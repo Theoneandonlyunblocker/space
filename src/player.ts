@@ -344,10 +344,58 @@ module Rance
 
       return allStars;
     }
+    updateVisionInStar(star: Star)
+    {
+      // meet players
+      if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
+      {
+        this.meetPlayersByVisibility("visible");
+      }
+    }
+    updateDetectionInStar(star: Star)
+    {
+      // meet players
+      if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
+      {
+        this.meetPlayersByVisibility("detected");
+      }
+      // identify ships
+      var unitsToIdentify = star.getAllShips();
+      for (var i = 0; i < unitsToIdentify.length; i++)
+      {
+        this.identifyUnit(unitsToIdentify[i]);
+      }
+    }
+    updateAllVisibilityInStar(star: Star)
+    {
+      if (this.starIsVisible(star))
+      {
+        this.updateVisionInStar(star);
+      }
+      if (this.starIsDetected(star))
+      {
+        this.updateDetectionInStar(star);
+      }
+    }
+    meetPlayersByVisibility(visibility: string)
+    {
+      var presentPlayersByVisibility = allVisible[i].getPresentPlayersByVisibility();
+
+      for (var playerId in presentPlayersByVisibility[visibility])
+      {
+        var player = presentPlayersByVisibility[visibility][playerId];
+        if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent)
+        {
+          this.diplomacyStatus.meetPlayer(player);
+        }
+      }
+    }
     updateVisibleStars()
     {
       var previousVisibleStars = extendObject(this.visibleStars);
       var previousDetectedStars = extendObject(this.detectedStars);
+      var newVisibleStars: Star[] = [];
+      var newDetectedStars: Star[] = [];
       var visibilityHasChanged: boolean = false;
       var detectionHasChanged: boolean = false;
       this.visibleStars = {};
@@ -372,9 +420,10 @@ module Rance
         if (!this.visibleStars[star.id])
         {
           this.visibleStars[star.id] = star;
-          if (!visibilityHasChanged && !previousVisibleStars[star.id])
+          if (!previousVisibleStars[star.id])
           {
             visibilityHasChanged = true;
+            newVisibleStars.push(star);
           }
 
           if (!this.revealedStars[star.id])
@@ -390,15 +439,11 @@ module Rance
         if (!this.detectedStars[star.id])
         {
           this.detectedStars[star.id] = star;
-          if (!detectionHasChanged && !previousDetectedStars[star.id])
+          if (!previousDetectedStars[star.id])
           {
             detectionHasChanged = true;
+            newDetectedStars.push(star);
           }
-        }
-        var unitsToIdentify = star.getAllShips();
-        for (var j = 0; j < unitsToIdentify.length; j++)
-        {
-          this.identifyUnit(unitsToIdentify[j]);
         }
       }
 
@@ -414,35 +459,13 @@ module Rance
           Object.keys(previousDetectedStars).length);
       }
 
-      var hasUnmetPlayers = Object.keys(this.diplomacyStatus.metPlayers).length < app.game.playerOrder.length;
-      if (hasUnmetPlayers)
+      for (var i = 0; i < newVisibleStars.length; i++)
       {
-        for (var i = 0; i < allVisible.length; i++)
-        {
-          var presentPlayersByVisibility = allVisible[i].getPresentPlayersByVisibility();
-
-          for (var playerId in presentPlayersByVisibility.visible)
-          {
-            var player = presentPlayersByVisibility.visible[playerId];
-            if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent)
-            {
-              this.diplomacyStatus.meetPlayer(player);
-            }
-          }
-        }
-        for (var i = 0; i < allDetected.length; i++)
-        {
-          var presentPlayersByVisibility = allDetected[i].getPresentPlayersByVisibility();
-
-          for (var playerId in presentPlayersByVisibility.detected)
-          {
-            var player = presentPlayersByVisibility.detected[playerId];
-            if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent)
-            {
-              this.diplomacyStatus.meetPlayer(player);
-            }
-          }
-        }
+        this.updateVisionInStar(newVisibleStars[i]);
+      }
+      for (var i = 0; i < newDetectedStars.length; i++)
+      {
+        this.updateDetectionInStar(newDetectedStars[i]);
       }
 
       if (visibilityHasChanged && !this.isAI)

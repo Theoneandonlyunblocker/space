@@ -98,7 +98,6 @@ module Rance
     {
       eventManager.dispatchEvent("diplomaticStatusUpdated");
     }
-
     getOpinionOf(player: Player)
     {
       var baseOpinion = this.getBaseOpinion();
@@ -113,7 +112,10 @@ module Rance
 
       return Math.round(baseOpinion + modifierOpinion);
     }
-
+    getUnMetPlayerCount()
+    {
+      return Object.keys(this.metPlayers).length - app.game.playerOrder.length;
+    }
     meetPlayer(player: Player)
     {
       if (this.metPlayers[player.id] || player === this.player) return;
@@ -125,7 +127,6 @@ module Rance
         player.diplomacyStatus.meetPlayer(this.player);
       }
     }
-
     canDeclareWarOn(player: Player)
     {
       return (this.statusByPlayer[player.id] < DiplomaticState.war);
@@ -134,7 +135,6 @@ module Rance
     {
       return (this.statusByPlayer[player.id] > DiplomaticState.peace);
     }
-
     declareWarOn(player: Player)
     {
       if (this.statusByPlayer[player.id] >= DiplomaticState.war)
