@@ -376,13 +376,14 @@ module Rance
       this.forEachUnit(function(unit)
       {
         unit.resetBattleStats();
-      });
-      this.forEachUnit(function(unit)
-      {
+
         if (unit.currentHealth < Math.round(unit.maxHealth * 0.1))
         {
           unit.currentHealth = Math.round(unit.maxHealth * 0.1);
         }
+
+        this.side1Player.identifyUnit(unit);
+        this.side2Player.identifyUnit(unit);
       });
       
       if (this.battleData.building)
