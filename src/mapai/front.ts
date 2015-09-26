@@ -190,25 +190,19 @@ module Rance
       }
       addUnit(unit: Unit)
       {
-        if (this.getUnitIndex(unit) === -1)
+        if (unit.front)
         {
-          if (unit.front)
-          {
-            unit.front.removeUnit(unit);
-          }
-          
-          unit.front = this;
-          this.units.push(unit);
+          unit.front.removeUnit(unit);
         }
+        
+        unit.front = this;
+        this.units.push(unit);
       }
       removeUnit(unit: Unit)
       {
         var unitIndex = this.getUnitIndex(unit);
-        if (unitIndex !== -1)
-        {
-          unit.front = null;
-          this.units.splice(unitIndex, 1);
-        }
+        unit.front = null;
+        this.units.splice(unitIndex, 1);
       }
       getUnitCountByArchetype()
       {
@@ -276,6 +270,8 @@ module Rance
           {
             score += 0.3;
           }
+
+          this.removeUnit(unit);
         }
         score *= this.objective.priority;
         score *= template.unitFitFN(unit, this);
