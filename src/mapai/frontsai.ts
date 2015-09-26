@@ -220,17 +220,9 @@ module Rance
       {
         this.frontsToMove = this.fronts.slice(0);
 
-        var frontMovePriorities =
-        {
-          discovery: 999,
-          expansion: 4,
-          cleanPirates: 3,
-          heal: -1
-        }
-
         this.frontsToMove.sort(function(a: Front, b: Front)
         {
-          return frontMovePriorities[a.objective.type] - frontMovePriorities[b.objective.type];
+          return a.objective.template.movePriority - b.objective.template.movePriority;
         });
       }
 
