@@ -876,6 +876,9 @@ module Rance
         for (var i = 0; i < stars.length; i++)
         {
           var star = stars[i];
+          var distanceToEnemy = star.getDistanceToStar(player.getNearestOwnedStarTo(star));
+          distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
+          var distanceScore = Math.pow(1 / distanceToEnemy, 2);
 
           var danger = enemyInfluence[star.id] || 1;
           if (!enemyVision.visible[star.id])
