@@ -8498,7 +8498,7 @@ var Rance;
             this.height = props.height || props.width;
             this.mainColor = props.mainColor;
             this.secondaryColor = props.secondaryColor;
-            this.tetriaryColor = props.tetriaryColor;
+            this.tetriaryColor = props.tetriaryColor; // TODO currently never set
         }
         Flag.prototype.setColorScheme = function (main, secondary, tetriary) {
             this.mainColor = main;
@@ -8516,7 +8516,7 @@ var Rance;
             var rng = new RNG(this.seed);
             this.foregroundEmblem = new Rance.Emblem(this.secondaryColor);
             this.foregroundEmblem.generateRandom(1, rng);
-            if (!this.foregroundEmblem.canAddBackground() && rng.uniform() > 0.5) {
+            if (this.foregroundEmblem.canAddBackground() && rng.uniform() > 0.5) {
                 this.backgroundEmblem = new Rance.Emblem(this.tetriaryColor);
                 this.backgroundEmblem.generateRandom(0.4, rng);
             }
@@ -15904,7 +15904,7 @@ var Rance;
                         secondaryColor: colorScheme.secondary
                     });
                     flag.generateRandom();
-                    var canvas = flag.draw(360, 320, true);
+                    var canvas = flag.draw();
                     flags.push(flag);
                 }
                 function makeHslStringFromHex(hex) {
@@ -15915,7 +15915,7 @@ var Rance;
                 }
                 window.setTimeout(function () {
                     for (var i = 0; i < flags.length; i++) {
-                        var canvas = flags[i].draw(360, 320, true);
+                        var canvas = flags[i].draw();
                         parent.appendChild(canvas);
                         canvas.setAttribute("title", "bgColor: " + makeHslStringFromHex(flags[i].mainColor) + "\n" +
                             "emblemColor: " + makeHslStringFromHex(flags[i].secondaryColor) + "\n");

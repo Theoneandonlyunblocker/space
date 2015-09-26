@@ -27,7 +27,7 @@ module Rance
 
           flag.generateRandom();
 
-          var canvas = flag.draw(360, 320, true);
+          var canvas = flag.draw();
 
           flags.push(flag);
         }
@@ -46,7 +46,7 @@ module Rance
         {
           for (var i = 0; i < flags.length; i++)
           {
-            var canvas = flags[i].draw(360, 320, true);
+            var canvas = flags[i].draw();
             parent.appendChild(canvas);
 
             canvas.setAttribute("title",
