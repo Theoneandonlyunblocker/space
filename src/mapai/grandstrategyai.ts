@@ -93,7 +93,7 @@ module Rance
         //   desire: desire.toFixed(2)
         // }]);
 
-        return clamp(desire, 0, 1);
+        return clamp(desire, 0.1, 1);
       }
     }
   }

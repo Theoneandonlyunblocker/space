@@ -10947,7 +10947,7 @@ var Rance;
                 //   currentStars: starsOwned,
                 //   desire: desire.toFixed(2)
                 // }]);
-                return Rance.clamp(desire, 0, 1);
+                return Rance.clamp(desire, 0.1, 1);
             };
             return GrandStrategyAI;
         })();
