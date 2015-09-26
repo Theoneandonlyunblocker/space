@@ -532,6 +532,7 @@ declare module Rance {
     function randRange(min: number, max: number): number;
     function getRandomArrayKey(target: any[]): number;
     function getRandomArrayItem(target: any[]): any;
+    function getSeededRandomArrayItem(array: any[], rng: any): any;
     function getRandomKey(target: {
         [props: string]: any;
     }): string;
@@ -889,15 +890,27 @@ declare module Rance {
     function checkRandomGenHues(amt: number): void;
 }
 declare module Rance {
+    enum SubEmblemCoverage {
+        inner = 0,
+        outer = 1,
+        both = 2,
+    }
+    enum SubEmblemPosition {
+        foreground = 0,
+        background = 1,
+        both = 2,
+    }
     class Emblem {
         alpha: number;
         color: number;
         inner: Templates.ISubEmblemTemplate;
         outer: Templates.ISubEmblemTemplate;
         constructor(color: number, alpha?: number, inner?: Templates.ISubEmblemTemplate, outer?: Templates.ISubEmblemTemplate);
-        isForegroundOnly(): boolean;
         generateRandom(minAlpha: number, rng?: any): void;
+        canAddOuterTemplate(): boolean;
+        getPossibleSubEmblemsToAdd(): Templates.ISubEmblemTemplate[];
         generateSubEmblems(rng: any): void;
+        canAddBackground(): boolean;
         draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
         drawSubEmblem(toDraw: Templates.ISubEmblemTemplate, maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
         serialize(): any;

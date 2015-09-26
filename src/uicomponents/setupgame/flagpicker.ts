@@ -47,7 +47,7 @@ module Rance
       {
         var className = "emblem-picker-image";
         if (this.state.selectedEmblem &&
-          this.state.selectedEmblem.type === template.type)
+          this.state.selectedEmblem.key === template.key)
         {
           className += " selected-emblem";
         }
@@ -56,13 +56,13 @@ module Rance
           React.DOM.div(
           {
             className: "emblem-picker-container",
-            key: template.type,
+            key: template.key,
             onClick: this.handleSelectEmblem.bind(this, template)
           },
             React.DOM.img(
             {
               className: className,
-              src: app.images[template.imageSrc].src
+              src: app.images[template.src].src
             })
           )
         );

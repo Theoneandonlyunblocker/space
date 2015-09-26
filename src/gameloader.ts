@@ -317,9 +317,9 @@ module Rance
     {
       var deserializeEmblem = function(emblemData: any, color: number)
       {
-        var inner = app.moduleData.Templates.SubEmblems[emblemData.innerType];
-        var outer = emblemData.outerType ?
-          app.moduleData.Templates.SubEmblems[emblemData.outerType] : null;
+        var inner = app.moduleData.Templates.SubEmblems[emblemData.innerKey];
+        var outer = emblemData.outerKey ?
+          app.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
 
         return new Emblem(color, emblemData.alpha, inner, outer);
 

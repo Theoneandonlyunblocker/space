@@ -65,7 +65,7 @@ module Rance
       this.foregroundEmblem.generateRandom(1, rng);
 
 
-      if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5)
+      if (!this.foregroundEmblem.canAddBackground() && rng.uniform() > 0.5)
       {
         this.backgroundEmblem = new Emblem(this.tetriaryColor);
         this.backgroundEmblem.generateRandom(0.4, rng);

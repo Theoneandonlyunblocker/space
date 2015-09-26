@@ -19,6 +19,11 @@ module Rance
     var _rnd = Math.floor(Math.random() * (target.length));
     return target[_rnd];
   }
+  export function getSeededRandomArrayItem(array: any[], rng: any)
+  {
+    var _rnd = Math.floor(rng.uniform() * array.length);
+    return array[_rnd];
+  }
   export function getRandomKey(target: {[props: string]: any;})
   {
     var _targetKeys = Object.keys(target);

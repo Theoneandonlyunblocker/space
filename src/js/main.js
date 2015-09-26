@@ -6434,6 +6434,11 @@ var Rance;
         return target[_rnd];
     }
     Rance.getRandomArrayItem = getRandomArrayItem;
+    function getSeededRandomArrayItem(array, rng) {
+        var _rnd = Math.floor(rng.uniform() * array.length);
+        return array[_rnd];
+    }
+    Rance.getSeededRandomArrayItem = getSeededRandomArrayItem;
     function getRandomKey(target) {
         var _targetKeys = Object.keys(target);
         var _rnd = Math.floor(Math.random() * (_targetKeys.length));
@@ -8370,6 +8375,18 @@ var Rance;
 /// <reference path="color.ts"/>
 var Rance;
 (function (Rance) {
+    (function (SubEmblemCoverage) {
+        SubEmblemCoverage[SubEmblemCoverage["inner"] = 0] = "inner";
+        SubEmblemCoverage[SubEmblemCoverage["outer"] = 1] = "outer";
+        SubEmblemCoverage[SubEmblemCoverage["both"] = 2] = "both";
+    })(Rance.SubEmblemCoverage || (Rance.SubEmblemCoverage = {}));
+    var SubEmblemCoverage = Rance.SubEmblemCoverage;
+    (function (SubEmblemPosition) {
+        SubEmblemPosition[SubEmblemPosition["foreground"] = 0] = "foreground";
+        SubEmblemPosition[SubEmblemPosition["background"] = 1] = "background";
+        SubEmblemPosition[SubEmblemPosition["both"] = 2] = "both"; // can be alone
+    })(Rance.SubEmblemPosition || (Rance.SubEmblemPosition = {}));
+    var SubEmblemPosition = Rance.SubEmblemPosition;
     var Emblem = (function () {
         function Emblem(color, alpha, inner, outer) {
             this.color = color;
@@ -8377,60 +8394,50 @@ var Rance;
             this.inner = inner;
             this.outer = outer;
         }
-        Emblem.prototype.isForegroundOnly = function () {
-            if (this.inner.foregroundOnly)
-                return true;
-            if (this.outer && this.outer.foregroundOnly)
-                return true;
-            return false;
-        };
         Emblem.prototype.generateRandom = function (minAlpha, rng) {
             var rng = rng || new RNG(Math.random);
             this.alpha = rng.uniform();
             this.alpha = Rance.clamp(this.alpha, minAlpha, 1);
             this.generateSubEmblems(rng);
         };
-        Emblem.prototype.generateSubEmblems = function (rng) {
-            var allEmblems = [];
-            function getSeededRandomArrayItem(array) {
-                var _rnd = Math.floor(rng.uniform() * array.length);
-                return array[_rnd];
+        Emblem.prototype.canAddOuterTemplate = function () {
+            return (this.inner && this.inner.coverage.indexOf(SubEmblemCoverage.inner) !== -1);
+        };
+        Emblem.prototype.getPossibleSubEmblemsToAdd = function () {
+            var possibleTemplates = [];
+            if (this.inner && this.outer) {
+                throw new Error("Tried to get available sub emblems for emblem that already has both inner and outer");
             }
-            for (var subEmblem in app.moduleData.Templates.SubEmblems) {
-                allEmblems.push(app.moduleData.Templates.SubEmblems[subEmblem]);
-            }
-            var mainEmblem = getSeededRandomArrayItem(allEmblems);
-            if (mainEmblem.position === "both") {
-                this.inner = mainEmblem;
-                return;
-            }
-            else if (mainEmblem.position === "inner" || mainEmblem.position === "outer") {
-                this[mainEmblem.position] = mainEmblem;
+            if (!this.inner) {
+                for (var key in app.moduleData.Templates.SubEmblems) {
+                    possibleTemplates.push(app.moduleData.Templates.SubEmblems[key]);
+                }
             }
             else {
-                if (rng.uniform() > 0.5) {
-                    this.inner = mainEmblem;
-                    return;
-                }
-                else if (mainEmblem.position === "inner-or-both") {
-                    this.inner = mainEmblem;
-                }
-                else {
-                    this.outer = mainEmblem;
+                if (this.canAddOuterTemplate()) {
+                    for (var key in app.moduleData.Templates.SubEmblems) {
+                        var template = app.moduleData.Templates.SubEmblems[key];
+                        if (template.coverage.indexOf(SubEmblemCoverage.outer) !== -1) {
+                            possibleTemplates.push(template);
+                        }
+                    }
                 }
             }
-            if (mainEmblem.position === "inner" || mainEmblem.position === "inner-or-both") {
-                var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function (emblem) {
-                    return (emblem.position === "outer" || emblem.position === "outer-or-both");
-                }));
-                this.outer = subEmblem;
+            return possibleTemplates;
+        };
+        Emblem.prototype.generateSubEmblems = function (rng) {
+            var candidates = this.getPossibleSubEmblemsToAdd();
+            this.inner = Rance.getSeededRandomArrayItem(candidates, rng);
+            candidates = this.getPossibleSubEmblemsToAdd();
+            if (candidates.length > 0 && rng.uniform() > 0.4) {
+                this.outer = Rance.getSeededRandomArrayItem(candidates, rng);
             }
-            else if (mainEmblem.position === "outer" || mainEmblem.position === "outer-or-both") {
-                var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function (emblem) {
-                    return (emblem.position === "inner" || emblem.position === "inner-or-both");
-                }));
-                this.inner = subEmblem;
+        };
+        Emblem.prototype.canAddBackground = function () {
+            if (this.inner.position.indexOf(SubEmblemPosition.foreground) !== -1) {
+                return (!this.outer || this.outer.position.indexOf(SubEmblemPosition.foreground) !== -1);
             }
+            return false;
         };
         Emblem.prototype.draw = function (maxWidth, maxHeight, stretch) {
             var canvas = document.createElement("canvas");
@@ -8447,7 +8454,7 @@ var Rance;
             return canvas;
         };
         Emblem.prototype.drawSubEmblem = function (toDraw, maxWidth, maxHeight, stretch) {
-            var image = app.images[toDraw.imageSrc];
+            var image = app.images[toDraw.src];
             var width = image.width;
             var height = image.height;
             if (stretch) {
@@ -8470,10 +8477,10 @@ var Rance;
         Emblem.prototype.serialize = function () {
             var data = {
                 alpha: this.alpha,
-                innerType: this.inner.type
+                innerKey: this.inner.key
             };
             if (this.outer)
-                data.outerType = this.outer.type;
+                data.outerKey = this.outer.key;
             return (data);
         };
         return Emblem;
@@ -8509,7 +8516,7 @@ var Rance;
             var rng = new RNG(this.seed);
             this.foregroundEmblem = new Rance.Emblem(this.secondaryColor);
             this.foregroundEmblem.generateRandom(1, rng);
-            if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5) {
+            if (!this.foregroundEmblem.canAddBackground() && rng.uniform() > 0.5) {
                 this.backgroundEmblem = new Rance.Emblem(this.tetriaryColor);
                 this.backgroundEmblem.generateRandom(0.4, rng);
             }
@@ -11748,10 +11755,10 @@ var Rance;
             var foregroundEmblem = new Rance.Emblem(this.secondaryColor);
             foregroundEmblem.inner =
                 {
-                    type: "pirateEmblem",
-                    position: "both",
-                    foregroundOnly: true,
-                    imageSrc: "pirateEmblem.png"
+                    key: "pirateEmblem",
+                    src: "pirateEmblem.png",
+                    coverage: [Rance.SubEmblemCoverage.both],
+                    position: [Rance.SubEmblemPosition.both]
                 };
             this.flag = new Rance.Flag({
                 width: 46,
@@ -15020,16 +15027,16 @@ var Rance;
             makeEmblemElement: function (template) {
                 var className = "emblem-picker-image";
                 if (this.state.selectedEmblem &&
-                    this.state.selectedEmblem.type === template.type) {
+                    this.state.selectedEmblem.key === template.key) {
                     className += " selected-emblem";
                 }
                 return (React.DOM.div({
                     className: "emblem-picker-container",
-                    key: template.type,
+                    key: template.key,
                     onClick: this.handleSelectEmblem.bind(this, template)
                 }, React.DOM.img({
                     className: className,
-                    src: app.images[template.imageSrc].src
+                    src: app.images[template.src].src
                 })));
             },
             render: function () {
@@ -21146,178 +21153,178 @@ var Rance;
                 var SubEmblems;
                 (function (SubEmblems) {
                     SubEmblems.emblem0 = {
-                        type: "emblem0",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem0.png"
+                        key: "emblem0",
+                        src: "emblem0.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem33 = {
-                        type: "emblem33",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem33.png"
+                        key: "emblem33",
+                        src: "emblem33.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem34 = {
-                        type: "emblem34",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem34.png"
+                        key: "emblem34",
+                        src: "emblem34.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem35 = {
-                        type: "emblem35",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem35.png"
+                        key: "emblem35",
+                        src: "emblem35.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem36 = {
-                        type: "emblem36",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem36.png"
+                        key: "emblem36",
+                        src: "emblem36.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem37 = {
-                        type: "emblem37",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem37.png"
+                        key: "emblem37",
+                        src: "emblem37.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem38 = {
-                        type: "emblem38",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem38.png"
+                        key: "emblem38",
+                        src: "emblem38.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem39 = {
-                        type: "emblem39",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem39.png"
+                        key: "emblem39",
+                        src: "emblem39.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem40 = {
-                        type: "emblem40",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem40.png"
+                        key: "emblem40",
+                        src: "emblem40.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem41 = {
-                        type: "emblem41",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem41.png"
+                        key: "emblem41",
+                        src: "emblem41.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem42 = {
-                        type: "emblem42",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem42.png"
+                        key: "emblem42",
+                        src: "emblem42.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem43 = {
-                        type: "emblem43",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem43.png"
+                        key: "emblem43",
+                        src: "emblem43.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem44 = {
-                        type: "emblem44",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem44.png"
+                        key: "emblem44",
+                        src: "emblem44.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem45 = {
-                        type: "emblem45",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem45.png"
+                        key: "emblem45",
+                        src: "emblem45.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem46 = {
-                        type: "emblem46",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem46.png"
+                        key: "emblem46",
+                        src: "emblem46.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem47 = {
-                        type: "emblem47",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem47.png"
+                        key: "emblem47",
+                        src: "emblem47.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem48 = {
-                        type: "emblem48",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem48.png"
+                        key: "emblem48",
+                        src: "emblem48.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem49 = {
-                        type: "emblem49",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem49.png"
+                        key: "emblem49",
+                        src: "emblem49.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem50 = {
-                        type: "emblem50",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem50.png"
+                        key: "emblem50",
+                        src: "emblem50.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem51 = {
-                        type: "emblem51",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem51.png"
+                        key: "emblem51",
+                        src: "emblem51.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem52 = {
-                        type: "emblem52",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem52.png"
+                        key: "emblem52",
+                        src: "emblem52.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem53 = {
-                        type: "emblem53",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem53.png"
+                        key: "emblem53",
+                        src: "emblem53.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem54 = {
-                        type: "emblem54",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem54.png"
+                        key: "emblem54",
+                        src: "emblem54.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem55 = {
-                        type: "emblem55",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem55.png"
+                        key: "emblem55",
+                        src: "emblem55.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem56 = {
-                        type: "emblem56",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem56.png"
+                        key: "emblem56",
+                        src: "emblem56.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem57 = {
-                        type: "emblem57",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem57.png"
+                        key: "emblem57",
+                        src: "emblem57.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem58 = {
-                        type: "emblem58",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem58.png"
+                        key: "emblem58",
+                        src: "emblem58.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem59 = {
-                        type: "emblem59",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem59.png"
+                        key: "emblem59",
+                        src: "emblem59.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.emblem61 = {
-                        type: "emblem61",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem61.png"
+                        key: "emblem61",
+                        src: "emblem61.png",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
                     };
                 })(SubEmblems = Templates.SubEmblems || (Templates.SubEmblems = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
@@ -22714,9 +22721,9 @@ var Rance;
         };
         GameLoader.prototype.deserializeFlag = function (data) {
             var deserializeEmblem = function (emblemData, color) {
-                var inner = app.moduleData.Templates.SubEmblems[emblemData.innerType];
-                var outer = emblemData.outerType ?
-                    app.moduleData.Templates.SubEmblems[emblemData.outerType] : null;
+                var inner = app.moduleData.Templates.SubEmblems[emblemData.innerKey];
+                var outer = emblemData.outerKey ?
+                    app.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
                 return new Rance.Emblem(color, emblemData.alpha, inner, outer);
             };
             var flag = new Rance.Flag({

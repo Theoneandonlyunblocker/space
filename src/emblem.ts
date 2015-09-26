@@ -5,6 +5,18 @@
 
 module Rance
 {
+  export enum SubEmblemCoverage
+  {
+    inner,
+    outer,
+    both
+  }
+  export enum SubEmblemPosition
+  {
+    foreground, // can be in foreground with bg emblem
+    background, // can be in background with fg emblem
+    both // can be alone
+  }
   export class Emblem
   {
     alpha: number;
@@ -19,14 +31,6 @@ module Rance
       this.inner = inner;
       this.outer = outer;
     }
-
-    isForegroundOnly(): boolean
-    {
-      if (this.inner.foregroundOnly) return true;
-      if (this.outer && this.outer.foregroundOnly) return true;
-
-      return false;
-    }
     generateRandom(minAlpha: number, rng?: any): void
     {
       var rng: any = rng || new RNG(Math.random);
@@ -35,68 +39,62 @@ module Rance
 
       this.generateSubEmblems(rng);
     }
+    canAddOuterTemplate(): boolean
+    {
+      return (this.inner && this.inner.coverage.indexOf(SubEmblemCoverage.inner) !== -1);
+    }
+    getPossibleSubEmblemsToAdd(): Templates.ISubEmblemTemplate[]
+    {
+      var possibleTemplates: Templates.ISubEmblemTemplate[] = [];
+
+      if (this.inner && this.outer)
+      {
+        throw new Error("Tried to get available sub emblems for emblem that already has both inner and outer");
+      }
+
+      if (!this.inner)
+      {
+        for (var key in app.moduleData.Templates.SubEmblems)
+        {
+          possibleTemplates.push(app.moduleData.Templates.SubEmblems[key]);
+        }
+      }
+      else
+      {
+        if (this.canAddOuterTemplate())
+        {
+          for (var key in app.moduleData.Templates.SubEmblems)
+          {
+            var template = app.moduleData.Templates.SubEmblems[key];
+            if (template.coverage.indexOf(SubEmblemCoverage.outer) !== -1)
+            {
+              possibleTemplates.push(template);
+            }
+          }
+        }
+      }
+
+      return possibleTemplates;
+    }
     generateSubEmblems(rng: any): void
     {
-      var allEmblems: Templates.ISubEmblemTemplate[] = [];
+      var candidates = this.getPossibleSubEmblemsToAdd();
+      this.inner = getSeededRandomArrayItem(candidates, rng);
 
-      function getSeededRandomArrayItem(array: any[])
+      candidates = this.getPossibleSubEmblemsToAdd();
+      if (candidates.length > 0 && rng.uniform() > 0.4)
       {
-        var _rnd = Math.floor(rng.uniform() * array.length);
-        return array[_rnd];
+        this.outer = getSeededRandomArrayItem(candidates, rng);
+      }
+    }
+    canAddBackground(): boolean
+    {
+      if (this.inner.position.indexOf(SubEmblemPosition.foreground) !== -1)
+      {
+        return (!this.outer || this.outer.position.indexOf(SubEmblemPosition.foreground) !== -1);
       }
 
-      for (var subEmblem in app.moduleData.Templates.SubEmblems)
-      {
-        allEmblems.push(app.moduleData.Templates.SubEmblems[subEmblem]);
-      }
-
-      var mainEmblem = getSeededRandomArrayItem(allEmblems);
-
-      if (mainEmblem.position === "both")
-      {
-        this.inner = mainEmblem;
-        return;
-      }
-      else if (mainEmblem.position === "inner" || mainEmblem.position === "outer")
-      {
-        this[mainEmblem.position] = mainEmblem;
-      }
-      else // inner-or-both || outer-or-both
-      {
-        if (rng.uniform() > 0.5)
-        {
-          this.inner = mainEmblem;
-          return;
-        }
-        else if (mainEmblem.position === "inner-or-both")
-        {
-          this.inner = mainEmblem;
-        }
-        else
-        {
-          this.outer = mainEmblem;
-        }
-      }
-
-
-      if (mainEmblem.position === "inner" || mainEmblem.position === "inner-or-both")
-      {
-        var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function(emblem)
-        {
-          return (emblem.position === "outer" || emblem.position === "outer-or-both");
-        }));
-
-        this.outer = subEmblem;
-      }
-      else if (mainEmblem.position === "outer" || mainEmblem.position === "outer-or-both")
-      {
-        var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function(emblem)
-        {
-          return (emblem.position === "inner" || emblem.position === "inner-or-both");
-        }));
-
-        this.inner = subEmblem;
-      }
+      return false;
     }
     draw(maxWidth: number, maxHeight: number, stretch: boolean)
     {
@@ -122,7 +120,7 @@ module Rance
     drawSubEmblem(toDraw: Templates.ISubEmblemTemplate,
       maxWidth: number, maxHeight: number, stretch: boolean)
     {
-      var image = app.images[toDraw.imageSrc];
+      var image = app.images[toDraw.src];
 
       var width = image.width;
       var height = image.height;
@@ -157,10 +155,10 @@ module Rance
       var data: any =
       {
         alpha: this.alpha,
-        innerType: this.inner.type
+        innerKey: this.inner.key
       };
 
-      if (this.outer) data.outerType = this.outer.type;
+      if (this.outer) data.outerKey = this.outer.key;
 
       return(data);
     }

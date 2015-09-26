@@ -100,10 +100,10 @@ module Rance
       var foregroundEmblem = new Emblem(this.secondaryColor);
       foregroundEmblem.inner = 
       {
-        type: "pirateEmblem",
-        position: "both",
-        foregroundOnly: true,
-        imageSrc: "pirateEmblem.png"
+        key: "pirateEmblem",
+        src: "pirateEmblem.png",
+        coverage: [SubEmblemCoverage.both],
+        position: [SubEmblemPosition.both]
       };
 
       this.flag = new Flag(

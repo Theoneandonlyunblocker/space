@@ -4,10 +4,11 @@ declare module Rance
   {
     interface ISubEmblemTemplate
     {
-      type: string;
-      position: string; //inner, outer, inner-or-both, outer-or-both, both
-      foregroundOnly: boolean;
-      imageSrc: string;
+      key: string;
+      src: string;
+      coverage: SubEmblemCoverage[];
+      position: SubEmblemPosition[];
+      onlyCombineWith?: string[];
     }
   }
 }
