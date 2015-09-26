@@ -8432,29 +8432,36 @@ var Rance;
                 this.inner = subEmblem;
             }
         };
-        Emblem.prototype.draw = function () {
+        Emblem.prototype.draw = function (maxWidth, maxHeight, stretch) {
             var canvas = document.createElement("canvas");
             var ctx = canvas.getContext("2d");
             ctx.globalAlpha = this.alpha;
-            var inner = this.drawSubEmblem(this.inner);
+            var inner = this.drawSubEmblem(this.inner, maxWidth, maxHeight, stretch);
             canvas.width = inner.width;
             canvas.height = inner.height;
             ctx.drawImage(inner, 0, 0);
             if (this.outer) {
-                var outer = this.drawSubEmblem(this.outer);
+                var outer = this.drawSubEmblem(this.outer, maxWidth, maxHeight, stretch);
                 ctx.drawImage(outer, 0, 0);
             }
             return canvas;
         };
-        Emblem.prototype.drawSubEmblem = function (toDraw) {
+        Emblem.prototype.drawSubEmblem = function (toDraw, maxWidth, maxHeight, stretch) {
             var image = app.images[toDraw.imageSrc];
             var width = image.width;
             var height = image.height;
+            if (stretch) {
+                var widthRatio = width / maxWidth;
+                var heightRatio = height / maxHeight;
+                var largestRatio = Math.max(widthRatio, heightRatio);
+                width /= largestRatio;
+                height /= largestRatio;
+            }
             var canvas = document.createElement("canvas");
             canvas.width = width;
             canvas.height = height;
             var ctx = canvas.getContext("2d");
-            ctx.drawImage(image, 0, 0);
+            ctx.drawImage(image, 0, 0, width, height);
             ctx.globalCompositeOperation = "source-in";
             ctx.fillStyle = "#" + Rance.hexToString(this.color);
             ctx.fillRect(0, 0, width, height);
@@ -8572,31 +8579,33 @@ var Rance;
             ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
             this._customImageToRender = canvas;
         };
-        Flag.prototype.draw = function () {
+        Flag.prototype.draw = function (width, height, stretch) {
+            if (width === void 0) { width = this.width; }
+            if (height === void 0) { height = this.height; }
+            if (stretch === void 0) { stretch = false; }
             var canvas = document.createElement("canvas");
-            canvas.width = this.width;
-            canvas.height = this.height;
+            canvas.width = width;
+            canvas.height = height;
             if (!isFinite(this.mainColor))
                 return canvas;
             var ctx = canvas.getContext("2d");
             ctx.globalCompositeOperation = "source-over";
             ctx.fillStyle = "#" + Rance.hexToString(this.mainColor);
-            ctx.fillRect(0, 0, this.width, this.height);
-            ctx.fillStyle = "#00FF00";
+            ctx.fillRect(0, 0, width, height);
             if (this._customImageToRender) {
                 ctx.drawImage(this._customImageToRender, 0, 0);
             }
             else {
                 if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null) {
-                    var background = this.backgroundEmblem.draw();
-                    var x = (this.width - background.width) / 2;
-                    var y = (this.height - background.height) / 2;
+                    var background = this.backgroundEmblem.draw(width, height, stretch);
+                    var x = (width - background.width) / 2;
+                    var y = (height - background.height) / 2;
                     ctx.drawImage(background, x, y);
                 }
                 if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null) {
-                    var foreground = this.foregroundEmblem.draw();
-                    var x = (this.width - foreground.width) / 2;
-                    var y = (this.height - foreground.height) / 2;
+                    var foreground = this.foregroundEmblem.draw(width, height, stretch);
+                    var x = (width - foreground.width) / 2;
+                    var y = (height - foreground.height) / 2;
                     ctx.drawImage(foreground, x, y);
                 }
             }
@@ -15888,7 +15897,7 @@ var Rance;
                         secondaryColor: colorScheme.secondary
                     });
                     flag.generateRandom();
-                    var canvas = flag.draw();
+                    var canvas = flag.draw(360, 320, true);
                     flags.push(flag);
                 }
                 function makeHslStringFromHex(hex) {
@@ -15899,7 +15908,7 @@ var Rance;
                 }
                 window.setTimeout(function () {
                     for (var i = 0; i < flags.length; i++) {
-                        var canvas = flags[i].draw();
+                        var canvas = flags[i].draw(360, 320, true);
                         parent.appendChild(canvas);
                         canvas.setAttribute("title", "bgColor: " + makeHslStringFromHex(flags[i].mainColor) + "\n" +
                             "emblemColor: " + makeHslStringFromHex(flags[i].secondaryColor) + "\n");

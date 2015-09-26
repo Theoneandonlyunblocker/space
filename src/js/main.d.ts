@@ -898,8 +898,8 @@ declare module Rance {
         isForegroundOnly(): boolean;
         generateRandom(minAlpha: number, rng?: any): void;
         generateSubEmblems(rng: any): void;
-        draw(): HTMLCanvasElement;
-        drawSubEmblem(toDraw: Templates.ISubEmblemTemplate): HTMLCanvasElement;
+        draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
+        drawSubEmblem(toDraw: Templates.ISubEmblemTemplate, maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
         serialize(): any;
     }
 }
@@ -928,7 +928,7 @@ declare module Rance {
         setForegroundEmblem(emblem: Emblem): void;
         setBackgroundEmblem(emblem: Emblem): void;
         setCustomImage(imageSrc: string): void;
-        draw(): HTMLCanvasElement;
+        draw(width?: number, height?: number, stretch?: boolean): HTMLCanvasElement;
         serialize(): any;
     }
 }

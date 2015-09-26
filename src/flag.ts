@@ -161,11 +161,11 @@ module Rance
 
       this._customImageToRender = canvas;
     }
-    draw()
+    draw(width: number = this.width, height: number = this.height, stretch: boolean = false)
     {
       var canvas = document.createElement("canvas");
-      canvas.width = this.width;
-      canvas.height = this.height;
+      canvas.width = width;
+      canvas.height = height;
 
       if (!isFinite(this.mainColor)) return canvas;
 
@@ -174,8 +174,7 @@ module Rance
       ctx.globalCompositeOperation = "source-over";
 
       ctx.fillStyle = "#" + hexToString(this.mainColor);
-      ctx.fillRect(0, 0, this.width, this.height);
-      ctx.fillStyle = "#00FF00";
+      ctx.fillRect(0, 0, width, height);
 
       if (this._customImageToRender)
       {
@@ -185,21 +184,20 @@ module Rance
       {
         if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null)
         {
-          var background = this.backgroundEmblem.draw();
-          var x = (this.width - background.width) / 2;
-          var y = (this.height - background.height) / 2;
+          var background = this.backgroundEmblem.draw(width, height, stretch);
+          var x = (width - background.width) / 2;
+          var y = (height - background.height) / 2;
           ctx.drawImage(background, x, y);
         }
 
         if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null)
         {
-          var foreground = this.foregroundEmblem.draw();
-          var x = (this.width - foreground.width) / 2;
-          var y = (this.height - foreground.height) / 2;
+          var foreground = this.foregroundEmblem.draw(width, height, stretch);
+          var x = (width - foreground.width) / 2;
+          var y = (height - foreground.height) / 2;
           ctx.drawImage(foreground, x, y);
         }
       }
-      
       
       return canvas;
     }

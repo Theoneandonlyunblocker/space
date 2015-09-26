@@ -98,41 +98,51 @@ module Rance
         this.inner = subEmblem;
       }
     }
-    draw()
+    draw(maxWidth: number, maxHeight: number, stretch: boolean)
     {
       var canvas = document.createElement("canvas");
       var ctx = canvas.getContext("2d");
 
       ctx.globalAlpha = this.alpha;
 
-      var inner = this.drawSubEmblem(this.inner);
+      var inner = this.drawSubEmblem(this.inner, maxWidth, maxHeight, stretch);
       canvas.width = inner.width;
       canvas.height = inner.height;
       ctx.drawImage(inner, 0, 0);
 
       if (this.outer)
       {
-        var outer = this.drawSubEmblem(this.outer);
+        var outer = this.drawSubEmblem(this.outer, maxWidth, maxHeight, stretch);
         ctx.drawImage(outer, 0, 0);
       }
 
       return canvas;
     }
 
-    drawSubEmblem(toDraw: Templates.ISubEmblemTemplate)
+    drawSubEmblem(toDraw: Templates.ISubEmblemTemplate,
+      maxWidth: number, maxHeight: number, stretch: boolean)
     {
       var image = app.images[toDraw.imageSrc];
 
-
       var width = image.width;
       var height = image.height;
+
+      if (stretch)
+      {
+        var widthRatio = width / maxWidth;
+        var heightRatio = height / maxHeight;
+
+        var largestRatio = Math.max(widthRatio, heightRatio);
+        width /= largestRatio;
+        height /= largestRatio;
+      }
 
       var canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
       var ctx = canvas.getContext("2d");
 
-      ctx.drawImage(image, 0, 0);
+      ctx.drawImage(image, 0, 0, width, height);
 
       ctx.globalCompositeOperation = "source-in";
 
