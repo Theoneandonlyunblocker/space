@@ -268,7 +268,7 @@ module Rance
       scoreUnitFit(unit: Unit)
       {
         var template = this.objective.template;
-        var score = this.objective.priority;
+        var score = 1;
         if (this.hasUnit(unit))
         {
           score += 0.2;
@@ -277,6 +277,7 @@ module Rance
             score += 0.3;
           }
         }
+        score *= this.objective.priority;
         score *= template.unitFitFN(unit, this);
         score *= template.unitDesireFN(this);
         return score;
