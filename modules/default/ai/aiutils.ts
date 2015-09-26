@@ -210,7 +210,7 @@ module Rance
           var cost = unit.getTotalCost();
           baseScore -= cost / 1000;
 
-          var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 1);
+          var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 2);
 
           return clamp(score, 0, 1);
         }
@@ -257,6 +257,48 @@ module Rance
           }
 
           return allObjectives;
+        }
+        export function perimeterObjectiveCreation(templateKey: string, isForScouting: boolean,
+          basePriority: number, grandStrategyAI: MapAI.GrandStrategyAI, mapEvaluator: MapAI.MapEvaluator)
+        {
+          var playersToEstablishPerimeterAgainst: Player[] = [];
+          var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
+          var statusByPlayer = diplomacyStatus.statusByPlayer;
+          for (var playerId in statusByPlayer)
+          {
+            if (statusByPlayer[playerId] >= DiplomaticState.war)
+            {
+              playersToEstablishPerimeterAgainst.push(diplomacyStatus.metPlayers[playerId]);
+            }
+          }
+
+          var allScoresByStar: AIUtils.IScoresByStar = {};
+          for (var i = 0; i < playersToEstablishPerimeterAgainst.length; i++)
+          {
+            var player = playersToEstablishPerimeterAgainst[i];
+            var scores = mapEvaluator.getScoredPerimeterLocationsAgainstPlayer(player, 1, isForScouting);
+
+            AIUtils.mergeScoresByStar(allScoresByStar, scores);
+          }
+
+          var allScores:
+          {
+            star: Star;
+            score: number;
+          }[] = [];
+          for (var starId in allScoresByStar)
+          {
+            if (allScoresByStar[starId].score > 0.04)
+            {
+              allScores.push(allScoresByStar[starId]);
+            }
+          }
+
+          var template = Rance.Modules.DefaultModule.Objectives[templateKey];
+          var objectives: MapAI.Objective[] = AIUtils.makeObjectivesFromScores(template, allScores, basePriority);
+
+
+          return objectives;
         }
         export function getUnitsToFillIndependentObjective(objective: MapAI.Objective)
         {

@@ -545,7 +545,7 @@ module Rance
               {
                 var objective = fleet.ships[0].front.objective;
                 var target = objective.target ? objective.target.id : null;
-                console.log(objective.type, target);
+                console.log(objective.type, target, objective.priority);
               }
             }
             function fleetClickFn(event: PIXI.interaction.InteractionEvent)
@@ -576,12 +576,12 @@ module Rance
                 {
                   case "discovery":
                   {
-                    containerGfx.lineStyle(1, 0xFF0000, 1);
+                    containerGfx.lineStyle(5, 0xFF0000, 1);
                     break;
                   }
-                  case "perimeter":
+                  case "scoutingPerimeter":
                   {
-                    containerGfx.lineStyle(1, 0x0000FF, 1);
+                    containerGfx.lineStyle(5, 0x0000FF, 1);
                     break;
                   }
                 }

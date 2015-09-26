@@ -27,7 +27,7 @@
 /// <reference path="ai/healobjective.ts" />
 /// <reference path="ai/expansionobjective.ts" />
 /// <reference path="ai/cleanupobjective.ts" />
-/// <reference path="ai/perimeterobjective.ts" />
+/// <reference path="ai/scoutingperimeterobjective.ts" />
 
 /// <reference path="ai/declarewarobjective.ts" />
 

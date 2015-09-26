@@ -1429,7 +1429,7 @@ declare module Rance {
                     [starId: number]: Star;
                 };
             };
-            getScoredPerimeterLocationsAgainstPlayer(player: Player, safetyFactor: number): {
+            getScoredPerimeterLocationsAgainstPlayer(player: Player, safetyFactor: number, forScouting: boolean): {
                 score: number;
                 star: Star;
             }[];
@@ -3098,6 +3098,7 @@ declare module Rance {
                     player?: Player;
                     score: number;
                 }[], basePriority: number): MapAI.Objective[];
+                function perimeterObjectiveCreation(templateKey: string, isForScouting: boolean, basePriority: number, grandStrategyAI: MapAI.GrandStrategyAI, mapEvaluator: MapAI.MapEvaluator): MapAI.Objective[];
                 function getUnitsToFillIndependentObjective(objective: MapAI.Objective): {
                     min: number;
                     ideal: number;
@@ -3146,7 +3147,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module Objectives {
-                var perimeter: Rance.Templates.IObjectiveTemplate;
+                var scoutingPerimeter: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
