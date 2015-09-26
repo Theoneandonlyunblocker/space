@@ -854,7 +854,7 @@ module Rance
 
         return this.cachedVisionMaps[player.id];
       }
-      getScoredPerimeterLocationsAgainstPlayer(player: Player, safetyFactor: number)
+      getScoredPerimeterLocationsAgainstPlayer(player: Player, safetyFactor: number, forScouting: boolean)
       {
         var ownInfluence = this.getPlayerInfluenceMap(this.player);
         var enemyInfluence = this.getPlayerInfluenceMap(player);
@@ -886,11 +886,18 @@ module Rance
             danger *= 0.5;
           }
           danger *= safetyFactor;
-          var safety = ownInfluence[star.id] / danger;
-
-          var vision = this.getVisionCoverageAroundStar(star, 2);
-          var lackOfVision = 1 - vision;
-          var score = lackOfVision * safety;
+          if (forScouting)
+          {
+            var safety = ownInfluence[star.id] / (danger * safetyFactor);
+            var score = safety * distanceScore;
+            // var vision = this.getVisionCoverageAroundStar(star, 2);
+            // var lackOfVision = 1 - vision;
+            // var score = lackOfVision * safety;
+          }
+          else
+          {
+            var score = (danger / ownInfluence[star.id]) / safetyFactor;
+          }
 
           scores.push(
           {
