@@ -1,18 +1,19 @@
 import os
+import re
 
 os.chdir("img/emblems")
 
-i = 0
-result = open("emblems", "a")
+result = open("emblems", "w")
 
 def makeEmblemTemplate(name):
+  encoded = re.sub(r'\W+', '', name)
   emblemTemplate = (
-    'export var ' + name + ' =\n'
+    'export var ' + encoded + ': Rance.Templates.ISubEmblemTemplate =\n'
     '{\n'
-    '  type: ' + name + ',\n'
-    '  position: "both",\n'
-    '  foregroundOnly: true,\n'
-    '  imageSrc: "' + name + '.png"\n'
+    '  key: "' + encoded + '",\n'
+    '  src: "' + name + '.svg",\n'
+    '  coverage: [SubEmblemCoverage.both],\n'
+    '  position: [SubEmblemPosition.both]\n'
     '}\n'
   )
 
@@ -20,9 +21,7 @@ def makeEmblemTemplate(name):
 
 
 for filename in os.listdir("."):
-  if filename.endswith(".png"):
-    # newName = "emblem" + str(i)
-    # os.rename(filename, newName + ".png")
+  if filename.endswith(".svg"):
     result.write(makeEmblemTemplate(filename[:-4]))
 
 result.close()

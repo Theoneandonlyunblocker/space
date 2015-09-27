@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<!-- https://commons.wikimedia.org/wiki/File:Japanese_Crest_Mitsumori_Janome.svg -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 500 500"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="Japanese_Crest_Mitsumori_Janome.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.0472656"
+     inkscape:cx="217.92428"
+     inkscape:cy="178.55622"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3861-0-3"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     class="emblem-color"
+     transform="translate(0,-552.36218)">
+    <g
+       id="g3861"
+       style="opacity:1"
+       transform="translate(-11.887547,13.209511)">
+      <path
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         d="M 132.01562 235.28711 A 112.5 112.5 0 0 0 19.515625 347.78711 A 112.5 112.5 0 0 0 132.01562 460.28711 A 112.5 112.5 0 0 0 244.51562 347.78711 A 112.5 112.5 0 0 0 132.01562 235.28711 z M 132.01562 300.28711 A 47.5 47.5 0 0 1 179.51562 347.78711 A 47.5 47.5 0 0 1 132.01562 395.28711 A 47.5 47.5 0 0 1 84.515625 347.78711 A 47.5 47.5 0 0 1 132.01562 300.28711 z "
+         transform="translate(11.887547,539.15267)"
+         id="path2985" />
+    </g>
+    <g
+       transform="translate(225.36988,12.870906)"
+       id="g3861-0"
+       style="opacity:1">
+      <path
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         d="M 369.27344 234.94922 A 112.5 112.5 0 0 0 256.77344 347.44922 A 112.5 112.5 0 0 0 369.27344 459.94922 A 112.5 112.5 0 0 0 481.77344 347.44922 A 112.5 112.5 0 0 0 369.27344 234.94922 z M 369.27344 299.94922 A 47.5 47.5 0 0 1 416.77344 347.44922 A 47.5 47.5 0 0 1 369.27344 394.94922 A 47.5 47.5 0 0 1 321.77344 347.44922 A 47.5 47.5 0 0 1 369.27344 299.94922 z "
+         transform="translate(-225.36988,539.49127)"
+         id="path2985-9" />
+    </g>
+    <g
+       transform="translate(106.74117,-188.79465)"
+       id="g3861-0-3"
+       style="opacity:1">
+      <path
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         d="M 250.64453 33.283203 A 112.5 112.5 0 0 0 138.14453 145.7832 A 112.5 112.5 0 0 0 250.64453 258.2832 A 112.5 112.5 0 0 0 363.14453 145.7832 A 112.5 112.5 0 0 0 250.64453 33.283203 z M 250.64453 98.283203 A 47.5 47.5 0 0 1 298.14453 145.7832 A 47.5 47.5 0 0 1 250.64453 193.2832 A 47.5 47.5 0 0 1 203.14453 145.7832 A 47.5 47.5 0 0 1 250.64453 98.283203 z "
+         transform="translate(-106.74117,741.15683)"
+         id="path2985-9-4" />
+    </g>
+  </g>
+</svg>
