@@ -8439,6 +8439,17 @@ var Rance;
             }
             return false;
         };
+        Emblem.prototype.drawSvg = function () {
+            var container = document.createElement("object");
+            container.classList.add("emblem-container");
+            var inner = this.drawSvgSubEmblem(this.inner, "inner-sub-emblem");
+            container.appendChild(inner);
+            if (this.outer) {
+                var outer = this.drawSvgSubEmblem(this.outer, "outer-sub-emblem");
+                container.appendChild(outer);
+            }
+            return container;
+        };
         Emblem.prototype.draw = function (maxWidth, maxHeight, stretch) {
             var canvas = document.createElement("canvas");
             var ctx = canvas.getContext("2d");
@@ -8452,6 +8463,22 @@ var Rance;
                 ctx.drawImage(outer, 0, 0);
             }
             return canvas;
+        };
+        Emblem.prototype.drawSvgSubEmblem = function (toDraw, className) {
+            var htmlColor = "#" + Rance.hexToString(this.color);
+            var container = document.createElement("object");
+            container.addEventListener("load", function (e) {
+                var svg = container.contentDocument;
+                var elementsToColor = svg.getElementsByClassName("emblem-color");
+                for (var i = 0; i < elementsToColor.length; i++) {
+                    var svgElementToColor = elementsToColor[i];
+                    svgElementToColor.style.fill = htmlColor;
+                }
+            }, false);
+            container.setAttribute("data", toDraw.src);
+            container.setAttribute("type", "image/svg+xml");
+            container.classList.add(className);
+            return container;
         };
         Emblem.prototype.drawSubEmblem = function (toDraw, maxWidth, maxHeight, stretch) {
             var image = app.images[toDraw.src];

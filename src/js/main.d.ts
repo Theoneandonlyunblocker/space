@@ -911,7 +911,9 @@ declare module Rance {
         getPossibleSubEmblemsToAdd(): Templates.ISubEmblemTemplate[];
         generateSubEmblems(rng: any): void;
         canAddBackground(): boolean;
+        drawSvg(): HTMLObjectElement;
         draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
+        drawSvgSubEmblem(toDraw: Templates.ISubEmblemTemplate, className: string): HTMLObjectElement;
         drawSubEmblem(toDraw: Templates.ISubEmblemTemplate, maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
         serialize(): any;
     }
