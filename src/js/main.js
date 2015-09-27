@@ -1181,6 +1181,25 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
+        UIComponents.PlayerFlag = React.createClass({
+            displayName: "PlayerFlag",
+            componentDidMount: function () {
+                var node = this.refs.wrapper.getDOMNode();
+                node.appendChild(this.props.flag.drawSvg());
+            },
+            render: function () {
+                var props = this.props.props;
+                props.ref = "wrapper";
+                return (React.DOM.object(props, null));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../playerflag.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
         UIComponents.BattleScore = React.createClass({
             displayName: "BattleScore",
             lastEvaluation: undefined,
@@ -1200,11 +1219,11 @@ var Rance;
                 }, React.DOM.img({
                     className: "battle-score-mid-point",
                     src: "img\/icons\/battleScoreMidPoint.png"
-                }, null), React.DOM.div({
-                    className: "battle-score-flag-wrapper",
-                    style: {
-                        backgroundImage: "url(" + battle.side1Player.icon + ")"
-                    }
+                }, null), UIComponents.PlayerFlag({
+                    props: {
+                        className: "battle-score-flag"
+                    },
+                    flag: battle.side1Player.flag
                 }), React.DOM.div({
                     className: "battle-score-bar-container"
                 }, React.DOM.div({
@@ -1221,11 +1240,11 @@ var Rance;
                         backgroundColor: "#" + Rance.hexToString(battle.side2Player.color),
                         borderColor: "#" + Rance.hexToString(battle.side2Player.secondaryColor)
                     }
-                })), React.DOM.div({
-                    className: "battle-score-flag-wrapper",
-                    style: {
-                        backgroundImage: "url(" + battle.side2Player.icon + ")"
-                    }
+                })), UIComponents.PlayerFlag({
+                    props: {
+                        className: "battle-score-flag"
+                    },
+                    flag: battle.side2Player.flag
                 }))));
             }
         });
@@ -3125,6 +3144,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../playerflag.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -3140,10 +3160,12 @@ var Rance;
                     className: "defence-building-icon",
                     src: Rance.colorImageInPlayerColor(image, building.controller),
                     title: building.template.displayName
-                }), React.DOM.img({
-                    className: "defence-building-controller",
-                    src: building.controller.icon,
-                    title: building.controller.name
+                }), UIComponents.PlayerFlag({
+                    props: {
+                        className: "defence-building-controller",
+                        title: building.controller.name
+                    },
+                    flag: building.controller.flag
                 })));
             }
         });
@@ -5630,6 +5652,7 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="topbarresources.ts" />
+/// <reference path="../playerflag.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -5648,9 +5671,11 @@ var Rance;
                     className: "top-bar-info"
                 }, React.DOM.div({
                     className: "top-bar-player"
-                }, React.DOM.img({
-                    className: "top-bar-player-icon",
-                    src: player.icon
+                }, UIComponents.PlayerFlag({
+                    props: {
+                        className: "top-bar-player-icon"
+                    },
+                    flag: player.flag
                 }), React.DOM.div({
                     className: "top-bar-turn-number"
                 }, "Turn " + this.props.game.turnNumber)), React.DOM.div({
@@ -8583,6 +8608,7 @@ var Rance;
                 emblem.color = this.tetriaryColor;
             }
         };
+        // TODO custom images
         Flag.prototype.setCustomImage = function (imageSrc) {
             this.clearContent();
             this.customImage = imageSrc;
@@ -8612,6 +8638,19 @@ var Rance;
             }
             ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
             this._customImageToRender = canvas;
+        };
+        Flag.prototype.drawSvg = function () {
+            var container = document.createElement("object");
+            container.setAttribute("type", "image/svg+xml");
+            container.classList.add("player-flag");
+            container.style.backgroundColor = "#" + Rance.hexToString(this.mainColor);
+            if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null) {
+                container.appendChild(this.backgroundEmblem.drawSvg());
+            }
+            if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null) {
+                container.appendChild(this.foregroundEmblem.drawSvg());
+            }
+            return container;
         };
         Flag.prototype.draw = function (width, height, stretch) {
             if (width === void 0) { width = this.width; }
@@ -11783,7 +11822,7 @@ var Rance;
             foregroundEmblem.inner =
                 {
                     key: "pirateEmblem",
-                    src: "pirateEmblem.png",
+                    src: "Flag_of_Edward_England.svg",
                     coverage: [Rance.SubEmblemCoverage.both],
                     position: [Rance.SubEmblemPosition.both]
                 };
@@ -11793,8 +11832,6 @@ var Rance;
                 secondaryColor: this.secondaryColor
             });
             this.flag.setForegroundEmblem(foregroundEmblem);
-            var canvas = this.flag.draw();
-            this.icon = canvas.toDataURL();
         };
         Player.prototype.makeRandomFlag = function (seed) {
             if (!this.color || !this.secondaryColor)
@@ -11805,11 +11842,6 @@ var Rance;
                 secondaryColor: this.secondaryColor
             });
             this.flag.generateRandom(seed);
-            var canvas = this.flag.draw();
-            this.icon = canvas.toDataURL();
-        };
-        Player.prototype.setIcon = function () {
-            this.icon = this.flag.draw().toDataURL();
         };
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
@@ -15412,7 +15444,6 @@ var Rance;
                     !flag.customImage && !flag.foregroundEmblem) {
                     flag.generateRandom();
                 }
-                player.setIcon();
                 this.setState({
                     mainColor: player.color,
                     subColor: player.secondaryColor
@@ -21179,177 +21210,57 @@ var Rance;
             (function (Templates) {
                 var SubEmblems;
                 (function (SubEmblems) {
-                    SubEmblems.emblem0 = {
-                        key: "emblem0",
-                        src: "emblem0.png",
+                    SubEmblems.Gomaisasa = {
+                        key: "Gomaisasa",
+                        src: "Gomaisasa.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
-                    SubEmblems.emblem33 = {
-                        key: "emblem33",
-                        src: "emblem33.png",
+                    SubEmblems.Japanese_Crest_Futatsudomoe_1 = {
+                        key: "Japanese_Crest_Futatsudomoe_1",
+                        src: "Japanese_Crest_Futatsudomoe_1.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
-                    SubEmblems.emblem34 = {
-                        key: "emblem34",
-                        src: "emblem34.png",
+                    SubEmblems.Japanese_Crest_Hana_Hisi = {
+                        key: "Japanese_Crest_Hana_Hisi",
+                        src: "Japanese_Crest_Hana_Hisi.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
-                    SubEmblems.emblem35 = {
-                        key: "emblem35",
-                        src: "emblem35.png",
+                    SubEmblems.Japanese_Crest_Oda_ka = {
+                        key: "Japanese_Crest_Oda_ka",
+                        src: "Japanese_Crest_Oda_ka.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
-                    SubEmblems.emblem36 = {
-                        key: "emblem36",
-                        src: "emblem36.png",
+                    SubEmblems.Japanese_crest_Tsuki_ni_Hoshi = {
+                        key: "Japanese_crest_Tsuki_ni_Hoshi",
+                        src: "Japanese_crest_Tsuki_ni_Hoshi.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
-                    SubEmblems.emblem37 = {
-                        key: "emblem37",
-                        src: "emblem37.png",
+                    SubEmblems.Japanese_Crest_Ume = {
+                        key: "Japanese_Crest_Ume",
+                        src: "Japanese_Crest_Ume.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
-                    SubEmblems.emblem38 = {
-                        key: "emblem38",
-                        src: "emblem38.png",
+                    SubEmblems.Mitsuuroko = {
+                        key: "Mitsuuroko",
+                        src: "Mitsuuroko.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
-                    SubEmblems.emblem39 = {
-                        key: "emblem39",
-                        src: "emblem39.png",
+                    SubEmblems.Musubikashiwa = {
+                        key: "Musubikashiwa",
+                        src: "Musubi-kashiwa.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
-                    SubEmblems.emblem40 = {
-                        key: "emblem40",
-                        src: "emblem40.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem41 = {
-                        key: "emblem41",
-                        src: "emblem41.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem42 = {
-                        key: "emblem42",
-                        src: "emblem42.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem43 = {
-                        key: "emblem43",
-                        src: "emblem43.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem44 = {
-                        key: "emblem44",
-                        src: "emblem44.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem45 = {
-                        key: "emblem45",
-                        src: "emblem45.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem46 = {
-                        key: "emblem46",
-                        src: "emblem46.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem47 = {
-                        key: "emblem47",
-                        src: "emblem47.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem48 = {
-                        key: "emblem48",
-                        src: "emblem48.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem49 = {
-                        key: "emblem49",
-                        src: "emblem49.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem50 = {
-                        key: "emblem50",
-                        src: "emblem50.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem51 = {
-                        key: "emblem51",
-                        src: "emblem51.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem52 = {
-                        key: "emblem52",
-                        src: "emblem52.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem53 = {
-                        key: "emblem53",
-                        src: "emblem53.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem54 = {
-                        key: "emblem54",
-                        src: "emblem54.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem55 = {
-                        key: "emblem55",
-                        src: "emblem55.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem56 = {
-                        key: "emblem56",
-                        src: "emblem56.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem57 = {
-                        key: "emblem57",
-                        src: "emblem57.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem58 = {
-                        key: "emblem58",
-                        src: "emblem58.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem59 = {
-                        key: "emblem59",
-                        src: "emblem59.png",
-                        coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
-                    };
-                    SubEmblems.emblem61 = {
-                        key: "emblem61",
-                        src: "emblem61.png",
+                    SubEmblems.Takeda_mon = {
+                        key: "Takeda_mon",
+                        src: "Takeda_mon.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
@@ -22688,7 +22599,6 @@ var Rance;
                 player.colorAlpha = data.colorAlpha;
                 if (data.flag && data.flag.mainColor) {
                     player.flag = this.deserializeFlag(data.flag);
-                    player.setIcon();
                 }
                 else {
                     player.makeRandomFlag();

@@ -1,4 +1,5 @@
 /// <reference path="topbarresources.ts" />
+/// <reference path="../playerflag.ts" />
 
 module Rance
 {
@@ -29,10 +30,13 @@ module Rance
               {
                 className: "top-bar-player"
               },
-                React.DOM.img(
+                UIComponents.PlayerFlag(
                 {
-                  className: "top-bar-player-icon",
-                  src: player.icon
+                  props:
+                  {
+                    className: "top-bar-player-icon"
+                  },
+                  flag: player.flag
                 }),
                 React.DOM.div(
                 {

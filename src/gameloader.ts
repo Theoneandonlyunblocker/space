@@ -230,7 +230,6 @@ module Rance
         if (data.flag && data.flag.mainColor)
         {
           player.flag = this.deserializeFlag(data.flag);
-          player.setIcon();
         }
         else
         {

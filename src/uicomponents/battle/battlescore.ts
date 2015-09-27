@@ -1,3 +1,5 @@
+/// <reference path="../playerflag.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -36,13 +38,13 @@ module Rance
               },
                 null
               ),
-              React.DOM.div(
+              UIComponents.PlayerFlag(
               {
-                className: "battle-score-flag-wrapper",
-                style:
+                props:
                 {
-                  backgroundImage: "url(" + battle.side1Player.icon + ")"
-                }
+                  className: "battle-score-flag"
+                },
+                flag: battle.side1Player.flag
               }),
               React.DOM.div(
               {
@@ -69,13 +71,13 @@ module Rance
                   }
                 })
               ),
-              React.DOM.div(
+              UIComponents.PlayerFlag(
               {
-                className: "battle-score-flag-wrapper",
-                style:
+                props:
                 {
-                  backgroundImage: "url(" + battle.side2Player.icon + ")"
-                }
+                  className: "battle-score-flag"
+                },
+                flag: battle.side2Player.flag
               })
             )
           )

@@ -109,8 +109,6 @@ module Rance
           flag.generateRandom();
         }
 
-        player.setIcon();
-
         this.setState(
         {
           mainColor: player.color,

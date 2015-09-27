@@ -164,6 +164,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var PlayerFlag: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var BattleScore: React.Factory<any>;
     }
 }
@@ -943,6 +948,7 @@ declare module Rance {
         setForegroundEmblem(emblem: Emblem): void;
         setBackgroundEmblem(emblem: Emblem): void;
         setCustomImage(imageSrc: string): void;
+        drawSvg(): HTMLElement;
         draw(width?: number, height?: number, stretch?: boolean): HTMLCanvasElement;
         serialize(): any;
     }
@@ -1644,7 +1650,6 @@ declare module Rance {
         colorAlpha: number;
         secondaryColor: number;
         flag: Flag;
-        icon: string;
         units: {
             [id: number]: Unit;
         };
@@ -1679,7 +1684,6 @@ declare module Rance {
         setupAI(game: Game): void;
         setupPirates(): void;
         makeRandomFlag(seed?: any): void;
-        setIcon(): void;
         addUnit(unit: Unit): void;
         removeUnit(unit: Unit): void;
         getAllUnits(): Unit[];
@@ -3007,35 +3011,15 @@ declare module Rance {
         module DefaultModule {
             module Templates {
                 module SubEmblems {
-                    var emblem0: Rance.Templates.ISubEmblemTemplate;
-                    var emblem33: Rance.Templates.ISubEmblemTemplate;
-                    var emblem34: Rance.Templates.ISubEmblemTemplate;
-                    var emblem35: Rance.Templates.ISubEmblemTemplate;
-                    var emblem36: Rance.Templates.ISubEmblemTemplate;
-                    var emblem37: Rance.Templates.ISubEmblemTemplate;
-                    var emblem38: Rance.Templates.ISubEmblemTemplate;
-                    var emblem39: Rance.Templates.ISubEmblemTemplate;
-                    var emblem40: Rance.Templates.ISubEmblemTemplate;
-                    var emblem41: Rance.Templates.ISubEmblemTemplate;
-                    var emblem42: Rance.Templates.ISubEmblemTemplate;
-                    var emblem43: Rance.Templates.ISubEmblemTemplate;
-                    var emblem44: Rance.Templates.ISubEmblemTemplate;
-                    var emblem45: Rance.Templates.ISubEmblemTemplate;
-                    var emblem46: Rance.Templates.ISubEmblemTemplate;
-                    var emblem47: Rance.Templates.ISubEmblemTemplate;
-                    var emblem48: Rance.Templates.ISubEmblemTemplate;
-                    var emblem49: Rance.Templates.ISubEmblemTemplate;
-                    var emblem50: Rance.Templates.ISubEmblemTemplate;
-                    var emblem51: Rance.Templates.ISubEmblemTemplate;
-                    var emblem52: Rance.Templates.ISubEmblemTemplate;
-                    var emblem53: Rance.Templates.ISubEmblemTemplate;
-                    var emblem54: Rance.Templates.ISubEmblemTemplate;
-                    var emblem55: Rance.Templates.ISubEmblemTemplate;
-                    var emblem56: Rance.Templates.ISubEmblemTemplate;
-                    var emblem57: Rance.Templates.ISubEmblemTemplate;
-                    var emblem58: Rance.Templates.ISubEmblemTemplate;
-                    var emblem59: Rance.Templates.ISubEmblemTemplate;
-                    var emblem61: Rance.Templates.ISubEmblemTemplate;
+                    var Gomaisasa: Rance.Templates.ISubEmblemTemplate;
+                    var Japanese_Crest_Futatsudomoe_1: Rance.Templates.ISubEmblemTemplate;
+                    var Japanese_Crest_Hana_Hisi: Rance.Templates.ISubEmblemTemplate;
+                    var Japanese_Crest_Oda_ka: Rance.Templates.ISubEmblemTemplate;
+                    var Japanese_crest_Tsuki_ni_Hoshi: Rance.Templates.ISubEmblemTemplate;
+                    var Japanese_Crest_Ume: Rance.Templates.ISubEmblemTemplate;
+                    var Mitsuuroko: Rance.Templates.ISubEmblemTemplate;
+                    var Musubikashiwa: Rance.Templates.ISubEmblemTemplate;
+                    var Takeda_mon: Rance.Templates.ISubEmblemTemplate;
                 }
             }
         }

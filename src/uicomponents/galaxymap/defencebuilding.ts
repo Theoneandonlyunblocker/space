@@ -1,3 +1,5 @@
+/// <reference path="../playerflag.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -21,11 +23,14 @@ module Rance
               src: colorImageInPlayerColor(image, building.controller),
               title: building.template.displayName
             }),
-            React.DOM.img(
+            UIComponents.PlayerFlag(
             {
-              className: "defence-building-controller",
-              src: building.controller.icon,
-              title: building.controller.name
+              props:
+              {
+                className: "defence-building-controller",
+                title: building.controller.name
+              },
+              flag: building.controller.flag
             })
           )
         );

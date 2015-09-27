@@ -119,6 +119,7 @@ module Rance
         emblem.color = this.tetriaryColor
       }
     }
+    // TODO custom images
     setCustomImage(imageSrc: string)
     {
       this.clearContent();

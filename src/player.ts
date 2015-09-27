@@ -22,7 +22,6 @@ module Rance
     colorAlpha: number;
     secondaryColor: number;
     flag: Flag;
-    icon: string;
     units:
     {
       [id: number]: Unit;
@@ -114,9 +113,6 @@ module Rance
       });
 
       this.flag.setForegroundEmblem(foregroundEmblem);
-
-      var canvas = this.flag.draw();
-      this.icon = canvas.toDataURL();
     }
     makeRandomFlag(seed?: any)
     {
@@ -130,12 +126,6 @@ module Rance
       });
 
       this.flag.generateRandom(seed);
-      var canvas = this.flag.draw();
-      this.icon = canvas.toDataURL();
-    }
-    setIcon()
-    {
-      this.icon = this.flag.draw().toDataURL();
     }
     addUnit(unit: Unit)
     {
