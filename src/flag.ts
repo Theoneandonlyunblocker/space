@@ -161,6 +161,24 @@ module Rance
 
       this._customImageToRender = canvas;
     }
+    drawSvg(): HTMLElement
+    {
+      var container = document.createElement("object");
+      container.setAttribute("type", "image/svg+xml");
+      container.classList.add("player-flag");
+      container.style.backgroundColor = "#" + hexToString(this.mainColor);
+
+      if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null)
+      {
+        container.appendChild(this.backgroundEmblem.drawSvg());
+      }
+      if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null)
+      {
+        container.appendChild(this.foregroundEmblem.drawSvg());
+      }
+
+      return container;
+    }
     draw(width: number = this.width, height: number = this.height, stretch: boolean = false)
     {
       var canvas = document.createElement("canvas");
