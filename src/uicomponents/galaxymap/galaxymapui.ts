@@ -180,27 +180,32 @@ module Rance
             
             React.DOM.div(
             {
-              className: "galaxy-map-ui-bottom-left"
+              className: "galaxy-map-ui-bottom-left",
+              key: "bottomLeft"
             },
               React.DOM.div(
               {
-                className: "galaxy-map-ui-bottom-left-column align-bottom"
+                className: "galaxy-map-ui-bottom-left-column align-bottom",
+                key: "bottomLeftColumn"
               },
                 React.DOM.div(
                 {
                   className: "galaxy-map-ui-bottom-left-leftmost-column-wrapper",
-                  ref: "leftColumnContent"
+                  ref: "leftColumnContent",
+                  key: "leftColumnContent"
                 },
                   UIComponents.PossibleActions(
                   {
                     attackTargets: this.state.attackTargets,
                     selectedStar: this.state.selectedStar,
                     player: this.props.player,
-                    setExpandedActionElementOnParent: this.setExpandedActionElement
+                    setExpandedActionElementOnParent: this.setExpandedActionElement,
+                    key: "possibleActions"
                   }),
                   UIComponents.StarInfo(
                   {
-                    selectedStar: this.state.selectedStar
+                    selectedStar: this.state.selectedStar,
+                    key: "starInfo"
                   })
                 )
               ),
@@ -208,16 +213,20 @@ module Rance
             ),
             !Options.debugMode ? null : UIComponents.MapRendererLayersList(
             {
-              mapRenderer: this.props.mapRenderer
+              mapRenderer: this.props.mapRenderer,
+              mapMode: this.props.mapRenderer.currentMapMode,
+              key: "mapRendererLayersList"
             }),
             React.DOM.div(
             {
-              className: "galaxy-map-ui-bottom-right"
+              className: "galaxy-map-ui-bottom-right",
+              key: "bottomRight"
             },
               !Options.debugMode ? null : UIComponents.NotificationLog(
               {
                 log: this.props.game.notificationLog,
-                currentTurn: this.props.game.turnNumber
+                currentTurn: this.props.game.turnNumber,
+                key: "notificationLog"
               }),
               React.DOM.button(endTurnButtonProps, "End turn")
             )

@@ -5,7 +5,7 @@ module Rance
     export var MapRendererLayersListItem = React.createClass(
     {
       displayName: "MapRendererLayersListItem",
-      mixins: [Draggable, DropTarget],
+      mixins: [Draggable, DropTarget, React.addons.PureRenderMixin],
       cachedMidPoint: undefined,
 
       getInitialState: function()

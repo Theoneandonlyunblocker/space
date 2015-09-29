@@ -7,6 +7,7 @@ module Rance
     export var MapRendererLayersList = React.createClass(
     {
       displayName: "MapRendererLayersList",
+      mixins: [React.addons.PureRenderMixin],
 
       getInitialState: function()
       {

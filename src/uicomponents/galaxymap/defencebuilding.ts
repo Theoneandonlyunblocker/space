@@ -7,6 +7,10 @@ module Rance
     export var DefenceBuilding = React.createClass(
     {
       displayName: "DefenceBuilding",
+      shouldComponentUpdate: function(newProps: any)
+      {
+        return newProps.building !== this.props.building;
+      },
       render: function()
       {
         var building: Building = this.props.building;
@@ -30,6 +34,7 @@ module Rance
                 className: "defence-building-controller",
                 title: building.controller.name
               },
+              key: "flag",
               flag: building.controller.flag
             })
           )

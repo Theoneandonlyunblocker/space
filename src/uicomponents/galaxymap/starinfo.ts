@@ -7,6 +7,10 @@ module Rance
     export var StarInfo = React.createClass(
     {
       displayName: "StarInfo",
+      shouldComponentUpdate: function(newProps: any)
+      {
+        return this.props.selectedStar !== newProps.selectedStar;
+      },
       render: function()
       {
         var star: Star = this.props.selectedStar;

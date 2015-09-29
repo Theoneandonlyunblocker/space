@@ -7,6 +7,21 @@ module Rance
     export var DefenceBuildingList= React.createClass(
     {
       displayName: "DefenceBuildingList",
+      shouldComponentUpdate: function(newProps: any)
+      {
+        var newBuildings = newProps.buildings;
+        var oldBuildings = this.props.buildings;
+        if (newBuildings.length !== oldBuildings.length) return true;
+        else
+        {
+          for (var i = 0; i < newBuildings.length; i++)
+          {
+            if (oldBuildings.indexOf(newBuildings[i]) === -1) return true;
+          }
+        }
+
+        return false;
+      },
       render: function()
       {
         if (!this.props.buildings) return null;
@@ -17,7 +32,7 @@ module Rance
         {
           buildings.push(UIComponents.DefenceBuilding(
           {
-            key: i,
+            key: this.props.buildings[i].id,
             building: this.props.buildings[i]
           }));
         }

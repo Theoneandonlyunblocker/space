@@ -49,7 +49,8 @@ module Rance
                 playerControl: this.props.playerControl,
                 player: this.props.player,
                 game: this.props.game,
-                mapRenderer: this.props.mapRenderer
+                mapRenderer: this.props.mapRenderer,
+                key: "galaxyMapUI"
               })
             ),
             !Options.debugMode ? null : React.DOM.div(
