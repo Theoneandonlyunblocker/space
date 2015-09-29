@@ -15,10 +15,14 @@ module Rance
 
         return this.lastEvaluation !== oldEvaluation;
       },
+      componentWillMount: function()
+      {
+        this.lastEvaluation = this.props.battle.getEvaluation();
+      },
       render: function()
       {
         var battle: Battle = this.props.battle;
-        var evaluation = this.lastEvaluation
+        var evaluation = this.lastEvaluation;
 
         var evaluationPercentage = 50 + evaluation * 50;
 
