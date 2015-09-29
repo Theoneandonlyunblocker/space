@@ -48,19 +48,23 @@ module Rance
           battleIsStarting: true
         });
       },
-      getBlurArea: function()
-      {
-        return this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
-      },
 
-      componentDidMount: function()
+      endBattleStart: function()
       {
-        this.setBattleSceneUnits(this.state.hoveredUnit);
+        this.setState(
+        {
+          battleIsStarting: false
+        }, this.setBattleSceneUnits(this.state.hoveredUnit));
 
         if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
         {
           this.useAIAbility();
         }
+      },
+
+      getBlurArea: function()
+      {
+        return this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
       },
 
       clearHoveredUnit: function()
@@ -478,7 +482,11 @@ module Rance
         }
 
         var upperFooterElement: ReactComponentPlaceHolder;
-        if (!this.state.playingBattleEffect)
+        if (this.state.battleIsStarting)
+        {
+          upperFooterElement = null;
+        }
+        else if (!this.state.playingBattleEffect)
         {
           upperFooterElement = UIComponents.TurnOrder(
           {
@@ -545,8 +553,9 @@ module Rance
           },
             React.DOM.div(
             {
-              className: "battle-container",
-              ref: "battleContainer"
+              className: "battle-container" + (this.state.battleIsStarting ? " battle-start" : ""),
+              ref: "battleContainer",
+              onClick: (this.state.battleIsStarting ? this.endBattleStart : undefined)
             },
               React.DOM.div(
               {

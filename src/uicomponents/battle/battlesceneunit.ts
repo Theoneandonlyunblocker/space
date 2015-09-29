@@ -12,7 +12,7 @@ module Rance
       componentDidUpdate: function(oldProps: any)
       {
         if (this.props.battleIsStarting) return;
-        if (oldProps.unit !== this.props.unit)
+        if (oldProps.unit !== this.props.unit || oldProps.battleIsStarting)
         {
           this.renderScene(true, false, this.props.unit);
         }
@@ -117,7 +117,7 @@ module Rance
       drawFlag: function(flag: Flag, facingRight: boolean)
       {
         var bounds = this.props.getSceneBounds();
-        var width = bounds.width / 2.5;
+        var width = bounds.width / 2;
 
         var canvas = flag.getCanvas(width, bounds.height, true, false).canvas;
         var context = canvas.getContext("2d");
@@ -217,9 +217,8 @@ module Rance
             scene = unit.drawBattleScene(this.getSceneProps(unit));
             this.removeAnimations(scene, true);
           }
+          scene.classList.add("battle-scene-unit-sprite");
         }
-
-        scene.classList.add("battle-scene-unit-sprite");
 
         this.addScene(animateEnter, animateFade, scene, onComplete);
       },

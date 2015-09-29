@@ -1206,6 +1206,9 @@ var Rance;
                 this.lastEvaluation = newProps.battle.getEvaluation();
                 return this.lastEvaluation !== oldEvaluation;
             },
+            componentWillMount: function () {
+                this.lastEvaluation = this.props.battle.getEvaluation();
+            },
             render: function () {
                 var battle = this.props.battle;
                 var evaluation = this.lastEvaluation;
@@ -1260,7 +1263,7 @@ var Rance;
             componentDidUpdate: function (oldProps) {
                 if (this.props.battleIsStarting)
                     return;
-                if (oldProps.unit !== this.props.unit) {
+                if (oldProps.unit !== this.props.unit || oldProps.battleIsStarting) {
                     this.renderScene(true, false, this.props.unit);
                 }
                 else {
@@ -1336,7 +1339,7 @@ var Rance;
             },
             drawFlag: function (flag, facingRight) {
                 var bounds = this.props.getSceneBounds();
-                var width = bounds.width / 2.5;
+                var width = bounds.width / 2;
                 var canvas = flag.getCanvas(width, bounds.height, true, false).canvas;
                 var context = canvas.getContext("2d");
                 context.globalCompositeOperation = "destination-out";
@@ -1409,8 +1412,8 @@ var Rance;
                         scene = unit.drawBattleScene(this.getSceneProps(unit));
                         this.removeAnimations(scene, true);
                     }
+                    scene.classList.add("battle-scene-unit-sprite");
                 }
-                scene.classList.add("battle-scene-unit-sprite");
                 this.addScene(animateEnter, animateFade, scene, onComplete);
             },
             removeScene: function (animateEnter, animateFade, onComplete) {
@@ -1765,14 +1768,16 @@ var Rance;
                     battleIsStarting: true
                 });
             },
-            getBlurArea: function () {
-                return this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
-            },
-            componentDidMount: function () {
-                this.setBattleSceneUnits(this.state.hoveredUnit);
+            endBattleStart: function () {
+                this.setState({
+                    battleIsStarting: false
+                }, this.setBattleSceneUnits(this.state.hoveredUnit));
                 if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
                     this.useAIAbility();
                 }
+            },
+            getBlurArea: function () {
+                return this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
             },
             clearHoveredUnit: function () {
                 this.tempHoveredUnit = null;
@@ -2057,7 +2062,10 @@ var Rance;
                     activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
                 }
                 var upperFooterElement;
-                if (!this.state.playingBattleEffect) {
+                if (this.state.battleIsStarting) {
+                    upperFooterElement = null;
+                }
+                else if (!this.state.playingBattleEffect) {
                     upperFooterElement = UIComponents.TurnOrder({
                         key: "turnOrder",
                         turnOrder: battle.turnOrder,
@@ -2100,8 +2108,9 @@ var Rance;
                     backgroundSeed: this.props.battle.battleData.location.getSeed(),
                     getBlurArea: this.getBlurArea
                 }, React.DOM.div({
-                    className: "battle-container",
-                    ref: "battleContainer"
+                    className: "battle-container" + (this.state.battleIsStarting ? " battle-start" : ""),
+                    ref: "battleContainer",
+                    onClick: (this.state.battleIsStarting ? this.endBattleStart : undefined)
                 }, React.DOM.div({
                     className: "battle-upper"
                 }, UIComponents.BattleScore({
