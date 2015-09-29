@@ -2,7 +2,10 @@
 <!-- https://commons.wikimedia.org/wiki/File:Flag_of_Edward_England.svg -->
 <svg version="1.0" baseProfile="Basic"
  xmlns="http://www.w3.org/2000/svg"
- viewBox="209.742 68.667 330.64343 334.33282">
+ viewBox="209.742 68.667 330.64343 334.33282"
+ width="330.64343"
+ height="334.33282">
+
 	<g id="flag">
 		<g id="symbol" fill="black" class="emblem-color">
 			<g id="bones">
