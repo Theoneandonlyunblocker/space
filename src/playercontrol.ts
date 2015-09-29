@@ -13,6 +13,10 @@ module Rance
     selectedFleets: Fleet[] = [];
     inspectedFleets: Fleet[] = [];
     currentlyReorganizing: Fleet[] = [];
+    lastSelectedFleetsIds:
+    {
+      [fleetId: number]: boolean;
+    } = {};
 
     currentAttackTargets: any[];
 
@@ -150,19 +154,38 @@ module Rance
 
       return true;
     }
+    hasFleetSelectionChanged(newFleets: Fleet[])
+    {
+      if (newFleets.length !== Object.keys(this.lastSelectedFleetsIds).length)
+      {
+        return true;
+      }
+      for (var i = 0; i < newFleets.length; i++)
+      {
+        if (!this.lastSelectedFleetsIds[newFleets[i].id])
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
     selectFleets(fleets: Fleet[])
     {
+      var shouldUpdateSelection = this.hasFleetSelectionChanged(fleets);
       if (fleets.length < 1)
       {
         this.clearSelection();
-        this.updateSelection();
+        if (shouldUpdateSelection) this.updateSelection();
         return;
       }
       
+      this.lastSelectedFleetsIds = {};
       var playerFleets: Fleet[] = [];
       var otherFleets: Fleet[] = [];
       for (var i = 0; i < fleets.length; i++)
       {
+        this.lastSelectedFleetsIds[fleets[i].id] = true;
         if (fleets[i].player === this.player)
         {
           playerFleets.push(fleets[i]);
@@ -182,7 +205,7 @@ module Rance
         this.selectOtherFleets(otherFleets);
       }
 
-      this.updateSelection();
+      if (shouldUpdateSelection) this.updateSelection();
 
       this.preventGhost(15);
     }
@@ -269,7 +292,7 @@ module Rance
     }
     selectStar(star: Star)
     {
-      if (this.preventingGhost) return;
+      if (this.preventingGhost || this.selectedStar === star) return;
       this.clearSelection();
 
       this.selectedStar = star;
