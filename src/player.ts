@@ -100,7 +100,7 @@ module Rance
       foregroundEmblem.inner = 
       {
         key: "pirateEmblem",
-        src: "Flag_of_Edward_England.svg",
+        src: "img\/emblems\/Flag_of_Edward_England.svg",
         coverage: [SubEmblemCoverage.both],
         position: [SubEmblemPosition.both]
       };
