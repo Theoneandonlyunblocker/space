@@ -1,3 +1,4 @@
+/// <reference path="../playerflag.ts" />
 /// <reference path="opinion.ts" />
 
 module Rance
@@ -15,8 +16,6 @@ module Rance
           hasAttitudeModifierTootlip: false
         });
       },
-      
-
       makeCell: function(type: string)
       {
         var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
@@ -42,10 +41,13 @@ module Rance
               key: type,
               className: className
             },
-              React.DOM.img(
+              UIComponents.PlayerFlag(
               {
-                className: "diplomacy-status-player-icon",
-                src: this.props.player.icon
+                flag: this.props.player.flag,
+                props:
+                {
+                  className: "diplomacy-status-player-icon"
+                }
               })
             )
           );

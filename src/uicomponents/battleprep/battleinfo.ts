@@ -1,4 +1,5 @@
 /// <reference path="../galaxymap/defencebuildinglist.ts"/>
+/// <reference path="../playerflag.ts" />
 
 module Rance
 {
@@ -22,10 +23,13 @@ module Rance
             {
               className: "battle-info-opponent"
             },
-              React.DOM.img(
+              UIComponents.PlayerFlag(
               {
-                className: "battle-info-opponent-icon",
-                src: battlePrep.enemyPlayer.icon
+                flag: battlePrep.enemyPlayer.flag,
+                props:
+                {
+                  className: "battle-info-opponent-icon",
+                }
               }),
               React.DOM.div(
               {

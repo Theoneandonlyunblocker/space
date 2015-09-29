@@ -1,3 +1,5 @@
+/// <reference path="../playerflag.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -24,10 +26,13 @@ module Rance
             {
               className: "attack-target-type"
             }, target.type),
-            React.DOM.img(
+            UIComponents.PlayerFlag(
             {
-              className: "attack-target-player-icon",
-              src: target.enemy.icon
+              flag: target.enemy.flag,
+              props:
+              {
+                className: "attack-target-player-icon"
+              }
             })
           )
         );
