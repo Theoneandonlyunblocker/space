@@ -32,6 +32,7 @@
 /// <reference path="../templateinterfaces/istatuseffectattributeadjustment.d.ts" />
 /// <reference path="../templateinterfaces/istatuseffectattributes.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
+/// <reference path="../templateinterfaces/iunitdrawingfunction.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../templateinterfaces/iobjectivetemplate.d.ts" />
 /// <reference path="../tutorials/tutorial.d.ts" />
@@ -499,21 +500,6 @@ declare module Rance {
     module UIComponents {
         var BuildableBuildingList: React.Factory<{}>;
     }
-}
-declare module Rance {
-    function defaultUnitScene(unit: Unit, props: {
-        unitsToDraw?: number;
-        maxUnitsPerColumn: number;
-        degree: number;
-        rotationAngle: number;
-        scalingFactor: number;
-        xDistance: number;
-        zDistance: number;
-        facesRight: boolean;
-        maxWidth?: number;
-        maxHeight?: number;
-        desiredHeight?: number;
-    }): HTMLCanvasElement;
 }
 declare module Rance {
     enum DamageType {
@@ -2002,19 +1988,7 @@ declare module Rance {
         getStrengthEvaluation(): number;
         getTotalCost(): number;
         getTurnsToReachStar(star: Star): number;
-        drawBattleScene(props: {
-            unitsToDraw?: number;
-            maxUnitsPerColumn: number;
-            degree: number;
-            rotationAngle: number;
-            scalingFactor: number;
-            xDistance: number;
-            zDistance: number;
-            facesRight: boolean;
-            maxWidth?: number;
-            maxHeight?: number;
-            desiredHeight?: number;
-        }): HTMLCanvasElement;
+        drawBattleScene(props: Templates.IUnitDrawingFunctionProps): HTMLCanvasElement;
         serialize(includeItems?: boolean): any;
         makeVirtualClone(): Unit;
     }
@@ -3072,6 +3046,13 @@ declare module Rance {
                     var blue: Rance.Templates.IUnitFamily;
                 }
             }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            var defaultUnitScene: Rance.Templates.IUnitDrawingFunction;
         }
     }
 }

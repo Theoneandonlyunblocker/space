@@ -1,3 +1,10 @@
+/// <reference path="iabilitytemplate.d.ts" />
+/// <reference path="ipassiveskilltemplate.d.ts" />
+/// <reference path="ispritetemplate.d.ts" />
+/// <reference path="iunitarchetype.d.ts" />
+/// <reference path="iunitdrawingfunction.d.ts" />
+/// <reference path="iunitfamily.d.ts" />
+
 declare module Rance
 {
   module Templates
@@ -35,6 +42,8 @@ declare module Rance
       };
       abilities: IAbilityTemplate[];
       passiveSkills?: IPassiveSkillTemplate[];
+
+      unitDrawingFN: IUnitDrawingFunction;
     }
   }
 }

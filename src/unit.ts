@@ -1,7 +1,5 @@
 /// <reference path="templateinterfaces/iunittemplate.d.ts" />
 
-/// <reference path="defaultunitscene.ts" />
-
 /// <reference path="damagetype.ts" />
 /// <reference path="unitattributes.ts"/>
 /// <reference path="utility.ts"/>
@@ -860,26 +858,13 @@ module Rance
       distance -= this.currentMovePoints; // current turn
       return distance / this.maxMovePoints; // future turns
     }
-    drawBattleScene(props:
-    {
-      unitsToDraw?: number;
-      maxUnitsPerColumn: number;
-      degree: number;
-      rotationAngle: number;
-      scalingFactor: number;
-      xDistance: number;
-      zDistance: number;
-      facesRight: boolean;
-      maxWidth?: number;
-      maxHeight?: number;
-      desiredHeight?: number;
-    })
+    drawBattleScene(props: Templates.IUnitDrawingFunctionProps)
     {
       var propsString = JSON.stringify(props);
       if (propsString !== this.cachedBattleScenePropsString ||
         this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage)
       {
-        this.cachedBattleScene = defaultUnitScene(this, props);
+        this.cachedBattleScene = this.template.unitDrawingFN(this, props);
         this.cachedBattleScenePropsString = propsString;
       }
 

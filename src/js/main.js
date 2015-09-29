@@ -1311,12 +1311,6 @@ var Rance;
             getSceneProps: function (unit) {
                 var boundingRect = this.props.getSceneBounds();
                 return ({
-                    zDistance: 8,
-                    xDistance: 5,
-                    maxUnitsPerColumn: 7,
-                    degree: -0.5,
-                    rotationAngle: 70,
-                    scalingFactor: 0.04,
                     facesRight: unit.battleStats.side === "side1",
                     maxHeight: boundingRect.height - 20,
                     desiredHeight: boundingRect.height - 40
@@ -6341,119 +6335,6 @@ var Rance;
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    function defaultUnitScene(unit, props) {
-        //var unitsToDraw = props.unitsToDraw;
-        var maxUnitsPerColumn = props.maxUnitsPerColumn;
-        var isConvex = true;
-        var degree = props.degree;
-        if (degree < 0) {
-            isConvex = !isConvex;
-            degree = Math.abs(degree);
-        }
-        var xDistance = isFinite(props.xDistance) ? props.xDistance : 5;
-        var zDistance = isFinite(props.zDistance) ? props.zDistance : 5;
-        var canvas = document.createElement("canvas");
-        canvas.width = 2000;
-        canvas.height = 2000;
-        var ctx = canvas.getContext("2d");
-        var spriteTemplate = unit.template.sprite;
-        var image = app.images[spriteTemplate.imageSrc];
-        var unitsToDraw;
-        if (isFinite(props.unitsToDraw)) {
-            unitsToDraw = props.unitsToDraw;
-        }
-        else if (!unit.isSquadron) {
-            unitsToDraw = 1;
-        }
-        else {
-            var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
-            unit.lastHealthDrawnAt = unit.currentHealth;
-            unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
-            var heightRatio = 25 / image.height;
-            heightRatio = Math.min(heightRatio, 1.25);
-            maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
-            unitsToDraw = Math.round(unitsToDraw * heightRatio);
-            zDistance *= (1 / heightRatio);
-            unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
-        }
-        var xMin, xMax, yMin, yMax;
-        function transformMat3(a, m) {
-            var x = m[0] * a.x + m[3] * a.y + m[6];
-            var y = m[1] * a.x + m[4] * a.y + m[7];
-            return { x: x, y: y };
-        }
-        var rotationAngle = Math.PI / 180 * props.rotationAngle;
-        var sA = Math.sin(rotationAngle);
-        var cA = Math.cos(rotationAngle);
-        var rotationMatrix = [
-            1, 0, 0,
-            0, cA, -sA,
-            0, sA, cA
-        ];
-        var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
-        if (props.desiredHeight) {
-            var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
-            var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
-            zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
-        }
-        for (var i = unitsToDraw - 1; i >= 0; i--) {
-            var column = Math.floor(i / maxUnitsPerColumn);
-            var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
-            var zPos;
-            if (isLastColumn) {
-                var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
-                if (maxUnitsInThisColumn === 1) {
-                    zPos = (maxUnitsPerColumn - 1) / 2;
-                }
-                else {
-                    var positionInLastColumn = i % maxUnitsInThisColumn;
-                    zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
-                }
-            }
-            else {
-                zPos = i % maxUnitsPerColumn;
-            }
-            var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
-            if (isConvex) {
-                xOffset = 1 - xOffset;
-            }
-            xOffset -= minXOffset;
-            var scale = 1 - zPos * props.scalingFactor;
-            var scaledWidth = image.width * scale;
-            var scaledHeight = image.height * scale;
-            var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
-            var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-            var translated = transformMat3({ x: x, y: y }, rotationMatrix);
-            x = Math.round(translated.x);
-            y = Math.round(translated.y);
-            xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
-            xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
-            yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
-            yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
-            ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
-        }
-        var resultCanvas = document.createElement("canvas");
-        resultCanvas.width = xMax - xMin;
-        if (props.maxWidth) {
-            resultCanvas.width = Math.min(props.maxWidth, resultCanvas.width);
-        }
-        resultCanvas.height = yMax - yMin;
-        if (props.maxHeight) {
-            resultCanvas.height = Math.min(props.maxHeight, resultCanvas.height);
-        }
-        var resultCtx = resultCanvas.getContext("2d");
-        // flip horizontally
-        if (props.facesRight) {
-            resultCtx.translate(resultCanvas.width, 0);
-            resultCtx.scale(-1, 1);
-        }
-        resultCtx.drawImage(canvas, -xMin, -yMin);
-        return resultCanvas;
-    }
-    Rance.defaultUnitScene = defaultUnitScene;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -13214,7 +13095,6 @@ var Rance;
     Rance.StatusEffect = StatusEffect;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iunittemplate.d.ts" />
-/// <reference path="defaultunitscene.ts" />
 /// <reference path="damagetype.ts" />
 /// <reference path="unitattributes.ts"/>
 /// <reference path="utility.ts"/>
@@ -13803,7 +13683,7 @@ var Rance;
             var propsString = JSON.stringify(props);
             if (propsString !== this.cachedBattleScenePropsString ||
                 this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage) {
-                this.cachedBattleScene = Rance.defaultUnitScene(this, props);
+                this.cachedBattleScene = this.template.unitDrawingFN(this, props);
                 this.cachedBattleScenePropsString = propsString;
             }
             return this.cachedBattleScene;
@@ -14717,7 +14597,7 @@ var Rance;
                     ref: "sceneSelector",
                     value: app.reactUI.currentScene,
                     onChange: this.changeScene
-                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene"), React.DOM.option({ value: "setupGame" }, "setup game")), React.DOM.button({
+                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "setupGame" }, "setup game")), React.DOM.button({
                     className: "debug",
                     onClick: function (e) {
                         // https://github.com/facebook/react/issues/2988
@@ -21055,7 +20935,7 @@ var Rance;
                     PassiveSkills.autoHeal = {
                         type: "autoHeal",
                         displayName: "Auto heal",
-                        description: "hiku hiku",
+                        description: "",
                         afterAbilityUse: [
                             {
                                 template: Templates.Effects.healSelf,
@@ -21499,8 +21379,132 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iunitdrawingfunction.d.ts"/>
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            DefaultModule.defaultUnitScene = function (unit, unitDrawingProps) {
+                var props = Rance.extendObject(unitDrawingProps, {
+                    zDistance: 8,
+                    xDistance: 5,
+                    maxUnitsPerColumn: 7,
+                    degree: -0.5,
+                    rotationAngle: 70,
+                    scalingFactor: 0.04
+                });
+                var maxUnitsPerColumn = props.maxUnitsPerColumn;
+                var isConvex = true;
+                var degree = props.degree;
+                if (degree < 0) {
+                    isConvex = !isConvex;
+                    degree = Math.abs(degree);
+                }
+                var canvas = document.createElement("canvas");
+                canvas.width = 2000;
+                canvas.height = 2000;
+                var ctx = canvas.getContext("2d");
+                var spriteTemplate = unit.template.sprite;
+                var image = app.images[spriteTemplate.imageSrc];
+                var zDistance = props.zDistance;
+                var xDistance = props.xDistance;
+                var unitsToDraw;
+                if (!unit.isSquadron) {
+                    unitsToDraw = 1;
+                }
+                else {
+                    var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
+                    unit.lastHealthDrawnAt = unit.currentHealth;
+                    unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
+                    var heightRatio = 25 / image.height;
+                    heightRatio = Math.min(heightRatio, 1.25);
+                    maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
+                    unitsToDraw = Math.round(unitsToDraw * heightRatio);
+                    zDistance *= (1 / heightRatio);
+                    unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+                }
+                var xMin, xMax, yMin, yMax;
+                function transformMat3(a, m) {
+                    var x = m[0] * a.x + m[3] * a.y + m[6];
+                    var y = m[1] * a.x + m[4] * a.y + m[7];
+                    return { x: x, y: y };
+                }
+                var rotationAngle = Math.PI / 180 * props.rotationAngle;
+                var sA = Math.sin(rotationAngle);
+                var cA = Math.cos(rotationAngle);
+                var rotationMatrix = [
+                    1, 0, 0,
+                    0, cA, -sA,
+                    0, sA, cA
+                ];
+                var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
+                if (props.desiredHeight) {
+                    var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
+                    var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
+                    zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
+                }
+                for (var i = unitsToDraw - 1; i >= 0; i--) {
+                    var column = Math.floor(i / maxUnitsPerColumn);
+                    var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
+                    var zPos;
+                    if (isLastColumn) {
+                        var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
+                        if (maxUnitsInThisColumn === 1) {
+                            zPos = (maxUnitsPerColumn - 1) / 2;
+                        }
+                        else {
+                            var positionInLastColumn = i % maxUnitsInThisColumn;
+                            zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+                        }
+                    }
+                    else {
+                        zPos = i % maxUnitsPerColumn;
+                    }
+                    var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
+                    if (isConvex) {
+                        xOffset = 1 - xOffset;
+                    }
+                    xOffset -= minXOffset;
+                    var scale = 1 - zPos * props.scalingFactor;
+                    var scaledWidth = image.width * scale;
+                    var scaledHeight = image.height * scale;
+                    var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+                    var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
+                    var translated = transformMat3({ x: x, y: y }, rotationMatrix);
+                    x = Math.round(translated.x);
+                    y = Math.round(translated.y);
+                    xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
+                    xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
+                    yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
+                    yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
+                    ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
+                }
+                var resultCanvas = document.createElement("canvas");
+                resultCanvas.width = xMax - xMin;
+                if (props.maxWidth) {
+                    resultCanvas.width = Math.min(props.maxWidth, resultCanvas.width);
+                }
+                resultCanvas.height = yMax - yMin;
+                if (props.maxHeight) {
+                    resultCanvas.height = Math.min(props.maxHeight, resultCanvas.height);
+                }
+                var resultCtx = resultCanvas.getContext("2d");
+                // flip horizontally
+                if (props.facesRight) {
+                    resultCtx.translate(resultCanvas.width, 0);
+                    resultCtx.scale(-1, 1);
+                }
+                resultCtx.drawImage(canvas, -xMin, -yMin);
+                return resultCanvas;
+            };
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iunittemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
+/// <reference path="../graphics/defaultunitscene.ts" />
 /// <reference path="abilities.ts"/>
 /// <reference path="passiveskills.ts" />
 /// <reference path="unitfamilies.ts" />
@@ -21550,7 +21554,8 @@ var Rance;
                             Templates.PassiveSkills.autoHeal,
                             Templates.PassiveSkills.warpJammer,
                             Templates.PassiveSkills.medic
-                        ]
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.fighterSquadron = {
                         type: "fighterSquadron",
@@ -21578,7 +21583,8 @@ var Rance;
                             Templates.Abilities.rangedAttack,
                             Templates.Abilities.closeAttack,
                             Templates.Abilities.standBy
-                        ]
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.bomberSquadron = {
                         type: "bomberSquadron",
@@ -21606,7 +21612,8 @@ var Rance;
                             Templates.Abilities.rangedAttack,
                             Templates.Abilities.bombAttack,
                             Templates.Abilities.standBy
-                        ]
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.battleCruiser = {
                         type: "battleCruiser",
@@ -21634,7 +21641,8 @@ var Rance;
                             Templates.Abilities.rangedAttack,
                             Templates.Abilities.wholeRowAttack,
                             Templates.Abilities.standBy
-                        ]
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.scout = {
                         type: "scout",
@@ -21661,7 +21669,8 @@ var Rance;
                         abilities: [
                             Templates.Abilities.rangedAttack,
                             Templates.Abilities.standBy
-                        ]
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.stealthShip = {
                         type: "stealthShip",
@@ -21689,7 +21698,8 @@ var Rance;
                         abilities: [
                             Templates.Abilities.rangedAttack,
                             Templates.Abilities.standBy
-                        ]
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.shieldBoat = {
                         type: "shieldBoat",
@@ -21720,7 +21730,8 @@ var Rance;
                         ],
                         passiveSkills: [
                             Templates.PassiveSkills.initialGuard
-                        ]
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.redShip = {
                         type: "redShip",
@@ -21747,7 +21758,8 @@ var Rance;
                         abilities: [
                             Templates.Abilities.rangedAttack,
                             Templates.Abilities.standBy
-                        ]
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.blueShip = {
                         type: "blueShip",
@@ -21774,7 +21786,8 @@ var Rance;
                         abilities: [
                             Templates.Abilities.rangedAttack,
                             Templates.Abilities.standBy
-                        ]
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                 })(Units = Templates.Units || (Templates.Units = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));

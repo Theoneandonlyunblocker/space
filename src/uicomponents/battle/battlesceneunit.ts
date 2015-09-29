@@ -88,12 +88,6 @@ module Rance
 
         return(
         {
-          zDistance: 8,
-          xDistance: 5,
-          maxUnitsPerColumn: 7,
-          degree: -0.5,
-          rotationAngle: 70,
-          scalingFactor: 0.04,
           facesRight: unit.battleStats.side === "side1",
           maxHeight: boundingRect.height - 20,
           desiredHeight: boundingRect.height - 40

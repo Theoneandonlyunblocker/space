@@ -17,7 +17,7 @@ module Rance
           {
             type: "autoHeal",
             displayName: "Auto heal",
-            description: "hiku hiku",
+            description: "",
 
             afterAbilityUse:
             [
