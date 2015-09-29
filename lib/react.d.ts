@@ -297,6 +297,7 @@ declare module React {
         crossOrigin?: any;
         data?: any;
         dateTime?: any;
+        defaultValue?: any;
         defer?: any;
         dir?: any;
         disabled?: any;

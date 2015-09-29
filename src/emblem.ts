@@ -96,65 +96,6 @@ module Rance
 
       return false;
     }
-    drawSvg()
-    {
-      var container = document.createElement("object");
-      container.classList.add("emblem-container");
-
-      var inner = this.drawSvgSubEmblem(this.inner, "inner-sub-emblem");
-      container.appendChild(inner);
-
-      if (this.outer)
-      {
-        var outer = this.drawSvgSubEmblem(this.outer, "outer-sub-emblem");
-        container.appendChild(outer);
-      }
-
-      return container;
-    }
-    draw(maxWidth: number, maxHeight: number, stretch: boolean)
-    {
-      var canvas = document.createElement("canvas");
-      var ctx = canvas.getContext("2d");
-
-      ctx.globalAlpha = this.alpha;
-
-      var inner = this.drawSubEmblem(this.inner, maxWidth, maxHeight, stretch);
-      canvas.width = inner.width;
-      canvas.height = inner.height;
-      ctx.drawImage(inner, 0, 0);
-
-      if (this.outer)
-      {
-        var outer = this.drawSubEmblem(this.outer, maxWidth, maxHeight, stretch);
-        ctx.drawImage(outer, 0, 0);
-      }
-
-      return canvas;
-    }
-    drawSvgSubEmblem(toDraw: Templates.ISubEmblemTemplate, className: string)
-    {
-      var htmlColor = "#" + hexToString(this.color);
-
-      var container = document.createElement("object");
-      container.addEventListener("load", function(e: Event)
-      {
-        var svg = container.contentDocument;
-        var elementsToColor = svg.getElementsByClassName("emblem-color");
-
-        for (var i = 0; i < elementsToColor.length; i++)
-        {
-          var svgElementToColor = <SVGSVGElement> elementsToColor[i];
-          svgElementToColor.style.fill = htmlColor;
-        }
-      }, false);
-
-      container.setAttribute("data", toDraw.src);
-      container.setAttribute("type", "image/svg+xml");
-      container.classList.add(className);
-
-      return container;
-    }
     drawSubEmblem(toDraw: Templates.ISubEmblemTemplate,
       maxWidth: number, maxHeight: number, stretch: boolean)
     {
@@ -187,6 +128,65 @@ module Rance
 
       return canvas;
     }
+    draw(maxWidth: number, maxHeight: number, stretch: boolean)
+    {
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+
+      ctx.globalAlpha = this.alpha;
+
+      var inner = this.drawSubEmblem(this.inner, maxWidth, maxHeight, stretch);
+      canvas.width = inner.width;
+      canvas.height = inner.height;
+      ctx.drawImage(inner, 0, 0);
+
+      if (this.outer)
+      {
+        var outer = this.drawSubEmblem(this.outer, maxWidth, maxHeight, stretch);
+        ctx.drawImage(outer, 0, 0);
+      }
+
+      return canvas;
+    }
+    // drawSvgSubEmblem(toDraw: Templates.ISubEmblemTemplate, className: string)
+    // {
+    //   var htmlColor = "#" + hexToString(this.color);
+
+    //   var container = document.createElement("object");
+    //   container.addEventListener("load", function(e: Event)
+    //   {
+    //     var svg = container.contentDocument;
+    //     var elementsToColor = svg.getElementsByClassName("emblem-color");
+
+    //     for (var i = 0; i < elementsToColor.length; i++)
+    //     {
+    //       var svgElementToColor = <SVGSVGElement> elementsToColor[i];
+    //       svgElementToColor.style.fill = htmlColor;
+    //     }
+    //   }, false);
+
+    //   container.setAttribute("data", toDraw.src);
+    //   container.setAttribute("type", "image/svg+xml");
+    //   container.classList.add(className);
+
+    //   return container;
+    // }
+    // drawSvg()
+    // {
+    //   var container = document.createElement("object");
+    //   container.classList.add("emblem-container");
+
+    //   var inner = this.drawSvgSubEmblem(this.inner, "inner-sub-emblem");
+    //   container.appendChild(inner);
+
+    //   if (this.outer)
+    //   {
+    //     var outer = this.drawSvgSubEmblem(this.outer, "outer-sub-emblem");
+    //     container.appendChild(outer);
+    //   }
+
+    //   return container;
+    // }
     serialize()
     {
       var data: any =

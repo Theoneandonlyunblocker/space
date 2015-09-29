@@ -1183,14 +1183,12 @@ var Rance;
     (function (UIComponents) {
         UIComponents.PlayerFlag = React.createClass({
             displayName: "PlayerFlag",
-            componentDidMount: function () {
-                var node = this.refs.wrapper.getDOMNode();
-                node.appendChild(this.props.flag.drawSvg());
-            },
+            mixins: [React.addons.PureRenderMixin],
             render: function () {
                 var props = this.props.props;
-                props.ref = "wrapper";
-                return (React.DOM.object(props, null));
+                var flag = this.props.flag;
+                props.src = flag.getCanvas(this.props.width, this.props.height, this.props.stretch).dataURL;
+                return (React.DOM.img(props, null));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3151,6 +3149,9 @@ var Rance;
     (function (UIComponents) {
         UIComponents.DefenceBuilding = React.createClass({
             displayName: "DefenceBuilding",
+            shouldComponentUpdate: function (newProps) {
+                return newProps.building !== this.props.building;
+            },
             render: function () {
                 var building = this.props.building;
                 var image = app.images[building.template.iconSrc];
@@ -3165,6 +3166,7 @@ var Rance;
                         className: "defence-building-controller",
                         title: building.controller.name
                     },
+                    key: "flag",
                     flag: building.controller.flag
                 })));
             }
@@ -3178,13 +3180,26 @@ var Rance;
     (function (UIComponents) {
         UIComponents.DefenceBuildingList = React.createClass({
             displayName: "DefenceBuildingList",
+            shouldComponentUpdate: function (newProps) {
+                var newBuildings = newProps.buildings;
+                var oldBuildings = this.props.buildings;
+                if (newBuildings.length !== oldBuildings.length)
+                    return true;
+                else {
+                    for (var i = 0; i < newBuildings.length; i++) {
+                        if (oldBuildings.indexOf(newBuildings[i]) === -1)
+                            return true;
+                    }
+                }
+                return false;
+            },
             render: function () {
                 if (!this.props.buildings)
                     return null;
                 var buildings = [];
                 for (var i = 0; i < this.props.buildings.length; i++) {
                     buildings.push(UIComponents.DefenceBuilding({
-                        key: i,
+                        key: this.props.buildings[i].id,
                         building: this.props.buildings[i]
                     }));
                 }
@@ -6136,6 +6151,9 @@ var Rance;
     (function (UIComponents) {
         UIComponents.StarInfo = React.createClass({
             displayName: "StarInfo",
+            shouldComponentUpdate: function (newProps) {
+                return this.props.selectedStar !== newProps.selectedStar;
+            },
             render: function () {
                 var star = this.props.selectedStar;
                 if (!star)
@@ -8464,47 +8482,6 @@ var Rance;
             }
             return false;
         };
-        Emblem.prototype.drawSvg = function () {
-            var container = document.createElement("object");
-            container.classList.add("emblem-container");
-            var inner = this.drawSvgSubEmblem(this.inner, "inner-sub-emblem");
-            container.appendChild(inner);
-            if (this.outer) {
-                var outer = this.drawSvgSubEmblem(this.outer, "outer-sub-emblem");
-                container.appendChild(outer);
-            }
-            return container;
-        };
-        Emblem.prototype.draw = function (maxWidth, maxHeight, stretch) {
-            var canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-            ctx.globalAlpha = this.alpha;
-            var inner = this.drawSubEmblem(this.inner, maxWidth, maxHeight, stretch);
-            canvas.width = inner.width;
-            canvas.height = inner.height;
-            ctx.drawImage(inner, 0, 0);
-            if (this.outer) {
-                var outer = this.drawSubEmblem(this.outer, maxWidth, maxHeight, stretch);
-                ctx.drawImage(outer, 0, 0);
-            }
-            return canvas;
-        };
-        Emblem.prototype.drawSvgSubEmblem = function (toDraw, className) {
-            var htmlColor = "#" + Rance.hexToString(this.color);
-            var container = document.createElement("object");
-            container.addEventListener("load", function (e) {
-                var svg = container.contentDocument;
-                var elementsToColor = svg.getElementsByClassName("emblem-color");
-                for (var i = 0; i < elementsToColor.length; i++) {
-                    var svgElementToColor = elementsToColor[i];
-                    svgElementToColor.style.fill = htmlColor;
-                }
-            }, false);
-            container.setAttribute("data", toDraw.src);
-            container.setAttribute("type", "image/svg+xml");
-            container.classList.add(className);
-            return container;
-        };
         Emblem.prototype.drawSubEmblem = function (toDraw, maxWidth, maxHeight, stretch) {
             var image = app.images[toDraw.src];
             var width = image.width;
@@ -8526,6 +8503,52 @@ var Rance;
             ctx.fillRect(0, 0, width, height);
             return canvas;
         };
+        Emblem.prototype.draw = function (maxWidth, maxHeight, stretch) {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            ctx.globalAlpha = this.alpha;
+            var inner = this.drawSubEmblem(this.inner, maxWidth, maxHeight, stretch);
+            canvas.width = inner.width;
+            canvas.height = inner.height;
+            ctx.drawImage(inner, 0, 0);
+            if (this.outer) {
+                var outer = this.drawSubEmblem(this.outer, maxWidth, maxHeight, stretch);
+                ctx.drawImage(outer, 0, 0);
+            }
+            return canvas;
+        };
+        // drawSvgSubEmblem(toDraw: Templates.ISubEmblemTemplate, className: string)
+        // {
+        //   var htmlColor = "#" + hexToString(this.color);
+        //   var container = document.createElement("object");
+        //   container.addEventListener("load", function(e: Event)
+        //   {
+        //     var svg = container.contentDocument;
+        //     var elementsToColor = svg.getElementsByClassName("emblem-color");
+        //     for (var i = 0; i < elementsToColor.length; i++)
+        //     {
+        //       var svgElementToColor = <SVGSVGElement> elementsToColor[i];
+        //       svgElementToColor.style.fill = htmlColor;
+        //     }
+        //   }, false);
+        //   container.setAttribute("data", toDraw.src);
+        //   container.setAttribute("type", "image/svg+xml");
+        //   container.classList.add(className);
+        //   return container;
+        // }
+        // drawSvg()
+        // {
+        //   var container = document.createElement("object");
+        //   container.classList.add("emblem-container");
+        //   var inner = this.drawSvgSubEmblem(this.inner, "inner-sub-emblem");
+        //   container.appendChild(inner);
+        //   if (this.outer)
+        //   {
+        //     var outer = this.drawSvgSubEmblem(this.outer, "outer-sub-emblem");
+        //     container.appendChild(outer);
+        //   }
+        //   return container;
+        // }
         Emblem.prototype.serialize = function () {
             var data = {
                 alpha: this.alpha,
@@ -8546,6 +8569,7 @@ var Rance;
 (function (Rance) {
     var Flag = (function () {
         function Flag(props) {
+            this.cachedCanvases = {};
             this.width = props.width;
             this.height = props.height || props.width;
             this.mainColor = props.mainColor;
@@ -8639,23 +8663,55 @@ var Rance;
             ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
             this._customImageToRender = canvas;
         };
-        Flag.prototype.drawSvg = function () {
-            var container = document.createElement("object");
-            container.setAttribute("type", "image/svg+xml");
-            container.classList.add("player-flag");
-            container.style.backgroundColor = "#" + Rance.hexToString(this.mainColor);
-            if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null) {
-                container.appendChild(this.backgroundEmblem.drawSvg());
+        Flag.prototype.getCanvas = function (width, height, stretch) {
+            if (stretch === void 0) { stretch = true; }
+            var sizeString = "" + width + "," + height + stretch;
+            if (!this.cachedCanvases[sizeString]) {
+                var canvas = this.draw(width, height, stretch);
+                this.cachedCanvases[sizeString] =
+                    {
+                        canvas: canvas,
+                        dataURL: canvas.toDataURL()
+                    };
             }
-            if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null) {
-                container.appendChild(this.foregroundEmblem.drawSvg());
-            }
-            return container;
+            return this.cachedCanvases[sizeString];
         };
+        // getReactMarkup()
+        // {
+        //   if (!this._reactMarkup)
+        //   {
+        //     var tempContainer = document.createElement("div");
+        //     tempContainer.appendChild(this.drawSvg());
+        //     this._reactMarkup =
+        //     {
+        //       __html: tempContainer.innerHTML
+        //     }
+        //   }
+        //   return this._reactMarkup;
+        // }
+        // drawSvg(): HTMLElement
+        // {
+        //   if (!this._renderedSvg)
+        //   {
+        //     var container = document.createElement("div");
+        //     container.classList.add("player-flag");
+        //     container.style.backgroundColor = "#" + hexToString(this.mainColor);
+        //     if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null)
+        //     {
+        //       container.appendChild(this.backgroundEmblem.drawSvg());
+        //     }
+        //     if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null)
+        //     {
+        //       container.appendChild(this.foregroundEmblem.drawSvg());
+        //     }
+        //     this._renderedSvg = container;
+        //   }
+        //   return this._renderedSvg;
+        // }
         Flag.prototype.draw = function (width, height, stretch) {
             if (width === void 0) { width = this.width; }
             if (height === void 0) { height = this.height; }
-            if (stretch === void 0) { stretch = false; }
+            if (stretch === void 0) { stretch = true; }
             var canvas = document.createElement("canvas");
             canvas.width = width;
             canvas.height = height;
@@ -11822,7 +11878,7 @@ var Rance;
             foregroundEmblem.inner =
                 {
                     key: "pirateEmblem",
-                    src: "Flag_of_Edward_England.svg",
+                    src: "img\/emblems\/Flag_of_Edward_England.svg",
                     coverage: [Rance.SubEmblemCoverage.both],
                     position: [Rance.SubEmblemPosition.both]
                 };
@@ -14157,7 +14213,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.MapRendererLayersListItem = React.createClass({
             displayName: "MapRendererLayersListItem",
-            mixins: [UIComponents.Draggable, UIComponents.DropTarget],
+            mixins: [UIComponents.Draggable, UIComponents.DropTarget, React.addons.PureRenderMixin],
             cachedMidPoint: undefined,
             getInitialState: function () {
                 return ({
@@ -14245,6 +14301,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.MapRendererLayersList = React.createClass({
             displayName: "MapRendererLayersList",
+            mixins: [React.addons.PureRenderMixin],
             getInitialState: function () {
                 return ({
                     currentDraggingLayer: null,
@@ -14575,26 +14632,35 @@ var Rance;
                     closeReorganization: this.closeReorganization,
                     player: this.props.player
                 }))), React.DOM.div({
-                    className: "galaxy-map-ui-bottom-left"
+                    className: "galaxy-map-ui-bottom-left",
+                    key: "bottomLeft"
                 }, React.DOM.div({
-                    className: "galaxy-map-ui-bottom-left-column align-bottom"
+                    className: "galaxy-map-ui-bottom-left-column align-bottom",
+                    key: "bottomLeftColumn"
                 }, React.DOM.div({
                     className: "galaxy-map-ui-bottom-left-leftmost-column-wrapper",
-                    ref: "leftColumnContent"
+                    ref: "leftColumnContent",
+                    key: "leftColumnContent"
                 }, UIComponents.PossibleActions({
                     attackTargets: this.state.attackTargets,
                     selectedStar: this.state.selectedStar,
                     player: this.props.player,
-                    setExpandedActionElementOnParent: this.setExpandedActionElement
+                    setExpandedActionElementOnParent: this.setExpandedActionElement,
+                    key: "possibleActions"
                 }), UIComponents.StarInfo({
-                    selectedStar: this.state.selectedStar
+                    selectedStar: this.state.selectedStar,
+                    key: "starInfo"
                 }))), expandedActionElement), !Rance.Options.debugMode ? null : UIComponents.MapRendererLayersList({
-                    mapRenderer: this.props.mapRenderer
+                    mapRenderer: this.props.mapRenderer,
+                    mapMode: this.props.mapRenderer.currentMapMode,
+                    key: "mapRendererLayersList"
                 }), React.DOM.div({
-                    className: "galaxy-map-ui-bottom-right"
+                    className: "galaxy-map-ui-bottom-right",
+                    key: "bottomRight"
                 }, !Rance.Options.debugMode ? null : UIComponents.NotificationLog({
                     log: this.props.game.notificationLog,
-                    currentTurn: this.props.game.turnNumber
+                    currentTurn: this.props.game.turnNumber,
+                    key: "notificationLog"
                 }), React.DOM.button(endTurnButtonProps, "End turn"))));
             }
         });
@@ -14632,7 +14698,8 @@ var Rance;
                     playerControl: this.props.playerControl,
                     player: this.props.player,
                     game: this.props.game,
-                    mapRenderer: this.props.mapRenderer
+                    mapRenderer: this.props.mapRenderer,
+                    key: "galaxyMapUI"
                 })), !Rance.Options.debugMode ? null : React.DOM.div({
                     className: "galaxy-map-debug debug"
                 }, React.DOM.select({
@@ -15942,58 +16009,68 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="playerflag.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.FlagMaker = React.createClass({
-            makeFlags: function (delay) {
-                if (delay === void 0) { delay = 0; }
-                var flags = [];
-                var parent = this.refs.flags.getDOMNode();
-                while (parent.lastChild) {
-                    parent.removeChild(parent.lastChild);
+            setStateTimeout: undefined,
+            sizeValue: 46,
+            getInitialState: function () {
+                return ({
+                    sizeValue: 46,
+                    size: 46
+                });
+            },
+            handleSizeChange: function (e) {
+                if (this.setStateTimeout) {
+                    window.clearTimeout(this.setStateTimeout);
                 }
+                var target = e.target;
+                var value = parseInt(target.value);
+                if (isFinite(value)) {
+                    this.sizeValue = value;
+                    this.setStateTimeout = window.setTimeout(this.setState.bind(this, { size: value }), 500);
+                }
+            },
+            makeFlags: function () {
+                this.forceUpdate();
+            },
+            render: function () {
+                var flagElements = [];
                 for (var i = 0; i < 100; i++) {
                     var colorScheme = Rance.generateColorScheme();
                     var flag = new Rance.Flag({
-                        width: 46,
+                        width: this.state.size,
                         mainColor: colorScheme.main,
                         secondaryColor: colorScheme.secondary
                     });
                     flag.generateRandom();
-                    var canvas = flag.draw();
-                    flags.push(flag);
+                    flagElements.push(UIComponents.PlayerFlag({
+                        key: i,
+                        props: {
+                            tag: "flagMaker",
+                            width: this.state.size,
+                            height: this.state.size,
+                            style: {
+                                width: this.state.size,
+                                height: this.state.size
+                            }
+                        },
+                        flag: flag
+                    }));
                 }
-                function makeHslStringFromHex(hex) {
-                    var hsl = Rance.hexToHsv(hex);
-                    hsl = Rance.colorFromScalars(hsl);
-                    var hslString = hsl.map(function (v) { return v.toFixed(); });
-                    return hslString.join(", ");
-                }
-                window.setTimeout(function () {
-                    for (var i = 0; i < flags.length; i++) {
-                        var canvas = flags[i].draw();
-                        parent.appendChild(canvas);
-                        canvas.setAttribute("title", "bgColor: " + makeHslStringFromHex(flags[i].mainColor) + "\n" +
-                            "emblemColor: " + makeHslStringFromHex(flags[i].secondaryColor) + "\n");
-                        canvas.onclick = function (e) {
-                            console.log(Rance.hexToHusl(this.mainColor));
-                            console.log(Rance.hexToHusl(this.secondaryColor));
-                        }.bind(flags[i]);
-                    }
-                }, delay);
-            },
-            componentDidMount: function () {
-                this.makeFlags();
-            },
-            render: function () {
                 return (React.DOM.div(null, React.DOM.div({
                     className: "flags",
                     ref: "flags"
-                }), React.DOM.button({
+                }, flagElements), React.DOM.button({
                     onClick: this.makeFlags
-                }, "make flags")));
+                }, "make flags"), React.DOM.input({
+                    onChange: this.handleSizeChange,
+                    defaultValue: this.sizeValue,
+                    type: "number"
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -16126,6 +16203,7 @@ var Rance;
             this.selectedFleets = [];
             this.inspectedFleets = [];
             this.currentlyReorganizing = [];
+            this.lastSelectedFleetsIds = {};
             this.preventingGhost = false;
             this.listeners = {};
             this.player = player;
@@ -16219,15 +16297,30 @@ var Rance;
             }
             return true;
         };
+        PlayerControl.prototype.hasFleetSelectionChanged = function (newFleets) {
+            if (newFleets.length !== Object.keys(this.lastSelectedFleetsIds).length) {
+                return true;
+            }
+            for (var i = 0; i < newFleets.length; i++) {
+                if (!this.lastSelectedFleetsIds[newFleets[i].id]) {
+                    return true;
+                }
+            }
+            return false;
+        };
         PlayerControl.prototype.selectFleets = function (fleets) {
+            var shouldUpdateSelection = this.hasFleetSelectionChanged(fleets);
             if (fleets.length < 1) {
                 this.clearSelection();
-                this.updateSelection();
+                if (shouldUpdateSelection)
+                    this.updateSelection();
                 return;
             }
+            this.lastSelectedFleetsIds = {};
             var playerFleets = [];
             var otherFleets = [];
             for (var i = 0; i < fleets.length; i++) {
+                this.lastSelectedFleetsIds[fleets[i].id] = true;
                 if (fleets[i].player === this.player) {
                     playerFleets.push(fleets[i]);
                 }
@@ -16241,7 +16334,8 @@ var Rance;
             else {
                 this.selectOtherFleets(otherFleets);
             }
-            this.updateSelection();
+            if (shouldUpdateSelection)
+                this.updateSelection();
             this.preventGhost(15);
         };
         PlayerControl.prototype.selectPlayerFleets = function (fleets) {
@@ -16303,7 +16397,7 @@ var Rance;
             this.updateSelection();
         };
         PlayerControl.prototype.selectStar = function (star) {
-            if (this.preventingGhost)
+            if (this.preventingGhost || this.selectedStar === star)
                 return;
             this.clearSelection();
             this.selectedStar = star;
@@ -21212,55 +21306,55 @@ var Rance;
                 (function (SubEmblems) {
                     SubEmblems.Gomaisasa = {
                         key: "Gomaisasa",
-                        src: "Gomaisasa.svg",
+                        src: "img\/emblems\/Gomaisasa.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_Crest_Futatsudomoe_1 = {
                         key: "Japanese_Crest_Futatsudomoe_1",
-                        src: "Japanese_Crest_Futatsudomoe_1.svg",
+                        src: "img\/emblems\/Japanese_Crest_Futatsudomoe_1.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_Crest_Hana_Hisi = {
                         key: "Japanese_Crest_Hana_Hisi",
-                        src: "Japanese_Crest_Hana_Hisi.svg",
+                        src: "img\/emblems\/Japanese_Crest_Hana_Hisi.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_Crest_Oda_ka = {
                         key: "Japanese_Crest_Oda_ka",
-                        src: "Japanese_Crest_Oda_ka.svg",
+                        src: "img\/emblems\/Japanese_Crest_Oda_ka.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_crest_Tsuki_ni_Hoshi = {
                         key: "Japanese_crest_Tsuki_ni_Hoshi",
-                        src: "Japanese_crest_Tsuki_ni_Hoshi.svg",
+                        src: "img\/emblems\/Japanese_crest_Tsuki_ni_Hoshi.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_Crest_Ume = {
                         key: "Japanese_Crest_Ume",
-                        src: "Japanese_Crest_Ume.svg",
+                        src: "img\/emblems\/Japanese_Crest_Ume.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Mitsuuroko = {
                         key: "Mitsuuroko",
-                        src: "Mitsuuroko.svg",
+                        src: "img\/emblems\/Mitsuuroko.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Musubikashiwa = {
                         key: "Musubikashiwa",
-                        src: "Musubi-kashiwa.svg",
+                        src: "img\/emblems\/Musubi-kashiwa.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Takeda_mon = {
                         key: "Takeda_mon",
-                        src: "Takeda_mon.svg",
+                        src: "img\/emblems\/Takeda_mon.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
@@ -22324,17 +22418,40 @@ var Rance;
                 },
                 loadAssets: function (onLoaded) {
                     var loader = new PIXI.loaders.Loader();
-                    loader.add("emblems", "img\/emblems.json");
                     loader.add("units", "img\/units.json");
                     loader.add("buildings", "img\/buildings.json");
                     loader.add("img\/fowTexture.png");
                     loader.add("img\/battleEffects\/rocket.png");
                     loader.add("explosion", "img\/battleEffects\/explosion.json");
+                    var emblemFileNames = [
+                        "img\/emblems\/Flag_of_Edward_England.svg",
+                        "img\/emblems\/Gomaisasa.svg",
+                        "img\/emblems\/Japanese_Crest_Futatsudomoe_1.svg",
+                        "img\/emblems\/Japanese_Crest_Hana_Hisi.svg",
+                        "img\/emblems\/Japanese_Crest_Mitsumori_Janome.svg",
+                        "img\/emblems\/Japanese_Crest_Oda_ka.svg",
+                        "img\/emblems\/Japanese_crest_Tsuki_ni_Hoshi.svg",
+                        "img\/emblems\/Japanese_Crest_Ume.svg",
+                        "img\/emblems\/Mitsuuroko.svg",
+                        "img\/emblems\/Musubi-kashiwa.svg",
+                        "img\/emblems\/Takeda_mon.svg"
+                    ];
+                    emblemFileNames.forEach(function (fileName) {
+                        loader.add({
+                            url: fileName,
+                            loadType: 2,
+                            xhrType: "png"
+                        });
+                    });
                     loader.load(function (loader) {
-                        ["emblems", "units", "buildings"].forEach(function (spriteSheetName) {
+                        ["units", "buildings"].forEach(function (spriteSheetName) {
                             var json = loader.resources[spriteSheetName].data;
                             var image = loader.resources[spriteSheetName + "_image"].data;
                             Rance.cacheSpriteSheetAsImages(json, image);
+                        });
+                        emblemFileNames.forEach(function (fileName) {
+                            var image = loader.resources[fileName].data;
+                            app.images[fileName] = image;
                         });
                         onLoaded();
                     });

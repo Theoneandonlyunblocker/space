@@ -54,7 +54,6 @@ module Rance
         loadAssets: function(onLoaded: () => void)
         {
           var loader = new PIXI.loaders.Loader();
-          loader.add("emblems", "img\/emblems.json");
           loader.add("units", "img\/units.json");
           loader.add("buildings", "img\/buildings.json");
 
@@ -62,13 +61,44 @@ module Rance
           loader.add("img\/battleEffects\/rocket.png");
           loader.add("explosion", "img\/battleEffects\/explosion.json");
 
+          var emblemFileNames =
+          [
+            "img\/emblems\/Flag_of_Edward_England.svg",
+            "img\/emblems\/Gomaisasa.svg",
+            "img\/emblems\/Japanese_Crest_Futatsudomoe_1.svg",
+            "img\/emblems\/Japanese_Crest_Hana_Hisi.svg",
+            "img\/emblems\/Japanese_Crest_Mitsumori_Janome.svg",
+            "img\/emblems\/Japanese_Crest_Oda_ka.svg",
+            "img\/emblems\/Japanese_crest_Tsuki_ni_Hoshi.svg",
+            "img\/emblems\/Japanese_Crest_Ume.svg",
+            "img\/emblems\/Mitsuuroko.svg",
+            "img\/emblems\/Musubi-kashiwa.svg",
+            "img\/emblems\/Takeda_mon.svg"
+          ];
+
+          emblemFileNames.forEach(function(fileName: string)
+          {
+            loader.add(
+            {
+              url: fileName,
+              loadType: 2, // image
+              xhrType: "png"
+            });
+          });
+
           loader.load(function(loader: PIXI.loaders.Loader)
           {
-            ["emblems", "units", "buildings"].forEach(function(spriteSheetName: string)
+            ["units", "buildings"].forEach(function(spriteSheetName: string)
             {
               var json = loader.resources[spriteSheetName].data;
               var image = loader.resources[spriteSheetName + "_image"].data;
               cacheSpriteSheetAsImages(json, image);
+            });
+
+            emblemFileNames.forEach(function(fileName: string)
+            {
+              var image = loader.resources[fileName].data;
+              app.images[fileName] = image;
             });
 
             onLoaded();

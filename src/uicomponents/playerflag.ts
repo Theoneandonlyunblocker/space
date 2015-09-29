@@ -5,17 +5,15 @@ module Rance
     export var PlayerFlag = React.createClass(
     {
       displayName: "PlayerFlag",
-      componentDidMount: function()
-      {
-        var node = this.refs.wrapper.getDOMNode();
-        node.appendChild(this.props.flag.drawSvg());
-      },
+      mixins: [React.addons.PureRenderMixin],
       render: function()
       {
         var props = this.props.props;
-        props.ref = "wrapper";
+        var flag: Flag = this.props.flag;
+        props.src = flag.getCanvas(this.props.width, this.props.height, this.props.stretch).dataURL;
+
         return(
-          React.DOM.object(props,
+          React.DOM.img(props,
             null
           )
         );

@@ -1,86 +1,92 @@
+/// <reference path="playerflag.ts" />
+
 module Rance
 {
   export module UIComponents
   {
     export var FlagMaker = React.createClass(
     {
-      makeFlags: function(delay: number = 0)
+      setStateTimeout: undefined,
+      sizeValue: 46,
+      getInitialState: function()
       {
-        var flags: Flag[] = [];
-        var parent = this.refs.flags.getDOMNode();
-
-        while (parent.lastChild)
+        return(
         {
-          parent.removeChild(parent.lastChild);
-        }
+          sizeValue: 46,
+          size: 46
+        });
+      },
 
+      handleSizeChange: function(e: Event)
+      {
+        if (this.setStateTimeout)
+        {
+          window.clearTimeout(this.setStateTimeout);
+        }
+        var target = <HTMLInputElement> e.target;
+        var value = parseInt(target.value);
+        if (isFinite(value))
+        {
+          this.sizeValue = value;
+          this.setStateTimeout = window.setTimeout(this.setState.bind(this, {size: value}), 500);
+        }
+      },
+      makeFlags: function()
+      {
+        this.forceUpdate();
+      },
+      render: function()
+      {
+        var flagElements: ReactComponentPlaceHolder[] = [];
         for (var i = 0; i < 100; i++)
         {
           var colorScheme = generateColorScheme();
 
           var flag = new Flag(
           {
-            width: 46, // FLAG_SIZE
+            width: this.state.size,
             mainColor: colorScheme.main,
             secondaryColor: colorScheme.secondary
           });
 
           flag.generateRandom();
 
-          var canvas = flag.draw();
-
-          flags.push(flag);
-        }
-
-        function makeHslStringFromHex(hex: number)
-        {
-          var hsl = hexToHsv(hex);
-
-          hsl = colorFromScalars(hsl);
-          var hslString = hsl.map(function(v){return v.toFixed()});
-
-          return hslString.join(", ");
-        }
-
-        window.setTimeout(function()
-        {
-          for (var i = 0; i < flags.length; i++)
+          flagElements.push(UIComponents.PlayerFlag(
           {
-            var canvas = flags[i].draw();
-            parent.appendChild(canvas);
-
-            canvas.setAttribute("title",
-              "bgColor: " + makeHslStringFromHex(flags[i].mainColor) + "\n" +
-              "emblemColor: " + makeHslStringFromHex(flags[i].secondaryColor) + "\n"
-            );
-
-            canvas.onclick = function(e: MouseEvent)
+            key: i,
+            props:
             {
-              console.log(hexToHusl(this.mainColor));
-              console.log(hexToHusl(this.secondaryColor))
-            }.bind(flags[i]);
-          }
-        }, delay);
-      },
-      componentDidMount: function()
-      {
-        this.makeFlags();
-      },
-
-      render: function()
-      {
-        
+              tag: "flagMaker",
+              width: this.state.size,
+              height: this.state.size,
+              style:
+              {
+                width: this.state.size,
+                height: this.state.size
+              }
+            },
+            flag: flag
+          }));
+        }
         return(
           React.DOM.div(null,
             React.DOM.div(
             {
               className: "flags",
               ref: "flags" 
-            }),
+            },
+              flagElements
+            ),
             React.DOM.button(
             {
               onClick: this.makeFlags
-            }, "make flags")
+            }, "make flags"),
+            React.DOM.input(
+            {
+              onChange: this.handleSizeChange,
+              defaultValue: this.sizeValue,
+              type: "number"
+            })
           )
         );
       }

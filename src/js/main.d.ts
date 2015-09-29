@@ -164,7 +164,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var PlayerFlag: React.Factory<{}>;
+        var PlayerFlag: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -270,12 +270,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var DefenceBuilding: React.Factory<{}>;
+        var DefenceBuilding: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DefenceBuildingList: React.Factory<{}>;
+        var DefenceBuildingList: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -482,7 +482,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var StarInfo: React.Factory<{}>;
+        var StarInfo: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -916,15 +916,14 @@ declare module Rance {
         getPossibleSubEmblemsToAdd(): Templates.ISubEmblemTemplate[];
         generateSubEmblems(rng: any): void;
         canAddBackground(): boolean;
-        drawSvg(): HTMLObjectElement;
-        draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
-        drawSvgSubEmblem(toDraw: Templates.ISubEmblemTemplate, className: string): HTMLObjectElement;
         drawSubEmblem(toDraw: Templates.ISubEmblemTemplate, maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
+        draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
         serialize(): any;
     }
 }
 declare module Rance {
     class Flag {
+        seed: any;
         width: number;
         height: number;
         mainColor: number;
@@ -932,9 +931,15 @@ declare module Rance {
         tetriaryColor: number;
         backgroundEmblem: Emblem;
         foregroundEmblem: Emblem;
+        private _renderedSvg;
         customImage: string;
         private _customImageToRender;
-        seed: any;
+        cachedCanvases: {
+            [sizeString: string]: {
+                canvas: HTMLCanvasElement;
+                dataURL: string;
+            };
+        };
         constructor(props: {
             width: number;
             height?: number;
@@ -948,7 +953,10 @@ declare module Rance {
         setForegroundEmblem(emblem: Emblem): void;
         setBackgroundEmblem(emblem: Emblem): void;
         setCustomImage(imageSrc: string): void;
-        drawSvg(): HTMLElement;
+        getCanvas(width: number, height: number, stretch?: boolean): {
+            canvas: HTMLCanvasElement;
+            dataURL: string;
+        };
         draw(width?: number, height?: number, stretch?: boolean): HTMLCanvasElement;
         serialize(): any;
     }
@@ -2040,7 +2048,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var MapRendererLayersList: React.Factory<{}>;
+        var MapRendererLayersList: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2163,6 +2171,9 @@ declare module Rance {
         selectedFleets: Fleet[];
         inspectedFleets: Fleet[];
         currentlyReorganizing: Fleet[];
+        lastSelectedFleetsIds: {
+            [fleetId: number]: boolean;
+        };
         currentAttackTargets: any[];
         selectedStar: Star;
         preventingGhost: boolean;
@@ -2179,6 +2190,7 @@ declare module Rance {
         clearSelection(): void;
         updateSelection(endReorganizingFleets?: boolean): void;
         areAllFleetsInSameLocation(): boolean;
+        hasFleetSelectionChanged(newFleets: Fleet[]): boolean;
         selectFleets(fleets: Fleet[]): void;
         selectPlayerFleets(fleets: Fleet[]): void;
         selectOtherFleets(fleets: Fleet[]): void;

@@ -6,6 +6,7 @@ module Rance
 {
   export class Flag
   {
+    seed: any;
     width: number;
     height: number;
     mainColor: number;
@@ -13,11 +14,20 @@ module Rance
     tetriaryColor: number;
     backgroundEmblem: Emblem;
     foregroundEmblem: Emblem;
+    private _renderedSvg: HTMLElement;
 
     customImage: string;
     private _customImageToRender: HTMLCanvasElement;
 
-    seed: any;
+    cachedCanvases:
+    {
+      [sizeString: string]:
+      {
+        canvas: HTMLCanvasElement;
+        dataURL: string;
+      }
+    } = {};
+
     constructor(props:
     {
       width: number;
@@ -34,7 +44,6 @@ module Rance
       this.secondaryColor = props.secondaryColor;
       this.tetriaryColor = props.tetriaryColor; // TODO currently never set
     }
-
     setColorScheme(main: number, secondary?: number, tetriary?: number)
     {
       this.mainColor = main;
@@ -53,8 +62,6 @@ module Rance
         this.backgroundEmblem.color = this.tetriaryColor;
       }
     }
-
-
     generateRandom(seed?: any)
     {
       this.seed = seed || Math.random();
@@ -162,25 +169,60 @@ module Rance
 
       this._customImageToRender = canvas;
     }
-    drawSvg(): HTMLElement
+    getCanvas(width: number, height: number, stretch: boolean = true)
     {
-      var container = document.createElement("object");
-      container.setAttribute("type", "image/svg+xml");
-      container.classList.add("player-flag");
-      container.style.backgroundColor = "#" + hexToString(this.mainColor);
-
-      if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null)
+      var sizeString = "" + width + "," + height + stretch;
+      if (!this.cachedCanvases[sizeString])
       {
-        container.appendChild(this.backgroundEmblem.drawSvg());
-      }
-      if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null)
-      {
-        container.appendChild(this.foregroundEmblem.drawSvg());
+        var canvas = this.draw(width, height, stretch);
+        this.cachedCanvases[sizeString] =
+        {
+          canvas: canvas,
+          dataURL: canvas.toDataURL()
+        }
       }
 
-      return container;
+      return this.cachedCanvases[sizeString];
     }
-    draw(width: number = this.width, height: number = this.height, stretch: boolean = false)
+    // getReactMarkup()
+    // {
+    //   if (!this._reactMarkup)
+    //   {
+    //     var tempContainer = document.createElement("div");
+    //     tempContainer.appendChild(this.drawSvg());
+
+    //     this._reactMarkup =
+    //     {
+    //       __html: tempContainer.innerHTML
+    //     }
+    //   }
+
+    //   return this._reactMarkup;
+    // }
+    // drawSvg(): HTMLElement
+    // {
+    //   if (!this._renderedSvg)
+    //   {
+    //     var container = document.createElement("div");
+    //     container.classList.add("player-flag");
+    //     container.style.backgroundColor = "#" + hexToString(this.mainColor);
+
+    //     if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null)
+    //     {
+    //       container.appendChild(this.backgroundEmblem.drawSvg());
+    //     }
+    //     if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null)
+    //     {
+    //       container.appendChild(this.foregroundEmblem.drawSvg());
+    //     }
+
+    //     this._renderedSvg = container;
+    //   }
+      
+    //   return this._renderedSvg;
+
+    // }
+    draw(width: number = this.width, height: number = this.height, stretch: boolean = true)
     {
       var canvas = document.createElement("canvas");
       canvas.width = width;
