@@ -105,7 +105,6 @@ module Rance
 
         container.appendChild(battleOverlay);
       },
-
       render: function()
       {
         var unit1SpriteFN: Function, unit1OverlayFN: Function,
@@ -127,7 +126,6 @@ module Rance
             unit1OverlayFN = this.props.effectSFX.enemyOverlay;
           }
         }
-
 
         return(
           React.DOM.div(
@@ -153,7 +151,10 @@ module Rance
                   effectSpriteFN: unit1SpriteFN,
                   effectOverlayFN: unit1OverlayFN,
 
-                  getSceneBounds: this.getSceneBounds
+                  getSceneBounds: this.getSceneBounds,
+
+                  battleIsStarting: this.props.battleIsStarting,
+                  flag: this.props.player1.flag
                 }),
                 UIComponents.BattleSceneUnit(
                 {
@@ -164,7 +165,10 @@ module Rance
                   effectSpriteFN: unit2SpriteFN,
                   effectOverlayFN: unit2OverlayFN,
 
-                  getSceneBounds: this.getSceneBounds
+                  getSceneBounds: this.getSceneBounds,
+
+                  battleIsStarting: this.props.battleIsStarting,
+                  flag: this.props.player2.flag
                 })
               ),
               React.DOM.div(

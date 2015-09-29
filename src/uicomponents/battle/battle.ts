@@ -44,7 +44,8 @@ module Rance
           playingBattleEffect: false,
           battleEffectId: undefined,
           battleEffectDuration: null,
-          battleEffectSFX: null
+          battleEffectSFX: null,
+          battleIsStarting: true
         });
       },
       getBlurArea: function()
@@ -563,7 +564,10 @@ module Rance
                   effectDuration: this.state.battleEffectDuration,
                   effectSFX: this.state.battleEffectSFX,
                   unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
-                  effectId: this.state.battleEffectId
+                  effectId: this.state.battleEffectId,
+                  battleIsStarting: this.state.battleIsStarting,
+                  player1: battle.side1Player,
+                  player2: battle.side2Player
                 })
               ),
               React.DOM.div(

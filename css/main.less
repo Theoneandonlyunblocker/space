@@ -602,34 +602,45 @@ progress::-webkit-progress-value { background: #080; }
   position: relative;
   height: 100%;
   width: 200px;
-  canvas
-  {
-    position: absolute;
-    bottom: 40px;
-
-    &.attach-to-bottom
-    {
-      bottom: 20px;
-    }
-  }
 }
 
+.battle-scene-unit-sprite
+{
+  position: absolute;
+  bottom: 40px;
+
+  &.attach-to-bottom
+  {
+    bottom: 20px;
+  }
+}
+.battle-scene-start-player-flag
+{
+  position: absolute;
+}
 .battle-scene-unit-side1
 {
-  canvas
+  .battle-scene-unit-sprite
   {
     left: 5%;
+  }
+  .battle-scene-start-player-flag
+  {
+    left: 0px;
   }
 }
 
 .battle-scene-unit-side2
 {
-  canvas
+  .battle-scene-unit-sprite
   {
     right: 5%;
   }
+  .battle-scene-start-player-flag
+  {
+    right: 0px;
+  }
 }
-
 
 .attach-animation(@duration, @name, @timing)
 {

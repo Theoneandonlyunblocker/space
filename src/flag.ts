@@ -169,20 +169,32 @@ module Rance
 
       this._customImageToRender = canvas;
     }
-    getCanvas(width: number, height: number, stretch: boolean = true)
+    getCanvas(width: number, height: number, stretch: boolean = true, useCache: boolean = true)
     {
-      var sizeString = "" + width + "," + height + stretch;
-      if (!this.cachedCanvases[sizeString])
+      if (useCache)
+      {
+        var sizeString = "" + width + "," + height + stretch;
+        if (!this.cachedCanvases[sizeString])
+        {
+          var canvas = this.draw(width, height, stretch);
+          this.cachedCanvases[sizeString] =
+          {
+            canvas: canvas,
+            dataURL: canvas.toDataURL()
+          }
+        }
+
+        return this.cachedCanvases[sizeString];
+      }
+      else
       {
         var canvas = this.draw(width, height, stretch);
-        this.cachedCanvases[sizeString] =
+        return(
         {
           canvas: canvas,
           dataURL: canvas.toDataURL()
-        }
+        });
       }
-
-      return this.cachedCanvases[sizeString];
     }
     // getReactMarkup()
     // {

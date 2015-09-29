@@ -937,7 +937,7 @@ declare module Rance {
         setForegroundEmblem(emblem: Emblem): void;
         setBackgroundEmblem(emblem: Emblem): void;
         setCustomImage(imageSrc: string): void;
-        getCanvas(width: number, height: number, stretch?: boolean): {
+        getCanvas(width: number, height: number, stretch?: boolean, useCache?: boolean): {
             canvas: HTMLCanvasElement;
             dataURL: string;
         };

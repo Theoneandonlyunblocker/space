@@ -1258,6 +1258,8 @@ var Rance;
             eventListenerCache: {},
             idGenerator: 0,
             componentDidUpdate: function (oldProps) {
+                if (this.props.battleIsStarting)
+                    return;
                 if (oldProps.unit !== this.props.unit) {
                     this.renderScene(true, false, this.props.unit);
                 }
@@ -1272,12 +1274,17 @@ var Rance;
             },
             componentDidMount: function () {
                 window.addEventListener("resize", this.handleResize, false);
+                this.addFlag();
             },
             componentWillUnmount: function () {
                 window.removeEventListener("resize", this.handleResize);
             },
             handleResize: function () {
-                if (this.props.unit) {
+                if (this.props.battleIsStarting) {
+                    this.removeScene();
+                    this.addFlag();
+                }
+                else if (this.props.unit) {
                     this.renderScene(false, false, this.props.unit);
                 }
             },
@@ -1327,19 +1334,36 @@ var Rance;
                     facingRight: this.props.side === "side1"
                 });
             },
-            addUnit: function (animateEnter, animateFade, unit, onComplete) {
+            drawFlag: function (flag, facingRight) {
+                var bounds = this.props.getSceneBounds();
+                var width = bounds.width / 2.5;
+                var canvas = flag.getCanvas(width, bounds.height, true, false).canvas;
+                var context = canvas.getContext("2d");
+                context.globalCompositeOperation = "destination-out";
+                var gradient;
+                if (facingRight) {
+                    gradient = context.createLinearGradient(0, 0, width, 0);
+                }
+                else {
+                    gradient = context.createLinearGradient(width, 0, 0, 0);
+                }
+                gradient.addColorStop(0.0, "rgba(255, 255, 255, 0.3)");
+                gradient.addColorStop(0.6, "rgba(255, 255, 255, 0.5)");
+                gradient.addColorStop(0.8, "rgba(255, 255, 255, 0.8)");
+                gradient.addColorStop(1.0, "rgba(255, 255, 255, 1.0)");
+                context.fillStyle = gradient;
+                context.fillRect(0, 0, width, bounds.height);
+                canvas.classList.add("battle-scene-start-player-flag");
+                return canvas;
+            },
+            addFlag: function () {
+                var scene = this.drawFlag(this.props.flag, this.props.side === "side1");
+                this.addScene(false, false, scene);
+            },
+            addScene: function (animateEnter, animateFade, scene, onComplete) {
                 var self = this;
                 var container = this.refs.sprite.getDOMNode();
-                if (unit) {
-                    var SFXProps = this.getSFXProps();
-                    var scene;
-                    if (this.props.effectSpriteFN && this.props.effectDuration) {
-                        scene = this.props.effectSpriteFN(this.getSFXProps());
-                    }
-                    else {
-                        scene = unit.drawBattleScene(this.getSceneProps(unit));
-                        this.removeAnimations(scene, true);
-                    }
+                if (scene) {
                     if (scene.height >= this.getSFXProps().height - 40) {
                         scene.classList.add("attach-to-bottom");
                     }
@@ -1374,7 +1398,22 @@ var Rance;
                         onComplete();
                 }
             },
-            removeUnit: function (animateEnter, animateFade, onComplete) {
+            addUnit: function (animateEnter, animateFade, unit, onComplete) {
+                var scene;
+                if (unit) {
+                    var SFXProps = this.getSFXProps();
+                    if (this.props.effectSpriteFN && this.props.effectDuration) {
+                        scene = this.props.effectSpriteFN(this.getSFXProps());
+                    }
+                    else {
+                        scene = unit.drawBattleScene(this.getSceneProps(unit));
+                        this.removeAnimations(scene, true);
+                    }
+                }
+                scene.classList.add("battle-scene-unit-sprite");
+                this.addScene(animateEnter, animateFade, scene, onComplete);
+            },
+            removeScene: function (animateEnter, animateFade, onComplete) {
                 var container = this.refs.sprite.getDOMNode();
                 var self = this;
                 // has child. child will be removed with animation if specified, then fire callback
@@ -1414,11 +1453,11 @@ var Rance;
             renderUnit: function (animateEnter, animateFade, unit) {
                 if (animateFade) {
                     this.addUnit(animateEnter, animateFade, unit);
-                    this.removeUnit(animateEnter, animateFade);
+                    this.removeScene(animateEnter, animateFade);
                 }
                 else {
                     var addUnitFN = this.addUnit.bind(this, animateEnter, animateFade, unit);
-                    this.removeUnit(animateEnter, animateFade, addUnitFN);
+                    this.removeScene(animateEnter, animateFade, addUnitFN);
                 }
             },
             renderOverlay: function () {
@@ -1440,11 +1479,11 @@ var Rance;
                         "battle-scene-unit-" + this.props.side,
                     ref: "container"
                 }, React.DOM.div({
-                    className: "battle-scene-unit-sprite",
+                    className: "battle-scene-unit-sprite-container",
                     ref: "sprite"
                 }, null // unit sprite drawn on canvas
                 ), React.DOM.div({
-                    className: "battle-scene-unit-overlay",
+                    className: "battle-scene-unit-overlay-container",
                     ref: "overlay"
                 }, null // unit overlay SFX drawn on canvas
                 )));
@@ -1555,14 +1594,18 @@ var Rance;
                     effectDuration: this.props.effectDuration,
                     effectSpriteFN: unit1SpriteFN,
                     effectOverlayFN: unit1OverlayFN,
-                    getSceneBounds: this.getSceneBounds
+                    getSceneBounds: this.getSceneBounds,
+                    battleIsStarting: this.props.battleIsStarting,
+                    flag: this.props.player1.flag
                 }), UIComponents.BattleSceneUnit({
                     unit: this.props.unit2,
                     side: "side2",
                     effectDuration: this.props.effectDuration,
                     effectSpriteFN: unit2SpriteFN,
                     effectOverlayFN: unit2OverlayFN,
-                    getSceneBounds: this.getSceneBounds
+                    getSceneBounds: this.getSceneBounds,
+                    battleIsStarting: this.props.battleIsStarting,
+                    flag: this.props.player2.flag
                 })), React.DOM.div({
                     className: "battle-scene-overlay-container",
                     ref: "overlay"
@@ -1718,7 +1761,8 @@ var Rance;
                     playingBattleEffect: false,
                     battleEffectId: undefined,
                     battleEffectDuration: null,
-                    battleEffectSFX: null
+                    battleEffectSFX: null,
+                    battleIsStarting: true
                 });
             },
             getBlurArea: function () {
@@ -2068,7 +2112,10 @@ var Rance;
                     effectDuration: this.state.battleEffectDuration,
                     effectSFX: this.state.battleEffectSFX,
                     unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
-                    effectId: this.state.battleEffectId
+                    effectId: this.state.battleEffectId,
+                    battleIsStarting: this.state.battleIsStarting,
+                    player1: battle.side1Player,
+                    player2: battle.side2Player
                 })), React.DOM.div({
                     className: "fleets-container",
                     ref: "fleetsContainer"
@@ -8550,18 +8597,28 @@ var Rance;
             ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
             this._customImageToRender = canvas;
         };
-        Flag.prototype.getCanvas = function (width, height, stretch) {
+        Flag.prototype.getCanvas = function (width, height, stretch, useCache) {
             if (stretch === void 0) { stretch = true; }
-            var sizeString = "" + width + "," + height + stretch;
-            if (!this.cachedCanvases[sizeString]) {
-                var canvas = this.draw(width, height, stretch);
-                this.cachedCanvases[sizeString] =
-                    {
-                        canvas: canvas,
-                        dataURL: canvas.toDataURL()
-                    };
+            if (useCache === void 0) { useCache = true; }
+            if (useCache) {
+                var sizeString = "" + width + "," + height + stretch;
+                if (!this.cachedCanvases[sizeString]) {
+                    var canvas = this.draw(width, height, stretch);
+                    this.cachedCanvases[sizeString] =
+                        {
+                            canvas: canvas,
+                            dataURL: canvas.toDataURL()
+                        };
+                }
+                return this.cachedCanvases[sizeString];
             }
-            return this.cachedCanvases[sizeString];
+            else {
+                var canvas = this.draw(width, height, stretch);
+                return ({
+                    canvas: canvas,
+                    dataURL: canvas.toDataURL()
+                });
+            }
         };
         // getReactMarkup()
         // {
