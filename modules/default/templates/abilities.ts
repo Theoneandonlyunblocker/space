@@ -1,4 +1,4 @@
-/// <reference path="../../../src/battlesfxfunctions/battlesfxutils.ts"/>
+/// <reference path="../graphics/battlesfxutils.ts"/>
 /// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>

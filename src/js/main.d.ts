@@ -501,21 +501,19 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module BattleSFXFunctions {
-        function defaultUnitScene(unit: Unit, props: {
-            unitsToDraw?: number;
-            maxUnitsPerColumn: number;
-            degree: number;
-            rotationAngle: number;
-            scalingFactor: number;
-            xDistance: number;
-            zDistance: number;
-            facesRight: boolean;
-            maxWidth?: number;
-            maxHeight?: number;
-            desiredHeight?: number;
-        }): HTMLCanvasElement;
-    }
+    function defaultUnitScene(unit: Unit, props: {
+        unitsToDraw?: number;
+        maxUnitsPerColumn: number;
+        degree: number;
+        rotationAngle: number;
+        scalingFactor: number;
+        xDistance: number;
+        zDistance: number;
+        facesRight: boolean;
+        maxWidth?: number;
+        maxHeight?: number;
+        desiredHeight?: number;
+    }): HTMLCanvasElement;
 }
 declare module Rance {
     enum DamageType {
@@ -2863,9 +2861,13 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module BattleSFXFunctions {
-        function makeSprite(imgSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
-        function makeVideo(videoSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
+    module Modules {
+        module DefaultModule {
+            module BattleSFXFunctions {
+                function makeSprite(imgSrc: string, props: Rance.Templates.SFXParams): HTMLCanvasElement;
+                function makeVideo(videoSrc: string, props: Rance.Templates.SFXParams): HTMLCanvasElement;
+            }
+        }
     }
 }
 declare module Rance {
@@ -2890,13 +2892,21 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module BattleSFXFunctions {
-        function rocketAttack(props: Templates.SFXParams): HTMLCanvasElement;
+    module Modules {
+        module DefaultModule {
+            module BattleSFXFunctions {
+                function rocketAttack(props: Rance.Templates.SFXParams): HTMLCanvasElement;
+            }
+        }
     }
 }
 declare module Rance {
-    module BattleSFXFunctions {
-        function guard(props: Templates.SFXParams): HTMLCanvasElement;
+    module Modules {
+        module DefaultModule {
+            module BattleSFXFunctions {
+                function guard(props: Rance.Templates.SFXParams): HTMLCanvasElement;
+            }
+        }
     }
 }
 declare module Rance {

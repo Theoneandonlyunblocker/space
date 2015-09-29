@@ -1,8 +1,7 @@
 /// <reference path="../../../src/templateinterfaces/ibattlesfxtemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
-/// <reference path="../../../src/battlesfxfunctions/battlesfxutils.ts" />
-/// <reference path="../../../src/battlesfxfunctions/rocketattack.ts" />
-/// <reference path="../../../src/battlesfxfunctions/guard.ts" />
+/// <reference path="../graphics/rocketattack.ts" />
+/// <reference path="../graphics/guard.ts" />
 
 module Rance
 {
