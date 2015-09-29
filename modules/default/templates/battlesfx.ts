@@ -22,7 +22,7 @@ module Rance
           }
           export var guard: Rance.Templates.IBattleSFXTemplate =
           {
-            duration: 1500,
+            duration: 1000,
             battleOverlay: BattleSFXFunctions.guard,
             delay: 0.3
           }

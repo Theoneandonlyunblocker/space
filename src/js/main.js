@@ -3214,6 +3214,7 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../galaxymap/defencebuildinglist.ts"/>
+/// <reference path="../playerflag.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -3228,9 +3229,11 @@ var Rance;
                     className: "battle-info"
                 }, React.DOM.div({
                     className: "battle-info-opponent"
-                }, React.DOM.img({
-                    className: "battle-info-opponent-icon",
-                    src: battlePrep.enemyPlayer.icon
+                }, UIComponents.PlayerFlag({
+                    flag: battlePrep.enemyPlayer.flag,
+                    props: {
+                        className: "battle-info-opponent-icon",
+                    }
                 }), React.DOM.div({
                     className: "battle-info-opponent-name"
                 }, battlePrep.enemyPlayer.name)), React.DOM.div({
@@ -4771,6 +4774,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../playerflag.ts" />
 /// <reference path="opinion.ts" />
 var Rance;
 (function (Rance) {
@@ -4795,9 +4799,11 @@ var Rance;
                     return (React.DOM.td({
                         key: type,
                         className: className
-                    }, React.DOM.img({
-                        className: "diplomacy-status-player-icon",
-                        src: this.props.player.icon
+                    }, UIComponents.PlayerFlag({
+                        flag: this.props.player.flag,
+                        props: {
+                            className: "diplomacy-status-player-icon"
+                        }
                     })));
                 }
                 if (type === "opinion") {
@@ -6186,6 +6192,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../playerflag.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -6202,9 +6209,11 @@ var Rance;
                     onClick: this.handleAttack
                 }, React.DOM.div({
                     className: "attack-target-type"
-                }, target.type), React.DOM.img({
-                    className: "attack-target-player-icon",
-                    src: target.enemy.icon
+                }, target.type), UIComponents.PlayerFlag({
+                    flag: target.enemy.flag,
+                    props: {
+                        className: "attack-target-player-icon"
+                    }
                 })));
             }
         });
@@ -17724,7 +17733,7 @@ var Rance;
             "",
             "float minX = frontier - trailDistance;",
             "float maxX = frontier + 20.0;",
-            "float frontGradientStart = frontier + 13.0;",
+            "float frontGradientStart = frontier + 17.0;",
             "float blockEnd = maxX;",
             "",
             "float hash(float n)",
@@ -20614,7 +20623,7 @@ var Rance;
                         delay: 0.3
                     };
                     BattleSFX.guard = {
-                        duration: 1500,
+                        duration: 1000,
                         battleOverlay: Rance.BattleSFXFunctions.guard,
                         delay: 0.3
                     };

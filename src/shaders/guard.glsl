@@ -11,7 +11,7 @@ uniform float blockAlpha;
 
 float minX = frontier - trailDistance;
 float maxX = frontier + 20.0;
-float frontGradientStart = frontier + 13.0;
+float frontGradientStart = frontier + 17.0;
 float blockEnd = maxX;
 
 float hash(float n)
