@@ -2108,10 +2108,12 @@ var Rance;
                     backgroundSeed: this.props.battle.battleData.location.getSeed(),
                     getBlurArea: this.getBlurArea
                 }, React.DOM.div({
-                    className: "battle-container" + (this.state.battleIsStarting ? " battle-start" : ""),
-                    ref: "battleContainer",
-                    onClick: (this.state.battleIsStarting ? this.endBattleStart : undefined)
-                }, React.DOM.div({
+                    className: "battle-container",
+                    ref: "battleContainer"
+                }, !this.state.battleIsStarting ? null : React.DOM.div({
+                    className: "battle-start-overlay",
+                    onClick: this.endBattleStart
+                }, null), React.DOM.div({
                     className: "battle-upper"
                 }, UIComponents.BattleScore({
                     battle: battle

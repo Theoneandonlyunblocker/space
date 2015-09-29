@@ -364,10 +364,14 @@ progress::-webkit-progress-value { background: #080; }
   max-height: 100%;
   height: 100%;
 
-  &.battle-start
-  {
-    cursor: pointer;
-  }
+}
+.battle-start-overlay
+{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  cursor: pointer;
 }
 
 .battle-upper

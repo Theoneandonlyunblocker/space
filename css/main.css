@@ -152,7 +152,11 @@ progress::-webkit-progress-value {
   max-height: 100%;
   height: 100%;
 }
-.battle-container.battle-start {
+.battle-start-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
   cursor: pointer;
 }
 .battle-upper {
