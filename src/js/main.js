@@ -13222,6 +13222,7 @@ var Rance;
     var Unit = (function () {
         function Unit(template, id, data) {
             this.abilities = [];
+            this.passiveSkills = [];
             this.items = {
                 low: null,
                 mid: null,
@@ -13279,8 +13280,11 @@ var Rance;
             this.timesActedThisTurn = data.timesActedThisTurn;
             this.baseAttributes = Rance.extendObject(data.baseAttributes);
             this.attributes = Rance.extendObject(this.baseAttributes);
-            this.abilities = data.abilityTemplateTypes.map(function (abilityType) {
-                return app.moduleData.Templates.Abilities[abilityType];
+            this.abilities = data.abilityTemplateTypes.map(function (key) {
+                return app.moduleData.Templates.Abilities[key];
+            });
+            this.passiveSkills = data.passiveSkillTemplateTypes.map(function (key) {
+                return app.moduleData.Templates.PassiveSkills[key];
             });
             var battleStats = {};
             battleStats.moveDelay = data.battleStats.moveDelay;
@@ -13311,6 +13315,7 @@ var Rance;
             this.maxMovePoints = this.template.maxMovePoints;
             this.resetMovePoints();
             this.setInitialAbilities();
+            this.setInitialPassiveSkills();
             this.timesActedThisTurn = 0;
         };
         Unit.prototype.setBaseHealth = function () {
@@ -13576,6 +13581,12 @@ var Rance;
             // TODO
             this.abilities = this.template.abilities.slice(0);
         };
+        Unit.prototype.setInitialPassiveSkills = function () {
+            // TODO
+            if (this.template.passiveSkills) {
+                this.passiveSkills = this.template.passiveSkills.slice(0);
+            }
+        };
         Unit.prototype.getItemAbilities = function () {
             var itemAbilities = [];
             for (var slot in this.items) {
@@ -13612,9 +13623,7 @@ var Rance;
         };
         Unit.prototype.getAllPassiveSkills = function () {
             var allSkills = [];
-            if (this.template.passiveSkills) {
-                allSkills = allSkills.concat(this.template.passiveSkills);
-            }
+            allSkills = allSkills.concat(this.passiveSkills);
             allSkills = allSkills.concat(this.getItemPassiveSkills());
             allSkills = allSkills.concat(this.getStatusEffectPassiveSkills());
             return allSkills;
@@ -13824,6 +13833,9 @@ var Rance;
             data.baseAttributes = Rance.extendObject(this.baseAttributes);
             data.abilityTemplateTypes = this.abilities.map(function (ability) {
                 return ability.type;
+            });
+            data.passiveSkillTemplateTypes = this.passiveSkills.map(function (passiveSkill) {
+                return passiveSkill.type;
             });
             data.battleStats = {};
             data.battleStats.moveDelay = this.battleStats.moveDelay;

@@ -60,6 +60,7 @@ module Rance
     };
 
     abilities: Templates.IAbilityTemplate[] = [];
+    passiveSkills: Templates.IPassiveSkillTemplate[] = [];
 
     displayFlags:
     {
@@ -82,7 +83,7 @@ module Rance
 
     passiveSkillsByPhase:
     {
-      atBattleStart?: Templates.IPassiveSkillTemplate[]
+      atBattleStart?: Templates.IPassiveSkillTemplate[];
       beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
       afterAbilityUse?: Templates.IPassiveSkillTemplate[];
       atTurnStart?: Templates.IPassiveSkillTemplate[];
@@ -153,9 +154,14 @@ module Rance
       this.baseAttributes = extendObject(data.baseAttributes);
       this.attributes = extendObject(this.baseAttributes);
 
-      this.abilities = data.abilityTemplateTypes.map(function(abilityType: string)
+      this.abilities = data.abilityTemplateTypes.map(function(key: string)
       {
-        return app.moduleData.Templates.Abilities[abilityType];
+        return app.moduleData.Templates.Abilities[key];
+      });
+      
+      this.passiveSkills = data.passiveSkillTemplateTypes.map(function(key: string)
+      {
+        return app.moduleData.Templates.PassiveSkills[key];
       });
 
       var battleStats: any = {};
@@ -195,6 +201,7 @@ module Rance
       this.maxMovePoints = this.template.maxMovePoints;
       this.resetMovePoints();
       this.setInitialAbilities();
+      this.setInitialPassiveSkills();
 
       this.timesActedThisTurn = 0;
     }
@@ -557,6 +564,14 @@ module Rance
       // TODO
       this.abilities = this.template.abilities.slice(0);
     }
+    setInitialPassiveSkills()
+    {
+      // TODO
+      if (this.template.passiveSkills)
+      {
+        this.passiveSkills = this.template.passiveSkills.slice(0);
+      }
+    }
     getItemAbilities(): Templates.IAbilityTemplate[]
     {
       var itemAbilities: Templates.IAbilityTemplate[] = [];
@@ -608,10 +623,7 @@ module Rance
     getAllPassiveSkills(): Templates.IPassiveSkillTemplate[]
     {
       var allSkills: Templates.IPassiveSkillTemplate[] = [];
-      if (this.template.passiveSkills)
-      {
-        allSkills = allSkills.concat(this.template.passiveSkills)
-      }
+      allSkills = allSkills.concat(this.passiveSkills);
 
       allSkills = allSkills.concat(this.getItemPassiveSkills());
       allSkills = allSkills.concat(this.getStatusEffectPassiveSkills());
@@ -899,6 +911,11 @@ module Rance
       data.abilityTemplateTypes = this.abilities.map(function(ability: Templates.IAbilityTemplate)
       {
         return ability.type;
+      });
+      data.passiveSkillTemplateTypes = this.passiveSkills.map(function(
+        passiveSkill: Templates.IPassiveSkillTemplate)
+      {
+        return passiveSkill.type;
       });
 
       data.battleStats = {};
