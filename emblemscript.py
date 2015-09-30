@@ -11,7 +11,7 @@ def makeEmblemTemplate(name):
     'export var ' + encoded + ': Rance.Templates.ISubEmblemTemplate =\n'
     '{\n'
     '  key: "' + encoded + '",\n'
-    '  src: "' + name + '.svg",\n'
+    '  src: "img\/emblems\/' + name + '.svg",\n'
     '  coverage: [SubEmblemCoverage.both],\n'
     '  position: [SubEmblemPosition.both]\n'
     '}\n'

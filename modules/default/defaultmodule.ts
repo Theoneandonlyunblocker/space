@@ -61,30 +61,16 @@ module Rance
           loader.add("img\/battleEffects\/rocket.png");
           loader.add("explosion", "img\/battleEffects\/explosion.json");
 
-          var emblemFileNames =
-          [
-            "img\/emblems\/Flag_of_Edward_England.svg",
-            "img\/emblems\/Gomaisasa.svg",
-            "img\/emblems\/Japanese_Crest_Futatsudomoe_1.svg",
-            "img\/emblems\/Japanese_Crest_Hana_Hisi.svg",
-            "img\/emblems\/Japanese_Crest_Mitsumori_Janome.svg",
-            "img\/emblems\/Japanese_Crest_Oda_ka.svg",
-            "img\/emblems\/Japanese_crest_Tsuki_ni_Hoshi.svg",
-            "img\/emblems\/Japanese_Crest_Ume.svg",
-            "img\/emblems\/Mitsuuroko.svg",
-            "img\/emblems\/Musubi-kashiwa.svg",
-            "img\/emblems\/Takeda_mon.svg"
-          ];
-
-          emblemFileNames.forEach(function(fileName: string)
+          for (var templateKey in Templates.SubEmblems)
           {
+            var template = Templates.SubEmblems[templateKey];
             loader.add(
             {
-              url: fileName,
+              url: template.src,
               loadType: 2, // image
               xhrType: "png"
             });
-          });
+          }
 
           loader.load(function(loader: PIXI.loaders.Loader)
           {
@@ -95,11 +81,21 @@ module Rance
               cacheSpriteSheetAsImages(json, image);
             });
 
-            emblemFileNames.forEach(function(fileName: string)
+            for (var templateKey in Templates.SubEmblems)
             {
-              var image = loader.resources[fileName].data;
-              app.images[fileName] = image;
-            });
+              var template = Templates.SubEmblems[templateKey];
+              var image = loader.resources[template.src].data;
+              app.images[template.src] = image;
+              if (templateKey === "Flag_of_Edward_England") // TODO
+              {
+                delete Templates.SubEmblems[templateKey];
+              }
+              // IE fix
+              document.body.appendChild(image);
+              image.width = image.offsetWidth;
+              image.height = image.offsetHeight;
+              document.body.removeChild(image);
+            }
 
             onLoaded();
           });
