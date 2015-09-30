@@ -44,16 +44,6 @@ module Rance
               intelligence: 9,
               speed: 9
             },
-            abilities:
-            [
-              Abilities.debugAbility,
-              Abilities.rangedAttack,
-              Abilities.bombAttack,
-              Abilities.boardingHook,
-              Abilities.guardColumn,
-              Abilities.ranceAttack,
-              Abilities.standBy
-            ],
             abilityProbabilities:
             [
               {
@@ -122,11 +112,17 @@ module Rance
               intelligence: 0.4,
               speed: 1
             },
-            abilities:
+            abilityProbabilities:
             [
-              Abilities.rangedAttack,
-              Abilities.closeAttack,
-              Abilities.standBy
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.rangedAttack,
+                  Abilities.closeAttack,
+                  Abilities.standBy
+                ]
+              }
             ],
             unitDrawingFN: defaultUnitScene
           }
@@ -156,11 +152,17 @@ module Rance
               intelligence: 0.5,
               speed: 0.8
             },
-            abilities:
+            abilityProbabilities:
             [
-              Abilities.rangedAttack,
-              Abilities.bombAttack,
-              Abilities.standBy
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.rangedAttack,
+                  Abilities.bombAttack,
+                  Abilities.standBy
+                ]
+              }
             ],
             unitDrawingFN: defaultUnitScene
           }
@@ -190,11 +192,17 @@ module Rance
               intelligence: 0.7,
               speed: 0.6
             },
-            abilities:
+            abilityProbabilities:
             [
-              Abilities.rangedAttack,
-              Abilities.wholeRowAttack,
-              Abilities.standBy
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.rangedAttack,
+                  Abilities.wholeRowAttack,
+                  Abilities.standBy
+                ]
+              }
             ],
             unitDrawingFN: defaultUnitScene
           }
@@ -224,10 +232,16 @@ module Rance
               intelligence: 0.8,
               speed: 0.7
             },
-            abilities:
+            abilityProbabilities:
             [
-              Abilities.rangedAttack,
-              Abilities.standBy
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.rangedAttack,
+                  Abilities.standBy
+                ]
+              }
             ],
             unitDrawingFN: defaultUnitScene
           }
@@ -258,10 +272,16 @@ module Rance
               intelligence: 0.8,
               speed: 0.7
             },
-            abilities:
+            abilityProbabilities:
             [
-              Abilities.rangedAttack,
-              Abilities.standBy
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.rangedAttack,
+                  Abilities.standBy
+                ]
+              }
             ],
             unitDrawingFN: defaultUnitScene
           }
@@ -291,11 +311,17 @@ module Rance
               intelligence: 0.6,
               speed: 0.4
             },
-            abilities:
+            abilityProbabilities:
             [
-              Abilities.guardColumn,
-              Abilities.rangedAttack,
-              Abilities.standBy
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.rangedAttack,
+                  Abilities.guardColumn,
+                  Abilities.standBy
+                ]
+              }
             ],
             passiveSkills:
             [
@@ -330,10 +356,16 @@ module Rance
               intelligence: 0.8,
               speed: 0.7
             },
-            abilities:
+            abilityProbabilities:
             [
-              Abilities.rangedAttack,
-              Abilities.standBy
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.rangedAttack,
+                  Abilities.standBy
+                ]
+              }
             ],
             unitDrawingFN: defaultUnitScene
           }
@@ -363,10 +395,16 @@ module Rance
               intelligence: 0.8,
               speed: 0.7
             },
-            abilities:
+            abilityProbabilities:
             [
-              Abilities.rangedAttack,
-              Abilities.standBy
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.rangedAttack,
+                  Abilities.standBy
+                ]
+              }
             ],
             unitDrawingFN: defaultUnitScene
           }

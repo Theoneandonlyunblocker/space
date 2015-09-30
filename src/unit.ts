@@ -561,15 +561,7 @@ module Rance
     }
     setInitialAbilities()
     {
-      if (this.template.abilityProbabilities)
-      {
-        this.abilities = getItemsFromWeightedProbabilities(this.template.abilityProbabilities);
-      }
-      // TODO remove
-      else
-      {
-        this.abilities = this.template.abilities.slice(0);
-      }
+      this.abilities = getItemsFromWeightedProbabilities(this.template.abilityProbabilities);
     }
     setInitialPassiveSkills()
     {

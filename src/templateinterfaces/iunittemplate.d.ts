@@ -42,8 +42,7 @@ declare module Rance
         intelligence: number;
         speed: number;
       };
-      abilities: IAbilityTemplate[]; // TODO remove
-      abilityProbabilities?: IWeightedProbability<IAbilityTemplate>[];
+      abilityProbabilities: IWeightedProbability<IAbilityTemplate>[];
       passiveSkills?: IPassiveSkillTemplate[]; // TODO remove
       passiveSkillProbabilities?: IWeightedProbability<IPassiveSkillTemplate>[];
 

@@ -13630,12 +13630,7 @@ var Rance;
             return false;
         };
         Unit.prototype.setInitialAbilities = function () {
-            if (this.template.abilityProbabilities) {
-                this.abilities = Rance.getItemsFromWeightedProbabilities(this.template.abilityProbabilities);
-            }
-            else {
-                this.abilities = this.template.abilities.slice(0);
-            }
+            this.abilities = Rance.getItemsFromWeightedProbabilities(this.template.abilityProbabilities);
         };
         Unit.prototype.setInitialPassiveSkills = function () {
             if (this.template.passiveSkillProbabilities) {
@@ -21805,15 +21800,6 @@ var Rance;
                             intelligence: 9,
                             speed: 9
                         },
-                        abilities: [
-                            Templates.Abilities.debugAbility,
-                            Templates.Abilities.rangedAttack,
-                            Templates.Abilities.bombAttack,
-                            Templates.Abilities.boardingHook,
-                            Templates.Abilities.guardColumn,
-                            Templates.Abilities.ranceAttack,
-                            Templates.Abilities.standBy
-                        ],
                         abilityProbabilities: [
                             {
                                 flatProbability: 1,
@@ -21875,10 +21861,15 @@ var Rance;
                             intelligence: 0.4,
                             speed: 1
                         },
-                        abilities: [
-                            Templates.Abilities.rangedAttack,
-                            Templates.Abilities.closeAttack,
-                            Templates.Abilities.standBy
+                        abilityProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.rangedAttack,
+                                    Templates.Abilities.closeAttack,
+                                    Templates.Abilities.standBy
+                                ]
+                            }
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
@@ -21905,10 +21896,15 @@ var Rance;
                             intelligence: 0.5,
                             speed: 0.8
                         },
-                        abilities: [
-                            Templates.Abilities.rangedAttack,
-                            Templates.Abilities.bombAttack,
-                            Templates.Abilities.standBy
+                        abilityProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.rangedAttack,
+                                    Templates.Abilities.bombAttack,
+                                    Templates.Abilities.standBy
+                                ]
+                            }
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
@@ -21935,10 +21931,15 @@ var Rance;
                             intelligence: 0.7,
                             speed: 0.6
                         },
-                        abilities: [
-                            Templates.Abilities.rangedAttack,
-                            Templates.Abilities.wholeRowAttack,
-                            Templates.Abilities.standBy
+                        abilityProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.rangedAttack,
+                                    Templates.Abilities.wholeRowAttack,
+                                    Templates.Abilities.standBy
+                                ]
+                            }
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
@@ -21965,9 +21966,14 @@ var Rance;
                             intelligence: 0.8,
                             speed: 0.7
                         },
-                        abilities: [
-                            Templates.Abilities.rangedAttack,
-                            Templates.Abilities.standBy
+                        abilityProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.rangedAttack,
+                                    Templates.Abilities.standBy
+                                ]
+                            }
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
@@ -21995,9 +22001,14 @@ var Rance;
                             intelligence: 0.8,
                             speed: 0.7
                         },
-                        abilities: [
-                            Templates.Abilities.rangedAttack,
-                            Templates.Abilities.standBy
+                        abilityProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.rangedAttack,
+                                    Templates.Abilities.standBy
+                                ]
+                            }
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
@@ -22024,10 +22035,15 @@ var Rance;
                             intelligence: 0.6,
                             speed: 0.4
                         },
-                        abilities: [
-                            Templates.Abilities.guardColumn,
-                            Templates.Abilities.rangedAttack,
-                            Templates.Abilities.standBy
+                        abilityProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.rangedAttack,
+                                    Templates.Abilities.guardColumn,
+                                    Templates.Abilities.standBy
+                                ]
+                            }
                         ],
                         passiveSkills: [
                             Templates.PassiveSkills.initialGuard
@@ -22057,9 +22073,14 @@ var Rance;
                             intelligence: 0.8,
                             speed: 0.7
                         },
-                        abilities: [
-                            Templates.Abilities.rangedAttack,
-                            Templates.Abilities.standBy
+                        abilityProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.rangedAttack,
+                                    Templates.Abilities.standBy
+                                ]
+                            }
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
@@ -22086,9 +22107,14 @@ var Rance;
                             intelligence: 0.8,
                             speed: 0.7
                         },
-                        abilities: [
-                            Templates.Abilities.rangedAttack,
-                            Templates.Abilities.standBy
+                        abilityProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.rangedAttack,
+                                    Templates.Abilities.standBy
+                                ]
+                            }
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
