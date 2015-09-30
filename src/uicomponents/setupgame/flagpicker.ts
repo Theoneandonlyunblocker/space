@@ -80,13 +80,13 @@ module Rance
 
         var pirateTemplate =
         {
-          type: "pirateEmblem",
-          position: "both",
-          foregroundOnly: true,
-          imageSrc: "pirateEmblem.png"
+          key: "pirateEmblem",
+          src: "img\/emblems\/Flag_of_Edward_England.svg",
+          coverage: [SubEmblemCoverage.both],
+          position: [SubEmblemPosition.both]
         };
 
-        emblems.push(this.makeEmblemElement(pirateTemplate));
+        // emblems.push(this.makeEmblemElement(pirateTemplate));
 
 
         var imageInfoMessage: ReactDOMPlaceHolder;
