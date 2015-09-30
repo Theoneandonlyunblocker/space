@@ -22,6 +22,7 @@ module Rance
           {
             type: "cheatShip",
             displayName: "Debug Ship",
+            description: "sebug",
             archetype: UnitArchetypes.combat,
             families: [UnitFamilies.debug],
             sprite:
@@ -65,6 +66,7 @@ module Rance
           {
             type: "fighterSquadron",
             displayName: "Fighter Squadron",
+            description: "Fast and cheap unit with good attack and speed but low defence",
             archetype: UnitArchetypes.combat,
             families: [UnitFamilies.basic],
             sprite:
@@ -98,6 +100,7 @@ module Rance
           {
             type: "bomberSquadron",
             displayName: "Bomber Squadron",
+            description: "Can damage multiple targets with special bomb attack",
             archetype: UnitArchetypes.combat,
             families: [UnitFamilies.basic],
             sprite:
@@ -131,6 +134,7 @@ module Rance
           {
             type: "battleCruiser",
             displayName: "Battlecruiser",
+            description: "Strong combat ship with low speed",
             archetype: UnitArchetypes.combat,
             families: [UnitFamilies.basic],
             sprite:
@@ -164,6 +168,7 @@ module Rance
           {
             type: "scout",
             displayName: "Scout",
+            description: "Weak in combat, but has high vision and can reveal stealthy units and details of units in same star",
             archetype: UnitArchetypes.scouting,
             families: [UnitFamilies.basic],
             sprite:
@@ -196,6 +201,7 @@ module Rance
           {
             type: "stealthShip",
             displayName: "Stealth Ship",
+            description: "Weak ship that is undetectable by regular vision",
             archetype: UnitArchetypes.scouting,
             families: [UnitFamilies.debug],
             sprite:
@@ -229,6 +235,7 @@ module Rance
           {
             type: "shieldBoat",
             displayName: "Shield Boat",
+            description: "Great defence and ability to protect allies in same row",
             archetype: UnitArchetypes.defence,
             families: [UnitFamilies.basic],
             sprite:
@@ -267,6 +274,7 @@ module Rance
           {
             type: "redShip",
             displayName: "Red ship",
+            description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
             archetype: UnitArchetypes.utility,
             families: [UnitFamilies.red],
             sprite:
@@ -299,6 +307,7 @@ module Rance
           {
             type: "blueShip",
             displayName: "Blue ship",
+            description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
             archetype: UnitArchetypes.utility,
             families: [UnitFamilies.blue],
             sprite:

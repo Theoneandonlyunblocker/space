@@ -21,6 +21,8 @@ module Rance
       tempHoveredUnit: null,
       idGenerator: 0,
       MCTree: null,
+      battleStartStartTime: undefined,
+      battleEndStartTime: undefined,
 
       getInitialState: function()
       {
@@ -49,8 +51,14 @@ module Rance
         });
       },
 
+      componentDidMount: function()
+      {
+        this.battleStartStartTime = Date.now();
+      },
+
       endBattleStart: function()
       {
+        if (Date.now() < this.battleStartStartTime + 1000) return;
         this.setState(
         {
           battleIsStarting: false
@@ -400,6 +408,7 @@ module Rance
 
       finishBattle: function()
       {
+        if (Date.now() < this.battleEndStartTime + 1000) return;
         var battle = this.props.battle;
         if (!battle.ended) throw new Error();
 
@@ -545,6 +554,7 @@ module Rance
           ) : upperFooterElement;
 
         var overlayContainer: ReactDOMPlaceHolder = null;
+        var playerWonBattle: boolean = null;
         if (this.state.battleIsStarting)
         {
           overlayContainer = React.DOM.div(
@@ -555,11 +565,13 @@ module Rance
         }
         else if (battle.ended)
         {
+          if (!this.battleEndStartTime) this.battleEndStartTime = Date.now();
           overlayContainer = React.DOM.div(
           {
             className: "battle-start-overlay",
             onClick: this.finishBattle
           });
+          playerWonBattle = this.props.humanPlayer === battle.getVictor();
         }
 
         return(
@@ -594,7 +606,7 @@ module Rance
                   effectId: this.state.battleEffectId,
                   battleIsStarting: this.state.battleIsStarting,
                   battleHasEnded: battle.ended,
-                  playerWonBattle: this.props.humanPlayer === battle.victor,
+                  playerWonBattle: playerWonBattle,
                   player1: battle.side1Player,
                   player2: battle.side2Player
                 })

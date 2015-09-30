@@ -1777,6 +1777,8 @@ var Rance;
             tempHoveredUnit: null,
             idGenerator: 0,
             MCTree: null,
+            battleStartStartTime: undefined,
+            battleEndStartTime: undefined,
             getInitialState: function () {
                 return ({
                     abilityTooltip: {
@@ -1798,7 +1800,12 @@ var Rance;
                     battleIsStarting: true
                 });
             },
+            componentDidMount: function () {
+                this.battleStartStartTime = Date.now();
+            },
             endBattleStart: function () {
+                if (Date.now() < this.battleStartStartTime + 1000)
+                    return;
                 this.setState({
                     battleIsStarting: false
                 }, this.setBattleSceneUnits(this.state.hoveredUnit));
@@ -2036,6 +2043,8 @@ var Rance;
                 this.handleAbilityUse(move.ability, target, false);
             },
             finishBattle: function () {
+                if (Date.now() < this.battleEndStartTime + 1000)
+                    return;
                 var battle = this.props.battle;
                 if (!battle.ended)
                     throw new Error();
@@ -2134,6 +2143,7 @@ var Rance;
                 var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
                     React.addons.CSSTransitionGroup({ transitionName: "battle-upper-footer" }, upperFooterElement) : upperFooterElement;
                 var overlayContainer = null;
+                var playerWonBattle = null;
                 if (this.state.battleIsStarting) {
                     overlayContainer = React.DOM.div({
                         className: "battle-start-overlay",
@@ -2141,10 +2151,13 @@ var Rance;
                     });
                 }
                 else if (battle.ended) {
+                    if (!this.battleEndStartTime)
+                        this.battleEndStartTime = Date.now();
                     overlayContainer = React.DOM.div({
                         className: "battle-start-overlay",
                         onClick: this.finishBattle
                     });
+                    playerWonBattle = this.props.humanPlayer === battle.getVictor();
                 }
                 return (UIComponents.BattleBackground({
                     renderer: this.props.renderer,
@@ -2166,7 +2179,7 @@ var Rance;
                     effectId: this.state.battleEffectId,
                     battleIsStarting: this.state.battleIsStarting,
                     battleHasEnded: battle.ended,
-                    playerWonBattle: this.props.humanPlayer === battle.victor,
+                    playerWonBattle: playerWonBattle,
                     player1: battle.side1Player,
                     player2: battle.side2Player
                 })), React.DOM.div({
@@ -13870,7 +13883,8 @@ var Rance;
                 }
                 var props = {
                     className: "buildable-item buildable-ship",
-                    onClick: this.props.handleClick
+                    onClick: this.props.handleClick,
+                    title: this.props.template.description
                 };
                 if (player.money < this.props.buildCost) {
                     props.onClick = null;
@@ -21691,6 +21705,7 @@ var Rance;
                     Units.cheatShip = {
                         type: "cheatShip",
                         displayName: "Debug Ship",
+                        description: "sebug",
                         archetype: Templates.UnitArchetypes.combat,
                         families: [Templates.UnitFamilies.debug],
                         sprite: {
@@ -21729,6 +21744,7 @@ var Rance;
                     Units.fighterSquadron = {
                         type: "fighterSquadron",
                         displayName: "Fighter Squadron",
+                        description: "Fast and cheap unit with good attack and speed but low defence",
                         archetype: Templates.UnitArchetypes.combat,
                         families: [Templates.UnitFamilies.basic],
                         sprite: {
@@ -21758,6 +21774,7 @@ var Rance;
                     Units.bomberSquadron = {
                         type: "bomberSquadron",
                         displayName: "Bomber Squadron",
+                        description: "Can damage multiple targets with special bomb attack",
                         archetype: Templates.UnitArchetypes.combat,
                         families: [Templates.UnitFamilies.basic],
                         sprite: {
@@ -21787,6 +21804,7 @@ var Rance;
                     Units.battleCruiser = {
                         type: "battleCruiser",
                         displayName: "Battlecruiser",
+                        description: "Strong combat ship with low speed",
                         archetype: Templates.UnitArchetypes.combat,
                         families: [Templates.UnitFamilies.basic],
                         sprite: {
@@ -21816,6 +21834,7 @@ var Rance;
                     Units.scout = {
                         type: "scout",
                         displayName: "Scout",
+                        description: "Weak in combat, but has high vision and can reveal stealthy units and details of units in same star",
                         archetype: Templates.UnitArchetypes.scouting,
                         families: [Templates.UnitFamilies.basic],
                         sprite: {
@@ -21844,6 +21863,7 @@ var Rance;
                     Units.stealthShip = {
                         type: "stealthShip",
                         displayName: "Stealth Ship",
+                        description: "Weak ship that is undetectable by regular vision",
                         archetype: Templates.UnitArchetypes.scouting,
                         families: [Templates.UnitFamilies.debug],
                         sprite: {
@@ -21873,6 +21893,7 @@ var Rance;
                     Units.shieldBoat = {
                         type: "shieldBoat",
                         displayName: "Shield Boat",
+                        description: "Great defence and ability to protect allies in same row",
                         archetype: Templates.UnitArchetypes.defence,
                         families: [Templates.UnitFamilies.basic],
                         sprite: {
@@ -21905,6 +21926,7 @@ var Rance;
                     Units.redShip = {
                         type: "redShip",
                         displayName: "Red ship",
+                        description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
                         archetype: Templates.UnitArchetypes.utility,
                         families: [Templates.UnitFamilies.red],
                         sprite: {
@@ -21933,6 +21955,7 @@ var Rance;
                     Units.blueShip = {
                         type: "blueShip",
                         displayName: "Blue ship",
+                        description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
                         archetype: Templates.UnitArchetypes.utility,
                         families: [Templates.UnitFamilies.blue],
                         sprite: {

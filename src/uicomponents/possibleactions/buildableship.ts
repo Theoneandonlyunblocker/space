@@ -50,7 +50,8 @@ module Rance
         var props: any =
         {
           className: "buildable-item buildable-ship",
-          onClick: this.props.handleClick
+          onClick: this.props.handleClick,
+          title: this.props.template.description
         }
         if (player.money < this.props.buildCost)
         {

@@ -13,6 +13,7 @@ declare module Rance
     {
       type: string;
       displayName: string;
+      description: string;
       sprite: ISpriteTemplate;
       isSquadron: boolean;
       buildCost: number;
