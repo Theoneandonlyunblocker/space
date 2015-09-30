@@ -59,6 +59,8 @@ module Rance
       }
     };
 
+    abilities: Templates.IAbilityTemplate[] = [];
+
     displayFlags:
     {
       isAnnihilated: boolean;
@@ -151,6 +153,11 @@ module Rance
       this.baseAttributes = extendObject(data.baseAttributes);
       this.attributes = extendObject(this.baseAttributes);
 
+      this.abilities = data.abilityTemplateTypes.map(function(abilityType: string)
+      {
+        return app.moduleData.Templates.Abilities[abilityType];
+      });
+
       var battleStats: any = {};
 
       battleStats.moveDelay = data.battleStats.moveDelay;
@@ -187,6 +194,7 @@ module Rance
 
       this.maxMovePoints = this.template.maxMovePoints;
       this.resetMovePoints();
+      this.setInitialAbilities();
 
       this.timesActedThisTurn = 0;
     }
@@ -544,6 +552,11 @@ module Rance
 
       return false;
     }
+    setInitialAbilities()
+    {
+      // TODO
+      this.abilities = this.template.abilities.slice(0);
+    }
     getItemAbilities(): Templates.IAbilityTemplate[]
     {
       var itemAbilities: Templates.IAbilityTemplate[] = [];
@@ -558,11 +571,7 @@ module Rance
     }
     getAllAbilities(): Templates.IAbilityTemplate[]
     {
-      var abilities = this.template.abilities;
-
-      abilities = abilities.concat(this.getItemAbilities());
-
-      return abilities;
+      return this.abilities.concat(this.getItemAbilities());
     }
     getItemPassiveSkills(): Templates.IPassiveSkillTemplate[]
     {
@@ -887,6 +896,10 @@ module Rance
       data.timesActedThisTurn = this.timesActedThisTurn;
 
       data.baseAttributes = extendObject(this.baseAttributes);
+      data.abilityTemplateTypes = this.abilities.map(function(ability: Templates.IAbilityTemplate)
+      {
+        return ability.type;
+      });
 
       data.battleStats = {};
       data.battleStats.moveDelay = this.battleStats.moveDelay;

@@ -13221,6 +13221,7 @@ var Rance;
 (function (Rance) {
     var Unit = (function () {
         function Unit(template, id, data) {
+            this.abilities = [];
             this.items = {
                 low: null,
                 mid: null,
@@ -13278,6 +13279,9 @@ var Rance;
             this.timesActedThisTurn = data.timesActedThisTurn;
             this.baseAttributes = Rance.extendObject(data.baseAttributes);
             this.attributes = Rance.extendObject(this.baseAttributes);
+            this.abilities = data.abilityTemplateTypes.map(function (abilityType) {
+                return app.moduleData.Templates.Abilities[abilityType];
+            });
             var battleStats = {};
             battleStats.moveDelay = data.battleStats.moveDelay;
             battleStats.side = data.battleStats.side;
@@ -13306,6 +13310,7 @@ var Rance;
             this.resetBattleStats();
             this.maxMovePoints = this.template.maxMovePoints;
             this.resetMovePoints();
+            this.setInitialAbilities();
             this.timesActedThisTurn = 0;
         };
         Unit.prototype.setBaseHealth = function () {
@@ -13567,6 +13572,10 @@ var Rance;
             }
             return false;
         };
+        Unit.prototype.setInitialAbilities = function () {
+            // TODO
+            this.abilities = this.template.abilities.slice(0);
+        };
         Unit.prototype.getItemAbilities = function () {
             var itemAbilities = [];
             for (var slot in this.items) {
@@ -13577,9 +13586,7 @@ var Rance;
             return itemAbilities;
         };
         Unit.prototype.getAllAbilities = function () {
-            var abilities = this.template.abilities;
-            abilities = abilities.concat(this.getItemAbilities());
-            return abilities;
+            return this.abilities.concat(this.getItemAbilities());
         };
         Unit.prototype.getItemPassiveSkills = function () {
             var itemPassiveSkills = [];
@@ -13815,6 +13822,9 @@ var Rance;
             data.maxMovePoints = this.maxMovePoints;
             data.timesActedThisTurn = this.timesActedThisTurn;
             data.baseAttributes = Rance.extendObject(this.baseAttributes);
+            data.abilityTemplateTypes = this.abilities.map(function (ability) {
+                return ability.type;
+            });
             data.battleStats = {};
             data.battleStats.moveDelay = this.battleStats.moveDelay;
             data.battleStats.side = this.battleStats.side;

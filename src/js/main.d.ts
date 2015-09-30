@@ -1895,6 +1895,7 @@ declare module Rance {
                 timesInterrupted: number;
             };
         };
+        abilities: Templates.IAbilityTemplate[];
         displayFlags: {
             isAnnihilated: boolean;
         };
@@ -1949,6 +1950,7 @@ declare module Rance {
         getAttributesWithEffects(): any;
         updateCachedAttributes(): void;
         removeItemAtSlot(slot: string): boolean;
+        setInitialAbilities(): void;
         getItemAbilities(): Templates.IAbilityTemplate[];
         getAllAbilities(): Templates.IAbilityTemplate[];
         getItemPassiveSkills(): Templates.IPassiveSkillTemplate[];
