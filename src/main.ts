@@ -59,8 +59,8 @@ module Rance
 
       this.seed = "" + Math.random();
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
-      var boundMakeApp = this.makeApp.bind(this);
 
+      var boundMakeApp = this.makeApp.bind(this);
       onDOMLoaded(function()
       {
         var moduleLoader = self.moduleLoader = new ModuleLoader();
@@ -74,7 +74,7 @@ module Rance
     }
     makeApp()
     {
-      var startTime = new Date().getTime();
+      var startTime = Date.now();
 
       Options = extendObject(defaultOptions);
       loadOptions();
@@ -96,7 +96,7 @@ module Rance
 
       this.reactUI.render();
 
-      console.log("Init in " + (new Date().getTime() - startTime) + " ms");
+      console.log("Init in " + (Date.now() - startTime) + " ms");
     }
     destroy()
     {
@@ -158,7 +158,6 @@ module Rance
 
       this.reactUI.switchScene("galaxyMap");
     }
-
     makeGameFromSetup(map: GalaxyMap, players: Player[], independents: Player[])
     {
       this.destroy();
@@ -174,7 +173,6 @@ module Rance
 
       this.reactUI.switchScene("galaxyMap");
     }
-
     makeGame()
     {
       var playerData = this.makePlayers();
