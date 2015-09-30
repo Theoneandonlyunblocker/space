@@ -1522,8 +1522,15 @@ var Rance;
             displayName: "BattleScene",
             mixins: [React.addons.PureRenderMixin],
             cachedSFXWidth: null,
+            componentWillUpdate: function (newProps) {
+                if (!this.props.battleHasEnded && newProps.battleHasEnded) {
+                    this.clearBattleOverlay();
+                }
+            },
             componentDidUpdate: function (oldProps) {
-                if (this.props.effectSFX && this.props.effectSFX.battleOverlay) {
+                if (this.props.battleHasEnded) {
+                }
+                else if (this.props.effectSFX && this.props.effectSFX.battleOverlay) {
                     if (oldProps.effectId !== this.props.effectId) {
                         this.drawBattleOverlay();
                     }
@@ -1565,17 +1572,15 @@ var Rance;
                 }
                 return leftoverWidth2;
             },
-            clearBattleOverlay: function () {
-                var container = this.refs.overlay.getDOMNode();
+            clearBattleOverlay: function (container) {
+                var container = container || this.refs.overlay.getDOMNode();
                 if (container.firstChild) {
                     container.removeChild(container.firstChild);
                 }
             },
             drawBattleOverlay: function () {
                 var container = this.refs.overlay.getDOMNode();
-                if (container.firstChild) {
-                    container.removeChild(container.firstChild);
-                }
+                this.clearBattleOverlay(container);
                 var bounds = this.getSceneBounds();
                 var battleOverlay = this.props.effectSFX.battleOverlay({
                     user: this.props.unit1IsActive ? this.props.unit1 : this.props.unit2,
@@ -1601,6 +1606,12 @@ var Rance;
                         unit2OverlayFN = this.props.effectSFX.userOverlay;
                         unit1OverlayFN = this.props.effectSFX.enemyOverlay;
                     }
+                }
+                var overlayElement = null;
+                if (this.props.battleHasEnded) {
+                    overlayElement = React.DOM.div({
+                        className: "battle-end-overlay"
+                    }, this.props.playerWonBattle ? "Victory" : "Defeat");
                 }
                 return (React.DOM.div({
                     className: "battle-scene-wrapper",
@@ -1631,7 +1642,7 @@ var Rance;
                 })), React.DOM.div({
                     className: "battle-scene-overlay-container",
                     ref: "overlay"
-                }, null // battle overlay SFX drawn on canvas
+                }, overlayElement // battle overlay SFX drawn on canvas or battle end gfx
                 ))));
             }
         });
@@ -2122,6 +2133,19 @@ var Rance;
                 // so just disable it on firefox for now
                 var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
                     React.addons.CSSTransitionGroup({ transitionName: "battle-upper-footer" }, upperFooterElement) : upperFooterElement;
+                var overlayContainer = null;
+                if (this.state.battleIsStarting) {
+                    overlayContainer = React.DOM.div({
+                        className: "battle-start-overlay",
+                        onClick: this.endBattleStart
+                    });
+                }
+                else if (battle.ended) {
+                    overlayContainer = React.DOM.div({
+                        className: "battle-start-overlay",
+                        onClick: this.finishBattle
+                    });
+                }
                 return (UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     backgroundSeed: this.props.battle.battleData.location.getSeed(),
@@ -2129,10 +2153,7 @@ var Rance;
                 }, React.DOM.div({
                     className: "battle-container",
                     ref: "battleContainer"
-                }, !this.state.battleIsStarting ? null : React.DOM.div({
-                    className: "battle-start-overlay",
-                    onClick: this.endBattleStart
-                }, null), React.DOM.div({
+                }, overlayContainer, React.DOM.div({
                     className: "battle-upper"
                 }, UIComponents.BattleScore({
                     battle: battle
@@ -2144,6 +2165,8 @@ var Rance;
                     unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
                     effectId: this.state.battleEffectId,
                     battleIsStarting: this.state.battleIsStarting,
+                    battleHasEnded: battle.ended,
+                    playerWonBattle: this.props.humanPlayer === battle.victor,
                     player1: battle.side1Player,
                     player2: battle.side2Player
                 })), React.DOM.div({
@@ -2177,10 +2200,7 @@ var Rance;
                     activeEffectUnits: activeEffectUnits
                 }), abilityTooltip, this.state.playingBattleEffect ?
                     React.DOM.div({ className: "battle-fleets-darken" }, null) :
-                    null), battle.ended ? React.DOM.button({
-                    className: "end-battle-button",
-                    onClick: this.finishBattle
-                }, "end") : null)));
+                    null))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));

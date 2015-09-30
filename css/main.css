@@ -323,6 +323,15 @@ progress::-webkit-progress-value {
   position: absolute;
   bottom: 0;
 }
+.battle-end-overlay {
+  width: 100%;
+  height: 100%;
+  color: #eeeeec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8em;
+}
 .battle-scene-units-container {
   display: flex;
   justify-content: space-between;

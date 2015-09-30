@@ -10,9 +10,20 @@ module Rance
       mixins: [React.addons.PureRenderMixin],
       cachedSFXWidth: null,
 
+      componentWillUpdate: function(newProps: any)
+      {
+        if (!this.props.battleHasEnded && newProps.battleHasEnded)
+        {
+          this.clearBattleOverlay();
+        }
+      },
       componentDidUpdate: function(oldProps: any)
       {
-        if (this.props.effectSFX && this.props.effectSFX.battleOverlay)
+        if (this.props.battleHasEnded)
+        {
+          
+        }
+        else if (this.props.effectSFX && this.props.effectSFX.battleOverlay)
         {
           if (oldProps.effectId !== this.props.effectId)
           {
@@ -74,22 +85,18 @@ module Rance
 
         return leftoverWidth2;
       },
-      clearBattleOverlay: function()
+      clearBattleOverlay: function(container?: Node)
       {
-        var container = this.refs.overlay.getDOMNode();
+        var container = container || <Node> this.refs.overlay.getDOMNode();
         if (container.firstChild)
         {
           container.removeChild(container.firstChild);
         }
       },
-
       drawBattleOverlay: function()
       {
         var container = this.refs.overlay.getDOMNode();
-        if (container.firstChild)
-        {
-          container.removeChild(container.firstChild);
-        }
+        this.clearBattleOverlay(container);
 
         var bounds = this.getSceneBounds();
         var battleOverlay = this.props.effectSFX.battleOverlay(
@@ -125,6 +132,17 @@ module Rance
 
             unit1OverlayFN = this.props.effectSFX.enemyOverlay;
           }
+        }
+
+        var overlayElement: ReactComponentPlaceHolder = null;
+        if (this.props.battleHasEnded)
+        {
+          overlayElement = React.DOM.div(
+          {
+            className: "battle-end-overlay"
+          },
+            this.props.playerWonBattle ? "Victory" : "Defeat"
+          )
         }
 
         return(
@@ -176,7 +194,7 @@ module Rance
                 className: "battle-scene-overlay-container",
                 ref: "overlay"
               },
-                null // battle overlay SFX drawn on canvas
+                overlayElement // battle overlay SFX drawn on canvas or battle end gfx
               )
             )
           )

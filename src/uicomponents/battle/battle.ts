@@ -544,6 +544,24 @@ module Rance
             upperFooterElement
           ) : upperFooterElement;
 
+        var overlayContainer: ReactDOMPlaceHolder = null;
+        if (this.state.battleIsStarting)
+        {
+          overlayContainer = React.DOM.div(
+          {
+            className: "battle-start-overlay",
+            onClick: this.endBattleStart
+          });
+        }
+        else if (battle.ended)
+        {
+          overlayContainer = React.DOM.div(
+          {
+            className: "battle-start-overlay",
+            onClick: this.finishBattle
+          });
+        }
+
         return(
           UIComponents.BattleBackground(
           {
@@ -556,13 +574,7 @@ module Rance
               className: "battle-container",
               ref: "battleContainer"
             },
-              !this.state.battleIsStarting ? null : React.DOM.div(
-              {
-                className: "battle-start-overlay",
-                onClick: this.endBattleStart
-              },
-                null
-              ),
+              overlayContainer,
               React.DOM.div(
               {
                 className: "battle-upper"
@@ -581,6 +593,8 @@ module Rance
                   unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
                   effectId: this.state.battleEffectId,
                   battleIsStarting: this.state.battleIsStarting,
+                  battleHasEnded: battle.ended,
+                  playerWonBattle: this.props.humanPlayer === battle.victor,
                   player1: battle.side1Player,
                   player2: battle.side2Player
                 })
@@ -626,12 +640,7 @@ module Rance
                 this.state.playingBattleEffect ?
                   React.DOM.div({className: "battle-fleets-darken"}, null):
                   null
-              ),
-              battle.ended ? React.DOM.button(
-              {
-                className: "end-battle-button",
-                onClick: this.finishBattle
-              }, "end") : null
+              )
             )
           )
         );
