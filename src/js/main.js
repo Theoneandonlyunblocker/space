@@ -15126,12 +15126,12 @@ var Rance;
                     emblems.push(this.makeEmblemElement(template));
                 }
                 var pirateTemplate = {
-                    type: "pirateEmblem",
-                    position: "both",
-                    foregroundOnly: true,
-                    imageSrc: "pirateEmblem.png"
+                    key: "pirateEmblem",
+                    src: "img\/emblems\/Flag_of_Edward_England.svg",
+                    coverage: [Rance.SubEmblemCoverage.both],
+                    position: [Rance.SubEmblemPosition.both]
                 };
-                emblems.push(this.makeEmblemElement(pirateTemplate));
+                // emblems.push(this.makeEmblemElement(pirateTemplate));
                 var imageInfoMessage;
                 if (this.props.hasImageFailMessage) {
                     imageInfoMessage =
@@ -21275,9 +21275,63 @@ var Rance;
             (function (Templates) {
                 var SubEmblems;
                 (function (SubEmblems) {
+                    SubEmblems.Aguila_explayada_2 = {
+                        key: "Aguila_explayada_2",
+                        src: "img\/emblems\/Aguila_explayada_2.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Berliner_Baer = {
+                        key: "Berliner_Baer",
+                        src: "img\/emblems\/Berliner_Baer.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Cles_en_sautoir = {
+                        key: "Cles_en_sautoir",
+                        src: "img\/emblems\/Cles_en_sautoir.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Coa_Illustration_Cross_Bowen_3 = {
+                        key: "Coa_Illustration_Cross_Bowen_3",
+                        src: "img\/emblems\/Coa_Illustration_Cross_Bowen_3.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Coa_Illustration_Cross_Malte_1 = {
+                        key: "Coa_Illustration_Cross_Malte_1",
+                        src: "img\/emblems\/Coa_Illustration_Cross_Malte_1.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Coa_Illustration_Elements_Planet_Moon = {
+                        key: "Coa_Illustration_Elements_Planet_Moon",
+                        src: "img\/emblems\/Coa_Illustration_Elements_Planet_Moon.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Couronne_heraldique_svg = {
+                        key: "Couronne_heraldique_svg",
+                        src: "img\/emblems\/Couronne_heraldique_svg.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
                     SubEmblems.Gomaisasa = {
                         key: "Gomaisasa",
                         src: "img\/emblems\/Gomaisasa.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Gryphon_Segreant = {
+                        key: "Gryphon_Segreant",
+                        src: "img\/emblems\/Gryphon_Segreant.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Heraldic_pentacle = {
+                        key: "Heraldic_pentacle",
+                        src: "img\/emblems\/Heraldic_pentacle.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
@@ -21290,6 +21344,12 @@ var Rance;
                     SubEmblems.Japanese_Crest_Hana_Hisi = {
                         key: "Japanese_Crest_Hana_Hisi",
                         src: "img\/emblems\/Japanese_Crest_Hana_Hisi.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Japanese_Crest_Mitsumori_Janome = {
+                        key: "Japanese_Crest_Mitsumori_Janome",
+                        src: "img\/emblems\/Japanese_Crest_Mitsumori_Janome.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
@@ -21326,6 +21386,12 @@ var Rance;
                     SubEmblems.Takeda_mon = {
                         key: "Takeda_mon",
                         src: "img\/emblems\/Takeda_mon.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.Flag_of_Edward_England = {
+                        key: "Flag_of_Edward_England",
+                        src: "img\/emblems\/Flag_of_Edward_England.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
@@ -22527,36 +22593,33 @@ var Rance;
                     loader.add("img\/fowTexture.png");
                     loader.add("img\/battleEffects\/rocket.png");
                     loader.add("explosion", "img\/battleEffects\/explosion.json");
-                    var emblemFileNames = [
-                        "img\/emblems\/Flag_of_Edward_England.svg",
-                        "img\/emblems\/Gomaisasa.svg",
-                        "img\/emblems\/Japanese_Crest_Futatsudomoe_1.svg",
-                        "img\/emblems\/Japanese_Crest_Hana_Hisi.svg",
-                        "img\/emblems\/Japanese_Crest_Mitsumori_Janome.svg",
-                        "img\/emblems\/Japanese_Crest_Oda_ka.svg",
-                        "img\/emblems\/Japanese_crest_Tsuki_ni_Hoshi.svg",
-                        "img\/emblems\/Japanese_Crest_Ume.svg",
-                        "img\/emblems\/Mitsuuroko.svg",
-                        "img\/emblems\/Musubi-kashiwa.svg",
-                        "img\/emblems\/Takeda_mon.svg"
-                    ];
-                    emblemFileNames.forEach(function (fileName) {
+                    for (var templateKey in DefaultModule.Templates.SubEmblems) {
+                        var template = DefaultModule.Templates.SubEmblems[templateKey];
                         loader.add({
-                            url: fileName,
+                            url: template.src,
                             loadType: 2,
                             xhrType: "png"
                         });
-                    });
+                    }
                     loader.load(function (loader) {
                         ["units", "buildings"].forEach(function (spriteSheetName) {
                             var json = loader.resources[spriteSheetName].data;
                             var image = loader.resources[spriteSheetName + "_image"].data;
                             Rance.cacheSpriteSheetAsImages(json, image);
                         });
-                        emblemFileNames.forEach(function (fileName) {
-                            var image = loader.resources[fileName].data;
-                            app.images[fileName] = image;
-                        });
+                        for (var templateKey in DefaultModule.Templates.SubEmblems) {
+                            var template = DefaultModule.Templates.SubEmblems[templateKey];
+                            var image = loader.resources[template.src].data;
+                            app.images[template.src] = image;
+                            if (templateKey === "Flag_of_Edward_England") {
+                                delete DefaultModule.Templates.SubEmblems[templateKey];
+                            }
+                            // IE fix
+                            document.body.appendChild(image);
+                            image.width = image.offsetWidth;
+                            image.height = image.offsetHeight;
+                            document.body.removeChild(image);
+                        }
                         onLoaded();
                     });
                 },
@@ -23143,7 +23206,7 @@ var Rance;
             });
         }
         App.prototype.makeApp = function () {
-            var startTime = new Date().getTime();
+            var startTime = Date.now();
             Rance.Options = Rance.extendObject(Rance.defaultOptions);
             Rance.loadOptions();
             Rance.setAllDynamicTemplateProperties();
@@ -23157,7 +23220,7 @@ var Rance;
                 this.hookUI();
             }
             this.reactUI.render();
-            console.log("Init in " + (new Date().getTime() - startTime) + " ms");
+            console.log("Init in " + (Date.now() - startTime) + " ms");
         };
         App.prototype.destroy = function () {
             if (this.game) {

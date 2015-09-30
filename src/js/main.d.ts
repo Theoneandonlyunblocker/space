@@ -3007,15 +3007,26 @@ declare module Rance {
         module DefaultModule {
             module Templates {
                 module SubEmblems {
+                    var Aguila_explayada_2: Rance.Templates.ISubEmblemTemplate;
+                    var Berliner_Baer: Rance.Templates.ISubEmblemTemplate;
+                    var Cles_en_sautoir: Rance.Templates.ISubEmblemTemplate;
+                    var Coa_Illustration_Cross_Bowen_3: Rance.Templates.ISubEmblemTemplate;
+                    var Coa_Illustration_Cross_Malte_1: Rance.Templates.ISubEmblemTemplate;
+                    var Coa_Illustration_Elements_Planet_Moon: Rance.Templates.ISubEmblemTemplate;
+                    var Couronne_heraldique_svg: Rance.Templates.ISubEmblemTemplate;
                     var Gomaisasa: Rance.Templates.ISubEmblemTemplate;
+                    var Gryphon_Segreant: Rance.Templates.ISubEmblemTemplate;
+                    var Heraldic_pentacle: Rance.Templates.ISubEmblemTemplate;
                     var Japanese_Crest_Futatsudomoe_1: Rance.Templates.ISubEmblemTemplate;
                     var Japanese_Crest_Hana_Hisi: Rance.Templates.ISubEmblemTemplate;
+                    var Japanese_Crest_Mitsumori_Janome: Rance.Templates.ISubEmblemTemplate;
                     var Japanese_Crest_Oda_ka: Rance.Templates.ISubEmblemTemplate;
                     var Japanese_crest_Tsuki_ni_Hoshi: Rance.Templates.ISubEmblemTemplate;
                     var Japanese_Crest_Ume: Rance.Templates.ISubEmblemTemplate;
                     var Mitsuuroko: Rance.Templates.ISubEmblemTemplate;
                     var Musubikashiwa: Rance.Templates.ISubEmblemTemplate;
                     var Takeda_mon: Rance.Templates.ISubEmblemTemplate;
+                    var Flag_of_Edward_England: Rance.Templates.ISubEmblemTemplate;
                 }
             }
         }
