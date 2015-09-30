@@ -561,13 +561,24 @@ module Rance
     }
     setInitialAbilities()
     {
-      // TODO
-      this.abilities = this.template.abilities.slice(0);
+      if (this.template.abilityProbabilities)
+      {
+        this.abilities = getItemsFromWeightedProbabilities(this.template.abilityProbabilities);
+      }
+      // TODO remove
+      else
+      {
+        this.abilities = this.template.abilities.slice(0);
+      }
     }
     setInitialPassiveSkills()
     {
-      // TODO
-      if (this.template.passiveSkills)
+      if (this.template.passiveSkillProbabilities)
+      {
+        this.passiveSkills = getItemsFromWeightedProbabilities(this.template.passiveSkillProbabilities);
+      }
+      // TODO remove
+      else if (this.template.passiveSkills)
       {
         this.passiveSkills = this.template.passiveSkills.slice(0);
       }

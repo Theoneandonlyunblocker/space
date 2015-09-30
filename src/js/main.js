@@ -13630,12 +13630,18 @@ var Rance;
             return false;
         };
         Unit.prototype.setInitialAbilities = function () {
-            // TODO
-            this.abilities = this.template.abilities.slice(0);
+            if (this.template.abilityProbabilities) {
+                this.abilities = Rance.getItemsFromWeightedProbabilities(this.template.abilityProbabilities);
+            }
+            else {
+                this.abilities = this.template.abilities.slice(0);
+            }
         };
         Unit.prototype.setInitialPassiveSkills = function () {
-            // TODO
-            if (this.template.passiveSkills) {
+            if (this.template.passiveSkillProbabilities) {
+                this.passiveSkills = Rance.getItemsFromWeightedProbabilities(this.template.passiveSkillProbabilities);
+            }
+            else if (this.template.passiveSkills) {
                 this.passiveSkills = this.template.passiveSkills.slice(0);
             }
         };
