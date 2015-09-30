@@ -9,6 +9,7 @@ declare module Rance
       coverage: SubEmblemCoverage[];
       position: SubEmblemPosition[];
       onlyCombineWith?: string[];
+      disallowRandomGeneration?: boolean;
     }
   }
 }

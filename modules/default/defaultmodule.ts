@@ -86,10 +86,7 @@ module Rance
               var template = Templates.SubEmblems[templateKey];
               var image = loader.resources[template.src].data;
               app.images[template.src] = image;
-              if (templateKey === "Flag_of_Edward_England") // TODO
-              {
-                delete Templates.SubEmblems[templateKey];
-              }
+
               // IE fix
               document.body.appendChild(image);
               image.width = image.offsetWidth;

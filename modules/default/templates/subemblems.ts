@@ -147,7 +147,8 @@ module Rance
             key: "Flag_of_Edward_England",
             src: "img\/emblems\/Flag_of_Edward_England.svg",
             coverage: [SubEmblemCoverage.both],
-            position: [SubEmblemPosition.both]
+            position: [SubEmblemPosition.both],
+            disallowRandomGeneration: true
           }
         }
       }

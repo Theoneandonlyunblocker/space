@@ -56,7 +56,10 @@ module Rance
       {
         for (var key in app.moduleData.Templates.SubEmblems)
         {
-          possibleTemplates.push(app.moduleData.Templates.SubEmblems[key]);
+          if (!app.moduleData.Templates.SubEmblems[key].disallowRandomGeneration)
+          {
+            possibleTemplates.push(app.moduleData.Templates.SubEmblems[key]);
+          }
         }
       }
       else
@@ -66,7 +69,7 @@ module Rance
           for (var key in app.moduleData.Templates.SubEmblems)
           {
             var template = app.moduleData.Templates.SubEmblems[key];
-            if (template.coverage.indexOf(SubEmblemCoverage.outer) !== -1)
+            if (!template.disallowRandomGeneration && template.coverage.indexOf(SubEmblemCoverage.outer) !== -1)
             {
               possibleTemplates.push(template);
             }
