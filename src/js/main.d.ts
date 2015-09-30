@@ -919,10 +919,7 @@ declare module Rance {
         customImage: string;
         private _customImageToRender;
         cachedCanvases: {
-            [sizeString: string]: {
-                canvas: HTMLCanvasElement;
-                dataURL: string;
-            };
+            [sizeString: string]: HTMLCanvasElement;
         };
         constructor(props: {
             width: number;
@@ -937,10 +934,7 @@ declare module Rance {
         setForegroundEmblem(emblem: Emblem): void;
         setBackgroundEmblem(emblem: Emblem): void;
         setCustomImage(imageSrc: string): void;
-        getCanvas(width: number, height: number, stretch?: boolean, useCache?: boolean): {
-            canvas: HTMLCanvasElement;
-            dataURL: string;
-        };
+        getCanvas(width: number, height: number, stretch?: boolean, useCache?: boolean): HTMLCanvasElement;
         draw(width?: number, height?: number, stretch?: boolean): HTMLCanvasElement;
         serialize(): any;
     }

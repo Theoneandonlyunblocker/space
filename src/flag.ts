@@ -21,11 +21,7 @@ module Rance
 
     cachedCanvases:
     {
-      [sizeString: string]:
-      {
-        canvas: HTMLCanvasElement;
-        dataURL: string;
-      }
+      [sizeString: string]: HTMLCanvasElement;
     } = {};
 
     constructor(props:
@@ -177,11 +173,7 @@ module Rance
         if (!this.cachedCanvases[sizeString])
         {
           var canvas = this.draw(width, height, stretch);
-          this.cachedCanvases[sizeString] =
-          {
-            canvas: canvas,
-            dataURL: canvas.toDataURL()
-          }
+          this.cachedCanvases[sizeString] = canvas;
         }
 
         return this.cachedCanvases[sizeString];
@@ -189,11 +181,7 @@ module Rance
       else
       {
         var canvas = this.draw(width, height, stretch);
-        return(
-        {
-          canvas: canvas,
-          dataURL: canvas.toDataURL()
-        });
+        return(canvas);
       }
     }
     // getReactMarkup()

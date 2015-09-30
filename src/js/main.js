@@ -1184,11 +1184,30 @@ var Rance;
         UIComponents.PlayerFlag = React.createClass({
             displayName: "PlayerFlag",
             mixins: [React.addons.PureRenderMixin],
+            canUseDataURL: function () {
+                var uaString = navigator.userAgent.toLowerCase();
+                var isIE = uaString.indexOf("msie") !== -1 || uaString.indexOf("trident/") !== -1;
+                return !isIE;
+            },
+            componentDidMount: function () {
+                if (this.refs.container) {
+                    var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
+                    canvas.style.maxWidth = "100%";
+                    canvas.style.maxHeight = "100%";
+                    this.refs.container.getDOMNode().appendChild(canvas);
+                }
+            },
             render: function () {
                 var props = this.props.props;
-                var flag = this.props.flag;
-                props.src = flag.getCanvas(this.props.width, this.props.height, this.props.stretch).dataURL;
-                return (React.DOM.img(props, null));
+                if (this.canUseDataURL()) {
+                    var flag = this.props.flag;
+                    props.src = flag.getCanvas(this.props.width, this.props.height, this.props.stretch).toDataURL();
+                    return (React.DOM.img(props, null));
+                }
+                else {
+                    props.ref = "container";
+                    return (React.DOM.div(props, null));
+                }
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1340,7 +1359,7 @@ var Rance;
             drawFlag: function (flag, facingRight) {
                 var bounds = this.props.getSceneBounds();
                 var width = bounds.width / 2;
-                var canvas = flag.getCanvas(width, bounds.height, true, false).canvas;
+                var canvas = flag.getCanvas(width, bounds.height, true, false);
                 var context = canvas.getContext("2d");
                 context.globalCompositeOperation = "destination-out";
                 var gradient;
@@ -8398,14 +8417,16 @@ var Rance;
             }
             if (!this.inner) {
                 for (var key in app.moduleData.Templates.SubEmblems) {
-                    possibleTemplates.push(app.moduleData.Templates.SubEmblems[key]);
+                    if (!app.moduleData.Templates.SubEmblems[key].disallowRandomGeneration) {
+                        possibleTemplates.push(app.moduleData.Templates.SubEmblems[key]);
+                    }
                 }
             }
             else {
                 if (this.canAddOuterTemplate()) {
                     for (var key in app.moduleData.Templates.SubEmblems) {
                         var template = app.moduleData.Templates.SubEmblems[key];
-                        if (template.coverage.indexOf(SubEmblemCoverage.outer) !== -1) {
+                        if (!template.disallowRandomGeneration && template.coverage.indexOf(SubEmblemCoverage.outer) !== -1) {
                             possibleTemplates.push(template);
                         }
                     }
@@ -8615,20 +8636,13 @@ var Rance;
                 var sizeString = "" + width + "," + height + stretch;
                 if (!this.cachedCanvases[sizeString]) {
                     var canvas = this.draw(width, height, stretch);
-                    this.cachedCanvases[sizeString] =
-                        {
-                            canvas: canvas,
-                            dataURL: canvas.toDataURL()
-                        };
+                    this.cachedCanvases[sizeString] = canvas;
                 }
                 return this.cachedCanvases[sizeString];
             }
             else {
                 var canvas = this.draw(width, height, stretch);
-                return ({
-                    canvas: canvas,
-                    dataURL: canvas.toDataURL()
-                });
+                return (canvas);
             }
         };
         // getReactMarkup()
@@ -21393,7 +21407,8 @@ var Rance;
                         key: "Flag_of_Edward_England",
                         src: "img\/emblems\/Flag_of_Edward_England.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
-                        position: [Rance.SubEmblemPosition.both]
+                        position: [Rance.SubEmblemPosition.both],
+                        disallowRandomGeneration: true
                     };
                 })(SubEmblems = Templates.SubEmblems || (Templates.SubEmblems = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
@@ -22611,9 +22626,6 @@ var Rance;
                             var template = DefaultModule.Templates.SubEmblems[templateKey];
                             var image = loader.resources[template.src].data;
                             app.images[template.src] = image;
-                            if (templateKey === "Flag_of_Edward_England") {
-                                delete DefaultModule.Templates.SubEmblems[templateKey];
-                            }
                             // IE fix
                             document.body.appendChild(image);
                             image.width = image.offsetWidth;

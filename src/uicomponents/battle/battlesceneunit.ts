@@ -119,7 +119,7 @@ module Rance
         var bounds = this.props.getSceneBounds();
         var width = bounds.width / 2;
 
-        var canvas = flag.getCanvas(width, bounds.height, true, false).canvas;
+        var canvas = flag.getCanvas(width, bounds.height, true, false);
         var context = canvas.getContext("2d");
         context.globalCompositeOperation = "destination-out";
 
