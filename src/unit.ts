@@ -569,11 +569,6 @@ module Rance
       {
         this.passiveSkills = getItemsFromWeightedProbabilities(this.template.passiveSkillProbabilities);
       }
-      // TODO remove
-      else if (this.template.passiveSkills)
-      {
-        this.passiveSkills = this.template.passiveSkills.slice(0);
-      }
     }
     getItemAbilities(): Templates.IAbilityTemplate[]
     {

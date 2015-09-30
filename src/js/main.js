@@ -13636,9 +13636,6 @@ var Rance;
             if (this.template.passiveSkillProbabilities) {
                 this.passiveSkills = Rance.getItemsFromWeightedProbabilities(this.template.passiveSkillProbabilities);
             }
-            else if (this.template.passiveSkills) {
-                this.passiveSkills = this.template.passiveSkills.slice(0);
-            }
         };
         Unit.prototype.getItemAbilities = function () {
             var itemAbilities = [];
@@ -21831,10 +21828,24 @@ var Rance;
                                 ]
                             }
                         ],
-                        passiveSkills: [
-                            Templates.PassiveSkills.autoHeal,
-                            Templates.PassiveSkills.warpJammer,
-                            Templates.PassiveSkills.medic
+                        passiveSkillProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    {
+                                        weight: 0.33,
+                                        probabilityItems: [Templates.PassiveSkills.autoHeal]
+                                    },
+                                    {
+                                        weight: 0.33,
+                                        probabilityItems: [Templates.PassiveSkills.warpJammer]
+                                    },
+                                    {
+                                        weight: 0.33,
+                                        probabilityItems: [Templates.PassiveSkills.medic]
+                                    }
+                                ]
+                            }
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
@@ -22045,8 +22056,13 @@ var Rance;
                                 ]
                             }
                         ],
-                        passiveSkills: [
-                            Templates.PassiveSkills.initialGuard
+                        passiveSkillProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.PassiveSkills.initialGuard
+                                ]
+                            }
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };

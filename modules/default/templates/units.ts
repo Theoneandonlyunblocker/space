@@ -78,11 +78,26 @@ module Rance
                 ]
               }
             ],
-            passiveSkills:
+            passiveSkillProbabilities:
             [
-              PassiveSkills.autoHeal,
-              PassiveSkills.warpJammer,
-              PassiveSkills.medic
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  {
+                    weight: 0.33,
+                    probabilityItems: [PassiveSkills.autoHeal]
+                  },
+                  {
+                    weight: 0.33,
+                    probabilityItems: [PassiveSkills.warpJammer]
+                  },
+                  {
+                    weight: 0.33,
+                    probabilityItems: [PassiveSkills.medic]
+                  }
+                ]
+              }
             ],
             unitDrawingFN: defaultUnitScene
           }
@@ -323,9 +338,15 @@ module Rance
                 ]
               }
             ],
-            passiveSkills:
+            passiveSkillProbabilities:
             [
-              PassiveSkills.initialGuard
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  PassiveSkills.initialGuard
+                ]
+              }
             ],
             unitDrawingFN: defaultUnitScene
           }
