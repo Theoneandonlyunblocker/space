@@ -54,6 +54,40 @@ module Rance
               Abilities.ranceAttack,
               Abilities.standBy
             ],
+            abilityProbabilities:
+            [
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.debugAbility,
+                  Abilities.rangedAttack,
+                  Abilities.standBy
+                ]
+              },
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  {
+                    weight: 0.25,
+                    probabilityItems: [Abilities.bombAttack]
+                  },
+                  {
+                    weight: 0.25,
+                    probabilityItems: [Abilities.boardingHook]
+                  },
+                  {
+                    weight: 0.25,
+                    probabilityItems: [Abilities.guardColumn]
+                  },
+                  {
+                    weight: 0.25,
+                    probabilityItems: [Abilities.ranceAttack]
+                  }
+                ]
+              }
+            ],
             passiveSkills:
             [
               PassiveSkills.autoHeal,

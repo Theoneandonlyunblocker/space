@@ -6514,6 +6514,20 @@ var Rance;
         }
     }
     Rance.getRandomKeyWithWeights = getRandomKeyWithWeights;
+    function getRandomArrayItemWithWeights(arr) {
+        var totalWeight = 0;
+        for (var i = 0; i < arr.length; i++) {
+            totalWeight += arr[i].weight;
+        }
+        var selection = randRange(0, totalWeight);
+        for (var i = 0; i < arr.length; i++) {
+            selection -= arr[i].weight;
+            if (selection <= 0) {
+                return arr[i];
+            }
+        }
+    }
+    Rance.getRandomArrayItemWithWeights = getRandomArrayItemWithWeights;
     function getFrom2dArray(target, arr) {
         var result = [];
         for (var i = 0; i < arr.length; i++) {
@@ -6780,6 +6794,44 @@ var Rance;
         }
     }
     Rance.meetAllPlayers = meetAllPlayers;
+    function getItemsFromWeightedProbabilities(probabilities) {
+        var allItems = [];
+        if (probabilities.length === 0) {
+            return allItems;
+        }
+        // weighted
+        if (probabilities[0].weight) {
+            var selected = getRandomArrayItemWithWeights(probabilities);
+            var firstItem = selected.probabilityItems[0];
+            if (firstItem.probabilityItems) {
+                var probabilityItems = selected.probabilityItems;
+                allItems = allItems.concat(getItemsFromWeightedProbabilities(probabilityItems));
+            }
+            else {
+                var toAdd = selected.probabilityItems;
+                allItems = allItems.concat(toAdd);
+            }
+        }
+        else {
+            // flat probability
+            for (var i = 0; i < probabilities.length; i++) {
+                var selected = probabilities[i];
+                if (Math.random() < selected.flatProbability) {
+                    var firstItem = selected.probabilityItems[0];
+                    if (firstItem.probabilityItems) {
+                        var probabilityItems = selected.probabilityItems;
+                        allItems = allItems.concat(getItemsFromWeightedProbabilities(probabilityItems));
+                    }
+                    else {
+                        var toAdd = selected.probabilityItems;
+                        allItems = allItems.concat(toAdd);
+                    }
+                }
+            }
+        }
+        return allItems;
+    }
+    Rance.getItemsFromWeightedProbabilities = getItemsFromWeightedProbabilities;
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
@@ -21755,6 +21807,37 @@ var Rance;
                             Templates.Abilities.guardColumn,
                             Templates.Abilities.ranceAttack,
                             Templates.Abilities.standBy
+                        ],
+                        abilityProbabilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.debugAbility,
+                                    Templates.Abilities.rangedAttack,
+                                    Templates.Abilities.standBy
+                                ]
+                            },
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    {
+                                        weight: 0.25,
+                                        probabilityItems: [Templates.Abilities.bombAttack]
+                                    },
+                                    {
+                                        weight: 0.25,
+                                        probabilityItems: [Templates.Abilities.boardingHook]
+                                    },
+                                    {
+                                        weight: 0.25,
+                                        probabilityItems: [Templates.Abilities.guardColumn]
+                                    },
+                                    {
+                                        weight: 0.25,
+                                        probabilityItems: [Templates.Abilities.ranceAttack]
+                                    }
+                                ]
+                            }
                         ],
                         passiveSkills: [
                             Templates.PassiveSkills.autoHeal,

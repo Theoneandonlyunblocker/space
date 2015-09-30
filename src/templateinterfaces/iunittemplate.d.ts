@@ -4,6 +4,7 @@
 /// <reference path="iunitarchetype.d.ts" />
 /// <reference path="iunitdrawingfunction.d.ts" />
 /// <reference path="iunitfamily.d.ts" />
+/// <reference path="iweightedprobability.d.ts" />
 
 declare module Rance
 {
@@ -41,8 +42,10 @@ declare module Rance
         intelligence: number;
         speed: number;
       };
-      abilities: IAbilityTemplate[];
-      passiveSkills?: IPassiveSkillTemplate[];
+      abilities: IAbilityTemplate[]; // TODO remove
+      abilityProbabilities?: IWeightedProbability<IAbilityTemplate>[];
+      passiveSkills?: IPassiveSkillTemplate[]; // TODO remove
+      passiveSkillProbabilities?: IWeightedProbability<IPassiveSkillTemplate>[];
 
       unitDrawingFN: IUnitDrawingFunction;
     }

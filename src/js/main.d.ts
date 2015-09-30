@@ -534,6 +534,9 @@ declare module Rance {
     function getRandomKeyWithWeights(target: {
         [prop: string]: number;
     }): any;
+    function getRandomArrayItemWithWeights<T extends {
+        weight?: number;
+    }>(arr: T[]): T;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
@@ -564,6 +567,7 @@ declare module Rance {
     function getDropTargetAtLocation(x: number, y: number): HTMLElement;
     function onDOMLoaded(onLoaded: () => void): void;
     function meetAllPlayers(): void;
+    function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IWeightedProbability<T>[]): T[];
 }
 declare module Rance {
     module Modules {

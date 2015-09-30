@@ -69,6 +69,24 @@ module Rance
       }
     }
   }
+  export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: T[]): T
+  {
+    var totalWeight: number = 0;
+    for (var i = 0; i < arr.length; i++)
+    {
+      totalWeight += arr[i].weight;
+    }
+
+    var selection = randRange(0, totalWeight);
+    for (var i = 0; i < arr.length; i++)
+    {
+      selection -= arr[i].weight;
+      if (selection <= 0)
+      {
+        return arr[i];
+      }
+    }
+  }
   export function getFrom2dArray(target: any[][], arr: number[][]): any[]
   {
     var result: any[] = [];
@@ -398,5 +416,55 @@ module Rance
         app.humanPlayer.diplomacyStatus.meetPlayer(player);
       }
     }
+  }
+  export function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IWeightedProbability<T>[])
+  {
+    var allItems: T[] = [];
+
+    if (probabilities.length === 0)
+    {
+      return allItems;
+    }
+
+    // weighted
+    if (probabilities[0].weight)
+    {
+      var selected = getRandomArrayItemWithWeights<Templates.IWeightedProbability<T>>(probabilities);
+      var firstItem = <Templates.IWeightedProbability<T>> selected.probabilityItems[0];
+
+      if (firstItem.probabilityItems)
+      {
+        var probabilityItems = <Templates.IWeightedProbability<T>[]> selected.probabilityItems;
+        allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
+      }
+      else
+      {
+        var toAdd = <T[]> selected.probabilityItems;
+        allItems = allItems.concat(toAdd);
+      }
+    }
+    else
+    {
+      // flat probability
+      for (var i = 0; i < probabilities.length; i++)
+      {
+        var selected: Templates.IWeightedProbability<T> = probabilities[i];
+        if (Math.random() < selected.flatProbability)
+        {
+          var firstItem = <Templates.IWeightedProbability<T>> selected.probabilityItems[0];
+          if (firstItem.probabilityItems)
+          {
+            var probabilityItems = <Templates.IWeightedProbability<T>[]> selected.probabilityItems;
+            allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
+          }
+          else
+          {
+            var toAdd = <T[]> selected.probabilityItems;
+            allItems = allItems.concat(toAdd);
+          }
+        }
+      }
+    }
+    return allItems;
   }
 }
