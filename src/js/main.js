@@ -13630,11 +13630,11 @@ var Rance;
             return false;
         };
         Unit.prototype.setInitialAbilities = function () {
-            this.abilities = Rance.getItemsFromWeightedProbabilities(this.template.abilityProbabilities);
+            this.abilities = Rance.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
         };
         Unit.prototype.setInitialPassiveSkills = function () {
-            if (this.template.passiveSkillProbabilities) {
-                this.passiveSkills = Rance.getItemsFromWeightedProbabilities(this.template.passiveSkillProbabilities);
+            if (this.template.possiblePassiveSkills) {
+                this.passiveSkills = Rance.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
             }
         };
         Unit.prototype.getItemAbilities = function () {
@@ -21797,7 +21797,7 @@ var Rance;
                             intelligence: 9,
                             speed: 9
                         },
-                        abilityProbabilities: [
+                        possibleAbilities: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -21828,7 +21828,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        passiveSkillProbabilities: [
+                        possiblePassiveSkills: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -21872,7 +21872,7 @@ var Rance;
                             intelligence: 0.4,
                             speed: 1
                         },
-                        abilityProbabilities: [
+                        possibleAbilities: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -21907,7 +21907,7 @@ var Rance;
                             intelligence: 0.5,
                             speed: 0.8
                         },
-                        abilityProbabilities: [
+                        possibleAbilities: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -21942,7 +21942,7 @@ var Rance;
                             intelligence: 0.7,
                             speed: 0.6
                         },
-                        abilityProbabilities: [
+                        possibleAbilities: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -21977,7 +21977,7 @@ var Rance;
                             intelligence: 0.8,
                             speed: 0.7
                         },
-                        abilityProbabilities: [
+                        possibleAbilities: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -22012,7 +22012,7 @@ var Rance;
                             intelligence: 0.8,
                             speed: 0.7
                         },
-                        abilityProbabilities: [
+                        possibleAbilities: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -22046,7 +22046,7 @@ var Rance;
                             intelligence: 0.6,
                             speed: 0.4
                         },
-                        abilityProbabilities: [
+                        possibleAbilities: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -22056,7 +22056,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        passiveSkillProbabilities: [
+                        possiblePassiveSkills: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -22089,7 +22089,7 @@ var Rance;
                             intelligence: 0.8,
                             speed: 0.7
                         },
-                        abilityProbabilities: [
+                        possibleAbilities: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [
@@ -22123,7 +22123,7 @@ var Rance;
                             intelligence: 0.8,
                             speed: 0.7
                         },
-                        abilityProbabilities: [
+                        possibleAbilities: [
                             {
                                 flatProbability: 1,
                                 probabilityItems: [

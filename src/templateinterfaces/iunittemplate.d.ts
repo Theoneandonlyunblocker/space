@@ -42,8 +42,8 @@ declare module Rance
         intelligence: number;
         speed: number;
       };
-      abilityProbabilities: IWeightedProbability<IAbilityTemplate>[];
-      passiveSkillProbabilities?: IWeightedProbability<IPassiveSkillTemplate>[];
+      possibleAbilities: IWeightedProbability<IAbilityTemplate>[];
+      possiblePassiveSkills?: IWeightedProbability<IPassiveSkillTemplate>[];
 
       unitDrawingFN: IUnitDrawingFunction;
     }

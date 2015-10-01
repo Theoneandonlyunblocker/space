@@ -44,7 +44,7 @@ module Rance
               intelligence: 9,
               speed: 9
             },
-            abilityProbabilities:
+            possibleAbilities:
             [
               {
                 flatProbability: 1,
@@ -78,7 +78,7 @@ module Rance
                 ]
               }
             ],
-            passiveSkillProbabilities:
+            possiblePassiveSkills:
             [
               {
                 flatProbability: 1,
@@ -127,7 +127,7 @@ module Rance
               intelligence: 0.4,
               speed: 1
             },
-            abilityProbabilities:
+            possibleAbilities:
             [
               {
                 flatProbability: 1,
@@ -167,7 +167,7 @@ module Rance
               intelligence: 0.5,
               speed: 0.8
             },
-            abilityProbabilities:
+            possibleAbilities:
             [
               {
                 flatProbability: 1,
@@ -207,7 +207,7 @@ module Rance
               intelligence: 0.7,
               speed: 0.6
             },
-            abilityProbabilities:
+            possibleAbilities:
             [
               {
                 flatProbability: 1,
@@ -247,7 +247,7 @@ module Rance
               intelligence: 0.8,
               speed: 0.7
             },
-            abilityProbabilities:
+            possibleAbilities:
             [
               {
                 flatProbability: 1,
@@ -287,7 +287,7 @@ module Rance
               intelligence: 0.8,
               speed: 0.7
             },
-            abilityProbabilities:
+            possibleAbilities:
             [
               {
                 flatProbability: 1,
@@ -326,7 +326,7 @@ module Rance
               intelligence: 0.6,
               speed: 0.4
             },
-            abilityProbabilities:
+            possibleAbilities:
             [
               {
                 flatProbability: 1,
@@ -338,7 +338,7 @@ module Rance
                 ]
               }
             ],
-            passiveSkillProbabilities:
+            possiblePassiveSkills:
             [
               {
                 flatProbability: 1,
@@ -377,7 +377,7 @@ module Rance
               intelligence: 0.8,
               speed: 0.7
             },
-            abilityProbabilities:
+            possibleAbilities:
             [
               {
                 flatProbability: 1,
@@ -416,7 +416,7 @@ module Rance
               intelligence: 0.8,
               speed: 0.7
             },
-            abilityProbabilities:
+            possibleAbilities:
             [
               {
                 flatProbability: 1,

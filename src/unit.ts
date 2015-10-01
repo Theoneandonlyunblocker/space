@@ -561,13 +561,13 @@ module Rance
     }
     setInitialAbilities()
     {
-      this.abilities = getItemsFromWeightedProbabilities(this.template.abilityProbabilities);
+      this.abilities = getItemsFromWeightedProbabilities(this.template.possibleAbilities);
     }
     setInitialPassiveSkills()
     {
-      if (this.template.passiveSkillProbabilities)
+      if (this.template.possiblePassiveSkills)
       {
-        this.passiveSkills = getItemsFromWeightedProbabilities(this.template.passiveSkillProbabilities);
+        this.passiveSkills = getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
       }
     }
     getItemAbilities(): Templates.IAbilityTemplate[]
