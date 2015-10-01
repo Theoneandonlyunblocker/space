@@ -9,6 +9,11 @@ module Rance
       displayName: "UpgradeAbilities",
       render: function()
       {
+        if (this.props.abilities.length === 0)
+        {
+          return null;
+        }
+        
         var headerText: string;
         if (this.props.learningNewability)
         {

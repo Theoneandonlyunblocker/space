@@ -3134,6 +3134,9 @@ var Rance;
         UIComponents.UpgradeAbilities = React.createClass({
             displayName: "UpgradeAbilities",
             render: function () {
+                if (this.props.abilities.length === 0) {
+                    return null;
+                }
                 var headerText;
                 if (this.props.learningNewability) {
                     headerText = "Learn ability";
