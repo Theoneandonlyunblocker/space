@@ -3370,7 +3370,8 @@ var Rance;
                     className: "unit-experience-bar-container"
                 };
                 var barProps = {
-                    className: "unit-experience-bar"
+                    className: "unit-experience-bar",
+                    title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel
                 };
                 if (isReadyToLevelUp) {
                     containerProps.onClick = this.makePopup;
