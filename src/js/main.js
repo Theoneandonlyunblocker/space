@@ -12663,12 +12663,9 @@ var Rance;
             for (var i = 0; i < this.deadUnits.length; i++) {
                 this.deadUnits[i].removeFromPlayer();
             }
-            if (victor) {
-                for (var i = 0; i < this.capturedUnits.length; i++) {
-                    this.capturedUnits[i].transferToPlayer(victor);
-                }
-            }
+            var experiencePerSide = this.getGainedExperiencePerSide();
             this.forEachUnit(function (unit) {
+                unit.addExperience(experiencePerSide[unit.battleStats.side]);
                 unit.resetBattleStats();
                 if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
                     unit.currentHealth = Math.round(unit.maxHealth * 0.1);
@@ -12676,6 +12673,12 @@ var Rance;
                 this.side1Player.identifyUnit(unit);
                 this.side2Player.identifyUnit(unit);
             });
+            if (victor) {
+                for (var i = 0; i < this.capturedUnits.length; i++) {
+                    this.capturedUnits[i].transferToPlayer(victor);
+                    this.capturedUnits[i].experienceForCurrentLevel = 0;
+                }
+            }
             if (this.battleData.building) {
                 if (victor) {
                     this.battleData.building.setController(victor);
@@ -12784,6 +12787,23 @@ var Rance;
             if (side2Front <= 0) {
                 this.swapColumnsForSide("side2");
             }
+        };
+        Battle.prototype.getGainedExperiencePerSide = function () {
+            var totalValuePerSide = {
+                side1: 0,
+                side2: 0
+            };
+            for (var side in this.unitsBySide) {
+                var totalValue = 0;
+                var units = this.unitsBySide[side];
+                for (var i = 0; i < units.length; i++) {
+                    totalValuePerSide[side] += units[i].level + 1;
+                }
+            }
+            return ({
+                side1: totalValuePerSide.side2 / totalValuePerSide.side1,
+                side2: totalValuePerSide.side1 / totalValuePerSide.side2
+            });
         };
         Battle.prototype.checkBattleEnd = function () {
             if (!this.activeUnit)
@@ -13338,6 +13358,8 @@ var Rance;
             this.passiveSkills = data.passiveSkillTemplateTypes.map(function (key) {
                 return app.moduleData.Templates.PassiveSkills[key];
             });
+            this.experienceForCurrentLevel = data.experienceForCurrentLevel;
+            this.level = data.level;
             var battleStats = {};
             battleStats.moveDelay = data.battleStats.moveDelay;
             battleStats.side = data.battleStats.side;
@@ -13376,8 +13398,8 @@ var Rance;
             this.maxHealth = Rance.randInt(min, max);
             this.currentHealth = this.maxHealth;
         };
-        Unit.prototype.setAttributes = function (experience, variance) {
-            if (experience === void 0) { experience = 1; }
+        Unit.prototype.setAttributes = function (baseSkill, variance) {
+            if (baseSkill === void 0) { baseSkill = 1; }
             if (variance === void 0) { variance = 1; }
             var template = this.template;
             var attributes = {
@@ -13389,8 +13411,8 @@ var Rance;
             };
             for (var attribute in template.attributeLevels) {
                 var attributeLevel = template.attributeLevels[attribute];
-                var min = 4 * experience * attributeLevel + 1;
-                var max = 8 * experience * attributeLevel + 1 + variance;
+                var min = 4 * baseSkill * attributeLevel + 1;
+                var max = 8 * baseSkill * attributeLevel + 1 + variance;
                 attributes[attribute] = Rance.randInt(min, max);
                 if (attributes[attribute] > 9)
                     attributes[attribute] = 9;
@@ -13869,6 +13891,16 @@ var Rance;
             }
             return this.cachedBattleScene;
         };
+        Unit.prototype.getExperienceToNextLevel = function () {
+            return 4 + this.level;
+        };
+        Unit.prototype.addExperience = function (amount) {
+            this.experienceForCurrentLevel += amount;
+        };
+        Unit.prototype.handleLevelUp = function () {
+            this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
+            this.level++;
+        };
         Unit.prototype.serialize = function (includeItems) {
             if (includeItems === void 0) { includeItems = true; }
             var data = {};
@@ -13887,6 +13919,8 @@ var Rance;
             data.passiveSkillTemplateTypes = this.passiveSkills.map(function (passiveSkill) {
                 return passiveSkill.type;
             });
+            data.experienceForCurrentLevel = this.experienceForCurrentLevel;
+            data.level = this.level;
             data.battleStats = {};
             data.battleStats.moveDelay = this.battleStats.moveDelay;
             data.battleStats.side = this.battleStats.side;

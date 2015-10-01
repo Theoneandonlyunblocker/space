@@ -364,17 +364,11 @@ module Rance
         this.deadUnits[i].removeFromPlayer();
       }
 
-      if (victor)
-      {
-        for (var i = 0; i < this.capturedUnits.length; i++)
-        {
-          this.capturedUnits[i].transferToPlayer(victor);
-        }
-      }
+      var experiencePerSide = this.getGainedExperiencePerSide();
       
-      
-      this.forEachUnit(function(unit)
+      this.forEachUnit(function(unit: Unit)
       {
+        unit.addExperience(experiencePerSide[unit.battleStats.side]);
         unit.resetBattleStats();
 
         if (unit.currentHealth < Math.round(unit.maxHealth * 0.1))
@@ -382,9 +376,20 @@ module Rance
           unit.currentHealth = Math.round(unit.maxHealth * 0.1);
         }
 
+
+
         this.side1Player.identifyUnit(unit);
         this.side2Player.identifyUnit(unit);
       });
+
+      if (victor)
+      {
+        for (var i = 0; i < this.capturedUnits.length; i++)
+        {
+          this.capturedUnits[i].transferToPlayer(victor);
+          this.capturedUnits[i].experienceForCurrentLevel = 0;
+        }
+      }
       
       if (this.battleData.building)
       {
@@ -536,6 +541,30 @@ module Rance
       {
         this.swapColumnsForSide("side2");
       }
+    }
+    getGainedExperiencePerSide()
+    {
+      var totalValuePerSide =
+      {
+        side1: 0,
+        side2: 0
+      };
+
+      for (var side in this.unitsBySide)
+      {
+        var totalValue = 0;
+        var units = this.unitsBySide[side];
+        for (var i = 0; i < units.length; i++)
+        {
+          totalValuePerSide[side] += units[i].level + 1;
+        }
+      }
+
+      return(
+      {
+        side1: totalValuePerSide.side2 / totalValuePerSide.side1,
+        side2: totalValuePerSide.side1 / totalValuePerSide.side2
+      });
     }
     checkBattleEnd()
     {

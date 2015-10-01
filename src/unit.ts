@@ -62,6 +62,9 @@ module Rance
     abilities: Templates.IAbilityTemplate[] = [];
     passiveSkills: Templates.IPassiveSkillTemplate[] = [];
 
+    experienceForCurrentLevel: number;
+    level: number;
+
     displayFlags:
     {
       isAnnihilated: boolean;
@@ -164,6 +167,9 @@ module Rance
         return app.moduleData.Templates.PassiveSkills[key];
       });
 
+      this.experienceForCurrentLevel = data.experienceForCurrentLevel;
+      this.level = data.level;
+
       var battleStats: any = {};
 
       battleStats.moveDelay = data.battleStats.moveDelay;
@@ -213,7 +219,7 @@ module Rance
       
       this.currentHealth = this.maxHealth;
     }
-    setAttributes(experience: number = 1, variance: number = 1)
+    setAttributes(baseSkill: number = 1, variance: number = 1)
     {
       var template = this.template;
 
@@ -230,8 +236,8 @@ module Rance
       {
         var attributeLevel = template.attributeLevels[attribute];
 
-        var min = 4 * experience * attributeLevel + 1;
-        var max = 8 * experience * attributeLevel + 1 + variance;
+        var min = 4 * baseSkill * attributeLevel + 1;
+        var max = 8 * baseSkill * attributeLevel + 1 + variance;
 
         attributes[attribute] = randInt(min, max);
         if (attributes[attribute] > 9) attributes[attribute] = 9;
@@ -889,6 +895,19 @@ module Rance
 
       return this.cachedBattleScene;
     }
+    getExperienceToNextLevel()
+    {
+      return 4 + this.level;
+    }
+    addExperience(amount: number)
+    {
+      this.experienceForCurrentLevel += amount;
+    }
+    handleLevelUp()
+    {
+      this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
+      this.level++;
+    }
     serialize(includeItems: boolean = true)
     {
       var data: any = {};
@@ -915,6 +934,9 @@ module Rance
       {
         return passiveSkill.type;
       });
+
+      data.experienceForCurrentLevel = this.experienceForCurrentLevel;
+      data.level = this.level;
 
       data.battleStats = {};
       data.battleStats.moveDelay = this.battleStats.moveDelay;

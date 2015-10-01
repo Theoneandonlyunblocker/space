@@ -1806,6 +1806,10 @@ declare module Rance {
         getEvaluation(): number;
         swapColumnsForSide(side: string): void;
         swapColumnsIfNeeded(): void;
+        getGainedExperiencePerSide(): {
+            side1: number;
+            side2: number;
+        };
         checkBattleEnd(): boolean;
         makeVirtualClone(): Battle;
     }
@@ -1901,6 +1905,8 @@ declare module Rance {
         };
         abilities: Templates.IAbilityTemplate[];
         passiveSkills: Templates.IPassiveSkillTemplate[];
+        experienceForCurrentLevel: number;
+        level: number;
         displayFlags: {
             isAnnihilated: boolean;
         };
@@ -1928,7 +1934,7 @@ declare module Rance {
         makeFromData(data: any): void;
         setInitialValues(): void;
         setBaseHealth(): void;
-        setAttributes(experience?: number, variance?: number): void;
+        setAttributes(baseSkill?: number, variance?: number): void;
         getBaseMoveDelay(): number;
         resetMovePoints(): void;
         resetBattleStats(): void;
@@ -1991,6 +1997,9 @@ declare module Rance {
         getTotalCost(): number;
         getTurnsToReachStar(star: Star): number;
         drawBattleScene(props: Templates.IUnitDrawingFunctionProps): HTMLCanvasElement;
+        getExperienceToNextLevel(): number;
+        addExperience(amount: number): void;
+        handleLevelUp(): void;
         serialize(includeItems?: boolean): any;
         makeVirtualClone(): Unit;
     }
