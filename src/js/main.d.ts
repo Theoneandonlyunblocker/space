@@ -261,6 +261,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var UpgradeUnit: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var UnitExperience: React.Factory<{}>;
     }
 }

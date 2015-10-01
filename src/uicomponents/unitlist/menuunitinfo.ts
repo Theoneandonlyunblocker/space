@@ -67,7 +67,8 @@ module Rance
             UIComponents.UnitExperience(
             {
               experienceForCurrentLevel: unit.experienceForCurrentLevel,
-              experienceToNextLevel: unit.getExperienceToNextLevel()
+              experienceToNextLevel: unit.getExperienceToNextLevel(),
+              unit: unit
             }),
             React.DOM.div(
             {

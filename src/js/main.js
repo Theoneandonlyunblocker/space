@@ -3126,8 +3126,55 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
+        UIComponents.UpgradeUnit = React.createClass({
+            displayName: "UpgradeUnit",
+            render: function () {
+                var unit = this.props.unit;
+                return (React.DOM.div({
+                    className: "upgrade-unit"
+                }, React.DOM.div({
+                    className: "upgrade-unit-header"
+                }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="upgradeunit.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
         UIComponents.UnitExperience = React.createClass({
             displayName: "UnitExperience",
+            getInitialState: function () {
+                return ({
+                    upgradePopupId: undefined
+                });
+            },
+            makePopup: function () {
+                var popupId = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.TopMenuPopup,
+                    contentProps: {
+                        handleClose: this.closePopup,
+                        contentConstructor: UIComponents.UpgradeUnit,
+                        contentProps: {
+                            unit: this.props.unit
+                        }
+                    },
+                    popupProps: {
+                        preventAutoResize: true
+                    }
+                });
+                this.setState({
+                    upgradePopupId: popupId
+                });
+            },
+            closePopup: function () {
+                this.refs.popupManager.closePopup(this.state.upgradePopupId);
+                this.setState({
+                    upgradePopupId: undefined
+                });
+            },
             render: function () {
                 var rows = [];
                 var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
@@ -3154,9 +3201,25 @@ var Rance;
                         key: "" + i
                     }, React.DOM.div(bgProps, null)));
                 }
-                return (React.DOM.div({
+                var isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
+                var containerProps = {
+                    className: "unit-experience-bar-container"
+                };
+                var barProps = {
                     className: "unit-experience-bar"
-                }, this.props.experienceForCurrentLevel, rows));
+                };
+                if (isReadyToLevelUp) {
+                    containerProps.onClick = this.makePopup;
+                    barProps.className += " ready-to-level-up";
+                }
+                return (React.DOM.div({
+                    className: "unit-experience-wrapper"
+                }, UIComponents.PopupManager({
+                    ref: "popupManager",
+                    onlyAllowOne: true
+                }), React.DOM.div(containerProps, React.DOM.div(barProps, rows), !isReadyToLevelUp ? null : React.DOM.span({
+                    className: "ready-to-level-up-message"
+                }, "Click to level up"))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3203,7 +3266,8 @@ var Rance;
                     listPassiveSkills: true
                 })), UIComponents.UnitExperience({
                     experienceForCurrentLevel: unit.experienceForCurrentLevel,
-                    experienceToNextLevel: unit.getExperienceToNextLevel()
+                    experienceToNextLevel: unit.getExperienceToNextLevel(),
+                    unit: unit
                 }), React.DOM.div({
                     className: "menu-unit-info-items-wrapper"
                 }, itemSlots)));

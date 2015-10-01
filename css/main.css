@@ -2442,6 +2442,10 @@ ol {
 .unit-experience-bar :last-child {
   border-right: none;
 }
+.unit-experience-bar.ready-to-level-up {
+  cursor: pointer;
+  box-shadow: 0px 0px 12px #fff inset, 0px 0px 10px #ff0;
+}
 .unit-experience-bar-point {
   position: relative;
   flex: 1 1 auto;
