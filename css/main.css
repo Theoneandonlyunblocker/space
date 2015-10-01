@@ -92,26 +92,6 @@ ol {
   background-size: 100% 2px;
   pointer-events: none;
 }
-progress {
-  color: #080;
-  background: #888;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border: none;
-}
-progress::-ms-fill {
-  background: #080;
-}
-progress::-moz-progress-bar {
-  background: #080;
-}
-progress::-webkit-progress-bar {
-  background: #888;
-}
-progress::-webkit-progress-value {
-  background: #080;
-}
 #react-container {
   height: 100%;
 }
