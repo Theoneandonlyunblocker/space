@@ -44,6 +44,7 @@ declare module Rance
       };
       possibleAbilities: IWeightedProbability<IAbilityTemplate>[];
       possiblePassiveSkills?: IWeightedProbability<IPassiveSkillTemplate>[];
+      specialAbilityUpgrades?: Array<IAbilityTemplate|IPassiveSkillTemplate>;
 
       unitDrawingFN: IUnitDrawingFunction;
     }

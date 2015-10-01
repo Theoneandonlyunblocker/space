@@ -60,20 +60,16 @@ module Rance
                 probabilityItems:
                 [
                   {
-                    weight: 0.25,
+                    weight: 0.33,
                     probabilityItems: [Abilities.bombAttack]
                   },
                   {
-                    weight: 0.25,
+                    weight: 0.33,
                     probabilityItems: [Abilities.boardingHook]
                   },
                   {
-                    weight: 0.25,
+                    weight: 0.33,
                     probabilityItems: [Abilities.guardColumn]
-                  },
-                  {
-                    weight: 0.25,
-                    probabilityItems: [Abilities.ranceAttack]
                   }
                 ]
               }
@@ -98,6 +94,10 @@ module Rance
                   }
                 ]
               }
+            ],
+            specialAbilityUpgrades:
+            [
+              Abilities.ranceAttack
             ],
             unitDrawingFN: defaultUnitScene
           }

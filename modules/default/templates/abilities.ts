@@ -42,7 +42,8 @@ module Rance
                   }
                 }
               ]
-            }
+            },
+            canUpgradeInto: ["bombAttack", "boardingHook", "ranceAttack"]
           }
           export var closeAttack: Rance.Templates.IAbilityTemplate =
           {
@@ -226,7 +227,8 @@ module Rance
                   }
                 }
               }
-            ]
+            ],
+            onlyAllowExplicitUpgrade: true
           }
 
           export var standBy: Rance.Templates.IAbilityTemplate =

@@ -20893,7 +20893,8 @@ var Rance;
                                     }
                                 }
                             ]
-                        }
+                        },
+                        canUpgradeInto: ["bombAttack", "boardingHook", "ranceAttack"]
                     };
                     Abilities.closeAttack = {
                         type: "closeAttack",
@@ -21042,7 +21043,8 @@ var Rance;
                                     }
                                 }
                             }
-                        ]
+                        ],
+                        onlyAllowExplicitUpgrade: true
                     };
                     Abilities.standBy = {
                         type: "standBy",
@@ -21952,20 +21954,16 @@ var Rance;
                                 flatProbability: 1,
                                 probabilityItems: [
                                     {
-                                        weight: 0.25,
+                                        weight: 0.33,
                                         probabilityItems: [Templates.Abilities.bombAttack]
                                     },
                                     {
-                                        weight: 0.25,
+                                        weight: 0.33,
                                         probabilityItems: [Templates.Abilities.boardingHook]
                                     },
                                     {
-                                        weight: 0.25,
+                                        weight: 0.33,
                                         probabilityItems: [Templates.Abilities.guardColumn]
-                                    },
-                                    {
-                                        weight: 0.25,
-                                        probabilityItems: [Templates.Abilities.ranceAttack]
                                     }
                                 ]
                             }
@@ -21988,6 +21986,9 @@ var Rance;
                                     }
                                 ]
                             }
+                        ],
+                        specialAbilityUpgrades: [
+                            Templates.Abilities.ranceAttack
                         ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
