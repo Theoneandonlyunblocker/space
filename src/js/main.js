@@ -3135,11 +3135,43 @@ var Rance;
             displayName: "UpgradeUnit",
             getInitialState: function () {
                 return ({
-                    upgradeData: this.props.unit.getAbilityUpgradeData()
+                    upgradeData: this.props.unit.getAbilityUpgradeData(),
+                    popupId: undefined
                 });
             },
-            handleClick: function (ability) {
-                console.log(this.state.upgradeData[ability.type]);
+            upgradeAbility: function (source, newAbility) {
+                var unit = this.props.unit;
+                unit.upgradeAbility(source, newAbility);
+                unit.handleLevelUp();
+                this.closePopup();
+                this.props.onUnitUpgrade();
+            },
+            makeAbilityLearnPopup: function (ability) {
+                var upgradeData = this.state.upgradeData[ability.type];
+                var popupId = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.TopMenuPopup,
+                    contentProps: {
+                        handleClose: this.closePopup,
+                        contentConstructor: UIComponents.AbilityList,
+                        contentProps: {
+                            abilities: upgradeData.possibleUpgrades,
+                            handleClick: this.upgradeAbility.bind(this, upgradeData.base)
+                        }
+                    },
+                    popupProps: {
+                        preventAutoResize: true,
+                        containerDragOnly: true
+                    }
+                });
+                this.setState({
+                    popupId: popupId
+                });
+            },
+            closePopup: function () {
+                this.refs.popupManager.closePopup(this.state.popupId);
+                this.setState({
+                    popupId: undefined
+                });
             },
             render: function () {
                 var unit = this.props.unit;
@@ -3158,11 +3190,14 @@ var Rance;
                 }
                 return (React.DOM.div({
                     className: "upgrade-unit"
-                }, React.DOM.div({
+                }, UIComponents.PopupManager({
+                    ref: "popupManager",
+                    onlyAllowOne: true
+                }), React.DOM.div({
                     className: "upgrade-unit-header"
                 }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)), UIComponents.AbilityList({
                     abilities: upgradableAbilities,
-                    handleClick: this.handleClick
+                    handleClick: this.makeAbilityLearnPopup
                 })));
             }
         });
@@ -3187,7 +3222,8 @@ var Rance;
                         handleClose: this.closePopup,
                         contentConstructor: UIComponents.UpgradeUnit,
                         contentProps: {
-                            unit: this.props.unit
+                            unit: this.props.unit,
+                            onUnitUpgrade: this.handleUnitUpgrade
                         }
                     },
                     popupProps: {
@@ -3204,6 +3240,15 @@ var Rance;
                 this.setState({
                     upgradePopupId: undefined
                 });
+            },
+            handleUnitUpgrade: function () {
+                if (!this.props.unit.canLevelUp()) {
+                    this.closePopup();
+                }
+                else {
+                    this.makePopup();
+                }
+                this.props.onUnitUpgrade();
             },
             render: function () {
                 var rows = [];
@@ -3263,6 +3308,9 @@ var Rance;
     (function (UIComponents) {
         UIComponents.MenuUnitInfo = React.createClass({
             displayName: "MenuUnitInfo",
+            handleUnitUpgrade: function () {
+                this.forceUpdate();
+            },
             render: function () {
                 var unit = this.props.unit;
                 if (!unit)
@@ -3295,7 +3343,8 @@ var Rance;
                 })), UIComponents.UnitExperience({
                     experienceForCurrentLevel: unit.experienceForCurrentLevel,
                     experienceToNextLevel: unit.getExperienceToNextLevel(),
-                    unit: unit
+                    unit: unit,
+                    onUnitUpgrade: this.handleUnitUpgrade
                 }), React.DOM.div({
                     className: "menu-unit-info-items-wrapper"
                 }, itemSlots)));
@@ -14034,6 +14083,9 @@ var Rance;
         Unit.prototype.addExperience = function (amount) {
             this.experienceForCurrentLevel += amount;
         };
+        Unit.prototype.canLevelUp = function () {
+            return this.experienceForCurrentLevel >= this.getExperienceToNextLevel();
+        };
         Unit.prototype.handleLevelUp = function () {
             this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
             this.level++;
@@ -14108,6 +14160,26 @@ var Rance;
                     };
             }
             return upgradeData;
+        };
+        Unit.prototype.upgradeAbility = function (source, newAbility) {
+            var newAbilityIsPassiveSkill = !newAbility.mainEffect;
+            if (source) {
+                var sourceIsPassiveSkill = !source.mainEffect;
+                if (sourceIsPassiveSkill) {
+                    this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
+                }
+                else {
+                    var castedSource = source;
+                    this.abilities.splice(this.abilities.indexOf(castedSource), 1);
+                }
+            }
+            if (newAbilityIsPassiveSkill) {
+                this.passiveSkills.push(newAbility);
+            }
+            else {
+                var castedNewAbility = newAbility;
+                this.abilities.push(castedNewAbility);
+            }
         };
         Unit.prototype.serialize = function (includeItems) {
             if (includeItems === void 0) { includeItems = true; }

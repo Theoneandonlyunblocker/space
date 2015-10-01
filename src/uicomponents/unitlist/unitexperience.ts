@@ -26,7 +26,8 @@ module Rance
             contentConstructor: UIComponents.UpgradeUnit,
             contentProps:
             {
-              unit: this.props.unit
+              unit: this.props.unit,
+              onUnitUpgrade: this.handleUnitUpgrade
             }
           },
           popupProps:
@@ -48,6 +49,18 @@ module Rance
         {
           upgradePopupId: undefined
         });
+      },
+      handleUnitUpgrade: function()
+      {
+        if (!this.props.unit.canLevelUp())
+        {
+          this.closePopup();
+        }
+        else
+        {
+          this.makePopup();
+        }
+        this.props.onUnitUpgrade();
       },
       render: function()
       {

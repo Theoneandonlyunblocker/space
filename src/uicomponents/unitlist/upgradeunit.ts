@@ -11,13 +11,53 @@ module Rance
       {
         return(
         {
-          upgradeData: this.props.unit.getAbilityUpgradeData()
+          upgradeData: this.props.unit.getAbilityUpgradeData(),
+          popupId: undefined
         });
       },
-      
-      handleClick: function(ability: Templates.IAbilityBase)
+      upgradeAbility: function(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase)
       {
-        console.log(this.state.upgradeData[ability.type]);
+        var unit: Unit = this.props.unit;
+        unit.upgradeAbility(source, newAbility);
+        unit.handleLevelUp();
+        this.closePopup();
+        this.props.onUnitUpgrade();
+      },
+      makeAbilityLearnPopup: function(ability: Templates.IAbilityBase)
+      {
+        var upgradeData = this.state.upgradeData[ability.type];
+        var popupId = this.refs.popupManager.makePopup(
+        {
+          contentConstructor: UIComponents.TopMenuPopup,
+          contentProps:
+          {
+            handleClose: this.closePopup,
+            contentConstructor: UIComponents.AbilityList,
+            contentProps:
+            {
+              abilities: upgradeData.possibleUpgrades,
+              handleClick: this.upgradeAbility.bind(this, upgradeData.base)
+            }
+          },
+          popupProps:
+          {
+            preventAutoResize: true,
+            containerDragOnly: true
+          }
+        });
+
+        this.setState(
+        {
+          popupId: popupId
+        });
+      },
+      closePopup: function()
+      {
+        this.refs.popupManager.closePopup(this.state.popupId);
+        this.setState(
+        {
+          popupId: undefined
+        });
       },
       render: function()
       {
@@ -46,6 +86,11 @@ module Rance
           {
             className: "upgrade-unit"
           },
+            UIComponents.PopupManager(
+            {
+              ref: "popupManager",
+              onlyAllowOne: true
+            }),
             React.DOM.div(
             {
               className: "upgrade-unit-header"
@@ -55,7 +100,7 @@ module Rance
             UIComponents.AbilityList(
             {
               abilities: upgradableAbilities,
-              handleClick: this.handleClick
+              handleClick: this.makeAbilityLearnPopup
             })
           )
         );

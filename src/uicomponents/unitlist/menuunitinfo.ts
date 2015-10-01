@@ -9,6 +9,10 @@ module Rance
     export var MenuUnitInfo = React.createClass(
     {
       displayName: "MenuUnitInfo",
+      handleUnitUpgrade: function()
+      {
+        this.forceUpdate();
+      },
       render: function()
       {
         var unit: Unit = this.props.unit;
@@ -65,7 +69,8 @@ module Rance
             {
               experienceForCurrentLevel: unit.experienceForCurrentLevel,
               experienceToNextLevel: unit.getExperienceToNextLevel(),
-              unit: unit
+              unit: unit,
+              onUnitUpgrade: this.handleUnitUpgrade
             }),
             React.DOM.div(
             {

@@ -2009,6 +2009,7 @@ declare module Rance {
         drawBattleScene(props: Templates.IUnitDrawingFunctionProps): HTMLCanvasElement;
         getExperienceToNextLevel(): number;
         addExperience(amount: number): void;
+        canLevelUp(): boolean;
         handleLevelUp(): void;
         getLearnableAbilities(allAbilities: Templates.IAbilityBase[]): Templates.IAbilityBase[];
         canUpgradeIntoAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
@@ -2018,6 +2019,7 @@ declare module Rance {
                 possibleUpgrades: Templates.IAbilityBase[];
             };
         };
+        upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase): void;
         serialize(includeItems?: boolean): any;
         makeVirtualClone(): Unit;
     }

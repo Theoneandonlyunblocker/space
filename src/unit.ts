@@ -906,6 +906,10 @@ module Rance
     {
       this.experienceForCurrentLevel += amount;
     }
+    canLevelUp()
+    {
+      return this.experienceForCurrentLevel >= this.getExperienceToNextLevel();
+    }
     handleLevelUp()
     {
       this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
@@ -1015,6 +1019,33 @@ module Rance
       }
 
       return upgradeData;
+    }
+    upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase)
+    {
+      var newAbilityIsPassiveSkill = !newAbility.mainEffect;
+      if (source)
+      {
+        var sourceIsPassiveSkill = !source.mainEffect;
+        if (sourceIsPassiveSkill)
+        {
+          this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
+        }
+        else
+        {
+          var castedSource = <Templates.IAbilityTemplate> source;
+          this.abilities.splice(this.abilities.indexOf(castedSource), 1);
+        }
+      }
+
+      if (newAbilityIsPassiveSkill)
+      {
+        this.passiveSkills.push(newAbility);
+      }
+      else
+      {
+        var castedNewAbility = <Templates.IAbilityTemplate> newAbility;
+        this.abilities.push(castedNewAbility);
+      }
     }
     serialize(includeItems: boolean = true)
     {
