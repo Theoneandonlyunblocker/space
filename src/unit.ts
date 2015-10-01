@@ -210,7 +210,7 @@ module Rance
       this.setInitialPassiveSkills();
 
       this.level = 1;
-      this.experienceForCurrentLevel = randInt(0, this.getExperienceToNextLevel());
+      this.experienceForCurrentLevel = 0;
 
       this.timesActedThisTurn = 0;
     }

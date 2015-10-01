@@ -2467,15 +2467,27 @@ ol {
 .unit-experience-bar-point-background.filled {
   background-color: green;
 }
+.upgrade-unit .unit-info-ability,
+.upgrade-unit .upgrade-attributes-attribute {
+  cursor: pointer;
+}
+.upgrade-unit .unit-info-ability:hover,
+.upgrade-unit .upgrade-attributes-attribute:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.upgrade-unit .unit-info-ability:active,
+.upgrade-unit .upgrade-attributes-attribute:active {
+  background-color: rgba(255, 255, 255, 0.3);
+}
 .unit-info-ability {
   display: inline-block;
   float: left;
   clear: both;
 }
-.unit-info-ability.active-skill:hover {
+.active-skill:hover {
   background-color: rgba(255, 255, 255, 0.4);
 }
-.unit-info-ability.passive-skill:hover {
+.passive-skill:hover {
   background-color: rgba(255, 255, 0, 0.4);
 }
 .active-skill {

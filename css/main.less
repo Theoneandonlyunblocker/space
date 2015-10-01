@@ -2876,20 +2876,35 @@ ul, ol
   }
 }
 
+.upgrade-unit
+{
+  .unit-info-ability, .upgrade-attributes-attribute
+  {
+    cursor: pointer;
+    &:hover
+    {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    &:active
+    {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
 .unit-info-ability
 {
   display: inline-block;
   float: left;
   clear: both;
-
-  &.active-skill:hover
-  {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-  &.passive-skill:hover
-  {
-    background-color: rgba(255, 255, 0, 0.4);
-  }
+}
+.active-skill:hover
+{
+  background-color: rgba(255, 255, 255, 0.4);
+}
+.passive-skill:hover
+{
+  background-color: rgba(255, 255, 0, 0.4);
 }
 
 .active-skill

@@ -58,7 +58,7 @@ module Rance
         }
         else
         {
-          this.makePopup();
+          this.refs.popupManager.forceUpdate();
         }
         this.props.onUnitUpgrade();
       },

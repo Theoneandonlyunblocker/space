@@ -3335,7 +3335,7 @@ var Rance;
                     this.closePopup();
                 }
                 else {
-                    this.makePopup();
+                    this.refs.popupManager.forceUpdate();
                 }
                 this.props.onUnitUpgrade();
             },
@@ -13664,7 +13664,7 @@ var Rance;
             this.setInitialAbilities();
             this.setInitialPassiveSkills();
             this.level = 1;
-            this.experienceForCurrentLevel = Rance.randInt(0, this.getExperienceToNextLevel());
+            this.experienceForCurrentLevel = 0;
             this.timesActedThisTurn = 0;
         };
         Unit.prototype.setBaseHealth = function () {
