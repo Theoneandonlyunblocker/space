@@ -34,6 +34,9 @@ module Rance
           }));
         }
 
+        var unitAbilities: Templates.IAbilityBase[] = unit.getAllAbilities();
+        unitAbilities = unitAbilities.concat(unit.getAllPassiveSkills());
+
         return(
           React.DOM.div(
           {
@@ -55,13 +58,7 @@ module Rance
             },
               UIComponents.AbilityList(
               {
-                abilities: unit.getAllAbilities(),
-                listPassiveSkills: false
-              }),
-              UIComponents.AbilityList(
-              {
-                abilities: unit.getAllPassiveSkills(),
-                listPassiveSkills: true
+                abilities: unitAbilities
               })
             ),
             UIComponents.UnitExperience(

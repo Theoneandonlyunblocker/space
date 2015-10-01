@@ -2975,17 +2975,15 @@ var Rance;
             render: function () {
                 var abilities = this.props.abilities;
                 var baseClassName = "unit-info-ability";
-                if (this.props.listPassiveSkills) {
-                    baseClassName += " passive-skill";
-                }
-                else {
-                    baseClassName += " active-skill";
-                }
                 if (abilities.length < 1)
                     return null;
                 var abilityElements = [];
                 var addedAbilityTypes = {};
                 abilities.sort(function (_a, _b) {
+                    if (_a.mainEffect && !_b.mainEffect)
+                        return -1;
+                    else if (_b.mainEffect && !_a.mainEffect)
+                        return 1;
                     var a = _a.displayName.toLowerCase();
                     var b = _b.displayName.toLowerCase();
                     if (a > b)
@@ -3003,14 +3001,22 @@ var Rance;
                     if (!addedAbilityTypes[ability.type]) {
                         addedAbilityTypes[ability.type] = 0;
                     }
-                    var className = baseClassName;
+                    var className = "unit-info-ability";
+                    var isPassiveSkill = !ability.mainEffect;
+                    if (isPassiveSkill) {
+                        className += " passive-skill";
+                    }
+                    else {
+                        className += " active-skill";
+                    }
                     if (addedAbilityTypes[ability.type] >= 1) {
                         className += " redundant-ability";
                     }
                     abilityElements.push(React.DOM.li({
                         className: className,
                         title: ability.description,
-                        key: ability.type + addedAbilityTypes[ability.type]
+                        key: ability.type + addedAbilityTypes[ability.type],
+                        onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined)
                     }, "[" + ability.displayName + "]"));
                     addedAbilityTypes[ability.type]++;
                 }
@@ -3120,19 +3126,44 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="abilitylist.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.UpgradeUnit = React.createClass({
             displayName: "UpgradeUnit",
+            getInitialState: function () {
+                return ({
+                    upgradeData: this.props.unit.getAbilityUpgradeData()
+                });
+            },
+            handleClick: function (ability) {
+                console.log(this.state.upgradeData[ability.type]);
+            },
             render: function () {
                 var unit = this.props.unit;
+                var upgradableAbilities = [];
+                for (var source in this.state.upgradeData) {
+                    if (this.state.upgradeData[source].base) {
+                        upgradableAbilities.push(this.state.upgradeData[source].base);
+                    }
+                    else {
+                        upgradableAbilities.push({
+                            type: source,
+                            displayName: "** New ability **",
+                            description: ""
+                        });
+                    }
+                }
                 return (React.DOM.div({
                     className: "upgrade-unit"
                 }, React.DOM.div({
                     className: "upgrade-unit-header"
-                }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1))));
+                }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)), UIComponents.AbilityList({
+                    abilities: upgradableAbilities,
+                    handleClick: this.handleClick
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3160,7 +3191,8 @@ var Rance;
                         }
                     },
                     popupProps: {
-                        preventAutoResize: true
+                        preventAutoResize: true,
+                        containerDragOnly: true
                     }
                 });
                 this.setState({
@@ -3248,6 +3280,8 @@ var Rance;
                         currentDragItem: this.props.currentDragItem
                     }));
                 }
+                var unitAbilities = unit.getAllAbilities();
+                unitAbilities = unitAbilities.concat(unit.getAllPassiveSkills());
                 return (React.DOM.div({
                     className: "menu-unit-info"
                 }, React.DOM.div({
@@ -3257,11 +3291,7 @@ var Rance;
                 }, null), React.DOM.div({
                     className: "menu-unit-info-abilities"
                 }, UIComponents.AbilityList({
-                    abilities: unit.getAllAbilities(),
-                    listPassiveSkills: false
-                }), UIComponents.AbilityList({
-                    abilities: unit.getAllPassiveSkills(),
-                    listPassiveSkills: true
+                    abilities: unitAbilities
                 })), UIComponents.UnitExperience({
                     experienceForCurrentLevel: unit.experienceForCurrentLevel,
                     experienceToNextLevel: unit.getExperienceToNextLevel(),
@@ -14026,7 +14056,7 @@ var Rance;
                         abilities = abilities.concat(learnableItem);
                     }
                 }
-                else {
+                else if (allAbilities.indexOf(learnableItem) === -1) {
                     abilities.push(learnableItem);
                 }
             }
@@ -21419,7 +21449,8 @@ var Rance;
                                     battlePrep.minDefendersInNeutralTerritory += 1;
                                 }
                             }
-                        ]
+                        ],
+                        canUpgradeInto: ["medic"]
                     };
                     PassiveSkills.medic = {
                         type: "medic",
@@ -22060,6 +22091,7 @@ var Rance;
                         specialAbilityUpgrades: [
                             Templates.Abilities.ranceAttack
                         ],
+                        learnableAbilities: [Templates.Abilities.guardColumn, [Templates.Abilities.debugAbility, Templates.Abilities.ranceAttack]],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.fighterSquadron = {
@@ -22095,7 +22127,6 @@ var Rance;
                                 ]
                             }
                         ],
-                        learnableAbilities: [Templates.Abilities.guardColumn, [Templates.Abilities.debugAbility, Templates.Abilities.ranceAttack]],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.bomberSquadron = {

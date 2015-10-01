@@ -125,7 +125,8 @@ module Rance
                   battlePrep.minDefendersInNeutralTerritory += 1;
                 }
               }
-            ]
+            ],
+            canUpgradeInto: ["medic"]
           }
           export var medic: Rance.Templates.IPassiveSkillTemplate =
           {

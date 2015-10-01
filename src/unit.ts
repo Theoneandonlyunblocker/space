@@ -937,7 +937,7 @@ module Rance
             abilities = abilities.concat(learnableItem);
           }
         }
-        else
+        else if (allAbilities.indexOf(learnableItem) === -1)
         {
           abilities.push(learnableItem);
         }

@@ -2434,6 +2434,9 @@ ol {
   flex: 1;
   overflow-y: auto;
 }
+.ability-list {
+  display: inline-block;
+}
 .unit-experience-bar {
   height: 1em;
   display: flex;

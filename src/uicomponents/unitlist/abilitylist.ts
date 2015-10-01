@@ -10,15 +10,6 @@ module Rance
         var abilities: Templates.IAbilityBase[] = this.props.abilities;
         var baseClassName = "unit-info-ability";
 
-        if (this.props.listPassiveSkills)
-        {
-          baseClassName += " passive-skill";
-        }
-        else
-        {
-          baseClassName += " active-skill";
-        }
-
         if (abilities.length < 1) return null;
 
 
@@ -30,6 +21,9 @@ module Rance
 
         abilities.sort(function(_a, _b)
         {
+          if (_a.mainEffect && !_b.mainEffect) return -1;
+          else if (_b.mainEffect && !_a.mainEffect) return 1;
+
           var a = _a.displayName.toLowerCase();
           var b = _b.displayName.toLowerCase();
           
@@ -50,7 +44,16 @@ module Rance
             addedAbilityTypes[ability.type] = 0;
           }
 
-          var className = baseClassName;
+          var className = "unit-info-ability";
+          var isPassiveSkill = !ability.mainEffect;
+          if (isPassiveSkill)
+          {
+            className += " passive-skill";
+          }
+          else
+          {
+            className += " active-skill";
+          }
 
           if (addedAbilityTypes[ability.type] >= 1)
           {
@@ -62,7 +65,8 @@ module Rance
             {
               className: className,
               title: ability.description,
-              key: ability.type + addedAbilityTypes[ability.type]
+              key: ability.type + addedAbilityTypes[ability.type],
+              onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined)
             },
               "[" + ability.displayName + "]"
             )

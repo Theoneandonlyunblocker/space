@@ -99,6 +99,7 @@ module Rance
             [
               Abilities.ranceAttack
             ],
+            learnableAbilities: [Abilities.guardColumn, [Abilities.debugAbility, Abilities.ranceAttack]],
             unitDrawingFN: defaultUnitScene
           }
           export var fighterSquadron: Rance.Templates.IUnitTemplate =
@@ -139,7 +140,6 @@ module Rance
                 ]
               }
             ],
-            learnableAbilities: [Abilities.guardColumn, [Abilities.debugAbility, Abilities.ranceAttack]],
             unitDrawingFN: defaultUnitScene
           }
           export var bomberSquadron: Rance.Templates.IUnitTemplate =
