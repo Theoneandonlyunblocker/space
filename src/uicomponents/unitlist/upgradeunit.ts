@@ -1,4 +1,5 @@
 /// <reference path="upgradeabilities.ts" />
+/// <reference path="upgradeattributes.ts" />
 
 module Rance
 {
@@ -25,6 +26,16 @@ module Rance
           upgradeData: unit.getAbilityUpgradeData()
         });
         this.closePopup();
+        this.props.onUnitUpgrade();
+      },
+      upgradeAttribute: function(attribute: string)
+      {
+        var unit: Unit = this.props.unit;
+
+        unit.baseAttributes[attribute] += 1;
+        unit.attributesAreDirty = true;
+
+        unit.handleLevelUp();
         this.props.onUnitUpgrade();
       },
       makeAbilityLearnPopup: function(ability: Templates.IAbilityBase)
@@ -107,6 +118,11 @@ module Rance
             {
               abilities: upgradableAbilities,
               handleClick: this.makeAbilityLearnPopup
+            }),
+            UIComponents.UpgradeAttributes(
+            {
+              unit: unit,
+              handleClick: this.upgradeAttribute
             })
           )
         );

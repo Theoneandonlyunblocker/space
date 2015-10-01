@@ -2986,6 +2986,10 @@ var Rance;
                         return 1;
                     var a = _a.displayName.toLowerCase();
                     var b = _b.displayName.toLowerCase();
+                    if (_a.type === "learnable")
+                        return 1;
+                    else if (_b.type === "learnable")
+                        return -1;
                     if (a > b)
                         return 1;
                     else if (a < b)
@@ -3159,7 +3163,44 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UpgradeAttributes = React.createClass({
+            displayName: "UpgradeAttributes",
+            upgradeAttribute: function (attribute, e) {
+                if (e.button)
+                    return;
+                this.props.handleClick(attribute);
+            },
+            render: function () {
+                var unit = this.props.unit;
+                var rows = [];
+                for (var attribute in unit.baseAttributes) {
+                    var maxAttribute = attribute === "maxActionPoints" ? 6 : 9;
+                    if (unit.baseAttributes[attribute] < maxAttribute) {
+                        rows.push(React.DOM.div({
+                            className: "upgrade-attributes-attribute",
+                            onClick: this.upgradeAttribute.bind(this, attribute),
+                            key: attribute
+                        }, attribute + ": " + unit.baseAttributes[attribute] + " -> " + (unit.baseAttributes[attribute] + 1)));
+                    }
+                }
+                if (rows.length === 0) {
+                    return null;
+                }
+                return (React.DOM.div({
+                    className: "upgrade-attributes"
+                }, React.DOM.div({
+                    className: "upgrade-attributes-header"
+                }, "Upgrade stats"), rows));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="upgradeabilities.ts" />
+/// <reference path="upgradeattributes.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -3180,6 +3221,13 @@ var Rance;
                     upgradeData: unit.getAbilityUpgradeData()
                 });
                 this.closePopup();
+                this.props.onUnitUpgrade();
+            },
+            upgradeAttribute: function (attribute) {
+                var unit = this.props.unit;
+                unit.baseAttributes[attribute] += 1;
+                unit.attributesAreDirty = true;
+                unit.handleLevelUp();
                 this.props.onUnitUpgrade();
             },
             makeAbilityLearnPopup: function (ability) {
@@ -3236,6 +3284,9 @@ var Rance;
                 }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)), UIComponents.UpgradeAbilities({
                     abilities: upgradableAbilities,
                     handleClick: this.makeAbilityLearnPopup
+                }), UIComponents.UpgradeAttributes({
+                    unit: unit,
+                    handleClick: this.upgradeAttribute
                 })));
             }
         });
