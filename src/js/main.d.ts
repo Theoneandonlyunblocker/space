@@ -261,6 +261,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var UpgradeAbilities: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var UpgradeUnit: React.Factory<{}>;
     }
 }
@@ -2011,6 +2016,7 @@ declare module Rance {
         addExperience(amount: number): void;
         canLevelUp(): boolean;
         handleLevelUp(): void;
+        hasAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
         getLearnableAbilities(allAbilities: Templates.IAbilityBase[]): Templates.IAbilityBase[];
         canUpgradeIntoAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
         getAbilityUpgradeData(): {

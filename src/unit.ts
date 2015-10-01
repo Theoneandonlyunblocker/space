@@ -915,6 +915,18 @@ module Rance
       this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
       this.level++;
     }
+    hasAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[])
+    {
+      for (var i = 0; i < allAbilities.length; i++)
+      {
+        if (allAbilities[i].type === ability.type)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
     getLearnableAbilities(allAbilities: Templates.IAbilityBase[])
     {
       var abilities: Templates.IAbilityBase[] = [];
@@ -929,7 +941,7 @@ module Rance
           var hasAbilityFromGroup: boolean = false;
           for (var j = 0; j < learnableItem.length; j++)
           {
-            if (allAbilities.indexOf(learnableItem[j]) !== -1)
+            if (this.hasAbility(learnableItem[j], allAbilities))
             {
               hasAbilityFromGroup = true;
               break;
@@ -941,7 +953,7 @@ module Rance
             abilities = abilities.concat(learnableItem);
           }
         }
-        else if (allAbilities.indexOf(learnableItem) === -1)
+        else if (!this.hasAbility(learnableItem, allAbilities))
         {
           abilities.push(learnableItem);
         }
@@ -958,7 +970,7 @@ module Rance
           return false;
         }
       }
-      if (allAbilities.indexOf(ability) !== -1)
+      if (this.hasAbility(ability, allAbilities))
       {
         return false;
       }

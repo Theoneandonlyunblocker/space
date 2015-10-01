@@ -1,4 +1,4 @@
-/// <reference path="abilitylist.ts" />
+/// <reference path="upgradeabilities.ts" />
 
 module Rance
 {
@@ -20,6 +20,10 @@ module Rance
         var unit: Unit = this.props.unit;
         unit.upgradeAbility(source, newAbility);
         unit.handleLevelUp();
+        this.setState(
+        {
+          upgradeData: unit.getAbilityUpgradeData()
+        });
         this.closePopup();
         this.props.onUnitUpgrade();
       },
@@ -32,11 +36,13 @@ module Rance
           contentProps:
           {
             handleClose: this.closePopup,
-            contentConstructor: UIComponents.AbilityList,
+            contentConstructor: UIComponents.UpgradeAbilities,
             contentProps:
             {
               abilities: upgradeData.possibleUpgrades,
-              handleClick: this.upgradeAbility.bind(this, upgradeData.base)
+              handleClick: this.upgradeAbility.bind(this, upgradeData.base),
+              sourceAbility: upgradeData.base,
+              learningNewability: !Boolean(upgradeData.base)
             }
           },
           popupProps:
@@ -97,7 +103,7 @@ module Rance
             },
               unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)
             ),
-            UIComponents.AbilityList(
+            UIComponents.UpgradeAbilities(
             {
               abilities: upgradableAbilities,
               handleClick: this.makeAbilityLearnPopup

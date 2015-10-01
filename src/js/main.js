@@ -3131,6 +3131,36 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
+        UIComponents.UpgradeAbilities = React.createClass({
+            displayName: "UpgradeAbilities",
+            render: function () {
+                var headerText;
+                if (this.props.learningNewability) {
+                    headerText = "Learn ability";
+                }
+                else {
+                    headerText = "Upgrade ability";
+                    if (this.props.sourceAbility) {
+                        headerText += " " + this.props.sourceAbility.displayName;
+                    }
+                }
+                return (React.DOM.div({
+                    className: "upgrade-abilities"
+                }, React.DOM.div({
+                    className: "upgrade-abilities-header"
+                }, headerText), UIComponents.AbilityList({
+                    abilities: this.props.abilities,
+                    handleClick: this.props.handleClick
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="upgradeabilities.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
         UIComponents.UpgradeUnit = React.createClass({
             displayName: "UpgradeUnit",
             getInitialState: function () {
@@ -3143,6 +3173,9 @@ var Rance;
                 var unit = this.props.unit;
                 unit.upgradeAbility(source, newAbility);
                 unit.handleLevelUp();
+                this.setState({
+                    upgradeData: unit.getAbilityUpgradeData()
+                });
                 this.closePopup();
                 this.props.onUnitUpgrade();
             },
@@ -3152,10 +3185,12 @@ var Rance;
                     contentConstructor: UIComponents.TopMenuPopup,
                     contentProps: {
                         handleClose: this.closePopup,
-                        contentConstructor: UIComponents.AbilityList,
+                        contentConstructor: UIComponents.UpgradeAbilities,
                         contentProps: {
                             abilities: upgradeData.possibleUpgrades,
-                            handleClick: this.upgradeAbility.bind(this, upgradeData.base)
+                            handleClick: this.upgradeAbility.bind(this, upgradeData.base),
+                            sourceAbility: upgradeData.base,
+                            learningNewability: !Boolean(upgradeData.base)
                         }
                     },
                     popupProps: {
@@ -3195,7 +3230,7 @@ var Rance;
                     onlyAllowOne: true
                 }), React.DOM.div({
                     className: "upgrade-unit-header"
-                }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)), UIComponents.AbilityList({
+                }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)), UIComponents.UpgradeAbilities({
                     abilities: upgradableAbilities,
                     handleClick: this.makeAbilityLearnPopup
                 })));
@@ -14090,6 +14125,14 @@ var Rance;
             this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
             this.level++;
         };
+        Unit.prototype.hasAbility = function (ability, allAbilities) {
+            for (var i = 0; i < allAbilities.length; i++) {
+                if (allAbilities[i].type === ability.type) {
+                    return true;
+                }
+            }
+            return false;
+        };
         Unit.prototype.getLearnableAbilities = function (allAbilities) {
             var abilities = [];
             if (!this.template.learnableAbilities)
@@ -14099,7 +14142,7 @@ var Rance;
                 if (Array.isArray(learnableItem)) {
                     var hasAbilityFromGroup = false;
                     for (var j = 0; j < learnableItem.length; j++) {
-                        if (allAbilities.indexOf(learnableItem[j]) !== -1) {
+                        if (this.hasAbility(learnableItem[j], allAbilities)) {
                             hasAbilityFromGroup = true;
                             break;
                         }
@@ -14108,7 +14151,7 @@ var Rance;
                         abilities = abilities.concat(learnableItem);
                     }
                 }
-                else if (allAbilities.indexOf(learnableItem) === -1) {
+                else if (!this.hasAbility(learnableItem, allAbilities)) {
                     abilities.push(learnableItem);
                 }
             }
@@ -14120,7 +14163,7 @@ var Rance;
                     return false;
                 }
             }
-            if (allAbilities.indexOf(ability) !== -1) {
+            if (this.hasAbility(ability, allAbilities)) {
                 return false;
             }
             return true;
@@ -22163,7 +22206,11 @@ var Rance;
                         specialAbilityUpgrades: [
                             Templates.Abilities.ranceAttack
                         ],
-                        learnableAbilities: [Templates.Abilities.guardColumn, [Templates.Abilities.debugAbility, Templates.Abilities.ranceAttack]],
+                        learnableAbilities: [
+                            Templates.Abilities.guardColumn,
+                            Templates.Abilities.closeAttack,
+                            [Templates.Abilities.debugAbility, Templates.Abilities.ranceAttack]
+                        ],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.fighterSquadron = {
