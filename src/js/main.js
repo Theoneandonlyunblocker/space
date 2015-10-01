@@ -3122,8 +3122,50 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitExperience = React.createClass({
+            displayName: "UnitExperience",
+            render: function () {
+                var rows = [];
+                var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
+                var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);
+                var lastBarWidth = (10 * (this.props.experienceForCurrentLevel % 10));
+                for (var i = 0; i < totalBars; i++) {
+                    var bgProps = {
+                        className: "unit-experience-bar-point-background"
+                    };
+                    if (i < filledBars) {
+                        bgProps.className += " filled";
+                        if (i === filledBars - 1 && lastBarWidth !== 0) {
+                            bgProps.style =
+                                {
+                                    width: "" + lastBarWidth + "%"
+                                };
+                        }
+                    }
+                    else {
+                        bgProps.className += " empty";
+                    }
+                    rows.push(React.DOM.div({
+                        className: "unit-experience-bar-point",
+                        key: "" + i
+                    }, React.DOM.div(bgProps, null), React.DOM.div({
+                        className: "unit-experience-bar-point-markers"
+                    }, null)));
+                }
+                return (React.DOM.div({
+                    className: "unit-experience-bar"
+                }, this.props.experienceForCurrentLevel, rows));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="abilitylist.ts" />
 /// <reference path="unititemwrapper.ts"/>
+/// <reference path="unitexperience.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -3161,7 +3203,10 @@ var Rance;
                 }), UIComponents.AbilityList({
                     unit: unit,
                     listPassiveSkills: true
-                })), React.DOM.div({
+                })), UIComponents.UnitExperience({
+                    experienceForCurrentLevel: unit.experienceForCurrentLevel,
+                    experienceToNextLevel: unit.getExperienceToNextLevel()
+                }), React.DOM.div({
                     className: "menu-unit-info-items-wrapper"
                 }, itemSlots)));
             }
@@ -12801,8 +12846,8 @@ var Rance;
                 }
             }
             return ({
-                side1: totalValuePerSide.side2 / totalValuePerSide.side1,
-                side2: totalValuePerSide.side1 / totalValuePerSide.side2
+                side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
+                side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
             });
         };
         Battle.prototype.checkBattleEnd = function () {
@@ -13390,6 +13435,8 @@ var Rance;
             this.resetMovePoints();
             this.setInitialAbilities();
             this.setInitialPassiveSkills();
+            this.level = 1;
+            this.experienceForCurrentLevel = Rance.randInt(0, this.getExperienceToNextLevel());
             this.timesActedThisTurn = 0;
         };
         Unit.prototype.setBaseHealth = function () {
@@ -13892,7 +13939,7 @@ var Rance;
             return this.cachedBattleScene;
         };
         Unit.prototype.getExperienceToNextLevel = function () {
-            return 4 + this.level;
+            return (4 + this.level) * 10;
         };
         Unit.prototype.addExperience = function (amount) {
             this.experienceForCurrentLevel += amount;

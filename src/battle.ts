@@ -562,8 +562,8 @@ module Rance
 
       return(
       {
-        side1: totalValuePerSide.side2 / totalValuePerSide.side1,
-        side2: totalValuePerSide.side1 / totalValuePerSide.side2
+        side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
+        side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
       });
     }
     checkBattleEnd()

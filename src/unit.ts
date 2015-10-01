@@ -209,6 +209,9 @@ module Rance
       this.setInitialAbilities();
       this.setInitialPassiveSkills();
 
+      this.level = 1;
+      this.experienceForCurrentLevel = randInt(0, this.getExperienceToNextLevel());
+
       this.timesActedThisTurn = 0;
     }
     setBaseHealth()
@@ -897,7 +900,7 @@ module Rance
     }
     getExperienceToNextLevel()
     {
-      return 4 + this.level;
+      return (4 + this.level) * 10;
     }
     addExperience(amount: number)
     {

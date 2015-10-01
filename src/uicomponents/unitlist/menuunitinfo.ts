@@ -1,5 +1,6 @@
 /// <reference path="abilitylist.ts" />
 /// <reference path="unititemwrapper.ts"/>
+/// <reference path="unitexperience.ts" />
 
 module Rance
 {
@@ -10,7 +11,7 @@ module Rance
       displayName: "MenuUnitInfo",
       render: function()
       {
-        var unit = this.props.unit;
+        var unit: Unit = this.props.unit;
         if (!unit) return(
           React.DOM.div({className: "menu-unit-info"})
         )
@@ -63,6 +64,11 @@ module Rance
                 listPassiveSkills: true
               })
             ),
+            UIComponents.UnitExperience(
+            {
+              experienceForCurrentLevel: unit.experienceForCurrentLevel,
+              experienceToNextLevel: unit.getExperienceToNextLevel()
+            }),
             React.DOM.div(
             {
               className: "menu-unit-info-items-wrapper"

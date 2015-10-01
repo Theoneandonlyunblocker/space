@@ -2434,6 +2434,35 @@ ol {
   flex: 1;
   overflow-y: auto;
 }
+.unit-experience-bar {
+  height: 1em;
+  display: flex;
+  border: 1px solid red;
+}
+.unit-experience-bar :last-child .unit-experience-bar-point-markers {
+  border-right: none;
+}
+.unit-experience-bar-point {
+  position: relative;
+  flex: 1 1 auto;
+}
+.unit-experience-bar-point > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.unit-experience-bar-point-background {
+  z-index: 1;
+}
+.unit-experience-bar-point-markers {
+  z-index: 2;
+  border-right: 1px solid grey;
+}
+.filled {
+  background-color: green;
+}
 .unit-info-ability {
   display: inline-block;
   float: left;
