@@ -2437,14 +2437,15 @@ ol {
 .unit-experience-bar {
   height: 1em;
   display: flex;
-  border: 1px solid red;
+  border: 1px solid #c4e5fb;
 }
-.unit-experience-bar :last-child .unit-experience-bar-point-markers {
+.unit-experience-bar :last-child {
   border-right: none;
 }
 .unit-experience-bar-point {
   position: relative;
   flex: 1 1 auto;
+  border-right: 1px solid grey;
 }
 .unit-experience-bar-point > * {
   position: absolute;
@@ -2456,11 +2457,7 @@ ol {
 .unit-experience-bar-point-background {
   z-index: 1;
 }
-.unit-experience-bar-point-markers {
-  z-index: 2;
-  border-right: 1px solid grey;
-}
-.filled {
+.unit-experience-bar-point-background.filled {
   background-color: green;
 }
 .unit-info-ability {

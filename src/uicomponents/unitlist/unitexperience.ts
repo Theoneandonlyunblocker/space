@@ -43,12 +43,6 @@ module Rance
           },
             React.DOM.div(bgProps,
               null
-            ),
-            React.DOM.div(
-            {
-              className: "unit-experience-bar-point-markers"
-            },
-              null
             )
           ))
         }

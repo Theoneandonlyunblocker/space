@@ -2834,14 +2834,11 @@ ul, ol
 {
   height: 1em;
   display: flex;
-  border: 1px solid red;
+  border: 1px solid @ui-border-color1;
 
   :last-child
   {
-    .unit-experience-bar-point-markers
-    {
-      border-right: none;
-    }
+    border-right: none;
   }
 }
 
@@ -2849,6 +2846,7 @@ ul, ol
 {
   position: relative;
   flex: 1 1 auto;
+  border-right: 1px solid grey;
   >*
   {
     position: absolute;
@@ -2861,16 +2859,11 @@ ul, ol
 .unit-experience-bar-point-background
 {
   z-index: 1;
-}
-.unit-experience-bar-point-markers
-{
-  z-index: 2;
-  border-right: 1px solid grey;
-}
   &.filled
   {
     background-color: green;
   }
+}
 
 .unit-info-ability
 {

@@ -3152,9 +3152,7 @@ var Rance;
                     rows.push(React.DOM.div({
                         className: "unit-experience-bar-point",
                         key: "" + i
-                    }, React.DOM.div(bgProps, null), React.DOM.div({
-                        className: "unit-experience-bar-point-markers"
-                    }, null)));
+                    }, React.DOM.div(bgProps, null)));
                 }
                 return (React.DOM.div({
                     className: "unit-experience-bar"
