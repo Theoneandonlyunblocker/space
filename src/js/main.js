@@ -2973,7 +2973,6 @@ var Rance;
         UIComponents.AbilityList = React.createClass({
             displayName: "AbilityList",
             render: function () {
-                // TODO wrong type signature
                 var abilities = this.props.abilities;
                 var baseClassName = "unit-info-ability";
                 if (this.props.listPassiveSkills) {
@@ -14009,6 +14008,77 @@ var Rance;
             this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
             this.level++;
         };
+        Unit.prototype.getLearnableAbilities = function (allAbilities) {
+            var abilities = [];
+            if (!this.template.learnableAbilities)
+                return abilities;
+            for (var i = 0; i < this.template.learnableAbilities.length; i++) {
+                var learnableItem = this.template.learnableAbilities[i];
+                if (Array.isArray(learnableItem)) {
+                    var hasAbilityFromGroup = false;
+                    for (var j = 0; j < learnableItem.length; j++) {
+                        if (allAbilities.indexOf(learnableItem[j]) !== -1) {
+                            hasAbilityFromGroup = true;
+                            break;
+                        }
+                    }
+                    if (!hasAbilityFromGroup) {
+                        abilities = abilities.concat(learnableItem);
+                    }
+                }
+                else {
+                    abilities.push(learnableItem);
+                }
+            }
+            return abilities;
+        };
+        Unit.prototype.canUpgradeIntoAbility = function (ability, allAbilities) {
+            if (ability.onlyAllowExplicitUpgrade) {
+                if (!this.template.specialAbilityUpgrades || this.template.specialAbilityUpgrades.indexOf(ability) === -1) {
+                    return false;
+                }
+            }
+            if (allAbilities.indexOf(ability) !== -1) {
+                return false;
+            }
+            return true;
+        };
+        Unit.prototype.getAbilityUpgradeData = function () {
+            var upgradeData = {};
+            var allAbilities = this.getAllAbilities();
+            allAbilities = allAbilities.concat(this.getAllPassiveSkills());
+            var templates = app.moduleData.Templates;
+            for (var i = 0; i < allAbilities.length; i++) {
+                var parentAbility = allAbilities[i];
+                if (!parentAbility.canUpgradeInto)
+                    continue;
+                for (var j = 0; j < parentAbility.canUpgradeInto.length; j++) {
+                    var childAbilityType = parentAbility.canUpgradeInto[j];
+                    var childAbility = templates.Abilities[childAbilityType] || templates.PassiveSkills[childAbilityType];
+                    if (!childAbility)
+                        throw new Error("Invalid ability upgrade " + childAbilityType);
+                    if (this.canUpgradeIntoAbility(childAbility, allAbilities)) {
+                        if (!upgradeData[parentAbility.type]) {
+                            upgradeData[parentAbility.type] =
+                                {
+                                    base: parentAbility,
+                                    possibleUpgrades: []
+                                };
+                        }
+                        upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
+                    }
+                }
+            }
+            var learnable = this.getLearnableAbilities(allAbilities);
+            if (learnable.length > 0) {
+                upgradeData["learnable"] =
+                    {
+                        base: null,
+                        possibleUpgrades: learnable
+                    };
+            }
+            return upgradeData;
+        };
         Unit.prototype.serialize = function (includeItems) {
             if (includeItems === void 0) { includeItems = true; }
             var data = {};
@@ -22025,6 +22095,7 @@ var Rance;
                                 ]
                             }
                         ],
+                        learnableAbilities: [Templates.Abilities.guardColumn, [Templates.Abilities.debugAbility, Templates.Abilities.ranceAttack]],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.bomberSquadron = {

@@ -911,6 +911,111 @@ module Rance
       this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
       this.level++;
     }
+    getLearnableAbilities(allAbilities: Templates.IAbilityBase[])
+    {
+      var abilities: Templates.IAbilityBase[] = [];
+
+      if (!this.template.learnableAbilities) return abilities;
+
+      for (var i = 0; i < this.template.learnableAbilities.length; i++)
+      {
+        var learnableItem = this.template.learnableAbilities[i];
+        if (Array.isArray(learnableItem))
+        {
+          var hasAbilityFromGroup: boolean = false;
+          for (var j = 0; j < learnableItem.length; j++)
+          {
+            if (allAbilities.indexOf(learnableItem[j]) !== -1)
+            {
+              hasAbilityFromGroup = true;
+              break;
+            }
+          }
+
+          if (!hasAbilityFromGroup)
+          {
+            abilities = abilities.concat(learnableItem);
+          }
+        }
+        else
+        {
+          abilities.push(learnableItem);
+        }
+      }
+
+      return abilities;
+    }
+    canUpgradeIntoAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[])
+    {
+      if (ability.onlyAllowExplicitUpgrade)
+      {
+        if (!this.template.specialAbilityUpgrades || this.template.specialAbilityUpgrades.indexOf(ability) === -1)
+        {
+          return false;
+        }
+      }
+      if (allAbilities.indexOf(ability) !== -1)
+      {
+        return false;
+      }
+
+      return true;
+    }
+    getAbilityUpgradeData()
+    {
+      var upgradeData:
+      {
+        [source: string]:
+        {
+          base: Templates.IAbilityBase;
+          possibleUpgrades: Templates.IAbilityBase[];
+        }
+      } = {};
+
+      var allAbilities: Templates.IAbilityBase[] = this.getAllAbilities();
+      allAbilities = allAbilities.concat(this.getAllPassiveSkills());
+
+      var templates = app.moduleData.Templates;
+
+      for (var i = 0; i < allAbilities.length; i++)
+      {
+        var parentAbility = allAbilities[i];
+        if (!parentAbility.canUpgradeInto) continue;
+
+        for (var j = 0; j < parentAbility.canUpgradeInto.length; j++)
+        {
+          var childAbilityType = parentAbility.canUpgradeInto[j];
+          var childAbility: Templates.IAbilityBase =
+            templates.Abilities[childAbilityType] || templates.PassiveSkills[childAbilityType];
+          if (!childAbility) throw new Error("Invalid ability upgrade " + childAbilityType);
+          if (this.canUpgradeIntoAbility(childAbility, allAbilities))
+          {
+            if (!upgradeData[parentAbility.type])
+            {
+              upgradeData[parentAbility.type] =
+              {
+                base: parentAbility,
+                possibleUpgrades: []
+              }
+            }
+
+            upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
+          }
+        }
+      }
+
+      var learnable = this.getLearnableAbilities(allAbilities);
+      if (learnable.length > 0)
+      {
+        upgradeData["learnable"] =
+        {
+          base: null,
+          possibleUpgrades: learnable
+        }
+      }
+
+      return upgradeData;
+    }
     serialize(includeItems: boolean = true)
     {
       var data: any = {};

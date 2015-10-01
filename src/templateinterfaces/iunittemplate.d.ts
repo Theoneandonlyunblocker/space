@@ -42,9 +42,13 @@ declare module Rance
         intelligence: number;
         speed: number;
       };
+
       possibleAbilities: IWeightedProbability<IAbilityTemplate>[];
       possiblePassiveSkills?: IWeightedProbability<IPassiveSkillTemplate>[];
-      specialAbilityUpgrades?: Array<IAbilityTemplate|IPassiveSkillTemplate>;
+      specialAbilityUpgrades?: IAbilityBase[];
+      // only one of the abilities in a nested array can be learned f.ex.
+      // [canAlwaysLearn, canAlwaysLearn, [#1cantLearnIfHas#2, #2cantLearnIfHas#1]]
+      learnableAbilities?: Array<IAbilityBase | IAbilityBase[]>;
 
       unitDrawingFN: IUnitDrawingFunction;
     }

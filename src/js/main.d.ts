@@ -2010,6 +2010,14 @@ declare module Rance {
         getExperienceToNextLevel(): number;
         addExperience(amount: number): void;
         handleLevelUp(): void;
+        getLearnableAbilities(allAbilities: Templates.IAbilityBase[]): Templates.IAbilityBase[];
+        canUpgradeIntoAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
+        getAbilityUpgradeData(): {
+            [source: string]: {
+                base: Templates.IAbilityBase;
+                possibleUpgrades: Templates.IAbilityBase[];
+            };
+        };
         serialize(includeItems?: boolean): any;
         makeVirtualClone(): Unit;
     }
