@@ -2973,14 +2973,13 @@ var Rance;
         UIComponents.AbilityList = React.createClass({
             displayName: "AbilityList",
             render: function () {
-                var abilities = []; // TODO wrong type signature
+                // TODO wrong type signature
+                var abilities = this.props.abilities;
                 var baseClassName = "unit-info-ability";
                 if (this.props.listPassiveSkills) {
-                    abilities = this.props.unit.getAllPassiveSkills();
                     baseClassName += " passive-skill";
                 }
                 else {
-                    abilities = this.props.unit.getAllAbilities();
                     baseClassName += " active-skill";
                 }
                 if (abilities.length < 1)
@@ -3259,10 +3258,10 @@ var Rance;
                 }, null), React.DOM.div({
                     className: "menu-unit-info-abilities"
                 }, UIComponents.AbilityList({
-                    unit: unit,
+                    abilities: unit.getAllAbilities(),
                     listPassiveSkills: false
                 }), UIComponents.AbilityList({
-                    unit: unit,
+                    abilities: unit.getAllPassiveSkills(),
                     listPassiveSkills: true
                 })), UIComponents.UnitExperience({
                     experienceForCurrentLevel: unit.experienceForCurrentLevel,

@@ -55,12 +55,12 @@ module Rance
             },
               UIComponents.AbilityList(
               {
-                unit: unit,
+                abilities: unit.getAllAbilities(),
                 listPassiveSkills: false
               }),
               UIComponents.AbilityList(
               {
-                unit: unit,
+                abilities: unit.getAllPassiveSkills(),
                 listPassiveSkills: true
               })
             ),

@@ -7,17 +7,16 @@ module Rance
       displayName: "AbilityList",
       render: function()
       {
-        var abilities: Templates.IPassiveSkillTemplate[] = []; // TODO wrong type signature
+        // TODO wrong type signature
+        var abilities: Templates.IPassiveSkillTemplate[] = this.props.abilities;
         var baseClassName = "unit-info-ability";
 
         if (this.props.listPassiveSkills)
         {
-          abilities = this.props.unit.getAllPassiveSkills();
           baseClassName += " passive-skill";
         }
         else
         {
-          abilities = this.props.unit.getAllAbilities();
           baseClassName += " active-skill";
         }
 
