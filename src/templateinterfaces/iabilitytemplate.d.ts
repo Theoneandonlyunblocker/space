@@ -1,8 +1,10 @@
+/// <reference path="iabilitybase.d.ts" />
+
 declare module Rance
 {
   module Templates
   {
-    interface IAbilityTemplate
+    interface IAbilityTemplate extends IAbilityBase
     {
       type: string;
       displayName: string;
@@ -37,12 +39,6 @@ declare module Rance
       // prevent from being used in AI vs AI battles. helps when simulation depth is too low
       // to let AIScoreAdjust kick in
       disableInAIBattles?: boolean;
-
-      // list of ability types this ability can be upgraded into
-      // string[] because ability templates referencing ability templates can be a bit messy
-      canUpgradeInto?: string[];
-      // if true, can only be upgraded when unit has this ability in it's specialAbilityUpgrades
-      onlyAllowExplicitUpgrade?: boolean;
       
       addsGuard?: boolean; // set dynamically
     }
