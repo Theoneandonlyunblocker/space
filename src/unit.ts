@@ -904,7 +904,7 @@ module Rance
     }
     addExperience(amount: number)
     {
-      this.experienceForCurrentLevel += amount;
+      this.experienceForCurrentLevel += Math.round(amount);
     }
     canLevelUp()
     {

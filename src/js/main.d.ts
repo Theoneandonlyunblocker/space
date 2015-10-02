@@ -1688,8 +1688,16 @@ declare module Rance {
         identifiedUnits: {
             [id: number]: Unit;
         };
+        technologies: {
+            [technologyKey: string]: {
+                technology: Templates.ITechnologyTemplate;
+                totalResearch: number;
+                level: number;
+            };
+        };
         constructor(isAI: boolean, id?: number);
         destroy(): void;
+        initTechnologies(): void;
         makeColorScheme(): void;
         setupAI(game: Game): void;
         setupPirates(): void;
@@ -1745,6 +1753,8 @@ declare module Rance {
         }[];
         getNearestOwnedStarTo(star: Star): Star;
         attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
+        getResearchNeededForTechnologyLevel(level: number): number;
+        addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void;
         serialize(): any;
     }
 }
@@ -2681,6 +2691,9 @@ declare module Rance {
         };
         SubEmblems: {
             [type: string]: Templates.ISubEmblemTemplate;
+        };
+        Technologies: {
+            [key: string]: Templates.ITechnologyTemplate;
         };
         UnitArchetypes: {
             [type: string]: Templates.IUnitArchetype;

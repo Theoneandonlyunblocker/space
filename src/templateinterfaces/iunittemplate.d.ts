@@ -1,6 +1,7 @@
 /// <reference path="iabilitytemplate.d.ts" />
 /// <reference path="ipassiveskilltemplate.d.ts" />
 /// <reference path="ispritetemplate.d.ts" />
+/// <reference path="itechnologyrequirement.d.ts" />
 /// <reference path="iunitarchetype.d.ts" />
 /// <reference path="iunitdrawingfunction.d.ts" />
 /// <reference path="iunitfamily.d.ts" />
@@ -49,6 +50,8 @@ declare module Rance
       // only one of the abilities in a nested array can be learned f.ex.
       // [canAlwaysLearn, canAlwaysLearn, [#1cantLearnIfHas#2, #2cantLearnIfHas#1]]
       learnableAbilities?: Array<IAbilityBase | IAbilityBase[]>;
+
+      technologyRequirement?: ITechnologyRequirement;
 
       unitDrawingFN: IUnitDrawingFunction;
     }

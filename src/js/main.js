@@ -12188,6 +12188,10 @@ var Rance;
             this.diplomacyStatus.destroy();
             this.diplomacyStatus = null;
         };
+        Player.prototype.initTechnologies = function () {
+            for (var key in app.moduleData.Templates.Technologies) {
+            }
+        };
         Player.prototype.makeColorScheme = function () {
             var scheme = Rance.generateColorScheme(this.color);
             this.color = scheme.main;
@@ -12647,6 +12651,39 @@ var Rance;
                 simulator.finishBattle();
             }
         };
+        Player.prototype.getResearchNeededForTechnologyLevel = function (level) {
+            if (level <= 0)
+                return 0;
+            if (level === 1)
+                return 40;
+            var a = 20;
+            var b = 40;
+            var swap;
+            for (var i = 0; i < level; i++) {
+                swap = a;
+                a = b;
+                b = swap + b;
+            }
+            return a;
+        };
+        Player.prototype.addResearchTowardsTechnology = function (technology, amount) {
+            var tech = this.technologies[technology.key];
+            tech.totalResearch += amount;
+            var overflow;
+            if (tech.level >= technology.maxLevel) {
+                overflow = amount;
+            }
+            else {
+                while (tech.level < technology.maxLevel &&
+                    this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch) {
+                    tech.level++;
+                }
+                if (tech.level === technology.maxLevel) {
+                    overflow = tech.totalResearch - this.getResearchNeededForTechnologyLevel(tech.level);
+                }
+            }
+            // TODO handle overflow
+        };
         Player.prototype.serialize = function () {
             var data = {};
             data.id = this.id;
@@ -12680,6 +12717,10 @@ var Rance;
             }
             if (this.isAI && this.AIController) {
                 data.personality = Rance.extendObject(this.AIController.personality);
+            }
+            data.researchByTechnology = {};
+            for (var key in this.technologies) {
+                data.researchByTechnology[key] = this.technologies[key].totalResearch;
             }
             return data;
         };
@@ -14171,7 +14212,7 @@ var Rance;
             return (4 + this.level) * 10;
         };
         Unit.prototype.addExperience = function (amount) {
-            this.experienceForCurrentLevel += amount;
+            this.experienceForCurrentLevel += Math.round(amount);
         };
         Unit.prototype.canLevelUp = function () {
             return this.experienceForCurrentLevel >= this.getExperienceToNextLevel();
@@ -19083,6 +19124,7 @@ var Rance;
                 Resources: {},
                 StatusEffects: {},
                 SubEmblems: {},
+                Technologies: {},
                 UnitArchetypes: {},
                 UnitFamilies: {},
                 Units: {}
@@ -23530,6 +23572,9 @@ var Rance;
             for (var i = 0; i < data.revealedStarIds.length; i++) {
                 var id = data.revealedStarIds[i];
                 player.revealedStars[id] = this.starsById[id];
+            }
+            // technology
+            for (var key in data.researchByTechnology) {
             }
             return player;
         };

@@ -25,7 +25,8 @@ declare module Rance
         intelligence?: number;
         speed?: number;
       };
-      
+
+      technologyRequirement?: ITechnologyRequirement;
     }
   }
 }

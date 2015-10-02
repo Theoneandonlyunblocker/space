@@ -69,6 +69,10 @@ module Rance
     {
       [type: string]: Templates.ISubEmblemTemplate;
     };
+    Technologies:
+    {
+      [key: string]: Templates.ITechnologyTemplate;
+    };
     UnitArchetypes:
     {
       [type: string]: Templates.IUnitArchetype;
@@ -135,6 +139,7 @@ module Rance
       Resources: {},
       StatusEffects: {},
       SubEmblems: {},
+      Technologies: {},
       UnitArchetypes: {},
       UnitFamilies: {},
       Units: {}

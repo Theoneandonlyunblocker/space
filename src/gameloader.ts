@@ -261,6 +261,12 @@ module Rance
         player.revealedStars[id] = this.starsById[id];
       }
 
+      // technology
+      for (var key in data.researchByTechnology)
+      {
+        
+      }
+
       return player;
     }
     deserializeDiplomacyStatus(player: Player, data: any)

@@ -61,6 +61,16 @@ module Rance
       [id: number]: Unit;
     } = {};
 
+    technologies:
+    {
+      [technologyKey: string]:
+      {
+        technology: Templates.ITechnologyTemplate;
+        totalResearch: number;
+        level: number;
+      }
+    };
+
     constructor(isAI: boolean, id?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.player++;
@@ -75,6 +85,13 @@ module Rance
     {
       this.diplomacyStatus.destroy();
       this.diplomacyStatus = null;
+    }
+    initTechnologies()
+    {
+      for (var key in app.moduleData.Templates.Technologies)
+      {
+        
+      }
     }
     makeColorScheme()
     {
@@ -719,6 +736,49 @@ module Rance
         simulator.finishBattle();
       }
     }
+    getResearchNeededForTechnologyLevel(level: number)
+    {
+      if (level <= 0) return 0;
+      if (level === 1) return 40;
+
+      var a = 20;
+      var b = 40;
+      var swap: number;
+
+      for (var i = 0; i < level; i++)
+      {
+        swap = a;
+        a = b;
+        b = swap + b;
+      }
+
+      return a;
+    }
+    addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number)
+    {
+      var tech = this.technologies[technology.key]
+      tech.totalResearch += amount;
+      var overflow: number;
+
+      if (tech.level >= technology.maxLevel) // TODO probably shouldnt happen in the first place
+      {
+        overflow = amount;
+      }
+      else
+      {
+        while (tech.level < technology.maxLevel &&
+          this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch)
+        {
+          tech.level++;
+        }
+        if (tech.level === technology.maxLevel)
+        {
+          overflow = tech.totalResearch - this.getResearchNeededForTechnologyLevel(tech.level);
+        }
+      }
+
+      // TODO handle overflow
+    }
     serialize()
     {
       var data: any = {};
@@ -768,6 +828,11 @@ module Rance
         data.personality = extendObject(this.AIController.personality);
       }
       
+      data.researchByTechnology = {};
+      for (var key in this.technologies)
+      {
+        data.researchByTechnology[key] = this.technologies[key].totalResearch
+      }
 
       return data;
     }
