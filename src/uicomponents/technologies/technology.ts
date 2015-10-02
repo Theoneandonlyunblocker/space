@@ -7,6 +7,12 @@ module Rance
     export var Technology = React.createClass(
     {
       displayName: "Technology",
+      togglePriorityLock: function()
+      {
+        this.props.player.technologies[this.props.technology.key].priorityIsLocked =
+          !this.props.player.technologies[this.props.technology.key].priorityIsLocked;
+        this.forceUpdate();
+      },
       render: function()
       {
         var technology: Templates.ITechnologyTemplate = this.props.technology;
@@ -42,6 +48,12 @@ module Rance
             ),
             React.DOM.div(
             {
+              className: "technology-level"
+            },
+              "Level " + techData.level
+            ),
+            React.DOM.div(
+            {
               className: "technology-progress-bar-container"
             },
               React.DOM.div(
@@ -61,8 +73,16 @@ module Rance
               UIComponents.TechnologyPrioritySlider(
               {
                 player: this.props.player,
-                technology: this.props.technology
+                technology: this.props.technology,
+                researchPoints: this.props.researchPoints
               })
+            ),
+            React.DOM.button(
+            {
+              className: "technology-toggle-priority-lock" + (techData.priorityIsLocked ? " locked" : " unlocked"),
+              onClick: this.togglePriorityLock
+            },
+              null
             )
           )
         );

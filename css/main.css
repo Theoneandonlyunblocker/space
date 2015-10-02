@@ -2774,9 +2774,22 @@ ol {
 .diplomacy-action-button.disabled * {
   pointer-events: none !important;
 }
+.technology-listing {
+  display: flex;
+  flex-flow: row;
+}
+.technology-name {
+  flex: 0 0 60px;
+  margin-right: 1em;
+}
+.technology-level {
+  flex: 0 0 60px;
+}
 .technology-progress-bar-container {
   display: flex;
   flex-flow: row;
+  flex: 1 1 300px;
+  min-width: 200px;
   position: relative;
   height: 1em;
   border: 1px solid #c4e5fb;
@@ -2789,6 +2802,15 @@ ol {
 }
 .technology-progress-bar {
   background-color: green;
+}
+.technology-progress-bar-priority-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.technology-progress-bar-priority-container > * {
+  position: absolute;
+  right: 0;
 }
 .technology-progress-bar-mixin {
   background-image: url("../img/icons/technologyPriorityMarker.png");
@@ -2836,6 +2858,20 @@ ol {
   background-repeat: no-repeat;
   width: 16px;
   height: 1em;
+}
+.technology-toggle-priority-lock.locked::after {
+  content: "\f023";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+.technology-toggle-priority-lock.unlocked::after {
+  content: "\f13e";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
 }
 .save-game {
   position: relative;

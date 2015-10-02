@@ -3081,10 +3081,29 @@ ul, ol
   margin: 5px;
 }
 
+.technology-listing
+{
+  display: flex;
+  flex-flow: row;
+}
+
+.technology-name
+{
+  flex: 0 0 60px;
+  margin-right: 1em;
+}
+
+.technology-level
+{
+  flex: 0 0 60px;
+}
+
 .technology-progress-bar-container
 {
   display: flex;
   flex-flow: row;
+  flex: 1 1 300px;
+  min-width: 200px;
   position: relative;
   height: 1em;
   border: 1px solid @ui-border-color1;
@@ -3100,6 +3119,19 @@ ul, ol
 .technology-progress-bar
 {
   background-color: green;
+}
+
+.technology-progress-bar-priority-container
+{
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  >*
+  {
+    position: absolute;
+    right: 0;
+  }
 }
 
 .technology-progress-bar-mixin
@@ -3128,6 +3160,18 @@ ul, ol
   &::-ms-thumb
   {
     .technology-progress-bar-mixin;
+  }
+}
+
+.technology-toggle-priority-lock
+{
+  &.locked::after
+  {
+    .fa("\f023");
+  }
+  &.unlocked::after
+  {
+    .fa("\f13e");
   }
 }
 

@@ -18,6 +18,7 @@ module Rance
           {
             player: player,
             technology: player.technologies[key].technology,
+            researchPoints: 30, // TODO
             key: key
           }));
         }

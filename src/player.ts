@@ -69,6 +69,7 @@ module Rance
         totalResearch: number;
         level: number;
         priority: number;
+        priorityIsLocked: boolean;
       }
     };
 
@@ -87,7 +88,8 @@ module Rance
       this.diplomacyStatus.destroy();
       this.diplomacyStatus = null;
     }
-    initTechnologies(savedData?: {[key: string]: {totalResearch: number; priority: number;}})
+    initTechnologies(savedData?:
+      {[key: string]: {totalResearch: number; priority: number; priorityIsLocked: boolean}})
     {
       this.technologies = {};
       var totalTechnologies = Object.keys(app.moduleData.Templates.Technologies).length;
@@ -99,13 +101,15 @@ module Rance
           technology: technology,
           totalResearch: 34,
           level: 0,
-          priority: 1 / totalTechnologies
+          priority: 1 / totalTechnologies,
+          priorityIsLocked: false
         }
 
         if (savedData && savedData[key])
         {
           this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
           this.technologies[key].priority = savedData[key].priority;
+          this.technologies[key].priorityIsLocked = savedData[key].priorityIsLocked;
         }
       }
     }
@@ -824,9 +828,7 @@ module Rance
     }
     setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number)
     {
-      this.technologies[technology.key].priority = priority;
-
-      var remainingPriority = 1 - priority;
+      var remainingPriority = 1;
 
       var totalOtherPriority: number = 0;
       var totalOtherPriorityWasZero: boolean = false;
@@ -835,10 +837,29 @@ module Rance
       {
         if (key !== technology.key)
         {
-          totalOtherPriority += this.technologies[key].priority;
-          totalOthersCount++;
+          if (this.technologies[key].priorityIsLocked)
+          {
+            remainingPriority -= this.technologies[key].priority;
+          }
+          else
+          {
+            totalOtherPriority += this.technologies[key].priority;
+            totalOthersCount++;
+          }
         }
       }
+
+      if (remainingPriority < 0.0001)
+      {
+        remainingPriority = 0;
+      }
+
+      if (priority > remainingPriority)
+      {
+        priority = remainingPriority;
+      }
+      this.technologies[technology.key].priority = priority;
+      remainingPriority -= priority;
 
       if (totalOtherPriority === 0)
       {
@@ -848,7 +869,7 @@ module Rance
 
       for (var key in this.technologies)
       {
-        if (key !== technology.key)
+        if (key !== technology.key && !this.technologies[key].priorityIsLocked)
         {
           var techData = this.technologies[key];
           if (totalOtherPriorityWasZero)
@@ -859,13 +880,6 @@ module Rance
           techData.priority = relativePriority * remainingPriority;
         }
       }
-
-      var test = 0;
-      for (var key in this.technologies)
-      {
-        test += this.technologies[key].priority;
-      }
-      console.log(test);
 
       eventManager.dispatchEvent("technologyPrioritiesUpdated");
     }
@@ -924,7 +938,8 @@ module Rance
         data.researchByTechnology[key] =
         {
           totalResearch: this.technologies[key].totalResearch,
-          priority: this.technologies[key].priority
+          priority: this.technologies[key].priority,
+          priorityIsLocked: this.technologies[key].priorityIsLocked
         }
       }
 

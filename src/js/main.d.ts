@@ -1710,6 +1710,7 @@ declare module Rance {
                 totalResearch: number;
                 level: number;
                 priority: number;
+                priorityIsLocked: boolean;
             };
         };
         constructor(isAI: boolean, id?: number);
@@ -1718,6 +1719,7 @@ declare module Rance {
             [key: string]: {
                 totalResearch: number;
                 priority: number;
+                priorityIsLocked: boolean;
             };
         }): void;
         makeColorScheme(): void;

@@ -33,22 +33,38 @@ module Rance
       },
       handlePriorityChange: function(e: Event)
       {
+        if (this.props.player.technologies[this.props.technology.key].priorityIsLocked)
+        {
+          return;
+        }
         var target = <HTMLInputElement> e.target;
         this.props.player.setTechnologyPriority(this.props.technology, parseFloat(target.value));
       },
       render: function()
       {
+        var predictedResearchPoints: number = 30; // TODO
         return(
-          React.DOM.input(
+          React.DOM.div(
           {
-            className: "technology-progress-bar-priority",
-            type: "range",
-            min: 0,
-            max: 1,
-            step: 0.01,
-            value: this.state.priority,
-            onChange: this.handlePriorityChange
-          })
+            className: "technology-progress-bar-priority-container"
+          },
+            React.DOM.span(
+            {
+              className: "technology-progress-bar-predicted-research"
+            },
+              "+" + (this.props.researchPoints * this.state.priority).toFixed(1)
+            ),
+            React.DOM.input(
+            {
+              className: "technology-progress-bar-priority",
+              type: "range",
+              min: 0,
+              max: 1,
+              step: 0.01,
+              value: this.state.priority,
+              onChange: this.handlePriorityChange
+            })
+          )
         );
       }
     })
