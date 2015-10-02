@@ -26,7 +26,7 @@ declare module Rance
         speed?: number;
       };
 
-      technologyRequirement?: ITechnologyRequirement;
+      technologyRequirements?: ITechnologyRequirement[];
     }
   }
 }

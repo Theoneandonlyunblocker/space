@@ -8,6 +8,7 @@
 /// <reference path="mapgen/spiralgalaxy.ts" />
 /// <reference path="mapgen/test.ts" />
 
+/// <reference path="templates/technologies.ts" />
 /// <reference path="templates/abilities.ts" />
 /// <reference path="templates/attitudemodifiers.ts" />
 /// <reference path="templates/battlesfx.ts" />

@@ -12188,8 +12188,19 @@ var Rance;
             this.diplomacyStatus.destroy();
             this.diplomacyStatus = null;
         };
-        Player.prototype.initTechnologies = function () {
+        Player.prototype.initTechnologies = function (savedData) {
+            this.technologies = {};
             for (var key in app.moduleData.Templates.Technologies) {
+                var technology = app.moduleData.Templates.Technologies[key];
+                this.technologies[key] =
+                    {
+                        technology: technology,
+                        totalResearch: 0,
+                        level: 0
+                    };
+                if (savedData && savedData[key]) {
+                    this.addResearchTowardsTechnology(technology, savedData[key]);
+                }
             }
         };
         Player.prototype.makeColorScheme = function () {
@@ -12327,6 +12338,15 @@ var Rance;
             }
             return incomeByResource;
         };
+        Player.prototype.meetsTechnologyRequirements = function (requirements) {
+            for (var i = 0; i < requirements.length; i++) {
+                var requirement = requirements[i];
+                if (this.technologies[requirement.technology.key].level < requirement.level) {
+                    return false;
+                }
+            }
+            return true;
+        };
         Player.prototype.getGloballyBuildableShips = function () {
             var templates = [];
             var typesAlreadyAdded = {};
@@ -12338,8 +12358,13 @@ var Rance;
                 var template = unitsToAdd[i];
                 if (typesAlreadyAdded[template.type])
                     continue;
-                typesAlreadyAdded[template.type] = true;
-                templates.push(template);
+                else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements)) {
+                    continue;
+                }
+                else {
+                    typesAlreadyAdded[template.type] = true;
+                    templates.push(template);
+                }
             }
             return templates;
         };
@@ -12606,6 +12631,9 @@ var Rance;
                     if (alreadyAdded[item.type]) {
                         continue;
                     }
+                    else if (item.technologyRequirements && !this.meetsTechnologyRequirements(item.technologyRequirements)) {
+                        continue;
+                    }
                     else {
                         alreadyAdded[item.type] = true;
                         allBuildable.push({
@@ -12679,7 +12707,9 @@ var Rance;
                     tech.level++;
                 }
                 if (tech.level === technology.maxLevel) {
-                    overflow = tech.totalResearch - this.getResearchNeededForTechnologyLevel(tech.level);
+                    var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
+                    overflow = tech.totalResearch - neededForMaxLevel;
+                    tech.totalResearch -= neededForMaxLevel;
                 }
             }
             // TODO handle overflow
@@ -16026,6 +16056,7 @@ var Rance;
             },
             makePlayer: function () {
                 var player = new Rance.Player(!this.props.isHuman);
+                player.initTechnologies();
                 player.name = this.state.name;
                 player.color = this.state.mainColor === null ?
                     this.generateMainColor() : this.state.mainColor;
@@ -20673,6 +20704,29 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/itechnologytemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Technologies;
+                (function (Technologies) {
+                    Technologies.stealth = {
+                        key: "stealth",
+                        displayName: "Stealth",
+                        description: "stealthy stuff",
+                        maxLevel: 9
+                    };
+                })(Technologies = Templates.Technologies || (Templates.Technologies = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var Modules;
@@ -22482,6 +22536,7 @@ var Rance;
                                 ]
                             }
                         ],
+                        technologyRequirements: [{ technology: Templates.Technologies.stealth, level: 1 }],
                         unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.shieldBoat = {
@@ -23222,6 +23277,7 @@ var Rance;
 /// <reference path="graphics/maprenderermapmodes.ts" />
 /// <reference path="mapgen/spiralgalaxy.ts" />
 /// <reference path="mapgen/test.ts" />
+/// <reference path="templates/technologies.ts" />
 /// <reference path="templates/abilities.ts" />
 /// <reference path="templates/attitudemodifiers.ts" />
 /// <reference path="templates/battlesfx.ts" />
@@ -23574,8 +23630,7 @@ var Rance;
                 player.revealedStars[id] = this.starsById[id];
             }
             // technology
-            for (var key in data.researchByTechnology) {
-            }
+            player.initTechnologies(data.researchByTechnology);
             return player;
         };
         GameLoader.prototype.deserializeDiplomacyStatus = function (player, data) {
@@ -23958,6 +24013,7 @@ var Rance;
             for (var i = 0; i < 5; i++) {
                 var player = new Rance.Player(i >= 1);
                 player.makeRandomFlag();
+                player.initTechnologies();
                 players.push(player);
             }
             var pirates = new Rance.Player(true);

@@ -262,10 +262,7 @@ module Rance
       }
 
       // technology
-      for (var key in data.researchByTechnology)
-      {
-        
-      }
+      player.initTechnologies(data.researchByTechnology);
 
       return player;
     }

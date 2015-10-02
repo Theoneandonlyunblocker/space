@@ -86,6 +86,7 @@ module Rance
       makePlayer: function()
       {
         var player = new Player(!this.props.isHuman);
+        player.initTechnologies();
 
         player.name = this.state.name;
         

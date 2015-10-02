@@ -194,6 +194,7 @@ module Rance
       {
         var player = new Player(i >= 1);
         player.makeRandomFlag();
+        player.initTechnologies();
 
         players.push(player);
       }

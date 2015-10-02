@@ -23,6 +23,7 @@
 /// <reference path="../../lib/offset.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
+/// <reference path="../templateinterfaces/itechnologytemplate.d.ts" />
 /// <reference path="../templateinterfaces/ieffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/sfxparams.d.ts" />
 /// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
@@ -1697,7 +1698,9 @@ declare module Rance {
         };
         constructor(isAI: boolean, id?: number);
         destroy(): void;
-        initTechnologies(): void;
+        initTechnologies(savedData?: {
+            [key: string]: number;
+        }): void;
         makeColorScheme(): void;
         setupAI(game: Game): void;
         setupPirates(): void;
@@ -1724,6 +1727,7 @@ declare module Rance {
                 amount: number;
             };
         };
+        meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[]): boolean;
         getGloballyBuildableShips(): Templates.IUnitTemplate[];
         getNeighboringStars(): Star[];
         updateVisionInStar(star: Star): void;
@@ -2884,6 +2888,17 @@ declare module Rance {
             module Templates {
                 module MapGen {
                     var tinierSpiralGalaxy: Rance.Templates.IMapGenTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Technologies {
+                    var stealth: Rance.Templates.ITechnologyTemplate;
                 }
             }
         }

@@ -86,11 +86,23 @@ module Rance
       this.diplomacyStatus.destroy();
       this.diplomacyStatus = null;
     }
-    initTechnologies()
+    initTechnologies(savedData?: {[key: string]: number})
     {
+      this.technologies = {};
       for (var key in app.moduleData.Templates.Technologies)
       {
-        
+        var technology = app.moduleData.Templates.Technologies[key]
+        this.technologies[key] =
+        {
+          technology: technology,
+          totalResearch: 0,
+          level: 0
+        }
+
+        if (savedData && savedData[key])
+        {
+          this.addResearchTowardsTechnology(technology, savedData[key]);
+        }
       }
     }
     makeColorScheme()
@@ -289,6 +301,19 @@ module Rance
 
       return incomeByResource;
     }
+    meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[])
+    {
+      for (var i = 0; i < requirements.length; i++)
+      {
+        var requirement = requirements[i];
+        if (this.technologies[requirement.technology.key].level < requirement.level)
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
     getGloballyBuildableShips()
     {
       var templates: Templates.IUnitTemplate[] = [];
@@ -307,9 +332,15 @@ module Rance
       {
         var template = unitsToAdd[i];
         if (typesAlreadyAdded[template.type]) continue;
-
-        typesAlreadyAdded[template.type] = true;
-        templates.push(template);
+        else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements))
+        {
+          continue;
+        }
+        else
+        {
+          typesAlreadyAdded[template.type] = true;
+          templates.push(template);
+        }
       }
 
       return templates;
@@ -678,6 +709,10 @@ module Rance
           {
             continue;
           }
+          else if (item.technologyRequirements && !this.meetsTechnologyRequirements(item.technologyRequirements))
+          {
+            continue;
+          }
           else
           {
             alreadyAdded[item.type] = true;
@@ -773,7 +808,9 @@ module Rance
         }
         if (tech.level === technology.maxLevel)
         {
-          overflow = tech.totalResearch - this.getResearchNeededForTechnologyLevel(tech.level);
+          var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
+          overflow = tech.totalResearch - neededForMaxLevel;
+          tech.totalResearch -= neededForMaxLevel;
         }
       }
 

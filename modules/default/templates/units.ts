@@ -304,6 +304,7 @@ module Rance
                 ]
               }
             ],
+            technologyRequirements: [{technology: Technologies.stealth, level: 1}],
             unitDrawingFN: defaultUnitScene
           }
           export var shieldBoat: Rance.Templates.IUnitTemplate =

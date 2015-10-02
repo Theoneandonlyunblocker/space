@@ -51,7 +51,7 @@ declare module Rance
       // [canAlwaysLearn, canAlwaysLearn, [#1cantLearnIfHas#2, #2cantLearnIfHas#1]]
       learnableAbilities?: Array<IAbilityBase | IAbilityBase[]>;
 
-      technologyRequirement?: ITechnologyRequirement;
+      technologyRequirements?: ITechnologyRequirement[];
 
       unitDrawingFN: IUnitDrawingFunction;
     }
