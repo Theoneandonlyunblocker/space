@@ -2777,6 +2777,8 @@ ol {
 .technology-listing {
   display: flex;
   flex-flow: row;
+  height: 1.5em;
+  align-items: center;
 }
 .technology-name {
   flex: 0 0 60px;
@@ -2858,6 +2860,32 @@ ol {
   background-repeat: no-repeat;
   width: 16px;
   height: 1em;
+}
+.technology-toggle-priority-lock {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  height: 1.1em;
+}
+.technology-toggle-priority-lock:hover,
+.technology-toggle-priority-lock:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.technology-toggle-priority-lock:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.technology-toggle-priority-lock:disabled,
+.technology-toggle-priority-lock.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.technology-toggle-priority-lock:disabled *,
+.technology-toggle-priority-lock.disabled * {
+  pointer-events: none !important;
 }
 .technology-toggle-priority-lock.locked::after {
   content: "\f023";
