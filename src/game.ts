@@ -100,6 +100,8 @@ module Rance
           var resourceData = allResourceIncomeData[resourceType];
           player.addResource(resourceData.resource, resourceData.amount);
         }
+
+        player.allocateResearchPoints();
       }
     }
     setNextPlayer()

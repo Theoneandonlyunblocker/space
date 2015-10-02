@@ -10,6 +10,7 @@ module Rance
       render: function()
       {
         var player: Player = this.props.player;
+        var researchSpeed: number = player.getResearchSpeed();
         var rows: ReactComponentPlaceHolder[] = [];
 
         for (var key in player.technologies)
@@ -18,7 +19,7 @@ module Rance
           {
             player: player,
             technology: player.technologies[key].technology,
-            researchPoints: 30, // TODO
+            researchPoints: researchSpeed,
             key: key
           }));
         }
@@ -38,7 +39,7 @@ module Rance
             {
               className: "technologies-list-research-speed"
             },
-              "Research speed goes here TODO"
+              "Research speed: " + researchSpeed + " per turn"
             )
           )
         );

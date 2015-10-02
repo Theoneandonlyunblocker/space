@@ -99,7 +99,7 @@ module Rance
         this.technologies[key] =
         {
           technology: technology,
-          totalResearch: 34,
+          totalResearch: 0,
           level: 0,
           priority: 1 / totalTechnologies,
           priorityIsLocked: false
@@ -781,7 +781,34 @@ module Rance
         simulator.finishBattle();
       }
     }
-    getResearchNeededForTechnologyLevel(level: number)
+    // research and technology
+    getResearchSpeed(): number
+    {
+      return 30; // TODO
+    }
+    allocateResearchPoints(): void
+    {
+      // probably not needed as priority should always add up to 1 anyway,
+      // but this is cheap and infrequently called so this is here as a safeguard at least for now
+      var totalPriority: number = 0;
+      for (var key in this.technologies)
+      {
+        totalPriority += this.technologies[key].priority;
+      }
+
+      var researchSpeed = this.getResearchSpeed();
+
+      for (var key in this.technologies)
+      {
+        var techData = this.technologies[key];
+        var relativePriority = techData.priority / totalPriority;
+        if (relativePriority > 0)
+        {
+          this.addResearchTowardsTechnology(techData.technology, relativePriority * researchSpeed);
+        }
+      }
+    }
+    getResearchNeededForTechnologyLevel(level: number): number
     {
       if (level <= 0) return 0;
       if (level === 1) return 40;
@@ -802,7 +829,7 @@ module Rance
 
       return total;
     }
-    addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number)
+    addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void
     {
       var tech = this.technologies[technology.key]
       tech.totalResearch += amount;
@@ -851,6 +878,7 @@ module Rance
           }
         }
       }
+      if (totalOthersCount === 0) return;
 
       if (remainingPriority < 0.0001)
       {
@@ -863,6 +891,7 @@ module Rance
       }
       this.technologies[technology.key].priority = priority;
       remainingPriority -= priority;
+
 
       if (totalOtherPriority === 0)
       {

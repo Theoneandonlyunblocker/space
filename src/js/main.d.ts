@@ -1778,6 +1778,8 @@ declare module Rance {
         }[];
         getNearestOwnedStarTo(star: Star): Star;
         attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
+        getResearchSpeed(): number;
+        allocateResearchPoints(): void;
         getResearchNeededForTechnologyLevel(level: number): number;
         addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void;
         setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number): void;

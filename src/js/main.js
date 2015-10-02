@@ -4123,7 +4123,9 @@ var Rance;
                         left: this.dragPos ? this.dragPos.left : 0,
                         width: this.dragPos.width,
                         height: this.dragPos.height,
-                        zIndex: this.state.zIndex
+                        zIndex: this.state.zIndex,
+                        minWidth: this.props.minWidth,
+                        minHeight: this.props.minHeight
                     }
                 };
                 if (this.state.dragging) {
@@ -5660,7 +5662,7 @@ var Rance;
             componentDidMount: function () {
                 Rance.eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
             },
-            componentWillUnMount: function () {
+            componentWillUnmount: function () {
                 Rance.eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
             },
             getPlayerPriority: function () {
@@ -5739,7 +5741,7 @@ var Rance;
                     }
                 }), React.DOM.div({
                     className: "technology-progress-bar-value"
-                }, "" + progressForLevel + " / " + neededToProgressLevel), UIComponents.TechnologyPrioritySlider({
+                }, "" + progressForLevel.toFixed(1) + " / " + Math.ceil(neededToProgressLevel)), UIComponents.TechnologyPrioritySlider({
                     player: this.props.player,
                     technology: this.props.technology,
                     researchPoints: this.props.researchPoints
@@ -5760,12 +5762,13 @@ var Rance;
             displayName: "TechnologiesList",
             render: function () {
                 var player = this.props.player;
+                var researchSpeed = player.getResearchSpeed();
                 var rows = [];
                 for (var key in player.technologies) {
                     rows.push(UIComponents.Technology({
                         player: player,
                         technology: player.technologies[key].technology,
-                        researchPoints: 30,
+                        researchPoints: researchSpeed,
                         key: key
                     }));
                 }
@@ -5775,7 +5778,7 @@ var Rance;
                     className: "technologies-list"
                 }, rows), React.DOM.div({
                     className: "technologies-list-research-speed"
-                }, "Research speed goes here TODO")));
+                }, "Research speed: " + researchSpeed + " per turn")));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -5916,6 +5919,7 @@ var Rance;
                                 {
                                     player: this.props.player
                                 };
+                            popupProps.minWidth = 430;
                         }
                 }
                 var id = this.refs.popupManager.makePopup({
@@ -10822,6 +10826,7 @@ var Rance;
                     var resourceData = allResourceIncomeData[resourceType];
                     player.addResource(resourceData.resource, resourceData.amount);
                 }
+                player.allocateResearchPoints();
             }
         };
         Game.prototype.setNextPlayer = function () {
@@ -12355,7 +12360,7 @@ var Rance;
                 this.technologies[key] =
                     {
                         technology: technology,
-                        totalResearch: 34,
+                        totalResearch: 0,
                         level: 0,
                         priority: 1 / totalTechnologies,
                         priorityIsLocked: false
@@ -12845,6 +12850,26 @@ var Rance;
                 simulator.finishBattle();
             }
         };
+        // research and technology
+        Player.prototype.getResearchSpeed = function () {
+            return 30; // TODO
+        };
+        Player.prototype.allocateResearchPoints = function () {
+            // probably not needed as priority should always add up to 1 anyway,
+            // but this is cheap and infrequently called so this is here as a safeguard at least for now
+            var totalPriority = 0;
+            for (var key in this.technologies) {
+                totalPriority += this.technologies[key].priority;
+            }
+            var researchSpeed = this.getResearchSpeed();
+            for (var key in this.technologies) {
+                var techData = this.technologies[key];
+                var relativePriority = techData.priority / totalPriority;
+                if (relativePriority > 0) {
+                    this.addResearchTowardsTechnology(techData.technology, relativePriority * researchSpeed);
+                }
+            }
+        };
         Player.prototype.getResearchNeededForTechnologyLevel = function (level) {
             if (level <= 0)
                 return 0;
@@ -12853,12 +12878,14 @@ var Rance;
             var a = 20;
             var b = 40;
             var swap;
+            var total = 0;
             for (var i = 0; i < level; i++) {
                 swap = a;
                 a = b;
                 b = swap + b;
+                total += a;
             }
-            return a;
+            return total;
         };
         Player.prototype.addResearchTowardsTechnology = function (technology, amount) {
             var tech = this.technologies[technology.key];
@@ -12896,6 +12923,8 @@ var Rance;
                     }
                 }
             }
+            if (totalOthersCount === 0)
+                return;
             if (remainingPriority < 0.0001) {
                 remainingPriority = 0;
             }
