@@ -16,7 +16,7 @@ module Rance
       {
         eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
       },
-      componentWillUnMount: function()
+      componentWillUnmount: function()
       {
         eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
       },
