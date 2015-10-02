@@ -12358,20 +12358,21 @@ var Rance;
         };
         Player.prototype.getGloballyBuildableShips = function () {
             var templates = [];
-            var typesAlreadyAdded = {};
+            var typesAlreadyAddedChecked = {};
             var unitsToAdd = app.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
             if (!this.isAI && Rance.Options.debugMode) {
                 unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
             }
             for (var i = 0; i < unitsToAdd.length; i++) {
                 var template = unitsToAdd[i];
-                if (typesAlreadyAdded[template.type])
+                if (typesAlreadyAddedChecked[template.type])
                     continue;
                 else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements)) {
+                    typesAlreadyAddedChecked[template.type] = true;
                     continue;
                 }
                 else {
-                    typesAlreadyAdded[template.type] = true;
+                    typesAlreadyAddedChecked[template.type] = true;
                     templates.push(template);
                 }
             }
@@ -12630,21 +12631,22 @@ var Rance;
             this.items.splice(index, 1);
         };
         Player.prototype.getAllBuildableItems = function () {
-            var alreadyAdded = {};
+            var alreadyChecked = {};
             var allBuildable = [];
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 var star = this.controlledLocations[i];
                 var buildableItems = star.getBuildableItems().all;
                 for (var j = 0; j < buildableItems.length; j++) {
                     var item = buildableItems[j];
-                    if (alreadyAdded[item.type]) {
+                    if (alreadyChecked[item.type]) {
                         continue;
                     }
                     else if (item.technologyRequirements && !this.meetsTechnologyRequirements(item.technologyRequirements)) {
+                        alreadyChecked[item.type] = true;
                         continue;
                     }
                     else {
-                        alreadyAdded[item.type] = true;
+                        alreadyChecked[item.type] = true;
                         allBuildable.push({
                             star: star,
                             template: item

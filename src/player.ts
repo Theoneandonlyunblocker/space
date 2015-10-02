@@ -317,7 +317,7 @@ module Rance
     getGloballyBuildableShips()
     {
       var templates: Templates.IUnitTemplate[] = [];
-      var typesAlreadyAdded:
+      var typesAlreadyAddedChecked:
       {
         [unitType: string]: boolean;
       } = {};
@@ -331,14 +331,15 @@ module Rance
       for (var i = 0; i < unitsToAdd.length; i++)
       {
         var template = unitsToAdd[i];
-        if (typesAlreadyAdded[template.type]) continue;
+        if (typesAlreadyAddedChecked[template.type]) continue;
         else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements))
         {
+          typesAlreadyAddedChecked[template.type] = true;
           continue;
         }
         else
         {
-          typesAlreadyAdded[template.type] = true;
+          typesAlreadyAddedChecked[template.type] = true;
           templates.push(template);
         }
       }
@@ -693,7 +694,7 @@ module Rance
     }
     getAllBuildableItems()
     {
-      var alreadyAdded: {[itemType: string]: boolean} = {};
+      var alreadyChecked: {[itemType: string]: boolean} = {};
       var allBuildable: {star: Star; template: Templates.IItemTemplate;}[] = [];
 
       for (var i = 0; i < this.controlledLocations.length; i++)
@@ -705,17 +706,18 @@ module Rance
         {
           var item = buildableItems[j];
 
-          if (alreadyAdded[item.type])
+          if (alreadyChecked[item.type])
           {
             continue;
           }
           else if (item.technologyRequirements && !this.meetsTechnologyRequirements(item.technologyRequirements))
           {
+            alreadyChecked[item.type] = true;
             continue;
           }
           else
           {
-            alreadyAdded[item.type] = true;
+            alreadyChecked[item.type] = true;
             allBuildable.push(
             {
               star: star,
