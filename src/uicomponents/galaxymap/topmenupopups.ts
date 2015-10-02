@@ -127,6 +127,7 @@ module Rance
             {
               player: this.props.player
             }
+            popupProps.minWidth = 430;
           }
         }
 

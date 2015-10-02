@@ -79,7 +79,9 @@ module Rance
             left: this.dragPos ? this.dragPos.left : 0,
             width: this.dragPos.width,
             height: this.dragPos.height,
-            zIndex: this.state.zIndex
+            zIndex: this.state.zIndex,
+            minWidth: this.props.minWidth,
+            minHeight: this.props.minHeight
           }
         };
 
