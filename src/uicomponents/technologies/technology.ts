@@ -68,7 +68,7 @@ module Rance
               {
                 className: "technology-progress-bar-value"
               },
-                "" + progressForLevel + " / " + neededToProgressLevel
+                "" + progressForLevel.toFixed(1) + " / " + Math.ceil(neededToProgressLevel)
               ),
               UIComponents.TechnologyPrioritySlider(
               {
