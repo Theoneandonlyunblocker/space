@@ -1,0 +1,56 @@
+module Rance
+{
+  export module UIComponents
+  {
+    export var TechnologyPrioritySlider = React.createClass(
+    {
+      displayName: "TechnologyPrioritySlider",
+      getInitialState: function()
+      {
+        return(
+        {
+          priority: this.getPlayerPriority()
+        });
+      },
+      componentDidMount: function()
+      {
+        eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
+      },
+      componentWillUnMount: function()
+      {
+        eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
+      },
+      getPlayerPriority: function()
+      {
+        return this.props.player.technologies[this.props.technology.key].priority;
+      },
+      updatePriority: function()
+      {
+        this.setState(
+        {
+          priority: this.getPlayerPriority()
+        });
+      },
+      handlePriorityChange: function(e: Event)
+      {
+        var target = <HTMLInputElement> e.target;
+        this.props.player.setTechnologyPriority(this.props.technology, parseFloat(target.value));
+      },
+      render: function()
+      {
+        return(
+          React.DOM.input(
+          {
+            className: "technology-progress-bar-priority",
+            type: "range",
+            min: 0,
+            max: 1,
+            step: 0.01,
+            value: this.state.priority,
+            onChange: this.handlePriorityChange
+          })
+        );
+      }
+    })
+  }
+}

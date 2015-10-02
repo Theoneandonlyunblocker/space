@@ -92,6 +92,28 @@ ol {
   background-size: 100% 2px;
   pointer-events: none;
 }
+.reset-progress-style {
+  -webkit-appearance: none;
+  /* Hides the slider so that custom slider can be made */
+  width: 100%;
+  /* Specific width is required for Firefox. */
+  background: transparent;
+}
+.reset-progress-style::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+.reset-progress-style:focus {
+  outline: none;
+  /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+.reset-progress-style::-ms-track {
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  /* Hides the slider so custom styles can be added */
+  border-color: transparent;
+  color: transparent;
+}
 #react-container {
   height: 100%;
 }
@@ -2751,6 +2773,69 @@ ol {
 .diplomacy-action-button:disabled *,
 .diplomacy-action-button.disabled * {
   pointer-events: none !important;
+}
+.technology-progress-bar-container {
+  display: flex;
+  flex-flow: row;
+  position: relative;
+  height: 1em;
+  border: 1px solid #c4e5fb;
+}
+.technology-progress-bar-container > * {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+.technology-progress-bar {
+  background-color: green;
+}
+.technology-progress-bar-mixin {
+  background-image: url("../img/icons/technologyPriorityMarker.png");
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 1em;
+}
+.technology-progress-bar-priority {
+  cursor: pointer;
+  -webkit-appearance: none;
+  /* Hides the slider so that custom slider can be made */
+  width: 100%;
+  /* Specific width is required for Firefox. */
+  background: transparent;
+}
+.technology-progress-bar-priority::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+.technology-progress-bar-priority:focus {
+  outline: none;
+  /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+.technology-progress-bar-priority::-ms-track {
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  /* Hides the slider so custom styles can be added */
+  border-color: transparent;
+  color: transparent;
+}
+.technology-progress-bar-priority::-webkit-slider-thumb {
+  background-image: url("../img/icons/technologyPriorityMarker.png");
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 1em;
+}
+.technology-progress-bar-priority::-moz-range-thumb {
+  background-image: url("../img/icons/technologyPriorityMarker.png");
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 1em;
+}
+.technology-progress-bar-priority::-ms-thumb {
+  background-image: url("../img/icons/technologyPriorityMarker.png");
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 1em;
 }
 .save-game {
   position: relative;

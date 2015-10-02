@@ -5650,6 +5650,120 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
+        UIComponents.TechnologyPrioritySlider = React.createClass({
+            displayName: "TechnologyPrioritySlider",
+            getInitialState: function () {
+                return ({
+                    priority: this.getPlayerPriority()
+                });
+            },
+            componentDidMount: function () {
+                Rance.eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
+            },
+            componentWillUnMount: function () {
+                Rance.eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
+            },
+            getPlayerPriority: function () {
+                return this.props.player.technologies[this.props.technology.key].priority;
+            },
+            updatePriority: function () {
+                this.setState({
+                    priority: this.getPlayerPriority()
+                });
+            },
+            handlePriorityChange: function (e) {
+                var target = e.target;
+                this.props.player.setTechnologyPriority(this.props.technology, parseFloat(target.value));
+            },
+            render: function () {
+                return (React.DOM.input({
+                    className: "technology-progress-bar-priority",
+                    type: "range",
+                    min: 0,
+                    max: 1,
+                    step: 0.01,
+                    value: this.state.priority,
+                    onChange: this.handlePriorityChange
+                }));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="technologypriorityslider.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Technology = React.createClass({
+            displayName: "Technology",
+            render: function () {
+                var technology = this.props.technology;
+                var player = this.props.player;
+                var techData = player.technologies[technology.key];
+                var forCurrentLevel = player.getResearchNeededForTechnologyLevel(techData.level);
+                var forNextLevel = player.getResearchNeededForTechnologyLevel(techData.level + 1);
+                var progressForLevel = techData.totalResearch - forCurrentLevel;
+                var neededToProgressLevel = forNextLevel - forCurrentLevel;
+                var relativeProgress;
+                if (techData.level === technology.maxLevel) {
+                    relativeProgress = 1;
+                }
+                else {
+                    relativeProgress = progressForLevel / neededToProgressLevel;
+                }
+                return (React.DOM.div({
+                    className: "technology-listing"
+                }, React.DOM.div({
+                    className: "technology-name"
+                }, technology.displayName), React.DOM.div({
+                    className: "technology-progress-bar-container"
+                }, React.DOM.div({
+                    className: "technology-progress-bar",
+                    style: {
+                        width: "" + (relativeProgress * 100) + "%"
+                    }
+                }), React.DOM.div({
+                    className: "technology-progress-bar-value"
+                }, "" + progressForLevel + " / " + neededToProgressLevel), UIComponents.TechnologyPrioritySlider({
+                    player: this.props.player,
+                    technology: this.props.technology
+                }))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="technology.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TechnologiesList = React.createClass({
+            displayName: "TechnologiesList",
+            render: function () {
+                var player = this.props.player;
+                var rows = [];
+                for (var key in player.technologies) {
+                    rows.push(UIComponents.Technology({
+                        player: player,
+                        technology: player.technologies[key].technology,
+                        key: key
+                    }));
+                }
+                return (React.DOM.div({
+                    className: "technologies-list-container"
+                }, React.DOM.div({
+                    className: "technologies-list"
+                }, rows), React.DOM.div({
+                    className: "technologies-list-research-speed"
+                }, "Research speed goes here TODO")));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
         UIComponents.TopMenuPopup = React.createClass({
             displayName: "TopMenuPopup",
             render: function () {
@@ -5672,6 +5786,7 @@ var Rance;
 /// <reference path="../diplomacy/diplomacyoverview.ts"/>
 /// <reference path="economysummary.ts"/>
 /// <reference path="optionslist.ts"/>
+/// <reference path="../technologies/technologieslist.ts" />
 /// <reference path="../popups/topmenupopup.ts" />
 var Rance;
 (function (Rance) {
@@ -5687,7 +5802,8 @@ var Rance;
                     saveGame: undefined,
                     loadGame: undefined,
                     options: undefined,
-                    diplomacy: undefined
+                    diplomacy: undefined,
+                    technologies: undefined
                 });
             },
             closePopup: function (popupType) {
@@ -5772,6 +5888,14 @@ var Rance;
                                     statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
                                 };
                             break;
+                        }
+                    case "technologies":
+                        {
+                            contentConstructor = UIComponents.TechnologiesList;
+                            contentProps =
+                                {
+                                    player: this.props.player
+                                };
                         }
                 }
                 var id = this.refs.popupManager.makePopup({
@@ -5938,6 +6062,12 @@ var Rance;
                         onClick: this.togglePopup.bind(this, "diplomacy"),
                         tabIndex: menuItemTabIndex
                     }, "Diplomacy"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "technologies",
+                        onClick: this.togglePopup.bind(this, "technologies"),
+                        tabIndex: menuItemTabIndex
+                    }, "Technology"),
                     React.DOM.button({
                         className: "top-menu-items-button",
                         key: "options",
@@ -12199,16 +12329,19 @@ var Rance;
         };
         Player.prototype.initTechnologies = function (savedData) {
             this.technologies = {};
+            var totalTechnologies = Object.keys(app.moduleData.Templates.Technologies).length;
             for (var key in app.moduleData.Templates.Technologies) {
                 var technology = app.moduleData.Templates.Technologies[key];
                 this.technologies[key] =
                     {
                         technology: technology,
-                        totalResearch: 0,
-                        level: 0
+                        totalResearch: 34,
+                        level: 0,
+                        priority: 1 / totalTechnologies
                     };
                 if (savedData && savedData[key]) {
-                    this.addResearchTowardsTechnology(technology, savedData[key]);
+                    this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
+                    this.technologies[key].priority = savedData[key].priority;
                 }
             }
         };
@@ -12725,6 +12858,39 @@ var Rance;
             }
             // TODO handle overflow
         };
+        Player.prototype.setTechnologyPriority = function (technology, priority) {
+            this.technologies[technology.key].priority = priority;
+            var remainingPriority = 1 - priority;
+            var totalOtherPriority = 0;
+            var totalOtherPriorityWasZero = false;
+            var totalOthersCount = 0;
+            for (var key in this.technologies) {
+                if (key !== technology.key) {
+                    totalOtherPriority += this.technologies[key].priority;
+                    totalOthersCount++;
+                }
+            }
+            if (totalOtherPriority === 0) {
+                totalOtherPriority = 1;
+                totalOtherPriorityWasZero = true;
+            }
+            for (var key in this.technologies) {
+                if (key !== technology.key) {
+                    var techData = this.technologies[key];
+                    if (totalOtherPriorityWasZero) {
+                        techData.priority = 1 / totalOthersCount;
+                    }
+                    var relativePriority = techData.priority / totalOtherPriority;
+                    techData.priority = relativePriority * remainingPriority;
+                }
+            }
+            var test = 0;
+            for (var key in this.technologies) {
+                test += this.technologies[key].priority;
+            }
+            console.log(test);
+            Rance.eventManager.dispatchEvent("technologyPrioritiesUpdated");
+        };
         Player.prototype.serialize = function () {
             var data = {};
             data.id = this.id;
@@ -12761,7 +12927,11 @@ var Rance;
             }
             data.researchByTechnology = {};
             for (var key in this.technologies) {
-                data.researchByTechnology[key] = this.technologies[key].totalResearch;
+                data.researchByTechnology[key] =
+                    {
+                        totalResearch: this.technologies[key].totalResearch,
+                        priority: this.technologies[key].priority
+                    };
             }
             return data;
         };
@@ -20731,6 +20901,30 @@ var Rance;
                         key: "stealth",
                         displayName: "Stealth",
                         description: "stealthy stuff",
+                        maxLevel: 9
+                    };
+                    Technologies.lasers = {
+                        key: "lasers",
+                        displayName: "Lasers",
+                        description: "pew pew",
+                        maxLevel: 9
+                    };
+                    Technologies.missiles = {
+                        key: "missiles",
+                        displayName: "Missiles",
+                        description: "boom",
+                        maxLevel: 9
+                    };
+                    Technologies.test1 = {
+                        key: "test1",
+                        displayName: "test1",
+                        description: "test1",
+                        maxLevel: 9
+                    };
+                    Technologies.test2 = {
+                        key: "test2",
+                        displayName: "test2",
+                        description: "test2",
                         maxLevel: 9
                     };
                 })(Technologies = Templates.Technologies || (Templates.Technologies = {}));

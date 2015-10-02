@@ -439,6 +439,21 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var TechnologyPrioritySlider: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Technology: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TechnologiesList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var TopMenuPopup: React.Factory<{}>;
     }
 }
@@ -1694,12 +1709,16 @@ declare module Rance {
                 technology: Templates.ITechnologyTemplate;
                 totalResearch: number;
                 level: number;
+                priority: number;
             };
         };
         constructor(isAI: boolean, id?: number);
         destroy(): void;
         initTechnologies(savedData?: {
-            [key: string]: number;
+            [key: string]: {
+                totalResearch: number;
+                priority: number;
+            };
         }): void;
         makeColorScheme(): void;
         setupAI(game: Game): void;
@@ -1759,6 +1778,7 @@ declare module Rance {
         attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
         getResearchNeededForTechnologyLevel(level: number): number;
         addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void;
+        setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number): void;
         serialize(): any;
     }
 }
@@ -2899,6 +2919,10 @@ declare module Rance {
             module Templates {
                 module Technologies {
                     var stealth: Rance.Templates.ITechnologyTemplate;
+                    var lasers: Rance.Templates.ITechnologyTemplate;
+                    var missiles: Rance.Templates.ITechnologyTemplate;
+                    var test1: Rance.Templates.ITechnologyTemplate;
+                    var test2: Rance.Templates.ITechnologyTemplate;
                 }
             }
         }

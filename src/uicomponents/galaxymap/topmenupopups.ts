@@ -5,6 +5,7 @@
 /// <reference path="../diplomacy/diplomacyoverview.ts"/>
 /// <reference path="economysummary.ts"/>
 /// <reference path="optionslist.ts"/>
+/// <reference path="../technologies/technologieslist.ts" />
 
 /// <reference path="../popups/topmenupopup.ts" />
 module Rance
@@ -24,7 +25,8 @@ module Rance
           saveGame: undefined,
           loadGame: undefined,
           options: undefined,
-          diplomacy: undefined
+          diplomacy: undefined,
+          technologies: undefined
         });
       },
       closePopup: function(popupType: string)
@@ -117,6 +119,14 @@ module Rance
               statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
             }
             break;
+          }
+          case "technologies":
+          {
+            contentConstructor = UIComponents.TechnologiesList;
+            contentProps =
+            {
+              player: this.props.player
+            }
           }
         }
 

@@ -301,6 +301,32 @@ ul, ol
   pointer-events: none;
 }
 
+.reset-progress-style
+{
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 100%; /* Specific width is required for Firefox. */
+  background: transparent;
+
+  &::-webkit-slider-thumb
+  {
+    -webkit-appearance: none;
+  }
+
+  &:focus
+  {
+    outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+  }
+
+  &::-ms-track
+  {
+    width: 100%;
+    cursor: pointer;
+    background: transparent; /* Hides the slider so custom styles can be added */
+    border-color: transparent;
+    color: transparent;
+  }
+}
+
 #react-container
 {
   height: 100%;
@@ -3053,6 +3079,56 @@ ul, ol
 {
   .button-style;
   margin: 5px;
+}
+
+.technology-progress-bar-container
+{
+  display: flex;
+  flex-flow: row;
+  position: relative;
+  height: 1em;
+  border: 1px solid @ui-border-color1;
+  >*
+  {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+}
+
+.technology-progress-bar
+{
+  background-color: green;
+}
+
+.technology-progress-bar-mixin
+{
+  background-image: url("../img/icons/technologyPriorityMarker.png");
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 1em;
+}
+
+.technology-progress-bar-priority
+{
+  width: 100%;
+  cursor: pointer;
+
+  .reset-progress-style;
+
+  &::-webkit-slider-thumb
+  {
+    .technology-progress-bar-mixin;
+  }
+  &::-moz-range-thumb
+  {
+    .technology-progress-bar-mixin;
+  }
+  &::-ms-thumb
+  {
+    .technology-progress-bar-mixin;
+  }
 }
 
 .save-game

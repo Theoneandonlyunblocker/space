@@ -68,6 +68,7 @@ module Rance
         technology: Templates.ITechnologyTemplate;
         totalResearch: number;
         level: number;
+        priority: number;
       }
     };
 
@@ -86,22 +87,25 @@ module Rance
       this.diplomacyStatus.destroy();
       this.diplomacyStatus = null;
     }
-    initTechnologies(savedData?: {[key: string]: number})
+    initTechnologies(savedData?: {[key: string]: {totalResearch: number; priority: number;}})
     {
       this.technologies = {};
+      var totalTechnologies = Object.keys(app.moduleData.Templates.Technologies).length;
       for (var key in app.moduleData.Templates.Technologies)
       {
         var technology = app.moduleData.Templates.Technologies[key]
         this.technologies[key] =
         {
           technology: technology,
-          totalResearch: 0,
-          level: 0
+          totalResearch: 34,
+          level: 0,
+          priority: 1 / totalTechnologies
         }
 
         if (savedData && savedData[key])
         {
-          this.addResearchTowardsTechnology(technology, savedData[key]);
+          this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
+          this.technologies[key].priority = savedData[key].priority;
         }
       }
     }
@@ -818,6 +822,53 @@ module Rance
 
       // TODO handle overflow
     }
+    setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number)
+    {
+      this.technologies[technology.key].priority = priority;
+
+      var remainingPriority = 1 - priority;
+
+      var totalOtherPriority: number = 0;
+      var totalOtherPriorityWasZero: boolean = false;
+      var totalOthersCount: number = 0;
+      for (var key in this.technologies)
+      {
+        if (key !== technology.key)
+        {
+          totalOtherPriority += this.technologies[key].priority;
+          totalOthersCount++;
+        }
+      }
+
+      if (totalOtherPriority === 0)
+      {
+        totalOtherPriority = 1;
+        totalOtherPriorityWasZero = true;
+      }
+
+      for (var key in this.technologies)
+      {
+        if (key !== technology.key)
+        {
+          var techData = this.technologies[key];
+          if (totalOtherPriorityWasZero)
+          {
+            techData.priority = 1 / totalOthersCount;
+          }
+          var relativePriority = techData.priority / totalOtherPriority;
+          techData.priority = relativePriority * remainingPriority;
+        }
+      }
+
+      var test = 0;
+      for (var key in this.technologies)
+      {
+        test += this.technologies[key].priority;
+      }
+      console.log(test);
+
+      eventManager.dispatchEvent("technologyPrioritiesUpdated");
+    }
     serialize()
     {
       var data: any = {};
@@ -870,7 +921,11 @@ module Rance
       data.researchByTechnology = {};
       for (var key in this.technologies)
       {
-        data.researchByTechnology[key] = this.technologies[key].totalResearch
+        data.researchByTechnology[key] =
+        {
+          totalResearch: this.technologies[key].totalResearch,
+          priority: this.technologies[key].priority
+        }
       }
 
       return data;
