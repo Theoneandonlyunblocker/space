@@ -7476,7 +7476,16 @@ var Rance;
             return allUpgrades;
         };
         Star.prototype.getBuildableShipTypes = function () {
-            return this.owner.getGloballyBuildableShips().concat(this.buildableUnitTypes);
+            var player = this.owner;
+            var global = player.getGloballyBuildableShips();
+            var local = [];
+            for (var i = 0; i < this.buildableUnitTypes.length; i++) {
+                var type = this.buildableUnitTypes[i];
+                if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements)) {
+                    local.push(type);
+                }
+            }
+            return global.concat(local);
         };
         // FLEETS
         Star.prototype.getAllFleets = function () {

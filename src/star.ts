@@ -383,9 +383,23 @@ module Rance
       return allUpgrades;
     }
 
-    getBuildableShipTypes()
+    getBuildableShipTypes(): Templates.IUnitTemplate[]
     {
-      return this.owner.getGloballyBuildableShips().concat(this.buildableUnitTypes);
+      var player = this.owner;
+
+      var global = player.getGloballyBuildableShips();
+      var local: Templates.IUnitTemplate[] = [];
+
+      for (var i = 0; i < this.buildableUnitTypes.length; i++)
+      {
+        var type = this.buildableUnitTypes[i];
+        if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements))
+        {
+          local.push(type);
+        }
+      }
+
+      return global.concat(local);
     }
 
     // FLEETS
