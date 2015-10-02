@@ -790,14 +790,17 @@ module Rance
       var b = 40;
       var swap: number;
 
+      var total = 0;
+
       for (var i = 0; i < level; i++)
       {
         swap = a;
         a = b;
         b = swap + b;
+        total += a;
       }
 
-      return a;
+      return total;
     }
     addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number)
     {
