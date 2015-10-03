@@ -317,7 +317,7 @@ module Rance
       for (var i = 0; i < sectors.length; i++)
       {
         var sector = sectors[i];
-        var alreadyAddedByWright = getRelativeWeightsFromObject(probabilityWeights);
+        var alreadyAddedByWeight = getRelativeWeightsFromObject(probabilityWeights);
         var candidates: Templates.IDistributable[] = [];
 
         for (var j = 0; j < sector.distributionFlags.length; j++)
@@ -336,7 +336,7 @@ module Rance
         for (var j = 0; j < candidates.length; j++)
         {
           candidatesByWeight[candidates[j].type] =
-            alreadyAddedByWright[candidates[j].type];
+            alreadyAddedByWeight[candidates[j].type];
         }
 
         var selectedKey = getRandomKeyWithWeights(candidatesByWeight);
