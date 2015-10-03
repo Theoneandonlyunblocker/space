@@ -89,6 +89,20 @@ module Rance
         }
       }
     }
+    export function calculateConnectedness(stars: Star[], maxRange: number)
+    {
+      for (var i = 0; i < stars.length; i++)
+      {
+        var connectedness: number = 0;
+        var linkedByRange = stars[i].getLinkedInRange(maxRange).byRange;
+        for (var rangeString in linkedByRange)
+        {
+          var range = parseInt(rangeString);
+          connectedness += linkedByRange[rangeString].length / range;
+        }
+        stars[i].mapGenData.connectedness = connectedness;
+      }
+    }
     export function makeSectors(stars: Star[], minSize: number, maxSize: number)
     {
       /*
@@ -99,13 +113,15 @@ module Rance
         else
           add random neighbors into sector until minsize is met
 
-
       while leftovers
         pick random leftover
         if leftover has no assigned neighbor pick, continue
 
         leftover gets assigned to smallest neighboring sector
         if sizes equal, assign to sector with least neighboring leftovers
+
+      for each sector larger than maxSize
+        assign extra stars to smaller neighboring sectors
        */
       var totalStars = stars.length;
       var unassignedStars: Star[] = stars.slice(0);
@@ -120,14 +136,25 @@ module Rance
       } = {};
       var sectorIdGen = 0;
 
+      var sectorsOverMaxSize: Sector[] = [];
+
       var sameSectorFN = function(a: Star, b: Star)
       {
         return a.mapGenData.sector === b.mapGenData.sector;
       };
 
+      var connectednessSortFN = function(a: Star, b: Star)
+      {
+        return b.mapGenData.connectedness - a.mapGenData.connectedness;
+      }
+
+      calculateConnectedness(stars, minSize);
+      unassignedStars.sort(connectednessSortFN);
+
       while (averageSectorsAmount > 0 && unassignedStars.length > 0)
       {
         var seedStar = unassignedStars.pop();
+        console.log(seedStar.id, seedStar.mapGenData.connectedness);
         var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
 
         if (canFormMinSizeSector)
@@ -148,10 +175,11 @@ module Rance
               return !star.mapGenData.sector;
             });
 
+            frontier.sort(connectednessSortFN);
+
             while (sector.stars.length < minSize && frontier.length > 0)
             {
-              var randomFrontierKey = getRandomArrayKey(frontier);
-              var toAdd = frontier.splice(randomFrontierKey, 1)[0];
+              var toAdd = frontier.pop(); // least connected
               unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
 
               sector.addStar(toAdd);

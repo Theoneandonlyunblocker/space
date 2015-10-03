@@ -225,7 +225,7 @@ module Rance
           MapGen2.partiallyCutLinks(stars, 4, 2);
 
           // make sectors
-          var sectorsById = MapGen2.makeSectors(stars, 3, 5);
+          var sectorsById = MapGen2.makeSectors(stars, 3, 3);
 
           // set resources && local ships
           var allSectors: MapGen2.Sector[] = [];

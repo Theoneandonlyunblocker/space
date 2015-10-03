@@ -2866,8 +2866,16 @@ declare module Rance {
             resourceLocation: Star;
             constructor(id: number);
             addStar(star: Star): void;
+            removeStar(star: Star): void;
             addResource(resource: Templates.IResourceTemplate): void;
             getNeighboringStars(): Star[];
+            getNeighboringSectorsWithAdjacentOwnStars(): {
+                [sectorId: number]: {
+                    sector: Sector;
+                    adjacentOwnStars: Star[];
+                };
+            };
+            giveRandomStarToSmallestNeighboringSector(): void;
             getMajorityRegions(): Region[];
         }
     }
@@ -2876,6 +2884,7 @@ declare module Rance {
     module MapGen2 {
         function linkAllStars(stars: Star[]): void;
         function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number): void;
+        function calculateConnectedness(stars: Star[], maxRange: number): void;
         function makeSectors(stars: Star[], minSize: number, maxSize: number): {
             [sectorId: number]: Sector;
         };

@@ -17803,12 +17803,13 @@ var Rance;
                 var template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
                 buildMapMode(template);
             }
-            var customMapModeTemplate = {
-                key: "custom",
-                displayName: "Custom",
-                layers: this.mapModes[Object.keys(this.mapModes)[0]].template.layers
-            };
-            buildMapMode(customMapModeTemplate);
+            // var customMapModeTemplate: IMapRendererMapModeTemplate =
+            // {
+            //   key: "custom",
+            //   displayName: "Custom",
+            //   layers: this.mapModes[Object.keys(this.mapModes)[0]].template.layers
+            // };
+            // buildMapMode(customMapModeTemplate);
         };
         MapRenderer.prototype.setParent = function (newParent) {
             var oldParent = this.parent;
@@ -20236,6 +20237,11 @@ var Rance;
                 this.stars.push(star);
                 star.mapGenData.sector = this;
             };
+            Sector.prototype.removeStar = function (star) {
+                var index = this.stars.indexOf(star);
+                this.stars.splice(index, 1);
+                star.mapGenData.sector = null;
+            };
             Sector.prototype.addResource = function (resource) {
                 var star = this.stars[0];
                 this.resourceType = resource;
@@ -20255,6 +20261,55 @@ var Rance;
                     }
                 }
                 return neighbors;
+            };
+            Sector.prototype.getNeighboringSectorsWithAdjacentOwnStars = function () {
+                var sectorsWithAdjacentOwnStars = {};
+                for (var i = 0; i < this.stars.length; i++) {
+                    var frontier = this.stars[i].getLinkedInRange(1).all;
+                    for (var j = 0; j < frontier.length; j++) {
+                        var frontierSector = frontier[j].mapGenData.sector;
+                        if (frontierSector !== this) {
+                            if (!sectorsWithAdjacentOwnStars[frontierSector.id]) {
+                                sectorsWithAdjacentOwnStars[frontierSector.id] =
+                                    {
+                                        sector: frontierSector,
+                                        adjacentOwnStars: []
+                                    };
+                            }
+                            sectorsWithAdjacentOwnStars[frontierSector.id].adjacentOwnStars.push(this.stars[i]);
+                        }
+                    }
+                }
+                return sectorsWithAdjacentOwnStars;
+            };
+            Sector.prototype.giveRandomStarToSmallestNeighboringSector = function () {
+                var sectorsWithAdjacentOwnStars = this.getNeighboringSectorsWithAdjacentOwnStars();
+                var candidateSectors = [];
+                var minNeighborSize = 999;
+                for (var sectorId in sectorsWithAdjacentOwnStars) {
+                    var neighborSector = sectorsWithAdjacentOwnStars[sectorId].sector;
+                    minNeighborSize = Math.min(neighborSector.stars.length, minNeighborSize);
+                }
+                for (var sectorId in sectorsWithAdjacentOwnStars) {
+                    var neighborSector = sectorsWithAdjacentOwnStars[sectorId].sector;
+                    if (neighborSector.stars.length === minNeighborSize) {
+                        candidateSectors.push(neighborSector);
+                    }
+                }
+                var sectorToGiveTo = Rance.getRandomArrayItem(candidateSectors);
+                var starToTransfer;
+                var candidateStars = sectorsWithAdjacentOwnStars[sectorToGiveTo.id].adjacentOwnStars;
+                function getLinkedOwnSectorStars(star) {
+                    return star.getLinkedInRange(1).all.filter(function (linkedStar) {
+                        return star.mapGenData.sector === linkedStar.mapGenData.sector;
+                    });
+                }
+                candidateStars.sort(function (a, b) {
+                    return getLinkedOwnSectorStars(a).length - getLinkedOwnSectorStars(b).length;
+                });
+                var starToTransfer = candidateStars[0];
+                this.removeStar(starToTransfer);
+                sectorToGiveTo.addStar(starToTransfer);
             };
             Sector.prototype.getMajorityRegions = function () {
                 var regionsByStars = {};
@@ -20349,6 +20404,18 @@ var Rance;
             }
         }
         MapGen2.partiallyCutLinks = partiallyCutLinks;
+        function calculateConnectedness(stars, maxRange) {
+            for (var i = 0; i < stars.length; i++) {
+                var connectedness = 0;
+                var linkedByRange = stars[i].getLinkedInRange(maxRange).byRange;
+                for (var rangeString in linkedByRange) {
+                    var range = parseInt(rangeString);
+                    connectedness += linkedByRange[rangeString].length / range;
+                }
+                stars[i].mapGenData.connectedness = connectedness;
+            }
+        }
+        MapGen2.calculateConnectedness = calculateConnectedness;
         function makeSectors(stars, minSize, maxSize) {
             /*
             while average size sectors left to assign && unassigned stars left
@@ -20358,13 +20425,15 @@ var Rance;
               else
                 add random neighbors into sector until minsize is met
       
-      
             while leftovers
               pick random leftover
               if leftover has no assigned neighbor pick, continue
       
               leftover gets assigned to smallest neighboring sector
               if sizes equal, assign to sector with least neighboring leftovers
+      
+            for each sector larger than maxSize
+              assign extra stars to smaller neighboring sectors
              */
             var totalStars = stars.length;
             var unassignedStars = stars.slice(0);
@@ -20373,11 +20442,18 @@ var Rance;
             var averageSectorsAmount = Math.round(totalStars / averageSize);
             var sectorsById = {};
             var sectorIdGen = 0;
+            var sectorsOverMaxSize = [];
             var sameSectorFN = function (a, b) {
                 return a.mapGenData.sector === b.mapGenData.sector;
             };
+            var connectednessSortFN = function (a, b) {
+                return b.mapGenData.connectedness - a.mapGenData.connectedness;
+            };
+            calculateConnectedness(stars, minSize);
+            unassignedStars.sort(connectednessSortFN);
             while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
                 var seedStar = unassignedStars.pop();
+                console.log(seedStar.id, seedStar.mapGenData.connectedness);
                 var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
                 if (canFormMinSizeSector) {
                     var sector = new MapGen2.Sector(sectorIdGen++);
@@ -20390,9 +20466,9 @@ var Rance;
                         frontier = frontier.filter(function (star) {
                             return !star.mapGenData.sector;
                         });
+                        frontier.sort(connectednessSortFN);
                         while (sector.stars.length < minSize && frontier.length > 0) {
-                            var randomFrontierKey = Rance.getRandomArrayKey(frontier);
-                            var toAdd = frontier.splice(randomFrontierKey, 1)[0];
+                            var toAdd = frontier.pop(); // least connected
                             unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
                             sector.addStar(toAdd);
                         }
@@ -20745,7 +20821,7 @@ var Rance;
                     }
                     Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
                     // make sectors
-                    var sectorsById = Rance.MapGen2.makeSectors(stars, 3, 5);
+                    var sectorsById = Rance.MapGen2.makeSectors(stars, 3, 3);
                     // set resources && local ships
                     var allSectors = [];
                     for (var sectorId in sectorsById) {
