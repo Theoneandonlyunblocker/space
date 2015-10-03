@@ -20228,6 +20228,7 @@ var Rance;
         var Sector = (function () {
             function Sector(id) {
                 this.stars = [];
+                this.addedDistributables = [];
                 this.id = id;
             }
             Sector.prototype.addStar = function (star) {
@@ -20256,6 +20257,19 @@ var Rance;
                     }
                 }
                 return neighbors;
+            };
+            Sector.prototype.getNeighboringSectors = function () {
+                var sectors = [];
+                var alreadyAdded = {};
+                var neighborStars = this.getNeighboringStars();
+                for (var i = 0; i < neighborStars.length; i++) {
+                    var sector = neighborStars[i].mapGenData.sector;
+                    if (!alreadyAdded[sector.id]) {
+                        alreadyAdded[sector.id] = true;
+                        sectors.push(sector);
+                    }
+                }
+                return sectors;
             };
             Sector.prototype.getMajorityRegions = function () {
                 var regionsByStars = {};
@@ -20521,7 +20535,7 @@ var Rance;
             }
             for (var i = 0; i < sectors.length; i++) {
                 var sector = sectors[i];
-                var alreadyAddedByWright = Rance.getRelativeWeightsFromObject(probabilityWeights);
+                var alreadyAddedByWeight = Rance.getRelativeWeightsFromObject(probabilityWeights);
                 var candidates = [];
                 for (var j = 0; j < sector.distributionFlags.length; j++) {
                     var flag = sector.distributionFlags[j];
@@ -20530,15 +20544,28 @@ var Rance;
                 }
                 if (candidates.length === 0)
                     continue;
+                var neighborSectors = sector.getNeighboringSectors();
+                var candidatesNotInNeighboringSectors = candidates.filter(function (candidate) {
+                    for (var k = 0; k < neighborSectors.length; k++) {
+                        if (neighborSectors[k].addedDistributables.indexOf(candidate) !== -1) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+                if (candidatesNotInNeighboringSectors.length > 0) {
+                    candidates = candidatesNotInNeighboringSectors;
+                }
                 var candidatesByWeight = {};
                 for (var j = 0; j < candidates.length; j++) {
                     candidatesByWeight[candidates[j].type] =
-                        alreadyAddedByWright[candidates[j].type];
+                        alreadyAddedByWeight[candidates[j].type];
                 }
                 var selectedKey = Rance.getRandomKeyWithWeights(candidatesByWeight);
                 var selectedType = allDistributables[selectedKey];
                 probabilityWeights[selectedKey] /= 2;
                 placerFunction(sector, selectedType);
+                sector.addedDistributables.push(selectedType);
             }
         }
         MapGen2.distributeDistributablesPerSector = distributeDistributablesPerSector;

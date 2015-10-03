@@ -2864,10 +2864,12 @@ declare module Rance {
             distributionFlags: string[];
             resourceType: Templates.IResourceTemplate;
             resourceLocation: Star;
+            addedDistributables: Templates.IDistributable[];
             constructor(id: number);
             addStar(star: Star): void;
             addResource(resource: Templates.IResourceTemplate): void;
             getNeighboringStars(): Star[];
+            getNeighboringSectors(): Sector[];
             getMajorityRegions(): Region[];
             getPerimeterLengthWithStar(star: Star): number;
         }

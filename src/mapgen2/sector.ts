@@ -12,6 +12,7 @@ module Rance
       distributionFlags: string[];
       resourceType: Templates.IResourceTemplate;
       resourceLocation: Star;
+      addedDistributables: Templates.IDistributable[] = [];
 
       constructor(id: number)
       {
@@ -58,6 +59,29 @@ module Rance
         }
 
         return neighbors;
+      }
+
+      getNeighboringSectors()
+      {
+        var sectors: Sector[] = [];
+        var alreadyAdded:
+        {
+          [sectorId: number]: boolean;
+        } = {};
+
+        var neighborStars = this.getNeighboringStars();
+
+        for (var i = 0; i < neighborStars.length; i++)
+        {
+          var sector = neighborStars[i].mapGenData.sector;
+          if (!alreadyAdded[sector.id])
+          {
+            alreadyAdded[sector.id] = true;
+            sectors.push(sector);
+          }
+        }
+
+        return sectors;
       }
 
       getMajorityRegions()

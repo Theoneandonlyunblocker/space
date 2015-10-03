@@ -297,8 +297,10 @@ module Rance
         }
       }
     }
-    export function distributeDistributablesPerSector(sectors: Sector[], distributableType: string,
-      allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void)
+    export function distributeDistributablesPerSector(sectors: Sector[],
+      distributableType: string,
+      allDistributables: any,
+      placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void)
     {
       if (!sectors[0].distributionFlags)
       {
@@ -329,6 +331,25 @@ module Rance
 
         if (candidates.length === 0) continue;
 
+        var neighborSectors = sector.getNeighboringSectors();
+        var candidatesNotInNeighboringSectors = candidates.filter(function(candidate: Templates.IDistributable)
+        {
+          for (var k = 0; k < neighborSectors.length; k++)
+          {
+            if (neighborSectors[k].addedDistributables.indexOf(candidate) !== -1)
+            {
+              return false;
+            }
+          }
+
+          return true;
+        });
+
+        if (candidatesNotInNeighboringSectors.length > 0)
+        {
+          candidates = candidatesNotInNeighboringSectors;
+        }
+
         var candidatesByWeight:
         {
           [distributableName: string]: number;
@@ -339,11 +360,13 @@ module Rance
             alreadyAddedByWeight[candidates[j].type];
         }
 
+
         var selectedKey = getRandomKeyWithWeights(candidatesByWeight);
         var selectedType = allDistributables[selectedKey];
         probabilityWeights[selectedKey]  /= 2;
 
         placerFunction(sector, selectedType);
+        sector.addedDistributables.push(selectedType);
       }
     }
     export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCommand: boolean = true)
