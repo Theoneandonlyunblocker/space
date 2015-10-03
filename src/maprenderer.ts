@@ -328,14 +328,13 @@ module Rance
         buildMapMode(template);
       }
 
-      var customMapModeTemplate: IMapRendererMapModeTemplate =
-      {
-        key: "custom",
-        displayName: "Custom",
-        layers: this.mapModes[Object.keys(this.mapModes)[0]].template.layers
-      };
-
-      buildMapMode(customMapModeTemplate);
+      // var customMapModeTemplate: IMapRendererMapModeTemplate =
+      // {
+      //   key: "custom",
+      //   displayName: "Custom",
+      //   layers: this.mapModes[Object.keys(this.mapModes)[0]].template.layers
+      // };
+      // buildMapMode(customMapModeTemplate);
     }
     setParent(newParent: PIXI.Container)
     {
