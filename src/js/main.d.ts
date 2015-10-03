@@ -2866,17 +2866,10 @@ declare module Rance {
             resourceLocation: Star;
             constructor(id: number);
             addStar(star: Star): void;
-            removeStar(star: Star): void;
             addResource(resource: Templates.IResourceTemplate): void;
             getNeighboringStars(): Star[];
-            getNeighboringSectorsWithAdjacentOwnStars(): {
-                [sectorId: number]: {
-                    sector: Sector;
-                    adjacentOwnStars: Star[];
-                };
-            };
-            giveRandomStarToSmallestNeighboringSector(): void;
             getMajorityRegions(): Region[];
+            getPerimeterLengthWithStar(star: Star): number;
         }
     }
 }

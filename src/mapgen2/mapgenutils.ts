@@ -143,18 +143,15 @@ module Rance
         return a.mapGenData.sector === b.mapGenData.sector;
       };
 
-      var connectednessSortFN = function(a: Star, b: Star)
+      calculateConnectedness(stars, minSize);
+      unassignedStars.sort(function(a: Star, b: Star)
       {
         return b.mapGenData.connectedness - a.mapGenData.connectedness;
-      }
-
-      calculateConnectedness(stars, minSize);
-      unassignedStars.sort(connectednessSortFN);
+      });
 
       while (averageSectorsAmount > 0 && unassignedStars.length > 0)
       {
         var seedStar = unassignedStars.pop();
-        console.log(seedStar.id, seedStar.mapGenData.connectedness);
         var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
 
         if (canFormMinSizeSector)
@@ -175,11 +172,27 @@ module Rance
               return !star.mapGenData.sector;
             });
 
-            frontier.sort(connectednessSortFN);
-
             while (sector.stars.length < minSize && frontier.length > 0)
             {
-              var toAdd = frontier.pop(); // least connected
+              var frontierSortScores:
+              {
+                [starId: number]: number
+              } = {};
+
+              for (var i = 0; i < frontier.length; i++)
+              {
+                var perimeter = sector.getPerimeterLengthWithStar(frontier[i]) / 15;
+                var sortScore = frontier[i].mapGenData.connectedness - perimeter;
+
+                frontierSortScores[frontier[i].id] = sortScore;
+              }
+
+              frontier.sort(function(a: Star, b: Star)
+              {
+                return frontierSortScores[b.id] - frontierSortScores[a.id];
+              });
+
+              var toAdd = frontier.pop();
               unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
 
               sector.addStar(toAdd);
@@ -246,14 +259,17 @@ module Rance
           unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
         }
 
-        candidateSectors.sort(function(a, b)
+        candidateSectors.sort(function(a: Sector, b: Sector)
         {
           var sizeSort = a.stars.length - b.stars.length;
           if (sizeSort) return sizeSort;
 
           var unclaimedSort = unclaimedNeighborsPerSector[b.id] -
             unclaimedNeighborsPerSector[a.id];
-          return unclaimedSort;
+          if (sizeSort) return unclaimedSort;
+
+          var perimeterSort = b.getPerimeterLengthWithStar(star) - a.getPerimeterLengthWithStar(star);
+          if (perimeterSort) return perimeterSort;
         });
 
         candidateSectors[0].addStar(star);

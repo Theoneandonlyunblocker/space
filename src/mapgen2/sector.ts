@@ -105,6 +105,27 @@ module Rance
 
         return majorityRegions;
       }
+      getPerimeterLengthWithStar(star: Star): number
+      {
+        var perimeterLength: number = 0;
+
+        for (var i = 0; i < this.stars.length; i++)
+        {
+          var ownStar = this.stars[i];
+          var halfEdges = ownStar.voronoiCell.halfedges;
+          for (var j = 0; j < halfEdges.length; j++)
+          {
+            var edge = halfEdges[j].edge;
+            if (edge.lSite === star || edge.rSite === star)
+            {
+              var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
+              perimeterLength += edgeLength;
+            }
+          }
+        }
+
+        return perimeterLength;
+      }
     }
   }
 }

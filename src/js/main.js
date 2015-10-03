@@ -20237,11 +20237,6 @@ var Rance;
                 this.stars.push(star);
                 star.mapGenData.sector = this;
             };
-            Sector.prototype.removeStar = function (star) {
-                var index = this.stars.indexOf(star);
-                this.stars.splice(index, 1);
-                star.mapGenData.sector = null;
-            };
             Sector.prototype.addResource = function (resource) {
                 var star = this.stars[0];
                 this.resourceType = resource;
@@ -20261,55 +20256,6 @@ var Rance;
                     }
                 }
                 return neighbors;
-            };
-            Sector.prototype.getNeighboringSectorsWithAdjacentOwnStars = function () {
-                var sectorsWithAdjacentOwnStars = {};
-                for (var i = 0; i < this.stars.length; i++) {
-                    var frontier = this.stars[i].getLinkedInRange(1).all;
-                    for (var j = 0; j < frontier.length; j++) {
-                        var frontierSector = frontier[j].mapGenData.sector;
-                        if (frontierSector !== this) {
-                            if (!sectorsWithAdjacentOwnStars[frontierSector.id]) {
-                                sectorsWithAdjacentOwnStars[frontierSector.id] =
-                                    {
-                                        sector: frontierSector,
-                                        adjacentOwnStars: []
-                                    };
-                            }
-                            sectorsWithAdjacentOwnStars[frontierSector.id].adjacentOwnStars.push(this.stars[i]);
-                        }
-                    }
-                }
-                return sectorsWithAdjacentOwnStars;
-            };
-            Sector.prototype.giveRandomStarToSmallestNeighboringSector = function () {
-                var sectorsWithAdjacentOwnStars = this.getNeighboringSectorsWithAdjacentOwnStars();
-                var candidateSectors = [];
-                var minNeighborSize = 999;
-                for (var sectorId in sectorsWithAdjacentOwnStars) {
-                    var neighborSector = sectorsWithAdjacentOwnStars[sectorId].sector;
-                    minNeighborSize = Math.min(neighborSector.stars.length, minNeighborSize);
-                }
-                for (var sectorId in sectorsWithAdjacentOwnStars) {
-                    var neighborSector = sectorsWithAdjacentOwnStars[sectorId].sector;
-                    if (neighborSector.stars.length === minNeighborSize) {
-                        candidateSectors.push(neighborSector);
-                    }
-                }
-                var sectorToGiveTo = Rance.getRandomArrayItem(candidateSectors);
-                var starToTransfer;
-                var candidateStars = sectorsWithAdjacentOwnStars[sectorToGiveTo.id].adjacentOwnStars;
-                function getLinkedOwnSectorStars(star) {
-                    return star.getLinkedInRange(1).all.filter(function (linkedStar) {
-                        return star.mapGenData.sector === linkedStar.mapGenData.sector;
-                    });
-                }
-                candidateStars.sort(function (a, b) {
-                    return getLinkedOwnSectorStars(a).length - getLinkedOwnSectorStars(b).length;
-                });
-                var starToTransfer = candidateStars[0];
-                this.removeStar(starToTransfer);
-                sectorToGiveTo.addStar(starToTransfer);
             };
             Sector.prototype.getMajorityRegions = function () {
                 var regionsByStars = {};
@@ -20336,6 +20282,21 @@ var Rance;
                     }
                 }
                 return majorityRegions;
+            };
+            Sector.prototype.getPerimeterLengthWithStar = function (star) {
+                var perimeterLength = 0;
+                for (var i = 0; i < this.stars.length; i++) {
+                    var ownStar = this.stars[i];
+                    var halfEdges = ownStar.voronoiCell.halfedges;
+                    for (var j = 0; j < halfEdges.length; j++) {
+                        var edge = halfEdges[j].edge;
+                        if (edge.lSite === star || edge.rSite === star) {
+                            var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
+                            perimeterLength += edgeLength;
+                        }
+                    }
+                }
+                return perimeterLength;
             };
             return Sector;
         })();
@@ -20446,14 +20407,12 @@ var Rance;
             var sameSectorFN = function (a, b) {
                 return a.mapGenData.sector === b.mapGenData.sector;
             };
-            var connectednessSortFN = function (a, b) {
-                return b.mapGenData.connectedness - a.mapGenData.connectedness;
-            };
             calculateConnectedness(stars, minSize);
-            unassignedStars.sort(connectednessSortFN);
+            unassignedStars.sort(function (a, b) {
+                return b.mapGenData.connectedness - a.mapGenData.connectedness;
+            });
             while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
                 var seedStar = unassignedStars.pop();
-                console.log(seedStar.id, seedStar.mapGenData.connectedness);
                 var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
                 if (canFormMinSizeSector) {
                     var sector = new MapGen2.Sector(sectorIdGen++);
@@ -20466,9 +20425,17 @@ var Rance;
                         frontier = frontier.filter(function (star) {
                             return !star.mapGenData.sector;
                         });
-                        frontier.sort(connectednessSortFN);
                         while (sector.stars.length < minSize && frontier.length > 0) {
-                            var toAdd = frontier.pop(); // least connected
+                            var frontierSortScores = {};
+                            for (var i = 0; i < frontier.length; i++) {
+                                var perimeter = sector.getPerimeterLengthWithStar(frontier[i]) / 15;
+                                var sortScore = frontier[i].mapGenData.connectedness - perimeter;
+                                frontierSortScores[frontier[i].id] = sortScore;
+                            }
+                            frontier.sort(function (a, b) {
+                                return frontierSortScores[b.id] - frontierSortScores[a.id];
+                            });
+                            var toAdd = frontier.pop();
                             unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
                             sector.addStar(toAdd);
                         }
@@ -20517,7 +20484,11 @@ var Rance;
                         return sizeSort;
                     var unclaimedSort = unclaimedNeighborsPerSector[b.id] -
                         unclaimedNeighborsPerSector[a.id];
-                    return unclaimedSort;
+                    if (sizeSort)
+                        return unclaimedSort;
+                    var perimeterSort = b.getPerimeterLengthWithStar(star) - a.getPerimeterLengthWithStar(star);
+                    if (perimeterSort)
+                        return perimeterSort;
                 });
                 candidateSectors[0].addStar(star);
             }
