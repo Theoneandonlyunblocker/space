@@ -2971,7 +2971,26 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module BattleSFXFunctions {
-                function rocketAttack(props: Rance.Templates.SFXParams): HTMLCanvasElement;
+                function projectileAttack(props: {
+                    projectileTextures: PIXI.Texture[];
+                    impactTextures?: PIXI.Texture[][];
+                    maxSpeed: number;
+                    acceleration: number;
+                    amountToSpawn: {
+                        min: number;
+                        max: number;
+                    };
+                    impactRate?: number;
+                }, params: Rance.Templates.SFXParams): HTMLCanvasElement;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module BattleSFXFunctions {
+                function rocketAttack(params: Rance.Templates.SFXParams): HTMLCanvasElement;
             }
         }
     }

@@ -21330,9 +21330,9 @@ var Rance;
         (function (DefaultModule) {
             var BattleSFXFunctions;
             (function (BattleSFXFunctions) {
-                function rocketAttack(props) {
+                function projectileAttack(props, params) {
                     var minY, maxY;
-                    [props.user, props.target].forEach(function (unit) {
+                    [params.user, params.target].forEach(function (unit) {
                         if (!unit)
                             return;
                         var unitCanvas = unit.cachedBattleScene;
@@ -21352,68 +21352,62 @@ var Rance;
                             }
                         }
                     });
-                    var travelSpeed = props.width / props.duration * 3; //milliseconds
-                    var acceleration = travelSpeed / 20;
-                    var maxSpeed = travelSpeed;
-                    var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
+                    var maxSpeed = (params.width / params.duration) * props.maxSpeed;
+                    var acceleration = maxSpeed * props.acceleration;
+                    var renderer = PIXI.autoDetectRenderer(params.width, params.height, {
                         transparent: true
                     });
                     var container = new PIXI.Container();
-                    if (!props.facingRight) {
+                    if (!params.facingRight) {
                         container.scale.x = -1;
-                        container.x = props.width;
-                    }
-                    var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png");
-                    var explosionTextures = [];
-                    for (var i = 0; i < 26; i++) {
-                        var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i + 1) + '.png');
-                        explosionTextures.push(explosionTexture);
+                        container.x = params.width;
                     }
                     var startTime = Date.now();
-                    var endTime = startTime + props.duration;
-                    var stopSpawningTime = startTime + props.duration / 2;
+                    var endTime = startTime + params.duration;
+                    var stopSpawningTime = startTime + params.duration / 2;
                     var lastTime = startTime;
-                    var rocketsToSpawn = 10;
-                    var explosionsToSpawn = 5;
-                    var explosionRate = rocketsToSpawn / explosionsToSpawn;
-                    var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
                     var nextSpawnTime = startTime;
-                    var rockets = [];
+                    var amountToSpawn = Rance.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
+                    var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
+                    var projectiles = [];
                     function animate() {
                         var currentTime = Date.now();
                         var elapsedTime = currentTime - lastTime;
                         lastTime = Date.now();
                         if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
                             nextSpawnTime += spawnRate;
-                            var sprite = new PIXI.Sprite(rocketTexture);
+                            var texture = Rance.getRandomArrayItem(props.projectileTextures);
+                            var sprite = new PIXI.Sprite(texture);
                             sprite.x = 20;
                             sprite.y = Rance.randInt(minY, maxY);
                             container.addChild(sprite);
-                            rockets.push({
+                            projectiles.push({
                                 sprite: sprite,
                                 speed: 0,
-                                willExplode: (rockets.length - 1) % explosionRate === 0,
-                                explosionX: Rance.randInt(props.width - 200, props.width - 50),
-                                hasExplosion: false
+                                willImpact: (projectiles.length - 1) % props.impactRate === 0,
+                                impactX: Rance.randInt(params.width - 200, params.width - 50),
+                                hasImpact: false
                             });
                         }
-                        for (var i = 0; i < rockets.length; i++) {
-                            var rocket = rockets[i];
-                            if (!rocket.hasExplosion) {
-                                if (rocket.speed < maxSpeed) {
-                                    rocket.speed += acceleration;
+                        for (var i = 0; i < projectiles.length; i++) {
+                            var projectile = projectiles[i];
+                            if (!projectile.hasImpact) {
+                                if (projectile.speed < maxSpeed) {
+                                    projectile.speed += acceleration;
                                 }
-                                rocket.sprite.x += rocket.speed * elapsedTime;
+                                projectile.sprite.x += projectile.speed * elapsedTime;
                             }
-                            if (!rocket.hasExplosion && rocket.willExplode && rocket.sprite.x >= rocket.explosionX) {
-                                rocket.hasExplosion = true;
-                                var explosion = new PIXI.extras.MovieClip(explosionTextures);
-                                explosion.anchor = new PIXI.Point(0.5, 0.5);
-                                explosion.loop = false;
-                                explosion.position = rocket.sprite.position;
-                                container.removeChild(rocket.sprite);
-                                container.addChild(explosion);
-                                explosion.play();
+                            if (!projectile.hasImpact && projectile.willImpact &&
+                                projectile.sprite.x >= projectile.impactX) {
+                                projectile.hasImpact = true;
+                                var impactTextures = Rance.getRandomArrayItem(props.impactTextures);
+                                var impactClip = new PIXI.extras.MovieClip(impactTextures);
+                                impactClip.anchor = new PIXI.Point(0.5, 0.5);
+                                impactClip.loop = false;
+                                impactClip.position = projectile.sprite.position;
+                                container.removeChild(projectile.sprite);
+                                container.addChild(impactClip);
+                                impactClip.play();
                             }
                         }
                         renderer.render(container);
@@ -21424,9 +21418,42 @@ var Rance;
                             renderer.destroy(true);
                         }
                     }
-                    props.onLoaded(renderer.view);
+                    params.onLoaded(renderer.view);
                     animate();
                     return renderer.view;
+                }
+                BattleSFXFunctions.projectileAttack = projectileAttack;
+            })(BattleSFXFunctions = DefaultModule.BattleSFXFunctions || (DefaultModule.BattleSFXFunctions = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="projectileattack.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var BattleSFXFunctions;
+            (function (BattleSFXFunctions) {
+                function rocketAttack(params) {
+                    var explosionTextures = [];
+                    for (var i = 0; i < 26; i++) {
+                        var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i + 1) + '.png');
+                        explosionTextures.push(explosionTexture);
+                    }
+                    var props = {
+                        projectileTextures: [PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png")],
+                        impactTextures: [explosionTextures],
+                        maxSpeed: 3,
+                        acceleration: 0.05,
+                        amountToSpawn: {
+                            min: 20,
+                            max: 20
+                        },
+                        impactRate: 5
+                    };
+                    return BattleSFXFunctions.projectileAttack(props, params);
                 }
                 BattleSFXFunctions.rocketAttack = rocketAttack;
             })(BattleSFXFunctions = DefaultModule.BattleSFXFunctions || (DefaultModule.BattleSFXFunctions = {}));
