@@ -64,6 +64,7 @@ module Rance
         this.dragPos.width = clamp(x - this.dragPos.left, minWidth, maxWidth);
         this.dragPos.height = clamp(y - this.dragPos.top, minHeight, maxHeight);
         this.updateDOMNodeStyle();
+        eventManager.dispatchEvent("popupResized");
       },
 
       render: function()

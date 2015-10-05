@@ -45,6 +45,7 @@ module Rance
         var self = this;
 
         window.addEventListener("resize", this.setDesiredHeight, false);
+        eventManager.addEventListener("popupResized", this.setDesiredHeight);
 
         if (this.props.keyboardSelect)
         {
@@ -87,6 +88,7 @@ module Rance
       componentWillUnmount: function()
       {
         window.removeEventListener("resize", this.setDesiredHeight);
+        eventManager.removeEventListener("popupResized", this.setDesiredHeight);
       },
 
       componentDidUpdate: function()
