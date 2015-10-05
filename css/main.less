@@ -1587,7 +1587,7 @@ ul, ol
 // using ::after element to preserve table layout
 // applied to first td inside the row to avoid adding the ::after element
 // to table row, messing up the table width
-.unit-list-item-hovered > td:first-child::after // jesus christ
+.unit-list-item-hovered > td:first-child::after
 {
   content: "";
   position: absolute;
@@ -3185,14 +3185,33 @@ ul, ol
   padding: 8px;
   color: @text-color;
   background-color: @bg-color;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
 
   .sort-icons(400px);
+
+  .save-list
+  {
+    flex: 1 1 auto;
+    overflow-y: hidden;
+  }
+
+  .save-game-name
+  {
+    flex: 0 0 auto;
+  }
+
+  .save-game-buttons-container
+  {
+    flex: 0 0 auto;
+  }
 }
 
 .save-game-buttons-container
 {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 .save-game-name
@@ -3203,7 +3222,6 @@ ul, ol
 .save-game-button
 {
   .button-style;
-  margin: 5px 20px;
 }
 
 .save-list
