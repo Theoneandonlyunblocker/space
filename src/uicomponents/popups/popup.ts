@@ -46,8 +46,8 @@ module Rance
 
         this.dragPos.top = top;
         this.dragPos.left = left;
-        this.dragPos.width = undefined;
-        this.dragPos.height = undefined;
+        this.dragPos.width = (rect.width > window.innerWidth ? window.innerWidth : undefined);
+        this.dragPos.height = (rect.height > window.innerHeight ? window.innerHeight : undefined);
         this.setState(
         {
           zIndex: this.props.incrementZIndex()
