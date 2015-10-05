@@ -2263,6 +2263,7 @@ var Rance;
             componentDidMount: function () {
                 var self = this;
                 window.addEventListener("resize", this.setDesiredHeight, false);
+                Rance.eventManager.addEventListener("popupResized", this.setDesiredHeight);
                 if (this.props.keyboardSelect) {
                     this.getDOMNode().addEventListener("keydown", function (event) {
                         switch (event.keyCode) {
@@ -2296,6 +2297,7 @@ var Rance;
             },
             componentWillUnmount: function () {
                 window.removeEventListener("resize", this.setDesiredHeight);
+                Rance.eventManager.removeEventListener("popupResized", this.setDesiredHeight);
             },
             componentDidUpdate: function () {
                 this.setDesiredHeight();
@@ -2720,7 +2722,7 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-                return (React.DOM.div({ className: "unit-list" }, UIComponents.List({
+                return (React.DOM.div({ className: "unit-list fixed-table-parent" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.props.onRowChange,
@@ -2954,7 +2956,7 @@ var Rance;
                             }
                         ];
                 }
-                return (React.DOM.div({ className: "item-list" }, UIComponents.List({
+                return (React.DOM.div({ className: "item-list fixed-table-parent" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[1], columns[2]],
@@ -3994,7 +3996,7 @@ var Rance;
                         defaultOrder: "asc"
                     }
                 ];
-                return (React.DOM.div({ className: "item-purchase-list" }, UIComponents.List({
+                return (React.DOM.div({ className: "item-purchase-list fixed-table-parent" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[1], columns[2]],
@@ -4098,8 +4100,8 @@ var Rance;
                 top = Rance.clamp(top, 0, container.offsetHeight - rect.height);
                 this.dragPos.top = top;
                 this.dragPos.left = left;
-                this.dragPos.width = undefined;
-                this.dragPos.height = undefined;
+                this.dragPos.width = (rect.width > window.innerWidth ? window.innerWidth : undefined);
+                this.dragPos.height = (rect.height > window.innerHeight ? window.innerHeight : undefined);
                 this.setState({
                     zIndex: this.props.incrementZIndex()
                 });
@@ -4112,6 +4114,7 @@ var Rance;
                 this.dragPos.width = Rance.clamp(x - this.dragPos.left, minWidth, maxWidth);
                 this.dragPos.height = Rance.clamp(y - this.dragPos.top, minHeight, maxHeight);
                 this.updateDOMNodeStyle();
+                Rance.eventManager.dispatchEvent("popupResized");
             },
             render: function () {
                 var divProps = {
@@ -4540,7 +4543,7 @@ var Rance;
                         notSortable: true
                     });
                 }
-                return (React.DOM.div({ className: "save-list" }, UIComponents.List({
+                return (React.DOM.div({ className: "save-list fixed-table-parent" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[1]],
@@ -5083,7 +5086,7 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-                return (React.DOM.div({ className: "attitude-modifier-list auto-position" }, UIComponents.List({
+                return (React.DOM.div({ className: "attitude-modifier-list auto-position fixed-table-parent" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[0], columns[1], columns[2]]
@@ -5300,7 +5303,7 @@ var Rance;
                 return (React.DOM.div({ className: "diplomacy-overview" }, UIComponents.PopupManager({
                     ref: "popupManager",
                     onlyAllowOne: true
-                }), React.DOM.div({ className: "diplomacy-status-list" }, UIComponents.List({
+                }), React.DOM.div({ className: "diplomacy-status-list fixed-table-parent" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[0]],
@@ -5392,7 +5395,7 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-                return (React.DOM.div({ className: "economy-summary-list" }, UIComponents.List({
+                return (React.DOM.div({ className: "economy-summary-list fixed-table-parent" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[2]]
@@ -6864,7 +6867,7 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-                return (React.DOM.div({ className: "buildable-item-list buildable-building-list" }, UIComponents.List({
+                return (React.DOM.div({ className: "buildable-item-list buildable-building-list fixed-table-parent" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.buildBuilding,
@@ -14742,7 +14745,7 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-                return (React.DOM.div({ className: "buildable-item-list buildable-ship-list" }, UIComponents.List({
+                return (React.DOM.div({ className: "buildable-item-list buildable-ship-list fixed-table-parent" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.buildShip,
@@ -16788,6 +16791,8 @@ var Rance;
             },
             render: function () {
                 return (React.DOM.div({
+                    className: "setup-game-wrapper"
+                }, React.DOM.div({
                     className: "setup-game"
                 }, React.DOM.div({
                     className: "setup-game-options"
@@ -16798,11 +16803,13 @@ var Rance;
                 }), UIComponents.MapSetup({
                     setPlayerLimits: this.setPlayerLimits,
                     ref: "mapSetup"
-                })), React.DOM.button({
+                })), React.DOM.div({
+                    className: "setup-game-buttons"
+                }, React.DOM.button({
                     onClick: this.randomize
                 }, "Randomize"), React.DOM.button({
                     onClick: this.startGame
-                }, "Start game")));
+                }, "Start game")))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));

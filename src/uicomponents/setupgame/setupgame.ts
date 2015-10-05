@@ -61,32 +61,42 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "setup-game"
+            className: "setup-game-wrapper"
           },
             React.DOM.div(
             {
-              className: "setup-game-options"
+              className: "setup-game"
             },
-              UIComponents.SetupGamePlayers(
+              React.DOM.div(
               {
-                ref: "players",
-                minPlayers: this.state.minPlayers,
-                maxPlayers: this.state.maxPlayers
-              }),
-              UIComponents.MapSetup(
+                className: "setup-game-options"
+              },
+                UIComponents.SetupGamePlayers(
+                {
+                  ref: "players",
+                  minPlayers: this.state.minPlayers,
+                  maxPlayers: this.state.maxPlayers
+                }),
+                UIComponents.MapSetup(
+                {
+                  setPlayerLimits: this.setPlayerLimits,
+                  ref: "mapSetup"
+                })
+              ),
+              React.DOM.div(
               {
-                setPlayerLimits: this.setPlayerLimits,
-                ref: "mapSetup"
-              })
-            ),
-            React.DOM.button(
-            {
-              onClick: this.randomize
-            }, "Randomize"),
-            React.DOM.button(
-            {
-              onClick: this.startGame
-            }, "Start game")
+                className: "setup-game-buttons"
+              },
+                React.DOM.button(
+                {
+                  onClick: this.randomize
+                }, "Randomize"),
+                React.DOM.button(
+                {
+                  onClick: this.startGame
+                }, "Start game")
+              )
+            )
           )
         );
       }

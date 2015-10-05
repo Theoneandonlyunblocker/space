@@ -1009,6 +1009,9 @@ ol {
 .react-list td {
   padding: 0 5px;
 }
+.fixed-table-parent {
+  overflow-y: hidden;
+}
 .fixed-table-container {
   position: relative;
   width: 100%;
@@ -1163,6 +1166,9 @@ ol {
 }
 .battle-prep > * {
   background-color: #0c1615;
+}
+.battle-prep .item-list {
+  overflow-y: hidden;
 }
 .battle-prep .item-list .sort-icon {
   font-weight: 100;
@@ -1625,6 +1631,9 @@ ol {
   height: 100%;
   background-color: #0c1615;
   color: #eeeeec;
+}
+.light-box-content > * {
+  height: 100%;
 }
 .light-box-close {
   position: absolute;
@@ -2281,6 +2290,7 @@ ol {
 }
 .item-equip .item-list {
   border-top: 1px solid #c4e5fb;
+  overflow-y: hidden;
 }
 .item-equip .item-list .sort-icon {
   font-weight: 100;
@@ -2774,6 +2784,10 @@ ol {
 .diplomacy-action-button.disabled * {
   pointer-events: none !important;
 }
+.technologies-list {
+  max-height: 100%;
+  overflow-y: auto;
+}
 .technology-listing {
   display: flex;
   flex-flow: row;
@@ -2906,6 +2920,9 @@ ol {
   padding: 8px;
   color: #eeeeec;
   background-color: #0c1615;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
 }
 .save-game .sort-icon {
   font-weight: 100;
@@ -2953,9 +2970,19 @@ ol {
     right: 5px;
   }
 }
+.save-game .save-list {
+  flex: 1 1 auto;
+  overflow-y: hidden;
+}
+.save-game .save-game-name {
+  flex: 0 0 auto;
+}
+.save-game .save-game-buttons-container {
+  flex: 0 0 auto;
+}
 .save-game-buttons-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
 }
 .save-game-name {
   margin: 5px 0;
@@ -2966,7 +2993,6 @@ ol {
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
-  margin: 5px 20px;
 }
 .save-game-button:hover,
 .save-game-button:focus {
@@ -3194,6 +3220,8 @@ ol {
 .item-purchase-list {
   color: #eeeeec;
   background-color: #0c1615;
+  height: 100%;
+  overflow-y: hidden;
   border-style: solid;
   border-color: #c4e5fb;
   border-width: 1px;
