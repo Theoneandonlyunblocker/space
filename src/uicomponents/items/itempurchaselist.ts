@@ -76,7 +76,7 @@ module Rance
        
 
         return(
-          React.DOM.div({className: "item-purchase-list"},
+          React.DOM.div({className: "item-purchase-list fixed-table-parent"},
             UIComponents.List(
             {
               listItems: rows,

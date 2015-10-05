@@ -92,7 +92,7 @@ module Rance
         ];
 
         return(
-          React.DOM.div({className: "buildable-item-list buildable-building-list"},
+          React.DOM.div({className: "buildable-item-list buildable-building-list fixed-table-parent"},
             UIComponents.List(
             {
               listItems: rows,

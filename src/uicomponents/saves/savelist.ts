@@ -85,7 +85,7 @@ module Rance
         }
 
         return(
-          React.DOM.div({className: "save-list"},
+          React.DOM.div({className: "save-list fixed-table-parent"},
             UIComponents.List(
             {
               listItems: rows,

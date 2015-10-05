@@ -106,7 +106,7 @@ module Rance
         ];
 
         return(
-          React.DOM.div({className: "unit-list"},
+          React.DOM.div({className: "unit-list fixed-table-parent"},
             UIComponents.List(
             {
               listItems: rows,

@@ -1463,6 +1463,11 @@ ul, ol
   }
 }
 
+.fixed-table-parent
+{
+  overflow-y: hidden;
+}
+
 .fixed-table-container
 {
   position: relative;
@@ -2138,6 +2143,11 @@ ul, ol
 
   background-color: @bg-color;
   color: @text-color;
+
+  >*
+  {
+    height: 100%;
+  }
 }
 
 .light-box-close
@@ -3373,6 +3383,8 @@ ul, ol
 {
   color: @text-color;
   background-color: @bg-color;
+  height: 100%;
+  overflow-y: hidden;
   .default-border(1px);
 
   .hover-only-fancy-table-style(2px, 0);

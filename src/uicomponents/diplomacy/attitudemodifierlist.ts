@@ -72,7 +72,7 @@ module Rance
         ];
 
         return(
-          React.DOM.div({className: "attitude-modifier-list auto-position"},
+          React.DOM.div({className: "attitude-modifier-list auto-position fixed-table-parent"},
             UIComponents.List(
             {
               listItems: rows,

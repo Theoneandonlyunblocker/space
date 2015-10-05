@@ -56,7 +56,7 @@ module Rance
         ];
 
         return(
-          React.DOM.div({className: "economy-summary-list"},
+          React.DOM.div({className: "economy-summary-list fixed-table-parent"},
             UIComponents.List(
             {
               listItems: rows,

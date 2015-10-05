@@ -105,7 +105,7 @@ module Rance
               ref: "popupManager",
               onlyAllowOne: true
             }),
-            React.DOM.div({className: "diplomacy-status-list"},
+            React.DOM.div({className: "diplomacy-status-list fixed-table-parent"},
               UIComponents.List(
               {
                 listItems: rows,
