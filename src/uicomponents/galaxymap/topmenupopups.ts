@@ -91,6 +91,7 @@ module Rance
             {
               handleClose: this.closePopup.bind(this, "saveGame")
             }
+            popupProps.preventAutoResize = true;
             break;
           }
           case "loadGame":
@@ -100,6 +101,7 @@ module Rance
             {
               handleClose: this.closePopup.bind(this, "loadGame")
             }
+            popupProps.preventAutoResize = true;
             break;
           }
           case "options":

@@ -4053,7 +4053,6 @@ var Rance;
             // },
             onDragMove: function (x, y) {
                 var rect = this.getDOMNode().getBoundingClientRect();
-                var offset = this.state.dragOffset;
                 this.props.handleResize(x + rect.width, y + rect.height);
             },
             render: function () {
@@ -4111,8 +4110,8 @@ var Rance;
                 var maxWidth = this.props.maxWidth || window.innerWidth;
                 var minHeight = this.props.minHeight || 0;
                 var maxHeight = this.props.maxHeight || window.innerHeight;
-                this.dragPos.width = Rance.clamp(x - this.dragPos.left, minWidth, maxWidth);
-                this.dragPos.height = Rance.clamp(y - this.dragPos.top, minHeight, maxHeight);
+                this.dragPos.width = Rance.clamp(x + 5 - this.dragPos.left, minWidth, maxWidth);
+                this.dragPos.height = Rance.clamp(y + 5 - this.dragPos.top, minHeight, maxHeight);
                 this.updateDOMNodeStyle();
                 Rance.eventManager.dispatchEvent("popupResized");
             },
@@ -5886,6 +5885,7 @@ var Rance;
                                 {
                                     handleClose: this.closePopup.bind(this, "saveGame")
                                 };
+                            popupProps.preventAutoResize = true;
                             break;
                         }
                     case "loadGame":
@@ -5895,6 +5895,7 @@ var Rance;
                                 {
                                     handleClose: this.closePopup.bind(this, "loadGame")
                                 };
+                            popupProps.preventAutoResize = true;
                             break;
                         }
                     case "options":
