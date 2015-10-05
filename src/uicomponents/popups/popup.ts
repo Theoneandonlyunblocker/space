@@ -61,8 +61,8 @@ module Rance
         var minHeight = this.props.minHeight || 0;
         var maxHeight = this.props.maxHeight || window.innerHeight;
 
-        this.dragPos.width = clamp(x - this.dragPos.left, minWidth, maxWidth);
-        this.dragPos.height = clamp(y - this.dragPos.top, minHeight, maxHeight);
+        this.dragPos.width = clamp(x + 5 - this.dragPos.left, minWidth, maxWidth);
+        this.dragPos.height = clamp(y + 5 - this.dragPos.top, minHeight, maxHeight);
         this.updateDOMNodeStyle();
         eventManager.dispatchEvent("popupResized");
       },

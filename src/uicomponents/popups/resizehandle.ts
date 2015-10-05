@@ -22,7 +22,6 @@ module Rance
       onDragMove: function(x: number, y: number)
       {
         var rect = this.getDOMNode().getBoundingClientRect();
-        var offset = this.state.dragOffset;
         this.props.handleResize(x + rect.width, y + rect.height);
       },
 
