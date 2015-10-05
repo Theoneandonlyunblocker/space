@@ -1857,6 +1857,8 @@ ul, ol
   flex: 1;
   flex-flow: column;
   height: 100%;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .galaxy-map-ui
@@ -2662,6 +2664,7 @@ ul, ol
   position: relative;
   width: 100%;
   left: -3px;
+  top: 3px;
   background-color: @bg-color2;
   padding: 0 8px;
   color: @text-color;
@@ -3048,6 +3051,7 @@ ul, ol
 
 .diplomacy-status-list
 {
+  height: 100%;
   .hover-only-fancy-table-style(2px, 0);
 }
 

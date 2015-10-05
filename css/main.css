@@ -1387,6 +1387,8 @@ ol {
   flex: 1;
   flex-flow: column;
   height: 100%;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 .galaxy-map-ui {
   z-index: 100;
@@ -2120,6 +2122,7 @@ ol {
   position: relative;
   width: 100%;
   left: -3px;
+  top: 3px;
   background-color: #0d2335;
   padding: 0 8px;
   color: #eeeeec;
@@ -2654,6 +2657,7 @@ ol {
   color: #f3c620;
 }
 .diplomacy-status-list {
+  height: 100%;
   position: relative;
 }
 .diplomacy-status-list .fixed-table-header-background {
