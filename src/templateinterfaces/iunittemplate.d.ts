@@ -1,3 +1,4 @@
+/// <reference path="imanufacturablething.d.ts" />
 /// <reference path="iabilitytemplate.d.ts" />
 /// <reference path="ipassiveskilltemplate.d.ts" />
 /// <reference path="ispritetemplate.d.ts" />
@@ -11,7 +12,7 @@ declare module Rance
 {
   module Templates
   {
-    interface IUnitTemplate
+    interface IUnitTemplate extends IManufacturableThing
     {
       type: string;
       displayName: string;

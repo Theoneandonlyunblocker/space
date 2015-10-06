@@ -16,10 +16,11 @@ module Rance
           {
             type: "bombLauncher1",
             displayName: "Bomb Launcher 1",
+            description: "",
             icon: "img\/items\/cannon.png",
             
             techLevel: 1,
-            cost: 100,
+            buildCost: 100,
 
             slot: "high",
             ability: Abilities.bombAttack
@@ -28,10 +29,11 @@ module Rance
           {
             type: "bombLauncher2",
             displayName: "Bomb Launcher 2",
+            description: "",
             icon: "img\/items\/cannon.png",
             
             techLevel: 2,
-            cost: 200,
+            buildCost: 200,
 
             attributes:
             {
@@ -45,10 +47,11 @@ module Rance
           {
             type: "bombLauncher3",
             displayName: "Bomb Launcher 3",
+            description: "",
             icon: "img\/items\/cannon.png",
             
             techLevel: 3,
-            cost: 300,
+            buildCost: 300,
 
             attributes:
             {
@@ -63,10 +66,11 @@ module Rance
           {
             type: "afterBurner1",
             displayName: "Afterburner 1",
+            description: "",
             icon: "img\/items\/blueThing.png",
             
             techLevel: 1,
-            cost: 100,
+            buildCost: 100,
 
             attributes:
             {
@@ -80,10 +84,11 @@ module Rance
           {
             type: "afterBurner2",
             displayName: "Afterburner 2",
+            description: "",
             icon: "img\/items\/blueThing.png",
             
             techLevel: 2,
-            cost: 200,
+            buildCost: 200,
 
             attributes:
             {
@@ -96,10 +101,11 @@ module Rance
           {
             type: "afterBurner3",
             displayName: "Afterburner 3",
+            description: "",
             icon: "img\/items\/blueThing.png",
             
             techLevel: 3,
-            cost: 300,
+            buildCost: 300,
 
             attributes:
             {
@@ -113,10 +119,11 @@ module Rance
           {
             type: "shieldPlating1",
             displayName: "Shield Plating 1",
+            description: "",
             icon: "img\/items\/armor1.png",
             
             techLevel: 1,
-            cost: 100,
+            buildCost: 100,
 
             attributes:
             {
@@ -129,10 +136,11 @@ module Rance
           {
             type: "shieldPlating2",
             displayName: "Shield Plating 2",
+            description: "",
             icon: "img\/items\/armor1.png",
             
             techLevel: 2,
-            cost: 200,
+            buildCost: 200,
 
             attributes:
             {
@@ -145,10 +153,11 @@ module Rance
           {
             type: "shieldPlating3",
             displayName: "Shield Plating 3",
+            description: "",
             icon: "img\/items\/armor1.png",
             
             techLevel: 3,
-            cost: 300,
+            buildCost: 300,
 
             attributes:
             {

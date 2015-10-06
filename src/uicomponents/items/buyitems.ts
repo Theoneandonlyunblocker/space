@@ -10,11 +10,11 @@ module Rance
 
       handleSelectRow: function(row: IListItem)
       {
-        var template = row.data.item.template;
+        var template: Templates.IItemTemplate = row.data.item.template;
         var item = new Item(template);
         
         this.props.player.addItem(item);
-        this.props.player.money -= template.cost;
+        this.props.player.money -= template.buildCost;
 
         eventManager.dispatchEvent("playerControlUpdated");
       },

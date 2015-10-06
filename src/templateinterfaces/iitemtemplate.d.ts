@@ -1,19 +1,21 @@
+/// <reference path="imanufacturablething.d.ts" />
+
 declare module Rance
 {
   module Templates
   {
-    interface IItemTemplate
+    interface IItemTemplate extends IManufacturableThing
     {
       type: string;
       displayName: string;
-      description?: string;
+      description: string;
       icon: string;
       
       techLevel: number;
       
       slot: string; // low, mid, high
       
-      cost: number;
+      buildCost: number;
       
       ability?: IAbilityTemplate;
       passiveSkill?: IPassiveSkillTemplate;

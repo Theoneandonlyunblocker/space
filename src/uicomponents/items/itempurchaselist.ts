@@ -24,10 +24,11 @@ module Rance
       render: function()
       {
         var rows: IListItem[] = [];
+        var items: Item[] = this.props.items;
 
-        for (var i = 0; i < this.props.items.length; i++)
+        for (var i = 0; i < items.length; i++)
         {
-          var item = this.props.items[i];
+          var item = items[i];
 
           var data: any =
           {
@@ -36,7 +37,7 @@ module Rance
             slot: item.template.slot,
             slotIndex: this.getSlotIndex(item.template.slot),
             techLevel: item.template.techLevel,
-            buildCost: item.template.cost,
+            buildCost: item.template.buildCost,
             playerMoney: this.props.playerMoney,
 
             rowConstructor: UIComponents.ItemPurchaseListItem

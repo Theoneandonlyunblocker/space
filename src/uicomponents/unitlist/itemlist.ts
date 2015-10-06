@@ -25,10 +25,11 @@ module Rance
       render: function()
       {
         var rows: IListItem[] = [];
+        var items: Item[] = this.props.items;
 
-        for (var i = 0; i < this.props.items.length; i++)
+        for (var i = 0; i < items.length; i++)
         {
-          var item = this.props.items[i];
+          var item = items[i];
 
           var ability: any = null;
           var abilityIsPassive = false;
@@ -53,7 +54,7 @@ module Rance
             unit: item.unit ? item.unit : null,
             unitName: item.unit ? item.unit.name : "",
             techLevel: item.template.techLevel,
-            cost: item.template.cost,
+            cost: item.template.buildCost,
 
             ability: ability,
             abilityName: ability ? ability.displayName : "",
