@@ -76,10 +76,6 @@ declare module React {
         replaceProps(nextProps: P, callback?: () => void): void;
     }
 
-    export interface Constructable {
-        new(): any;
-    }
-
     export interface Validator<P> {
         (props: P, propName: string, componentName: string): Error;
     }
@@ -102,7 +98,7 @@ declare module React {
         string: Requireable<any>;
         renderable: Requireable<any>;
         component: Requireable<any>;
-        instanceOf: (clazz: Constructable) => Requireable<any>;
+        instanceOf: (expectedClass: {}) => Requireable<any>;
         oneOf: (types: any[]) => Requireable<any>
         oneOfType: (types: Validator<any>[]) => Requireable<any>;
         arrayOf: (type: Validator<any>) => Requireable<any>;
