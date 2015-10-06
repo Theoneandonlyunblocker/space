@@ -3683,3 +3683,20 @@ ol {
 .debug-hidden {
   display: none;
 }
+.manufactory-stars-list-item {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+.manufactory-stars-list-item.no-manufactory {
+  color: grey;
+}
+.manufactory-stars-list-item.highlighted {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.manufactory-stars-list-item-capacity {
+  margin-left: 1em;
+}
+.manufactory-stars-list-item-capacity.no-capacity {
+  color: red;
+}

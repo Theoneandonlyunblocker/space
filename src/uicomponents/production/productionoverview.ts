@@ -27,10 +27,26 @@ module Rance
       
       handleStarSelect: function(star: Star)
       {
+        if (this.state.selectedStar === star)
+        {
+          this.clearSelection();
+        }
+        else
+        {
+          this.setState(
+          {
+            selectedStar: star,
+            highlightedStars: [star]
+          });
+        }
+      },
+
+      clearSelection: function()
+      {
         this.setState(
         {
-          selectedStar: star,
-          highlightedStars: [star]
+          selectedStar: undefined,
+          highlightedStars: []
         });
       },
 

@@ -3771,3 +3771,30 @@ ul, ol
 {
   display: none;
 }
+
+.manufactory-stars-list-item
+{
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+
+  &.no-manufactory
+  {
+    color: grey;
+  }
+
+  &.highlighted
+  {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.manufactory-stars-list-item-capacity
+{
+  margin-left: 1em;
+
+  &.no-capacity
+  {
+    color: red;
+  }
+}

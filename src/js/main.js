@@ -13580,7 +13580,9 @@ var Rance;
                 var hasManufcatory = Boolean(totalCapacity);
                 var hasCapacity = hasManufcatory && usedCapacity < totalCapacity;
                 return (React.DOM.div({
-                    className: "manufactory-stars-list-item" + (!hasManufcatory ? " no-manufactory" : ""),
+                    className: "manufactory-stars-list-item" +
+                        (!hasManufcatory ? " no-manufactory" : "") +
+                        (isHighlighted ? " highlighted" : ""),
                     onClick: this.handleClick
                 }, React.DOM.div({
                     className: "manufactory-stars-list-item-star-name"
@@ -13673,9 +13675,20 @@ var Rance;
                 });
             },
             handleStarSelect: function (star) {
+                if (this.state.selectedStar === star) {
+                    this.clearSelection();
+                }
+                else {
+                    this.setState({
+                        selectedStar: star,
+                        highlightedStars: [star]
+                    });
+                }
+            },
+            clearSelection: function () {
                 this.setState({
-                    selectedStar: star,
-                    highlightedStars: [star]
+                    selectedStar: undefined,
+                    highlightedStars: []
                 });
             },
             render: function () {

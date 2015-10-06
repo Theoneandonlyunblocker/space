@@ -37,7 +37,9 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "manufactory-stars-list-item" + (!hasManufcatory ? " no-manufactory" : ""),
+            className: "manufactory-stars-list-item" +
+              (!hasManufcatory ? " no-manufactory" : "") +
+              (isHighlighted ? " highlighted" : ""),
             onClick: this.handleClick
           },
             React.DOM.div(
