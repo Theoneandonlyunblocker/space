@@ -10705,7 +10705,7 @@ var Rance;
             };
             MapEvaluator.prototype.evaluateStarProduction = function (star) {
                 var evaluation = 0;
-                evaluation += star.getItemManufactoryLevel();
+                // TODO manufactory
                 return evaluation;
             };
             MapEvaluator.prototype.evaluateStarDefendability = function (star) {
@@ -11922,8 +11922,9 @@ var Rance;
                 }
                 if (!unitType)
                     debugger;
-                var unit = this.player.buildUnit(unitType, star);
-                front.addUnit(unit);
+                // TODO manufactory
+                // var unit = this.player.buildUnit(unitType, star);
+                // front.addUnit(unit);
             };
             return EconomyAI;
         })();
@@ -12481,14 +12482,6 @@ var Rance;
             }
             return linksBySourceStarId;
         };
-        Player.prototype.buildUnit = function (template, location) {
-            var unit = new Rance.Unit(template);
-            this.addUnit(unit);
-            var fleet = new Rance.Fleet(this, [unit], location);
-            this.money -= template.buildCost;
-            Rance.eventManager.dispatchEvent("playerControlUpdated");
-            return unit;
-        };
         Player.prototype.identifyUnit = function (unit) {
             if (!this.identifiedUnits[unit.id]) {
                 this.identifiedUnits[unit.id] = unit;
@@ -12523,30 +12516,12 @@ var Rance;
             this.items.splice(index, 1);
         };
         Player.prototype.getAllBuildableItems = function () {
-            var alreadyChecked = {};
-            var allBuildable = [];
-            for (var i = 0; i < this.controlledLocations.length; i++) {
-                var star = this.controlledLocations[i];
-                var buildableItems = star.getBuildableItems().all;
-                for (var j = 0; j < buildableItems.length; j++) {
-                    var item = buildableItems[j];
-                    if (alreadyChecked[item.type]) {
-                        continue;
-                    }
-                    else if (item.technologyRequirements && !this.meetsTechnologyRequirements(item.technologyRequirements)) {
-                        alreadyChecked[item.type] = true;
-                        continue;
-                    }
-                    else {
-                        alreadyChecked[item.type] = true;
-                        allBuildable.push({
-                            star: star,
-                            template: item
-                        });
-                    }
-                }
+            // TODO
+            var itemTypes = [];
+            for (var key in app.moduleData.Templates.Items) {
+                itemTypes.push(app.moduleData.Templates.Items[key]);
             }
-            return allBuildable;
+            return itemTypes;
         };
         Player.prototype.getNearestOwnedStarTo = function (star) {
             var self = this;
@@ -12752,12 +12727,6 @@ var Rance;
             this.buildingsEffectIsDirty = true;
             this.indexedNeighborsInRange = {};
             this.indexedDistanceToStar = {};
-            // TODO rework items building
-            this.buildableItems = {
-                1: [],
-                2: [],
-                3: []
-            };
             this.buildableUnitTypes = [];
             this.id = isFinite(id) ? id : Rance.idGenerators.star++;
             this.name = "Star " + this.id;
@@ -13337,46 +13306,6 @@ var Rance;
             }
             return this.seed;
         };
-        Star.prototype.seedBuildableItems = function () {
-            for (var techLevel in this.buildableItems) {
-                var itemsByTechLevel = Rance.TemplateIndexes.itemsByTechLevel[techLevel];
-                var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
-                itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel, this.getSeed());
-                for (var i = 0; i < maxItemsForTechLevel; i++) {
-                    this.buildableItems[techLevel].push(itemsByTechLevel.pop());
-                }
-            }
-        };
-        Star.prototype.getItemManufactoryLevel = function () {
-            return this.getEffectWithBuildingsEffect(0, "itemLevel");
-        };
-        Star.prototype.getItemAmountForTechLevel = function (techLevel, manufactoryLevel) {
-            var maxManufactoryLevel = 3; // MANUFACTORY_MAX
-            manufactoryLevel = Rance.clamp(manufactoryLevel, 0, maxManufactoryLevel);
-            var amount = (1 + manufactoryLevel) - techLevel;
-            if (amount < 0)
-                amount = 0;
-            return amount;
-        };
-        Star.prototype.getBuildableItems = function () {
-            if (!this.buildableItems[1] || this.buildableItems[1].length < 1) {
-                this.seedBuildableItems();
-            }
-            ;
-            var manufactoryLevel = this.getItemManufactoryLevel();
-            var byTechLevel = {};
-            var allBuildable = [];
-            for (var techLevel in this.buildableItems) {
-                var amountBuildable = this.getItemAmountForTechLevel(techLevel, manufactoryLevel);
-                var forThisTechLevel = this.buildableItems[techLevel].slice(0, amountBuildable);
-                byTechLevel[techLevel] = forThisTechLevel;
-                allBuildable = allBuildable.concat(forThisTechLevel);
-            }
-            return ({
-                byTechLevel: byTechLevel,
-                all: allBuildable
-            });
-        };
         Star.prototype.serialize = function () {
             var data = {};
             data.id = this.id;
@@ -13625,7 +13554,7 @@ var Rance;
             return global.concat(local);
         };
         Manufactory.prototype.getBuildableItemTypes = function () {
-            return this.star.getBuildableItems().all;
+            return this.player.getAllBuildableItems();
         };
         Manufactory.prototype.getAllBuildableThings = function () {
             // if (this.buildableThingsAreDirty)

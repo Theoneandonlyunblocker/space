@@ -69,18 +69,6 @@ module Rance
       [id: number]: number;
     } = {};
 
-    // TODO rework items building
-    buildableItems:
-    {
-      1: Templates.IItemTemplate[];
-      2: Templates.IItemTemplate[];
-      3: Templates.IItemTemplate[];
-    } =
-    {
-      1: [],
-      2: [],
-      3: []
-    };
     buildableUnitTypes: Templates.IUnitTemplate[] = [];
 
     constructor(x: number, y: number, id?: number)
@@ -957,69 +945,6 @@ module Rance
       }
 
       return this.seed;
-    }
-    
-    seedBuildableItems()
-    {
-      for (var techLevel in this.buildableItems)
-      {
-        var itemsByTechLevel = TemplateIndexes.itemsByTechLevel[techLevel];
-
-        var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
-
-        itemsByTechLevel = shuffleArray(itemsByTechLevel, this.getSeed());
-
-        for (var i = 0; i < maxItemsForTechLevel; i++)
-        {
-          this.buildableItems[techLevel].push(itemsByTechLevel.pop());
-        }
-      }
-    }
-    getItemManufactoryLevel()
-    {
-      return this.getEffectWithBuildingsEffect(0, "itemLevel");
-    }
-    getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number)
-    {
-      var maxManufactoryLevel = 3; // MANUFACTORY_MAX
-
-      manufactoryLevel = clamp(manufactoryLevel, 0, maxManufactoryLevel);
-
-      var amount = (1 + manufactoryLevel) - techLevel;
-
-      if (amount < 0) amount = 0;
-
-      return amount;
-    }
-    getBuildableItems()
-    {
-      if (!this.buildableItems[1] || this.buildableItems[1].length < 1)
-      {
-        this.seedBuildableItems();
-      };
-
-      var manufactoryLevel = this.getItemManufactoryLevel();
-
-      var byTechLevel:
-      {
-        [techLevel: number]: Templates.IItemTemplate[];
-      } = {};
-      var allBuildable: Templates.IItemTemplate[] = [];
-
-      for (var techLevel in this.buildableItems)
-      {
-        var amountBuildable = this.getItemAmountForTechLevel(techLevel, manufactoryLevel)
-        var forThisTechLevel = this.buildableItems[techLevel].slice(0, amountBuildable);
-
-        byTechLevel[techLevel] = forThisTechLevel;
-        allBuildable = allBuildable.concat(forThisTechLevel);
-      }
-
-      return(
-      {
-        byTechLevel: byTechLevel,
-        all: allBuildable
-      })
     }
     serialize()
     {

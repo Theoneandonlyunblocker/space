@@ -642,19 +642,6 @@ module Rance
 
       return linksBySourceStarId;
     }
-    buildUnit(template: Templates.IUnitTemplate, location: Star)
-    {
-      var unit = new Rance.Unit(template);
-      this.addUnit(unit);
-
-      var fleet = new Fleet(this, [unit], location);
-
-      this.money -= template.buildCost;
-
-      eventManager.dispatchEvent("playerControlUpdated");
-
-      return unit;
-    }
     identifyUnit(unit: Unit)
     {
       if (!this.identifiedUnits[unit.id])
@@ -702,40 +689,15 @@ module Rance
     }
     getAllBuildableItems()
     {
-      var alreadyChecked: {[itemType: string]: boolean} = {};
-      var allBuildable: {star: Star; template: Templates.IItemTemplate;}[] = [];
+      // TODO manufactory
+      var itemTypes: Templates.IItemTemplate[] = [];
 
-      for (var i = 0; i < this.controlledLocations.length; i++)
+      for (var key in app.moduleData.Templates.Items)
       {
-        var star = this.controlledLocations[i];
-
-        var buildableItems = star.getBuildableItems().all;
-        for (var j = 0; j < buildableItems.length; j++)
-        {
-          var item = buildableItems[j];
-
-          if (alreadyChecked[item.type])
-          {
-            continue;
-          }
-          else if (item.technologyRequirements && !this.meetsTechnologyRequirements(item.technologyRequirements))
-          {
-            alreadyChecked[item.type] = true;
-            continue;
-          }
-          else
-          {
-            alreadyChecked[item.type] = true;
-            allBuildable.push(
-            {
-              star: star,
-              template: item
-            });
-          }
-        }
+        itemTypes.push(app.moduleData.Templates.Items[key]);
       }
 
-      return allBuildable;
+      return itemTypes;
     }
     getNearestOwnedStarTo(star: Star)
     {

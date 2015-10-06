@@ -119,9 +119,10 @@ module Rance
         }
         if (!unitType) debugger;
 
-        var unit = this.player.buildUnit(unitType, star);
+        // TODO manufactory
+        // var unit = this.player.buildUnit(unitType, star);
         
-        front.addUnit(unit);
+        // front.addUnit(unit);
       }
     }
   }

@@ -1818,16 +1818,12 @@ declare module Rance {
         getLinksToUnRevealedStars(): {
             [starId: number]: Star[];
         };
-        buildUnit(template: Templates.IUnitTemplate, location: Star): Unit;
         identifyUnit(unit: Unit): void;
         unitIsIdentified(unit: Unit): boolean;
         fleetIsFullyIdentified(fleet: Fleet): boolean;
         addItem(item: Item): void;
         removeItem(item: Item): void;
-        getAllBuildableItems(): {
-            star: Star;
-            template: Templates.IItemTemplate;
-        }[];
+        getAllBuildableItems(): Templates.IItemTemplate[];
         getNearestOwnedStarTo(star: Star): Star;
         attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
         getResearchSpeed(): number;
@@ -1873,11 +1869,6 @@ declare module Rance {
         };
         indexedDistanceToStar: {
             [id: number]: number;
-        };
-        buildableItems: {
-            1: Templates.IItemTemplate[];
-            2: Templates.IItemTemplate[];
-            3: Templates.IItemTemplate[];
         };
         buildableUnitTypes: Templates.IUnitTemplate[];
         constructor(x: number, y: number, id?: number);
@@ -1961,15 +1952,6 @@ declare module Rance {
             };
         };
         getSeed(): string;
-        seedBuildableItems(): void;
-        getItemManufactoryLevel(): any;
-        getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
-        getBuildableItems(): {
-            byTechLevel: {
-                [techLevel: number]: Templates.IItemTemplate[];
-            };
-            all: Templates.IItemTemplate[];
-        };
         serialize(): any;
     }
 }

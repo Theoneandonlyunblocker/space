@@ -134,7 +134,7 @@ module Rance
       {
         var evaluation = 0;
 
-        evaluation += star.getItemManufactoryLevel();
+        // TODO manufactory
 
         return evaluation;
       }

@@ -96,7 +96,7 @@ module Rance
     }
     getBuildableItemTypes(): Templates.IItemTemplate[]
     {
-      return this.star.getBuildableItems().all;
+      return this.player.getAllBuildableItems();
     }
     getAllBuildableThings()
     {
