@@ -164,6 +164,13 @@ module Rance
           React.DOM.button(
           {
             className: "top-menu-items-button",
+            key: "production",
+            onClick: this.togglePopup.bind(this, "production"),
+            tabIndex: menuItemTabIndex
+          }, "Production"),
+          React.DOM.button(
+          {
+            className: "top-menu-items-button",
             key: "equipItems",
             onClick: this.togglePopup.bind(this, "equipItems"),
             tabIndex: menuItemTabIndex

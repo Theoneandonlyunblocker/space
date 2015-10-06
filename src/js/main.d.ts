@@ -4,19 +4,19 @@
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../templateinterfaces/idistributable.d.ts" />
 /// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
+/// <reference path="../templateinterfaces/iitemtemplate.d.ts" />
+/// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
+/// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
-/// <reference path="../templateinterfaces/iitemtemplate.d.ts" />
-/// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="../templateinterfaces/iattitudemodifiertemplate.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
 /// <reference path="../templateinterfaces/inotificationtemplate.d.ts" />
-/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
-/// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
-/// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
-/// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="../templateinterfaces/imaprendererlayertemplate.d.ts" />
 /// <reference path="../templateinterfaces/imaprenderermapmodetemplate.d.ts" />
@@ -453,88 +453,24 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module UIComponents {
-        var TopMenuPopup: React.Factory<{}>;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Resources {
+                    var testResource1: Rance.Templates.IResourceTemplate;
+                    var testResource2: Rance.Templates.IResourceTemplate;
+                    var testResource3: Rance.Templates.IResourceTemplate;
+                    var testResource4: Rance.Templates.IResourceTemplate;
+                    var testResource5: Rance.Templates.IResourceTemplate;
+                }
+            }
+        }
     }
 }
 declare module Rance {
-    module UIComponents {
-        var TopMenuPopups: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var TopMenu: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var Resource: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var TopBarResources: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var TopBar: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var FleetControls: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var FleetInfo: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ShipInfoName: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ShipInfo: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var FleetContents: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var FleetReorganization: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var FleetSelection: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var StarInfo: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var AttackTarget: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BuildableBuilding: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BuildableBuildingList: React.Factory<{}>;
+    interface Point {
+        x: number;
+        y: number;
     }
 }
 declare module Rance {
@@ -606,27 +542,6 @@ declare module Rance {
     function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IWeightedProbability<T>[]): T[];
 }
 declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Resources {
-                    var testResource1: Rance.Templates.IResourceTemplate;
-                    var testResource2: Rance.Templates.IResourceTemplate;
-                    var testResource3: Rance.Templates.IResourceTemplate;
-                    var testResource4: Rance.Templates.IResourceTemplate;
-                    var testResource5: Rance.Templates.IResourceTemplate;
-                }
-            }
-        }
-    }
-}
-declare module Rance {
-    interface Point {
-        x: number;
-        y: number;
-    }
-}
-declare module Rance {
     interface IBuildingUpgradeData {
         template: Templates.IBuildingTemplate;
         level: number;
@@ -656,138 +571,299 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class Star implements Point {
-        id: number;
-        x: number;
-        y: number;
-        basisX: number;
-        basisY: number;
-        linksTo: Star[];
-        linksFrom: Star[];
-        mapGenData: any;
-        voronoiId: number;
-        seed: string;
-        name: string;
-        owner: Player;
-        baseIncome: number;
-        resource: Templates.IResourceTemplate;
-        fleets: {
-            [playerId: string]: Fleet[];
-        };
-        buildings: {
-            [category: string]: Building[];
-        };
-        buildingsEffect: Templates.IBuildingEffect;
-        buildingsEffectIsDirty: boolean;
-        voronoiCell: any;
-        indexedNeighborsInRange: {
-            [range: number]: {
-                all: Star[];
-                byRange: {
-                    [range: number]: Star[];
-                };
-            };
-        };
-        indexedDistanceToStar: {
-            [id: number]: number;
-        };
-        buildableItems: {
-            1: Templates.IItemTemplate[];
-            2: Templates.IItemTemplate[];
-            3: Templates.IItemTemplate[];
-        };
-        buildableUnitTypes: Templates.IUnitTemplate[];
-        constructor(x: number, y: number, id?: number);
-        severLinksToNonAdjacent(): void;
-        addBuilding(building: Building): void;
-        removeBuilding(building: Building): void;
-        sortDefenceBuildings(): void;
-        getSecondaryController(): Player;
-        updateController(): void;
-        updateBuildingsEffect(): void;
-        getBuildingsEffect(): Templates.IBuildingEffect;
-        getEffectWithBuildingsEffect(base: number, effectType: string): any;
-        getIncome(): any;
-        getResourceIncome(): {
-            resource: Templates.IResourceTemplate;
-            amount: any;
-        };
-        getAllBuildings(): Building[];
-        getBuildingsForPlayer(player: Player): Building[];
-        getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];
-        getBuildableBuildings(): Templates.IBuildingTemplate[];
-        getBuildingUpgrades(): {
-            [buildingId: number]: {
-                template: Templates.IBuildingTemplate;
-                level: number;
-                cost: number;
-                parentBuilding: Building;
-            }[];
-        };
-        getBuildableShipTypes(): Templates.IUnitTemplate[];
-        getAllFleets(): Fleet[];
-        getFleetIndex(fleet: Fleet): number;
-        hasFleet(fleet: Fleet): boolean;
-        addFleet(fleet: Fleet): boolean;
-        addFleets(fleets: Fleet[]): void;
-        removeFleet(fleet: Fleet): boolean;
-        removeFleets(fleets: Fleet[]): void;
-        getAllShipsOfPlayer(player: Player): Unit[];
-        getAllShips(): Unit[];
-        getIndependentShips(): Unit[];
-        getTargetsForPlayer(player: Player): {
-            type: string;
-            enemy: Player;
-            building: Building;
+    interface IBattleData {
+        location: Star;
+        building: Building;
+        attacker: {
+            player: Player;
             ships: Unit[];
+        };
+        defender: {
+            player: Player;
+            ships: Unit[];
+        };
+    }
+}
+declare module Rance {
+    class Battle {
+        unitsById: {
+            [id: number]: Unit;
+        };
+        unitsBySide: {
+            [side: string]: Unit[];
+        };
+        side1: Unit[][];
+        side1Player: Player;
+        side2: Unit[][];
+        side2Player: Player;
+        battleData: IBattleData;
+        turnOrder: Unit[];
+        activeUnit: Unit;
+        currentTurn: number;
+        maxTurns: number;
+        turnsLeft: number;
+        startHealth: {
+            side1: number;
+            side2: number;
+        };
+        evaluation: {
+            [turnNumber: number]: number;
+        };
+        isSimulated: boolean;
+        isVirtual: boolean;
+        ended: boolean;
+        capturedUnits: Unit[];
+        deadUnits: Unit[];
+        afterFinishCallbacks: any[];
+        constructor(props: {
+            battleData: IBattleData;
+            side1: Unit[][];
+            side2: Unit[][];
+            side1Player: Player;
+            side2Player: Player;
+        });
+        init(): void;
+        forEachUnit(operator: (unit: Unit) => any): void;
+        initUnit(unit: Unit, side: string, position: number[]): void;
+        triggerBattleStartAbilities(): void;
+        removeUnitFromTurnOrder(unit: Unit): boolean;
+        addUnitToTurnOrder(unit: Unit): boolean;
+        updateTurnOrder(): void;
+        setActiveUnit(): void;
+        endTurn(): void;
+        getPlayerForSide(side: string): Player;
+        getSideForPlayer(player: Player): string;
+        getActivePlayer(): Player;
+        getColumnByPosition(position: number): any;
+        getCapturedUnits(victor: Player, maxCapturedUnits?: number): Unit[];
+        getDeadUnits(capturedUnits: Unit[], victor: Player): Unit[];
+        endBattle(): void;
+        finishBattle(forcedVictor?: Player): void;
+        getVictor(): Player;
+        getTotalHealthForColumn(position: number): number;
+        getTotalHealthForSide(side: string): {
+            current: number;
+            max: number;
+        };
+        getEvaluation(): number;
+        swapColumnsForSide(side: string): void;
+        swapColumnsIfNeeded(): void;
+        getGainedExperiencePerSide(): {
+            side1: number;
+            side2: number;
+        };
+        checkBattleEnd(): boolean;
+        makeVirtualClone(): Battle;
+    }
+}
+declare module Rance {
+    interface TargetingFunction {
+        (units: Unit[][], target: number[]): Unit[];
+    }
+    var targetSingle: TargetingFunction;
+    var targetAll: TargetingFunction;
+    var targetRow: TargetingFunction;
+    var targetColumn: TargetingFunction;
+    var targetColumnNeighbors: TargetingFunction;
+    var targetNeighbors: TargetingFunction;
+}
+declare module Rance {
+    interface IAbilityUseDataEffect {
+        effects: {
+            (): void;
         }[];
-        getFirstEnemyDefenceBuilding(player: Player): Building;
-        getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[];
-        setPosition(x: number, y: number): void;
-        setResource(resource: Templates.IResourceTemplate): void;
-        hasLink(linkTo: Star): boolean;
-        addLink(linkTo: Star): void;
-        removeLink(linkTo: Star): void;
-        getAllLinks(): Star[];
-        getEdgeWith(neighbor: Star): any;
-        getSharedNeighborsWith(neighbor: Star): Star[];
-        getNeighbors(): Star[];
-        getLinkedInRange(range: number): {
-            all: Star[];
-            byRange: {
-                [range: number]: Star[];
-            };
-        };
-        getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
-        getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star;
-        getDistanceToStar(target: Star): number;
-        getVisionRange(): number;
-        getVision(): Star[];
-        getDetectionRange(): number;
-        getDetection(): Star[];
-        getHealingFactor(player: Player): number;
-        getPresentPlayersByVisibility(): {
-            visible: {
-                [playerId: number]: Player;
-            };
-            detected: {
-                [playerId: number]: Player;
-            };
-            all: {
-                [playerId: number]: Player;
-            };
-        };
-        getSeed(): string;
-        seedBuildableItems(): void;
-        getItemManufactoryLevel(): any;
-        getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
-        getBuildableItems(): {
-            byTechLevel: {
-                [techLevel: number]: Templates.IItemTemplate[];
-            };
-            all: Templates.IItemTemplate[];
-        };
+        user: Unit;
+        target: Unit;
+        sfx: Templates.IBattleSFXTemplate;
+        trigger: (user: Unit, target: Unit) => boolean;
+    }
+    interface IAbilityUseData {
+        user: Unit;
+        originalTarget: Unit;
+        actualTarget: Unit;
+        beforeUse: {
+            (): void;
+        }[];
+        effectsToCall: IAbilityUseDataEffect[];
+        afterUse: {
+            (): void;
+        }[];
+    }
+    function getAbilityUseData(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): IAbilityUseData;
+    function useAbility(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): void;
+    function getPreparationDummyData(user: Unit): IAbilityUseData;
+    function validateTarget(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): boolean;
+    function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit;
+    function getGuarders(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit[];
+    function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): Unit[];
+    function getFleetsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectTemplate): Unit[][];
+    function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): number[][];
+    function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: number[]): Unit[];
+    function getUnitsInEffectArea(battle: Battle, user: Unit, effect: Templates.IEffectTemplate, target: number[]): Unit[];
+    function getTargetsForAllAbilities(battle: Battle, user: Unit): {
+        [id: number]: Templates.IAbilityTemplate[];
+    };
+}
+declare module Rance {
+    class Item {
+        id: number;
+        template: Templates.IItemTemplate;
+        unit: Unit;
+        constructor(template: Templates.IItemTemplate, id?: number);
         serialize(): any;
+    }
+}
+declare module Rance {
+    class StatusEffect {
+        template: Templates.IStatusEffectTemplate;
+        duration: number;
+        constructor(template: Templates.IStatusEffectTemplate, duration: number);
+        processTurnEnd(): void;
+        clone(): StatusEffect;
+    }
+}
+declare module Rance {
+    class Unit {
+        template: Templates.IUnitTemplate;
+        id: number;
+        name: string;
+        maxHealth: number;
+        currentHealth: number;
+        isSquadron: boolean;
+        currentMovePoints: number;
+        maxMovePoints: number;
+        timesActedThisTurn: number;
+        baseAttributes: IUnitAttributes;
+        attributesAreDirty: boolean;
+        cachedAttributes: IUnitAttributes;
+        attributes: IUnitAttributes;
+        battleStats: {
+            moveDelay: number;
+            side: string;
+            position: number[];
+            currentActionPoints: number;
+            guardAmount: number;
+            guardCoverage: string;
+            captureChance: number;
+            statusEffects: StatusEffect[];
+            lastHealthBeforeReceivingDamage: number;
+            queuedAction: {
+                ability: Templates.IAbilityTemplate;
+                targetId: number;
+                turnsPrepared: number;
+                timesInterrupted: number;
+            };
+        };
+        abilities: Templates.IAbilityTemplate[];
+        passiveSkills: Templates.IPassiveSkillTemplate[];
+        experienceForCurrentLevel: number;
+        level: number;
+        displayFlags: {
+            isAnnihilated: boolean;
+        };
+        fleet: Fleet;
+        items: {
+            low: Item;
+            mid: Item;
+            high: Item;
+        };
+        passiveSkillsByPhase: {
+            atBattleStart?: Templates.IPassiveSkillTemplate[];
+            beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
+            afterAbilityUse?: Templates.IPassiveSkillTemplate[];
+            atTurnStart?: Templates.IPassiveSkillTemplate[];
+            inBattlePrep?: Templates.IPassiveSkillTemplate[];
+        };
+        passiveSkillsByPhaseAreDirty: boolean;
+        sfxDuration: number;
+        uiDisplayIsDirty: boolean;
+        cachedBattleScene: HTMLCanvasElement;
+        cachedBattleScenePropsString: string;
+        lastHealthDrawnAt: number;
+        front: MapAI.Front;
+        constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
+        makeFromData(data: any): void;
+        setInitialValues(): void;
+        setBaseHealth(): void;
+        setAttributes(baseSkill?: number, variance?: number): void;
+        getBaseMoveDelay(): number;
+        resetMovePoints(): void;
+        resetBattleStats(): void;
+        setBattlePosition(battle: Battle, side: string, position: number[]): void;
+        addStrength(amount: number): void;
+        removeStrength(amount: number): void;
+        removeActionPoints(amount: number): void;
+        addMoveDelay(amount: number): void;
+        updateStatusEffects(): void;
+        setQueuedAction(ability: Templates.IAbilityTemplate, target: Unit): void;
+        interruptQueuedAction(interruptStrength: number): void;
+        updateQueuedAction(): void;
+        isReadyToUseQueuedAction(): boolean;
+        clearQueuedAction(): void;
+        isTargetable(): boolean;
+        isActiveInBattle(): boolean;
+        addItem(item: Item): boolean;
+        removeItem(item: Item): boolean;
+        destroyAllItems(): void;
+        getAttributesWithItems(): any;
+        addStatusEffect(statusEffect: StatusEffect): void;
+        removeStatusEffect(statusEffect: StatusEffect): void;
+        getTotalStatusEffectAttributeAdjustments(): Templates.IStatusEffectAttributes;
+        getAttributesWithEffects(): any;
+        updateCachedAttributes(): void;
+        removeItemAtSlot(slot: string): boolean;
+        setInitialAbilities(): void;
+        setInitialPassiveSkills(): void;
+        getItemAbilities(): Templates.IAbilityTemplate[];
+        getAllAbilities(): Templates.IAbilityTemplate[];
+        getItemPassiveSkills(): Templates.IPassiveSkillTemplate[];
+        getStatusEffectPassiveSkills(): Templates.IPassiveSkillTemplate[];
+        getAllPassiveSkills(): Templates.IPassiveSkillTemplate[];
+        updatePassiveSkillsByPhase(): void;
+        getPassiveSkillsByPhase(): {
+            atBattleStart?: Templates.IPassiveSkillTemplate[];
+            beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
+            afterAbilityUse?: Templates.IPassiveSkillTemplate[];
+            atTurnStart?: Templates.IPassiveSkillTemplate[];
+            inBattlePrep?: Templates.IPassiveSkillTemplate[];
+        };
+        receiveDamage(amount: number, damageType: DamageType): void;
+        getAdjustedTroopSize(): number;
+        getAttackDamageIncrease(damageType: DamageType): number;
+        getReducedDamageFactor(damageType: DamageType): number;
+        addToFleet(fleet: Fleet): void;
+        removeFromFleet(): void;
+        removeFromPlayer(): void;
+        transferToPlayer(newPlayer: Player): void;
+        removeGuard(amount: number): void;
+        addGuard(amount: number, coverage: string): void;
+        removeAllGuard(): void;
+        getCounterAttackStrength(): number;
+        canActThisTurn(): boolean;
+        isStealthy(): boolean;
+        getVisionRange(): number;
+        getDetectionRange(): number;
+        heal(): void;
+        getStrengthEvaluation(): number;
+        getTotalCost(): number;
+        getTurnsToReachStar(star: Star): number;
+        drawBattleScene(props: Templates.IUnitDrawingFunctionProps): HTMLCanvasElement;
+        getExperienceToNextLevel(): number;
+        addExperience(amount: number): void;
+        canLevelUp(): boolean;
+        handleLevelUp(): void;
+        hasAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
+        getLearnableAbilities(allAbilities: Templates.IAbilityBase[]): Templates.IAbilityBase[];
+        canUpgradeIntoAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
+        getAbilityUpgradeData(): {
+            [source: string]: {
+                base: Templates.IAbilityBase;
+                possibleUpgrades: Templates.IAbilityBase[];
+            };
+        };
+        upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase): void;
+        serialize(includeItems?: boolean): any;
+        makeVirtualClone(): Unit;
     }
 }
 declare module Rance {
@@ -976,15 +1052,6 @@ declare module Rance {
         setCustomImage(imageSrc: string): void;
         getCanvas(width: number, height: number, stretch?: boolean, useCache?: boolean): HTMLCanvasElement;
         draw(width?: number, height?: number, stretch?: boolean): HTMLCanvasElement;
-        serialize(): any;
-    }
-}
-declare module Rance {
-    class Item {
-        id: number;
-        template: Templates.IItemTemplate;
-        unit: Unit;
-        constructor(template: Templates.IItemTemplate, id?: number);
         serialize(): any;
     }
 }
@@ -1787,290 +1854,238 @@ declare module Rance {
     }
 }
 declare module Rance {
-    interface IBattleData {
-        location: Star;
-        building: Building;
-        attacker: {
-            player: Player;
-            ships: Unit[];
-        };
-        defender: {
-            player: Player;
-            ships: Unit[];
-        };
-    }
-}
-declare module Rance {
-    class Battle {
-        unitsById: {
-            [id: number]: Unit;
-        };
-        unitsBySide: {
-            [side: string]: Unit[];
-        };
-        side1: Unit[][];
-        side1Player: Player;
-        side2: Unit[][];
-        side2Player: Player;
-        battleData: IBattleData;
-        turnOrder: Unit[];
-        activeUnit: Unit;
-        currentTurn: number;
-        maxTurns: number;
-        turnsLeft: number;
-        startHealth: {
-            side1: number;
-            side2: number;
-        };
-        evaluation: {
-            [turnNumber: number]: number;
-        };
-        isSimulated: boolean;
-        isVirtual: boolean;
-        ended: boolean;
-        capturedUnits: Unit[];
-        deadUnits: Unit[];
-        afterFinishCallbacks: any[];
-        constructor(props: {
-            battleData: IBattleData;
-            side1: Unit[][];
-            side2: Unit[][];
-            side1Player: Player;
-            side2Player: Player;
-        });
-        init(): void;
-        forEachUnit(operator: (unit: Unit) => any): void;
-        initUnit(unit: Unit, side: string, position: number[]): void;
-        triggerBattleStartAbilities(): void;
-        removeUnitFromTurnOrder(unit: Unit): boolean;
-        addUnitToTurnOrder(unit: Unit): boolean;
-        updateTurnOrder(): void;
-        setActiveUnit(): void;
-        endTurn(): void;
-        getPlayerForSide(side: string): Player;
-        getSideForPlayer(player: Player): string;
-        getActivePlayer(): Player;
-        getColumnByPosition(position: number): any;
-        getCapturedUnits(victor: Player, maxCapturedUnits?: number): Unit[];
-        getDeadUnits(capturedUnits: Unit[], victor: Player): Unit[];
-        endBattle(): void;
-        finishBattle(forcedVictor?: Player): void;
-        getVictor(): Player;
-        getTotalHealthForColumn(position: number): number;
-        getTotalHealthForSide(side: string): {
-            current: number;
-            max: number;
-        };
-        getEvaluation(): number;
-        swapColumnsForSide(side: string): void;
-        swapColumnsIfNeeded(): void;
-        getGainedExperiencePerSide(): {
-            side1: number;
-            side2: number;
-        };
-        checkBattleEnd(): boolean;
-        makeVirtualClone(): Battle;
-    }
-}
-declare module Rance {
-    interface TargetingFunction {
-        (units: Unit[][], target: number[]): Unit[];
-    }
-    var targetSingle: TargetingFunction;
-    var targetAll: TargetingFunction;
-    var targetRow: TargetingFunction;
-    var targetColumn: TargetingFunction;
-    var targetColumnNeighbors: TargetingFunction;
-    var targetNeighbors: TargetingFunction;
-}
-declare module Rance {
-    interface IAbilityUseDataEffect {
-        effects: {
-            (): void;
-        }[];
-        user: Unit;
-        target: Unit;
-        sfx: Templates.IBattleSFXTemplate;
-        trigger: (user: Unit, target: Unit) => boolean;
-    }
-    interface IAbilityUseData {
-        user: Unit;
-        originalTarget: Unit;
-        actualTarget: Unit;
-        beforeUse: {
-            (): void;
-        }[];
-        effectsToCall: IAbilityUseDataEffect[];
-        afterUse: {
-            (): void;
-        }[];
-    }
-    function getAbilityUseData(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): IAbilityUseData;
-    function useAbility(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): void;
-    function getPreparationDummyData(user: Unit): IAbilityUseData;
-    function validateTarget(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): boolean;
-    function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit;
-    function getGuarders(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit[];
-    function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): Unit[];
-    function getFleetsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectTemplate): Unit[][];
-    function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): number[][];
-    function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: number[]): Unit[];
-    function getUnitsInEffectArea(battle: Battle, user: Unit, effect: Templates.IEffectTemplate, target: number[]): Unit[];
-    function getTargetsForAllAbilities(battle: Battle, user: Unit): {
-        [id: number]: Templates.IAbilityTemplate[];
-    };
-}
-declare module Rance {
-    class StatusEffect {
-        template: Templates.IStatusEffectTemplate;
-        duration: number;
-        constructor(template: Templates.IStatusEffectTemplate, duration: number);
-        processTurnEnd(): void;
-        clone(): StatusEffect;
-    }
-}
-declare module Rance {
-    class Unit {
-        template: Templates.IUnitTemplate;
+    class Star implements Point {
         id: number;
+        x: number;
+        y: number;
+        basisX: number;
+        basisY: number;
+        linksTo: Star[];
+        linksFrom: Star[];
+        mapGenData: any;
+        voronoiId: number;
+        seed: string;
         name: string;
-        maxHealth: number;
-        currentHealth: number;
-        isSquadron: boolean;
-        currentMovePoints: number;
-        maxMovePoints: number;
-        timesActedThisTurn: number;
-        baseAttributes: IUnitAttributes;
-        attributesAreDirty: boolean;
-        cachedAttributes: IUnitAttributes;
-        attributes: IUnitAttributes;
-        battleStats: {
-            moveDelay: number;
-            side: string;
-            position: number[];
-            currentActionPoints: number;
-            guardAmount: number;
-            guardCoverage: string;
-            captureChance: number;
-            statusEffects: StatusEffect[];
-            lastHealthBeforeReceivingDamage: number;
-            queuedAction: {
-                ability: Templates.IAbilityTemplate;
-                targetId: number;
-                turnsPrepared: number;
-                timesInterrupted: number;
+        owner: Player;
+        baseIncome: number;
+        resource: Templates.IResourceTemplate;
+        fleets: {
+            [playerId: string]: Fleet[];
+        };
+        buildings: {
+            [category: string]: Building[];
+        };
+        buildingsEffect: Templates.IBuildingEffect;
+        buildingsEffectIsDirty: boolean;
+        voronoiCell: any;
+        indexedNeighborsInRange: {
+            [range: number]: {
+                all: Star[];
+                byRange: {
+                    [range: number]: Star[];
+                };
             };
         };
-        abilities: Templates.IAbilityTemplate[];
-        passiveSkills: Templates.IPassiveSkillTemplate[];
-        experienceForCurrentLevel: number;
-        level: number;
-        displayFlags: {
-            isAnnihilated: boolean;
+        indexedDistanceToStar: {
+            [id: number]: number;
         };
-        fleet: Fleet;
-        items: {
-            low: Item;
-            mid: Item;
-            high: Item;
+        buildableItems: {
+            1: Templates.IItemTemplate[];
+            2: Templates.IItemTemplate[];
+            3: Templates.IItemTemplate[];
         };
-        passiveSkillsByPhase: {
-            atBattleStart?: Templates.IPassiveSkillTemplate[];
-            beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
-            afterAbilityUse?: Templates.IPassiveSkillTemplate[];
-            atTurnStart?: Templates.IPassiveSkillTemplate[];
-            inBattlePrep?: Templates.IPassiveSkillTemplate[];
+        buildableUnitTypes: Templates.IUnitTemplate[];
+        constructor(x: number, y: number, id?: number);
+        severLinksToNonAdjacent(): void;
+        addBuilding(building: Building): void;
+        removeBuilding(building: Building): void;
+        sortDefenceBuildings(): void;
+        getSecondaryController(): Player;
+        updateController(): void;
+        updateBuildingsEffect(): void;
+        getBuildingsEffect(): Templates.IBuildingEffect;
+        getEffectWithBuildingsEffect(base: number, effectType: string): any;
+        getIncome(): any;
+        getResourceIncome(): {
+            resource: Templates.IResourceTemplate;
+            amount: any;
         };
-        passiveSkillsByPhaseAreDirty: boolean;
-        sfxDuration: number;
-        uiDisplayIsDirty: boolean;
-        cachedBattleScene: HTMLCanvasElement;
-        cachedBattleScenePropsString: string;
-        lastHealthDrawnAt: number;
-        front: MapAI.Front;
-        constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
-        makeFromData(data: any): void;
-        setInitialValues(): void;
-        setBaseHealth(): void;
-        setAttributes(baseSkill?: number, variance?: number): void;
-        getBaseMoveDelay(): number;
-        resetMovePoints(): void;
-        resetBattleStats(): void;
-        setBattlePosition(battle: Battle, side: string, position: number[]): void;
-        addStrength(amount: number): void;
-        removeStrength(amount: number): void;
-        removeActionPoints(amount: number): void;
-        addMoveDelay(amount: number): void;
-        updateStatusEffects(): void;
-        setQueuedAction(ability: Templates.IAbilityTemplate, target: Unit): void;
-        interruptQueuedAction(interruptStrength: number): void;
-        updateQueuedAction(): void;
-        isReadyToUseQueuedAction(): boolean;
-        clearQueuedAction(): void;
-        isTargetable(): boolean;
-        isActiveInBattle(): boolean;
-        addItem(item: Item): boolean;
-        removeItem(item: Item): boolean;
-        destroyAllItems(): void;
-        getAttributesWithItems(): any;
-        addStatusEffect(statusEffect: StatusEffect): void;
-        removeStatusEffect(statusEffect: StatusEffect): void;
-        getTotalStatusEffectAttributeAdjustments(): Templates.IStatusEffectAttributes;
-        getAttributesWithEffects(): any;
-        updateCachedAttributes(): void;
-        removeItemAtSlot(slot: string): boolean;
-        setInitialAbilities(): void;
-        setInitialPassiveSkills(): void;
-        getItemAbilities(): Templates.IAbilityTemplate[];
-        getAllAbilities(): Templates.IAbilityTemplate[];
-        getItemPassiveSkills(): Templates.IPassiveSkillTemplate[];
-        getStatusEffectPassiveSkills(): Templates.IPassiveSkillTemplate[];
-        getAllPassiveSkills(): Templates.IPassiveSkillTemplate[];
-        updatePassiveSkillsByPhase(): void;
-        getPassiveSkillsByPhase(): {
-            atBattleStart?: Templates.IPassiveSkillTemplate[];
-            beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
-            afterAbilityUse?: Templates.IPassiveSkillTemplate[];
-            atTurnStart?: Templates.IPassiveSkillTemplate[];
-            inBattlePrep?: Templates.IPassiveSkillTemplate[];
+        getAllBuildings(): Building[];
+        getBuildingsForPlayer(player: Player): Building[];
+        getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];
+        getBuildableBuildings(): Templates.IBuildingTemplate[];
+        getBuildingUpgrades(): {
+            [buildingId: number]: {
+                template: Templates.IBuildingTemplate;
+                level: number;
+                cost: number;
+                parentBuilding: Building;
+            }[];
         };
-        receiveDamage(amount: number, damageType: DamageType): void;
-        getAdjustedTroopSize(): number;
-        getAttackDamageIncrease(damageType: DamageType): number;
-        getReducedDamageFactor(damageType: DamageType): number;
-        addToFleet(fleet: Fleet): void;
-        removeFromFleet(): void;
-        removeFromPlayer(): void;
-        transferToPlayer(newPlayer: Player): void;
-        removeGuard(amount: number): void;
-        addGuard(amount: number, coverage: string): void;
-        removeAllGuard(): void;
-        getCounterAttackStrength(): number;
-        canActThisTurn(): boolean;
-        isStealthy(): boolean;
+        getBuildableShipTypes(): Templates.IUnitTemplate[];
+        getAllFleets(): Fleet[];
+        getFleetIndex(fleet: Fleet): number;
+        hasFleet(fleet: Fleet): boolean;
+        addFleet(fleet: Fleet): boolean;
+        addFleets(fleets: Fleet[]): void;
+        removeFleet(fleet: Fleet): boolean;
+        removeFleets(fleets: Fleet[]): void;
+        getAllShipsOfPlayer(player: Player): Unit[];
+        getAllShips(): Unit[];
+        getIndependentShips(): Unit[];
+        getTargetsForPlayer(player: Player): {
+            type: string;
+            enemy: Player;
+            building: Building;
+            ships: Unit[];
+        }[];
+        getFirstEnemyDefenceBuilding(player: Player): Building;
+        getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[];
+        setPosition(x: number, y: number): void;
+        setResource(resource: Templates.IResourceTemplate): void;
+        hasLink(linkTo: Star): boolean;
+        addLink(linkTo: Star): void;
+        removeLink(linkTo: Star): void;
+        getAllLinks(): Star[];
+        getEdgeWith(neighbor: Star): any;
+        getSharedNeighborsWith(neighbor: Star): Star[];
+        getNeighbors(): Star[];
+        getLinkedInRange(range: number): {
+            all: Star[];
+            byRange: {
+                [range: number]: Star[];
+            };
+        };
+        getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
+        getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star;
+        getDistanceToStar(target: Star): number;
         getVisionRange(): number;
+        getVision(): Star[];
         getDetectionRange(): number;
-        heal(): void;
-        getStrengthEvaluation(): number;
-        getTotalCost(): number;
-        getTurnsToReachStar(star: Star): number;
-        drawBattleScene(props: Templates.IUnitDrawingFunctionProps): HTMLCanvasElement;
-        getExperienceToNextLevel(): number;
-        addExperience(amount: number): void;
-        canLevelUp(): boolean;
-        handleLevelUp(): void;
-        hasAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
-        getLearnableAbilities(allAbilities: Templates.IAbilityBase[]): Templates.IAbilityBase[];
-        canUpgradeIntoAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
-        getAbilityUpgradeData(): {
-            [source: string]: {
-                base: Templates.IAbilityBase;
-                possibleUpgrades: Templates.IAbilityBase[];
+        getDetection(): Star[];
+        getHealingFactor(player: Player): number;
+        getPresentPlayersByVisibility(): {
+            visible: {
+                [playerId: number]: Player;
+            };
+            detected: {
+                [playerId: number]: Player;
+            };
+            all: {
+                [playerId: number]: Player;
             };
         };
-        upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase): void;
-        serialize(includeItems?: boolean): any;
-        makeVirtualClone(): Unit;
+        getSeed(): string;
+        seedBuildableItems(): void;
+        getItemManufactoryLevel(): any;
+        getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
+        getBuildableItems(): {
+            byTechLevel: {
+                [techLevel: number]: Templates.IItemTemplate[];
+            };
+            all: Templates.IItemTemplate[];
+        };
+        serialize(): any;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ManufactoryStarsListItem: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ManufactoryStarsList: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ProductionOverview: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TopMenuPopup: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TopMenuPopups: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TopMenu: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Resource: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TopBarResources: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TopBar: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var FleetControls: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var FleetInfo: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ShipInfoName: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ShipInfo: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var FleetContents: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var FleetReorganization: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var FleetSelection: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var StarInfo: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var AttackTarget: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BuildableBuilding: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BuildableBuildingList: React.Factory<{}>;
     }
 }
 declare module Rance {

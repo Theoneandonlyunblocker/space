@@ -6,6 +6,7 @@
 /// <reference path="economysummary.ts"/>
 /// <reference path="optionslist.ts"/>
 /// <reference path="../technologies/technologieslist.ts" />
+/// <reference path="../production/productionoverview.ts" />
 
 /// <reference path="../popups/topmenupopup.ts" />
 module Rance
@@ -19,6 +20,7 @@ module Rance
       {
         return(
         {
+          production: undefined,
           equipItems: undefined,
           buyItems: undefined,
           economySummary: undefined,
@@ -56,6 +58,15 @@ module Rance
 
         switch (popupType)
         {
+          case "production":
+          {
+            contentConstructor = UIComponents.ProductionOverview;
+            contentProps =
+            {
+              player: this.props.player
+            };
+            break;
+          }
           case "equipItems":
           {
             contentConstructor = UIComponents.ItemEquip;
@@ -130,6 +141,7 @@ module Rance
               player: this.props.player
             }
             popupProps.minWidth = 430;
+            break;
           }
         }
 

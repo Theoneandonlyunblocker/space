@@ -24,11 +24,11 @@ module Rance
           if (_a.mainEffect && !_b.mainEffect) return -1;
           else if (_b.mainEffect && !_a.mainEffect) return 1;
 
-          var a = _a.displayName.toLowerCase();
-          var b = _b.displayName.toLowerCase();
-
           if (_a.type === "learnable") return 1;
           else if (_b.type === "learnable") return -1;
+
+          var a = _a.displayName.toLowerCase();
+          var b = _b.displayName.toLowerCase();
           
           if (a > b) return 1;
           else if (a < b) return -1;

@@ -2986,12 +2986,12 @@ var Rance;
                         return -1;
                     else if (_b.mainEffect && !_a.mainEffect)
                         return 1;
-                    var a = _a.displayName.toLowerCase();
-                    var b = _b.displayName.toLowerCase();
                     if (_a.type === "learnable")
                         return 1;
                     else if (_b.type === "learnable")
                         return -1;
+                    var a = _a.displayName.toLowerCase();
+                    var b = _b.displayName.toLowerCase();
                     if (a > b)
                         return 1;
                     else if (a < b)
@@ -5785,1098 +5785,57 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
 var Rance;
 (function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.TopMenuPopup = React.createClass({
-            displayName: "TopMenuPopup",
-            render: function () {
-                return (React.DOM.div({
-                    className: "top-menu-popup-container draggable-container"
-                }, React.DOM.button({
-                    className: "light-box-close",
-                    onClick: this.props.handleClose
-                }, "X"), React.DOM.div({
-                    className: "light-box-content"
-                }, this.props.contentConstructor(this.props.contentProps))));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../items/buyitems.ts"/>
-/// <reference path="../saves/savegame.ts"/>
-/// <reference path="../saves/loadgame.ts"/>
-/// <reference path="../unitlist/itemequip.ts"/>
-/// <reference path="../diplomacy/diplomacyoverview.ts"/>
-/// <reference path="economysummary.ts"/>
-/// <reference path="optionslist.ts"/>
-/// <reference path="../technologies/technologieslist.ts" />
-/// <reference path="../popups/topmenupopup.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.TopMenuPopups = React.createClass({
-            displayName: "TopMenuPopups",
-            getInitialState: function () {
-                return ({
-                    equipItems: undefined,
-                    buyItems: undefined,
-                    economySummary: undefined,
-                    saveGame: undefined,
-                    loadGame: undefined,
-                    options: undefined,
-                    diplomacy: undefined,
-                    technologies: undefined
-                });
-            },
-            closePopup: function (popupType) {
-                this.refs.popupManager.closePopup(this.state[popupType]);
-                var stateObj = {};
-                stateObj[popupType] = undefined;
-                this.setState(stateObj);
-                if (popupType === "options") {
-                    Rance.saveOptions();
-                }
-            },
-            makePopup: function (popupType) {
-                var contentConstructor;
-                var contentProps;
-                var popupProps = {
-                    resizable: true,
-                    containerDragOnly: true,
-                    minWidth: 150,
-                    minHeight: 50
-                };
-                switch (popupType) {
-                    case "equipItems":
-                        {
-                            contentConstructor = UIComponents.ItemEquip;
-                            contentProps =
-                                {
-                                    player: this.props.player
-                                };
-                            popupProps.minWidth = 440;
-                            break;
-                        }
-                    case "buyItems":
-                        {
-                            contentConstructor = UIComponents.BuyItems;
-                            contentProps =
-                                {
-                                    player: this.props.player
-                                };
-                            break;
-                        }
-                    case "economySummary":
-                        {
-                            contentConstructor = UIComponents.EconomySummary;
-                            contentProps =
-                                {
-                                    player: this.props.player
-                                };
-                            break;
-                        }
-                    case "saveGame":
-                        {
-                            contentConstructor = UIComponents.SaveGame;
-                            contentProps =
-                                {
-                                    handleClose: this.closePopup.bind(this, "saveGame")
-                                };
-                            popupProps.preventAutoResize = true;
-                            break;
-                        }
-                    case "loadGame":
-                        {
-                            contentConstructor = UIComponents.LoadGame;
-                            contentProps =
-                                {
-                                    handleClose: this.closePopup.bind(this, "loadGame")
-                                };
-                            popupProps.preventAutoResize = true;
-                            break;
-                        }
-                    case "options":
-                        {
-                            contentConstructor = UIComponents.OptionsList;
-                            contentProps = {};
-                            break;
-                        }
-                    case "diplomacy":
-                        {
-                            contentConstructor = UIComponents.DiplomacyOverview;
-                            contentProps =
-                                {
-                                    player: this.props.player,
-                                    totalPlayerCount: this.props.game.playerOrder.length,
-                                    metPlayers: this.props.player.diplomacyStatus.metPlayers,
-                                    statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
-                                };
-                            break;
-                        }
-                    case "technologies":
-                        {
-                            contentConstructor = UIComponents.TechnologiesList;
-                            contentProps =
-                                {
-                                    player: this.props.player
-                                };
-                            popupProps.minWidth = 430;
-                        }
-                }
-                var id = this.refs.popupManager.makePopup({
-                    contentConstructor: UIComponents.TopMenuPopup,
-                    contentProps: {
-                        contentConstructor: contentConstructor,
-                        contentProps: contentProps,
-                        handleClose: this.closePopup.bind(this, popupType)
-                    },
-                    popupProps: popupProps
-                });
-                var stateObj = {};
-                stateObj[popupType] = id;
-                this.setState(stateObj);
-            },
-            togglePopup: function (popupType) {
-                if (isFinite(this.state[popupType])) {
-                    this.closePopup(popupType);
-                }
-                else {
-                    this.makePopup(popupType);
-                }
-            },
-            render: function () {
-                return (UIComponents.PopupManager({
-                    ref: "popupManager"
-                }));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="topmenupopups.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.TopMenu = React.createClass({
-            displayName: "TopMenu",
-            mixins: [React.addons.PureRenderMixin],
-            cachedTopMenuWidth: undefined,
-            cachedButtonWidths: [],
-            cachedMenuButtonWidth: 37,
-            getInitialState: function () {
-                return ({
-                    hasCondensedMenu: false,
-                    buttonsToPlace: 999,
-                    condensedMenuOpened: Rance.Options.ui.noHamburger
-                });
-            },
-            componentDidMount: function () {
-                window.addEventListener("resize", this.handleResize, false);
-                Rance.eventManager.addEventListener("playerControlUpdated", this.delayedResize);
-                Rance.eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
-                this.handleResize();
-            },
-            componentWillUnmount: function () {
-                window.removeEventListener("resize", this.handleResize);
-                Rance.eventManager.removeEventListener("playerControlUpdated", this.delayedResize);
-                Rance.eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
-            },
-            handleToggleHamburger: function () {
-                this.handleResize();
-                this.forceUpdate();
-            },
-            delayedResize: function () {
-                window.setTimeout(this.handleResize, 0);
-            },
-            handleResize: function () {
-                if (!this.cachedTopMenuWidth) {
-                    this.cachedTopMenuWidth = this.refs.topMenu.getDOMNode().getBoundingClientRect().width;
-                    var buttons = this.refs.topMenuItems.getDOMNode().children;
-                    var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
-                    for (var i = 0; i < buttons.length; i++) {
-                        var buttonWidth = buttons[i].getBoundingClientRect().width + margin;
-                        this.cachedButtonWidths.push(buttonWidth);
-                    }
-                }
-                var topMenuHeight = window.innerHeight > 600 ? 50 : 32;
-                var topBar = document.getElementsByClassName("top-bar-info")[0];
-                var topBarRect = topBar.getBoundingClientRect();
-                var rightmostElement = topBar;
-                var rightmostRect = topBarRect;
-                var fleetContainer = document.getElementsByClassName("fleet-selection")[0];
-                if (fleetContainer) {
-                    var fleetElementToCheckAgainst;
-                    var firstChild = fleetContainer.firstChild;
-                    if (firstChild.classList.contains("fleet-selection-controls")) {
-                        fleetElementToCheckAgainst = document.getElementsByClassName("fleet-selection-selected-wrapper")[0];
-                    }
-                    else {
-                        fleetElementToCheckAgainst = firstChild;
-                    }
-                    if (fleetElementToCheckAgainst) {
-                        var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
-                        if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right) {
-                            rightmostElement = fleetElementToCheckAgainst;
-                            rightmostRect = fleetRect;
-                        }
-                    }
-                }
-                var spaceAvailable = window.innerWidth - rightmostRect.right;
-                var hasCondensedMenu = spaceAvailable < this.cachedTopMenuWidth;
-                var amountOfButtonsToPlace = 0;
-                if (hasCondensedMenu) {
-                    if (!Rance.Options.ui.noHamburger) {
-                        spaceAvailable -= this.cachedMenuButtonWidth;
-                    }
-                    var padding = window.innerHeight > 600 ? 25 : 0;
-                    for (var i = 0; i < this.cachedButtonWidths.length; i++) {
-                        var buttonWidthToCheck = this.cachedButtonWidths[i];
-                        if (spaceAvailable > buttonWidthToCheck + padding) {
-                            amountOfButtonsToPlace++;
-                            spaceAvailable -= buttonWidthToCheck;
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                }
-                else {
-                    amountOfButtonsToPlace = this.cachedButtonWidths.length;
-                }
-                this.setState({
-                    hasCondensedMenu: hasCondensedMenu,
-                    buttonsToPlace: amountOfButtonsToPlace
-                });
-            },
-            togglePopup: function (popupType) {
-                this.refs.popups.togglePopup(popupType);
-                this.forceUpdate();
-            },
-            toggleCondensedMenu: function () {
-                this.setState({
-                    condensedMenuOpened: !this.state.condensedMenuOpened
-                });
-            },
-            render: function () {
-                var menuItemTabIndex = this.state.opened ? -1 : 0;
-                var topMenuButtons = [
-                    React.DOM.button({
-                        className: "top-menu-items-button",
-                        key: "equipItems",
-                        onClick: this.togglePopup.bind(this, "equipItems"),
-                        tabIndex: menuItemTabIndex
-                    }, "Equip"),
-                    React.DOM.button({
-                        className: "top-menu-items-button",
-                        key: "buyItems",
-                        onClick: this.togglePopup.bind(this, "buyItems"),
-                        tabIndex: menuItemTabIndex
-                    }, "Buy items"),
-                    /*
-                    React.DOM.button(
-                    {
-                      className: "top-menu-items-button",
-                      key: "economySummary",
-                      onClick: this.togglePopup.bind(this, "economySummary"),
-                      tabIndex: menuItemTabIndex
-                    }, "Economy"),
-                    */
-                    React.DOM.button({
-                        className: "top-menu-items-button",
-                        key: "diplomacy",
-                        onClick: this.togglePopup.bind(this, "diplomacy"),
-                        tabIndex: menuItemTabIndex
-                    }, "Diplomacy"),
-                    React.DOM.button({
-                        className: "top-menu-items-button",
-                        key: "technologies",
-                        onClick: this.togglePopup.bind(this, "technologies"),
-                        tabIndex: menuItemTabIndex
-                    }, "Technology"),
-                    React.DOM.button({
-                        className: "top-menu-items-button",
-                        key: "options",
-                        onClick: this.togglePopup.bind(this, "options"),
-                        tabIndex: menuItemTabIndex
-                    }, "Options"),
-                    React.DOM.button({
-                        className: "top-menu-items-button",
-                        key: "loadGame",
-                        onClick: this.togglePopup.bind(this, "loadGame"),
-                        tabIndex: menuItemTabIndex
-                    }, "Load"),
-                    React.DOM.button({
-                        className: "top-menu-items-button",
-                        key: "saveGame",
-                        onClick: this.togglePopup.bind(this, "saveGame"),
-                        tabIndex: menuItemTabIndex
-                    }, "Save")
-                ];
-                var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
-                var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
-                if (this.state.hasCondensedMenu && !Rance.Options.ui.noHamburger) {
-                    topMenuItems.push(React.DOM.button({
-                        className: "top-menu-items-button top-menu-open-condensed-button",
-                        key: "openCondensedMenu",
-                        onClick: this.toggleCondensedMenu,
-                        tabIndex: menuItemTabIndex
-                    }));
-                }
-                var openedCondensedMenu = null;
-                if ((this.state.condensedMenuOpened || Rance.Options.ui.noHamburger) && leftoverButtons.length > 0) {
-                    openedCondensedMenu = React.DOM.div({
-                        className: "top-menu-opened-condensed-menu"
-                    }, leftoverButtons);
-                }
-                ;
-                return (React.DOM.div({
-                    className: "top-menu-wrapper"
-                }, React.DOM.div({
-                    className: "top-menu",
-                    ref: "topMenu"
-                }, React.DOM.div({
-                    className: "top-menu-items",
-                    ref: "topMenuItems"
-                }, topMenuItems)), openedCondensedMenu, UIComponents.TopMenuPopups({
-                    ref: "popups",
-                    player: this.props.player,
-                    game: this.props.game
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.Resource = React.createClass({
-            displayName: "Resource",
-            render: function () {
-                var sign = this.props.income < 0 ? "-" : "+";
-                return (React.DOM.div({
-                    className: "resource",
-                    title: this.props.resource.displayName + ""
-                }, React.DOM.img({
-                    className: "resource-icon",
-                    src: this.props.resource.icon
-                }, null), React.DOM.div({
-                    className: "resource-amount"
-                }, "" + this.props.amount + " (" + sign + this.props.income + ")")));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="resource.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.TopBarResources = React.createClass({
-            displayName: "TopBarResources",
-            render: function () {
-                var player = this.props.player;
-                var resources = [];
-                var resourceIncome = player.getResourceIncome();
-                var resourceTypes = Object.keys(player.resources);
-                for (var _resourceType in resourceIncome) {
-                    if (resourceTypes.indexOf(_resourceType) === -1) {
-                        resourceTypes.push(_resourceType);
-                    }
-                }
-                for (var i = 0; i < resourceTypes.length; i++) {
-                    var resourceType = resourceTypes[i];
-                    var amount = player.resources[resourceType] || 0;
-                    var income = resourceIncome[resourceType].amount || 0;
-                    if (amount === 0 && income === 0)
-                        continue;
-                    var resourceData = {
-                        resource: app.moduleData.Templates.Resources[resourceType],
-                        amount: amount,
-                        income: income,
-                        key: resourceType
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Resources;
+                (function (Resources) {
+                    Resources.testResource1 = {
+                        type: "testResource1",
+                        displayName: "Test Resource 1",
+                        icon: "img\/resources\/test1.png",
+                        rarity: 1,
+                        distributionGroups: ["common"]
                     };
-                    resources.push(UIComponents.Resource(resourceData));
-                }
-                return (React.DOM.div({
-                    className: "top-bar-resources"
-                }, resources));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="topbarresources.ts" />
-/// <reference path="../playerflag.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.TopBar = React.createClass({
-            displayName: "TopBar",
-            render: function () {
-                var player = this.props.player;
-                var income = player.getIncome();
-                var incomeClass = "top-bar-money-income";
-                if (income < 0)
-                    incomeClass += " negative";
-                return (React.DOM.div({
-                    className: "top-bar"
-                }, React.DOM.div({
-                    className: "top-bar-info"
-                }, React.DOM.div({
-                    className: "top-bar-player"
-                }, UIComponents.PlayerFlag({
-                    props: {
-                        className: "top-bar-player-icon"
-                    },
-                    flag: player.flag
-                }), React.DOM.div({
-                    className: "top-bar-turn-number"
-                }, "Turn " + this.props.game.turnNumber)), React.DOM.div({
-                    className: "top-bar-money"
-                }, React.DOM.div({
-                    className: "top-bar-money-current"
-                }, "Money: " + player.money), React.DOM.div({
-                    className: incomeClass
-                }, "(+" + player.getIncome() + ")")), UIComponents.TopBarResources({
-                    player: player
-                }))));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.FleetControls = React.createClass({
-            displayName: "FleetControls",
-            deselectFleet: function () {
-                Rance.eventManager.dispatchEvent("deselectFleet", this.props.fleet);
-            },
-            selectFleet: function () {
-                Rance.eventManager.dispatchEvent("selectFleets", [this.props.fleet]);
-            },
-            splitFleet: function () {
-                Rance.eventManager.dispatchEvent("splitFleet", this.props.fleet);
-            },
-            render: function () {
-                var splitButtonProps = {
-                    className: "fleet-controls-split"
-                };
-                if (this.props.fleet.ships.length > 1 && !this.props.isInspecting) {
-                    splitButtonProps.onClick = this.splitFleet;
-                }
-                else {
-                    splitButtonProps.className += " disabled";
-                    splitButtonProps.disabled = true;
-                }
-                return (React.DOM.div({
-                    className: "fleet-controls"
-                }, React.DOM.button(splitButtonProps, "split"), React.DOM.button({
-                    className: "fleet-controls-deselect",
-                    onClick: this.deselectFleet
-                }, "deselect"), !this.props.hasMultipleSelected ? null : React.DOM.button({
-                    className: "fleet-controls-select",
-                    onClick: this.selectFleet
-                }, "select")));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="fleetcontrols.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.FleetInfo = React.createClass({
-            displayName: "FleetInfo",
-            setFleetName: function (e) {
-                var target = e.target;
-                this.props.fleet.name = target.value;
-                this.forceUpdate();
-            },
-            render: function () {
-                var fleet = this.props.fleet;
-                if (!fleet)
-                    return null;
-                var totalHealth = fleet.getTotalHealth();
-                var isNotDetected = this.props.isNotDetected;
-                var healthRatio = totalHealth.current / totalHealth.max;
-                var critThreshhold = 0.3;
-                var healthStatus = "";
-                if (!isNotDetected && healthRatio <= critThreshhold) {
-                    healthStatus += " critical";
-                }
-                else if (!isNotDetected && totalHealth.current < totalHealth.max) {
-                    healthStatus += " wounded";
-                }
-                return (React.DOM.div({
-                    className: "fleet-info" + (fleet.isStealthy ? " stealthy" : "")
-                }, React.DOM.div({
-                    className: "fleet-info-header"
-                }, React.DOM.input({
-                    className: "fleet-info-name",
-                    value: isNotDetected ? "Unidentified fleet" : fleet.name,
-                    onChange: isNotDetected ? null : this.setFleetName,
-                    readOnly: isNotDetected
-                }), React.DOM.div({
-                    className: "fleet-info-strength"
-                }, React.DOM.span({
-                    className: "fleet-info-strength-current" + healthStatus
-                }, isNotDetected ? "???" : totalHealth.current), React.DOM.span({
-                    className: "fleet-info-strength-max"
-                }, isNotDetected ? "/???" : "/" + totalHealth.max)), UIComponents.FleetControls({
-                    fleet: fleet,
-                    hasMultipleSelected: this.props.hasMultipleSelected,
-                    isInspecting: this.props.isInspecting
-                })), React.DOM.div({
-                    className: "fleet-info-move-points"
-                }, isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
-                    fleet.getMinMaxMovePoints())));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.ShipInfoName = React.createClass({
-            displayName: "ShipInfoName",
-            getInitialState: function () {
-                return ({
-                    value: this.props.unit.name
-                });
-            },
-            onChange: function (e) {
-                var target = e.target;
-                this.setState({ value: target.value });
-                this.props.unit.name = target.value;
-            },
-            render: function () {
-                return (React.DOM.input({
-                    className: "ship-info-name",
-                    value: this.props.isNotDetected ? "Unidentified ship" : this.state.value,
-                    onChange: this.props.isNotDetected ? null : this.onChange,
-                    readOnly: this.props.isNotDetected
-                }));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../unit/unitstrength.ts"/>
-/// <reference path="shipinfoname.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.ShipInfo = React.createClass({
-            displayName: "ShipInfo",
-            mixins: [UIComponents.Draggable],
-            onDragStart: function () {
-                this.props.onDragStart(this.props.ship);
-            },
-            onDragEnd: function (e) {
-                this.props.onDragEnd(e);
-            },
-            render: function () {
-                var ship = this.props.ship;
-                var isNotDetected = !this.props.isIdentified;
-                var divProps = {
-                    className: "ship-info"
-                };
-                if (this.props.isDraggable) {
-                    divProps.className += " draggable";
-                    divProps.onTouchStart = this.handleMouseDown;
-                    divProps.onMouseDown = this.handleMouseDown;
-                    if (this.state.dragging) {
-                        divProps.style = this.dragPos;
-                        divProps.className += " dragging";
-                    }
-                }
-                return (React.DOM.div(divProps, React.DOM.div({
-                    className: "ship-info-icon-container"
-                }, React.DOM.img({
-                    className: "ship-info-icon",
-                    src: isNotDetected ? "img\/icons\/unDetected.png" : ship.template.icon
-                })), React.DOM.div({
-                    className: "ship-info-info"
-                }, UIComponents.ShipInfoName({
-                    unit: ship,
-                    isNotDetected: isNotDetected
-                }), React.DOM.div({
-                    className: "ship-info-type"
-                }, isNotDetected ? "???" : ship.template.displayName)), UIComponents.UnitStrength({
-                    maxHealth: ship.maxHealth,
-                    currentHealth: ship.currentHealth,
-                    isSquadron: true,
-                    isNotDetected: isNotDetected
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="shipinfo.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.FleetContents = React.createClass({
-            displayName: "FleetContents",
-            handleMouseUp: function () {
-                if (!this.props.onMouseUp)
-                    return;
-                this.props.onMouseUp(this.props.fleet);
-            },
-            render: function () {
-                var shipInfos = [];
-                var hasDraggableContent = (this.props.onDragStart ||
-                    this.props.onDragEnd);
-                for (var i = 0; i < this.props.fleet.ships.length; i++) {
-                    var ship = this.props.fleet.ships[i];
-                    shipInfos.push(UIComponents.ShipInfo({
-                        key: ship.id,
-                        ship: ship,
-                        isDraggable: hasDraggableContent,
-                        onDragStart: this.props.onDragStart,
-                        onDragMove: this.props.onDragMove,
-                        onDragEnd: this.props.onDragEnd,
-                        isIdentified: this.props.player.unitIsIdentified(ship)
-                    }));
-                }
-                if (hasDraggableContent) {
-                    shipInfos.push(React.DOM.div({
-                        className: "fleet-contents-dummy-ship",
-                        key: "dummy"
-                    }));
-                }
-                return (React.DOM.div({
-                    className: "fleet-contents",
-                    onMouseUp: this.handleMouseUp
-                }, shipInfos));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="fleetcontents.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.FleetReorganization = React.createClass({
-            displayName: "FleetReorganization",
-            getInitialState: function () {
-                return ({
-                    currentDragUnit: null
-                });
-            },
-            handleDragStart: function (unit) {
-                this.setState({
-                    currentDragUnit: unit
-                });
-            },
-            handleDragEnd: function (dropSuccesful) {
-                if (dropSuccesful === void 0) { dropSuccesful = false; }
-                this.setState({
-                    currentDragUnit: null
-                });
-            },
-            handleDrop: function (fleet) {
-                var draggingUnit = this.state.currentDragUnit;
-                if (draggingUnit) {
-                    var oldFleet = draggingUnit.fleet;
-                    oldFleet.transferShip(fleet, draggingUnit);
-                    Rance.eventManager.dispatchEvent("playerControlUpdated", null);
-                }
-                this.handleDragEnd(true);
-            },
-            handleClose: function () {
-                this.hasClosed = true;
-                this.props.closeReorganization();
-            },
-            componentWillUnmount: function () {
-                if (this.hasClosed)
-                    return;
-                Rance.eventManager.dispatchEvent("endReorganizingFleets");
-            },
-            render: function () {
-                var selectedFleets = this.props.fleets;
-                if (!selectedFleets || selectedFleets.length < 1) {
-                    return null;
-                }
-                return (React.DOM.div({
-                    className: "fleet-reorganization"
-                }, React.DOM.div({
-                    className: "fleet-reorganization-header"
-                }, "Reorganize fleets"), React.DOM.div({
-                    className: "fleet-reorganization-subheader"
-                }, React.DOM.div({
-                    className: "fleet-reorganization-subheader-fleet-name" +
-                        " fleet-reorganization-subheader-fleet-name-left",
-                }, selectedFleets[0].name), React.DOM.div({
-                    className: "fleet-reorganization-subheader-center"
-                }, null), React.DOM.div({
-                    className: "fleet-reorganization-subheader-fleet-name" +
-                        " fleet-reorganization-subheader-fleet-name-right",
-                }, selectedFleets[1].name)), React.DOM.div({
-                    className: "fleet-reorganization-contents"
-                }, UIComponents.FleetContents({
-                    fleet: selectedFleets[0],
-                    onMouseUp: this.handleDrop,
-                    onDragStart: this.handleDragStart,
-                    onDragEnd: this.handleDragEnd,
-                    player: selectedFleets[0].player
-                }), React.DOM.div({
-                    className: "fleet-reorganization-contents-divider"
-                }, null), UIComponents.FleetContents({
-                    fleet: selectedFleets[1],
-                    onMouseUp: this.handleDrop,
-                    onDragStart: this.handleDragStart,
-                    onDragEnd: this.handleDragEnd,
-                    player: selectedFleets[0].player
-                })), React.DOM.div({
-                    className: "fleet-reorganization-footer"
-                }, React.DOM.button({
-                    className: "close-reorganization",
-                    onClick: this.handleClose
-                }, "Close"))));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="fleetinfo.ts"/>
-/// <reference path="fleetcontents.ts"/>
-/// <reference path="fleetreorganization.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.FleetSelection = React.createClass({
-            displayName: "FleetSelection",
-            mergeFleets: function () {
-                Rance.eventManager.dispatchEvent("mergeFleets", null);
-            },
-            reorganizeFleets: function () {
-                Rance.eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
-            },
-            setElementPosition: function () {
-                if (!this.refs.selected)
-                    return;
-                var domNode = this.refs.selected.getDOMNode();
-                if (!this.props.selectedStar) {
-                    domNode.style.left = 0;
-                }
-                else {
-                    var containerNode = document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
-                    var actionsNode = containerNode.firstChild.firstChild;
-                    var actionsRect = actionsNode.getBoundingClientRect();
-                    var rightMostNode = (containerNode.childElementCount > 1 ?
-                        containerNode.lastChild.lastChild :
-                        containerNode.lastChild);
-                    var rightMostRect = rightMostNode.getBoundingClientRect();
-                    var ownBottom = domNode.getBoundingClientRect().bottom;
-                    var first = this.refs.main.getDOMNode().firstChild;
-                    if (ownBottom > actionsRect.top) {
-                        var styleString = "" + (rightMostRect.right) + "px";
-                        domNode.style.left = styleString;
-                        first.style.left = styleString;
-                        first.classList.add("fleet-selection-displaced");
-                    }
-                    else {
-                        domNode.style.left = 0;
-                        first.style.left = 0;
-                        first.classList.remove("fleet-selection-displaced");
-                    }
-                }
-            },
-            componentDidMount: function () {
-                this.setElementPosition();
-                Rance.eventManager.addEventListener("possibleActionsUpdated", this.setElementPosition);
-                window.addEventListener("resize", this.setElementPosition, false);
-            },
-            componentDidUpdate: function () {
-                this.setElementPosition();
-            },
-            componentWillUnmount: function () {
-                Rance.eventManager.removeEventListener("possibleActionsUpdated", this.setElementPosition);
-                window.removeEventListener("resize", this.setElementPosition);
-            },
-            render: function () {
-                var selectedFleets = this.props.selectedFleets;
-                if (!selectedFleets || selectedFleets.length <= 0) {
-                    return null;
-                }
-                var allFleetsInSameLocation = true;
-                var hasMultipleSelected = selectedFleets.length >= 2;
-                for (var i = 1; i < selectedFleets.length; i++) {
-                    if (selectedFleets[i].location !== selectedFleets[i - 1].location) {
-                        allFleetsInSameLocation = false;
-                        break;
-                    }
-                }
-                var fleetInfos = [];
-                for (var i = 0; i < selectedFleets.length; i++) {
-                    var fleet = selectedFleets[i];
-                    var infoProps = {
-                        key: fleet.id,
-                        fleet: fleet,
-                        hasMultipleSelected: hasMultipleSelected,
-                        isInspecting: this.props.isInspecting,
-                        isNotDetected: this.props.isInspecting && !this.props.player.fleetIsFullyIdentified(fleet)
+                    Resources.testResource2 = {
+                        type: "testResource2",
+                        displayName: "Test Resource 2",
+                        icon: "img\/resources\/test2.png",
+                        rarity: 1,
+                        distributionGroups: ["common"]
                     };
-                    fleetInfos.push(UIComponents.FleetInfo(infoProps));
-                }
-                var fleetSelectionControls = null;
-                if (hasMultipleSelected) {
-                    var fleetStealthsAreClashing = selectedFleets.length === 2 && selectedFleets[0].isStealthy !== selectedFleets[1].isStealthy;
-                    var mergeProps = {
-                        className: "fleet-selection-controls-merge"
+                    Resources.testResource3 = {
+                        type: "testResource3",
+                        displayName: "Test Resource 3",
+                        icon: "img\/resources\/test3.png",
+                        rarity: 1,
+                        distributionGroups: ["common"]
                     };
-                    if (allFleetsInSameLocation && !this.props.isInspecting && !fleetStealthsAreClashing) {
-                        mergeProps.onClick = this.mergeFleets;
-                    }
-                    else {
-                        mergeProps.disabled = true;
-                        mergeProps.className += " disabled";
-                    }
-                    var reorganizeProps = {
-                        className: "fleet-selection-controls-reorganize"
+                    Resources.testResource4 = {
+                        type: "testResource4",
+                        displayName: "Test Resource 4",
+                        icon: "img\/resources\/test4.png",
+                        rarity: 1,
+                        distributionGroups: ["rare"]
                     };
-                    if (allFleetsInSameLocation && selectedFleets.length === 2 && !this.props.isInspecting &&
-                        !fleetStealthsAreClashing) {
-                        reorganizeProps.onClick = this.reorganizeFleets;
-                    }
-                    else {
-                        reorganizeProps.disabled = true;
-                        reorganizeProps.className += " disabled";
-                    }
-                    fleetSelectionControls = React.DOM.div({
-                        className: "fleet-selection-controls"
-                    }, React.DOM.button(reorganizeProps, "reorganize"), React.DOM.button(mergeProps, "merge"));
-                }
-                var fleetContents = null;
-                if (!hasMultipleSelected) {
-                    fleetContents = UIComponents.FleetContents({
-                        fleet: selectedFleets[0],
-                        player: this.props.player
-                    });
-                }
-                var isReorganizing = this.props.currentlyReorganizing.length > 0;
-                var reorganizeElement = null;
-                if (isReorganizing) {
-                    reorganizeElement = UIComponents.FleetReorganization({
-                        fleets: this.props.currentlyReorganizing,
-                        closeReorganization: this.props.closeReorganization
-                    });
-                }
-                return (React.DOM.div({
-                    className: "fleet-selection",
-                    ref: "main"
-                }, fleetSelectionControls, hasMultipleSelected ? null : fleetInfos, React.DOM.div({
-                    className: "fleet-selection-selected-wrapper"
-                }, React.DOM.div({
-                    className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
-                    ref: "selected"
-                }, hasMultipleSelected ? fleetInfos : null, fleetContents), reorganizeElement)));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="defencebuildinglist.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.StarInfo = React.createClass({
-            displayName: "StarInfo",
-            shouldComponentUpdate: function (newProps) {
-                return this.props.selectedStar !== newProps.selectedStar;
-            },
-            render: function () {
-                var star = this.props.selectedStar;
-                if (!star)
-                    return null;
-                var dumpDebugInfoButton = null;
-                if (Rance.Options.debugMode) {
-                    dumpDebugInfoButton = React.DOM.button({
-                        className: "star-info-dump-debug-button",
-                        onClick: function (e) {
-                            console.log(star);
-                            console.log(star.mapGenData);
-                        }
-                    }, "Debug");
-                }
-                return (React.DOM.div({
-                    className: "star-info"
-                }, React.DOM.div({
-                    className: "star-info-name"
-                }, star.name), React.DOM.div({
-                    className: "star-info-owner"
-                }, star.owner ? star.owner.name : null), dumpDebugInfoButton, React.DOM.div({
-                    className: "star-info-location"
-                }, "x: " + star.x.toFixed() +
-                    " y: " + star.y.toFixed()), React.DOM.div({
-                    className: "star-info-income"
-                }, "Income: " + star.getIncome()), UIComponents.DefenceBuildingList({
-                    buildings: star.buildings["defence"]
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../playerflag.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.AttackTarget = React.createClass({
-            displayName: "AttackTarget",
-            handleAttack: function () {
-                Rance.eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
-            },
-            render: function () {
-                var target = this.props.attackTarget;
-                return (React.DOM.div({
-                    className: "attack-target",
-                    onClick: this.handleAttack
-                }, React.DOM.div({
-                    className: "attack-target-type"
-                }, target.type), UIComponents.PlayerFlag({
-                    flag: target.enemy.flag,
-                    props: {
-                        className: "attack-target-player-icon"
-                    }
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.BuildableBuilding = React.createClass({
-            displayName: "BuildableBuilding",
-            makeCell: function (type) {
-                var cellProps = {};
-                cellProps.key = type;
-                cellProps.className = "buildable-building-list-item-cell " + type;
-                var cellContent;
-                switch (type) {
-                    case ("buildCost"):
-                        {
-                            if (this.props.player.money < this.props.buildCost) {
-                                cellProps.className += " negative";
-                            }
-                        }
-                    default:
-                        {
-                            cellContent = this.props[type];
-                            break;
-                        }
-                }
-                return (React.DOM.td(cellProps, cellContent));
-            },
-            render: function () {
-                var player = this.props.player;
-                var cells = [];
-                var columns = this.props.activeColumns;
-                for (var i = 0; i < columns.length; i++) {
-                    cells.push(this.makeCell(columns[i].key));
-                }
-                var props = {
-                    className: "buildable-item buildable-building",
-                    onClick: this.props.handleClick
-                };
-                if (player.money < this.props.buildCost) {
-                    props.onClick = null;
-                    props.disabled = true;
-                    props.className += " disabled";
-                }
-                return (React.DOM.tr(props, cells));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../unitlist/list.ts" />
-/// <reference path="buildablebuilding.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.BuildableBuildingList = React.createClass({
-            displayName: "BuildableBuildingList",
-            getInitialState: function () {
-                return ({
-                    buildingTemplates: this.props.star.getBuildableBuildings()
-                });
-            },
-            updateBuildings: function () {
-                var buildingTemplates = this.props.star.getBuildableBuildings();
-                this.setState({
-                    buildingTemplates: buildingTemplates
-                });
-                Rance.eventManager.dispatchEvent("playerControlUpdated");
-                if (buildingTemplates.length < 1) {
-                    this.props.clearExpandedAction();
-                }
-            },
-            buildBuilding: function (rowItem) {
-                var template = rowItem.data.template;
-                var building = new Rance.Building({
-                    template: template,
-                    location: this.props.star
-                });
-                if (!building.controller)
-                    building.controller = this.props.humanPlayer;
-                this.props.star.addBuilding(building);
-                building.controller.money -= template.buildCost;
-                //building.totalCost += template.buildCost;
-                this.updateBuildings();
-            },
-            render: function () {
-                if (this.state.buildingTemplates.length < 1)
-                    return null;
-                var rows = [];
-                for (var i = 0; i < this.state.buildingTemplates.length; i++) {
-                    var template = this.state.buildingTemplates[i];
-                    var data = {
-                        template: template,
-                        typeName: template.displayName,
-                        buildCost: template.buildCost,
-                        player: this.props.player,
-                        rowConstructor: UIComponents.BuildableBuilding
+                    Resources.testResource5 = {
+                        type: "testResource5",
+                        displayName: "Test Resource 5",
+                        icon: "img\/resources\/test5.png",
+                        rarity: 1,
+                        distributionGroups: ["rare"]
                     };
-                    rows.push({
-                        key: i,
-                        data: data
-                    });
-                }
-                var columns = [
-                    {
-                        label: "Name",
-                        key: "typeName",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Cost",
-                        key: "buildCost",
-                        defaultOrder: "desc"
-                    }
-                ];
-                return (React.DOM.div({ className: "buildable-item-list buildable-building-list fixed-table-parent" }, UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    onRowChange: this.buildBuilding,
-                    addSpacer: true
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+                })(Resources = Templates.Resources || (Templates.Resources = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -7265,58 +6224,6 @@ var Rance;
     }
     Rance.getItemsFromWeightedProbabilities = getItemsFromWeightedProbabilities;
 })(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var Resources;
-                (function (Resources) {
-                    Resources.testResource1 = {
-                        type: "testResource1",
-                        displayName: "Test Resource 1",
-                        icon: "img\/resources\/test1.png",
-                        rarity: 1,
-                        distributionGroups: ["common"]
-                    };
-                    Resources.testResource2 = {
-                        type: "testResource2",
-                        displayName: "Test Resource 2",
-                        icon: "img\/resources\/test2.png",
-                        rarity: 1,
-                        distributionGroups: ["common"]
-                    };
-                    Resources.testResource3 = {
-                        type: "testResource3",
-                        displayName: "Test Resource 3",
-                        icon: "img\/resources\/test3.png",
-                        rarity: 1,
-                        distributionGroups: ["common"]
-                    };
-                    Resources.testResource4 = {
-                        type: "testResource4",
-                        displayName: "Test Resource 4",
-                        icon: "img\/resources\/test4.png",
-                        rarity: 1,
-                        distributionGroups: ["rare"]
-                    };
-                    Resources.testResource5 = {
-                        type: "testResource5",
-                        displayName: "Test Resource 5",
-                        icon: "img\/resources\/test5.png",
-                        rarity: 1,
-                        distributionGroups: ["rare"]
-                    };
-                })(Resources = Templates.Resources || (Templates.Resources = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/ibuildingtemplate.d.ts" />
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />
@@ -7409,682 +6316,1672 @@ var Rance;
     })();
     Rance.Building = Building;
 })(Rance || (Rance = {}));
-/// <reference path="../modules/default/templates/resources.ts" />
-/// <reference path="templateinterfaces/iresourcetemplate.d.ts" />
-/// <reference path="point.ts" />
-/// <reference path="player.ts" />
-/// <reference path="fleet.ts" />
-/// <reference path="building.ts" />
+/// <reference path="player.ts"/>
+/// <reference path="unit.ts"/>
+/// <reference path="star.ts"/>
+/// <reference path="building.ts"/>
+/// <reference path="battledata.ts"/>
+/// <reference path="unit.ts"/>
+/// <reference path="eventmanager.ts"/>
 var Rance;
 (function (Rance) {
-    var Star = (function () {
-        function Star(x, y, id) {
-            // separated so we can iterate through star[].linksTo to only get each connection once
-            // use star.getAllLinks() for individual star connections
-            this.linksTo = [];
-            this.linksFrom = [];
-            // can be used during map gen to attach temporary variables for easier debugging
-            // nulled and deleted after map gen is done
-            this.mapGenData = {};
-            this.fleets = {};
-            this.buildings = {};
-            this.buildingsEffectIsDirty = true;
-            this.indexedNeighborsInRange = {};
-            this.indexedDistanceToStar = {};
-            // TODO rework items building
-            this.buildableItems = {
-                1: [],
-                2: [],
-                3: []
+    var Battle = (function () {
+        function Battle(props) {
+            this.unitsById = {};
+            this.unitsBySide = {
+                side1: [],
+                side2: []
             };
-            this.buildableUnitTypes = [];
-            this.id = isFinite(id) ? id : Rance.idGenerators.star++;
-            this.name = "Star " + this.id;
-            this.x = x;
-            this.y = y;
+            this.turnOrder = [];
+            this.evaluation = {};
+            this.isSimulated = false; // true when battle is between two
+            // ai players
+            this.isVirtual = false; // true when a clone made by battle ai
+            this.ended = false;
+            this.afterFinishCallbacks = [];
+            this.side1 = props.side1;
+            this.side1Player = props.side1Player;
+            this.side2 = props.side2;
+            this.side2Player = props.side2Player;
+            this.battleData = props.battleData;
         }
-        // TODO REMOVE
-        Star.prototype.severLinksToNonAdjacent = function () {
-            var allLinks = this.getAllLinks();
-            var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
-            for (var i = 0; i < allLinks.length; i++) {
-                var star = allLinks[i];
-                if (neighborVoronoiIds.indexOf(star.voronoiId) === -1) {
-                    this.removeLink(star);
-                }
-            }
-        };
-        // END TO REMOVE
-        // BUILDINGS
-        Star.prototype.addBuilding = function (building) {
-            if (!this.buildings[building.template.category]) {
-                this.buildings[building.template.category] = [];
-            }
-            var buildings = this.buildings[building.template.category];
-            if (buildings.indexOf(building) >= 0) {
-                throw new Error("Already has building");
-            }
-            buildings.push(building);
-            this.buildingsEffectIsDirty = true;
-            if (building.template.category === "defence") {
-                this.sortDefenceBuildings();
-                Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
-            }
-            if (building.template.category === "vision") {
-                this.owner.updateVisibleStars();
-            }
-        };
-        Star.prototype.removeBuilding = function (building) {
-            if (!this.buildings[building.template.category] ||
-                this.buildings[building.template.category].indexOf(building) < 0) {
-                throw new Error("Location doesn't have building");
-            }
-            var buildings = this.buildings[building.template.category];
-            this.buildings[building.template.category].splice(buildings.indexOf(building), 1);
-            this.buildingsEffectIsDirty = true;
-        };
-        Star.prototype.sortDefenceBuildings = function () {
-            this.buildings["defence"].sort(function (a, b) {
-                if (a.template.maxPerType === 1) {
-                    return -1;
-                }
-                else if (b.template.maxPerType === 1) {
-                    return 1;
-                }
-                if (a.upgradeLevel !== b.upgradeLevel) {
-                    return b.upgradeLevel - a.upgradeLevel;
-                }
-                return a.id - b.id;
-            });
-        };
-        Star.prototype.getSecondaryController = function () {
-            if (!this.buildings["defence"])
-                return null;
-            var defenceBuildings = this.buildings["defence"];
-            for (var i = 0; i < defenceBuildings.length; i++) {
-                if (defenceBuildings[i].controller !== this.owner) {
-                    return defenceBuildings[i].controller;
-                }
-            }
-            return null;
-        };
-        Star.prototype.updateController = function () {
-            if (!this.buildings["defence"])
-                return;
-            var oldOwner = this.owner;
-            var newOwner = this.buildings["defence"][0].controller;
-            if (oldOwner) {
-                if (oldOwner === newOwner)
-                    return;
-                oldOwner.removeStar(this);
-            }
-            newOwner.addStar(this);
-            Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
-            Rance.eventManager.dispatchEvent("renderLayer", "starOwners", this);
-            Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
-        };
-        Star.prototype.updateBuildingsEffect = function () {
-            var effect = {};
-            for (var category in this.buildings) {
-                for (var i = 0; i < this.buildings[category].length; i++) {
-                    var building = this.buildings[category][i];
-                    building.getEffect(effect);
-                }
-            }
-            this.buildingsEffect = effect;
-            this.buildingsEffectIsDirty = false;
-        };
-        Star.prototype.getBuildingsEffect = function () {
-            if (this.buildingsEffectIsDirty) {
-                this.updateBuildingsEffect();
-            }
-            return this.buildingsEffect;
-        };
-        Star.prototype.getEffectWithBuildingsEffect = function (base, effectType) {
-            var effect = base;
-            var buildingsEffect = this.getBuildingsEffect()[effectType];
-            if (isFinite(buildingsEffect)) {
-                return effect + buildingsEffect;
-            }
-            else if (buildingsEffect) {
-                effect += (buildingsEffect.flat || 0);
-                effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
-            }
-            return effect;
-        };
-        Star.prototype.getIncome = function () {
-            return this.getEffectWithBuildingsEffect(this.baseIncome, "income");
-        };
-        Star.prototype.getResourceIncome = function () {
-            if (!this.resource)
-                return null;
-            return ({
-                resource: this.resource,
-                amount: this.getEffectWithBuildingsEffect(0, "resourceIncome")
-            });
-        };
-        Star.prototype.getAllBuildings = function () {
-            var buildings = [];
-            for (var category in this.buildings) {
-                buildings = buildings.concat(this.buildings[category]);
-            }
-            return buildings;
-        };
-        Star.prototype.getBuildingsForPlayer = function (player) {
-            var allBuildings = this.getAllBuildings();
-            return allBuildings.filter(function (building) {
-                return building.controller.id === player.id;
-            });
-        };
-        Star.prototype.getBuildingsByFamily = function (buildingTemplate) {
-            var propToCheck = buildingTemplate.family ? "family" : "type";
-            var categoryBuildings = this.buildings[buildingTemplate.category];
-            var buildings = [];
-            if (categoryBuildings) {
-                for (var i = 0; i < categoryBuildings.length; i++) {
-                    if (categoryBuildings[i].template[propToCheck] === buildingTemplate[propToCheck]) {
-                        buildings.push(categoryBuildings[i]);
-                    }
-                }
-            }
-            return buildings;
-        };
-        Star.prototype.getBuildableBuildings = function () {
-            var canBuild = [];
-            for (var buildingType in app.moduleData.Templates.Buildings) {
-                var template = app.moduleData.Templates.Buildings[buildingType];
-                var alreadyBuilt;
-                if (template.category === "mine" && !this.resource) {
-                    continue;
-                }
-                alreadyBuilt = this.getBuildingsByFamily(template);
-                if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly) {
-                    canBuild.push(template);
-                }
-            }
-            return canBuild;
-        };
-        Star.prototype.getBuildingUpgrades = function () {
-            var allUpgrades = {};
+        Battle.prototype.init = function () {
             var self = this;
-            var ownerBuildings = this.getBuildingsForPlayer(this.owner);
-            for (var i = 0; i < ownerBuildings.length; i++) {
-                var building = ownerBuildings[i];
-                var upgrades = building.getPossibleUpgrades();
-                upgrades = upgrades.filter(function (upgradeData) {
-                    var parent = upgradeData.parentBuilding.template;
-                    var template = upgradeData.template;
-                    if (parent.type === template.type) {
-                        return true;
-                    }
-                    else {
-                        var isSameFamily = (template.family && parent.family === template.family);
-                        var maxAllowed = template.maxPerType;
-                        if (isSameFamily) {
-                            maxAllowed += 1;
+            ["side1", "side2"].forEach(function (sideId) {
+                var side = self[sideId];
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (side[i][j]) {
+                            self.unitsById[side[i][j].id] = side[i][j];
+                            self.unitsBySide[sideId].push(side[i][j]);
+                            var pos = sideId === "side1" ? [i, j] : [i + 2, j];
+                            self.initUnit(side[i][j], sideId, pos);
                         }
-                        var alreadyBuilt = self.getBuildingsByFamily(template);
-                        return alreadyBuilt.length < maxAllowed;
                     }
-                });
-                if (upgrades.length > 0) {
-                    allUpgrades[building.id] = upgrades;
                 }
-            }
-            return allUpgrades;
-        };
-        Star.prototype.getBuildableShipTypes = function () {
-            var player = this.owner;
-            var global = player.getGloballyBuildableShips();
-            var local = [];
-            for (var i = 0; i < this.buildableUnitTypes.length; i++) {
-                var type = this.buildableUnitTypes[i];
-                if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements)) {
-                    local.push(type);
-                }
-            }
-            return global.concat(local);
-        };
-        // FLEETS
-        Star.prototype.getAllFleets = function () {
-            var allFleets = [];
-            for (var playerId in this.fleets) {
-                allFleets = allFleets.concat(this.fleets[playerId]);
-            }
-            return allFleets;
-        };
-        Star.prototype.getFleetIndex = function (fleet) {
-            if (!this.fleets[fleet.player.id])
-                return -1;
-            return this.fleets[fleet.player.id].indexOf(fleet);
-        };
-        Star.prototype.hasFleet = function (fleet) {
-            return this.getFleetIndex(fleet) >= 0;
-        };
-        Star.prototype.addFleet = function (fleet) {
-            if (!this.fleets[fleet.player.id]) {
-                this.fleets[fleet.player.id] = [];
-            }
-            if (this.hasFleet(fleet))
-                return false;
-            this.fleets[fleet.player.id].push(fleet);
-        };
-        Star.prototype.addFleets = function (fleets) {
-            for (var i = 0; i < fleets.length; i++) {
-                this.addFleet(fleets[i]);
-            }
-        };
-        Star.prototype.removeFleet = function (fleet) {
-            var fleetIndex = this.getFleetIndex(fleet);
-            if (fleetIndex < 0)
-                return false;
-            this.fleets[fleet.player.id].splice(fleetIndex, 1);
-            if (this.fleets[fleet.player.id].length === 0) {
-                delete this.fleets[fleet.player.id];
-            }
-        };
-        Star.prototype.removeFleets = function (fleets) {
-            for (var i = 0; i < fleets.length; i++) {
-                this.removeFleet(fleets[i]);
-            }
-        };
-        Star.prototype.getAllShipsOfPlayer = function (player) {
-            var allShips = [];
-            var fleets = this.fleets[player.id];
-            if (!fleets)
-                return [];
-            for (var i = 0; i < fleets.length; i++) {
-                allShips = allShips.concat(fleets[i].ships);
-            }
-            return allShips;
-        };
-        Star.prototype.getAllShips = function () {
-            var allShips = [];
-            for (var playerId in this.fleets) {
-                var fleets = this.fleets[playerId];
-                allShips = allShips.concat(this.getAllShipsOfPlayer(fleets[0].player));
-            }
-            return allShips;
-        };
-        Star.prototype.getIndependentShips = function () {
-            var ships = [];
-            for (var playerId in this.fleets) {
-                var player = this.fleets[playerId][0].player;
-                if (player.isIndependent) {
-                    ships = ships.concat(this.getAllShipsOfPlayer(player));
-                }
-            }
-            return ships;
-        };
-        Star.prototype.getTargetsForPlayer = function (player) {
-            var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
-            var buildingController = buildingTarget ? buildingTarget.controller : null;
-            var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
-            var diplomacyStatus = player.diplomacyStatus;
-            var targets = [];
-            if (buildingTarget &&
-                (player === this.owner ||
-                    diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller))) {
-                targets.push({
-                    type: "building",
-                    enemy: buildingTarget.controller,
-                    building: buildingTarget,
-                    ships: this.getAllShipsOfPlayer(buildingTarget.controller)
-                });
-            }
-            for (var i = 0; i < fleetOwners.length; i++) {
-                if (diplomacyStatus.canAttackFleetOfPlayer(fleetOwners[i])) {
-                    targets.push({
-                        type: "fleet",
-                        enemy: fleetOwners[i],
-                        building: null,
-                        ships: this.getAllShipsOfPlayer(fleetOwners[i])
-                    });
-                }
-            }
-            return targets;
-        };
-        Star.prototype.getFirstEnemyDefenceBuilding = function (player) {
-            if (!this.buildings["defence"])
-                return null;
-            var defenceBuildings = this.buildings["defence"].slice(0);
-            if (this.owner === player)
-                defenceBuildings = defenceBuildings.reverse();
-            for (var i = defenceBuildings.length - 1; i >= 0; i--) {
-                if (defenceBuildings[i].controller.id !== player.id) {
-                    return defenceBuildings[i];
-                }
-            }
-            return null;
-        };
-        Star.prototype.getEnemyFleetOwners = function (player, excludedTarget) {
-            var fleetOwners = [];
-            for (var playerId in this.fleets) {
-                if (playerId == player.id)
-                    continue;
-                else if (excludedTarget && playerId == excludedTarget.id)
-                    continue;
-                else if (this.fleets[playerId].length < 1)
-                    continue;
-                fleetOwners.push(this.fleets[playerId][0].player);
-            }
-            return fleetOwners;
-        };
-        // MAP GEN
-        Star.prototype.setPosition = function (x, y) {
-            this.x = x;
-            this.y = y;
-        };
-        Star.prototype.setResource = function (resource) {
-            this.resource = resource;
-        };
-        Star.prototype.hasLink = function (linkTo) {
-            return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
-        };
-        // could maybe use adding / removing links as a gameplay mechanic
-        Star.prototype.addLink = function (linkTo) {
-            if (this.hasLink(linkTo))
-                return;
-            this.linksTo.push(linkTo);
-            linkTo.linksFrom.push(this);
-        };
-        Star.prototype.removeLink = function (linkTo) {
-            if (!this.hasLink(linkTo))
-                return;
-            var toIndex = this.linksTo.indexOf(linkTo);
-            if (toIndex >= 0) {
-                this.linksTo.splice(toIndex, 1);
+            });
+            this.currentTurn = 0;
+            this.maxTurns = 24;
+            this.turnsLeft = this.maxTurns;
+            this.updateTurnOrder();
+            this.setActiveUnit();
+            this.startHealth =
+                {
+                    side1: this.getTotalHealthForSide("side1").current,
+                    side2: this.getTotalHealthForSide("side2").current
+                };
+            if (this.checkBattleEnd()) {
+                this.endBattle();
             }
             else {
-                this.linksFrom.splice(this.linksFrom.indexOf(linkTo), 1);
+                this.swapColumnsIfNeeded();
             }
-            linkTo.removeLink(this);
+            this.triggerBattleStartAbilities();
         };
-        Star.prototype.getAllLinks = function () {
-            return this.linksTo.concat(this.linksFrom);
+        Battle.prototype.forEachUnit = function (operator) {
+            for (var id in this.unitsById) {
+                operator.call(this, this.unitsById[id]);
+            }
         };
-        Star.prototype.getEdgeWith = function (neighbor) {
-            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
-                var edge = this.voronoiCell.halfedges[i].edge;
-                if ((edge.lSite && edge.lSite === neighbor) ||
-                    (edge.rSite && edge.rSite === neighbor)) {
-                    return edge;
-                }
-            }
-            return null;
+        Battle.prototype.initUnit = function (unit, side, position) {
+            unit.resetBattleStats();
+            unit.setBattlePosition(this, side, position);
+            this.addUnitToTurnOrder(unit);
+            unit.timesActedThisTurn++;
         };
-        Star.prototype.getSharedNeighborsWith = function (neighbor) {
-            var ownNeighbors = this.getNeighbors();
-            var neighborNeighbors = neighbor.getNeighbors();
-            var sharedNeighbors = [];
-            for (var i = 0; i < ownNeighbors.length; i++) {
-                var star = ownNeighbors[i];
-                if (star !== neighbor && neighborNeighbors.indexOf(star) !== -1) {
-                    sharedNeighbors.push(star);
-                }
-            }
-            return sharedNeighbors;
-        };
-        // return adjacent stars whether they're linked to this or not
-        Star.prototype.getNeighbors = function () {
-            var neighbors = [];
-            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
-                var edge = this.voronoiCell.halfedges[i].edge;
-                if (edge.lSite !== null && edge.lSite.id !== this.id) {
-                    neighbors.push(edge.lSite);
-                }
-                else if (edge.rSite !== null && edge.rSite.id !== this.id) {
-                    neighbors.push(edge.rSite);
-                }
-            }
-            return neighbors;
-        };
-        Star.prototype.getLinkedInRange = function (range) {
-            if (this.indexedNeighborsInRange[range]) {
-                return this.indexedNeighborsInRange[range];
-            }
-            var visited = {};
-            var visitedByRange = {};
-            if (range >= 0) {
-                visited[this.id] = this;
-            }
-            var current = [];
-            var frontier = [this];
-            for (var i = 0; i < range; i++) {
-                current = frontier.slice(0);
-                if (current.length <= 0)
-                    break;
-                frontier = [];
-                visitedByRange[i + 1] = [];
-                for (var j = 0; j < current.length; j++) {
-                    var neighbors = current[j].getAllLinks();
-                    for (var k = 0; k < neighbors.length; k++) {
-                        if (visited[neighbors[k].id])
-                            continue;
-                        visited[neighbors[k].id] = neighbors[k];
-                        visitedByRange[i + 1].push(neighbors[k]);
-                        frontier.push(neighbors[k]);
-                        this.indexedDistanceToStar[neighbors[k].id] = i;
+        Battle.prototype.triggerBattleStartAbilities = function () {
+            this.forEachUnit(function (unit) {
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase["atBattleStart"]) {
+                    var skills = passiveSkillsByPhase["atBattleStart"];
+                    for (var i = 0; i < skills.length; i++) {
+                        for (var j = 0; j < skills[i].atBattleStart.length; j++) {
+                            var effect = skills[i].atBattleStart[j];
+                            effect.template.effect(unit, unit, effect.data);
+                        }
                     }
                 }
-            }
-            var allVisited = [];
-            for (var id in visited) {
-                allVisited.push(visited[id]);
-            }
-            this.indexedNeighborsInRange[range] =
-                {
-                    all: allVisited,
-                    byRange: visitedByRange
-                };
-            return ({
-                all: allVisited,
-                byRange: visitedByRange
             });
         };
-        // Recursively gets all neighbors that fulfill the callback condition with this star
-        // Optional earlyReturnSize parameter returns if an island of specified size is found
-        Star.prototype.getIslandForQualifier = function (qualifier, earlyReturnSize) {
-            var visited = {};
-            var connected = {};
-            var sizeFound = 1;
-            var initialStar = this;
-            var frontier = [initialStar];
-            visited[initialStar.id] = true;
-            while (frontier.length > 0) {
-                var current = frontier.pop();
-                connected[current.id] = current;
-                var neighbors = current.getLinkedInRange(1).all;
-                for (var i = 0; i < neighbors.length; i++) {
-                    var neighbor = neighbors[i];
-                    if (visited[neighbor.id])
-                        continue;
-                    visited[neighbor.id] = true;
-                    if (qualifier(current, neighbor)) {
-                        sizeFound++;
-                        frontier.push(neighbor);
-                    }
+        Battle.prototype.removeUnitFromTurnOrder = function (unit) {
+            var unitIndex = this.turnOrder.indexOf(unit);
+            if (unitIndex < 0)
+                return false; //not in list
+            this.turnOrder.splice(unitIndex, 1);
+        };
+        Battle.prototype.addUnitToTurnOrder = function (unit) {
+            var unitIndex = this.turnOrder.indexOf(unit);
+            if (unitIndex >= 0)
+                return false; //already in list
+            this.turnOrder.push(unit);
+        };
+        Battle.prototype.updateTurnOrder = function () {
+            //Sorting function is in utility.ts for reusing in turn order UI.
+            //Maybe should make separate TurnOrder class?
+            this.turnOrder.sort(Rance.turnOrderSortFunction);
+            function turnOrderFilterFunction(unit) {
+                if (unit.battleStats.currentActionPoints <= 0) {
+                    return false;
                 }
-                // breaks when sufficiently big island has been found
-                if (earlyReturnSize && sizeFound >= earlyReturnSize) {
-                    for (var i = 0; i < frontier.length; i++) {
-                        connected[frontier[i].id] = frontier[i];
+                if (unit.currentHealth <= 0) {
+                    return false;
+                }
+                return true;
+            }
+            this.turnOrder = this.turnOrder.filter(turnOrderFilterFunction);
+        };
+        Battle.prototype.setActiveUnit = function () {
+            this.activeUnit = this.turnOrder[0];
+        };
+        Battle.prototype.endTurn = function () {
+            this.currentTurn++;
+            this.turnsLeft--;
+            this.updateTurnOrder();
+            this.setActiveUnit();
+            if (!this.isVirtual) {
+                this.forEachUnit(function (unit) {
+                    if (unit.currentHealth <= 0) {
+                        unit.displayFlags.isAnnihilated = true;
+                        unit.uiDisplayIsDirty = true;
                     }
+                });
+            }
+            var shouldEnd = this.checkBattleEnd();
+            if (shouldEnd) {
+                this.endBattle();
+            }
+            else {
+                this.swapColumnsIfNeeded();
+            }
+        };
+        Battle.prototype.getPlayerForSide = function (side) {
+            if (side === "side1")
+                return this.side1Player;
+            else if (side === "side2")
+                return this.side2Player;
+            else
+                throw new Error("invalid side");
+        };
+        Battle.prototype.getSideForPlayer = function (player) {
+            if (this.side1Player === player)
+                return "side1";
+            else if (this.side2Player === player)
+                return "side2";
+            else
+                throw new Error("invalid player");
+        };
+        Battle.prototype.getActivePlayer = function () {
+            if (!this.activeUnit)
+                return null;
+            var side = this.activeUnit.battleStats.side;
+            return this.getPlayerForSide(side);
+        };
+        Battle.prototype.getColumnByPosition = function (position) {
+            var side = position <= 1 ? "side1" : "side2";
+            var relativePosition = position % 2;
+            return this[side][relativePosition];
+        };
+        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
+            if (maxCapturedUnits === void 0) { maxCapturedUnits = 1; }
+            if (!victor || victor.isIndependent)
+                return [];
+            var winningSide = this.getSideForPlayer(victor);
+            var losingSide = Rance.reverseSide(winningSide);
+            var losingUnits = this.unitsBySide[losingSide].slice(0);
+            losingUnits.sort(function (a, b) {
+                return b.battleStats.captureChance - a.battleStats.captureChance;
+            });
+            var capturedUnits = [];
+            for (var i = 0; i < losingUnits.length; i++) {
+                if (capturedUnits.length >= maxCapturedUnits)
                     break;
+                var unit = losingUnits[i];
+                if (unit.currentHealth <= 0 &&
+                    Math.random() <= unit.battleStats.captureChance) {
+                    capturedUnits.push(unit);
                 }
             }
-            var island = [];
-            for (var starId in connected) {
-                island.push(connected[starId]);
-            }
-            return island;
+            return capturedUnits;
         };
-        Star.prototype.getNearestStarForQualifier = function (qualifier) {
-            if (qualifier(this))
-                return this;
-            var visited = {};
-            var frontier = [this];
-            visited[this.id] = true;
-            while (frontier.length > 0) {
-                var current = frontier.pop();
-                var neighbors = current.getLinkedInRange(1).all;
-                for (var i = 0; i < neighbors.length; i++) {
-                    var neighbor = neighbors[i];
-                    if (visited[neighbor.id])
-                        continue;
-                    visited[neighbor.id] = true;
-                    if (qualifier(neighbor)) {
-                        return neighbor;
+        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
+            var INDEPENDENT_DEATH_CHANCE = 1; // base chance for independents
+            var PLAYER_DEATH_CHANCE = 0.65; // base chance for players
+            var LOSER_DEATH_CHANCE = 0.35; // extra chance for losing side
+            if (victor) {
+                var winningSide = this.getSideForPlayer(victor);
+                var losingSide = Rance.reverseSide(winningSide);
+                var losingPlayer = this.getPlayerForSide(losingSide);
+            }
+            var deadUnits = [];
+            this.forEachUnit(function (unit) {
+                if (unit.currentHealth <= 0) {
+                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
+                    if (!wasCaptured) {
+                        var isIndependent = unit.fleet.player.isIndependent;
+                        var deathChance = isIndependent ? INDEPENDENT_DEATH_CHANCE : PLAYER_DEATH_CHANCE;
+                        if (unit.fleet.player === losingPlayer) {
+                            deathChance += LOSER_DEATH_CHANCE;
+                        }
+                        if (Math.random() < deathChance) {
+                            deadUnits.push(unit);
+                        }
                     }
-                    else {
-                        frontier.push(neighbor);
+                }
+            });
+            return deadUnits;
+        };
+        Battle.prototype.endBattle = function () {
+            this.ended = true;
+            if (this.isVirtual)
+                return;
+            this.activeUnit = null;
+            var victor = this.getVictor();
+            this.capturedUnits = this.getCapturedUnits(victor);
+            this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
+            /*
+            var _ : any = window;
+      
+            var consoleRows = [];
+            this.forEachUnit(function(unit)
+            {
+              consoleRows.push(
+              {
+                id: unit.id,
+                health: unit.currentHealth,
+                destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
+                captureChance: unit.battleStats.captureChance,
+                captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
+              });
+            }.bind(this));
+      
+            if (_.console.table)
+            {
+              _.console.table(consoleRows);
+            }
+            */
+            Rance.eventManager.dispatchEvent("battleEnd", null);
+        };
+        Battle.prototype.finishBattle = function (forcedVictor) {
+            var victor = forcedVictor || this.getVictor();
+            for (var i = 0; i < this.deadUnits.length; i++) {
+                this.deadUnits[i].removeFromPlayer();
+            }
+            var experiencePerSide = this.getGainedExperiencePerSide();
+            this.forEachUnit(function (unit) {
+                unit.addExperience(experiencePerSide[unit.battleStats.side]);
+                unit.resetBattleStats();
+                if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
+                    unit.currentHealth = Math.round(unit.maxHealth * 0.1);
+                }
+                this.side1Player.identifyUnit(unit);
+                this.side2Player.identifyUnit(unit);
+            });
+            if (victor) {
+                for (var i = 0; i < this.capturedUnits.length; i++) {
+                    this.capturedUnits[i].transferToPlayer(victor);
+                    this.capturedUnits[i].experienceForCurrentLevel = 0;
+                }
+            }
+            if (this.battleData.building) {
+                if (victor) {
+                    this.battleData.building.setController(victor);
+                }
+            }
+            if (this.isSimulated) {
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.battleData.location);
+            }
+            else {
+                Rance.eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
+                Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
+            }
+            if (app.humanPlayer.starIsVisible(this.battleData.location)) {
+                Rance.eventManager.dispatchEvent("makeBattleFinishNotification", {
+                    location: this.battleData.location,
+                    attacker: this.battleData.attacker.player,
+                    defender: this.battleData.defender.player,
+                    victor: victor
+                });
+            }
+            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
+                this.afterFinishCallbacks[i]();
+            }
+        };
+        Battle.prototype.getVictor = function () {
+            var evaluation = this.getEvaluation();
+            if (evaluation > 0)
+                return this.side1Player;
+            else if (evaluation < 0)
+                return this.side2Player;
+            else
+                return null;
+        };
+        Battle.prototype.getTotalHealthForColumn = function (position) {
+            var column = this.getColumnByPosition(position);
+            var total = 0;
+            for (var i = 0; i < column.length; i++) {
+                if (column[i]) {
+                    total += column[i].currentHealth;
+                }
+            }
+            return total;
+        };
+        Battle.prototype.getTotalHealthForSide = function (side) {
+            var health = {
+                current: 0,
+                max: 0
+            };
+            var units = this.unitsBySide[side];
+            for (var i = 0; i < units.length; i++) {
+                var unit = units[i];
+                health.current += unit.currentHealth;
+                health.max += unit.maxHealth;
+            }
+            return health;
+        };
+        Battle.prototype.getEvaluation = function () {
+            var self = this;
+            var evaluation = 0;
+            ["side1", "side2"].forEach(function (side) {
+                // positive * sign === good, negative * sign === bad
+                var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
+                var currentHealth = self.getTotalHealthForSide(side).current;
+                if (currentHealth <= 0) {
+                    return -999 * sign;
+                }
+                // how much health remains from strating health 0.0-1.0
+                var currentHealthFactor = currentHealth / self.startHealth[side];
+                for (var i = 0; i < self.unitsBySide[side].length; i++) {
+                    if (self.unitsBySide[side][i].currentHealth <= 0) {
+                        evaluation -= 0.2 * sign;
+                    }
+                }
+                var defenderMultiplier = 1;
+                if (self.battleData.building) {
+                    var template = self.battleData.building.template;
+                    var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
+                    if (isDefender) {
+                        defenderMultiplier += template.defenderAdvantage;
+                    }
+                }
+                evaluation += currentHealthFactor * defenderMultiplier * sign;
+            });
+            evaluation = Rance.clamp(evaluation, -1, 1);
+            this.evaluation[this.currentTurn] = evaluation;
+            return this.evaluation[this.currentTurn];
+        };
+        Battle.prototype.swapColumnsForSide = function (side) {
+            this[side] = this[side].reverse();
+            for (var i = 0; i < this[side].length; i++) {
+                var column = this[side][i];
+                for (var j = 0; j < column.length; j++) {
+                    var pos = side === "side1" ? [i, j] : [i + 2, j];
+                    if (column[j]) {
+                        column[j].setBattlePosition(this, side, pos);
                     }
                 }
             }
-            return null;
         };
-        Star.prototype.getDistanceToStar = function (target) {
-            if (!this.indexedDistanceToStar[target.id]) {
-                var a = Rance.aStar(this, target);
-                if (!a) {
-                    this.indexedDistanceToStar[target.id] = -1;
+        Battle.prototype.swapColumnsIfNeeded = function () {
+            var side1Front = this.getTotalHealthForColumn(1);
+            if (side1Front <= 0) {
+                this.swapColumnsForSide("side1");
+            }
+            var side2Front = this.getTotalHealthForColumn(2);
+            if (side2Front <= 0) {
+                this.swapColumnsForSide("side2");
+            }
+        };
+        Battle.prototype.getGainedExperiencePerSide = function () {
+            var totalValuePerSide = {
+                side1: 0,
+                side2: 0
+            };
+            for (var side in this.unitsBySide) {
+                var totalValue = 0;
+                var units = this.unitsBySide[side];
+                for (var i = 0; i < units.length; i++) {
+                    totalValuePerSide[side] += units[i].level + 1;
+                }
+            }
+            return ({
+                side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
+                side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
+            });
+        };
+        Battle.prototype.checkBattleEnd = function () {
+            if (!this.activeUnit)
+                return true;
+            if (this.turnsLeft <= 0)
+                return true;
+            if (this.getTotalHealthForSide("side1").current <= 0 ||
+                this.getTotalHealthForSide("side2").current <= 0) {
+                return true;
+            }
+            return false;
+        };
+        Battle.prototype.makeVirtualClone = function () {
+            var battleData = this.battleData;
+            function cloneUnits(units) {
+                var clones = [];
+                for (var i = 0; i < units.length; i++) {
+                    var column = [];
+                    for (var j = 0; j < units[i].length; j++) {
+                        var unit = units[i][j];
+                        if (!unit) {
+                            column.push(unit);
+                        }
+                        else {
+                            column.push(unit.makeVirtualClone());
+                        }
+                    }
+                    clones.push(column);
+                }
+                return clones;
+            }
+            var side1 = cloneUnits(this.side1);
+            var side2 = cloneUnits(this.side2);
+            var side1Player = this.side1Player;
+            var side2Player = this.side2Player;
+            var clone = new Battle({
+                battleData: battleData,
+                side1: side1,
+                side2: side2,
+                side1Player: side1Player,
+                side2Player: side2Player
+            });
+            [side1, side2].forEach(function (side) {
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (!side[i][j])
+                            continue;
+                        clone.addUnitToTurnOrder(side[i][j]);
+                        clone.unitsById[side[i][j].id] = side[i][j];
+                        clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
+                    }
+                }
+            });
+            clone.isVirtual = true;
+            clone.currentTurn = this.currentTurn;
+            clone.maxTurns = this.maxTurns;
+            clone.turnsLeft = this.turnsLeft;
+            clone.startHealth = this.startHealth;
+            clone.updateTurnOrder();
+            clone.setActiveUnit();
+            if (clone.checkBattleEnd()) {
+                clone.endBattle();
+            }
+            else {
+                clone.swapColumnsIfNeeded();
+            }
+            return clone;
+        };
+        return Battle;
+    })();
+    Rance.Battle = Battle;
+})(Rance || (Rance = {}));
+/// <reference path="utility.ts"/>
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    Rance.targetSingle = function (units, target) {
+        return Rance.getFrom2dArray(units, [target]);
+    };
+    Rance.targetAll = function (units, target) {
+        return Rance.flatten2dArray(units);
+    };
+    Rance.targetRow = function (units, target) {
+        var y = target[1];
+        var targetLocations = [];
+        for (var i = 0; i < units.length; i++) {
+            targetLocations.push([i, y]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    Rance.targetColumn = function (units, target) {
+        var x = target[0];
+        var targetLocations = [];
+        for (var i = 0; i < units[x].length; i++) {
+            targetLocations.push([x, i]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    Rance.targetColumnNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    Rance.targetNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x - 1, y]);
+        targetLocations.push([x + 1, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
+/// <reference path="templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
+/// <reference path="battle.ts"/>
+/// <reference path="unit.ts"/>
+/// <reference path="targeting.ts"/>
+var Rance;
+(function (Rance) {
+    function getAbilityUseData(battle, user, ability, target) {
+        if (ability.preparation) {
+            if (!user.battleStats.queuedAction) {
+                user.setQueuedAction(ability, target);
+                return getPreparationDummyData(user);
+            }
+            else {
+                user.updateQueuedAction();
+                if (!user.isReadyToUseQueuedAction()) {
+                    return getPreparationDummyData(user);
                 }
                 else {
-                    for (var id in a.cost) {
-                        this.indexedDistanceToStar[id] = a.cost[id];
-                    }
+                    var action = user.battleStats.queuedAction;
+                    var target = battle.unitsById[action.targetId];
+                    var ability = action.ability;
+                    user.clearQueuedAction();
                 }
             }
-            return this.indexedDistanceToStar[target.id];
+        }
+        var data = {
+            user: user,
+            originalTarget: target,
+            actualTarget: getTargetOrGuard(battle, user, ability, target),
+            effectsToCall: [],
+            beforeUse: [],
+            afterUse: []
         };
-        Star.prototype.getVisionRange = function () {
-            return this.getEffectWithBuildingsEffect(1, "vision");
-        };
-        Star.prototype.getVision = function () {
-            return this.getLinkedInRange(this.getVisionRange()).all;
-        };
-        Star.prototype.getDetectionRange = function () {
-            return this.getEffectWithBuildingsEffect(0, "detection");
-        };
-        Star.prototype.getDetection = function () {
-            return this.getLinkedInRange(this.getDetectionRange()).all;
-        };
-        Star.prototype.getHealingFactor = function (player) {
-            var factor = 0;
-            if (player === this.owner) {
-                factor += 0.15;
+        var passiveSkills = user.getPassiveSkillsByPhase();
+        var beforeUseEffects = [];
+        if (ability.beforeUse) {
+            beforeUseEffects = beforeUseEffects.concat(ability.beforeUse);
+        }
+        if (passiveSkills.beforeAbilityUse) {
+            for (var i = 0; i < passiveSkills.beforeAbilityUse.length; i++) {
+                beforeUseEffects = beforeUseEffects.concat(passiveSkills.beforeAbilityUse[i].beforeAbilityUse);
             }
-            return factor;
+        }
+        for (var i = 0; i < beforeUseEffects.length; i++) {
+            var hasSfx = Boolean(beforeUseEffects[i].sfx);
+            if (hasSfx) {
+                data.effectsToCall.push({
+                    effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data)],
+                    user: user,
+                    target: data.actualTarget,
+                    sfx: beforeUseEffects[i].sfx,
+                    trigger: beforeUseEffects[i].trigger
+                });
+            }
+            else {
+                data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data));
+            }
+        }
+        data.beforeUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
+        if (!ability.addsGuard) {
+            data.beforeUse.push(user.removeAllGuard.bind(user));
+        }
+        var effectsToCall = [ability.mainEffect];
+        if (ability.secondaryEffects) {
+            effectsToCall = effectsToCall.concat(ability.secondaryEffects);
+        }
+        for (var i = 0; i < effectsToCall.length; i++) {
+            var effect = effectsToCall[i];
+            var targetsInArea = getUnitsInEffectArea(battle, user, effect.template, data.actualTarget.battleStats.position);
+            for (var j = 0; j < targetsInArea.length; j++) {
+                var effectTarget = targetsInArea[j];
+                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
+                var attachedEffectsToAddAfter = [];
+                if (effect.attachedEffects) {
+                    for (var k = 0; k < effect.attachedEffects.length; k++) {
+                        var attachedEffect = effect.attachedEffects[k];
+                        var boundAttachedEffect = attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data);
+                        if (attachedEffect.sfx) {
+                            attachedEffectsToAddAfter.push({
+                                effects: [boundAttachedEffect],
+                                user: user,
+                                target: effectTarget,
+                                sfx: attachedEffect.sfx,
+                                trigger: attachedEffect.trigger
+                            });
+                        }
+                        else {
+                            boundEffects.push(boundAttachedEffect);
+                        }
+                    }
+                }
+                data.effectsToCall.push({
+                    effects: boundEffects,
+                    user: user,
+                    target: effectTarget,
+                    sfx: effect.sfx,
+                    trigger: effect.trigger
+                });
+                if (attachedEffectsToAddAfter.length > 0) {
+                    data.effectsToCall = data.effectsToCall.concat(attachedEffectsToAddAfter);
+                }
+            }
+        }
+        var afterUseEffects = [];
+        if (ability.afterUse) {
+            afterUseEffects = afterUseEffects.concat(ability.afterUse);
+        }
+        if (passiveSkills.afterAbilityUse) {
+            for (var i = 0; i < passiveSkills.afterAbilityUse.length; i++) {
+                afterUseEffects = afterUseEffects.concat(passiveSkills.afterAbilityUse[i].afterAbilityUse);
+            }
+        }
+        for (var i = 0; i < afterUseEffects.length; i++) {
+            var hasSfx = Boolean(afterUseEffects[i].sfx);
+            if (hasSfx) {
+                data.effectsToCall.push({
+                    effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data)],
+                    user: user,
+                    target: data.actualTarget,
+                    sfx: afterUseEffects[i].sfx,
+                    trigger: afterUseEffects[i].trigger
+                });
+            }
+            else {
+                data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data));
+            }
+        }
+        data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
+        return data;
+    }
+    Rance.getAbilityUseData = getAbilityUseData;
+    // used for ai simulation. otherwise UIComponents.Battle steps through ability use data
+    function useAbility(battle, user, ability, target) {
+        var abilityData = getAbilityUseData(battle, user, ability, target);
+        for (var i = 0; i < abilityData.beforeUse.length; i++) {
+            abilityData.beforeUse[i]();
+        }
+        for (var i = 0; i < abilityData.effectsToCall.length; i++) {
+            var effectData = abilityData.effectsToCall[i];
+            if (!effectData.trigger || effectData.trigger(effectData.user, effectData.target)) {
+                for (var j = 0; j < effectData.effects.length; j++) {
+                    effectData.effects[j]();
+                }
+            }
+        }
+        for (var i = 0; i < abilityData.afterUse.length; i++) {
+            abilityData.afterUse[i]();
+        }
+    }
+    Rance.useAbility = useAbility;
+    function getPreparationDummyData(user) {
+        var action = user.battleStats.queuedAction;
+        var dummyData = {
+            user: user,
+            originalTarget: user,
+            actualTarget: user,
+            effectsToCall: [],
+            beforeUse: [],
+            afterUse: []
         };
-        Star.prototype.getPresentPlayersByVisibility = function () {
-            var byVisibilityAndId = {
-                visible: {},
-                detected: {},
-                all: {}
+        dummyData.beforeUse.push(user.removeAllGuard.bind(user));
+        dummyData.effectsToCall.push({
+            effects: [],
+            user: user,
+            target: user,
+            sfx: {
+                duration: 100
+            },
+            trigger: null
+        });
+        dummyData.afterUse.push(user.addMoveDelay.bind(user, action.ability.preparation.prepDelay));
+        return dummyData;
+    }
+    Rance.getPreparationDummyData = getPreparationDummyData;
+    function validateTarget(battle, user, ability, target) {
+        var potentialTargets = getPotentialTargets(battle, user, ability);
+        return potentialTargets.indexOf(target) >= 0;
+    }
+    Rance.validateTarget = validateTarget;
+    function getTargetOrGuard(battle, user, ability, target) {
+        if (ability.bypassesGuard) {
+            return target;
+        }
+        var guarding = getGuarders(battle, user, ability, target);
+        guarding = guarding.sort(function (a, b) {
+            return a.battleStats.guardAmount - b.battleStats.guardAmount;
+        });
+        for (var i = 0; i < guarding.length; i++) {
+            var guardRoll = Math.random() * 100;
+            if (guardRoll <= guarding[i].battleStats.guardAmount) {
+                return guarding[i];
+            }
+        }
+        return target;
+    }
+    Rance.getTargetOrGuard = getTargetOrGuard;
+    function getGuarders(battle, user, ability, target) {
+        var enemySide = Rance.reverseSide(user.battleStats.side);
+        if (target.battleStats.side !== enemySide)
+            return [];
+        var allEnemies = battle.unitsBySide[enemySide];
+        var guarders = allEnemies.filter(function (unit) {
+            if (!unit.isTargetable)
+                return false;
+            if (unit.battleStats.guardCoverage === "all") {
+                return unit.battleStats.guardAmount > 0;
+            }
+            else if (unit.battleStats.guardCoverage === "column") {
+                // same column
+                if (unit.battleStats.position[0] === target.battleStats.position[0]) {
+                    return unit.battleStats.guardAmount > 0;
+                }
+            }
+        });
+        return guarders;
+    }
+    Rance.getGuarders = getGuarders;
+    function getPotentialTargets(battle, user, ability) {
+        if (ability.mainEffect.template.targetRange === "self") {
+            return [user];
+        }
+        var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
+        if (ability.mainEffect.template.targetRange === "close") {
+            var farColumnForSide = {
+                side1: 0,
+                side2: 3
             };
-            var allPlayers = [];
-            byVisibilityAndId.visible[this.owner.id] = this.owner;
-            var secondaryController = this.getSecondaryController();
-            if (secondaryController) {
-                byVisibilityAndId.visible[secondaryController.id] = secondaryController;
+            if (user.battleStats.position[0] ===
+                farColumnForSide[user.battleStats.side]) {
+                return [];
             }
-            for (var playerId in this.fleets) {
-                var fleets = this.fleets[playerId];
-                for (var i = 0; i < fleets.length; i++) {
-                    var fleetPlayer = fleets[i].player;
-                    if (byVisibilityAndId.detected[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id]) {
-                        break;
-                    }
-                    byVisibilityAndId.all[fleetPlayer.id] = fleetPlayer;
-                    if (fleets[i].isStealthy) {
-                        byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;
-                    }
-                    else {
-                        byVisibilityAndId.visible[fleetPlayer.id] = fleetPlayer;
+            var oppositeSide = Rance.reverseSide(user.battleStats.side);
+            fleetsToTarget[farColumnForSide[oppositeSide]] = [null];
+        }
+        var fleetFilterFN = function (target) {
+            if (!Boolean(target)) {
+                return false;
+            }
+            else if (!target.isTargetable()) {
+                return false;
+            }
+            return true;
+        };
+        var targets = Rance.flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
+        return targets;
+    }
+    Rance.getPotentialTargets = getPotentialTargets;
+    function getFleetsToTarget(battle, user, effect) {
+        var nullFleet = [
+            [null, null, null, null],
+            [null, null, null, null]
+        ];
+        var insertNullBefore;
+        var toConcat;
+        switch (effect.targetFleets) {
+            case "all":
+                {
+                    return battle.side1.concat(battle.side2);
+                }
+            case "ally":
+                {
+                    insertNullBefore = user.battleStats.side === "side1" ? false : true;
+                    toConcat = battle[user.battleStats.side];
+                    break;
+                }
+            case "enemy":
+                {
+                    insertNullBefore = user.battleStats.side === "side1" ? true : false;
+                    toConcat = battle[Rance.reverseSide(user.battleStats.side)];
+                    break;
+                }
+        }
+        if (insertNullBefore) {
+            return nullFleet.concat(toConcat);
+        }
+        else {
+            return toConcat.concat(nullFleet);
+        }
+    }
+    Rance.getFleetsToTarget = getFleetsToTarget;
+    function getPotentialTargetsByPosition(battle, user, ability) {
+        var targets = getPotentialTargets(battle, user, ability);
+        var targetPositions = [];
+        for (var i = 0; i < targets.length; i++) {
+            targetPositions.push(targets[i].battleStats.position);
+        }
+        return targetPositions;
+    }
+    Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
+    function getUnitsInAbilityArea(battle, user, ability, target) {
+        var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
+        if (ability.secondaryEffects) {
+            for (var i = 0; i < ability.secondaryEffects.length; i++) {
+                var inSecondary = getUnitsInEffectArea(battle, user, ability.secondaryEffects[i].template, target);
+                for (var j = 0; j < inSecondary.length; j++) {
+                    if (inArea.indexOf(inSecondary[j]) === -1) {
+                        inArea.push(inSecondary[j]);
                     }
                 }
             }
-            return byVisibilityAndId;
-        };
-        Star.prototype.getSeed = function () {
-            if (!this.seed) {
-                var bgString = "";
-                bgString += Math.round(this.x);
-                bgString += Math.round(this.y);
-                bgString += new Date().getTime();
-                this.seed = bgString;
-            }
-            return this.seed;
-        };
-        Star.prototype.seedBuildableItems = function () {
-            for (var techLevel in this.buildableItems) {
-                var itemsByTechLevel = Rance.TemplateIndexes.itemsByTechLevel[techLevel];
-                var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
-                itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel, this.getSeed());
-                for (var i = 0; i < maxItemsForTechLevel; i++) {
-                    this.buildableItems[techLevel].push(itemsByTechLevel.pop());
+        }
+        return inArea;
+    }
+    Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
+    function getUnitsInEffectArea(battle, user, effect, target) {
+        var targetFleets = getFleetsToTarget(battle, user, effect);
+        var inArea = effect.targetingFunction(targetFleets, target);
+        return inArea.filter(function (unit) {
+            if (!unit)
+                return false;
+            else
+                return unit.isActiveInBattle();
+        });
+    }
+    Rance.getUnitsInEffectArea = getUnitsInEffectArea;
+    function getTargetsForAllAbilities(battle, user) {
+        if (!user || !battle.activeUnit) {
+            return null;
+        }
+        var allTargets = {};
+        var abilities = user.getAllAbilities();
+        for (var i = 0; i < abilities.length; i++) {
+            var ability = abilities[i];
+            var targets = getPotentialTargets(battle, user, ability);
+            for (var j = 0; j < targets.length; j++) {
+                var target = targets[j];
+                if (!allTargets[target.id]) {
+                    allTargets[target.id] = [];
                 }
+                allTargets[target.id].push(ability);
             }
-        };
-        Star.prototype.getItemManufactoryLevel = function () {
-            return this.getEffectWithBuildingsEffect(0, "itemLevel");
-        };
-        Star.prototype.getItemAmountForTechLevel = function (techLevel, manufactoryLevel) {
-            var maxManufactoryLevel = 3; // MANUFACTORY_MAX
-            manufactoryLevel = Rance.clamp(manufactoryLevel, 0, maxManufactoryLevel);
-            var amount = (1 + manufactoryLevel) - techLevel;
-            if (amount < 0)
-                amount = 0;
-            return amount;
-        };
-        Star.prototype.getBuildableItems = function () {
-            if (!this.buildableItems[1] || this.buildableItems[1].length < 1) {
-                this.seedBuildableItems();
-            }
-            ;
-            var manufactoryLevel = this.getItemManufactoryLevel();
-            var byTechLevel = {};
-            var allBuildable = [];
-            for (var techLevel in this.buildableItems) {
-                var amountBuildable = this.getItemAmountForTechLevel(techLevel, manufactoryLevel);
-                var forThisTechLevel = this.buildableItems[techLevel].slice(0, amountBuildable);
-                byTechLevel[techLevel] = forThisTechLevel;
-                allBuildable = allBuildable.concat(forThisTechLevel);
-            }
-            return ({
-                byTechLevel: byTechLevel,
-                all: allBuildable
-            });
-        };
-        Star.prototype.serialize = function () {
+        }
+        return allTargets;
+    }
+    Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/iitemtemplate.d.ts" />
+/// <reference path="unit.ts" />
+var Rance;
+(function (Rance) {
+    var Item = (function () {
+        function Item(template, id) {
+            this.id = isFinite(id) ? id : Rance.idGenerators.item++;
+            this.template = template;
+        }
+        Item.prototype.serialize = function () {
             var data = {};
             data.id = this.id;
-            data.x = this.basisX;
-            data.y = this.basisY;
-            data.baseIncome = this.baseIncome;
-            data.name = this.name;
-            data.ownerId = this.owner ? this.owner.id : null;
-            data.linksToIds = this.linksTo.map(function (star) { return star.id; });
-            data.linksFromIds = this.linksFrom.map(function (star) { return star.id; });
-            data.seed = this.seed;
-            if (this.resource) {
-                data.resourceType = this.resource.type;
+            data.templateType = this.template.type;
+            if (this.unit) {
+                data.unitId = this.unit.id;
             }
-            data.buildableUnitTypes = this.buildableUnitTypes.map(function (template) {
-                return template.type;
+            return data;
+        };
+        return Item;
+    })();
+    Rance.Item = Item;
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
+var Rance;
+(function (Rance) {
+    var StatusEffect = (function () {
+        function StatusEffect(template, duration) {
+            this.template = template;
+            this.duration = duration;
+        }
+        StatusEffect.prototype.processTurnEnd = function () {
+            if (this.duration > 0) {
+                this.duration--;
+            }
+        };
+        StatusEffect.prototype.clone = function () {
+            return new StatusEffect(this.template, this.duration);
+        };
+        return StatusEffect;
+    })();
+    Rance.StatusEffect = StatusEffect;
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/iunittemplate.d.ts" />
+/// <reference path="damagetype.ts" />
+/// <reference path="unitattributes.ts"/>
+/// <reference path="utility.ts"/>
+/// <reference path="ability.ts"/>
+/// <reference path="battle.ts"/>
+/// <reference path="item.ts"/>
+/// <reference path="statuseffect.ts" />
+var Rance;
+(function (Rance) {
+    var Unit = (function () {
+        function Unit(template, id, data) {
+            this.abilities = [];
+            this.passiveSkills = [];
+            this.items = {
+                low: null,
+                mid: null,
+                high: null
+            };
+            this.passiveSkillsByPhase = {};
+            this.passiveSkillsByPhaseAreDirty = true;
+            this.uiDisplayIsDirty = true;
+            this.cachedBattleScenePropsString = "";
+            this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
+            this.template = template;
+            this.name = this.id + " " + template.displayName;
+            this.isSquadron = template.isSquadron;
+            if (data) {
+                this.makeFromData(data);
+            }
+            else {
+                this.setInitialValues();
+            }
+            this.displayFlags =
+                {
+                    isAnnihilated: false
+                };
+        }
+        Object.defineProperty(Unit.prototype, "attributes", {
+            get: function () {
+                if (this.attributesAreDirty || !this.cachedAttributes) {
+                    this.updateCachedAttributes();
+                }
+                return this.cachedAttributes;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Unit.prototype.makeFromData = function (data) {
+            var items = {};
+            ["low", "mid", "high"].forEach(function (slot) {
+                if (data.items[slot]) {
+                    var item = data.items[slot];
+                    if (!item)
+                        return;
+                    if (item.templateType) {
+                        items[slot] = new Rance.Item(app.moduleData.Templates.Items[item.templateType], item.id);
+                    }
+                    else {
+                        items[slot] = item;
+                    }
+                }
             });
-            data.buildings = {};
-            for (var category in this.buildings) {
-                data.buildings[category] = [];
-                for (var i = 0; i < this.buildings[category].length; i++) {
-                    data.buildings[category].push(this.buildings[category][i].serialize());
+            this.name = data.name;
+            this.maxHealth = data.maxHealth;
+            this.currentHealth = data.currentHealth;
+            this.currentMovePoints = data.currentMovePoints;
+            this.maxMovePoints = data.maxMovePoints;
+            this.timesActedThisTurn = data.timesActedThisTurn;
+            this.baseAttributes = Rance.extendObject(data.baseAttributes);
+            this.attributes = Rance.extendObject(this.baseAttributes);
+            this.abilities = data.abilityTemplateTypes.map(function (key) {
+                return app.moduleData.Templates.Abilities[key];
+            });
+            this.passiveSkills = data.passiveSkillTemplateTypes.map(function (key) {
+                return app.moduleData.Templates.PassiveSkills[key];
+            });
+            this.experienceForCurrentLevel = data.experienceForCurrentLevel;
+            this.level = data.level;
+            var battleStats = {};
+            battleStats.moveDelay = data.battleStats.moveDelay;
+            battleStats.side = data.battleStats.side;
+            battleStats.position = data.battleStats.position;
+            battleStats.currentActionPoints = data.battleStats.currentActionPoints;
+            battleStats.guardAmount = data.battleStats.guardAmount;
+            battleStats.guardCoverage = data.battleStats.guardCoverage;
+            battleStats.captureChance = data.battleStats.captureChance;
+            battleStats.statusEffects = data.battleStats.statusEffects;
+            battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+            battleStats.queuedAction = data.queuedAction;
+            this.battleStats = battleStats;
+            this.items =
+                {
+                    low: null,
+                    mid: null,
+                    high: null
+                };
+            for (var slot in items) {
+                this.addItem(items[slot]);
+            }
+        };
+        Unit.prototype.setInitialValues = function () {
+            this.setBaseHealth();
+            this.setAttributes();
+            this.resetBattleStats();
+            this.maxMovePoints = this.template.maxMovePoints;
+            this.resetMovePoints();
+            this.setInitialAbilities();
+            this.setInitialPassiveSkills();
+            this.level = 1;
+            this.experienceForCurrentLevel = 0;
+            this.timesActedThisTurn = 0;
+        };
+        Unit.prototype.setBaseHealth = function () {
+            var min = 500 * this.template.maxHealth;
+            var max = 1000 * this.template.maxHealth;
+            this.maxHealth = Rance.randInt(min, max);
+            this.currentHealth = this.maxHealth;
+        };
+        Unit.prototype.setAttributes = function (baseSkill, variance) {
+            if (baseSkill === void 0) { baseSkill = 1; }
+            if (variance === void 0) { variance = 1; }
+            var template = this.template;
+            var attributes = {
+                attack: 1,
+                defence: 1,
+                intelligence: 1,
+                speed: 1,
+                maxActionPoints: Rance.randInt(3, 6)
+            };
+            for (var attribute in template.attributeLevels) {
+                var attributeLevel = template.attributeLevels[attribute];
+                var min = 4 * baseSkill * attributeLevel + 1;
+                var max = 8 * baseSkill * attributeLevel + 1 + variance;
+                attributes[attribute] = Rance.randInt(min, max);
+                if (attributes[attribute] > 9)
+                    attributes[attribute] = 9;
+            }
+            this.baseAttributes = Rance.extendObject(attributes);
+            this.attributes = attributes;
+        };
+        Unit.prototype.getBaseMoveDelay = function () {
+            return 30 - this.attributes.speed;
+        };
+        Unit.prototype.resetMovePoints = function () {
+            this.currentMovePoints = this.maxMovePoints;
+        };
+        Unit.prototype.resetBattleStats = function () {
+            this.battleStats =
+                {
+                    moveDelay: this.getBaseMoveDelay(),
+                    currentActionPoints: this.attributes.maxActionPoints,
+                    side: null,
+                    position: null,
+                    guardAmount: 0,
+                    guardCoverage: null,
+                    captureChance: 0.1,
+                    statusEffects: [],
+                    lastHealthBeforeReceivingDamage: this.currentHealth,
+                    queuedAction: null
+                };
+            this.displayFlags =
+                {
+                    isAnnihilated: false
+                };
+        };
+        Unit.prototype.setBattlePosition = function (battle, side, position) {
+            this.battleStats.side = side;
+            this.battleStats.position = position;
+        };
+        Unit.prototype.addStrength = function (amount) {
+            this.currentHealth += Math.round(amount);
+            if (this.currentHealth > this.maxHealth) {
+                this.currentHealth = this.maxHealth;
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.removeStrength = function (amount) {
+            this.currentHealth -= Math.round(amount);
+            this.currentHealth = Rance.clamp(this.currentHealth, 0, this.maxHealth);
+            if (amount > 0) {
+                this.removeGuard(40);
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.removeActionPoints = function (amount) {
+            this.battleStats.currentActionPoints -= amount;
+            if (this.battleStats.currentActionPoints < 0) {
+                this.battleStats.currentActionPoints = 0;
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.addMoveDelay = function (amount) {
+            this.battleStats.moveDelay += amount;
+        };
+        Unit.prototype.updateStatusEffects = function () {
+            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
+                this.battleStats.statusEffects[i].processTurnEnd();
+                if (this.battleStats.statusEffects[i].duration === 0) {
+                    this.removeStatusEffect(this.battleStats.statusEffects[i]);
+                }
+            }
+        };
+        Unit.prototype.setQueuedAction = function (ability, target) {
+            this.battleStats.queuedAction =
+                {
+                    ability: ability,
+                    targetId: target.id,
+                    turnsPrepared: 0,
+                    timesInterrupted: 0
+                };
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.interruptQueuedAction = function (interruptStrength) {
+            var action = this.battleStats.queuedAction;
+            if (!action)
+                return;
+            action.timesInterrupted += interruptStrength;
+            if (action.timesInterrupted >= action.ability.preparation.interruptsNeeded) {
+                this.clearQueuedAction();
+            }
+        };
+        Unit.prototype.updateQueuedAction = function () {
+            var action = this.battleStats.queuedAction;
+            if (!action)
+                return;
+            action.turnsPrepared++;
+        };
+        Unit.prototype.isReadyToUseQueuedAction = function () {
+            var action = this.battleStats.queuedAction;
+            return (action && action.turnsPrepared >= action.ability.preparation.turnsToPrep);
+        };
+        Unit.prototype.clearQueuedAction = function () {
+            this.battleStats.queuedAction = null;
+            this.uiDisplayIsDirty = true;
+        };
+        // redundant
+        Unit.prototype.isTargetable = function () {
+            return this.currentHealth > 0;
+        };
+        Unit.prototype.isActiveInBattle = function () {
+            return this.currentHealth > 0;
+        };
+        Unit.prototype.addItem = function (item) {
+            var itemSlot = item.template.slot;
+            if (this.items[itemSlot])
+                return false;
+            if (item.unit) {
+                item.unit.removeItem(item);
+            }
+            this.items[itemSlot] = item;
+            item.unit = this;
+            if (item.template.attributes) {
+                this.attributesAreDirty = true;
+            }
+            if (item.template.passiveSkill) {
+                this.passiveSkillsByPhaseAreDirty = true;
+            }
+        };
+        Unit.prototype.removeItem = function (item) {
+            var itemSlot = item.template.slot;
+            if (this.items[itemSlot] === item) {
+                this.items[itemSlot] = null;
+                item.unit = null;
+                if (item.template.attributes) {
+                    this.attributesAreDirty = true;
+                }
+                if (item.template.passiveSkill) {
+                    this.passiveSkillsByPhaseAreDirty = true;
+                }
+                return true;
+            }
+            return false;
+        };
+        Unit.prototype.destroyAllItems = function () {
+            for (var slot in this.items) {
+                var item = this.items[slot];
+                if (item) {
+                    this.fleet.player.removeItem(item);
+                }
+            }
+        };
+        Unit.prototype.getAttributesWithItems = function () {
+            var attributes = Rance.extendObject(this.baseAttributes);
+            for (var itemSlot in this.items) {
+                if (this.items[itemSlot]) {
+                    var item = this.items[itemSlot];
+                    for (var attribute in item.template.attributes) {
+                        attributes[attribute] = Rance.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
+                    }
+                }
+            }
+            return attributes;
+        };
+        Unit.prototype.addStatusEffect = function (statusEffect) {
+            if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1) {
+                throw new Error("Tried to add duplicate status effect to unit " + this.name);
+            }
+            else if (statusEffect.duration === 0) {
+                console.warn("Tried to add status effect", statusEffect, "with 0 duration");
+                return;
+            }
+            this.battleStats.statusEffects.push(statusEffect);
+            if (statusEffect.template.attributes) {
+                this.attributesAreDirty = true;
+            }
+            if (statusEffect.template.passiveSkills) {
+                this.passiveSkillsByPhaseAreDirty = true;
+            }
+        };
+        Unit.prototype.removeStatusEffect = function (statusEffect) {
+            var index = this.battleStats.statusEffects.indexOf(statusEffect);
+            if (index === -1) {
+                throw new Error("Tried to remove status effect not active on unit " + this.name);
+            }
+            this.battleStats.statusEffects.splice(index, 1);
+            if (statusEffect.template.attributes) {
+                this.attributesAreDirty = true;
+            }
+            if (statusEffect.template.passiveSkills) {
+                this.passiveSkillsByPhaseAreDirty = true;
+            }
+        };
+        /*
+        sort by attribute, positive/negative, additive vs multiplicative
+        apply additive, multiplicative
+         */
+        Unit.prototype.getTotalStatusEffectAttributeAdjustments = function () {
+            if (!this.battleStats || !this.battleStats.statusEffects) {
+                return null;
+            }
+            var adjustments = {};
+            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
+                var statusEffect = this.battleStats.statusEffects[i];
+                if (!statusEffect.template.attributes)
+                    continue;
+                for (var attribute in statusEffect.template.attributes) {
+                    adjustments[attribute] = {};
+                    for (var type in statusEffect.template.attributes[attribute]) {
+                        if (!adjustments[attribute][type]) {
+                            adjustments[attribute][type] = 0;
+                        }
+                        adjustments[attribute][type] += statusEffect.template.attributes[attribute][type];
+                    }
+                }
+            }
+            return adjustments;
+        };
+        Unit.prototype.getAttributesWithEffects = function () {
+            var withItems = this.getAttributesWithItems();
+            var adjustments = this.getTotalStatusEffectAttributeAdjustments();
+            for (var attribute in adjustments) {
+                if (adjustments[attribute].flat) {
+                    withItems[attribute] += adjustments[attribute].flat;
+                }
+                if (adjustments[attribute].multiplier) {
+                    withItems[attribute] *= 1 + adjustments[attribute].multiplier;
+                }
+                withItems[attribute] = Rance.clamp(withItems[attribute], -5, 20);
+            }
+            return withItems;
+        };
+        Unit.prototype.updateCachedAttributes = function () {
+            this.cachedAttributes = this.getAttributesWithEffects();
+        };
+        Unit.prototype.removeItemAtSlot = function (slot) {
+            if (this.items[slot]) {
+                this.removeItem(this.items[slot]);
+                return true;
+            }
+            return false;
+        };
+        Unit.prototype.setInitialAbilities = function () {
+            this.abilities = Rance.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
+        };
+        Unit.prototype.setInitialPassiveSkills = function () {
+            if (this.template.possiblePassiveSkills) {
+                this.passiveSkills = Rance.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
+            }
+        };
+        Unit.prototype.getItemAbilities = function () {
+            var itemAbilities = [];
+            for (var slot in this.items) {
+                if (!this.items[slot] || !this.items[slot].template.ability)
+                    continue;
+                itemAbilities.push(this.items[slot].template.ability);
+            }
+            return itemAbilities;
+        };
+        Unit.prototype.getAllAbilities = function () {
+            return this.abilities.concat(this.getItemAbilities());
+        };
+        Unit.prototype.getItemPassiveSkills = function () {
+            var itemPassiveSkills = [];
+            for (var slot in this.items) {
+                if (!this.items[slot] || !this.items[slot].template.passiveSkill)
+                    continue;
+                itemPassiveSkills.push(this.items[slot].template.passiveSkill);
+            }
+            return itemPassiveSkills;
+        };
+        Unit.prototype.getStatusEffectPassiveSkills = function () {
+            var statusEffectPassiveSkills = [];
+            if (!this.battleStats || !this.battleStats.statusEffects) {
+                return statusEffectPassiveSkills;
+            }
+            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
+                var templateSkills = this.battleStats.statusEffects[i].template.passiveSkills;
+                if (templateSkills) {
+                    statusEffectPassiveSkills = statusEffectPassiveSkills.concat(templateSkills);
+                }
+            }
+            return statusEffectPassiveSkills;
+        };
+        Unit.prototype.getAllPassiveSkills = function () {
+            var allSkills = [];
+            allSkills = allSkills.concat(this.passiveSkills);
+            allSkills = allSkills.concat(this.getItemPassiveSkills());
+            allSkills = allSkills.concat(this.getStatusEffectPassiveSkills());
+            return allSkills;
+        };
+        Unit.prototype.updatePassiveSkillsByPhase = function () {
+            var updatedSkills = {};
+            var allSkills = this.getAllPassiveSkills();
+            for (var i = 0; i < allSkills.length; i++) {
+                var skill = allSkills[i];
+                ["atBattleStart", "beforeAbilityUse", "afterAbilityUse", "atTurnStart", "inBattlePrep"].forEach(function (phase) {
+                    if (skill[phase]) {
+                        if (!updatedSkills[phase]) {
+                            updatedSkills[phase] = [];
+                        }
+                        if (updatedSkills[phase].indexOf(skill) === -1) {
+                            updatedSkills[phase].push(skill);
+                        }
+                    }
+                });
+            }
+            this.passiveSkillsByPhase = updatedSkills;
+            this.passiveSkillsByPhaseAreDirty = false;
+        };
+        Unit.prototype.getPassiveSkillsByPhase = function () {
+            if (this.passiveSkillsByPhaseAreDirty) {
+                this.updatePassiveSkillsByPhase();
+            }
+            return this.passiveSkillsByPhase;
+        };
+        Unit.prototype.receiveDamage = function (amount, damageType) {
+            var damageReduction = this.getReducedDamageFactor(damageType);
+            var adjustedDamage = amount * damageReduction;
+            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+            this.removeStrength(adjustedDamage);
+        };
+        Unit.prototype.getAdjustedTroopSize = function () {
+            // used so unit will always counter with at least 1/3 strength it had before being attacked
+            var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
+            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+            var currentHealth = this.isSquadron ?
+                balancedHealth :
+                Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
+            if (currentHealth <= 500) {
+                return currentHealth;
+            }
+            else if (currentHealth <= 2000) {
+                return currentHealth / 2 + 250;
+            }
+            else {
+                return currentHealth / 4 + 750;
+            }
+        };
+        Unit.prototype.getAttackDamageIncrease = function (damageType) {
+            var attackStat, attackFactor;
+            switch (damageType) {
+                case Rance.DamageType.physical:
+                    {
+                        attackStat = this.attributes.attack;
+                        attackFactor = 0.1;
+                        break;
+                    }
+                case Rance.DamageType.magical:
+                    {
+                        attackStat = this.attributes.intelligence;
+                        attackFactor = 0.1;
+                        break;
+                    }
+            }
+            var troopSize = this.getAdjustedTroopSize() / 4;
+            return (1 + attackStat * attackFactor) * troopSize;
+        };
+        Unit.prototype.getReducedDamageFactor = function (damageType) {
+            var defensiveStat, defenceFactor;
+            var finalDamageMultiplier = 1;
+            switch (damageType) {
+                case Rance.DamageType.physical:
+                    {
+                        defensiveStat = this.attributes.defence;
+                        defenceFactor = 0.045;
+                        var guardAmount = Math.min(this.battleStats.guardAmount, 100);
+                        finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
+                        break;
+                    }
+                case Rance.DamageType.magical:
+                    {
+                        defensiveStat = this.attributes.intelligence;
+                        defenceFactor = 0.045;
+                        break;
+                    }
+            }
+            var damageReduction = defensiveStat * defenceFactor;
+            var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
+            return finalDamageFactor;
+        };
+        Unit.prototype.addToFleet = function (fleet) {
+            this.fleet = fleet;
+        };
+        Unit.prototype.removeFromFleet = function () {
+            this.fleet = null;
+        };
+        Unit.prototype.removeFromPlayer = function () {
+            var player = this.fleet.player;
+            this.destroyAllItems();
+            player.removeUnit(this);
+            this.fleet.removeShip(this);
+            if (this.front) {
+                this.front.removeUnit(this);
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.transferToPlayer = function (newPlayer) {
+            var oldPlayer = this.fleet.player;
+            var location = this.fleet.location;
+            this.removeFromPlayer();
+            newPlayer.addUnit(this);
+            var newFleet = new Rance.Fleet(newPlayer, [this], location);
+        };
+        Unit.prototype.removeGuard = function (amount) {
+            this.battleStats.guardAmount -= amount;
+            if (this.battleStats.guardAmount < 0)
+                this.removeAllGuard();
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.addGuard = function (amount, coverage) {
+            this.battleStats.guardAmount += amount;
+            this.battleStats.guardCoverage = coverage;
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.removeAllGuard = function () {
+            this.battleStats.guardAmount = 0;
+            this.battleStats.guardCoverage = null;
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.getCounterAttackStrength = function () {
+            return 1; // TODO
+        };
+        Unit.prototype.canActThisTurn = function () {
+            return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
+        };
+        Unit.prototype.isStealthy = function () {
+            // TODO
+            return this.template.isStealthy;
+        };
+        Unit.prototype.getVisionRange = function () {
+            // TODO
+            return this.template.visionRange;
+        };
+        Unit.prototype.getDetectionRange = function () {
+            // TODO
+            return this.template.detectionRange;
+        };
+        Unit.prototype.heal = function () {
+            var location = this.fleet.location;
+            var baseHealFactor = 0.05;
+            var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
+            var healAmount = this.maxHealth * healingFactor;
+            this.addStrength(healAmount);
+        };
+        Unit.prototype.getStrengthEvaluation = function () {
+            // TODO
+            return this.currentHealth;
+        };
+        Unit.prototype.getTotalCost = function () {
+            var totalCost = 0;
+            totalCost += this.template.buildCost;
+            for (var slot in this.items) {
+                if (this.items[slot]) {
+                    totalCost += this.items[slot].template.buildCost;
+                }
+            }
+            return totalCost;
+        };
+        Unit.prototype.getTurnsToReachStar = function (star) {
+            var currentLocation = this.fleet.location;
+            var distance = currentLocation.getDistanceToStar(star);
+            if (distance <= this.currentMovePoints) {
+                if (this.currentMovePoints === 0) {
+                    return 0;
+                }
+                else {
+                    return distance / this.currentMovePoints;
+                }
+            }
+            distance -= this.currentMovePoints; // current turn
+            return distance / this.maxMovePoints; // future turns
+        };
+        Unit.prototype.drawBattleScene = function (props) {
+            var propsString = JSON.stringify(props);
+            if (propsString !== this.cachedBattleScenePropsString ||
+                this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage) {
+                this.cachedBattleScene = this.template.unitDrawingFN(this, props);
+                this.cachedBattleScenePropsString = propsString;
+            }
+            return this.cachedBattleScene;
+        };
+        Unit.prototype.getExperienceToNextLevel = function () {
+            return (4 + this.level) * 10;
+        };
+        Unit.prototype.addExperience = function (amount) {
+            this.experienceForCurrentLevel += Math.round(amount);
+        };
+        Unit.prototype.canLevelUp = function () {
+            return this.experienceForCurrentLevel >= this.getExperienceToNextLevel();
+        };
+        Unit.prototype.handleLevelUp = function () {
+            this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
+            this.level++;
+        };
+        Unit.prototype.hasAbility = function (ability, allAbilities) {
+            for (var i = 0; i < allAbilities.length; i++) {
+                if (allAbilities[i].type === ability.type) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        Unit.prototype.getLearnableAbilities = function (allAbilities) {
+            var abilities = [];
+            if (!this.template.learnableAbilities)
+                return abilities;
+            for (var i = 0; i < this.template.learnableAbilities.length; i++) {
+                var learnableItem = this.template.learnableAbilities[i];
+                if (Array.isArray(learnableItem)) {
+                    var hasAbilityFromGroup = false;
+                    for (var j = 0; j < learnableItem.length; j++) {
+                        if (this.hasAbility(learnableItem[j], allAbilities)) {
+                            hasAbilityFromGroup = true;
+                            break;
+                        }
+                    }
+                    if (!hasAbilityFromGroup) {
+                        abilities = abilities.concat(learnableItem);
+                    }
+                }
+                else if (!this.hasAbility(learnableItem, allAbilities)) {
+                    abilities.push(learnableItem);
+                }
+            }
+            return abilities;
+        };
+        Unit.prototype.canUpgradeIntoAbility = function (ability, allAbilities) {
+            if (ability.onlyAllowExplicitUpgrade) {
+                if (!this.template.specialAbilityUpgrades || this.template.specialAbilityUpgrades.indexOf(ability) === -1) {
+                    return false;
+                }
+            }
+            if (this.hasAbility(ability, allAbilities)) {
+                return false;
+            }
+            return true;
+        };
+        Unit.prototype.getAbilityUpgradeData = function () {
+            var upgradeData = {};
+            var allAbilities = this.getAllAbilities();
+            allAbilities = allAbilities.concat(this.getAllPassiveSkills());
+            var templates = app.moduleData.Templates;
+            for (var i = 0; i < allAbilities.length; i++) {
+                var parentAbility = allAbilities[i];
+                if (!parentAbility.canUpgradeInto)
+                    continue;
+                for (var j = 0; j < parentAbility.canUpgradeInto.length; j++) {
+                    var childAbilityType = parentAbility.canUpgradeInto[j];
+                    var childAbility = templates.Abilities[childAbilityType] || templates.PassiveSkills[childAbilityType];
+                    if (!childAbility)
+                        throw new Error("Invalid ability upgrade " + childAbilityType);
+                    if (this.canUpgradeIntoAbility(childAbility, allAbilities)) {
+                        if (!upgradeData[parentAbility.type]) {
+                            upgradeData[parentAbility.type] =
+                                {
+                                    base: parentAbility,
+                                    possibleUpgrades: []
+                                };
+                        }
+                        upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
+                    }
+                }
+            }
+            var learnable = this.getLearnableAbilities(allAbilities);
+            if (learnable.length > 0) {
+                upgradeData["learnable"] =
+                    {
+                        base: null,
+                        possibleUpgrades: learnable
+                    };
+            }
+            return upgradeData;
+        };
+        Unit.prototype.upgradeAbility = function (source, newAbility) {
+            var newAbilityIsPassiveSkill = !newAbility.mainEffect;
+            if (source) {
+                var sourceIsPassiveSkill = !source.mainEffect;
+                if (sourceIsPassiveSkill) {
+                    this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
+                }
+                else {
+                    var castedSource = source;
+                    this.abilities.splice(this.abilities.indexOf(castedSource), 1);
+                }
+            }
+            if (newAbilityIsPassiveSkill) {
+                this.passiveSkills.push(newAbility);
+            }
+            else {
+                var castedNewAbility = newAbility;
+                this.abilities.push(castedNewAbility);
+            }
+        };
+        Unit.prototype.serialize = function (includeItems) {
+            if (includeItems === void 0) { includeItems = true; }
+            var data = {};
+            data.templateType = this.template.type;
+            data.id = this.id;
+            data.name = this.name;
+            data.maxHealth = this.maxHealth;
+            data.currentHealth = this.currentHealth;
+            data.currentMovePoints = this.currentMovePoints;
+            data.maxMovePoints = this.maxMovePoints;
+            data.timesActedThisTurn = this.timesActedThisTurn;
+            data.baseAttributes = Rance.extendObject(this.baseAttributes);
+            data.abilityTemplateTypes = this.abilities.map(function (ability) {
+                return ability.type;
+            });
+            data.passiveSkillTemplateTypes = this.passiveSkills.map(function (passiveSkill) {
+                return passiveSkill.type;
+            });
+            data.experienceForCurrentLevel = this.experienceForCurrentLevel;
+            data.level = this.level;
+            data.battleStats = {};
+            data.battleStats.moveDelay = this.battleStats.moveDelay;
+            data.battleStats.side = this.battleStats.side;
+            data.battleStats.position = this.battleStats.position;
+            data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
+            data.battleStats.guardAmount = this.battleStats.guardAmount;
+            data.battleStats.guardCoverage = this.battleStats.guardCoverage;
+            data.battleStats.captureChance = this.battleStats.captureChance;
+            data.battleStats.statusEffects = this.battleStats.statusEffects.map(function (statusEffect) {
+                return statusEffect.clone();
+            });
+            data.battleStats.queuedAction = this.battleStats.queuedAction;
+            if (this.fleet) {
+                data.fleetId = this.fleet.id;
+            }
+            data.items = {};
+            if (includeItems) {
+                for (var slot in this.items) {
+                    if (this.items[slot])
+                        data.items[slot] = this.items[slot].serialize();
                 }
             }
             return data;
         };
-        return Star;
+        Unit.prototype.makeVirtualClone = function () {
+            var data = this.serialize();
+            var clone = new Unit(this.template, this.id, data);
+            return clone;
+        };
+        return Unit;
     })();
-    Rance.Star = Star;
+    Rance.Unit = Unit;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -9260,28 +9157,6 @@ var Rance;
         return Flag;
     })();
     Rance.Flag = Flag;
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/iitemtemplate.d.ts" />
-/// <reference path="unit.ts" />
-var Rance;
-(function (Rance) {
-    var Item = (function () {
-        function Item(template, id) {
-            this.id = isFinite(id) ? id : Rance.idGenerators.item++;
-            this.template = template;
-        }
-        Item.prototype.serialize = function () {
-            var data = {};
-            data.id = this.id;
-            data.templateType = this.template.type;
-            if (this.unit) {
-                data.unitId = this.unit.id;
-            }
-            return data;
-        };
-        return Item;
-    })();
-    Rance.Item = Item;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="battle.ts" />
@@ -13002,1650 +12877,1943 @@ var Rance;
     })();
     Rance.Player = Player;
 })(Rance || (Rance = {}));
-/// <reference path="player.ts"/>
-/// <reference path="unit.ts"/>
-/// <reference path="star.ts"/>
-/// <reference path="building.ts"/>
-/// <reference path="battledata.ts"/>
-/// <reference path="unit.ts"/>
-/// <reference path="eventmanager.ts"/>
+/// <reference path="../modules/default/templates/resources.ts" />
+/// <reference path="templateinterfaces/iresourcetemplate.d.ts" />
+/// <reference path="point.ts" />
+/// <reference path="player.ts" />
+/// <reference path="fleet.ts" />
+/// <reference path="building.ts" />
 var Rance;
 (function (Rance) {
-    var Battle = (function () {
-        function Battle(props) {
-            this.unitsById = {};
-            this.unitsBySide = {
-                side1: [],
-                side2: []
+    var Star = (function () {
+        function Star(x, y, id) {
+            // separated so we can iterate through star[].linksTo to only get each connection once
+            // use star.getAllLinks() for individual star connections
+            this.linksTo = [];
+            this.linksFrom = [];
+            // can be used during map gen to attach temporary variables for easier debugging
+            // nulled and deleted after map gen is done
+            this.mapGenData = {};
+            this.fleets = {};
+            this.buildings = {};
+            this.buildingsEffectIsDirty = true;
+            this.indexedNeighborsInRange = {};
+            this.indexedDistanceToStar = {};
+            // TODO rework items building
+            this.buildableItems = {
+                1: [],
+                2: [],
+                3: []
             };
-            this.turnOrder = [];
-            this.evaluation = {};
-            this.isSimulated = false; // true when battle is between two
-            // ai players
-            this.isVirtual = false; // true when a clone made by battle ai
-            this.ended = false;
-            this.afterFinishCallbacks = [];
-            this.side1 = props.side1;
-            this.side1Player = props.side1Player;
-            this.side2 = props.side2;
-            this.side2Player = props.side2Player;
-            this.battleData = props.battleData;
+            this.buildableUnitTypes = [];
+            this.id = isFinite(id) ? id : Rance.idGenerators.star++;
+            this.name = "Star " + this.id;
+            this.x = x;
+            this.y = y;
         }
-        Battle.prototype.init = function () {
-            var self = this;
-            ["side1", "side2"].forEach(function (sideId) {
-                var side = self[sideId];
-                for (var i = 0; i < side.length; i++) {
-                    for (var j = 0; j < side[i].length; j++) {
-                        if (side[i][j]) {
-                            self.unitsById[side[i][j].id] = side[i][j];
-                            self.unitsBySide[sideId].push(side[i][j]);
-                            var pos = sideId === "side1" ? [i, j] : [i + 2, j];
-                            self.initUnit(side[i][j], sideId, pos);
-                        }
-                    }
+        // TODO REMOVE
+        Star.prototype.severLinksToNonAdjacent = function () {
+            var allLinks = this.getAllLinks();
+            var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
+            for (var i = 0; i < allLinks.length; i++) {
+                var star = allLinks[i];
+                if (neighborVoronoiIds.indexOf(star.voronoiId) === -1) {
+                    this.removeLink(star);
                 }
-            });
-            this.currentTurn = 0;
-            this.maxTurns = 24;
-            this.turnsLeft = this.maxTurns;
-            this.updateTurnOrder();
-            this.setActiveUnit();
-            this.startHealth =
-                {
-                    side1: this.getTotalHealthForSide("side1").current,
-                    side2: this.getTotalHealthForSide("side2").current
-                };
-            if (this.checkBattleEnd()) {
-                this.endBattle();
-            }
-            else {
-                this.swapColumnsIfNeeded();
-            }
-            this.triggerBattleStartAbilities();
-        };
-        Battle.prototype.forEachUnit = function (operator) {
-            for (var id in this.unitsById) {
-                operator.call(this, this.unitsById[id]);
             }
         };
-        Battle.prototype.initUnit = function (unit, side, position) {
-            unit.resetBattleStats();
-            unit.setBattlePosition(this, side, position);
-            this.addUnitToTurnOrder(unit);
-            unit.timesActedThisTurn++;
+        // END TO REMOVE
+        // BUILDINGS
+        Star.prototype.addBuilding = function (building) {
+            if (!this.buildings[building.template.category]) {
+                this.buildings[building.template.category] = [];
+            }
+            var buildings = this.buildings[building.template.category];
+            if (buildings.indexOf(building) >= 0) {
+                throw new Error("Already has building");
+            }
+            buildings.push(building);
+            this.buildingsEffectIsDirty = true;
+            if (building.template.category === "defence") {
+                this.sortDefenceBuildings();
+                Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+            }
+            if (building.template.category === "vision") {
+                this.owner.updateVisibleStars();
+            }
         };
-        Battle.prototype.triggerBattleStartAbilities = function () {
-            this.forEachUnit(function (unit) {
-                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-                if (passiveSkillsByPhase["atBattleStart"]) {
-                    var skills = passiveSkillsByPhase["atBattleStart"];
-                    for (var i = 0; i < skills.length; i++) {
-                        for (var j = 0; j < skills[i].atBattleStart.length; j++) {
-                            var effect = skills[i].atBattleStart[j];
-                            effect.template.effect(unit, unit, effect.data);
-                        }
-                    }
+        Star.prototype.removeBuilding = function (building) {
+            if (!this.buildings[building.template.category] ||
+                this.buildings[building.template.category].indexOf(building) < 0) {
+                throw new Error("Location doesn't have building");
+            }
+            var buildings = this.buildings[building.template.category];
+            this.buildings[building.template.category].splice(buildings.indexOf(building), 1);
+            this.buildingsEffectIsDirty = true;
+        };
+        Star.prototype.sortDefenceBuildings = function () {
+            this.buildings["defence"].sort(function (a, b) {
+                if (a.template.maxPerType === 1) {
+                    return -1;
                 }
+                else if (b.template.maxPerType === 1) {
+                    return 1;
+                }
+                if (a.upgradeLevel !== b.upgradeLevel) {
+                    return b.upgradeLevel - a.upgradeLevel;
+                }
+                return a.id - b.id;
             });
         };
-        Battle.prototype.removeUnitFromTurnOrder = function (unit) {
-            var unitIndex = this.turnOrder.indexOf(unit);
-            if (unitIndex < 0)
-                return false; //not in list
-            this.turnOrder.splice(unitIndex, 1);
-        };
-        Battle.prototype.addUnitToTurnOrder = function (unit) {
-            var unitIndex = this.turnOrder.indexOf(unit);
-            if (unitIndex >= 0)
-                return false; //already in list
-            this.turnOrder.push(unit);
-        };
-        Battle.prototype.updateTurnOrder = function () {
-            //Sorting function is in utility.ts for reusing in turn order UI.
-            //Maybe should make separate TurnOrder class?
-            this.turnOrder.sort(Rance.turnOrderSortFunction);
-            function turnOrderFilterFunction(unit) {
-                if (unit.battleStats.currentActionPoints <= 0) {
-                    return false;
-                }
-                if (unit.currentHealth <= 0) {
-                    return false;
-                }
-                return true;
-            }
-            this.turnOrder = this.turnOrder.filter(turnOrderFilterFunction);
-        };
-        Battle.prototype.setActiveUnit = function () {
-            this.activeUnit = this.turnOrder[0];
-        };
-        Battle.prototype.endTurn = function () {
-            this.currentTurn++;
-            this.turnsLeft--;
-            this.updateTurnOrder();
-            this.setActiveUnit();
-            if (!this.isVirtual) {
-                this.forEachUnit(function (unit) {
-                    if (unit.currentHealth <= 0) {
-                        unit.displayFlags.isAnnihilated = true;
-                        unit.uiDisplayIsDirty = true;
-                    }
-                });
-            }
-            var shouldEnd = this.checkBattleEnd();
-            if (shouldEnd) {
-                this.endBattle();
-            }
-            else {
-                this.swapColumnsIfNeeded();
-            }
-        };
-        Battle.prototype.getPlayerForSide = function (side) {
-            if (side === "side1")
-                return this.side1Player;
-            else if (side === "side2")
-                return this.side2Player;
-            else
-                throw new Error("invalid side");
-        };
-        Battle.prototype.getSideForPlayer = function (player) {
-            if (this.side1Player === player)
-                return "side1";
-            else if (this.side2Player === player)
-                return "side2";
-            else
-                throw new Error("invalid player");
-        };
-        Battle.prototype.getActivePlayer = function () {
-            if (!this.activeUnit)
+        Star.prototype.getSecondaryController = function () {
+            if (!this.buildings["defence"])
                 return null;
-            var side = this.activeUnit.battleStats.side;
-            return this.getPlayerForSide(side);
-        };
-        Battle.prototype.getColumnByPosition = function (position) {
-            var side = position <= 1 ? "side1" : "side2";
-            var relativePosition = position % 2;
-            return this[side][relativePosition];
-        };
-        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
-            if (maxCapturedUnits === void 0) { maxCapturedUnits = 1; }
-            if (!victor || victor.isIndependent)
-                return [];
-            var winningSide = this.getSideForPlayer(victor);
-            var losingSide = Rance.reverseSide(winningSide);
-            var losingUnits = this.unitsBySide[losingSide].slice(0);
-            losingUnits.sort(function (a, b) {
-                return b.battleStats.captureChance - a.battleStats.captureChance;
-            });
-            var capturedUnits = [];
-            for (var i = 0; i < losingUnits.length; i++) {
-                if (capturedUnits.length >= maxCapturedUnits)
-                    break;
-                var unit = losingUnits[i];
-                if (unit.currentHealth <= 0 &&
-                    Math.random() <= unit.battleStats.captureChance) {
-                    capturedUnits.push(unit);
+            var defenceBuildings = this.buildings["defence"];
+            for (var i = 0; i < defenceBuildings.length; i++) {
+                if (defenceBuildings[i].controller !== this.owner) {
+                    return defenceBuildings[i].controller;
                 }
             }
-            return capturedUnits;
-        };
-        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
-            var INDEPENDENT_DEATH_CHANCE = 1; // base chance for independents
-            var PLAYER_DEATH_CHANCE = 0.65; // base chance for players
-            var LOSER_DEATH_CHANCE = 0.35; // extra chance for losing side
-            if (victor) {
-                var winningSide = this.getSideForPlayer(victor);
-                var losingSide = Rance.reverseSide(winningSide);
-                var losingPlayer = this.getPlayerForSide(losingSide);
-            }
-            var deadUnits = [];
-            this.forEachUnit(function (unit) {
-                if (unit.currentHealth <= 0) {
-                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
-                    if (!wasCaptured) {
-                        var isIndependent = unit.fleet.player.isIndependent;
-                        var deathChance = isIndependent ? INDEPENDENT_DEATH_CHANCE : PLAYER_DEATH_CHANCE;
-                        if (unit.fleet.player === losingPlayer) {
-                            deathChance += LOSER_DEATH_CHANCE;
-                        }
-                        if (Math.random() < deathChance) {
-                            deadUnits.push(unit);
-                        }
-                    }
-                }
-            });
-            return deadUnits;
-        };
-        Battle.prototype.endBattle = function () {
-            this.ended = true;
-            if (this.isVirtual)
-                return;
-            this.activeUnit = null;
-            var victor = this.getVictor();
-            this.capturedUnits = this.getCapturedUnits(victor);
-            this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
-            /*
-            var _ : any = window;
-      
-            var consoleRows = [];
-            this.forEachUnit(function(unit)
-            {
-              consoleRows.push(
-              {
-                id: unit.id,
-                health: unit.currentHealth,
-                destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
-                captureChance: unit.battleStats.captureChance,
-                captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
-              });
-            }.bind(this));
-      
-            if (_.console.table)
-            {
-              _.console.table(consoleRows);
-            }
-            */
-            Rance.eventManager.dispatchEvent("battleEnd", null);
-        };
-        Battle.prototype.finishBattle = function (forcedVictor) {
-            var victor = forcedVictor || this.getVictor();
-            for (var i = 0; i < this.deadUnits.length; i++) {
-                this.deadUnits[i].removeFromPlayer();
-            }
-            var experiencePerSide = this.getGainedExperiencePerSide();
-            this.forEachUnit(function (unit) {
-                unit.addExperience(experiencePerSide[unit.battleStats.side]);
-                unit.resetBattleStats();
-                if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
-                    unit.currentHealth = Math.round(unit.maxHealth * 0.1);
-                }
-                this.side1Player.identifyUnit(unit);
-                this.side2Player.identifyUnit(unit);
-            });
-            if (victor) {
-                for (var i = 0; i < this.capturedUnits.length; i++) {
-                    this.capturedUnits[i].transferToPlayer(victor);
-                    this.capturedUnits[i].experienceForCurrentLevel = 0;
-                }
-            }
-            if (this.battleData.building) {
-                if (victor) {
-                    this.battleData.building.setController(victor);
-                }
-            }
-            if (this.isSimulated) {
-                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.battleData.location);
-            }
-            else {
-                Rance.eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
-                Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
-            }
-            if (app.humanPlayer.starIsVisible(this.battleData.location)) {
-                Rance.eventManager.dispatchEvent("makeBattleFinishNotification", {
-                    location: this.battleData.location,
-                    attacker: this.battleData.attacker.player,
-                    defender: this.battleData.defender.player,
-                    victor: victor
-                });
-            }
-            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
-                this.afterFinishCallbacks[i]();
-            }
-        };
-        Battle.prototype.getVictor = function () {
-            var evaluation = this.getEvaluation();
-            if (evaluation > 0)
-                return this.side1Player;
-            else if (evaluation < 0)
-                return this.side2Player;
-            else
-                return null;
-        };
-        Battle.prototype.getTotalHealthForColumn = function (position) {
-            var column = this.getColumnByPosition(position);
-            var total = 0;
-            for (var i = 0; i < column.length; i++) {
-                if (column[i]) {
-                    total += column[i].currentHealth;
-                }
-            }
-            return total;
-        };
-        Battle.prototype.getTotalHealthForSide = function (side) {
-            var health = {
-                current: 0,
-                max: 0
-            };
-            var units = this.unitsBySide[side];
-            for (var i = 0; i < units.length; i++) {
-                var unit = units[i];
-                health.current += unit.currentHealth;
-                health.max += unit.maxHealth;
-            }
-            return health;
-        };
-        Battle.prototype.getEvaluation = function () {
-            var self = this;
-            var evaluation = 0;
-            ["side1", "side2"].forEach(function (side) {
-                // positive * sign === good, negative * sign === bad
-                var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
-                var currentHealth = self.getTotalHealthForSide(side).current;
-                if (currentHealth <= 0) {
-                    return -999 * sign;
-                }
-                // how much health remains from strating health 0.0-1.0
-                var currentHealthFactor = currentHealth / self.startHealth[side];
-                for (var i = 0; i < self.unitsBySide[side].length; i++) {
-                    if (self.unitsBySide[side][i].currentHealth <= 0) {
-                        evaluation -= 0.2 * sign;
-                    }
-                }
-                var defenderMultiplier = 1;
-                if (self.battleData.building) {
-                    var template = self.battleData.building.template;
-                    var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
-                    if (isDefender) {
-                        defenderMultiplier += template.defenderAdvantage;
-                    }
-                }
-                evaluation += currentHealthFactor * defenderMultiplier * sign;
-            });
-            evaluation = Rance.clamp(evaluation, -1, 1);
-            this.evaluation[this.currentTurn] = evaluation;
-            return this.evaluation[this.currentTurn];
-        };
-        Battle.prototype.swapColumnsForSide = function (side) {
-            this[side] = this[side].reverse();
-            for (var i = 0; i < this[side].length; i++) {
-                var column = this[side][i];
-                for (var j = 0; j < column.length; j++) {
-                    var pos = side === "side1" ? [i, j] : [i + 2, j];
-                    if (column[j]) {
-                        column[j].setBattlePosition(this, side, pos);
-                    }
-                }
-            }
-        };
-        Battle.prototype.swapColumnsIfNeeded = function () {
-            var side1Front = this.getTotalHealthForColumn(1);
-            if (side1Front <= 0) {
-                this.swapColumnsForSide("side1");
-            }
-            var side2Front = this.getTotalHealthForColumn(2);
-            if (side2Front <= 0) {
-                this.swapColumnsForSide("side2");
-            }
-        };
-        Battle.prototype.getGainedExperiencePerSide = function () {
-            var totalValuePerSide = {
-                side1: 0,
-                side2: 0
-            };
-            for (var side in this.unitsBySide) {
-                var totalValue = 0;
-                var units = this.unitsBySide[side];
-                for (var i = 0; i < units.length; i++) {
-                    totalValuePerSide[side] += units[i].level + 1;
-                }
-            }
-            return ({
-                side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
-                side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
-            });
-        };
-        Battle.prototype.checkBattleEnd = function () {
-            if (!this.activeUnit)
-                return true;
-            if (this.turnsLeft <= 0)
-                return true;
-            if (this.getTotalHealthForSide("side1").current <= 0 ||
-                this.getTotalHealthForSide("side2").current <= 0) {
-                return true;
-            }
-            return false;
-        };
-        Battle.prototype.makeVirtualClone = function () {
-            var battleData = this.battleData;
-            function cloneUnits(units) {
-                var clones = [];
-                for (var i = 0; i < units.length; i++) {
-                    var column = [];
-                    for (var j = 0; j < units[i].length; j++) {
-                        var unit = units[i][j];
-                        if (!unit) {
-                            column.push(unit);
-                        }
-                        else {
-                            column.push(unit.makeVirtualClone());
-                        }
-                    }
-                    clones.push(column);
-                }
-                return clones;
-            }
-            var side1 = cloneUnits(this.side1);
-            var side2 = cloneUnits(this.side2);
-            var side1Player = this.side1Player;
-            var side2Player = this.side2Player;
-            var clone = new Battle({
-                battleData: battleData,
-                side1: side1,
-                side2: side2,
-                side1Player: side1Player,
-                side2Player: side2Player
-            });
-            [side1, side2].forEach(function (side) {
-                for (var i = 0; i < side.length; i++) {
-                    for (var j = 0; j < side[i].length; j++) {
-                        if (!side[i][j])
-                            continue;
-                        clone.addUnitToTurnOrder(side[i][j]);
-                        clone.unitsById[side[i][j].id] = side[i][j];
-                        clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
-                    }
-                }
-            });
-            clone.isVirtual = true;
-            clone.currentTurn = this.currentTurn;
-            clone.maxTurns = this.maxTurns;
-            clone.turnsLeft = this.turnsLeft;
-            clone.startHealth = this.startHealth;
-            clone.updateTurnOrder();
-            clone.setActiveUnit();
-            if (clone.checkBattleEnd()) {
-                clone.endBattle();
-            }
-            else {
-                clone.swapColumnsIfNeeded();
-            }
-            return clone;
-        };
-        return Battle;
-    })();
-    Rance.Battle = Battle;
-})(Rance || (Rance = {}));
-/// <reference path="utility.ts"/>
-/// <reference path="unit.ts"/>
-var Rance;
-(function (Rance) {
-    Rance.targetSingle = function (units, target) {
-        return Rance.getFrom2dArray(units, [target]);
-    };
-    Rance.targetAll = function (units, target) {
-        return Rance.flatten2dArray(units);
-    };
-    Rance.targetRow = function (units, target) {
-        var y = target[1];
-        var targetLocations = [];
-        for (var i = 0; i < units.length; i++) {
-            targetLocations.push([i, y]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    Rance.targetColumn = function (units, target) {
-        var x = target[0];
-        var targetLocations = [];
-        for (var i = 0; i < units[x].length; i++) {
-            targetLocations.push([x, i]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    Rance.targetColumnNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    Rance.targetNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x - 1, y]);
-        targetLocations.push([x + 1, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
-/// <reference path="templateinterfaces/iabilitytemplateeffect.d.ts" />
-/// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
-/// <reference path="battle.ts"/>
-/// <reference path="unit.ts"/>
-/// <reference path="targeting.ts"/>
-var Rance;
-(function (Rance) {
-    function getAbilityUseData(battle, user, ability, target) {
-        if (ability.preparation) {
-            if (!user.battleStats.queuedAction) {
-                user.setQueuedAction(ability, target);
-                return getPreparationDummyData(user);
-            }
-            else {
-                user.updateQueuedAction();
-                if (!user.isReadyToUseQueuedAction()) {
-                    return getPreparationDummyData(user);
-                }
-                else {
-                    var action = user.battleStats.queuedAction;
-                    var target = battle.unitsById[action.targetId];
-                    var ability = action.ability;
-                    user.clearQueuedAction();
-                }
-            }
-        }
-        var data = {
-            user: user,
-            originalTarget: target,
-            actualTarget: getTargetOrGuard(battle, user, ability, target),
-            effectsToCall: [],
-            beforeUse: [],
-            afterUse: []
-        };
-        var passiveSkills = user.getPassiveSkillsByPhase();
-        var beforeUseEffects = [];
-        if (ability.beforeUse) {
-            beforeUseEffects = beforeUseEffects.concat(ability.beforeUse);
-        }
-        if (passiveSkills.beforeAbilityUse) {
-            for (var i = 0; i < passiveSkills.beforeAbilityUse.length; i++) {
-                beforeUseEffects = beforeUseEffects.concat(passiveSkills.beforeAbilityUse[i].beforeAbilityUse);
-            }
-        }
-        for (var i = 0; i < beforeUseEffects.length; i++) {
-            var hasSfx = Boolean(beforeUseEffects[i].sfx);
-            if (hasSfx) {
-                data.effectsToCall.push({
-                    effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data)],
-                    user: user,
-                    target: data.actualTarget,
-                    sfx: beforeUseEffects[i].sfx,
-                    trigger: beforeUseEffects[i].trigger
-                });
-            }
-            else {
-                data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data));
-            }
-        }
-        data.beforeUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
-        if (!ability.addsGuard) {
-            data.beforeUse.push(user.removeAllGuard.bind(user));
-        }
-        var effectsToCall = [ability.mainEffect];
-        if (ability.secondaryEffects) {
-            effectsToCall = effectsToCall.concat(ability.secondaryEffects);
-        }
-        for (var i = 0; i < effectsToCall.length; i++) {
-            var effect = effectsToCall[i];
-            var targetsInArea = getUnitsInEffectArea(battle, user, effect.template, data.actualTarget.battleStats.position);
-            for (var j = 0; j < targetsInArea.length; j++) {
-                var effectTarget = targetsInArea[j];
-                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
-                var attachedEffectsToAddAfter = [];
-                if (effect.attachedEffects) {
-                    for (var k = 0; k < effect.attachedEffects.length; k++) {
-                        var attachedEffect = effect.attachedEffects[k];
-                        var boundAttachedEffect = attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data);
-                        if (attachedEffect.sfx) {
-                            attachedEffectsToAddAfter.push({
-                                effects: [boundAttachedEffect],
-                                user: user,
-                                target: effectTarget,
-                                sfx: attachedEffect.sfx,
-                                trigger: attachedEffect.trigger
-                            });
-                        }
-                        else {
-                            boundEffects.push(boundAttachedEffect);
-                        }
-                    }
-                }
-                data.effectsToCall.push({
-                    effects: boundEffects,
-                    user: user,
-                    target: effectTarget,
-                    sfx: effect.sfx,
-                    trigger: effect.trigger
-                });
-                if (attachedEffectsToAddAfter.length > 0) {
-                    data.effectsToCall = data.effectsToCall.concat(attachedEffectsToAddAfter);
-                }
-            }
-        }
-        var afterUseEffects = [];
-        if (ability.afterUse) {
-            afterUseEffects = afterUseEffects.concat(ability.afterUse);
-        }
-        if (passiveSkills.afterAbilityUse) {
-            for (var i = 0; i < passiveSkills.afterAbilityUse.length; i++) {
-                afterUseEffects = afterUseEffects.concat(passiveSkills.afterAbilityUse[i].afterAbilityUse);
-            }
-        }
-        for (var i = 0; i < afterUseEffects.length; i++) {
-            var hasSfx = Boolean(afterUseEffects[i].sfx);
-            if (hasSfx) {
-                data.effectsToCall.push({
-                    effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data)],
-                    user: user,
-                    target: data.actualTarget,
-                    sfx: afterUseEffects[i].sfx,
-                    trigger: afterUseEffects[i].trigger
-                });
-            }
-            else {
-                data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data));
-            }
-        }
-        data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
-        return data;
-    }
-    Rance.getAbilityUseData = getAbilityUseData;
-    // used for ai simulation. otherwise UIComponents.Battle steps through ability use data
-    function useAbility(battle, user, ability, target) {
-        var abilityData = getAbilityUseData(battle, user, ability, target);
-        for (var i = 0; i < abilityData.beforeUse.length; i++) {
-            abilityData.beforeUse[i]();
-        }
-        for (var i = 0; i < abilityData.effectsToCall.length; i++) {
-            var effectData = abilityData.effectsToCall[i];
-            if (!effectData.trigger || effectData.trigger(effectData.user, effectData.target)) {
-                for (var j = 0; j < effectData.effects.length; j++) {
-                    effectData.effects[j]();
-                }
-            }
-        }
-        for (var i = 0; i < abilityData.afterUse.length; i++) {
-            abilityData.afterUse[i]();
-        }
-    }
-    Rance.useAbility = useAbility;
-    function getPreparationDummyData(user) {
-        var action = user.battleStats.queuedAction;
-        var dummyData = {
-            user: user,
-            originalTarget: user,
-            actualTarget: user,
-            effectsToCall: [],
-            beforeUse: [],
-            afterUse: []
-        };
-        dummyData.beforeUse.push(user.removeAllGuard.bind(user));
-        dummyData.effectsToCall.push({
-            effects: [],
-            user: user,
-            target: user,
-            sfx: {
-                duration: 100
-            },
-            trigger: null
-        });
-        dummyData.afterUse.push(user.addMoveDelay.bind(user, action.ability.preparation.prepDelay));
-        return dummyData;
-    }
-    Rance.getPreparationDummyData = getPreparationDummyData;
-    function validateTarget(battle, user, ability, target) {
-        var potentialTargets = getPotentialTargets(battle, user, ability);
-        return potentialTargets.indexOf(target) >= 0;
-    }
-    Rance.validateTarget = validateTarget;
-    function getTargetOrGuard(battle, user, ability, target) {
-        if (ability.bypassesGuard) {
-            return target;
-        }
-        var guarding = getGuarders(battle, user, ability, target);
-        guarding = guarding.sort(function (a, b) {
-            return a.battleStats.guardAmount - b.battleStats.guardAmount;
-        });
-        for (var i = 0; i < guarding.length; i++) {
-            var guardRoll = Math.random() * 100;
-            if (guardRoll <= guarding[i].battleStats.guardAmount) {
-                return guarding[i];
-            }
-        }
-        return target;
-    }
-    Rance.getTargetOrGuard = getTargetOrGuard;
-    function getGuarders(battle, user, ability, target) {
-        var enemySide = Rance.reverseSide(user.battleStats.side);
-        if (target.battleStats.side !== enemySide)
-            return [];
-        var allEnemies = battle.unitsBySide[enemySide];
-        var guarders = allEnemies.filter(function (unit) {
-            if (!unit.isTargetable)
-                return false;
-            if (unit.battleStats.guardCoverage === "all") {
-                return unit.battleStats.guardAmount > 0;
-            }
-            else if (unit.battleStats.guardCoverage === "column") {
-                // same column
-                if (unit.battleStats.position[0] === target.battleStats.position[0]) {
-                    return unit.battleStats.guardAmount > 0;
-                }
-            }
-        });
-        return guarders;
-    }
-    Rance.getGuarders = getGuarders;
-    function getPotentialTargets(battle, user, ability) {
-        if (ability.mainEffect.template.targetRange === "self") {
-            return [user];
-        }
-        var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
-        if (ability.mainEffect.template.targetRange === "close") {
-            var farColumnForSide = {
-                side1: 0,
-                side2: 3
-            };
-            if (user.battleStats.position[0] ===
-                farColumnForSide[user.battleStats.side]) {
-                return [];
-            }
-            var oppositeSide = Rance.reverseSide(user.battleStats.side);
-            fleetsToTarget[farColumnForSide[oppositeSide]] = [null];
-        }
-        var fleetFilterFN = function (target) {
-            if (!Boolean(target)) {
-                return false;
-            }
-            else if (!target.isTargetable()) {
-                return false;
-            }
-            return true;
-        };
-        var targets = Rance.flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
-        return targets;
-    }
-    Rance.getPotentialTargets = getPotentialTargets;
-    function getFleetsToTarget(battle, user, effect) {
-        var nullFleet = [
-            [null, null, null, null],
-            [null, null, null, null]
-        ];
-        var insertNullBefore;
-        var toConcat;
-        switch (effect.targetFleets) {
-            case "all":
-                {
-                    return battle.side1.concat(battle.side2);
-                }
-            case "ally":
-                {
-                    insertNullBefore = user.battleStats.side === "side1" ? false : true;
-                    toConcat = battle[user.battleStats.side];
-                    break;
-                }
-            case "enemy":
-                {
-                    insertNullBefore = user.battleStats.side === "side1" ? true : false;
-                    toConcat = battle[Rance.reverseSide(user.battleStats.side)];
-                    break;
-                }
-        }
-        if (insertNullBefore) {
-            return nullFleet.concat(toConcat);
-        }
-        else {
-            return toConcat.concat(nullFleet);
-        }
-    }
-    Rance.getFleetsToTarget = getFleetsToTarget;
-    function getPotentialTargetsByPosition(battle, user, ability) {
-        var targets = getPotentialTargets(battle, user, ability);
-        var targetPositions = [];
-        for (var i = 0; i < targets.length; i++) {
-            targetPositions.push(targets[i].battleStats.position);
-        }
-        return targetPositions;
-    }
-    Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
-    function getUnitsInAbilityArea(battle, user, ability, target) {
-        var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
-        if (ability.secondaryEffects) {
-            for (var i = 0; i < ability.secondaryEffects.length; i++) {
-                var inSecondary = getUnitsInEffectArea(battle, user, ability.secondaryEffects[i].template, target);
-                for (var j = 0; j < inSecondary.length; j++) {
-                    if (inArea.indexOf(inSecondary[j]) === -1) {
-                        inArea.push(inSecondary[j]);
-                    }
-                }
-            }
-        }
-        return inArea;
-    }
-    Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
-    function getUnitsInEffectArea(battle, user, effect, target) {
-        var targetFleets = getFleetsToTarget(battle, user, effect);
-        var inArea = effect.targetingFunction(targetFleets, target);
-        return inArea.filter(function (unit) {
-            if (!unit)
-                return false;
-            else
-                return unit.isActiveInBattle();
-        });
-    }
-    Rance.getUnitsInEffectArea = getUnitsInEffectArea;
-    function getTargetsForAllAbilities(battle, user) {
-        if (!user || !battle.activeUnit) {
             return null;
-        }
-        var allTargets = {};
-        var abilities = user.getAllAbilities();
-        for (var i = 0; i < abilities.length; i++) {
-            var ability = abilities[i];
-            var targets = getPotentialTargets(battle, user, ability);
-            for (var j = 0; j < targets.length; j++) {
-                var target = targets[j];
-                if (!allTargets[target.id]) {
-                    allTargets[target.id] = [];
-                }
-                allTargets[target.id].push(ability);
-            }
-        }
-        return allTargets;
-    }
-    Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
-var Rance;
-(function (Rance) {
-    var StatusEffect = (function () {
-        function StatusEffect(template, duration) {
-            this.template = template;
-            this.duration = duration;
-        }
-        StatusEffect.prototype.processTurnEnd = function () {
-            if (this.duration > 0) {
-                this.duration--;
-            }
         };
-        StatusEffect.prototype.clone = function () {
-            return new StatusEffect(this.template, this.duration);
+        Star.prototype.updateController = function () {
+            if (!this.buildings["defence"])
+                return;
+            var oldOwner = this.owner;
+            var newOwner = this.buildings["defence"][0].controller;
+            if (oldOwner) {
+                if (oldOwner === newOwner)
+                    return;
+                oldOwner.removeStar(this);
+            }
+            newOwner.addStar(this);
+            Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+            Rance.eventManager.dispatchEvent("renderLayer", "starOwners", this);
+            Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
         };
-        return StatusEffect;
-    })();
-    Rance.StatusEffect = StatusEffect;
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/iunittemplate.d.ts" />
-/// <reference path="damagetype.ts" />
-/// <reference path="unitattributes.ts"/>
-/// <reference path="utility.ts"/>
-/// <reference path="ability.ts"/>
-/// <reference path="battle.ts"/>
-/// <reference path="item.ts"/>
-/// <reference path="statuseffect.ts" />
-var Rance;
-(function (Rance) {
-    var Unit = (function () {
-        function Unit(template, id, data) {
-            this.abilities = [];
-            this.passiveSkills = [];
-            this.items = {
-                low: null,
-                mid: null,
-                high: null
-            };
-            this.passiveSkillsByPhase = {};
-            this.passiveSkillsByPhaseAreDirty = true;
-            this.uiDisplayIsDirty = true;
-            this.cachedBattleScenePropsString = "";
-            this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
-            this.template = template;
-            this.name = this.id + " " + template.displayName;
-            this.isSquadron = template.isSquadron;
-            if (data) {
-                this.makeFromData(data);
-            }
-            else {
-                this.setInitialValues();
-            }
-            this.displayFlags =
-                {
-                    isAnnihilated: false
-                };
-        }
-        Object.defineProperty(Unit.prototype, "attributes", {
-            get: function () {
-                if (this.attributesAreDirty || !this.cachedAttributes) {
-                    this.updateCachedAttributes();
+        Star.prototype.updateBuildingsEffect = function () {
+            var effect = {};
+            for (var category in this.buildings) {
+                for (var i = 0; i < this.buildings[category].length; i++) {
+                    var building = this.buildings[category][i];
+                    building.getEffect(effect);
                 }
-                return this.cachedAttributes;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Unit.prototype.makeFromData = function (data) {
-            var items = {};
-            ["low", "mid", "high"].forEach(function (slot) {
-                if (data.items[slot]) {
-                    var item = data.items[slot];
-                    if (!item)
-                        return;
-                    if (item.templateType) {
-                        items[slot] = new Rance.Item(app.moduleData.Templates.Items[item.templateType], item.id);
+            }
+            this.buildingsEffect = effect;
+            this.buildingsEffectIsDirty = false;
+        };
+        Star.prototype.getBuildingsEffect = function () {
+            if (this.buildingsEffectIsDirty) {
+                this.updateBuildingsEffect();
+            }
+            return this.buildingsEffect;
+        };
+        Star.prototype.getEffectWithBuildingsEffect = function (base, effectType) {
+            var effect = base;
+            var buildingsEffect = this.getBuildingsEffect()[effectType];
+            if (isFinite(buildingsEffect)) {
+                return effect + buildingsEffect;
+            }
+            else if (buildingsEffect) {
+                effect += (buildingsEffect.flat || 0);
+                effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
+            }
+            return effect;
+        };
+        Star.prototype.getIncome = function () {
+            return this.getEffectWithBuildingsEffect(this.baseIncome, "income");
+        };
+        Star.prototype.getResourceIncome = function () {
+            if (!this.resource)
+                return null;
+            return ({
+                resource: this.resource,
+                amount: this.getEffectWithBuildingsEffect(0, "resourceIncome")
+            });
+        };
+        Star.prototype.getAllBuildings = function () {
+            var buildings = [];
+            for (var category in this.buildings) {
+                buildings = buildings.concat(this.buildings[category]);
+            }
+            return buildings;
+        };
+        Star.prototype.getBuildingsForPlayer = function (player) {
+            var allBuildings = this.getAllBuildings();
+            return allBuildings.filter(function (building) {
+                return building.controller.id === player.id;
+            });
+        };
+        Star.prototype.getBuildingsByFamily = function (buildingTemplate) {
+            var propToCheck = buildingTemplate.family ? "family" : "type";
+            var categoryBuildings = this.buildings[buildingTemplate.category];
+            var buildings = [];
+            if (categoryBuildings) {
+                for (var i = 0; i < categoryBuildings.length; i++) {
+                    if (categoryBuildings[i].template[propToCheck] === buildingTemplate[propToCheck]) {
+                        buildings.push(categoryBuildings[i]);
+                    }
+                }
+            }
+            return buildings;
+        };
+        Star.prototype.getBuildableBuildings = function () {
+            var canBuild = [];
+            for (var buildingType in app.moduleData.Templates.Buildings) {
+                var template = app.moduleData.Templates.Buildings[buildingType];
+                var alreadyBuilt;
+                if (template.category === "mine" && !this.resource) {
+                    continue;
+                }
+                alreadyBuilt = this.getBuildingsByFamily(template);
+                if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly) {
+                    canBuild.push(template);
+                }
+            }
+            return canBuild;
+        };
+        Star.prototype.getBuildingUpgrades = function () {
+            var allUpgrades = {};
+            var self = this;
+            var ownerBuildings = this.getBuildingsForPlayer(this.owner);
+            for (var i = 0; i < ownerBuildings.length; i++) {
+                var building = ownerBuildings[i];
+                var upgrades = building.getPossibleUpgrades();
+                upgrades = upgrades.filter(function (upgradeData) {
+                    var parent = upgradeData.parentBuilding.template;
+                    var template = upgradeData.template;
+                    if (parent.type === template.type) {
+                        return true;
                     }
                     else {
-                        items[slot] = item;
-                    }
-                }
-            });
-            this.name = data.name;
-            this.maxHealth = data.maxHealth;
-            this.currentHealth = data.currentHealth;
-            this.currentMovePoints = data.currentMovePoints;
-            this.maxMovePoints = data.maxMovePoints;
-            this.timesActedThisTurn = data.timesActedThisTurn;
-            this.baseAttributes = Rance.extendObject(data.baseAttributes);
-            this.attributes = Rance.extendObject(this.baseAttributes);
-            this.abilities = data.abilityTemplateTypes.map(function (key) {
-                return app.moduleData.Templates.Abilities[key];
-            });
-            this.passiveSkills = data.passiveSkillTemplateTypes.map(function (key) {
-                return app.moduleData.Templates.PassiveSkills[key];
-            });
-            this.experienceForCurrentLevel = data.experienceForCurrentLevel;
-            this.level = data.level;
-            var battleStats = {};
-            battleStats.moveDelay = data.battleStats.moveDelay;
-            battleStats.side = data.battleStats.side;
-            battleStats.position = data.battleStats.position;
-            battleStats.currentActionPoints = data.battleStats.currentActionPoints;
-            battleStats.guardAmount = data.battleStats.guardAmount;
-            battleStats.guardCoverage = data.battleStats.guardCoverage;
-            battleStats.captureChance = data.battleStats.captureChance;
-            battleStats.statusEffects = data.battleStats.statusEffects;
-            battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-            battleStats.queuedAction = data.queuedAction;
-            this.battleStats = battleStats;
-            this.items =
-                {
-                    low: null,
-                    mid: null,
-                    high: null
-                };
-            for (var slot in items) {
-                this.addItem(items[slot]);
-            }
-        };
-        Unit.prototype.setInitialValues = function () {
-            this.setBaseHealth();
-            this.setAttributes();
-            this.resetBattleStats();
-            this.maxMovePoints = this.template.maxMovePoints;
-            this.resetMovePoints();
-            this.setInitialAbilities();
-            this.setInitialPassiveSkills();
-            this.level = 1;
-            this.experienceForCurrentLevel = 0;
-            this.timesActedThisTurn = 0;
-        };
-        Unit.prototype.setBaseHealth = function () {
-            var min = 500 * this.template.maxHealth;
-            var max = 1000 * this.template.maxHealth;
-            this.maxHealth = Rance.randInt(min, max);
-            this.currentHealth = this.maxHealth;
-        };
-        Unit.prototype.setAttributes = function (baseSkill, variance) {
-            if (baseSkill === void 0) { baseSkill = 1; }
-            if (variance === void 0) { variance = 1; }
-            var template = this.template;
-            var attributes = {
-                attack: 1,
-                defence: 1,
-                intelligence: 1,
-                speed: 1,
-                maxActionPoints: Rance.randInt(3, 6)
-            };
-            for (var attribute in template.attributeLevels) {
-                var attributeLevel = template.attributeLevels[attribute];
-                var min = 4 * baseSkill * attributeLevel + 1;
-                var max = 8 * baseSkill * attributeLevel + 1 + variance;
-                attributes[attribute] = Rance.randInt(min, max);
-                if (attributes[attribute] > 9)
-                    attributes[attribute] = 9;
-            }
-            this.baseAttributes = Rance.extendObject(attributes);
-            this.attributes = attributes;
-        };
-        Unit.prototype.getBaseMoveDelay = function () {
-            return 30 - this.attributes.speed;
-        };
-        Unit.prototype.resetMovePoints = function () {
-            this.currentMovePoints = this.maxMovePoints;
-        };
-        Unit.prototype.resetBattleStats = function () {
-            this.battleStats =
-                {
-                    moveDelay: this.getBaseMoveDelay(),
-                    currentActionPoints: this.attributes.maxActionPoints,
-                    side: null,
-                    position: null,
-                    guardAmount: 0,
-                    guardCoverage: null,
-                    captureChance: 0.1,
-                    statusEffects: [],
-                    lastHealthBeforeReceivingDamage: this.currentHealth,
-                    queuedAction: null
-                };
-            this.displayFlags =
-                {
-                    isAnnihilated: false
-                };
-        };
-        Unit.prototype.setBattlePosition = function (battle, side, position) {
-            this.battleStats.side = side;
-            this.battleStats.position = position;
-        };
-        Unit.prototype.addStrength = function (amount) {
-            this.currentHealth += Math.round(amount);
-            if (this.currentHealth > this.maxHealth) {
-                this.currentHealth = this.maxHealth;
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.removeStrength = function (amount) {
-            this.currentHealth -= Math.round(amount);
-            this.currentHealth = Rance.clamp(this.currentHealth, 0, this.maxHealth);
-            if (amount > 0) {
-                this.removeGuard(40);
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.removeActionPoints = function (amount) {
-            this.battleStats.currentActionPoints -= amount;
-            if (this.battleStats.currentActionPoints < 0) {
-                this.battleStats.currentActionPoints = 0;
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.addMoveDelay = function (amount) {
-            this.battleStats.moveDelay += amount;
-        };
-        Unit.prototype.updateStatusEffects = function () {
-            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
-                this.battleStats.statusEffects[i].processTurnEnd();
-                if (this.battleStats.statusEffects[i].duration === 0) {
-                    this.removeStatusEffect(this.battleStats.statusEffects[i]);
-                }
-            }
-        };
-        Unit.prototype.setQueuedAction = function (ability, target) {
-            this.battleStats.queuedAction =
-                {
-                    ability: ability,
-                    targetId: target.id,
-                    turnsPrepared: 0,
-                    timesInterrupted: 0
-                };
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.interruptQueuedAction = function (interruptStrength) {
-            var action = this.battleStats.queuedAction;
-            if (!action)
-                return;
-            action.timesInterrupted += interruptStrength;
-            if (action.timesInterrupted >= action.ability.preparation.interruptsNeeded) {
-                this.clearQueuedAction();
-            }
-        };
-        Unit.prototype.updateQueuedAction = function () {
-            var action = this.battleStats.queuedAction;
-            if (!action)
-                return;
-            action.turnsPrepared++;
-        };
-        Unit.prototype.isReadyToUseQueuedAction = function () {
-            var action = this.battleStats.queuedAction;
-            return (action && action.turnsPrepared >= action.ability.preparation.turnsToPrep);
-        };
-        Unit.prototype.clearQueuedAction = function () {
-            this.battleStats.queuedAction = null;
-            this.uiDisplayIsDirty = true;
-        };
-        // redundant
-        Unit.prototype.isTargetable = function () {
-            return this.currentHealth > 0;
-        };
-        Unit.prototype.isActiveInBattle = function () {
-            return this.currentHealth > 0;
-        };
-        Unit.prototype.addItem = function (item) {
-            var itemSlot = item.template.slot;
-            if (this.items[itemSlot])
-                return false;
-            if (item.unit) {
-                item.unit.removeItem(item);
-            }
-            this.items[itemSlot] = item;
-            item.unit = this;
-            if (item.template.attributes) {
-                this.attributesAreDirty = true;
-            }
-            if (item.template.passiveSkill) {
-                this.passiveSkillsByPhaseAreDirty = true;
-            }
-        };
-        Unit.prototype.removeItem = function (item) {
-            var itemSlot = item.template.slot;
-            if (this.items[itemSlot] === item) {
-                this.items[itemSlot] = null;
-                item.unit = null;
-                if (item.template.attributes) {
-                    this.attributesAreDirty = true;
-                }
-                if (item.template.passiveSkill) {
-                    this.passiveSkillsByPhaseAreDirty = true;
-                }
-                return true;
-            }
-            return false;
-        };
-        Unit.prototype.destroyAllItems = function () {
-            for (var slot in this.items) {
-                var item = this.items[slot];
-                if (item) {
-                    this.fleet.player.removeItem(item);
-                }
-            }
-        };
-        Unit.prototype.getAttributesWithItems = function () {
-            var attributes = Rance.extendObject(this.baseAttributes);
-            for (var itemSlot in this.items) {
-                if (this.items[itemSlot]) {
-                    var item = this.items[itemSlot];
-                    for (var attribute in item.template.attributes) {
-                        attributes[attribute] = Rance.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
-                    }
-                }
-            }
-            return attributes;
-        };
-        Unit.prototype.addStatusEffect = function (statusEffect) {
-            if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1) {
-                throw new Error("Tried to add duplicate status effect to unit " + this.name);
-            }
-            else if (statusEffect.duration === 0) {
-                console.warn("Tried to add status effect", statusEffect, "with 0 duration");
-                return;
-            }
-            this.battleStats.statusEffects.push(statusEffect);
-            if (statusEffect.template.attributes) {
-                this.attributesAreDirty = true;
-            }
-            if (statusEffect.template.passiveSkills) {
-                this.passiveSkillsByPhaseAreDirty = true;
-            }
-        };
-        Unit.prototype.removeStatusEffect = function (statusEffect) {
-            var index = this.battleStats.statusEffects.indexOf(statusEffect);
-            if (index === -1) {
-                throw new Error("Tried to remove status effect not active on unit " + this.name);
-            }
-            this.battleStats.statusEffects.splice(index, 1);
-            if (statusEffect.template.attributes) {
-                this.attributesAreDirty = true;
-            }
-            if (statusEffect.template.passiveSkills) {
-                this.passiveSkillsByPhaseAreDirty = true;
-            }
-        };
-        /*
-        sort by attribute, positive/negative, additive vs multiplicative
-        apply additive, multiplicative
-         */
-        Unit.prototype.getTotalStatusEffectAttributeAdjustments = function () {
-            if (!this.battleStats || !this.battleStats.statusEffects) {
-                return null;
-            }
-            var adjustments = {};
-            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
-                var statusEffect = this.battleStats.statusEffects[i];
-                if (!statusEffect.template.attributes)
-                    continue;
-                for (var attribute in statusEffect.template.attributes) {
-                    adjustments[attribute] = {};
-                    for (var type in statusEffect.template.attributes[attribute]) {
-                        if (!adjustments[attribute][type]) {
-                            adjustments[attribute][type] = 0;
+                        var isSameFamily = (template.family && parent.family === template.family);
+                        var maxAllowed = template.maxPerType;
+                        if (isSameFamily) {
+                            maxAllowed += 1;
                         }
-                        adjustments[attribute][type] += statusEffect.template.attributes[attribute][type];
-                    }
-                }
-            }
-            return adjustments;
-        };
-        Unit.prototype.getAttributesWithEffects = function () {
-            var withItems = this.getAttributesWithItems();
-            var adjustments = this.getTotalStatusEffectAttributeAdjustments();
-            for (var attribute in adjustments) {
-                if (adjustments[attribute].flat) {
-                    withItems[attribute] += adjustments[attribute].flat;
-                }
-                if (adjustments[attribute].multiplier) {
-                    withItems[attribute] *= 1 + adjustments[attribute].multiplier;
-                }
-                withItems[attribute] = Rance.clamp(withItems[attribute], -5, 20);
-            }
-            return withItems;
-        };
-        Unit.prototype.updateCachedAttributes = function () {
-            this.cachedAttributes = this.getAttributesWithEffects();
-        };
-        Unit.prototype.removeItemAtSlot = function (slot) {
-            if (this.items[slot]) {
-                this.removeItem(this.items[slot]);
-                return true;
-            }
-            return false;
-        };
-        Unit.prototype.setInitialAbilities = function () {
-            this.abilities = Rance.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
-        };
-        Unit.prototype.setInitialPassiveSkills = function () {
-            if (this.template.possiblePassiveSkills) {
-                this.passiveSkills = Rance.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
-            }
-        };
-        Unit.prototype.getItemAbilities = function () {
-            var itemAbilities = [];
-            for (var slot in this.items) {
-                if (!this.items[slot] || !this.items[slot].template.ability)
-                    continue;
-                itemAbilities.push(this.items[slot].template.ability);
-            }
-            return itemAbilities;
-        };
-        Unit.prototype.getAllAbilities = function () {
-            return this.abilities.concat(this.getItemAbilities());
-        };
-        Unit.prototype.getItemPassiveSkills = function () {
-            var itemPassiveSkills = [];
-            for (var slot in this.items) {
-                if (!this.items[slot] || !this.items[slot].template.passiveSkill)
-                    continue;
-                itemPassiveSkills.push(this.items[slot].template.passiveSkill);
-            }
-            return itemPassiveSkills;
-        };
-        Unit.prototype.getStatusEffectPassiveSkills = function () {
-            var statusEffectPassiveSkills = [];
-            if (!this.battleStats || !this.battleStats.statusEffects) {
-                return statusEffectPassiveSkills;
-            }
-            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
-                var templateSkills = this.battleStats.statusEffects[i].template.passiveSkills;
-                if (templateSkills) {
-                    statusEffectPassiveSkills = statusEffectPassiveSkills.concat(templateSkills);
-                }
-            }
-            return statusEffectPassiveSkills;
-        };
-        Unit.prototype.getAllPassiveSkills = function () {
-            var allSkills = [];
-            allSkills = allSkills.concat(this.passiveSkills);
-            allSkills = allSkills.concat(this.getItemPassiveSkills());
-            allSkills = allSkills.concat(this.getStatusEffectPassiveSkills());
-            return allSkills;
-        };
-        Unit.prototype.updatePassiveSkillsByPhase = function () {
-            var updatedSkills = {};
-            var allSkills = this.getAllPassiveSkills();
-            for (var i = 0; i < allSkills.length; i++) {
-                var skill = allSkills[i];
-                ["atBattleStart", "beforeAbilityUse", "afterAbilityUse", "atTurnStart", "inBattlePrep"].forEach(function (phase) {
-                    if (skill[phase]) {
-                        if (!updatedSkills[phase]) {
-                            updatedSkills[phase] = [];
-                        }
-                        if (updatedSkills[phase].indexOf(skill) === -1) {
-                            updatedSkills[phase].push(skill);
-                        }
+                        var alreadyBuilt = self.getBuildingsByFamily(template);
+                        return alreadyBuilt.length < maxAllowed;
                     }
                 });
-            }
-            this.passiveSkillsByPhase = updatedSkills;
-            this.passiveSkillsByPhaseAreDirty = false;
-        };
-        Unit.prototype.getPassiveSkillsByPhase = function () {
-            if (this.passiveSkillsByPhaseAreDirty) {
-                this.updatePassiveSkillsByPhase();
-            }
-            return this.passiveSkillsByPhase;
-        };
-        Unit.prototype.receiveDamage = function (amount, damageType) {
-            var damageReduction = this.getReducedDamageFactor(damageType);
-            var adjustedDamage = amount * damageReduction;
-            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-            this.removeStrength(adjustedDamage);
-        };
-        Unit.prototype.getAdjustedTroopSize = function () {
-            // used so unit will always counter with at least 1/3 strength it had before being attacked
-            var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
-            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-            var currentHealth = this.isSquadron ?
-                balancedHealth :
-                Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
-            if (currentHealth <= 500) {
-                return currentHealth;
-            }
-            else if (currentHealth <= 2000) {
-                return currentHealth / 2 + 250;
-            }
-            else {
-                return currentHealth / 4 + 750;
-            }
-        };
-        Unit.prototype.getAttackDamageIncrease = function (damageType) {
-            var attackStat, attackFactor;
-            switch (damageType) {
-                case Rance.DamageType.physical:
-                    {
-                        attackStat = this.attributes.attack;
-                        attackFactor = 0.1;
-                        break;
-                    }
-                case Rance.DamageType.magical:
-                    {
-                        attackStat = this.attributes.intelligence;
-                        attackFactor = 0.1;
-                        break;
-                    }
-            }
-            var troopSize = this.getAdjustedTroopSize() / 4;
-            return (1 + attackStat * attackFactor) * troopSize;
-        };
-        Unit.prototype.getReducedDamageFactor = function (damageType) {
-            var defensiveStat, defenceFactor;
-            var finalDamageMultiplier = 1;
-            switch (damageType) {
-                case Rance.DamageType.physical:
-                    {
-                        defensiveStat = this.attributes.defence;
-                        defenceFactor = 0.045;
-                        var guardAmount = Math.min(this.battleStats.guardAmount, 100);
-                        finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
-                        break;
-                    }
-                case Rance.DamageType.magical:
-                    {
-                        defensiveStat = this.attributes.intelligence;
-                        defenceFactor = 0.045;
-                        break;
-                    }
-            }
-            var damageReduction = defensiveStat * defenceFactor;
-            var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
-            return finalDamageFactor;
-        };
-        Unit.prototype.addToFleet = function (fleet) {
-            this.fleet = fleet;
-        };
-        Unit.prototype.removeFromFleet = function () {
-            this.fleet = null;
-        };
-        Unit.prototype.removeFromPlayer = function () {
-            var player = this.fleet.player;
-            this.destroyAllItems();
-            player.removeUnit(this);
-            this.fleet.removeShip(this);
-            if (this.front) {
-                this.front.removeUnit(this);
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.transferToPlayer = function (newPlayer) {
-            var oldPlayer = this.fleet.player;
-            var location = this.fleet.location;
-            this.removeFromPlayer();
-            newPlayer.addUnit(this);
-            var newFleet = new Rance.Fleet(newPlayer, [this], location);
-        };
-        Unit.prototype.removeGuard = function (amount) {
-            this.battleStats.guardAmount -= amount;
-            if (this.battleStats.guardAmount < 0)
-                this.removeAllGuard();
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.addGuard = function (amount, coverage) {
-            this.battleStats.guardAmount += amount;
-            this.battleStats.guardCoverage = coverage;
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.removeAllGuard = function () {
-            this.battleStats.guardAmount = 0;
-            this.battleStats.guardCoverage = null;
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.getCounterAttackStrength = function () {
-            return 1; // TODO
-        };
-        Unit.prototype.canActThisTurn = function () {
-            return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
-        };
-        Unit.prototype.isStealthy = function () {
-            // TODO
-            return this.template.isStealthy;
-        };
-        Unit.prototype.getVisionRange = function () {
-            // TODO
-            return this.template.visionRange;
-        };
-        Unit.prototype.getDetectionRange = function () {
-            // TODO
-            return this.template.detectionRange;
-        };
-        Unit.prototype.heal = function () {
-            var location = this.fleet.location;
-            var baseHealFactor = 0.05;
-            var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
-            var healAmount = this.maxHealth * healingFactor;
-            this.addStrength(healAmount);
-        };
-        Unit.prototype.getStrengthEvaluation = function () {
-            // TODO
-            return this.currentHealth;
-        };
-        Unit.prototype.getTotalCost = function () {
-            var totalCost = 0;
-            totalCost += this.template.buildCost;
-            for (var slot in this.items) {
-                if (this.items[slot]) {
-                    totalCost += this.items[slot].template.buildCost;
+                if (upgrades.length > 0) {
+                    allUpgrades[building.id] = upgrades;
                 }
             }
-            return totalCost;
+            return allUpgrades;
         };
-        Unit.prototype.getTurnsToReachStar = function (star) {
-            var currentLocation = this.fleet.location;
-            var distance = currentLocation.getDistanceToStar(star);
-            if (distance <= this.currentMovePoints) {
-                if (this.currentMovePoints === 0) {
-                    return 0;
-                }
-                else {
-                    return distance / this.currentMovePoints;
-                }
-            }
-            distance -= this.currentMovePoints; // current turn
-            return distance / this.maxMovePoints; // future turns
-        };
-        Unit.prototype.drawBattleScene = function (props) {
-            var propsString = JSON.stringify(props);
-            if (propsString !== this.cachedBattleScenePropsString ||
-                this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage) {
-                this.cachedBattleScene = this.template.unitDrawingFN(this, props);
-                this.cachedBattleScenePropsString = propsString;
-            }
-            return this.cachedBattleScene;
-        };
-        Unit.prototype.getExperienceToNextLevel = function () {
-            return (4 + this.level) * 10;
-        };
-        Unit.prototype.addExperience = function (amount) {
-            this.experienceForCurrentLevel += Math.round(amount);
-        };
-        Unit.prototype.canLevelUp = function () {
-            return this.experienceForCurrentLevel >= this.getExperienceToNextLevel();
-        };
-        Unit.prototype.handleLevelUp = function () {
-            this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
-            this.level++;
-        };
-        Unit.prototype.hasAbility = function (ability, allAbilities) {
-            for (var i = 0; i < allAbilities.length; i++) {
-                if (allAbilities[i].type === ability.type) {
-                    return true;
+        Star.prototype.getBuildableShipTypes = function () {
+            var player = this.owner;
+            var global = player.getGloballyBuildableShips();
+            var local = [];
+            for (var i = 0; i < this.buildableUnitTypes.length; i++) {
+                var type = this.buildableUnitTypes[i];
+                if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements)) {
+                    local.push(type);
                 }
             }
-            return false;
+            return global.concat(local);
         };
-        Unit.prototype.getLearnableAbilities = function (allAbilities) {
-            var abilities = [];
-            if (!this.template.learnableAbilities)
-                return abilities;
-            for (var i = 0; i < this.template.learnableAbilities.length; i++) {
-                var learnableItem = this.template.learnableAbilities[i];
-                if (Array.isArray(learnableItem)) {
-                    var hasAbilityFromGroup = false;
-                    for (var j = 0; j < learnableItem.length; j++) {
-                        if (this.hasAbility(learnableItem[j], allAbilities)) {
-                            hasAbilityFromGroup = true;
-                            break;
-                        }
-                    }
-                    if (!hasAbilityFromGroup) {
-                        abilities = abilities.concat(learnableItem);
-                    }
-                }
-                else if (!this.hasAbility(learnableItem, allAbilities)) {
-                    abilities.push(learnableItem);
-                }
+        // FLEETS
+        Star.prototype.getAllFleets = function () {
+            var allFleets = [];
+            for (var playerId in this.fleets) {
+                allFleets = allFleets.concat(this.fleets[playerId]);
             }
-            return abilities;
+            return allFleets;
         };
-        Unit.prototype.canUpgradeIntoAbility = function (ability, allAbilities) {
-            if (ability.onlyAllowExplicitUpgrade) {
-                if (!this.template.specialAbilityUpgrades || this.template.specialAbilityUpgrades.indexOf(ability) === -1) {
-                    return false;
-                }
+        Star.prototype.getFleetIndex = function (fleet) {
+            if (!this.fleets[fleet.player.id])
+                return -1;
+            return this.fleets[fleet.player.id].indexOf(fleet);
+        };
+        Star.prototype.hasFleet = function (fleet) {
+            return this.getFleetIndex(fleet) >= 0;
+        };
+        Star.prototype.addFleet = function (fleet) {
+            if (!this.fleets[fleet.player.id]) {
+                this.fleets[fleet.player.id] = [];
             }
-            if (this.hasAbility(ability, allAbilities)) {
+            if (this.hasFleet(fleet))
                 return false;
-            }
-            return true;
+            this.fleets[fleet.player.id].push(fleet);
         };
-        Unit.prototype.getAbilityUpgradeData = function () {
-            var upgradeData = {};
-            var allAbilities = this.getAllAbilities();
-            allAbilities = allAbilities.concat(this.getAllPassiveSkills());
-            var templates = app.moduleData.Templates;
-            for (var i = 0; i < allAbilities.length; i++) {
-                var parentAbility = allAbilities[i];
-                if (!parentAbility.canUpgradeInto)
+        Star.prototype.addFleets = function (fleets) {
+            for (var i = 0; i < fleets.length; i++) {
+                this.addFleet(fleets[i]);
+            }
+        };
+        Star.prototype.removeFleet = function (fleet) {
+            var fleetIndex = this.getFleetIndex(fleet);
+            if (fleetIndex < 0)
+                return false;
+            this.fleets[fleet.player.id].splice(fleetIndex, 1);
+            if (this.fleets[fleet.player.id].length === 0) {
+                delete this.fleets[fleet.player.id];
+            }
+        };
+        Star.prototype.removeFleets = function (fleets) {
+            for (var i = 0; i < fleets.length; i++) {
+                this.removeFleet(fleets[i]);
+            }
+        };
+        Star.prototype.getAllShipsOfPlayer = function (player) {
+            var allShips = [];
+            var fleets = this.fleets[player.id];
+            if (!fleets)
+                return [];
+            for (var i = 0; i < fleets.length; i++) {
+                allShips = allShips.concat(fleets[i].ships);
+            }
+            return allShips;
+        };
+        Star.prototype.getAllShips = function () {
+            var allShips = [];
+            for (var playerId in this.fleets) {
+                var fleets = this.fleets[playerId];
+                allShips = allShips.concat(this.getAllShipsOfPlayer(fleets[0].player));
+            }
+            return allShips;
+        };
+        Star.prototype.getIndependentShips = function () {
+            var ships = [];
+            for (var playerId in this.fleets) {
+                var player = this.fleets[playerId][0].player;
+                if (player.isIndependent) {
+                    ships = ships.concat(this.getAllShipsOfPlayer(player));
+                }
+            }
+            return ships;
+        };
+        Star.prototype.getTargetsForPlayer = function (player) {
+            var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
+            var buildingController = buildingTarget ? buildingTarget.controller : null;
+            var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
+            var diplomacyStatus = player.diplomacyStatus;
+            var targets = [];
+            if (buildingTarget &&
+                (player === this.owner ||
+                    diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller))) {
+                targets.push({
+                    type: "building",
+                    enemy: buildingTarget.controller,
+                    building: buildingTarget,
+                    ships: this.getAllShipsOfPlayer(buildingTarget.controller)
+                });
+            }
+            for (var i = 0; i < fleetOwners.length; i++) {
+                if (diplomacyStatus.canAttackFleetOfPlayer(fleetOwners[i])) {
+                    targets.push({
+                        type: "fleet",
+                        enemy: fleetOwners[i],
+                        building: null,
+                        ships: this.getAllShipsOfPlayer(fleetOwners[i])
+                    });
+                }
+            }
+            return targets;
+        };
+        Star.prototype.getFirstEnemyDefenceBuilding = function (player) {
+            if (!this.buildings["defence"])
+                return null;
+            var defenceBuildings = this.buildings["defence"].slice(0);
+            if (this.owner === player)
+                defenceBuildings = defenceBuildings.reverse();
+            for (var i = defenceBuildings.length - 1; i >= 0; i--) {
+                if (defenceBuildings[i].controller.id !== player.id) {
+                    return defenceBuildings[i];
+                }
+            }
+            return null;
+        };
+        Star.prototype.getEnemyFleetOwners = function (player, excludedTarget) {
+            var fleetOwners = [];
+            for (var playerId in this.fleets) {
+                if (playerId == player.id)
                     continue;
-                for (var j = 0; j < parentAbility.canUpgradeInto.length; j++) {
-                    var childAbilityType = parentAbility.canUpgradeInto[j];
-                    var childAbility = templates.Abilities[childAbilityType] || templates.PassiveSkills[childAbilityType];
-                    if (!childAbility)
-                        throw new Error("Invalid ability upgrade " + childAbilityType);
-                    if (this.canUpgradeIntoAbility(childAbility, allAbilities)) {
-                        if (!upgradeData[parentAbility.type]) {
-                            upgradeData[parentAbility.type] =
-                                {
-                                    base: parentAbility,
-                                    possibleUpgrades: []
-                                };
-                        }
-                        upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
+                else if (excludedTarget && playerId == excludedTarget.id)
+                    continue;
+                else if (this.fleets[playerId].length < 1)
+                    continue;
+                fleetOwners.push(this.fleets[playerId][0].player);
+            }
+            return fleetOwners;
+        };
+        // MAP GEN
+        Star.prototype.setPosition = function (x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        Star.prototype.setResource = function (resource) {
+            this.resource = resource;
+        };
+        Star.prototype.hasLink = function (linkTo) {
+            return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
+        };
+        // could maybe use adding / removing links as a gameplay mechanic
+        Star.prototype.addLink = function (linkTo) {
+            if (this.hasLink(linkTo))
+                return;
+            this.linksTo.push(linkTo);
+            linkTo.linksFrom.push(this);
+        };
+        Star.prototype.removeLink = function (linkTo) {
+            if (!this.hasLink(linkTo))
+                return;
+            var toIndex = this.linksTo.indexOf(linkTo);
+            if (toIndex >= 0) {
+                this.linksTo.splice(toIndex, 1);
+            }
+            else {
+                this.linksFrom.splice(this.linksFrom.indexOf(linkTo), 1);
+            }
+            linkTo.removeLink(this);
+        };
+        Star.prototype.getAllLinks = function () {
+            return this.linksTo.concat(this.linksFrom);
+        };
+        Star.prototype.getEdgeWith = function (neighbor) {
+            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
+                var edge = this.voronoiCell.halfedges[i].edge;
+                if ((edge.lSite && edge.lSite === neighbor) ||
+                    (edge.rSite && edge.rSite === neighbor)) {
+                    return edge;
+                }
+            }
+            return null;
+        };
+        Star.prototype.getSharedNeighborsWith = function (neighbor) {
+            var ownNeighbors = this.getNeighbors();
+            var neighborNeighbors = neighbor.getNeighbors();
+            var sharedNeighbors = [];
+            for (var i = 0; i < ownNeighbors.length; i++) {
+                var star = ownNeighbors[i];
+                if (star !== neighbor && neighborNeighbors.indexOf(star) !== -1) {
+                    sharedNeighbors.push(star);
+                }
+            }
+            return sharedNeighbors;
+        };
+        // return adjacent stars whether they're linked to this or not
+        Star.prototype.getNeighbors = function () {
+            var neighbors = [];
+            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
+                var edge = this.voronoiCell.halfedges[i].edge;
+                if (edge.lSite !== null && edge.lSite.id !== this.id) {
+                    neighbors.push(edge.lSite);
+                }
+                else if (edge.rSite !== null && edge.rSite.id !== this.id) {
+                    neighbors.push(edge.rSite);
+                }
+            }
+            return neighbors;
+        };
+        Star.prototype.getLinkedInRange = function (range) {
+            if (this.indexedNeighborsInRange[range]) {
+                return this.indexedNeighborsInRange[range];
+            }
+            var visited = {};
+            var visitedByRange = {};
+            if (range >= 0) {
+                visited[this.id] = this;
+            }
+            var current = [];
+            var frontier = [this];
+            for (var i = 0; i < range; i++) {
+                current = frontier.slice(0);
+                if (current.length <= 0)
+                    break;
+                frontier = [];
+                visitedByRange[i + 1] = [];
+                for (var j = 0; j < current.length; j++) {
+                    var neighbors = current[j].getAllLinks();
+                    for (var k = 0; k < neighbors.length; k++) {
+                        if (visited[neighbors[k].id])
+                            continue;
+                        visited[neighbors[k].id] = neighbors[k];
+                        visitedByRange[i + 1].push(neighbors[k]);
+                        frontier.push(neighbors[k]);
+                        this.indexedDistanceToStar[neighbors[k].id] = i;
                     }
                 }
             }
-            var learnable = this.getLearnableAbilities(allAbilities);
-            if (learnable.length > 0) {
-                upgradeData["learnable"] =
-                    {
-                        base: null,
-                        possibleUpgrades: learnable
-                    };
+            var allVisited = [];
+            for (var id in visited) {
+                allVisited.push(visited[id]);
             }
-            return upgradeData;
+            this.indexedNeighborsInRange[range] =
+                {
+                    all: allVisited,
+                    byRange: visitedByRange
+                };
+            return ({
+                all: allVisited,
+                byRange: visitedByRange
+            });
         };
-        Unit.prototype.upgradeAbility = function (source, newAbility) {
-            var newAbilityIsPassiveSkill = !newAbility.mainEffect;
-            if (source) {
-                var sourceIsPassiveSkill = !source.mainEffect;
-                if (sourceIsPassiveSkill) {
-                    this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
+        // Recursively gets all neighbors that fulfill the callback condition with this star
+        // Optional earlyReturnSize parameter returns if an island of specified size is found
+        Star.prototype.getIslandForQualifier = function (qualifier, earlyReturnSize) {
+            var visited = {};
+            var connected = {};
+            var sizeFound = 1;
+            var initialStar = this;
+            var frontier = [initialStar];
+            visited[initialStar.id] = true;
+            while (frontier.length > 0) {
+                var current = frontier.pop();
+                connected[current.id] = current;
+                var neighbors = current.getLinkedInRange(1).all;
+                for (var i = 0; i < neighbors.length; i++) {
+                    var neighbor = neighbors[i];
+                    if (visited[neighbor.id])
+                        continue;
+                    visited[neighbor.id] = true;
+                    if (qualifier(current, neighbor)) {
+                        sizeFound++;
+                        frontier.push(neighbor);
+                    }
+                }
+                // breaks when sufficiently big island has been found
+                if (earlyReturnSize && sizeFound >= earlyReturnSize) {
+                    for (var i = 0; i < frontier.length; i++) {
+                        connected[frontier[i].id] = frontier[i];
+                    }
+                    break;
+                }
+            }
+            var island = [];
+            for (var starId in connected) {
+                island.push(connected[starId]);
+            }
+            return island;
+        };
+        Star.prototype.getNearestStarForQualifier = function (qualifier) {
+            if (qualifier(this))
+                return this;
+            var visited = {};
+            var frontier = [this];
+            visited[this.id] = true;
+            while (frontier.length > 0) {
+                var current = frontier.pop();
+                var neighbors = current.getLinkedInRange(1).all;
+                for (var i = 0; i < neighbors.length; i++) {
+                    var neighbor = neighbors[i];
+                    if (visited[neighbor.id])
+                        continue;
+                    visited[neighbor.id] = true;
+                    if (qualifier(neighbor)) {
+                        return neighbor;
+                    }
+                    else {
+                        frontier.push(neighbor);
+                    }
+                }
+            }
+            return null;
+        };
+        Star.prototype.getDistanceToStar = function (target) {
+            if (!this.indexedDistanceToStar[target.id]) {
+                var a = Rance.aStar(this, target);
+                if (!a) {
+                    this.indexedDistanceToStar[target.id] = -1;
                 }
                 else {
-                    var castedSource = source;
-                    this.abilities.splice(this.abilities.indexOf(castedSource), 1);
+                    for (var id in a.cost) {
+                        this.indexedDistanceToStar[id] = a.cost[id];
+                    }
                 }
             }
-            if (newAbilityIsPassiveSkill) {
-                this.passiveSkills.push(newAbility);
+            return this.indexedDistanceToStar[target.id];
+        };
+        Star.prototype.getVisionRange = function () {
+            return this.getEffectWithBuildingsEffect(1, "vision");
+        };
+        Star.prototype.getVision = function () {
+            return this.getLinkedInRange(this.getVisionRange()).all;
+        };
+        Star.prototype.getDetectionRange = function () {
+            return this.getEffectWithBuildingsEffect(0, "detection");
+        };
+        Star.prototype.getDetection = function () {
+            return this.getLinkedInRange(this.getDetectionRange()).all;
+        };
+        Star.prototype.getHealingFactor = function (player) {
+            var factor = 0;
+            if (player === this.owner) {
+                factor += 0.15;
             }
-            else {
-                var castedNewAbility = newAbility;
-                this.abilities.push(castedNewAbility);
+            return factor;
+        };
+        Star.prototype.getPresentPlayersByVisibility = function () {
+            var byVisibilityAndId = {
+                visible: {},
+                detected: {},
+                all: {}
+            };
+            var allPlayers = [];
+            byVisibilityAndId.visible[this.owner.id] = this.owner;
+            var secondaryController = this.getSecondaryController();
+            if (secondaryController) {
+                byVisibilityAndId.visible[secondaryController.id] = secondaryController;
+            }
+            for (var playerId in this.fleets) {
+                var fleets = this.fleets[playerId];
+                for (var i = 0; i < fleets.length; i++) {
+                    var fleetPlayer = fleets[i].player;
+                    if (byVisibilityAndId.detected[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id]) {
+                        break;
+                    }
+                    byVisibilityAndId.all[fleetPlayer.id] = fleetPlayer;
+                    if (fleets[i].isStealthy) {
+                        byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;
+                    }
+                    else {
+                        byVisibilityAndId.visible[fleetPlayer.id] = fleetPlayer;
+                    }
+                }
+            }
+            return byVisibilityAndId;
+        };
+        Star.prototype.getSeed = function () {
+            if (!this.seed) {
+                var bgString = "";
+                bgString += Math.round(this.x);
+                bgString += Math.round(this.y);
+                bgString += new Date().getTime();
+                this.seed = bgString;
+            }
+            return this.seed;
+        };
+        Star.prototype.seedBuildableItems = function () {
+            for (var techLevel in this.buildableItems) {
+                var itemsByTechLevel = Rance.TemplateIndexes.itemsByTechLevel[techLevel];
+                var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
+                itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel, this.getSeed());
+                for (var i = 0; i < maxItemsForTechLevel; i++) {
+                    this.buildableItems[techLevel].push(itemsByTechLevel.pop());
+                }
             }
         };
-        Unit.prototype.serialize = function (includeItems) {
-            if (includeItems === void 0) { includeItems = true; }
-            var data = {};
-            data.templateType = this.template.type;
-            data.id = this.id;
-            data.name = this.name;
-            data.maxHealth = this.maxHealth;
-            data.currentHealth = this.currentHealth;
-            data.currentMovePoints = this.currentMovePoints;
-            data.maxMovePoints = this.maxMovePoints;
-            data.timesActedThisTurn = this.timesActedThisTurn;
-            data.baseAttributes = Rance.extendObject(this.baseAttributes);
-            data.abilityTemplateTypes = this.abilities.map(function (ability) {
-                return ability.type;
-            });
-            data.passiveSkillTemplateTypes = this.passiveSkills.map(function (passiveSkill) {
-                return passiveSkill.type;
-            });
-            data.experienceForCurrentLevel = this.experienceForCurrentLevel;
-            data.level = this.level;
-            data.battleStats = {};
-            data.battleStats.moveDelay = this.battleStats.moveDelay;
-            data.battleStats.side = this.battleStats.side;
-            data.battleStats.position = this.battleStats.position;
-            data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
-            data.battleStats.guardAmount = this.battleStats.guardAmount;
-            data.battleStats.guardCoverage = this.battleStats.guardCoverage;
-            data.battleStats.captureChance = this.battleStats.captureChance;
-            data.battleStats.statusEffects = this.battleStats.statusEffects.map(function (statusEffect) {
-                return statusEffect.clone();
-            });
-            data.battleStats.queuedAction = this.battleStats.queuedAction;
-            if (this.fleet) {
-                data.fleetId = this.fleet.id;
+        Star.prototype.getItemManufactoryLevel = function () {
+            return this.getEffectWithBuildingsEffect(0, "itemLevel");
+        };
+        Star.prototype.getItemAmountForTechLevel = function (techLevel, manufactoryLevel) {
+            var maxManufactoryLevel = 3; // MANUFACTORY_MAX
+            manufactoryLevel = Rance.clamp(manufactoryLevel, 0, maxManufactoryLevel);
+            var amount = (1 + manufactoryLevel) - techLevel;
+            if (amount < 0)
+                amount = 0;
+            return amount;
+        };
+        Star.prototype.getBuildableItems = function () {
+            if (!this.buildableItems[1] || this.buildableItems[1].length < 1) {
+                this.seedBuildableItems();
             }
-            data.items = {};
-            if (includeItems) {
-                for (var slot in this.items) {
-                    if (this.items[slot])
-                        data.items[slot] = this.items[slot].serialize();
+            ;
+            var manufactoryLevel = this.getItemManufactoryLevel();
+            var byTechLevel = {};
+            var allBuildable = [];
+            for (var techLevel in this.buildableItems) {
+                var amountBuildable = this.getItemAmountForTechLevel(techLevel, manufactoryLevel);
+                var forThisTechLevel = this.buildableItems[techLevel].slice(0, amountBuildable);
+                byTechLevel[techLevel] = forThisTechLevel;
+                allBuildable = allBuildable.concat(forThisTechLevel);
+            }
+            return ({
+                byTechLevel: byTechLevel,
+                all: allBuildable
+            });
+        };
+        Star.prototype.serialize = function () {
+            var data = {};
+            data.id = this.id;
+            data.x = this.basisX;
+            data.y = this.basisY;
+            data.baseIncome = this.baseIncome;
+            data.name = this.name;
+            data.ownerId = this.owner ? this.owner.id : null;
+            data.linksToIds = this.linksTo.map(function (star) { return star.id; });
+            data.linksFromIds = this.linksFrom.map(function (star) { return star.id; });
+            data.seed = this.seed;
+            if (this.resource) {
+                data.resourceType = this.resource.type;
+            }
+            data.buildableUnitTypes = this.buildableUnitTypes.map(function (template) {
+                return template.type;
+            });
+            data.buildings = {};
+            for (var category in this.buildings) {
+                data.buildings[category] = [];
+                for (var i = 0; i < this.buildings[category].length; i++) {
+                    data.buildings[category].push(this.buildings[category][i].serialize());
                 }
             }
             return data;
         };
-        Unit.prototype.makeVirtualClone = function () {
-            var data = this.serialize();
-            var clone = new Unit(this.template, this.id, data);
-            return clone;
-        };
-        return Unit;
+        return Star;
     })();
-    Rance.Unit = Unit;
+    Rance.Star = Star;
+})(Rance || (Rance = {}));
+/// <reference path="../../star.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ManufactoryStarsListItem = React.createClass({
+            displayName: "ManufactoryStarsListItem",
+            propTypes: {
+                star: React.PropTypes.instanceOf(Rance.Star).isRequired,
+                isHighlighted: React.PropTypes.bool.isRequired,
+                usedCapacity: React.PropTypes.number.isRequired,
+                totalCapacity: React.PropTypes.number.isRequired,
+                onClick: React.PropTypes.func.isRequired
+            },
+            handleClick: function () {
+                var star = this.props.star;
+                this.props.onClick(star);
+            },
+            render: function () {
+                var star = this.props.star;
+                var isHighlighted = this.props.isHighlighted;
+                var usedCapacity = this.props.usedCapacity;
+                var totalCapacity = this.props.totalCapacity;
+                var hasManufcatory = Boolean(totalCapacity);
+                var hasCapacity = hasManufcatory && usedCapacity < totalCapacity;
+                return (React.DOM.div({
+                    className: "manufactory-stars-list-item" + (!hasManufcatory ? " no-manufactory" : ""),
+                    onClick: this.handleClick
+                }, React.DOM.div({
+                    className: "manufactory-stars-list-item-star-name"
+                }, star.name), !hasManufcatory ? null : React.DOM.div({
+                    className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : "")
+                }, "" + usedCapacity + "/" + totalCapacity)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="manufactorystarslistitem.ts" />
+/// <reference path="../../star.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ManufactoryStarsList = React.createClass({
+            displayName: "ManufactoryStarsList",
+            propTypes: {
+                starsWithManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Star)).isRequired,
+                starsWithoutManufcatories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Star)).isRequired,
+                highlightedStars: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Star)).isRequired,
+                handleStarSelect: React.PropTypes.func.isRequired
+            },
+            sortByStarNameFN: function (a, b) {
+                var _a = a.name.toLowerCase();
+                var _b = b.name.toLowerCase();
+                if (_a > _b)
+                    return 1;
+                else if (_a < _b)
+                    return -1;
+                else
+                    return 0;
+            },
+            render: function () {
+                var starsWithManufactories = this.props.starsWithManufactories;
+                var starsWithoutManufcatories = this.props.starsWithoutManufcatories;
+                var highlightedStars = this.props.highlightedStars;
+                var handleStarSelect = this.props.handleStarSelect;
+                var rows = [];
+                starsWithManufactories.sort(this.sortByStarNameFN);
+                starsWithoutManufcatories.sort(this.sortByStarNameFN);
+                for (var i = 0; i < starsWithManufactories.length; i++) {
+                    var star = starsWithManufactories[i];
+                    var isHighlighted = highlightedStars.indexOf(star) !== -1;
+                    rows.push(UIComponents.ManufactoryStarsListItem({
+                        key: star.id,
+                        star: star,
+                        isHighlighted: isHighlighted,
+                        usedCapacity: 2,
+                        totalCapacity: 3,
+                        onClick: handleStarSelect
+                    }));
+                }
+                for (var i = 0; i < starsWithoutManufcatories.length; i++) {
+                    var star = starsWithoutManufcatories[i];
+                    var isHighlighted = highlightedStars.indexOf(star) !== -1;
+                    rows.push(UIComponents.ManufactoryStarsListItem({
+                        key: star.id,
+                        star: star,
+                        isHighlighted: isHighlighted,
+                        usedCapacity: 0,
+                        totalCapacity: 0,
+                        onClick: handleStarSelect
+                    }));
+                }
+                return (React.DOM.div({
+                    className: "manufactory-stars-list"
+                }, rows));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="manufactorystarslist.ts" />
+/// <reference path="../../player.ts" />
+/// <reference path="../../star.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ProductionOverview = React.createClass({
+            displayName: "ProductionOverview",
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    selectedStar: undefined,
+                    highlightedStars: [] // Star[]
+                });
+            },
+            handleStarSelect: function (star) {
+                this.setState({
+                    selectedStar: star,
+                    highlightedStars: [star]
+                });
+            },
+            render: function () {
+                var player = this.props.player;
+                var starsWithManufactories = [];
+                var starsWithoutManufcatories = [];
+                for (var i = 0; i < player.controlledLocations.length; i++) {
+                    var star = player.controlledLocations[i];
+                    var hasManufactory = star.id % 2 === 0; // TODO
+                    if (hasManufactory) {
+                        starsWithManufactories.push(star);
+                    }
+                    else {
+                        starsWithoutManufcatories.push(star);
+                    }
+                }
+                return (React.DOM.div({
+                    className: "production-overview"
+                }, UIComponents.ManufactoryStarsList({
+                    starsWithManufactories: starsWithManufactories,
+                    starsWithoutManufcatories: starsWithoutManufcatories,
+                    highlightedStars: this.state.highlightedStars,
+                    handleStarSelect: this.handleStarSelect
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TopMenuPopup = React.createClass({
+            displayName: "TopMenuPopup",
+            render: function () {
+                return (React.DOM.div({
+                    className: "top-menu-popup-container draggable-container"
+                }, React.DOM.button({
+                    className: "light-box-close",
+                    onClick: this.props.handleClose
+                }, "X"), React.DOM.div({
+                    className: "light-box-content"
+                }, this.props.contentConstructor(this.props.contentProps))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../items/buyitems.ts"/>
+/// <reference path="../saves/savegame.ts"/>
+/// <reference path="../saves/loadgame.ts"/>
+/// <reference path="../unitlist/itemequip.ts"/>
+/// <reference path="../diplomacy/diplomacyoverview.ts"/>
+/// <reference path="economysummary.ts"/>
+/// <reference path="optionslist.ts"/>
+/// <reference path="../technologies/technologieslist.ts" />
+/// <reference path="../production/productionoverview.ts" />
+/// <reference path="../popups/topmenupopup.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TopMenuPopups = React.createClass({
+            displayName: "TopMenuPopups",
+            getInitialState: function () {
+                return ({
+                    production: undefined,
+                    equipItems: undefined,
+                    buyItems: undefined,
+                    economySummary: undefined,
+                    saveGame: undefined,
+                    loadGame: undefined,
+                    options: undefined,
+                    diplomacy: undefined,
+                    technologies: undefined
+                });
+            },
+            closePopup: function (popupType) {
+                this.refs.popupManager.closePopup(this.state[popupType]);
+                var stateObj = {};
+                stateObj[popupType] = undefined;
+                this.setState(stateObj);
+                if (popupType === "options") {
+                    Rance.saveOptions();
+                }
+            },
+            makePopup: function (popupType) {
+                var contentConstructor;
+                var contentProps;
+                var popupProps = {
+                    resizable: true,
+                    containerDragOnly: true,
+                    minWidth: 150,
+                    minHeight: 50
+                };
+                switch (popupType) {
+                    case "production":
+                        {
+                            contentConstructor = UIComponents.ProductionOverview;
+                            contentProps =
+                                {
+                                    player: this.props.player
+                                };
+                            break;
+                        }
+                    case "equipItems":
+                        {
+                            contentConstructor = UIComponents.ItemEquip;
+                            contentProps =
+                                {
+                                    player: this.props.player
+                                };
+                            popupProps.minWidth = 440;
+                            break;
+                        }
+                    case "buyItems":
+                        {
+                            contentConstructor = UIComponents.BuyItems;
+                            contentProps =
+                                {
+                                    player: this.props.player
+                                };
+                            break;
+                        }
+                    case "economySummary":
+                        {
+                            contentConstructor = UIComponents.EconomySummary;
+                            contentProps =
+                                {
+                                    player: this.props.player
+                                };
+                            break;
+                        }
+                    case "saveGame":
+                        {
+                            contentConstructor = UIComponents.SaveGame;
+                            contentProps =
+                                {
+                                    handleClose: this.closePopup.bind(this, "saveGame")
+                                };
+                            popupProps.preventAutoResize = true;
+                            break;
+                        }
+                    case "loadGame":
+                        {
+                            contentConstructor = UIComponents.LoadGame;
+                            contentProps =
+                                {
+                                    handleClose: this.closePopup.bind(this, "loadGame")
+                                };
+                            popupProps.preventAutoResize = true;
+                            break;
+                        }
+                    case "options":
+                        {
+                            contentConstructor = UIComponents.OptionsList;
+                            contentProps = {};
+                            break;
+                        }
+                    case "diplomacy":
+                        {
+                            contentConstructor = UIComponents.DiplomacyOverview;
+                            contentProps =
+                                {
+                                    player: this.props.player,
+                                    totalPlayerCount: this.props.game.playerOrder.length,
+                                    metPlayers: this.props.player.diplomacyStatus.metPlayers,
+                                    statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
+                                };
+                            break;
+                        }
+                    case "technologies":
+                        {
+                            contentConstructor = UIComponents.TechnologiesList;
+                            contentProps =
+                                {
+                                    player: this.props.player
+                                };
+                            popupProps.minWidth = 430;
+                            break;
+                        }
+                }
+                var id = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.TopMenuPopup,
+                    contentProps: {
+                        contentConstructor: contentConstructor,
+                        contentProps: contentProps,
+                        handleClose: this.closePopup.bind(this, popupType)
+                    },
+                    popupProps: popupProps
+                });
+                var stateObj = {};
+                stateObj[popupType] = id;
+                this.setState(stateObj);
+            },
+            togglePopup: function (popupType) {
+                if (isFinite(this.state[popupType])) {
+                    this.closePopup(popupType);
+                }
+                else {
+                    this.makePopup(popupType);
+                }
+            },
+            render: function () {
+                return (UIComponents.PopupManager({
+                    ref: "popupManager"
+                }));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="topmenupopups.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TopMenu = React.createClass({
+            displayName: "TopMenu",
+            mixins: [React.addons.PureRenderMixin],
+            cachedTopMenuWidth: undefined,
+            cachedButtonWidths: [],
+            cachedMenuButtonWidth: 37,
+            getInitialState: function () {
+                return ({
+                    hasCondensedMenu: false,
+                    buttonsToPlace: 999,
+                    condensedMenuOpened: Rance.Options.ui.noHamburger
+                });
+            },
+            componentDidMount: function () {
+                window.addEventListener("resize", this.handleResize, false);
+                Rance.eventManager.addEventListener("playerControlUpdated", this.delayedResize);
+                Rance.eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+                this.handleResize();
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.handleResize);
+                Rance.eventManager.removeEventListener("playerControlUpdated", this.delayedResize);
+                Rance.eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+            },
+            handleToggleHamburger: function () {
+                this.handleResize();
+                this.forceUpdate();
+            },
+            delayedResize: function () {
+                window.setTimeout(this.handleResize, 0);
+            },
+            handleResize: function () {
+                if (!this.cachedTopMenuWidth) {
+                    this.cachedTopMenuWidth = this.refs.topMenu.getDOMNode().getBoundingClientRect().width;
+                    var buttons = this.refs.topMenuItems.getDOMNode().children;
+                    var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
+                    for (var i = 0; i < buttons.length; i++) {
+                        var buttonWidth = buttons[i].getBoundingClientRect().width + margin;
+                        this.cachedButtonWidths.push(buttonWidth);
+                    }
+                }
+                var topMenuHeight = window.innerHeight > 600 ? 50 : 32;
+                var topBar = document.getElementsByClassName("top-bar-info")[0];
+                var topBarRect = topBar.getBoundingClientRect();
+                var rightmostElement = topBar;
+                var rightmostRect = topBarRect;
+                var fleetContainer = document.getElementsByClassName("fleet-selection")[0];
+                if (fleetContainer) {
+                    var fleetElementToCheckAgainst;
+                    var firstChild = fleetContainer.firstChild;
+                    if (firstChild.classList.contains("fleet-selection-controls")) {
+                        fleetElementToCheckAgainst = document.getElementsByClassName("fleet-selection-selected-wrapper")[0];
+                    }
+                    else {
+                        fleetElementToCheckAgainst = firstChild;
+                    }
+                    if (fleetElementToCheckAgainst) {
+                        var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
+                        if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right) {
+                            rightmostElement = fleetElementToCheckAgainst;
+                            rightmostRect = fleetRect;
+                        }
+                    }
+                }
+                var spaceAvailable = window.innerWidth - rightmostRect.right;
+                var hasCondensedMenu = spaceAvailable < this.cachedTopMenuWidth;
+                var amountOfButtonsToPlace = 0;
+                if (hasCondensedMenu) {
+                    if (!Rance.Options.ui.noHamburger) {
+                        spaceAvailable -= this.cachedMenuButtonWidth;
+                    }
+                    var padding = window.innerHeight > 600 ? 25 : 0;
+                    for (var i = 0; i < this.cachedButtonWidths.length; i++) {
+                        var buttonWidthToCheck = this.cachedButtonWidths[i];
+                        if (spaceAvailable > buttonWidthToCheck + padding) {
+                            amountOfButtonsToPlace++;
+                            spaceAvailable -= buttonWidthToCheck;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                else {
+                    amountOfButtonsToPlace = this.cachedButtonWidths.length;
+                }
+                this.setState({
+                    hasCondensedMenu: hasCondensedMenu,
+                    buttonsToPlace: amountOfButtonsToPlace
+                });
+            },
+            togglePopup: function (popupType) {
+                this.refs.popups.togglePopup(popupType);
+                this.forceUpdate();
+            },
+            toggleCondensedMenu: function () {
+                this.setState({
+                    condensedMenuOpened: !this.state.condensedMenuOpened
+                });
+            },
+            render: function () {
+                var menuItemTabIndex = this.state.opened ? -1 : 0;
+                var topMenuButtons = [
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "production",
+                        onClick: this.togglePopup.bind(this, "production"),
+                        tabIndex: menuItemTabIndex
+                    }, "Production"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "equipItems",
+                        onClick: this.togglePopup.bind(this, "equipItems"),
+                        tabIndex: menuItemTabIndex
+                    }, "Equip"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "buyItems",
+                        onClick: this.togglePopup.bind(this, "buyItems"),
+                        tabIndex: menuItemTabIndex
+                    }, "Buy items"),
+                    /*
+                    React.DOM.button(
+                    {
+                      className: "top-menu-items-button",
+                      key: "economySummary",
+                      onClick: this.togglePopup.bind(this, "economySummary"),
+                      tabIndex: menuItemTabIndex
+                    }, "Economy"),
+                    */
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "diplomacy",
+                        onClick: this.togglePopup.bind(this, "diplomacy"),
+                        tabIndex: menuItemTabIndex
+                    }, "Diplomacy"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "technologies",
+                        onClick: this.togglePopup.bind(this, "technologies"),
+                        tabIndex: menuItemTabIndex
+                    }, "Technology"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "options",
+                        onClick: this.togglePopup.bind(this, "options"),
+                        tabIndex: menuItemTabIndex
+                    }, "Options"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "loadGame",
+                        onClick: this.togglePopup.bind(this, "loadGame"),
+                        tabIndex: menuItemTabIndex
+                    }, "Load"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "saveGame",
+                        onClick: this.togglePopup.bind(this, "saveGame"),
+                        tabIndex: menuItemTabIndex
+                    }, "Save")
+                ];
+                var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
+                var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
+                if (this.state.hasCondensedMenu && !Rance.Options.ui.noHamburger) {
+                    topMenuItems.push(React.DOM.button({
+                        className: "top-menu-items-button top-menu-open-condensed-button",
+                        key: "openCondensedMenu",
+                        onClick: this.toggleCondensedMenu,
+                        tabIndex: menuItemTabIndex
+                    }));
+                }
+                var openedCondensedMenu = null;
+                if ((this.state.condensedMenuOpened || Rance.Options.ui.noHamburger) && leftoverButtons.length > 0) {
+                    openedCondensedMenu = React.DOM.div({
+                        className: "top-menu-opened-condensed-menu"
+                    }, leftoverButtons);
+                }
+                ;
+                return (React.DOM.div({
+                    className: "top-menu-wrapper"
+                }, React.DOM.div({
+                    className: "top-menu",
+                    ref: "topMenu"
+                }, React.DOM.div({
+                    className: "top-menu-items",
+                    ref: "topMenuItems"
+                }, topMenuItems)), openedCondensedMenu, UIComponents.TopMenuPopups({
+                    ref: "popups",
+                    player: this.props.player,
+                    game: this.props.game
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Resource = React.createClass({
+            displayName: "Resource",
+            render: function () {
+                var sign = this.props.income < 0 ? "-" : "+";
+                return (React.DOM.div({
+                    className: "resource",
+                    title: this.props.resource.displayName + ""
+                }, React.DOM.img({
+                    className: "resource-icon",
+                    src: this.props.resource.icon
+                }, null), React.DOM.div({
+                    className: "resource-amount"
+                }, "" + this.props.amount + " (" + sign + this.props.income + ")")));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="resource.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TopBarResources = React.createClass({
+            displayName: "TopBarResources",
+            render: function () {
+                var player = this.props.player;
+                var resources = [];
+                var resourceIncome = player.getResourceIncome();
+                var resourceTypes = Object.keys(player.resources);
+                for (var _resourceType in resourceIncome) {
+                    if (resourceTypes.indexOf(_resourceType) === -1) {
+                        resourceTypes.push(_resourceType);
+                    }
+                }
+                for (var i = 0; i < resourceTypes.length; i++) {
+                    var resourceType = resourceTypes[i];
+                    var amount = player.resources[resourceType] || 0;
+                    var income = resourceIncome[resourceType].amount || 0;
+                    if (amount === 0 && income === 0)
+                        continue;
+                    var resourceData = {
+                        resource: app.moduleData.Templates.Resources[resourceType],
+                        amount: amount,
+                        income: income,
+                        key: resourceType
+                    };
+                    resources.push(UIComponents.Resource(resourceData));
+                }
+                return (React.DOM.div({
+                    className: "top-bar-resources"
+                }, resources));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="topbarresources.ts" />
+/// <reference path="../playerflag.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TopBar = React.createClass({
+            displayName: "TopBar",
+            render: function () {
+                var player = this.props.player;
+                var income = player.getIncome();
+                var incomeClass = "top-bar-money-income";
+                if (income < 0)
+                    incomeClass += " negative";
+                return (React.DOM.div({
+                    className: "top-bar"
+                }, React.DOM.div({
+                    className: "top-bar-info"
+                }, React.DOM.div({
+                    className: "top-bar-player"
+                }, UIComponents.PlayerFlag({
+                    props: {
+                        className: "top-bar-player-icon"
+                    },
+                    flag: player.flag
+                }), React.DOM.div({
+                    className: "top-bar-turn-number"
+                }, "Turn " + this.props.game.turnNumber)), React.DOM.div({
+                    className: "top-bar-money"
+                }, React.DOM.div({
+                    className: "top-bar-money-current"
+                }, "Money: " + player.money), React.DOM.div({
+                    className: incomeClass
+                }, "(+" + player.getIncome() + ")")), UIComponents.TopBarResources({
+                    player: player
+                }))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.FleetControls = React.createClass({
+            displayName: "FleetControls",
+            deselectFleet: function () {
+                Rance.eventManager.dispatchEvent("deselectFleet", this.props.fleet);
+            },
+            selectFleet: function () {
+                Rance.eventManager.dispatchEvent("selectFleets", [this.props.fleet]);
+            },
+            splitFleet: function () {
+                Rance.eventManager.dispatchEvent("splitFleet", this.props.fleet);
+            },
+            render: function () {
+                var splitButtonProps = {
+                    className: "fleet-controls-split"
+                };
+                if (this.props.fleet.ships.length > 1 && !this.props.isInspecting) {
+                    splitButtonProps.onClick = this.splitFleet;
+                }
+                else {
+                    splitButtonProps.className += " disabled";
+                    splitButtonProps.disabled = true;
+                }
+                return (React.DOM.div({
+                    className: "fleet-controls"
+                }, React.DOM.button(splitButtonProps, "split"), React.DOM.button({
+                    className: "fleet-controls-deselect",
+                    onClick: this.deselectFleet
+                }, "deselect"), !this.props.hasMultipleSelected ? null : React.DOM.button({
+                    className: "fleet-controls-select",
+                    onClick: this.selectFleet
+                }, "select")));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="fleetcontrols.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.FleetInfo = React.createClass({
+            displayName: "FleetInfo",
+            setFleetName: function (e) {
+                var target = e.target;
+                this.props.fleet.name = target.value;
+                this.forceUpdate();
+            },
+            render: function () {
+                var fleet = this.props.fleet;
+                if (!fleet)
+                    return null;
+                var totalHealth = fleet.getTotalHealth();
+                var isNotDetected = this.props.isNotDetected;
+                var healthRatio = totalHealth.current / totalHealth.max;
+                var critThreshhold = 0.3;
+                var healthStatus = "";
+                if (!isNotDetected && healthRatio <= critThreshhold) {
+                    healthStatus += " critical";
+                }
+                else if (!isNotDetected && totalHealth.current < totalHealth.max) {
+                    healthStatus += " wounded";
+                }
+                return (React.DOM.div({
+                    className: "fleet-info" + (fleet.isStealthy ? " stealthy" : "")
+                }, React.DOM.div({
+                    className: "fleet-info-header"
+                }, React.DOM.input({
+                    className: "fleet-info-name",
+                    value: isNotDetected ? "Unidentified fleet" : fleet.name,
+                    onChange: isNotDetected ? null : this.setFleetName,
+                    readOnly: isNotDetected
+                }), React.DOM.div({
+                    className: "fleet-info-strength"
+                }, React.DOM.span({
+                    className: "fleet-info-strength-current" + healthStatus
+                }, isNotDetected ? "???" : totalHealth.current), React.DOM.span({
+                    className: "fleet-info-strength-max"
+                }, isNotDetected ? "/???" : "/" + totalHealth.max)), UIComponents.FleetControls({
+                    fleet: fleet,
+                    hasMultipleSelected: this.props.hasMultipleSelected,
+                    isInspecting: this.props.isInspecting
+                })), React.DOM.div({
+                    className: "fleet-info-move-points"
+                }, isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
+                    fleet.getMinMaxMovePoints())));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ShipInfoName = React.createClass({
+            displayName: "ShipInfoName",
+            getInitialState: function () {
+                return ({
+                    value: this.props.unit.name
+                });
+            },
+            onChange: function (e) {
+                var target = e.target;
+                this.setState({ value: target.value });
+                this.props.unit.name = target.value;
+            },
+            render: function () {
+                return (React.DOM.input({
+                    className: "ship-info-name",
+                    value: this.props.isNotDetected ? "Unidentified ship" : this.state.value,
+                    onChange: this.props.isNotDetected ? null : this.onChange,
+                    readOnly: this.props.isNotDetected
+                }));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../unit/unitstrength.ts"/>
+/// <reference path="shipinfoname.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ShipInfo = React.createClass({
+            displayName: "ShipInfo",
+            mixins: [UIComponents.Draggable],
+            onDragStart: function () {
+                this.props.onDragStart(this.props.ship);
+            },
+            onDragEnd: function (e) {
+                this.props.onDragEnd(e);
+            },
+            render: function () {
+                var ship = this.props.ship;
+                var isNotDetected = !this.props.isIdentified;
+                var divProps = {
+                    className: "ship-info"
+                };
+                if (this.props.isDraggable) {
+                    divProps.className += " draggable";
+                    divProps.onTouchStart = this.handleMouseDown;
+                    divProps.onMouseDown = this.handleMouseDown;
+                    if (this.state.dragging) {
+                        divProps.style = this.dragPos;
+                        divProps.className += " dragging";
+                    }
+                }
+                return (React.DOM.div(divProps, React.DOM.div({
+                    className: "ship-info-icon-container"
+                }, React.DOM.img({
+                    className: "ship-info-icon",
+                    src: isNotDetected ? "img\/icons\/unDetected.png" : ship.template.icon
+                })), React.DOM.div({
+                    className: "ship-info-info"
+                }, UIComponents.ShipInfoName({
+                    unit: ship,
+                    isNotDetected: isNotDetected
+                }), React.DOM.div({
+                    className: "ship-info-type"
+                }, isNotDetected ? "???" : ship.template.displayName)), UIComponents.UnitStrength({
+                    maxHealth: ship.maxHealth,
+                    currentHealth: ship.currentHealth,
+                    isSquadron: true,
+                    isNotDetected: isNotDetected
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="shipinfo.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.FleetContents = React.createClass({
+            displayName: "FleetContents",
+            handleMouseUp: function () {
+                if (!this.props.onMouseUp)
+                    return;
+                this.props.onMouseUp(this.props.fleet);
+            },
+            render: function () {
+                var shipInfos = [];
+                var hasDraggableContent = (this.props.onDragStart ||
+                    this.props.onDragEnd);
+                for (var i = 0; i < this.props.fleet.ships.length; i++) {
+                    var ship = this.props.fleet.ships[i];
+                    shipInfos.push(UIComponents.ShipInfo({
+                        key: ship.id,
+                        ship: ship,
+                        isDraggable: hasDraggableContent,
+                        onDragStart: this.props.onDragStart,
+                        onDragMove: this.props.onDragMove,
+                        onDragEnd: this.props.onDragEnd,
+                        isIdentified: this.props.player.unitIsIdentified(ship)
+                    }));
+                }
+                if (hasDraggableContent) {
+                    shipInfos.push(React.DOM.div({
+                        className: "fleet-contents-dummy-ship",
+                        key: "dummy"
+                    }));
+                }
+                return (React.DOM.div({
+                    className: "fleet-contents",
+                    onMouseUp: this.handleMouseUp
+                }, shipInfos));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="fleetcontents.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.FleetReorganization = React.createClass({
+            displayName: "FleetReorganization",
+            getInitialState: function () {
+                return ({
+                    currentDragUnit: null
+                });
+            },
+            handleDragStart: function (unit) {
+                this.setState({
+                    currentDragUnit: unit
+                });
+            },
+            handleDragEnd: function (dropSuccesful) {
+                if (dropSuccesful === void 0) { dropSuccesful = false; }
+                this.setState({
+                    currentDragUnit: null
+                });
+            },
+            handleDrop: function (fleet) {
+                var draggingUnit = this.state.currentDragUnit;
+                if (draggingUnit) {
+                    var oldFleet = draggingUnit.fleet;
+                    oldFleet.transferShip(fleet, draggingUnit);
+                    Rance.eventManager.dispatchEvent("playerControlUpdated", null);
+                }
+                this.handleDragEnd(true);
+            },
+            handleClose: function () {
+                this.hasClosed = true;
+                this.props.closeReorganization();
+            },
+            componentWillUnmount: function () {
+                if (this.hasClosed)
+                    return;
+                Rance.eventManager.dispatchEvent("endReorganizingFleets");
+            },
+            render: function () {
+                var selectedFleets = this.props.fleets;
+                if (!selectedFleets || selectedFleets.length < 1) {
+                    return null;
+                }
+                return (React.DOM.div({
+                    className: "fleet-reorganization"
+                }, React.DOM.div({
+                    className: "fleet-reorganization-header"
+                }, "Reorganize fleets"), React.DOM.div({
+                    className: "fleet-reorganization-subheader"
+                }, React.DOM.div({
+                    className: "fleet-reorganization-subheader-fleet-name" +
+                        " fleet-reorganization-subheader-fleet-name-left",
+                }, selectedFleets[0].name), React.DOM.div({
+                    className: "fleet-reorganization-subheader-center"
+                }, null), React.DOM.div({
+                    className: "fleet-reorganization-subheader-fleet-name" +
+                        " fleet-reorganization-subheader-fleet-name-right",
+                }, selectedFleets[1].name)), React.DOM.div({
+                    className: "fleet-reorganization-contents"
+                }, UIComponents.FleetContents({
+                    fleet: selectedFleets[0],
+                    onMouseUp: this.handleDrop,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd,
+                    player: selectedFleets[0].player
+                }), React.DOM.div({
+                    className: "fleet-reorganization-contents-divider"
+                }, null), UIComponents.FleetContents({
+                    fleet: selectedFleets[1],
+                    onMouseUp: this.handleDrop,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd,
+                    player: selectedFleets[0].player
+                })), React.DOM.div({
+                    className: "fleet-reorganization-footer"
+                }, React.DOM.button({
+                    className: "close-reorganization",
+                    onClick: this.handleClose
+                }, "Close"))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="fleetinfo.ts"/>
+/// <reference path="fleetcontents.ts"/>
+/// <reference path="fleetreorganization.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.FleetSelection = React.createClass({
+            displayName: "FleetSelection",
+            mergeFleets: function () {
+                Rance.eventManager.dispatchEvent("mergeFleets", null);
+            },
+            reorganizeFleets: function () {
+                Rance.eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
+            },
+            setElementPosition: function () {
+                if (!this.refs.selected)
+                    return;
+                var domNode = this.refs.selected.getDOMNode();
+                if (!this.props.selectedStar) {
+                    domNode.style.left = 0;
+                }
+                else {
+                    var containerNode = document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
+                    var actionsNode = containerNode.firstChild.firstChild;
+                    var actionsRect = actionsNode.getBoundingClientRect();
+                    var rightMostNode = (containerNode.childElementCount > 1 ?
+                        containerNode.lastChild.lastChild :
+                        containerNode.lastChild);
+                    var rightMostRect = rightMostNode.getBoundingClientRect();
+                    var ownBottom = domNode.getBoundingClientRect().bottom;
+                    var first = this.refs.main.getDOMNode().firstChild;
+                    if (ownBottom > actionsRect.top) {
+                        var styleString = "" + (rightMostRect.right) + "px";
+                        domNode.style.left = styleString;
+                        first.style.left = styleString;
+                        first.classList.add("fleet-selection-displaced");
+                    }
+                    else {
+                        domNode.style.left = 0;
+                        first.style.left = 0;
+                        first.classList.remove("fleet-selection-displaced");
+                    }
+                }
+            },
+            componentDidMount: function () {
+                this.setElementPosition();
+                Rance.eventManager.addEventListener("possibleActionsUpdated", this.setElementPosition);
+                window.addEventListener("resize", this.setElementPosition, false);
+            },
+            componentDidUpdate: function () {
+                this.setElementPosition();
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("possibleActionsUpdated", this.setElementPosition);
+                window.removeEventListener("resize", this.setElementPosition);
+            },
+            render: function () {
+                var selectedFleets = this.props.selectedFleets;
+                if (!selectedFleets || selectedFleets.length <= 0) {
+                    return null;
+                }
+                var allFleetsInSameLocation = true;
+                var hasMultipleSelected = selectedFleets.length >= 2;
+                for (var i = 1; i < selectedFleets.length; i++) {
+                    if (selectedFleets[i].location !== selectedFleets[i - 1].location) {
+                        allFleetsInSameLocation = false;
+                        break;
+                    }
+                }
+                var fleetInfos = [];
+                for (var i = 0; i < selectedFleets.length; i++) {
+                    var fleet = selectedFleets[i];
+                    var infoProps = {
+                        key: fleet.id,
+                        fleet: fleet,
+                        hasMultipleSelected: hasMultipleSelected,
+                        isInspecting: this.props.isInspecting,
+                        isNotDetected: this.props.isInspecting && !this.props.player.fleetIsFullyIdentified(fleet)
+                    };
+                    fleetInfos.push(UIComponents.FleetInfo(infoProps));
+                }
+                var fleetSelectionControls = null;
+                if (hasMultipleSelected) {
+                    var fleetStealthsAreClashing = selectedFleets.length === 2 && selectedFleets[0].isStealthy !== selectedFleets[1].isStealthy;
+                    var mergeProps = {
+                        className: "fleet-selection-controls-merge"
+                    };
+                    if (allFleetsInSameLocation && !this.props.isInspecting && !fleetStealthsAreClashing) {
+                        mergeProps.onClick = this.mergeFleets;
+                    }
+                    else {
+                        mergeProps.disabled = true;
+                        mergeProps.className += " disabled";
+                    }
+                    var reorganizeProps = {
+                        className: "fleet-selection-controls-reorganize"
+                    };
+                    if (allFleetsInSameLocation && selectedFleets.length === 2 && !this.props.isInspecting &&
+                        !fleetStealthsAreClashing) {
+                        reorganizeProps.onClick = this.reorganizeFleets;
+                    }
+                    else {
+                        reorganizeProps.disabled = true;
+                        reorganizeProps.className += " disabled";
+                    }
+                    fleetSelectionControls = React.DOM.div({
+                        className: "fleet-selection-controls"
+                    }, React.DOM.button(reorganizeProps, "reorganize"), React.DOM.button(mergeProps, "merge"));
+                }
+                var fleetContents = null;
+                if (!hasMultipleSelected) {
+                    fleetContents = UIComponents.FleetContents({
+                        fleet: selectedFleets[0],
+                        player: this.props.player
+                    });
+                }
+                var isReorganizing = this.props.currentlyReorganizing.length > 0;
+                var reorganizeElement = null;
+                if (isReorganizing) {
+                    reorganizeElement = UIComponents.FleetReorganization({
+                        fleets: this.props.currentlyReorganizing,
+                        closeReorganization: this.props.closeReorganization
+                    });
+                }
+                return (React.DOM.div({
+                    className: "fleet-selection",
+                    ref: "main"
+                }, fleetSelectionControls, hasMultipleSelected ? null : fleetInfos, React.DOM.div({
+                    className: "fleet-selection-selected-wrapper"
+                }, React.DOM.div({
+                    className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
+                    ref: "selected"
+                }, hasMultipleSelected ? fleetInfos : null, fleetContents), reorganizeElement)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="defencebuildinglist.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.StarInfo = React.createClass({
+            displayName: "StarInfo",
+            shouldComponentUpdate: function (newProps) {
+                return this.props.selectedStar !== newProps.selectedStar;
+            },
+            render: function () {
+                var star = this.props.selectedStar;
+                if (!star)
+                    return null;
+                var dumpDebugInfoButton = null;
+                if (Rance.Options.debugMode) {
+                    dumpDebugInfoButton = React.DOM.button({
+                        className: "star-info-dump-debug-button",
+                        onClick: function (e) {
+                            console.log(star);
+                            console.log(star.mapGenData);
+                        }
+                    }, "Debug");
+                }
+                return (React.DOM.div({
+                    className: "star-info"
+                }, React.DOM.div({
+                    className: "star-info-name"
+                }, star.name), React.DOM.div({
+                    className: "star-info-owner"
+                }, star.owner ? star.owner.name : null), dumpDebugInfoButton, React.DOM.div({
+                    className: "star-info-location"
+                }, "x: " + star.x.toFixed() +
+                    " y: " + star.y.toFixed()), React.DOM.div({
+                    className: "star-info-income"
+                }, "Income: " + star.getIncome()), UIComponents.DefenceBuildingList({
+                    buildings: star.buildings["defence"]
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../playerflag.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.AttackTarget = React.createClass({
+            displayName: "AttackTarget",
+            handleAttack: function () {
+                Rance.eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
+            },
+            render: function () {
+                var target = this.props.attackTarget;
+                return (React.DOM.div({
+                    className: "attack-target",
+                    onClick: this.handleAttack
+                }, React.DOM.div({
+                    className: "attack-target-type"
+                }, target.type), UIComponents.PlayerFlag({
+                    flag: target.enemy.flag,
+                    props: {
+                        className: "attack-target-player-icon"
+                    }
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.BuildableBuilding = React.createClass({
+            displayName: "BuildableBuilding",
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "buildable-building-list-item-cell " + type;
+                var cellContent;
+                switch (type) {
+                    case ("buildCost"):
+                        {
+                            if (this.props.player.money < this.props.buildCost) {
+                                cellProps.className += " negative";
+                            }
+                        }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            break;
+                        }
+                }
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var player = this.props.player;
+                var cells = [];
+                var columns = this.props.activeColumns;
+                for (var i = 0; i < columns.length; i++) {
+                    cells.push(this.makeCell(columns[i].key));
+                }
+                var props = {
+                    className: "buildable-item buildable-building",
+                    onClick: this.props.handleClick
+                };
+                if (player.money < this.props.buildCost) {
+                    props.onClick = null;
+                    props.disabled = true;
+                    props.className += " disabled";
+                }
+                return (React.DOM.tr(props, cells));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../unitlist/list.ts" />
+/// <reference path="buildablebuilding.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.BuildableBuildingList = React.createClass({
+            displayName: "BuildableBuildingList",
+            getInitialState: function () {
+                return ({
+                    buildingTemplates: this.props.star.getBuildableBuildings()
+                });
+            },
+            updateBuildings: function () {
+                var buildingTemplates = this.props.star.getBuildableBuildings();
+                this.setState({
+                    buildingTemplates: buildingTemplates
+                });
+                Rance.eventManager.dispatchEvent("playerControlUpdated");
+                if (buildingTemplates.length < 1) {
+                    this.props.clearExpandedAction();
+                }
+            },
+            buildBuilding: function (rowItem) {
+                var template = rowItem.data.template;
+                var building = new Rance.Building({
+                    template: template,
+                    location: this.props.star
+                });
+                if (!building.controller)
+                    building.controller = this.props.humanPlayer;
+                this.props.star.addBuilding(building);
+                building.controller.money -= template.buildCost;
+                //building.totalCost += template.buildCost;
+                this.updateBuildings();
+            },
+            render: function () {
+                if (this.state.buildingTemplates.length < 1)
+                    return null;
+                var rows = [];
+                for (var i = 0; i < this.state.buildingTemplates.length; i++) {
+                    var template = this.state.buildingTemplates[i];
+                    var data = {
+                        template: template,
+                        typeName: template.displayName,
+                        buildCost: template.buildCost,
+                        player: this.props.player,
+                        rowConstructor: UIComponents.BuildableBuilding
+                    };
+                    rows.push({
+                        key: i,
+                        data: data
+                    });
+                }
+                var columns = [
+                    {
+                        label: "Name",
+                        key: "typeName",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Cost",
+                        key: "buildCost",
+                        defaultOrder: "desc"
+                    }
+                ];
+                return (React.DOM.div({ className: "buildable-item-list buildable-building-list fixed-table-parent" }, UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    onRowChange: this.buildBuilding,
+                    addSpacer: true
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
