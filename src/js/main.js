@@ -2833,8 +2833,9 @@ var Rance;
             },
             render: function () {
                 var rows = [];
-                for (var i = 0; i < this.props.items.length; i++) {
-                    var item = this.props.items[i];
+                var items = this.props.items;
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
                     var ability = null;
                     var abilityIsPassive = false;
                     if (item.template.ability) {
@@ -2854,7 +2855,7 @@ var Rance;
                         unit: item.unit ? item.unit : null,
                         unitName: item.unit ? item.unit.name : "",
                         techLevel: item.template.techLevel,
-                        cost: item.template.cost,
+                        cost: item.template.buildCost,
                         ability: ability,
                         abilityName: ability ? ability.displayName : "",
                         abilityIsPassive: abilityIsPassive,
@@ -3956,15 +3957,16 @@ var Rance;
             },
             render: function () {
                 var rows = [];
-                for (var i = 0; i < this.props.items.length; i++) {
-                    var item = this.props.items[i];
+                var items = this.props.items;
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
                     var data = {
                         item: item,
                         typeName: item.template.displayName,
                         slot: item.template.slot,
                         slotIndex: this.getSlotIndex(item.template.slot),
                         techLevel: item.template.techLevel,
-                        buildCost: item.template.cost,
+                        buildCost: item.template.buildCost,
                         playerMoney: this.props.playerMoney,
                         rowConstructor: UIComponents.ItemPurchaseListItem
                     };
@@ -4017,7 +4019,7 @@ var Rance;
                 var template = row.data.item.template;
                 var item = new Rance.Item(template);
                 this.props.player.addItem(item);
-                this.props.player.money -= template.cost;
+                this.props.player.money -= template.buildCost;
                 Rance.eventManager.dispatchEvent("playerControlUpdated");
             },
             render: function () {
@@ -13656,7 +13658,141 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.BuildQueue = React.createClass({
+            displayName: "BuildQueue",
+            render: function () {
+                return (React.DOM.div({
+                    className: "build-queue"
+                }, "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br()));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ManufacturableUnits = React.createClass({
+            displayName: "ManufacturableUnits",
+            propTypes: {
+                selectedStar: React.PropTypes.instanceOf(Rance.Star).isRequired,
+                consolidateLocations: React.PropTypes.bool.isRequired,
+                manufacturableThings: React.PropTypes.arrayOf(React.PropTypes.any).isRequired // TODO
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "manufacturable-units"
+                }, "units todo"));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ManufacturableItems = React.createClass({
+            displayName: "ManufacturableItems",
+            propTypes: {
+                selectedStar: React.PropTypes.instanceOf(Rance.Star).isRequired,
+                consolidateLocations: React.PropTypes.bool.isRequired,
+                manufacturableThings: React.PropTypes.arrayOf(React.PropTypes.any).isRequired // TODO
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "manufacturable-items"
+                }, "items todo"));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="manufacturableunits.ts" />
+/// <reference path="manufacturableitems.ts" />
+/// <reference path="../../star.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ManufacturableThings = React.createClass({
+            displayName: "ManufacturableThings",
+            propTypes: {
+                selectedStar: React.PropTypes.instanceOf(Rance.Star).isRequired,
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    activeTab: "units"
+                });
+            },
+            selectTab: function (key) {
+                if (this.state.activeTab === key)
+                    return;
+                this.setState({
+                    activeTab: key
+                });
+            },
+            makeTabButton: function (key) {
+                var displayString;
+                switch (key) {
+                    case "units":
+                        {
+                            displayString = "Units";
+                            break;
+                        }
+                    case "items":
+                        {
+                            displayString = "Items";
+                            break;
+                        }
+                }
+                return (React.DOM.button({
+                    key: key,
+                    className: "manufacturable-things-tab-button" +
+                        (this.state.activeTab === key ? " active-tab" : ""),
+                    onClick: this.selectTab.bind(this, key)
+                }, displayString));
+            },
+            getManufacturableThings: function (key) {
+                return []; // TODO
+            },
+            makeTab: function (key) {
+                var props = {
+                    key: key,
+                    selectedStar: this.props.selectedStar,
+                    manufacturableThings: this.getManufacturableThings(key),
+                    consolidateLocations: false
+                };
+                switch (key) {
+                    case "units":
+                        {
+                            return (UIComponents.ManufacturableUnits(props));
+                        }
+                    case "items":
+                        {
+                            props.consolidateLocations = true;
+                            return (UIComponents.ManufacturableItems(props));
+                        }
+                }
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "manufacturable-things"
+                }, React.DOM.div({
+                    className: "manufacturable-things-tab-buttons"
+                }, this.makeTabButton("units"), this.makeTabButton("items")), React.DOM.div({
+                    className: "manufacturable-things-active-tab"
+                }, this.makeTab(this.state.activeTab))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="manufactorystarslist.ts" />
+/// <reference path="buildqueue.ts" />
+/// <reference path="manufacturablethings.ts" />
 /// <reference path="../../player.ts" />
 /// <reference path="../../star.ts" />
 var Rance;
@@ -13712,7 +13848,12 @@ var Rance;
                     starsWithoutManufcatories: starsWithoutManufcatories,
                     highlightedStars: this.state.highlightedStars,
                     handleStarSelect: this.handleStarSelect
-                })));
+                }), React.DOM.div({
+                    className: "production-overview-contents"
+                }, !this.state.selectedStar ? null : UIComponents.BuildQueue(), UIComponents.ManufacturableThings({
+                    selectedStar: this.state.selectedStar,
+                    player: player
+                }))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -22307,18 +22448,20 @@ var Rance;
                     Items.bombLauncher1 = {
                         type: "bombLauncher1",
                         displayName: "Bomb Launcher 1",
+                        description: "",
                         icon: "img\/items\/cannon.png",
                         techLevel: 1,
-                        cost: 100,
+                        buildCost: 100,
                         slot: "high",
                         ability: Templates.Abilities.bombAttack
                     };
                     Items.bombLauncher2 = {
                         type: "bombLauncher2",
                         displayName: "Bomb Launcher 2",
+                        description: "",
                         icon: "img\/items\/cannon.png",
                         techLevel: 2,
-                        cost: 200,
+                        buildCost: 200,
                         attributes: {
                             attack: 1
                         },
@@ -22328,9 +22471,10 @@ var Rance;
                     Items.bombLauncher3 = {
                         type: "bombLauncher3",
                         displayName: "Bomb Launcher 3",
+                        description: "",
                         icon: "img\/items\/cannon.png",
                         techLevel: 3,
-                        cost: 300,
+                        buildCost: 300,
                         attributes: {
                             attack: 3
                         },
@@ -22340,9 +22484,10 @@ var Rance;
                     Items.afterBurner1 = {
                         type: "afterBurner1",
                         displayName: "Afterburner 1",
+                        description: "",
                         icon: "img\/items\/blueThing.png",
                         techLevel: 1,
-                        cost: 100,
+                        buildCost: 100,
                         attributes: {
                             speed: 1
                         },
@@ -22352,9 +22497,10 @@ var Rance;
                     Items.afterBurner2 = {
                         type: "afterBurner2",
                         displayName: "Afterburner 2",
+                        description: "",
                         icon: "img\/items\/blueThing.png",
                         techLevel: 2,
-                        cost: 200,
+                        buildCost: 200,
                         attributes: {
                             speed: 2
                         },
@@ -22363,9 +22509,10 @@ var Rance;
                     Items.afterBurner3 = {
                         type: "afterBurner3",
                         displayName: "Afterburner 3",
+                        description: "",
                         icon: "img\/items\/blueThing.png",
                         techLevel: 3,
-                        cost: 300,
+                        buildCost: 300,
                         attributes: {
                             maxActionPoints: 1,
                             speed: 3
@@ -22375,9 +22522,10 @@ var Rance;
                     Items.shieldPlating1 = {
                         type: "shieldPlating1",
                         displayName: "Shield Plating 1",
+                        description: "",
                         icon: "img\/items\/armor1.png",
                         techLevel: 1,
-                        cost: 100,
+                        buildCost: 100,
                         attributes: {
                             defence: 1
                         },
@@ -22386,9 +22534,10 @@ var Rance;
                     Items.shieldPlating2 = {
                         type: "shieldPlating2",
                         displayName: "Shield Plating 2",
+                        description: "",
                         icon: "img\/items\/armor1.png",
                         techLevel: 2,
-                        cost: 200,
+                        buildCost: 200,
                         attributes: {
                             defence: 2
                         },
@@ -22397,9 +22546,10 @@ var Rance;
                     Items.shieldPlating3 = {
                         type: "shieldPlating3",
                         displayName: "Shield Plating 3",
+                        description: "",
                         icon: "img\/items\/armor1.png",
                         techLevel: 3,
-                        cost: 300,
+                        buildCost: 300,
                         attributes: {
                             defence: 3,
                             speed: -1

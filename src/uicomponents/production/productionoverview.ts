@@ -1,4 +1,6 @@
 /// <reference path="manufactorystarslist.ts" />
+/// <reference path="buildqueue.ts" />
+/// <reference path="manufacturablethings.ts" />
 
 /// <reference path="../../player.ts" />
 /// <reference path="../../star.ts" />
@@ -82,7 +84,18 @@ module Rance
               starsWithoutManufcatories: starsWithoutManufcatories,
               highlightedStars: this.state.highlightedStars,
               handleStarSelect: this.handleStarSelect
-            })
+            }),
+            React.DOM.div(
+            {
+              className: "production-overview-contents"
+            },
+              !this.state.selectedStar ? null : UIComponents.BuildQueue(),
+              UIComponents.ManufacturableThings(
+              {
+                selectedStar: this.state.selectedStar,
+                player: player
+              })
+            )
           )
         );
       }

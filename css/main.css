@@ -3683,6 +3683,16 @@ ol {
 .debug-hidden {
   display: none;
 }
+.production-overview {
+  display: flex;
+  flex-flow: row;
+}
+.manufactory-stars-list {
+  border: 1px solid red;
+  overflow-y: scroll;
+  height: 100%;
+  flex: 0 0 auto;
+}
 .manufactory-stars-list-item {
   display: flex;
   flex-flow: row;
@@ -3698,5 +3708,58 @@ ol {
   margin-left: 1em;
 }
 .manufactory-stars-list-item-capacity.no-capacity {
+  color: red;
+}
+.production-overview-contents {
+  border: 1px solid green;
+  display: flex;
+  flex-flow: row;
+  flex: 1 1 auto;
+  height: 100%;
+}
+.build-queue {
+  border: 1px solid red;
+  flex: 0 0 auto;
+  height: 100%;
+  overflow-y: scroll;
+}
+.manufacturable-things {
+  border: 1px solid yellow;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+}
+.manufacturable-things-tab-buttons {
+  display: flex;
+  flex-flow: row;
+  flex: 0 0 auto;
+}
+.manufacturable-things-tab-button {
+  flex: 1 1 auto;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.manufacturable-things-tab-button:hover,
+.manufacturable-things-tab-button:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.manufacturable-things-tab-button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.manufacturable-things-tab-button:disabled,
+.manufacturable-things-tab-button.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.manufacturable-things-tab-button:disabled *,
+.manufacturable-things-tab-button.disabled * {
+  pointer-events: none !important;
+}
+.manufacturable-things-tab-button.active-tab {
   color: red;
 }

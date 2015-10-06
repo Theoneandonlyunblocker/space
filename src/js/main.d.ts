@@ -2000,6 +2000,26 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var BuildQueue: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ManufacturableUnits: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ManufacturableItems: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ManufacturableThings: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var ProductionOverview: React.Factory<any>;
     }
 }

@@ -3772,6 +3772,20 @@ ul, ol
   display: none;
 }
 
+.production-overview
+{
+  display: flex;
+  flex-flow: row;
+}
+
+.manufactory-stars-list
+{
+  border: 1px solid red;
+  overflow-y: scroll;
+  height: 100%;
+  flex: 0 0 auto;
+}
+
 .manufactory-stars-list-item
 {
   display: flex;
@@ -3794,6 +3808,49 @@ ul, ol
   margin-left: 1em;
 
   &.no-capacity
+  {
+    color: red;
+  }
+}
+
+.production-overview-contents
+{
+  border: 1px solid green;
+  display: flex;
+  flex-flow: row;
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.build-queue
+{
+  border: 1px solid red;
+  flex: 0 0 auto;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.manufacturable-things
+{
+  border: 1px solid yellow;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+}
+
+.manufacturable-things-tab-buttons
+{
+  display: flex;
+  flex-flow: row;
+  flex: 0 0 auto;
+}
+
+.manufacturable-things-tab-button
+{
+  flex: 1 1 auto;
+  .button-style;
+
+  &.active-tab
   {
     color: red;
   }
