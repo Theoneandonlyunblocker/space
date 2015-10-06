@@ -3741,6 +3741,7 @@ ol {
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
+  border-radius: 5px 5px 0 0;
 }
 .manufacturable-things-tab-button:hover,
 .manufacturable-things-tab-button:focus {
@@ -3762,4 +3763,12 @@ ol {
 }
 .manufacturable-things-tab-button.active-tab {
   color: red;
+}
+.manufacturable-things-active-tab {
+  flex: 1 1 auto;
+}
+.manufactory-upgrade-buttons-container {
+  display: flex;
+  flex-flow: row;
+  border: 1px solid red;
 }

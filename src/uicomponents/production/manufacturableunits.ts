@@ -8,9 +8,9 @@ module Rance
 
       propTypes:
       {
-        selectedStar: React.PropTypes.instanceOf(Star).isRequired,
+        selectedStar: React.PropTypes.instanceOf(Star),
         consolidateLocations: React.PropTypes.bool.isRequired,
-        manufacturableThings: React.PropTypes.arrayOf(React.PropTypes.any).isRequired // TODO
+        manufacturableThings: React.PropTypes.object.isRequired // TODO
       },
 
       render: function()
@@ -20,7 +20,24 @@ module Rance
           {
             className: "manufacturable-units"
           },
-            "units todo"
+            React.DOM.div(
+            {
+              className: "manufactory-upgrade-buttons-container"
+            },
+              React.DOM.button(
+              {
+                className: "manufactory-upgrade-button manufactory-units-upgrade-strength-button"
+              },
+                "Upgrade strength"
+              ),
+              React.DOM.button(
+              {
+                className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button"
+              },
+                "Upgrade stats"
+              )
+            ),
+            "todo units"
           )
         );
       }

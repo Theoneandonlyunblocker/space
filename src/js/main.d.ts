@@ -2014,6 +2014,31 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IManufacturableThingWithLocations {
+        thing: IManufacturableThing;
+        locations: Star[];
+    }
+    interface IManufacturableThingsData {
+        manufacturable: IManufacturableThingWithLocations[];
+        potential: IManufacturableThingWithLocations[];
+    }
+    class Manufactory {
+        buildQueue: {
+            type: string;
+            template: IManufacturableThing;
+        }[];
+        player: Player;
+        star: Star;
+        capacity: number;
+        maxCapacity: number;
+        constructor();
+        addThingToQueue(template: IManufacturableThing, type: string): void;
+        removeThingAtIndex(index: number): void;
+        buildAllThings(): void;
+        serialize(): void;
+    }
+}
+declare module Rance {
     module UIComponents {
         var ManufacturableThings: React.Factory<any>;
     }

@@ -13679,14 +13679,20 @@ var Rance;
         UIComponents.ManufacturableUnits = React.createClass({
             displayName: "ManufacturableUnits",
             propTypes: {
-                selectedStar: React.PropTypes.instanceOf(Rance.Star).isRequired,
+                selectedStar: React.PropTypes.instanceOf(Rance.Star),
                 consolidateLocations: React.PropTypes.bool.isRequired,
-                manufacturableThings: React.PropTypes.arrayOf(React.PropTypes.any).isRequired // TODO
+                manufacturableThings: React.PropTypes.object.isRequired // TODO
             },
             render: function () {
                 return (React.DOM.div({
                     className: "manufacturable-units"
-                }, "units todo"));
+                }, React.DOM.div({
+                    className: "manufactory-upgrade-buttons-container"
+                }, React.DOM.button({
+                    className: "manufactory-upgrade-button manufactory-units-upgrade-strength-button"
+                }, "Upgrade strength"), React.DOM.button({
+                    className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button"
+                }, "Upgrade stats")), "todo units"));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -13698,21 +13704,79 @@ var Rance;
         UIComponents.ManufacturableItems = React.createClass({
             displayName: "ManufacturableItems",
             propTypes: {
-                selectedStar: React.PropTypes.instanceOf(Rance.Star).isRequired,
+                selectedStar: React.PropTypes.instanceOf(Rance.Star),
                 consolidateLocations: React.PropTypes.bool.isRequired,
-                manufacturableThings: React.PropTypes.arrayOf(React.PropTypes.any).isRequired // TODO
+                manufacturableThings: React.PropTypes.object.isRequired // TODO
             },
             render: function () {
                 return (React.DOM.div({
                     className: "manufacturable-items"
-                }, "items todo"));
+                }, React.DOM.div({
+                    className: "manufactory-upgrade-buttons-container"
+                }, React.DOM.button({
+                    className: "manufactory-upgrade-button manufactory-items-upgrade-button"
+                }, "Upgrade items")), "todo items"));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Manufactory = (function () {
+        function Manufactory() {
+            this.buildQueue = [];
+        }
+        Manufactory.prototype.addThingToQueue = function (template, type) {
+            this.buildQueue.push({ type: type, template: template });
+            this.player.money -= template.buildCost;
+        };
+        Manufactory.prototype.removeThingAtIndex = function (index) {
+            var template = this.buildQueue[index].template;
+            this.player.money += template.buildCost;
+            this.buildQueue.splice(index, 1);
+        };
+        Manufactory.prototype.buildAllThings = function () {
+            var units = [];
+            while (this.buildQueue.length > 0) {
+                var thingData = this.buildQueue.pop();
+                switch (thingData.type) {
+                    case "unit":
+                        {
+                            var unitTemplate = thingData.template;
+                            var unit = new Rance.Unit(unitTemplate);
+                            units.push(unit);
+                            this.player.addUnit(unit);
+                            break;
+                        }
+                    case "item":
+                        {
+                            var itemTemplate = thingData.template;
+                            var item = new Rance.Item(itemTemplate);
+                            this.player.addItem(item);
+                            break;
+                        }
+                }
+            }
+            if (units.length > 0) {
+                var fleet = new Rance.Fleet(this.player, units, this.star);
+            }
+        };
+        Manufactory.prototype.serialize = function () {
+            var buildQueue = this.buildQueue.map(function (thingData) {
+                return ({
+                    type: thingData.type,
+                    templateType: thingData.template.type
+                });
+            });
+        };
+        return Manufactory;
+    })();
+    Rance.Manufactory = Manufactory;
+})(Rance || (Rance = {}));
 /// <reference path="manufacturableunits.ts" />
 /// <reference path="manufacturableitems.ts" />
 /// <reference path="../../star.ts" />
+/// <reference path="../../manufactory.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -13720,7 +13784,7 @@ var Rance;
         UIComponents.ManufacturableThings = React.createClass({
             displayName: "ManufacturableThings",
             propTypes: {
-                selectedStar: React.PropTypes.instanceOf(Rance.Star).isRequired,
+                selectedStar: React.PropTypes.instanceOf(Rance.Star),
                 player: React.PropTypes.instanceOf(Rance.Player).isRequired
             },
             getInitialState: function () {
@@ -13757,13 +13821,34 @@ var Rance;
                 }, displayString));
             },
             getManufacturableThings: function (key) {
-                return []; // TODO
+                var manufacturableThings;
+                var selectedStar = this.props.selectedStar;
+                var player = this.props.player;
+                switch (key) {
+                    case "units":
+                        {
+                            if (selectedStar) {
+                            }
+                            else {
+                            }
+                            break;
+                        }
+                    case "items":
+                        {
+                            if (selectedStar) {
+                            }
+                            else {
+                            }
+                            break;
+                        }
+                }
+                return manufacturableThings;
             },
             makeTab: function (key) {
                 var props = {
                     key: key,
                     selectedStar: this.props.selectedStar,
-                    manufacturableThings: this.getManufacturableThings(key),
+                    manufacturableThings: {},
                     consolidateLocations: false
                 };
                 switch (key) {

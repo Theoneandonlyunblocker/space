@@ -2,6 +2,7 @@
 /// <reference path="manufacturableitems.ts" />
 
 /// <reference path="../../star.ts" />
+/// <reference path="../../manufactory.ts" />
 
 module Rance
 {
@@ -13,7 +14,7 @@ module Rance
 
       propTypes:
       {
-        selectedStar: React.PropTypes.instanceOf(Star).isRequired,
+        selectedStar: React.PropTypes.instanceOf(Star),
         player: React.PropTypes.instanceOf(Player).isRequired
       },
 
@@ -64,9 +65,42 @@ module Rance
         );
       },
 
-      getManufacturableThings: function(key: string): any[]
+      getManufacturableThings: function(key: string)
       {
-        return []; // TODO
+        var manufacturableThings: IManufacturableThingsData;
+
+        var selectedStar: Star = this.props.selectedStar;
+        var player: Player = this.props.player;
+
+        switch (key)
+        {
+          case "units":
+          {
+            if (selectedStar)
+            {
+
+            }
+            else
+            {
+              
+            }
+            break;
+          }
+          case "items":
+          {
+            if (selectedStar)
+            {
+
+            }
+            else
+            {
+              
+            }
+            break;
+          }
+        }
+
+        return manufacturableThings;
       },
 
       makeTab: function(key: string)
@@ -75,7 +109,7 @@ module Rance
         {
           key: key,
           selectedStar: this.props.selectedStar,
-          manufacturableThings: this.getManufacturableThings(key),
+          manufacturableThings: {}, //TODO this.getManufacturableThings(key),
           consolidateLocations: false
         }
         switch (key)
