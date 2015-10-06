@@ -175,13 +175,6 @@ module Rance
             onClick: this.togglePopup.bind(this, "equipItems"),
             tabIndex: menuItemTabIndex
           }, "Equip"),
-          React.DOM.button(
-          {
-            className: "top-menu-items-button",
-            key: "buyItems",
-            onClick: this.togglePopup.bind(this, "buyItems"),
-            tabIndex: menuItemTabIndex
-          }, "Buy items"),
           /*
           React.DOM.button(
           {

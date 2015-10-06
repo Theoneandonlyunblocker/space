@@ -1,4 +1,3 @@
-/// <reference path="../items/buyitems.ts"/>
 /// <reference path="../saves/savegame.ts"/>
 /// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
@@ -22,7 +21,6 @@ module Rance
         {
           production: undefined,
           equipItems: undefined,
-          buyItems: undefined,
           economySummary: undefined,
           saveGame: undefined,
           loadGame: undefined,
@@ -75,15 +73,6 @@ module Rance
               player: this.props.player
             };
             popupProps.minWidth = 440;
-            break;
-          }
-          case "buyItems":
-          {
-            contentConstructor = UIComponents.BuyItems;
-            contentProps =
-            {
-              player: this.props.player
-            }
             break;
           }
           case "economySummary":

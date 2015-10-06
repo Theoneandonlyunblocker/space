@@ -3888,155 +3888,6 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.ItemPurchaseListItem = React.createClass({
-            displayName: "ItemPurchaseListItem",
-            makeCell: function (type) {
-                var cellProps = {};
-                cellProps.key = type;
-                cellProps.className = "item-purchase-list-item-cell " +
-                    "item-purchase-list-" + type;
-                var cellContent;
-                switch (type) {
-                    case ("buildCost"):
-                        {
-                            if (this.props.playerMoney < this.props.buildCost) {
-                                cellProps.className += " negative";
-                            }
-                        }
-                    default:
-                        {
-                            cellContent = this.props[type];
-                            if (isFinite(cellContent)) {
-                                cellProps.className += " center-text";
-                            }
-                            break;
-                        }
-                }
-                return (React.DOM.td(cellProps, cellContent));
-            },
-            render: function () {
-                var cells = [];
-                var columns = this.props.activeColumns;
-                for (var i = 0; i < columns.length; i++) {
-                    cells.push(this.makeCell(columns[i].key));
-                }
-                var props = {
-                    className: "item-purchase-list-item",
-                    onClick: this.props.handleClick
-                };
-                if (this.props.playerMoney < this.props.buildCost) {
-                    props.onClick = null;
-                    props.disabled = true;
-                    props.className += " disabled";
-                }
-                return (React.DOM.tr(props, cells));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="itempurchaselistitem.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.ItemPurchaseList = React.createClass({
-            displayName: "ItemPurchaseList",
-            getSlotIndex: function (slot) {
-                if (slot === "high") {
-                    return 2;
-                }
-                else if (slot === "mid") {
-                    return 1;
-                }
-                else
-                    return 0;
-            },
-            render: function () {
-                var rows = [];
-                var items = this.props.items;
-                for (var i = 0; i < items.length; i++) {
-                    var item = items[i];
-                    var data = {
-                        item: item,
-                        typeName: item.template.displayName,
-                        slot: item.template.slot,
-                        slotIndex: this.getSlotIndex(item.template.slot),
-                        techLevel: item.template.techLevel,
-                        buildCost: item.template.buildCost,
-                        playerMoney: this.props.playerMoney,
-                        rowConstructor: UIComponents.ItemPurchaseListItem
-                    };
-                    rows.push({
-                        key: item.template.type,
-                        data: data
-                    });
-                }
-                var columns = [
-                    {
-                        label: "Type",
-                        key: "typeName",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Slot",
-                        key: "slot",
-                        propToSortBy: "slotIndex",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Tech",
-                        key: "techLevel",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Cost",
-                        key: "buildCost",
-                        defaultOrder: "asc"
-                    }
-                ];
-                return (React.DOM.div({ className: "item-purchase-list fixed-table-parent" }, UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    initialSortOrder: [columns[1], columns[2]],
-                    onRowChange: this.props.onRowChange
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="itempurchaselist.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.BuyItems = React.createClass({
-            displayName: "BuyItems",
-            handleSelectRow: function (row) {
-                var template = row.data.item.template;
-                var item = new Rance.Item(template);
-                this.props.player.addItem(item);
-                this.props.player.money -= template.buildCost;
-                Rance.eventManager.dispatchEvent("playerControlUpdated");
-            },
-            render: function () {
-                var player = this.props.player;
-                var items = player.getAllBuildableItems();
-                if (items.length < 1) {
-                    return (React.DOM.div({ className: "buy-items" }, "You need to construct an item manufactory first"));
-                }
-                return (React.DOM.div({ className: "buy-items" }, UIComponents.ItemPurchaseList({
-                    items: items,
-                    onRowChange: this.handleSelectRow,
-                    playerMoney: this.props.player.money
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
 /// <reference path="../mixins/draggable.ts" />
 var Rance;
 (function (Rance) {
@@ -13725,6 +13576,7 @@ var Rance;
     var Manufactory = (function () {
         function Manufactory() {
             this.buildQueue = [];
+            this.buildableThingsAreDirty = true;
         }
         Manufactory.prototype.addThingToQueue = function (template, type) {
             this.buildQueue.push({ type: type, template: template });
@@ -13738,7 +13590,7 @@ var Rance;
         Manufactory.prototype.buildAllThings = function () {
             var units = [];
             while (this.buildQueue.length > 0) {
-                var thingData = this.buildQueue.pop();
+                var thingData = this.buildQueue.shift();
                 switch (thingData.type) {
                     case "unit":
                         {
@@ -13761,12 +13613,43 @@ var Rance;
                 var fleet = new Rance.Fleet(this.player, units, this.star);
             }
         };
+        Manufactory.prototype.getBuildableUnitTypes = function () {
+            var global = this.player.getGloballyBuildableShips();
+            var local = [];
+            for (var i = 0; i < this.star.buildableUnitTypes.length; i++) {
+                var type = this.star.buildableUnitTypes[i];
+                if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements)) {
+                    local.push(type);
+                }
+            }
+            return global.concat(local);
+        };
+        Manufactory.prototype.getBuildableItemTypes = function () {
+            return this.star.getBuildableItems().all;
+        };
+        Manufactory.prototype.getAllBuildableThings = function () {
+            // if (this.buildableThingsAreDirty)
+            // {
+            //   this.buildableThingsAreDirty = false;
+            // }
+            this.buildableThings =
+                {
+                    units: this.getBuildableUnitTypes(),
+                    items: this.getBuildableItemTypes()
+                };
+            return this.buildableThings;
+        };
         Manufactory.prototype.serialize = function () {
             var buildQueue = this.buildQueue.map(function (thingData) {
                 return ({
                     type: thingData.type,
                     templateType: thingData.template.type
                 });
+            });
+            return ({
+                capacity: this.capacity,
+                maxCapacity: this.maxCapacity,
+                buildQueue: buildQueue
             });
         };
         return Manufactory;
@@ -13962,7 +13845,6 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../items/buyitems.ts"/>
 /// <reference path="../saves/savegame.ts"/>
 /// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
@@ -13982,7 +13864,6 @@ var Rance;
                 return ({
                     production: undefined,
                     equipItems: undefined,
-                    buyItems: undefined,
                     economySummary: undefined,
                     saveGame: undefined,
                     loadGame: undefined,
@@ -14027,15 +13908,6 @@ var Rance;
                                     player: this.props.player
                                 };
                             popupProps.minWidth = 440;
-                            break;
-                        }
-                    case "buyItems":
-                        {
-                            contentConstructor = UIComponents.BuyItems;
-                            contentProps =
-                                {
-                                    player: this.props.player
-                                };
                             break;
                         }
                     case "economySummary":
@@ -14245,12 +14117,6 @@ var Rance;
                         onClick: this.togglePopup.bind(this, "equipItems"),
                         tabIndex: menuItemTabIndex
                     }, "Equip"),
-                    React.DOM.button({
-                        className: "top-menu-items-button",
-                        key: "buyItems",
-                        onClick: this.togglePopup.bind(this, "buyItems"),
-                        tabIndex: menuItemTabIndex
-                    }, "Buy items"),
                     /*
                     React.DOM.button(
                     {
@@ -15054,115 +14920,6 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.BuildableShip = React.createClass({
-            displayName: "BuildableShip",
-            makeCell: function (type) {
-                var cellProps = {};
-                cellProps.key = type;
-                cellProps.className = "buildable-ship-list-item-cell " + type;
-                var cellContent;
-                switch (type) {
-                    case ("buildCost"):
-                        {
-                            if (this.props.player.money < this.props.buildCost) {
-                                cellProps.className += " negative";
-                            }
-                        }
-                    default:
-                        {
-                            cellContent = this.props[type];
-                            break;
-                        }
-                }
-                return (React.DOM.td(cellProps, cellContent));
-            },
-            render: function () {
-                var player = this.props.player;
-                var cells = [];
-                var columns = this.props.activeColumns;
-                for (var i = 0; i < columns.length; i++) {
-                    cells.push(this.makeCell(columns[i].key));
-                }
-                var props = {
-                    className: "buildable-item buildable-ship",
-                    onClick: this.props.handleClick,
-                    title: this.props.template.description
-                };
-                if (player.money < this.props.buildCost) {
-                    props.onClick = null;
-                    props.disabled = true;
-                    props.className += " disabled";
-                }
-                return (React.DOM.tr(props, cells));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../unit.ts" />
-/// <reference path="../../fleet.ts" />
-/// <reference path="../unitlist/list.ts" />
-/// <reference path="buildableship.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.BuildableShipsList = React.createClass({
-            displayName: "BuildableShipsList",
-            getInitialState: function () {
-                return ({
-                    shipTemplates: this.props.star.getBuildableShipTypes()
-                });
-            },
-            buildShip: function (rowItem) {
-                if (rowItem.data.template.buildCost > this.props.player.money) {
-                    return;
-                }
-                this.props.player.buildUnit(rowItem.data.template, this.props.star);
-            },
-            render: function () {
-                if (this.state.shipTemplates.length < 1)
-                    return null;
-                var rows = [];
-                for (var i = 0; i < this.state.shipTemplates.length; i++) {
-                    var template = this.state.shipTemplates[i];
-                    var data = {
-                        template: template,
-                        typeName: template.displayName,
-                        buildCost: template.buildCost,
-                        player: this.props.player,
-                        rowConstructor: UIComponents.BuildableShip
-                    };
-                    rows.push({
-                        key: i,
-                        data: data
-                    });
-                }
-                var columns = [
-                    {
-                        label: "Name",
-                        key: "typeName",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Cost",
-                        key: "buildCost",
-                        defaultOrder: "desc"
-                    }
-                ];
-                return (React.DOM.div({ className: "buildable-item-list buildable-ship-list fixed-table-parent" }, UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    onRowChange: this.buildShip,
-                    addSpacer: true
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
 // /// <reference path="buildingupgradelistitem.ts" />
 var Rance;
 (function (Rance) {
@@ -15261,7 +15018,6 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="attacktarget.ts"/>
 /// <reference path="buildablebuildinglist.ts"/>
-/// <reference path="buildableshipslist.ts"/>
 /// <reference path="buildingupgradelist.ts"/>
 var Rance;
 (function (Rance) {
@@ -15320,25 +15076,6 @@ var Rance;
                     }, this.updateActions);
                 }
             },
-            buildShips: function () {
-                if (!this.props.selectedStar ||
-                    this.state.expandedAction === "buildShips") {
-                    this.clearExpandedAction();
-                }
-                else {
-                    var element = React.DOM.div({
-                        className: "expanded-action"
-                    }, UIComponents.BuildableShipsList({
-                        player: this.props.player,
-                        star: this.props.selectedStar,
-                        clearExpandedAction: this.clearExpandedAction
-                    }));
-                    this.setState({
-                        expandedAction: "buildShips",
-                        expandedActionElement: element
-                    }, this.updateActions);
-                }
-            },
             upgradeBuildings: function () {
                 if (!this.props.selectedStar ||
                     this.state.expandedAction === "upgradeBuildings") {
@@ -15378,11 +15115,6 @@ var Rance;
                 var star = this.props.selectedStar;
                 if (star) {
                     if (star.owner === this.props.player) {
-                        allActions.push(React.DOM.div({
-                            className: "possible-action",
-                            onClick: this.buildShips,
-                            key: "buildShipActions"
-                        }, "build ship"));
                         if (star.getBuildableBuildings().length > 0) {
                             allActions.push(React.DOM.div({
                                 className: "possible-action",

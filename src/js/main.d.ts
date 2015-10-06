@@ -312,21 +312,6 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var ItemPurchaseListItem: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ItemPurchaseList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BuyItems: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
         var PopupResizeHandle: React.Factory<{}>;
     }
 }
@@ -2031,11 +2016,29 @@ declare module Rance {
         star: Star;
         capacity: number;
         maxCapacity: number;
+        buildableThings: {
+            items: Templates.IItemTemplate[];
+            units: Templates.IUnitTemplate[];
+        };
+        buildableThingsAreDirty: boolean;
         constructor();
         addThingToQueue(template: IManufacturableThing, type: string): void;
         removeThingAtIndex(index: number): void;
         buildAllThings(): void;
-        serialize(): void;
+        getBuildableUnitTypes(): Templates.IUnitTemplate[];
+        getBuildableItemTypes(): Templates.IItemTemplate[];
+        getAllBuildableThings(): {
+            items: Templates.IItemTemplate[];
+            units: Templates.IUnitTemplate[];
+        };
+        serialize(): {
+            capacity: number;
+            maxCapacity: number;
+            buildQueue: {
+                type: string;
+                templateType: string;
+            }[];
+        };
     }
 }
 declare module Rance {
@@ -2131,16 +2134,6 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var BuildableBuildingList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BuildableShip: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BuildableShipsList: React.Factory<{}>;
     }
 }
 declare module Rance {
