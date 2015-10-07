@@ -68,8 +68,16 @@ module Rance
         });
       });
     }
+    queueIsFull()
+    {
+      return this.buildQueue.length >= this.capacity;
+    }
     addThingToQueue(template: IManufacturableThing, type: string)
     {
+      if (this.queueIsFull())
+      {
+        throw new Error("Tried to add to manufactory build queue despite manufactory being at full capacity");
+      }
       this.buildQueue.push({type: type, template: template});
       this.player.money -= template.buildCost;
     }
