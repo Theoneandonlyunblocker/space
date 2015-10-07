@@ -195,6 +195,10 @@ module Rance
       }
 
       newOwner.addStar(this);
+      if (this.manufactory)
+      {
+        this.manufactory.handleOwnerChange();
+      }
 
       eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
       eventManager.dispatchEvent("renderLayer", "starOwners", this);

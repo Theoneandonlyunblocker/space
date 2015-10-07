@@ -1218,6 +1218,51 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IManufacturableThingWithLocations {
+        thing: IManufacturableThing;
+        locations: Star[];
+    }
+    interface IManufacturableThingsData {
+        manufacturable: IManufacturableThingWithLocations[];
+        potential: IManufacturableThingWithLocations[];
+    }
+    class Manufactory {
+        buildQueue: {
+            type: string;
+            template: IManufacturableThing;
+        }[];
+        player: Player;
+        star: Star;
+        capacity: number;
+        maxCapacity: number;
+        buildableThings: {
+            items: Templates.IItemTemplate[];
+            units: Templates.IUnitTemplate[];
+        };
+        buildableThingsAreDirty: boolean;
+        constructor(star: Star, serializedData?: any);
+        makeFromData(data: any): void;
+        addThingToQueue(template: IManufacturableThing, type: string): void;
+        removeThingAtIndex(index: number): void;
+        buildAllThings(): void;
+        getBuildableUnitTypes(): Templates.IUnitTemplate[];
+        getBuildableItemTypes(): Templates.IItemTemplate[];
+        getAllBuildableThings(): {
+            items: Templates.IItemTemplate[];
+            units: Templates.IUnitTemplate[];
+        };
+        handleOwnerChange(): void;
+        serialize(): {
+            capacity: number;
+            maxCapacity: number;
+            buildQueue: {
+                type: string;
+                templateType: string;
+            }[];
+        };
+    }
+}
+declare module Rance {
     interface IArchetypeValues {
         [archetypeType: string]: number;
     }
@@ -1831,6 +1876,7 @@ declare module Rance {
         getResearchNeededForTechnologyLevel(level: number): number;
         addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void;
         setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number): void;
+        getAllManufactories(): Manufactory[];
         serialize(): any;
     }
 }
@@ -1871,6 +1917,7 @@ declare module Rance {
             [id: number]: number;
         };
         buildableUnitTypes: Templates.IUnitTemplate[];
+        manufactory: Manufactory;
         constructor(x: number, y: number, id?: number);
         severLinksToNonAdjacent(): void;
         addBuilding(building: Building): void;
@@ -1952,6 +1999,7 @@ declare module Rance {
             };
         };
         getSeed(): string;
+        buildManufactory(): void;
         serialize(): any;
     }
 }
@@ -1978,49 +2026,6 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var ManufacturableItems: React.Factory<any>;
-    }
-}
-declare module Rance {
-    interface IManufacturableThingWithLocations {
-        thing: IManufacturableThing;
-        locations: Star[];
-    }
-    interface IManufacturableThingsData {
-        manufacturable: IManufacturableThingWithLocations[];
-        potential: IManufacturableThingWithLocations[];
-    }
-    class Manufactory {
-        buildQueue: {
-            type: string;
-            template: IManufacturableThing;
-        }[];
-        player: Player;
-        star: Star;
-        capacity: number;
-        maxCapacity: number;
-        buildableThings: {
-            items: Templates.IItemTemplate[];
-            units: Templates.IUnitTemplate[];
-        };
-        buildableThingsAreDirty: boolean;
-        constructor();
-        addThingToQueue(template: IManufacturableThing, type: string): void;
-        removeThingAtIndex(index: number): void;
-        buildAllThings(): void;
-        getBuildableUnitTypes(): Templates.IUnitTemplate[];
-        getBuildableItemTypes(): Templates.IItemTemplate[];
-        getAllBuildableThings(): {
-            items: Templates.IItemTemplate[];
-            units: Templates.IUnitTemplate[];
-        };
-        serialize(): {
-            capacity: number;
-            maxCapacity: number;
-            buildQueue: {
-                type: string;
-                templateType: string;
-            }[];
-        };
     }
 }
 declare module Rance {

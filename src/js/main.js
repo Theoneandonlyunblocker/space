@@ -9931,6 +9931,127 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var Manufactory = (function () {
+        function Manufactory(star, serializedData) {
+            this.buildQueue = [];
+            this.buildableThingsAreDirty = true;
+            this.star = star;
+            this.player = star.owner;
+            if (serializedData) {
+                this.makeFromData(serializedData);
+            }
+        }
+        Manufactory.prototype.makeFromData = function (data) {
+            this.capacity = data.capacity;
+            this.maxCapacity = data.maxCapacity;
+            this.buildQueue = data.buildQueue.map(function (savedThing) {
+                var templatesString;
+                switch (savedThing.type) {
+                    case "unit":
+                        {
+                            templatesString = "Units";
+                            break;
+                        }
+                    case "item":
+                        {
+                            templatesString = "Items";
+                        }
+                }
+                return ({
+                    type: savedThing.type,
+                    template: app.moduleData.Templates[templatesString][savedThing.templateType]
+                });
+            });
+        };
+        Manufactory.prototype.addThingToQueue = function (template, type) {
+            this.buildQueue.push({ type: type, template: template });
+            this.player.money -= template.buildCost;
+        };
+        Manufactory.prototype.removeThingAtIndex = function (index) {
+            var template = this.buildQueue[index].template;
+            this.player.money += template.buildCost;
+            this.buildQueue.splice(index, 1);
+        };
+        Manufactory.prototype.buildAllThings = function () {
+            var units = [];
+            while (this.buildQueue.length > 0) {
+                var thingData = this.buildQueue.shift();
+                switch (thingData.type) {
+                    case "unit":
+                        {
+                            var unitTemplate = thingData.template;
+                            var unit = new Rance.Unit(unitTemplate);
+                            units.push(unit);
+                            this.player.addUnit(unit);
+                            break;
+                        }
+                    case "item":
+                        {
+                            var itemTemplate = thingData.template;
+                            var item = new Rance.Item(itemTemplate);
+                            this.player.addItem(item);
+                            break;
+                        }
+                }
+            }
+            if (units.length > 0) {
+                var fleet = new Rance.Fleet(this.player, units, this.star);
+            }
+        };
+        Manufactory.prototype.getBuildableUnitTypes = function () {
+            var global = this.player.getGloballyBuildableShips();
+            var local = [];
+            for (var i = 0; i < this.star.buildableUnitTypes.length; i++) {
+                var type = this.star.buildableUnitTypes[i];
+                if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements)) {
+                    local.push(type);
+                }
+            }
+            return global.concat(local);
+        };
+        Manufactory.prototype.getBuildableItemTypes = function () {
+            return this.player.getAllBuildableItems();
+        };
+        Manufactory.prototype.getAllBuildableThings = function () {
+            // if (this.buildableThingsAreDirty)
+            // {
+            //   this.buildableThings =
+            //   {
+            //     units: this.getBuildableUnitTypes(),
+            //     items: this.getBuildableItemTypes()
+            //   }
+            //   this.buildableThingsAreDirty = false;
+            // }
+            this.buildableThings =
+                {
+                    units: this.getBuildableUnitTypes(),
+                    items: this.getBuildableItemTypes()
+                };
+            return this.buildableThings;
+        };
+        Manufactory.prototype.handleOwnerChange = function () {
+            this.player = this.star.owner;
+            this.capacity = Math.max(1, this.capacity - 1);
+        };
+        Manufactory.prototype.serialize = function () {
+            var buildQueue = this.buildQueue.map(function (thingData) {
+                return ({
+                    type: thingData.type,
+                    templateType: thingData.template.type
+                });
+            });
+            return ({
+                capacity: this.capacity,
+                maxCapacity: this.maxCapacity,
+                buildQueue: buildQueue
+            });
+        };
+        return Manufactory;
+    })();
+    Rance.Manufactory = Manufactory;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
     function makeRandomPersonality() {
         var unitCompositionPreference = {};
         for (var archetype in app.moduleData.Templates.UnitArchetypes) {
@@ -10499,6 +10620,7 @@ var Rance;
 /// <reference path="galaxymap.ts"/>
 /// <reference path="eventmanager.ts"/>
 /// <reference path="notificationlog.ts" />
+/// <reference path="manufactory.ts" />
 var Rance;
 (function (Rance) {
     var Game = (function () {
@@ -10559,6 +10681,9 @@ var Rance;
                     player.addResource(resourceData.resource, resourceData.amount);
                 }
                 player.allocateResearchPoints();
+                player.getAllManufactories().forEach(function (manufactory) {
+                    manufactory.buildAllThings();
+                });
             }
         };
         Game.prototype.setNextPlayer = function () {
@@ -12058,6 +12183,7 @@ var Rance;
 /// <reference path="battlesimulator.ts" />
 /// <reference path="battleprep.ts" />
 /// <reference path="diplomacystatus.ts" />
+/// <reference path="manufactory.ts" />
 /// <reference path="mapai/aicontroller.ts"/>
 var Rance;
 (function (Rance) {
@@ -12516,7 +12642,7 @@ var Rance;
             this.items.splice(index, 1);
         };
         Player.prototype.getAllBuildableItems = function () {
-            // TODO
+            // TODO manufactory
             var itemTypes = [];
             for (var key in app.moduleData.Templates.Items) {
                 itemTypes.push(app.moduleData.Templates.Items[key]);
@@ -12656,6 +12782,15 @@ var Rance;
             }
             Rance.eventManager.dispatchEvent("technologyPrioritiesUpdated");
         };
+        Player.prototype.getAllManufactories = function () {
+            var manufactories = [];
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                if (this.controlledLocations[i].manufactory) {
+                    manufactories.push(this.controlledLocations[i].manufactory);
+                }
+            }
+            return manufactories;
+        };
         Player.prototype.serialize = function () {
             var data = {};
             data.id = this.id;
@@ -12711,6 +12846,7 @@ var Rance;
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
+/// <reference path="manufactory.ts" />
 var Rance;
 (function (Rance) {
     var Star = (function () {
@@ -12809,6 +12945,9 @@ var Rance;
                 oldOwner.removeStar(this);
             }
             newOwner.addStar(this);
+            if (this.manufactory) {
+                this.manufactory.handleOwnerChange();
+            }
             Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
             Rance.eventManager.dispatchEvent("renderLayer", "starOwners", this);
             Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
@@ -13306,6 +13445,9 @@ var Rance;
             }
             return this.seed;
         };
+        Star.prototype.buildManufactory = function () {
+            this.manufactory = new Rance.Manufactory(this);
+        };
         Star.prototype.serialize = function () {
             var data = {};
             data.id = this.id;
@@ -13329,6 +13471,9 @@ var Rance;
                 for (var i = 0; i < this.buildings[category].length; i++) {
                     data.buildings[category].push(this.buildings[category][i].serialize());
                 }
+            }
+            if (this.manufactory) {
+                data.manufactory = this.manufactory.serialize();
             }
             return data;
         };
@@ -13499,91 +13644,6 @@ var Rance;
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var Manufactory = (function () {
-        function Manufactory() {
-            this.buildQueue = [];
-            this.buildableThingsAreDirty = true;
-        }
-        Manufactory.prototype.addThingToQueue = function (template, type) {
-            this.buildQueue.push({ type: type, template: template });
-            this.player.money -= template.buildCost;
-        };
-        Manufactory.prototype.removeThingAtIndex = function (index) {
-            var template = this.buildQueue[index].template;
-            this.player.money += template.buildCost;
-            this.buildQueue.splice(index, 1);
-        };
-        Manufactory.prototype.buildAllThings = function () {
-            var units = [];
-            while (this.buildQueue.length > 0) {
-                var thingData = this.buildQueue.shift();
-                switch (thingData.type) {
-                    case "unit":
-                        {
-                            var unitTemplate = thingData.template;
-                            var unit = new Rance.Unit(unitTemplate);
-                            units.push(unit);
-                            this.player.addUnit(unit);
-                            break;
-                        }
-                    case "item":
-                        {
-                            var itemTemplate = thingData.template;
-                            var item = new Rance.Item(itemTemplate);
-                            this.player.addItem(item);
-                            break;
-                        }
-                }
-            }
-            if (units.length > 0) {
-                var fleet = new Rance.Fleet(this.player, units, this.star);
-            }
-        };
-        Manufactory.prototype.getBuildableUnitTypes = function () {
-            var global = this.player.getGloballyBuildableShips();
-            var local = [];
-            for (var i = 0; i < this.star.buildableUnitTypes.length; i++) {
-                var type = this.star.buildableUnitTypes[i];
-                if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements)) {
-                    local.push(type);
-                }
-            }
-            return global.concat(local);
-        };
-        Manufactory.prototype.getBuildableItemTypes = function () {
-            return this.player.getAllBuildableItems();
-        };
-        Manufactory.prototype.getAllBuildableThings = function () {
-            // if (this.buildableThingsAreDirty)
-            // {
-            //   this.buildableThingsAreDirty = false;
-            // }
-            this.buildableThings =
-                {
-                    units: this.getBuildableUnitTypes(),
-                    items: this.getBuildableItemTypes()
-                };
-            return this.buildableThings;
-        };
-        Manufactory.prototype.serialize = function () {
-            var buildQueue = this.buildQueue.map(function (thingData) {
-                return ({
-                    type: thingData.type,
-                    templateType: thingData.template.type
-                });
-            });
-            return ({
-                capacity: this.capacity,
-                maxCapacity: this.maxCapacity,
-                buildQueue: buildQueue
-            });
-        };
-        return Manufactory;
-    })();
-    Rance.Manufactory = Manufactory;
 })(Rance || (Rance = {}));
 /// <reference path="manufacturableunits.ts" />
 /// <reference path="manufacturableitems.ts" />
@@ -24009,6 +24069,9 @@ var Rance;
                 for (var i = 0; i < data.buildableUnitTypes.length; i++) {
                     star.buildableUnitTypes.push(app.moduleData.Templates.Units[data.buildableUnitTypes[i]]);
                 }
+            }
+            if (data.manufactory) {
+                star.manufactory = new Rance.Manufactory(star, data.manufactory);
             }
             return star;
         };

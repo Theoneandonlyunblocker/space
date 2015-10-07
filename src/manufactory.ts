@@ -135,6 +135,11 @@ module Rance
     {
       // if (this.buildableThingsAreDirty)
       // {
+      //   this.buildableThings =
+      //   {
+      //     units: this.getBuildableUnitTypes(),
+      //     items: this.getBuildableItemTypes()
+      //   }
       //   this.buildableThingsAreDirty = false;
       // }
       this.buildableThings =
@@ -144,6 +149,11 @@ module Rance
       }
 
       return this.buildableThings;
+    }
+    handleOwnerChange()
+    {
+      this.player = this.star.owner;
+      this.capacity = Math.max(1, this.capacity - 1);
     }
     serialize()
     {
