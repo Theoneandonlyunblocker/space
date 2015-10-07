@@ -157,6 +157,11 @@ module Rance
         }
       }
 
+      if (data.manufactory)
+      {
+        star.manufactory = new Manufactory(star, data.manufactory);
+      }
+
       return star;
     }
     deserializeBuildings(data: any)
@@ -174,11 +179,9 @@ module Rance
             var building = this.deserializeBuilding(buildingData);
 
             star.addBuilding(building);
-
           }
         }
       }
-      
     }
     deserializeBuilding(data: any)
     {

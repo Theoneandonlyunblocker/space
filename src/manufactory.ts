@@ -31,9 +31,42 @@ module Rance
     };
     buildableThingsAreDirty: boolean = true;
 
-    constructor()
+    constructor(star: Star, serializedData?: any)
     {
-      
+      this.star = star;
+      this.player = star.owner;
+
+      if (serializedData)
+      {
+        this.makeFromData(serializedData);
+      }
+    }
+    makeFromData(data: any)
+    {
+      this.capacity = data.capacity;
+      this.maxCapacity = data.maxCapacity;
+      this.buildQueue = data.buildQueue.map(function(savedThing: any)
+      {
+        var templatesString: string;
+        switch (savedThing.type)
+        {
+          case "unit":
+          {
+            templatesString = "Units";
+            break;
+          }
+          case "item":
+          {
+            templatesString = "Items";
+          }
+        }
+
+        return(
+        {
+          type: savedThing.type,
+          template: app.moduleData.Templates[templatesString][savedThing.templateType]
+        });
+      });
     }
     addThingToQueue(template: IManufacturableThing, type: string)
     {
