@@ -113,7 +113,10 @@ module Rance
           selectedStar: this.props.selectedStar,
           manufacturableThings: this.getManufacturableThings(key),
           consolidateLocations: false,
-          triggerUpdate: this.props.triggerUpdate
+          triggerUpdate: this.props.triggerUpdate,
+          canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory &&
+            !this.props.selectedStar.manufactory.queueIsFull()),
+          money: this.props.player.money
         }
         switch (key)
         {

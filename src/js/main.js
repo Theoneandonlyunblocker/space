@@ -13648,7 +13648,21 @@ var Rance;
             propTypes: {
                 template: React.PropTypes.any.isRequired,
                 parentIndex: React.PropTypes.number.isRequired,
-                onClick: React.PropTypes.func
+                onClick: React.PropTypes.func,
+                showCost: React.PropTypes.bool.isRequired,
+                money: React.PropTypes.number
+            },
+            getInitialState: function () {
+                return ({
+                    canAfford: this.props.money >= this.props.template.buildCost,
+                    isDisabled: !this.props.onClick
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                this.setState({
+                    canAfford: newProps.money >= newProps.template.buildCost,
+                    isDisabled: !newProps.onClick
+                });
             },
             handleClick: function () {
                 if (this.props.onClick) {
@@ -13657,10 +13671,20 @@ var Rance;
             },
             render: function () {
                 var template = this.props.template;
+                var isDisabled = this.state.isDisabled;
+                if (this.props.showCost) {
+                    isDisabled = isDisabled || !this.state.canAfford;
+                }
                 return (React.DOM.li({
-                    className: "manufacturable-things-list-item",
-                    onClick: this.handleClick
-                }, template.displayName));
+                    className: "manufacturable-things-list-item" + (isDisabled ? " disabled" : ""),
+                    onClick: (isDisabled ? null : this.handleClick),
+                    disabled: isDisabled
+                }, React.DOM.div({
+                    className: "manufacturable-things-list-item-name"
+                }, template.displayName), !this.props.showCost ? null : React.DOM.div({
+                    className: "manufacturable-things-list-item-cost money-style" +
+                        (this.state.canAfford ? "" : " negative")
+                }, template.buildCost)));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -13675,7 +13699,9 @@ var Rance;
             mixins: [React.addons.PureRenderMixin],
             propTypes: {
                 manufacturableThings: React.PropTypes.array.isRequired,
-                onClick: React.PropTypes.func
+                onClick: React.PropTypes.func,
+                showCost: React.PropTypes.bool.isRequired,
+                money: React.PropTypes.number
             },
             render: function () {
                 var manufacturableThings = this.props.manufacturableThings;
@@ -13690,7 +13716,9 @@ var Rance;
                         template: manufacturableThings[i],
                         key: templateType + keyByTemplateType[templateType]++,
                         parentIndex: i,
-                        onClick: this.props.onClick
+                        onClick: this.props.onClick,
+                        money: this.props.money,
+                        showCost: this.props.showCost
                     }));
                 }
                 return (React.DOM.ol({
@@ -13729,7 +13757,8 @@ var Rance;
                     className: "build-queue-header"
                 }, "Build queue"), UIComponents.ManufacturableThingsList({
                     manufacturableThings: convertedBuildQueue,
-                    onClick: this.removeItem
+                    onClick: this.removeItem,
+                    showCost: false
                 })));
             }
         });
@@ -13742,12 +13771,30 @@ var Rance;
     (function (UIComponents) {
         UIComponents.ManufacturableUnits = React.createClass({
             displayName: "ManufacturableUnits",
-            mixins: [React.addons.PureRenderMixin],
             propTypes: {
                 selectedStar: React.PropTypes.instanceOf(Rance.Star),
                 consolidateLocations: React.PropTypes.bool.isRequired,
                 manufacturableThings: React.PropTypes.array.isRequired,
-                triggerUpdate: React.PropTypes.func.isRequired
+                triggerUpdate: React.PropTypes.func.isRequired,
+                canBuild: React.PropTypes.bool.isRequired,
+                money: React.PropTypes.number.isRequired
+            },
+            shouldComponentUpdate: function (newProps) {
+                if (this.props.selectedStar !== newProps.selectedStar) {
+                    return true;
+                }
+                if (this.props.manufacturableThings.length !== newProps.manufacturableThings.length) {
+                    return true;
+                }
+                else {
+                }
+                if (this.props.canBuild !== newProps.canBuild) {
+                    return true;
+                }
+                if (this.props.money !== newProps.money) {
+                    return true;
+                }
+                return false;
             },
             addUnitToBuildQueue: function (template) {
                 var manufactory = this.props.selectedStar.manufactory;
@@ -13765,7 +13812,9 @@ var Rance;
                     className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button"
                 }, "Upgrade stats")), UIComponents.ManufacturableThingsList({
                     manufacturableThings: this.props.manufacturableThings,
-                    onClick: this.addUnitToBuildQueue
+                    onClick: (this.props.canBuild ? this.addUnitToBuildQueue : null),
+                    showCost: true,
+                    money: this.props.money
                 })));
             }
         });
@@ -13777,12 +13826,30 @@ var Rance;
     (function (UIComponents) {
         UIComponents.ManufacturableItems = React.createClass({
             displayName: "ManufacturableItems",
-            mixins: [React.addons.PureRenderMixin],
             propTypes: {
                 selectedStar: React.PropTypes.instanceOf(Rance.Star),
                 consolidateLocations: React.PropTypes.bool.isRequired,
                 manufacturableThings: React.PropTypes.array.isRequired,
-                triggerUpdate: React.PropTypes.func.isRequired
+                triggerUpdate: React.PropTypes.func.isRequired,
+                canBuild: React.PropTypes.bool.isRequired,
+                money: React.PropTypes.number.isRequired
+            },
+            shouldComponentUpdate: function (newProps) {
+                if (this.props.selectedStar !== newProps.selectedStar) {
+                    return true;
+                }
+                if (this.props.manufacturableThings.length !== newProps.manufacturableThings.length) {
+                    return true;
+                }
+                else {
+                }
+                if (this.props.canBuild !== newProps.canBuild) {
+                    return true;
+                }
+                if (this.props.money !== newProps.money) {
+                    return true;
+                }
+                return false;
             },
             addItemToBuildQueue: function (template) {
                 var manufactory = this.props.selectedStar.manufactory;
@@ -13790,7 +13857,6 @@ var Rance;
                 this.props.triggerUpdate();
             },
             render: function () {
-                console.log("render items");
                 return (React.DOM.div({
                     className: "manufacturable-items"
                 }, React.DOM.div({
@@ -13799,7 +13865,9 @@ var Rance;
                     className: "manufactory-upgrade-button manufactory-items-upgrade-button"
                 }, "Upgrade items")), UIComponents.ManufacturableThingsList({
                     manufacturableThings: this.props.manufacturableThings,
-                    onClick: this.addItemToBuildQueue
+                    onClick: (this.props.canBuild ? this.addItemToBuildQueue : null),
+                    showCost: true,
+                    money: this.props.money
                 })));
             }
         });
@@ -13887,7 +13955,10 @@ var Rance;
                     selectedStar: this.props.selectedStar,
                     manufacturableThings: this.getManufacturableThings(key),
                     consolidateLocations: false,
-                    triggerUpdate: this.props.triggerUpdate
+                    triggerUpdate: this.props.triggerUpdate,
+                    canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory &&
+                        !this.props.selectedStar.manufactory.queueIsFull()),
+                    money: this.props.player.money
                 };
                 switch (key) {
                     case "units":
@@ -13953,7 +14024,8 @@ var Rance;
                 }, React.DOM.span({
                     className: "construct-manufactory-action"
                 }, "Construct manufactory"), React.DOM.span({
-                    className: "construct-manufactory-cost" + (this.state.canAfford ? "" : " negative")
+                    className: "construct-manufactory-cost money-style" +
+                        (this.state.canAfford ? "" : " negative")
                 }, manufactoryData.buildCost))));
             }
         });

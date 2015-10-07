@@ -62,7 +62,8 @@ module Rance
               ),
               React.DOM.span(
               {
-                className: "construct-manufactory-cost" + (this.state.canAfford ? "" : " negative")
+                className: "construct-manufactory-cost money-style" +
+                  (this.state.canAfford ? "" : " negative")
               },
                 manufactoryData.buildCost
               )

@@ -3697,6 +3697,7 @@ ol {
   display: flex;
   flex-flow: row;
   justify-content: space-between;
+  padding: 0 0.5em;
 }
 .manufactory-stars-list-item.no-manufactory {
   color: grey;
@@ -3722,6 +3723,9 @@ ol {
   flex: 0 0 auto;
   height: 100%;
   overflow-y: scroll;
+}
+.build-queue .manufacturable-things-list-item {
+  padding: 0 0.5em;
 }
 .manufacturable-things {
   border: 1px solid yellow;
@@ -3771,4 +3775,33 @@ ol {
   display: flex;
   flex-flow: row;
   border: 1px solid red;
+}
+.manufacturable-things-list-item {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+}
+.manufacturable-things-list-item:hover,
+.manufacturable-things-list-item:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.manufacturable-things-list-item:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.manufacturable-things-list-item:disabled,
+.manufacturable-things-list-item.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.manufacturable-things-list-item:disabled *,
+.manufacturable-things-list-item.disabled * {
+  pointer-events: none !important;
+}
+.manufacturable-things-list-item > * {
+  margin: 0 1em;
 }

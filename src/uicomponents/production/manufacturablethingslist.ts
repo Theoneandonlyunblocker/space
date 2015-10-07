@@ -12,7 +12,9 @@ module Rance
       propTypes:
       {
         manufacturableThings: React.PropTypes.array.isRequired,
-        onClick: React.PropTypes.func
+        onClick: React.PropTypes.func,
+        showCost: React.PropTypes.bool.isRequired,
+        money: React.PropTypes.number
       },
 
       render: function()
@@ -38,7 +40,9 @@ module Rance
             template: manufacturableThings[i],
             key: templateType + keyByTemplateType[templateType]++,
             parentIndex: i,
-            onClick: this.props.onClick
+            onClick: this.props.onClick,
+            money: this.props.money,
+            showCost: this.props.showCost
           }));
         }
 

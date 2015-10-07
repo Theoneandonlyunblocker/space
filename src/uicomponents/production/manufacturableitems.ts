@@ -5,14 +5,41 @@ module Rance
     export var ManufacturableItems = React.createClass(
     {
       displayName: "ManufacturableItems",
-      mixins: [React.addons.PureRenderMixin],
 
       propTypes:
       {
         selectedStar: React.PropTypes.instanceOf(Star),
         consolidateLocations: React.PropTypes.bool.isRequired,
         manufacturableThings: React.PropTypes.array.isRequired,
-        triggerUpdate: React.PropTypes.func.isRequired
+        triggerUpdate: React.PropTypes.func.isRequired,
+        canBuild: React.PropTypes.bool.isRequired,
+        money: React.PropTypes.number.isRequired
+      },
+
+      shouldComponentUpdate: function(newProps: any)
+      {
+        if (this.props.selectedStar !== newProps.selectedStar)
+        {
+          return true;
+        }
+        if (this.props.manufacturableThings.length !== newProps.manufacturableThings.length)
+        {
+          return true;
+        }
+        else
+        {
+
+        }
+        if (this.props.canBuild !== newProps.canBuild)
+        {
+          return true;
+        }
+        if (this.props.money !== newProps.money)
+        {
+          return true;
+        }
+
+        return false;
       },
 
       addItemToBuildQueue: function(template: Templates.IItemTemplate)
@@ -24,7 +51,6 @@ module Rance
 
       render: function()
       {
-        console.log("render items")
         return(
           React.DOM.div(
           {
@@ -44,7 +70,9 @@ module Rance
             UIComponents.ManufacturableThingsList(
             {
               manufacturableThings: this.props.manufacturableThings,
-              onClick: this.addItemToBuildQueue
+              onClick: (this.props.canBuild ? this.addItemToBuildQueue : null),
+              showCost: true,
+              money: this.props.money
             })
           )
         );

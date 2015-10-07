@@ -48,7 +48,8 @@ module Rance
             UIComponents.ManufacturableThingsList(
             {
               manufacturableThings: convertedBuildQueue,
-              onClick: this.removeItem
+              onClick: this.removeItem,
+              showCost: false
             })
           )
         );
