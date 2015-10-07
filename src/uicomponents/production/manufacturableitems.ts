@@ -56,7 +56,7 @@ module Rance
           {
             className: "manufacturable-items"
           },
-            React.DOM.div(
+            (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : React.DOM.div(
             {
               className: "manufactory-upgrade-buttons-container"
             },
