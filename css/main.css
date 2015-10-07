@@ -3722,7 +3722,6 @@ ol {
   border: 1px solid red;
   flex: 0 0 auto;
   height: 100%;
-  overflow-y: scroll;
 }
 .build-queue .manufacturable-things-list-item {
   padding: 0 0.5em;
@@ -3795,6 +3794,22 @@ ol {
 }
 .manufacturable-things-active-tab {
   flex: 1 1 auto;
+  overflow-y: hidden;
+  display: flex;
+  flex-flow: column;
+}
+.manufacturable-things-active-tab > * {
+  display: flex;
+  flex-flow: column;
+  overflow-y: hidden;
+  flex: 1 1 auto;
+}
+.manufacturable-things-active-tab .manufactory-upgrade-buttons-container {
+  flex: 0 0 auto;
+}
+.manufacturable-things-active-tab .manufacturable-things-list {
+  flex: 1 1 auto;
+  overflow-y: scroll;
 }
 .manufactory-upgrade-buttons-container {
   display: flex;
