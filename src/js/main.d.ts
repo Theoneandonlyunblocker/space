@@ -1245,6 +1245,7 @@ declare module Rance {
         getManufacturableThingsForType(type: string): IManufacturableThing[];
         canManufactureThing(template: IManufacturableThing, type: string): boolean;
         handleOwnerChange(): void;
+        upgradeCapacity(amount: number): void;
         serialize(): {
             capacity: number;
             maxCapacity: number;

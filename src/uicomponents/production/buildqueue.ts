@@ -23,6 +23,13 @@ module Rance
         this.props.triggerUpdate();
       },
 
+      upgradeCapacity: function()
+      {
+        var manufactory: Manufactory = this.props.manufactory;
+        manufactory.upgradeCapacity(1);
+        this.props.triggerUpdate();
+      },
+
       render: function()
       {
         var manufactory: Manufactory = this.props.manufactory;
@@ -34,11 +41,22 @@ module Rance
           convertedBuildQueue.push(manufactory.buildQueue[i].template);
         }
 
+        var canUpgradeCapacity = manufactory.capacity < manufactory.maxCapacity;
+
         return(
           React.DOM.div(
           {
             className: "build-queue"
           },
+            React.DOM.button(
+            {
+              className: "manufactory-upgrade-button manufactory-items-upgrade-button" +
+                (canUpgradeCapacity ? "" : " disabled"),
+              disabled: !canUpgradeCapacity,
+              onClick: (canUpgradeCapacity ? this.upgradeCapacity : null)
+            },
+              "Upgrade capacity"
+            ),
             React.DOM.div(
             {
               className: "build-queue-header"

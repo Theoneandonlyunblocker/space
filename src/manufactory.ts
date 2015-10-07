@@ -171,6 +171,10 @@ module Rance
       this.player = this.star.owner;
       this.capacity = Math.max(1, this.capacity - 1);
     }
+    upgradeCapacity(amount: number)
+    {
+      this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
+    }
     serialize()
     {
       var buildQueue = this.buildQueue.map(function(thingData)

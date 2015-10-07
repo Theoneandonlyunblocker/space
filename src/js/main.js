@@ -10054,6 +10054,9 @@ var Rance;
             this.player = this.star.owner;
             this.capacity = Math.max(1, this.capacity - 1);
         };
+        Manufactory.prototype.upgradeCapacity = function (amount) {
+            this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
+        };
         Manufactory.prototype.serialize = function () {
             var buildQueue = this.buildQueue.map(function (thingData) {
                 return ({
@@ -13590,6 +13593,11 @@ var Rance;
                 handleStarSelect: React.PropTypes.func.isRequired
             },
             sortByStarNameFN: function (a, b) {
+                var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
+                var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
+                if (bLevel !== aLevel) {
+                    return bLevel - aLevel;
+                }
                 var _a = a.name.toLowerCase();
                 var _b = b.name.toLowerCase();
                 if (_a > _b)
@@ -13745,15 +13753,26 @@ var Rance;
                 manufactory.removeThingAtIndex(parentIndex);
                 this.props.triggerUpdate();
             },
+            upgradeCapacity: function () {
+                var manufactory = this.props.manufactory;
+                manufactory.upgradeCapacity(1);
+                this.props.triggerUpdate();
+            },
             render: function () {
                 var manufactory = this.props.manufactory;
                 var convertedBuildQueue = [];
                 for (var i = 0; i < manufactory.buildQueue.length; i++) {
                     convertedBuildQueue.push(manufactory.buildQueue[i].template);
                 }
+                var canUpgradeCapacity = manufactory.capacity < manufactory.maxCapacity;
                 return (React.DOM.div({
                     className: "build-queue"
-                }, React.DOM.div({
+                }, React.DOM.button({
+                    className: "manufactory-upgrade-button manufactory-items-upgrade-button" +
+                        (canUpgradeCapacity ? "" : " disabled"),
+                    disabled: !canUpgradeCapacity,
+                    onClick: (canUpgradeCapacity ? this.upgradeCapacity : null)
+                }, "Upgrade capacity"), React.DOM.div({
                     className: "build-queue-header"
                 }, "Build queue"), UIComponents.ManufacturableThingsList({
                     manufacturableThings: convertedBuildQueue,
