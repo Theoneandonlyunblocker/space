@@ -20,6 +20,14 @@ module Rance
 
       sortByStarNameFN: function(a: Star, b: Star)
       {
+        var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
+        var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
+
+        if (bLevel !== aLevel)
+        {
+          return bLevel - aLevel;
+        }
+
         var _a: string = a.name.toLowerCase();
         var _b: string = b.name.toLowerCase();
         
