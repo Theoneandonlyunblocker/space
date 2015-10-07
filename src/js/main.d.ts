@@ -1242,6 +1242,7 @@ declare module Rance {
         buildableThingsAreDirty: boolean;
         constructor(star: Star, serializedData?: any);
         makeFromData(data: any): void;
+        queueIsFull(): boolean;
         addThingToQueue(template: IManufacturableThing, type: string): void;
         removeThingAtIndex(index: number): void;
         buildAllThings(): void;
@@ -2015,7 +2016,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var BuildQueue: React.Factory<{}>;
+        var BuildQueueItem: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BuildQueue: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2031,6 +2037,11 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var ManufacturableThings: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ConstructManufactory: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -3474,6 +3485,11 @@ declare module Rance {
         };
     }
 }
+declare var manufactoryData: {
+    startingCapacity: number;
+    maxCapacity: number;
+    buildCost: number;
+};
 declare module Rance {
     var idGenerators: {
         fleet: number;

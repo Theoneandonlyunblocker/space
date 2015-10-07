@@ -9940,6 +9940,11 @@ var Rance;
             if (serializedData) {
                 this.makeFromData(serializedData);
             }
+            else {
+                // manufactorydata temporarily in main.ts
+                this.capacity = manufactoryData.startingCapacity;
+                this.maxCapacity = manufactoryData.maxCapacity;
+            }
         }
         Manufactory.prototype.makeFromData = function (data) {
             this.capacity = data.capacity;
@@ -9963,7 +9968,13 @@ var Rance;
                 });
             });
         };
+        Manufactory.prototype.queueIsFull = function () {
+            return this.buildQueue.length >= this.capacity;
+        };
         Manufactory.prototype.addThingToQueue = function (template, type) {
+            if (this.queueIsFull) {
+                throw new Error("Tried to add to manufactory build queue despite manufactory being at full capacity");
+            }
             this.buildQueue.push({ type: type, template: template });
             this.player.money -= template.buildCost;
         };
@@ -13554,13 +13565,14 @@ var Rance;
                 starsWithoutManufcatories.sort(this.sortByStarNameFN);
                 for (var i = 0; i < starsWithManufactories.length; i++) {
                     var star = starsWithManufactories[i];
+                    var manufactory = star.manufactory;
                     var isHighlighted = highlightedStars.indexOf(star) !== -1;
                     rows.push(UIComponents.ManufactoryStarsListItem({
                         key: star.id,
                         star: star,
                         isHighlighted: isHighlighted,
-                        usedCapacity: 2,
-                        totalCapacity: 3,
+                        usedCapacity: manufactory.buildQueue.length,
+                        totalCapacity: manufactory.capacity,
                         onClick: handleStarSelect
                     }));
                 }
@@ -13587,12 +13599,54 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
+        UIComponents.BuildQueueItem = React.createClass({
+            displayName: "BuildQueueItem",
+            propTypes: {
+                type: React.PropTypes.string.isRequired,
+                template: React.PropTypes.any.isRequired
+            },
+            render: function () {
+                var template = this.props.template;
+                return (React.DOM.li({
+                    className: "build-queue-item"
+                }, template.displayName));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="buildqueueitem.ts" />
+/// <reference path="../../manufactory.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
         UIComponents.BuildQueue = React.createClass({
             displayName: "BuildQueue",
+            propTypes: {
+                manufactory: React.PropTypes.instanceOf(Rance.Manufactory).isRequired
+            },
             render: function () {
+                var manufactory = this.props.manufactory;
+                var buildQueue = manufactory.buildQueue;
+                var buildQueueItems = [];
+                var keyByTemplateType = {};
+                for (var i = 0; i < buildQueue.length; i++) {
+                    if (!keyByTemplateType[buildQueue[i].template.type]) {
+                        keyByTemplateType[buildQueue[i].template.type] = 0;
+                    }
+                    buildQueueItems.push(UIComponents.BuildQueueItem({
+                        type: buildQueue[i].type,
+                        template: buildQueue[i].template,
+                        key: keyByTemplateType[buildQueue[i].template.type]++
+                    }));
+                }
                 return (React.DOM.div({
                     className: "build-queue"
-                }, "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br(), "build queue", React.DOM.br()));
+                }, React.DOM.div({
+                    className: "build-queue-header"
+                }, "Build queue"), React.DOM.ol({
+                    className: "build-queue-items"
+                }, buildQueueItems)));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -13747,9 +13801,56 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../star.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ConstructManufactory = React.createClass({
+            displayName: "ConstructManufactory",
+            mixins: [React.addons.PureRenderMixin],
+            propTypes: {
+                star: React.PropTypes.instanceOf(Rance.Star).isRequired,
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                triggerUpdate: React.PropTypes.func.isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    canAfford: this.props.player.money >= manufactoryData.buildCost
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                this.setState({
+                    canAfford: newProps.player.money >= manufactoryData.buildCost
+                });
+            },
+            handleConstruct: function () {
+                var star = this.props.star;
+                var player = this.props.player;
+                star.buildManufactory();
+                player.money -= manufactoryData.buildCost;
+                this.props.triggerUpdate();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "construct-manufactory-container"
+                }, React.DOM.button({
+                    className: "construct-manufactory-button" + (this.state.canAfford ? "" : " disabled"),
+                    onClick: this.state.canAfford ? this.handleConstruct : null,
+                    disabled: !this.state.canAfford
+                }, React.DOM.span({
+                    className: "construct-manufactory-action"
+                }, "Construct manufactory"), React.DOM.span({
+                    className: "construct-manufactory-cost" + (this.state.canAfford ? "" : " negative")
+                }, manufactoryData.buildCost))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="manufactorystarslist.ts" />
 /// <reference path="buildqueue.ts" />
 /// <reference path="manufacturablethings.ts" />
+/// <reference path="constructmanufactory.ts" />
 /// <reference path="../../player.ts" />
 /// <reference path="../../star.ts" />
 var Rance;
@@ -13786,16 +13887,31 @@ var Rance;
             },
             render: function () {
                 var player = this.props.player;
+                var selectedStar = this.state.selectedStar;
                 var starsWithManufactories = [];
                 var starsWithoutManufcatories = [];
                 for (var i = 0; i < player.controlledLocations.length; i++) {
                     var star = player.controlledLocations[i];
-                    var hasManufactory = star.id % 2 === 0; // TODO
-                    if (hasManufactory) {
+                    if (star.manufactory) {
                         starsWithManufactories.push(star);
                     }
                     else {
                         starsWithoutManufcatories.push(star);
+                    }
+                }
+                var queueElement = null;
+                if (selectedStar) {
+                    if (selectedStar.manufactory) {
+                        queueElement = UIComponents.BuildQueue({
+                            manufactory: selectedStar.manufactory
+                        });
+                    }
+                    else {
+                        queueElement = UIComponents.ConstructManufactory({
+                            star: selectedStar,
+                            player: player,
+                            triggerUpdate: this.forceUpdate.bind(this)
+                        });
                     }
                 }
                 return (React.DOM.div({
@@ -13807,8 +13923,8 @@ var Rance;
                     handleStarSelect: this.handleStarSelect
                 }), React.DOM.div({
                     className: "production-overview-contents"
-                }, !this.state.selectedStar ? null : UIComponents.BuildQueue(), UIComponents.ManufacturableThings({
-                    selectedStar: this.state.selectedStar,
+                }, queueElement, UIComponents.ManufacturableThings({
+                    selectedStar: selectedStar,
                     player: player
                 }))));
             }
@@ -24418,6 +24534,12 @@ var Rance;
 /// <reference path="templateindexes.ts"/>
 /// <reference path="options.ts"/>
 /// <reference path="tutorials/uitutorial.ts"/>
+// TODO manufactory  move these to module file
+var manufactoryData = {
+    startingCapacity: 1,
+    maxCapacity: 3,
+    buildCost: 1000
+};
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {

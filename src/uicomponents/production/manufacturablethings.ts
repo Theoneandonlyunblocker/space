@@ -78,11 +78,11 @@ module Rance
           {
             if (selectedStar)
             {
-
+              return {};
             }
             else
             {
-              
+              return {};
             }
             break;
           }
@@ -90,11 +90,11 @@ module Rance
           {
             if (selectedStar)
             {
-
+              return {};
             }
             else
             {
-              
+              return {};
             }
             break;
           }
@@ -109,7 +109,7 @@ module Rance
         {
           key: key,
           selectedStar: this.props.selectedStar,
-          manufacturableThings: {}, //TODO this.getManufacturableThings(key),
+          manufacturableThings: this.getManufacturableThings(key),
           consolidateLocations: false
         }
         switch (key)

@@ -44,6 +44,7 @@ module Rance
         for (var i = 0; i < starsWithManufactories.length; i++)
         {
           var star = starsWithManufactories[i];
+          var manufactory = star.manufactory;
           var isHighlighted = highlightedStars.indexOf(star) !== -1;
 
           rows.push(UIComponents.ManufactoryStarsListItem(
@@ -51,8 +52,8 @@ module Rance
             key: star.id,
             star: star,
             isHighlighted: isHighlighted,
-            usedCapacity: 2, // TODO
-            totalCapacity: 3,
+            usedCapacity: manufactory.buildQueue.length,
+            totalCapacity: manufactory.capacity,
 
             onClick: handleStarSelect
           }));

@@ -1,6 +1,7 @@
 /// <reference path="manufactorystarslist.ts" />
 /// <reference path="buildqueue.ts" />
 /// <reference path="manufacturablethings.ts" />
+/// <reference path="constructmanufactory.ts" />
 
 /// <reference path="../../player.ts" />
 /// <reference path="../../star.ts" />
@@ -55,6 +56,7 @@ module Rance
       render: function()
       {
         var player: Player = this.props.player;
+        var selectedStar: Star = this.state.selectedStar;
 
         var starsWithManufactories: Star[] = [];
         var starsWithoutManufcatories: Star[] = [];
@@ -62,14 +64,34 @@ module Rance
         for (var i = 0; i < player.controlledLocations.length; i++)
         {
           var star = player.controlledLocations[i];
-          var hasManufactory = star.id % 2 === 0;// TODO
-          if (hasManufactory)
+          if (star.manufactory)
           {
             starsWithManufactories.push(star);
           }
           else
           {
             starsWithoutManufcatories.push(star);
+          }
+        }
+
+        var queueElement: ReactComponentPlaceHolder = null;
+        if (selectedStar)
+        {
+          if (selectedStar.manufactory)
+          {
+            queueElement = UIComponents.BuildQueue(
+            {
+              manufactory: selectedStar.manufactory
+            });
+          }
+          else
+          {
+            queueElement = UIComponents.ConstructManufactory(
+            {
+              star: selectedStar,
+              player: player,
+              triggerUpdate: this.forceUpdate.bind(this)
+            });
           }
         }
 
@@ -89,10 +111,10 @@ module Rance
             {
               className: "production-overview-contents"
             },
-              !this.state.selectedStar ? null : UIComponents.BuildQueue(),
+              queueElement,
               UIComponents.ManufacturableThings(
               {
-                selectedStar: this.state.selectedStar,
+                selectedStar: selectedStar,
                 player: player
               })
             )
