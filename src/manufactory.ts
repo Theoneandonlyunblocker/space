@@ -65,10 +65,6 @@ module Rance
     }
     addThingToQueue(template: IManufacturableThing, type: string)
     {
-      if (this.queueIsFull())
-      {
-        throw new Error("Tried to add to manufactory build queue despite manufactory being at full capacity");
-      }
       this.buildQueue.push({type: type, template: template});
       this.player.money -= template.buildCost;
     }
@@ -82,9 +78,12 @@ module Rance
     {
       var units: Unit[] = [];
 
-      while (this.buildQueue.length > 0)
+      var toBuild = this.buildQueue.slice(0, this.capacity);
+      this.buildQueue = this.buildQueue.slice(this.capacity);
+
+      while (toBuild.length > 0)
       {
-        var thingData = this.buildQueue.shift();
+        var thingData = toBuild.pop();
         switch (thingData.type)
         {
           case "unit":

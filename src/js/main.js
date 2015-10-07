@@ -9971,9 +9971,6 @@ var Rance;
             return this.buildQueue.length >= this.capacity;
         };
         Manufactory.prototype.addThingToQueue = function (template, type) {
-            if (this.queueIsFull()) {
-                throw new Error("Tried to add to manufactory build queue despite manufactory being at full capacity");
-            }
             this.buildQueue.push({ type: type, template: template });
             this.player.money -= template.buildCost;
         };
@@ -9984,8 +9981,10 @@ var Rance;
         };
         Manufactory.prototype.buildAllThings = function () {
             var units = [];
-            while (this.buildQueue.length > 0) {
-                var thingData = this.buildQueue.shift();
+            var toBuild = this.buildQueue.slice(0, this.capacity);
+            this.buildQueue = this.buildQueue.slice(this.capacity);
+            while (toBuild.length > 0) {
+                var thingData = toBuild.pop();
                 switch (thingData.type) {
                     case "unit":
                         {
@@ -13975,8 +13974,7 @@ var Rance;
                     manufacturableThings: this.getManufacturableThings(key),
                     consolidateLocations: false,
                     triggerUpdate: this.props.triggerUpdate,
-                    canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory &&
-                        !this.props.selectedStar.manufactory.queueIsFull()),
+                    canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
                     money: this.props.player.money
                 };
                 switch (key) {
