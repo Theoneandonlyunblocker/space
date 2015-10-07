@@ -15,6 +15,9 @@ module Rance
     capacity: number;
     maxCapacity: number;
 
+    unitStatsModifier: number = 1;
+    unitHealthModifier: number = 1;
+
     constructor(star: Star, serializedData?: any)
     {
       this.star = star;
@@ -36,6 +39,9 @@ module Rance
     {
       this.capacity = data.capacity;
       this.maxCapacity = data.maxCapacity;
+      this.unitStatsModifier = data.unitStatsModifier;
+      this.unitHealthModifier = data.unitHealthModifier;
+
       this.buildQueue = data.buildQueue.map(function(savedThing: any)
       {
         var templatesString: string;
@@ -90,6 +96,8 @@ module Rance
           {
             var unitTemplate = <Templates.IUnitTemplate> thingData.template;
             var unit = new Unit(unitTemplate);
+            unit.setAttributes(this.unitStatsModifier);
+            unit.setBaseHealth(this.unitHealthModifier);
             units.push(unit);
             this.player.addUnit(unit);
             break;
@@ -174,6 +182,14 @@ module Rance
     {
       this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
     }
+    upgradeUnitStatsModifier(amount: number)
+    {
+      this.unitStatsModifier += amount;
+    }
+    upgradeUnitHealthModifier(amount: number)
+    {
+      this.unitHealthModifier += amount;
+    }
     serialize()
     {
       var buildQueue = this.buildQueue.map(function(thingData)
@@ -189,6 +205,8 @@ module Rance
       {
         capacity: this.capacity,
         maxCapacity: this.maxCapacity,
+        unitStatsModifier: this.unitStatsModifier,
+        unitHealthModifier: this.unitHealthModifier,
         buildQueue: buildQueue
       });
     }

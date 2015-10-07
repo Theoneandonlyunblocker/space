@@ -51,6 +51,20 @@ module Rance
         this.props.triggerUpdate();
       },
 
+      upgradeHealth: function()
+      {
+        var manufactory: Manufactory = this.props.selectedStar.manufactory;
+        manufactory.upgradeUnitHealthModifier(0.1);
+        this.forceUpdate();
+      },
+
+      upgradeStats: function()
+      {
+        var manufactory: Manufactory = this.props.selectedStar.manufactory;
+        manufactory.upgradeUnitStatsModifier(0.1);
+        this.forceUpdate();
+      },
+
       render: function()
       {
         return(
@@ -64,15 +78,17 @@ module Rance
             },
               React.DOM.button(
               {
-                className: "manufactory-upgrade-button manufactory-units-upgrade-strength-button"
+                className: "manufactory-upgrade-button manufactory-units-upgrade-health-button",
+                onClick: this.upgradeHealth
               },
-                "Upgrade strength"
+                "Upgrade health" + "\n" + this.props.selectedStar.manufactory.unitHealthModifier.toFixed(1)
               ),
               React.DOM.button(
               {
-                className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button"
+                className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button",
+                onClick: this.upgradeStats
               },
-                "Upgrade stats"
+                "Upgrade stats" + "\n" + this.props.selectedStar.manufactory.unitStatsModifier.toFixed(1)
               )
             ),
             UIComponents.ManufacturableThingsList(

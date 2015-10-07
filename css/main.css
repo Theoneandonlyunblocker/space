@@ -3722,10 +3722,22 @@ ol {
   height: 100%;
 }
 .build-queue {
+  display: flex;
+  flex-flow: column;
   flex: 0 0 auto;
   border: 1px solid #c4e5fb;
   border-right: 0;
   box-sizing: border-box;
+}
+.build-queue .manufactory-upgrade-button {
+  flex: 0 0 auto;
+}
+.build-queue .build-queue-header {
+  flex: 0 0 auto;
+}
+.build-queue .manufacturable-things-list {
+  flex: 1 1 auto;
+  overflow-y: scroll;
 }
 .build-queue .manufacturable-things-list-item {
   padding: 0 0.5em;

@@ -769,7 +769,7 @@ declare module Rance {
         constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
         makeFromData(data: any): void;
         setInitialValues(): void;
-        setBaseHealth(): void;
+        setBaseHealth(multiplier?: number): void;
         setAttributes(baseSkill?: number, variance?: number): void;
         getBaseMoveDelay(): number;
         resetMovePoints(): void;
@@ -1228,6 +1228,8 @@ declare module Rance {
         star: Star;
         capacity: number;
         maxCapacity: number;
+        unitStatsModifier: number;
+        unitHealthModifier: number;
         constructor(star: Star, serializedData?: any);
         makeFromData(data: any): void;
         queueIsFull(): boolean;
@@ -1246,9 +1248,13 @@ declare module Rance {
         canManufactureThing(template: IManufacturableThing, type: string): boolean;
         handleOwnerChange(): void;
         upgradeCapacity(amount: number): void;
+        upgradeUnitStatsModifier(amount: number): void;
+        upgradeUnitHealthModifier(amount: number): void;
         serialize(): {
             capacity: number;
             maxCapacity: number;
+            unitStatsModifier: number;
+            unitHealthModifier: number;
             buildQueue: {
                 type: string;
                 templateType: string;

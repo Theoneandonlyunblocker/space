@@ -7172,9 +7172,10 @@ var Rance;
             this.experienceForCurrentLevel = 0;
             this.timesActedThisTurn = 0;
         };
-        Unit.prototype.setBaseHealth = function () {
-            var min = 500 * this.template.maxHealth;
-            var max = 1000 * this.template.maxHealth;
+        Unit.prototype.setBaseHealth = function (multiplier) {
+            if (multiplier === void 0) { multiplier = 1; }
+            var min = 500 * this.template.maxHealth * multiplier;
+            var max = 1000 * this.template.maxHealth * multiplier;
             this.maxHealth = Rance.randInt(min, max);
             this.currentHealth = this.maxHealth;
         };
@@ -9934,6 +9935,8 @@ var Rance;
     var Manufactory = (function () {
         function Manufactory(star, serializedData) {
             this.buildQueue = [];
+            this.unitStatsModifier = 1;
+            this.unitHealthModifier = 1;
             this.star = star;
             this.player = star.owner;
             if (serializedData) {
@@ -9948,6 +9951,8 @@ var Rance;
         Manufactory.prototype.makeFromData = function (data) {
             this.capacity = data.capacity;
             this.maxCapacity = data.maxCapacity;
+            this.unitStatsModifier = data.unitStatsModifier;
+            this.unitHealthModifier = data.unitHealthModifier;
             this.buildQueue = data.buildQueue.map(function (savedThing) {
                 var templatesString;
                 switch (savedThing.type) {
@@ -9990,6 +9995,8 @@ var Rance;
                         {
                             var unitTemplate = thingData.template;
                             var unit = new Rance.Unit(unitTemplate);
+                            unit.setAttributes(this.unitStatsModifier);
+                            unit.setBaseHealth(this.unitHealthModifier);
                             units.push(unit);
                             this.player.addUnit(unit);
                             break;
@@ -10056,6 +10063,12 @@ var Rance;
         Manufactory.prototype.upgradeCapacity = function (amount) {
             this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
         };
+        Manufactory.prototype.upgradeUnitStatsModifier = function (amount) {
+            this.unitStatsModifier += amount;
+        };
+        Manufactory.prototype.upgradeUnitHealthModifier = function (amount) {
+            this.unitHealthModifier += amount;
+        };
         Manufactory.prototype.serialize = function () {
             var buildQueue = this.buildQueue.map(function (thingData) {
                 return ({
@@ -10066,6 +10079,8 @@ var Rance;
             return ({
                 capacity: this.capacity,
                 maxCapacity: this.maxCapacity,
+                unitStatsModifier: this.unitStatsModifier,
+                unitHealthModifier: this.unitHealthModifier,
                 buildQueue: buildQueue
             });
         };
@@ -13819,16 +13834,28 @@ var Rance;
                 manufactory.addThingToQueue(template, "unit");
                 this.props.triggerUpdate();
             },
+            upgradeHealth: function () {
+                var manufactory = this.props.selectedStar.manufactory;
+                manufactory.upgradeUnitHealthModifier(0.1);
+                this.forceUpdate();
+            },
+            upgradeStats: function () {
+                var manufactory = this.props.selectedStar.manufactory;
+                manufactory.upgradeUnitStatsModifier(0.1);
+                this.forceUpdate();
+            },
             render: function () {
                 return (React.DOM.div({
                     className: "manufacturable-units"
                 }, (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : React.DOM.div({
                     className: "manufactory-upgrade-buttons-container"
                 }, React.DOM.button({
-                    className: "manufactory-upgrade-button manufactory-units-upgrade-strength-button"
-                }, "Upgrade strength"), React.DOM.button({
-                    className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button"
-                }, "Upgrade stats")), UIComponents.ManufacturableThingsList({
+                    className: "manufactory-upgrade-button manufactory-units-upgrade-health-button",
+                    onClick: this.upgradeHealth
+                }, "Upgrade health" + "\n" + this.props.selectedStar.manufactory.unitHealthModifier.toFixed(1)), React.DOM.button({
+                    className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button",
+                    onClick: this.upgradeStats
+                }, "Upgrade stats" + "\n" + this.props.selectedStar.manufactory.unitStatsModifier.toFixed(1))), UIComponents.ManufacturableThingsList({
                     manufacturableThings: this.props.manufacturableThings,
                     onClick: (this.props.canBuild ? this.addUnitToBuildQueue : null),
                     showCost: true,
