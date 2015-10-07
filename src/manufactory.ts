@@ -4,6 +4,7 @@ module Rance
   {
     thing: IManufacturableThing;
     locations: Star[];
+
   }
   export interface IManufacturableThingsData
   {
@@ -39,6 +40,13 @@ module Rance
       if (serializedData)
       {
         this.makeFromData(serializedData);
+      }
+      else
+      {
+        // manufactorydata temporarily in main.ts
+
+        this.capacity = manufactoryData.startingCapacity;
+        this.maxCapacity = manufactoryData.maxCapacity;
       }
     }
     makeFromData(data: any)
