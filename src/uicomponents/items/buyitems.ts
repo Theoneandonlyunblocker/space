@@ -22,7 +22,7 @@ module Rance
       render: function()
       {
         var player = this.props.player;
-        var items = player.getAllBuildableItems();
+        var items = player.getGloballyBuildableItems();
 
         if (items.length < 1)
         {

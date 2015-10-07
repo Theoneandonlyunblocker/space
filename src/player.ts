@@ -355,6 +355,18 @@ module Rance
 
       return templates;
     }
+    getGloballyBuildableItems()
+    {
+      // TODO manufactory
+      var itemTypes: Templates.IItemTemplate[] = [];
+
+      for (var key in app.moduleData.Templates.Items)
+      {
+        itemTypes.push(app.moduleData.Templates.Items[key]);
+      }
+
+      return itemTypes;
+    }
     getNeighboringStars(): Star[]
     {
       var stars:
@@ -687,18 +699,6 @@ module Rance
       }
 
       this.items.splice(index, 1);
-    }
-    getAllBuildableItems()
-    {
-      // TODO manufactory
-      var itemTypes: Templates.IItemTemplate[] = [];
-
-      for (var key in app.moduleData.Templates.Items)
-      {
-        itemTypes.push(app.moduleData.Templates.Items[key]);
-      }
-
-      return itemTypes;
     }
     getNearestOwnedStarTo(star: Star)
     {
