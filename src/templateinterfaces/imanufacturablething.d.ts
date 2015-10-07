@@ -6,5 +6,7 @@ declare module Rance
     displayName: string;
     description: string;
     buildCost: number;
+
+    technologyRequirements?: ITechnologyRequirement[];
   }
 }
