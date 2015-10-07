@@ -5,10 +5,10 @@
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
+/// <reference path="manufactory.ts" />
 
 module Rance
 {
-
   export class Star implements Point
   {
     id: number;
@@ -70,6 +70,7 @@ module Rance
     } = {};
 
     buildableUnitTypes: Templates.IUnitTemplate[] = [];
+    manufactory: Manufactory;
 
     constructor(x: number, y: number, id?: number)
     {
@@ -946,6 +947,10 @@ module Rance
 
       return this.seed;
     }
+    buildManufactory()
+    {
+      this.manufactory = new Manufactory(this);
+    }
     serialize()
     {
       var data: any = {};
@@ -982,6 +987,11 @@ module Rance
         {
           data.buildings[category].push(this.buildings[category][i].serialize())
         }
+      }
+
+      if (this.manufactory)
+      {
+        data.manufactory = this.manufactory.serialize();
       }
 
       return data;

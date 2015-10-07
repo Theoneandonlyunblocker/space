@@ -8,6 +8,7 @@
 /// <reference path="battlesimulator.ts" />
 /// <reference path="battleprep.ts" />
 /// <reference path="diplomacystatus.ts" />
+/// <reference path="manufactory.ts" />
 
 /// <reference path="mapai/aicontroller.ts"/>
 
@@ -876,6 +877,20 @@ module Rance
       }
 
       eventManager.dispatchEvent("technologyPrioritiesUpdated");
+    }
+    getAllManufactories(): Manufactory[]
+    {
+      var manufactories: Manufactory[] = [];
+
+      for (var i = 0; i < this.controlledLocations.length; i++)
+      {
+        if (this.controlledLocations[i].manufactory)
+        {
+          manufactories.push(this.controlledLocations[i].manufactory);
+        }
+      }
+
+      return manufactories;
     }
     serialize()
     {

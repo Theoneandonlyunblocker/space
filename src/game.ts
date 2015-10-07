@@ -2,6 +2,7 @@
 /// <reference path="galaxymap.ts"/>
 /// <reference path="eventmanager.ts"/>
 /// <reference path="notificationlog.ts" />
+/// <reference path="manufactory.ts" />
 
 module Rance
 {
@@ -102,6 +103,10 @@ module Rance
         }
 
         player.allocateResearchPoints();
+        player.getAllManufactories().forEach(function(manufactory: Manufactory)
+        {
+          manufactory.buildAllThings();
+        });
       }
     }
     setNextPlayer()
