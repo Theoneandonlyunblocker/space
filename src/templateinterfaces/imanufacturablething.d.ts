@@ -7,6 +7,6 @@ declare module Rance
     description: string;
     buildCost: number;
 
-    technologyRequirements?: ITechnologyRequirement[];
+    technologyRequirements?: Templates.ITechnologyRequirement[];
   }
 }

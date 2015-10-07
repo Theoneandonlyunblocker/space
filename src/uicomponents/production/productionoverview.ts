@@ -81,7 +81,8 @@ module Rance
           {
             queueElement = UIComponents.BuildQueue(
             {
-              manufactory: selectedStar.manufactory
+              manufactory: selectedStar.manufactory,
+              triggerUpdate: this.forceUpdate.bind(this)
             });
           }
           else
@@ -115,7 +116,8 @@ module Rance
               UIComponents.ManufacturableThings(
               {
                 selectedStar: selectedStar,
-                player: player
+                player: player,
+                triggerUpdate: this.forceUpdate.bind(this)
               })
             )
           )

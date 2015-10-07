@@ -9934,7 +9934,6 @@ var Rance;
     var Manufactory = (function () {
         function Manufactory(star, serializedData) {
             this.buildQueue = [];
-            this.buildableThingsAreDirty = true;
             this.star = star;
             this.player = star.owner;
             if (serializedData) {
@@ -9972,7 +9971,7 @@ var Rance;
             return this.buildQueue.length >= this.capacity;
         };
         Manufactory.prototype.addThingToQueue = function (template, type) {
-            if (this.queueIsFull) {
+            if (this.queueIsFull()) {
                 throw new Error("Tried to add to manufactory build queue despite manufactory being at full capacity");
             }
             this.buildQueue.push({ type: type, template: template });
@@ -10009,36 +10008,47 @@ var Rance;
                 var fleet = new Rance.Fleet(this.player, units, this.star);
             }
         };
-        Manufactory.prototype.getBuildableUnitTypes = function () {
-            var global = this.player.getGloballyBuildableShips();
-            var local = [];
+        Manufactory.prototype.getLocalUnitTypes = function () {
+            var manufacturable = [];
+            var potential = [];
             for (var i = 0; i < this.star.buildableUnitTypes.length; i++) {
                 var type = this.star.buildableUnitTypes[i];
                 if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements)) {
-                    local.push(type);
+                    manufacturable.push(type);
+                }
+                else {
+                    potential.push(type);
                 }
             }
-            return global.concat(local);
+            return ({
+                manufacturable: manufacturable,
+                potential: potential
+            });
         };
-        Manufactory.prototype.getBuildableItemTypes = function () {
-            return this.player.getAllBuildableItems();
+        Manufactory.prototype.getLocalItemTypes = function () {
+            var manufacturable = [];
+            var potential = [];
+            // TODO manufactory
+            return ({
+                manufacturable: manufacturable,
+                potential: potential
+            });
         };
-        Manufactory.prototype.getAllBuildableThings = function () {
-            // if (this.buildableThingsAreDirty)
-            // {
-            //   this.buildableThings =
-            //   {
-            //     units: this.getBuildableUnitTypes(),
-            //     items: this.getBuildableItemTypes()
-            //   }
-            //   this.buildableThingsAreDirty = false;
-            // }
-            this.buildableThings =
-                {
-                    units: this.getBuildableUnitTypes(),
-                    items: this.getBuildableItemTypes()
-                };
-            return this.buildableThings;
+        Manufactory.prototype.getManufacturableThingsForType = function (type) {
+            switch (type) {
+                case "item":
+                    {
+                        return this.getLocalItemTypes().manufacturable;
+                    }
+                case "unit":
+                    {
+                        return this.getLocalUnitTypes().manufacturable;
+                    }
+            }
+        };
+        Manufactory.prototype.canManufactureThing = function (template, type) {
+            var manufacturableThings = this.getManufacturableThingsForType(type);
+            return manufacturableThings.indexOf(template) !== -1;
         };
         Manufactory.prototype.handleOwnerChange = function () {
             this.player = this.star.owner;
@@ -12377,37 +12387,6 @@ var Rance;
             }
             return incomeByResource;
         };
-        Player.prototype.meetsTechnologyRequirements = function (requirements) {
-            for (var i = 0; i < requirements.length; i++) {
-                var requirement = requirements[i];
-                if (this.technologies[requirement.technology.key].level < requirement.level) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        Player.prototype.getGloballyBuildableShips = function () {
-            var templates = [];
-            var typesAlreadyAddedChecked = {};
-            var unitsToAdd = app.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
-            if (!this.isAI && Rance.Options.debugMode) {
-                unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
-            }
-            for (var i = 0; i < unitsToAdd.length; i++) {
-                var template = unitsToAdd[i];
-                if (typesAlreadyAddedChecked[template.type])
-                    continue;
-                else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements)) {
-                    typesAlreadyAddedChecked[template.type] = true;
-                    continue;
-                }
-                else {
-                    typesAlreadyAddedChecked[template.type] = true;
-                    templates.push(template);
-                }
-            }
-            return templates;
-        };
         Player.prototype.getNeighboringStars = function () {
             var stars = {};
             for (var i = 0; i < this.controlledLocations.length; i++) {
@@ -12652,14 +12631,6 @@ var Rance;
             }
             this.items.splice(index, 1);
         };
-        Player.prototype.getAllBuildableItems = function () {
-            // TODO manufactory
-            var itemTypes = [];
-            for (var key in app.moduleData.Templates.Items) {
-                itemTypes.push(app.moduleData.Templates.Items[key]);
-            }
-            return itemTypes;
-        };
         Player.prototype.getNearestOwnedStarTo = function (star) {
             var self = this;
             var isOwnedByThisFN = function (star) {
@@ -12793,6 +12764,7 @@ var Rance;
             }
             Rance.eventManager.dispatchEvent("technologyPrioritiesUpdated");
         };
+        // MANUFACTORIES
         Player.prototype.getAllManufactories = function () {
             var manufactories = [];
             for (var i = 0; i < this.controlledLocations.length; i++) {
@@ -12801,6 +12773,77 @@ var Rance;
                 }
             }
             return manufactories;
+        };
+        Player.prototype.meetsTechnologyRequirements = function (requirements) {
+            for (var i = 0; i < requirements.length; i++) {
+                var requirement = requirements[i];
+                if (this.technologies[requirement.technology.key].level < requirement.level) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        Player.prototype.getGloballyBuildableUnits = function () {
+            var templates = [];
+            var typesAlreadyAddedChecked = {};
+            var unitsToAdd = app.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
+            if (!this.isAI && Rance.Options.debugMode) {
+                unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
+            }
+            for (var i = 0; i < unitsToAdd.length; i++) {
+                var template = unitsToAdd[i];
+                if (typesAlreadyAddedChecked[template.type])
+                    continue;
+                else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements)) {
+                    typesAlreadyAddedChecked[template.type] = true;
+                    continue;
+                }
+                else {
+                    typesAlreadyAddedChecked[template.type] = true;
+                    templates.push(template);
+                }
+            }
+            return templates;
+        };
+        Player.prototype.getGloballyBuildableItems = function () {
+            // TODO manufactory
+            var itemTypes = [];
+            for (var key in app.moduleData.Templates.Items) {
+                itemTypes.push(app.moduleData.Templates.Items[key]);
+            }
+            return itemTypes;
+        };
+        Player.prototype.getManufacturingCapacityFor = function (template, type) {
+            var totalCapacity = 0;
+            var capacityByStar = [];
+            var isGloballyBuildable;
+            switch (type) {
+                case "item":
+                    {
+                        var globallyBuildableItems = this.getGloballyBuildableItems();
+                        isGloballyBuildable = globallyBuildableItems.indexOf(template) !== -1;
+                    }
+                case "unit":
+                    {
+                        var globallyBuildableUnits = this.getGloballyBuildableUnits();
+                        isGloballyBuildable = globallyBuildableUnits.indexOf(template) !== -1;
+                    }
+            }
+            var manufactories = this.getAllManufactories();
+            for (var i = 0; i < manufactories.length; i++) {
+                var manufactory = manufactories[i];
+                var isBuildable = !manufactory.queueIsFull() &&
+                    (isGloballyBuildable || manufactory.canManufactureThing(template, type));
+                if (isBuildable) {
+                    var capacity = manufactory.capacity - manufactory.buildQueue.length;
+                    totalCapacity += capacity;
+                    capacityByStar.push({
+                        star: manufactory.star,
+                        capacity: capacity
+                    });
+                }
+            }
+            return totalCapacity;
         };
         Player.prototype.serialize = function () {
             var data = {};
@@ -12890,6 +12933,19 @@ var Rance;
                     this.removeLink(star);
                 }
             }
+        };
+        // TODO manufactory
+        Star.prototype.getBuildableShipTypes = function () {
+            var player = this.owner;
+            var global = player.getGloballyBuildableUnits();
+            var local = [];
+            for (var i = 0; i < this.buildableUnitTypes.length; i++) {
+                var type = this.buildableUnitTypes[i];
+                if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements)) {
+                    local.push(type);
+                }
+            }
+            return global.concat(local);
         };
         // END TO REMOVE
         // BUILDINGS
@@ -13072,18 +13128,6 @@ var Rance;
                 }
             }
             return allUpgrades;
-        };
-        Star.prototype.getBuildableShipTypes = function () {
-            var player = this.owner;
-            var global = player.getGloballyBuildableShips();
-            var local = [];
-            for (var i = 0; i < this.buildableUnitTypes.length; i++) {
-                var type = this.buildableUnitTypes[i];
-                if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements)) {
-                    local.push(type);
-                }
-            }
-            return global.concat(local);
         };
         // FLEETS
         Star.prototype.getAllFleets = function () {
@@ -13599,22 +13643,64 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BuildQueueItem = React.createClass({
-            displayName: "BuildQueueItem",
+        UIComponents.ManufacturableThingsListItem = React.createClass({
+            displayName: "ManufacturableThingsListItem",
             propTypes: {
-                type: React.PropTypes.string.isRequired,
-                template: React.PropTypes.any.isRequired
+                template: React.PropTypes.any.isRequired,
+                parentIndex: React.PropTypes.number.isRequired,
+                onClick: React.PropTypes.func
+            },
+            handleClick: function () {
+                if (this.props.onClick) {
+                    this.props.onClick(this.props.template, this.props.parentIndex);
+                }
             },
             render: function () {
                 var template = this.props.template;
                 return (React.DOM.li({
-                    className: "build-queue-item"
+                    className: "manufacturable-things-list-item",
+                    onClick: this.handleClick
                 }, template.displayName));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="buildqueueitem.ts" />
+/// <reference path="manufacturablethingslistitem.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ManufacturableThingsList = React.createClass({
+            displayName: "ManufacturableThingsList",
+            mixins: [React.addons.PureRenderMixin],
+            propTypes: {
+                manufacturableThings: React.PropTypes.array.isRequired,
+                onClick: React.PropTypes.func
+            },
+            render: function () {
+                var manufacturableThings = this.props.manufacturableThings;
+                var items = [];
+                var keyByTemplateType = {};
+                for (var i = 0; i < manufacturableThings.length; i++) {
+                    var templateType = manufacturableThings[i].type;
+                    if (!keyByTemplateType[templateType]) {
+                        keyByTemplateType[templateType] = 0;
+                    }
+                    items.push(UIComponents.ManufacturableThingsListItem({
+                        template: manufacturableThings[i],
+                        key: templateType + keyByTemplateType[templateType]++,
+                        parentIndex: i,
+                        onClick: this.props.onClick
+                    }));
+                }
+                return (React.DOM.ol({
+                    className: "manufacturable-things-list"
+                }, items));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="manufacturablethingslist.ts" />
 /// <reference path="../../manufactory.ts" />
 var Rance;
 (function (Rance) {
@@ -13623,44 +13709,50 @@ var Rance;
         UIComponents.BuildQueue = React.createClass({
             displayName: "BuildQueue",
             propTypes: {
-                manufactory: React.PropTypes.instanceOf(Rance.Manufactory).isRequired
+                manufactory: React.PropTypes.instanceOf(Rance.Manufactory).isRequired,
+                triggerUpdate: React.PropTypes.func.isRequired
+            },
+            removeItem: function (template, parentIndex) {
+                var manufactory = this.props.manufactory;
+                manufactory.removeThingAtIndex(parentIndex);
+                this.props.triggerUpdate();
             },
             render: function () {
                 var manufactory = this.props.manufactory;
-                var buildQueue = manufactory.buildQueue;
-                var buildQueueItems = [];
-                var keyByTemplateType = {};
-                for (var i = 0; i < buildQueue.length; i++) {
-                    if (!keyByTemplateType[buildQueue[i].template.type]) {
-                        keyByTemplateType[buildQueue[i].template.type] = 0;
-                    }
-                    buildQueueItems.push(UIComponents.BuildQueueItem({
-                        type: buildQueue[i].type,
-                        template: buildQueue[i].template,
-                        key: keyByTemplateType[buildQueue[i].template.type]++
-                    }));
+                var convertedBuildQueue = [];
+                for (var i = 0; i < manufactory.buildQueue.length; i++) {
+                    convertedBuildQueue.push(manufactory.buildQueue[i].template);
                 }
                 return (React.DOM.div({
                     className: "build-queue"
                 }, React.DOM.div({
                     className: "build-queue-header"
-                }, "Build queue"), React.DOM.ol({
-                    className: "build-queue-items"
-                }, buildQueueItems)));
+                }, "Build queue"), UIComponents.ManufacturableThingsList({
+                    manufacturableThings: convertedBuildQueue,
+                    onClick: this.removeItem
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="manufacturablethingslist.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.ManufacturableUnits = React.createClass({
             displayName: "ManufacturableUnits",
+            mixins: [React.addons.PureRenderMixin],
             propTypes: {
                 selectedStar: React.PropTypes.instanceOf(Rance.Star),
                 consolidateLocations: React.PropTypes.bool.isRequired,
-                manufacturableThings: React.PropTypes.object.isRequired // TODO
+                manufacturableThings: React.PropTypes.array.isRequired,
+                triggerUpdate: React.PropTypes.func.isRequired
+            },
+            addUnitToBuildQueue: function (template) {
+                var manufactory = this.props.selectedStar.manufactory;
+                manufactory.addThingToQueue(template, "unit");
+                this.props.triggerUpdate();
             },
             render: function () {
                 return (React.DOM.div({
@@ -13671,7 +13763,10 @@ var Rance;
                     className: "manufactory-upgrade-button manufactory-units-upgrade-strength-button"
                 }, "Upgrade strength"), React.DOM.button({
                     className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button"
-                }, "Upgrade stats")), "todo units"));
+                }, "Upgrade stats")), UIComponents.ManufacturableThingsList({
+                    manufacturableThings: this.props.manufacturableThings,
+                    onClick: this.addUnitToBuildQueue
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -13682,19 +13777,30 @@ var Rance;
     (function (UIComponents) {
         UIComponents.ManufacturableItems = React.createClass({
             displayName: "ManufacturableItems",
+            mixins: [React.addons.PureRenderMixin],
             propTypes: {
                 selectedStar: React.PropTypes.instanceOf(Rance.Star),
                 consolidateLocations: React.PropTypes.bool.isRequired,
-                manufacturableThings: React.PropTypes.object.isRequired // TODO
+                manufacturableThings: React.PropTypes.array.isRequired,
+                triggerUpdate: React.PropTypes.func.isRequired
+            },
+            addItemToBuildQueue: function (template) {
+                var manufactory = this.props.selectedStar.manufactory;
+                manufactory.addThingToQueue(template, "item");
+                this.props.triggerUpdate();
             },
             render: function () {
+                console.log("render items");
                 return (React.DOM.div({
                     className: "manufacturable-items"
                 }, React.DOM.div({
                     className: "manufactory-upgrade-buttons-container"
                 }, React.DOM.button({
                     className: "manufactory-upgrade-button manufactory-items-upgrade-button"
-                }, "Upgrade items")), "todo items"));
+                }, "Upgrade items")), UIComponents.ManufacturableThingsList({
+                    manufacturableThings: this.props.manufacturableThings,
+                    onClick: this.addItemToBuildQueue
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -13711,7 +13817,8 @@ var Rance;
             displayName: "ManufacturableThings",
             propTypes: {
                 selectedStar: React.PropTypes.instanceOf(Rance.Star),
-                player: React.PropTypes.instanceOf(Rance.Player).isRequired
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                triggerUpdate: React.PropTypes.func.isRequired
             },
             getInitialState: function () {
                 return ({
@@ -13747,23 +13854,27 @@ var Rance;
                 }, displayString));
             },
             getManufacturableThings: function (key) {
-                var manufacturableThings;
+                var manufacturableThings = [];
                 var selectedStar = this.props.selectedStar;
                 var player = this.props.player;
                 switch (key) {
                     case "units":
                         {
+                            manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableUnits());
                             if (selectedStar) {
-                            }
-                            else {
+                                if (selectedStar.manufactory) {
+                                    manufacturableThings = manufacturableThings.concat(selectedStar.manufactory.getLocalUnitTypes().manufacturable);
+                                }
                             }
                             break;
                         }
                     case "items":
                         {
+                            manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableItems());
                             if (selectedStar) {
-                            }
-                            else {
+                                if (selectedStar.manufactory) {
+                                    manufacturableThings = manufacturableThings.concat(selectedStar.manufactory.getLocalItemTypes().manufacturable);
+                                }
                             }
                             break;
                         }
@@ -13774,8 +13885,9 @@ var Rance;
                 var props = {
                     key: key,
                     selectedStar: this.props.selectedStar,
-                    manufacturableThings: {},
-                    consolidateLocations: false
+                    manufacturableThings: this.getManufacturableThings(key),
+                    consolidateLocations: false,
+                    triggerUpdate: this.props.triggerUpdate
                 };
                 switch (key) {
                     case "units":
@@ -13903,7 +14015,8 @@ var Rance;
                 if (selectedStar) {
                     if (selectedStar.manufactory) {
                         queueElement = UIComponents.BuildQueue({
-                            manufactory: selectedStar.manufactory
+                            manufactory: selectedStar.manufactory,
+                            triggerUpdate: this.forceUpdate.bind(this)
                         });
                     }
                     else {
@@ -13925,7 +14038,8 @@ var Rance;
                     className: "production-overview-contents"
                 }, queueElement, UIComponents.ManufacturableThings({
                     selectedStar: selectedStar,
-                    player: player
+                    player: player,
+                    triggerUpdate: this.forceUpdate.bind(this)
                 }))));
             }
         });

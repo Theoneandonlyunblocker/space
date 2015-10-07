@@ -1218,40 +1218,32 @@ declare module Rance {
     }
 }
 declare module Rance {
-    interface IManufacturableThingWithLocations {
-        thing: IManufacturableThing;
-        locations: Star[];
-    }
-    interface IManufacturableThingsData {
-        manufacturable: IManufacturableThingWithLocations[];
-        potential: IManufacturableThingWithLocations[];
+    interface IManufacturableThingWithType {
+        type: string;
+        template: IManufacturableThing;
     }
     class Manufactory {
-        buildQueue: {
-            type: string;
-            template: IManufacturableThing;
-        }[];
+        buildQueue: IManufacturableThingWithType[];
         player: Player;
         star: Star;
         capacity: number;
         maxCapacity: number;
-        buildableThings: {
-            items: Templates.IItemTemplate[];
-            units: Templates.IUnitTemplate[];
-        };
-        buildableThingsAreDirty: boolean;
         constructor(star: Star, serializedData?: any);
         makeFromData(data: any): void;
         queueIsFull(): boolean;
         addThingToQueue(template: IManufacturableThing, type: string): void;
         removeThingAtIndex(index: number): void;
         buildAllThings(): void;
-        getBuildableUnitTypes(): Templates.IUnitTemplate[];
-        getBuildableItemTypes(): Templates.IItemTemplate[];
-        getAllBuildableThings(): {
-            items: Templates.IItemTemplate[];
-            units: Templates.IUnitTemplate[];
+        getLocalUnitTypes(): {
+            manufacturable: Templates.IUnitTemplate[];
+            potential: Templates.IUnitTemplate[];
         };
+        getLocalItemTypes(): {
+            manufacturable: Templates.IItemTemplate[];
+            potential: Templates.IItemTemplate[];
+        };
+        getManufacturableThingsForType(type: string): IManufacturableThing[];
+        canManufactureThing(template: IManufacturableThing, type: string): boolean;
         handleOwnerChange(): void;
         serialize(): {
             capacity: number;
@@ -1846,8 +1838,6 @@ declare module Rance {
                 amount: number;
             };
         };
-        meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[]): boolean;
-        getGloballyBuildableShips(): Templates.IUnitTemplate[];
         getNeighboringStars(): Star[];
         updateVisionInStar(star: Star): void;
         updateDetectionInStar(star: Star): void;
@@ -1869,7 +1859,6 @@ declare module Rance {
         fleetIsFullyIdentified(fleet: Fleet): boolean;
         addItem(item: Item): void;
         removeItem(item: Item): void;
-        getAllBuildableItems(): Templates.IItemTemplate[];
         getNearestOwnedStarTo(star: Star): Star;
         attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
         getResearchSpeed(): number;
@@ -1878,6 +1867,10 @@ declare module Rance {
         addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void;
         setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number): void;
         getAllManufactories(): Manufactory[];
+        meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[]): boolean;
+        getGloballyBuildableUnits(): Templates.IUnitTemplate[];
+        getGloballyBuildableItems(): Templates.IItemTemplate[];
+        getManufacturingCapacityFor(template: IManufacturableThing, type: string): number;
         serialize(): any;
     }
 }
@@ -1921,6 +1914,7 @@ declare module Rance {
         manufactory: Manufactory;
         constructor(x: number, y: number, id?: number);
         severLinksToNonAdjacent(): void;
+        getBuildableShipTypes(): Templates.IUnitTemplate[];
         addBuilding(building: Building): void;
         removeBuilding(building: Building): void;
         sortDefenceBuildings(): void;
@@ -1946,7 +1940,6 @@ declare module Rance {
                 parentBuilding: Building;
             }[];
         };
-        getBuildableShipTypes(): Templates.IUnitTemplate[];
         getAllFleets(): Fleet[];
         getFleetIndex(fleet: Fleet): number;
         hasFleet(fleet: Fleet): boolean;
@@ -2016,7 +2009,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var BuildQueueItem: React.Factory<any>;
+        var ManufacturableThingsListItem: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ManufacturableThingsList: React.Factory<any>;
     }
 }
 declare module Rance {

@@ -5,16 +5,26 @@ module Rance
     export var ManufacturableItems = React.createClass(
     {
       displayName: "ManufacturableItems",
+      mixins: [React.addons.PureRenderMixin],
 
       propTypes:
       {
         selectedStar: React.PropTypes.instanceOf(Star),
         consolidateLocations: React.PropTypes.bool.isRequired,
-        manufacturableThings: React.PropTypes.object.isRequired // TODO
+        manufacturableThings: React.PropTypes.array.isRequired,
+        triggerUpdate: React.PropTypes.func.isRequired
+      },
+
+      addItemToBuildQueue: function(template: Templates.IItemTemplate)
+      {
+        var manufactory: Manufactory = this.props.selectedStar.manufactory;
+        manufactory.addThingToQueue(template, "item");
+        this.props.triggerUpdate();
       },
 
       render: function()
       {
+        console.log("render items")
         return(
           React.DOM.div(
           {
@@ -31,7 +41,11 @@ module Rance
                 "Upgrade items"
               )
             ),
-            "todo items"
+            UIComponents.ManufacturableThingsList(
+            {
+              manufacturableThings: this.props.manufacturableThings,
+              onClick: this.addItemToBuildQueue
+            })
           )
         );
       }

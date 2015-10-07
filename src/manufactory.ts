@@ -1,36 +1,19 @@
 module Rance
 {
-  export interface IManufacturableThingWithLocations
+  export interface IManufacturableThingWithType
   {
-    thing: IManufacturableThing;
-    locations: Star[];
-
-  }
-  export interface IManufacturableThingsData
-  {
-    manufacturable: IManufacturableThingWithLocations[];
-    potential: IManufacturableThingWithLocations[];
+    type: string;
+    template: IManufacturableThing;
   }
   export class Manufactory
   {
-    buildQueue:
-    {
-      type: string;
-      template: IManufacturableThing;
-    }[] = [];
+    buildQueue: IManufacturableThingWithType[] = [];
 
     player: Player;
     star: Star;
 
     capacity: number;
     maxCapacity: number;
-
-    manufacturableThings:
-    {
-      items: Templates.IItemTemplate[];
-      units: Templates.IUnitTemplate[];
-    };
-    manufacturableThingsAreDirty: boolean = true;
 
     constructor(star: Star, serializedData?: any)
     {
@@ -127,44 +110,61 @@ module Rance
         var fleet = new Fleet(this.player, units, this.star);
       }
     }
-    getManufacturableUnitTypes(): Templates.IUnitTemplate[]
+    getLocalUnitTypes()
     {
-      var global = this.player.getGloballyBuildableShips();
-      var local: Templates.IUnitTemplate[] = [];
+      var manufacturable: Templates.IUnitTemplate[] = [];
+      var potential: Templates.IUnitTemplate[] = [];
 
       for (var i = 0; i < this.star.buildableUnitTypes.length; i++)
       {
         var type = this.star.buildableUnitTypes[i];
         if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements))
         {
-          local.push(type);
+          manufacturable.push(type);
+        }
+        else
+        {
+          potential.push(type);
         }
       }
 
-      return global.concat(local);
-    }
-    getManufacturableItemTypes(): Templates.IItemTemplate[]
-    {
-      return this.player.getGloballyBuildableItems();
-    }
-    getAllManufacturableThings()
-    {
-      // if (this.manufacturableThingsAreDirty)
-      // {
-      //   this.manufacturableThings =
-      //   {
-      //     units: this.getManufacturableUnitTypes(),
-      //     items: this.getManufacturableItemTypes()
-      //   }
-      //   this.manufacturableThingsAreDirty = false;
-      // }
-      this.manufacturableThings =
+      return(
       {
-        units: this.getManufacturableUnitTypes(),
-        items: this.getManufacturableItemTypes()
-      }
+        manufacturable: manufacturable,
+        potential: potential
+      });
+    }
+    getLocalItemTypes()
+    {
+      var manufacturable: Templates.IItemTemplate[] = [];
+      var potential: Templates.IItemTemplate[] = [];
 
-      return this.manufacturableThings;
+      // TODO manufactory
+
+      return(
+      {
+        manufacturable: manufacturable,
+        potential: potential
+      })
+    }
+    getManufacturableThingsForType(type: string): IManufacturableThing[]
+    {
+      switch (type)
+      {
+        case "item":
+        {
+          return this.getLocalItemTypes().manufacturable;
+        }
+        case "unit":
+        {
+          return this.getLocalUnitTypes().manufacturable;
+        }
+      }
+    }
+    canManufactureThing(template: IManufacturableThing, type: string)
+    {
+      var manufacturableThings = this.getManufacturableThingsForType(type);
+      return manufacturableThings.indexOf(template) !== -1;
     }
     handleOwnerChange()
     {

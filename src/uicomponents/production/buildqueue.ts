@@ -1,4 +1,4 @@
-/// <reference path="buildqueueitem.ts" />
+/// <reference path="manufacturablethingslist.ts" />
 
 /// <reference path="../../manufactory.ts" />
 
@@ -12,33 +12,26 @@ module Rance
 
       propTypes:
       {
-        manufactory: React.PropTypes.instanceOf(Manufactory).isRequired
+        manufactory: React.PropTypes.instanceOf(Manufactory).isRequired,
+        triggerUpdate: React.PropTypes.func.isRequired
+      },
+
+      removeItem: function(template: IManufacturableThing, parentIndex: number)
+      {
+        var manufactory: Manufactory = this.props.manufactory;
+        manufactory.removeThingAtIndex(parentIndex);
+        this.props.triggerUpdate();
       },
 
       render: function()
       {
         var manufactory: Manufactory = this.props.manufactory;
-        var buildQueue = manufactory.buildQueue;
 
-        var buildQueueItems: ReactComponentPlaceHolder[] = [];
-        var keyByTemplateType:
+        var convertedBuildQueue: IManufacturableThing[] = [];
+
+        for (var i = 0; i < manufactory.buildQueue.length; i++)
         {
-          [templateType: string]: number;
-        } = {};
-
-        for (var i = 0; i < buildQueue.length; i++)
-        {
-          if (!keyByTemplateType[buildQueue[i].template.type])
-          {
-            keyByTemplateType[buildQueue[i].template.type] = 0;
-          }
-
-          buildQueueItems.push(UIComponents.BuildQueueItem(
-          {
-            type: buildQueue[i].type,
-            template: buildQueue[i].template,
-            key: keyByTemplateType[buildQueue[i].template.type]++
-          }));
+          convertedBuildQueue.push(manufactory.buildQueue[i].template);
         }
 
         return(
@@ -52,12 +45,11 @@ module Rance
             },
               "Build queue"
             ),
-            React.DOM.ol(
+            UIComponents.ManufacturableThingsList(
             {
-              className: "build-queue-items"
-            },
-              buildQueueItems
-            )
+              manufacturableThings: convertedBuildQueue,
+              onClick: this.removeItem
+            })
           )
         );
       }

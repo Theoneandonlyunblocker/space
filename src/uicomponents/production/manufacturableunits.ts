@@ -1,3 +1,5 @@
+/// <reference path="manufacturablethingslist.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -5,12 +7,21 @@ module Rance
     export var ManufacturableUnits = React.createClass(
     {
       displayName: "ManufacturableUnits",
+      mixins: [React.addons.PureRenderMixin],
 
       propTypes:
       {
         selectedStar: React.PropTypes.instanceOf(Star),
         consolidateLocations: React.PropTypes.bool.isRequired,
-        manufacturableThings: React.PropTypes.object.isRequired // TODO
+        manufacturableThings: React.PropTypes.array.isRequired,
+        triggerUpdate: React.PropTypes.func.isRequired
+      },
+
+      addUnitToBuildQueue: function(template: Templates.IUnitTemplate)
+      {
+        var manufactory: Manufactory = this.props.selectedStar.manufactory;
+        manufactory.addThingToQueue(template, "unit");
+        this.props.triggerUpdate();
       },
 
       render: function()
@@ -37,7 +48,11 @@ module Rance
                 "Upgrade stats"
               )
             ),
-            "todo units"
+            UIComponents.ManufacturableThingsList(
+            {
+              manufacturableThings: this.props.manufacturableThings,
+              onClick: this.addUnitToBuildQueue
+            })
           )
         );
       }

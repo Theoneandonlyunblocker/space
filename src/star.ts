@@ -97,6 +97,25 @@ module Rance
         }
       }
     }
+    // TODO manufactory
+    getBuildableShipTypes(): Templates.IUnitTemplate[]
+    {
+      var player = this.owner;
+
+      var global = player.getGloballyBuildableUnits();
+      var local: Templates.IUnitTemplate[] = [];
+
+      for (var i = 0; i < this.buildableUnitTypes.length; i++)
+      {
+        var type = this.buildableUnitTypes[i];
+        if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements))
+        {
+          local.push(type);
+        }
+      }
+
+      return global.concat(local);
+    }
     // END TO REMOVE
 
     // BUILDINGS
@@ -375,26 +394,6 @@ module Rance
 
       return allUpgrades;
     }
-
-    getBuildableShipTypes(): Templates.IUnitTemplate[]
-    {
-      var player = this.owner;
-
-      var global = player.getGloballyBuildableShips();
-      var local: Templates.IUnitTemplate[] = [];
-
-      for (var i = 0; i < this.buildableUnitTypes.length; i++)
-      {
-        var type = this.buildableUnitTypes[i];
-        if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements))
-        {
-          local.push(type);
-        }
-      }
-
-      return global.concat(local);
-    }
-
     // FLEETS
     getAllFleets()
     {

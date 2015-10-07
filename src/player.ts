@@ -310,63 +310,6 @@ module Rance
 
       return incomeByResource;
     }
-    meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[])
-    {
-      for (var i = 0; i < requirements.length; i++)
-      {
-        var requirement = requirements[i];
-        if (this.technologies[requirement.technology.key].level < requirement.level)
-        {
-          return false;
-        }
-      }
-
-      return true;
-    }
-    getGloballyBuildableShips()
-    {
-      var templates: Templates.IUnitTemplate[] = [];
-      var typesAlreadyAddedChecked:
-      {
-        [unitType: string]: boolean;
-      } = {};
-
-      var unitsToAdd: Templates.IUnitTemplate[] = app.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
-      if (!this.isAI && Options.debugMode)
-      {
-        unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
-      }
-
-      for (var i = 0; i < unitsToAdd.length; i++)
-      {
-        var template = unitsToAdd[i];
-        if (typesAlreadyAddedChecked[template.type]) continue;
-        else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements))
-        {
-          typesAlreadyAddedChecked[template.type] = true;
-          continue;
-        }
-        else
-        {
-          typesAlreadyAddedChecked[template.type] = true;
-          templates.push(template);
-        }
-      }
-
-      return templates;
-    }
-    getGloballyBuildableItems()
-    {
-      // TODO manufactory
-      var itemTypes: Templates.IItemTemplate[] = [];
-
-      for (var key in app.moduleData.Templates.Items)
-      {
-        itemTypes.push(app.moduleData.Templates.Items[key]);
-      }
-
-      return itemTypes;
-    }
     getNeighboringStars(): Star[]
     {
       var stars:
@@ -878,6 +821,7 @@ module Rance
 
       eventManager.dispatchEvent("technologyPrioritiesUpdated");
     }
+    // MANUFACTORIES
     getAllManufactories(): Manufactory[]
     {
       var manufactories: Manufactory[] = [];
@@ -891,6 +835,106 @@ module Rance
       }
 
       return manufactories;
+    }
+    meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[])
+    {
+      for (var i = 0; i < requirements.length; i++)
+      {
+        var requirement = requirements[i];
+        if (this.technologies[requirement.technology.key].level < requirement.level)
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+    getGloballyBuildableUnits()
+    {
+      var templates: Templates.IUnitTemplate[] = [];
+      var typesAlreadyAddedChecked:
+      {
+        [unitType: string]: boolean;
+      } = {};
+
+      var unitsToAdd: Templates.IUnitTemplate[] = app.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
+      if (!this.isAI && Options.debugMode)
+      {
+        unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
+      }
+
+      for (var i = 0; i < unitsToAdd.length; i++)
+      {
+        var template = unitsToAdd[i];
+        if (typesAlreadyAddedChecked[template.type]) continue;
+        else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements))
+        {
+          typesAlreadyAddedChecked[template.type] = true;
+          continue;
+        }
+        else
+        {
+          typesAlreadyAddedChecked[template.type] = true;
+          templates.push(template);
+        }
+      }
+
+      return templates;
+    }
+    getGloballyBuildableItems()
+    {
+      // TODO manufactory
+      var itemTypes: Templates.IItemTemplate[] = [];
+
+      for (var key in app.moduleData.Templates.Items)
+      {
+        itemTypes.push(app.moduleData.Templates.Items[key]);
+      }
+
+      return itemTypes;
+    }
+    getManufacturingCapacityFor(template: IManufacturableThing, type: string)
+    {
+      var totalCapacity = 0;
+      var capacityByStar:
+      {
+        star: Star;
+        capacity: number;
+      }[] = [];
+      var isGloballyBuildable: boolean;
+      switch (type)
+      {
+        case "item":
+        {
+          var globallyBuildableItems = <IManufacturableThing[]> this.getGloballyBuildableItems();
+          isGloballyBuildable = globallyBuildableItems.indexOf(template) !== -1;
+        }
+        case "unit":
+        {
+          var globallyBuildableUnits = <IManufacturableThing[]> this.getGloballyBuildableUnits();
+          isGloballyBuildable = globallyBuildableUnits.indexOf(template) !== -1;
+        }
+      }
+      var manufactories = this.getAllManufactories();
+
+      for (var i = 0; i < manufactories.length; i++)
+      {
+        var manufactory = manufactories[i];
+        var isBuildable = !manufactory.queueIsFull() &&
+          (isGloballyBuildable || manufactory.canManufactureThing(template, type));
+        if (isBuildable)
+        {
+          var capacity = manufactory.capacity - manufactory.buildQueue.length;
+          totalCapacity += capacity;
+          capacityByStar.push(
+          {
+            star: manufactory.star,
+            capacity: capacity
+          });
+        }
+      }
+
+      return totalCapacity;
     }
     serialize()
     {

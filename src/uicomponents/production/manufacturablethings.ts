@@ -15,7 +15,8 @@ module Rance
       propTypes:
       {
         selectedStar: React.PropTypes.instanceOf(Star),
-        player: React.PropTypes.instanceOf(Player).isRequired
+        player: React.PropTypes.instanceOf(Player).isRequired,
+        triggerUpdate: React.PropTypes.func.isRequired
       },
 
       getInitialState: function()
@@ -67,8 +68,7 @@ module Rance
 
       getManufacturableThings: function(key: string)
       {
-        var manufacturableThings: IManufacturableThingsData;
-
+        var manufacturableThings: IManufacturableThing[] = [];
         var selectedStar: Star = this.props.selectedStar;
         var player: Player = this.props.player;
 
@@ -76,25 +76,27 @@ module Rance
         {
           case "units":
           {
+            manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableUnits());
             if (selectedStar)
             {
-              return {};
-            }
-            else
-            {
-              return {};
+              if (selectedStar.manufactory)
+              {
+                manufacturableThings = manufacturableThings.concat(
+                  selectedStar.manufactory.getLocalUnitTypes().manufacturable);
+              }
             }
             break;
           }
           case "items":
           {
+            manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableItems());
             if (selectedStar)
             {
-              return {};
-            }
-            else
-            {
-              return {};
+              if (selectedStar.manufactory)
+              {
+                manufacturableThings = manufacturableThings.concat(
+                  selectedStar.manufactory.getLocalItemTypes().manufacturable);
+              }
             }
             break;
           }
@@ -110,7 +112,8 @@ module Rance
           key: key,
           selectedStar: this.props.selectedStar,
           manufacturableThings: this.getManufacturableThings(key),
-          consolidateLocations: false
+          consolidateLocations: false,
+          triggerUpdate: this.props.triggerUpdate
         }
         switch (key)
         {
