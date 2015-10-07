@@ -24,12 +24,12 @@ module Rance
     capacity: number;
     maxCapacity: number;
 
-    buildableThings:
+    manufacturableThings:
     {
       items: Templates.IItemTemplate[];
       units: Templates.IUnitTemplate[];
     };
-    buildableThingsAreDirty: boolean = true;
+    manufacturableThingsAreDirty: boolean = true;
 
     constructor(star: Star, serializedData?: any)
     {
@@ -111,7 +111,7 @@ module Rance
         var fleet = new Fleet(this.player, units, this.star);
       }
     }
-    getBuildableUnitTypes(): Templates.IUnitTemplate[]
+    getManufacturableUnitTypes(): Templates.IUnitTemplate[]
     {
       var global = this.player.getGloballyBuildableShips();
       var local: Templates.IUnitTemplate[] = [];
@@ -127,28 +127,28 @@ module Rance
 
       return global.concat(local);
     }
-    getBuildableItemTypes(): Templates.IItemTemplate[]
+    getManufacturableItemTypes(): Templates.IItemTemplate[]
     {
-      return this.player.getAllBuildableItems();
+      return this.player.getGloballyBuildableItems();
     }
-    getAllBuildableThings()
+    getAllManufacturableThings()
     {
-      // if (this.buildableThingsAreDirty)
+      // if (this.manufacturableThingsAreDirty)
       // {
-      //   this.buildableThings =
+      //   this.manufacturableThings =
       //   {
-      //     units: this.getBuildableUnitTypes(),
-      //     items: this.getBuildableItemTypes()
+      //     units: this.getManufacturableUnitTypes(),
+      //     items: this.getManufacturableItemTypes()
       //   }
-      //   this.buildableThingsAreDirty = false;
+      //   this.manufacturableThingsAreDirty = false;
       // }
-      this.buildableThings =
+      this.manufacturableThings =
       {
-        units: this.getBuildableUnitTypes(),
-        items: this.getBuildableItemTypes()
+        units: this.getManufacturableUnitTypes(),
+        items: this.getManufacturableItemTypes()
       }
 
-      return this.buildableThings;
+      return this.manufacturableThings;
     }
     handleOwnerChange()
     {
