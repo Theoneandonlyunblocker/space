@@ -3882,7 +3882,16 @@ ul, ol
 
   &.active-tab
   {
-    color: red;
+    .double-gradient(
+      to bottom,
+      lighten(@bg-color2, 8%),
+      lighten(@bg-color, 4%)
+    );
+  }
+
+  +.manufacturable-things-tab-button
+  {
+    margin-left: -1px;
   }
 }
 

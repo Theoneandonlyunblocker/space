@@ -3779,7 +3779,10 @@ ol {
   pointer-events: none !important;
 }
 .manufacturable-things-tab-button.active-tab {
-  color: red;
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.manufacturable-things-tab-button + .manufacturable-things-tab-button {
+  margin-left: -1px;
 }
 .manufacturable-things-active-tab {
   flex: 1 1 auto;

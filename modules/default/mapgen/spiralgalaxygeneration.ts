@@ -304,6 +304,7 @@ module Rance
             player.addStar(star);
 
             MapGen2.addDefenceBuildings(star, 2);
+            star.buildManufactory();
           }
 
           MapGen2.setupPirates(stars, independents[0], 0.08, 1);

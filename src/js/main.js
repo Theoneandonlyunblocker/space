@@ -21325,6 +21325,7 @@ var Rance;
                         var player = players[i];
                         player.addStar(star);
                         Rance.MapGen2.addDefenceBuildings(star, 2);
+                        star.buildManufactory();
                     }
                     Rance.MapGen2.setupPirates(stars, independents[0], 0.08, 1);
                     return new Rance.MapGen2.MapGenResult({
