@@ -3880,8 +3880,18 @@ ul, ol
   
 }
 
+.manufacturable-things-list
+{
+  :last-child
+  {
+    border-width: 0;
+  }
+}
+
 .manufacturable-things-list-item
 {
+  position: relative;
+  padding: 2px 0;
   display: flex;
   flex-flow: row;
   justify-content: space-between;
@@ -3890,4 +3900,7 @@ ul, ol
   {
     margin: 0 1em;
   }
+
+  border-image: url("../img/listSeparator.png") 2 0 stretch;
+  border-width: 0 0 2px 0;
 }

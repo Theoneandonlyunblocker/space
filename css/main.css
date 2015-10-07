@@ -3776,13 +3776,20 @@ ol {
   flex-flow: row;
   border: 1px solid red;
 }
+.manufacturable-things-list :last-child {
+  border-width: 0;
+}
 .manufacturable-things-list-item {
+  position: relative;
+  padding: 2px 0;
   display: flex;
   flex-flow: row;
   justify-content: space-between;
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
   cursor: pointer;
+  border-image: url("../img/listSeparator.png") 2 0 stretch;
+  border-width: 0 0 2px 0;
 }
 .manufacturable-things-list-item:hover,
 .manufacturable-things-list-item:focus {
