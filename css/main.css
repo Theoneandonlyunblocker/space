@@ -3134,6 +3134,8 @@ ol {
   color: #eeeeec;
   background-color: #0c1615;
   box-sizing: border-box;
+  max-width: 100%;
+  max-height: 100%;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -3686,12 +3688,14 @@ ol {
 .production-overview {
   display: flex;
   flex-flow: row;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .manufactory-stars-list {
-  border: 1px solid red;
   overflow-y: scroll;
-  height: 100%;
   flex: 0 0 auto;
+  border: 1px solid #c4e5fb;
+  box-sizing: border-box;
 }
 .manufactory-stars-list-item {
   display: flex;
@@ -3712,47 +3716,32 @@ ol {
   color: red;
 }
 .production-overview-contents {
-  border: 1px solid green;
   display: flex;
   flex-flow: row;
   flex: 1 1 auto;
   height: 100%;
 }
 .build-queue {
-  border: 1px solid red;
   flex: 0 0 auto;
-  height: 100%;
+  border: 1px solid #c4e5fb;
+  border-right: 0;
+  box-sizing: border-box;
 }
 .build-queue .manufacturable-things-list-item {
   padding: 0 0.5em;
 }
-.construct-manufactory-button {
-  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
-  color: #eeeeec;
-  cursor: pointer;
+.build-queue .manufacturable-things-list-item-name {
+  max-width: 10em;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.construct-manufactory-container {
   border: 1px solid #c4e5fb;
-  border-radius: 5px;
-}
-.construct-manufactory-button:hover,
-.construct-manufactory-button:focus {
-  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
-}
-.construct-manufactory-button:active {
-  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
-}
-.construct-manufactory-button:disabled,
-.construct-manufactory-button.disabled {
-  pointer-events: none !important;
-  cursor: default;
-  color: #bebeb6;
-  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.construct-manufactory-button:disabled *,
-.construct-manufactory-button.disabled * {
-  pointer-events: none !important;
+  border-right: 0;
+  box-sizing: border-box;
 }
 .manufacturable-things {
-  border: 1px solid yellow;
   flex: 1 1 auto;
   display: flex;
   flex-flow: column;
@@ -3797,6 +3786,9 @@ ol {
   overflow-y: hidden;
   display: flex;
   flex-flow: column;
+  border: 1px solid #c4e5fb;
+  border-top: 0px;
+  box-sizing: border-box;
 }
 .manufacturable-things-active-tab > * {
   display: flex;
@@ -3811,10 +3803,12 @@ ol {
   flex: 1 1 auto;
   overflow-y: scroll;
 }
+.manufacturable-things-active-tab .manufacturable-things-list-item {
+  padding: 0 0.5em;
+}
 .manufactory-upgrade-buttons-container {
   display: flex;
   flex-flow: row;
-  border: 1px solid red;
 }
 .manufacturable-things-list :last-child {
   border-width: 0;
@@ -3850,5 +3844,8 @@ ol {
   pointer-events: none !important;
 }
 .manufacturable-things-list-item > * {
-  margin: 0 1em;
+  margin-right: 0.5em;
+}
+.manufacturable-things-list-item :last-child {
+  margin-right: 0;
 }

@@ -3289,6 +3289,8 @@ ul, ol
   color: @text-color;
   background-color: @bg-color;
   box-sizing: border-box;
+  max-width: 100%;
+  max-height: 100%;
 
   .full-border(5px);
 }
@@ -3776,14 +3778,17 @@ ul, ol
 {
   display: flex;
   flex-flow: row;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .manufactory-stars-list
 {
-  border: 1px solid red;
   overflow-y: scroll;
-  height: 100%;
+  // height: 100%;
   flex: 0 0 auto;
+  border: 1px solid @ui-border-color1;
+  box-sizing: border-box;
 }
 
 .manufactory-stars-list-item
@@ -3816,7 +3821,6 @@ ul, ol
 
 .production-overview-contents
 {
-  border: 1px solid green;
   display: flex;
   flex-flow: row;
   flex: 1 1 auto;
@@ -3825,24 +3829,39 @@ ul, ol
 
 .build-queue
 {
-  border: 1px solid red;
   flex: 0 0 auto;
-  height: 100%;
+  // height: 100%;
+  border: 1px solid @ui-border-color1;
+  border-right: 0;
+  box-sizing: border-box;
 
   .manufacturable-things-list-item
   {
     padding: 0 0.5em;
   }
+  .manufacturable-things-list-item-name
+  {
+    max-width: 10em;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.construct-manufactory-container
+{
+  border: 1px solid @ui-border-color1;
+  border-right: 0;
+  box-sizing: border-box;
 }
 
 .construct-manufactory-button
 {
-  .button-style;
+
 }
 
 .manufacturable-things
 {
-  border: 1px solid yellow;
   flex: 1 1 auto;
   display: flex;
   flex-flow: column;
@@ -3873,6 +3892,9 @@ ul, ol
   overflow-y: hidden;
   display: flex;
   flex-flow: column;
+  border: 1px solid @ui-border-color1;
+  border-top: 0px;
+  box-sizing: border-box;
 
   >*
   {
@@ -3892,13 +3914,17 @@ ul, ol
     flex: 1 1 auto;
     overflow-y: scroll;
   }
+
+  .manufacturable-things-list-item
+  {
+    padding: 0 0.5em;
+  }
 }
 
 .manufactory-upgrade-buttons-container
 {
   display: flex;
   flex-flow: row;
-  border: 1px solid red;
 }
 
 .manufactory-upgrade-button
@@ -3924,7 +3950,11 @@ ul, ol
   .button-style-no-border;
   >*
   {
-    margin: 0 1em;
+    margin-right: 0.5em;
+  }
+  :last-child
+  {
+    margin-right: 0;
   }
 
   border-image: url("../img/listSeparator.png") 2 0 stretch;
