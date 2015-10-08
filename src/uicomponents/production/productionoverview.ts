@@ -27,6 +27,21 @@ module Rance
           highlightedStars: [] // Star[]
         });
       },
+
+      triggerUpdate: function()
+      {
+        this.forceUpdate();
+      },
+
+      componentDidMount: function()
+      {
+        eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+      },
+
+      componentWillUnmount: function()
+      {
+        eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+      },
       
       handleStarSelect: function(star: Star)
       {
@@ -82,7 +97,7 @@ module Rance
             queueElement = UIComponents.BuildQueue(
             {
               manufactory: selectedStar.manufactory,
-              triggerUpdate: this.forceUpdate.bind(this),
+              triggerUpdate: this.triggerUpdate,
               money: player.money
             });
           }
@@ -92,7 +107,7 @@ module Rance
             {
               star: selectedStar,
               player: player,
-              triggerUpdate: this.forceUpdate.bind(this)
+              triggerUpdate: this.triggerUpdate
             });
           }
         }
@@ -118,7 +133,7 @@ module Rance
               {
                 selectedStar: selectedStar,
                 player: player,
-                triggerUpdate: this.forceUpdate.bind(this)
+                triggerUpdate: this.triggerUpdate
               })
             )
           )

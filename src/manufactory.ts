@@ -116,6 +116,11 @@ module Rance
       {
         var fleet = new Fleet(this.player, units, this.star);
       }
+
+      if (!this.player.isAI)
+      {
+        eventManager.dispatchEvent("playerManufactoryBuiltThings");
+      }
     }
     getLocalUnitTypes()
     {

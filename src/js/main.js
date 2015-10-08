@@ -10025,6 +10025,9 @@ var Rance;
             if (units.length > 0) {
                 var fleet = new Rance.Fleet(this.player, units, this.star);
             }
+            if (!this.player.isAI) {
+                Rance.eventManager.dispatchEvent("playerManufactoryBuiltThings");
+            }
         };
         Manufactory.prototype.getLocalUnitTypes = function () {
             var manufacturable = [];
@@ -14220,6 +14223,15 @@ var Rance;
                     highlightedStars: [] // Star[]
                 });
             },
+            triggerUpdate: function () {
+                this.forceUpdate();
+            },
+            componentDidMount: function () {
+                Rance.eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+            },
             handleStarSelect: function (star) {
                 if (this.state.selectedStar === star) {
                     this.clearSelection();
@@ -14256,7 +14268,7 @@ var Rance;
                     if (selectedStar.manufactory) {
                         queueElement = UIComponents.BuildQueue({
                             manufactory: selectedStar.manufactory,
-                            triggerUpdate: this.forceUpdate.bind(this),
+                            triggerUpdate: this.triggerUpdate,
                             money: player.money
                         });
                     }
@@ -14264,7 +14276,7 @@ var Rance;
                         queueElement = UIComponents.ConstructManufactory({
                             star: selectedStar,
                             player: player,
-                            triggerUpdate: this.forceUpdate.bind(this)
+                            triggerUpdate: this.triggerUpdate
                         });
                     }
                 }
@@ -14280,7 +14292,7 @@ var Rance;
                 }, queueElement, UIComponents.ManufacturableThings({
                     selectedStar: selectedStar,
                     player: player,
-                    triggerUpdate: this.forceUpdate.bind(this)
+                    triggerUpdate: this.triggerUpdate
                 }))));
             }
         });
