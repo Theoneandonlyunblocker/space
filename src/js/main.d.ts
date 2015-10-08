@@ -1247,7 +1247,9 @@ declare module Rance {
         getManufacturableThingsForType(type: string): IManufacturableThing[];
         canManufactureThing(template: IManufacturableThing, type: string): boolean;
         handleOwnerChange(): void;
+        getCapacityUpgradeCost(): number;
         upgradeCapacity(amount: number): void;
+        getUnitUpgradeCost(): number;
         upgradeUnitStatsModifier(amount: number): void;
         upgradeUnitHealthModifier(amount: number): void;
         serialize(): {
@@ -1786,6 +1788,7 @@ declare module Rance {
         AIController: MapAI.AIController;
         isIndependent: boolean;
         diplomacyStatus: DiplomacyStatus;
+        private _money;
         money: number;
         controlledLocations: Star[];
         visionIsDirty: boolean;
@@ -2026,6 +2029,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var ManufactoryUpgradeButton: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var BuildQueue: React.Factory<any>;
     }
 }
@@ -2067,6 +2075,11 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var TopMenu: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var PlayerMoney: React.Factory<any>;
     }
 }
 declare module Rance {

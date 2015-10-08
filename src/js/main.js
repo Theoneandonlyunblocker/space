@@ -10072,13 +10072,23 @@ var Rance;
             this.player = this.star.owner;
             this.capacity = Math.max(1, this.capacity - 1);
         };
+        Manufactory.prototype.getCapacityUpgradeCost = function () {
+            return manufactoryData.buildCost * this.capacity;
+        };
         Manufactory.prototype.upgradeCapacity = function (amount) {
+            this.player.money -= this.getCapacityUpgradeCost();
             this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
         };
+        Manufactory.prototype.getUnitUpgradeCost = function () {
+            var totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
+            return Math.round((totalUpgrades + 1) * 100);
+        };
         Manufactory.prototype.upgradeUnitStatsModifier = function (amount) {
+            this.player.money -= this.getUnitUpgradeCost();
             this.unitStatsModifier += amount;
         };
         Manufactory.prototype.upgradeUnitHealthModifier = function (amount) {
+            this.player.money -= this.getUnitUpgradeCost();
             this.unitHealthModifier += amount;
         };
         Manufactory.prototype.serialize = function () {
@@ -12257,6 +12267,19 @@ var Rance;
             this.diplomacyStatus = new Rance.DiplomacyStatus(this);
             this.money = 1000;
         }
+        Object.defineProperty(Player.prototype, "money", {
+            get: function () {
+                return this._money;
+            },
+            set: function (amount) {
+                this._money = amount;
+                if (!this.isAI) {
+                    Rance.eventManager.dispatchEvent("playerMoneyUpdated");
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
         Player.prototype.destroy = function () {
             this.diplomacyStatus.destroy();
             this.diplomacyStatus = null;
@@ -13762,7 +13785,61 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ManufactoryUpgradeButton = React.createClass({
+            displayName: "ManufactoryUpgradeButton",
+            propTypes: {
+                money: React.PropTypes.number.isRequired,
+                upgradeCost: React.PropTypes.number.isRequired,
+                onClick: React.PropTypes.func.isRequired,
+                actionString: React.PropTypes.string.isRequired,
+                currentLevel: React.PropTypes.number.isRequired,
+                maxLevel: React.PropTypes.number.isRequired,
+                levelDecimalPoints: React.PropTypes.number.isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    canAffordUpgrade: this.props.money >= this.props.upgradeCost,
+                    isDisabled: this.props.currentLevel >= this.props.maxLevel
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                this.setState({
+                    canAffordUpgrade: newProps.money >= newProps.upgradeCost,
+                    isDisabled: newProps.currentLevel >= newProps.maxLevel
+                });
+            },
+            render: function () {
+                var unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
+                var unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
+                var isDisabled = this.state.isDisabled || !this.state.canAffordUpgrade;
+                if (isDisabled) {
+                    unitUpgradeButtonBaseClassName += " disabled";
+                }
+                if (!this.state.canAffordUpgrade) {
+                    unitUpgradeCostBaseClassName += " negative";
+                }
+                return (React.DOM.button({
+                    className: unitUpgradeButtonBaseClassName + " manufactory-units-upgrade-health-button",
+                    onClick: (isDisabled ? null : this.props.onClick),
+                    disabled: isDisabled
+                }, React.DOM.span({
+                    className: "manufactory-upgrade-button-action"
+                }, this.props.actionString), React.DOM.br(), React.DOM.span({
+                    className: "manufactory-upgrade-button-level"
+                }, "" + this.props.currentLevel.toFixed(this.props.levelDecimalPoints) + "/" +
+                    this.props.maxLevel.toFixed(this.props.levelDecimalPoints)), React.DOM.span({
+                    className: unitUpgradeCostBaseClassName
+                }, this.props.upgradeCost)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="manufacturablethingslist.ts" />
+/// <reference path="manufactoryupgradebutton.ts" />
 /// <reference path="../../manufactory.ts" />
 var Rance;
 (function (Rance) {
@@ -13772,7 +13849,8 @@ var Rance;
             displayName: "BuildQueue",
             propTypes: {
                 manufactory: React.PropTypes.instanceOf(Rance.Manufactory).isRequired,
-                triggerUpdate: React.PropTypes.func.isRequired
+                triggerUpdate: React.PropTypes.func.isRequired,
+                money: React.PropTypes.number.isRequired
             },
             removeItem: function (template, parentIndex) {
                 var manufactory = this.props.manufactory;
@@ -13793,12 +13871,15 @@ var Rance;
                 var canUpgradeCapacity = manufactory.capacity < manufactory.maxCapacity;
                 return (React.DOM.div({
                     className: "build-queue"
-                }, React.DOM.button({
-                    className: "manufactory-upgrade-button manufactory-items-upgrade-button" +
-                        (canUpgradeCapacity ? "" : " disabled"),
-                    disabled: !canUpgradeCapacity,
-                    onClick: (canUpgradeCapacity ? this.upgradeCapacity : null)
-                }, "Upgrade capacity"), React.DOM.div({
+                }, UIComponents.ManufactoryUpgradeButton({
+                    money: this.props.money,
+                    upgradeCost: manufactory.getCapacityUpgradeCost(),
+                    onClick: this.upgradeCapacity,
+                    actionString: "Upgrade capacity",
+                    currentLevel: manufactory.capacity,
+                    maxLevel: manufactory.maxCapacity,
+                    levelDecimalPoints: 0
+                }), React.DOM.div({
                     className: "build-queue-header"
                 }, "Build queue"), UIComponents.ManufacturableThingsList({
                     manufacturableThings: convertedBuildQueue,
@@ -13810,6 +13891,7 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="manufacturablethingslist.ts" />
+/// <reference path="manufactoryupgradebutton.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -13857,17 +13939,38 @@ var Rance;
                 this.forceUpdate();
             },
             render: function () {
+                if (this.props.selectedStar && this.props.selectedStar.manufactory) {
+                    var manufactory = this.props.selectedStar.manufactory;
+                    var unitUpgradeCost = manufactory.getUnitUpgradeCost();
+                    var canAffordUnitUpgrade = this.props.money >= unitUpgradeCost;
+                    var unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
+                    var unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
+                    if (!canAffordUnitUpgrade) {
+                        unitUpgradeButtonBaseClassName += " disabled";
+                        unitUpgradeCostBaseClassName += " negative";
+                    }
+                }
                 return (React.DOM.div({
                     className: "manufacturable-units"
                 }, (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : React.DOM.div({
                     className: "manufactory-upgrade-buttons-container"
-                }, React.DOM.button({
-                    className: "manufactory-upgrade-button manufactory-units-upgrade-health-button",
+                }, UIComponents.ManufactoryUpgradeButton({
+                    money: this.props.money,
+                    upgradeCost: unitUpgradeCost,
+                    actionString: "Upgrade health",
+                    currentLevel: manufactory.unitHealthModifier,
+                    maxLevel: 5.0,
+                    levelDecimalPoints: 1,
                     onClick: this.upgradeHealth
-                }, "Upgrade health" + "\n" + this.props.selectedStar.manufactory.unitHealthModifier.toFixed(1)), React.DOM.button({
-                    className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button",
+                }), UIComponents.ManufactoryUpgradeButton({
+                    money: this.props.money,
+                    upgradeCost: unitUpgradeCost,
+                    actionString: "Upgrade stats",
+                    currentLevel: manufactory.unitStatsModifier,
+                    maxLevel: 5.0,
+                    levelDecimalPoints: 1,
                     onClick: this.upgradeStats
-                }, "Upgrade stats" + "\n" + this.props.selectedStar.manufactory.unitStatsModifier.toFixed(1))), UIComponents.ManufacturableThingsList({
+                })), UIComponents.ManufacturableThingsList({
                     manufacturableThings: this.props.manufacturableThings,
                     onClick: (this.props.canBuild ? this.addUnitToBuildQueue : null),
                     showCost: true,
@@ -13877,6 +13980,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="manufactoryupgradebutton.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -13913,14 +14017,22 @@ var Rance;
                 manufactory.addThingToQueue(template, "item");
                 this.props.triggerUpdate();
             },
+            upgradeItems: function () {
+            },
             render: function () {
                 return (React.DOM.div({
                     className: "manufacturable-items"
                 }, (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : React.DOM.div({
                     className: "manufactory-upgrade-buttons-container"
-                }, React.DOM.button({
-                    className: "manufactory-upgrade-button manufactory-items-upgrade-button"
-                }, "Upgrade items")), UIComponents.ManufacturableThingsList({
+                }, UIComponents.ManufactoryUpgradeButton({
+                    money: this.props.money,
+                    upgradeCost: 0,
+                    actionString: "Upgrade items",
+                    currentLevel: 0,
+                    maxLevel: 0,
+                    levelDecimalPoints: 0,
+                    onClick: this.upgradeItems
+                })), UIComponents.ManufacturableThingsList({
                     manufacturableThings: this.props.manufacturableThings,
                     onClick: (this.props.canBuild ? this.addItemToBuildQueue : null),
                     showCost: true,
@@ -14144,7 +14256,8 @@ var Rance;
                     if (selectedStar.manufactory) {
                         queueElement = UIComponents.BuildQueue({
                             manufactory: selectedStar.manufactory,
-                            triggerUpdate: this.forceUpdate.bind(this)
+                            triggerUpdate: this.forceUpdate.bind(this),
+                            money: player.money
                         });
                     }
                     else {
@@ -14545,6 +14658,37 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../player.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.PlayerMoney = React.createClass({
+            displayName: "PlayerMoney",
+            lastAmountRendered: undefined,
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player)
+            },
+            componentDidMount: function () {
+                Rance.eventManager.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
+            },
+            handlePlayerMoneyUpdated: function () {
+                if (this.props.player.money !== this.lastAmountRendered) {
+                    this.forceUpdate();
+                }
+            },
+            render: function () {
+                this.lastAmountRendered = this.props.player.money;
+                return (React.DOM.div({
+                    className: "player-money"
+                }, "Money: " + this.props.player.money));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -14604,6 +14748,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="playermoney.ts" />
 /// <reference path="topbarresources.ts" />
 /// <reference path="../playerflag.ts" />
 var Rance;
@@ -14633,9 +14778,9 @@ var Rance;
                     className: "top-bar-turn-number"
                 }, "Turn " + this.props.game.turnNumber)), React.DOM.div({
                     className: "top-bar-money"
-                }, React.DOM.div({
-                    className: "top-bar-money-current"
-                }, "Money: " + player.money), React.DOM.div({
+                }, UIComponents.PlayerMoney({
+                    player: player
+                }), React.DOM.div({
                     className: incomeClass
                 }, "(+" + player.getIncome() + ")")), UIComponents.TopBarResources({
                     player: player

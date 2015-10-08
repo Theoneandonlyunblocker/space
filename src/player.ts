@@ -41,7 +41,19 @@ module Rance
 
     diplomacyStatus: DiplomacyStatus;
 
-    money: number;
+    private _money: number;
+    get money(): number
+    {
+      return this._money;
+    }
+    set money(amount: number)
+    {
+      this._money = amount;
+      if (!this.isAI)
+      {
+        eventManager.dispatchEvent("playerMoneyUpdated");
+      }
+    }
     controlledLocations: Star[] = [];
 
     visionIsDirty: boolean = true;

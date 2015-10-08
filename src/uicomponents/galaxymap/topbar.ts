@@ -1,3 +1,4 @@
+/// <reference path="playermoney.ts" />
 /// <reference path="topbarresources.ts" />
 /// <reference path="../playerflag.ts" />
 
@@ -8,6 +9,7 @@ module Rance
     export var TopBar = React.createClass(
     {
       displayName: "TopBar",
+
       render: function()
       {
         var player: Player = this.props.player;
@@ -47,12 +49,10 @@ module Rance
               {
                 className: "top-bar-money"
               },
-                React.DOM.div(
+                UIComponents.PlayerMoney(
                 {
-                  className: "top-bar-money-current"
-                },
-                  "Money: " + player.money
-                ),
+                  player: player
+                }),
                 React.DOM.div(
                 {
                   className: incomeClass
