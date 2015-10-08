@@ -3944,16 +3944,27 @@ var Rance;
             },
             setInitialPosition: function () {
                 var rect = this.getDOMNode().getBoundingClientRect();
+                var left;
+                var top;
                 var container = this.containerElement; // set in draggable mixin
-                var position = this.props.getInitialPosition(rect, container);
-                var left = position.left;
-                var top = position.top;
+                if (this.props.initialPosition) {
+                    rect = Rance.extendObject(this.props.initialPosition, rect);
+                    if (rect.left || rect.top) {
+                        left = rect.left;
+                        top = rect.top;
+                    }
+                }
+                if (!left && !top) {
+                    var position = this.props.getInitialPosition(rect, container);
+                    left = position.left;
+                    top = position.top;
+                }
                 left = Rance.clamp(left, 0, container.offsetWidth - rect.width);
                 top = Rance.clamp(top, 0, container.offsetHeight - rect.height);
                 this.dragPos.top = top;
                 this.dragPos.left = left;
-                this.dragPos.width = (rect.width > window.innerWidth ? window.innerWidth : undefined);
-                this.dragPos.height = (rect.height > window.innerHeight ? window.innerHeight : undefined);
+                this.dragPos.width = (rect.width > window.innerWidth ? window.innerWidth : rect.width);
+                this.dragPos.height = (rect.height > window.innerHeight ? window.innerHeight : rect.height);
                 this.setState({
                     zIndex: this.props.incrementZIndex()
                 });
@@ -7200,6 +7211,7 @@ var Rance;
             }
             this.baseAttributes = Rance.extendObject(attributes);
             this.attributes = attributes;
+            this.attributesAreDirty = true;
         };
         Unit.prototype.getBaseMoveDelay = function () {
             return 30 - this.attributes.speed;
@@ -14195,6 +14207,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TopMenuPopups = React.createClass({
             displayName: "TopMenuPopups",
+            cachedPopupRects: {},
             getInitialState: function () {
                 return ({
                     production: undefined,
@@ -14208,6 +14221,8 @@ var Rance;
                 });
             },
             closePopup: function (popupType) {
+                var popupNode = this.refs.popupManager.refs[this.state[popupType]].getDOMNode();
+                this.cachedPopupRects[popupType] = popupNode.getBoundingClientRect();
                 this.refs.popupManager.closePopup(this.state[popupType]);
                 var stateObj = {};
                 stateObj[popupType] = undefined;
@@ -14217,13 +14232,17 @@ var Rance;
                 }
             },
             makePopup: function (popupType) {
+                if (!this.cachedPopupRects[popupType]) {
+                    this.cachedPopupRects[popupType] = {};
+                }
                 var contentConstructor;
                 var contentProps;
                 var popupProps = {
                     resizable: true,
                     containerDragOnly: true,
                     minWidth: 150,
-                    minHeight: 50
+                    minHeight: 50,
+                    initialPosition: this.cachedPopupRects[popupType]
                 };
                 switch (popupType) {
                     case "production":

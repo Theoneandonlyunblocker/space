@@ -35,19 +35,35 @@ module Rance
       setInitialPosition: function()
       {
         var rect = this.getDOMNode().getBoundingClientRect();
-        var container = this.containerElement; // set in draggable mixin
-        var position = this.props.getInitialPosition(rect, container);
+        var left: number;
+        var top: number;
 
-        var left = position.left;
-        var top = position.top;
+        var container = this.containerElement; // set in draggable mixin
+        if (this.props.initialPosition)
+        {
+          rect = extendObject(this.props.initialPosition, rect);
+
+          if (rect.left || rect.top)
+          {
+            left = rect.left;
+            top = rect.top;
+          }
+        }
+        if (!left && !top)
+        {
+          var position = this.props.getInitialPosition(rect, container);
+          
+          left = position.left;
+          top = position.top;
+        }
 
         left = clamp(left, 0, container.offsetWidth - rect.width);
         top = clamp(top, 0, container.offsetHeight - rect.height);
 
         this.dragPos.top = top;
         this.dragPos.left = left;
-        this.dragPos.width = (rect.width > window.innerWidth ? window.innerWidth : undefined);
-        this.dragPos.height = (rect.height > window.innerHeight ? window.innerHeight : undefined);
+        this.dragPos.width = (rect.width > window.innerWidth ? window.innerWidth : rect.width);
+        this.dragPos.height = (rect.height > window.innerHeight ? window.innerHeight : rect.height);
         this.setState(
         {
           zIndex: this.props.incrementZIndex()

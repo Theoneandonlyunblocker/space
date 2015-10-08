@@ -15,6 +15,7 @@ module Rance
     export var TopMenuPopups = React.createClass(
     {
       displayName: "TopMenuPopups",
+      cachedPopupRects: {},
       getInitialState: function()
       {
         return(
@@ -31,6 +32,9 @@ module Rance
       },
       closePopup: function(popupType: string)
       {
+        var popupNode = this.refs.popupManager.refs[this.state[popupType]].getDOMNode();
+        this.cachedPopupRects[popupType] = popupNode.getBoundingClientRect();
+
         this.refs.popupManager.closePopup(this.state[popupType]);
         var stateObj: any = {};
         stateObj[popupType] = undefined;
@@ -44,6 +48,11 @@ module Rance
 
       makePopup: function(popupType: string)
       {
+        if (!this.cachedPopupRects[popupType])
+        {
+          this.cachedPopupRects[popupType] = {};
+        }
+
         var contentConstructor: ReactComponentPlaceHolder;
         var contentProps: any;
         var popupProps: any =
@@ -51,7 +60,8 @@ module Rance
           resizable: true,
           containerDragOnly: true,
           minWidth: 150,
-          minHeight: 50
+          minHeight: 50,
+          initialPosition: this.cachedPopupRects[popupType]
         };
 
         switch (popupType)
