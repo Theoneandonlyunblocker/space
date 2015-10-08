@@ -82,7 +82,8 @@ module Rance
             queueElement = UIComponents.BuildQueue(
             {
               manufactory: selectedStar.manufactory,
-              triggerUpdate: this.forceUpdate.bind(this)
+              triggerUpdate: this.forceUpdate.bind(this),
+              money: player.money
             });
           }
           else

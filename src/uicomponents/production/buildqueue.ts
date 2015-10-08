@@ -1,4 +1,5 @@
 /// <reference path="manufacturablethingslist.ts" />
+/// <reference path="manufactoryupgradebutton.ts" />
 
 /// <reference path="../../manufactory.ts" />
 
@@ -13,7 +14,8 @@ module Rance
       propTypes:
       {
         manufactory: React.PropTypes.instanceOf(Manufactory).isRequired,
-        triggerUpdate: React.PropTypes.func.isRequired
+        triggerUpdate: React.PropTypes.func.isRequired,
+        money: React.PropTypes.number.isRequired
       },
 
       removeItem: function(template: IManufacturableThing, parentIndex: number)
@@ -48,15 +50,16 @@ module Rance
           {
             className: "build-queue"
           },
-            React.DOM.button(
+            UIComponents.ManufactoryUpgradeButton(
             {
-              className: "manufactory-upgrade-button manufactory-items-upgrade-button" +
-                (canUpgradeCapacity ? "" : " disabled"),
-              disabled: !canUpgradeCapacity,
-              onClick: (canUpgradeCapacity ? this.upgradeCapacity : null)
-            },
-              "Upgrade capacity"
-            ),
+              money: this.props.money,
+              upgradeCost: manufactory.getCapacityUpgradeCost(),
+              onClick: this.upgradeCapacity,
+              actionString: "Upgrade capacity",
+              currentLevel: manufactory.capacity,
+              maxLevel: manufactory.maxCapacity,
+              levelDecimalPoints: 0
+            }),
             React.DOM.div(
             {
               className: "build-queue-header"

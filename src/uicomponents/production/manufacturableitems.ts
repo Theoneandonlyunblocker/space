@@ -1,3 +1,5 @@
+/// <reference path="manufactoryupgradebutton.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -49,6 +51,11 @@ module Rance
         this.props.triggerUpdate();
       },
 
+      upgradeItems: function()
+      {
+
+      },
+
       render: function()
       {
         return(
@@ -60,12 +67,16 @@ module Rance
             {
               className: "manufactory-upgrade-buttons-container"
             },
-              React.DOM.button(
+              UIComponents.ManufactoryUpgradeButton(
               {
-                className: "manufactory-upgrade-button manufactory-items-upgrade-button"
-              },
-                "Upgrade items"
-              )
+                money: this.props.money, // TODO manufactory
+                upgradeCost: 0,
+                actionString: "Upgrade items",
+                currentLevel: 0,
+                maxLevel: 0,
+                levelDecimalPoints: 0,
+                onClick: this.upgradeItems
+              })
             ),
             UIComponents.ManufacturableThingsList(
             {

@@ -3825,6 +3825,18 @@ ol {
   display: flex;
   flex-flow: row;
 }
+.manufactory-upgrade-button-cost {
+  color: #ffeb00;
+}
+.manufactory-upgrade-button-cost::after {
+  content: "\f111";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  margin-left: 0.25em;
+  color: #f3c620;
+}
 .manufacturable-things-list :last-child {
   border-width: 0;
 }

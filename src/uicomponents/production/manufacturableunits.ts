@@ -1,4 +1,5 @@
 /// <reference path="manufacturablethingslist.ts" />
+/// <reference path="manufactoryupgradebutton.ts" />
 
 module Rance
 {
@@ -67,6 +68,22 @@ module Rance
 
       render: function()
       {
+        if (this.props.selectedStar && this.props.selectedStar.manufactory)
+        {
+          var manufactory: Manufactory = this.props.selectedStar.manufactory;
+          var unitUpgradeCost = manufactory.getUnitUpgradeCost(); 
+          var canAffordUnitUpgrade = this.props.money >= unitUpgradeCost;
+
+          var unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
+          var unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
+
+          if (!canAffordUnitUpgrade)
+          {
+            unitUpgradeButtonBaseClassName += " disabled";
+            unitUpgradeCostBaseClassName += " negative";
+          }
+        }
+
         return(
           React.DOM.div(
           {
@@ -76,20 +93,26 @@ module Rance
             {
               className: "manufactory-upgrade-buttons-container"
             },
-              React.DOM.button(
+              UIComponents.ManufactoryUpgradeButton(
               {
-                className: "manufactory-upgrade-button manufactory-units-upgrade-health-button",
+                money: this.props.money,
+                upgradeCost: unitUpgradeCost,
+                actionString: "Upgrade health",
+                currentLevel: manufactory.unitHealthModifier,
+                maxLevel: 5.0,
+                levelDecimalPoints: 1,
                 onClick: this.upgradeHealth
-              },
-                "Upgrade health" + "\n" + this.props.selectedStar.manufactory.unitHealthModifier.toFixed(1)
-              ),
-              React.DOM.button(
+              }),
+              UIComponents.ManufactoryUpgradeButton(
               {
-                className: "manufactory-upgrade-button manufactory-units-upgrade-stats-button",
+                money: this.props.money,
+                upgradeCost: unitUpgradeCost,
+                actionString: "Upgrade stats",
+                currentLevel: manufactory.unitStatsModifier,
+                maxLevel: 5.0,
+                levelDecimalPoints: 1,
                 onClick: this.upgradeStats
-              },
-                "Upgrade stats" + "\n" + this.props.selectedStar.manufactory.unitStatsModifier.toFixed(1)
-              )
+              })
             ),
             UIComponents.ManufacturableThingsList(
             {
