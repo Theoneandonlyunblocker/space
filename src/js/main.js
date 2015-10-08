@@ -13931,12 +13931,12 @@ var Rance;
             upgradeHealth: function () {
                 var manufactory = this.props.selectedStar.manufactory;
                 manufactory.upgradeUnitHealthModifier(0.1);
-                this.forceUpdate();
+                this.props.triggerUpdate();
             },
             upgradeStats: function () {
                 var manufactory = this.props.selectedStar.manufactory;
                 manufactory.upgradeUnitStatsModifier(0.1);
-                this.forceUpdate();
+                this.props.triggerUpdate();
             },
             render: function () {
                 if (this.props.selectedStar && this.props.selectedStar.manufactory) {

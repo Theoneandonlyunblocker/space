@@ -56,14 +56,14 @@ module Rance
       {
         var manufactory: Manufactory = this.props.selectedStar.manufactory;
         manufactory.upgradeUnitHealthModifier(0.1);
-        this.forceUpdate();
+        this.props.triggerUpdate();
       },
 
       upgradeStats: function()
       {
         var manufactory: Manufactory = this.props.selectedStar.manufactory;
         manufactory.upgradeUnitStatsModifier(0.1);
-        this.forceUpdate();
+        this.props.triggerUpdate();
       },
 
       render: function()
