@@ -178,16 +178,28 @@ module Rance
       this.player = this.star.owner;
       this.capacity = Math.max(1, this.capacity - 1);
     }
+    getCapacityUpgradeCost()
+    {
+      return manufactoryData.buildCost * this.capacity;
+    }
     upgradeCapacity(amount: number)
     {
+      this.player.money -= this.getCapacityUpgradeCost();
       this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
+    }
+    getUnitUpgradeCost()
+    {
+      var totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
+      return Math.round((totalUpgrades + 1) * 100);
     }
     upgradeUnitStatsModifier(amount: number)
     {
+      this.player.money -= this.getUnitUpgradeCost();
       this.unitStatsModifier += amount;
     }
     upgradeUnitHealthModifier(amount: number)
     {
+      this.player.money -= this.getUnitUpgradeCost();
       this.unitHealthModifier += amount;
     }
     serialize()
