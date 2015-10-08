@@ -248,6 +248,7 @@ module Rance
 
       this.baseAttributes = extendObject(attributes);
       this.attributes = attributes;
+      this.attributesAreDirty = true;
     }
     getBaseMoveDelay()
     {
