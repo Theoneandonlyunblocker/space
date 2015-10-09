@@ -401,52 +401,22 @@ module Rance
         }));
       }
     }
-    export function setDistancesFromNearestPlayerOwnedStar(stars: Star[])
-    {
-      var playerOwnedStars: Star[] = [];
-
-      for (var i = 0; i < stars.length; i++)
-      {
-        var star = stars[i];
-        if (star.owner && !star.owner.isIndependent)
-        {
-          playerOwnedStars.push(star);
-        }
-      }
-
-      for (var i = 0; i < playerOwnedStars.length; i++)
-      {
-        var ownedStarToCheck = playerOwnedStars[i];
-        for (var j = 0; j < stars.length; j++)
-        {
-          var star = stars[j];
-          var distance = star.getDistanceToStar(ownedStarToCheck);
-
-          if (!isFinite(star.mapGenData.distanceFromNearestPlayerOwnedStar))
-          {
-            star.mapGenData.distanceFromNearestPlayerOwnedStar = distance;
-          }
-          else
-          {
-            star.mapGenData.distanceFromNearestPlayerOwnedStar =
-              Math.min(distance, star.mapGenData.distanceFromNearestPlayerOwnedStar)
-          }
-        }
-      }
-    }
     export function setupPirates(stars: Star[], player: Player,
       variance: number = 0.33, intensity: number = 1)
     {
       var minShips = 2;
       var maxShips = 6;
 
-      setDistancesFromNearestPlayerOwnedStar(stars);
-
       var shipTypes: string[] = Object.keys(app.moduleData.Templates.Units);
       shipTypes = shipTypes.filter(function(shipType: string)
       {
         return shipType !== "cheatShip" && !app.moduleData.Templates.Units[shipType].isStealthy;
       });
+
+      var starIsOwnedByPlayerQualifierFN = function(star: Star)
+      {
+        return star.owner && !star.owner.isIndependent;
+      }
 
       for (var i = 0; i < stars.length; i++)
       {
@@ -456,7 +426,8 @@ module Rance
         {
           player.addStar(star);
 
-          var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
+          var nearestPlayerStar = star.getNearestStarForQualifier(starIsOwnedByPlayerQualifierFN);
+          var distance = star.getDistanceToStar(nearestPlayerStar);
           var defenceBuildingstoAdd = 1 + Math.floor(distance / 4);
           addDefenceBuildings(star, defenceBuildingstoAdd, defenceBuildingstoAdd > 1);
 

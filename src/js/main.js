@@ -7219,12 +7219,12 @@ var Rance;
                 defence: 1,
                 intelligence: 1,
                 speed: 1,
-                maxActionPoints: Rance.randInt(3, 6)
+                maxActionPoints: Rance.randInt(3, 5)
             };
             for (var attribute in template.attributeLevels) {
                 var attributeLevel = template.attributeLevels[attribute];
-                var min = 4 * baseSkill * attributeLevel + 1;
-                var max = 8 * baseSkill * attributeLevel + 1 + variance;
+                var min = Math.max(3 * baseSkill * attributeLevel, 1);
+                var max = Math.max(5 * baseSkill * attributeLevel + variance, 1);
                 attributes[attribute] = Rance.randInt(min, max);
                 if (attributes[attribute] > 9)
                     attributes[attribute] = 9;
@@ -13485,7 +13485,7 @@ var Rance;
             var frontier = [this];
             visited[this.id] = true;
             while (frontier.length > 0) {
-                var current = frontier.pop();
+                var current = frontier.shift();
                 var neighbors = current.getLinkedInRange(1).all;
                 for (var i = 0; i < neighbors.length; i++) {
                     var neighbor = neighbors[i];
@@ -13503,7 +13503,12 @@ var Rance;
             return null;
         };
         Star.prototype.getDistanceToStar = function (target) {
-            if (!this.indexedDistanceToStar[target.id]) {
+            // don't index distance while generating map as distance can change
+            if (this.mapGenData) {
+                var a = Rance.aStar(this, target);
+                return a.cost[target.id];
+            }
+            else if (!this.indexedDistanceToStar[target.id]) {
                 var a = Rance.aStar(this, target);
                 if (!a) {
                     this.indexedDistanceToStar[target.id] = -1;
@@ -21277,45 +21282,24 @@ var Rance;
             }
         }
         MapGen2.addDefenceBuildings = addDefenceBuildings;
-        function setDistancesFromNearestPlayerOwnedStar(stars) {
-            var playerOwnedStars = [];
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                if (star.owner && !star.owner.isIndependent) {
-                    playerOwnedStars.push(star);
-                }
-            }
-            for (var i = 0; i < playerOwnedStars.length; i++) {
-                var ownedStarToCheck = playerOwnedStars[i];
-                for (var j = 0; j < stars.length; j++) {
-                    var star = stars[j];
-                    var distance = star.getDistanceToStar(ownedStarToCheck);
-                    if (!isFinite(star.mapGenData.distanceFromNearestPlayerOwnedStar)) {
-                        star.mapGenData.distanceFromNearestPlayerOwnedStar = distance;
-                    }
-                    else {
-                        star.mapGenData.distanceFromNearestPlayerOwnedStar =
-                            Math.min(distance, star.mapGenData.distanceFromNearestPlayerOwnedStar);
-                    }
-                }
-            }
-        }
-        MapGen2.setDistancesFromNearestPlayerOwnedStar = setDistancesFromNearestPlayerOwnedStar;
         function setupPirates(stars, player, variance, intensity) {
             if (variance === void 0) { variance = 0.33; }
             if (intensity === void 0) { intensity = 1; }
             var minShips = 2;
             var maxShips = 6;
-            setDistancesFromNearestPlayerOwnedStar(stars);
             var shipTypes = Object.keys(app.moduleData.Templates.Units);
             shipTypes = shipTypes.filter(function (shipType) {
                 return shipType !== "cheatShip" && !app.moduleData.Templates.Units[shipType].isStealthy;
             });
+            var starIsOwnedByPlayerQualifierFN = function (star) {
+                return star.owner && !star.owner.isIndependent;
+            };
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
                 if (!star.owner) {
                     player.addStar(star);
-                    var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
+                    var nearestPlayerStar = star.getNearestStarForQualifier(starIsOwnedByPlayerQualifierFN);
+                    var distance = star.getDistanceToStar(nearestPlayerStar);
                     var defenceBuildingstoAdd = 1 + Math.floor(distance / 4);
                     addDefenceBuildings(star, defenceBuildingstoAdd, defenceBuildingstoAdd > 1);
                     var shipAmount = minShips;

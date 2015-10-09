@@ -1986,7 +1986,7 @@ declare module Rance {
         };
         getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
         getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star;
-        getDistanceToStar(target: Star): number;
+        getDistanceToStar(target: Star): any;
         getVisionRange(): number;
         getVision(): Star[];
         getDetectionRange(): number;
@@ -2956,7 +2956,6 @@ declare module Rance {
         function setSectorDistributionFlags(sectors: Sector[]): void;
         function distributeDistributablesPerSector(sectors: Sector[], distributableType: string, allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void): void;
         function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
-        function setDistancesFromNearestPlayerOwnedStar(stars: Star[]): void;
         function setupPirates(stars: Star[], player: Player, variance?: number, intensity?: number): void;
     }
 }
