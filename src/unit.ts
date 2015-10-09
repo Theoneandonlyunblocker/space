@@ -232,15 +232,15 @@ module Rance
         defence: 1,
         intelligence: 1,
         speed: 1,
-        maxActionPoints: randInt(3, 6)
+        maxActionPoints: randInt(3, 5)
       }
 
       for (var attribute in template.attributeLevels)
       {
         var attributeLevel = template.attributeLevels[attribute];
 
-        var min = 4 * baseSkill * attributeLevel + 1;
-        var max = 8 * baseSkill * attributeLevel + 1 + variance;
+        var min = Math.max(3 * baseSkill * attributeLevel, 1);
+        var max = Math.max(5 * baseSkill * attributeLevel + variance, 1);
 
         attributes[attribute] = randInt(min, max);
         if (attributes[attribute] > 9) attributes[attribute] = 9;
