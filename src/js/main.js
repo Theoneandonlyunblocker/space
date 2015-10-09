@@ -24624,9 +24624,6 @@ var Rance;
                     star.buildableUnitTypes.push(app.moduleData.Templates.Units[data.buildableUnitTypes[i]]);
                 }
             }
-            if (data.manufactory) {
-                star.manufactory = new Rance.Manufactory(star, data.manufactory);
-            }
             return star;
         };
         GameLoader.prototype.deserializeBuildings = function (data) {
@@ -24639,6 +24636,9 @@ var Rance;
                         var building = this.deserializeBuilding(buildingData);
                         star.addBuilding(building);
                     }
+                }
+                if (starData.manufactory) {
+                    star.manufactory = new Rance.Manufactory(star, starData.manufactory);
                 }
             }
         };
