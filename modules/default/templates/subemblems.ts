@@ -142,6 +142,13 @@ module Rance
             coverage: [SubEmblemCoverage.both],
             position: [SubEmblemPosition.both]
           }
+          export var threeHorns: Rance.Templates.ISubEmblemTemplate =
+          {
+            key: "threeHorns",
+            src: "img\/emblems\/threeHorns.svg",
+            coverage: [SubEmblemCoverage.both],
+            position: [SubEmblemPosition.both]
+          }
           export var Flag_of_Edward_England: Rance.Templates.ISubEmblemTemplate =
           {
             key: "Flag_of_Edward_England",
