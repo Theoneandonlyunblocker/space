@@ -837,7 +837,13 @@ module Rance
     }
     getDistanceToStar(target: Star)
     {
-      if (!this.indexedDistanceToStar[target.id])
+      // don't index distance while generating map as distance can change
+      if (this.mapGenData)
+      {
+        var a = aStar(this, target);
+        return a.cost[target.id];
+      }
+      else if (!this.indexedDistanceToStar[target.id])
       {
         var a = aStar(this, target);
         if (!a)
