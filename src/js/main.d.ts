@@ -498,6 +498,7 @@ declare module Rance {
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
     function turnOrderSortFunction(a: Unit, b: Unit): number;
+    function sortByManufactoryCapacityFN(a: Star, b: Star): number;
     function rectContains(rect: {
         x1: number;
         x2: number;

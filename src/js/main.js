@@ -3428,8 +3428,6 @@ var Rance;
                 }, React.DOM.div({
                     className: "menu-unit-info-name"
                 }, unit.name), React.DOM.div({
-                    className: "menu-unit-info-image unit-image" // UNIT IMAGE TODO
-                }, null), React.DOM.div({
                     className: "menu-unit-info-abilities"
                 }, UIComponents.AbilityList({
                     abilities: unitAbilities
@@ -5841,6 +5839,22 @@ var Rance;
         }
     }
     Rance.turnOrderSortFunction = turnOrderSortFunction;
+    function sortByManufactoryCapacityFN(a, b) {
+        var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
+        var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
+        if (bLevel !== aLevel) {
+            return bLevel - aLevel;
+        }
+        var _a = a.name.toLowerCase();
+        var _b = b.name.toLowerCase();
+        if (_a > _b)
+            return 1;
+        else if (_a < _b)
+            return -1;
+        else
+            return 0;
+    }
+    Rance.sortByManufactoryCapacityFN = sortByManufactoryCapacityFN;
     function rectContains(rect, point) {
         var x = point.x;
         var y = point.y;
@@ -7191,8 +7205,8 @@ var Rance;
         };
         Unit.prototype.setBaseHealth = function (multiplier) {
             if (multiplier === void 0) { multiplier = 1; }
-            var min = 500 * this.template.maxHealth * multiplier;
-            var max = 1000 * this.template.maxHealth * multiplier;
+            var min = 200 * this.template.maxHealth * multiplier;
+            var max = 300 * this.template.maxHealth * multiplier;
             this.maxHealth = Rance.randInt(min, max);
             this.currentHealth = this.maxHealth;
         };
@@ -13646,33 +13660,18 @@ var Rance;
             displayName: "ManufactoryStarsList",
             propTypes: {
                 starsWithManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Star)).isRequired,
-                starsWithoutManufcatories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Star)).isRequired,
+                starsWithoutManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Star)).isRequired,
                 highlightedStars: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Star)).isRequired,
                 handleStarSelect: React.PropTypes.func.isRequired
             },
-            sortByStarNameFN: function (a, b) {
-                var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
-                var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
-                if (bLevel !== aLevel) {
-                    return bLevel - aLevel;
-                }
-                var _a = a.name.toLowerCase();
-                var _b = b.name.toLowerCase();
-                if (_a > _b)
-                    return 1;
-                else if (_a < _b)
-                    return -1;
-                else
-                    return 0;
-            },
             render: function () {
                 var starsWithManufactories = this.props.starsWithManufactories;
-                var starsWithoutManufcatories = this.props.starsWithoutManufcatories;
+                var starsWithoutManufactories = this.props.starsWithoutManufactories;
                 var highlightedStars = this.props.highlightedStars;
                 var handleStarSelect = this.props.handleStarSelect;
                 var rows = [];
-                starsWithManufactories.sort(this.sortByStarNameFN);
-                starsWithoutManufcatories.sort(this.sortByStarNameFN);
+                starsWithManufactories.sort(Rance.sortByManufactoryCapacityFN);
+                starsWithoutManufactories.sort(Rance.sortByManufactoryCapacityFN);
                 for (var i = 0; i < starsWithManufactories.length; i++) {
                     var star = starsWithManufactories[i];
                     var manufactory = star.manufactory;
@@ -13686,8 +13685,8 @@ var Rance;
                         onClick: handleStarSelect
                     }));
                 }
-                for (var i = 0; i < starsWithoutManufcatories.length; i++) {
-                    var star = starsWithoutManufcatories[i];
+                for (var i = 0; i < starsWithoutManufactories.length; i++) {
+                    var star = starsWithoutManufactories[i];
                     var isHighlighted = highlightedStars.indexOf(star) !== -1;
                     rows.push(UIComponents.ManufactoryStarsListItem({
                         key: star.id,
@@ -13888,9 +13887,7 @@ var Rance;
                     currentLevel: manufactory.capacity,
                     maxLevel: manufactory.maxCapacity,
                     levelDecimalPoints: 0
-                }), React.DOM.div({
-                    className: "build-queue-header"
-                }, "Build queue"), UIComponents.ManufacturableThingsList({
+                }), UIComponents.ManufacturableThingsList({
                     manufacturableThings: convertedBuildQueue,
                     onClick: this.removeItem,
                     showCost: false
@@ -14224,9 +14221,19 @@ var Rance;
                 player: React.PropTypes.instanceOf(Rance.Player).isRequired
             },
             getInitialState: function () {
+                var initialSelected = null;
+                var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
+                if (starsByManufactoryPresence.withManufactories.length > 0) {
+                    starsByManufactoryPresence.withManufactories.sort(Rance.sortByManufactoryCapacityFN);
+                    initialSelected = starsByManufactoryPresence.withManufactories[0];
+                }
+                else if (starsByManufactoryPresence.withoutManufactories.length > 0) {
+                    starsByManufactoryPresence.withoutManufactories.sort(Rance.sortByManufactoryCapacityFN);
+                    initialSelected = starsByManufactoryPresence.withoutManufactories[0];
+                }
                 return ({
-                    selectedStar: undefined,
-                    highlightedStars: [] // Star[]
+                    selectedStar: initialSelected,
+                    highlightedStars: [initialSelected] // Star[]
                 });
             },
             triggerUpdate: function () {
@@ -14237,6 +14244,24 @@ var Rance;
             },
             componentWillUnmount: function () {
                 Rance.eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+            },
+            getStarsWithAndWithoutManufactories: function () {
+                var player = this.props.player;
+                var starsWithManufactories = [];
+                var starsWithoutManufactories = [];
+                for (var i = 0; i < player.controlledLocations.length; i++) {
+                    var star = player.controlledLocations[i];
+                    if (star.manufactory) {
+                        starsWithManufactories.push(star);
+                    }
+                    else {
+                        starsWithoutManufactories.push(star);
+                    }
+                }
+                return ({
+                    withManufactories: starsWithManufactories,
+                    withoutManufactories: starsWithoutManufactories
+                });
             },
             handleStarSelect: function (star) {
                 if (this.state.selectedStar === star) {
@@ -14258,17 +14283,7 @@ var Rance;
             render: function () {
                 var player = this.props.player;
                 var selectedStar = this.state.selectedStar;
-                var starsWithManufactories = [];
-                var starsWithoutManufcatories = [];
-                for (var i = 0; i < player.controlledLocations.length; i++) {
-                    var star = player.controlledLocations[i];
-                    if (star.manufactory) {
-                        starsWithManufactories.push(star);
-                    }
-                    else {
-                        starsWithoutManufcatories.push(star);
-                    }
-                }
+                var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
                 var queueElement = null;
                 if (selectedStar) {
                     if (selectedStar.manufactory) {
@@ -14289,8 +14304,8 @@ var Rance;
                 return (React.DOM.div({
                     className: "production-overview"
                 }, UIComponents.ManufactoryStarsList({
-                    starsWithManufactories: starsWithManufactories,
-                    starsWithoutManufcatories: starsWithoutManufcatories,
+                    starsWithManufactories: starsByManufactoryPresence.withManufactories,
+                    starsWithoutManufactories: starsByManufactoryPresence.withoutManufactories,
                     highlightedStars: this.state.highlightedStars,
                     handleStarSelect: this.handleStarSelect
                 }), React.DOM.div({

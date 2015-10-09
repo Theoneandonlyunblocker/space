@@ -3825,6 +3825,31 @@ ol {
   display: flex;
   flex-flow: row;
 }
+.manufactory-upgrade-button {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.manufactory-upgrade-button:hover,
+.manufactory-upgrade-button:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.manufactory-upgrade-button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.manufactory-upgrade-button:disabled,
+.manufactory-upgrade-button.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.manufactory-upgrade-button:disabled *,
+.manufactory-upgrade-button.disabled * {
+  pointer-events: none !important;
+}
 .manufactory-upgrade-button-cost {
   color: #ffeb00;
 }
