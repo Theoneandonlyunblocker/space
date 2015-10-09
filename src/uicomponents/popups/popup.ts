@@ -34,7 +34,14 @@ module Rance
 
       setInitialPosition: function()
       {
-        var rect = this.getDOMNode().getBoundingClientRect();
+        var domRect = this.getDOMNode().getBoundingClientRect();
+        var rect =
+        {
+          top: domRect.top,
+          left: domRect.left,
+          width: domRect.width,
+          height: domRect.height
+        };
         var left: number;
         var top: number;
 
@@ -62,8 +69,8 @@ module Rance
 
         this.dragPos.top = top;
         this.dragPos.left = left;
-        this.dragPos.width = (rect.width > window.innerWidth ? window.innerWidth : rect.width);
-        this.dragPos.height = (rect.height > window.innerHeight ? window.innerHeight : rect.height);
+        this.dragPos.width = Math.min(window.innerWidth, rect.width);
+        this.dragPos.height = Math.min(window.innerHeight, rect.height);
         this.setState(
         {
           zIndex: this.props.incrementZIndex()

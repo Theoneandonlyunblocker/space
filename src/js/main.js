@@ -3943,7 +3943,13 @@ var Rance;
                 });
             },
             setInitialPosition: function () {
-                var rect = this.getDOMNode().getBoundingClientRect();
+                var domRect = this.getDOMNode().getBoundingClientRect();
+                var rect = {
+                    top: domRect.top,
+                    left: domRect.left,
+                    width: domRect.width,
+                    height: domRect.height
+                };
                 var left;
                 var top;
                 var container = this.containerElement; // set in draggable mixin
@@ -3963,8 +3969,8 @@ var Rance;
                 top = Rance.clamp(top, 0, container.offsetHeight - rect.height);
                 this.dragPos.top = top;
                 this.dragPos.left = left;
-                this.dragPos.width = (rect.width > window.innerWidth ? window.innerWidth : rect.width);
-                this.dragPos.height = (rect.height > window.innerHeight ? window.innerHeight : rect.height);
+                this.dragPos.width = Math.min(window.innerWidth, rect.width);
+                this.dragPos.height = Math.min(window.innerHeight, rect.height);
                 this.setState({
                     zIndex: this.props.incrementZIndex()
                 });
@@ -14377,6 +14383,10 @@ var Rance;
                                 {
                                     player: this.props.player
                                 };
+                            if (!popupProps.initialPosition.width) {
+                                popupProps.initialPosition.width = 600;
+                                popupProps.initialPosition.height = 300;
+                            }
                             break;
                         }
                     case "equipItems":
@@ -23050,6 +23060,12 @@ var Rance;
                     SubEmblems.Takeda_mon = {
                         key: "Takeda_mon",
                         src: "img\/emblems\/Takeda_mon.svg",
+                        coverage: [Rance.SubEmblemCoverage.both],
+                        position: [Rance.SubEmblemPosition.both]
+                    };
+                    SubEmblems.threeHorns = {
+                        key: "threeHorns",
+                        src: "img\/emblems\/threeHorns.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };

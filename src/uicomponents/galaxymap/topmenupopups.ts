@@ -73,6 +73,12 @@ module Rance
             {
               player: this.props.player
             };
+
+            if (!popupProps.initialPosition.width)
+            {
+              popupProps.initialPosition.width = 600;
+              popupProps.initialPosition.height = 300;
+            }
             break;
           }
           case "equipItems":

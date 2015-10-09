@@ -3216,6 +3216,7 @@ declare module Rance {
                     var Mitsuuroko: Rance.Templates.ISubEmblemTemplate;
                     var Musubikashiwa: Rance.Templates.ISubEmblemTemplate;
                     var Takeda_mon: Rance.Templates.ISubEmblemTemplate;
+                    var threeHorns: Rance.Templates.ISubEmblemTemplate;
                     var Flag_of_Edward_England: Rance.Templates.ISubEmblemTemplate;
                 }
             }
