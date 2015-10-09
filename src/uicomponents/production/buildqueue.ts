@@ -60,12 +60,6 @@ module Rance
               maxLevel: manufactory.maxCapacity,
               levelDecimalPoints: 0
             }),
-            React.DOM.div(
-            {
-              className: "build-queue-header"
-            },
-              "Build queue"
-            ),
             UIComponents.ManufacturableThingsList(
             {
               manufacturableThings: convertedBuildQueue,
