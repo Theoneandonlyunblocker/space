@@ -13,41 +13,22 @@ module Rance
       propTypes:
       {
         starsWithManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
-        starsWithoutManufcatories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
+        starsWithoutManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
         highlightedStars: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
         handleStarSelect: React.PropTypes.func.isRequired
       },
-
-      sortByStarNameFN: function(a: Star, b: Star)
-      {
-        var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
-        var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
-
-        if (bLevel !== aLevel)
-        {
-          return bLevel - aLevel;
-        }
-
-        var _a: string = a.name.toLowerCase();
-        var _b: string = b.name.toLowerCase();
-        
-        if (_a > _b) return 1;
-        else if (_a < _b) return -1;
-        else return 0;
-      },
-
       render: function()
       {
         var starsWithManufactories: Star[] = this.props.starsWithManufactories;
-        var starsWithoutManufcatories: Star[] = this.props.starsWithoutManufcatories;
+        var starsWithoutManufactories: Star[] = this.props.starsWithoutManufactories;
         var highlightedStars: Star[] = this.props.highlightedStars;
         var handleStarSelect: Function = this.props.handleStarSelect;
 
 
         var rows: ReactComponentPlaceHolder[] = [];
 
-        starsWithManufactories.sort(this.sortByStarNameFN);
-        starsWithoutManufcatories.sort(this.sortByStarNameFN);
+        starsWithManufactories.sort(sortByManufactoryCapacityFN);
+        starsWithoutManufactories.sort(sortByManufactoryCapacityFN);
 
         for (var i = 0; i < starsWithManufactories.length; i++)
         {
@@ -66,9 +47,9 @@ module Rance
             onClick: handleStarSelect
           }));
         }
-        for (var i = 0; i < starsWithoutManufcatories.length; i++)
+        for (var i = 0; i < starsWithoutManufactories.length; i++)
         {
-          var star = starsWithoutManufcatories[i];
+          var star = starsWithoutManufactories[i];
           var isHighlighted = highlightedStars.indexOf(star) !== -1;
 
           rows.push(UIComponents.ManufactoryStarsListItem(

@@ -152,6 +152,23 @@ module Rance
       return a.id - b.id;
     }
   }
+  export function sortByManufactoryCapacityFN(a: Star, b: Star)
+  {
+    var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
+    var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
+
+    if (bLevel !== aLevel)
+    {
+      return bLevel - aLevel;
+    }
+
+    var _a: string = a.name.toLowerCase();
+    var _b: string = b.name.toLowerCase();
+    
+    if (_a > _b) return 1;
+    else if (_a < _b) return -1;
+    else return 0;
+  }
   export function rectContains(rect:{x1: number, x2: number, y1: number, y2: number}, point: Point)
   {
     var x = point.x;

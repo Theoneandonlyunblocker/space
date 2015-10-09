@@ -21,10 +21,25 @@ module Rance
 
       getInitialState: function()
       {
+        var initialSelected: Star = null;
+
+        var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
+
+        if (starsByManufactoryPresence.withManufactories.length > 0)
+        {
+          starsByManufactoryPresence.withManufactories.sort(sortByManufactoryCapacityFN);
+          initialSelected = starsByManufactoryPresence.withManufactories[0];
+        }
+        else if (starsByManufactoryPresence.withoutManufactories.length > 0)
+        {
+          starsByManufactoryPresence.withoutManufactories.sort(sortByManufactoryCapacityFN);
+          initialSelected = starsByManufactoryPresence.withoutManufactories[0];
+        }
+
         return(
         {
-          selectedStar: undefined, // Star
-          highlightedStars: [] // Star[]
+          selectedStar: initialSelected, // Star
+          highlightedStars: [initialSelected] // Star[]
         });
       },
 
@@ -41,6 +56,33 @@ module Rance
       componentWillUnmount: function()
       {
         eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+      },
+
+      getStarsWithAndWithoutManufactories: function()
+      {
+        var player: Player = this.props.player;
+
+        var starsWithManufactories: Star[] = [];
+        var starsWithoutManufactories: Star[] = [];
+
+        for (var i = 0; i < player.controlledLocations.length; i++)
+        {
+          var star = player.controlledLocations[i];
+          if (star.manufactory)
+          {
+            starsWithManufactories.push(star);
+          }
+          else
+          {
+            starsWithoutManufactories.push(star);
+          }
+        }
+
+        return(
+        {
+          withManufactories: starsWithManufactories,
+          withoutManufactories: starsWithoutManufactories
+        });
       },
       
       handleStarSelect: function(star: Star)
@@ -73,21 +115,7 @@ module Rance
         var player: Player = this.props.player;
         var selectedStar: Star = this.state.selectedStar;
 
-        var starsWithManufactories: Star[] = [];
-        var starsWithoutManufcatories: Star[] = [];
-
-        for (var i = 0; i < player.controlledLocations.length; i++)
-        {
-          var star = player.controlledLocations[i];
-          if (star.manufactory)
-          {
-            starsWithManufactories.push(star);
-          }
-          else
-          {
-            starsWithoutManufcatories.push(star);
-          }
-        }
+        var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
         var queueElement: ReactComponentPlaceHolder = null;
         if (selectedStar)
@@ -119,8 +147,8 @@ module Rance
           },
             UIComponents.ManufactoryStarsList(
             {
-              starsWithManufactories: starsWithManufactories,
-              starsWithoutManufcatories: starsWithoutManufcatories,
+              starsWithManufactories: starsByManufactoryPresence.withManufactories,
+              starsWithoutManufactories: starsByManufactoryPresence.withoutManufactories,
               highlightedStars: this.state.highlightedStars,
               handleStarSelect: this.handleStarSelect
             }),
