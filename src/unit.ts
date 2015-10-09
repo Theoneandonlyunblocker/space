@@ -216,8 +216,8 @@ module Rance
     }
     setBaseHealth(multiplier: number = 1)
     {
-      var min = 500 * this.template.maxHealth * multiplier;
-      var max = 1000 * this.template.maxHealth * multiplier;
+      var min = 200 * this.template.maxHealth * multiplier;
+      var max = 300 * this.template.maxHealth * multiplier;
       this.maxHealth = randInt(min, max);
       
       this.currentHealth = this.maxHealth;
