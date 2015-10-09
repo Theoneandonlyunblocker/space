@@ -812,7 +812,7 @@ module Rance
 
       while (frontier.length > 0)
       {
-        var current = frontier.pop();
+        var current = frontier.shift();
         var neighbors = current.getLinkedInRange(1).all;
 
         for (var i = 0; i < neighbors.length; i++)
