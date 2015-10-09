@@ -10530,6 +10530,7 @@ var Rance;
                 this.width = props.width;
                 this.height = props.height;
                 this.seed = props.seed;
+                this.independents = props.independents;
             }
             MapGenResult.prototype.getAllPoints = function () {
                 return this.fillerPoints.concat(this.stars);
@@ -10710,6 +10711,11 @@ var Rance;
         function Game(map, players, humanPlayer) {
             this.independents = [];
             this.galaxyMap = map;
+            if (map.independents) {
+                this.independents = map.independents;
+                map.independents = null;
+                delete map.independents;
+            }
             this.playerOrder = players;
             this.humanPlayer = humanPlayer;
             this.turnNumber = 1;
@@ -10820,6 +10826,7 @@ var Rance;
             this.seed = mapGen.seed;
             this.stars = mapGen.stars;
             this.fillerPoints = mapGen.fillerPoints;
+            this.independents = mapGen.independents;
             this.voronoi = mapGen.voronoiInfo;
         }
         GalaxyMap.prototype.getIncomeBounds = function () {
@@ -17458,13 +17465,11 @@ var Rance;
             startGame: function () {
                 var playerData = {};
                 var players = this.refs.players.makeAllPlayers();
-                var pirates = new Rance.Player(true);
-                pirates.setupPirates();
                 var mapSetupInfo = this.refs.mapSetup.getMapSetupInfo();
                 var mapGenFunction = mapSetupInfo.template.mapGenFunction;
-                var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players, [pirates]);
+                var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
                 var map = mapGenResult.makeMap();
-                app.makeGameFromSetup(map, players, [pirates]);
+                app.makeGameFromSetup(map, players);
             },
             randomize: function () {
                 this.refs.players.randomizeAllPlayers();
@@ -21000,6 +21005,10 @@ var Rance;
                 }
                 return perimeterLength;
             };
+            Sector.prototype.setupIndependents = function (intensity, variance) {
+                if (intensity === void 0) { intensity = 1; }
+                if (variance === void 0) { variance = 0.33; }
+            };
             return Sector;
         })();
         MapGen2.Sector = Sector;
@@ -21343,7 +21352,7 @@ var Rance;
         (function (DefaultModule) {
             var MapGenFunctions;
             (function (MapGenFunctions) {
-                function spiralGalaxyGeneration(options, players, independents) {
+                function spiralGalaxyGeneration(options, players) {
                     // generate points
                     // in closure because tons of temporary variables we dont really care about
                     var sg = (function setStarGenerationProps(options) {
@@ -21482,7 +21491,7 @@ var Rance;
                     if (!isConnected) {
                         if (Rance.Options.debugMode)
                             console.log("Regenerated map due to insufficient connections");
-                        return spiralGalaxyGeneration(options, players, independents);
+                        return spiralGalaxyGeneration(options, players);
                     }
                     Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
                     // make sectors
@@ -21537,13 +21546,16 @@ var Rance;
                         Rance.MapGen2.addDefenceBuildings(star, 2);
                         star.buildManufactory();
                     }
-                    Rance.MapGen2.setupPirates(stars, independents[0], 0.08, 1);
+                    var pirates = new Rance.Player(true);
+                    pirates.setupPirates();
+                    Rance.MapGen2.setupPirates(stars, pirates, 0.08, 1);
                     return new Rance.MapGen2.MapGenResult({
                         stars: stars,
                         fillerPoints: fillerPoints,
                         width: options.defaultOptions.width,
                         height: options.defaultOptions.height,
-                        seed: "" + Math.random() // TODO
+                        seed: "" + Math.random(),
+                        independents: [pirates]
                     });
                 }
                 MapGenFunctions.spiralGalaxyGeneration = spiralGalaxyGeneration;
@@ -24590,7 +24602,8 @@ var Rance;
                 fillerPoints: fillerPoints,
                 width: data.width,
                 height: data.height,
-                seed: data.seed
+                seed: data.seed,
+                independents: null
             });
             var galaxyMap = mapGenResult.makeMap();
             return galaxyMap;
@@ -25046,11 +25059,10 @@ var Rance;
             }
             this.reactUI.switchScene("galaxyMap");
         };
-        App.prototype.makeGameFromSetup = function (map, players, independents) {
+        App.prototype.makeGameFromSetup = function (map, players) {
             this.destroy();
             this.initUI();
             this.game = new Rance.Game(map, players, players[0]);
-            this.game.independents = independents;
             this.initGame();
             this.initDisplay();
             this.hookUI();
@@ -25059,10 +25071,8 @@ var Rance;
         App.prototype.makeGame = function () {
             var playerData = this.makePlayers();
             var players = playerData.players;
-            var independents = playerData.independents;
             var map = this.makeMap(playerData);
             var game = new Rance.Game(map, players, players[0]);
-            game.independents = game.independents.concat(independents);
             return game;
         };
         App.prototype.makePlayers = function () {
@@ -25073,11 +25083,8 @@ var Rance;
                 player.initTechnologies();
                 players.push(player);
             }
-            var pirates = new Rance.Player(true);
-            pirates.setupPirates();
             return ({
-                players: players,
-                independents: [pirates]
+                players: players
             });
         };
         App.prototype.makeMap = function (playerData) {
@@ -25093,7 +25100,7 @@ var Rance;
                     starSizeRegularity: 100
                 }
             };
-            var mapGenResult = app.moduleData.getDefaultMap().mapGenFunction(optionValues, playerData.players, playerData.independents);
+            var mapGenResult = app.moduleData.getDefaultMap().mapGenFunction(optionValues, playerData.players);
             var galaxyMap = mapGenResult.makeMap();
             return galaxyMap;
         };

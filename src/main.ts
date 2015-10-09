@@ -166,14 +166,13 @@ module Rance
 
       this.reactUI.switchScene("galaxyMap");
     }
-    makeGameFromSetup(map: GalaxyMap, players: Player[], independents: Player[])
+    makeGameFromSetup(map: GalaxyMap, players: Player[])
     {
       this.destroy();
 
       this.initUI();
 
       this.game = new Game(map, players, players[0]);
-      this.game.independents = independents;
       this.initGame();
 
       this.initDisplay();
@@ -185,11 +184,9 @@ module Rance
     {
       var playerData = this.makePlayers();
       var players = playerData.players;
-      var independents = playerData.independents;
       var map = this.makeMap(playerData);
 
       var game = new Game(map, players, players[0]);
-      game.independents = game.independents.concat(independents);
 
       return game;
     }
@@ -207,16 +204,12 @@ module Rance
         players.push(player);
       }
 
-      var pirates = new Player(true);
-      pirates.setupPirates();
-
       return(
       {
-        players: players,
-        independents: [pirates]
+        players: players
       });
     }
-    makeMap(playerData: {players: Player[], independents: Player[]})
+    makeMap(playerData: {players: Player[]})
     {
       var optionValues: Templates.IMapGenOptionValues =
       {
@@ -236,8 +229,7 @@ module Rance
 
       var mapGenResult = app.moduleData.getDefaultMap().mapGenFunction(
         optionValues,
-        playerData.players,
-        playerData.independents
+        playerData.players
       );
 
       var galaxyMap = mapGenResult.makeMap();

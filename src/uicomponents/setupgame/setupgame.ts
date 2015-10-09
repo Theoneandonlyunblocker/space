@@ -37,17 +37,14 @@ module Rance
 
         var players = this.refs.players.makeAllPlayers();
 
-        var pirates = new Player(true);
-        pirates.setupPirates();
-
         var mapSetupInfo = this.refs.mapSetup.getMapSetupInfo();
 
-        var mapGenFunction = mapSetupInfo.template.mapGenFunction;
+        var mapGenFunction: Templates.IMapGenFunction = mapSetupInfo.template.mapGenFunction;
 
-        var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players, [pirates]);
+        var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
         var map = mapGenResult.makeMap();
 
-        app.makeGameFromSetup(map, players, [pirates]);
+        app.makeGameFromSetup(map, players);
       },
 
       randomize: function()

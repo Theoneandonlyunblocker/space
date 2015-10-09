@@ -1,6 +1,5 @@
-/// <reference path="../mapgen2/mapgenresult.ts" />
-/// <reference path="../player.ts" />
 /// <reference path="mapgenoptions.d.ts" />
+/// <reference path="imapgenfunction.d.ts" />
 
 declare module Rance
 {
@@ -17,8 +16,7 @@ declare module Rance
 
       options: IMapGenOptions;
 
-      mapGenFunction: (options: IMapGenOptionValues,
-        players: Player[], independents: Player[]) => MapGen2.MapGenResult;
+      mapGenFunction: IMapGenFunction;
     }
   }
 }

@@ -17,6 +17,7 @@ module Rance
     height: number;
     seed: string;
 
+    independents: Player[];
     voronoi: MapVoronoiInfo;
 
     constructor(mapGen: MapGen2.MapGenResult)
@@ -29,6 +30,7 @@ module Rance
       this.stars = mapGen.stars;
       this.fillerPoints = mapGen.fillerPoints;
 
+      this.independents = mapGen.independents;
       this.voronoi = mapGen.voronoiInfo;
     }
     getIncomeBounds()

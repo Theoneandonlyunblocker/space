@@ -23,6 +23,12 @@ module Rance
       players: Player[], humanPlayer: Player)
     {
       this.galaxyMap = map;
+      if (map.independents)
+      {
+        this.independents = map.independents;
+        map.independents = null;
+        delete map.independents;
+      }
       
       this.playerOrder = players;
       this.humanPlayer = humanPlayer;

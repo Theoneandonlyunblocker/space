@@ -150,6 +150,10 @@ module Rance
 
         return perimeterLength;
       }
+      setupIndependents(intensity: number = 1, variance: number = 0.33)
+      {
+
+      }
     }
   }
 }

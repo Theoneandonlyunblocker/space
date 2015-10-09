@@ -20,7 +20,7 @@ module Rance
       export module MapGenFunctions
       {
         export function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues,
-          players: Player[], independents: Player[]): MapGen2.MapGenResult
+          players: Player[]): MapGen2.MapGenResult
         {
           // generate points
           
@@ -219,7 +219,7 @@ module Rance
           if (!isConnected)
           {
             if (Options.debugMode) console.log("Regenerated map due to insufficient connections");
-            return spiralGalaxyGeneration(options, players, independents);
+            return spiralGalaxyGeneration(options, players);
           }
 
           MapGen2.partiallyCutLinks(stars, 4, 2);
@@ -307,7 +307,10 @@ module Rance
             star.buildManufactory();
           }
 
-          MapGen2.setupPirates(stars, independents[0], 0.08, 1);
+          var pirates = new Player(true);
+          pirates.setupPirates();
+
+          MapGen2.setupPirates(stars, pirates, 0.08, 1);
 
           return new MapGen2.MapGenResult(
           {
@@ -315,7 +318,8 @@ module Rance
             fillerPoints: fillerPoints,
             width: options.defaultOptions.width,
             height: options.defaultOptions.height,
-            seed: "" + Math.random() // TODO
+            seed: "" + Math.random(), // TODO
+            independents: [pirates]
           });
         }
       }

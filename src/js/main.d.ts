@@ -1357,6 +1357,7 @@ declare module Rance {
             width: number;
             height: number;
             seed: string;
+            independents: Player[];
             voronoiInfo: MapVoronoiInfo;
             constructor(props: {
                 stars: Star[];
@@ -1364,6 +1365,7 @@ declare module Rance {
                 width: number;
                 height: number;
                 seed: string;
+                independents: Player[];
             });
             getAllPoints(): Point[];
             makeMap(): GalaxyMap;
@@ -1432,6 +1434,7 @@ declare module Rance {
         width: number;
         height: number;
         seed: string;
+        independents: Player[];
         voronoi: MapVoronoiInfo;
         constructor(mapGen: MapGen2.MapGenResult);
         getIncomeBounds(): {
@@ -2942,6 +2945,7 @@ declare module Rance {
             getNeighboringSectors(): Sector[];
             getMajorityRegions(): Region[];
             getPerimeterLengthWithStar(star: Star): number;
+            setupIndependents(intensity?: number, variance?: number): void;
         }
     }
 }
@@ -2963,7 +2967,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module MapGenFunctions {
-                function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues, players: Player[], independents: Player[]): MapGen2.MapGenResult;
+                function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues, players: Player[]): MapGen2.MapGenResult;
             }
         }
     }
@@ -3536,15 +3540,13 @@ declare module Rance {
         makeApp(): void;
         destroy(): void;
         load(saveKey: string): void;
-        makeGameFromSetup(map: GalaxyMap, players: Player[], independents: Player[]): void;
+        makeGameFromSetup(map: GalaxyMap, players: Player[]): void;
         makeGame(): Game;
         makePlayers(): {
             players: Player[];
-            independents: Player[];
         };
         makeMap(playerData: {
             players: Player[];
-            independents: Player[];
         }): GalaxyMap;
         initGame(): void;
         initDisplay(): void;

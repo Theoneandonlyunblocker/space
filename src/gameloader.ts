@@ -130,7 +130,8 @@ module Rance
         fillerPoints: fillerPoints,
         width: data.width,
         height: data.height,
-        seed: data.seed
+        seed: data.seed,
+        independents: null
       });
       
       var galaxyMap = mapGenResult.makeMap();

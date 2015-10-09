@@ -20,6 +20,7 @@ module Rance
       height: number;
       seed: string;
 
+      independents: Player[];
       voronoiInfo: MapVoronoiInfo;
 
       constructor(props:
@@ -30,6 +31,8 @@ module Rance
         width: number;
         height: number;
         seed: string;
+
+        independents: Player[];
       })
       {
         this.stars = props.stars;
@@ -38,6 +41,8 @@ module Rance
         this.width = props.width;
         this.height = props.height;
         this.seed = props.seed;
+
+        this.independents = props.independents;
       }
 
       getAllPoints(): Point[]
