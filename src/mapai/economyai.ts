@@ -69,6 +69,7 @@ module Rance
 
       satisfyFrontRequest(front: Front)
       {
+        return;}/*
         // TODO
         var star = this.player.getNearestOwnedStarTo(front.musterLocation);
 
@@ -123,7 +124,7 @@ module Rance
         // var unit = this.player.buildUnit(unitType, star);
         
         // front.addUnit(unit);
-      }
+      }*/
     }
   }
 }

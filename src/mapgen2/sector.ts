@@ -150,9 +150,126 @@ module Rance
 
         return perimeterLength;
       }
-      setupIndependents(intensity: number = 1, variance: number = 0.33)
+      setupIndependents(player: Player, intensity: number = 1, variance: number = 0.33)
       {
+        var independentStars = this.stars.filter(function(star: Star)
+        {
+          return !star.owner || star.owner.isIndependent;
+        });
 
+        var distanceFromPlayerOwnedLocationById:
+        {
+          [starId: number]: number;
+        } = {};
+
+        var starIsOwnedByPlayerQualifierFN = function(star: Star)
+        {
+          return star.owner && !star.owner.isIndependent;
+        }
+
+        var makeUnitFN = function(template: Templates.IUnitTemplate, player: Player,
+          unitStatsModifier: number, unitHealthModifier: number)
+        {
+          var unit = new Unit(template);
+
+          unit.setAttributes(unitStatsModifier);
+          unit.setBaseHealth(unitHealthModifier);
+          player.addUnit(unit);
+
+          return unit;
+        }
+
+        var maxDistance: number = 0;
+
+        for (var i = 0; i < independentStars.length; i++)
+        {
+          var star = independentStars[i];
+
+          player.addStar(star);
+          star.addBuilding(new Building(
+          {
+            template: app.moduleData.Templates.Buildings["starBase"],
+            location: star
+          }));
+
+          var nearestPlayerStar = star.getNearestStarForQualifier(
+            starIsOwnedByPlayerQualifierFN);
+          var distance = star.getDistanceToStar(nearestPlayerStar);
+          distanceFromPlayerOwnedLocationById[star.id] = distance;
+          maxDistance = Math.max(maxDistance, distance);
+        }
+
+        var starsAtMaxDistance = independentStars.filter(function(star: Star)
+        {
+          return distanceFromPlayerOwnedLocationById[star.id] === maxDistance;
+        });
+
+        var commanderStar = starsAtMaxDistance.sort(function(a: Star, b: Star)
+        {
+          return b.mapGenData.distance - a.mapGenData.distance;
+        })[0];
+
+        var minShips = 2;
+        var maxShips = 5;
+
+        var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
+
+        for (var i = 0; i < independentStars.length; i++)
+        {
+          var star = independentStars[i];
+          var distance = distanceFromPlayerOwnedLocationById[star.id];
+          var inverseMapGenDistance = 1 - star.mapGenData.distance;
+
+          var localBuildableUnitTypes: Templates.IUnitTemplate[] = [];
+          for (var j = 0; j < star.buildableUnitTypes.length; j++)
+          {
+            var template = star.buildableUnitTypes[j];
+            if (!template.technologyRequirements ||
+              star.owner.meetsTechnologyRequirements(template.technologyRequirements))
+            {
+              localBuildableUnitTypes.push(template);
+            }
+          }
+
+          // TODO kinda weird
+          var shipAmount = minShips;
+          for (var j = 2; j < distance; j++)
+          {
+            shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
+
+            if (shipAmount >= maxShips)
+            {
+              shipAmount = maxShips;
+              break;
+            }
+          }
+
+          var elitesAmount = Math.floor(shipAmount / 2);
+
+          var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
+          var units: Unit[] = [];
+          if (star === commanderStar)
+          {
+            var template: Templates.IUnitTemplate = getRandomArrayItem(localBuildableUnitTypes);
+            var commander = makeUnitFN(template, player, 1.4, 1.4 + inverseMapGenDistance);
+            commander.name = "Pirate commander";
+            units.push(commander);
+          }
+          for (var j = 0; j < shipAmount; j++)
+          {
+            var isElite = j < elitesAmount;
+            var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
+            var unitStatsModifier = (isElite ? 1.2 : 1);
+            var template: Templates.IUnitTemplate = getRandomArrayItem(templateCandidates);
+
+            var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
+            unit.name = (isElite ? "Pirate elite" : "Pirate");
+            units.push(unit);
+          }
+          
+          var fleet = new Fleet(player, units, star, undefined, false);
+          fleet.name = "Pirates";
+        }
       }
     }
   }

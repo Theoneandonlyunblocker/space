@@ -835,7 +835,7 @@ module Rance
 
       return null;
     }
-    getDistanceToStar(target: Star)
+    getDistanceToStar(target: Star): number
     {
       // don't index distance while generating map as distance can change
       if (this.mapGenData)

@@ -12105,42 +12105,63 @@ var Rance;
                 }
             };
             EconomyAI.prototype.satisfyFrontRequest = function (front) {
-                // TODO
-                var star = this.player.getNearestOwnedStarTo(front.musterLocation);
-                var archetypeScores = front.getNewUnitArchetypeScores();
-                var buildableUnitTypesByArchetype = {};
-                var buildableUnitTypes = star.getBuildableShipTypes();
-                for (var i = 0; i < buildableUnitTypes.length; i++) {
-                    var archetype = buildableUnitTypes[i].archetype;
-                    if (!buildableUnitTypesByArchetype[archetype.type]) {
-                        buildableUnitTypesByArchetype[archetype.type] = [];
-                    }
-                    if (!archetypeScores[archetype.type]) {
-                        archetypeScores[archetype.type] = 0;
-                    }
-                    buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
+                return;
+            }; /*
+            // TODO
+            var star = this.player.getNearestOwnedStarTo(front.musterLocation);
+    
+            var archetypeScores = front.getNewUnitArchetypeScores();
+    
+            var buildableUnitTypesByArchetype:
+            {
+              [archetypeType: string]: Templates.IUnitTemplate[];
+            } = {};
+    
+            var buildableUnitTypes = star.getBuildableShipTypes();
+    
+            for (var i = 0; i < buildableUnitTypes.length; i++)
+            {
+              var archetype = buildableUnitTypes[i].archetype;
+    
+              if (!buildableUnitTypesByArchetype[archetype.type])
+              {
+                buildableUnitTypesByArchetype[archetype.type] = [];
+              }
+              if (!archetypeScores[archetype.type])
+              {
+                archetypeScores[archetype.type] = 0;
+              }
+    
+              buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
+            }
+    
+            var sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
+            var unitType: Templates.IUnitTemplate;
+    
+            for (var i = 0; i < sortedScores.length; i++)
+            {
+              if (buildableUnitTypesByArchetype[sortedScores[i]])
+              {
+                unitType = getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
+                if (this.player.money < unitType.buildCost)
+                {
+                  // TODO AI should actually try to figure out which individual unit would
+                  // be the best
+                  return;
                 }
-                var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
-                var unitType;
-                for (var i = 0; i < sortedScores.length; i++) {
-                    if (buildableUnitTypesByArchetype[sortedScores[i]]) {
-                        unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-                        if (this.player.money < unitType.buildCost) {
-                            // TODO AI should actually try to figure out which individual unit would
-                            // be the best
-                            return;
-                        }
-                        else {
-                            break;
-                        }
-                    }
+                else
+                {
+                  break;
                 }
-                if (!unitType)
-                    debugger;
-                // TODO manufactory
-                // var unit = this.player.buildUnit(unitType, star);
-                // front.addUnit(unit);
-            };
+              }
+            }
+            if (!unitType) debugger;
+    
+            // TODO manufactory
+            // var unit = this.player.buildUnit(unitType, star);
+            
+            // front.addUnit(unit);
+          }*/
             return EconomyAI;
         })();
         MapAI.EconomyAI = EconomyAI;
@@ -21005,9 +21026,87 @@ var Rance;
                 }
                 return perimeterLength;
             };
-            Sector.prototype.setupIndependents = function (intensity, variance) {
+            Sector.prototype.setupIndependents = function (player, intensity, variance) {
                 if (intensity === void 0) { intensity = 1; }
                 if (variance === void 0) { variance = 0.33; }
+                var independentStars = this.stars.filter(function (star) {
+                    return !star.owner || star.owner.isIndependent;
+                });
+                var distanceFromPlayerOwnedLocationById = {};
+                var starIsOwnedByPlayerQualifierFN = function (star) {
+                    return star.owner && !star.owner.isIndependent;
+                };
+                var makeUnitFN = function (template, player, unitStatsModifier, unitHealthModifier) {
+                    var unit = new Rance.Unit(template);
+                    unit.setAttributes(unitStatsModifier);
+                    unit.setBaseHealth(unitHealthModifier);
+                    player.addUnit(unit);
+                    return unit;
+                };
+                var maxDistance = 0;
+                for (var i = 0; i < independentStars.length; i++) {
+                    var star = independentStars[i];
+                    player.addStar(star);
+                    star.addBuilding(new Rance.Building({
+                        template: app.moduleData.Templates.Buildings["starBase"],
+                        location: star
+                    }));
+                    var nearestPlayerStar = star.getNearestStarForQualifier(starIsOwnedByPlayerQualifierFN);
+                    var distance = star.getDistanceToStar(nearestPlayerStar);
+                    distanceFromPlayerOwnedLocationById[star.id] = distance;
+                    maxDistance = Math.max(maxDistance, distance);
+                }
+                var starsAtMaxDistance = independentStars.filter(function (star) {
+                    return distanceFromPlayerOwnedLocationById[star.id] === maxDistance;
+                });
+                var commanderStar = starsAtMaxDistance.sort(function (a, b) {
+                    return b.mapGenData.distance - a.mapGenData.distance;
+                })[0];
+                var minShips = 2;
+                var maxShips = 5;
+                var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
+                for (var i = 0; i < independentStars.length; i++) {
+                    var star = independentStars[i];
+                    var distance = distanceFromPlayerOwnedLocationById[star.id];
+                    var inverseMapGenDistance = 1 - star.mapGenData.distance;
+                    var localBuildableUnitTypes = [];
+                    for (var j = 0; j < star.buildableUnitTypes.length; j++) {
+                        var template = star.buildableUnitTypes[j];
+                        if (!template.technologyRequirements ||
+                            star.owner.meetsTechnologyRequirements(template.technologyRequirements)) {
+                            localBuildableUnitTypes.push(template);
+                        }
+                    }
+                    // TODO kinda weird
+                    var shipAmount = minShips;
+                    for (var j = 2; j < distance; j++) {
+                        shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
+                        if (shipAmount >= maxShips) {
+                            shipAmount = maxShips;
+                            break;
+                        }
+                    }
+                    var elitesAmount = Math.floor(shipAmount / 2);
+                    var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
+                    var units = [];
+                    if (star === commanderStar) {
+                        var template = Rance.getRandomArrayItem(localBuildableUnitTypes);
+                        var commander = makeUnitFN(template, player, 1.4, 1.4 + inverseMapGenDistance);
+                        commander.name = "Pirate commander";
+                        units.push(commander);
+                    }
+                    for (var j = 0; j < shipAmount; j++) {
+                        var isElite = j < elitesAmount;
+                        var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
+                        var unitStatsModifier = (isElite ? 1.2 : 1);
+                        var template = Rance.getRandomArrayItem(templateCandidates);
+                        var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
+                        unit.name = (isElite ? "Pirate elite" : "Pirate");
+                        units.push(unit);
+                    }
+                    var fleet = new Rance.Fleet(player, units, star, undefined, false);
+                    fleet.name = "Pirates";
+                }
             };
             return Sector;
         })();
@@ -21291,47 +21390,6 @@ var Rance;
             }
         }
         MapGen2.addDefenceBuildings = addDefenceBuildings;
-        function setupPirates(stars, player, variance, intensity) {
-            if (variance === void 0) { variance = 0.33; }
-            if (intensity === void 0) { intensity = 1; }
-            var minShips = 2;
-            var maxShips = 6;
-            var shipTypes = Object.keys(app.moduleData.Templates.Units);
-            shipTypes = shipTypes.filter(function (shipType) {
-                return shipType !== "cheatShip" && !app.moduleData.Templates.Units[shipType].isStealthy;
-            });
-            var starIsOwnedByPlayerQualifierFN = function (star) {
-                return star.owner && !star.owner.isIndependent;
-            };
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                if (!star.owner) {
-                    player.addStar(star);
-                    var nearestPlayerStar = star.getNearestStarForQualifier(starIsOwnedByPlayerQualifierFN);
-                    var distance = star.getDistanceToStar(nearestPlayerStar);
-                    var defenceBuildingstoAdd = 1 + Math.floor(distance / 4);
-                    addDefenceBuildings(star, defenceBuildingstoAdd, defenceBuildingstoAdd > 1);
-                    var shipAmount = minShips;
-                    for (var j = 2; j < distance; j++) {
-                        shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
-                        if (shipAmount >= maxShips) {
-                            shipAmount = maxShips;
-                            break;
-                        }
-                    }
-                    var ships = [];
-                    for (var j = 0; j < shipAmount; j++) {
-                        var shipTemplates = star.getBuildableShipTypes();
-                        var ship = new Rance.Unit(Rance.getRandomArrayItem(shipTemplates));
-                        player.addUnit(ship);
-                        ships.push(ship);
-                    }
-                    var fleet = new Rance.Fleet(player, ships, star, undefined, false);
-                    fleet.name = "Pirates";
-                }
-            }
-        }
-        MapGen2.setupPirates = setupPirates;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/utility.ts" />
@@ -21548,7 +21606,10 @@ var Rance;
                     }
                     var pirates = new Rance.Player(true);
                     pirates.setupPirates();
-                    Rance.MapGen2.setupPirates(stars, pirates, 0.08, 1);
+                    for (var i = 0; i < allSectors.length; i++) {
+                        var sector = allSectors[i];
+                        sector.setupIndependents(pirates, 1, 0);
+                    }
                     return new Rance.MapGen2.MapGenResult({
                         stars: stars,
                         fillerPoints: fillerPoints,

@@ -310,7 +310,12 @@ module Rance
           var pirates = new Player(true);
           pirates.setupPirates();
 
-          MapGen2.setupPirates(stars, pirates, 0.08, 1);
+          for (var i = 0; i < allSectors.length; i++)
+          {
+            var sector = allSectors[i];
+            sector.setupIndependents(pirates, 1, 0);
+          }
+
 
           return new MapGen2.MapGenResult(
           {
