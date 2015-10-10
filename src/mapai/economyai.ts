@@ -46,12 +46,12 @@ module Rance
         sort by priority
         fulfill by priority
          */
-        var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
+        // TODO other requests
+        var allRequests: Front[] = this.frontsAI.frontsRequestingUnits;
         allRequests.sort(function(a, b)
         {
-          return b.priority - a.priority;
+          return b.objective.priority - a.objective.priority;
         });
-
         for (var i = 0; i < allRequests.length; i++)
         {
           var request = allRequests[i];
