@@ -69,9 +69,15 @@ module Rance
 
       satisfyFrontRequest(front: Front)
       {
-        return;}/*
-        // TODO
-        var star = this.player.getNearestOwnedStarTo(front.musterLocation);
+        var player = this.player;
+        var starQualifierFN = function(star: Star)
+        {
+          return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
+        }
+        var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
+        // TODO economy ai
+        if (!star) return;
+        var manufactory = star.manufactory;
 
         var archetypeScores = front.getNewUnitArchetypeScores();
 
@@ -80,7 +86,8 @@ module Rance
           [archetypeType: string]: Templates.IUnitTemplate[];
         } = {};
 
-        var buildableUnitTypes = star.getBuildableShipTypes();
+        var buildableUnitTypes = player.getGloballyBuildableUnits().concat(
+          manufactory.getLocalUnitTypes().manufacturable);
 
         for (var i = 0; i < buildableUnitTypes.length; i++)
         {
@@ -120,11 +127,8 @@ module Rance
         }
         if (!unitType) debugger;
 
-        // TODO manufactory
-        // var unit = this.player.buildUnit(unitType, star);
-        
-        // front.addUnit(unit);
-      }*/
+        manufactory.addThingToQueue(unitType, "unit");
+      }
     }
   }
 }

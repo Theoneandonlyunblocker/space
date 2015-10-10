@@ -11892,7 +11892,8 @@ var Rance;
                 var idealWeights = this.objective.template.preferredUnitComposition;
                 var scores = {};
                 for (var unitType in idealWeights) {
-                    scores[unitType] = totalUnits * idealWeights[unitType] - countByArchetype[unitType];
+                    var archetypeCount = countByArchetype[unitType] || 0;
+                    scores[unitType] = totalUnits * idealWeights[unitType] - archetypeCount;
                 }
                 return scores;
             };
@@ -12090,9 +12091,10 @@ var Rance;
                 sort by priority
                 fulfill by priority
                  */
-                var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
+                // TODO other requests
+                var allRequests = this.frontsAI.frontsRequestingUnits;
                 allRequests.sort(function (a, b) {
-                    return b.priority - a.priority;
+                    return b.objective.priority - a.objective.priority;
                 });
                 for (var i = 0; i < allRequests.length; i++) {
                     var request = allRequests[i];
@@ -12105,63 +12107,47 @@ var Rance;
                 }
             };
             EconomyAI.prototype.satisfyFrontRequest = function (front) {
-                return;
-            }; /*
-            // TODO
-            var star = this.player.getNearestOwnedStarTo(front.musterLocation);
-    
-            var archetypeScores = front.getNewUnitArchetypeScores();
-    
-            var buildableUnitTypesByArchetype:
-            {
-              [archetypeType: string]: Templates.IUnitTemplate[];
-            } = {};
-    
-            var buildableUnitTypes = star.getBuildableShipTypes();
-    
-            for (var i = 0; i < buildableUnitTypes.length; i++)
-            {
-              var archetype = buildableUnitTypes[i].archetype;
-    
-              if (!buildableUnitTypesByArchetype[archetype.type])
-              {
-                buildableUnitTypesByArchetype[archetype.type] = [];
-              }
-              if (!archetypeScores[archetype.type])
-              {
-                archetypeScores[archetype.type] = 0;
-              }
-    
-              buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
-            }
-    
-            var sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
-            var unitType: Templates.IUnitTemplate;
-    
-            for (var i = 0; i < sortedScores.length; i++)
-            {
-              if (buildableUnitTypesByArchetype[sortedScores[i]])
-              {
-                unitType = getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-                if (this.player.money < unitType.buildCost)
-                {
-                  // TODO AI should actually try to figure out which individual unit would
-                  // be the best
-                  return;
+                var player = this.player;
+                var starQualifierFN = function (star) {
+                    return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
+                };
+                var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
+                // TODO economy ai
+                if (!star)
+                    return;
+                var manufactory = star.manufactory;
+                var archetypeScores = front.getNewUnitArchetypeScores();
+                var buildableUnitTypesByArchetype = {};
+                var buildableUnitTypes = player.getGloballyBuildableUnits().concat(manufactory.getLocalUnitTypes().manufacturable);
+                for (var i = 0; i < buildableUnitTypes.length; i++) {
+                    var archetype = buildableUnitTypes[i].archetype;
+                    if (!buildableUnitTypesByArchetype[archetype.type]) {
+                        buildableUnitTypesByArchetype[archetype.type] = [];
+                    }
+                    if (!archetypeScores[archetype.type]) {
+                        archetypeScores[archetype.type] = 0;
+                    }
+                    buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
                 }
-                else
-                {
-                  break;
+                var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
+                var unitType;
+                for (var i = 0; i < sortedScores.length; i++) {
+                    if (buildableUnitTypesByArchetype[sortedScores[i]]) {
+                        unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
+                        if (this.player.money < unitType.buildCost) {
+                            // TODO AI should actually try to figure out which individual unit would
+                            // be the best
+                            return;
+                        }
+                        else {
+                            break;
+                        }
+                    }
                 }
-              }
-            }
-            if (!unitType) debugger;
-    
-            // TODO manufactory
-            // var unit = this.player.buildUnit(unitType, star);
-            
-            // front.addUnit(unit);
-          }*/
+                if (!unitType)
+                    debugger;
+                manufactory.addThingToQueue(unitType, "unit");
+            };
             return EconomyAI;
         })();
         MapAI.EconomyAI = EconomyAI;
