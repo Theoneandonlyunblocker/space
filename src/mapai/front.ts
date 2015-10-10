@@ -287,7 +287,8 @@ module Rance
 
         for (var unitType in idealWeights)
         {
-          scores[unitType] = totalUnits * idealWeights[unitType] - countByArchetype[unitType];
+          var archetypeCount = countByArchetype[unitType] || 0;
+          scores[unitType] = totalUnits * idealWeights[unitType] - archetypeCount;
         }
 
         return scores;
