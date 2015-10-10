@@ -21060,7 +21060,7 @@ var Rance;
                     return distanceFromPlayerOwnedLocationById[star.id] === maxDistance;
                 });
                 var commanderStar = starsAtMaxDistance.sort(function (a, b) {
-                    return b.mapGenData.distance - a.mapGenData.distance;
+                    return b.mapGenData.connectedness - a.mapGenData.connectedness;
                 })[0];
                 var minShips = 2;
                 var maxShips = 5;

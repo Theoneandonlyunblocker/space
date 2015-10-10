@@ -206,7 +206,7 @@ module Rance
 
         var commanderStar = starsAtMaxDistance.sort(function(a: Star, b: Star)
         {
-          return b.mapGenData.distance - a.mapGenData.distance;
+          return b.mapGenData.connectedness - a.mapGenData.connectedness;
         })[0];
 
         var minShips = 2;
