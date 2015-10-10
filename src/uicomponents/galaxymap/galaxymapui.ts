@@ -111,7 +111,7 @@ module Rance
 
       render: function()
       {
-        var endTurnButtonProps =
+        var endTurnButtonProps: any =
         {
           className: "end-turn-button",
           onClick: this.endTurn,
@@ -120,6 +120,7 @@ module Rance
         if (!this.state.isPlayerTurn)
         {
           endTurnButtonProps.className += " disabled";
+          endTurnButtonProps.disabled = true;
         }
 
         var selectionContainerClassName = "fleet-selection-container";
