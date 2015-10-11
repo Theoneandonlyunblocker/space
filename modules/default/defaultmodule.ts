@@ -32,6 +32,8 @@
 
 /// <reference path="ai/declarewarobjective.ts" />
 
+/// <reference path="ai/expandmanufactorycapacityobjective.ts" />
+
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />
 

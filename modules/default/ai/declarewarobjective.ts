@@ -36,7 +36,6 @@ module Rance
               var score = mapEvaluator.getDesireToGoToWarWith(player) *
                 mapEvaluator.getAbilityToGoToWarWith(player);
 
-              // console.log(mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player), mapEvaluator.player.id, player.id, score);
               scores.push(
               {
                 player: player,

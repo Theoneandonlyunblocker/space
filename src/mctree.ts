@@ -72,6 +72,7 @@ module Rance
       {
         return true;
       }
+      // TODO crash battle.activeUnit can be undefined
       else if (this.actualBattle.activeUnit.id !== this.rootNode.battle.activeUnit.id)
       {
         return this.actualBattle.activeUnit.battleStats.side === this.sideId;

@@ -24,7 +24,7 @@ module Rance
           unitDesireFN: AIUtils.defaultUnitDesireFN,
           unitFitFN: AIUtils.defaultUnitFitFN,
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-            mapEvaluator: MapAI.MapEvaluator)
+            mapEvaluator: MapAI.MapEvaluator, objectivesAI: MapAI.ObjectivesAI)
           {
             var basePriority = grandStrategyAI.desireForExpansion;
 

@@ -70,6 +70,11 @@ module Rance
         this.clearObjectives();
         this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
       }
+      setAllEconomicObjectives()
+      {
+        this.clearObjectives();
+        this.setAllObjectivesWithTemplateProperty("economyRoutineFN");
+      }
       setAllMoveObjectives()
       {
         this.clearObjectives();
@@ -92,7 +97,7 @@ module Rance
       {
         var objectiveType = objectiveTemplate.key;
         var byTarget = this.getObjectivesByTarget(objectiveType, true);
-        var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator);
+        var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
         var finalObjectives: Objective[] = [];
 
         for (var i = 0; i < newObjectives.length; i++)

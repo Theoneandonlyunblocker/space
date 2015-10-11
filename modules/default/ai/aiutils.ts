@@ -259,7 +259,8 @@ module Rance
           return allObjectives;
         }
         export function perimeterObjectiveCreation(templateKey: string, isForScouting: boolean,
-          basePriority: number, grandStrategyAI: MapAI.GrandStrategyAI, mapEvaluator: MapAI.MapEvaluator)
+          basePriority: number, grandStrategyAI: MapAI.GrandStrategyAI, mapEvaluator: MapAI.MapEvaluator,
+          objectivesAI: MapAI.ObjectivesAI)
         {
           var playersToEstablishPerimeterAgainst: Player[] = [];
           var diplomacyStatus = mapEvaluator.player.diplomacyStatus;

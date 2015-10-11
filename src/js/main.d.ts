@@ -1642,6 +1642,7 @@ declare module Rance {
             constructor(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI);
             clearObjectives(): void;
             setAllDiplomaticObjectives(): void;
+            setAllEconomicObjectives(): void;
             setAllMoveObjectives(): void;
             setAllObjectivesWithTemplateProperty(propKey: string): void;
             getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate): Objective[];
@@ -1730,6 +1731,7 @@ declare module Rance {
                 mapEvaluator: MapEvaluator;
                 personality: IPersonality;
             });
+            resolveEconomicObjectives(): void;
             satisfyAllRequests(): void;
             satisfyFrontRequest(front: Front): void;
         }
@@ -1761,7 +1763,7 @@ declare module Rance {
             mapEvaluator: MapEvaluator;
             grandStrategyAI: GrandStrategyAI;
             objectivesAI: ObjectivesAI;
-            economicAI: EconomyAI;
+            economyAI: EconomyAI;
             frontsAI: FrontsAI;
             diplomacyAI: DiplomacyAI;
             constructor(player: Player, game: Game, personality?: IPersonality);
@@ -3305,7 +3307,7 @@ declare module Rance {
                     player?: Player;
                     score: number;
                 }[], basePriority: number): MapAI.Objective[];
-                function perimeterObjectiveCreation(templateKey: string, isForScouting: boolean, basePriority: number, grandStrategyAI: MapAI.GrandStrategyAI, mapEvaluator: MapAI.MapEvaluator): MapAI.Objective[];
+                function perimeterObjectiveCreation(templateKey: string, isForScouting: boolean, basePriority: number, grandStrategyAI: MapAI.GrandStrategyAI, mapEvaluator: MapAI.MapEvaluator, objectivesAI: MapAI.ObjectivesAI): MapAI.Objective[];
                 function getUnitsToFillIndependentObjective(objective: MapAI.Objective): {
                     min: number;
                     ideal: number;
@@ -3364,6 +3366,15 @@ declare module Rance {
         module DefaultModule {
             module Objectives {
                 var declareWar: Rance.Templates.IObjectiveTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Objectives {
+                var expandManufactoryCapacity: Rance.Templates.IObjectiveTemplate;
             }
         }
     }

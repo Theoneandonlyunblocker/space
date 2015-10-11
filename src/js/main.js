@@ -11630,6 +11630,10 @@ var Rance;
                 this.clearObjectives();
                 this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
             };
+            ObjectivesAI.prototype.setAllEconomicObjectives = function () {
+                this.clearObjectives();
+                this.setAllObjectivesWithTemplateProperty("economyRoutineFN");
+            };
             ObjectivesAI.prototype.setAllMoveObjectives = function () {
                 this.clearObjectives();
                 this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
@@ -11646,7 +11650,7 @@ var Rance;
             ObjectivesAI.prototype.getNewObjectivesOfType = function (objectiveTemplate) {
                 var objectiveType = objectiveTemplate.key;
                 var byTarget = this.getObjectivesByTarget(objectiveType, true);
-                var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator);
+                var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
                 var finalObjectives = [];
                 for (var i = 0; i < newObjectives.length; i++) {
                     var newObjective = newObjectives[i];
@@ -12085,6 +12089,14 @@ var Rance;
                 this.player = props.mapEvaluator.player;
                 this.personality = props.personality;
             }
+            EconomyAI.prototype.resolveEconomicObjectives = function () {
+                var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
+                var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
+                for (var i = 0; i < objectives.length; i++) {
+                    var objective = objectives[i];
+                    objective.template.economyRoutineFN(objective, this, adjustments);
+                }
+            };
             EconomyAI.prototype.satisfyAllRequests = function () {
                 /*
                 get all requests from OAI and FAI
@@ -12220,7 +12232,7 @@ var Rance;
                 this.grandStrategyAI = new MapAI.GrandStrategyAI(this.personality, this.mapEvaluator);
                 this.objectivesAI = new MapAI.ObjectivesAI(this.mapEvaluator, this.grandStrategyAI);
                 this.frontsAI = new MapAI.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
-                this.economicAI = new MapAI.EconomyAI({
+                this.economyAI = new MapAI.EconomyAI({
                     objectivesAI: this.objectivesAI,
                     frontsAI: this.frontsAI,
                     mapEvaluator: this.mapEvaluator,
@@ -12241,6 +12253,8 @@ var Rance;
                 this.diplomacyAI.resolveDiplomaticObjectives(this.processTurnAfterDiplomaticObjectives.bind(this, afterFinishedCallback));
             };
             AIController.prototype.processTurnAfterDiplomaticObjectives = function (afterFinishedCallback) {
+                this.objectivesAI.setAllEconomicObjectives();
+                this.economyAI.resolveEconomicObjectives();
                 // oai make objectives
                 this.objectivesAI.setAllMoveObjectives();
                 // fai form fronts
@@ -12250,7 +12264,7 @@ var Rance;
                 // fai request units
                 this.frontsAI.setUnitRequests();
                 // eai fulfill requests
-                this.economicAI.satisfyAllRequests();
+                this.economyAI.satisfyAllRequests();
                 // fai organize fleets
                 this.frontsAI.organizeFleets();
                 // fai set fleets yet to move
@@ -16093,6 +16107,7 @@ var Rance;
                 };
                 if (!this.state.isPlayerTurn) {
                     endTurnButtonProps.className += " disabled";
+                    endTurnButtonProps.disabled = true;
                 }
                 var selectionContainerClassName = "fleet-selection-container";
                 if (this.state.currentlyReorganizing.length > 0) {
@@ -23952,7 +23967,7 @@ var Rance;
                     return allObjectives;
                 }
                 AIUtils.makeObjectivesFromScores = makeObjectivesFromScores;
-                function perimeterObjectiveCreation(templateKey, isForScouting, basePriority, grandStrategyAI, mapEvaluator) {
+                function perimeterObjectiveCreation(templateKey, isForScouting, basePriority, grandStrategyAI, mapEvaluator, objectivesAI) {
                     var playersToEstablishPerimeterAgainst = [];
                     var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
                     var statusByPlayer = diplomacyStatus.statusByPlayer;
@@ -24163,7 +24178,7 @@ var Rance;
                     moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine,
                     unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,
                     unitFitFN: DefaultModule.AIUtils.defaultUnitFitFN,
-                    creatorFunction: function (grandStrategyAI, mapEvaluator) {
+                    creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
                         var basePriority = grandStrategyAI.desireForExpansion;
                         var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function (star) {
                             return star.getIndependentShips().length > 0 && !star.getSecondaryController();
@@ -24221,7 +24236,7 @@ var Rance;
                     key: "declareWar",
                     creatorFunction: function (grandStrategyAI, mapEvaluator) {
                         var template = Rance.Modules.DefaultModule.Objectives.declareWar;
-                        var basePriority = grandStrategyAI.desireForWar;
+                        var basePriority = 999;
                         var scores = [];
                         for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers) {
                             var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
@@ -24230,10 +24245,9 @@ var Rance;
                             }
                             var score = mapEvaluator.getDesireToGoToWarWith(player) *
                                 mapEvaluator.getAbilityToGoToWarWith(player);
-                            // console.log(mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player), mapEvaluator.player.id, player.id, score);
                             scores.push({
                                 player: player,
-                                score: score
+                                score: 1 //score
                             });
                         }
                         return DefaultModule.AIUtils.makeObjectivesFromScores(template, scores, basePriority);
@@ -24241,6 +24255,70 @@ var Rance;
                     diplomacyRoutineFN: function (objective, diplomacyAI, adjustments, afterDoneCallback) {
                         diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
                         afterDoneCallback();
+                    }
+                };
+            })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="aiutils.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Objectives;
+            (function (Objectives) {
+                Objectives.expandManufactoryCapacity = {
+                    key: "expandManufactoryCapacity",
+                    creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
+                        // TODO
+                        // base priority = manufacturing demand / manufacturing capacity
+                        var template = Rance.Modules.DefaultModule.Objectives.expandManufactoryCapacity;
+                        return [new Rance.MapAI.Objective(template, 0.5, null)];
+                    },
+                    economyRoutineFN: function (objective, economyAI) {
+                        // TODO
+                        var costByStar = [];
+                        var player = economyAI.player;
+                        var stars = player.controlledLocations;
+                        if (player.money < 1200)
+                            return;
+                        for (var i = 0; i < stars.length; i++) {
+                            var star = stars[i];
+                            var fullyExpanded = star.manufactory && star.manufactory.capacity >= star.manufactory.maxCapacity;
+                            if (fullyExpanded)
+                                continue;
+                            var expansionCost;
+                            if (!star.manufactory)
+                                expansionCost = manufactoryData.buildCost;
+                            else {
+                                expansionCost = star.manufactory.getCapacityUpgradeCost();
+                            }
+                            costByStar.push({
+                                star: star,
+                                cost: expansionCost
+                            });
+                        }
+                        if (costByStar.length === 0)
+                            return;
+                        costByStar.sort(function (a, b) {
+                            return a.cost - b.cost;
+                        });
+                        var star = costByStar[0].star;
+                        var cost = costByStar[0].cost;
+                        if (player.money < cost * 1.1) {
+                            return;
+                        }
+                        if (star.manufactory) {
+                            star.manufactory.upgradeCapacity(1);
+                        }
+                        else {
+                            star.buildManufactory();
+                            player.money -= manufactoryData.buildCost;
+                        }
                     }
                 };
             })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
@@ -24405,6 +24483,7 @@ var Rance;
 /// <reference path="ai/cleanupobjective.ts" />
 /// <reference path="ai/scoutingperimeterobjective.ts" />
 /// <reference path="ai/declarewarobjective.ts" />
+/// <reference path="ai/expandmanufactorycapacityobjective.ts" />
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />
 var Rance;
@@ -25039,6 +25118,7 @@ var Rance;
             var self = this;
             PIXI.utils._saidHello = true;
             this.seed = "" + Math.random();
+            this.seed = "0.6397270935121924";
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
             Rance.onDOMLoaded(function () {

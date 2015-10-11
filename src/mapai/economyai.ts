@@ -38,7 +38,17 @@ module Rance
 
         this.personality = props.personality;
       }
+      resolveEconomicObjectives()
+      {
+        var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
+        var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
 
+        for (var i = 0; i < objectives.length; i++)
+        {
+          var objective = objectives[i];
+          objective.template.economyRoutineFN(objective, this, adjustments);
+        }
+      }
       satisfyAllRequests()
       {
         /*

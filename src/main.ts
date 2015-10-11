@@ -66,6 +66,7 @@ module Rance
       PIXI.utils._saidHello = true;
 
       this.seed = "" + Math.random();
+      this.seed = "0.6397270935121924";
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       var boundMakeApp = this.makeApp.bind(this);

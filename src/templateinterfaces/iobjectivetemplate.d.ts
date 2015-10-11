@@ -15,7 +15,7 @@ declare module Rance
     {
       key: string;
       creatorFunction: (grandStrategyAI: MapAI.GrandStrategyAI,
-        mapEvaluator: MapAI.MapEvaluator) => MapAI.Objective[];
+        mapEvaluator: MapAI.MapEvaluator, objectivesAI: MapAI.ObjectivesAI) => MapAI.Objective[];
 
       movePriority?: number;
       preferredUnitComposition?: IArchetypeValues;
@@ -31,7 +31,7 @@ declare module Rance
       unitsToFillObjectiveFN?: (objective: MapAI.Objective) => {min: number; ideal: number};
 
       economyRoutineFN?: (objective: MapAI.Objective, economyAI: MapAI.EconomyAI,
-        adjustments: IRoutineAdjustmentByTargetId, afterDoneCallback: () => void) => void;
+        adjustments: IRoutineAdjustmentByTargetId) => void;
       diplomacyRoutineFN?: (objective: MapAI.Objective, diplomacyAI: MapAI.DiplomacyAI,
         adjustments: IRoutineAdjustmentByTargetId, afterDoneCallback: () => void) => void;
 

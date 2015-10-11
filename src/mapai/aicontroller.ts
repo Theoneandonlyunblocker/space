@@ -27,7 +27,7 @@ module Rance
 
       grandStrategyAI: GrandStrategyAI;
       objectivesAI: ObjectivesAI;
-      economicAI: EconomyAI;
+      economyAI: EconomyAI;
       frontsAI: FrontsAI;
       diplomacyAI: DiplomacyAI;
 
@@ -46,7 +46,7 @@ module Rance
         this.grandStrategyAI = new GrandStrategyAI(this.personality, this.mapEvaluator);
         this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.grandStrategyAI);
         this.frontsAI = new FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
-        this.economicAI = new EconomyAI(
+        this.economyAI = new EconomyAI(
         {
           objectivesAI: this.objectivesAI,
           frontsAI: this.frontsAI,
@@ -77,6 +77,9 @@ module Rance
       }
       processTurnAfterDiplomaticObjectives(afterFinishedCallback: () => void)
       {
+        this.objectivesAI.setAllEconomicObjectives();
+        this.economyAI.resolveEconomicObjectives();
+
         // oai make objectives
         this.objectivesAI.setAllMoveObjectives();
 
@@ -90,7 +93,7 @@ module Rance
         this.frontsAI.setUnitRequests();
 
         // eai fulfill requests
-        this.economicAI.satisfyAllRequests();
+        this.economyAI.satisfyAllRequests();
 
         // fai organize fleets
         this.frontsAI.organizeFleets();
