@@ -232,8 +232,8 @@ module Rance
     {
       if (this.renderer && document.body.contains(this.renderer.view))
       {
-        var w = this.pixiContainer.offsetWidth;
-        var h = this.pixiContainer.offsetHeight;
+        var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
+        var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
         this.renderer.resize(w, h);
         this.layers["bgFilter"].filterArea = new PIXI.Rectangle(0, 0, w, h);
         this.backgroundIsDirty = true;
