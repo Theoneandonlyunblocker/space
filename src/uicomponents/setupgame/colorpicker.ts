@@ -281,7 +281,7 @@ module Rance
               className: "color-picker-input",
               type: "number",
               step: 1,
-              value: this.state[type],
+              value: Math.round(this.state[type]),
               onChange: updateFunctions[type]
             })
           )

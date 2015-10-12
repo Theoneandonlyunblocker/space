@@ -3376,11 +3376,13 @@ ol {
   background-repeat: no-repeat;
   background-position: center top;
   background-attachment: fixed;
+  overflow-y: hidden;
 }
 .setup-game {
   display: flex;
   flex-flow: column;
   max-height: 100%;
+  min-width: 75%;
   overflow-y: hidden;
   background-color: #0d2335;
   border: 5px solid transparent;
@@ -3397,15 +3399,53 @@ ol {
   background-color: #0c1615;
   color: #eeeeec;
 }
+.setup-game-buttons {
+  display: flex;
+  flex-flow: row;
+  flex: 0 0 auto;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin: 25px 25px 0 25px;
+}
+@media (max-height: 450px) {
+  .setup-game-buttons {
+    margin-top: 2px;
+  }
+}
+.setup-game-button {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.setup-game-button:hover,
+.setup-game-button:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.setup-game-button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.setup-game-button:disabled,
+.setup-game-button.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.setup-game-button-start {
+  font-size: 1.5em;
+}
 .setup-game-players {
   display: flex;
   flex-flow: column;
   width: 500px;
-  border: 1px solid #c4e5fb;
+  border: 1px solid #77abce;
   overflow-y: auto;
+  padding: 5px;
 }
 .setup-game-players-header {
   flex: 0 0 auto;
+  padding: 0 !important;
 }
 .setup-game-players-header .player-setup-is-human::after {
   content: "\f007";
@@ -3451,6 +3491,26 @@ ol {
 .player-setup-remove-player {
   width: 4em;
 }
+button.player-setup-remove-player {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+button.player-setup-remove-player:hover,
+button.player-setup-remove-player:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+button.player-setup-remove-player:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+button.player-setup-remove-player:disabled,
+button.player-setup-remove-player.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
 .setup-game-players-buttons {
   display: flex;
   flex: 0 0 auto;
@@ -3482,13 +3542,15 @@ ol {
   cursor: pointer;
   height: 2em;
   width: 2em;
-  border: 1px solid pink;
+  border: 1px solid #c4e5fb;
 }
 .color-picker {
-  border: 1px solid green;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
   position: fixed;
   z-index: 201;
-  background-color: grey;
+  background-color: #0c1615;
 }
 .color-picker-hsv {
   display: flex;
@@ -3496,14 +3558,19 @@ ol {
 }
 .color-picker-input-container {
   display: flex;
+  flex-flow: row;
   box-sizing: border-box;
   width: 100%;
   height: 1.5em;
   margin: 0.15em 0;
-  background-color: #9a9a9a;
+  align-items: center;
 }
 .color-picker-label {
   min-width: 2.25em;
+  text-align: center;
+}
+.color-picker-slider-background {
+  height: 1em;
 }
 .color-picker-slider-thumb-mixin {
   background-image: url("../img/icons/colorPickerMarker.png");
@@ -3512,7 +3579,7 @@ ol {
   z-index: 999;
   width: 7px;
   height: 7px;
-  bottom: -12px;
+  bottom: -4px;
 }
 .color-picker-slider {
   width: 8em;
@@ -3547,7 +3614,7 @@ ol {
   z-index: 999;
   width: 7px;
   height: 7px;
-  bottom: -12px;
+  bottom: -4px;
 }
 .color-picker-slider::-moz-range-thumb {
   background-image: url("../img/icons/colorPickerMarker.png");
@@ -3556,7 +3623,7 @@ ol {
   z-index: 999;
   width: 7px;
   height: 7px;
-  bottom: -12px;
+  bottom: -4px;
 }
 .color-picker-slider::-ms-thumb {
   background-image: url("../img/icons/colorPickerMarker.png");
@@ -3565,16 +3632,16 @@ ol {
   z-index: 999;
   width: 7px;
   height: 7px;
-  bottom: -12px;
+  bottom: -4px;
 }
-.color-picker-slider:hover::-webkit-slider-thumb {
+.color-picker-slider:active::-webkit-slider-thumb {
   background-image: url("../img/icons/colorPickerMarker2.png");
   background-repeat: no-repeat;
   position: relative;
   z-index: 999;
   width: 7px;
   height: 7px;
-  bottom: -12px;
+  bottom: -4px;
 }
 .color-picker-input {
   flex: 1 0 0%;
@@ -3589,13 +3656,13 @@ ol {
   cursor: pointer;
   height: 2em;
   width: 2em;
-  border: 1px solid green;
+  border: 1px solid #c4e5fb;
 }
 .flag-picker {
   border: 1px solid green;
   position: fixed;
   z-index: 201;
-  background-color: grey;
+  background-color: #0c1615;
   max-width: 368px;
 }
 @media (max-width: 500px) {
@@ -3615,7 +3682,7 @@ ol {
   }
 }
 .flag-picker-title {
-  background-color: white;
+  background-color: #0d2335;
 }
 @keyframes flash-bg-red {
   from {
@@ -3632,6 +3699,10 @@ ol {
   animation-name: flash-bg-red;
   -webkit-animation-timing-function: ease-in-quart;
   animation-timing-function: ease-in-quart;
+}
+.emblem-picker {
+  background: magenta;
+  display: inline-block;
 }
 .emblem-picker-container {
   cursor: pointer;
@@ -3651,9 +3722,12 @@ ol {
   z-index: 99;
 }
 .map-setup {
-  border: 1px solid green;
+  border: 1px solid #77abce;
   width: 400px;
   overflow-y: auto;
+}
+.map-gen-options-option-groups :last-child::after {
+  content: none;
 }
 .map-gen-options-group-header {
   width: 100%;
@@ -3762,6 +3836,33 @@ ol {
   font-style: normal !important;
   font-weight: normal !important;
   text-decoration: inherit !important;
+}
+.map-gen-options-buttons {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+.map-gen-options-buttons button {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.map-gen-options-buttons button:hover,
+.map-gen-options-buttons button:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.map-gen-options-buttons button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.map-gen-options-buttons button:disabled,
+.map-gen-options-buttons button.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .auto-position {
   position: fixed;

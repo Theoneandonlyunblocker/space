@@ -98,11 +98,6 @@ module Rance
         return this.state["optionValue_" + optionName];
       },
 
-      logOptions: function()
-      {
-        console.log(this.getOptionValuesForTemplate());
-      },
-
       randomizeOptions: function()
       {
         var newValues: any = {};
@@ -227,24 +222,30 @@ module Rance
           {
             className: "map-gen-options"
           },
-            optionGroups,
-            React.DOM.button(
+            React.DOM.div(
             {
-              onClick: this.logOptions
+              className: "map-gen-options-option-groups"
             },
-              "log option values"
+              optionGroups
             ),
-            React.DOM.button(
+            React.DOM.div(
             {
-              onClick: this.randomizeOptions
+              className: "map-gen-options-buttons"
             },
-              "randomize"
-            ),
-            React.DOM.button(
-            {
-              onClick: this.resetValuesToDefault
-            },
-              "reset"
+              React.DOM.button(
+              {
+                className: "map-gen-options-button",
+                onClick: this.randomizeOptions
+              },
+                "randomize"
+              ),
+              React.DOM.button(
+              {
+                className: "map-gen-options-button",
+                onClick: this.resetValuesToDefault
+              },
+                "reset"
+              )
             )
           )
         );

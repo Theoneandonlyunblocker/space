@@ -16492,7 +16492,7 @@ var Rance;
                     className: "color-picker-input",
                     type: "number",
                     step: 1,
-                    value: this.state[type],
+                    value: Math.round(this.state[type]),
                     onChange: updateFunctions[type]
                 })));
             },
@@ -17304,9 +17304,6 @@ var Rance;
             getOptionValue: function (optionName) {
                 return this.state["optionValue_" + optionName];
             },
-            logOptions: function () {
-                console.log(this.getOptionValuesForTemplate());
-            },
             randomizeOptions: function () {
                 var newValues = {};
                 var optionGroups = this.props.mapGenTemplate.options;
@@ -17387,13 +17384,17 @@ var Rance;
                 }
                 return (React.DOM.div({
                     className: "map-gen-options"
-                }, optionGroups, React.DOM.button({
-                    onClick: this.logOptions
-                }, "log option values"), React.DOM.button({
+                }, React.DOM.div({
+                    className: "map-gen-options-option-groups"
+                }, optionGroups), React.DOM.div({
+                    className: "map-gen-options-buttons"
+                }, React.DOM.button({
+                    className: "map-gen-options-button",
                     onClick: this.randomizeOptions
                 }, "randomize"), React.DOM.button({
+                    className: "map-gen-options-button",
                     onClick: this.resetValuesToDefault
-                }, "reset")));
+                }, "reset"))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -17518,8 +17519,10 @@ var Rance;
                 })), React.DOM.div({
                     className: "setup-game-buttons"
                 }, React.DOM.button({
+                    className: "setup-game-button setup-game-button-randomize",
                     onClick: this.randomize
                 }, "Randomize"), React.DOM.button({
+                    className: "setup-game-button setup-game-button-start",
                     onClick: this.startGame
                 }, "Start game")))));
             }
@@ -20015,8 +20018,8 @@ var Rance;
         };
         Renderer.prototype.resize = function () {
             if (this.renderer && document.body.contains(this.renderer.view)) {
-                var w = this.pixiContainer.offsetWidth;
-                var h = this.pixiContainer.offsetHeight;
+                var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
+                var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
                 this.renderer.resize(w, h);
                 this.layers["bgFilter"].filterArea = new PIXI.Rectangle(0, 0, w, h);
                 this.backgroundIsDirty = true;
@@ -25122,7 +25125,6 @@ var Rance;
             var self = this;
             PIXI.utils._saidHello = true;
             this.seed = "" + Math.random();
-            this.seed = "0.6397270935121924";
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
             Rance.onDOMLoaded(function () {

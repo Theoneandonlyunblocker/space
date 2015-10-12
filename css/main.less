@@ -3505,6 +3505,7 @@ ul, ol
   background-repeat: no-repeat;
   background-position: center top;
   background-attachment: fixed;
+  overflow-y: hidden;
 }
 
 .setup-game
@@ -3512,6 +3513,7 @@ ul, ol
   display: flex;
   flex-flow: column;
   max-height: 100%;
+  min-width: 75%;
   overflow-y: hidden;
   background-color: @bg-color2;
   .full-border(5px);
@@ -3529,18 +3531,43 @@ ul, ol
   color: @text-color;
 }
 
+.setup-game-buttons
+{
+  display: flex;
+  flex-flow: row;
+  flex: 0 0 auto;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin: 25px 25px 0 25px;
+
+  @media(max-height: 450px)
+  {
+    margin-top: 2px;
+  }
+}
+.setup-game-button
+{
+  .button-style;
+}
+.setup-game-button-start
+{
+  font-size: 1.5em;
+}
+
 .setup-game-players
 {
   display: flex;
   flex-flow: column;
   width: 500px;
-  border: 1px solid @ui-border-color1;
+  border: 1px solid @ui-border-color2;
   overflow-y: auto;
+  padding: 5px;
 }
 
 .setup-game-players-header
 {
   flex: 0 0 auto;
+  padding: 0 !important;
   .player-setup-is-human::after
   {
     .fa("\f007");
@@ -3598,6 +3625,10 @@ ul, ol
 {
   width: 4em;
 }
+button.player-setup-remove-player
+{
+  .button-style;
+}
 
 .setup-game-players-buttons
 {
@@ -3618,15 +3649,15 @@ ul, ol
   cursor: pointer;
   height: 2em;
   width: 2em;
-  border: 1px solid pink;
+  border: 1px solid @ui-border-color1;
 }
 
 .color-picker
 {
-  border: 1px solid green;
+  .full-border(5px);
   position: fixed;
   z-index: 201;
-  background-color: grey;
+  background-color: @bg-color;
 }
 
 .color-picker-hsv
@@ -3638,21 +3669,23 @@ ul, ol
 .color-picker-input-container
 {
   display: flex;
+  flex-flow: row;
   box-sizing: border-box;
   width: 100%;
   height: 1.5em;
   margin: 0.15em 0;
-  background-color: lighten(grey, 10%);
+  align-items: center;
 }
 
 .color-picker-label
 {
   min-width: 2.25em;
+  text-align: center;
 }
 
 .color-picker-slider-background
 {
-
+  height: 1em;
 }
 
 .color-picker-slider-thumb-base-mixin(@imageSrc)
@@ -3664,7 +3697,7 @@ ul, ol
   z-index: 999;
   width: 7px;
   height: 7px;
-  bottom: -12px;
+  bottom: -4px;
 }
 
 .color-picker-slider-thumb-mixin
@@ -3691,7 +3724,7 @@ ul, ol
   {
     .color-picker-slider-thumb-mixin;
   }
-  &:hover::-webkit-slider-thumb
+  &:active::-webkit-slider-thumb
   {
     .color-picker-slider-thumb-base-mixin("../img/icons/colorPickerMarker2.png")
   }
@@ -3715,7 +3748,7 @@ ul, ol
   cursor: pointer;
   height: 2em;
   width: 2em;
-  border: 1px solid green;
+  border: 1px solid @ui-border-color1;
 }
 
 .flag-picker
@@ -3723,7 +3756,7 @@ ul, ol
   border: 1px solid green;
   position: fixed;
   z-index: 201;
-  background-color: grey;
+  background-color: @bg-color;
   max-width: 46px * 8;
 
   @media(max-width: 500px)
@@ -3743,7 +3776,7 @@ ul, ol
 
 .flag-picker-title
 {
-  background-color: white;
+  background-color: @bg-color2;
 }
 
 @keyframes flash-bg-red
@@ -3766,6 +3799,12 @@ ul, ol
   animation-name: flash-bg-red;
   -webkit-animation-timing-function: ease-in-quart;
   animation-timing-function: ease-in-quart;
+}
+
+.emblem-picker
+{
+  background: magenta;
+  display: inline-block;
 }
 
 .emblem-picker-container
@@ -3793,9 +3832,17 @@ ul, ol
 
 .map-setup
 {
-  border: 1px solid green;
+  border: 1px solid @ui-border-color2;
   width: 400px;
   overflow-y: auto;
+}
+
+.map-gen-options-option-groups
+{
+  :last-child::after
+  {
+    content: none;
+  }
 }
 
 .map-gen-options-group-header
@@ -3891,6 +3938,20 @@ ul, ol
   &::after
   {
     .fa("\f078") !important;
+  }
+}
+
+.map-gen-options-buttons
+{
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 0.5em;
+
+  button
+  {
+    .button-style;
   }
 }
 

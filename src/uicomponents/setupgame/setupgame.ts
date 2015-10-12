@@ -86,10 +86,12 @@ module Rance
               },
                 React.DOM.button(
                 {
+                  className: "setup-game-button setup-game-button-randomize",
                   onClick: this.randomize
                 }, "Randomize"),
                 React.DOM.button(
                 {
+                  className: "setup-game-button setup-game-button-start",
                   onClick: this.startGame
                 }, "Start game")
               )
