@@ -29,13 +29,9 @@ ol {
   color: #f3c620;
 }
 .disabled-button-style {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.disabled-button-style * {
-  pointer-events: none !important;
 }
 .button-style-no-border {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
@@ -51,14 +47,9 @@ ol {
 }
 .button-style-no-border:disabled,
 .button-style-no-border.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.button-style-no-border:disabled *,
-.button-style-no-border.disabled * {
-  pointer-events: none !important;
 }
 .button-style {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
@@ -76,14 +67,9 @@ ol {
 }
 .button-style:disabled,
 .button-style.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.button-style:disabled *,
-.button-style.disabled * {
-  pointer-events: none !important;
 }
 .list-spacer td {
   background-image: url("../img/listSeparator.png");
@@ -1542,14 +1528,9 @@ ol {
 }
 .top-menu-items-button:disabled,
 .top-menu-items-button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.top-menu-items-button:disabled *,
-.top-menu-items-button.disabled * {
-  pointer-events: none !important;
 }
 .top-menu-open-condensed-button::after {
   content: "\f0c9";
@@ -1708,14 +1689,9 @@ ol {
 }
 .fleet-selection-controls button:disabled,
 .fleet-selection-controls button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.fleet-selection-controls button:disabled *,
-.fleet-selection-controls button.disabled * {
-  pointer-events: none !important;
 }
 .fleet-selection-controls.fleet-selection-displaced {
   border-left-width: 2px;
@@ -1774,14 +1750,9 @@ ol {
 }
 .fleet-controls button:disabled,
 .fleet-controls button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.fleet-controls button:disabled *,
-.fleet-controls button.disabled * {
-  pointer-events: none !important;
 }
 .fleet-info {
   display: inline-flex;
@@ -1904,14 +1875,9 @@ ol {
 }
 .fleet-reorganization button:disabled,
 .fleet-reorganization button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.fleet-reorganization button:disabled *,
-.fleet-reorganization button.disabled * {
-  pointer-events: none !important;
 }
 .fleet-reorganization-header {
   text-align: center;
@@ -2037,14 +2003,9 @@ ol {
 }
 .end-turn-button:disabled,
 .end-turn-button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.end-turn-button:disabled *,
-.end-turn-button.disabled * {
-  pointer-events: none !important;
 }
 .notification-log {
   max-height: 15em;
@@ -2106,14 +2067,9 @@ ol {
 }
 .possible-action:disabled,
 .possible-action.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.possible-action:disabled *,
-.possible-action.disabled * {
-  pointer-events: none !important;
 }
 .possible-action-title {
   align-self: center;
@@ -2249,14 +2205,9 @@ ol {
 }
 .buildable-item-list tbody tr:disabled,
 .buildable-item-list tbody tr.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.buildable-item-list tbody tr:disabled *,
-.buildable-item-list tbody tr.disabled * {
-  pointer-events: none !important;
 }
 .buildable-item-list tbody tr:hover,
 .buildable-item-list tbody tr:focus {
@@ -2680,14 +2631,9 @@ ol {
 }
 .diplomacy-status-list .disabled,
 .diplomacy-status-list :disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.diplomacy-status-list .disabled *,
-.diplomacy-status-list :disabled * {
-  pointer-events: none !important;
 }
 .diplomacy-status-list tbody tr {
   cursor: pointer;
@@ -2712,16 +2658,9 @@ ol {
 .diplomacy-status-list tbody tr:focus:disabled,
 .diplomacy-status-list tbody tr:hover.disabled,
 .diplomacy-status-list tbody tr:focus.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.diplomacy-status-list tbody tr:hover:disabled *,
-.diplomacy-status-list tbody tr:focus:disabled *,
-.diplomacy-status-list tbody tr:hover.disabled *,
-.diplomacy-status-list tbody tr:focus.disabled * {
-  pointer-events: none !important;
 }
 .diplomacy-status-list tbody :first-child::after {
   background-image: none;
@@ -2779,14 +2718,9 @@ ol {
 }
 .diplomacy-action-button:disabled,
 .diplomacy-action-button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.diplomacy-action-button:disabled *,
-.diplomacy-action-button.disabled * {
-  pointer-events: none !important;
 }
 .technologies-list {
   max-height: 100%;
@@ -2896,14 +2830,9 @@ ol {
 }
 .technology-toggle-priority-lock:disabled,
 .technology-toggle-priority-lock.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.technology-toggle-priority-lock:disabled *,
-.technology-toggle-priority-lock.disabled * {
-  pointer-events: none !important;
 }
 .technology-toggle-priority-lock.locked::after {
   content: "\f023";
@@ -3007,14 +2936,9 @@ ol {
 }
 .save-game-button:disabled,
 .save-game-button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.save-game-button:disabled *,
-.save-game-button.disabled * {
-  pointer-events: none !important;
 }
 .save-list {
   position: relative;
@@ -3042,14 +2966,9 @@ ol {
 }
 .save-list .disabled,
 .save-list :disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.save-list .disabled *,
-.save-list :disabled * {
-  pointer-events: none !important;
 }
 .save-list tbody tr {
   cursor: pointer;
@@ -3074,16 +2993,9 @@ ol {
 .save-list tbody tr:focus:disabled,
 .save-list tbody tr:hover.disabled,
 .save-list tbody tr:focus.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.save-list tbody tr:hover:disabled *,
-.save-list tbody tr:focus:disabled *,
-.save-list tbody tr:hover.disabled *,
-.save-list tbody tr:focus.disabled * {
-  pointer-events: none !important;
 }
 .save-list .fixed-table-container-inner {
   max-height: 20em;
@@ -3110,14 +3022,9 @@ ol {
 }
 .save-list-delete:disabled,
 .save-list-delete.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.save-list-delete:disabled *,
-.save-list-delete.disabled * {
-  pointer-events: none !important;
 }
 .undo-delete-button::after {
   content: "\f0e2";
@@ -3161,14 +3068,9 @@ ol {
 }
 .popup-button:disabled,
 .popup-button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.popup-button:disabled *,
-.popup-button.disabled * {
-  pointer-events: none !important;
 }
 .popup-resize-handle {
   position: absolute;
@@ -3261,14 +3163,9 @@ ol {
 }
 .item-purchase-list .disabled,
 .item-purchase-list :disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.item-purchase-list .disabled *,
-.item-purchase-list :disabled * {
-  pointer-events: none !important;
 }
 .item-purchase-list tbody tr {
   cursor: pointer;
@@ -3293,16 +3190,9 @@ ol {
 .item-purchase-list tbody tr:focus:disabled,
 .item-purchase-list tbody tr:hover.disabled,
 .item-purchase-list tbody tr:focus.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.item-purchase-list tbody tr:hover:disabled *,
-.item-purchase-list tbody tr:focus:disabled *,
-.item-purchase-list tbody tr:hover.disabled *,
-.item-purchase-list tbody tr:focus.disabled * {
-  pointer-events: none !important;
 }
 .item-purchase-list tbody :first-child::after {
   background-image: none;
@@ -3472,44 +3362,72 @@ ol {
 }
 .reset-options-button:disabled,
 .reset-options-button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
-.reset-options-button:disabled *,
-.reset-options-button.disabled * {
-  pointer-events: none !important;
-}
 .setup-game-wrapper {
-  background-color: #fdd;
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-image: url("../img/hs-2005-12-a-resized.jpg");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-attachment: fixed;
 }
 .setup-game {
-  background-color: white;
+  display: flex;
+  flex-flow: column;
+  max-height: 100%;
+  overflow-y: hidden;
+  background-color: #0d2335;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+  padding: 25px;
 }
 .setup-game-options {
   display: flex;
   flex-flow: row;
+  flex: 1 1 auto;
   justify-content: space-between;
+  overflow-y: hidden;
+  background-color: #0c1615;
+  color: #eeeeec;
 }
 .setup-game-players {
   display: flex;
   flex-flow: column;
   width: 500px;
-  border: 1px solid blue;
+  border: 1px solid #c4e5fb;
+  overflow-y: auto;
+}
+.setup-game-players-header {
+  flex: 0 0 auto;
+}
+.setup-game-players-header .player-setup-is-human::after {
+  content: "\f007";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+.player-setup-players-list {
+  flex: 1 1 auto;
 }
 .player-setup {
   display: flex;
   flex-flow: row;
-  border: 1px solid red;
   height: 2em;
   align-items: center;
   justify-content: space-between;
+  padding: 0.5em 0;
+}
+.player-setup + .player-setup {
+  border-image: url("../img/listSeparator2.png") 2 0 stretch;
+  border-width: 2px 0 0 0;
 }
 .player-setup > * {
   display: flex;
@@ -3533,12 +3451,32 @@ ol {
 .player-setup-remove-player {
   width: 4em;
 }
-.setup-game-players-header .player-setup-is-human::after {
-  content: "\f007";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
+.setup-game-players-buttons {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-around;
+  margin: 0.5em 0;
+}
+.setup-game-players-add-new {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.setup-game-players-add-new:hover,
+.setup-game-players-add-new:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.setup-game-players-add-new:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.setup-game-players-add-new:disabled,
+.setup-game-players-add-new.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .color-setter-display {
   cursor: pointer;
@@ -3548,11 +3486,9 @@ ol {
 }
 .color-picker {
   border: 1px solid green;
-  position: absolute;
+  position: fixed;
   z-index: 201;
   background-color: grey;
-  top: 2em;
-  left: 1em;
 }
 .color-picker-hsv {
   display: flex;
@@ -3569,11 +3505,76 @@ ol {
 .color-picker-label {
   min-width: 2.25em;
 }
+.color-picker-slider-thumb-mixin {
+  background-image: url("../img/icons/colorPickerMarker.png");
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 999;
+  width: 7px;
+  height: 7px;
+  bottom: -12px;
+}
 .color-picker-slider {
   width: 8em;
   height: 1.5em;
   z-index: 5;
   box-sizing: border-box;
+  -webkit-appearance: none;
+  /* Hides the slider so that custom slider can be made */
+  width: 100%;
+  /* Specific width is required for Firefox. */
+  background: transparent;
+}
+.color-picker-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+.color-picker-slider:focus {
+  outline: none;
+  /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+.color-picker-slider::-ms-track {
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  /* Hides the slider so custom styles can be added */
+  border-color: transparent;
+  color: transparent;
+}
+.color-picker-slider::-webkit-slider-thumb {
+  background-image: url("../img/icons/colorPickerMarker.png");
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 999;
+  width: 7px;
+  height: 7px;
+  bottom: -12px;
+}
+.color-picker-slider::-moz-range-thumb {
+  background-image: url("../img/icons/colorPickerMarker.png");
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 999;
+  width: 7px;
+  height: 7px;
+  bottom: -12px;
+}
+.color-picker-slider::-ms-thumb {
+  background-image: url("../img/icons/colorPickerMarker.png");
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 999;
+  width: 7px;
+  height: 7px;
+  bottom: -12px;
+}
+.color-picker-slider:hover::-webkit-slider-thumb {
+  background-image: url("../img/icons/colorPickerMarker2.png");
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 999;
+  width: 7px;
+  height: 7px;
+  bottom: -12px;
 }
 .color-picker-input {
   flex: 1 0 0%;
@@ -3592,11 +3593,26 @@ ol {
 }
 .flag-picker {
   border: 1px solid green;
-  position: absolute;
+  position: fixed;
   z-index: 201;
   background-color: grey;
-  top: 2em;
-  left: 1em;
+  max-width: 368px;
+}
+@media (max-width: 500px) {
+  .flag-picker {
+    left: 0;
+  }
+}
+@media (max-height: 400px) {
+  .flag-picker {
+    bottom: 0;
+  }
+}
+@media (max-height: 300px) {
+  .flag-picker {
+    left: 0;
+    max-width: 90%;
+  }
 }
 .flag-picker-title {
   background-color: white;
@@ -3637,6 +3653,7 @@ ol {
 .map-setup {
   border: 1px solid green;
   width: 400px;
+  overflow-y: auto;
 }
 .map-gen-options-group-header {
   width: 100%;
@@ -3648,8 +3665,78 @@ ol {
 .map-gen-option-label {
   flex: 1 1 40%;
 }
+.map-gen-slider-thumb-mixin {
+  background-image: url("../img/icons/spentAction.png");
+  background-repeat: no-repeat;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  top: -2px;
+}
+.map-gen-slider-track-mixin {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #0c1615 0%, #0d1c25 10%, #0d1c25 66%, #0d2335 100%);
+  background-color: #0d1c25;
+  border: 1px solid #77abce;
+  border-radius: 10px;
+}
 .map-gen-option-slider {
   flex: 0 1 45%;
+  -webkit-appearance: none;
+  /* Hides the slider so that custom slider can be made */
+  width: 100%;
+  /* Specific width is required for Firefox. */
+  background: transparent;
+}
+.map-gen-option-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+.map-gen-option-slider:focus {
+  outline: none;
+  /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+.map-gen-option-slider::-ms-track {
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  /* Hides the slider so custom styles can be added */
+  border-color: transparent;
+  color: transparent;
+}
+.map-gen-option-slider::-webkit-slider-thumb {
+  background-image: url("../img/icons/spentAction.png");
+  background-repeat: no-repeat;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  top: -2px;
+}
+.map-gen-option-slider::-moz-range-thumb {
+  background-image: url("../img/icons/spentAction.png");
+  background-repeat: no-repeat;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  top: -2px;
+}
+.map-gen-option-slider::-ms-thumb {
+  background-image: url("../img/icons/spentAction.png");
+  background-repeat: no-repeat;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  top: -2px;
+}
+.map-gen-option-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #0c1615 0%, #0d1c25 10%, #0d1c25 66%, #0d2335 100%);
+  background-color: #0d1c25;
+  border: 1px solid #77abce;
+  border-radius: 10px;
 }
 .map-gen-option-value {
   margin: 0 1em;
@@ -3781,14 +3868,9 @@ ol {
 }
 .manufacturable-things-tab-button:disabled,
 .manufacturable-things-tab-button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.manufacturable-things-tab-button:disabled *,
-.manufacturable-things-tab-button.disabled * {
-  pointer-events: none !important;
 }
 .manufacturable-things-tab-button.active-tab {
   background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
@@ -3841,14 +3923,9 @@ ol {
 }
 .manufactory-upgrade-button:disabled,
 .manufactory-upgrade-button.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.manufactory-upgrade-button:disabled *,
-.manufactory-upgrade-button.disabled * {
-  pointer-events: none !important;
 }
 .manufactory-upgrade-button-cost {
   color: #ffeb00;
@@ -3886,14 +3963,9 @@ ol {
 }
 .manufacturable-things-list-item:disabled,
 .manufacturable-things-list-item.disabled {
-  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.manufacturable-things-list-item:disabled *,
-.manufacturable-things-list-item.disabled * {
-  pointer-events: none !important;
 }
 .manufacturable-things-list-item > * {
   margin-right: 0.5em;

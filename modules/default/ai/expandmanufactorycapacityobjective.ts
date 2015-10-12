@@ -16,7 +16,7 @@ module Rance
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
             mapEvaluator: MapAI.MapEvaluator, objectivesAI: MapAI.ObjectivesAI)
           {
-            // TODO
+            // TODO economy ai
             // base priority = manufacturing demand / manufacturing capacity
 
             var template = Rance.Modules.DefaultModule.Objectives.expandManufactoryCapacity;
@@ -24,7 +24,7 @@ module Rance
           },
           economyRoutineFN: function(objective: MapAI.Objective, economyAI: MapAI.EconomyAI)
           {
-            // TODO
+            // TODO economy ai
             var costByStar:
             {
               star: Star;

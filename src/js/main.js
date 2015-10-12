@@ -17172,11 +17172,15 @@ var Rance;
                     className: "flag-setter"
                 }, "Flag"), React.DOM.div({
                     className: "player-setup-remove-player"
-                }, "Remove")), playerSetups, React.DOM.button({
-                    className: "player-setup player-setup-add-new" + (canAddPlayers ? "" : " disabled"),
+                }, "Remove")), React.DOM.div({
+                    className: "player-setup-players-list"
+                }, playerSetups), React.DOM.div({
+                    className: "setup-game-players-buttons"
+                }, React.DOM.button({
+                    className: "setup-game-players-add-new" + (canAddPlayers ? "" : " disabled"),
                     onClick: this.makeNewPlayers.bind(this, 1),
                     disabled: !canAddPlayers
-                }, "Add new player")));
+                }, "Add new player"))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -24236,7 +24240,7 @@ var Rance;
                     key: "declareWar",
                     creatorFunction: function (grandStrategyAI, mapEvaluator) {
                         var template = Rance.Modules.DefaultModule.Objectives.declareWar;
-                        var basePriority = 999;
+                        var basePriority = grandStrategyAI.desireForWar;
                         var scores = [];
                         for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers) {
                             var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
@@ -24247,7 +24251,7 @@ var Rance;
                                 mapEvaluator.getAbilityToGoToWarWith(player);
                             scores.push({
                                 player: player,
-                                score: 1 //score
+                                score: score
                             });
                         }
                         return DefaultModule.AIUtils.makeObjectivesFromScores(template, scores, basePriority);
@@ -24274,13 +24278,13 @@ var Rance;
                 Objectives.expandManufactoryCapacity = {
                     key: "expandManufactoryCapacity",
                     creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
-                        // TODO
+                        // TODO economy ai
                         // base priority = manufacturing demand / manufacturing capacity
                         var template = Rance.Modules.DefaultModule.Objectives.expandManufactoryCapacity;
                         return [new Rance.MapAI.Objective(template, 0.5, null)];
                     },
                     economyRoutineFN: function (objective, economyAI) {
-                        // TODO
+                        // TODO economy ai
                         var costByStar = [];
                         var player = economyAI.player;
                         var stars = player.controlledLocations;

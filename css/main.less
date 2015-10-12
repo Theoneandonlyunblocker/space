@@ -22,6 +22,7 @@ ul, ol
 
 @bg-color: darken(#101C1B, 2%);
 @bg-color2: darken(#0F283D, 2%);
+@bg-color3: mix(@bg-color, @bg-color2);
 @highlight-bg-color: lighten(saturate(@bg-color, 20%), 10%);
 @ui-border-color1: #C4E5FB;
 @ui-border-color2: #77ABCE;
@@ -120,7 +121,6 @@ ul, ol
 }
 .disabled-button-style
 {
-  .prevent-pointer-events;
   cursor: default;
   color: darken(@text-color, 20%);
   .double-gradient(
@@ -3494,24 +3494,39 @@ ul, ol
 
 .setup-game-wrapper
 {
-  background-color: #fdd;
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  // http://hubblesite.org/gallery/album/galaxy/pr2005012a/
+  // Credit: NASA, ESA, S. Beckwith (STScI), and The Hubble Heritage Team (STScI/AURA)
+  background-image: url("../img/hs-2005-12-a-resized.jpg");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-attachment: fixed;
 }
 
 .setup-game
 {
-  background-color: white;
+  display: flex;
+  flex-flow: column;
+  max-height: 100%;
+  overflow-y: hidden;
+  background-color: @bg-color2;
+  .full-border(5px);
+  padding: 25px;
 }
 
 .setup-game-options
 {
   display: flex;
   flex-flow: row;
+  flex: 1 1 auto;
   justify-content: space-between;
+  overflow-y: hidden;
+  background-color: @bg-color;
+  color: @text-color;
 }
 
 .setup-game-players
@@ -3519,17 +3534,39 @@ ul, ol
   display: flex;
   flex-flow: column;
   width: 500px;
-  border: 1px solid blue;
+  border: 1px solid @ui-border-color1;
+  overflow-y: auto;
+}
+
+.setup-game-players-header
+{
+  flex: 0 0 auto;
+  .player-setup-is-human::after
+  {
+    .fa("\f007");
+  }
+}
+
+.player-setup-players-list
+{
+  flex: 1 1 auto;
 }
 
 .player-setup
 {
   display: flex;
   flex-flow: row;
-  border: 1px solid red;
   height: 2em;
   align-items: center;
   justify-content: space-between;
+  padding: 0.5em 0;
+
+  +.player-setup
+  {
+    border-image: url("../img/listSeparator2.png") 2 0 stretch;
+    border-width: 2px 0 0 0;
+  }
+
 
   >*
   {
@@ -3562,12 +3599,18 @@ ul, ol
   width: 4em;
 }
 
-.setup-game-players-header
+.setup-game-players-buttons
 {
-  .player-setup-is-human::after
-  {
-    .fa("\f007");
-  }
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-around;
+  margin: 0.5em 0;
+}
+
+.setup-game-players-add-new
+{
+  .button-style;
 }
 
 .color-setter-display
@@ -3581,11 +3624,9 @@ ul, ol
 .color-picker
 {
   border: 1px solid green;
-  position: absolute;
+  position: fixed;
   z-index: 201;
   background-color: grey;
-  top: 2em;
-  left: 1em;
 }
 
 .color-picker-hsv
@@ -3613,12 +3654,47 @@ ul, ol
 {
 
 }
+
+.color-picker-slider-thumb-base-mixin(@imageSrc)
+{
+  background-image: url(@imageSrc);
+  background-repeat: no-repeat;
+
+  position: relative;
+  z-index: 999;
+  width: 7px;
+  height: 7px;
+  bottom: -12px;
+}
+
+.color-picker-slider-thumb-mixin
+{
+  .color-picker-slider-thumb-base-mixin("../img/icons/colorPickerMarker.png")
+}
 .color-picker-slider
 {
   width: 8em;
   height: 1.5em;
   z-index: 5;
   box-sizing: border-box;
+
+  .reset-progress-style;
+  &::-webkit-slider-thumb
+  {
+    .color-picker-slider-thumb-mixin;
+  }
+  &::-moz-range-thumb
+  {
+    .color-picker-slider-thumb-mixin;
+  }
+  &::-ms-thumb
+  {
+    .color-picker-slider-thumb-mixin;
+  }
+  &:hover::-webkit-slider-thumb
+  {
+    .color-picker-slider-thumb-base-mixin("../img/icons/colorPickerMarker2.png")
+  }
 }
 
 .color-picker-input
@@ -3645,12 +3721,24 @@ ul, ol
 .flag-picker
 {
   border: 1px solid green;
-  position: absolute;
+  position: fixed;
   z-index: 201;
   background-color: grey;
-  //max-width: 40em;
-  top: 2em;
-  left: 1em;
+  max-width: 46px * 8;
+
+  @media(max-width: 500px)
+  {
+    left: 0;
+  }
+  @media(max-height: 400px)
+  {
+    bottom: 0;
+  }
+  @media(max-height: 300px)
+  {
+    left: 0;
+    max-width: 90%;
+  }
 }
 
 .flag-picker-title
@@ -3707,6 +3795,7 @@ ul, ol
 {
   border: 1px solid green;
   width: 400px;
+  overflow-y: auto;
 }
 
 .map-gen-options-group-header
@@ -3725,9 +3814,55 @@ ul, ol
   flex: 1 1 40%;
 }
 
+.map-gen-slider-thumb-mixin
+{
+  background-image: url("../img/icons/spentAction.png");
+  background-repeat: no-repeat;
+
+  position: relative;
+  width: 12px;
+  height: 12px;
+  top: -2px;
+}
+
+.map-gen-slider-track-mixin
+{
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  background: linear-gradient(to bottom,
+    @bg-color 0%,
+    @bg-color3 10%,
+    @bg-color3 66%,
+    @bg-color2 100%
+  );
+  background-color: @bg-color3;
+  border: 1px solid @ui-border-color2;
+  border-radius: 10px;
+}
+
 .map-gen-option-slider
 {
-  flex: 0 1 45%
+  flex: 0 1 45%;
+  .reset-progress-style;
+
+  &::-webkit-slider-thumb
+  {
+    .map-gen-slider-thumb-mixin;
+  }
+  &::-moz-range-thumb
+  {
+    .map-gen-slider-thumb-mixin;
+  }
+  &::-ms-thumb
+  {
+    .map-gen-slider-thumb-mixin;
+  }
+
+  &::-webkit-slider-runnable-track
+  {
+    .map-gen-slider-track-mixin;
+  }
 }
 
 .map-gen-option-value

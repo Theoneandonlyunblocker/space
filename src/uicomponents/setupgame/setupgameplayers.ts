@@ -167,14 +167,24 @@ module Rance
                 className: "player-setup-remove-player"
               }, "Remove")
             ),
-            playerSetups,
-            React.DOM.button(
+            React.DOM.div(
             {
-              className: "player-setup player-setup-add-new" + (canAddPlayers ? "" : " disabled"),
-              onClick: this.makeNewPlayers.bind(this, 1),
-              disabled: !canAddPlayers
+              className: "player-setup-players-list"
             },
-              "Add new player"
+              playerSetups
+            ),
+            React.DOM.div(
+            {
+              className: "setup-game-players-buttons"
+            },
+              React.DOM.button(
+              {
+                className: "setup-game-players-add-new" + (canAddPlayers ? "" : " disabled"),
+                onClick: this.makeNewPlayers.bind(this, 1),
+                disabled: !canAddPlayers
+              },
+                "Add new player"
+              )
             )
           )
         );
