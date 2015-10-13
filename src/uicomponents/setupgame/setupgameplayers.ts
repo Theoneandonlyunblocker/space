@@ -13,7 +13,7 @@ module Rance
         this.newPlayerId = 0;
 
         var players: number[] = [];
-        for (var i = 0; i < this.props.minPlayers; i++)
+        for (var i = 0; i < this.props.maxPlayers; i++)
         {
           players.push(this.newPlayerId++);
         }
