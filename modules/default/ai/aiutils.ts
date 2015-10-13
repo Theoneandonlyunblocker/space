@@ -41,7 +41,16 @@ module Rance
             fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
           }
         }
-        export function musterAndAttackRoutine(front: MapAI.Front, afterMoveCallback: Function)
+        export function independentTargetFilter(target: any)
+        {
+          return target.enemy.isIndependent;
+        }
+        export function buildingControllerFilter(target: any)
+        {
+          return target.enemy === target.building.controller;
+        }
+        export function musterAndAttackRoutine(targetFilter: (target: any) => boolean,
+          front: MapAI.Front, afterMoveCallback: Function)
         {
           var shouldMoveToTarget: boolean;
 
@@ -99,10 +108,7 @@ module Rance
 
               var attackTargets = star.getTargetsForPlayer(player);
 
-              var target = attackTargets.filter(function(target)
-              {
-                return target.enemy.isIndependent;
-              })[0];
+              var target = attackTargets.filter(targetFilter)[0];
 
               player.attackTarget(star, target, afterMoveCallback);
             }

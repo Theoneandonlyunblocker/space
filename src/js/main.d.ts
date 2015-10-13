@@ -3293,7 +3293,9 @@ declare module Rance {
                     };
                 }
                 function moveToRoutine(front: MapAI.Front, afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star): void;
-                function musterAndAttackRoutine(front: MapAI.Front, afterMoveCallback: Function): void;
+                function independentTargetFilter(target: any): any;
+                function buildingControllerFilter(target: any): boolean;
+                function musterAndAttackRoutine(targetFilter: (target: any) => boolean, front: MapAI.Front, afterMoveCallback: Function): void;
                 function defaultUnitDesireFN(front: MapAI.Front): number;
                 function defaultUnitFitFN(unit: Unit, front: MapAI.Front, lowHealthThreshhold?: number, healthAdjust?: number, distanceAdjust?: number): number;
                 function scoutingUnitDesireFN(front: MapAI.Front): number;

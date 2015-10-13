@@ -11036,6 +11036,7 @@ var Rance;
                 for (var i = 0; i < stars.length; i++) {
                     var star = stars[i];
                     total += this.evaluateStarDesirability(star);
+                    console.log(star.id, this.evaluateStarDesirability(star));
                 }
                 return total;
             };
@@ -23811,7 +23812,15 @@ var Rance;
                     }
                 }
                 AIUtils.moveToRoutine = moveToRoutine;
-                function musterAndAttackRoutine(front, afterMoveCallback) {
+                function independentTargetFilter(target) {
+                    return target.enemy.isIndependent;
+                }
+                AIUtils.independentTargetFilter = independentTargetFilter;
+                function buildingControllerFilter(target) {
+                    return target.enemy === target.building.controller;
+                }
+                AIUtils.buildingControllerFilter = buildingControllerFilter;
+                function musterAndAttackRoutine(targetFilter, front, afterMoveCallback) {
                     var shouldMoveToTarget;
                     var unitsByLocation = front.getUnitsByLocation();
                     var fleets = front.getAssociatedFleets();
@@ -23845,9 +23854,7 @@ var Rance;
                             var star = front.targetLocation;
                             var player = front.units[0].fleet.player;
                             var attackTargets = star.getTargetsForPlayer(player);
-                            var target = attackTargets.filter(function (target) {
-                                return target.enemy.isIndependent;
-                            })[0];
+                            var target = attackTargets.filter(targetFilter)[0];
                             player.attackTarget(star, target, afterMoveCallback);
                         }
                         else {
@@ -24147,7 +24154,7 @@ var Rance;
                         defence: 0.25,
                         utility: 0.1
                     },
-                    moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine,
+                    moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine.bind(null, DefaultModule.AIUtils.independentTargetFilter),
                     unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,
                     unitFitFN: DefaultModule.AIUtils.defaultUnitFitFN,
                     creatorFunction: function (grandStrategyAI, mapEvaluator) {
@@ -24182,7 +24189,7 @@ var Rance;
                         defence: 0.25,
                         utility: 0.1
                     },
-                    moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine,
+                    moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine.bind(null, DefaultModule.AIUtils.independentTargetFilter),
                     unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,
                     unitFitFN: DefaultModule.AIUtils.defaultUnitFitFN,
                     creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {

@@ -20,7 +20,7 @@ module Rance
             defence: 0.25,
             utility: 0.1
           },
-          moveRoutineFN: AIUtils.musterAndAttackRoutine,
+          moveRoutineFN: AIUtils.musterAndAttackRoutine.bind(null, AIUtils.independentTargetFilter),
           unitDesireFN: AIUtils.defaultUnitDesireFN,
           unitFitFN: AIUtils.defaultUnitFitFN,
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,

@@ -66,6 +66,7 @@ module Rance
       PIXI.utils._saidHello = true;
 
       this.seed = "" + Math.random();
+      // crashes mctree "0.062779669649899"
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       var boundMakeApp = this.makeApp.bind(this);
