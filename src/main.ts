@@ -65,10 +65,7 @@ module Rance
       var self = this;
       PIXI.utils._saidHello = true;
 
-      // this.seed = "" + Math.random();
-      this.seed = "0.062779669649899";
-      // crashes pathfinding "0.062779669649899"
-      // crashes diplo status "0.9075259214732796"
+      this.seed = "" + Math.random();
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       var boundMakeApp = this.makeApp.bind(this);

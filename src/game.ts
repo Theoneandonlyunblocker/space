@@ -51,6 +51,13 @@ module Rance
     endTurn()
     {
       this.setNextPlayer();
+
+      while (this.activePlayer.controlledLocations.length === 0)
+      {
+        this.killPlayer(this.activePlayer);
+        this.activePlayer = this.playerOrder[0];
+      }
+
       this.processPlayerStartTurn(this.activePlayer);
       this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
 
@@ -93,12 +100,6 @@ module Rance
         }
 
         ship.timesActedThisTurn = 0;
-      }
-
-      if (player.controlledLocations.length === 0)
-      {
-        this.killPlayer(player);
-        return;
       }
 
       player.forEachUnit(shipStartTurnFN);

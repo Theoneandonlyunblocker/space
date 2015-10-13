@@ -100,6 +100,7 @@ module Rance
     {
       this.diplomacyStatus.destroy();
       this.diplomacyStatus = null;
+      this.AIController = null;
     }
     die()
     {

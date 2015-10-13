@@ -9324,15 +9324,11 @@ var Rance;
         MCTree.prototype.rootSimulationNeedsToBeRemade = function () {
             var scoreVariationTolerance = 0.1;
             var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
-            // TODO crash battle.activeUnit can be undefined
-            if (!this.rootNode.battle.activeUnit.id) {
-                debugger;
-            }
             if (scoreVariance > scoreVariationTolerance) {
                 return true;
             }
-            else if (this.actualBattle.activeUnit.id !== this.rootNode.battle.activeUnit.id) {
-                return this.actualBattle.activeUnit.battleStats.side === this.sideId;
+            else if (this.actualBattle.activeUnit !== this.rootNode.battle.activeUnit) {
+                return true;
             }
             else if (this.rootNode.children.length === 0) {
                 if (!this.rootNode.possibleMoves) {
@@ -10785,6 +10781,10 @@ var Rance;
         };
         Game.prototype.endTurn = function () {
             this.setNextPlayer();
+            while (this.activePlayer.controlledLocations.length === 0) {
+                this.killPlayer(this.activePlayer);
+                this.activePlayer = this.playerOrder[0];
+            }
             this.processPlayerStartTurn(this.activePlayer);
             this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
             if (this.activePlayer.isAI) {
@@ -10814,10 +10814,6 @@ var Rance;
                 }
                 ship.timesActedThisTurn = 0;
             };
-            if (player.controlledLocations.length === 0) {
-                this.killPlayer(player);
-                return;
-            }
             player.forEachUnit(shipStartTurnFN);
             if (!player.isIndependent) {
                 player.money += player.getIncome();
@@ -12423,6 +12419,7 @@ var Rance;
         Player.prototype.destroy = function () {
             this.diplomacyStatus.destroy();
             this.diplomacyStatus = null;
+            this.AIController = null;
         };
         Player.prototype.die = function () {
             console.log(this.name + " died");
@@ -13634,7 +13631,8 @@ var Rance;
         };
         Star.prototype.getDistanceToStar = function (target) {
             // don't index distance while generating map as distance can change
-            if (this.mapGenData) {
+            // if (this.mapGenData)
+            if (!app.game) {
                 var a = Rance.aStar(this, target);
                 return a.cost[target.id];
             }
@@ -16408,6 +16406,19 @@ var Rance;
                     isNull: true
                 });
             },
+            componentDidMount: function () {
+                window.addEventListener("resize", this.setPosition);
+                this.setPosition();
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.setPosition);
+            },
+            setPosition: function () {
+                var parentRect = this.props.getParentPosition();
+                var domNode = this.getDOMNode();
+                domNode.style.top = "" + parentRect.bottom + "px";
+                domNode.style.left = "" + parentRect.left + "px";
+            },
             triggerParentOnChange: function (color, isNull) {
                 if (this.onChangeTimeout) {
                     window.clearTimeout(this.onChangeTimeout);
@@ -16710,6 +16721,9 @@ var Rance;
                     this.props.onChange(hexColor, isNull);
                 }
             },
+            getClientRect: function () {
+                return this.getDOMNode().firstChild.getBoundingClientRect();
+            },
             render: function () {
                 var displayElement = this.state.isNull ?
                     React.DOM.img({
@@ -16730,7 +16744,8 @@ var Rance;
                         generateColor: this.props.generateColor,
                         onChange: this.updateColor,
                         setAsInactive: this.setAsInactive,
-                        flagHasCustomImage: this.props.flagHasCustomImage
+                        flagHasCustomImage: this.props.flagHasCustomImage,
+                        getParentPosition: this.getClientRect
                     }) : null));
             }
         });
@@ -17287,6 +17302,9 @@ var Rance;
                 }, playerSetups), React.DOM.div({
                     className: "setup-game-players-buttons"
                 }, React.DOM.button({
+                    className: "setup-game-button",
+                    onClick: this.randomizeAllPlayers
+                }, "Randomize"), React.DOM.button({
                     className: "setup-game-players-add-new" + (canAddPlayers ? "" : " disabled"),
                     onClick: this.makeNewPlayers.bind(this, 1),
                     disabled: !canAddPlayers
@@ -21665,8 +21683,7 @@ var Rance;
                     }
                     var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;
                     if (!isConnected) {
-                        if (Rance.Options.debugMode)
-                            console.log("Regenerated map due to insufficient connections");
+                        console.log("Regenerated map due to insufficient connections");
                         return spiralGalaxyGeneration(options, players);
                     }
                     Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
@@ -21691,7 +21708,7 @@ var Rance;
                     // set players
                     var startRegions = (function setStartingRegions() {
                         var armCount = options.basicOptions["arms"];
-                        var playerCount = players.length;
+                        var playerCount = Math.min(players.length, armCount);
                         var playerArmStep = armCount / playerCount;
                         var startRegions = [];
                         var candidateRegions = regions.filter(function (region) {
@@ -21711,11 +21728,12 @@ var Rance;
                             var starsByDistance = region.stars.slice(0).sort(function (a, b) {
                                 return b.mapGenData.distance - a.mapGenData.distance;
                             });
-                            startPositions.push(starsByDistance[0]);
+                            var star = starsByDistance[0];
+                            startPositions.push(star);
                         }
                         return startPositions;
                     })(startRegions);
-                    for (var i = 0; i < players.length; i++) {
+                    for (var i = 0; i < startPositions.length; i++) {
                         var star = startPositions[i];
                         var player = players[i];
                         player.addStar(star);
@@ -21781,9 +21799,10 @@ var Rance;
                             },
                             basicOptions: {
                                 arms: {
-                                    min: 4,
+                                    min: 3,
                                     max: 6,
-                                    step: 1
+                                    step: 1,
+                                    defaultValue: 5
                                 },
                                 starSizeRegularity: {
                                     min: 1,
@@ -21830,7 +21849,7 @@ var Rance;
                         displayName: "Tinier Spiral galaxy",
                         description: "Create a spiral galaxy with arms but tinier (just for testing)",
                         minPlayers: 2,
-                        maxPlayers: 5,
+                        maxPlayers: 4,
                         mapGenFunction: DefaultModule.MapGenFunctions.spiralGalaxyGeneration,
                         options: {
                             defaultOptions: {
@@ -21852,8 +21871,8 @@ var Rance;
                             },
                             basicOptions: {
                                 arms: {
-                                    min: 2,
-                                    max: 5,
+                                    min: 4,
+                                    max: 6,
                                     step: 1,
                                     defaultValue: 4
                                 },
@@ -25298,10 +25317,7 @@ var Rance;
             this.images = {};
             var self = this;
             PIXI.utils._saidHello = true;
-            // this.seed = "" + Math.random();
-            this.seed = "0.062779669649899";
-            // crashes pathfinding "0.062779669649899"
-            // crashes diplo status "0.9075259214732796"
+            this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
             Rance.onDOMLoaded(function () {
