@@ -3659,7 +3659,9 @@ button.player-setup-remove-player.disabled {
   border: 1px solid #c4e5fb;
 }
 .flag-picker {
-  border: 1px solid green;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
   position: fixed;
   z-index: 201;
   background-color: #0c1615;
