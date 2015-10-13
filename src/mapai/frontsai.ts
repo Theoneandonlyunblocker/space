@@ -142,7 +142,7 @@ module Rance
         var musterLocation = objective.target ?
           this.player.getNearestOwnedStarTo(objective.target) :
           null;
-        var unitsDesired = objective.getUnitsDesired();
+        var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
 
         var front = new Front(
         {

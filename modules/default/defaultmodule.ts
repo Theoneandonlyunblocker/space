@@ -29,6 +29,7 @@
 /// <reference path="ai/expansionobjective.ts" />
 /// <reference path="ai/cleanupobjective.ts" />
 /// <reference path="ai/scoutingperimeterobjective.ts" />
+/// <reference path="ai/conquerobjective.ts" />
 
 /// <reference path="ai/declarewarobjective.ts" />
 

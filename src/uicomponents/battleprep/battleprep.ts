@@ -184,8 +184,9 @@ module Rance
 
       render: function()
       {
-        var player = this.props.battlePrep.humanPlayer;
-        var location = this.props.battlePrep.battleData.location;
+        var battlePrep: Rance.BattlePrep = this.props.battlePrep;
+        var player = battlePrep.humanPlayer;
+        var location = battlePrep.battleData.location;
 
         // priority: hovered unit > selected unit > battle info
         var leftUpperElement: ReactComponentPlaceHolder;
@@ -201,7 +202,7 @@ module Rance
         else if (this.state.selectedUnit)
         {
           var selectedUnitIsFriendly =
-            this.props.battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
+            battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
 
 
           leftUpperElement = UIComponents.MenuUnitInfo(
@@ -219,7 +220,7 @@ module Rance
         {
           leftUpperElement = UIComponents.BattleInfo(
           {
-            battlePrep: this.props.battlePrep
+            battlePrep: battlePrep
           });
         }
 
@@ -232,7 +233,7 @@ module Rance
             leftLowerElement = UIComponents.Fleet(
             {
               key: "playerFleet",
-              fleet: this.props.battlePrep.playerFormation.slice(0),
+              fleet: battlePrep.playerFormation.slice(0),
               hoveredUnit: this.state.hoveredUnit,
               activeUnit: this.state.selectedUnit,
 
@@ -253,7 +254,7 @@ module Rance
             leftLowerElement = UIComponents.Fleet(
             {
               key: "enemyFleet",
-              fleet: this.props.battlePrep.enemyFormation,
+              fleet: battlePrep.enemyFormation,
               facesLeft: true,
               hoveredUnit: this.state.hoveredUnit,
               activeUnit: this.state.selectedUnit,
@@ -281,8 +282,9 @@ module Rance
           }
         };
 
-        var humanFormationIsValid = this.props.battlePrep.humanFormationIsValid();
-        var canScout = player.starIsDetected(this.props.battlePrep.battleData.location);
+        var playerIsDefending = player === battlePrep.defender;
+        var humanFormationIsValid = battlePrep.humanFormationIsValid();
+        var canScout = player.starIsDetected(battlePrep.battleData.location);
 
         return(
           React.DOM.div({className: "battle-prep"},
@@ -292,7 +294,7 @@ module Rance
                 {
                   renderer: this.props.renderer,
                   getBlurArea: this.getBackgroundBlurArea,
-                  backgroundSeed: this.props.battlePrep.battleData.location.getSeed()
+                  backgroundSeed: battlePrep.battleData.location.getSeed()
                 },
                   React.DOM.div({className: "battle-prep-left-upper-inner"},
                     leftUpperElement
@@ -329,7 +331,8 @@ module Rance
                   onClick: function()
                   {
                     app.reactUI.switchScene("galaxyMap");
-                  }
+                  },
+                  disabled: playerIsDefending
                 }, "Cancel"),
                 React.DOM.button(
                 {
@@ -337,7 +340,7 @@ module Rance
                   disabled: !humanFormationIsValid,
                   onClick: function()
                   {
-                    var battle = this.props.battlePrep.makeBattle();
+                    var battle = battlePrep.makeBattle();
                     app.reactUI.battle = battle;
                     app.reactUI.switchScene("battle");
                   }.bind(this)
@@ -347,7 +350,7 @@ module Rance
                   className: "battle-prep-controls-button",
                   onClick: function()
                   {
-                    var battle = this.props.battlePrep.makeBattle();
+                    var battle = battlePrep.makeBattle();
                     var simulator = new BattleSimulator(battle);
                     simulator.simulateBattle();
                     simulator.finishBattle();
@@ -360,9 +363,9 @@ module Rance
             ),
             UIComponents.UnitList(
             {
-              units: this.props.battlePrep.availableUnits,
+              units: battlePrep.availableUnits,
               selectedUnit: this.state.selectedUnit,
-              reservedUnits: this.props.battlePrep.alreadyPlaced,
+              reservedUnits: battlePrep.alreadyPlaced,
               hoveredUnit: this.state.hoveredUnit,
 
               checkTimesActed: true,

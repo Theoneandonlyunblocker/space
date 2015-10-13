@@ -485,6 +485,14 @@ declare module Rance {
     function getObjectKeysSortedByValue(obj: {
         [key: string]: number;
     }, order: string): string[];
+    function getObjectKeysSortedByValueOfProp(obj: {
+        [key: string]: any;
+    }, prop: string, order: string): string[];
+    function sortObjectsByProperty(objects: {
+        [key: string]: any;
+    }[], prop: string, order: string): {
+        [key: string]: any;
+    }[];
     function getRandomProperty(target: {
         [props: string]: any;
     }): any;
@@ -1517,11 +1525,22 @@ declare module Rance {
                 star: Star;
                 score: number;
             }[];
-            evaluateDesirabilityOfPlayersStars(player: Player): number;
+            evaluateDesirabilityOfPlayersStars(player: Player): {
+                byStar: {
+                    [starId: number]: {
+                        star: Star;
+                        desirability: number;
+                    };
+                };
+                total: number;
+            };
             getIndependentNeighborStars(): Star[];
             getIndependentNeighborStarIslands(earlyReturnSize?: number): Star[];
             getHostileShipsAtStar(star: Star): {
-                [playerId: number]: Unit[];
+                byEnemy: {
+                    [playerId: number]: Unit[];
+                };
+                all: Unit[];
             };
             getHostileStrengthAtStar(star: Star): {
                 [playerId: number]: number;
@@ -1620,7 +1639,7 @@ declare module Rance {
             target: Star;
             targetPlayer: Player;
             constructor(template: Templates.IObjectiveTemplate, priority: number, target: Star, targetPlayer?: Player);
-            getUnitsDesired(): {
+            getUnitsDesired(mapEvaluator: MapEvaluator): {
                 min: number;
                 ideal: number;
             };
@@ -3310,7 +3329,7 @@ declare module Rance {
                     score: number;
                 }[], basePriority: number): MapAI.Objective[];
                 function perimeterObjectiveCreation(templateKey: string, isForScouting: boolean, basePriority: number, grandStrategyAI: MapAI.GrandStrategyAI, mapEvaluator: MapAI.MapEvaluator, objectivesAI: MapAI.ObjectivesAI): MapAI.Objective[];
-                function getUnitsToFillIndependentObjective(objective: MapAI.Objective): {
+                function getUnitsToBeatImmediateTarget(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective): {
                     min: number;
                     ideal: number;
                 };
@@ -3359,6 +3378,15 @@ declare module Rance {
         module DefaultModule {
             module Objectives {
                 var scoutingPerimeter: Rance.Templates.IObjectiveTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Objectives {
+                var conquer: Rance.Templates.IObjectiveTemplate;
             }
         }
     }

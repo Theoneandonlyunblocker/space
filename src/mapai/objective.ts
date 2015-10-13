@@ -46,9 +46,9 @@ module Rance
         this.target = target;
         this.targetPlayer = targetPlayer;
       }
-      getUnitsDesired()
+      getUnitsDesired(mapEvaluator: MapEvaluator)
       {
-        return this.template.unitsToFillObjectiveFN(this);
+        return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
       }
     }
   }

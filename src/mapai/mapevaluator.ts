@@ -305,6 +305,14 @@ module Rance
       }
       evaluateDesirabilityOfPlayersStars(player: Player)
       {
+        var byStar:
+        {
+          [starId: number]:
+          {
+            star: Star;
+            desirability: number;
+          }
+        } = {};
         var total = 0;
 
         var stars = this.getVisibleStarsOfPlayer(player);
@@ -312,10 +320,20 @@ module Rance
         for (var i = 0; i < stars.length; i++)
         {
           var star = stars[i];
-          total += this.evaluateStarDesirability(star);
+          var desirability = this.evaluateStarDesirability(star);
+          byStar[star.id] = 
+          {
+            star: star,
+            desirability: desirability
+          };
+          total += desirability;
         }
 
-        return total;
+        return(
+        {
+          byStar: byStar,
+          total: total
+        });
       }
       getIndependentNeighborStars()
       {
@@ -375,17 +393,23 @@ module Rance
         {
           [playerId: number]: Unit[];
         } = {};
+        var allShips: Unit[] = [];
 
         for (var i = 0; i < hostilePlayers.length; i++)
         {
           shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
+          allShips = allShips.concat(shipsByEnemy[hostilePlayers[i].id]);
         }
 
-        return shipsByEnemy;
+        return(
+        {
+          byEnemy: shipsByEnemy,
+          all: allShips
+        });
       }
       getHostileStrengthAtStar(star: Star)
       {
-        var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
+        var hostileShipsByPlayer = this.getHostileShipsAtStar(star).byEnemy;
 
         var strengthByEnemy:
         {
@@ -925,7 +949,7 @@ module Rance
         // perceived threat
         var threat = this.getPerceivedThreatOfPlayer(player);
 
-        return Math.random(); // TODO
+        return Math.random(); // TODO war
       }
       getAbilityToGoToWarWith(player: Player)
       {
@@ -940,7 +964,7 @@ module Rance
         // enemy is well liked
         // distance
 
-        return Math.random(); // TODO
+        return Math.random(); // TODO war
       }
       getDiplomacyEvaluations(currentTurn: number)
       {

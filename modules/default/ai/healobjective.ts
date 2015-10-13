@@ -37,7 +37,7 @@ module Rance
             var template = Rance.Modules.DefaultModule.Objectives.heal;
             return [new MapAI.Objective(template, 1, null)];
           },
-          unitsToFillObjectiveFN: function(objective: MapAI.Objective)
+          unitsToFillObjectiveFN: function(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective)
           {
             return {min: 0, ideal: 0};
           }

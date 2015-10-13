@@ -3751,8 +3751,9 @@ var Rance;
                 return this.refs.upper.getDOMNode().getBoundingClientRect();
             },
             render: function () {
-                var player = this.props.battlePrep.humanPlayer;
-                var location = this.props.battlePrep.battleData.location;
+                var battlePrep = this.props.battlePrep;
+                var player = battlePrep.humanPlayer;
+                var location = battlePrep.battleData.location;
                 // priority: hovered unit > selected unit > battle info
                 var leftUpperElement;
                 var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
@@ -3762,7 +3763,7 @@ var Rance;
                     });
                 }
                 else if (this.state.selectedUnit) {
-                    var selectedUnitIsFriendly = this.props.battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
+                    var selectedUnitIsFriendly = battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
                     leftUpperElement = UIComponents.MenuUnitInfo({
                         unit: this.state.selectedUnit,
                         onMouseUp: this.handleItemDrop,
@@ -3774,7 +3775,7 @@ var Rance;
                 }
                 else {
                     leftUpperElement = UIComponents.BattleInfo({
-                        battlePrep: this.props.battlePrep
+                        battlePrep: battlePrep
                     });
                 }
                 var leftLowerElement;
@@ -3783,7 +3784,7 @@ var Rance;
                         {
                             leftLowerElement = UIComponents.Fleet({
                                 key: "playerFleet",
-                                fleet: this.props.battlePrep.playerFormation.slice(0),
+                                fleet: battlePrep.playerFormation.slice(0),
                                 hoveredUnit: this.state.hoveredUnit,
                                 activeUnit: this.state.selectedUnit,
                                 onMouseUp: this.handleDrop,
@@ -3800,7 +3801,7 @@ var Rance;
                         {
                             leftLowerElement = UIComponents.Fleet({
                                 key: "enemyFleet",
-                                fleet: this.props.battlePrep.enemyFormation,
+                                fleet: battlePrep.enemyFormation,
                                 facesLeft: true,
                                 hoveredUnit: this.state.hoveredUnit,
                                 activeUnit: this.state.selectedUnit,
@@ -3825,12 +3826,13 @@ var Rance;
                         }
                 }
                 ;
-                var humanFormationIsValid = this.props.battlePrep.humanFormationIsValid();
-                var canScout = player.starIsDetected(this.props.battlePrep.battleData.location);
+                var playerIsDefending = player === battlePrep.defender;
+                var humanFormationIsValid = battlePrep.humanFormationIsValid();
+                var canScout = player.starIsDetected(battlePrep.battleData.location);
                 return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: "upper" }, UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     getBlurArea: this.getBackgroundBlurArea,
-                    backgroundSeed: this.props.battlePrep.battleData.location.getSeed()
+                    backgroundSeed: battlePrep.battleData.location.getSeed()
                 }, React.DOM.div({ className: "battle-prep-left-upper-inner" }, leftUpperElement))), React.DOM.div({ className: "battle-prep-left-controls" }, React.DOM.button({
                     className: "battle-prep-controls-button",
                     onClick: this.setLeftLowerElement.bind(this, "itemEquip"),
@@ -3850,19 +3852,20 @@ var Rance;
                 }, "Auto formation"), React.DOM.button({
                     onClick: function () {
                         app.reactUI.switchScene("galaxyMap");
-                    }
+                    },
+                    disabled: playerIsDefending
                 }, "Cancel"), React.DOM.button({
                     className: "battle-prep-controls-button",
                     disabled: !humanFormationIsValid,
                     onClick: function () {
-                        var battle = this.props.battlePrep.makeBattle();
+                        var battle = battlePrep.makeBattle();
                         app.reactUI.battle = battle;
                         app.reactUI.switchScene("battle");
                     }.bind(this)
                 }, "Start battle"), !Rance.Options.debugMode ? null : React.DOM.button({
                     className: "battle-prep-controls-button",
                     onClick: function () {
-                        var battle = this.props.battlePrep.makeBattle();
+                        var battle = battlePrep.makeBattle();
                         var simulator = new Rance.BattleSimulator(battle);
                         simulator.simulateBattle();
                         simulator.finishBattle();
@@ -3870,9 +3873,9 @@ var Rance;
                         Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
                     }.bind(this)
                 }, "Simulate battle")), React.DOM.div({ className: "battle-prep-left-lower" }, leftLowerElement)), UIComponents.UnitList({
-                    units: this.props.battlePrep.availableUnits,
+                    units: battlePrep.availableUnits,
                     selectedUnit: this.state.selectedUnit,
-                    reservedUnits: this.props.battlePrep.alreadyPlaced,
+                    reservedUnits: battlePrep.alreadyPlaced,
                     hoveredUnit: this.state.hoveredUnit,
                     checkTimesActed: true,
                     isDraggable: this.state.leftLowerElement === "playerFleet",
@@ -5754,6 +5757,26 @@ var Rance;
         });
     }
     Rance.getObjectKeysSortedByValue = getObjectKeysSortedByValue;
+    function getObjectKeysSortedByValueOfProp(obj, prop, order) {
+        return Object.keys(obj).sort(function (a, b) {
+            if (order === "asc") {
+                return obj[a][prop] - obj[b][prop];
+            }
+            else
+                return obj[b][prop] - obj[a][prop];
+        });
+    }
+    Rance.getObjectKeysSortedByValueOfProp = getObjectKeysSortedByValueOfProp;
+    function sortObjectsByProperty(objects, prop, order) {
+        return objects.sort(function (a, b) {
+            if (order === "asc") {
+                return a[prop] - b[prop];
+            }
+            else
+                return b[prop] - a[prop];
+        });
+    }
+    Rance.sortObjectsByProperty = sortObjectsByProperty;
     function getRandomProperty(target) {
         var _rndProp = target[getRandomKey(target)];
         return _rndProp;
@@ -9466,7 +9489,7 @@ var Rance;
                 this.availableUnits = this.battleData.defender.ships;
                 this.enemyUnits = this.battleData.attacker.ships;
                 this.defenderFormation = this.makeEmptyFormation();
-                this.playerFormation = this.attackerFormation;
+                this.playerFormation = this.defenderFormation;
                 this.enemyFormation = this.attackerFormation;
                 this.humanPlayer = this.defender;
                 this.enemyPlayer = this.attacker;
@@ -9597,7 +9620,7 @@ var Rance;
                 if (unit)
                     shipsPlaced++;
             });
-            var minShips;
+            var minShips = 0;
             if (!this.attacker.isAI) {
                 minShips = 1;
             }
@@ -11031,14 +11054,23 @@ var Rance;
                 });
             };
             MapEvaluator.prototype.evaluateDesirabilityOfPlayersStars = function (player) {
+                var byStar = {};
                 var total = 0;
                 var stars = this.getVisibleStarsOfPlayer(player);
                 for (var i = 0; i < stars.length; i++) {
                     var star = stars[i];
-                    total += this.evaluateStarDesirability(star);
-                    console.log(star.id, this.evaluateStarDesirability(star));
+                    var desirability = this.evaluateStarDesirability(star);
+                    byStar[star.id] =
+                        {
+                            star: star,
+                            desirability: desirability
+                        };
+                    total += desirability;
                 }
-                return total;
+                return ({
+                    byStar: byStar,
+                    total: total
+                });
             };
             MapEvaluator.prototype.getIndependentNeighborStars = function () {
                 var self = this;
@@ -11074,13 +11106,18 @@ var Rance;
             MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
                 var hostilePlayers = star.getEnemyFleetOwners(this.player);
                 var shipsByEnemy = {};
+                var allShips = [];
                 for (var i = 0; i < hostilePlayers.length; i++) {
                     shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
+                    allShips = allShips.concat(shipsByEnemy[hostilePlayers[i].id]);
                 }
-                return shipsByEnemy;
+                return ({
+                    byEnemy: shipsByEnemy,
+                    all: allShips
+                });
             };
             MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
-                var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
+                var hostileShipsByPlayer = this.getHostileShipsAtStar(star).byEnemy;
                 var strengthByEnemy = {};
                 for (var playerId in hostileShipsByPlayer) {
                     var strength = 0;
@@ -11419,7 +11456,7 @@ var Rance;
                 //   enemy ally strength
                 // perceived threat
                 var threat = this.getPerceivedThreatOfPlayer(player);
-                return Math.random(); // TODO
+                return Math.random(); // TODO war
             };
             MapEvaluator.prototype.getAbilityToGoToWarWith = function (player) {
                 // perceived strength
@@ -11432,7 +11469,7 @@ var Rance;
                 //   enemy ally strength
                 // enemy is well liked
                 // distance
-                return Math.random(); // TODO
+                return Math.random(); // TODO war
             };
             MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
                 var evaluationByPlayer = {};
@@ -11568,8 +11605,8 @@ var Rance;
                 enumerable: true,
                 configurable: true
             });
-            Objective.prototype.getUnitsDesired = function () {
-                return this.template.unitsToFillObjectiveFN(this);
+            Objective.prototype.getUnitsDesired = function (mapEvaluator) {
+                return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
             };
             return Objective;
         })();
@@ -11991,7 +12028,7 @@ var Rance;
                 var musterLocation = objective.target ?
                     this.player.getNearestOwnedStarTo(objective.target) :
                     null;
-                var unitsDesired = objective.getUnitsDesired();
+                var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
                 var front = new MapAI.Front({
                     id: objective.id,
                     objective: objective,
@@ -23817,7 +23854,7 @@ var Rance;
                 }
                 AIUtils.independentTargetFilter = independentTargetFilter;
                 function buildingControllerFilter(target) {
-                    return target.enemy === target.building.controller;
+                    return target.building && target.enemy === target.building.controller;
                 }
                 AIUtils.buildingControllerFilter = buildingControllerFilter;
                 function musterAndAttackRoutine(targetFilter, front, afterMoveCallback) {
@@ -24007,17 +24044,17 @@ var Rance;
                     return objectives;
                 }
                 AIUtils.perimeterObjectiveCreation = perimeterObjectiveCreation;
-                function getUnitsToFillIndependentObjective(objective) {
+                function getUnitsToBeatImmediateTarget(mapEvaluator, objective) {
                     var min;
                     var ideal;
                     var star = objective.target;
-                    var independentShips = star.getIndependentShips();
-                    if (independentShips.length <= 1) {
-                        min = independentShips.length + 1;
-                        ideal = independentShips.length + 1;
+                    var hostileShips = mapEvaluator.getHostileShipsAtStar(star).all;
+                    if (hostileShips.length <= 1) {
+                        min = hostileShips.length + 1;
+                        ideal = hostileShips.length + 1;
                     }
                     else {
-                        min = Math.min(independentShips.length + 2, 6);
+                        min = Math.min(hostileShips.length + 2, 6);
                         ideal = 6;
                     }
                     return ({
@@ -24025,7 +24062,7 @@ var Rance;
                         ideal: ideal
                     });
                 }
-                AIUtils.getUnitsToFillIndependentObjective = getUnitsToFillIndependentObjective;
+                AIUtils.getUnitsToBeatImmediateTarget = getUnitsToBeatImmediateTarget;
             })(AIUtils = DefaultModule.AIUtils || (DefaultModule.AIUtils = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -24092,7 +24129,7 @@ var Rance;
                         var template = Rance.Modules.DefaultModule.Objectives.discovery;
                         return DefaultModule.AIUtils.makeObjectivesFromScores(template, scores, 0.5);
                     },
-                    unitsToFillObjectiveFN: function (objective) {
+                    unitsToFillObjectiveFN: function (mapEvaluator, objective) {
                         return { min: 1, ideal: 1 };
                     }
                 };
@@ -24128,7 +24165,7 @@ var Rance;
                         var template = Rance.Modules.DefaultModule.Objectives.heal;
                         return [new Rance.MapAI.Objective(template, 1, null)];
                     },
-                    unitsToFillObjectiveFN: function (objective) {
+                    unitsToFillObjectiveFN: function (mapEvaluator, objective) {
                         return { min: 0, ideal: 0 };
                     }
                 };
@@ -24165,7 +24202,7 @@ var Rance;
                         var template = Rance.Modules.DefaultModule.Objectives.expansion;
                         return DefaultModule.AIUtils.makeObjectivesFromScores(template, scores, basePriority);
                     },
-                    unitsToFillObjectiveFN: DefaultModule.AIUtils.getUnitsToFillIndependentObjective
+                    unitsToFillObjectiveFN: DefaultModule.AIUtils.getUnitsToBeatImmediateTarget
                 };
             })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
@@ -24202,7 +24239,7 @@ var Rance;
                         var template = Rance.Modules.DefaultModule.Objectives.cleanUpPirates;
                         return DefaultModule.AIUtils.makeObjectivesFromScores(template, scores, basePriority);
                     },
-                    unitsToFillObjectiveFN: DefaultModule.AIUtils.getUnitsToFillIndependentObjective
+                    unitsToFillObjectiveFN: DefaultModule.AIUtils.getUnitsToBeatImmediateTarget
                 };
             })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
@@ -24228,9 +24265,64 @@ var Rance;
                     unitDesireFN: DefaultModule.AIUtils.scoutingUnitDesireFN,
                     unitFitFN: DefaultModule.AIUtils.scoutingUnitFitFN,
                     creatorFunction: DefaultModule.AIUtils.perimeterObjectiveCreation.bind(null, "scoutingPerimeter", true, 0.3),
-                    unitsToFillObjectiveFN: function (objective) {
+                    unitsToFillObjectiveFN: function (mapEvaluator, objective) {
                         return { min: 1, ideal: 1 };
                     }
+                };
+            })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="aiutils.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Objectives;
+            (function (Objectives) {
+                Objectives.conquer = {
+                    key: "conquer",
+                    movePriority: 6,
+                    preferredUnitComposition: {
+                        combat: 0.65,
+                        defence: 0.25,
+                        utility: 0.1
+                    },
+                    moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine.bind(null, DefaultModule.AIUtils.buildingControllerFilter),
+                    unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,
+                    unitFitFN: DefaultModule.AIUtils.defaultUnitFitFN,
+                    creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
+                        var hostilePlayers = [];
+                        var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
+                        for (var playerId in diplomacyStatus.metPlayers) {
+                            if (diplomacyStatus.statusByPlayer[playerId] >= Rance.DiplomaticState.war) {
+                                hostilePlayers.push(diplomacyStatus.metPlayers[playerId]);
+                            }
+                        }
+                        var relativeThreatOfPlayers = mapEvaluator.getRelativePerceivedThreatOfAllKnownPlayers();
+                        var possibleTargets = [];
+                        for (var i = 0; i < hostilePlayers.length; i++) {
+                            var desirabilityByStar = mapEvaluator.evaluateDesirabilityOfPlayersStars(hostilePlayers[i]).byStar;
+                            var sortedIds = Rance.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
+                            if (sortedIds.length === 0) {
+                                continue;
+                            }
+                            possibleTargets.push(desirabilityByStar[sortedIds[0]].star);
+                        }
+                        var template = Rance.Modules.DefaultModule.Objectives.conquer;
+                        var objectives = [];
+                        for (var i = 0; i < possibleTargets.length; i++) {
+                            var star = possibleTargets[i];
+                            var player = star.owner;
+                            var threat = relativeThreatOfPlayers[player.id];
+                            objectives.push(new Rance.MapAI.Objective(template, threat, star));
+                        }
+                        return objectives;
+                    },
+                    unitsToFillObjectiveFN: DefaultModule.AIUtils.getUnitsToBeatImmediateTarget
                 };
             })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
@@ -24496,6 +24588,7 @@ var Rance;
 /// <reference path="ai/expansionobjective.ts" />
 /// <reference path="ai/cleanupobjective.ts" />
 /// <reference path="ai/scoutingperimeterobjective.ts" />
+/// <reference path="ai/conquerobjective.ts" />
 /// <reference path="ai/declarewarobjective.ts" />
 /// <reference path="ai/expandmanufactorycapacityobjective.ts" />
 /// <reference path="notifications/battlefinishnotification.ts" />
@@ -25132,6 +25225,8 @@ var Rance;
             var self = this;
             PIXI.utils._saidHello = true;
             this.seed = "" + Math.random();
+            // crashes mctree "0.062779669649899"
+            // crashes diplo status "0.9075259214732796"
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
             Rance.onDOMLoaded(function () {

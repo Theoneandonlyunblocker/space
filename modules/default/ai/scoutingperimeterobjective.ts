@@ -22,7 +22,7 @@ module Rance
           unitDesireFN: AIUtils.scoutingUnitDesireFN,
           unitFitFN: AIUtils.scoutingUnitFitFN,
           creatorFunction: AIUtils.perimeterObjectiveCreation.bind(null, "scoutingPerimeter", true, 0.3),
-          unitsToFillObjectiveFN: function(objective: MapAI.Objective)
+          unitsToFillObjectiveFN: function(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective)
           {
             return {min: 1, ideal: 1};
           }

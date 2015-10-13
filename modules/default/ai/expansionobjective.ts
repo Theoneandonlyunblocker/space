@@ -36,7 +36,7 @@ module Rance
 
             return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
           },
-          unitsToFillObjectiveFN: AIUtils.getUnitsToFillIndependentObjective
+          unitsToFillObjectiveFN: AIUtils.getUnitsToBeatImmediateTarget
         }
       }
     }

@@ -28,7 +28,8 @@ declare module Rance
       // how well individual unit fits into front
       unitFitFN?: (unit: Unit, front: MapAI.Front) => number;
       // unitsToFillObjective
-      unitsToFillObjectiveFN?: (objective: MapAI.Objective) => {min: number; ideal: number};
+      unitsToFillObjectiveFN?: (mapEvaluator: MapAI.MapEvaluator,
+        objective: MapAI.Objective) => {min: number; ideal: number};
 
       economyRoutineFN?: (objective: MapAI.Objective, economyAI: MapAI.EconomyAI,
         adjustments: IRoutineAdjustmentByTargetId) => void;

@@ -47,7 +47,7 @@ module Rance
         }
         export function buildingControllerFilter(target: any)
         {
-          return target.enemy === target.building.controller;
+          return target.building && target.enemy === target.building.controller;
         }
         export function musterAndAttackRoutine(targetFilter: (target: any) => boolean,
           front: MapAI.Front, afterMoveCallback: Function)
@@ -307,21 +307,22 @@ module Rance
 
           return objectives;
         }
-        export function getUnitsToFillIndependentObjective(objective: MapAI.Objective)
+        export function getUnitsToBeatImmediateTarget(mapEvaluator: MapAI.MapEvaluator,
+          objective: MapAI.Objective)
         {
           var min: number;
           var ideal: number;
           var star = objective.target;
-          var independentShips = star.getIndependentShips();
+          var hostileShips = mapEvaluator.getHostileShipsAtStar(star).all;
 
-          if (independentShips.length <= 1)
+          if (hostileShips.length <= 1)
           {
-            min = independentShips.length + 1;
-            ideal = independentShips.length + 1;
+            min = hostileShips.length + 1;
+            ideal = hostileShips.length + 1;
           }
           else
           {
-            min = Math.min(independentShips.length + 2, 6);
+            min = Math.min(hostileShips.length + 2, 6);
             ideal = 6;
           }
 

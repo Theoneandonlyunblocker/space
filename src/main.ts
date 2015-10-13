@@ -67,6 +67,7 @@ module Rance
 
       this.seed = "" + Math.random();
       // crashes mctree "0.062779669649899"
+      // crashes diplo status "0.9075259214732796"
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       var boundMakeApp = this.makeApp.bind(this);

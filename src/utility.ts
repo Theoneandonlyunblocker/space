@@ -45,6 +45,34 @@ module Rance
       else return obj[b] - obj[a];
     });
   }
+  export function getObjectKeysSortedByValueOfProp(obj:
+  {
+    [key: string]: any;
+  }, prop: string, order: string)
+  {
+    return Object.keys(obj).sort(function(a, b)
+    {
+      if (order === "asc")
+      {
+        return obj[a][prop] - obj[b][prop];
+      }
+      else return obj[b][prop] - obj[a][prop];
+    });
+  }
+  export function sortObjectsByProperty(objects:
+  {
+    [key: string]: any;
+  }[], prop: string, order: string)
+  {
+    return objects.sort(function(a, b)
+    {
+      if (order === "asc")
+      {
+        return a[prop] - b[prop];
+      }
+      else return b[prop] - a[prop];
+    });
+  }
 
   export function getRandomProperty(target: {[props: string]: any;})
   {

@@ -92,7 +92,7 @@ module Rance
 
             return AIUtils.makeObjectivesFromScores(template, scores, 0.5);
           },
-          unitsToFillObjectiveFN: function(objective: MapAI.Objective)
+          unitsToFillObjectiveFN: function(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective)
           {
             return {min: 1, ideal: 1};
           }
