@@ -97,6 +97,11 @@ module Rance
         }
       },
 
+      getClientRect: function()
+      {
+        return this.getDOMNode().firstChild.getBoundingClientRect();
+      },
+
       render: function()
       {
         var displayElement = this.state.isNull ?
@@ -126,7 +131,8 @@ module Rance
                 generateColor: this.props.generateColor,
                 onChange: this.updateColor,
                 setAsInactive: this.setAsInactive,
-                flagHasCustomImage: this.props.flagHasCustomImage
+                flagHasCustomImage: this.props.flagHasCustomImage,
+                getParentPosition: this.getClientRect
               }) : null
           )
         );

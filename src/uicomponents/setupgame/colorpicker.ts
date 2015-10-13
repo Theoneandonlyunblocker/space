@@ -27,6 +27,25 @@ module Rance
         });
       },
 
+      componentDidMount: function()
+      {
+        window.addEventListener("resize", this.setPosition);
+        this.setPosition();
+      },
+
+      componentWillUnmount: function()
+      {
+        window.removeEventListener("resize", this.setPosition);
+      },
+
+      setPosition: function()
+      {
+        var parentRect = this.props.getParentPosition();
+        var domNode = this.getDOMNode();
+        domNode.style.top = "" + parentRect.bottom + "px";
+        domNode.style.left = "" + parentRect.left + "px";
+      },
+
       triggerParentOnChange: function(color: number, isNull: boolean)
       {
         if (this.onChangeTimeout)
