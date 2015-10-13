@@ -75,19 +75,13 @@ module Rance
       var scoreVariationTolerance = 0.1;
       var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
 
-      // TODO crash battle.activeUnit can be undefined
-      if (!this.rootNode.battle.activeUnit.id)
-      {
-        debugger;
-      }
-
       if (scoreVariance > scoreVariationTolerance)
       {
         return true;
       }
-      else if (this.actualBattle.activeUnit.id !== this.rootNode.battle.activeUnit.id)
+      else if (this.actualBattle.activeUnit !== this.rootNode.battle.activeUnit)
       {
-        return this.actualBattle.activeUnit.battleStats.side === this.sideId;
+        return true;
       }
       else if (this.rootNode.children.length === 0)
       {
