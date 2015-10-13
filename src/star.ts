@@ -839,7 +839,8 @@ module Rance
     getDistanceToStar(target: Star): number
     {
       // don't index distance while generating map as distance can change
-      if (this.mapGenData)
+      // if (this.mapGenData)
+      if (!app.game)
       {
         var a = aStar(this, target);
         return a.cost[target.id];
