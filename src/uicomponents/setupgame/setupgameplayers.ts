@@ -179,6 +179,13 @@ module Rance
             },
               React.DOM.button(
               {
+                className: "setup-game-button",
+                onClick: this.randomizeAllPlayers
+              },
+                "Randomize"
+              ),
+              React.DOM.button(
+              {
                 className: "setup-game-players-add-new" + (canAddPlayers ? "" : " disabled"),
                 onClick: this.makeNewPlayers.bind(this, 1),
                 disabled: !canAddPlayers
