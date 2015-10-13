@@ -222,6 +222,7 @@ module Rance
       eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
       eventManager.dispatchEvent("renderLayer", "starOwners", this);
       eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
+      // TODO update starOwners if secondary controller changes
     }
     updateBuildingsEffect()
     {

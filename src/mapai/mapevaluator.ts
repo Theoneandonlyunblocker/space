@@ -900,7 +900,9 @@ module Rance
         for (var i = 0; i < stars.length; i++)
         {
           var star = stars[i];
-          var distanceToEnemy = star.getDistanceToStar(player.getNearestOwnedStarTo(star));
+          var nearestOwnedStar = player.getNearestOwnedStarTo(star);
+          if (!nearestOwnedStar) debugger;
+          var distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
           distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
           var distanceScore = Math.pow(1 / distanceToEnemy, 2);
 

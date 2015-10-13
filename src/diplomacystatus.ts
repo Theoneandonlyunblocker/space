@@ -73,6 +73,14 @@ module Rance
         }
       }
     }
+    removePlayer(player: Player)
+    {
+      ["metPlayers", "statusByPlayer", "attitudeModifiersByPlayer"].forEach(function(prop: string)
+      {
+        this[prop][player.id] = null;
+        delete this[prop][player.id];
+      }.bind(this));
+    }
     getBaseOpinion()
     {
       if (isFinite(this.baseOpinion)) return this.baseOpinion;

@@ -9313,6 +9313,9 @@ var Rance;
             var sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
             //this.printToConsole(sortedMoves);
             var best = sortedMoves[0];
+            if (!best) {
+                debugger;
+            }
             return best;
         };
         MCTree.prototype.getChildForMove = function (move) {
@@ -9321,6 +9324,10 @@ var Rance;
         MCTree.prototype.rootSimulationNeedsToBeRemade = function () {
             var scoreVariationTolerance = 0.1;
             var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
+            // TODO crash battle.activeUnit can be undefined
+            if (!this.rootNode.battle.activeUnit.id) {
+                debugger;
+            }
             if (scoreVariance > scoreVariationTolerance) {
                 return true;
             }
@@ -9803,6 +9810,12 @@ var Rance;
                     Rance.eventManager.removeEventListener(key, this.listeners[key][i]);
                 }
             }
+        };
+        DiplomacyStatus.prototype.removePlayer = function (player) {
+            ["metPlayers", "statusByPlayer", "attitudeModifiersByPlayer"].forEach(function (prop) {
+                this[prop][player.id] = null;
+                delete this[prop][player.id];
+            }.bind(this));
         };
         DiplomacyStatus.prototype.getBaseOpinion = function () {
             if (isFinite(this.baseOpinion))
@@ -10798,6 +10811,10 @@ var Rance;
                 }
                 ship.timesActedThisTurn = 0;
             };
+            if (player.controlledLocations.length === 0) {
+                this.killPlayer(player);
+                return;
+            }
             player.forEachUnit(shipStartTurnFN);
             if (!player.isIndependent) {
                 player.money += player.getIncome();
@@ -10815,6 +10832,20 @@ var Rance;
         Game.prototype.setNextPlayer = function () {
             this.playerOrder.push(this.playerOrder.shift());
             this.activePlayer = this.playerOrder[0];
+        };
+        Game.prototype.killPlayer = function (playerToKill) {
+            var playerOrderIndex;
+            for (var i = 0; i < this.playerOrder.length; i++) {
+                var player = this.playerOrder[i];
+                if (player === playerToKill) {
+                    playerOrderIndex = i;
+                    continue;
+                }
+                player.diplomacyStatus.removePlayer(playerToKill);
+            }
+            playerToKill.die();
+            playerToKill.destroy();
+            this.playerOrder.splice(playerOrderIndex, 1);
         };
         Game.prototype.serialize = function () {
             var data = {};
@@ -11433,7 +11464,10 @@ var Rance;
                 }, this);
                 for (var i = 0; i < stars.length; i++) {
                     var star = stars[i];
-                    var distanceToEnemy = star.getDistanceToStar(player.getNearestOwnedStarTo(star));
+                    var nearestOwnedStar = player.getNearestOwnedStarTo(star);
+                    if (!nearestOwnedStar)
+                        debugger;
+                    var distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
                     distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
                     var distanceScore = Math.pow(1 / distanceToEnemy, 2);
                     var danger = enemyInfluence[star.id] || 1;
@@ -12387,6 +12421,12 @@ var Rance;
             this.diplomacyStatus.destroy();
             this.diplomacyStatus = null;
         };
+        Player.prototype.die = function () {
+            console.log(this.name + " died");
+            for (var i = 0; i < this.fleets.length; i++) {
+                this.fleets[i].deleteFleet(false);
+            }
+        };
         Player.prototype.initTechnologies = function (savedData) {
             this.technologies = {};
             var totalTechnologies = Object.keys(app.moduleData.Templates.Technologies).length;
@@ -12510,6 +12550,9 @@ var Rance;
             star.owner = null;
             this.controlledLocations.splice(index, 1);
             this.visionIsDirty = true;
+            if (this.controlledLocations.length === 0) {
+                app.game.killPlayer(this);
+            }
         };
         Player.prototype.getIncome = function () {
             var income = 0;
@@ -13176,6 +13219,7 @@ var Rance;
             Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
             Rance.eventManager.dispatchEvent("renderLayer", "starOwners", this);
             Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
+            // TODO update starOwners if secondary controller changes
         };
         Star.prototype.updateBuildingsEffect = function () {
             var effect = {};
@@ -21727,8 +21771,8 @@ var Rance;
                                     step: 1
                                 },
                                 starCount: {
-                                    min: 30,
-                                    max: 50,
+                                    min: 20,
+                                    max: 40,
                                     step: 1
                                 }
                             },
@@ -25251,8 +25295,9 @@ var Rance;
             this.images = {};
             var self = this;
             PIXI.utils._saidHello = true;
-            this.seed = "" + Math.random();
-            // crashes mctree "0.062779669649899"
+            // this.seed = "" + Math.random();
+            this.seed = "0.062779669649899";
+            // crashes pathfinding "0.062779669649899"
             // crashes diplo status "0.9075259214732796"
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
@@ -25354,7 +25399,7 @@ var Rance;
                 defaultOptions: {
                     height: 1200,
                     width: 1200,
-                    starCount: 40
+                    starCount: 30
                 },
                 basicOptions: {
                     arms: 5,

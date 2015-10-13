@@ -101,6 +101,14 @@ module Rance
       this.diplomacyStatus.destroy();
       this.diplomacyStatus = null;
     }
+    die()
+    {
+      console.log(this.name + " died");
+      for (var i = 0; i < this.fleets.length; i++)
+      {
+        this.fleets[i].deleteFleet(false);
+      }
+    }
     initTechnologies(savedData?:
       {[key: string]: {totalResearch: number; priority: number; priorityIsLocked: boolean}})
     {
@@ -268,6 +276,10 @@ module Rance
       star.owner = null;
       this.controlledLocations.splice(index, 1);
       this.visionIsDirty = true;
+      if (this.controlledLocations.length === 0)
+      {
+        app.game.killPlayer(this);
+      }
     }
     getIncome()
     {

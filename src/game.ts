@@ -95,6 +95,12 @@ module Rance
         ship.timesActedThisTurn = 0;
       }
 
+      if (player.controlledLocations.length === 0)
+      {
+        this.killPlayer(player);
+        return;
+      }
+
       player.forEachUnit(shipStartTurnFN);
 
       if (!player.isIndependent)
@@ -120,6 +126,25 @@ module Rance
       this.playerOrder.push(this.playerOrder.shift());
 
       this.activePlayer = this.playerOrder[0];
+    }
+    killPlayer(playerToKill: Player)
+    {
+      var playerOrderIndex: number;
+      for (var i = 0; i < this.playerOrder.length; i++)
+      {
+        var player = this.playerOrder[i];
+        if (player === playerToKill)
+        {
+          playerOrderIndex = i;
+          continue;
+        }
+        player.diplomacyStatus.removePlayer(playerToKill);
+      }
+
+      playerToKill.die();
+      playerToKill.destroy();
+
+      this.playerOrder.splice(playerOrderIndex, 1);
     }
     serialize()
     {

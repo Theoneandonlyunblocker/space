@@ -65,8 +65,9 @@ module Rance
       var self = this;
       PIXI.utils._saidHello = true;
 
-      this.seed = "" + Math.random();
-      // crashes mctree "0.062779669649899"
+      // this.seed = "" + Math.random();
+      this.seed = "0.062779669649899";
+      // crashes pathfinding "0.062779669649899"
       // crashes diplo status "0.9075259214732796"
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
@@ -219,7 +220,7 @@ module Rance
         {
           height: 1200,
           width: 1200,
-          starCount: 40
+          starCount: 30
         },
         basicOptions:
         {

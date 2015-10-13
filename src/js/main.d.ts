@@ -1208,6 +1208,7 @@ declare module Rance {
         constructor(player: Player);
         addEventListeners(): void;
         destroy(): void;
+        removePlayer(player: Player): void;
         getBaseOpinion(): number;
         updateAttitudes(): void;
         handleDiplomaticStatusUpdate(): void;
@@ -1432,6 +1433,7 @@ declare module Rance {
         endTurn(): void;
         processPlayerStartTurn(player: Player): void;
         setNextPlayer(): void;
+        killPlayer(playerToKill: Player): void;
         serialize(): any;
         save(name: string): void;
     }
@@ -1841,6 +1843,7 @@ declare module Rance {
         };
         constructor(isAI: boolean, id?: number);
         destroy(): void;
+        die(): void;
         initTechnologies(savedData?: {
             [key: string]: {
                 totalResearch: number;

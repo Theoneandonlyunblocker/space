@@ -58,6 +58,12 @@ module Rance
       //this.printToConsole(sortedMoves);
 
       var best = sortedMoves[0];
+
+      if (!best)
+      {
+        debugger;
+      }
+
       return best;
     }
     getChildForMove(move: IMove): MCTreeNode
@@ -68,11 +74,17 @@ module Rance
     {
       var scoreVariationTolerance = 0.1;
       var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
+
+      // TODO crash battle.activeUnit can be undefined
+      if (!this.rootNode.battle.activeUnit.id)
+      {
+        debugger;
+      }
+
       if (scoreVariance > scoreVariationTolerance)
       {
         return true;
       }
-      // TODO crash battle.activeUnit can be undefined
       else if (this.actualBattle.activeUnit.id !== this.rootNode.battle.activeUnit.id)
       {
         return this.actualBattle.activeUnit.battleStats.side === this.sideId;
