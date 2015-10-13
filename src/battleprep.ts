@@ -126,7 +126,7 @@ module Rance
         this.availableUnits = this.battleData.defender.ships;
         this.enemyUnits = this.battleData.attacker.ships;
         this.defenderFormation = this.makeEmptyFormation();
-        this.playerFormation = this.attackerFormation;
+        this.playerFormation = this.defenderFormation;
         this.enemyFormation = this.attackerFormation;
         this.humanPlayer = this.defender;
         this.enemyPlayer = this.attacker;
@@ -319,7 +319,7 @@ module Rance
         if (unit) shipsPlaced++;
       });
 
-      var minShips: number
+      var minShips: number = 0;
 
       if (!this.attacker.isAI)
       {
