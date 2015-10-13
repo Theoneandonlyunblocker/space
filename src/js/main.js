@@ -10142,6 +10142,9 @@ var Rance;
             return manufacturableThings.indexOf(template) !== -1;
         };
         Manufactory.prototype.handleOwnerChange = function () {
+            while (this.buildQueue.length > 0) {
+                this.removeThingAtIndex(this.buildQueue.length - 1);
+            }
             this.player = this.star.owner;
             this.capacity = Math.max(1, this.capacity - 1);
         };
