@@ -688,7 +688,10 @@ module Rance
       if (battlePrep.humanPlayer)
       {
         app.reactUI.battlePrep = battlePrep;
-        battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
+        if (battleFinishCallback)
+        {
+          battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
+        }
         app.reactUI.switchScene("battlePrep");
       }
       else

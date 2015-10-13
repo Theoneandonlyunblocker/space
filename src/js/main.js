@@ -12798,7 +12798,9 @@ var Rance;
             var battlePrep = new Rance.BattlePrep(battleData);
             if (battlePrep.humanPlayer) {
                 app.reactUI.battlePrep = battlePrep;
-                battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
+                if (battleFinishCallback) {
+                    battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
+                }
                 app.reactUI.switchScene("battlePrep");
             }
             else {
@@ -17120,7 +17122,7 @@ var Rance;
             getInitialState: function () {
                 this.newPlayerId = 0;
                 var players = [];
-                for (var i = 0; i < this.props.minPlayers; i++) {
+                for (var i = 0; i < this.props.maxPlayers; i++) {
                     players.push(this.newPlayerId++);
                 }
                 return ({
