@@ -28,7 +28,6 @@ module Rance
 
       componentWillReceiveProps: function(newProps: any)
       {
-        console.log()
         if (newProps.color !== this.state.hexColor)
         {
           this.setState(

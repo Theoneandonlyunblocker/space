@@ -7,6 +7,7 @@ module Rance
     export var ColorPicker = React.createClass(
     {
       displayName: "ColorPicker",
+      onChangeTimeout: null,
 
       getInitialState: function()
       {
@@ -24,6 +25,17 @@ module Rance
           val: hsvColor[2],
           isNull: true
         });
+      },
+
+      triggerParentOnChange: function(color: number, isNull: boolean)
+      {
+        if (this.onChangeTimeout)
+        {
+          window.clearTimeout(this.onChangeTimeout);
+          this.onChangeTimeout = null;
+        }
+
+        this.onChangeTimeout = window.setTimeout(this.props.onChange.bind(null, color, isNull), 50);
       },
 
       updateFromHsv: function(hue: number, sat: number, val: number, e?: Event)
@@ -49,7 +61,7 @@ module Rance
             target.type !== "range" ||
             e.type !== "input"))
           {
-            this.props.onChange(hexColor, false);
+            this.triggerParentOnChange(hexColor, false);
           }
         }
       },
@@ -66,7 +78,7 @@ module Rance
 
         if (this.props.onChange)
         {
-          this.props.onChange(hexColor, false);
+          this.triggerParentOnChange(hexColor, false);
         }
       },
       setHex: function(e: Event)
@@ -156,7 +168,7 @@ module Rance
 
         if (this.props.onChange)
         {
-          this.props.onChange(this.state.hexColor, true);
+          this.triggerParentOnChange(this.state.hexColor, true);
         }
       },
 

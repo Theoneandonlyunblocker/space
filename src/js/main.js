@@ -16346,6 +16346,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.ColorPicker = React.createClass({
             displayName: "ColorPicker",
+            onChangeTimeout: null,
             getInitialState: function () {
                 var hexColor = this.props.hexColor || 0xFFFFFF;
                 var hexString = "#" + Rance.hexToString(hexColor);
@@ -16359,6 +16360,13 @@ var Rance;
                     val: hsvColor[2],
                     isNull: true
                 });
+            },
+            triggerParentOnChange: function (color, isNull) {
+                if (this.onChangeTimeout) {
+                    window.clearTimeout(this.onChangeTimeout);
+                    this.onChangeTimeout = null;
+                }
+                this.onChangeTimeout = window.setTimeout(this.props.onChange.bind(null, color, isNull), 50);
             },
             updateFromHsv: function (hue, sat, val, e) {
                 var hsvColor = [hue, sat, val];
@@ -16377,7 +16385,7 @@ var Rance;
                         (!this.props.flagHasCustomImage ||
                             target.type !== "range" ||
                             e.type !== "input")) {
-                        this.props.onChange(hexColor, false);
+                        this.triggerParentOnChange(hexColor, false);
                     }
                 }
             },
@@ -16389,7 +16397,7 @@ var Rance;
                     val: Math.round(hsvColor[2])
                 });
                 if (this.props.onChange) {
-                    this.props.onChange(hexColor, false);
+                    this.triggerParentOnChange(hexColor, false);
                 }
             },
             setHex: function (e) {
@@ -16456,7 +16464,7 @@ var Rance;
             nullifyColor: function () {
                 this.setState({ isNull: true });
                 if (this.props.onChange) {
-                    this.props.onChange(this.state.hexColor, true);
+                    this.triggerParentOnChange(this.state.hexColor, true);
                 }
             },
             getHueGradientString: function () {
@@ -16605,7 +16613,6 @@ var Rance;
                 this.clearFocusTimerListener();
             },
             componentWillReceiveProps: function (newProps) {
-                console.log();
                 if (newProps.color !== this.state.hexColor) {
                     this.setState({
                         hexColor: newProps.color,
