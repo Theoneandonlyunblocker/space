@@ -30,6 +30,8 @@ module Rance
 
     minDefendersInNeutralTerritory: number = 1;
 
+    afterBattleFinishCallbacks: Function[] = [];
+
     constructor(battleData: IBattleData)
     {
       this.attacker = battleData.attacker.player;
@@ -364,6 +366,8 @@ module Rance
         side1Player: side1Player,
         side2Player: side2Player
       });
+
+      battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
 
       battle.init();
 

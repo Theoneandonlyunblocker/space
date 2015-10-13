@@ -9421,6 +9421,7 @@ var Rance;
         function BattlePrep(battleData) {
             this.alreadyPlaced = {};
             this.minDefendersInNeutralTerritory = 1;
+            this.afterBattleFinishCallbacks = [];
             this.attacker = battleData.attacker.player;
             this.attackerUnits = battleData.attacker.ships;
             this.defender = battleData.defender.player;
@@ -9650,6 +9651,7 @@ var Rance;
                 side1Player: side1Player,
                 side2Player: side2Player
             });
+            battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
             battle.init();
             return battle;
         };
@@ -12796,6 +12798,7 @@ var Rance;
             var battlePrep = new Rance.BattlePrep(battleData);
             if (battlePrep.humanPlayer) {
                 app.reactUI.battlePrep = battlePrep;
+                battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
                 app.reactUI.switchScene("battlePrep");
             }
             else {

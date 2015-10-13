@@ -1141,6 +1141,7 @@ declare module Rance {
             [id: number]: number[];
         };
         minDefendersInNeutralTerritory: number;
+        afterBattleFinishCallbacks: Function[];
         constructor(battleData: IBattleData);
         resetBattleStats(): void;
         triggerPassiveSkills(): void;
