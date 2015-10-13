@@ -24638,10 +24638,12 @@ var Rance;
                             var image = loader.resources[template.src].data;
                             app.images[template.src] = image;
                             // IE fix
-                            document.body.appendChild(image);
-                            image.width = image.offsetWidth;
-                            image.height = image.offsetHeight;
-                            document.body.removeChild(image);
+                            if (!image.width) {
+                                document.body.appendChild(image);
+                                image.width = image.offsetWidth;
+                                image.height = image.offsetHeight;
+                                document.body.removeChild(image);
+                            }
                         }
                         onLoaded();
                     });
