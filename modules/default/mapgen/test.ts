@@ -18,7 +18,7 @@ module Rance
             description: "Create a spiral galaxy with arms but tinier (just for testing)",
 
             minPlayers: 2,
-            maxPlayers: 5,
+            maxPlayers: 4,
 
             mapGenFunction: DefaultModule.MapGenFunctions.spiralGalaxyGeneration,
 

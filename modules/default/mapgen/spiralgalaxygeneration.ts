@@ -218,7 +218,7 @@ module Rance
           var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;
           if (!isConnected)
           {
-            if (Options.debugMode) console.log("Regenerated map due to insufficient connections");
+            console.log("Regenerated map due to insufficient connections");
             return spiralGalaxyGeneration(options, players);
           }
 
@@ -256,7 +256,7 @@ module Rance
           var startRegions: MapGen2.Region[] = (function setStartingRegions()
           {
             var armCount = options.basicOptions["arms"];
-            var playerCount = players.length;
+            var playerCount = Math.min(players.length, armCount);
 
             var playerArmStep = armCount / playerCount;
 
@@ -290,13 +290,14 @@ module Rance
                 return b.mapGenData.distance - a.mapGenData.distance;
               });
 
-              startPositions.push(starsByDistance[0]);
+              var star = starsByDistance[0];
+              startPositions.push(star);
             }
 
             return startPositions
           })(startRegions);
 
-          for (var i = 0; i < players.length; i++)
+          for (var i = 0; i < startPositions.length; i++)
           {
             var star = startPositions[i];
             var player = players[i];

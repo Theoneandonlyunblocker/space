@@ -49,9 +49,10 @@ module Rance
               {
                 arms:
                 {
-                  min: 4,
+                  min: 3,
                   max: 6,
-                  step: 1
+                  step: 1,
+                  defaultValue: 5
                 },
                 starSizeRegularity:
                 {
