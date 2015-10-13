@@ -1,4 +1,5 @@
 /// <reference path="../mixins/focustimer.ts" />
+/// <reference path="../playerflag.ts" />
 
 /// <reference path="flagpicker.ts" />
 module Rance
@@ -22,7 +23,6 @@ module Rance
         return(
         {
           flag: flag,
-          icon: flag.draw().toDataURL(),
           hasImageFailMessage: false,
           active: false
         });
@@ -291,10 +291,7 @@ module Rance
           this.props.toggleCustomImage(this.state.flag.customImage);
         }
 
-        this.setState(
-        {
-          icon: this.state.flag.draw().toDataURL()
-        });
+        this.forceUpdate();
       },
 
       render: function()
@@ -308,11 +305,15 @@ module Rance
             onDragOver: this.stopEvent,
             onDrop: this.handleDrop
           },
-            React.DOM.img(
+            UIComponents.PlayerFlag(
             {
-              className: "flag-setter-display",
-              src: this.state.icon,
-              onClick: this.toggleActive
+              flag: this.state.flag,
+              isMutable: true,
+              props:
+              {
+                className: "flag-setter-display",
+                onClick: this.toggleActive
+              }
             }),
             this.props.isActive || this.state.isActive ?
               UIComponents.FlagPicker(

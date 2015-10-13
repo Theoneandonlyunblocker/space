@@ -1190,18 +1190,30 @@ var Rance;
                 return !isIE;
             },
             componentDidMount: function () {
-                if (this.refs.container) {
+                if (this.refs.container && !this.props.isMutable) {
                     var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
                     canvas.style.maxWidth = "100%";
                     canvas.style.maxHeight = "100%";
                     this.refs.container.getDOMNode().appendChild(canvas);
                 }
             },
+            componentDidUpdate: function () {
+                if (this.refs.container && this.props.isMutable) {
+                    var containerNode = this.refs.container.getDOMNode();
+                    if (containerNode.firstChild) {
+                        containerNode.removeChild(containerNode.firstChild);
+                    }
+                    var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
+                    canvas.style.maxWidth = "100%";
+                    canvas.style.maxHeight = "100%";
+                    containerNode.appendChild(canvas);
+                }
+            },
             render: function () {
                 var props = this.props.props;
                 if (this.canUseDataURL()) {
                     var flag = this.props.flag;
-                    props.src = flag.getCanvas(this.props.width, this.props.height, this.props.stretch).toDataURL();
+                    props.src = flag.getCanvas(this.props.width, this.props.height, this.props.stretch, !this.props.isMutable).toDataURL();
                     return (React.DOM.img(props, null));
                 }
                 else {
@@ -16760,6 +16772,7 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/focustimer.ts" />
+/// <reference path="../playerflag.ts" />
 /// <reference path="flagpicker.ts" />
 var Rance;
 (function (Rance) {
@@ -16777,7 +16790,6 @@ var Rance;
                 });
                 return ({
                     flag: flag,
-                    icon: flag.draw().toDataURL(),
                     hasImageFailMessage: false,
                     active: false
                 });
@@ -16959,9 +16971,7 @@ var Rance;
                 if (!dontTriggerParentUpdates) {
                     this.props.toggleCustomImage(this.state.flag.customImage);
                 }
-                this.setState({
-                    icon: this.state.flag.draw().toDataURL()
-                });
+                this.forceUpdate();
             },
             render: function () {
                 return (React.DOM.div({
@@ -16970,10 +16980,13 @@ var Rance;
                     onDragEnter: this.stopEvent,
                     onDragOver: this.stopEvent,
                     onDrop: this.handleDrop
-                }, React.DOM.img({
-                    className: "flag-setter-display",
-                    src: this.state.icon,
-                    onClick: this.toggleActive
+                }, UIComponents.PlayerFlag({
+                    flag: this.state.flag,
+                    isMutable: true,
+                    props: {
+                        className: "flag-setter-display",
+                        onClick: this.toggleActive
+                    }
                 }), this.props.isActive || this.state.isActive ?
                     UIComponents.FlagPicker({
                         ref: "flagPicker",

@@ -14,12 +14,28 @@ module Rance
       },
       componentDidMount: function()
       {
-        if (this.refs.container)
+        if (this.refs.container && !this.props.isMutable)
         {
           var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
           canvas.style.maxWidth = "100%";
           canvas.style.maxHeight = "100%";
           this.refs.container.getDOMNode().appendChild(canvas);
+        }
+      },
+      componentDidUpdate: function()
+      {
+        if (this.refs.container && this.props.isMutable)
+        {
+          var containerNode = this.refs.container.getDOMNode();
+          if (containerNode.firstChild)
+          {
+            containerNode.removeChild(containerNode.firstChild);
+          }
+
+          var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
+          canvas.style.maxWidth = "100%";
+          canvas.style.maxHeight = "100%";
+          containerNode.appendChild(canvas);
         }
       },
       render: function()
@@ -28,8 +44,8 @@ module Rance
         if (this.canUseDataURL())
         {
           var flag: Flag = this.props.flag;
-          props.src = flag.getCanvas(this.props.width, this.props.height, this.props.stretch).toDataURL();
-
+          props.src = flag.getCanvas(
+            this.props.width, this.props.height, this.props.stretch, !this.props.isMutable).toDataURL();
           return(
             React.DOM.img(props,
               null
