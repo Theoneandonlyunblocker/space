@@ -84,6 +84,8 @@ ol {
   width: 100%;
   /* Specific width is required for Firefox. */
   background: transparent;
+  padding: 0;
+  margin: 0;
 }
 .reset-progress-style::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -92,6 +94,13 @@ ol {
   outline: none;
   /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
 }
+.reset-progress-style::-moz-range-track {
+  background: transparent;
+}
+.reset-progress-style::-moz-range-thumb {
+  background: transparent;
+  border: none;
+}
 .reset-progress-style::-ms-track {
   width: 100%;
   cursor: pointer;
@@ -99,6 +108,13 @@ ol {
   /* Hides the slider so custom styles can be added */
   border-color: transparent;
   color: transparent;
+}
+.reset-progress-style::-ms-fill-lower {
+  background: transparent;
+}
+.reset-progress-style::-ms-thumb {
+  border: none;
+  background: transparent;
 }
 #react-container {
   height: 100%;
@@ -2779,6 +2795,8 @@ ol {
   width: 100%;
   /* Specific width is required for Firefox. */
   background: transparent;
+  padding: 0;
+  margin: 0;
 }
 .technology-progress-bar-priority::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -2787,6 +2805,13 @@ ol {
   outline: none;
   /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
 }
+.technology-progress-bar-priority::-moz-range-track {
+  background: transparent;
+}
+.technology-progress-bar-priority::-moz-range-thumb {
+  background: transparent;
+  border: none;
+}
 .technology-progress-bar-priority::-ms-track {
   width: 100%;
   cursor: pointer;
@@ -2794,6 +2819,13 @@ ol {
   /* Hides the slider so custom styles can be added */
   border-color: transparent;
   color: transparent;
+}
+.technology-progress-bar-priority::-ms-fill-lower {
+  background: transparent;
+}
+.technology-progress-bar-priority::-ms-thumb {
+  border: none;
+  background: transparent;
 }
 .technology-progress-bar-priority::-webkit-slider-thumb {
   background-image: url("../img/icons/technologyPriorityMarker.png");
@@ -3564,33 +3596,42 @@ button.player-setup-remove-player.disabled {
   height: 1.5em;
   margin: 0.15em 0;
   align-items: center;
+  position: relative;
 }
 .color-picker-label {
   min-width: 2.25em;
   text-align: center;
 }
 .color-picker-slider-background {
-  height: 1em;
+  height: 16px;
+  position: relative;
 }
 .color-picker-slider-thumb-mixin {
   background-image: url("../img/icons/colorPickerMarker.png");
   background-repeat: no-repeat;
+  background-position: center bottom;
   position: relative;
-  z-index: 999;
   width: 7px;
-  height: 7px;
-  bottom: -4px;
+  height: 16px;
+}
+.color-picker-slider-thumb-mixin-active {
+  background-image: url("../img/icons/colorPickerMarker2.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  position: relative;
+  width: 7px;
+  height: 16px;
 }
 .color-picker-slider {
-  width: 8em;
-  height: 1.5em;
-  z-index: 5;
-  box-sizing: border-box;
   -webkit-appearance: none;
   /* Hides the slider so that custom slider can be made */
   width: 100%;
   /* Specific width is required for Firefox. */
   background: transparent;
+  padding: 0;
+  margin: 0;
+  width: 8em;
+  height: 24px;
 }
 .color-picker-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -3598,6 +3639,13 @@ button.player-setup-remove-player.disabled {
 .color-picker-slider:focus {
   outline: none;
   /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+.color-picker-slider::-moz-range-track {
+  background: transparent;
+}
+.color-picker-slider::-moz-range-thumb {
+  background: transparent;
+  border: none;
 }
 .color-picker-slider::-ms-track {
   width: 100%;
@@ -3607,49 +3655,69 @@ button.player-setup-remove-player.disabled {
   border-color: transparent;
   color: transparent;
 }
+.color-picker-slider::-ms-fill-lower {
+  background: transparent;
+}
+.color-picker-slider::-ms-thumb {
+  border: none;
+  background: transparent;
+}
 .color-picker-slider::-webkit-slider-thumb {
   background-image: url("../img/icons/colorPickerMarker.png");
   background-repeat: no-repeat;
+  background-position: center bottom;
   position: relative;
-  z-index: 999;
   width: 7px;
-  height: 7px;
-  bottom: -4px;
+  height: 16px;
 }
 .color-picker-slider::-moz-range-thumb {
   background-image: url("../img/icons/colorPickerMarker.png");
   background-repeat: no-repeat;
+  background-position: center bottom;
   position: relative;
-  z-index: 999;
   width: 7px;
-  height: 7px;
-  bottom: -4px;
+  height: 16px;
 }
 .color-picker-slider::-ms-thumb {
   background-image: url("../img/icons/colorPickerMarker.png");
   background-repeat: no-repeat;
+  background-position: center bottom;
   position: relative;
-  z-index: 999;
   width: 7px;
-  height: 7px;
-  bottom: -4px;
+  height: 16px;
 }
 .color-picker-slider:active::-webkit-slider-thumb {
   background-image: url("../img/icons/colorPickerMarker2.png");
   background-repeat: no-repeat;
+  background-position: center bottom;
   position: relative;
-  z-index: 999;
   width: 7px;
-  height: 7px;
-  bottom: -4px;
+  height: 16px;
+}
+.color-picker-slider:active::-moz-range-thumb {
+  background-image: url("../img/icons/colorPickerMarker2.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  position: relative;
+  width: 7px;
+  height: 16px;
+}
+.color-picker-slider:active::-ms-thumb {
+  background-image: url("../img/icons/colorPickerMarker2.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  position: relative;
+  width: 7px;
+  height: 16px;
 }
 .color-picker-input {
-  flex: 1 0 0%;
+  flex: 0 0 auto;
   max-width: 5em;
   box-sizing: border-box;
 }
 .color-picker-input-hex {
   right: 0;
+  top: 0;
   position: absolute;
 }
 .flag-setter-display {
@@ -3759,12 +3827,14 @@ button.player-setup-remove-player.disabled {
   border-radius: 10px;
 }
 .map-gen-option-slider {
-  flex: 0 1 45%;
   -webkit-appearance: none;
   /* Hides the slider so that custom slider can be made */
   width: 100%;
   /* Specific width is required for Firefox. */
   background: transparent;
+  padding: 0;
+  margin: 0;
+  flex: 0 1 45%;
 }
 .map-gen-option-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -3773,6 +3843,13 @@ button.player-setup-remove-player.disabled {
   outline: none;
   /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
 }
+.map-gen-option-slider::-moz-range-track {
+  background: transparent;
+}
+.map-gen-option-slider::-moz-range-thumb {
+  background: transparent;
+  border: none;
+}
 .map-gen-option-slider::-ms-track {
   width: 100%;
   cursor: pointer;
@@ -3780,6 +3857,13 @@ button.player-setup-remove-player.disabled {
   /* Hides the slider so custom styles can be added */
   border-color: transparent;
   color: transparent;
+}
+.map-gen-option-slider::-ms-fill-lower {
+  background: transparent;
+}
+.map-gen-option-slider::-ms-thumb {
+  border: none;
+  background: transparent;
 }
 .map-gen-option-slider::-webkit-slider-thumb {
   background-image: url("../img/icons/spentAction.png");
@@ -3806,6 +3890,24 @@ button.player-setup-remove-player.disabled {
   top: -2px;
 }
 .map-gen-option-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #0c1615 0%, #0d1c25 10%, #0d1c25 66%, #0d2335 100%);
+  background-color: #0d1c25;
+  border: 1px solid #77abce;
+  border-radius: 10px;
+}
+.map-gen-option-slider::-moz-range-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #0c1615 0%, #0d1c25 10%, #0d1c25 66%, #0d2335 100%);
+  background-color: #0d1c25;
+  border: 1px solid #77abce;
+  border-radius: 10px;
+}
+.map-gen-option-slider::-ms-track {
   width: 100%;
   height: 10px;
   cursor: pointer;

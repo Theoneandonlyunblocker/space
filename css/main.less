@@ -306,6 +306,8 @@ ul, ol
   -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
   width: 100%; /* Specific width is required for Firefox. */
   background: transparent;
+  padding: 0;
+  margin: 0;
 
   &::-webkit-slider-thumb
   {
@@ -317,6 +319,17 @@ ul, ol
     outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
   }
 
+  &::-moz-range-track
+  {
+    background: transparent;
+  }
+
+  &::-moz-range-thumb
+  {
+    background: transparent;
+    border: none;
+  }
+
   &::-ms-track
   {
     width: 100%;
@@ -324,6 +337,15 @@ ul, ol
     background: transparent; /* Hides the slider so custom styles can be added */
     border-color: transparent;
     color: transparent;
+  }
+  &::-ms-fill-lower
+  {
+    background: transparent;
+  }
+  &::-ms-thumb
+  {
+    border: none;
+    background: transparent;
   }
 }
 
@@ -3674,6 +3696,7 @@ button.player-setup-remove-player
   height: 1.5em;
   margin: 0.15em 0;
   align-items: center;
+  position: relative;
 }
 
 .color-picker-label
@@ -3684,33 +3707,35 @@ button.player-setup-remove-player
 
 .color-picker-slider-background
 {
-  height: 1em;
+  height: 16px;
+  position: relative;
 }
 
 .color-picker-slider-thumb-base-mixin(@imageSrc)
 {
   background-image: url(@imageSrc);
   background-repeat: no-repeat;
+  background-position: center bottom;
 
   position: relative;
-  z-index: 999;
   width: 7px;
-  height: 7px;
-  bottom: -4px;
+  height: 16px;
 }
 
 .color-picker-slider-thumb-mixin
 {
   .color-picker-slider-thumb-base-mixin("../img/icons/colorPickerMarker.png")
 }
+.color-picker-slider-thumb-mixin-active
+{
+  .color-picker-slider-thumb-base-mixin("../img/icons/colorPickerMarker2.png")
+}
 .color-picker-slider
 {
-  width: 8em;
-  height: 1.5em;
-  z-index: 5;
-  box-sizing: border-box;
-
   .reset-progress-style;
+  width: 8em;
+  height: 24px;
+
   &::-webkit-slider-thumb
   {
     .color-picker-slider-thumb-mixin;
@@ -3725,13 +3750,21 @@ button.player-setup-remove-player
   }
   &:active::-webkit-slider-thumb
   {
-    .color-picker-slider-thumb-base-mixin("../img/icons/colorPickerMarker2.png")
+    .color-picker-slider-thumb-mixin-active;
+  }
+  &:active::-moz-range-thumb
+  {
+    .color-picker-slider-thumb-mixin-active;
+  }
+  &:active::-ms-thumb
+  {
+    .color-picker-slider-thumb-mixin-active;
   }
 }
 
 .color-picker-input
 {
-  flex: 1 0 0%;
+  flex: 0 0 auto;
   max-width: 5em;
   box-sizing: border-box;
 }
@@ -3739,6 +3772,7 @@ button.player-setup-remove-player
 .color-picker-input-hex
 {
   right: 0;
+  top: 0;
   position: absolute;
 }
 
@@ -3889,8 +3923,8 @@ button.player-setup-remove-player
 
 .map-gen-option-slider
 {
-  flex: 0 1 45%;
   .reset-progress-style;
+  flex: 0 1 45%;
 
   &::-webkit-slider-thumb
   {
@@ -3906,6 +3940,14 @@ button.player-setup-remove-player
   }
 
   &::-webkit-slider-runnable-track
+  {
+    .map-gen-slider-track-mixin;
+  }
+  &::-moz-range-track
+  {
+    .map-gen-slider-track-mixin;
+  }
+  &::-ms-track
   {
     .map-gen-slider-track-mixin;
   }
