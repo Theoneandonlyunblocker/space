@@ -16,7 +16,8 @@ module Rance
       {
         selectedStar: React.PropTypes.instanceOf(Star),
         player: React.PropTypes.instanceOf(Player).isRequired,
-        triggerUpdate: React.PropTypes.func.isRequired
+        triggerUpdate: React.PropTypes.func.isRequired,
+        money: React.PropTypes.number.isRequired
       },
 
       getInitialState: function()
@@ -115,7 +116,7 @@ module Rance
           consolidateLocations: false,
           triggerUpdate: this.props.triggerUpdate,
           canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
-          money: this.props.player.money
+          money: this.props.money
         }
         switch (key)
         {

@@ -22,6 +22,7 @@ module Rance
       getInitialState: function()
       {
         var initialSelected: Star = null;
+        var player: Player = this.props.player;
 
         var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
@@ -39,7 +40,8 @@ module Rance
         return(
         {
           selectedStar: initialSelected, // Star
-          highlightedStars: [initialSelected] // Star[]
+          highlightedStars: [initialSelected], // Star[]
+          money: player.money
         });
       },
 
@@ -48,14 +50,24 @@ module Rance
         this.forceUpdate();
       },
 
+      updateMoney: function()
+      {
+        this.setState(
+        {
+          money: this.props.player.money
+        });
+      },
+
       componentDidMount: function()
       {
         eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+        eventManager.addEventListener("playerMoneyUpdated", this.updateMoney);
       },
 
       componentWillUnmount: function()
       {
         eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+        eventManager.removeEventListener("playerMoneyUpdated", this.updateMoney);
       },
 
       getStarsWithAndWithoutManufactories: function()
@@ -126,7 +138,7 @@ module Rance
             {
               manufactory: selectedStar.manufactory,
               triggerUpdate: this.triggerUpdate,
-              money: player.money
+              money: this.state.money
             });
           }
           else
@@ -135,6 +147,7 @@ module Rance
             {
               star: selectedStar,
               player: player,
+              money: this.state.money,
               triggerUpdate: this.triggerUpdate
             });
           }
@@ -161,6 +174,7 @@ module Rance
               {
                 selectedStar: selectedStar,
                 player: player,
+                money: this.state.money,
                 triggerUpdate: this.triggerUpdate
               })
             )

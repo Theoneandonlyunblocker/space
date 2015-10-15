@@ -7,6 +7,18 @@ module Rance
     export var TechnologiesList = React.createClass(
     {
       displayName: "TechnologiesList",
+      updateListener: undefined,
+
+      componentDidMount: function()
+      {
+        this.updateListener = eventManager.addEventListener(
+          "builtBuildingWithEffect_research", this.forceUpdate.bind(this));
+      },
+
+      componentWillUnmount: function()
+      {
+        eventManager.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
+      },
       render: function()
       {
         var player: Player = this.props.player;

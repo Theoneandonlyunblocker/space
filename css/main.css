@@ -3303,6 +3303,7 @@ ol {
   overflow-y: auto;
 }
 .building-upgrade-group-header {
+  color: #eeeeec;
   font-size: 0.82em;
 }
 .building-upgrade-list-item-cost {

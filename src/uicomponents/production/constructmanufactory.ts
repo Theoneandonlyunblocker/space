@@ -13,14 +13,15 @@ module Rance
       {
         star: React.PropTypes.instanceOf(Star).isRequired,
         player: React.PropTypes.instanceOf(Player).isRequired,
-        triggerUpdate: React.PropTypes.func.isRequired
+        triggerUpdate: React.PropTypes.func.isRequired,
+        money: React.PropTypes.number.isRequired
       },
 
       getInitialState: function()
       {
         return(
         {
-          canAfford: this.props.player.money >= manufactoryData.buildCost
+          canAfford: this.props.money >= manufactoryData.buildCost
         });
       },
       
@@ -28,7 +29,7 @@ module Rance
       {
         this.setState(
         {
-          canAfford: newProps.player.money >= manufactoryData.buildCost
+          canAfford: newProps.money >= manufactoryData.buildCost
         });
       },
 

@@ -5645,6 +5645,13 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TechnologiesList = React.createClass({
             displayName: "TechnologiesList",
+            updateListener: undefined,
+            componentDidMount: function () {
+                this.updateListener = Rance.eventManager.addEventListener("builtBuildingWithEffect_research", this.forceUpdate.bind(this));
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
+            },
             render: function () {
                 var player = this.props.player;
                 var researchSpeed = player.getResearchSpeed();
@@ -14208,7 +14215,8 @@ var Rance;
             propTypes: {
                 selectedStar: React.PropTypes.instanceOf(Rance.Star),
                 player: React.PropTypes.instanceOf(Rance.Player).isRequired,
-                triggerUpdate: React.PropTypes.func.isRequired
+                triggerUpdate: React.PropTypes.func.isRequired,
+                money: React.PropTypes.number.isRequired
             },
             getInitialState: function () {
                 return ({
@@ -14279,7 +14287,7 @@ var Rance;
                     consolidateLocations: false,
                     triggerUpdate: this.props.triggerUpdate,
                     canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
-                    money: this.props.player.money
+                    money: this.props.money
                 };
                 switch (key) {
                     case "units":
@@ -14316,16 +14324,17 @@ var Rance;
             propTypes: {
                 star: React.PropTypes.instanceOf(Rance.Star).isRequired,
                 player: React.PropTypes.instanceOf(Rance.Player).isRequired,
-                triggerUpdate: React.PropTypes.func.isRequired
+                triggerUpdate: React.PropTypes.func.isRequired,
+                money: React.PropTypes.number.isRequired
             },
             getInitialState: function () {
                 return ({
-                    canAfford: this.props.player.money >= manufactoryData.buildCost
+                    canAfford: this.props.money >= manufactoryData.buildCost
                 });
             },
             componentWillReceiveProps: function (newProps) {
                 this.setState({
-                    canAfford: newProps.player.money >= manufactoryData.buildCost
+                    canAfford: newProps.money >= manufactoryData.buildCost
                 });
             },
             handleConstruct: function () {
@@ -14369,6 +14378,7 @@ var Rance;
             },
             getInitialState: function () {
                 var initialSelected = null;
+                var player = this.props.player;
                 var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
                 if (starsByManufactoryPresence.withManufactories.length > 0) {
                     starsByManufactoryPresence.withManufactories.sort(Rance.sortByManufactoryCapacityFN);
@@ -14380,17 +14390,25 @@ var Rance;
                 }
                 return ({
                     selectedStar: initialSelected,
-                    highlightedStars: [initialSelected] // Star[]
+                    highlightedStars: [initialSelected],
+                    money: player.money
                 });
             },
             triggerUpdate: function () {
                 this.forceUpdate();
             },
+            updateMoney: function () {
+                this.setState({
+                    money: this.props.player.money
+                });
+            },
             componentDidMount: function () {
                 Rance.eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+                Rance.eventManager.addEventListener("playerMoneyUpdated", this.updateMoney);
             },
             componentWillUnmount: function () {
                 Rance.eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
+                Rance.eventManager.removeEventListener("playerMoneyUpdated", this.updateMoney);
             },
             getStarsWithAndWithoutManufactories: function () {
                 var player = this.props.player;
@@ -14437,13 +14455,14 @@ var Rance;
                         queueElement = UIComponents.BuildQueue({
                             manufactory: selectedStar.manufactory,
                             triggerUpdate: this.triggerUpdate,
-                            money: player.money
+                            money: this.state.money
                         });
                     }
                     else {
                         queueElement = UIComponents.ConstructManufactory({
                             star: selectedStar,
                             player: player,
+                            money: this.state.money,
                             triggerUpdate: this.triggerUpdate
                         });
                     }
@@ -14460,6 +14479,7 @@ var Rance;
                 }, queueElement, UIComponents.ManufacturableThings({
                     selectedStar: selectedStar,
                     player: player,
+                    money: this.state.money,
                     triggerUpdate: this.triggerUpdate
                 }))));
             }
