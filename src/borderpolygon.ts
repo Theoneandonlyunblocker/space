@@ -246,8 +246,8 @@ module Rance
           var point = <any> offsetted[j];
           var nextPoint = <any> offsetted[(j + 1) % offsetted.length];
 
-          // TODO offset library can't handle acute angles properly. can lead to crashes
-          // if angle is at map edge due to points going off the map. clamping should fix crashes at least
+          // offset library can't handle acute angles properly. can lead to crashes if
+          // angle is at map edge due to points going off the map. clamping should fix crashes at least
           var edgeCenter: Point =
           {
             x: clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
