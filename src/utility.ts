@@ -79,6 +79,38 @@ module Rance
     var _rndProp = target[getRandomKey(target)];
     return _rndProp;
   }
+  export function getAllPropertiesWithKey(target: {[props: string]: any}, keyToFind: string)
+  {
+    var matchingProperties: any[] = [];
+    for (var key in target)
+    {
+      if (target[key][keyToFind])
+      {
+        matchingProperties.push(target[key]);
+      }
+    }
+
+    return matchingProperties;
+  }
+  export function getRandomPropertyWithKey(target: {[props: string]: any}, keyToFind: string)
+  {
+    var keys = Object.keys(target);
+    while (keys.length > 0)
+    {
+      var key = getRandomArrayItem(keys);
+      var prop = target[key];
+      if (prop[keyToFind])
+      {
+        return prop[keyToFind];
+      }
+      else
+      {
+        keys.splice(keys.indexOf(key), 1);
+      }
+    }
+
+    return null;
+  }
   export function getRandomKeyWithWeights(target: {[prop: string]: number})
   {
     var totalWeight: number = 0;
@@ -114,6 +146,46 @@ module Rance
         return arr[i];
       }
     }
+  }
+  export function findItemWithKey<T>(source: {[key: string]: any},
+    keyToFind: string, parentKey?: string, hasParentKey: boolean = false): T
+  {
+    var hasParentKey = hasParentKey;
+    if (source[keyToFind])
+    {
+      if (!parentKey || hasParentKey)
+      {
+        return source[keyToFind];
+      }
+    };
+
+    for (var key in source)
+    {
+      if (key === parentKey)
+      {
+        hasParentKey = true;
+      }
+      if (source[key][keyToFind])
+      {
+        if (!parentKey || hasParentKey)
+        {
+          return source[key][keyToFind];
+        }
+      }
+      else if (typeof source[key] === "object")
+      {
+        var matchFound = findItemWithKey<T>(source[key], keyToFind, parentKey, hasParentKey);
+        if (matchFound)
+        {
+          if (!parentKey || hasParentKey)
+          {
+            return matchFound;
+          }
+        }
+      }
+    }
+
+    return null;
   }
   export function getFrom2dArray(target: any[][], arr: number[][]): any[]
   {
@@ -511,5 +583,9 @@ module Rance
       }
     }
     return allItems;
+  }
+  export function defaultNameGenerator(unit: Unit)
+  {
+    return "" + unit.id + " " + unit.template.displayName;
   }
 }

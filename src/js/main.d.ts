@@ -36,6 +36,7 @@
 /// <reference path="../templateinterfaces/iunitdrawingfunction.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="../templateinterfaces/iculturetemplate.d.ts" />
 /// <reference path="../tutorials/tutorial.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
@@ -76,6 +77,11 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var UnitStatusEffects: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitPortrait: React.Factory<{}>;
     }
 }
 declare module Rance {
@@ -459,6 +465,13 @@ declare module Rance {
     }
 }
 declare module Rance {
+    enum RandomGenUnitRarity {
+        common = 0,
+        elite = 1,
+        commander = 2,
+    }
+}
+declare module Rance {
     enum DamageType {
         physical = 0,
         magical = 1,
@@ -496,12 +509,21 @@ declare module Rance {
     function getRandomProperty(target: {
         [props: string]: any;
     }): any;
+    function getAllPropertiesWithKey(target: {
+        [props: string]: any;
+    }, keyToFind: string): any[];
+    function getRandomPropertyWithKey(target: {
+        [props: string]: any;
+    }, keyToFind: string): any;
     function getRandomKeyWithWeights(target: {
         [prop: string]: number;
     }): any;
     function getRandomArrayItemWithWeights<T extends {
         weight?: number;
     }>(arr: T[]): T;
+    function findItemWithKey<T>(source: {
+        [key: string]: any;
+    }, keyToFind: string, parentKey?: string, hasParentKey?: boolean): T;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
@@ -534,6 +556,7 @@ declare module Rance {
     function onDOMLoaded(onLoaded: () => void): void;
     function meetAllPlayers(): void;
     function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IWeightedProbability<T>[]): T[];
+    function defaultNameGenerator(unit: Unit): string;
 }
 declare module Rance {
     interface IBuildingUpgradeData {
@@ -721,6 +744,7 @@ declare module Rance {
         template: Templates.IUnitTemplate;
         id: number;
         name: string;
+        portrait: Templates.IPortraitTemplate;
         maxHealth: number;
         currentHealth: number;
         isSquadron: boolean;
@@ -780,6 +804,7 @@ declare module Rance {
         setInitialValues(): void;
         setBaseHealth(multiplier?: number): void;
         setAttributes(baseSkill?: number, variance?: number): void;
+        setCulture(): void;
         getBaseMoveDelay(): number;
         resetMovePoints(): void;
         resetBattleStats(): void;
@@ -2797,6 +2822,9 @@ declare module Rance {
         Buildings: {
             [type: string]: Templates.IBuildingTemplate;
         };
+        Cultures: {
+            [key: string]: Templates.ICultureTemplate;
+        };
         Effects: {
             [type: string]: Templates.IEffectTemplate;
         };
@@ -3478,6 +3506,22 @@ declare module Rance {
             module BuildingTemplates {
                 var commercialPortTest: Rance.Templates.IBuildingTemplate;
             }
+            var moduleFile: IModuleFile;
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module PaintingPortraits {
+            module Culture {
+                var paintingPortraitsCulture: Rance.Templates.ICultureTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module PaintingPortraits {
             var moduleFile: IModuleFile;
         }
     }

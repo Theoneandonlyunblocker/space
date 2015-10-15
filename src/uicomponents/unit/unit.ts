@@ -1,6 +1,7 @@
 /// <reference path="unitinfo.ts"/>
 /// <reference path="uniticon.ts"/>
 /// <reference path="unitstatuseffects.ts" />
+/// <reference path="unitportrait.ts" />
 /// <reference path="../mixins/draggable.ts" />
 
 module Rance
@@ -51,7 +52,7 @@ module Rance
 
       render: function()
       {
-        var unit = this.props.unit;
+        var unit: Unit = this.props.unit;
         unit.uiDisplayIsDirty = false;
 
         var containerProps: any =
@@ -148,7 +149,10 @@ module Rance
             className: "unit-left-container",
             key: "leftContainer"
           },
-            React.DOM.div({className: "unit-image", key: "image"}), // UNIT IMAGE TODO
+            UIComponents.UnitPortrait(
+            {
+              imageSrc: (unit.portrait ? unit.portrait.imageSrc : "")
+            }),
             UIComponents.UnitStatusEffects(
             {
               unit: unit,

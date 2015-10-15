@@ -17,6 +17,8 @@ module Rance
     id: number;
 
     name: string;
+    portrait: Templates.IPortraitTemplate;
+
     maxHealth: number;
     currentHealth: number;
     isSquadron: boolean;
@@ -106,7 +108,6 @@ module Rance
       this.id = isFinite(id) ? id : idGenerators.unit++;
 
       this.template = template;
-      this.name = this.id + " " + template.displayName;
       this.isSquadron = template.isSquadron;
       if (data)
       {
@@ -114,6 +115,7 @@ module Rance
       }
       else
       {
+        this.setCulture();
         this.setInitialValues();
       }
 
@@ -197,6 +199,9 @@ module Rance
       {
         this.addItem(items[slot]);
       }
+
+      this.portrait = findItemWithKey<Templates.IPortraitTemplate>(
+        app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
     }
     setInitialValues()
     {
@@ -249,6 +254,69 @@ module Rance
       this.baseAttributes = extendObject(attributes);
       this.attributes = attributes;
       this.attributesAreDirty = true;
+    }
+    setCulture()
+    {
+      // TODO culture TODO portraits
+      var templateCultures = this.template.cultures;
+
+      var nameGeneratorCulture: Templates.ICultureTemplate;
+      var nameGeneratorFN: (unit: Unit) => string;
+      var nameGeneratorCandidateCultures: Templates.ICultureTemplate[] = templateCultures.filter(
+        function(cultureTemplate: Templates.ICultureTemplate)
+      {
+        return Boolean(cultureTemplate.nameGenerator);
+      });
+
+      if (nameGeneratorCandidateCultures.length === 0)
+      {
+        nameGeneratorCulture = getRandomPropertyWithKey(app.moduleData.Templates.Cultures, "nameGenerator");
+      }
+      else
+      {
+        nameGeneratorCulture = getRandomArrayItem(nameGeneratorCandidateCultures);
+      }
+
+      if (!nameGeneratorCulture)
+      {
+        nameGeneratorFN = defaultNameGenerator;
+      }
+      else
+      {
+        nameGeneratorFN = nameGeneratorCulture.nameGenerator;
+      }
+
+      this.name = nameGeneratorFN(this);
+
+
+      var portraitCandidateCultures: Templates.ICultureTemplate[] = templateCultures.filter(
+        function(cultureTemplate: Templates.ICultureTemplate)
+      {
+        return Boolean(cultureTemplate.portraits);
+      });
+
+      if (portraitCandidateCultures.length === 0)
+      {
+        portraitCandidateCultures = getAllPropertiesWithKey(app.moduleData.Templates.Cultures, "portraits");
+        if (portraitCandidateCultures.length === 0)
+        {
+          console.warn("No culture has portraits specified"); //TODO culture
+        }
+      }
+
+
+      var portraitCandidateCulturesWithWeights: any =
+        portraitCandidateCultures.map(function(culture: Templates.ICultureTemplate)
+      {
+        return(
+        {
+          weight: Object.keys(culture.portraits).length,
+          culture: culture
+        });
+      });
+
+      var portraitCulture = getRandomArrayItemWithWeights<any>(portraitCandidateCulturesWithWeights).culture;
+      this.portrait = getRandomProperty(portraitCulture.portraits);
     }
     getBaseMoveDelay()
     {
@@ -1118,6 +1186,8 @@ module Rance
           if (this.items[slot]) data.items[slot] = this.items[slot].serialize();
         }
       }
+
+      data.portraitKey = this.portrait.key;
 
       return data;
     }

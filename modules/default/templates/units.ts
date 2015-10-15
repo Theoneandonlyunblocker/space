@@ -25,6 +25,7 @@ module Rance
             description: "sebug",
             archetype: UnitArchetypes.combat,
             families: [UnitFamilies.debug],
+            cultures: [],
             sprite:
             {
               imageSrc: "cheatShip.png",
@@ -114,6 +115,7 @@ module Rance
             description: "Fast and cheap unit with good attack and speed but low defence",
             archetype: UnitArchetypes.combat,
             families: [UnitFamilies.basic],
+            cultures: [],
             sprite:
             {
               imageSrc: "fighter.png",
@@ -154,6 +156,7 @@ module Rance
             description: "Can damage multiple targets with special bomb attack",
             archetype: UnitArchetypes.combat,
             families: [UnitFamilies.basic],
+            cultures: [],
             sprite:
             {
               imageSrc: "bomber.png",
@@ -194,6 +197,7 @@ module Rance
             description: "Strong combat ship with low speed",
             archetype: UnitArchetypes.combat,
             families: [UnitFamilies.basic],
+            cultures: [],
             sprite:
             {
               imageSrc: "battleCruiser.png",
@@ -234,6 +238,7 @@ module Rance
             description: "Weak in combat, but has high vision and can reveal stealthy units and details of units in same star",
             archetype: UnitArchetypes.scouting,
             families: [UnitFamilies.basic],
+            cultures: [],
             sprite:
             {
               imageSrc: "scout.png",
@@ -273,6 +278,7 @@ module Rance
             description: "Weak ship that is undetectable by regular vision",
             archetype: UnitArchetypes.scouting,
             families: [UnitFamilies.debug],
+            cultures: [],
             sprite:
             {
               imageSrc: "scout.png",
@@ -314,6 +320,7 @@ module Rance
             description: "Great defence and ability to protect allies in same row",
             archetype: UnitArchetypes.defence,
             families: [UnitFamilies.basic],
+            cultures: [],
             sprite:
             {
               imageSrc: "shieldBoat.png",
@@ -365,6 +372,7 @@ module Rance
             description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
             archetype: UnitArchetypes.utility,
             families: [UnitFamilies.red],
+            cultures: [],
             sprite:
             {
               imageSrc: "scout.png",
@@ -404,6 +412,7 @@ module Rance
             description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
             archetype: UnitArchetypes.utility,
             families: [UnitFamilies.blue],
+            cultures: [],
             sprite:
             {
               imageSrc: "scout.png",

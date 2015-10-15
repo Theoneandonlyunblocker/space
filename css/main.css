@@ -775,9 +775,12 @@ ol {
     display: none;
   }
 }
-.unit-image {
+.unit-portrait {
   width: 64px;
-  height: 64px;
+  height: 80px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 }
 .unit-status-effects-container {
   position: absolute;
@@ -1277,7 +1280,7 @@ ol {
   border-image-slice: 10%;
 }
 @media (max-width: 1000px) {
-  .battle-prep .unit.unit-image {
+  .battle-prep .unit.unit-portrait {
     display: none;
   }
 }

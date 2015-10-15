@@ -18,6 +18,10 @@ module Rance
     {
       [type: string]: Templates.IBuildingTemplate;
     };
+    Cultures:
+    {
+      [key: string]: Templates.ICultureTemplate;
+    };
     Effects:
     {
       [type: string]: Templates.IEffectTemplate;
@@ -86,7 +90,6 @@ module Rance
       [type: string]: Templates.IUnitTemplate;
     };
   }
-
   export interface IModuleMetaData
   {
     name: string;
@@ -127,6 +130,7 @@ module Rance
       AttitudeModifiers: {},
       BattleSFX: {},
       Buildings: {},
+      Cultures: {},
       Effects: {},
       Items: {},
       MapGen: {},

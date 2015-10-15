@@ -1,0 +1,913 @@
+export var adelaide_hanscom1: Rance.Templates.IPortraitTemplate =
+{
+  key: "adelaide_hanscom1",
+  imageSrc: "img\/portraits\/adelaide_hanscom1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var alessandro_allori1: Rance.Templates.IPortraitTemplate =
+{
+  key: "alessandro_allori1",
+  imageSrc: "img\/portraits\/alessandro_allori1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var alessandro_allori2: Rance.Templates.IPortraitTemplate =
+{
+  key: "alessandro_allori2",
+  imageSrc: "img\/portraits\/alessandro_allori2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var alexandre_cabanel1: Rance.Templates.IPortraitTemplate =
+{
+  key: "alexandre_cabanel1",
+  imageSrc: "img\/portraits\/alexandre_cabanel1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var alexei_harlamov1: Rance.Templates.IPortraitTemplate =
+{
+  key: "alexei_harlamov1",
+  imageSrc: "img\/portraits\/alexei_harlamov1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var alexey_petrovich_antropov1: Rance.Templates.IPortraitTemplate =
+{
+  key: "alexey_petrovich_antropov1",
+  imageSrc: "img\/portraits\/alexey_petrovich_antropov1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var alice_pike_barney1: Rance.Templates.IPortraitTemplate =
+{
+  key: "alice_pike_barney1",
+  imageSrc: "img\/portraits\/alice_pike_barney1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var aman_theodor1: Rance.Templates.IPortraitTemplate =
+{
+  key: "aman_theodor1",
+  imageSrc: "img\/portraits\/aman_theodor1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var antonello_messina1: Rance.Templates.IPortraitTemplate =
+{
+  key: "antonello_messina1",
+  imageSrc: "img\/portraits\/antonello_messina1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var antonio_herrera_toro1: Rance.Templates.IPortraitTemplate =
+{
+  key: "antonio_herrera_toro1",
+  imageSrc: "img\/portraits\/antonio_herrera_toro1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var benjaminconstant1: Rance.Templates.IPortraitTemplate =
+{
+  key: "benjaminconstant1",
+  imageSrc: "img\/portraits\/benjamin-constant1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var benoist_marieguillemine1: Rance.Templates.IPortraitTemplate =
+{
+  key: "benoist_marieguillemine1",
+  imageSrc: "img\/portraits\/benoist_marie-guillemine1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var bouguereau_williamadolphe1: Rance.Templates.IPortraitTemplate =
+{
+  key: "bouguereau_williamadolphe1",
+  imageSrc: "img\/portraits\/bouguereau_william-adolphe1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var byron1: Rance.Templates.IPortraitTemplate =
+{
+  key: "byron1",
+  imageSrc: "img\/portraits\/byron1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var carl_fredric_breda1: Rance.Templates.IPortraitTemplate =
+{
+  key: "carl_fredric_breda1",
+  imageSrc: "img\/portraits\/carl_fredric_breda1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var carl_fredric_breda2: Rance.Templates.IPortraitTemplate =
+{
+  key: "carl_fredric_breda2",
+  imageSrc: "img\/portraits\/carl_fredric_breda2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var cramacj_lucas1: Rance.Templates.IPortraitTemplate =
+{
+  key: "cramacj_lucas1",
+  imageSrc: "img\/portraits\/cramacj_lucas1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var cranach_lucas2: Rance.Templates.IPortraitTemplate =
+{
+  key: "cranach_lucas2",
+  imageSrc: "img\/portraits\/cranach_lucas2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var cristobal_rojas1: Rance.Templates.IPortraitTemplate =
+{
+  key: "cristobal_rojas1",
+  imageSrc: "img\/portraits\/cristobal_rojas1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var delacroix_eugene_ferdinand_victor1: Rance.Templates.IPortraitTemplate =
+{
+  key: "delacroix_eugene_ferdinand_victor1",
+  imageSrc: "img\/portraits\/delacroix_eugene_ferdinand_victor1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var domenikos_theotokopoulos1: Rance.Templates.IPortraitTemplate =
+{
+  key: "domenikos_theotokopoulos1",
+  imageSrc: "img\/portraits\/domenikos_theotokopoulos1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var edmund_blair_leighton1: Rance.Templates.IPortraitTemplate =
+{
+  key: "edmund_blair_leighton1",
+  imageSrc: "img\/portraits\/edmund_blair_leighton1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var edmund_blair_leighton2: Rance.Templates.IPortraitTemplate =
+{
+  key: "edmund_blair_leighton2",
+  imageSrc: "img\/portraits\/edmund_blair_leighton2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var edwin_longsden_long1: Rance.Templates.IPortraitTemplate =
+{
+  key: "edwin_longsden_long1",
+  imageSrc: "img\/portraits\/edwin_longsden_long1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var falero_luis_ricardo1: Rance.Templates.IPortraitTemplate =
+{
+  key: "falero_luis_ricardo1",
+  imageSrc: "img\/portraits\/falero_luis_ricardo1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var felix_bonfils1: Rance.Templates.IPortraitTemplate =
+{
+  key: "felix_bonfils1",
+  imageSrc: "img\/portraits\/felix_bonfils1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var francesco_hayez1: Rance.Templates.IPortraitTemplate =
+{
+  key: "francesco_hayez1",
+  imageSrc: "img\/portraits\/francesco_hayez1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var francisco_goya_lucientes1: Rance.Templates.IPortraitTemplate =
+{
+  key: "francisco_goya_lucientes1",
+  imageSrc: "img\/portraits\/francisco_goya_lucientes1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var francisco_goya_lucientes2: Rance.Templates.IPortraitTemplate =
+{
+  key: "francisco_goya_lucientes2",
+  imageSrc: "img\/portraits\/francisco_goya_lucientes2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var francisco_zurbaran1: Rance.Templates.IPortraitTemplate =
+{
+  key: "francisco_zurbaran1",
+  imageSrc: "img\/portraits\/francisco_zurbaran1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var franz_von_defregger1: Rance.Templates.IPortraitTemplate =
+{
+  key: "franz_von_defregger1",
+  imageSrc: "img\/portraits\/franz_von_defregger1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var franz_von_defregger2: Rance.Templates.IPortraitTemplate =
+{
+  key: "franz_von_defregger2",
+  imageSrc: "img\/portraits\/franz_von_defregger2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var franz_von_defregger3: Rance.Templates.IPortraitTemplate =
+{
+  key: "franz_von_defregger3",
+  imageSrc: "img\/portraits\/franz_von_defregger3.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var frederick_leighton1: Rance.Templates.IPortraitTemplate =
+{
+  key: "frederick_leighton1",
+  imageSrc: "img\/portraits\/frederick_leighton1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var frederic_westin1: Rance.Templates.IPortraitTemplate =
+{
+  key: "frederic_westin1",
+  imageSrc: "img\/portraits\/frederic_westin1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var frederic_yates1: Rance.Templates.IPortraitTemplate =
+{
+  key: "frederic_yates1",
+  imageSrc: "img\/portraits\/frederic_yates1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var gaston_bussiere1: Rance.Templates.IPortraitTemplate =
+{
+  key: "gaston_bussiere1",
+  imageSrc: "img\/portraits\/gaston_bussiere1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var george_henry_hall1: Rance.Templates.IPortraitTemplate =
+{
+  key: "george_henry_hall1",
+  imageSrc: "img\/portraits\/george_henry_hall1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var giovanni_battista_tiepolo1: Rance.Templates.IPortraitTemplate =
+{
+  key: "giovanni_battista_tiepolo1",
+  imageSrc: "img\/portraits\/giovanni_battista_tiepolo1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var giovanni_bellini1: Rance.Templates.IPortraitTemplate =
+{
+  key: "giovanni_bellini1",
+  imageSrc: "img\/portraits\/giovanni_bellini1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var hans_holbein1: Rance.Templates.IPortraitTemplate =
+{
+  key: "hans_holbein1",
+  imageSrc: "img\/portraits\/hans_holbein1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var hayez_francesco1: Rance.Templates.IPortraitTemplate =
+{
+  key: "hayez_francesco1",
+  imageSrc: "img\/portraits\/hayez_francesco1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var henryk_siemiradzki1: Rance.Templates.IPortraitTemplate =
+{
+  key: "henryk_siemiradzki1",
+  imageSrc: "img\/portraits\/henryk_siemiradzki1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var ilja_jefimowitsch_repin1: Rance.Templates.IPortraitTemplate =
+{
+  key: "ilja_jefimowitsch_repin1",
+  imageSrc: "img\/portraits\/ilja_jefimowitsch_repin1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var james_carrol_beckwith1: Rance.Templates.IPortraitTemplate =
+{
+  key: "james_carrol_beckwith1",
+  imageSrc: "img\/portraits\/james_carrol_beckwith1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var jeanbaptistecamille_corot1: Rance.Templates.IPortraitTemplate =
+{
+  key: "jeanbaptistecamille_corot1",
+  imageSrc: "img\/portraits\/jean-baptiste-camille_corot1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var jeanbaptistecamille_corot2: Rance.Templates.IPortraitTemplate =
+{
+  key: "jeanbaptistecamille_corot2",
+  imageSrc: "img\/portraits\/jean-baptiste-camille_corot2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var jeanleon_gerome1: Rance.Templates.IPortraitTemplate =
+{
+  key: "jeanleon_gerome1",
+  imageSrc: "img\/portraits\/jean-leon_gerome1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var jeanleon_gerome2: Rance.Templates.IPortraitTemplate =
+{
+  key: "jeanleon_gerome2",
+  imageSrc: "img\/portraits\/jean-leon_gerome2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var jeanleon_gerome3: Rance.Templates.IPortraitTemplate =
+{
+  key: "jeanleon_gerome3",
+  imageSrc: "img\/portraits\/jean-leon_gerome3.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var jeanleon_gerome4: Rance.Templates.IPortraitTemplate =
+{
+  key: "jeanleon_gerome4",
+  imageSrc: "img\/portraits\/jean-leon_gerome4.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var john_william_godward1: Rance.Templates.IPortraitTemplate =
+{
+  key: "john_william_godward1",
+  imageSrc: "img\/portraits\/john_william_godward1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var john_william_godward2: Rance.Templates.IPortraitTemplate =
+{
+  key: "john_william_godward2",
+  imageSrc: "img\/portraits\/john_william_godward2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var john_william_godward3: Rance.Templates.IPortraitTemplate =
+{
+  key: "john_william_godward3",
+  imageSrc: "img\/portraits\/john_william_godward3.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var julije_klovic1: Rance.Templates.IPortraitTemplate =
+{
+  key: "julije_klovic1",
+  imageSrc: "img\/portraits\/julije_klovic1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var juriaen_streek1: Rance.Templates.IPortraitTemplate =
+{
+  key: "juriaen_streek1",
+  imageSrc: "img\/portraits\/juriaen_streek1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var kiprenskij_orest_adamovic1: Rance.Templates.IPortraitTemplate =
+{
+  key: "kiprenskij_orest_adamovic1",
+  imageSrc: "img\/portraits\/kiprenskij_orest_adamovic1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var konstantin_makovsky1: Rance.Templates.IPortraitTemplate =
+{
+  key: "konstantin_makovsky1",
+  imageSrc: "img\/portraits\/konstantin_makovsky1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var lefebvre_jules_joseph1: Rance.Templates.IPortraitTemplate =
+{
+  key: "lefebvre_jules_joseph1",
+  imageSrc: "img\/portraits\/lefebvre_jules_joseph1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var leonfrancois_comerre1: Rance.Templates.IPortraitTemplate =
+{
+  key: "leonfrancois_comerre1",
+  imageSrc: "img\/portraits\/leon-francois_comerre1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var leopold_loffler1: Rance.Templates.IPortraitTemplate =
+{
+  key: "leopold_loffler1",
+  imageSrc: "img\/portraits\/leopold_loffler1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var lewis_john_frederick1: Rance.Templates.IPortraitTemplate =
+{
+  key: "lewis_john_frederick1",
+  imageSrc: "img\/portraits\/lewis_john_frederick1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var madrazo_garreta_raimundo1: Rance.Templates.IPortraitTemplate =
+{
+  key: "madrazo_garreta_raimundo1",
+  imageSrc: "img\/portraits\/madrazo_garreta_raimundo1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var marie_bashkirtseff1: Rance.Templates.IPortraitTemplate =
+{
+  key: "marie_bashkirtseff1",
+  imageSrc: "img\/portraits\/marie_bashkirtseff1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var moritz_kellerhoven1: Rance.Templates.IPortraitTemplate =
+{
+  key: "moritz_kellerhoven1",
+  imageSrc: "img\/portraits\/moritz_kellerhoven1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var nathaniel_jocelyn1: Rance.Templates.IPortraitTemplate =
+{
+  key: "nathaniel_jocelyn1",
+  imageSrc: "img\/portraits\/nathaniel_jocelyn1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var nikolai_alexandrowitsch_jaroschenko1: Rance.Templates.IPortraitTemplate =
+{
+  key: "nikolai_alexandrowitsch_jaroschenko1",
+  imageSrc: "img\/portraits\/nikolai_alexandrowitsch_jaroschenko1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var nils_johan_olsson_blommer1: Rance.Templates.IPortraitTemplate =
+{
+  key: "nils_johan_olsson_blommer1",
+  imageSrc: "img\/portraits\/nils_johan_olsson_blommer1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var paolo_veronese1: Rance.Templates.IPortraitTemplate =
+{
+  key: "paolo_veronese1",
+  imageSrc: "img\/portraits\/paolo_veronese1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var parmigianino1: Rance.Templates.IPortraitTemplate =
+{
+  key: "parmigianino1",
+  imageSrc: "img\/portraits\/parmigianino1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var paul_cesar_helleu1: Rance.Templates.IPortraitTemplate =
+{
+  key: "paul_cesar_helleu1",
+  imageSrc: "img\/portraits\/paul_cesar_helleu1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var portrait: Rance.Templates.IPortraitTemplate =
+{
+  key: "portrait",
+  imageSrc: "img\/portraits\/portraits",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var regnault_henri1: Rance.Templates.IPortraitTemplate =
+{
+  key: "regnault_henri1",
+  imageSrc: "img\/portraits\/regnault_henri1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var richard_bergh1: Rance.Templates.IPortraitTemplate =
+{
+  key: "richard_bergh1",
+  imageSrc: "img\/portraits\/richard_bergh1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var richard_bergh2: Rance.Templates.IPortraitTemplate =
+{
+  key: "richard_bergh2",
+  imageSrc: "img\/portraits\/richard_bergh2.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var robert_dampier1: Rance.Templates.IPortraitTemplate =
+{
+  key: "robert_dampier1",
+  imageSrc: "img\/portraits\/robert_dampier1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var robert_lefevre1: Rance.Templates.IPortraitTemplate =
+{
+  key: "robert_lefevre1",
+  imageSrc: "img\/portraits\/robert_lefevre1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var robert_leopold1: Rance.Templates.IPortraitTemplate =
+{
+  key: "robert_leopold1",
+  imageSrc: "img\/portraits\/robert_leopold1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var sichel_nathanael1: Rance.Templates.IPortraitTemplate =
+{
+  key: "sichel_nathanael1",
+  imageSrc: "img\/portraits\/sichel_nathanael1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var svetoslav_roerich1: Rance.Templates.IPortraitTemplate =
+{
+  key: "svetoslav_roerich1",
+  imageSrc: "img\/portraits\/svetoslav_roerich1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var velazquez_diego1: Rance.Templates.IPortraitTemplate =
+{
+  key: "velazquez_diego1",
+  imageSrc: "img\/portraits\/velazquez_diego1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var viktor_vasnetsov1: Rance.Templates.IPortraitTemplate =
+{
+  key: "viktor_vasnetsov1",
+  imageSrc: "img\/portraits\/viktor_vasnetsov1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
+export var williamadolphe_bouguereau1: Rance.Templates.IPortraitTemplate =
+{
+  key: "williamadolphe_bouguereau1",
+  imageSrc: "img\/portraits\/william-adolphe_bouguereau1.png",
+  generatedFor:
+  [
+    Templates.RandomGenUnitRarity.common,
+    Templates.RandomGenUnitRarity.elite,
+    Templates.RandomGenUnitRarity.commander
+  ]
+}
