@@ -4,6 +4,11 @@ declare module Rance
 {
   module Templates
   {
+    interface IMapGenOption
+    {
+      displayName: string;
+      range: IRange;
+    }
     interface IMapGenOptions
     {
       defaultOptions: IMapDefaultOptions;
@@ -12,13 +17,13 @@ declare module Rance
     }
     interface IMapDefaultOptions
     {
-      height: IRange; // pixels
-      width: IRange; // pixels
-      starCount: IRange;
+      height: IMapGenOption; // pixels
+      width: IMapGenOption; // pixels
+      starCount: IMapGenOption;
     }
     interface IMapSpecificOptions
     {
-      [optionName: string]: IRange;
+      [optionName: string]: IMapGenOption;
     }
 
     interface IMapGenOptionValues

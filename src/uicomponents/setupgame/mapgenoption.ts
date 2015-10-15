@@ -21,12 +21,13 @@ module Rance
 
       render: function()
       {
-        var option = this.props.option;
+        var option: Templates.IMapGenOption = this.props.option;
+        var range = option.range;
         var id = "mapGenOption_" + this.props.id;
 
         ["min", "max", "step"].forEach(function(prop: string)
         {
-          if (!option[prop])
+          if (!range[prop])
           {
             throw new Error("No property " + prop +" specified on map gen option " + this.props.id);
           }
@@ -44,16 +45,16 @@ module Rance
               className: "map-gen-option-label",
               htmlFor: id
             },
-              this.props.id
+              option.displayName
             ),
             React.DOM.input(
             {
               className: "map-gen-option-slider",
               id: id,
               type: "range",
-              min: option.min,
-              max: option.max,
-              step: option.step,
+              min: range.min,
+              max: range.max,
+              step: range.step,
               value: this.props.value,
               onChange: this.handleChange
             }),
@@ -61,9 +62,9 @@ module Rance
             {
               className: "map-gen-option-value",
               type: "number",
-              min: option.min,
-              max: option.max,
-              step: option.step,
+              min: range.min,
+              max: range.max,
+              step: range.step,
               value: this.props.value,
               onChange: this.handleChange
             })

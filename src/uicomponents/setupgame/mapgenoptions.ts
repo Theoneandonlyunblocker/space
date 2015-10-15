@@ -2,6 +2,8 @@
 /// <reference path="../galaxymap/optionsgroup.ts" />
 /// <reference path="mapgenoption.ts" />
 
+/// <reference path="../../templateinterfaces/mapgenoptions.d.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -40,12 +42,12 @@ module Rance
 
         ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function(optionGroup: string)
         {
-          var options = mapGenTemplate.options[optionGroup];
+          var options: Templates.IMapGenOptions = mapGenTemplate.options[optionGroup];
           if (!options) return;
 
           for (var optionName in options)
           {
-            var option = options[optionName];
+            var option: IRange = options[optionName].range;
             var value: number;
 
             if (unsetOnly && this.state && isFinite(this.getOptionValue(optionName)))
@@ -102,13 +104,13 @@ module Rance
       {
         var newValues: any = {};
 
-        var optionGroups = this.props.mapGenTemplate.options;
+        var optionGroups: Templates.IMapGenOptions = this.props.mapGenTemplate.options;
         for (var optionGroupName in optionGroups)
         {
           var optionGroup = optionGroups[optionGroupName];
           for (var optionName in optionGroup)
           {
-            var option = optionGroup[optionName];
+            var option = optionGroup[optionName].range;
             var optionValue = clamp(roundToNearestMultiple(randInt(option.min, option.max), option.step), option.min, option.max);
             newValues["optionValue_" + optionName] = optionValue;
           }

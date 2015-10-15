@@ -28,45 +28,70 @@ module Rance
               {
                 height:
                 {
-                  min: 500,
-                  max: 1000,
-                  step: 1
+                  displayName: "height",
+                  range:
+                  {
+                    min: 500,
+                    max: 1000,
+                    step: 1
+                  }
                 },
                 width:
                 {
-                  min: 500,
-                  max: 1000,
-                  step: 1
+                  displayName: "width",
+                  range:
+                  {
+                    min: 500,
+                    max: 1000,
+                    step: 1
+                  }
                 },
                 starCount:
                 {
-                  min: 15,
-                  max: 35,
-                  step: 1
+                  displayName: "starCount",
+                  range:
+                  {
+                    min: 15,
+                    max: 30,
+                    step: 1,
+                    defaultValue: 20
+                  }
                 }
               },
               basicOptions:
               {
                 arms:
                 {
-                  min: 2,
-                  max: 5,
-                  step: 1,
-                  defaultValue: 4
+                  displayName: "arms",
+                  range:
+                  {
+                    min: 2,
+                    max: 5,
+                    step: 1,
+                    defaultValue: 4
+                  }
                 },
                 starSizeRegularity:
                 {
-                  min: 1,
-                  max: 100,
-                  step: 1,
-                  defaultValue: 100
+                  displayName: "starSizeRegularity",
+                  range:
+                  {
+                    min: 1,
+                    max: 100,
+                    step: 1,
+                    defaultValue: 100
+                  }
                 },
                 centerDensity:
                 {
-                  min: 1,
-                  max: 90,
-                  step: 1,
-                  defaultValue: 50
+                  displayName: "centerDensity",
+                  range:
+                  {
+                    min: 1,
+                    max: 90,
+                    step: 1,
+                    defaultValue: 50
+                  }
                 }
               }
             }

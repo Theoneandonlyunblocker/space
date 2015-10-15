@@ -17330,9 +17330,10 @@ var Rance;
             },
             render: function () {
                 var option = this.props.option;
+                var range = option.range;
                 var id = "mapGenOption_" + this.props.id;
                 ["min", "max", "step"].forEach(function (prop) {
-                    if (!option[prop]) {
+                    if (!range[prop]) {
                         throw new Error("No property " + prop + " specified on map gen option " + this.props.id);
                     }
                 }.bind(this));
@@ -17342,21 +17343,21 @@ var Rance;
                 }, React.DOM.label({
                     className: "map-gen-option-label",
                     htmlFor: id
-                }, this.props.id), React.DOM.input({
+                }, option.displayName), React.DOM.input({
                     className: "map-gen-option-slider",
                     id: id,
                     type: "range",
-                    min: option.min,
-                    max: option.max,
-                    step: option.step,
+                    min: range.min,
+                    max: range.max,
+                    step: range.step,
                     value: this.props.value,
                     onChange: this.handleChange
                 }), React.DOM.input({
                     className: "map-gen-option-value",
                     type: "number",
-                    min: option.min,
-                    max: option.max,
-                    step: option.step,
+                    min: range.min,
+                    max: range.max,
+                    step: range.step,
                     value: this.props.value,
                     onChange: this.handleChange
                 })));
@@ -17367,6 +17368,7 @@ var Rance;
 /// <reference path="../../utility.ts" />
 /// <reference path="../galaxymap/optionsgroup.ts" />
 /// <reference path="mapgenoption.ts" />
+/// <reference path="../../templateinterfaces/mapgenoptions.d.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -17396,7 +17398,7 @@ var Rance;
                     if (!options)
                         return;
                     for (var optionName in options) {
-                        var option = options[optionName];
+                        var option = options[optionName].range;
                         var value;
                         if (unsetOnly && this.state && isFinite(this.getOptionValue(optionName))) {
                             if (!this.props.mapGenTemplate.options[optionGroup])
@@ -17438,7 +17440,7 @@ var Rance;
                 for (var optionGroupName in optionGroups) {
                     var optionGroup = optionGroups[optionGroupName];
                     for (var optionName in optionGroup) {
-                        var option = optionGroup[optionName];
+                        var option = optionGroup[optionName].range;
                         var optionValue = Rance.clamp(Rance.roundToNearestMultiple(Rance.randInt(option.min, option.max), option.step), option.min, option.max);
                         newValues["optionValue_" + optionName] = optionValue;
                     }
@@ -21782,47 +21784,68 @@ var Rance;
                         options: {
                             defaultOptions: {
                                 height: {
-                                    min: 800,
-                                    max: 1600,
-                                    step: 1
+                                    displayName: "Height",
+                                    range: {
+                                        min: 800,
+                                        max: 1600,
+                                        step: 1
+                                    }
                                 },
                                 width: {
-                                    min: 800,
-                                    max: 1600,
-                                    step: 1
+                                    displayName: "Width",
+                                    range: {
+                                        min: 800,
+                                        max: 1600,
+                                        step: 1
+                                    }
                                 },
                                 starCount: {
-                                    min: 20,
-                                    max: 40,
-                                    step: 1
+                                    displayName: "Star count",
+                                    range: {
+                                        min: 20,
+                                        max: 40,
+                                        step: 1
+                                    }
                                 }
                             },
                             basicOptions: {
                                 arms: {
-                                    min: 3,
-                                    max: 6,
-                                    step: 1,
-                                    defaultValue: 5
+                                    displayName: "Arms",
+                                    range: {
+                                        min: 3,
+                                        max: 6,
+                                        step: 1,
+                                        defaultValue: 5
+                                    }
                                 },
                                 starSizeRegularity: {
-                                    min: 1,
-                                    max: 100,
-                                    step: 1,
-                                    defaultValue: 100
+                                    displayName: "Star size regularity",
+                                    range: {
+                                        min: 1,
+                                        max: 100,
+                                        step: 1,
+                                        defaultValue: 100
+                                    }
                                 },
                                 centerDensity: {
-                                    min: 1,
-                                    max: 90,
-                                    step: 1,
-                                    defaultValue: 50
+                                    displayName: "Center density",
+                                    range: {
+                                        min: 1,
+                                        max: 90,
+                                        step: 1,
+                                        defaultValue: 50
+                                    }
                                 }
                             },
                             advancedOptions: {
                                 funnyNumber: {
-                                    min: 69,
-                                    max: 420,
-                                    step: 351,
-                                    defaultValue: 69
+                                    displayName: "Funny number",
+                                    range: {
+                                        min: 69,
+                                        max: 420,
+                                        step: 351,
+                                        defaultValue: 69
+                                    }
                                 }
                             }
                         }
@@ -21854,39 +21877,58 @@ var Rance;
                         options: {
                             defaultOptions: {
                                 height: {
-                                    min: 500,
-                                    max: 1000,
-                                    step: 1
+                                    displayName: "height",
+                                    range: {
+                                        min: 500,
+                                        max: 1000,
+                                        step: 1
+                                    }
                                 },
                                 width: {
-                                    min: 500,
-                                    max: 1000,
-                                    step: 1
+                                    displayName: "width",
+                                    range: {
+                                        min: 500,
+                                        max: 1000,
+                                        step: 1
+                                    }
                                 },
                                 starCount: {
-                                    min: 15,
-                                    max: 35,
-                                    step: 1
+                                    displayName: "starCount",
+                                    range: {
+                                        min: 15,
+                                        max: 30,
+                                        step: 1,
+                                        defaultValue: 20
+                                    }
                                 }
                             },
                             basicOptions: {
                                 arms: {
-                                    min: 4,
-                                    max: 6,
-                                    step: 1,
-                                    defaultValue: 4
+                                    displayName: "arms",
+                                    range: {
+                                        min: 2,
+                                        max: 5,
+                                        step: 1,
+                                        defaultValue: 4
+                                    }
                                 },
                                 starSizeRegularity: {
-                                    min: 1,
-                                    max: 100,
-                                    step: 1,
-                                    defaultValue: 100
+                                    displayName: "starSizeRegularity",
+                                    range: {
+                                        min: 1,
+                                        max: 100,
+                                        step: 1,
+                                        defaultValue: 100
+                                    }
                                 },
                                 centerDensity: {
-                                    min: 1,
-                                    max: 90,
-                                    step: 1,
-                                    defaultValue: 50
+                                    displayName: "centerDensity",
+                                    range: {
+                                        min: 1,
+                                        max: 90,
+                                        step: 1,
+                                        defaultValue: 50
+                                    }
                                 }
                             }
                         }
