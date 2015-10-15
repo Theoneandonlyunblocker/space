@@ -4020,9 +4020,12 @@ button.player-setup-remove-player.disabled {
   border: 1px solid #c4e5fb;
   border-right: 0;
   box-sizing: border-box;
+  margin-left: 2em;
+  margin-top: 23px;
 }
 .build-queue .manufactory-upgrade-button {
   flex: 0 0 auto;
+  border: none;
 }
 .build-queue .build-queue-header {
   flex: 0 0 auto;
@@ -4053,10 +4056,10 @@ button.player-setup-remove-player.disabled {
 .manufacturable-things-tab-buttons {
   display: flex;
   flex-flow: row;
-  flex: 0 0 auto;
+  flex: 0 0 24px;
 }
 .manufacturable-things-tab-button {
-  flex: 1 1 auto;
+  flex: 1 1 50%;
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
   cursor: pointer;
@@ -4088,9 +4091,6 @@ button.player-setup-remove-player.disabled {
   overflow-y: hidden;
   display: flex;
   flex-flow: column;
-  border: 1px solid #c4e5fb;
-  border-top: 0px;
-  box-sizing: border-box;
 }
 .manufacturable-things-active-tab > * {
   display: flex;
@@ -4098,12 +4098,11 @@ button.player-setup-remove-player.disabled {
   overflow-y: hidden;
   flex: 1 1 auto;
 }
-.manufacturable-things-active-tab .manufactory-upgrade-buttons-container {
-  flex: 0 0 auto;
-}
 .manufacturable-things-active-tab .manufacturable-things-list {
   flex: 1 1 auto;
   overflow-y: scroll;
+  border: 1px solid #c4e5fb;
+  border-top: 0;
 }
 .manufacturable-things-active-tab .manufacturable-things-list-item {
   padding: 0 0.5em;
@@ -4111,13 +4110,24 @@ button.player-setup-remove-player.disabled {
 .manufactory-upgrade-buttons-container {
   display: flex;
   flex-flow: row;
+  flex: 0 0 auto;
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 0px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
+.manufactory-upgrade-buttons-container > * {
+  flex: 1 1 auto;
+  margin-bottom: -1px;
 }
 .manufactory-upgrade-button {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
   cursor: pointer;
-  border: 1px solid #c4e5fb;
-  border-radius: 5px;
+  border: none;
+  border-left: 1px solid #c4e5fb;
+  border-right: 1px solid #c4e5fb;
 }
 .manufactory-upgrade-button:hover,
 .manufactory-upgrade-button:focus {
@@ -4132,6 +4142,9 @@ button.player-setup-remove-player.disabled {
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
+.manufactory-upgrade-button + .manufactory-upgrade-button {
+  margin-left: -1px;
+}
 .manufactory-upgrade-button-cost {
   color: #ffeb00;
 }
@@ -4143,6 +4156,9 @@ button.player-setup-remove-player.disabled {
   text-decoration: inherit;
   margin-left: 0.25em;
   color: #f3c620;
+}
+.manufacturable-units .manufactory-upgrade-button {
+  flex: 1 1 50%;
 }
 .manufacturable-things-list :last-child {
   border-width: 0;

@@ -4072,10 +4072,13 @@ button.player-setup-remove-player
   border: 1px solid @ui-border-color1;
   border-right: 0;
   box-sizing: border-box;
+  margin-left: 2em;
+  margin-top: 23px;
 
   .manufactory-upgrade-button
   {
     flex: 0 0 auto;
+    border: none;
   }
 
   .build-queue-header
@@ -4125,12 +4128,12 @@ button.player-setup-remove-player
 {
   display: flex;
   flex-flow: row;
-  flex: 0 0 auto;
+  flex: 0 0 24px;
 }
 
 .manufacturable-things-tab-button
 {
-  flex: 1 1 auto;
+  flex: 1 1 50%;
   .button-style;
   border-radius: 5px 5px 0 0;
 
@@ -4155,9 +4158,6 @@ button.player-setup-remove-player
   overflow-y: hidden;
   display: flex;
   flex-flow: column;
-  border: 1px solid @ui-border-color1;
-  border-top: 0px;
-  box-sizing: border-box;
 
   >*
   {
@@ -4167,15 +4167,12 @@ button.player-setup-remove-player
     flex: 1 1 auto;
   }
 
-  .manufactory-upgrade-buttons-container
-  {
-    flex: 0 0 auto;
-  }
-
   .manufacturable-things-list
   {
     flex: 1 1 auto;
     overflow-y: scroll;
+    border: 1px solid @ui-border-color1;
+    border-top: 0;
   }
 
   .manufacturable-things-list-item
@@ -4188,16 +4185,38 @@ button.player-setup-remove-player
 {
   display: flex;
   flex-flow: row;
+  flex: 0 0 auto;
+  .horizontal-border(0px, 3px);
+  >*
+  {
+    flex: 1 1 auto;
+    margin-bottom: -1px;
+  }
 }
 
 .manufactory-upgrade-button
 {
-  .button-style;
+  .button-style-no-border;
+  border: none;
+  border-left: 1px solid @ui-border-color1;
+  border-right: 1px solid @ui-border-color1;
+  +.manufactory-upgrade-button
+  {
+    margin-left: -1px;
+  }
 }
 
 .manufactory-upgrade-button-cost
 {
   .money-style;
+}
+
+.manufacturable-units
+{
+  .manufactory-upgrade-button
+  {
+    flex: 1 1 50%;
+  }
 }
 
 .manufacturable-things-list

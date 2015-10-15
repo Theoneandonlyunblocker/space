@@ -50,16 +50,21 @@ module Rance
           {
             className: "build-queue"
           },
-            UIComponents.ManufactoryUpgradeButton(
+            React.DOM.div(
             {
-              money: this.props.money,
-              upgradeCost: manufactory.getCapacityUpgradeCost(),
-              onClick: this.upgradeCapacity,
-              actionString: "Upgrade capacity",
-              currentLevel: manufactory.capacity,
-              maxLevel: manufactory.maxCapacity,
-              levelDecimalPoints: 0
-            }),
+              className: "manufactory-upgrade-buttons-container"
+            },
+              UIComponents.ManufactoryUpgradeButton(
+              {
+                money: this.props.money,
+                upgradeCost: manufactory.getCapacityUpgradeCost(),
+                onClick: this.upgradeCapacity,
+                actionString: "Upgrade capacity",
+                currentLevel: manufactory.capacity,
+                maxLevel: manufactory.maxCapacity,
+                levelDecimalPoints: 0
+              })
+            ),
             UIComponents.ManufacturableThingsList(
             {
               manufacturableThings: convertedBuildQueue,
