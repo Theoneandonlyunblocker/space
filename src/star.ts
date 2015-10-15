@@ -152,6 +152,7 @@ module Rance
         {
           eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
         }
+        eventManager.dispatchEvent("humanPlayerBuiltBuilding");
       }
     }
     removeBuilding(building: Building)

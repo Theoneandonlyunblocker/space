@@ -34,7 +34,7 @@ module Rance
 
       handleClick: function()
       {
-        this.handleUpgradeBuilding(this.props.upgradeData);
+        this.props.handleUpgrade(this.props.upgradeData);
       },
 
       render: function()

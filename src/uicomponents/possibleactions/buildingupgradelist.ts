@@ -46,6 +46,10 @@ module Rance
         {
           this.props.clearExpandedAction();
         }
+        else
+        {
+          this.forceUpdate();
+        }
       },
 
       render: function()

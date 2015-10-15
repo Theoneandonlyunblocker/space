@@ -13182,6 +13182,7 @@ var Rance;
                 for (var key in building.template.effect) {
                     Rance.eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
                 }
+                Rance.eventManager.dispatchEvent("humanPlayerBuiltBuilding");
             }
         };
         Star.prototype.removeBuilding = function (building) {
@@ -15697,7 +15698,7 @@ var Rance;
                 });
             },
             handleClick: function () {
-                this.handleUpgradeBuilding(this.props.upgradeData);
+                this.props.handleUpgrade(this.props.upgradeData);
             },
             render: function () {
                 var upgradeData = this.props.upgradeData;
@@ -15757,6 +15758,9 @@ var Rance;
                 if (!this.hasAvailableUpgrades()) {
                     this.props.clearExpandedAction();
                 }
+                else {
+                    this.forceUpdate();
+                }
             },
             render: function () {
                 if (!this.hasAvailableUpgrades())
@@ -15812,6 +15816,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../star.ts" />
 /// <reference path="attacktarget.ts"/>
 /// <reference path="buildablebuildinglist.ts"/>
 /// <reference path="buildingupgradelist.ts"/>
@@ -15821,27 +15826,48 @@ var Rance;
     (function (UIComponents) {
         UIComponents.PossibleActions = React.createClass({
             displayName: "PossibleActions",
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                setExpandedActionElementOnParent: React.PropTypes.func.isRequired,
+                selectedStar: React.PropTypes.instanceOf(Rance.Star),
+                attackTargets: React.PropTypes.arrayOf(React.PropTypes.object)
+            },
             getInitialState: function () {
                 return ({
                     expandedAction: null,
-                    expandedActionElement: null
+                    expandedActionElement: null,
+                    canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar)
                 });
             },
             componentWillReceiveProps: function (newProps) {
-                if (this.props.selectedStar !== newProps.selectedStar &&
-                    this.state.expandedActionElement) {
-                    this.setState({
-                        expandedAction: null,
-                        expandedActionElement: null
-                    }, this.updateActions);
+                if (this.props.selectedStar !== newProps.selectedStar) {
+                    var newState = {};
+                    var afterStateSetCallback = null;
+                    newState.canUpgradeBuildings = this.canUpgradeBuildings(newProps.selectedStar);
+                    if (this.state.expandedActionElement) {
+                        newState.expandedAction = null;
+                        newState.expandedActionElement = null;
+                        afterStateSetCallback = this.updateActions;
+                    }
+                    this.setState(newState, afterStateSetCallback);
                 }
             },
             componentDidMount: function () {
                 var self = this;
                 Rance.eventManager.addEventListener("clearPossibleActions", this.clearExpandedAction);
+                Rance.eventManager.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
             },
             componentWillUnmount: function () {
                 Rance.eventManager.removeAllListeners("clearPossibleActions");
+                Rance.eventManager.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
+            },
+            canUpgradeBuildings: function (star) {
+                return star && Object.keys(star.getBuildingUpgrades()).length > 0;
+            },
+            handlePlayerBuiltBuilding: function () {
+                this.setState({
+                    canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar)
+                });
             },
             updateActions: function () {
                 this.props.setExpandedActionElementOnParent(this.state.expandedActionElement);
@@ -15918,7 +15944,7 @@ var Rance;
                                 key: "buildActions"
                             }, "construct"));
                         }
-                        if (Object.keys(star.getBuildingUpgrades()).length > 0) {
+                        if (this.state.canUpgradeBuildings) {
                             allActions.push(React.DOM.div({
                                 className: "possible-action",
                                 onClick: this.upgradeBuildings,

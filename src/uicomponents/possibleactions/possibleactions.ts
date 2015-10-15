@@ -1,3 +1,4 @@
+/// <reference path="../../star.ts" />
 /// <reference path="attacktarget.ts"/>
 /// <reference path="buildablebuildinglist.ts"/>
 /// <reference path="buildingupgradelist.ts"/>
@@ -9,25 +10,42 @@ module Rance
     export var PossibleActions = React.createClass(
     {
       displayName: "PossibleActions",
+
+      propTypes:
+      {
+        player: React.PropTypes.instanceOf(Player).isRequired,
+        setExpandedActionElementOnParent: React.PropTypes.func.isRequired,
+        selectedStar: React.PropTypes.instanceOf(Star),
+        attackTargets: React.PropTypes.arrayOf(React.PropTypes.object)
+      },
+
       getInitialState: function()
       {
         return(
         {
           expandedAction: null,
-          expandedActionElement: null
+          expandedActionElement: null,
+          canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar)
         });
       },
 
       componentWillReceiveProps: function(newProps: any)
       {
-        if (this.props.selectedStar !== newProps.selectedStar &&
-          this.state.expandedActionElement)
+        if (this.props.selectedStar !== newProps.selectedStar)
         {
-          this.setState(
+          var newState: any = {};
+          var afterStateSetCallback: Function = null;
+
+          newState.canUpgradeBuildings = this.canUpgradeBuildings(newProps.selectedStar);
+          if (this.state.expandedActionElement)
           {
-            expandedAction: null,
-            expandedActionElement: null
-          }, this.updateActions);
+            newState.expandedAction = null;
+            newState.expandedActionElement = null;
+
+            afterStateSetCallback = this.updateActions;
+          }
+
+          this.setState(newState, afterStateSetCallback);
         }
       },
 
@@ -35,11 +53,26 @@ module Rance
       {
         var self = this;
         eventManager.addEventListener("clearPossibleActions", this.clearExpandedAction);
+        eventManager.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
       },
 
       componentWillUnmount: function()
       {
         eventManager.removeAllListeners("clearPossibleActions");
+        eventManager.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
+      },
+
+      canUpgradeBuildings: function(star: Star)
+      {
+        return star && Object.keys(star.getBuildingUpgrades()).length > 0;
+      },
+
+      handlePlayerBuiltBuilding: function()
+      {
+        this.setState(
+        {
+          canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar)
+        });
       },
 
       updateActions: function()
@@ -166,7 +199,7 @@ module Rance
               );
             }
 
-            if (Object.keys(star.getBuildingUpgrades()).length > 0)
+            if (this.state.canUpgradeBuildings)
             {
               allActions.push(
                 React.DOM.div(
