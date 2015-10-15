@@ -16,6 +16,11 @@ declare module Rance
         flat?: number;
         multiplier?: number;
       }
+      research?:
+      {
+        flat?: number;
+        multiplier?: number;
+      }
       itemLevel?: number;
     }
   }

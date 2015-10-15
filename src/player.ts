@@ -719,7 +719,14 @@ module Rance
     // research and technology
     getResearchSpeed(): number
     {
-      return 30; // TODO
+      var research: number = 30;
+
+      for (var i = 0; i < this.controlledLocations.length; i++)
+      {
+        research += this.controlledLocations[i].getResearchPoints();
+      }
+
+      return research;
     }
     allocateResearchPoints(): void
     {

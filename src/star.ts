@@ -280,6 +280,10 @@ module Rance
         amount: this.getEffectWithBuildingsEffect(0, "resourceIncome")
       });
     }
+    getResearchPoints()
+    {
+      return this.getEffectWithBuildingsEffect(0, "research");
+    }
     getAllBuildings()
     {
       var buildings: Building[] = [];

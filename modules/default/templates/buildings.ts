@@ -165,6 +165,26 @@ module Rance
 
             maxUpgradeLevel: 3
           }
+          export var reserachLab: Rance.Templates.IBuildingTemplate =
+          {
+            type: "reserachLab",
+            category: "research",
+            displayName: "Research Lab",
+
+            iconSrc: "commercialPort.png",
+            buildCost: 300,
+
+            maxPerType: 1,
+            effect:
+            {
+              research:
+              {
+                flat: 10
+              }
+            },
+
+            maxUpgradeLevel: 3
+          }
         }
       }
     }

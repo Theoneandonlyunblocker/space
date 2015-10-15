@@ -8,11 +8,11 @@ module Rance
     {
       export module BuildingTemplates
       {
-        export var commercialPortTest1: Rance.Templates.IBuildingTemplate =
+        export var commercialPortTest: Rance.Templates.IBuildingTemplate =
         {
-          type: "commercialPortTest1",
+          type: "commercialPortTest",
           category: "economy",
-          displayName: "Commercial Spaceport Test 1",
+          displayName: "Commercial Spaceport Test",
 
           iconSrc: "commercialPort.png",
           buildCost: 0,
@@ -23,84 +23,6 @@ module Rance
               multiplier: 1
             }
           },
-
-          maxPerType: 1,
-
-          maxUpgradeLevel: 10
-        }
-        export var commercialPortTest2: Rance.Templates.IBuildingTemplate =
-        {
-          type: "commercialPortTest2",
-          category: "economy",
-          displayName: "Commercial Spaceport Test",
-
-          iconSrc: "commercialPort.png",
-          buildCost: 0,
-
-          maxPerType: 1,
-
-          maxUpgradeLevel: 10
-        }
-        export var commercialPortTest3: Rance.Templates.IBuildingTemplate =
-        {
-          type: "commercialPortTest3",
-          category: "economy",
-          displayName: "Commercial Spaceport Test",
-
-          iconSrc: "commercialPort.png",
-          buildCost: 0,
-
-          maxPerType: 1,
-
-          maxUpgradeLevel: 10
-        }
-        export var commercialPortTest4: Rance.Templates.IBuildingTemplate =
-        {
-          type: "commercialPortTest4",
-          category: "economy",
-          displayName: "Commercial Spaceport Test",
-
-          iconSrc: "commercialPort.png",
-          buildCost: 0,
-
-          maxPerType: 1,
-
-          maxUpgradeLevel: 10
-        }
-        export var commercialPortTest5: Rance.Templates.IBuildingTemplate =
-        {
-          type: "commercialPortTest5",
-          category: "economy",
-          displayName: "Commercial Spaceport Test",
-
-          iconSrc: "commercialPort.png",
-          buildCost: 0,
-
-          maxPerType: 1,
-
-          maxUpgradeLevel: 10
-        }
-        export var commercialPortTest6: Rance.Templates.IBuildingTemplate =
-        {
-          type: "commercialPortTest6",
-          category: "economy",
-          displayName: "Commercial Spaceport Test",
-
-          iconSrc: "commercialPort.png",
-          buildCost: 0,
-
-          maxPerType: 1,
-
-          maxUpgradeLevel: 10
-        }
-        export var commercialPortTest7: Rance.Templates.IBuildingTemplate =
-        {
-          type: "commercialPortTest7",
-          category: "economy",
-          displayName: "Commercial Spaceport Test",
-
-          iconSrc: "commercialPort.png",
-          buildCost: 0,
 
           maxPerType: 1,
 
