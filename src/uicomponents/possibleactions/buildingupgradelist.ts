@@ -32,8 +32,6 @@ module Rance
 
         upgradeData.parentBuilding.controller.money -= upgradeData.cost;
 
-        eventManager.dispatchEvent("playerControlUpdated");
-
         if (!this.hasAvailableUpgrades())
         {
           this.props.clearExpandedAction();

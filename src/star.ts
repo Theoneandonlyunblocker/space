@@ -145,6 +145,14 @@ module Rance
       {
         this.owner.updateVisibleStars();
       }
+
+      if (this.owner === app.humanPlayer)
+      {
+        for (var key in building.template.effect)
+        {
+          eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
+        }
+      }
     }
     removeBuilding(building: Building)
     {

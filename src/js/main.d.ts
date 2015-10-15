@@ -1967,6 +1967,7 @@ declare module Rance {
             resource: Templates.IResourceTemplate;
             amount: any;
         };
+        getResearchPoints(): any;
         getAllBuildings(): Building[];
         getBuildingsForPlayer(player: Player): Building[];
         getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];
@@ -3169,6 +3170,7 @@ declare module Rance {
                     var deepSpaceRadar: Rance.Templates.IBuildingTemplate;
                     var itemManufactory: Rance.Templates.IBuildingTemplate;
                     var resourceMine: Rance.Templates.IBuildingTemplate;
+                    var reserachLab: Rance.Templates.IBuildingTemplate;
                 }
             }
         }
@@ -3460,13 +3462,7 @@ declare module Rance {
     module Modules {
         module TestModule {
             module BuildingTemplates {
-                var commercialPortTest1: Rance.Templates.IBuildingTemplate;
-                var commercialPortTest2: Rance.Templates.IBuildingTemplate;
-                var commercialPortTest3: Rance.Templates.IBuildingTemplate;
-                var commercialPortTest4: Rance.Templates.IBuildingTemplate;
-                var commercialPortTest5: Rance.Templates.IBuildingTemplate;
-                var commercialPortTest6: Rance.Templates.IBuildingTemplate;
-                var commercialPortTest7: Rance.Templates.IBuildingTemplate;
+                var commercialPortTest: Rance.Templates.IBuildingTemplate;
             }
             var moduleFile: IModuleFile;
         }

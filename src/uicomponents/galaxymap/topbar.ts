@@ -9,6 +9,18 @@ module Rance
     export var TopBar = React.createClass(
     {
       displayName: "TopBar",
+      updateListener: undefined,
+
+      componentDidMount: function()
+      {
+        this.updateListener = eventManager.addEventListener(
+          "builtBuildingWithEffect_income", this.forceUpdate.bind(this));
+      },
+
+      componentWillUnmount: function()
+      {
+        eventManager.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
+      },
 
       render: function()
       {

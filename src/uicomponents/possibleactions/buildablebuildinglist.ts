@@ -24,7 +24,7 @@ module Rance
           buildingTemplates: buildingTemplates
         });
 
-        eventManager.dispatchEvent("playerControlUpdated");
+        // eventManager.dispatchEvent("playerControlUpdated");
         if (buildingTemplates.length < 1)
         {
           this.props.clearExpandedAction();
