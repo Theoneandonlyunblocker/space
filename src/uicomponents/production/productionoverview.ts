@@ -3,6 +3,8 @@
 /// <reference path="manufacturablethings.ts" />
 /// <reference path="constructmanufactory.ts" />
 
+/// <reference path="../mixins/updatewhenmoneychanges.ts" />
+
 /// <reference path="../../player.ts" />
 /// <reference path="../../star.ts" />
 
@@ -13,6 +15,7 @@ module Rance
     export var ProductionOverview = React.createClass(
     {
       displayName: "ProductionOverview",
+      mixins: [UpdateWhenMoneyChanges],
 
       propTypes:
       {
@@ -50,24 +53,14 @@ module Rance
         this.forceUpdate();
       },
 
-      updateMoney: function()
-      {
-        this.setState(
-        {
-          money: this.props.player.money
-        });
-      },
-
       componentDidMount: function()
       {
         eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
-        eventManager.addEventListener("playerMoneyUpdated", this.updateMoney);
       },
 
       componentWillUnmount: function()
       {
         eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
-        eventManager.removeEventListener("playerMoneyUpdated", this.updateMoney);
       },
 
       getStarsWithAndWithoutManufactories: function()

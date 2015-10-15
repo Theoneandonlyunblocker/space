@@ -14361,10 +14361,36 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../lib/react.d.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UpdateWhenMoneyChanges = {
+            handleMoneyChange: function () {
+                if (this.overrideHandleMoneyChange) {
+                    this.overrideHandleMoneyChange();
+                }
+                else {
+                    this.setState({
+                        money: this.props.player.money
+                    });
+                }
+            },
+            componentDidMount: function () {
+                Rance.eventManager.addEventListener("playerMoneyUpdated", this.handleMoneyChange);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("playerMoneyUpdated", this.handleMoneyChange);
+            },
+        };
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="manufactorystarslist.ts" />
 /// <reference path="buildqueue.ts" />
 /// <reference path="manufacturablethings.ts" />
 /// <reference path="constructmanufactory.ts" />
+/// <reference path="../mixins/updatewhenmoneychanges.ts" />
 /// <reference path="../../player.ts" />
 /// <reference path="../../star.ts" />
 var Rance;
@@ -14373,6 +14399,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.ProductionOverview = React.createClass({
             displayName: "ProductionOverview",
+            mixins: [UIComponents.UpdateWhenMoneyChanges],
             propTypes: {
                 player: React.PropTypes.instanceOf(Rance.Player).isRequired
             },
@@ -14397,18 +14424,11 @@ var Rance;
             triggerUpdate: function () {
                 this.forceUpdate();
             },
-            updateMoney: function () {
-                this.setState({
-                    money: this.props.player.money
-                });
-            },
             componentDidMount: function () {
                 Rance.eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
-                Rance.eventManager.addEventListener("playerMoneyUpdated", this.updateMoney);
             },
             componentWillUnmount: function () {
                 Rance.eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
-                Rance.eventManager.removeEventListener("playerMoneyUpdated", this.updateMoney);
             },
             getStarsWithAndWithoutManufactories: function () {
                 var player = this.props.player;
@@ -15514,12 +15534,30 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../mixins/updatewhenmoneychanges.ts" />
+/// <reference path="../../player.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.BuildableBuilding = React.createClass({
             displayName: "BuildableBuilding",
+            mixins: [UIComponents.UpdateWhenMoneyChanges],
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                buildCost: React.PropTypes.number.isRequired,
+                handleClick: React.PropTypes.func.isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    canAfford: this.props.player.money >= this.props.buildCost
+                });
+            },
+            overrideHandleMoneyChange: function () {
+                this.setState({
+                    canAfford: this.props.player.money >= this.props.buildCost
+                });
+            },
             makeCell: function (type) {
                 var cellProps = {};
                 cellProps.key = type;
@@ -15528,7 +15566,7 @@ var Rance;
                 switch (type) {
                     case ("buildCost"):
                         {
-                            if (this.props.player.money < this.props.buildCost) {
+                            if (!this.state.canAfford) {
                                 cellProps.className += " negative";
                             }
                         }
@@ -15541,7 +15579,6 @@ var Rance;
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
-                var player = this.props.player;
                 var cells = [];
                 var columns = this.props.activeColumns;
                 for (var i = 0; i < columns.length; i++) {
@@ -15551,7 +15588,7 @@ var Rance;
                     className: "buildable-item buildable-building",
                     onClick: this.props.handleClick
                 };
-                if (player.money < this.props.buildCost) {
+                if (!this.state.canAfford) {
                     props.onClick = null;
                     props.disabled = true;
                     props.className += " disabled";
@@ -15579,7 +15616,6 @@ var Rance;
                 this.setState({
                     buildingTemplates: buildingTemplates
                 });
-                // eventManager.dispatchEvent("playerControlUpdated");
                 if (buildingTemplates.length < 1) {
                     this.props.clearExpandedAction();
                 }
@@ -15594,7 +15630,6 @@ var Rance;
                     building.controller = this.props.humanPlayer;
                 this.props.star.addBuilding(building);
                 building.controller.money -= template.buildCost;
-                //building.totalCost += template.buildCost;
                 this.updateBuildings();
             },
             render: function () {
@@ -15637,13 +15672,72 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-// /// <reference path="buildingupgradelistitem.ts" />
+/// <reference path="../../player.ts" />
+/// <reference path="../mixins/updatewhenmoneychanges.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.BuildingUpgradeListItem = React.createClass({
+            displayName: "BuildingUpgradeListItem",
+            mixins: [UIComponents.UpdateWhenMoneyChanges],
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                handleUpgrade: React.PropTypes.func.isRequired,
+                upgradeData: React.PropTypes.object.isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    canAfford: this.props.player.money >= this.props.upgradeData.cost
+                });
+            },
+            overrideHandleMoneyChange: function () {
+                this.setState({
+                    canAfford: this.props.player.money >= this.props.upgradeData.cost
+                });
+            },
+            handleClick: function () {
+                this.handleUpgradeBuilding(this.props.upgradeData);
+            },
+            render: function () {
+                var upgradeData = this.props.upgradeData;
+                var rowProps = {
+                    key: upgradeData.template.type,
+                    className: "building-upgrade-list-item",
+                    onClick: this.handleClick
+                };
+                var costProps = {
+                    key: "cost",
+                    className: "building-upgrade-list-item-cost"
+                };
+                if (!this.state.canAfford) {
+                    rowProps.onClick = null;
+                    rowProps.disabled = true;
+                    rowProps.className += " disabled";
+                    costProps.className += " negative";
+                }
+                return (React.DOM.tr(rowProps, React.DOM.td({
+                    key: "name",
+                    className: "building-upgrade-list-item-name"
+                }, upgradeData.template.displayName + " " + (upgradeData.level > 1 ? upgradeData.level : "")), React.DOM.td(costProps, upgradeData.cost)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../player.ts" />
+/// <reference path="../../star.ts" />
+/// <reference path="buildingupgradelistitem.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.BuildingUpgradeList = React.createClass({
             displayName: "BuildingUpgradeList",
+            propTypes: {
+                star: React.PropTypes.instanceOf(Rance.Star).isRequired,
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                clearExpandedAction: React.PropTypes.func.isRequired
+            },
             hasAvailableUpgrades: function () {
                 var possibleUpgrades = this.props.star.getBuildingUpgrades();
                 return Object.keys(possibleUpgrades).length > 0;
@@ -15685,22 +15779,6 @@ var Rance;
                     var parentBuilding = upgrades[0].parentBuilding;
                     var upgradeElements = [];
                     for (var j = 0; j < upgrades.length; j++) {
-                        var upgrade = upgrades[j];
-                        var rowProps = {
-                            key: upgrade.template.type,
-                            className: "building-upgrade-list-item",
-                            onClick: this.upgradeBuilding.bind(this, upgrade)
-                        };
-                        var costProps = {
-                            key: "cost",
-                            className: "building-upgrade-list-item-cost"
-                        };
-                        if (this.props.player.money < upgrade.cost) {
-                            rowProps.onClick = null;
-                            rowProps.disabled = true;
-                            rowProps.className += " disabled";
-                            costProps.className += " negative";
-                        }
                         if (j > 0) {
                             upgradeElements.push(React.DOM.tr({
                                 className: "list-spacer",
@@ -15710,10 +15788,12 @@ var Rance;
                             }, null)));
                         }
                         ;
-                        upgradeElements.push(React.DOM.tr(rowProps, React.DOM.td({
-                            key: "name",
-                            className: "building-upgrade-list-item-name"
-                        }, upgrade.template.displayName + " " + (upgrade.level > 1 ? upgrade.level : "")), React.DOM.td(costProps, upgrade.cost)));
+                        upgradeElements.push(UIComponents.BuildingUpgradeListItem({
+                            key: upgrades[j].template.type,
+                            player: this.props.player,
+                            handleUpgrade: this.upgradeBuilding,
+                            upgradeData: upgrades[j]
+                        }));
                     }
                     var parentElement = React.DOM.div({
                         key: "" + parentBuilding.id,

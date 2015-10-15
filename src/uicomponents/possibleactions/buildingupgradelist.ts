@@ -1,4 +1,7 @@
-// /// <reference path="buildingupgradelistitem.ts" />
+/// <reference path="../../player.ts" />
+/// <reference path="../../star.ts" />
+
+/// <reference path="buildingupgradelistitem.ts" />
 
 module Rance
 {
@@ -7,6 +10,13 @@ module Rance
     export var BuildingUpgradeList = React.createClass(
     {
       displayName: "BuildingUpgradeList",
+
+      propTypes:
+      {
+        star: React.PropTypes.instanceOf(Star).isRequired,
+        player: React.PropTypes.instanceOf(Player).isRequired,
+        clearExpandedAction: React.PropTypes.func.isRequired
+      },
 
       hasAvailableUpgrades: function()
       {
@@ -61,34 +71,10 @@ module Rance
           var upgrades = possibleUpgrades[parentBuildingId];
           var parentBuilding: Building = upgrades[0].parentBuilding;
 
-          var upgradeElements: ReactDOMPlaceHolder[] = [];
+          var upgradeElements: ReactComponentPlaceHolder[] = [];
 
           for (var j = 0; j < upgrades.length; j++)
           {
-            var upgrade: IBuildingUpgradeData = upgrades[j];
-
-            var rowProps: any =
-            {
-              key: upgrade.template.type,
-              className: "building-upgrade-list-item",
-              onClick: this.upgradeBuilding.bind(this, upgrade)
-            };
-
-            var costProps: any = 
-            {
-              key: "cost",
-              className: "building-upgrade-list-item-cost"
-            };
-
-            if (this.props.player.money < upgrade.cost)
-            {
-              rowProps.onClick = null;
-              rowProps.disabled = true;
-              rowProps.className += " disabled";
-
-              costProps.className += " negative";
-            }
-
             if (j > 0)
             {
               upgradeElements.push(React.DOM.tr(
@@ -104,18 +90,14 @@ module Rance
                 )
               ))
             };
-            
-            upgradeElements.push(
-              React.DOM.tr(rowProps,
-                React.DOM.td(
-                {
-                  key: "name",
-                  className: "building-upgrade-list-item-name"
-                }, upgrade.template.displayName + " " + (upgrade.level > 1 ? upgrade.level : "")),
-                React.DOM.td(costProps, upgrade.cost)
-              )
-            );
 
+            upgradeElements.push(UIComponents.BuildingUpgradeListItem(
+            {
+              key: upgrades[j].template.type,
+              player: this.props.player,
+              handleUpgrade: this.upgradeBuilding,
+              upgradeData: upgrades[j]
+            }));
           }
 
           var parentElement = React.DOM.div(

@@ -24,7 +24,6 @@ module Rance
           buildingTemplates: buildingTemplates
         });
 
-        // eventManager.dispatchEvent("playerControlUpdated");
         if (buildingTemplates.length < 1)
         {
           this.props.clearExpandedAction();
@@ -45,7 +44,6 @@ module Rance
 
         this.props.star.addBuilding(building);
         building.controller.money -= template.buildCost;
-        //building.totalCost += template.buildCost;
         this.updateBuildings();
       },
 

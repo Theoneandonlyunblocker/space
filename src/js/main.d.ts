@@ -2089,6 +2089,15 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var UpdateWhenMoneyChanges: {
+            handleMoneyChange: () => void;
+            componentDidMount: () => void;
+            componentWillUnmount: () => void;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
         var ProductionOverview: React.Factory<any>;
     }
 }
@@ -2174,7 +2183,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var BuildableBuilding: React.Factory<{}>;
+        var BuildableBuilding: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2184,7 +2193,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var BuildingUpgradeList: React.Factory<{}>;
+        var BuildingUpgradeListItem: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BuildingUpgradeList: React.Factory<any>;
     }
 }
 declare module Rance {

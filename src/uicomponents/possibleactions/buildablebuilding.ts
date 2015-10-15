@@ -1,3 +1,7 @@
+/// <reference path="../mixins/updatewhenmoneychanges.ts" />
+
+/// <reference path="../../player.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -5,6 +9,31 @@ module Rance
     export var BuildableBuilding = React.createClass(
     {
       displayName: "BuildableBuilding",
+      mixins: [UpdateWhenMoneyChanges],
+
+      propTypes:
+      {
+        player: React.PropTypes.instanceOf(Player).isRequired,
+        buildCost: React.PropTypes.number.isRequired,
+        handleClick: React.PropTypes.func.isRequired
+      },
+
+      getInitialState: function()
+      {
+        return(
+        {
+          canAfford: this.props.player.money >= this.props.buildCost
+        });
+      },
+      
+      overrideHandleMoneyChange: function()
+      {
+        this.setState(
+        {
+          canAfford: this.props.player.money >= this.props.buildCost
+        });
+      },
+
       makeCell: function(type: string)
       {
         var cellProps: any = {};
@@ -17,7 +46,7 @@ module Rance
         {
           case ("buildCost"):
           {
-            if (this.props.player.money < this.props.buildCost)
+            if (!this.state.canAfford)
             {
               cellProps.className += " negative";
             }
@@ -37,7 +66,6 @@ module Rance
 
       render: function()
       {
-        var player = this.props.player;
         var cells: ReactDOMPlaceHolder[] = [];
         var columns = this.props.activeColumns;
 
@@ -53,7 +81,7 @@ module Rance
           className: "buildable-item buildable-building",
           onClick: this.props.handleClick
         }
-        if (player.money < this.props.buildCost)
+        if (!this.state.canAfford)
         {
           props.onClick = null;
           props.disabled = true;
