@@ -1438,6 +1438,13 @@ declare module Rance {
         setDefaultFilterStates(): void;
         shouldDisplayNotification(notification: Notification): boolean;
         getCompatibleFilterStates(filterState: NotificationFilterState): NotificationFilterState[];
+        handleFilterStateChange(filterKey: string, state: NotificationFilterState): void;
+        getFiltersByCategory(): {
+            [category: string]: {
+                notificationTemplate: Templates.INotificationTemplate;
+                filterState: NotificationFilterState[];
+            }[];
+        };
         load(slot?: number): void;
         save(slot?: number): void;
     }
@@ -2272,6 +2279,26 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var NotificationLog: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var NotificationFilterListItem: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var NotificationFilterList: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var NotificationFilterButton: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Notifications: React.Factory<any>;
     }
 }
 declare module Rance {

@@ -7,6 +7,7 @@ declare module Rance
     interface INotificationTemplate
     {
       key: string;
+      displayName: string;
       category: string;
       defaultFilterState: NotificationFilterState[];
       iconSrc: string;

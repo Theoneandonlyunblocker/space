@@ -77,6 +77,66 @@ module Rance
         }
       }
     }
+    handleFilterStateChange(filterKey: string, state: NotificationFilterState)
+    {
+      var stateIndex = this.filters[filterKey].indexOf(state);
+      if (stateIndex !== -1)
+      {
+        if (this.filters[filterKey].length === 1)
+        {
+          this.filters[filterKey] = [NotificationFilterState.neverShow];
+        }
+        else
+        {
+          this.filters[filterKey].splice(stateIndex, 1);
+        }
+      }
+      else
+      {
+        var newState: NotificationFilterState[] = [state];
+        var compatibleStates = this.getCompatibleFilterStates(state);
+        for (var i = 0; i < this.filters[filterKey].length; i++)
+        {
+          if (compatibleStates.indexOf(this.filters[filterKey][i]) !== -1)
+          {
+            newState.push(this.filters[filterKey][i]);
+          }
+        }
+        this.filters[filterKey] = newState;
+      }
+    }
+    getFiltersByCategory()
+    {
+      var filtersByCategory:
+      {
+        [category: string]:
+        {
+          notificationTemplate: Templates.INotificationTemplate;
+          filterState: NotificationFilterState[];
+        }[]
+      } = {};
+      var notifications = app.moduleData.Templates.Notifications;
+
+      for (var key in this.filters)
+      {
+        var notificationTemplate = notifications[key];
+        if (notificationTemplate)
+        {
+          if (!filtersByCategory[notificationTemplate.category])
+          {
+            filtersByCategory[notificationTemplate.category] = [];
+          }
+
+          filtersByCategory[notificationTemplate.category].push(
+          {
+            notificationTemplate: notificationTemplate,
+            filterState: this.filters[key]
+          });
+        }
+      }
+
+      return filtersByCategory;
+    }
     load(slot?: number)
     {
       var baseString = "Rance.NotificationFilter.";

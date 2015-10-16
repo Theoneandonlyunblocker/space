@@ -12,6 +12,7 @@ module Rance
         export var WarDeclarationNotification: Rance.Templates.INotificationTemplate =
         {
           key: "WarDeclarationNotification",
+          displayName: "War declaration",
           category: "diplomacy",
           defaultFilterState: [NotificationFilterState.showIfInvolved],
           iconSrc: "img\/resources\/test2.png",

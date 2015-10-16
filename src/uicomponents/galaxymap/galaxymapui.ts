@@ -4,7 +4,7 @@
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
 /// <reference path="../mapmodes/maprendererlayerslist.ts" />
-/// <reference path="../notifications/notificationlog.ts" />
+/// <reference path="../notifications/notifications.ts" />
 
 module Rance
 {
@@ -223,11 +223,11 @@ module Rance
               className: "galaxy-map-ui-bottom-right",
               key: "bottomRight"
             },
-              !Options.debugMode ? null : UIComponents.NotificationLog(
+              !Options.debugMode ? null : UIComponents.Notifications(
               {
                 log: this.props.game.notificationLog,
                 currentTurn: this.props.game.turnNumber,
-                key: "notificationLog"
+                key: "notifications"
               }),
               React.DOM.button(endTurnButtonProps, "End turn")
             )

@@ -1,3 +1,4 @@
+/// <reference path="../../notificationlog.ts" />
 /// <reference path="notification.ts" />
 
 module Rance
@@ -9,6 +10,12 @@ module Rance
       displayName: "NotificationLog",
       mixins: [React.addons.PureRenderMixin],
       updateListener: undefined,
+
+      propTypes:
+      {
+        log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
+        currentTurn: React.PropTypes.number.isRequired
+      },
 
       getInitialState: function()
       {
