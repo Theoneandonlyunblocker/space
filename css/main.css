@@ -1518,7 +1518,7 @@ ol {
 .top-menu > * {
   pointer-events: auto;
 }
-@media (max-height: 600px) {
+@media (max-height: 400px) {
   .top-menu {
     height: 2em;
     top: -1px;
@@ -1570,7 +1570,7 @@ ol {
   border-image-slice: 10%;
   border-width: 0 0 5px 5px;
 }
-@media (max-height: 600px) {
+@media (max-height: 400px) {
   .top-menu-opened-condensed-menu {
     top: 2em;
   }

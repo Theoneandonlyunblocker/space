@@ -1,3 +1,5 @@
+/// <reference path="../notificationfilterstate.ts" />
+
 declare module Rance
 {
   module Templates
@@ -5,6 +7,8 @@ declare module Rance
     interface INotificationTemplate
     {
       key: string;
+      category: string;
+      defaultFilterState: NotificationFilterState[];
       iconSrc: string;
       eventListeners: string[];
       contentConstructor: UIComponents.ReactComponentPlaceHolder;

@@ -1411,6 +1411,13 @@ declare module Rance {
     }
 }
 declare module Rance {
+    enum NotificationFilterState {
+        alwaysShow = 0,
+        showIfInvolved = 1,
+        neverShow = 2,
+    }
+}
+declare module Rance {
     class Notification {
         template: Templates.INotificationTemplate;
         props: any;
@@ -1419,6 +1426,20 @@ declare module Rance {
         constructor(template: Templates.INotificationTemplate, props: any, turn: number);
         makeMessage(): string;
         serialize(): any;
+    }
+}
+declare module Rance {
+    class NotificationFilter {
+        filters: {
+            [notificationKey: string]: NotificationFilterState[];
+        };
+        player: Player;
+        constructor(player: Player);
+        setDefaultFilterStates(): void;
+        shouldDisplayNotification(notification: Notification): boolean;
+        getCompatibleFilterStates(filterState: NotificationFilterState): NotificationFilterState[];
+        load(slot?: number): void;
+        save(slot?: number): void;
     }
 }
 declare module Rance {
@@ -1432,7 +1453,8 @@ declare module Rance {
         listeners: {
             [name: string]: Function[];
         };
-        constructor();
+        notificationFilter: NotificationFilter;
+        constructor(player: Player);
         addEventListeners(): void;
         destroy(): void;
         setTurn(turn: number, isHumanTurn: boolean): void;
@@ -1440,6 +1462,7 @@ declare module Rance {
         addNotification(notification: Notification): void;
         markAsRead(notification: Notification): void;
         getUnreadNotificationsForTurn(turn: number): Notification[];
+        filterNotifications(notifications: Notification[]): Notification[];
         serialize(): any[];
     }
 }

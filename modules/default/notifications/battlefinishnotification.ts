@@ -12,6 +12,8 @@ module Rance
         export var battleFinishNotification: Rance.Templates.INotificationTemplate =
         {
           key: "battleFinishNotification",
+          category: "combat",
+          defaultFilterState: [NotificationFilterState.neverShow],
           iconSrc: "img\/resources\/test1.png",
           eventListeners: ["makeBattleFinishNotification"],
           contentConstructor: DefaultModule.UIComponents.BattleFinishNotification,

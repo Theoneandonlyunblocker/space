@@ -1,5 +1,6 @@
 /// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
 /// <reference path="notification.ts" />
+/// <reference path="notificationfilter.ts" />
 /// <reference path="eventmanager.ts" />
 /// <reference path="star.ts" />
 
@@ -18,10 +19,12 @@ module Rance
     {
       [name: string]: Function[];
     } = {};
+    notificationFilter: NotificationFilter;
 
-    constructor()
+    constructor(player: Player)
     {
       this.addEventListeners();
+      this.notificationFilter = new NotificationFilter(player);
     }
     addEventListeners()
     {
@@ -94,6 +97,20 @@ module Rance
       {
         return !notification.hasBeenRead;
       });
+    }
+    filterNotifications(notifications: Notification[])
+    {
+      var filtered: Notification[] = [];
+
+      for (var i = 0; i < notifications.length; i++)
+      {
+        if (this.notificationFilter.shouldDisplayNotification(notifications[i]))
+        {
+          filtered.push(notifications[i]);
+        }
+      }
+
+      return filtered;
     }
     serialize()
     {

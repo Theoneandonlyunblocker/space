@@ -79,7 +79,7 @@ module Rance
     }
     deserializeNotificationLog(data: any[])
     {
-      var notificationLog = new NotificationLog();
+      var notificationLog = new NotificationLog(this.humanPlayer);
       for (var i = 0; i < data.length; i++)
       {
         var template = app.moduleData.Templates.Notifications[data[i].templateKey];

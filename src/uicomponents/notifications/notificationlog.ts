@@ -119,8 +119,8 @@ module Rance
 
       render: function()
       {
-        var log: NotificationLog = this.props.log;
-        var notifications: Notification[] = log.unread;
+        var log: Rance.NotificationLog = this.props.log;
+        var notifications: Notification[] = log.filterNotifications(log.unread);
 
         var items: ReactComponentPlaceHolder[] = [];
 

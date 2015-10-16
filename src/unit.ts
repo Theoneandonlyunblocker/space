@@ -260,7 +260,6 @@ module Rance
     }
     setCulture()
     {
-      // TODO culture TODO portraits
       var templateCultures = this.template.cultures;
 
       var nameGeneratorCulture: Templates.ICultureTemplate;

@@ -7364,7 +7364,6 @@ var Rance;
             this.attributesAreDirty = true;
         };
         Unit.prototype.setCulture = function () {
-            // TODO culture TODO portraits
             var templateCultures = this.template.cultures;
             var nameGeneratorCulture;
             var nameGeneratorFN;
@@ -8029,7 +8028,6 @@ var Rance;
                 }
             }
             if (includeFluff) {
-                console.log("saved portrait");
                 data.portraitKey = this.portrait.key;
             }
             return data;
@@ -10783,6 +10781,15 @@ var Rance;
         MapGen2.MapGenResult = MapGenResult;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (NotificationFilterState) {
+        NotificationFilterState[NotificationFilterState["alwaysShow"] = 0] = "alwaysShow";
+        NotificationFilterState[NotificationFilterState["showIfInvolved"] = 1] = "showIfInvolved";
+        NotificationFilterState[NotificationFilterState["neverShow"] = 2] = "neverShow";
+    })(Rance.NotificationFilterState || (Rance.NotificationFilterState = {}));
+    var NotificationFilterState = Rance.NotificationFilterState;
+})(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
 var Rance;
 (function (Rance) {
@@ -10808,19 +10815,101 @@ var Rance;
     })();
     Rance.Notification = Notification;
 })(Rance || (Rance = {}));
+/// <reference path="notificationfilterstate.ts" />
+/// <reference path="notification.ts" />
+/// <reference path="player.ts" />
+var Rance;
+(function (Rance) {
+    var NotificationFilter = (function () {
+        function NotificationFilter(player) {
+            this.filters = {};
+            this.player = player;
+            this.setDefaultFilterStates();
+            this.load();
+        }
+        NotificationFilter.prototype.setDefaultFilterStates = function () {
+            var notifications = app.moduleData.Templates.Notifications;
+            for (var key in notifications) {
+                var notificationTemplate = notifications[key];
+                this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
+            }
+        };
+        NotificationFilter.prototype.shouldDisplayNotification = function (notification) {
+            var filterStates = this.filters[notification.template.key];
+            if (filterStates.indexOf(Rance.NotificationFilterState.alwaysShow) !== -1) {
+                return true;
+            }
+            else if (filterStates.indexOf(Rance.NotificationFilterState.neverShow) !== -1) {
+                return false;
+            }
+            var playerIsInvolved = false;
+            for (var key in notification.props) {
+                if (notification.props[key] === this.player) {
+                    playerIsInvolved = true;
+                    break;
+                }
+            }
+            if (playerIsInvolved) {
+                return filterStates.indexOf(Rance.NotificationFilterState.showIfInvolved) !== -1;
+            }
+            return false;
+        };
+        NotificationFilter.prototype.getCompatibleFilterStates = function (filterState) {
+            switch (filterState) {
+                case Rance.NotificationFilterState.alwaysShow:
+                    {
+                        return [];
+                    }
+                case Rance.NotificationFilterState.showIfInvolved:
+                    {
+                        return [];
+                    }
+                case Rance.NotificationFilterState.neverShow:
+                    {
+                        return [];
+                    }
+            }
+        };
+        NotificationFilter.prototype.load = function (slot) {
+            var baseString = "Rance.NotificationFilter.";
+            var parsedData;
+            if (slot && localStorage[baseString + slot]) {
+                parsedData = JSON.parse(localStorage.getItem(baseString + slot));
+            }
+            else {
+                parsedData = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
+            }
+            if (parsedData) {
+                this.filters = Rance.extendObject(parsedData.filters, this.filters, false);
+            }
+        };
+        NotificationFilter.prototype.save = function (slot) {
+            if (slot === void 0) { slot = 0; }
+            var data = JSON.stringify({
+                filters: this.filters,
+                date: new Date()
+            });
+            localStorage.setItem("Rance.NotificationFilter." + slot, data);
+        };
+        return NotificationFilter;
+    })();
+    Rance.NotificationFilter = NotificationFilter;
+})(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
 /// <reference path="notification.ts" />
+/// <reference path="notificationfilter.ts" />
 /// <reference path="eventmanager.ts" />
 /// <reference path="star.ts" />
 var Rance;
 (function (Rance) {
     var NotificationLog = (function () {
-        function NotificationLog() {
+        function NotificationLog(player) {
             this.byTurn = {};
             this.unread = [];
             this.isHumanTurn = true;
             this.listeners = {};
             this.addEventListeners();
+            this.notificationFilter = new Rance.NotificationFilter(player);
         }
         NotificationLog.prototype.addEventListeners = function () {
             for (var key in app.moduleData.Templates.Notifications) {
@@ -10873,6 +10962,15 @@ var Rance;
             return this.byTurn[turn].filter(function (notification) {
                 return !notification.hasBeenRead;
             });
+        };
+        NotificationLog.prototype.filterNotifications = function (notifications) {
+            var filtered = [];
+            for (var i = 0; i < notifications.length; i++) {
+                if (this.notificationFilter.shouldDisplayNotification(notifications[i])) {
+                    filtered.push(notifications[i]);
+                }
+            }
+            return filtered;
         };
         NotificationLog.prototype.serialize = function () {
             var data = [];
@@ -16386,7 +16484,7 @@ var Rance;
             },
             render: function () {
                 var log = this.props.log;
-                var notifications = log.unread;
+                var notifications = log.filterNotifications(log.unread);
                 var items = [];
                 for (var i = 0; i < notifications.length; i++) {
                     items.push(UIComponents.Notification({
@@ -24914,6 +25012,8 @@ var Rance;
             (function (Notifications) {
                 Notifications.battleFinishNotification = {
                     key: "battleFinishNotification",
+                    category: "combat",
+                    defaultFilterState: [Rance.NotificationFilterState.neverShow],
                     iconSrc: "img\/resources\/test1.png",
                     eventListeners: ["makeBattleFinishNotification"],
                     contentConstructor: DefaultModule.UIComponents.BattleFinishNotification,
@@ -24977,6 +25077,8 @@ var Rance;
             (function (Notifications) {
                 Notifications.WarDeclarationNotification = {
                     key: "WarDeclarationNotification",
+                    category: "diplomacy",
+                    defaultFilterState: [Rance.NotificationFilterState.showIfInvolved],
                     iconSrc: "img\/resources\/test2.png",
                     eventListeners: ["makeWarDeclarationNotification"],
                     contentConstructor: DefaultModule.UIComponents.WarDeclarationNotification,
@@ -25970,7 +26072,7 @@ var Rance;
             return game;
         };
         GameLoader.prototype.deserializeNotificationLog = function (data) {
-            var notificationLog = new Rance.NotificationLog();
+            var notificationLog = new Rance.NotificationLog(this.humanPlayer);
             for (var i = 0; i < data.length; i++) {
                 var template = app.moduleData.Templates.Notifications[data[i].templateKey];
                 var props = template.deserializeProps(data[i].props, this);
@@ -26526,7 +26628,7 @@ var Rance;
                 }
             }
             if (!this.game.notificationLog) {
-                this.game.notificationLog = new Rance.NotificationLog();
+                this.game.notificationLog = new Rance.NotificationLog(this.humanPlayer);
                 this.game.notificationLog.setTurn(this.game.turnNumber, true);
             }
         };
