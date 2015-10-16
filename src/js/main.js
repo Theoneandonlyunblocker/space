@@ -5904,12 +5904,7 @@ var Rance;
                 }
             }
             else if (typeof source[key] === "object") {
-                var matchFound = findItemWithKey(source[key], keyToFind, parentKey, hasParentKey);
-                if (matchFound) {
-                    if (!parentKey || hasParentKey) {
-                        return matchFound;
-                    }
-                }
+                return findItemWithKey(source[key], keyToFind, parentKey, hasParentKey);
             }
         }
         return null;
@@ -7322,7 +7317,9 @@ var Rance;
             for (var slot in items) {
                 this.addItem(items[slot]);
             }
-            this.portrait = Rance.findItemWithKey(app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+            if (data.portraitKey) {
+                this.portrait = Rance.findItemWithKey(app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+            }
         };
         Unit.prototype.setInitialValues = function () {
             this.setBaseHealth();
@@ -7988,8 +7985,9 @@ var Rance;
                 this.abilities.push(castedNewAbility);
             }
         };
-        Unit.prototype.serialize = function (includeItems) {
+        Unit.prototype.serialize = function (includeItems, includeFluff) {
             if (includeItems === void 0) { includeItems = true; }
+            if (includeFluff === void 0) { includeFluff = true; }
             var data = {};
             data.templateType = this.template.type;
             data.id = this.id;
@@ -8030,11 +8028,14 @@ var Rance;
                         data.items[slot] = this.items[slot].serialize();
                 }
             }
-            data.portraitKey = this.portrait.key;
+            if (includeFluff) {
+                console.log("saved portrait");
+                data.portraitKey = this.portrait.key;
+            }
             return data;
         };
         Unit.prototype.makeVirtualClone = function () {
-            var data = this.serialize();
+            var data = this.serialize(true, false);
             var clone = new Unit(this.template, this.id, data);
             return clone;
         };
@@ -25785,15 +25786,6 @@ var Rance;
                         paul_cesar_helleu1: {
                             key: "paul_cesar_helleu1",
                             imageSrc: "img\/portraits\/paul_cesar_helleu1.png",
-                            generatedFor: [
-                                Rance.RandomGenUnitRarity.common,
-                                Rance.RandomGenUnitRarity.elite,
-                                Rance.RandomGenUnitRarity.commander
-                            ]
-                        },
-                        portrait: {
-                            key: "portrait",
-                            imageSrc: "img\/portraits\/portraits",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,

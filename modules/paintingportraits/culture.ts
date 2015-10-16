@@ -794,17 +794,6 @@ module Rance
                 Rance.RandomGenUnitRarity.commander
               ]
             },
-            portrait:
-            {
-              key: "portrait",
-              imageSrc: "img\/portraits\/portraits",
-              generatedFor:
-              [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
-              ]
-            },
             regnault_henri1:
             {
               key: "regnault_henri1",

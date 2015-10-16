@@ -881,7 +881,7 @@ declare module Rance {
             };
         };
         upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase): void;
-        serialize(includeItems?: boolean): any;
+        serialize(includeItems?: boolean, includeFluff?: boolean): any;
         makeVirtualClone(): Unit;
     }
 }

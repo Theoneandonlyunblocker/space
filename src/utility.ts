@@ -174,14 +174,7 @@ module Rance
       }
       else if (typeof source[key] === "object")
       {
-        var matchFound = findItemWithKey<T>(source[key], keyToFind, parentKey, hasParentKey);
-        if (matchFound)
-        {
-          if (!parentKey || hasParentKey)
-          {
-            return matchFound;
-          }
-        }
+        return findItemWithKey<T>(source[key], keyToFind, parentKey, hasParentKey);
       }
     }
 

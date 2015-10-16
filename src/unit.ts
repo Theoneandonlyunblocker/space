@@ -200,8 +200,11 @@ module Rance
         this.addItem(items[slot]);
       }
 
-      this.portrait = findItemWithKey<Templates.IPortraitTemplate>(
-        app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+      if (data.portraitKey)
+      {
+        this.portrait = findItemWithKey<Templates.IPortraitTemplate>(
+          app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+      }
     }
     setInitialValues()
     {
@@ -1128,7 +1131,7 @@ module Rance
         this.abilities.push(castedNewAbility);
       }
     }
-    serialize(includeItems: boolean = true)
+    serialize(includeItems: boolean = true, includeFluff: boolean = true)
     {
       var data: any = {};
 
@@ -1186,14 +1189,16 @@ module Rance
           if (this.items[slot]) data.items[slot] = this.items[slot].serialize();
         }
       }
-
-      data.portraitKey = this.portrait.key;
+      if (includeFluff)
+      {
+        data.portraitKey = this.portrait.key;
+      }
 
       return data;
     }
     makeVirtualClone()
     {
-      var data = this.serialize();
+      var data = this.serialize(true, false);
       var clone = new Unit(this.template, this.id, data);
 
       return clone;
