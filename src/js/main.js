@@ -16581,6 +16581,7 @@ var Rance;
             handleChangeState: function (state) {
                 var filter = this.props.filter;
                 filter.handleFilterStateChange(this.props.key, state);
+                filter.save();
                 this.setState({
                     filterState: filter.filters[this.props.key]
                 });
@@ -16629,6 +16630,7 @@ var Rance;
             handleResetCategory: function (category) {
                 var filter = this.props.filter;
                 filter.setDefaultFilterStatesForCategory(category);
+                filter.save();
                 this.forceUpdate();
             },
             render: function () {

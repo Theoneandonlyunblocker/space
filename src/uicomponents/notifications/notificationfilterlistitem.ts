@@ -33,6 +33,7 @@ module Rance
       {
         var filter: Rance.NotificationFilter = this.props.filter;
         filter.handleFilterStateChange(this.props.key, state);
+        filter.save();
         this.setState(
         {
           filterState: filter.filters[this.props.key]

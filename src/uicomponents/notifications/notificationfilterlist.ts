@@ -16,6 +16,7 @@ module Rance
       {
         var filter: NotificationFilter = this.props.filter;
         filter.setDefaultFilterStatesForCategory(category);
+        filter.save();
         this.forceUpdate();
       },
       render: function()
