@@ -10908,6 +10908,14 @@ var Rance;
             }
             return filtersByCategory;
         };
+        NotificationFilter.prototype.setDefaultFilterStatesForCategory = function (category) {
+            var byCategory = this.getFiltersByCategory();
+            var forSelectedCategory = byCategory[category];
+            for (var i = 0; i < forSelectedCategory.length; i++) {
+                var template = forSelectedCategory[i].notificationTemplate;
+                this.filters[template.key] = template.defaultFilterState.slice(0);
+            }
+        };
         NotificationFilter.prototype.load = function (slot) {
             var baseString = "Rance.NotificationFilter.";
             var parsedData;
@@ -16565,6 +16573,11 @@ var Rance;
                     filterState: this.props.filterState
                 });
             },
+            componentWillReceiveProps: function (newProps) {
+                this.setState({
+                    filterState: newProps.filterState
+                });
+            },
             handleChangeState: function (state) {
                 var filter = this.props.filter;
                 filter.handleFilterStateChange(this.props.key, state);
@@ -16613,6 +16626,11 @@ var Rance;
             propTypes: {
                 filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
             },
+            handleResetCategory: function (category) {
+                var filter = this.props.filter;
+                filter.setDefaultFilterStatesForCategory(category);
+                this.forceUpdate();
+            },
             render: function () {
                 var filter = this.props.filter;
                 var filtersByCategory = filter.getFiltersByCategory();
@@ -16635,7 +16653,8 @@ var Rance;
                     filterGroupElements.push(UIComponents.OptionsGroup({
                         header: category,
                         options: filterElementsForCategory,
-                        key: category
+                        key: category,
+                        resetFN: this.handleResetCategory.bind(this, category)
                     }));
                 }
                 return (React.DOM.div({

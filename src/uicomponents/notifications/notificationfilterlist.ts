@@ -12,6 +12,12 @@ module Rance
       {
         filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
       },
+      handleResetCategory: function(category: string)
+      {
+        var filter: NotificationFilter = this.props.filter;
+        filter.setDefaultFilterStatesForCategory(category);
+        this.forceUpdate();
+      },
       render: function()
       {
         var filter: Rance.NotificationFilter = this.props.filter;
@@ -42,7 +48,8 @@ module Rance
           {
             header: category,
             options: filterElementsForCategory,
-            key: category
+            key: category,
+            resetFN: this.handleResetCategory.bind(this, category)
           }));
         }
 

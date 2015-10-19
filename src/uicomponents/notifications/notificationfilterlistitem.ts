@@ -21,6 +21,13 @@ module Rance
         });
       },
       
+      componentWillReceiveProps: function(newProps: any)
+      {
+        this.setState(
+        {
+          filterState: newProps.filterState
+        });
+      },
 
       handleChangeState: function(state: NotificationFilterState)
       {

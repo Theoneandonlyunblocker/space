@@ -137,6 +137,17 @@ module Rance
 
       return filtersByCategory;
     }
+    setDefaultFilterStatesForCategory(category: string)
+    {
+      var byCategory = this.getFiltersByCategory();
+      var forSelectedCategory = byCategory[category];
+
+      for (var i = 0; i < forSelectedCategory.length; i++)
+      {
+        var template = forSelectedCategory[i].notificationTemplate;
+        this.filters[template.key] = template.defaultFilterState.slice(0);
+      }
+    }
     load(slot?: number)
     {
       var baseString = "Rance.NotificationFilter.";

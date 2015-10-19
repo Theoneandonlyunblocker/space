@@ -1445,6 +1445,7 @@ declare module Rance {
                 filterState: NotificationFilterState[];
             }[];
         };
+        setDefaultFilterStatesForCategory(category: string): void;
         load(slot?: number): void;
         save(slot?: number): void;
     }
