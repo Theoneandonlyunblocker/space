@@ -55,7 +55,20 @@ module Rance
             {
               className: "notification-filter-list-header"
             },
-              "Filter notifications"
+              React.DOM.div(
+              {
+                className: "notification-filter-list-item-label"
+              },
+                "Show"
+              ),
+              React.DOM.div(
+              {
+                className: "notification-filter-list-item-filters"
+              },
+                "Always",
+                "Involved",
+                "Never"
+              )
             ),
             filterGroupElements
           )

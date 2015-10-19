@@ -2046,6 +2046,31 @@ ol {
 .notification-message {
   color: #eeeeec;
 }
+.notification-filter-list-header {
+  display: flex;
+  flex-flow: row;
+  width: 350px;
+}
+.notification-filter-list-item {
+  display: flex;
+  flex-flow: row;
+  width: 350px;
+}
+.notification-filter-list-item-label {
+  flex: 1 0 140px;
+  margin: 0 10px;
+}
+.notification-filter-list-item-filters {
+  flex: 0 0 200px;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.notification-filter-list-item-filters > * {
+  width: 66.66666667px;
+  text-align: center;
+}
 .possible-actions-container {
   position: relative;
   bottom: -3px;

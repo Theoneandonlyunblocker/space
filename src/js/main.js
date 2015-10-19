@@ -16642,7 +16642,11 @@ var Rance;
                     className: "notification-filter-list"
                 }, React.DOM.div({
                     className: "notification-filter-list-header"
-                }, "Filter notifications"), filterGroupElements));
+                }, React.DOM.div({
+                    className: "notification-filter-list-item-label"
+                }, "Show"), React.DOM.div({
+                    className: "notification-filter-list-item-filters"
+                }, "Always", "Involved", "Never")), filterGroupElements));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -16675,7 +16679,8 @@ var Rance;
                         handleClose: this.closePopup
                     },
                     popupProps: {
-                        containerDragOnly: true
+                        containerDragOnly: true,
+                        preventAutoResize: true
                     }
                 });
                 this.setState({
