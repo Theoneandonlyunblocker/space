@@ -25,6 +25,22 @@ module Rance
       displayName: "List",
       mixins: [SplitMultilineText],
 
+      propTypes:
+      {
+        initialColumns: React.PropTypes.arrayOf(React.PropTypes.object).isRequired, // IListColumn[]
+        listItems: React.PropTypes.arrayOf(React.PropTypes.object).isRequired, // IListItem[]
+        initialSortOrder: React.PropTypes.arrayOf(React.PropTypes.object), // IListColumn[]
+        keyboardSelect: React.PropTypes.bool, // boolean
+        initialSelected: React.PropTypes.object, // IListItem
+        onRowChange: React.PropTypes.func, // (row: IListItem) => void
+        tabIndex: React.PropTypes.number, // number
+        noHeader: React.PropTypes.bool, // boolean
+        colStylingFN: React.PropTypes.func, // (column: IListColumn, props: any) => any
+        addSpacer: React.PropTypes.bool, // boolean
+
+        sortedItems: React.PropTypes.arrayOf(React.PropTypes.object) // IListItem[] TODO refactor shouldnt be a prop
+      },
+
       getInitialState: function()
       {
         var initialColumn: IListColumn = this.props.initialSortOrder ?
