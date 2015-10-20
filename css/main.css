@@ -1639,7 +1639,7 @@ ol {
 }
 .light-box-close {
   position: absolute;
-  z-index: 999;
+  z-index: 1;
   top: 0;
   right: 0;
   color: #444;
@@ -4222,4 +4222,18 @@ button.player-setup-remove-player.disabled {
 }
 .manufacturable-things-list-item :last-child {
   margin-right: 0;
+}
+.trade-overview {
+  border: 1px solid red;
+  display: flex;
+  flex-flow: column;
+}
+.tradeable-items-container {
+  display: flex;
+  flex-flow: row;
+}
+.tradeable-items {
+  border: 1px solid green;
+  display: flex;
+  flex-flow: column;
 }

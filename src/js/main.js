@@ -2283,6 +2283,19 @@ var Rance;
         UIComponents.List = React.createClass({
             displayName: "List",
             mixins: [UIComponents.SplitMultilineText],
+            propTypes: {
+                initialColumns: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+                listItems: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+                initialSortOrder: React.PropTypes.arrayOf(React.PropTypes.object),
+                keyboardSelect: React.PropTypes.bool,
+                initialSelected: React.PropTypes.object,
+                onRowChange: React.PropTypes.func,
+                tabIndex: React.PropTypes.number,
+                noHeader: React.PropTypes.bool,
+                colStylingFN: React.PropTypes.func,
+                addSpacer: React.PropTypes.bool,
+                sortedItems: React.PropTypes.arrayOf(React.PropTypes.object) // IListItem[] TODO refactor shouldnt be a prop
+            },
             getInitialState: function () {
                 var initialColumn = this.props.initialSortOrder ?
                     this.props.initialSortOrder[0] :
@@ -4708,1049 +4721,6 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.DiplomacyActions = React.createClass({
-            displayName: "DiplomacyActions",
-            handleDeclareWar: function () {
-                this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
-                this.props.onUpdate();
-            },
-            handleMakePeace: function () {
-                this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
-                this.props.onUpdate();
-            },
-            render: function () {
-                var player = this.props.player;
-                var targetPlayer = this.props.targetPlayer;
-                var declareWarProps = {
-                    className: "diplomacy-action-button"
-                };
-                if (player.diplomacyStatus.canDeclareWarOn(targetPlayer)) {
-                    declareWarProps.onClick = this.handleDeclareWar;
-                }
-                else {
-                    declareWarProps.disabled = true;
-                    declareWarProps.className += " disabled";
-                }
-                var makePeaceProps = {
-                    className: "diplomacy-action-button"
-                };
-                if (player.diplomacyStatus.canMakePeaceWith(targetPlayer)) {
-                    makePeaceProps.onClick = this.handleMakePeace;
-                }
-                else {
-                    makePeaceProps.disabled = true;
-                    makePeaceProps.className += " disabled";
-                }
-                return (React.DOM.div({
-                    className: "diplomacy-actions-container"
-                }, React.DOM.button({
-                    className: "light-box-close",
-                    onClick: this.props.closePopup
-                }, "X"), React.DOM.div({
-                    className: "diplomacy-actions"
-                }, React.DOM.div({
-                    className: "diplomacy-actions-header"
-                }, targetPlayer.name), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"))));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.AutoPosition = {
-            componentDidMount: function () {
-                if (this.props.autoPosition) {
-                    this.setAutoPosition();
-                }
-            },
-            componentDidUpdate: function () {
-                if (this.props.autoPosition) {
-                    this.setAutoPosition();
-                }
-            },
-            flipSide: function (side) {
-                switch (side) {
-                    case "top":
-                        {
-                            return "bottom";
-                        }
-                    case "bottom":
-                        {
-                            return "top";
-                        }
-                    case "left":
-                        {
-                            return "right";
-                        }
-                    case "right":
-                        {
-                            return "left";
-                        }
-                    default:
-                        {
-                            throw new Error("Invalid side");
-                        }
-                }
-            },
-            elementFitsYSide: function (side, ownRect, parentRect) {
-                switch (side) {
-                    case "top":
-                        {
-                            return parentRect.top - ownRect.height >= 0;
-                        }
-                    case "bottom":
-                        {
-                            return parentRect.bottom + ownRect.height < window.innerHeight;
-                        }
-                    default:
-                        {
-                            throw new Error("Invalid side");
-                        }
-                }
-            },
-            elementFitsXSide: function (side, ownRect, parentRect) {
-                switch (side) {
-                    case "left":
-                        {
-                            return parentRect.left + ownRect.width < window.innerWidth;
-                        }
-                    case "right":
-                        {
-                            return parentRect.right - ownRect.width >= 0;
-                        }
-                    default:
-                        {
-                            throw new Error("Invalid side");
-                        }
-                }
-            },
-            setAutoPosition: function () {
-                /*
-                try to fit prefered y
-                  flip if doesnt fit
-                try to fit prefered x alignment
-                  flip if doesnt fit
-                 */
-                var parentRect = this.props.getParentNode().getBoundingClientRect();
-                var ownNode = this.getDOMNode();
-                var rect = ownNode.getBoundingClientRect();
-                var ySide = this.props.ySide || "top";
-                var xSide = this.props.xSide || "right";
-                var yMargin = this.props.yMargin || 0;
-                var xMargin = this.props.xMargin || 0;
-                var fitsY = this.elementFitsYSide(ySide, rect, parentRect);
-                if (!fitsY) {
-                    ySide = this.flipSide(ySide);
-                }
-                var fitsX = this.elementFitsXSide(xSide, rect, parentRect);
-                if (!fitsX) {
-                    xSide = this.flipSide(xSide);
-                }
-                var top = null;
-                var left = null;
-                if (ySide === "top") {
-                    top = parentRect.top - rect.height - yMargin;
-                }
-                else {
-                    top = parentRect.bottom + yMargin;
-                }
-                if (xSide === "left") {
-                    left = parentRect.left - xMargin;
-                }
-                else {
-                    left = parentRect.right - rect.width + xMargin;
-                }
-                ownNode.style.left = "" + left + "px";
-                ownNode.style.top = "" + top + "px";
-            }
-        };
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.AttitudeModifierInfo = React.createClass({
-            displayName: "AttitudeModifierInfo",
-            makeCell: function (type) {
-                var cellProps = {};
-                cellProps.key = type;
-                cellProps.className = "attitude-modifier-info-cell" +
-                    " attitude-modifier-info-" + type;
-                var cellContent;
-                switch (type) {
-                    case "endTurn":
-                        {
-                            if (this.props.endTurn < 0) {
-                                cellContent = null;
-                                return;
-                            }
-                        }
-                    case "strength":
-                        {
-                            var relativeValue = Rance.getRelativeValue(this.props.strength, -20, 20);
-                            relativeValue = Rance.clamp(relativeValue, 0, 1);
-                            var deviation = Math.abs(0.5 - relativeValue) * 2;
-                            var hue = 110 * relativeValue;
-                            var saturation = 0 + 50 * deviation;
-                            if (deviation > 0.3)
-                                saturation += 40;
-                            var lightness = 70 - 20 * deviation;
-                            cellProps.style =
-                                {
-                                    color: "hsl(" +
-                                        hue + "," +
-                                        saturation + "%," +
-                                        lightness + "%)"
-                                };
-                        }
-                    default:
-                        {
-                            cellContent = this.props[type];
-                            if (isFinite(cellContent)) {
-                                cellProps.className += " center-text";
-                            }
-                            break;
-                        }
-                }
-                return (React.DOM.td(cellProps, cellContent));
-            },
-            render: function () {
-                var columns = this.props.activeColumns;
-                var cells = [];
-                for (var i = 0; i < columns.length; i++) {
-                    var cell = this.makeCell(columns[i].key);
-                    cells.push(cell);
-                }
-                var rowProps = {
-                    className: "diplomatic-status-player",
-                    onClick: this.props.handleClick
-                };
-                return (React.DOM.tr(rowProps, cells));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../mixins/autoposition.ts" />
-/// <reference path="attitudemodifierinfo.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.AttitudeModifierList = React.createClass({
-            displayName: "AttitudeModifierList",
-            mixins: [UIComponents.AutoPosition],
-            render: function () {
-                var modifiers = this.props.attitudeModifiers;
-                var rows = [];
-                rows.push({
-                    key: "baseOpinion",
-                    data: {
-                        name: "AI Personality",
-                        strength: this.props.baseOpinion,
-                        endTurn: -1,
-                        sortOrder: -1,
-                        rowConstructor: UIComponents.AttitudeModifierInfo
-                    }
-                });
-                for (var i = 0; i < modifiers.length; i++) {
-                    var modifier = modifiers[i];
-                    if (modifier.isOverRidden)
-                        continue;
-                    rows.push({
-                        key: modifier.template.type,
-                        data: {
-                            name: modifier.template.displayName,
-                            strength: modifier.getAdjustedStrength(),
-                            endTurn: modifier.endTurn,
-                            sortOrder: 0,
-                            rowConstructor: UIComponents.AttitudeModifierInfo
-                        }
-                    });
-                }
-                var columns = [
-                    {
-                        label: "Name",
-                        key: "name",
-                        defaultOrder: "asc",
-                        propToSortBy: "sortOrder"
-                    },
-                    {
-                        label: "Effect",
-                        key: "strength",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Ends on",
-                        key: "endTurn",
-                        defaultOrder: "desc"
-                    }
-                ];
-                return (React.DOM.div({ className: "attitude-modifier-list auto-position fixed-table-parent" }, UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    initialSortOrder: [columns[0], columns[1], columns[2]]
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="attitudemodifierlist.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.Opinion = React.createClass({
-            displayName: "Opinion",
-            getInitialState: function () {
-                return ({
-                    hasAttitudeModifierTootlip: false
-                });
-            },
-            setTooltip: function () {
-                this.setState({ hasAttitudeModifierTootlip: true });
-            },
-            clearTooltip: function () {
-                this.setState({ hasAttitudeModifierTootlip: false });
-            },
-            getOpinionTextNode: function () {
-                return this.getDOMNode().firstChild;
-            },
-            getColor: function () {
-                var relativeValue = Rance.getRelativeValue(this.props.opinion, -30, 30);
-                relativeValue = Rance.clamp(relativeValue, 0, 1);
-                var deviation = Math.abs(0.5 - relativeValue) * 2;
-                var hue = 110 * relativeValue;
-                var saturation = 0 + 50 * deviation;
-                if (deviation > 0.3)
-                    saturation += 40;
-                var lightness = 70 - 20 * deviation;
-                return ("hsl(" +
-                    hue + "," +
-                    saturation + "%," +
-                    lightness + "%)");
-            },
-            render: function () {
-                var tooltip = null;
-                if (this.state.hasAttitudeModifierTootlip) {
-                    tooltip = UIComponents.AttitudeModifierList({
-                        attitudeModifiers: this.props.attitudeModifiers,
-                        baseOpinion: this.props.baseOpinion,
-                        onLeave: this.clearTooltip,
-                        getParentNode: this.getOpinionTextNode,
-                        autoPosition: true,
-                        ySide: "top",
-                        xSide: "right",
-                        yMargin: 10
-                    });
-                }
-                return (React.DOM.div({
-                    className: "player-opinion",
-                    onMouseEnter: this.setTooltip,
-                    onMouseLeave: this.clearTooltip
-                }, React.DOM.span({
-                    style: {
-                        color: this.getColor()
-                    }
-                }, this.props.opinion), tooltip));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../playerflag.ts" />
-/// <reference path="opinion.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.DiplomaticStatusPlayer = React.createClass({
-            displayName: "DiplomaticStatusPlayer",
-            getInitialState: function () {
-                return ({
-                    hasAttitudeModifierTootlip: false
-                });
-            },
-            makeCell: function (type) {
-                var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
-                if (type === "flag") {
-                    if (!this.props.player) {
-                        return (React.DOM.td({
-                            key: type,
-                            className: className
-                        }, null));
-                    }
-                    return (React.DOM.td({
-                        key: type,
-                        className: className
-                    }, UIComponents.PlayerFlag({
-                        flag: this.props.player.flag,
-                        props: {
-                            className: "diplomacy-status-player-icon"
-                        }
-                    })));
-                }
-                if (type === "opinion") {
-                    return (React.DOM.td({
-                        key: type,
-                        className: className
-                    }, UIComponents.Opinion({
-                        attitudeModifiers: this.props.attitudeModifiers,
-                        opinion: this.props.opinion,
-                        baseOpinion: this.props.baseOpinion
-                    })));
-                }
-                if (type === "player") {
-                    className += " player-name";
-                }
-                return (React.DOM.td({
-                    key: type,
-                    className: className
-                }, this.props[type]));
-            },
-            render: function () {
-                var columns = this.props.activeColumns;
-                var cells = [];
-                for (var i = 0; i < columns.length; i++) {
-                    var cell = this.makeCell(columns[i].key);
-                    cells.push(cell);
-                }
-                var rowProps = {
-                    className: "diplomatic-status-player",
-                    onClick: this.props.handleClick
-                };
-                return (React.DOM.tr(rowProps, cells));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="diplomacyactions.ts" />
-/// <reference path="diplomaticstatusplayer.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.DiplomacyOverview = React.createClass({
-            displayName: "DiplomacyOverview",
-            makeDiplomacyActionsPopup: function (rowItem) {
-                var player = rowItem.data.player;
-                if (!player)
-                    return;
-                this.refs.popupManager.makePopup({
-                    contentConstructor: UIComponents.DiplomacyActions,
-                    contentProps: {
-                        player: this.props.player,
-                        targetPlayer: player,
-                        onUpdate: this.forceUpdate.bind(this)
-                    }
-                });
-            },
-            render: function () {
-                var unmetPlayerCount = this.props.totalPlayerCount -
-                    Object.keys(this.props.metPlayers).length - 1;
-                var rows = [];
-                for (var playerId in this.props.statusByPlayer) {
-                    var player = this.props.metPlayers[playerId];
-                    rows.push({
-                        key: player.id,
-                        data: {
-                            player: player,
-                            name: player.name,
-                            baseOpinion: player.diplomacyStatus.getBaseOpinion(),
-                            status: Rance.DiplomaticState[this.props.statusByPlayer[playerId]],
-                            statusEnum: this.props.statusByPlayer[playerId],
-                            opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
-                            attitudeModifiers: player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
-                            rowConstructor: UIComponents.DiplomaticStatusPlayer
-                        }
-                    });
-                }
-                for (var i = 0; i < unmetPlayerCount; i++) {
-                    rows.push({
-                        key: "unmet" + i,
-                        data: {
-                            name: "?????",
-                            status: "unmet",
-                            statusEnum: 99999 + i,
-                            opinion: null,
-                            rowConstructor: UIComponents.DiplomaticStatusPlayer
-                        }
-                    });
-                }
-                var columns = [
-                    {
-                        label: "",
-                        key: "flag",
-                        defaultOrder: "asc",
-                        propToSortBy: "name"
-                    },
-                    {
-                        label: "Name",
-                        key: "name",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Status",
-                        key: "status",
-                        defaultOrder: "asc",
-                        propToSortBy: "statusEnum"
-                    },
-                    {
-                        label: "Opinion",
-                        key: "opinion",
-                        defaultOrder: "desc"
-                    }
-                ];
-                return (React.DOM.div({ className: "diplomacy-overview" }, UIComponents.PopupManager({
-                    ref: "popupManager",
-                    onlyAllowOne: true
-                }), React.DOM.div({ className: "diplomacy-status-list fixed-table-parent" }, UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    initialSortOrder: [columns[0]],
-                    onRowChange: this.makeDiplomacyActionsPopup
-                }))));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.EconomySummaryItem = React.createClass({
-            displayName: "EconomySummaryItem",
-            makeCell: function (type) {
-                var cellProps = {};
-                cellProps.key = type;
-                cellProps.className = "economy-summary-item-cell" + " economy-summary-" + type;
-                var cellContent;
-                switch (type) {
-                    default:
-                        {
-                            cellContent = this.props[type];
-                            break;
-                        }
-                }
-                return (React.DOM.td(cellProps, cellContent));
-            },
-            render: function () {
-                var columns = this.props.activeColumns;
-                var cells = [];
-                for (var i = 0; i < columns.length; i++) {
-                    var cell = this.makeCell(columns[i].key);
-                    cells.push(cell);
-                }
-                var rowProps = {
-                    className: "economy-summary-item",
-                    onClick: this.props.handleClick
-                };
-                if (this.props.isSelected) {
-                    rowProps.className += " selected";
-                }
-                ;
-                return (React.DOM.tr(rowProps, cells));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../unitlist/list.ts"/>
-/// <reference path="economysummaryitem.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.EconomySummary = React.createClass({
-            displayName: "EconomySummary",
-            render: function () {
-                var rows = [];
-                var player = this.props.player;
-                for (var i = 0; i < player.controlledLocations.length; i++) {
-                    var star = player.controlledLocations[i];
-                    var data = {
-                        star: star,
-                        id: star.id,
-                        name: star.name,
-                        income: star.getIncome(),
-                        rowConstructor: UIComponents.EconomySummaryItem
-                    };
-                    rows.push({
-                        key: star.id,
-                        data: data
-                    });
-                }
-                var columns = [
-                    {
-                        label: "Id",
-                        key: "id",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Name",
-                        key: "name",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Income",
-                        key: "income",
-                        defaultOrder: "desc"
-                    }
-                ];
-                return (React.DOM.div({ className: "economy-summary-list fixed-table-parent" }, UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    initialSortOrder: [columns[2]]
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.OptionsGroup = React.createClass({
-            displayName: "OptionsGroup",
-            render: function () {
-                var rows = [];
-                for (var i = 0; i < this.props.options.length; i++) {
-                    var option = this.props.options[i];
-                    rows.push(React.DOM.div({
-                        className: "option-container",
-                        key: option.key
-                    }, option.content));
-                }
-                var resetButton = null;
-                if (this.props.resetFN) {
-                    resetButton = React.DOM.button({
-                        className: "reset-options-button",
-                        onClick: this.props.resetFN
-                    }, "reset");
-                }
-                var header = this.props.header || resetButton ?
-                    React.DOM.div({ className: "option-group-header" }, this.props.header, resetButton) :
-                    null;
-                return (React.DOM.div({ className: "option-group" }, header, rows));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.OptionsCheckbox = React.createClass({
-            displayName: "OptionsCheckbox",
-            render: function () {
-                var key = "options-checkbox-" + this.props.label;
-                return (React.DOM.div({
-                    className: "options-checkbox-container"
-                }, React.DOM.input({
-                    type: "checkbox",
-                    id: key,
-                    checked: this.props.isChecked,
-                    onChange: this.props.onChangeFN
-                }), React.DOM.label({
-                    htmlFor: key
-                }, this.props.label)));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../popups/popupmanager.ts"/>
-/// <reference path="optionsgroup.ts"/>
-/// <reference path="optionscheckbox.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.OptionsList = React.createClass({
-            displayName: "OptionsList",
-            makeBattleAnimationOption: function (stage) {
-                if (!isFinite(Rance.Options.battleAnimationTiming[stage])) {
-                    console.warn("Invalid option", stage);
-                    return;
-                }
-                var onChangeFN = function (e) {
-                    var target = e.target;
-                    var value = parseFloat(target.value);
-                    if (!isFinite(value)) {
-                        return;
-                    }
-                    value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
-                    Rance.Options.battleAnimationTiming[stage] = value;
-                    this.forceUpdate();
-                }.bind(this);
-                var key = "battle-animation-option-" + stage;
-                return ({
-                    key: stage,
-                    content: React.DOM.div({}, React.DOM.input({
-                        type: "number",
-                        id: key,
-                        value: Rance.Options.battleAnimationTiming[stage],
-                        min: 0,
-                        max: 10,
-                        step: 0.1,
-                        onChange: onChangeFN
-                    }), React.DOM.label({
-                        htmlFor: key
-                    }, stage))
-                });
-            },
-            handleResetAllOptions: function () {
-                var resetFN = function () {
-                    var shouldToggleDebug = false;
-                    if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode)
-                        shouldToggleDebug = true;
-                    Rance.Options = Rance.extendObject(Rance.defaultOptions);
-                    this.forceUpdate();
-                    if (shouldToggleDebug) {
-                        app.reactUI.render();
-                    }
-                }.bind(this);
-                var confirmProps = {
-                    handleOk: resetFN,
-                    contentText: "Are you sure you want to reset all options?"
-                };
-                this.refs.popupManager.makePopup({
-                    contentConstructor: UIComponents.ConfirmPopup,
-                    contentProps: confirmProps
-                });
-            },
-            render: function () {
-                var allOptions = [];
-                // battle animation timing
-                var battleAnimationOptions = [];
-                for (var stage in Rance.Options.battleAnimationTiming) {
-                    battleAnimationOptions.push(this.makeBattleAnimationOption(stage));
-                }
-                allOptions.push(UIComponents.OptionsGroup({
-                    header: "Battle animation timing",
-                    options: battleAnimationOptions,
-                    resetFN: function () {
-                        Rance.extendObject(Rance.defaultOptions.battleAnimationTiming, Rance.Options.battleAnimationTiming);
-                        this.forceUpdate();
-                    }.bind(this),
-                    key: "battleAnimationOptions"
-                }));
-                var debugOptions = [];
-                debugOptions.push({
-                    key: "debugMode",
-                    content: UIComponents.OptionsCheckbox({
-                        isChecked: Rance.Options.debugMode,
-                        label: "Debug mode",
-                        onChangeFN: function () {
-                            Rance.Options.debugMode = !Rance.Options.debugMode;
-                            this.forceUpdate();
-                            app.reactUI.render();
-                        }.bind(this)
-                    })
-                });
-                if (Rance.Options.debugMode) {
-                    debugOptions.push({
-                        key: "battleSimulationDepth",
-                        content: React.DOM.div({}, React.DOM.input({
-                            type: "number",
-                            id: "battle-simulation-depth-input",
-                            value: Rance.Options.debugOptions.battleSimulationDepth,
-                            min: 1,
-                            max: 500,
-                            step: 1,
-                            onChange: function (e) {
-                                var target = e.target;
-                                var value = parseInt(target.value);
-                                if (!isFinite(value)) {
-                                    return;
-                                }
-                                value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
-                                Rance.Options.debugOptions.battleSimulationDepth = value;
-                                this.forceUpdate();
-                            }.bind(this)
-                        }), React.DOM.label({
-                            htmlFor: "battle-simulation-depth-input"
-                        }, "AI vs. AI Battle simulation depth"))
-                    });
-                }
-                allOptions.push(UIComponents.OptionsGroup({
-                    header: "Debug",
-                    options: debugOptions,
-                    resetFN: function () {
-                        Rance.extendObject(Rance.defaultOptions.debugOptions, Rance.Options.debugOptions);
-                        if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode) {
-                            Rance.Options.debugMode = !Rance.Options.debugMode;
-                            this.forceUpdate();
-                            app.reactUI.render();
-                        }
-                    }.bind(this),
-                    key: "debug"
-                }));
-                var uiOptions = [];
-                uiOptions.push({
-                    key: "noHamburger",
-                    content: UIComponents.OptionsCheckbox({
-                        isChecked: Rance.Options.ui.noHamburger,
-                        label: "Always expand top right menu on low resolution",
-                        onChangeFN: function () {
-                            Rance.Options.ui.noHamburger = !Rance.Options.ui.noHamburger;
-                            Rance.eventManager.dispatchEvent("updateHamburgerMenu");
-                            this.forceUpdate();
-                        }.bind(this)
-                    })
-                });
-                allOptions.push(UIComponents.OptionsGroup({
-                    header: "UI",
-                    options: uiOptions,
-                    resetFN: function () {
-                        Rance.extendObject(Rance.defaultOptions.ui, Rance.Options.ui);
-                        this.forceUpdate();
-                    }.bind(this),
-                    key: "ui"
-                }));
-                var displayOptions = [];
-                displayOptions.push({
-                    key: "borderWidth",
-                    content: React.DOM.div({}, React.DOM.input({
-                        type: "number",
-                        id: "border-width-input",
-                        value: Rance.Options.display.borderWidth,
-                        min: 0,
-                        max: 50,
-                        step: 1,
-                        onChange: function (e) {
-                            var target = e.target;
-                            var value = parseFloat(target.value);
-                            if (!isFinite(value)) {
-                                return;
-                            }
-                            value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
-                            Rance.Options.display.borderWidth = value;
-                            Rance.eventManager.dispatchEvent("renderMap");
-                            this.forceUpdate();
-                        }.bind(this)
-                    }), React.DOM.label({
-                        htmlFor: "border-width-input"
-                    }, "Border width"))
-                });
-                allOptions.push(UIComponents.OptionsGroup({
-                    header: "Display",
-                    options: displayOptions,
-                    resetFN: function () {
-                        Rance.extendObject(Rance.defaultOptions.display, Rance.Options.display);
-                        Rance.eventManager.dispatchEvent("renderMap");
-                        this.forceUpdate();
-                    }.bind(this),
-                    key: "display"
-                }));
-                return (React.DOM.div({ className: "options" }, UIComponents.PopupManager({
-                    ref: "popupManager",
-                    onlyAllowOne: true
-                }), React.DOM.div({ className: "options-header" }, "Options", React.DOM.button({
-                    className: "reset-options-button reset-all-options-button",
-                    onClick: this.handleResetAllOptions
-                }, "Reset all options")), allOptions));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.TechnologyPrioritySlider = React.createClass({
-            displayName: "TechnologyPrioritySlider",
-            getInitialState: function () {
-                return ({
-                    priority: this.getPlayerPriority()
-                });
-            },
-            componentDidMount: function () {
-                Rance.eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
-            },
-            componentWillUnmount: function () {
-                Rance.eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
-            },
-            getPlayerPriority: function () {
-                return this.props.player.technologies[this.props.technology.key].priority;
-            },
-            updatePriority: function () {
-                this.setState({
-                    priority: this.getPlayerPriority()
-                });
-            },
-            handlePriorityChange: function (e) {
-                if (this.props.player.technologies[this.props.technology.key].priorityIsLocked) {
-                    return;
-                }
-                var target = e.target;
-                this.props.player.setTechnologyPriority(this.props.technology, parseFloat(target.value));
-            },
-            render: function () {
-                var predictedResearchPoints = 30; // TODO
-                return (React.DOM.div({
-                    className: "technology-progress-bar-priority-container"
-                }, React.DOM.span({
-                    className: "technology-progress-bar-predicted-research"
-                }, "+" + (this.props.researchPoints * this.state.priority).toFixed(1)), React.DOM.input({
-                    className: "technology-progress-bar-priority",
-                    type: "range",
-                    min: 0,
-                    max: 1,
-                    step: 0.01,
-                    value: this.state.priority,
-                    onChange: this.handlePriorityChange
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="technologypriorityslider.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.Technology = React.createClass({
-            displayName: "Technology",
-            togglePriorityLock: function () {
-                this.props.player.technologies[this.props.technology.key].priorityIsLocked =
-                    !this.props.player.technologies[this.props.technology.key].priorityIsLocked;
-                this.forceUpdate();
-            },
-            render: function () {
-                var technology = this.props.technology;
-                var player = this.props.player;
-                var techData = player.technologies[technology.key];
-                var forCurrentLevel = player.getResearchNeededForTechnologyLevel(techData.level);
-                var forNextLevel = player.getResearchNeededForTechnologyLevel(techData.level + 1);
-                var progressForLevel = techData.totalResearch - forCurrentLevel;
-                var neededToProgressLevel = forNextLevel - forCurrentLevel;
-                var relativeProgress;
-                if (techData.level === technology.maxLevel) {
-                    relativeProgress = 1;
-                }
-                else {
-                    relativeProgress = progressForLevel / neededToProgressLevel;
-                }
-                return (React.DOM.div({
-                    className: "technology-listing"
-                }, React.DOM.div({
-                    className: "technology-name"
-                }, technology.displayName), React.DOM.div({
-                    className: "technology-level"
-                }, "Level " + techData.level), React.DOM.div({
-                    className: "technology-progress-bar-container"
-                }, React.DOM.div({
-                    className: "technology-progress-bar",
-                    style: {
-                        width: "" + (relativeProgress * 100) + "%"
-                    }
-                }), React.DOM.div({
-                    className: "technology-progress-bar-value"
-                }, "" + progressForLevel.toFixed(1) + " / " + Math.ceil(neededToProgressLevel)), UIComponents.TechnologyPrioritySlider({
-                    player: this.props.player,
-                    technology: this.props.technology,
-                    researchPoints: this.props.researchPoints
-                })), React.DOM.button({
-                    className: "technology-toggle-priority-lock" + (techData.priorityIsLocked ? " locked" : " unlocked"),
-                    onClick: this.togglePriorityLock
-                }, null)));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="technology.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.TechnologiesList = React.createClass({
-            displayName: "TechnologiesList",
-            updateListener: undefined,
-            componentDidMount: function () {
-                this.updateListener = Rance.eventManager.addEventListener("builtBuildingWithEffect_research", this.forceUpdate.bind(this));
-            },
-            componentWillUnmount: function () {
-                Rance.eventManager.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
-            },
-            render: function () {
-                var player = this.props.player;
-                var researchSpeed = player.getResearchSpeed();
-                var rows = [];
-                for (var key in player.technologies) {
-                    rows.push(UIComponents.Technology({
-                        player: player,
-                        technology: player.technologies[key].technology,
-                        researchPoints: researchSpeed,
-                        key: key
-                    }));
-                }
-                return (React.DOM.div({
-                    className: "technologies-list-container"
-                }, React.DOM.div({
-                    className: "technologies-list"
-                }, rows), React.DOM.div({
-                    className: "technologies-list-research-speed"
-                }, "Research speed: " + researchSpeed + " per turn")));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var Resources;
-                (function (Resources) {
-                    Resources.testResource1 = {
-                        type: "testResource1",
-                        displayName: "Test Resource 1",
-                        icon: "img\/resources\/test1.png",
-                        rarity: 1,
-                        distributionGroups: ["common"]
-                    };
-                    Resources.testResource2 = {
-                        type: "testResource2",
-                        displayName: "Test Resource 2",
-                        icon: "img\/resources\/test2.png",
-                        rarity: 1,
-                        distributionGroups: ["common"]
-                    };
-                    Resources.testResource3 = {
-                        type: "testResource3",
-                        displayName: "Test Resource 3",
-                        icon: "img\/resources\/test3.png",
-                        rarity: 1,
-                        distributionGroups: ["common"]
-                    };
-                    Resources.testResource4 = {
-                        type: "testResource4",
-                        displayName: "Test Resource 4",
-                        icon: "img\/resources\/test4.png",
-                        rarity: 1,
-                        distributionGroups: ["rare"]
-                    };
-                    Resources.testResource5 = {
-                        type: "testResource5",
-                        displayName: "Test Resource 5",
-                        icon: "img\/resources\/test5.png",
-                        rarity: 1,
-                        distributionGroups: ["rare"]
-                    };
-                })(Resources = Templates.Resources || (Templates.Resources = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
     (function (RandomGenUnitRarity) {
         RandomGenUnitRarity[RandomGenUnitRarity["common"] = 0] = "common";
         RandomGenUnitRarity[RandomGenUnitRarity["elite"] = 1] = "elite";
@@ -6235,6 +5205,411 @@ var Rance;
     }
     Rance.defaultNameGenerator = defaultNameGenerator;
 })(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Resources;
+                (function (Resources) {
+                    Resources.testResource1 = {
+                        type: "testResource1",
+                        displayName: "Test Resource 1",
+                        icon: "img\/resources\/test1.png",
+                        rarity: 1,
+                        distributionGroups: ["common"]
+                    };
+                    Resources.testResource2 = {
+                        type: "testResource2",
+                        displayName: "Test Resource 2",
+                        icon: "img\/resources\/test2.png",
+                        rarity: 1,
+                        distributionGroups: ["common"]
+                    };
+                    Resources.testResource3 = {
+                        type: "testResource3",
+                        displayName: "Test Resource 3",
+                        icon: "img\/resources\/test3.png",
+                        rarity: 1,
+                        distributionGroups: ["common"]
+                    };
+                    Resources.testResource4 = {
+                        type: "testResource4",
+                        displayName: "Test Resource 4",
+                        icon: "img\/resources\/test4.png",
+                        rarity: 1,
+                        distributionGroups: ["rare"]
+                    };
+                    Resources.testResource5 = {
+                        type: "testResource5",
+                        displayName: "Test Resource 5",
+                        icon: "img\/resources\/test5.png",
+                        rarity: 1,
+                        distributionGroups: ["rare"]
+                    };
+                })(Resources = Templates.Resources || (Templates.Resources = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    // todo: use a heap instead of this crap
+    var PriorityQueue = (function () {
+        function PriorityQueue() {
+            this.items = {};
+        }
+        PriorityQueue.prototype.isEmpty = function () {
+            if (Object.keys(this.items).length > 0)
+                return false;
+            else
+                return true;
+        };
+        PriorityQueue.prototype.push = function (priority, data) {
+            if (!this.items[priority]) {
+                this.items[priority] = [];
+            }
+            this.items[priority].push(data);
+        };
+        PriorityQueue.prototype.pop = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+            var toReturn = this.items[highestPriority].pop();
+            if (this.items[highestPriority].length < 1) {
+                delete this.items[highestPriority];
+            }
+            return toReturn;
+        };
+        PriorityQueue.prototype.peek = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+            var toReturn = this.items[highestPriority][0];
+            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
+        };
+        return PriorityQueue;
+    })();
+    Rance.PriorityQueue = PriorityQueue;
+})(Rance || (Rance = {}));
+/// <reference path="star.ts" />
+/// <reference path="priorityqueue.ts" />
+var Rance;
+(function (Rance) {
+    function backTrace(graph, target) {
+        var parent = graph[target.id];
+        if (!parent)
+            return [];
+        var path = [
+            {
+                star: target,
+                cost: parent.cost
+            }
+        ];
+        while (parent) {
+            path.push({
+                star: parent.star,
+                cost: parent.cost
+            });
+            parent = graph[parent.star.id];
+        }
+        path.reverse();
+        path[0].cost = null;
+        return path;
+    }
+    Rance.backTrace = backTrace;
+    function aStar(start, target) {
+        var frontier = new Rance.PriorityQueue();
+        frontier.push(0, start);
+        //var frontier = new EasyStar.PriorityQueue("p", 1);
+        //frontier.insert({p: 0, tile: start})
+        var cameFrom = {};
+        var costSoFar = {};
+        cameFrom[start.id] = null;
+        costSoFar[start.id] = 0;
+        while (!frontier.isEmpty()) 
+        //while (frontier.length > 0)
+        {
+            var current = frontier.pop();
+            //var current = frontier.shiftHighestPriorityElement().tile;
+            if (current === target)
+                return { came: cameFrom, cost: costSoFar, queue: frontier };
+            var neighbors = current.getAllLinks();
+            for (var i = 0; i < neighbors.length; i++) {
+                var neigh = neighbors[i];
+                if (!neigh)
+                    continue;
+                var moveCost = 1;
+                var newCost = costSoFar[current.id] + moveCost;
+                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
+                    costSoFar[neigh.id] = newCost;
+                    // ^ done
+                    var dx = Math.abs(neigh.id[1] - target.id[1]);
+                    var dy = Math.abs(neigh.id[2] - target.id[2]);
+                    var priority = newCost;
+                    frontier.push(priority, neigh);
+                    //frontier.insert({p: priority, tile: neigh});
+                    cameFrom[neigh.id] =
+                        {
+                            star: current,
+                            cost: moveCost
+                        };
+                }
+            }
+        }
+        return null; // didnt find path 
+    }
+    Rance.aStar = aStar;
+})(Rance || (Rance = {}));
+/// <reference path="player.ts" />
+/// <reference path="unit.ts" />
+/// <reference path="star.ts" />
+/// <reference path="pathfinding.ts"/>
+var Rance;
+(function (Rance) {
+    var Fleet = (function () {
+        function Fleet(player, ships, location, id, shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            this.ships = [];
+            this.visionIsDirty = true;
+            this.visibleStars = [];
+            this.detectedStars = [];
+            this.player = player;
+            this.location = location;
+            this.id = isFinite(id) ? id : Rance.idGenerators.fleet++;
+            this.name = "Fleet " + this.id;
+            this.location.addFleet(this);
+            this.player.addFleet(this);
+            this.addShips(ships);
+            if (shouldRender) {
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+            }
+        }
+        Fleet.prototype.getShipIndex = function (ship) {
+            return this.ships.indexOf(ship);
+        };
+        Fleet.prototype.hasShip = function (ship) {
+            return this.getShipIndex(ship) >= 0;
+        };
+        Fleet.prototype.deleteFleet = function (shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            this.location.removeFleet(this);
+            this.player.removeFleet(this);
+            if (shouldRender) {
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+            }
+        };
+        Fleet.prototype.mergeWith = function (fleet, shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            if (fleet.isStealthy !== this.isStealthy) {
+                console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
+                return;
+            }
+            fleet.addShips(this.ships);
+            this.deleteFleet(shouldRender);
+        };
+        Fleet.prototype.addShip = function (ship) {
+            if (this.hasShip(ship))
+                return false;
+            if (this.ships.length === 0) {
+                this.isStealthy = ship.isStealthy();
+            }
+            else if (ship.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to add stealthy ship to non stealthy fleet or other way around");
+                return;
+            }
+            this.ships.push(ship);
+            ship.addToFleet(this);
+            this.visionIsDirty = true;
+        };
+        Fleet.prototype.addShips = function (ships) {
+            for (var i = 0; i < ships.length; i++) {
+                this.addShip(ships[i]);
+            }
+        };
+        Fleet.prototype.removeShip = function (ship) {
+            var index = this.getShipIndex(ship);
+            if (index < 0)
+                return false;
+            this.ships.splice(index, 1);
+            ship.removeFromFleet();
+            this.visionIsDirty = true;
+            if (this.ships.length <= 0) {
+                this.deleteFleet();
+            }
+        };
+        Fleet.prototype.removeShips = function (ships) {
+            for (var i = 0; i < ships.length; i++) {
+                this.removeShip(ships[i]);
+            }
+        };
+        Fleet.prototype.transferShip = function (fleet, ship) {
+            if (fleet === this)
+                return;
+            if (ship.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to transfer stealthy ship to non stealthy fleet");
+                return;
+            }
+            var index = this.getShipIndex(ship);
+            if (index < 0)
+                return false;
+            fleet.addShip(ship);
+            this.ships.splice(index, 1);
+            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+        };
+        Fleet.prototype.split = function () {
+            var newFleet = new Fleet(this.player, [], this.location);
+            this.location.addFleet(newFleet);
+            return newFleet;
+        };
+        Fleet.prototype.splitStealthyUnits = function () {
+            var stealthyUnits = this.ships.filter(function (unit) {
+                return unit.isStealthy();
+            });
+            var newFleet = new Fleet(this.player, stealthyUnits, this.location);
+            this.location.addFleet(newFleet);
+            this.removeShips(stealthyUnits);
+            return newFleet;
+        };
+        Fleet.prototype.getMinCurrentMovePoints = function () {
+            if (!this.ships[0])
+                return 0;
+            var min = this.ships[0].currentMovePoints;
+            for (var i = 0; i < this.ships.length; i++) {
+                min = Math.min(this.ships[i].currentMovePoints, min);
+            }
+            return min;
+        };
+        Fleet.prototype.getMinMaxMovePoints = function () {
+            if (!this.ships[0])
+                return 0;
+            var min = this.ships[0].maxMovePoints;
+            for (var i = 0; i < this.ships.length; i++) {
+                min = Math.min(this.ships[i].maxMovePoints, min);
+            }
+            return min;
+        };
+        Fleet.prototype.canMove = function () {
+            for (var i = 0; i < this.ships.length; i++) {
+                if (this.ships[i].currentMovePoints <= 0) {
+                    return false;
+                }
+            }
+            if (this.getMinCurrentMovePoints() > 0) {
+                return true;
+            }
+            return false;
+        };
+        Fleet.prototype.subtractMovePoints = function () {
+            for (var i = 0; i < this.ships.length; i++) {
+                this.ships[i].currentMovePoints--;
+            }
+        };
+        Fleet.prototype.move = function (newLocation) {
+            if (newLocation === this.location)
+                return;
+            if (!this.canMove())
+                return;
+            var oldLocation = this.location;
+            oldLocation.removeFleet(this);
+            this.location = newLocation;
+            newLocation.addFleet(this);
+            this.subtractMovePoints();
+            this.visionIsDirty = true;
+            this.player.visionIsDirty = true;
+            // todo maybe send an event instead?
+            for (var i = 0; i < app.game.playerOrder.length; i++) {
+                var player = app.game.playerOrder[i];
+                if (player.isIndependent || player === this.player) {
+                    continue;
+                }
+                player.updateAllVisibilityInStar(newLocation);
+            }
+            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+            Rance.eventManager.dispatchEvent("updateSelection", null);
+        };
+        Fleet.prototype.getPathTo = function (newLocation) {
+            var a = Rance.aStar(this.location, newLocation);
+            if (!a)
+                return;
+            var path = Rance.backTrace(a.came, newLocation);
+            return path;
+        };
+        Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
+            var path = this.getPathTo(newLocation);
+            var interval = window.setInterval(function () {
+                if (!path || path.length <= 0) {
+                    window.clearInterval(interval);
+                    if (afterMove)
+                        afterMove();
+                    return;
+                }
+                var move = path.shift();
+                this.move(move.star);
+                if (onMove)
+                    onMove();
+            }.bind(this), 10);
+        };
+        Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
+            return this.location.fleets[this.player.id];
+        };
+        Fleet.prototype.getTotalStrengthEvaluation = function () {
+            var total = 0;
+            for (var i = 0; i < this.ships.length; i++) {
+                total += this.ships[i].getStrengthEvaluation();
+            }
+            return total;
+        };
+        Fleet.prototype.getTotalHealth = function () {
+            var total = {
+                current: 0,
+                max: 0
+            };
+            for (var i = 0; i < this.ships.length; i++) {
+                total.current += this.ships[i].currentHealth;
+                total.max += this.ships[i].maxHealth;
+            }
+            return total;
+        };
+        Fleet.prototype.updateVisibleStars = function () {
+            var highestVisionRange = 0;
+            var highestDetectionRange = -1;
+            for (var i = 0; i < this.ships.length; i++) {
+                highestVisionRange = Math.max(this.ships[i].getVisionRange(), highestVisionRange);
+                highestDetectionRange = Math.max(this.ships[i].getDetectionRange(), highestDetectionRange);
+            }
+            var inVision = this.location.getLinkedInRange(highestVisionRange);
+            var inDetection = this.location.getLinkedInRange(highestDetectionRange);
+            this.visibleStars = inVision.all;
+            this.detectedStars = inDetection.all;
+            this.visionIsDirty = false;
+        };
+        Fleet.prototype.getVision = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
+            }
+            return this.visibleStars;
+        };
+        Fleet.prototype.getDetection = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
+            }
+            return this.detectedStars;
+        };
+        Fleet.prototype.serialize = function () {
+            var data = {};
+            data.id = this.id;
+            data.name = this.name;
+            data.locationId = this.location.id;
+            data.playerId = this.player.id;
+            data.ships = this.ships.map(function (ship) { return ship.serialize(false); });
+            return data;
+        };
+        return Fleet;
+    })();
+    Rance.Fleet = Fleet;
+})(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/ibuildingtemplate.d.ts" />
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />
@@ -6326,6 +5701,838 @@ var Rance;
         return Building;
     })();
     Rance.Building = Building;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Manufactory = (function () {
+        function Manufactory(star, serializedData) {
+            this.buildQueue = [];
+            this.unitStatsModifier = 1;
+            this.unitHealthModifier = 1;
+            this.star = star;
+            this.player = star.owner;
+            if (serializedData) {
+                this.makeFromData(serializedData);
+            }
+            else {
+                // manufactorydata temporarily in main.ts
+                this.capacity = manufactoryData.startingCapacity;
+                this.maxCapacity = manufactoryData.maxCapacity;
+            }
+        }
+        Manufactory.prototype.makeFromData = function (data) {
+            this.capacity = data.capacity;
+            this.maxCapacity = data.maxCapacity;
+            this.unitStatsModifier = data.unitStatsModifier;
+            this.unitHealthModifier = data.unitHealthModifier;
+            this.buildQueue = data.buildQueue.map(function (savedThing) {
+                var templatesString;
+                switch (savedThing.type) {
+                    case "unit":
+                        {
+                            templatesString = "Units";
+                            break;
+                        }
+                    case "item":
+                        {
+                            templatesString = "Items";
+                        }
+                }
+                return ({
+                    type: savedThing.type,
+                    template: app.moduleData.Templates[templatesString][savedThing.templateType]
+                });
+            });
+        };
+        Manufactory.prototype.queueIsFull = function () {
+            return this.buildQueue.length >= this.capacity;
+        };
+        Manufactory.prototype.addThingToQueue = function (template, type) {
+            this.buildQueue.push({ type: type, template: template });
+            this.player.money -= template.buildCost;
+        };
+        Manufactory.prototype.removeThingAtIndex = function (index) {
+            var template = this.buildQueue[index].template;
+            this.player.money += template.buildCost;
+            this.buildQueue.splice(index, 1);
+        };
+        Manufactory.prototype.buildAllThings = function () {
+            var units = [];
+            var toBuild = this.buildQueue.slice(0, this.capacity);
+            this.buildQueue = this.buildQueue.slice(this.capacity);
+            while (toBuild.length > 0) {
+                var thingData = toBuild.pop();
+                switch (thingData.type) {
+                    case "unit":
+                        {
+                            var unitTemplate = thingData.template;
+                            var unit = new Rance.Unit(unitTemplate);
+                            unit.setAttributes(this.unitStatsModifier);
+                            unit.setBaseHealth(this.unitHealthModifier);
+                            units.push(unit);
+                            this.player.addUnit(unit);
+                            break;
+                        }
+                    case "item":
+                        {
+                            var itemTemplate = thingData.template;
+                            var item = new Rance.Item(itemTemplate);
+                            this.player.addItem(item);
+                            break;
+                        }
+                }
+            }
+            if (units.length > 0) {
+                var fleet = new Rance.Fleet(this.player, units, this.star);
+            }
+            if (!this.player.isAI) {
+                Rance.eventManager.dispatchEvent("playerManufactoryBuiltThings");
+            }
+        };
+        Manufactory.prototype.getLocalUnitTypes = function () {
+            var manufacturable = [];
+            var potential = [];
+            for (var i = 0; i < this.star.buildableUnitTypes.length; i++) {
+                var type = this.star.buildableUnitTypes[i];
+                if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements)) {
+                    manufacturable.push(type);
+                }
+                else {
+                    potential.push(type);
+                }
+            }
+            return ({
+                manufacturable: manufacturable,
+                potential: potential
+            });
+        };
+        Manufactory.prototype.getLocalItemTypes = function () {
+            var manufacturable = [];
+            var potential = [];
+            // TODO manufactory
+            return ({
+                manufacturable: manufacturable,
+                potential: potential
+            });
+        };
+        Manufactory.prototype.getManufacturableThingsForType = function (type) {
+            switch (type) {
+                case "item":
+                    {
+                        return this.getLocalItemTypes().manufacturable;
+                    }
+                case "unit":
+                    {
+                        return this.getLocalUnitTypes().manufacturable;
+                    }
+            }
+        };
+        Manufactory.prototype.canManufactureThing = function (template, type) {
+            var manufacturableThings = this.getManufacturableThingsForType(type);
+            return manufacturableThings.indexOf(template) !== -1;
+        };
+        Manufactory.prototype.handleOwnerChange = function () {
+            while (this.buildQueue.length > 0) {
+                this.removeThingAtIndex(this.buildQueue.length - 1);
+            }
+            this.player = this.star.owner;
+            this.capacity = Math.max(1, this.capacity - 1);
+        };
+        Manufactory.prototype.getCapacityUpgradeCost = function () {
+            return manufactoryData.buildCost * this.capacity;
+        };
+        Manufactory.prototype.upgradeCapacity = function (amount) {
+            this.player.money -= this.getCapacityUpgradeCost();
+            this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
+        };
+        Manufactory.prototype.getUnitUpgradeCost = function () {
+            var totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
+            return Math.round((totalUpgrades + 1) * 100);
+        };
+        Manufactory.prototype.upgradeUnitStatsModifier = function (amount) {
+            this.player.money -= this.getUnitUpgradeCost();
+            this.unitStatsModifier += amount;
+        };
+        Manufactory.prototype.upgradeUnitHealthModifier = function (amount) {
+            this.player.money -= this.getUnitUpgradeCost();
+            this.unitHealthModifier += amount;
+        };
+        Manufactory.prototype.serialize = function () {
+            var buildQueue = this.buildQueue.map(function (thingData) {
+                return ({
+                    type: thingData.type,
+                    templateType: thingData.template.type
+                });
+            });
+            return ({
+                capacity: this.capacity,
+                maxCapacity: this.maxCapacity,
+                unitStatsModifier: this.unitStatsModifier,
+                unitHealthModifier: this.unitHealthModifier,
+                buildQueue: buildQueue
+            });
+        };
+        return Manufactory;
+    })();
+    Rance.Manufactory = Manufactory;
+})(Rance || (Rance = {}));
+/// <reference path="../modules/default/templates/resources.ts" />
+/// <reference path="templateinterfaces/iresourcetemplate.d.ts" />
+/// <reference path="point.ts" />
+/// <reference path="player.ts" />
+/// <reference path="fleet.ts" />
+/// <reference path="building.ts" />
+/// <reference path="manufactory.ts" />
+var Rance;
+(function (Rance) {
+    var Star = (function () {
+        function Star(x, y, id) {
+            // separated so we can iterate through star[].linksTo to only get each connection once
+            // use star.getAllLinks() for individual star connections
+            this.linksTo = [];
+            this.linksFrom = [];
+            // can be used during map gen to attach temporary variables for easier debugging
+            // nulled and deleted after map gen is done
+            this.mapGenData = {};
+            this.fleets = {};
+            this.buildings = {};
+            this.buildingsEffectIsDirty = true;
+            this.indexedNeighborsInRange = {};
+            this.indexedDistanceToStar = {};
+            this.buildableUnitTypes = [];
+            this.id = isFinite(id) ? id : Rance.idGenerators.star++;
+            this.name = "Star " + this.id;
+            this.x = x;
+            this.y = y;
+        }
+        // TODO REMOVE
+        Star.prototype.severLinksToNonAdjacent = function () {
+            var allLinks = this.getAllLinks();
+            var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
+            for (var i = 0; i < allLinks.length; i++) {
+                var star = allLinks[i];
+                if (neighborVoronoiIds.indexOf(star.voronoiId) === -1) {
+                    this.removeLink(star);
+                }
+            }
+        };
+        // TODO manufactory
+        Star.prototype.getBuildableShipTypes = function () {
+            var player = this.owner;
+            var global = player.getGloballyBuildableUnits();
+            var local = [];
+            for (var i = 0; i < this.buildableUnitTypes.length; i++) {
+                var type = this.buildableUnitTypes[i];
+                if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements)) {
+                    local.push(type);
+                }
+            }
+            return global.concat(local);
+        };
+        // END TO REMOVE
+        // BUILDINGS
+        Star.prototype.addBuilding = function (building) {
+            if (!this.buildings[building.template.category]) {
+                this.buildings[building.template.category] = [];
+            }
+            var buildings = this.buildings[building.template.category];
+            if (buildings.indexOf(building) >= 0) {
+                throw new Error("Already has building");
+            }
+            buildings.push(building);
+            this.buildingsEffectIsDirty = true;
+            if (building.template.category === "defence") {
+                this.sortDefenceBuildings();
+                Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+            }
+            if (building.template.category === "vision") {
+                this.owner.updateVisibleStars();
+            }
+            if (this.owner === app.humanPlayer) {
+                for (var key in building.template.effect) {
+                    Rance.eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
+                }
+                Rance.eventManager.dispatchEvent("humanPlayerBuiltBuilding");
+            }
+        };
+        Star.prototype.removeBuilding = function (building) {
+            if (!this.buildings[building.template.category] ||
+                this.buildings[building.template.category].indexOf(building) < 0) {
+                throw new Error("Location doesn't have building");
+            }
+            var buildings = this.buildings[building.template.category];
+            this.buildings[building.template.category].splice(buildings.indexOf(building), 1);
+            this.buildingsEffectIsDirty = true;
+        };
+        Star.prototype.sortDefenceBuildings = function () {
+            this.buildings["defence"].sort(function (a, b) {
+                if (a.template.maxPerType === 1) {
+                    return -1;
+                }
+                else if (b.template.maxPerType === 1) {
+                    return 1;
+                }
+                if (a.upgradeLevel !== b.upgradeLevel) {
+                    return b.upgradeLevel - a.upgradeLevel;
+                }
+                return a.id - b.id;
+            });
+        };
+        Star.prototype.getSecondaryController = function () {
+            if (!this.buildings["defence"])
+                return null;
+            var defenceBuildings = this.buildings["defence"];
+            for (var i = 0; i < defenceBuildings.length; i++) {
+                if (defenceBuildings[i].controller !== this.owner) {
+                    return defenceBuildings[i].controller;
+                }
+            }
+            return null;
+        };
+        Star.prototype.updateController = function () {
+            if (!this.buildings["defence"])
+                return;
+            var oldOwner = this.owner;
+            var newOwner = this.buildings["defence"][0].controller;
+            if (oldOwner) {
+                if (oldOwner === newOwner)
+                    return;
+                oldOwner.removeStar(this);
+            }
+            newOwner.addStar(this);
+            if (this.manufactory) {
+                this.manufactory.handleOwnerChange();
+            }
+            Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+            Rance.eventManager.dispatchEvent("renderLayer", "starOwners", this);
+            Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
+            // TODO update starOwners if secondary controller changes
+        };
+        Star.prototype.updateBuildingsEffect = function () {
+            var effect = {};
+            for (var category in this.buildings) {
+                for (var i = 0; i < this.buildings[category].length; i++) {
+                    var building = this.buildings[category][i];
+                    building.getEffect(effect);
+                }
+            }
+            this.buildingsEffect = effect;
+            this.buildingsEffectIsDirty = false;
+        };
+        Star.prototype.getBuildingsEffect = function () {
+            if (this.buildingsEffectIsDirty) {
+                this.updateBuildingsEffect();
+            }
+            return this.buildingsEffect;
+        };
+        Star.prototype.getEffectWithBuildingsEffect = function (base, effectType) {
+            var effect = base;
+            var buildingsEffect = this.getBuildingsEffect()[effectType];
+            if (isFinite(buildingsEffect)) {
+                return effect + buildingsEffect;
+            }
+            else if (buildingsEffect) {
+                effect += (buildingsEffect.flat || 0);
+                effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
+            }
+            return effect;
+        };
+        Star.prototype.getIncome = function () {
+            return this.getEffectWithBuildingsEffect(this.baseIncome, "income");
+        };
+        Star.prototype.getResourceIncome = function () {
+            if (!this.resource)
+                return null;
+            return ({
+                resource: this.resource,
+                amount: this.getEffectWithBuildingsEffect(0, "resourceIncome")
+            });
+        };
+        Star.prototype.getResearchPoints = function () {
+            return this.getEffectWithBuildingsEffect(0, "research");
+        };
+        Star.prototype.getAllBuildings = function () {
+            var buildings = [];
+            for (var category in this.buildings) {
+                buildings = buildings.concat(this.buildings[category]);
+            }
+            return buildings;
+        };
+        Star.prototype.getBuildingsForPlayer = function (player) {
+            var allBuildings = this.getAllBuildings();
+            return allBuildings.filter(function (building) {
+                return building.controller.id === player.id;
+            });
+        };
+        Star.prototype.getBuildingsByFamily = function (buildingTemplate) {
+            var propToCheck = buildingTemplate.family ? "family" : "type";
+            var categoryBuildings = this.buildings[buildingTemplate.category];
+            var buildings = [];
+            if (categoryBuildings) {
+                for (var i = 0; i < categoryBuildings.length; i++) {
+                    if (categoryBuildings[i].template[propToCheck] === buildingTemplate[propToCheck]) {
+                        buildings.push(categoryBuildings[i]);
+                    }
+                }
+            }
+            return buildings;
+        };
+        Star.prototype.getBuildableBuildings = function () {
+            var canBuild = [];
+            for (var buildingType in app.moduleData.Templates.Buildings) {
+                var template = app.moduleData.Templates.Buildings[buildingType];
+                var alreadyBuilt;
+                if (template.category === "mine" && !this.resource) {
+                    continue;
+                }
+                alreadyBuilt = this.getBuildingsByFamily(template);
+                if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly) {
+                    canBuild.push(template);
+                }
+            }
+            return canBuild;
+        };
+        Star.prototype.getBuildingUpgrades = function () {
+            var allUpgrades = {};
+            var self = this;
+            var ownerBuildings = this.getBuildingsForPlayer(this.owner);
+            for (var i = 0; i < ownerBuildings.length; i++) {
+                var building = ownerBuildings[i];
+                var upgrades = building.getPossibleUpgrades();
+                upgrades = upgrades.filter(function (upgradeData) {
+                    var parent = upgradeData.parentBuilding.template;
+                    var template = upgradeData.template;
+                    if (parent.type === template.type) {
+                        return true;
+                    }
+                    else {
+                        var isSameFamily = (template.family && parent.family === template.family);
+                        var maxAllowed = template.maxPerType;
+                        if (isSameFamily) {
+                            maxAllowed += 1;
+                        }
+                        var alreadyBuilt = self.getBuildingsByFamily(template);
+                        return alreadyBuilt.length < maxAllowed;
+                    }
+                });
+                if (upgrades.length > 0) {
+                    allUpgrades[building.id] = upgrades;
+                }
+            }
+            return allUpgrades;
+        };
+        // FLEETS
+        Star.prototype.getAllFleets = function () {
+            var allFleets = [];
+            for (var playerId in this.fleets) {
+                allFleets = allFleets.concat(this.fleets[playerId]);
+            }
+            return allFleets;
+        };
+        Star.prototype.getFleetIndex = function (fleet) {
+            if (!this.fleets[fleet.player.id])
+                return -1;
+            return this.fleets[fleet.player.id].indexOf(fleet);
+        };
+        Star.prototype.hasFleet = function (fleet) {
+            return this.getFleetIndex(fleet) >= 0;
+        };
+        Star.prototype.addFleet = function (fleet) {
+            if (!this.fleets[fleet.player.id]) {
+                this.fleets[fleet.player.id] = [];
+            }
+            if (this.hasFleet(fleet))
+                return false;
+            this.fleets[fleet.player.id].push(fleet);
+        };
+        Star.prototype.addFleets = function (fleets) {
+            for (var i = 0; i < fleets.length; i++) {
+                this.addFleet(fleets[i]);
+            }
+        };
+        Star.prototype.removeFleet = function (fleet) {
+            var fleetIndex = this.getFleetIndex(fleet);
+            if (fleetIndex < 0)
+                return false;
+            this.fleets[fleet.player.id].splice(fleetIndex, 1);
+            if (this.fleets[fleet.player.id].length === 0) {
+                delete this.fleets[fleet.player.id];
+            }
+        };
+        Star.prototype.removeFleets = function (fleets) {
+            for (var i = 0; i < fleets.length; i++) {
+                this.removeFleet(fleets[i]);
+            }
+        };
+        Star.prototype.getAllShipsOfPlayer = function (player) {
+            var allShips = [];
+            var fleets = this.fleets[player.id];
+            if (!fleets)
+                return [];
+            for (var i = 0; i < fleets.length; i++) {
+                allShips = allShips.concat(fleets[i].ships);
+            }
+            return allShips;
+        };
+        Star.prototype.getAllShips = function () {
+            var allShips = [];
+            for (var playerId in this.fleets) {
+                var fleets = this.fleets[playerId];
+                allShips = allShips.concat(this.getAllShipsOfPlayer(fleets[0].player));
+            }
+            return allShips;
+        };
+        Star.prototype.getIndependentShips = function () {
+            var ships = [];
+            for (var playerId in this.fleets) {
+                var player = this.fleets[playerId][0].player;
+                if (player.isIndependent) {
+                    ships = ships.concat(this.getAllShipsOfPlayer(player));
+                }
+            }
+            return ships;
+        };
+        Star.prototype.getTargetsForPlayer = function (player) {
+            var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
+            var buildingController = buildingTarget ? buildingTarget.controller : null;
+            var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
+            var diplomacyStatus = player.diplomacyStatus;
+            var targets = [];
+            if (buildingTarget &&
+                (player === this.owner ||
+                    diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller))) {
+                targets.push({
+                    type: "building",
+                    enemy: buildingTarget.controller,
+                    building: buildingTarget,
+                    ships: this.getAllShipsOfPlayer(buildingTarget.controller)
+                });
+            }
+            for (var i = 0; i < fleetOwners.length; i++) {
+                if (diplomacyStatus.canAttackFleetOfPlayer(fleetOwners[i])) {
+                    targets.push({
+                        type: "fleet",
+                        enemy: fleetOwners[i],
+                        building: null,
+                        ships: this.getAllShipsOfPlayer(fleetOwners[i])
+                    });
+                }
+            }
+            return targets;
+        };
+        Star.prototype.getFirstEnemyDefenceBuilding = function (player) {
+            if (!this.buildings["defence"])
+                return null;
+            var defenceBuildings = this.buildings["defence"].slice(0);
+            if (this.owner === player)
+                defenceBuildings = defenceBuildings.reverse();
+            for (var i = defenceBuildings.length - 1; i >= 0; i--) {
+                if (defenceBuildings[i].controller.id !== player.id) {
+                    return defenceBuildings[i];
+                }
+            }
+            return null;
+        };
+        Star.prototype.getEnemyFleetOwners = function (player, excludedTarget) {
+            var fleetOwners = [];
+            for (var playerId in this.fleets) {
+                if (playerId == player.id)
+                    continue;
+                else if (excludedTarget && playerId == excludedTarget.id)
+                    continue;
+                else if (this.fleets[playerId].length < 1)
+                    continue;
+                fleetOwners.push(this.fleets[playerId][0].player);
+            }
+            return fleetOwners;
+        };
+        // MAP GEN
+        Star.prototype.setPosition = function (x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        Star.prototype.setResource = function (resource) {
+            this.resource = resource;
+        };
+        Star.prototype.hasLink = function (linkTo) {
+            return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
+        };
+        // could maybe use adding / removing links as a gameplay mechanic
+        Star.prototype.addLink = function (linkTo) {
+            if (this.hasLink(linkTo))
+                return;
+            this.linksTo.push(linkTo);
+            linkTo.linksFrom.push(this);
+        };
+        Star.prototype.removeLink = function (linkTo) {
+            if (!this.hasLink(linkTo))
+                return;
+            var toIndex = this.linksTo.indexOf(linkTo);
+            if (toIndex >= 0) {
+                this.linksTo.splice(toIndex, 1);
+            }
+            else {
+                this.linksFrom.splice(this.linksFrom.indexOf(linkTo), 1);
+            }
+            linkTo.removeLink(this);
+        };
+        Star.prototype.getAllLinks = function () {
+            return this.linksTo.concat(this.linksFrom);
+        };
+        Star.prototype.getEdgeWith = function (neighbor) {
+            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
+                var edge = this.voronoiCell.halfedges[i].edge;
+                if ((edge.lSite && edge.lSite === neighbor) ||
+                    (edge.rSite && edge.rSite === neighbor)) {
+                    return edge;
+                }
+            }
+            return null;
+        };
+        Star.prototype.getSharedNeighborsWith = function (neighbor) {
+            var ownNeighbors = this.getNeighbors();
+            var neighborNeighbors = neighbor.getNeighbors();
+            var sharedNeighbors = [];
+            for (var i = 0; i < ownNeighbors.length; i++) {
+                var star = ownNeighbors[i];
+                if (star !== neighbor && neighborNeighbors.indexOf(star) !== -1) {
+                    sharedNeighbors.push(star);
+                }
+            }
+            return sharedNeighbors;
+        };
+        // return adjacent stars whether they're linked to this or not
+        Star.prototype.getNeighbors = function () {
+            var neighbors = [];
+            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
+                var edge = this.voronoiCell.halfedges[i].edge;
+                if (edge.lSite !== null && edge.lSite.id !== this.id) {
+                    neighbors.push(edge.lSite);
+                }
+                else if (edge.rSite !== null && edge.rSite.id !== this.id) {
+                    neighbors.push(edge.rSite);
+                }
+            }
+            return neighbors;
+        };
+        Star.prototype.getLinkedInRange = function (range) {
+            if (this.indexedNeighborsInRange[range]) {
+                return this.indexedNeighborsInRange[range];
+            }
+            var visited = {};
+            var visitedByRange = {};
+            if (range >= 0) {
+                visited[this.id] = this;
+            }
+            var current = [];
+            var frontier = [this];
+            for (var i = 0; i < range; i++) {
+                current = frontier.slice(0);
+                if (current.length <= 0)
+                    break;
+                frontier = [];
+                visitedByRange[i + 1] = [];
+                for (var j = 0; j < current.length; j++) {
+                    var neighbors = current[j].getAllLinks();
+                    for (var k = 0; k < neighbors.length; k++) {
+                        if (visited[neighbors[k].id])
+                            continue;
+                        visited[neighbors[k].id] = neighbors[k];
+                        visitedByRange[i + 1].push(neighbors[k]);
+                        frontier.push(neighbors[k]);
+                        this.indexedDistanceToStar[neighbors[k].id] = i;
+                    }
+                }
+            }
+            var allVisited = [];
+            for (var id in visited) {
+                allVisited.push(visited[id]);
+            }
+            this.indexedNeighborsInRange[range] =
+                {
+                    all: allVisited,
+                    byRange: visitedByRange
+                };
+            return ({
+                all: allVisited,
+                byRange: visitedByRange
+            });
+        };
+        // Recursively gets all neighbors that fulfill the callback condition with this star
+        // Optional earlyReturnSize parameter returns if an island of specified size is found
+        Star.prototype.getIslandForQualifier = function (qualifier, earlyReturnSize) {
+            var visited = {};
+            var connected = {};
+            var sizeFound = 1;
+            var initialStar = this;
+            var frontier = [initialStar];
+            visited[initialStar.id] = true;
+            while (frontier.length > 0) {
+                var current = frontier.pop();
+                connected[current.id] = current;
+                var neighbors = current.getLinkedInRange(1).all;
+                for (var i = 0; i < neighbors.length; i++) {
+                    var neighbor = neighbors[i];
+                    if (visited[neighbor.id])
+                        continue;
+                    visited[neighbor.id] = true;
+                    if (qualifier(current, neighbor)) {
+                        sizeFound++;
+                        frontier.push(neighbor);
+                    }
+                }
+                // breaks when sufficiently big island has been found
+                if (earlyReturnSize && sizeFound >= earlyReturnSize) {
+                    for (var i = 0; i < frontier.length; i++) {
+                        connected[frontier[i].id] = frontier[i];
+                    }
+                    break;
+                }
+            }
+            var island = [];
+            for (var starId in connected) {
+                island.push(connected[starId]);
+            }
+            return island;
+        };
+        Star.prototype.getNearestStarForQualifier = function (qualifier) {
+            if (qualifier(this))
+                return this;
+            var visited = {};
+            var frontier = [this];
+            visited[this.id] = true;
+            while (frontier.length > 0) {
+                var current = frontier.shift();
+                var neighbors = current.getLinkedInRange(1).all;
+                for (var i = 0; i < neighbors.length; i++) {
+                    var neighbor = neighbors[i];
+                    if (visited[neighbor.id])
+                        continue;
+                    visited[neighbor.id] = true;
+                    if (qualifier(neighbor)) {
+                        return neighbor;
+                    }
+                    else {
+                        frontier.push(neighbor);
+                    }
+                }
+            }
+            return null;
+        };
+        Star.prototype.getDistanceToStar = function (target) {
+            // don't index distance while generating map as distance can change
+            // if (this.mapGenData)
+            if (!app.game) {
+                var a = Rance.aStar(this, target);
+                return a.cost[target.id];
+            }
+            else if (!this.indexedDistanceToStar[target.id]) {
+                var a = Rance.aStar(this, target);
+                if (!a) {
+                    this.indexedDistanceToStar[target.id] = -1;
+                }
+                else {
+                    for (var id in a.cost) {
+                        this.indexedDistanceToStar[id] = a.cost[id];
+                    }
+                }
+            }
+            return this.indexedDistanceToStar[target.id];
+        };
+        Star.prototype.getVisionRange = function () {
+            return this.getEffectWithBuildingsEffect(1, "vision");
+        };
+        Star.prototype.getVision = function () {
+            return this.getLinkedInRange(this.getVisionRange()).all;
+        };
+        Star.prototype.getDetectionRange = function () {
+            return this.getEffectWithBuildingsEffect(0, "detection");
+        };
+        Star.prototype.getDetection = function () {
+            return this.getLinkedInRange(this.getDetectionRange()).all;
+        };
+        Star.prototype.getHealingFactor = function (player) {
+            var factor = 0;
+            if (player === this.owner) {
+                factor += 0.15;
+            }
+            return factor;
+        };
+        Star.prototype.getPresentPlayersByVisibility = function () {
+            var byVisibilityAndId = {
+                visible: {},
+                detected: {},
+                all: {}
+            };
+            var allPlayers = [];
+            byVisibilityAndId.visible[this.owner.id] = this.owner;
+            var secondaryController = this.getSecondaryController();
+            if (secondaryController) {
+                byVisibilityAndId.visible[secondaryController.id] = secondaryController;
+            }
+            for (var playerId in this.fleets) {
+                var fleets = this.fleets[playerId];
+                for (var i = 0; i < fleets.length; i++) {
+                    var fleetPlayer = fleets[i].player;
+                    if (byVisibilityAndId.detected[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id]) {
+                        break;
+                    }
+                    byVisibilityAndId.all[fleetPlayer.id] = fleetPlayer;
+                    if (fleets[i].isStealthy) {
+                        byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;
+                    }
+                    else {
+                        byVisibilityAndId.visible[fleetPlayer.id] = fleetPlayer;
+                    }
+                }
+            }
+            return byVisibilityAndId;
+        };
+        Star.prototype.getSeed = function () {
+            if (!this.seed) {
+                var bgString = "";
+                bgString += Math.round(this.x);
+                bgString += Math.round(this.y);
+                bgString += new Date().getTime();
+                this.seed = bgString;
+            }
+            return this.seed;
+        };
+        Star.prototype.buildManufactory = function () {
+            this.manufactory = new Rance.Manufactory(this);
+        };
+        Star.prototype.serialize = function () {
+            var data = {};
+            data.id = this.id;
+            data.x = this.basisX;
+            data.y = this.basisY;
+            data.baseIncome = this.baseIncome;
+            data.name = this.name;
+            data.ownerId = this.owner ? this.owner.id : null;
+            data.linksToIds = this.linksTo.map(function (star) { return star.id; });
+            data.linksFromIds = this.linksFrom.map(function (star) { return star.id; });
+            data.seed = this.seed;
+            if (this.resource) {
+                data.resourceType = this.resource.type;
+            }
+            data.buildableUnitTypes = this.buildableUnitTypes.map(function (template) {
+                return template.type;
+            });
+            data.buildings = {};
+            for (var category in this.buildings) {
+                data.buildings[category] = [];
+                for (var i = 0; i < this.buildings[category].length; i++) {
+                    data.buildings[category].push(this.buildings[category][i].serialize());
+                }
+            }
+            if (this.manufactory) {
+                data.manufactory = this.manufactory.serialize();
+            }
+            return data;
+        };
+        return Star;
+    })();
+    Rance.Star = Star;
 })(Rance || (Rance = {}));
 /// <reference path="player.ts"/>
 /// <reference path="unit.ts"/>
@@ -8040,359 +8247,6 @@ var Rance;
         return Unit;
     })();
     Rance.Unit = Unit;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    // todo: use a heap instead of this crap
-    var PriorityQueue = (function () {
-        function PriorityQueue() {
-            this.items = {};
-        }
-        PriorityQueue.prototype.isEmpty = function () {
-            if (Object.keys(this.items).length > 0)
-                return false;
-            else
-                return true;
-        };
-        PriorityQueue.prototype.push = function (priority, data) {
-            if (!this.items[priority]) {
-                this.items[priority] = [];
-            }
-            this.items[priority].push(data);
-        };
-        PriorityQueue.prototype.pop = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-            var toReturn = this.items[highestPriority].pop();
-            if (this.items[highestPriority].length < 1) {
-                delete this.items[highestPriority];
-            }
-            return toReturn;
-        };
-        PriorityQueue.prototype.peek = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-            var toReturn = this.items[highestPriority][0];
-            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
-        };
-        return PriorityQueue;
-    })();
-    Rance.PriorityQueue = PriorityQueue;
-})(Rance || (Rance = {}));
-/// <reference path="star.ts" />
-/// <reference path="priorityqueue.ts" />
-var Rance;
-(function (Rance) {
-    function backTrace(graph, target) {
-        var parent = graph[target.id];
-        if (!parent)
-            return [];
-        var path = [
-            {
-                star: target,
-                cost: parent.cost
-            }
-        ];
-        while (parent) {
-            path.push({
-                star: parent.star,
-                cost: parent.cost
-            });
-            parent = graph[parent.star.id];
-        }
-        path.reverse();
-        path[0].cost = null;
-        return path;
-    }
-    Rance.backTrace = backTrace;
-    function aStar(start, target) {
-        var frontier = new Rance.PriorityQueue();
-        frontier.push(0, start);
-        //var frontier = new EasyStar.PriorityQueue("p", 1);
-        //frontier.insert({p: 0, tile: start})
-        var cameFrom = {};
-        var costSoFar = {};
-        cameFrom[start.id] = null;
-        costSoFar[start.id] = 0;
-        while (!frontier.isEmpty()) 
-        //while (frontier.length > 0)
-        {
-            var current = frontier.pop();
-            //var current = frontier.shiftHighestPriorityElement().tile;
-            if (current === target)
-                return { came: cameFrom, cost: costSoFar, queue: frontier };
-            var neighbors = current.getAllLinks();
-            for (var i = 0; i < neighbors.length; i++) {
-                var neigh = neighbors[i];
-                if (!neigh)
-                    continue;
-                var moveCost = 1;
-                var newCost = costSoFar[current.id] + moveCost;
-                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
-                    costSoFar[neigh.id] = newCost;
-                    // ^ done
-                    var dx = Math.abs(neigh.id[1] - target.id[1]);
-                    var dy = Math.abs(neigh.id[2] - target.id[2]);
-                    var priority = newCost;
-                    frontier.push(priority, neigh);
-                    //frontier.insert({p: priority, tile: neigh});
-                    cameFrom[neigh.id] =
-                        {
-                            star: current,
-                            cost: moveCost
-                        };
-                }
-            }
-        }
-        return null; // didnt find path 
-    }
-    Rance.aStar = aStar;
-})(Rance || (Rance = {}));
-/// <reference path="player.ts" />
-/// <reference path="unit.ts" />
-/// <reference path="star.ts" />
-/// <reference path="pathfinding.ts"/>
-var Rance;
-(function (Rance) {
-    var Fleet = (function () {
-        function Fleet(player, ships, location, id, shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            this.ships = [];
-            this.visionIsDirty = true;
-            this.visibleStars = [];
-            this.detectedStars = [];
-            this.player = player;
-            this.location = location;
-            this.id = isFinite(id) ? id : Rance.idGenerators.fleet++;
-            this.name = "Fleet " + this.id;
-            this.location.addFleet(this);
-            this.player.addFleet(this);
-            this.addShips(ships);
-            if (shouldRender) {
-                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-            }
-        }
-        Fleet.prototype.getShipIndex = function (ship) {
-            return this.ships.indexOf(ship);
-        };
-        Fleet.prototype.hasShip = function (ship) {
-            return this.getShipIndex(ship) >= 0;
-        };
-        Fleet.prototype.deleteFleet = function (shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            this.location.removeFleet(this);
-            this.player.removeFleet(this);
-            if (shouldRender) {
-                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-            }
-        };
-        Fleet.prototype.mergeWith = function (fleet, shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            if (fleet.isStealthy !== this.isStealthy) {
-                console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
-                return;
-            }
-            fleet.addShips(this.ships);
-            this.deleteFleet(shouldRender);
-        };
-        Fleet.prototype.addShip = function (ship) {
-            if (this.hasShip(ship))
-                return false;
-            if (this.ships.length === 0) {
-                this.isStealthy = ship.isStealthy();
-            }
-            else if (ship.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to add stealthy ship to non stealthy fleet or other way around");
-                return;
-            }
-            this.ships.push(ship);
-            ship.addToFleet(this);
-            this.visionIsDirty = true;
-        };
-        Fleet.prototype.addShips = function (ships) {
-            for (var i = 0; i < ships.length; i++) {
-                this.addShip(ships[i]);
-            }
-        };
-        Fleet.prototype.removeShip = function (ship) {
-            var index = this.getShipIndex(ship);
-            if (index < 0)
-                return false;
-            this.ships.splice(index, 1);
-            ship.removeFromFleet();
-            this.visionIsDirty = true;
-            if (this.ships.length <= 0) {
-                this.deleteFleet();
-            }
-        };
-        Fleet.prototype.removeShips = function (ships) {
-            for (var i = 0; i < ships.length; i++) {
-                this.removeShip(ships[i]);
-            }
-        };
-        Fleet.prototype.transferShip = function (fleet, ship) {
-            if (fleet === this)
-                return;
-            if (ship.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to transfer stealthy ship to non stealthy fleet");
-                return;
-            }
-            var index = this.getShipIndex(ship);
-            if (index < 0)
-                return false;
-            fleet.addShip(ship);
-            this.ships.splice(index, 1);
-            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-        };
-        Fleet.prototype.split = function () {
-            var newFleet = new Fleet(this.player, [], this.location);
-            this.location.addFleet(newFleet);
-            return newFleet;
-        };
-        Fleet.prototype.splitStealthyUnits = function () {
-            var stealthyUnits = this.ships.filter(function (unit) {
-                return unit.isStealthy();
-            });
-            var newFleet = new Fleet(this.player, stealthyUnits, this.location);
-            this.location.addFleet(newFleet);
-            this.removeShips(stealthyUnits);
-            return newFleet;
-        };
-        Fleet.prototype.getMinCurrentMovePoints = function () {
-            if (!this.ships[0])
-                return 0;
-            var min = this.ships[0].currentMovePoints;
-            for (var i = 0; i < this.ships.length; i++) {
-                min = Math.min(this.ships[i].currentMovePoints, min);
-            }
-            return min;
-        };
-        Fleet.prototype.getMinMaxMovePoints = function () {
-            if (!this.ships[0])
-                return 0;
-            var min = this.ships[0].maxMovePoints;
-            for (var i = 0; i < this.ships.length; i++) {
-                min = Math.min(this.ships[i].maxMovePoints, min);
-            }
-            return min;
-        };
-        Fleet.prototype.canMove = function () {
-            for (var i = 0; i < this.ships.length; i++) {
-                if (this.ships[i].currentMovePoints <= 0) {
-                    return false;
-                }
-            }
-            if (this.getMinCurrentMovePoints() > 0) {
-                return true;
-            }
-            return false;
-        };
-        Fleet.prototype.subtractMovePoints = function () {
-            for (var i = 0; i < this.ships.length; i++) {
-                this.ships[i].currentMovePoints--;
-            }
-        };
-        Fleet.prototype.move = function (newLocation) {
-            if (newLocation === this.location)
-                return;
-            if (!this.canMove())
-                return;
-            var oldLocation = this.location;
-            oldLocation.removeFleet(this);
-            this.location = newLocation;
-            newLocation.addFleet(this);
-            this.subtractMovePoints();
-            this.visionIsDirty = true;
-            this.player.visionIsDirty = true;
-            // todo maybe send an event instead?
-            for (var i = 0; i < app.game.playerOrder.length; i++) {
-                var player = app.game.playerOrder[i];
-                if (player.isIndependent || player === this.player) {
-                    continue;
-                }
-                player.updateAllVisibilityInStar(newLocation);
-            }
-            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-            Rance.eventManager.dispatchEvent("updateSelection", null);
-        };
-        Fleet.prototype.getPathTo = function (newLocation) {
-            var a = Rance.aStar(this.location, newLocation);
-            if (!a)
-                return;
-            var path = Rance.backTrace(a.came, newLocation);
-            return path;
-        };
-        Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
-            var path = this.getPathTo(newLocation);
-            var interval = window.setInterval(function () {
-                if (!path || path.length <= 0) {
-                    window.clearInterval(interval);
-                    if (afterMove)
-                        afterMove();
-                    return;
-                }
-                var move = path.shift();
-                this.move(move.star);
-                if (onMove)
-                    onMove();
-            }.bind(this), 10);
-        };
-        Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
-            return this.location.fleets[this.player.id];
-        };
-        Fleet.prototype.getTotalStrengthEvaluation = function () {
-            var total = 0;
-            for (var i = 0; i < this.ships.length; i++) {
-                total += this.ships[i].getStrengthEvaluation();
-            }
-            return total;
-        };
-        Fleet.prototype.getTotalHealth = function () {
-            var total = {
-                current: 0,
-                max: 0
-            };
-            for (var i = 0; i < this.ships.length; i++) {
-                total.current += this.ships[i].currentHealth;
-                total.max += this.ships[i].maxHealth;
-            }
-            return total;
-        };
-        Fleet.prototype.updateVisibleStars = function () {
-            var highestVisionRange = 0;
-            var highestDetectionRange = -1;
-            for (var i = 0; i < this.ships.length; i++) {
-                highestVisionRange = Math.max(this.ships[i].getVisionRange(), highestVisionRange);
-                highestDetectionRange = Math.max(this.ships[i].getDetectionRange(), highestDetectionRange);
-            }
-            var inVision = this.location.getLinkedInRange(highestVisionRange);
-            var inDetection = this.location.getLinkedInRange(highestDetectionRange);
-            this.visibleStars = inVision.all;
-            this.detectedStars = inDetection.all;
-            this.visionIsDirty = false;
-        };
-        Fleet.prototype.getVision = function () {
-            if (this.visionIsDirty) {
-                this.updateVisibleStars();
-            }
-            return this.visibleStars;
-        };
-        Fleet.prototype.getDetection = function () {
-            if (this.visionIsDirty) {
-                this.updateVisibleStars();
-            }
-            return this.detectedStars;
-        };
-        Fleet.prototype.serialize = function () {
-            var data = {};
-            data.id = this.id;
-            data.name = this.name;
-            data.locationId = this.location.id;
-            data.playerId = this.player.id;
-            data.ships = this.ships.map(function (ship) { return ship.serialize(false); });
-            return data;
-        };
-        return Fleet;
-    })();
-    Rance.Fleet = Fleet;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
 /// <reference path="range.ts" />
@@ -10144,180 +9998,6 @@ var Rance;
         return DiplomacyStatus;
     })();
     Rance.DiplomacyStatus = DiplomacyStatus;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var Manufactory = (function () {
-        function Manufactory(star, serializedData) {
-            this.buildQueue = [];
-            this.unitStatsModifier = 1;
-            this.unitHealthModifier = 1;
-            this.star = star;
-            this.player = star.owner;
-            if (serializedData) {
-                this.makeFromData(serializedData);
-            }
-            else {
-                // manufactorydata temporarily in main.ts
-                this.capacity = manufactoryData.startingCapacity;
-                this.maxCapacity = manufactoryData.maxCapacity;
-            }
-        }
-        Manufactory.prototype.makeFromData = function (data) {
-            this.capacity = data.capacity;
-            this.maxCapacity = data.maxCapacity;
-            this.unitStatsModifier = data.unitStatsModifier;
-            this.unitHealthModifier = data.unitHealthModifier;
-            this.buildQueue = data.buildQueue.map(function (savedThing) {
-                var templatesString;
-                switch (savedThing.type) {
-                    case "unit":
-                        {
-                            templatesString = "Units";
-                            break;
-                        }
-                    case "item":
-                        {
-                            templatesString = "Items";
-                        }
-                }
-                return ({
-                    type: savedThing.type,
-                    template: app.moduleData.Templates[templatesString][savedThing.templateType]
-                });
-            });
-        };
-        Manufactory.prototype.queueIsFull = function () {
-            return this.buildQueue.length >= this.capacity;
-        };
-        Manufactory.prototype.addThingToQueue = function (template, type) {
-            this.buildQueue.push({ type: type, template: template });
-            this.player.money -= template.buildCost;
-        };
-        Manufactory.prototype.removeThingAtIndex = function (index) {
-            var template = this.buildQueue[index].template;
-            this.player.money += template.buildCost;
-            this.buildQueue.splice(index, 1);
-        };
-        Manufactory.prototype.buildAllThings = function () {
-            var units = [];
-            var toBuild = this.buildQueue.slice(0, this.capacity);
-            this.buildQueue = this.buildQueue.slice(this.capacity);
-            while (toBuild.length > 0) {
-                var thingData = toBuild.pop();
-                switch (thingData.type) {
-                    case "unit":
-                        {
-                            var unitTemplate = thingData.template;
-                            var unit = new Rance.Unit(unitTemplate);
-                            unit.setAttributes(this.unitStatsModifier);
-                            unit.setBaseHealth(this.unitHealthModifier);
-                            units.push(unit);
-                            this.player.addUnit(unit);
-                            break;
-                        }
-                    case "item":
-                        {
-                            var itemTemplate = thingData.template;
-                            var item = new Rance.Item(itemTemplate);
-                            this.player.addItem(item);
-                            break;
-                        }
-                }
-            }
-            if (units.length > 0) {
-                var fleet = new Rance.Fleet(this.player, units, this.star);
-            }
-            if (!this.player.isAI) {
-                Rance.eventManager.dispatchEvent("playerManufactoryBuiltThings");
-            }
-        };
-        Manufactory.prototype.getLocalUnitTypes = function () {
-            var manufacturable = [];
-            var potential = [];
-            for (var i = 0; i < this.star.buildableUnitTypes.length; i++) {
-                var type = this.star.buildableUnitTypes[i];
-                if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements)) {
-                    manufacturable.push(type);
-                }
-                else {
-                    potential.push(type);
-                }
-            }
-            return ({
-                manufacturable: manufacturable,
-                potential: potential
-            });
-        };
-        Manufactory.prototype.getLocalItemTypes = function () {
-            var manufacturable = [];
-            var potential = [];
-            // TODO manufactory
-            return ({
-                manufacturable: manufacturable,
-                potential: potential
-            });
-        };
-        Manufactory.prototype.getManufacturableThingsForType = function (type) {
-            switch (type) {
-                case "item":
-                    {
-                        return this.getLocalItemTypes().manufacturable;
-                    }
-                case "unit":
-                    {
-                        return this.getLocalUnitTypes().manufacturable;
-                    }
-            }
-        };
-        Manufactory.prototype.canManufactureThing = function (template, type) {
-            var manufacturableThings = this.getManufacturableThingsForType(type);
-            return manufacturableThings.indexOf(template) !== -1;
-        };
-        Manufactory.prototype.handleOwnerChange = function () {
-            while (this.buildQueue.length > 0) {
-                this.removeThingAtIndex(this.buildQueue.length - 1);
-            }
-            this.player = this.star.owner;
-            this.capacity = Math.max(1, this.capacity - 1);
-        };
-        Manufactory.prototype.getCapacityUpgradeCost = function () {
-            return manufactoryData.buildCost * this.capacity;
-        };
-        Manufactory.prototype.upgradeCapacity = function (amount) {
-            this.player.money -= this.getCapacityUpgradeCost();
-            this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
-        };
-        Manufactory.prototype.getUnitUpgradeCost = function () {
-            var totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
-            return Math.round((totalUpgrades + 1) * 100);
-        };
-        Manufactory.prototype.upgradeUnitStatsModifier = function (amount) {
-            this.player.money -= this.getUnitUpgradeCost();
-            this.unitStatsModifier += amount;
-        };
-        Manufactory.prototype.upgradeUnitHealthModifier = function (amount) {
-            this.player.money -= this.getUnitUpgradeCost();
-            this.unitHealthModifier += amount;
-        };
-        Manufactory.prototype.serialize = function () {
-            var buildQueue = this.buildQueue.map(function (thingData) {
-                return ({
-                    type: thingData.type,
-                    templateType: thingData.template.type
-                });
-            });
-            return ({
-                capacity: this.capacity,
-                maxCapacity: this.maxCapacity,
-                unitStatsModifier: this.unitStatsModifier,
-                unitHealthModifier: this.unitHealthModifier,
-                buildQueue: buildQueue
-            });
-        };
-        return Manufactory;
-    })();
-    Rance.Manufactory = Manufactory;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -13382,663 +13062,1178 @@ var Rance;
     })();
     Rance.Player = Player;
 })(Rance || (Rance = {}));
-/// <reference path="../modules/default/templates/resources.ts" />
-/// <reference path="templateinterfaces/iresourcetemplate.d.ts" />
-/// <reference path="point.ts" />
-/// <reference path="player.ts" />
-/// <reference path="fleet.ts" />
-/// <reference path="building.ts" />
-/// <reference path="manufactory.ts" />
 var Rance;
 (function (Rance) {
-    var Star = (function () {
-        function Star(x, y, id) {
-            // separated so we can iterate through star[].linksTo to only get each connection once
-            // use star.getAllLinks() for individual star connections
-            this.linksTo = [];
-            this.linksFrom = [];
-            // can be used during map gen to attach temporary variables for easier debugging
-            // nulled and deleted after map gen is done
-            this.mapGenData = {};
-            this.fleets = {};
-            this.buildings = {};
-            this.buildingsEffectIsDirty = true;
-            this.indexedNeighborsInRange = {};
-            this.indexedDistanceToStar = {};
-            this.buildableUnitTypes = [];
-            this.id = isFinite(id) ? id : Rance.idGenerators.star++;
-            this.name = "Star " + this.id;
-            this.x = x;
-            this.y = y;
-        }
-        // TODO REMOVE
-        Star.prototype.severLinksToNonAdjacent = function () {
-            var allLinks = this.getAllLinks();
-            var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
-            for (var i = 0; i < allLinks.length; i++) {
-                var star = allLinks[i];
-                if (neighborVoronoiIds.indexOf(star.voronoiId) === -1) {
-                    this.removeLink(star);
-                }
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TradeMoney = React.createClass({
+            displayName: "TradeMoney",
+            propTypes: {
+                moneyAvailable: React.PropTypes.number.isRequired,
+                title: React.PropTypes.string.isRequired
+            },
+            render: function () {
+                return (React.DOM.tr({
+                    className: "tradeable-items-list-item"
+                }, React.DOM.td(null, React.DOM.span({
+                    className: "trade-money-title"
+                }, this.props.title), React.DOM.span({
+                    className: "trade-money-money-available"
+                }, this.props.moneyAvailable))));
             }
-        };
-        // TODO manufactory
-        Star.prototype.getBuildableShipTypes = function () {
-            var player = this.owner;
-            var global = player.getGloballyBuildableUnits();
-            var local = [];
-            for (var i = 0; i < this.buildableUnitTypes.length; i++) {
-                var type = this.buildableUnitTypes[i];
-                if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements)) {
-                    local.push(type);
-                }
-            }
-            return global.concat(local);
-        };
-        // END TO REMOVE
-        // BUILDINGS
-        Star.prototype.addBuilding = function (building) {
-            if (!this.buildings[building.template.category]) {
-                this.buildings[building.template.category] = [];
-            }
-            var buildings = this.buildings[building.template.category];
-            if (buildings.indexOf(building) >= 0) {
-                throw new Error("Already has building");
-            }
-            buildings.push(building);
-            this.buildingsEffectIsDirty = true;
-            if (building.template.category === "defence") {
-                this.sortDefenceBuildings();
-                Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
-            }
-            if (building.template.category === "vision") {
-                this.owner.updateVisibleStars();
-            }
-            if (this.owner === app.humanPlayer) {
-                for (var key in building.template.effect) {
-                    Rance.eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
-                }
-                Rance.eventManager.dispatchEvent("humanPlayerBuiltBuilding");
-            }
-        };
-        Star.prototype.removeBuilding = function (building) {
-            if (!this.buildings[building.template.category] ||
-                this.buildings[building.template.category].indexOf(building) < 0) {
-                throw new Error("Location doesn't have building");
-            }
-            var buildings = this.buildings[building.template.category];
-            this.buildings[building.template.category].splice(buildings.indexOf(building), 1);
-            this.buildingsEffectIsDirty = true;
-        };
-        Star.prototype.sortDefenceBuildings = function () {
-            this.buildings["defence"].sort(function (a, b) {
-                if (a.template.maxPerType === 1) {
-                    return -1;
-                }
-                else if (b.template.maxPerType === 1) {
-                    return 1;
-                }
-                if (a.upgradeLevel !== b.upgradeLevel) {
-                    return b.upgradeLevel - a.upgradeLevel;
-                }
-                return a.id - b.id;
-            });
-        };
-        Star.prototype.getSecondaryController = function () {
-            if (!this.buildings["defence"])
-                return null;
-            var defenceBuildings = this.buildings["defence"];
-            for (var i = 0; i < defenceBuildings.length; i++) {
-                if (defenceBuildings[i].controller !== this.owner) {
-                    return defenceBuildings[i].controller;
-                }
-            }
-            return null;
-        };
-        Star.prototype.updateController = function () {
-            if (!this.buildings["defence"])
-                return;
-            var oldOwner = this.owner;
-            var newOwner = this.buildings["defence"][0].controller;
-            if (oldOwner) {
-                if (oldOwner === newOwner)
-                    return;
-                oldOwner.removeStar(this);
-            }
-            newOwner.addStar(this);
-            if (this.manufactory) {
-                this.manufactory.handleOwnerChange();
-            }
-            Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
-            Rance.eventManager.dispatchEvent("renderLayer", "starOwners", this);
-            Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
-            // TODO update starOwners if secondary controller changes
-        };
-        Star.prototype.updateBuildingsEffect = function () {
-            var effect = {};
-            for (var category in this.buildings) {
-                for (var i = 0; i < this.buildings[category].length; i++) {
-                    var building = this.buildings[category][i];
-                    building.getEffect(effect);
-                }
-            }
-            this.buildingsEffect = effect;
-            this.buildingsEffectIsDirty = false;
-        };
-        Star.prototype.getBuildingsEffect = function () {
-            if (this.buildingsEffectIsDirty) {
-                this.updateBuildingsEffect();
-            }
-            return this.buildingsEffect;
-        };
-        Star.prototype.getEffectWithBuildingsEffect = function (base, effectType) {
-            var effect = base;
-            var buildingsEffect = this.getBuildingsEffect()[effectType];
-            if (isFinite(buildingsEffect)) {
-                return effect + buildingsEffect;
-            }
-            else if (buildingsEffect) {
-                effect += (buildingsEffect.flat || 0);
-                effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
-            }
-            return effect;
-        };
-        Star.prototype.getIncome = function () {
-            return this.getEffectWithBuildingsEffect(this.baseIncome, "income");
-        };
-        Star.prototype.getResourceIncome = function () {
-            if (!this.resource)
-                return null;
-            return ({
-                resource: this.resource,
-                amount: this.getEffectWithBuildingsEffect(0, "resourceIncome")
-            });
-        };
-        Star.prototype.getResearchPoints = function () {
-            return this.getEffectWithBuildingsEffect(0, "research");
-        };
-        Star.prototype.getAllBuildings = function () {
-            var buildings = [];
-            for (var category in this.buildings) {
-                buildings = buildings.concat(this.buildings[category]);
-            }
-            return buildings;
-        };
-        Star.prototype.getBuildingsForPlayer = function (player) {
-            var allBuildings = this.getAllBuildings();
-            return allBuildings.filter(function (building) {
-                return building.controller.id === player.id;
-            });
-        };
-        Star.prototype.getBuildingsByFamily = function (buildingTemplate) {
-            var propToCheck = buildingTemplate.family ? "family" : "type";
-            var categoryBuildings = this.buildings[buildingTemplate.category];
-            var buildings = [];
-            if (categoryBuildings) {
-                for (var i = 0; i < categoryBuildings.length; i++) {
-                    if (categoryBuildings[i].template[propToCheck] === buildingTemplate[propToCheck]) {
-                        buildings.push(categoryBuildings[i]);
-                    }
-                }
-            }
-            return buildings;
-        };
-        Star.prototype.getBuildableBuildings = function () {
-            var canBuild = [];
-            for (var buildingType in app.moduleData.Templates.Buildings) {
-                var template = app.moduleData.Templates.Buildings[buildingType];
-                var alreadyBuilt;
-                if (template.category === "mine" && !this.resource) {
-                    continue;
-                }
-                alreadyBuilt = this.getBuildingsByFamily(template);
-                if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly) {
-                    canBuild.push(template);
-                }
-            }
-            return canBuild;
-        };
-        Star.prototype.getBuildingUpgrades = function () {
-            var allUpgrades = {};
-            var self = this;
-            var ownerBuildings = this.getBuildingsForPlayer(this.owner);
-            for (var i = 0; i < ownerBuildings.length; i++) {
-                var building = ownerBuildings[i];
-                var upgrades = building.getPossibleUpgrades();
-                upgrades = upgrades.filter(function (upgradeData) {
-                    var parent = upgradeData.parentBuilding.template;
-                    var template = upgradeData.template;
-                    if (parent.type === template.type) {
-                        return true;
-                    }
-                    else {
-                        var isSameFamily = (template.family && parent.family === template.family);
-                        var maxAllowed = template.maxPerType;
-                        if (isSameFamily) {
-                            maxAllowed += 1;
-                        }
-                        var alreadyBuilt = self.getBuildingsByFamily(template);
-                        return alreadyBuilt.length < maxAllowed;
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../player.ts" />
+/// <reference path="../unitlist/list.ts" />
+/// <reference path="trademoney.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TradeableItemsList = React.createClass({
+            displayName: "TradeableItemsList",
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+            },
+            render: function () {
+                var player = this.props.player;
+                var rows = [];
+                // TODO trading
+                rows.push({
+                    key: "money",
+                    data: {
+                        rowConstructor: UIComponents.TradeMoney,
+                        title: "Money",
+                        moneyAvailable: player.money,
+                        sortOrder: 0
                     }
                 });
-                if (upgrades.length > 0) {
-                    allUpgrades[building.id] = upgrades;
-                }
-            }
-            return allUpgrades;
-        };
-        // FLEETS
-        Star.prototype.getAllFleets = function () {
-            var allFleets = [];
-            for (var playerId in this.fleets) {
-                allFleets = allFleets.concat(this.fleets[playerId]);
-            }
-            return allFleets;
-        };
-        Star.prototype.getFleetIndex = function (fleet) {
-            if (!this.fleets[fleet.player.id])
-                return -1;
-            return this.fleets[fleet.player.id].indexOf(fleet);
-        };
-        Star.prototype.hasFleet = function (fleet) {
-            return this.getFleetIndex(fleet) >= 0;
-        };
-        Star.prototype.addFleet = function (fleet) {
-            if (!this.fleets[fleet.player.id]) {
-                this.fleets[fleet.player.id] = [];
-            }
-            if (this.hasFleet(fleet))
-                return false;
-            this.fleets[fleet.player.id].push(fleet);
-        };
-        Star.prototype.addFleets = function (fleets) {
-            for (var i = 0; i < fleets.length; i++) {
-                this.addFleet(fleets[i]);
-            }
-        };
-        Star.prototype.removeFleet = function (fleet) {
-            var fleetIndex = this.getFleetIndex(fleet);
-            if (fleetIndex < 0)
-                return false;
-            this.fleets[fleet.player.id].splice(fleetIndex, 1);
-            if (this.fleets[fleet.player.id].length === 0) {
-                delete this.fleets[fleet.player.id];
-            }
-        };
-        Star.prototype.removeFleets = function (fleets) {
-            for (var i = 0; i < fleets.length; i++) {
-                this.removeFleet(fleets[i]);
-            }
-        };
-        Star.prototype.getAllShipsOfPlayer = function (player) {
-            var allShips = [];
-            var fleets = this.fleets[player.id];
-            if (!fleets)
-                return [];
-            for (var i = 0; i < fleets.length; i++) {
-                allShips = allShips.concat(fleets[i].ships);
-            }
-            return allShips;
-        };
-        Star.prototype.getAllShips = function () {
-            var allShips = [];
-            for (var playerId in this.fleets) {
-                var fleets = this.fleets[playerId];
-                allShips = allShips.concat(this.getAllShipsOfPlayer(fleets[0].player));
-            }
-            return allShips;
-        };
-        Star.prototype.getIndependentShips = function () {
-            var ships = [];
-            for (var playerId in this.fleets) {
-                var player = this.fleets[playerId][0].player;
-                if (player.isIndependent) {
-                    ships = ships.concat(this.getAllShipsOfPlayer(player));
-                }
-            }
-            return ships;
-        };
-        Star.prototype.getTargetsForPlayer = function (player) {
-            var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
-            var buildingController = buildingTarget ? buildingTarget.controller : null;
-            var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
-            var diplomacyStatus = player.diplomacyStatus;
-            var targets = [];
-            if (buildingTarget &&
-                (player === this.owner ||
-                    diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller))) {
-                targets.push({
-                    type: "building",
-                    enemy: buildingTarget.controller,
-                    building: buildingTarget,
-                    ships: this.getAllShipsOfPlayer(buildingTarget.controller)
-                });
-            }
-            for (var i = 0; i < fleetOwners.length; i++) {
-                if (diplomacyStatus.canAttackFleetOfPlayer(fleetOwners[i])) {
-                    targets.push({
-                        type: "fleet",
-                        enemy: fleetOwners[i],
-                        building: null,
-                        ships: this.getAllShipsOfPlayer(fleetOwners[i])
-                    });
-                }
-            }
-            return targets;
-        };
-        Star.prototype.getFirstEnemyDefenceBuilding = function (player) {
-            if (!this.buildings["defence"])
-                return null;
-            var defenceBuildings = this.buildings["defence"].slice(0);
-            if (this.owner === player)
-                defenceBuildings = defenceBuildings.reverse();
-            for (var i = defenceBuildings.length - 1; i >= 0; i--) {
-                if (defenceBuildings[i].controller.id !== player.id) {
-                    return defenceBuildings[i];
-                }
-            }
-            return null;
-        };
-        Star.prototype.getEnemyFleetOwners = function (player, excludedTarget) {
-            var fleetOwners = [];
-            for (var playerId in this.fleets) {
-                if (playerId == player.id)
-                    continue;
-                else if (excludedTarget && playerId == excludedTarget.id)
-                    continue;
-                else if (this.fleets[playerId].length < 1)
-                    continue;
-                fleetOwners.push(this.fleets[playerId][0].player);
-            }
-            return fleetOwners;
-        };
-        // MAP GEN
-        Star.prototype.setPosition = function (x, y) {
-            this.x = x;
-            this.y = y;
-        };
-        Star.prototype.setResource = function (resource) {
-            this.resource = resource;
-        };
-        Star.prototype.hasLink = function (linkTo) {
-            return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
-        };
-        // could maybe use adding / removing links as a gameplay mechanic
-        Star.prototype.addLink = function (linkTo) {
-            if (this.hasLink(linkTo))
-                return;
-            this.linksTo.push(linkTo);
-            linkTo.linksFrom.push(this);
-        };
-        Star.prototype.removeLink = function (linkTo) {
-            if (!this.hasLink(linkTo))
-                return;
-            var toIndex = this.linksTo.indexOf(linkTo);
-            if (toIndex >= 0) {
-                this.linksTo.splice(toIndex, 1);
-            }
-            else {
-                this.linksFrom.splice(this.linksFrom.indexOf(linkTo), 1);
-            }
-            linkTo.removeLink(this);
-        };
-        Star.prototype.getAllLinks = function () {
-            return this.linksTo.concat(this.linksFrom);
-        };
-        Star.prototype.getEdgeWith = function (neighbor) {
-            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
-                var edge = this.voronoiCell.halfedges[i].edge;
-                if ((edge.lSite && edge.lSite === neighbor) ||
-                    (edge.rSite && edge.rSite === neighbor)) {
-                    return edge;
-                }
-            }
-            return null;
-        };
-        Star.prototype.getSharedNeighborsWith = function (neighbor) {
-            var ownNeighbors = this.getNeighbors();
-            var neighborNeighbors = neighbor.getNeighbors();
-            var sharedNeighbors = [];
-            for (var i = 0; i < ownNeighbors.length; i++) {
-                var star = ownNeighbors[i];
-                if (star !== neighbor && neighborNeighbors.indexOf(star) !== -1) {
-                    sharedNeighbors.push(star);
-                }
-            }
-            return sharedNeighbors;
-        };
-        // return adjacent stars whether they're linked to this or not
-        Star.prototype.getNeighbors = function () {
-            var neighbors = [];
-            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
-                var edge = this.voronoiCell.halfedges[i].edge;
-                if (edge.lSite !== null && edge.lSite.id !== this.id) {
-                    neighbors.push(edge.lSite);
-                }
-                else if (edge.rSite !== null && edge.rSite.id !== this.id) {
-                    neighbors.push(edge.rSite);
-                }
-            }
-            return neighbors;
-        };
-        Star.prototype.getLinkedInRange = function (range) {
-            if (this.indexedNeighborsInRange[range]) {
-                return this.indexedNeighborsInRange[range];
-            }
-            var visited = {};
-            var visitedByRange = {};
-            if (range >= 0) {
-                visited[this.id] = this;
-            }
-            var current = [];
-            var frontier = [this];
-            for (var i = 0; i < range; i++) {
-                current = frontier.slice(0);
-                if (current.length <= 0)
-                    break;
-                frontier = [];
-                visitedByRange[i + 1] = [];
-                for (var j = 0; j < current.length; j++) {
-                    var neighbors = current[j].getAllLinks();
-                    for (var k = 0; k < neighbors.length; k++) {
-                        if (visited[neighbors[k].id])
-                            continue;
-                        visited[neighbors[k].id] = neighbors[k];
-                        visitedByRange[i + 1].push(neighbors[k]);
-                        frontier.push(neighbors[k]);
-                        this.indexedDistanceToStar[neighbors[k].id] = i;
+                var columns = [
+                    {
+                        label: "Item",
+                        key: "item",
+                        defaultOrder: "asc",
+                        propToSortBy: "sortOrder"
                     }
-                }
+                ];
+                return (React.DOM.div({
+                    className: "tradeable-items-list fixed-table-parent"
+                }, UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialSortOrder: [columns[0]] // item
+                })));
             }
-            var allVisited = [];
-            for (var id in visited) {
-                allVisited.push(visited[id]);
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../player.ts" />
+/// <reference path="tradeableitemslist.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TradeableItems = React.createClass({
+            displayName: "TradeableItems",
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "tradeable-items"
+                }, React.DOM.div({
+                    className: "tradeable-items-header"
+                }, "tradeable items " + this.props.player.name), UIComponents.TradeableItemsList({
+                    player: this.props.player
+                })));
             }
-            this.indexedNeighborsInRange[range] =
-                {
-                    all: allVisited,
-                    byRange: visitedByRange
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../player.ts" />
+/// <reference path="tradeableitems.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TradeOverview = React.createClass({
+            displayName: "TradeOverview",
+            propTypes: {
+                selfPlayer: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                otherPlayer: React.PropTypes.instanceOf(Rance.Player).isRequired
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "trade-overview"
+                }, React.DOM.div({
+                    className: "tradeable-items-container"
+                }, UIComponents.TradeableItems({
+                    player: this.props.selfPlayer
+                }), UIComponents.TradeableItems({
+                    player: this.props.otherPlayer
+                }))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../player.ts" />
+/// <reference path="../trade/tradeoverview.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.DiplomacyActions = React.createClass({
+            displayName: "DiplomacyActions",
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                targetPlayer: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                onUpdate: React.PropTypes.func.isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    trade: undefined
+                });
+            },
+            closePopup: function (popupType) {
+                this.refs.popupManager.closePopup(this.state[popupType]);
+                var stateObj = {};
+                stateObj[popupType] = undefined;
+                this.setState(stateObj);
+            },
+            makePopup: function (popupType) {
+                var contentConstructor;
+                var contentProps;
+                var popupProps = {
+                    resizable: true,
+                    containerDragOnly: true,
+                    minWidth: 150,
+                    minHeight: 50,
+                    preventAutoResize: true
                 };
-            return ({
-                all: allVisited,
-                byRange: visitedByRange
-            });
-        };
-        // Recursively gets all neighbors that fulfill the callback condition with this star
-        // Optional earlyReturnSize parameter returns if an island of specified size is found
-        Star.prototype.getIslandForQualifier = function (qualifier, earlyReturnSize) {
-            var visited = {};
-            var connected = {};
-            var sizeFound = 1;
-            var initialStar = this;
-            var frontier = [initialStar];
-            visited[initialStar.id] = true;
-            while (frontier.length > 0) {
-                var current = frontier.pop();
-                connected[current.id] = current;
-                var neighbors = current.getLinkedInRange(1).all;
-                for (var i = 0; i < neighbors.length; i++) {
-                    var neighbor = neighbors[i];
-                    if (visited[neighbor.id])
-                        continue;
-                    visited[neighbor.id] = true;
-                    if (qualifier(current, neighbor)) {
-                        sizeFound++;
-                        frontier.push(neighbor);
-                    }
+                switch (popupType) {
+                    case "trade":
+                        {
+                            contentConstructor = UIComponents.TradeOverview;
+                            contentProps =
+                                {
+                                    selfPlayer: this.props.player,
+                                    otherPlayer: this.props.targetPlayer
+                                };
+                            break;
+                        }
                 }
-                // breaks when sufficiently big island has been found
-                if (earlyReturnSize && sizeFound >= earlyReturnSize) {
-                    for (var i = 0; i < frontier.length; i++) {
-                        connected[frontier[i].id] = frontier[i];
-                    }
-                    break;
-                }
-            }
-            var island = [];
-            for (var starId in connected) {
-                island.push(connected[starId]);
-            }
-            return island;
-        };
-        Star.prototype.getNearestStarForQualifier = function (qualifier) {
-            if (qualifier(this))
-                return this;
-            var visited = {};
-            var frontier = [this];
-            visited[this.id] = true;
-            while (frontier.length > 0) {
-                var current = frontier.shift();
-                var neighbors = current.getLinkedInRange(1).all;
-                for (var i = 0; i < neighbors.length; i++) {
-                    var neighbor = neighbors[i];
-                    if (visited[neighbor.id])
-                        continue;
-                    visited[neighbor.id] = true;
-                    if (qualifier(neighbor)) {
-                        return neighbor;
-                    }
-                    else {
-                        frontier.push(neighbor);
-                    }
-                }
-            }
-            return null;
-        };
-        Star.prototype.getDistanceToStar = function (target) {
-            // don't index distance while generating map as distance can change
-            // if (this.mapGenData)
-            if (!app.game) {
-                var a = Rance.aStar(this, target);
-                return a.cost[target.id];
-            }
-            else if (!this.indexedDistanceToStar[target.id]) {
-                var a = Rance.aStar(this, target);
-                if (!a) {
-                    this.indexedDistanceToStar[target.id] = -1;
+                var id = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.TopMenuPopup,
+                    contentProps: {
+                        contentConstructor: contentConstructor,
+                        contentProps: contentProps,
+                        handleClose: this.closePopup.bind(this, popupType)
+                    },
+                    popupProps: popupProps
+                });
+                var stateObj = {};
+                stateObj[popupType] = id;
+                this.setState(stateObj);
+            },
+            togglePopup: function (popupType) {
+                if (isFinite(this.state[popupType])) {
+                    this.closePopup(popupType);
                 }
                 else {
-                    for (var id in a.cost) {
-                        this.indexedDistanceToStar[id] = a.cost[id];
-                    }
+                    this.makePopup(popupType);
                 }
-            }
-            return this.indexedDistanceToStar[target.id];
-        };
-        Star.prototype.getVisionRange = function () {
-            return this.getEffectWithBuildingsEffect(1, "vision");
-        };
-        Star.prototype.getVision = function () {
-            return this.getLinkedInRange(this.getVisionRange()).all;
-        };
-        Star.prototype.getDetectionRange = function () {
-            return this.getEffectWithBuildingsEffect(0, "detection");
-        };
-        Star.prototype.getDetection = function () {
-            return this.getLinkedInRange(this.getDetectionRange()).all;
-        };
-        Star.prototype.getHealingFactor = function (player) {
-            var factor = 0;
-            if (player === this.owner) {
-                factor += 0.15;
-            }
-            return factor;
-        };
-        Star.prototype.getPresentPlayersByVisibility = function () {
-            var byVisibilityAndId = {
-                visible: {},
-                detected: {},
-                all: {}
-            };
-            var allPlayers = [];
-            byVisibilityAndId.visible[this.owner.id] = this.owner;
-            var secondaryController = this.getSecondaryController();
-            if (secondaryController) {
-                byVisibilityAndId.visible[secondaryController.id] = secondaryController;
-            }
-            for (var playerId in this.fleets) {
-                var fleets = this.fleets[playerId];
-                for (var i = 0; i < fleets.length; i++) {
-                    var fleetPlayer = fleets[i].player;
-                    if (byVisibilityAndId.detected[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id]) {
-                        break;
-                    }
-                    byVisibilityAndId.all[fleetPlayer.id] = fleetPlayer;
-                    if (fleets[i].isStealthy) {
-                        byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;
-                    }
-                    else {
-                        byVisibilityAndId.visible[fleetPlayer.id] = fleetPlayer;
-                    }
+            },
+            handleDeclareWar: function () {
+                this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
+                this.props.onUpdate();
+            },
+            handleMakePeace: function () {
+                this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
+                this.props.onUpdate();
+            },
+            render: function () {
+                var player = this.props.player;
+                var targetPlayer = this.props.targetPlayer;
+                var declareWarProps = {
+                    className: "diplomacy-action-button"
+                };
+                if (player.diplomacyStatus.canDeclareWarOn(targetPlayer)) {
+                    declareWarProps.onClick = this.handleDeclareWar;
                 }
-            }
-            return byVisibilityAndId;
-        };
-        Star.prototype.getSeed = function () {
-            if (!this.seed) {
-                var bgString = "";
-                bgString += Math.round(this.x);
-                bgString += Math.round(this.y);
-                bgString += new Date().getTime();
-                this.seed = bgString;
-            }
-            return this.seed;
-        };
-        Star.prototype.buildManufactory = function () {
-            this.manufactory = new Rance.Manufactory(this);
-        };
-        Star.prototype.serialize = function () {
-            var data = {};
-            data.id = this.id;
-            data.x = this.basisX;
-            data.y = this.basisY;
-            data.baseIncome = this.baseIncome;
-            data.name = this.name;
-            data.ownerId = this.owner ? this.owner.id : null;
-            data.linksToIds = this.linksTo.map(function (star) { return star.id; });
-            data.linksFromIds = this.linksFrom.map(function (star) { return star.id; });
-            data.seed = this.seed;
-            if (this.resource) {
-                data.resourceType = this.resource.type;
-            }
-            data.buildableUnitTypes = this.buildableUnitTypes.map(function (template) {
-                return template.type;
-            });
-            data.buildings = {};
-            for (var category in this.buildings) {
-                data.buildings[category] = [];
-                for (var i = 0; i < this.buildings[category].length; i++) {
-                    data.buildings[category].push(this.buildings[category][i].serialize());
+                else {
+                    declareWarProps.disabled = true;
+                    declareWarProps.className += " disabled";
                 }
+                var makePeaceProps = {
+                    className: "diplomacy-action-button"
+                };
+                if (player.diplomacyStatus.canMakePeaceWith(targetPlayer)) {
+                    makePeaceProps.onClick = this.handleMakePeace;
+                }
+                else {
+                    makePeaceProps.disabled = true;
+                    makePeaceProps.className += " disabled";
+                }
+                return (React.DOM.div({
+                    className: "diplomacy-actions-container"
+                }, UIComponents.PopupManager({
+                    ref: "popupManager",
+                    onlyAllowOne: true
+                }), React.DOM.button({
+                    className: "light-box-close",
+                    onClick: this.props.closePopup
+                }, "X"), React.DOM.div({
+                    className: "diplomacy-actions"
+                }, React.DOM.div({
+                    className: "diplomacy-actions-header"
+                }, targetPlayer.name), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"), React.DOM.button({
+                    className: "diplomacy-action-button",
+                    onClick: this.togglePopup.bind(this, "trade")
+                }, "Trade"))));
             }
-            if (this.manufactory) {
-                data.manufactory = this.manufactory.serialize();
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.AutoPosition = {
+            componentDidMount: function () {
+                if (this.props.autoPosition) {
+                    this.setAutoPosition();
+                }
+            },
+            componentDidUpdate: function () {
+                if (this.props.autoPosition) {
+                    this.setAutoPosition();
+                }
+            },
+            flipSide: function (side) {
+                switch (side) {
+                    case "top":
+                        {
+                            return "bottom";
+                        }
+                    case "bottom":
+                        {
+                            return "top";
+                        }
+                    case "left":
+                        {
+                            return "right";
+                        }
+                    case "right":
+                        {
+                            return "left";
+                        }
+                    default:
+                        {
+                            throw new Error("Invalid side");
+                        }
+                }
+            },
+            elementFitsYSide: function (side, ownRect, parentRect) {
+                switch (side) {
+                    case "top":
+                        {
+                            return parentRect.top - ownRect.height >= 0;
+                        }
+                    case "bottom":
+                        {
+                            return parentRect.bottom + ownRect.height < window.innerHeight;
+                        }
+                    default:
+                        {
+                            throw new Error("Invalid side");
+                        }
+                }
+            },
+            elementFitsXSide: function (side, ownRect, parentRect) {
+                switch (side) {
+                    case "left":
+                        {
+                            return parentRect.left + ownRect.width < window.innerWidth;
+                        }
+                    case "right":
+                        {
+                            return parentRect.right - ownRect.width >= 0;
+                        }
+                    default:
+                        {
+                            throw new Error("Invalid side");
+                        }
+                }
+            },
+            setAutoPosition: function () {
+                /*
+                try to fit prefered y
+                  flip if doesnt fit
+                try to fit prefered x alignment
+                  flip if doesnt fit
+                 */
+                var parentRect = this.props.getParentNode().getBoundingClientRect();
+                var ownNode = this.getDOMNode();
+                var rect = ownNode.getBoundingClientRect();
+                var ySide = this.props.ySide || "top";
+                var xSide = this.props.xSide || "right";
+                var yMargin = this.props.yMargin || 0;
+                var xMargin = this.props.xMargin || 0;
+                var fitsY = this.elementFitsYSide(ySide, rect, parentRect);
+                if (!fitsY) {
+                    ySide = this.flipSide(ySide);
+                }
+                var fitsX = this.elementFitsXSide(xSide, rect, parentRect);
+                if (!fitsX) {
+                    xSide = this.flipSide(xSide);
+                }
+                var top = null;
+                var left = null;
+                if (ySide === "top") {
+                    top = parentRect.top - rect.height - yMargin;
+                }
+                else {
+                    top = parentRect.bottom + yMargin;
+                }
+                if (xSide === "left") {
+                    left = parentRect.left - xMargin;
+                }
+                else {
+                    left = parentRect.right - rect.width + xMargin;
+                }
+                ownNode.style.left = "" + left + "px";
+                ownNode.style.top = "" + top + "px";
             }
-            return data;
         };
-        return Star;
-    })();
-    Rance.Star = Star;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.AttitudeModifierInfo = React.createClass({
+            displayName: "AttitudeModifierInfo",
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "attitude-modifier-info-cell" +
+                    " attitude-modifier-info-" + type;
+                var cellContent;
+                switch (type) {
+                    case "endTurn":
+                        {
+                            if (this.props.endTurn < 0) {
+                                cellContent = null;
+                                return;
+                            }
+                        }
+                    case "strength":
+                        {
+                            var relativeValue = Rance.getRelativeValue(this.props.strength, -20, 20);
+                            relativeValue = Rance.clamp(relativeValue, 0, 1);
+                            var deviation = Math.abs(0.5 - relativeValue) * 2;
+                            var hue = 110 * relativeValue;
+                            var saturation = 0 + 50 * deviation;
+                            if (deviation > 0.3)
+                                saturation += 40;
+                            var lightness = 70 - 20 * deviation;
+                            cellProps.style =
+                                {
+                                    color: "hsl(" +
+                                        hue + "," +
+                                        saturation + "%," +
+                                        lightness + "%)"
+                                };
+                        }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            if (isFinite(cellContent)) {
+                                cellProps.className += " center-text";
+                            }
+                            break;
+                        }
+                }
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var columns = this.props.activeColumns;
+                var cells = [];
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+                    cells.push(cell);
+                }
+                var rowProps = {
+                    className: "diplomatic-status-player",
+                    onClick: this.props.handleClick
+                };
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../mixins/autoposition.ts" />
+/// <reference path="attitudemodifierinfo.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.AttitudeModifierList = React.createClass({
+            displayName: "AttitudeModifierList",
+            mixins: [UIComponents.AutoPosition],
+            render: function () {
+                var modifiers = this.props.attitudeModifiers;
+                var rows = [];
+                rows.push({
+                    key: "baseOpinion",
+                    data: {
+                        name: "AI Personality",
+                        strength: this.props.baseOpinion,
+                        endTurn: -1,
+                        sortOrder: -1,
+                        rowConstructor: UIComponents.AttitudeModifierInfo
+                    }
+                });
+                for (var i = 0; i < modifiers.length; i++) {
+                    var modifier = modifiers[i];
+                    if (modifier.isOverRidden)
+                        continue;
+                    rows.push({
+                        key: modifier.template.type,
+                        data: {
+                            name: modifier.template.displayName,
+                            strength: modifier.getAdjustedStrength(),
+                            endTurn: modifier.endTurn,
+                            sortOrder: 0,
+                            rowConstructor: UIComponents.AttitudeModifierInfo
+                        }
+                    });
+                }
+                var columns = [
+                    {
+                        label: "Name",
+                        key: "name",
+                        defaultOrder: "asc",
+                        propToSortBy: "sortOrder"
+                    },
+                    {
+                        label: "Effect",
+                        key: "strength",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Ends on",
+                        key: "endTurn",
+                        defaultOrder: "desc"
+                    }
+                ];
+                return (React.DOM.div({ className: "attitude-modifier-list auto-position fixed-table-parent" }, UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialSortOrder: [columns[0], columns[1], columns[2]]
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="attitudemodifierlist.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Opinion = React.createClass({
+            displayName: "Opinion",
+            getInitialState: function () {
+                return ({
+                    hasAttitudeModifierTootlip: false
+                });
+            },
+            setTooltip: function () {
+                this.setState({ hasAttitudeModifierTootlip: true });
+            },
+            clearTooltip: function () {
+                this.setState({ hasAttitudeModifierTootlip: false });
+            },
+            getOpinionTextNode: function () {
+                return this.getDOMNode().firstChild;
+            },
+            getColor: function () {
+                var relativeValue = Rance.getRelativeValue(this.props.opinion, -30, 30);
+                relativeValue = Rance.clamp(relativeValue, 0, 1);
+                var deviation = Math.abs(0.5 - relativeValue) * 2;
+                var hue = 110 * relativeValue;
+                var saturation = 0 + 50 * deviation;
+                if (deviation > 0.3)
+                    saturation += 40;
+                var lightness = 70 - 20 * deviation;
+                return ("hsl(" +
+                    hue + "," +
+                    saturation + "%," +
+                    lightness + "%)");
+            },
+            render: function () {
+                var tooltip = null;
+                if (this.state.hasAttitudeModifierTootlip) {
+                    tooltip = UIComponents.AttitudeModifierList({
+                        attitudeModifiers: this.props.attitudeModifiers,
+                        baseOpinion: this.props.baseOpinion,
+                        onLeave: this.clearTooltip,
+                        getParentNode: this.getOpinionTextNode,
+                        autoPosition: true,
+                        ySide: "top",
+                        xSide: "right",
+                        yMargin: 10
+                    });
+                }
+                return (React.DOM.div({
+                    className: "player-opinion",
+                    onMouseEnter: this.setTooltip,
+                    onMouseLeave: this.clearTooltip
+                }, React.DOM.span({
+                    style: {
+                        color: this.getColor()
+                    }
+                }, this.props.opinion), tooltip));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../playerflag.ts" />
+/// <reference path="opinion.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.DiplomaticStatusPlayer = React.createClass({
+            displayName: "DiplomaticStatusPlayer",
+            getInitialState: function () {
+                return ({
+                    hasAttitudeModifierTootlip: false
+                });
+            },
+            makeCell: function (type) {
+                var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
+                if (type === "flag") {
+                    if (!this.props.player) {
+                        return (React.DOM.td({
+                            key: type,
+                            className: className
+                        }, null));
+                    }
+                    return (React.DOM.td({
+                        key: type,
+                        className: className
+                    }, UIComponents.PlayerFlag({
+                        flag: this.props.player.flag,
+                        props: {
+                            className: "diplomacy-status-player-icon"
+                        }
+                    })));
+                }
+                if (type === "opinion") {
+                    return (React.DOM.td({
+                        key: type,
+                        className: className
+                    }, UIComponents.Opinion({
+                        attitudeModifiers: this.props.attitudeModifiers,
+                        opinion: this.props.opinion,
+                        baseOpinion: this.props.baseOpinion
+                    })));
+                }
+                if (type === "player") {
+                    className += " player-name";
+                }
+                return (React.DOM.td({
+                    key: type,
+                    className: className
+                }, this.props[type]));
+            },
+            render: function () {
+                var columns = this.props.activeColumns;
+                var cells = [];
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+                    cells.push(cell);
+                }
+                var rowProps = {
+                    className: "diplomatic-status-player",
+                    onClick: this.props.handleClick
+                };
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="diplomacyactions.ts" />
+/// <reference path="diplomaticstatusplayer.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.DiplomacyOverview = React.createClass({
+            displayName: "DiplomacyOverview",
+            makeDiplomacyActionsPopup: function (rowItem) {
+                var player = rowItem.data.player;
+                if (!player)
+                    return;
+                this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.DiplomacyActions,
+                    contentProps: {
+                        player: this.props.player,
+                        targetPlayer: player,
+                        onUpdate: this.forceUpdate.bind(this)
+                    }
+                });
+            },
+            render: function () {
+                var unmetPlayerCount = this.props.totalPlayerCount -
+                    Object.keys(this.props.metPlayers).length - 1;
+                var rows = [];
+                for (var playerId in this.props.statusByPlayer) {
+                    var player = this.props.metPlayers[playerId];
+                    rows.push({
+                        key: player.id,
+                        data: {
+                            player: player,
+                            name: player.name,
+                            baseOpinion: player.diplomacyStatus.getBaseOpinion(),
+                            status: Rance.DiplomaticState[this.props.statusByPlayer[playerId]],
+                            statusEnum: this.props.statusByPlayer[playerId],
+                            opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
+                            attitudeModifiers: player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
+                            rowConstructor: UIComponents.DiplomaticStatusPlayer
+                        }
+                    });
+                }
+                for (var i = 0; i < unmetPlayerCount; i++) {
+                    rows.push({
+                        key: "unmet" + i,
+                        data: {
+                            name: "?????",
+                            status: "unmet",
+                            statusEnum: 99999 + i,
+                            opinion: null,
+                            rowConstructor: UIComponents.DiplomaticStatusPlayer
+                        }
+                    });
+                }
+                var columns = [
+                    {
+                        label: "",
+                        key: "flag",
+                        defaultOrder: "asc",
+                        propToSortBy: "name"
+                    },
+                    {
+                        label: "Name",
+                        key: "name",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Status",
+                        key: "status",
+                        defaultOrder: "asc",
+                        propToSortBy: "statusEnum"
+                    },
+                    {
+                        label: "Opinion",
+                        key: "opinion",
+                        defaultOrder: "desc"
+                    }
+                ];
+                return (React.DOM.div({ className: "diplomacy-overview" }, UIComponents.PopupManager({
+                    ref: "popupManager",
+                    onlyAllowOne: true
+                }), React.DOM.div({ className: "diplomacy-status-list fixed-table-parent" }, UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialSortOrder: [columns[0]],
+                    onRowChange: this.makeDiplomacyActionsPopup
+                }))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.EconomySummaryItem = React.createClass({
+            displayName: "EconomySummaryItem",
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "economy-summary-item-cell" + " economy-summary-" + type;
+                var cellContent;
+                switch (type) {
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            break;
+                        }
+                }
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var columns = this.props.activeColumns;
+                var cells = [];
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+                    cells.push(cell);
+                }
+                var rowProps = {
+                    className: "economy-summary-item",
+                    onClick: this.props.handleClick
+                };
+                if (this.props.isSelected) {
+                    rowProps.className += " selected";
+                }
+                ;
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../unitlist/list.ts"/>
+/// <reference path="economysummaryitem.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.EconomySummary = React.createClass({
+            displayName: "EconomySummary",
+            render: function () {
+                var rows = [];
+                var player = this.props.player;
+                for (var i = 0; i < player.controlledLocations.length; i++) {
+                    var star = player.controlledLocations[i];
+                    var data = {
+                        star: star,
+                        id: star.id,
+                        name: star.name,
+                        income: star.getIncome(),
+                        rowConstructor: UIComponents.EconomySummaryItem
+                    };
+                    rows.push({
+                        key: star.id,
+                        data: data
+                    });
+                }
+                var columns = [
+                    {
+                        label: "Id",
+                        key: "id",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Name",
+                        key: "name",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Income",
+                        key: "income",
+                        defaultOrder: "desc"
+                    }
+                ];
+                return (React.DOM.div({ className: "economy-summary-list fixed-table-parent" }, UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialSortOrder: [columns[2]]
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.OptionsGroup = React.createClass({
+            displayName: "OptionsGroup",
+            render: function () {
+                var rows = [];
+                for (var i = 0; i < this.props.options.length; i++) {
+                    var option = this.props.options[i];
+                    rows.push(React.DOM.div({
+                        className: "option-container",
+                        key: option.key
+                    }, option.content));
+                }
+                var resetButton = null;
+                if (this.props.resetFN) {
+                    resetButton = React.DOM.button({
+                        className: "reset-options-button",
+                        onClick: this.props.resetFN
+                    }, "reset");
+                }
+                var header = this.props.header || resetButton ?
+                    React.DOM.div({ className: "option-group-header" }, this.props.header, resetButton) :
+                    null;
+                return (React.DOM.div({ className: "option-group" }, header, rows));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.OptionsCheckbox = React.createClass({
+            displayName: "OptionsCheckbox",
+            render: function () {
+                var key = "options-checkbox-" + this.props.label;
+                return (React.DOM.div({
+                    className: "options-checkbox-container"
+                }, React.DOM.input({
+                    type: "checkbox",
+                    id: key,
+                    checked: this.props.isChecked,
+                    onChange: this.props.onChangeFN
+                }), React.DOM.label({
+                    htmlFor: key
+                }, this.props.label)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../popups/popupmanager.ts"/>
+/// <reference path="optionsgroup.ts"/>
+/// <reference path="optionscheckbox.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.OptionsList = React.createClass({
+            displayName: "OptionsList",
+            makeBattleAnimationOption: function (stage) {
+                if (!isFinite(Rance.Options.battleAnimationTiming[stage])) {
+                    console.warn("Invalid option", stage);
+                    return;
+                }
+                var onChangeFN = function (e) {
+                    var target = e.target;
+                    var value = parseFloat(target.value);
+                    if (!isFinite(value)) {
+                        return;
+                    }
+                    value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                    Rance.Options.battleAnimationTiming[stage] = value;
+                    this.forceUpdate();
+                }.bind(this);
+                var key = "battle-animation-option-" + stage;
+                return ({
+                    key: stage,
+                    content: React.DOM.div({}, React.DOM.input({
+                        type: "number",
+                        id: key,
+                        value: Rance.Options.battleAnimationTiming[stage],
+                        min: 0,
+                        max: 10,
+                        step: 0.1,
+                        onChange: onChangeFN
+                    }), React.DOM.label({
+                        htmlFor: key
+                    }, stage))
+                });
+            },
+            handleResetAllOptions: function () {
+                var resetFN = function () {
+                    var shouldToggleDebug = false;
+                    if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode)
+                        shouldToggleDebug = true;
+                    Rance.Options = Rance.extendObject(Rance.defaultOptions);
+                    this.forceUpdate();
+                    if (shouldToggleDebug) {
+                        app.reactUI.render();
+                    }
+                }.bind(this);
+                var confirmProps = {
+                    handleOk: resetFN,
+                    contentText: "Are you sure you want to reset all options?"
+                };
+                this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.ConfirmPopup,
+                    contentProps: confirmProps
+                });
+            },
+            render: function () {
+                var allOptions = [];
+                // battle animation timing
+                var battleAnimationOptions = [];
+                for (var stage in Rance.Options.battleAnimationTiming) {
+                    battleAnimationOptions.push(this.makeBattleAnimationOption(stage));
+                }
+                allOptions.push(UIComponents.OptionsGroup({
+                    header: "Battle animation timing",
+                    options: battleAnimationOptions,
+                    resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.battleAnimationTiming, Rance.Options.battleAnimationTiming);
+                        this.forceUpdate();
+                    }.bind(this),
+                    key: "battleAnimationOptions"
+                }));
+                var debugOptions = [];
+                debugOptions.push({
+                    key: "debugMode",
+                    content: UIComponents.OptionsCheckbox({
+                        isChecked: Rance.Options.debugMode,
+                        label: "Debug mode",
+                        onChangeFN: function () {
+                            Rance.Options.debugMode = !Rance.Options.debugMode;
+                            this.forceUpdate();
+                            app.reactUI.render();
+                        }.bind(this)
+                    })
+                });
+                if (Rance.Options.debugMode) {
+                    debugOptions.push({
+                        key: "battleSimulationDepth",
+                        content: React.DOM.div({}, React.DOM.input({
+                            type: "number",
+                            id: "battle-simulation-depth-input",
+                            value: Rance.Options.debugOptions.battleSimulationDepth,
+                            min: 1,
+                            max: 500,
+                            step: 1,
+                            onChange: function (e) {
+                                var target = e.target;
+                                var value = parseInt(target.value);
+                                if (!isFinite(value)) {
+                                    return;
+                                }
+                                value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                                Rance.Options.debugOptions.battleSimulationDepth = value;
+                                this.forceUpdate();
+                            }.bind(this)
+                        }), React.DOM.label({
+                            htmlFor: "battle-simulation-depth-input"
+                        }, "AI vs. AI Battle simulation depth"))
+                    });
+                }
+                allOptions.push(UIComponents.OptionsGroup({
+                    header: "Debug",
+                    options: debugOptions,
+                    resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.debugOptions, Rance.Options.debugOptions);
+                        if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode) {
+                            Rance.Options.debugMode = !Rance.Options.debugMode;
+                            this.forceUpdate();
+                            app.reactUI.render();
+                        }
+                    }.bind(this),
+                    key: "debug"
+                }));
+                var uiOptions = [];
+                uiOptions.push({
+                    key: "noHamburger",
+                    content: UIComponents.OptionsCheckbox({
+                        isChecked: Rance.Options.ui.noHamburger,
+                        label: "Always expand top right menu on low resolution",
+                        onChangeFN: function () {
+                            Rance.Options.ui.noHamburger = !Rance.Options.ui.noHamburger;
+                            Rance.eventManager.dispatchEvent("updateHamburgerMenu");
+                            this.forceUpdate();
+                        }.bind(this)
+                    })
+                });
+                allOptions.push(UIComponents.OptionsGroup({
+                    header: "UI",
+                    options: uiOptions,
+                    resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.ui, Rance.Options.ui);
+                        this.forceUpdate();
+                    }.bind(this),
+                    key: "ui"
+                }));
+                var displayOptions = [];
+                displayOptions.push({
+                    key: "borderWidth",
+                    content: React.DOM.div({}, React.DOM.input({
+                        type: "number",
+                        id: "border-width-input",
+                        value: Rance.Options.display.borderWidth,
+                        min: 0,
+                        max: 50,
+                        step: 1,
+                        onChange: function (e) {
+                            var target = e.target;
+                            var value = parseFloat(target.value);
+                            if (!isFinite(value)) {
+                                return;
+                            }
+                            value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                            Rance.Options.display.borderWidth = value;
+                            Rance.eventManager.dispatchEvent("renderMap");
+                            this.forceUpdate();
+                        }.bind(this)
+                    }), React.DOM.label({
+                        htmlFor: "border-width-input"
+                    }, "Border width"))
+                });
+                allOptions.push(UIComponents.OptionsGroup({
+                    header: "Display",
+                    options: displayOptions,
+                    resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.display, Rance.Options.display);
+                        Rance.eventManager.dispatchEvent("renderMap");
+                        this.forceUpdate();
+                    }.bind(this),
+                    key: "display"
+                }));
+                return (React.DOM.div({ className: "options" }, UIComponents.PopupManager({
+                    ref: "popupManager",
+                    onlyAllowOne: true
+                }), React.DOM.div({ className: "options-header" }, "Options", React.DOM.button({
+                    className: "reset-options-button reset-all-options-button",
+                    onClick: this.handleResetAllOptions
+                }, "Reset all options")), allOptions));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TechnologyPrioritySlider = React.createClass({
+            displayName: "TechnologyPrioritySlider",
+            getInitialState: function () {
+                return ({
+                    priority: this.getPlayerPriority()
+                });
+            },
+            componentDidMount: function () {
+                Rance.eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
+            },
+            getPlayerPriority: function () {
+                return this.props.player.technologies[this.props.technology.key].priority;
+            },
+            updatePriority: function () {
+                this.setState({
+                    priority: this.getPlayerPriority()
+                });
+            },
+            handlePriorityChange: function (e) {
+                if (this.props.player.technologies[this.props.technology.key].priorityIsLocked) {
+                    return;
+                }
+                var target = e.target;
+                this.props.player.setTechnologyPriority(this.props.technology, parseFloat(target.value));
+            },
+            render: function () {
+                var predictedResearchPoints = 30; // TODO
+                return (React.DOM.div({
+                    className: "technology-progress-bar-priority-container"
+                }, React.DOM.span({
+                    className: "technology-progress-bar-predicted-research"
+                }, "+" + (this.props.researchPoints * this.state.priority).toFixed(1)), React.DOM.input({
+                    className: "technology-progress-bar-priority",
+                    type: "range",
+                    min: 0,
+                    max: 1,
+                    step: 0.01,
+                    value: this.state.priority,
+                    onChange: this.handlePriorityChange
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="technologypriorityslider.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Technology = React.createClass({
+            displayName: "Technology",
+            togglePriorityLock: function () {
+                this.props.player.technologies[this.props.technology.key].priorityIsLocked =
+                    !this.props.player.technologies[this.props.technology.key].priorityIsLocked;
+                this.forceUpdate();
+            },
+            render: function () {
+                var technology = this.props.technology;
+                var player = this.props.player;
+                var techData = player.technologies[technology.key];
+                var forCurrentLevel = player.getResearchNeededForTechnologyLevel(techData.level);
+                var forNextLevel = player.getResearchNeededForTechnologyLevel(techData.level + 1);
+                var progressForLevel = techData.totalResearch - forCurrentLevel;
+                var neededToProgressLevel = forNextLevel - forCurrentLevel;
+                var relativeProgress;
+                if (techData.level === technology.maxLevel) {
+                    relativeProgress = 1;
+                }
+                else {
+                    relativeProgress = progressForLevel / neededToProgressLevel;
+                }
+                return (React.DOM.div({
+                    className: "technology-listing"
+                }, React.DOM.div({
+                    className: "technology-name"
+                }, technology.displayName), React.DOM.div({
+                    className: "technology-level"
+                }, "Level " + techData.level), React.DOM.div({
+                    className: "technology-progress-bar-container"
+                }, React.DOM.div({
+                    className: "technology-progress-bar",
+                    style: {
+                        width: "" + (relativeProgress * 100) + "%"
+                    }
+                }), React.DOM.div({
+                    className: "technology-progress-bar-value"
+                }, "" + progressForLevel.toFixed(1) + " / " + Math.ceil(neededToProgressLevel)), UIComponents.TechnologyPrioritySlider({
+                    player: this.props.player,
+                    technology: this.props.technology,
+                    researchPoints: this.props.researchPoints
+                })), React.DOM.button({
+                    className: "technology-toggle-priority-lock" + (techData.priorityIsLocked ? " locked" : " unlocked"),
+                    onClick: this.togglePriorityLock
+                }, null)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="technology.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TechnologiesList = React.createClass({
+            displayName: "TechnologiesList",
+            updateListener: undefined,
+            componentDidMount: function () {
+                this.updateListener = Rance.eventManager.addEventListener("builtBuildingWithEffect_research", this.forceUpdate.bind(this));
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
+            },
+            render: function () {
+                var player = this.props.player;
+                var researchSpeed = player.getResearchSpeed();
+                var rows = [];
+                for (var key in player.technologies) {
+                    rows.push(UIComponents.Technology({
+                        player: player,
+                        technology: player.technologies[key].technology,
+                        researchPoints: researchSpeed,
+                        key: key
+                    }));
+                }
+                return (React.DOM.div({
+                    className: "technologies-list-container"
+                }, React.DOM.div({
+                    className: "technologies-list"
+                }, rows), React.DOM.div({
+                    className: "technologies-list-research-speed"
+                }, "Research speed: " + researchSpeed + " per turn")));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../star.ts" />
 var Rance;
@@ -14852,7 +15047,8 @@ var Rance;
                     containerDragOnly: true,
                     minWidth: 150,
                     minHeight: 50,
-                    initialPosition: this.cachedPopupRects[popupType]
+                    initialPosition: this.cachedPopupRects[popupType],
+                    preventAutoResize: true
                 };
                 switch (popupType) {
                     case "production":
@@ -14894,7 +15090,6 @@ var Rance;
                                 {
                                     handleClose: this.closePopup.bind(this, "saveGame")
                                 };
-                            popupProps.preventAutoResize = true;
                             break;
                         }
                     case "loadGame":
@@ -14904,7 +15099,6 @@ var Rance;
                                 {
                                     handleClose: this.closePopup.bind(this, "loadGame")
                                 };
-                            popupProps.preventAutoResize = true;
                             break;
                         }
                     case "options":

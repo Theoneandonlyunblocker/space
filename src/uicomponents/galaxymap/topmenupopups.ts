@@ -61,7 +61,8 @@ module Rance
           containerDragOnly: true,
           minWidth: 150,
           minHeight: 50,
-          initialPosition: this.cachedPopupRects[popupType]
+          initialPosition: this.cachedPopupRects[popupType],
+          preventAutoResize: true
         };
 
         switch (popupType)
@@ -107,7 +108,6 @@ module Rance
             {
               handleClose: this.closePopup.bind(this, "saveGame")
             }
-            popupProps.preventAutoResize = true;
             break;
           }
           case "loadGame":
@@ -117,7 +117,6 @@ module Rance
             {
               handleClose: this.closePopup.bind(this, "loadGame")
             }
-            popupProps.preventAutoResize = true;
             break;
           }
           case "options":

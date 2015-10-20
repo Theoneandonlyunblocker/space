@@ -1,3 +1,7 @@
+/// <reference path="../../player.ts" />
+
+/// <reference path="../trade/tradeoverview.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -5,6 +9,85 @@ module Rance
     export var DiplomacyActions = React.createClass(
     {
       displayName: "DiplomacyActions",
+
+      propTypes:
+      {
+        player: React.PropTypes.instanceOf(Player).isRequired,
+        targetPlayer: React.PropTypes.instanceOf(Player).isRequired,
+        onUpdate: React.PropTypes.func.isRequired
+      },
+
+      getInitialState: function()
+      {
+        return(
+        {
+          trade: undefined
+        });
+      },
+      
+      closePopup: function(popupType: string)
+      {
+        this.refs.popupManager.closePopup(this.state[popupType]);
+        var stateObj: any = {};
+        stateObj[popupType] = undefined;
+        this.setState(stateObj);
+      },
+
+      makePopup: function(popupType: string)
+      {
+        var contentConstructor: ReactComponentPlaceHolder;
+        var contentProps: any;
+        var popupProps: any =
+        {
+          resizable: true,
+          containerDragOnly: true,
+          minWidth: 150,
+          minHeight: 50,
+          preventAutoResize: true
+        };
+
+        switch (popupType)
+        {
+          case "trade":
+          {
+            contentConstructor = UIComponents.TradeOverview;
+            contentProps =
+            {
+              selfPlayer: this.props.player,
+              otherPlayer: this.props.targetPlayer
+            };
+            break;
+          }
+        }
+
+        var id = this.refs.popupManager.makePopup(
+        {
+          contentConstructor: UIComponents.TopMenuPopup,
+          contentProps:
+          {
+            contentConstructor: contentConstructor,
+            contentProps: contentProps,
+            handleClose: this.closePopup.bind(this, popupType)
+          },
+          popupProps: popupProps
+        });
+
+        var stateObj: any = {};
+        stateObj[popupType] = id;
+        this.setState(stateObj)
+      },
+
+      togglePopup: function(popupType: string)
+      {
+        if (isFinite(this.state[popupType]))
+        {
+          this.closePopup(popupType);
+        }
+        else
+        {
+          this.makePopup(popupType);
+        }
+      },
 
       handleDeclareWar: function()
       {
@@ -58,6 +141,11 @@ module Rance
           {
             className: "diplomacy-actions-container"
           },
+            UIComponents.PopupManager(
+            {
+              ref: "popupManager",
+              onlyAllowOne: true
+            }),
             React.DOM.button(
             {
               className: "light-box-close",
@@ -78,6 +166,13 @@ module Rance
               ),
               React.DOM.button(makePeaceProps,
                 "Make peace"
+              ),
+              React.DOM.button(
+              {
+                className: "diplomacy-action-button",
+                onClick: this.togglePopup.bind(this, "trade")
+              },
+                "Trade"
               )
             )
           )

@@ -2180,7 +2180,7 @@ ul, ol
 .light-box-close
 {
   position: absolute;
-  z-index: 999;
+  z-index: 1;
   top: 0;
   right: 0;
   color: #444;
@@ -4280,4 +4280,24 @@ button.player-setup-remove-player
 
   border-image: url("../img/listSeparator.png") 2 0 stretch;
   border-width: 0 0 2px 0;
+}
+
+.trade-overview
+{
+  border: 1px solid red;
+  display: flex;
+  flex-flow: column;
+}
+
+.tradeable-items-container
+{
+  display: flex;
+  flex-flow: row;
+}
+
+.tradeable-items
+{
+  border: 1px solid green;
+  display: flex;
+  flex-flow: column;
 }

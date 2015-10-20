@@ -228,7 +228,7 @@ declare module Rance {
             key: string | number;
             data: any;
         }
-        var List: React.Factory<{}>;
+        var List: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -362,109 +362,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module UIComponents {
-        var DiplomacyActions: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var AutoPosition: {
-            componentDidMount: () => void;
-            componentDidUpdate: () => void;
-            flipSide: (side: string) => string;
-            elementFitsYSide: (side: string, ownRect: ClientRect, parentRect: ClientRect) => boolean;
-            elementFitsXSide: (side: string, ownRect: ClientRect, parentRect: ClientRect) => boolean;
-            setAutoPosition: () => void;
-        };
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var AttitudeModifierInfo: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var AttitudeModifierList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var Opinion: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DiplomaticStatusPlayer: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DiplomacyOverview: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var EconomySummaryItem: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var EconomySummary: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var OptionsGroup: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var OptionsCheckbox: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var OptionsList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var TechnologyPrioritySlider: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var Technology: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var TechnologiesList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Resources {
-                    var testResource1: Rance.Templates.IResourceTemplate;
-                    var testResource2: Rance.Templates.IResourceTemplate;
-                    var testResource3: Rance.Templates.IResourceTemplate;
-                    var testResource4: Rance.Templates.IResourceTemplate;
-                    var testResource5: Rance.Templates.IResourceTemplate;
-                }
-            }
-        }
-    }
-}
-declare module Rance {
-    interface Point {
-        x: number;
-        y: number;
-    }
-}
-declare module Rance {
     enum RandomGenUnitRarity {
         common = 0,
         elite = 1,
@@ -559,6 +456,95 @@ declare module Rance {
     function defaultNameGenerator(unit: Unit): string;
 }
 declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Resources {
+                    var testResource1: Rance.Templates.IResourceTemplate;
+                    var testResource2: Rance.Templates.IResourceTemplate;
+                    var testResource3: Rance.Templates.IResourceTemplate;
+                    var testResource4: Rance.Templates.IResourceTemplate;
+                    var testResource5: Rance.Templates.IResourceTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    interface Point {
+        x: number;
+        y: number;
+    }
+}
+declare module Rance {
+    class PriorityQueue {
+        items: {
+            [priority: number]: any[];
+        };
+        constructor();
+        isEmpty(): boolean;
+        push(priority: number, data: any): void;
+        pop(): any;
+        peek(): any[];
+    }
+}
+declare module Rance {
+    function backTrace(graph: any, target: Star): {
+        star: Star;
+        cost: any;
+    }[];
+    function aStar(start: Star, target: Star): {
+        came: any;
+        cost: any;
+        queue: PriorityQueue;
+    };
+}
+declare module Rance {
+    class Fleet {
+        player: Player;
+        ships: Unit[];
+        location: Star;
+        visionIsDirty: boolean;
+        visibleStars: Star[];
+        detectedStars: Star[];
+        isStealthy: boolean;
+        id: number;
+        name: string;
+        constructor(player: Player, ships: Unit[], location: Star, id?: number, shouldRender?: boolean);
+        getShipIndex(ship: Unit): number;
+        hasShip(ship: Unit): boolean;
+        deleteFleet(shouldRender?: boolean): void;
+        mergeWith(fleet: Fleet, shouldRender?: boolean): void;
+        addShip(ship: Unit): boolean;
+        addShips(ships: Unit[]): void;
+        removeShip(ship: Unit): boolean;
+        removeShips(ships: Unit[]): void;
+        transferShip(fleet: Fleet, ship: Unit): boolean;
+        split(): Fleet;
+        splitStealthyUnits(): Fleet;
+        getMinCurrentMovePoints(): number;
+        getMinMaxMovePoints(): number;
+        canMove(): boolean;
+        subtractMovePoints(): void;
+        move(newLocation: Star): void;
+        getPathTo(newLocation: Star): {
+            star: Star;
+            cost: any;
+        }[];
+        pathFind(newLocation: Star, onMove?: any, afterMove?: any): void;
+        getFriendlyFleetsAtOwnLocation(): Fleet[];
+        getTotalStrengthEvaluation(): number;
+        getTotalHealth(): {
+            current: number;
+            max: number;
+        };
+        updateVisibleStars(): void;
+        getVision(): Star[];
+        getDetection(): Star[];
+        serialize(): any;
+    }
+}
+declare module Rance {
     interface IBuildingUpgradeData {
         template: Templates.IBuildingTemplate;
         level: number;
@@ -584,6 +570,177 @@ declare module Rance {
         getPossibleUpgrades(): IBuildingUpgradeData[];
         upgrade(): void;
         setController(newController: Player): void;
+        serialize(): any;
+    }
+}
+declare module Rance {
+    interface IManufacturableThingWithType {
+        type: string;
+        template: IManufacturableThing;
+    }
+    class Manufactory {
+        buildQueue: IManufacturableThingWithType[];
+        player: Player;
+        star: Star;
+        capacity: number;
+        maxCapacity: number;
+        unitStatsModifier: number;
+        unitHealthModifier: number;
+        constructor(star: Star, serializedData?: any);
+        makeFromData(data: any): void;
+        queueIsFull(): boolean;
+        addThingToQueue(template: IManufacturableThing, type: string): void;
+        removeThingAtIndex(index: number): void;
+        buildAllThings(): void;
+        getLocalUnitTypes(): {
+            manufacturable: Templates.IUnitTemplate[];
+            potential: Templates.IUnitTemplate[];
+        };
+        getLocalItemTypes(): {
+            manufacturable: Templates.IItemTemplate[];
+            potential: Templates.IItemTemplate[];
+        };
+        getManufacturableThingsForType(type: string): IManufacturableThing[];
+        canManufactureThing(template: IManufacturableThing, type: string): boolean;
+        handleOwnerChange(): void;
+        getCapacityUpgradeCost(): number;
+        upgradeCapacity(amount: number): void;
+        getUnitUpgradeCost(): number;
+        upgradeUnitStatsModifier(amount: number): void;
+        upgradeUnitHealthModifier(amount: number): void;
+        serialize(): {
+            capacity: number;
+            maxCapacity: number;
+            unitStatsModifier: number;
+            unitHealthModifier: number;
+            buildQueue: {
+                type: string;
+                templateType: string;
+            }[];
+        };
+    }
+}
+declare module Rance {
+    class Star implements Point {
+        id: number;
+        x: number;
+        y: number;
+        basisX: number;
+        basisY: number;
+        linksTo: Star[];
+        linksFrom: Star[];
+        mapGenData: any;
+        voronoiId: number;
+        seed: string;
+        name: string;
+        owner: Player;
+        baseIncome: number;
+        resource: Templates.IResourceTemplate;
+        fleets: {
+            [playerId: string]: Fleet[];
+        };
+        buildings: {
+            [category: string]: Building[];
+        };
+        buildingsEffect: Templates.IBuildingEffect;
+        buildingsEffectIsDirty: boolean;
+        voronoiCell: any;
+        indexedNeighborsInRange: {
+            [range: number]: {
+                all: Star[];
+                byRange: {
+                    [range: number]: Star[];
+                };
+            };
+        };
+        indexedDistanceToStar: {
+            [id: number]: number;
+        };
+        buildableUnitTypes: Templates.IUnitTemplate[];
+        manufactory: Manufactory;
+        constructor(x: number, y: number, id?: number);
+        severLinksToNonAdjacent(): void;
+        getBuildableShipTypes(): Templates.IUnitTemplate[];
+        addBuilding(building: Building): void;
+        removeBuilding(building: Building): void;
+        sortDefenceBuildings(): void;
+        getSecondaryController(): Player;
+        updateController(): void;
+        updateBuildingsEffect(): void;
+        getBuildingsEffect(): Templates.IBuildingEffect;
+        getEffectWithBuildingsEffect(base: number, effectType: string): any;
+        getIncome(): any;
+        getResourceIncome(): {
+            resource: Templates.IResourceTemplate;
+            amount: any;
+        };
+        getResearchPoints(): any;
+        getAllBuildings(): Building[];
+        getBuildingsForPlayer(player: Player): Building[];
+        getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];
+        getBuildableBuildings(): Templates.IBuildingTemplate[];
+        getBuildingUpgrades(): {
+            [buildingId: number]: {
+                template: Templates.IBuildingTemplate;
+                level: number;
+                cost: number;
+                parentBuilding: Building;
+            }[];
+        };
+        getAllFleets(): Fleet[];
+        getFleetIndex(fleet: Fleet): number;
+        hasFleet(fleet: Fleet): boolean;
+        addFleet(fleet: Fleet): boolean;
+        addFleets(fleets: Fleet[]): void;
+        removeFleet(fleet: Fleet): boolean;
+        removeFleets(fleets: Fleet[]): void;
+        getAllShipsOfPlayer(player: Player): Unit[];
+        getAllShips(): Unit[];
+        getIndependentShips(): Unit[];
+        getTargetsForPlayer(player: Player): {
+            type: string;
+            enemy: Player;
+            building: Building;
+            ships: Unit[];
+        }[];
+        getFirstEnemyDefenceBuilding(player: Player): Building;
+        getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[];
+        setPosition(x: number, y: number): void;
+        setResource(resource: Templates.IResourceTemplate): void;
+        hasLink(linkTo: Star): boolean;
+        addLink(linkTo: Star): void;
+        removeLink(linkTo: Star): void;
+        getAllLinks(): Star[];
+        getEdgeWith(neighbor: Star): any;
+        getSharedNeighborsWith(neighbor: Star): Star[];
+        getNeighbors(): Star[];
+        getLinkedInRange(range: number): {
+            all: Star[];
+            byRange: {
+                [range: number]: Star[];
+            };
+        };
+        getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
+        getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star;
+        getDistanceToStar(target: Star): number;
+        getVisionRange(): number;
+        getVision(): Star[];
+        getDetectionRange(): number;
+        getDetection(): Star[];
+        getHealingFactor(player: Player): number;
+        getPresentPlayersByVisibility(): {
+            visible: {
+                [playerId: number]: Player;
+            };
+            detected: {
+                [playerId: number]: Player;
+            };
+            all: {
+                [playerId: number]: Player;
+            };
+        };
+        getSeed(): string;
+        buildManufactory(): void;
         serialize(): any;
     }
 }
@@ -886,74 +1043,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class PriorityQueue {
-        items: {
-            [priority: number]: any[];
-        };
-        constructor();
-        isEmpty(): boolean;
-        push(priority: number, data: any): void;
-        pop(): any;
-        peek(): any[];
-    }
-}
-declare module Rance {
-    function backTrace(graph: any, target: Star): {
-        star: Star;
-        cost: any;
-    }[];
-    function aStar(start: Star, target: Star): {
-        came: any;
-        cost: any;
-        queue: PriorityQueue;
-    };
-}
-declare module Rance {
-    class Fleet {
-        player: Player;
-        ships: Unit[];
-        location: Star;
-        visionIsDirty: boolean;
-        visibleStars: Star[];
-        detectedStars: Star[];
-        isStealthy: boolean;
-        id: number;
-        name: string;
-        constructor(player: Player, ships: Unit[], location: Star, id?: number, shouldRender?: boolean);
-        getShipIndex(ship: Unit): number;
-        hasShip(ship: Unit): boolean;
-        deleteFleet(shouldRender?: boolean): void;
-        mergeWith(fleet: Fleet, shouldRender?: boolean): void;
-        addShip(ship: Unit): boolean;
-        addShips(ships: Unit[]): void;
-        removeShip(ship: Unit): boolean;
-        removeShips(ships: Unit[]): void;
-        transferShip(fleet: Fleet, ship: Unit): boolean;
-        split(): Fleet;
-        splitStealthyUnits(): Fleet;
-        getMinCurrentMovePoints(): number;
-        getMinMaxMovePoints(): number;
-        canMove(): boolean;
-        subtractMovePoints(): void;
-        move(newLocation: Star): void;
-        getPathTo(newLocation: Star): {
-            star: Star;
-            cost: any;
-        }[];
-        pathFind(newLocation: Star, onMove?: any, afterMove?: any): void;
-        getFriendlyFleetsAtOwnLocation(): Fleet[];
-        getTotalStrengthEvaluation(): number;
-        getTotalHealth(): {
-            current: number;
-            max: number;
-        };
-        updateVisibleStars(): void;
-        getVision(): Star[];
-        getDetection(): Star[];
-        serialize(): any;
-    }
-}
-declare module Rance {
     interface IRange {
         min?: number;
         max?: number;
@@ -1251,53 +1340,6 @@ declare module Rance {
         triggerAttitudeModifier(template: Templates.IAttitudeModifierTemplate, player: Player, source: Player): void;
         processAttitudeModifiersForPlayer(player: Player, evaluation: IDiplomacyEvaluation): void;
         serialize(): any;
-    }
-}
-declare module Rance {
-    interface IManufacturableThingWithType {
-        type: string;
-        template: IManufacturableThing;
-    }
-    class Manufactory {
-        buildQueue: IManufacturableThingWithType[];
-        player: Player;
-        star: Star;
-        capacity: number;
-        maxCapacity: number;
-        unitStatsModifier: number;
-        unitHealthModifier: number;
-        constructor(star: Star, serializedData?: any);
-        makeFromData(data: any): void;
-        queueIsFull(): boolean;
-        addThingToQueue(template: IManufacturableThing, type: string): void;
-        removeThingAtIndex(index: number): void;
-        buildAllThings(): void;
-        getLocalUnitTypes(): {
-            manufacturable: Templates.IUnitTemplate[];
-            potential: Templates.IUnitTemplate[];
-        };
-        getLocalItemTypes(): {
-            manufacturable: Templates.IItemTemplate[];
-            potential: Templates.IItemTemplate[];
-        };
-        getManufacturableThingsForType(type: string): IManufacturableThing[];
-        canManufactureThing(template: IManufacturableThing, type: string): boolean;
-        handleOwnerChange(): void;
-        getCapacityUpgradeCost(): number;
-        upgradeCapacity(amount: number): void;
-        getUnitUpgradeCost(): number;
-        upgradeUnitStatsModifier(amount: number): void;
-        upgradeUnitHealthModifier(amount: number): void;
-        serialize(): {
-            capacity: number;
-            maxCapacity: number;
-            unitStatsModifier: number;
-            unitHealthModifier: number;
-            buildQueue: {
-                type: string;
-                templateType: string;
-            }[];
-        };
     }
 }
 declare module Rance {
@@ -1970,127 +2012,105 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class Star implements Point {
-        id: number;
-        x: number;
-        y: number;
-        basisX: number;
-        basisY: number;
-        linksTo: Star[];
-        linksFrom: Star[];
-        mapGenData: any;
-        voronoiId: number;
-        seed: string;
-        name: string;
-        owner: Player;
-        baseIncome: number;
-        resource: Templates.IResourceTemplate;
-        fleets: {
-            [playerId: string]: Fleet[];
+    module UIComponents {
+        var TradeMoney: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TradeableItemsList: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TradeableItems: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TradeOverview: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DiplomacyActions: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var AutoPosition: {
+            componentDidMount: () => void;
+            componentDidUpdate: () => void;
+            flipSide: (side: string) => string;
+            elementFitsYSide: (side: string, ownRect: ClientRect, parentRect: ClientRect) => boolean;
+            elementFitsXSide: (side: string, ownRect: ClientRect, parentRect: ClientRect) => boolean;
+            setAutoPosition: () => void;
         };
-        buildings: {
-            [category: string]: Building[];
-        };
-        buildingsEffect: Templates.IBuildingEffect;
-        buildingsEffectIsDirty: boolean;
-        voronoiCell: any;
-        indexedNeighborsInRange: {
-            [range: number]: {
-                all: Star[];
-                byRange: {
-                    [range: number]: Star[];
-                };
-            };
-        };
-        indexedDistanceToStar: {
-            [id: number]: number;
-        };
-        buildableUnitTypes: Templates.IUnitTemplate[];
-        manufactory: Manufactory;
-        constructor(x: number, y: number, id?: number);
-        severLinksToNonAdjacent(): void;
-        getBuildableShipTypes(): Templates.IUnitTemplate[];
-        addBuilding(building: Building): void;
-        removeBuilding(building: Building): void;
-        sortDefenceBuildings(): void;
-        getSecondaryController(): Player;
-        updateController(): void;
-        updateBuildingsEffect(): void;
-        getBuildingsEffect(): Templates.IBuildingEffect;
-        getEffectWithBuildingsEffect(base: number, effectType: string): any;
-        getIncome(): any;
-        getResourceIncome(): {
-            resource: Templates.IResourceTemplate;
-            amount: any;
-        };
-        getResearchPoints(): any;
-        getAllBuildings(): Building[];
-        getBuildingsForPlayer(player: Player): Building[];
-        getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];
-        getBuildableBuildings(): Templates.IBuildingTemplate[];
-        getBuildingUpgrades(): {
-            [buildingId: number]: {
-                template: Templates.IBuildingTemplate;
-                level: number;
-                cost: number;
-                parentBuilding: Building;
-            }[];
-        };
-        getAllFleets(): Fleet[];
-        getFleetIndex(fleet: Fleet): number;
-        hasFleet(fleet: Fleet): boolean;
-        addFleet(fleet: Fleet): boolean;
-        addFleets(fleets: Fleet[]): void;
-        removeFleet(fleet: Fleet): boolean;
-        removeFleets(fleets: Fleet[]): void;
-        getAllShipsOfPlayer(player: Player): Unit[];
-        getAllShips(): Unit[];
-        getIndependentShips(): Unit[];
-        getTargetsForPlayer(player: Player): {
-            type: string;
-            enemy: Player;
-            building: Building;
-            ships: Unit[];
-        }[];
-        getFirstEnemyDefenceBuilding(player: Player): Building;
-        getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[];
-        setPosition(x: number, y: number): void;
-        setResource(resource: Templates.IResourceTemplate): void;
-        hasLink(linkTo: Star): boolean;
-        addLink(linkTo: Star): void;
-        removeLink(linkTo: Star): void;
-        getAllLinks(): Star[];
-        getEdgeWith(neighbor: Star): any;
-        getSharedNeighborsWith(neighbor: Star): Star[];
-        getNeighbors(): Star[];
-        getLinkedInRange(range: number): {
-            all: Star[];
-            byRange: {
-                [range: number]: Star[];
-            };
-        };
-        getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
-        getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star;
-        getDistanceToStar(target: Star): number;
-        getVisionRange(): number;
-        getVision(): Star[];
-        getDetectionRange(): number;
-        getDetection(): Star[];
-        getHealingFactor(player: Player): number;
-        getPresentPlayersByVisibility(): {
-            visible: {
-                [playerId: number]: Player;
-            };
-            detected: {
-                [playerId: number]: Player;
-            };
-            all: {
-                [playerId: number]: Player;
-            };
-        };
-        getSeed(): string;
-        buildManufactory(): void;
-        serialize(): any;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var AttitudeModifierInfo: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var AttitudeModifierList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Opinion: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DiplomaticStatusPlayer: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DiplomacyOverview: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var EconomySummaryItem: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var EconomySummary: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var OptionsGroup: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var OptionsCheckbox: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var OptionsList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TechnologyPrioritySlider: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Technology: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TechnologiesList: React.Factory<{}>;
     }
 }
 declare module Rance {
