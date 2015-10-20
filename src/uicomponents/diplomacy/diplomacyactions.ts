@@ -54,7 +54,8 @@ module Rance
             contentProps =
             {
               selfPlayer: this.props.player,
-              otherPlayer: this.props.targetPlayer
+              otherPlayer: this.props.targetPlayer,
+              handleClose: this.closePopup.bind(this, popupType)
             };
             break;
           }
@@ -139,7 +140,7 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "diplomacy-actions-container"
+            className: "diplomacy-actions-container draggable-container"
           },
             UIComponents.PopupManager(
             {

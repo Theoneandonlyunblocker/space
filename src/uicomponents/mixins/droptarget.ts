@@ -1,7 +1,4 @@
-/*
-used to register event listeners for manually firing drop events because
-touch events suck balls
- */
+// used to register event listeners for manually firing drop events because touch events suck
 module Rance
 {
   export module UIComponents

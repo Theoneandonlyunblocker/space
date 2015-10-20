@@ -2012,6 +2012,27 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface ITradeableItem {
+        key: string;
+        amount: number;
+    }
+    interface ITradeableItems {
+        [key: string]: ITradeableItem;
+    }
+    class Trade {
+        allItems: ITradeableItems;
+        stagedItems: ITradeableItems;
+        player: Player;
+        constructor(player: Player);
+        setAllTradeableItems(): void;
+        getItemsAvailableForTrade(): ITradeableItems;
+        removeStagedItem(key: string): void;
+        stageItem(key: string, amount: number): void;
+        handleTradeOfItem(key: string, amount: number, targetPlayer: Player): void;
+        executeAllStagedTrades(targetPlayer: Player): void;
+    }
+}
+declare module Rance {
     module UIComponents {
         var TradeMoney: React.Factory<any>;
     }

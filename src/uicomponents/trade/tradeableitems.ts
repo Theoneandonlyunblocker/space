@@ -12,7 +12,16 @@ module Rance
 
       propTypes:
       {
-        player: React.PropTypes.instanceOf(Player).isRequired,
+        availableItems: React.PropTypes.object.isRequired, // ITradeableItems
+        header: React.PropTypes.string,
+        noListHeader: React.PropTypes.bool,
+        onMouseUp: React.PropTypes.func,
+        onDragStart: React.PropTypes.func
+      },
+
+      handleMouseUp: function()
+      {
+
       },
 
       render: function()
@@ -20,17 +29,19 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "tradeable-items"
+            className: "tradeable-items",
           },
-            React.DOM.div(
+            !this.props.header ? null : React.DOM.div(
             {
               className: "tradeable-items-header"
             },
-              "tradeable items " + this.props.player.name
+              this.props.header
             ),
             UIComponents.TradeableItemsList(
             {
-              player: this.props.player
+              availableItems: this.props.availableItems,
+              noListHeader: this.props.noListHeader,
+              onDragStart: this.props.onDragStart
             })
           )
         );

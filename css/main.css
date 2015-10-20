@@ -2736,11 +2736,16 @@ ol {
   text-align: center;
 }
 .diplomacy-actions-container {
-  padding: 8px;
+  padding: 25px;
+  background-color: #0d2335;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
 }
 .diplomacy-actions {
   display: flex;
   flex-flow: column;
+  background-color: #0c1615;
 }
 .diplomacy-actions-header {
   margin-bottom: 0.5em;
@@ -4228,12 +4233,66 @@ button.player-setup-remove-player.disabled {
   display: flex;
   flex-flow: column;
 }
+.available-items-container {
+  flex: 1 1 auto;
+}
+.trade-staging-areas-container {
+  flex: 1 1 auto;
+}
 .tradeable-items-container {
   display: flex;
   flex-flow: row;
+  overflow-y: hidden;
+  min-height: 2em;
+}
+.tradeable-items-container > * {
+  flex: 1 1 50%;
 }
 .tradeable-items {
   border: 1px solid green;
   display: flex;
   flex-flow: column;
+}
+.trade-buttons-container {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+  align-items: flex-end;
+  flex: 0 0 auto;
+}
+.trade-button {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.trade-button:hover,
+.trade-button:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.trade-button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.trade-button:disabled,
+.trade-button.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.trade-button-ok {
+  font-size: 1.33em;
+}
+.trade-money-money-available {
+  color: #ffeb00;
+  margin-left: 0.5em;
+}
+.trade-money-money-available::after {
+  content: "\f111";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  margin-left: 0.25em;
+  color: #f3c620;
 }

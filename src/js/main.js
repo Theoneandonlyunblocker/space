@@ -825,10 +825,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/*
-used to register event listeners for manually firing drop events because
-touch events suck balls
- */
+// used to register event listeners for manually firing drop events because touch events suck
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -2289,11 +2286,11 @@ var Rance;
                 initialSortOrder: React.PropTypes.arrayOf(React.PropTypes.object),
                 keyboardSelect: React.PropTypes.bool,
                 initialSelected: React.PropTypes.object,
-                onRowChange: React.PropTypes.func,
                 tabIndex: React.PropTypes.number,
                 noHeader: React.PropTypes.bool,
-                colStylingFN: React.PropTypes.func,
                 addSpacer: React.PropTypes.bool,
+                onRowChange: React.PropTypes.func,
+                colStylingFN: React.PropTypes.func,
                 sortedItems: React.PropTypes.arrayOf(React.PropTypes.object) // IListItem[] TODO refactor shouldnt be a prop
             },
             getInitialState: function () {
@@ -13062,6 +13059,104 @@ var Rance;
     })();
     Rance.Player = Player;
 })(Rance || (Rance = {}));
+/// <reference path="player.ts" />
+var Rance;
+(function (Rance) {
+    var Trade = (function () {
+        function Trade(player) {
+            this.stagedItems = {};
+            this.player = player;
+            this.setAllTradeableItems();
+        }
+        Trade.prototype.setAllTradeableItems = function () {
+            this.allItems =
+                {
+                    money: {
+                        key: "money",
+                        amount: this.player.money
+                    },
+                    test1: {
+                        key: "test1",
+                        amount: 1
+                    },
+                    test2: {
+                        key: "test2",
+                        amount: 2
+                    },
+                    test3: {
+                        key: "test3",
+                        amount: 3
+                    },
+                    test4: {
+                        key: "test4",
+                        amount: 4
+                    },
+                    test5: {
+                        key: "test5",
+                        amount: 5
+                    },
+                    test6: {
+                        key: "test6",
+                        amount: 6
+                    },
+                    test7: {
+                        key: "test7",
+                        amount: 7
+                    },
+                    test8: {
+                        key: "test8",
+                        amount: 8
+                    },
+                    test9: {
+                        key: "test9",
+                        amount: 9
+                    },
+                };
+        };
+        Trade.prototype.getItemsAvailableForTrade = function () {
+            var available = Object.create(this.allItems);
+            for (var key in this.stagedItems) {
+                available[key].amount -= this.stagedItems[key].amount;
+            }
+            return available;
+        };
+        Trade.prototype.removeStagedItem = function (key) {
+            this.stagedItems[key] = null;
+            delete this.stagedItems[key];
+        };
+        Trade.prototype.stageItem = function (key, amount) {
+            if (!this.stagedItems[key]) {
+                this.stagedItems[key] =
+                    {
+                        key: key,
+                        amount: amount
+                    };
+            }
+            else {
+                this.stagedItems[key].amount += amount;
+                if (this.stagedItems[key].amount <= 0) {
+                    this.removeStagedItem(key);
+                }
+            }
+        };
+        Trade.prototype.handleTradeOfItem = function (key, amount, targetPlayer) {
+            switch (key) {
+                case "money":
+                    {
+                        this.player.money -= amount;
+                        targetPlayer.money += amount;
+                    }
+            }
+        };
+        Trade.prototype.executeAllStagedTrades = function (targetPlayer) {
+            for (var key in this.stagedItems) {
+                this.handleTradeOfItem(key, this.stagedItems[key].amount, targetPlayer);
+            }
+        };
+        return Trade;
+    })();
+    Rance.Trade = Trade;
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -13084,7 +13179,6 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../player.ts" />
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="trademoney.ts" />
 var Rance;
@@ -13094,21 +13188,45 @@ var Rance;
         UIComponents.TradeableItemsList = React.createClass({
             displayName: "TradeableItemsList",
             propTypes: {
-                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                availableItems: React.PropTypes.object,
+                noListHeader: React.PropTypes.bool,
+                onDragStart: React.PropTypes.func
+            },
+            makeRowForTradeableItem: function (item) {
+                switch (item.key) {
+                    case "money":
+                        {
+                            return ({
+                                key: "money",
+                                data: {
+                                    rowConstructor: UIComponents.TradeMoney,
+                                    title: "Money",
+                                    moneyAvailable: item.amount,
+                                    sortOrder: 0,
+                                    onDragStart: this.props.onDragStart
+                                }
+                            });
+                        }
+                    default:
+                        {
+                            return ({
+                                key: item.key,
+                                data: {
+                                    rowConstructor: UIComponents.TradeMoney,
+                                    title: item.key,
+                                    moneyAvailable: item.amount,
+                                    sortOrder: 1
+                                }
+                            });
+                        }
+                }
             },
             render: function () {
-                var player = this.props.player;
+                var availableItems = this.props.availableItems;
                 var rows = [];
-                // TODO trading
-                rows.push({
-                    key: "money",
-                    data: {
-                        rowConstructor: UIComponents.TradeMoney,
-                        title: "Money",
-                        moneyAvailable: player.money,
-                        sortOrder: 0
-                    }
-                });
+                for (var key in availableItems) {
+                    rows.push(this.makeRowForTradeableItem(availableItems[key]));
+                }
                 var columns = [
                     {
                         label: "Item",
@@ -13122,7 +13240,8 @@ var Rance;
                 }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    initialSortOrder: [columns[0]] // item
+                    initialSortOrder: [columns[0]],
+                    noHeader: this.props.noListHeader
                 })));
             }
         });
@@ -13137,21 +13256,30 @@ var Rance;
         UIComponents.TradeableItems = React.createClass({
             displayName: "TradeableItems",
             propTypes: {
-                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                availableItems: React.PropTypes.object.isRequired,
+                header: React.PropTypes.string,
+                noListHeader: React.PropTypes.bool,
+                onMouseUp: React.PropTypes.func,
+                onDragStart: React.PropTypes.func
+            },
+            handleMouseUp: function () {
             },
             render: function () {
                 return (React.DOM.div({
-                    className: "tradeable-items"
-                }, React.DOM.div({
+                    className: "tradeable-items",
+                }, !this.props.header ? null : React.DOM.div({
                     className: "tradeable-items-header"
-                }, "tradeable items " + this.props.player.name), UIComponents.TradeableItemsList({
-                    player: this.props.player
+                }, this.props.header), UIComponents.TradeableItemsList({
+                    availableItems: this.props.availableItems,
+                    noListHeader: this.props.noListHeader,
+                    onDragStart: this.props.onDragStart
                 })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../player.ts" />
+/// <reference path="../../trade.ts" />
 /// <reference path="tradeableitems.ts" />
 var Rance;
 (function (Rance) {
@@ -13159,20 +13287,74 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TradeOverview = React.createClass({
             displayName: "TradeOverview",
+            selfPlayerTrade: undefined,
+            otherPlayerTrade: undefined,
             propTypes: {
                 selfPlayer: React.PropTypes.instanceOf(Rance.Player).isRequired,
-                otherPlayer: React.PropTypes.instanceOf(Rance.Player).isRequired
+                otherPlayer: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                handleClose: React.PropTypes.func.isRequired
+            },
+            componentWillMount: function () {
+                this.selfPlayerTrade = new Rance.Trade(this.props.selfPlayer);
+                this.otherPlayerTrade = new Rance.Trade(this.props.otherPlayer);
+            },
+            getInitialState: function () {
+                return ({
+                    currentAvailableItemDragKey: undefined,
+                    currentStagingItemDragKey: undefined
+                });
+            },
+            handleCancel: function () {
+                this.props.handleClose();
+            },
+            handleOk: function () {
+            },
+            handleAvailableDragStart: function (key) {
+                this.setState({
+                    currentAvailableItemDragKey: key
+                });
+            },
+            handleDragEnd: function () {
+                this.setState({
+                    currentAvailableItemDragKey: undefined,
+                    currentStagingItemDragKey: undefined
+                });
+            },
+            handleStagingAreaMouseUp: function () {
+                if (this.currentAvailableItemDragKey) {
+                    console.log(this.state.currentAvailableItemDragKey);
+                }
             },
             render: function () {
                 return (React.DOM.div({
                     className: "trade-overview"
                 }, React.DOM.div({
-                    className: "tradeable-items-container"
+                    className: "tradeable-items-container available-items-container"
                 }, UIComponents.TradeableItems({
-                    player: this.props.selfPlayer
+                    header: "tradeable items " + this.props.selfPlayer.name,
+                    availableItems: this.selfPlayerTrade.getItemsAvailableForTrade()
                 }), UIComponents.TradeableItems({
-                    player: this.props.otherPlayer
-                }))));
+                    header: "tradeable items " + this.props.otherPlayer.name,
+                    availableItems: this.otherPlayerTrade.getItemsAvailableForTrade()
+                })), React.DOM.div({
+                    className: "tradeable-items-container trade-staging-areas-container"
+                }, UIComponents.TradeableItems({
+                    availableItems: this.selfPlayerTrade.stagedItems,
+                    noListHeader: true,
+                    hasDragItem: Boolean(this.state.currentAvailableItemDragKey)
+                }), UIComponents.TradeableItems({
+                    availableItems: this.otherPlayerTrade.stagedItems,
+                    noListHeader: true,
+                    hasDragItem: Boolean(this.state.currentAvailableItemDragKey)
+                })), React.DOM.div({
+                    className: "trade-buttons-container"
+                }, React.DOM.button({
+                    className: "trade-button",
+                    onClick: this.handleCancel
+                }, "Cancel"), React.DOM.button({
+                    className: "trade-button trade-button-ok",
+                    onClick: this.handleOk
+                }, "Ok"))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -13218,7 +13400,8 @@ var Rance;
                             contentProps =
                                 {
                                     selfPlayer: this.props.player,
-                                    otherPlayer: this.props.targetPlayer
+                                    otherPlayer: this.props.targetPlayer,
+                                    handleClose: this.closePopup.bind(this, popupType)
                                 };
                             break;
                         }
@@ -13276,7 +13459,7 @@ var Rance;
                     makePeaceProps.className += " disabled";
                 }
                 return (React.DOM.div({
-                    className: "diplomacy-actions-container"
+                    className: "diplomacy-actions-container draggable-container"
                 }, UIComponents.PopupManager({
                     ref: "popupManager",
                     onlyAllowOne: true
@@ -13683,6 +13866,10 @@ var Rance;
                         player: this.props.player,
                         targetPlayer: player,
                         onUpdate: this.forceUpdate.bind(this)
+                    },
+                    popupProps: {
+                        preventAutoResize: true,
+                        containerDragOnly: true
                     }
                 });
             },

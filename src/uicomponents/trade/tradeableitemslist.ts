@@ -1,5 +1,3 @@
-/// <reference path="../../player.ts" />
-
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="trademoney.ts" />
 
@@ -13,26 +11,56 @@ module Rance
 
       propTypes:
       {
-        player: React.PropTypes.instanceOf(Player).isRequired,
+        availableItems: React.PropTypes.object, // ITradeableItems
+        noListHeader: React.PropTypes.bool,
+        onDragStart: React.PropTypes.func
+      },
+
+      makeRowForTradeableItem: function(item: ITradeableItem): IListItem
+      {
+        switch (item.key)
+        {
+          case "money":
+          {
+            return(
+            {
+              key: "money",
+              data:
+              {
+                rowConstructor: UIComponents.TradeMoney,
+                title: "Money",
+                moneyAvailable: item.amount,
+                sortOrder: 0,
+                onDragStart: this.props.onDragStart
+              }
+            });
+          }
+          default:
+          {
+            return(
+            {
+              key: item.key,
+              data:
+              {
+                rowConstructor: UIComponents.TradeMoney,
+                title: item.key,
+                moneyAvailable: item.amount,
+                sortOrder: 1
+              }
+            });
+          }
+        }
       },
 
       render: function()
       {
-        var player: Player = this.props.player;
+        var availableItems: ITradeableItems = this.props.availableItems;
         var rows: IListItem[] = [];
 
-        // TODO trading
-        rows.push(
+        for (var key in availableItems)
         {
-          key: "money",
-          data:
-          {
-            rowConstructor: UIComponents.TradeMoney,
-            title: "Money",
-            moneyAvailable: player.money,
-            sortOrder: 0
-          }
-        });
+          rows.push(this.makeRowForTradeableItem(availableItems[key]));
+        }
 
         var columns: IListColumn[] =
         [
@@ -53,7 +81,8 @@ module Rance
             {
               listItems: rows,
               initialColumns: columns,
-              initialSortOrder: [columns[0]] // item
+              initialSortOrder: [columns[0]], // item
+              noHeader: this.props.noListHeader
             })
           )
         );

@@ -22,6 +22,11 @@ module Rance
             player: this.props.player,
             targetPlayer: player,
             onUpdate: this.forceUpdate.bind(this)
+          },
+          popupProps:
+          {
+            preventAutoResize: true,
+            containerDragOnly: true
           }
         });
       },
