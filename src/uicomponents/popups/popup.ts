@@ -48,7 +48,17 @@ module Rance
         var container = this.containerElement; // set in draggable mixin
         if (this.props.initialPosition)
         {
-          rect = extendObject(this.props.initialPosition, rect);
+          rect.top = this.props.initialPosition.top || rect.top;
+          rect.left = this.props.initialPosition.left || rect.left;
+
+          if (this.props.initialPosition.width)
+          {
+            rect.width = Math.max(this.props.initialPosition.width, domRect.width);
+          }
+          if (this.props.initialPosition.height)
+          {
+            rect.height = Math.max(this.props.initialPosition.height, domRect.height);
+          }
 
           if (rect.left || rect.top)
           {
