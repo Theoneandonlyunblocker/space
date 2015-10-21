@@ -17,26 +17,52 @@ module Rance
       {
         return(
         {
-          mouseDown: false,
           dragging: false,
-          dragOffset:
-          {
-            x: 0,
-            y: 0
-          },
-          mouseDownPosition:
-          {
-            x: 0,
-            y: 0
-          },
-          originPosition:
-          {
-            x: 0,
-            y: 0
-          },
           clone: <Node> null
-
         });
+      },
+      componentWillMount: function()
+      {
+        this.dragPos = {};
+        this.mouseDown = false;
+        this.dragOffset =
+        {
+          x: 0,
+          y: 0
+        };
+        this.mouseDownPosition =
+        {
+          x: 0,
+          y: 0
+        };
+        this.originPosition =
+        {
+          x: 0,
+          y: 0
+        };
+      },
+      componentDidMount: function()
+      {
+        this.DOMNode = this.getDOMNode();
+        this.containerElement = document.body;
+        if (this.props.containerElement)
+        {
+          if (this.props.containerElement.getDOMNode)
+          {
+            // React component
+            this.containerElement = this.props.containerElement.getDOMNode();
+          }
+          // DOM node
+          else this.containerElement = this.props.containerElement;
+        }
+
+        this.setContainerRect();
+        window.addEventListener("resize", this.setContainerRect, false);
+      },
+      componentWillUnmount: function()
+      {
+        this.removeEventListeners();
+        window.removeEventListener("resize", this.setContainerRect);
       },
       handleMouseDown: function(e: MouseEvent)
       {
@@ -68,7 +94,6 @@ module Rance
         //   this.touchEventTarget = e.target;
         // }
 
-
         this.addEventListeners();
 
         var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset ||
@@ -77,21 +102,18 @@ module Rance
           y: e.clientY - clientRect.top
         };
 
-        this.setState(
+        this.mouseDown = true;
+        this.dragOffset = dragOffset;
+        this.mouseDownPosition =
         {
-          mouseDown: true,
-          mouseDownPosition:
-          {
-            x: e.pageX,
-            y: e.pageY
-          },
-          originPosition:
-          {
-            x: clientRect.left + document.body.scrollLeft,
-            y: clientRect.top + document.body.scrollTop
-          },
-          dragOffset: dragOffset
-        });
+          x: e.pageX,
+          y: e.pageY
+        };
+        this.originPosition =
+        {
+          x: clientRect.left + document.body.scrollLeft,
+          y: clientRect.top + document.body.scrollTop
+        }
 
         if (this.props.dragThreshhold <= 0)
         {
@@ -110,8 +132,8 @@ module Rance
 
         if (!this.state.dragging)
         {
-          var deltaX = Math.abs(e.pageX - this.state.mouseDownPosition.x);
-          var deltaY = Math.abs(e.pageY - this.state.mouseDownPosition.y);
+          var deltaX = Math.abs(e.pageX - this.mouseDownPosition.x);
+          var deltaY = Math.abs(e.pageY - this.mouseDownPosition.y);
 
           var delta = deltaX + deltaY;
 
@@ -157,7 +179,7 @@ module Rance
             }
             if (this.onDragMove)
             {
-              this.onDragMove(e.pageX - this.state.dragOffset.x, e.pageY - this.state.dragOffset.y);
+              this.onDragMove(e.pageX - this.dragOffset.x, e.pageY - this.dragOffset.y);
             }
           }
         }
@@ -169,8 +191,8 @@ module Rance
       },
       handleDrag: function(e: MouseEvent)
       {
-        var x = e.pageX - this.state.dragOffset.x;
-        var y = e.pageY - this.state.dragOffset.y;
+        var x = e.pageX - this.dragOffset.x;
+        var y = e.pageY - this.dragOffset.y;
 
         var domWidth: number, domHeight: number;
 
@@ -238,19 +260,13 @@ module Rance
         //   }
         // }
 
-        if (this.isMounted())
+
+        this.mouseDown = false;
+        this.mouseDownPosition =
         {
-          this.setState(
-          {
-            mouseDown: false,
-            mouseDownPosition:
-            {
-              x: 0,
-              y: 0
-            }
-          });
+          x: 0,
+          y: 0
         }
-        
 
         if (this.state.dragging)
         {
@@ -270,18 +286,18 @@ module Rance
           this.setState(
           {
             dragging: false,
-            dragOffset:
-            {
-              x: 0,
-              y: 0
-            },
-            originPosition:
-            {
-              x: 0,
-              y: 0
-            },
             clone: null
           });
+          this.dragOffset =
+          {
+            x: 0,
+            y: 0
+          };
+          this.originPosition =
+          {
+            x: 0,
+            y: 0
+          };
         }
 
         if (this.onDragEnd)
@@ -336,33 +352,6 @@ module Rance
             s[key] = "" + this.dragPos[key] + "px";
           }
         }
-      },
-      componentWillMount: function()
-      {
-        this.dragPos = {};
-      },
-      componentDidMount: function()
-      {
-        this.DOMNode = this.getDOMNode();
-        this.containerElement = document.body;
-        if (this.props.containerElement)
-        {
-          if (this.props.containerElement.getDOMNode)
-          {
-            // React component
-            this.containerElement = this.props.containerElement.getDOMNode();
-          }
-          // DOM node
-          else this.containerElement = this.props.containerElement;
-        }
-
-        this.setContainerRect();
-        window.addEventListener("resize", this.setContainerRect, false);
-      },
-      componentWillUnmount: function()
-      {
-        this.removeEventListeners();
-        window.removeEventListener("resize", this.setContainerRect);
       }
     }
   }
