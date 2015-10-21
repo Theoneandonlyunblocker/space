@@ -81,11 +81,16 @@ module Rance
     }
     getItemsAvailableForTrade()
     {
-      var available: ITradeableItems = Object.create(this.allItems);
+      var available: ITradeableItems = {};
 
-      for (var key in this.stagedItems)
+      for (var key in this.allItems)
       {
-        available[key].amount -= this.stagedItems[key].amount;
+        var stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
+        available[key] =
+        {
+          key: key,
+          amount: this.allItems[key].amount - stagedAmount
+        };
       }
 
       return available;

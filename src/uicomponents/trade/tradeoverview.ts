@@ -31,7 +31,8 @@ module Rance
         return(
         {
           currentAvailableItemDragKey: undefined,
-          currentStagingItemDragKey: undefined
+          currentStagingItemDragKey: undefined,
+          currentDragItemPlayer: undefined
         });
       },
       
@@ -46,33 +47,105 @@ module Rance
 
       },
 
-      handleAvailableDragStart: function(key: string)
+      getActiveTrade: function()
+      {
+        if (this.state.currentDragItemPlayer === "self")
+        {
+          return this.selfPlayerTrade;
+        }
+        else if (this.state.currentDragItemPlayer === "other")
+        {
+          return this.otherPlayerTrade;
+        }
+        else return null;
+      },
+
+      handleStageItem: function(key: string)
+      {
+        var activeTrade = this.getActiveTrade();
+
+        var availableItems = activeTrade.getItemsAvailableForTrade();
+        var availableAmount = availableItems[key].amount;
+
+        if (availableAmount === 1)
+        {
+          activeTrade.stageItem(key, 1);
+        }
+        else
+        {
+          // TODO
+          activeTrade.stageItem(key, availableAmount);
+        }
+
+        this.forceUpdate();
+      },
+
+      handleRemoveStagedItem: function(key: string)
+      {
+        var activeTrade = this.getActiveTrade();
+        activeTrade.removeStagedItem(key);
+
+        this.forceUpdate();
+      },
+
+      handleAvailableDragStart: function(player: string, key: string)
       {
         this.setState(
         {
-          currentAvailableItemDragKey: key
+          currentAvailableItemDragKey: key,
+          currentDragItemPlayer: player
+        });
+      },
+
+      handleStagingDragStart: function(player: string, key: string)
+      {
+        this.setState(
+        {
+          currentStagingItemDragKey: key,
+          currentDragItemPlayer: player
         });
       },
 
       handleDragEnd: function()
       {
+        console.log("drag end");
+        if (this.state.currentStagingItemDragKey)
+        {
+          console.log("staging item up outside either")
+          // TODO trade remove staged item
+        }
         this.setState(
         {
           currentAvailableItemDragKey: undefined,
-          currentStagingItemDragKey: undefined
+          currentStagingItemDragKey: undefined,
+          currentDragItemPlayer: undefined
         });
+      },
+
+      handleAvailableMouseUp: function()
+      {
+        if (this.state.currentStagingItemDragKey)
+        {
+          console.log("available area up")
+          this.handleRemoveStagedItem(this.state.currentStagingItemDragKey);
+        }
       },
 
       handleStagingAreaMouseUp: function()
       {
-        if (this.currentAvailableItemDragKey)
+        if (this.state.currentAvailableItemDragKey)
         {
-          console.log(this.state.currentAvailableItemDragKey);
+          console.log("staging area up")
+          this.handleStageItem(this.state.currentAvailableItemDragKey);
         }
       },
 
       render: function()
       {
+        var hasDragItem = Boolean(this.state.currentDragItemPlayer);
+        var selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";
+        var otherPlayerAcceptsDrop = this.state.currentDragItemPlayer === "other";
+
         return(
           React.DOM.div(
           {
@@ -85,12 +158,20 @@ module Rance
               UIComponents.TradeableItems(
               {
                 header: "tradeable items " + this.props.selfPlayer.name,
-                availableItems: this.selfPlayerTrade.getItemsAvailableForTrade()
+                availableItems: this.selfPlayerTrade.getItemsAvailableForTrade(),
+                hasDragItem: hasDragItem,
+                onDragStart: this.handleAvailableDragStart.bind(this, "self"),
+                onDragEnd: this.handleDragEnd,
+                onMouseUp: selfPlayerAcceptsDrop ? this.handleAvailableMouseUp : null
               }),
               UIComponents.TradeableItems(
               {
                 header: "tradeable items " + this.props.otherPlayer.name,
-                availableItems: this.otherPlayerTrade.getItemsAvailableForTrade()
+                availableItems: this.otherPlayerTrade.getItemsAvailableForTrade(),
+                hasDragItem: hasDragItem,
+                onDragStart: this.handleAvailableDragStart.bind(this, "other"),
+                onDragEnd: this.handleDragEnd,
+                onMouseUp: otherPlayerAcceptsDrop ? this.handleAvailableMouseUp : null
               })
             ),
             React.DOM.div(
@@ -101,13 +182,19 @@ module Rance
               {
                 availableItems: this.selfPlayerTrade.stagedItems,
                 noListHeader: true,
-                hasDragItem: Boolean(this.state.currentAvailableItemDragKey)
+                hasDragItem: hasDragItem,
+                onDragStart: this.handleStagingDragStart.bind(this, "self"),
+                onDragEnd: this.handleDragEnd,
+                onMouseUp: selfPlayerAcceptsDrop ? this.handleStagingAreaMouseUp : null
               }),
               UIComponents.TradeableItems(
               {
                 availableItems: this.otherPlayerTrade.stagedItems,
                 noListHeader: true,
-                hasDragItem: Boolean(this.state.currentAvailableItemDragKey)
+                hasDragItem: hasDragItem,
+                onDragStart: this.handleStagingDragStart.bind(this, "other"),
+                onDragEnd: this.handleDragEnd,
+                onMouseUp: otherPlayerAcceptsDrop ? this.handleStagingAreaMouseUp : null
               })
             ),
             React.DOM.div(

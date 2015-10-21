@@ -13,7 +13,8 @@ module Rance
       {
         availableItems: React.PropTypes.object, // ITradeableItems
         noListHeader: React.PropTypes.bool,
-        onDragStart: React.PropTypes.func
+        onDragStart: React.PropTypes.func,
+        onDragEnd: React.PropTypes.func
       },
 
       makeRowForTradeableItem: function(item: ITradeableItem): IListItem
@@ -27,11 +28,13 @@ module Rance
               key: "money",
               data:
               {
+                key: "money",
                 rowConstructor: UIComponents.TradeMoney,
                 title: "Money",
                 moneyAvailable: item.amount,
                 sortOrder: 0,
-                onDragStart: this.props.onDragStart
+                onDragStart: this.props.onDragStart,
+                onDragEnd: this.props.onDragEnd
               }
             });
           }

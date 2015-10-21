@@ -3999,7 +3999,14 @@ var Rance;
                 var top;
                 var container = this.containerElement; // set in draggable mixin
                 if (this.props.initialPosition) {
-                    rect = Rance.extendObject(this.props.initialPosition, rect);
+                    rect.top = this.props.initialPosition.top || rect.top;
+                    rect.left = this.props.initialPosition.left || rect.left;
+                    if (this.props.initialPosition.width) {
+                        rect.width = Math.max(this.props.initialPosition.width, domRect.width);
+                    }
+                    if (this.props.initialPosition.height) {
+                        rect.height = Math.max(this.props.initialPosition.height, domRect.height);
+                    }
                     if (rect.left || rect.top) {
                         left = rect.left;
                         top = rect.top;
@@ -13114,9 +13121,14 @@ var Rance;
                 };
         };
         Trade.prototype.getItemsAvailableForTrade = function () {
-            var available = Object.create(this.allItems);
-            for (var key in this.stagedItems) {
-                available[key].amount -= this.stagedItems[key].amount;
+            var available = {};
+            for (var key in this.allItems) {
+                var stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
+                available[key] =
+                    {
+                        key: key,
+                        amount: this.allItems[key].amount - stagedAmount
+                    };
             }
             return available;
         };
@@ -13163,14 +13175,33 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TradeMoney = React.createClass({
             displayName: "TradeMoney",
+            mixins: [UIComponents.Draggable],
             propTypes: {
+                key: React.PropTypes.string.isRequired,
                 moneyAvailable: React.PropTypes.number.isRequired,
-                title: React.PropTypes.string.isRequired
+                title: React.PropTypes.string.isRequired,
+                onDragStart: React.PropTypes.func,
+                onDragEnd: React.PropTypes.func
+            },
+            onDragStart: function () {
+                this.props.onDragStart(this.props.key);
+            },
+            onDragEnd: function () {
+                this.props.onDragEnd();
             },
             render: function () {
-                return (React.DOM.tr({
+                var rowProps = {
                     className: "tradeable-items-list-item"
-                }, React.DOM.td(null, React.DOM.span({
+                };
+                if (this.props.onDragStart) {
+                    rowProps.className += " draggable";
+                    rowProps.onMouseDown = rowProps.onTouchStart = this.handleMouseDown;
+                }
+                if (this.state.dragging) {
+                    rowProps.style = this.dragPos;
+                    rowProps.className += " dragging";
+                }
+                return (React.DOM.tr(rowProps, React.DOM.td(null, React.DOM.span({
                     className: "trade-money-title"
                 }, this.props.title), React.DOM.span({
                     className: "trade-money-money-available"
@@ -13190,7 +13221,8 @@ var Rance;
             propTypes: {
                 availableItems: React.PropTypes.object,
                 noListHeader: React.PropTypes.bool,
-                onDragStart: React.PropTypes.func
+                onDragStart: React.PropTypes.func,
+                onDragEnd: React.PropTypes.func
             },
             makeRowForTradeableItem: function (item) {
                 switch (item.key) {
@@ -13199,11 +13231,13 @@ var Rance;
                             return ({
                                 key: "money",
                                 data: {
+                                    key: "money",
                                     rowConstructor: UIComponents.TradeMoney,
                                     title: "Money",
                                     moneyAvailable: item.amount,
                                     sortOrder: 0,
-                                    onDragStart: this.props.onDragStart
+                                    onDragStart: this.props.onDragStart,
+                                    onDragEnd: this.props.onDragEnd
                                 }
                             });
                         }
@@ -13255,24 +13289,36 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TradeableItems = React.createClass({
             displayName: "TradeableItems",
+            mixins: [UIComponents.DropTarget],
             propTypes: {
                 availableItems: React.PropTypes.object.isRequired,
                 header: React.PropTypes.string,
                 noListHeader: React.PropTypes.bool,
                 onMouseUp: React.PropTypes.func,
-                onDragStart: React.PropTypes.func
+                onDragStart: React.PropTypes.func,
+                onDragEnd: React.PropTypes.func,
+                hasDragItem: React.PropTypes.bool
             },
             handleMouseUp: function () {
+                this.props.onMouseUp();
             },
             render: function () {
-                return (React.DOM.div({
-                    className: "tradeable-items",
-                }, !this.props.header ? null : React.DOM.div({
+                var divProps = {
+                    className: "tradeable-items"
+                };
+                if (this.props.onMouseUp) {
+                    divProps.onMouseUp = this.handleMouseUp;
+                }
+                else if (this.props.hasDragItem) {
+                    divProps.className += " invalid-drop-target";
+                }
+                return (React.DOM.div(divProps, !this.props.header ? null : React.DOM.div({
                     className: "tradeable-items-header"
                 }, this.props.header), UIComponents.TradeableItemsList({
                     availableItems: this.props.availableItems,
                     noListHeader: this.props.noListHeader,
-                    onDragStart: this.props.onDragStart
+                    onDragStart: this.props.onDragStart,
+                    onDragEnd: this.props.onDragEnd
                 })));
             }
         });
@@ -13301,7 +13347,8 @@ var Rance;
             getInitialState: function () {
                 return ({
                     currentAvailableItemDragKey: undefined,
-                    currentStagingItemDragKey: undefined
+                    currentStagingItemDragKey: undefined,
+                    currentDragItemPlayer: undefined
                 });
             },
             handleCancel: function () {
@@ -13309,43 +13356,107 @@ var Rance;
             },
             handleOk: function () {
             },
-            handleAvailableDragStart: function (key) {
+            getActiveTrade: function () {
+                if (this.state.currentDragItemPlayer === "self") {
+                    return this.selfPlayerTrade;
+                }
+                else if (this.state.currentDragItemPlayer === "other") {
+                    return this.otherPlayerTrade;
+                }
+                else
+                    return null;
+            },
+            handleStageItem: function (key) {
+                var activeTrade = this.getActiveTrade();
+                var availableItems = activeTrade.getItemsAvailableForTrade();
+                var availableAmount = availableItems[key].amount;
+                if (availableAmount === 1) {
+                    activeTrade.stageItem(key, 1);
+                }
+                else {
+                    // TODO
+                    activeTrade.stageItem(key, availableAmount);
+                }
+                this.forceUpdate();
+            },
+            handleRemoveStagedItem: function (key) {
+                var activeTrade = this.getActiveTrade();
+                activeTrade.removeStagedItem(key);
+                this.forceUpdate();
+            },
+            handleAvailableDragStart: function (player, key) {
                 this.setState({
-                    currentAvailableItemDragKey: key
+                    currentAvailableItemDragKey: key,
+                    currentDragItemPlayer: player
+                });
+            },
+            handleStagingDragStart: function (player, key) {
+                this.setState({
+                    currentStagingItemDragKey: key,
+                    currentDragItemPlayer: player
                 });
             },
             handleDragEnd: function () {
+                console.log("drag end");
+                if (this.state.currentStagingItemDragKey) {
+                    console.log("staging item up outside either");
+                }
                 this.setState({
                     currentAvailableItemDragKey: undefined,
-                    currentStagingItemDragKey: undefined
+                    currentStagingItemDragKey: undefined,
+                    currentDragItemPlayer: undefined
                 });
             },
+            handleAvailableMouseUp: function () {
+                if (this.state.currentStagingItemDragKey) {
+                    console.log("available area up");
+                    this.handleRemoveStagedItem(this.state.currentStagingItemDragKey);
+                }
+            },
             handleStagingAreaMouseUp: function () {
-                if (this.currentAvailableItemDragKey) {
-                    console.log(this.state.currentAvailableItemDragKey);
+                if (this.state.currentAvailableItemDragKey) {
+                    console.log("staging area up");
+                    this.handleStageItem(this.state.currentAvailableItemDragKey);
                 }
             },
             render: function () {
+                var hasDragItem = Boolean(this.state.currentDragItemPlayer);
+                var selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";
+                var otherPlayerAcceptsDrop = this.state.currentDragItemPlayer === "other";
                 return (React.DOM.div({
                     className: "trade-overview"
                 }, React.DOM.div({
                     className: "tradeable-items-container available-items-container"
                 }, UIComponents.TradeableItems({
                     header: "tradeable items " + this.props.selfPlayer.name,
-                    availableItems: this.selfPlayerTrade.getItemsAvailableForTrade()
+                    availableItems: this.selfPlayerTrade.getItemsAvailableForTrade(),
+                    hasDragItem: hasDragItem,
+                    onDragStart: this.handleAvailableDragStart.bind(this, "self"),
+                    onDragEnd: this.handleDragEnd,
+                    onMouseUp: selfPlayerAcceptsDrop ? this.handleAvailableMouseUp : null
                 }), UIComponents.TradeableItems({
                     header: "tradeable items " + this.props.otherPlayer.name,
-                    availableItems: this.otherPlayerTrade.getItemsAvailableForTrade()
+                    availableItems: this.otherPlayerTrade.getItemsAvailableForTrade(),
+                    hasDragItem: hasDragItem,
+                    onDragStart: this.handleAvailableDragStart.bind(this, "other"),
+                    onDragEnd: this.handleDragEnd,
+                    onMouseUp: otherPlayerAcceptsDrop ? this.handleAvailableMouseUp : null
                 })), React.DOM.div({
                     className: "tradeable-items-container trade-staging-areas-container"
                 }, UIComponents.TradeableItems({
                     availableItems: this.selfPlayerTrade.stagedItems,
                     noListHeader: true,
-                    hasDragItem: Boolean(this.state.currentAvailableItemDragKey)
+                    hasDragItem: hasDragItem,
+                    onDragStart: this.handleStagingDragStart.bind(this, "self"),
+                    onDragEnd: this.handleDragEnd,
+                    onMouseUp: selfPlayerAcceptsDrop ? this.handleStagingAreaMouseUp : null
                 }), UIComponents.TradeableItems({
                     availableItems: this.otherPlayerTrade.stagedItems,
                     noListHeader: true,
-                    hasDragItem: Boolean(this.state.currentAvailableItemDragKey)
+                    hasDragItem: hasDragItem,
+                    onDragStart: this.handleStagingDragStart.bind(this, "other"),
+                    onDragEnd: this.handleDragEnd,
+                    onMouseUp: otherPlayerAcceptsDrop ? this.handleStagingAreaMouseUp : null
                 })), React.DOM.div({
                     className: "trade-buttons-container"
                 }, React.DOM.button({

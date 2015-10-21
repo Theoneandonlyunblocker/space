@@ -4252,6 +4252,7 @@ button.player-setup-remove-player.disabled {
   border: 1px solid green;
   display: flex;
   flex-flow: column;
+  position: relative;
 }
 .trade-buttons-container {
   display: flex;
