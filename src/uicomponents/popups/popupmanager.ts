@@ -82,11 +82,18 @@ module Rance
         }
       },
 
-      incrementZIndex: function()
+      incrementZIndex: function(childZIndex: number)
       {
         if (!this.currentZIndex) this.currentZIndex = 0;
 
-        return this.currentZIndex++;
+        if (childZIndex === this.currentZIndex)
+        {
+          return this.currentZIndex;
+        }
+        else
+        {
+          return ++this.currentZIndex;
+        }
       },
 
       getPopupId: function()

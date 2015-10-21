@@ -26,10 +26,14 @@ module Rance
       onMouseDown: function(e: MouseEvent)
       {
         this.handleMouseDown(e);
-        this.setState(
+        var newZIndex = this.props.incrementZIndex(this.state.zIndex);
+        if (this.state.zIndex !== newZIndex)
         {
-          zIndex: this.props.incrementZIndex()
-        });
+          this.setState(
+          {
+            zIndex: this.props.incrementZIndex(this.state.zIndex)
+          });
+        }
       },
 
       setInitialPosition: function()
@@ -83,7 +87,7 @@ module Rance
         this.dragPos.height = Math.min(window.innerHeight, rect.height);
         this.setState(
         {
-          zIndex: this.props.incrementZIndex()
+          zIndex: this.props.incrementZIndex(this.state.zIndex)
         });
       },
 
