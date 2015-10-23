@@ -45,7 +45,8 @@ module Rance
         {
           key: upgradeData.template.type,
           className: "building-upgrade-list-item",
-          onClick: this.handleClick
+          onClick: this.handleClick,
+          title: upgradeData.template.description
         };
 
         var costProps: any = 

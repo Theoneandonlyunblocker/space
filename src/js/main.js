@@ -16376,6 +16376,7 @@ var Rance;
             displayName: "BuildableBuilding",
             mixins: [UIComponents.UpdateWhenMoneyChanges],
             propTypes: {
+                template: React.PropTypes.object.isRequired,
                 player: React.PropTypes.instanceOf(Rance.Player).isRequired,
                 buildCost: React.PropTypes.number.isRequired,
                 handleClick: React.PropTypes.func.isRequired
@@ -16411,6 +16412,7 @@ var Rance;
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
+                var template = this.props.template;
                 var cells = [];
                 var columns = this.props.activeColumns;
                 for (var i = 0; i < columns.length; i++) {
@@ -16418,7 +16420,8 @@ var Rance;
                 }
                 var props = {
                     className: "buildable-item buildable-building",
-                    onClick: this.props.handleClick
+                    onClick: this.props.handleClick,
+                    title: template.description
                 };
                 if (!this.state.canAfford) {
                     props.onClick = null;
@@ -16536,7 +16539,8 @@ var Rance;
                 var rowProps = {
                     key: upgradeData.template.type,
                     className: "building-upgrade-list-item",
-                    onClick: this.handleClick
+                    onClick: this.handleClick,
+                    title: upgradeData.template.description
                 };
                 var costProps = {
                     key: "cost",
@@ -23984,6 +23988,8 @@ var Rance;
                         category: "defence",
                         family: "sectorCommand",
                         displayName: "Sector Command",
+                        description: "Defence building with slight defender advantage. (All defence buildings must " +
+                            "be conquered to gain control of area)",
                         iconSrc: "sectorCommand.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -24005,6 +24011,7 @@ var Rance;
                         category: "defence",
                         family: "sectorCommand",
                         displayName: "Sector Command1",
+                        description: "just testing upgrade paths",
                         iconSrc: "sectorCommand.png",
                         buildCost: 100,
                         maxPerType: 1,
@@ -24017,6 +24024,7 @@ var Rance;
                         category: "defence",
                         family: "sectorCommand",
                         displayName: "Sector Command2",
+                        description: "just testing upgrade paths",
                         iconSrc: "sectorCommand.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -24028,6 +24036,8 @@ var Rance;
                         type: "starBase",
                         category: "defence",
                         displayName: "Starbase",
+                        description: "Defence building with no defender advantage. (All defence buildings must " +
+                            "be conquered to gain control of area)",
                         iconSrc: "starBase.png",
                         buildCost: 200,
                         maxPerType: 3,
@@ -24044,6 +24054,7 @@ var Rance;
                         type: "commercialPort",
                         category: "economy",
                         displayName: "Commercial Spaceport",
+                        description: "Increase star income by 20",
                         iconSrc: "commercialPort.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -24058,6 +24069,7 @@ var Rance;
                         type: "deepSpaceRadar",
                         category: "vision",
                         displayName: "Deep Space Radar",
+                        description: "Increase star vision and detection radius",
                         iconSrc: "commercialPort.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -24071,6 +24083,7 @@ var Rance;
                         type: "itemManufactory",
                         category: "manufactory",
                         displayName: "Item Manufactory",
+                        description: "todo",
                         iconSrc: "commercialPort.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -24083,6 +24096,7 @@ var Rance;
                         type: "resourceMine",
                         category: "mine",
                         displayName: "Mine",
+                        description: "Gathers resources from current star",
                         iconSrc: "commercialPort.png",
                         buildCost: 500,
                         maxPerType: 1,
@@ -24097,6 +24111,7 @@ var Rance;
                         type: "reserachLab",
                         category: "research",
                         displayName: "Research Lab",
+                        description: "Increase research speed",
                         iconSrc: "commercialPort.png",
                         buildCost: 300,
                         maxPerType: 1,

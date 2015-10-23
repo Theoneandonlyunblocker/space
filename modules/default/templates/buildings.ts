@@ -16,6 +16,8 @@ module Rance
             category: "defence",
             family: "sectorCommand",
             displayName: "Sector Command",
+            description: "Defence building with slight defender advantage. (All defence buildings must " +
+              "be conquered to gain control of area)",
 
             iconSrc: "sectorCommand.png",
             buildCost: 200,
@@ -43,6 +45,7 @@ module Rance
             category: "defence",
             family: "sectorCommand",
             displayName: "Sector Command1",
+            description: "just testing upgrade paths",
 
             iconSrc: "sectorCommand.png",
             buildCost: 100,
@@ -59,6 +62,7 @@ module Rance
             category: "defence",
             family: "sectorCommand",
             displayName: "Sector Command2",
+            description: "just testing upgrade paths",
 
             iconSrc: "sectorCommand.png",
             buildCost: 200,
@@ -74,6 +78,8 @@ module Rance
             type: "starBase",
             category: "defence",
             displayName: "Starbase",
+            description: "Defence building with no defender advantage. (All defence buildings must " +
+              "be conquered to gain control of area)",
 
             iconSrc: "starBase.png",
             buildCost: 200,
@@ -95,6 +101,7 @@ module Rance
             type: "commercialPort",
             category: "economy",
             displayName: "Commercial Spaceport",
+            description: "Increase star income by 20",
 
             iconSrc: "commercialPort.png",
             buildCost: 200,
@@ -115,6 +122,7 @@ module Rance
             type: "deepSpaceRadar",
             category: "vision",
             displayName: "Deep Space Radar",
+            description: "Increase star vision and detection radius",
 
             iconSrc: "commercialPort.png",
             buildCost: 200,
@@ -133,6 +141,7 @@ module Rance
             type: "itemManufactory",
             category: "manufactory",
             displayName: "Item Manufactory",
+            description: "todo",
 
             iconSrc: "commercialPort.png",
             buildCost: 200,
@@ -150,6 +159,7 @@ module Rance
             type: "resourceMine",
             category: "mine",
             displayName: "Mine",
+            description: "Gathers resources from current star",
 
             iconSrc: "commercialPort.png",
             buildCost: 500,
@@ -170,6 +180,7 @@ module Rance
             type: "reserachLab",
             category: "research",
             displayName: "Research Lab",
+            description: "Increase research speed",
 
             iconSrc: "commercialPort.png",
             buildCost: 300,

@@ -13,6 +13,7 @@ module Rance
 
       propTypes:
       {
+        template: React.PropTypes.object.isRequired,
         player: React.PropTypes.instanceOf(Player).isRequired,
         buildCost: React.PropTypes.number.isRequired,
         handleClick: React.PropTypes.func.isRequired
@@ -66,6 +67,7 @@ module Rance
 
       render: function()
       {
+        var template: Templates.IBuildingTemplate = this.props.template;
         var cells: ReactDOMPlaceHolder[] = [];
         var columns = this.props.activeColumns;
 
@@ -79,7 +81,8 @@ module Rance
         var props: any =
         {
           className: "buildable-item buildable-building",
-          onClick: this.props.handleClick
+          onClick: this.props.handleClick,
+          title: template.description
         }
         if (!this.state.canAfford)
         {
