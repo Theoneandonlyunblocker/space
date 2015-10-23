@@ -31,52 +31,7 @@ module Rance
         {
           key: "money",
           amount: this.player.money
-        },
-        test1:
-        {
-          key: "test1",
-          amount: 1
-        },
-        test2:
-        {
-          key: "test2",
-          amount: 2
-        },
-        test3:
-        {
-          key: "test3",
-          amount: 3
-        },
-        test4:
-        {
-          key: "test4",
-          amount: 4
-        },
-        test5:
-        {
-          key: "test5",
-          amount: 5
-        },
-        test6:
-        {
-          key: "test6",
-          amount: 6
-        },
-        test7:
-        {
-          key: "test7",
-          amount: 7
-        },
-        test8:
-        {
-          key: "test8",
-          amount: 8
-        },
-        test9:
-        {
-          key: "test9",
-          amount: 9
-        },
+        }
       }
     }
     getItemsAvailableForTrade()
@@ -117,6 +72,18 @@ module Rance
         {
           this.removeStagedItem(key);
         }
+      }
+    }
+    setStagedItemAmount(key: string, newAmount: number)
+    {
+      if (newAmount <= 0)
+      {
+        this.removeStagedItem(key);
+      }
+      else
+      {
+        var clamped = Math.min(this.allItems[key].amount, newAmount);
+        this.stagedItems[key].amount = clamped;
       }
     }
     handleTradeOfItem(key: string, amount: number, targetPlayer: Player)

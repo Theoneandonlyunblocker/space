@@ -390,22 +390,46 @@ var Rance;
             },
             getInitialState: function () {
                 return ({
-                    mouseDown: false,
                     dragging: false,
-                    dragOffset: {
-                        x: 0,
-                        y: 0
-                    },
-                    mouseDownPosition: {
-                        x: 0,
-                        y: 0
-                    },
-                    originPosition: {
-                        x: 0,
-                        y: 0
-                    },
                     clone: null
                 });
+            },
+            componentWillMount: function () {
+                this.dragPos = {};
+                this.mouseDown = false;
+                this.dragOffset =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+                this.mouseDownPosition =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+                this.originPosition =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+            },
+            componentDidMount: function () {
+                this.DOMNode = this.getDOMNode();
+                this.containerElement = document.body;
+                if (this.props.containerElement) {
+                    if (this.props.containerElement.getDOMNode) {
+                        // React component
+                        this.containerElement = this.props.containerElement.getDOMNode();
+                    }
+                    else
+                        this.containerElement = this.props.containerElement;
+                }
+                this.setContainerRect();
+                window.addEventListener("resize", this.setContainerRect, false);
+            },
+            componentWillUnmount: function () {
+                this.removeEventListeners();
+                window.removeEventListener("resize", this.setContainerRect);
             },
             handleMouseDown: function (e) {
                 if (e.button)
@@ -438,18 +462,18 @@ var Rance;
                         x: e.clientX - clientRect.left,
                         y: e.clientY - clientRect.top
                     };
-                this.setState({
-                    mouseDown: true,
-                    mouseDownPosition: {
+                this.mouseDown = true;
+                this.dragOffset = dragOffset;
+                this.mouseDownPosition =
+                    {
                         x: e.pageX,
                         y: e.pageY
-                    },
-                    originPosition: {
+                    };
+                this.originPosition =
+                    {
                         x: clientRect.left + document.body.scrollLeft,
                         y: clientRect.top + document.body.scrollTop
-                    },
-                    dragOffset: dragOffset
-                });
+                    };
                 if (this.props.dragThreshhold <= 0) {
                     this.handleMouseMove(e);
                 }
@@ -461,8 +485,8 @@ var Rance;
                 if (e.clientX === 0 && e.clientY === 0)
                     return;
                 if (!this.state.dragging) {
-                    var deltaX = Math.abs(e.pageX - this.state.mouseDownPosition.x);
-                    var deltaY = Math.abs(e.pageY - this.state.mouseDownPosition.y);
+                    var deltaX = Math.abs(e.pageX - this.mouseDownPosition.x);
+                    var deltaY = Math.abs(e.pageY - this.mouseDownPosition.y);
                     var delta = deltaX + deltaY;
                     if (delta >= this.props.dragThreshhold) {
                         var ownNode = this.getDOMNode();
@@ -492,7 +516,7 @@ var Rance;
                             this.onDragStart(e);
                         }
                         if (this.onDragMove) {
-                            this.onDragMove(e.pageX - this.state.dragOffset.x, e.pageY - this.state.dragOffset.y);
+                            this.onDragMove(e.pageX - this.dragOffset.x, e.pageY - this.dragOffset.y);
                         }
                     }
                 }
@@ -501,8 +525,8 @@ var Rance;
                 }
             },
             handleDrag: function (e) {
-                var x = e.pageX - this.state.dragOffset.x;
-                var y = e.pageY - this.state.dragOffset.y;
+                var x = e.pageX - this.dragOffset.x;
+                var y = e.pageY - this.dragOffset.y;
                 var domWidth, domHeight;
                 if (this.makeDragClone) {
                     domWidth = parseInt(this.state.clone.offsetWidth);
@@ -553,15 +577,12 @@ var Rance;
                 //     eventManager.dispatchEvent("drop" + reactid);
                 //   }
                 // }
-                if (this.isMounted()) {
-                    this.setState({
-                        mouseDown: false,
-                        mouseDownPosition: {
-                            x: 0,
-                            y: 0
-                        }
-                    });
-                }
+                this.mouseDown = false;
+                this.mouseDownPosition =
+                    {
+                        x: 0,
+                        y: 0
+                    };
                 if (this.state.dragging) {
                     this.handleDragEnd(e);
                 }
@@ -574,16 +595,18 @@ var Rance;
                 if (this.isMounted()) {
                     this.setState({
                         dragging: false,
-                        dragOffset: {
-                            x: 0,
-                            y: 0
-                        },
-                        originPosition: {
-                            x: 0,
-                            y: 0
-                        },
                         clone: null
                     });
+                    this.dragOffset =
+                        {
+                            x: 0,
+                            y: 0
+                        };
+                    this.originPosition =
+                        {
+                            x: 0,
+                            y: 0
+                        };
                 }
                 if (this.onDragEnd) {
                     var endSuccesful = this.onDragEnd(e);
@@ -623,27 +646,6 @@ var Rance;
                         s[key] = "" + this.dragPos[key] + "px";
                     }
                 }
-            },
-            componentWillMount: function () {
-                this.dragPos = {};
-            },
-            componentDidMount: function () {
-                this.DOMNode = this.getDOMNode();
-                this.containerElement = document.body;
-                if (this.props.containerElement) {
-                    if (this.props.containerElement.getDOMNode) {
-                        // React component
-                        this.containerElement = this.props.containerElement.getDOMNode();
-                    }
-                    else
-                        this.containerElement = this.props.containerElement;
-                }
-                this.setContainerRect();
-                window.addEventListener("resize", this.setContainerRect, false);
-            },
-            componentWillUnmount: function () {
-                this.removeEventListeners();
-                window.removeEventListener("resize", this.setContainerRect);
             }
         };
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3983,9 +3985,12 @@ var Rance;
             },
             onMouseDown: function (e) {
                 this.handleMouseDown(e);
-                this.setState({
-                    zIndex: this.props.incrementZIndex()
-                });
+                var newZIndex = this.props.incrementZIndex(this.state.zIndex);
+                if (this.state.zIndex !== newZIndex) {
+                    this.setState({
+                        zIndex: this.props.incrementZIndex(this.state.zIndex)
+                    });
+                }
             },
             setInitialPosition: function () {
                 var domRect = this.getDOMNode().getBoundingClientRect();
@@ -4024,7 +4029,7 @@ var Rance;
                 this.dragPos.width = Math.min(window.innerWidth, rect.width);
                 this.dragPos.height = Math.min(window.innerHeight, rect.height);
                 this.setState({
-                    zIndex: this.props.incrementZIndex()
+                    zIndex: this.props.incrementZIndex(this.state.zIndex)
                 });
             },
             handleResizeMove: function (x, y) {
@@ -4254,10 +4259,15 @@ var Rance;
                     });
                 }
             },
-            incrementZIndex: function () {
+            incrementZIndex: function (childZIndex) {
                 if (!this.currentZIndex)
                     this.currentZIndex = 0;
-                return this.currentZIndex++;
+                if (childZIndex === this.currentZIndex) {
+                    return this.currentZIndex;
+                }
+                else {
+                    return ++this.currentZIndex;
+                }
             },
             getPopupId: function () {
                 if (!this.popupId)
@@ -13081,43 +13091,7 @@ var Rance;
                     money: {
                         key: "money",
                         amount: this.player.money
-                    },
-                    test1: {
-                        key: "test1",
-                        amount: 1
-                    },
-                    test2: {
-                        key: "test2",
-                        amount: 2
-                    },
-                    test3: {
-                        key: "test3",
-                        amount: 3
-                    },
-                    test4: {
-                        key: "test4",
-                        amount: 4
-                    },
-                    test5: {
-                        key: "test5",
-                        amount: 5
-                    },
-                    test6: {
-                        key: "test6",
-                        amount: 6
-                    },
-                    test7: {
-                        key: "test7",
-                        amount: 7
-                    },
-                    test8: {
-                        key: "test8",
-                        amount: 8
-                    },
-                    test9: {
-                        key: "test9",
-                        amount: 9
-                    },
+                    }
                 };
         };
         Trade.prototype.getItemsAvailableForTrade = function () {
@@ -13151,6 +13125,15 @@ var Rance;
                 }
             }
         };
+        Trade.prototype.setStagedItemAmount = function (key, newAmount) {
+            if (newAmount <= 0) {
+                this.removeStagedItem(key);
+            }
+            else {
+                var clamped = Math.min(this.allItems[key].amount, newAmount);
+                this.stagedItems[key].amount = clamped;
+            }
+        };
         Trade.prototype.handleTradeOfItem = function (key, amount, targetPlayer) {
             switch (key) {
                 case "money":
@@ -13178,16 +13161,30 @@ var Rance;
             mixins: [UIComponents.Draggable],
             propTypes: {
                 key: React.PropTypes.string.isRequired,
-                moneyAvailable: React.PropTypes.number.isRequired,
+                moneyAmount: React.PropTypes.number.isRequired,
                 title: React.PropTypes.string.isRequired,
+                maxMoneyAvailable: React.PropTypes.number,
                 onDragStart: React.PropTypes.func,
-                onDragEnd: React.PropTypes.func
+                onDragEnd: React.PropTypes.func,
+                onClick: React.PropTypes.func,
+                adjustItemAmount: React.PropTypes.func
             },
             onDragStart: function () {
                 this.props.onDragStart(this.props.key);
             },
             onDragEnd: function () {
                 this.props.onDragEnd();
+            },
+            handleClick: function () {
+                this.props.onClick(this.props.key);
+            },
+            handleMoneyAmountChange: function (e) {
+                var target = e.target;
+                var value = parseInt(target.value);
+                this.props.adjustItemAmount(this.props.key, value);
+            },
+            captureEvent: function (e) {
+                e.stopPropagation();
             },
             render: function () {
                 var rowProps = {
@@ -13201,11 +13198,33 @@ var Rance;
                     rowProps.style = this.dragPos;
                     rowProps.className += " dragging";
                 }
+                else if (this.props.onClick) {
+                    rowProps.onClick = this.handleClick;
+                }
+                var moneyElement;
+                if (this.props.adjustItemAmount) {
+                    var moneyProps = {
+                        className: "trade-money-money-available trade-item-adjust",
+                        type: "number",
+                        min: 0,
+                        max: this.props.maxMoneyAvailable,
+                        step: 1,
+                        value: this.props.moneyAmount,
+                        onChange: this.handleMoneyAmountChange,
+                        onClick: this.captureEvent,
+                        onMouseDown: this.captureEvent,
+                        onTouchStart: this.captureEvent
+                    };
+                    moneyElement = React.DOM.input(moneyProps);
+                }
+                else {
+                    moneyElement = React.DOM.span({
+                        className: "trade-money-money-available"
+                    }, this.props.moneyAmount);
+                }
                 return (React.DOM.tr(rowProps, React.DOM.td(null, React.DOM.span({
                     className: "trade-money-title"
-                }, this.props.title), React.DOM.span({
-                    className: "trade-money-money-available"
-                }, this.props.moneyAvailable))));
+                }, this.props.title), moneyElement)));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -13219,10 +13238,13 @@ var Rance;
         UIComponents.TradeableItemsList = React.createClass({
             displayName: "TradeableItemsList",
             propTypes: {
+                tradeableItems: React.PropTypes.object,
                 availableItems: React.PropTypes.object,
                 noListHeader: React.PropTypes.bool,
                 onDragStart: React.PropTypes.func,
-                onDragEnd: React.PropTypes.func
+                onDragEnd: React.PropTypes.func,
+                onItemClick: React.PropTypes.func,
+                adjustItemAmount: React.PropTypes.func
             },
             makeRowForTradeableItem: function (item) {
                 switch (item.key) {
@@ -13234,10 +13256,14 @@ var Rance;
                                     key: "money",
                                     rowConstructor: UIComponents.TradeMoney,
                                     title: "Money",
-                                    moneyAvailable: item.amount,
+                                    moneyAmount: item.amount,
                                     sortOrder: 0,
                                     onDragStart: this.props.onDragStart,
-                                    onDragEnd: this.props.onDragEnd
+                                    onDragEnd: this.props.onDragEnd,
+                                    onClick: this.props.onItemClick,
+                                    adjustItemAmount: this.props.adjustItemAmount,
+                                    maxMoneyAvailable: (this.props.availableItems && this.props.availableItems["money"]) ?
+                                        this.props.availableItems["money"].amount : undefined
                                 }
                             });
                         }
@@ -13248,7 +13274,7 @@ var Rance;
                                 data: {
                                     rowConstructor: UIComponents.TradeMoney,
                                     title: item.key,
-                                    moneyAvailable: item.amount,
+                                    moneyAmount: item.amount,
                                     sortOrder: 1
                                 }
                             });
@@ -13256,10 +13282,10 @@ var Rance;
                 }
             },
             render: function () {
-                var availableItems = this.props.availableItems;
+                var tradeableItems = this.props.tradeableItems;
                 var rows = [];
-                for (var key in availableItems) {
-                    rows.push(this.makeRowForTradeableItem(availableItems[key]));
+                for (var key in tradeableItems) {
+                    rows.push(this.makeRowForTradeableItem(tradeableItems[key]));
                 }
                 var columns = [
                     {
@@ -13291,13 +13317,17 @@ var Rance;
             displayName: "TradeableItems",
             mixins: [UIComponents.DropTarget],
             propTypes: {
-                availableItems: React.PropTypes.object.isRequired,
+                tradeableItems: React.PropTypes.object.isRequired,
+                availableItems: React.PropTypes.object,
                 header: React.PropTypes.string,
                 noListHeader: React.PropTypes.bool,
                 onMouseUp: React.PropTypes.func,
                 onDragStart: React.PropTypes.func,
                 onDragEnd: React.PropTypes.func,
-                hasDragItem: React.PropTypes.bool
+                hasDragItem: React.PropTypes.bool,
+                isInvalidDropTarget: React.PropTypes.bool,
+                onItemClick: React.PropTypes.func,
+                adjustItemAmount: React.PropTypes.func
             },
             handleMouseUp: function () {
                 this.props.onMouseUp();
@@ -13309,16 +13339,19 @@ var Rance;
                 if (this.props.onMouseUp) {
                     divProps.onMouseUp = this.handleMouseUp;
                 }
-                else if (this.props.hasDragItem) {
+                if (this.props.isInvalidDropTarget) {
                     divProps.className += " invalid-drop-target";
                 }
                 return (React.DOM.div(divProps, !this.props.header ? null : React.DOM.div({
                     className: "tradeable-items-header"
                 }, this.props.header), UIComponents.TradeableItemsList({
+                    tradeableItems: this.props.tradeableItems,
                     availableItems: this.props.availableItems,
                     noListHeader: this.props.noListHeader,
                     onDragStart: this.props.onDragStart,
-                    onDragEnd: this.props.onDragEnd
+                    onDragEnd: this.props.onDragEnd,
+                    onItemClick: this.props.onItemClick,
+                    adjustItemAmount: this.props.adjustItemAmount
                 })));
             }
         });
@@ -13355,19 +13388,23 @@ var Rance;
                 this.props.handleClose();
             },
             handleOk: function () {
+                this.selfPlayerTrade.executeAllStagedTrades(this.props.otherPlayer);
+                this.otherPlayerTrade.executeAllStagedTrades(this.props.selfPlayer);
+                this.forceUpdate();
             },
-            getActiveTrade: function () {
-                if (this.state.currentDragItemPlayer === "self") {
+            getActiveTrade: function (player) {
+                var playerStringToUse = player || this.state.currentDragItemPlayer;
+                if (playerStringToUse === "self") {
                     return this.selfPlayerTrade;
                 }
-                else if (this.state.currentDragItemPlayer === "other") {
+                else if (playerStringToUse === "other") {
                     return this.otherPlayerTrade;
                 }
                 else
                     return null;
             },
-            handleStageItem: function (key) {
-                var activeTrade = this.getActiveTrade();
+            handleStageItem: function (player, key) {
+                var activeTrade = this.getActiveTrade(player);
                 var availableItems = activeTrade.getItemsAvailableForTrade();
                 var availableAmount = availableItems[key].amount;
                 if (availableAmount === 1) {
@@ -13377,12 +13414,23 @@ var Rance;
                     // TODO
                     activeTrade.stageItem(key, availableAmount);
                 }
+                if (!this.state.currentDragItemPlayer) {
+                    this.forceUpdate();
+                }
+            },
+            handleAdjustStagedItemAmount: function (player, key, newAmount) {
+                var activeTrade = this.getActiveTrade(player);
+                {
+                    activeTrade.setStagedItemAmount(key, newAmount);
+                }
                 this.forceUpdate();
             },
-            handleRemoveStagedItem: function (key) {
-                var activeTrade = this.getActiveTrade();
+            handleRemoveStagedItem: function (player, key) {
+                var activeTrade = this.getActiveTrade(player);
                 activeTrade.removeStagedItem(key);
-                this.forceUpdate();
+                if (!this.state.currentDragItemPlayer) {
+                    this.forceUpdate();
+                }
             },
             handleAvailableDragStart: function (player, key) {
                 this.setState({
@@ -13397,10 +13445,6 @@ var Rance;
                 });
             },
             handleDragEnd: function () {
-                console.log("drag end");
-                if (this.state.currentStagingItemDragKey) {
-                    console.log("staging item up outside either");
-                }
                 this.setState({
                     currentAvailableItemDragKey: undefined,
                     currentStagingItemDragKey: undefined,
@@ -13409,54 +13453,62 @@ var Rance;
             },
             handleAvailableMouseUp: function () {
                 if (this.state.currentStagingItemDragKey) {
-                    console.log("available area up");
-                    this.handleRemoveStagedItem(this.state.currentStagingItemDragKey);
+                    this.handleRemoveStagedItem(null, this.state.currentStagingItemDragKey);
                 }
             },
             handleStagingAreaMouseUp: function () {
                 if (this.state.currentAvailableItemDragKey) {
-                    console.log("staging area up");
-                    this.handleStageItem(this.state.currentAvailableItemDragKey);
+                    this.handleStageItem(null, this.state.currentAvailableItemDragKey);
                 }
             },
             render: function () {
                 var hasDragItem = Boolean(this.state.currentDragItemPlayer);
                 var selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";
                 var otherPlayerAcceptsDrop = this.state.currentDragItemPlayer === "other";
+                var selfAvailableItems = this.selfPlayerTrade.getItemsAvailableForTrade();
+                var otherAvailableItems = this.otherPlayerTrade.getItemsAvailableForTrade();
                 return (React.DOM.div({
                     className: "trade-overview"
                 }, React.DOM.div({
                     className: "tradeable-items-container available-items-container"
                 }, UIComponents.TradeableItems({
                     header: "tradeable items " + this.props.selfPlayer.name,
-                    availableItems: this.selfPlayerTrade.getItemsAvailableForTrade(),
-                    hasDragItem: hasDragItem,
+                    tradeableItems: selfAvailableItems,
+                    isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
                     onDragStart: this.handleAvailableDragStart.bind(this, "self"),
                     onDragEnd: this.handleDragEnd,
-                    onMouseUp: selfPlayerAcceptsDrop ? this.handleAvailableMouseUp : null
+                    onMouseUp: this.handleAvailableMouseUp,
+                    onItemClick: this.handleStageItem.bind(this, "self")
                 }), UIComponents.TradeableItems({
                     header: "tradeable items " + this.props.otherPlayer.name,
-                    availableItems: this.otherPlayerTrade.getItemsAvailableForTrade(),
-                    hasDragItem: hasDragItem,
+                    tradeableItems: otherAvailableItems,
+                    isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
                     onDragStart: this.handleAvailableDragStart.bind(this, "other"),
                     onDragEnd: this.handleDragEnd,
-                    onMouseUp: otherPlayerAcceptsDrop ? this.handleAvailableMouseUp : null
+                    onMouseUp: this.handleAvailableMouseUp,
+                    onItemClick: this.handleStageItem.bind(this, "other")
                 })), React.DOM.div({
                     className: "tradeable-items-container trade-staging-areas-container"
                 }, UIComponents.TradeableItems({
-                    availableItems: this.selfPlayerTrade.stagedItems,
+                    tradeableItems: this.selfPlayerTrade.stagedItems,
+                    availableItems: this.selfPlayerTrade.allItems,
                     noListHeader: true,
-                    hasDragItem: hasDragItem,
+                    isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
                     onDragStart: this.handleStagingDragStart.bind(this, "self"),
                     onDragEnd: this.handleDragEnd,
-                    onMouseUp: selfPlayerAcceptsDrop ? this.handleStagingAreaMouseUp : null
+                    onMouseUp: this.handleStagingAreaMouseUp,
+                    onItemClick: this.handleRemoveStagedItem.bind(this, "self"),
+                    adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "self")
                 }), UIComponents.TradeableItems({
-                    availableItems: this.otherPlayerTrade.stagedItems,
+                    tradeableItems: this.otherPlayerTrade.stagedItems,
+                    availableItems: this.otherPlayerTrade.allItems,
                     noListHeader: true,
-                    hasDragItem: hasDragItem,
+                    isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
                     onDragStart: this.handleStagingDragStart.bind(this, "other"),
                     onDragEnd: this.handleDragEnd,
-                    onMouseUp: otherPlayerAcceptsDrop ? this.handleStagingAreaMouseUp : null
+                    onMouseUp: this.handleStagingAreaMouseUp,
+                    onItemClick: this.handleRemoveStagedItem.bind(this, "other"),
+                    adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "other")
                 })), React.DOM.div({
                     className: "trade-buttons-container"
                 }, React.DOM.button({

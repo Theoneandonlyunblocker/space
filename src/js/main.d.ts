@@ -91,22 +91,12 @@ declare module Rance {
                 dragThreshhold: number;
             };
             getInitialState: () => {
-                mouseDown: boolean;
                 dragging: boolean;
-                dragOffset: {
-                    x: number;
-                    y: number;
-                };
-                mouseDownPosition: {
-                    x: number;
-                    y: number;
-                };
-                originPosition: {
-                    x: number;
-                    y: number;
-                };
                 clone: Node;
             };
+            componentWillMount: () => void;
+            componentDidMount: () => void;
+            componentWillUnmount: () => void;
             handleMouseDown: (e: MouseEvent) => void;
             handleMouseMove: (e: MouseEvent) => void;
             handleDrag: (e: MouseEvent) => void;
@@ -116,9 +106,6 @@ declare module Rance {
             removeEventListeners: () => void;
             setContainerRect: () => void;
             updateDOMNodeStyle: () => void;
-            componentWillMount: () => void;
-            componentDidMount: () => void;
-            componentWillUnmount: () => void;
         };
     }
 }
@@ -2028,6 +2015,7 @@ declare module Rance {
         getItemsAvailableForTrade(): ITradeableItems;
         removeStagedItem(key: string): void;
         stageItem(key: string, amount: number): void;
+        setStagedItemAmount(key: string, newAmount: number): void;
         handleTradeOfItem(key: string, amount: number, targetPlayer: Player): void;
         executeAllStagedTrades(targetPlayer: Player): void;
     }

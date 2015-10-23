@@ -13,13 +13,17 @@ module Rance
 
       propTypes:
       {
-        availableItems: React.PropTypes.object.isRequired, // ITradeableItems
+        tradeableItems: React.PropTypes.object.isRequired, // ITradeableItems
+        availableItems: React.PropTypes.object,
         header: React.PropTypes.string,
         noListHeader: React.PropTypes.bool,
         onMouseUp: React.PropTypes.func,
         onDragStart: React.PropTypes.func,
         onDragEnd: React.PropTypes.func,
-        hasDragItem: React.PropTypes.bool
+        hasDragItem: React.PropTypes.bool,
+        isInvalidDropTarget: React.PropTypes.bool,
+        onItemClick: React.PropTypes.func,
+        adjustItemAmount: React.PropTypes.func
       },
 
       handleMouseUp: function()
@@ -38,7 +42,7 @@ module Rance
         {
           divProps.onMouseUp = this.handleMouseUp;
         }
-        else if (this.props.hasDragItem)
+        if (this.props.isInvalidDropTarget)
         {
           divProps.className += " invalid-drop-target";
         }
@@ -53,10 +57,13 @@ module Rance
             ),
             UIComponents.TradeableItemsList(
             {
+              tradeableItems: this.props.tradeableItems,
               availableItems: this.props.availableItems,
               noListHeader: this.props.noListHeader,
               onDragStart: this.props.onDragStart,
-              onDragEnd: this.props.onDragEnd
+              onDragEnd: this.props.onDragEnd,
+              onItemClick: this.props.onItemClick,
+              adjustItemAmount: this.props.adjustItemAmount
             })
           )
         );

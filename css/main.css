@@ -2427,6 +2427,7 @@ ol {
   display: flex;
   flex: 1 1 auto;
   flex-flow: column;
+  overflow-x: hidden;
   overflow-y: hidden;
   border: 1px solid #c4e5fb;
   margin-right: 5px;
@@ -4296,4 +4297,8 @@ button.player-setup-remove-player.disabled {
   text-decoration: inherit;
   margin-left: 0.25em;
   color: #f3c620;
+}
+.trade-item-adjust {
+  border: 1px solid #c4e5fb;
+  background-color: #0c1615;
 }

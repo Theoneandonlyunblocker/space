@@ -11,10 +11,13 @@ module Rance
 
       propTypes:
       {
-        availableItems: React.PropTypes.object, // ITradeableItems
+        tradeableItems: React.PropTypes.object, // ITradeableItems
+        availableItems: React.PropTypes.object,
         noListHeader: React.PropTypes.bool,
         onDragStart: React.PropTypes.func,
-        onDragEnd: React.PropTypes.func
+        onDragEnd: React.PropTypes.func,
+        onItemClick: React.PropTypes.func,
+        adjustItemAmount: React.PropTypes.func
       },
 
       makeRowForTradeableItem: function(item: ITradeableItem): IListItem
@@ -31,10 +34,14 @@ module Rance
                 key: "money",
                 rowConstructor: UIComponents.TradeMoney,
                 title: "Money",
-                moneyAvailable: item.amount,
+                moneyAmount: item.amount,
                 sortOrder: 0,
                 onDragStart: this.props.onDragStart,
-                onDragEnd: this.props.onDragEnd
+                onDragEnd: this.props.onDragEnd,
+                onClick: this.props.onItemClick,
+                adjustItemAmount: this.props.adjustItemAmount,
+                maxMoneyAvailable: (this.props.availableItems && this.props.availableItems["money"]) ?
+                  this.props.availableItems["money"].amount : undefined
               }
             });
           }
@@ -47,7 +54,7 @@ module Rance
               {
                 rowConstructor: UIComponents.TradeMoney,
                 title: item.key,
-                moneyAvailable: item.amount,
+                moneyAmount: item.amount,
                 sortOrder: 1
               }
             });
@@ -57,12 +64,12 @@ module Rance
 
       render: function()
       {
-        var availableItems: ITradeableItems = this.props.availableItems;
+        var tradeableItems: ITradeableItems = this.props.tradeableItems;
         var rows: IListItem[] = [];
 
-        for (var key in availableItems)
+        for (var key in tradeableItems)
         {
-          rows.push(this.makeRowForTradeableItem(availableItems[key]));
+          rows.push(this.makeRowForTradeableItem(tradeableItems[key]));
         }
 
         var columns: IListColumn[] =
