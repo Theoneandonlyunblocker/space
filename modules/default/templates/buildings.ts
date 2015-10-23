@@ -17,7 +17,7 @@ module Rance
             family: "sectorCommand",
             displayName: "Sector Command",
             description: "Defence building with slight defender advantage. (All defence buildings must " +
-              "be conquered to gain control of area)",
+              "be captured to gain control of area)",
 
             iconSrc: "sectorCommand.png",
             buildCost: 200,
@@ -79,7 +79,7 @@ module Rance
             category: "defence",
             displayName: "Starbase",
             description: "Defence building with no defender advantage. (All defence buildings must " +
-              "be conquered to gain control of area)",
+              "be captured to gain control of area)",
 
             iconSrc: "starBase.png",
             buildCost: 200,

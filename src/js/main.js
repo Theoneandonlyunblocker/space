@@ -9864,7 +9864,8 @@ var Rance;
         };
         DiplomacyStatus.prototype.declareWarOn = function (player) {
             if (this.statusByPlayer[player.id] >= DiplomaticState.war) {
-                throw new Error("Players " + this.player.id + " and " + player.id + " are already at war");
+                console.error("Players " + this.player.id + " and " + player.id + " are already at war");
+                return;
             }
             this.statusByPlayer[player.id] = DiplomaticState.war;
             player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
@@ -14728,7 +14729,8 @@ var Rance;
                 return (React.DOM.li({
                     className: "manufacturable-things-list-item" + (isDisabled ? " disabled" : ""),
                     onClick: (isDisabled ? null : this.handleClick),
-                    disabled: isDisabled
+                    disabled: isDisabled,
+                    title: template.description
                 }, React.DOM.div({
                     className: "manufacturable-things-list-item-name"
                 }, template.displayName), !this.props.showCost ? null : React.DOM.div({
@@ -14791,7 +14793,8 @@ var Rance;
                 actionString: React.PropTypes.string.isRequired,
                 currentLevel: React.PropTypes.number.isRequired,
                 maxLevel: React.PropTypes.number.isRequired,
-                levelDecimalPoints: React.PropTypes.number.isRequired
+                levelDecimalPoints: React.PropTypes.number.isRequired,
+                title: React.PropTypes.string
             },
             getInitialState: function () {
                 return ({
@@ -14818,7 +14821,8 @@ var Rance;
                 return (React.DOM.button({
                     className: unitUpgradeButtonBaseClassName + " manufactory-units-upgrade-health-button",
                     onClick: (isDisabled ? null : this.props.onClick),
-                    disabled: isDisabled
+                    disabled: isDisabled,
+                    title: this.props.title
                 }, React.DOM.span({
                     className: "manufactory-upgrade-button-action"
                 }, this.props.actionString), React.DOM.br(), React.DOM.span({
@@ -14873,7 +14877,8 @@ var Rance;
                     actionString: "Upgrade capacity",
                     currentLevel: manufactory.capacity,
                     maxLevel: manufactory.maxCapacity,
-                    levelDecimalPoints: 0
+                    levelDecimalPoints: 0,
+                    title: "Increase amount of things this manufactory can build per turn"
                 })), UIComponents.ManufacturableThingsList({
                     manufacturableThings: convertedBuildQueue,
                     onClick: this.removeItem,
@@ -14954,7 +14959,8 @@ var Rance;
                     currentLevel: manufactory.unitHealthModifier,
                     maxLevel: 5.0,
                     levelDecimalPoints: 1,
-                    onClick: this.upgradeHealth
+                    onClick: this.upgradeHealth,
+                    title: "Increase base health of units built here"
                 }), UIComponents.ManufactoryUpgradeButton({
                     money: this.props.money,
                     upgradeCost: unitUpgradeCost,
@@ -14962,7 +14968,8 @@ var Rance;
                     currentLevel: manufactory.unitStatsModifier,
                     maxLevel: 5.0,
                     levelDecimalPoints: 1,
-                    onClick: this.upgradeStats
+                    onClick: this.upgradeStats,
+                    title: "Increase base stats of units built here"
                 })), UIComponents.ManufacturableThingsList({
                     manufacturableThings: this.props.manufacturableThings,
                     onClick: (this.props.canBuild ? this.addUnitToBuildQueue : null),
@@ -23989,7 +23996,7 @@ var Rance;
                         family: "sectorCommand",
                         displayName: "Sector Command",
                         description: "Defence building with slight defender advantage. (All defence buildings must " +
-                            "be conquered to gain control of area)",
+                            "be captured to gain control of area)",
                         iconSrc: "sectorCommand.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -24037,7 +24044,7 @@ var Rance;
                         category: "defence",
                         displayName: "Starbase",
                         description: "Defence building with no defender advantage. (All defence buildings must " +
-                            "be conquered to gain control of area)",
+                            "be captured to gain control of area)",
                         iconSrc: "starBase.png",
                         buildCost: 200,
                         maxPerType: 3,
@@ -24814,7 +24821,7 @@ var Rance;
                     Units.cheatShip = {
                         type: "cheatShip",
                         displayName: "Debug Ship",
-                        description: "sebug",
+                        description: "debug",
                         archetype: Templates.UnitArchetypes.combat,
                         families: [Templates.UnitFamilies.debug],
                         cultures: [],

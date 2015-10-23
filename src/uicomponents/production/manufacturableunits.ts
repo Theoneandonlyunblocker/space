@@ -101,7 +101,8 @@ module Rance
                 currentLevel: manufactory.unitHealthModifier,
                 maxLevel: 5.0,
                 levelDecimalPoints: 1,
-                onClick: this.upgradeHealth
+                onClick: this.upgradeHealth,
+                title: "Increase base health of units built here"
               }),
               UIComponents.ManufactoryUpgradeButton(
               {
@@ -111,7 +112,8 @@ module Rance
                 currentLevel: manufactory.unitStatsModifier,
                 maxLevel: 5.0,
                 levelDecimalPoints: 1,
-                onClick: this.upgradeStats
+                onClick: this.upgradeStats,
+                title: "Increase base stats of units built here"
               })
             ),
             UIComponents.ManufacturableThingsList(

@@ -14,7 +14,8 @@ module Rance
         actionString: React.PropTypes.string.isRequired,
         currentLevel: React.PropTypes.number.isRequired,
         maxLevel: React.PropTypes.number.isRequired,
-        levelDecimalPoints: React.PropTypes.number.isRequired
+        levelDecimalPoints: React.PropTypes.number.isRequired,
+        title: React.PropTypes.string
       },
 
       getInitialState: function()
@@ -37,7 +38,6 @@ module Rance
 
       render: function()
       {
-
         var unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
         var unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
 
@@ -57,7 +57,8 @@ module Rance
           {
             className: unitUpgradeButtonBaseClassName + " manufactory-units-upgrade-health-button",
             onClick: (isDisabled ? null : this.props.onClick),
-            disabled: isDisabled
+            disabled: isDisabled,
+            title: this.props.title
           },
             React.DOM.span(
             {

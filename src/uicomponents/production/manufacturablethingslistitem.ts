@@ -56,7 +56,8 @@ module Rance
           {
             className: "manufacturable-things-list-item" + (isDisabled ? " disabled" : ""),
             onClick: (isDisabled ? null : this.handleClick),
-            disabled: isDisabled
+            disabled: isDisabled,
+            title: template.description
           },
             React.DOM.div(
             {

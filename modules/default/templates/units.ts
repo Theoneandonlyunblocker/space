@@ -22,7 +22,7 @@ module Rance
           {
             type: "cheatShip",
             displayName: "Debug Ship",
-            description: "sebug",
+            description: "debug",
             archetype: UnitArchetypes.combat,
             families: [UnitFamilies.debug],
             cultures: [],

@@ -62,7 +62,8 @@ module Rance
                 actionString: "Upgrade capacity",
                 currentLevel: manufactory.capacity,
                 maxLevel: manufactory.maxCapacity,
-                levelDecimalPoints: 0
+                levelDecimalPoints: 0,
+                title: "Increase amount of things this manufactory can build per turn"
               })
             ),
             UIComponents.ManufacturableThingsList(
