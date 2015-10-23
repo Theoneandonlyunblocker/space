@@ -262,7 +262,6 @@ module Rance
     {
       var templateCultures = this.template.cultures;
 
-      var nameGeneratorCulture: Templates.ICultureTemplate;
       var nameGeneratorFN: (unit: Unit) => string;
       var nameGeneratorCandidateCultures: Templates.ICultureTemplate[] = templateCultures.filter(
         function(cultureTemplate: Templates.ICultureTemplate)
@@ -270,22 +269,13 @@ module Rance
         return Boolean(cultureTemplate.nameGenerator);
       });
 
-      if (nameGeneratorCandidateCultures.length === 0)
+      if (nameGeneratorCandidateCultures.length > 0)
       {
-        nameGeneratorCulture = getRandomPropertyWithKey(app.moduleData.Templates.Cultures, "nameGenerator");
+        nameGeneratorFN = getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
       }
       else
-      {
-        nameGeneratorCulture = getRandomArrayItem(nameGeneratorCandidateCultures);
-      }
-
-      if (!nameGeneratorCulture)
       {
         nameGeneratorFN = defaultNameGenerator;
-      }
-      else
-      {
-        nameGeneratorFN = nameGeneratorCulture.nameGenerator;
       }
 
       this.name = nameGeneratorFN(this);

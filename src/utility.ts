@@ -101,7 +101,7 @@ module Rance
       var prop = target[key];
       if (prop[keyToFind])
       {
-        return prop[keyToFind];
+        return prop;
       }
       else
       {

@@ -4832,7 +4832,7 @@ var Rance;
             var key = getRandomArrayItem(keys);
             var prop = target[key];
             if (prop[keyToFind]) {
-                return prop[keyToFind];
+                return prop;
             }
             else {
                 keys.splice(keys.indexOf(key), 1);
@@ -7586,22 +7586,15 @@ var Rance;
         };
         Unit.prototype.setCulture = function () {
             var templateCultures = this.template.cultures;
-            var nameGeneratorCulture;
             var nameGeneratorFN;
             var nameGeneratorCandidateCultures = templateCultures.filter(function (cultureTemplate) {
                 return Boolean(cultureTemplate.nameGenerator);
             });
-            if (nameGeneratorCandidateCultures.length === 0) {
-                nameGeneratorCulture = Rance.getRandomPropertyWithKey(app.moduleData.Templates.Cultures, "nameGenerator");
+            if (nameGeneratorCandidateCultures.length > 0) {
+                nameGeneratorFN = Rance.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
             }
             else {
-                nameGeneratorCulture = Rance.getRandomArrayItem(nameGeneratorCandidateCultures);
-            }
-            if (!nameGeneratorCulture) {
                 nameGeneratorFN = Rance.defaultNameGenerator;
-            }
-            else {
-                nameGeneratorFN = nameGeneratorCulture.nameGenerator;
             }
             this.name = nameGeneratorFN(this);
             var portraitCandidateCultures = templateCultures.filter(function (cultureTemplate) {
@@ -9864,6 +9857,7 @@ var Rance;
         };
         DiplomacyStatus.prototype.declareWarOn = function (player) {
             if (this.statusByPlayer[player.id] >= DiplomaticState.war) {
+                // TODO crash
                 console.error("Players " + this.player.id + " and " + player.id + " are already at war");
                 return;
             }
