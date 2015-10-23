@@ -13110,6 +13110,11 @@ var Rance;
             this.stagedItems[key] = null;
             delete this.stagedItems[key];
         };
+        Trade.prototype.removeAllStagedItems = function () {
+            for (var key in this.stagedItems) {
+                this.removeStagedItem(key);
+            }
+        };
         Trade.prototype.stageItem = function (key, amount) {
             if (!this.stagedItems[key]) {
                 this.stagedItems[key] =
@@ -13147,6 +13152,10 @@ var Rance;
             for (var key in this.stagedItems) {
                 this.handleTradeOfItem(key, this.stagedItems[key].amount, targetPlayer);
             }
+        };
+        Trade.prototype.updateAfterExecutedTrade = function () {
+            this.setAllTradeableItems();
+            this.removeAllStagedItems();
         };
         return Trade;
     })();
@@ -13390,6 +13399,8 @@ var Rance;
             handleOk: function () {
                 this.selfPlayerTrade.executeAllStagedTrades(this.props.otherPlayer);
                 this.otherPlayerTrade.executeAllStagedTrades(this.props.selfPlayer);
+                this.selfPlayerTrade.updateAfterExecutedTrade();
+                this.otherPlayerTrade.updateAfterExecutedTrade();
                 this.forceUpdate();
             },
             getActiveTrade: function (player) {

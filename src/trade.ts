@@ -55,6 +55,13 @@ module Rance
       this.stagedItems[key] = null;
       delete this.stagedItems[key];
     }
+    removeAllStagedItems()
+    {
+      for (var key in this.stagedItems)
+      {
+        this.removeStagedItem(key);
+      }
+    }
     stageItem(key: string, amount: number)
     {
       if (!this.stagedItems[key])
@@ -103,6 +110,11 @@ module Rance
       {
         this.handleTradeOfItem(key, this.stagedItems[key].amount, targetPlayer);
       }
+    }
+    updateAfterExecutedTrade()
+    {
+      this.setAllTradeableItems();
+      this.removeAllStagedItems();
     }
   }
 }

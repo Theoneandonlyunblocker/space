@@ -46,6 +46,8 @@ module Rance
       {
         this.selfPlayerTrade.executeAllStagedTrades(this.props.otherPlayer);
         this.otherPlayerTrade.executeAllStagedTrades(this.props.selfPlayer);
+        this.selfPlayerTrade.updateAfterExecutedTrade();
+        this.otherPlayerTrade.updateAfterExecutedTrade();
         this.forceUpdate();
       },
 

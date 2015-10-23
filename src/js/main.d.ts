@@ -2014,10 +2014,12 @@ declare module Rance {
         setAllTradeableItems(): void;
         getItemsAvailableForTrade(): ITradeableItems;
         removeStagedItem(key: string): void;
+        removeAllStagedItems(): void;
         stageItem(key: string, amount: number): void;
         setStagedItemAmount(key: string, newAmount: number): void;
         handleTradeOfItem(key: string, amount: number, targetPlayer: Player): void;
         executeAllStagedTrades(targetPlayer: Player): void;
+        updateAfterExecutedTrade(): void;
     }
 }
 declare module Rance {
