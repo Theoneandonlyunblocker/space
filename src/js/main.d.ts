@@ -3584,16 +3584,6 @@ declare module Rance {
 }
 declare module Rance {
     module Modules {
-        module TestModule {
-            module BuildingTemplates {
-                var commercialPortTest: Rance.Templates.IBuildingTemplate;
-            }
-            var moduleFile: IModuleFile;
-        }
-    }
-}
-declare module Rance {
-    module Modules {
         module PaintingPortraits {
             module Culture {
                 var paintingPortraitsCulture: Rance.Templates.ICultureTemplate;

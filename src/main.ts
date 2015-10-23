@@ -9,7 +9,6 @@
 /// <reference path="moduledata.ts"/>
 /// <reference path="moduleloader.ts" />
 /// <reference path="../modules/default/defaultmodule.ts" />
-/// <reference path="../modules/test/testmodule.ts" />
 /// <reference path="../modules/paintingportraits/modulefile.ts" />
 
 /// <reference path="gameloader.ts"/>
@@ -76,7 +75,6 @@ module Rance
         self.moduleData = moduleLoader.moduleData;
 
         moduleLoader.addModuleFile(Modules.DefaultModule.moduleFile);
-        moduleLoader.addModuleFile(Modules.TestModule.moduleFile);
         moduleLoader.addModuleFile(Modules.PaintingPortraits.moduleFile);
         
         moduleLoader.loadAll(boundMakeApp);

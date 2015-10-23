@@ -26017,49 +26017,6 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../src/moduledata.ts" />
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var TestModule;
-        (function (TestModule) {
-            var BuildingTemplates;
-            (function (BuildingTemplates) {
-                BuildingTemplates.commercialPortTest = {
-                    type: "commercialPortTest",
-                    category: "economy",
-                    displayName: "Commercial Spaceport Test",
-                    iconSrc: "commercialPort.png",
-                    buildCost: 0,
-                    effect: {
-                        income: {
-                            multiplier: 1
-                        }
-                    },
-                    maxPerType: 1,
-                    maxUpgradeLevel: 10
-                };
-            })(BuildingTemplates = TestModule.BuildingTemplates || (TestModule.BuildingTemplates = {}));
-            TestModule.moduleFile = {
-                key: "test",
-                metaData: {
-                    name: "test",
-                    version: "0.0.420",
-                    author: "not me",
-                    description: "just testing"
-                },
-                loadAssets: function (onLoaded) {
-                    onLoaded();
-                },
-                constructModule: function (moduleData) {
-                    moduleData.copyTemplates(TestModule.BuildingTemplates, "Buildings");
-                    return moduleData;
-                }
-            };
-        })(TestModule = Modules.TestModule || (Modules.TestModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/iculturetemplate.d.ts" />
 var Rance;
 (function (Rance) {
@@ -27285,7 +27242,6 @@ var Rance;
 /// <reference path="moduledata.ts"/>
 /// <reference path="moduleloader.ts" />
 /// <reference path="../modules/default/defaultmodule.ts" />
-/// <reference path="../modules/test/testmodule.ts" />
 /// <reference path="../modules/paintingportraits/modulefile.ts" />
 /// <reference path="gameloader.ts"/>
 /// <reference path="notificationlog.ts" />
@@ -27322,7 +27278,6 @@ var Rance;
                 var moduleLoader = self.moduleLoader = new Rance.ModuleLoader();
                 self.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(Rance.Modules.DefaultModule.moduleFile);
-                moduleLoader.addModuleFile(Rance.Modules.TestModule.moduleFile);
                 moduleLoader.addModuleFile(Rance.Modules.PaintingPortraits.moduleFile);
                 moduleLoader.loadAll(boundMakeApp);
             });
