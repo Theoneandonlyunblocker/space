@@ -147,7 +147,9 @@ module Rance
     {
       if (this.statusByPlayer[player.id] >= DiplomaticState.war)
       {
-        throw new Error("Players " + this.player.id + " and " + player.id + " are already at war");
+        // TODO crash
+        console.error("Players " + this.player.id + " and " + player.id + " are already at war");
+        return;
       }
       this.statusByPlayer[player.id] = DiplomaticState.war;
       player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
