@@ -1,6 +1,5 @@
 /// <reference path="../../notificationlog.ts" />
 /// <reference path="notificationlog.ts" />
-/// <reference path="notificationfilterbutton.ts" />
 
 module Rance
 {
@@ -28,12 +27,6 @@ module Rance
               log: this.props.log,
               currentTurn: this.props.currentTurn,
               key: "log"
-            }),
-            UIComponents.NotificationFilterButton(
-            {
-              filter: this.props.log.notificationFilter,
-              text: "Filter",
-              key: "filter"
             })
           )
         );

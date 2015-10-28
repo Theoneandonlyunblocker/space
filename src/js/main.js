@@ -14238,6 +14238,186 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
+        UIComponents.NotificationFilterListItem = React.createClass({
+            displayName: "NotificationFilterListItem",
+            propTypes: {
+                displayName: React.PropTypes.string.isRequired,
+                filterState: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+                key: React.PropTypes.string.isRequired,
+                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    filterState: this.props.filterState
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                this.setState({
+                    filterState: newProps.filterState
+                });
+            },
+            handleChangeState: function (state) {
+                var filter = this.props.filter;
+                filter.handleFilterStateChange(this.props.key, state);
+                filter.save();
+                this.setState({
+                    filterState: filter.filters[this.props.key]
+                });
+            },
+            render: function () {
+                var inputElements = [];
+                var filterState = this.state.filterState;
+                for (var state in Rance.NotificationFilterState) {
+                    if (!isFinite(state))
+                        continue;
+                    var numericState = parseInt(state);
+                    var stateIsActive = filterState.indexOf(numericState) !== -1;
+                    inputElements.push(React.DOM.input({
+                        className: "notification-filter-list-item-filter",
+                        type: "checkbox",
+                        id: this.props.key,
+                        key: state,
+                        checked: stateIsActive,
+                        onChange: this.handleChangeState.bind(this, numericState),
+                        title: Rance.NotificationFilterState[numericState]
+                    }));
+                }
+                return (React.DOM.div({
+                    className: "notification-filter-list-item"
+                }, React.DOM.label({
+                    className: "notification-filter-list-item-label",
+                    htmlFor: this.props.key
+                }, this.props.displayName), React.DOM.div({
+                    className: "notification-filter-list-item-filters"
+                }, inputElements)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../galaxymap/optionsgroup.ts" />
+/// <reference path="notificationfilterlistitem.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.NotificationFilterList = React.createClass({
+            displayName: "NotificationFilterList",
+            propTypes: {
+                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
+            },
+            handleResetCategory: function (category) {
+                var filter = this.props.filter;
+                filter.setDefaultFilterStatesForCategory(category);
+                filter.save();
+                this.forceUpdate();
+            },
+            render: function () {
+                var filter = this.props.filter;
+                var filtersByCategory = filter.getFiltersByCategory();
+                var filterGroupElements = [];
+                for (var category in filtersByCategory) {
+                    var filtersForCategory = filtersByCategory[category];
+                    var filterElementsForCategory = [];
+                    for (var i = 0; i < filtersForCategory.length; i++) {
+                        var notificationTemplate = filtersForCategory[i].notificationTemplate;
+                        filterElementsForCategory.push({
+                            key: notificationTemplate.key,
+                            content: UIComponents.NotificationFilterListItem({
+                                displayName: notificationTemplate.displayName,
+                                filter: filter,
+                                filterState: filtersForCategory[i].filterState,
+                                key: notificationTemplate.key
+                            })
+                        });
+                    }
+                    filterGroupElements.push(UIComponents.OptionsGroup({
+                        header: category,
+                        options: filterElementsForCategory,
+                        key: category,
+                        resetFN: this.handleResetCategory.bind(this, category)
+                    }));
+                }
+                return (React.DOM.div({
+                    className: "notification-filter-list"
+                }, React.DOM.div({
+                    className: "notification-filter-list-header"
+                }, React.DOM.div({
+                    className: "notification-filter-list-item-label"
+                }, "Show"), React.DOM.div({
+                    className: "notification-filter-list-item-filters"
+                }, "Always", "Involved", "Never")), filterGroupElements));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../notificationfilter.ts" />
+/// <reference path="notificationfilterlist.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.NotificationFilterButton = React.createClass({
+            displayName: "NotificationFilterButton",
+            propTypes: {
+                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
+                text: React.PropTypes.string.isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    notificationFilterPopup: undefined
+                });
+            },
+            makePopup: function () {
+                var popupId = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.TopMenuPopup,
+                    contentProps: {
+                        contentConstructor: UIComponents.NotificationFilterList,
+                        contentProps: {
+                            filter: this.props.filter
+                        },
+                        handleClose: this.closePopup
+                    },
+                    popupProps: {
+                        containerDragOnly: true,
+                        preventAutoResize: true
+                    }
+                });
+                this.setState({
+                    notificationFilterPopup: popupId
+                });
+            },
+            closePopup: function () {
+                this.refs.popupManager.closePopup(this.state.notificationFilterPopup);
+                this.setState({
+                    notificationFilterPopup: undefined
+                });
+            },
+            togglePopup: function () {
+                if (isFinite(this.state.notificationFilterPopup)) {
+                    this.closePopup();
+                }
+                else {
+                    this.makePopup();
+                }
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "notification-filter-button-container"
+                }, React.DOM.button({
+                    className: "notification-filter-button",
+                    onClick: this.togglePopup
+                }, this.props.text), UIComponents.PopupManager({
+                    ref: "popupManager",
+                    onlyAllowOne: true
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
         UIComponents.OptionsCheckbox = React.createClass({
             displayName: "OptionsCheckbox",
             render: function () {
@@ -14257,14 +14437,19 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts"/>
+/// <reference path="../notifications/notificationfilterbutton.ts" />
 /// <reference path="optionsgroup.ts"/>
 /// <reference path="optionscheckbox.ts" />
+/// <reference path="../../notificationlog.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.OptionsList = React.createClass({
             displayName: "OptionsList",
+            propTypes: {
+                log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
+            },
             makeBattleAnimationOption: function (stage) {
                 if (!isFinite(Rance.Options.battleAnimationTiming[stage])) {
                     console.warn("Invalid option", stage);
@@ -14313,7 +14498,11 @@ var Rance;
                 };
                 this.refs.popupManager.makePopup({
                     contentConstructor: UIComponents.ConfirmPopup,
-                    contentProps: confirmProps
+                    contentProps: confirmProps,
+                    popupProps: {
+                        containerDragOnly: true,
+                        preventAutoResize: true
+                    }
                 });
             },
             render: function () {
@@ -14394,6 +14583,13 @@ var Rance;
                             Rance.eventManager.dispatchEvent("updateHamburgerMenu");
                             this.forceUpdate();
                         }.bind(this)
+                    })
+                });
+                uiOptions.push({
+                    key: "notificationLogFilter",
+                    content: UIComponents.NotificationFilterButton({
+                        filter: this.props.log.notificationFilter,
+                        text: "Message settings"
                     })
                 });
                 allOptions.push(UIComponents.OptionsGroup({
@@ -15377,6 +15573,10 @@ var Rance;
         UIComponents.TopMenuPopups = React.createClass({
             displayName: "TopMenuPopups",
             cachedPopupRects: {},
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                game: React.PropTypes.instanceOf(Rance.Game).isRequired
+            },
             getInitialState: function () {
                 return ({
                     production: undefined,
@@ -15468,7 +15668,10 @@ var Rance;
                     case "options":
                         {
                             contentConstructor = UIComponents.OptionsList;
-                            contentProps = {};
+                            contentProps =
+                                {
+                                    log: this.props.game.notificationLog
+                                };
                             break;
                         }
                     case "diplomacy":
@@ -15524,6 +15727,8 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="topmenupopups.ts" />
+/// <reference path="../../player.ts" />
+/// <reference path="../../game.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -15534,6 +15739,10 @@ var Rance;
             cachedTopMenuWidth: undefined,
             cachedButtonWidths: [],
             cachedMenuButtonWidth: 37,
+            propTypes: {
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                game: React.PropTypes.instanceOf(Rance.Game).isRequired
+            },
             getInitialState: function () {
                 return ({
                     hasCondensedMenu: false,
@@ -15666,12 +15875,6 @@ var Rance;
                     }, "Technology"),
                     React.DOM.button({
                         className: "top-menu-items-button",
-                        key: "options",
-                        onClick: this.togglePopup.bind(this, "options"),
-                        tabIndex: menuItemTabIndex
-                    }, "Options"),
-                    React.DOM.button({
-                        className: "top-menu-items-button",
                         key: "loadGame",
                         onClick: this.togglePopup.bind(this, "loadGame"),
                         tabIndex: menuItemTabIndex
@@ -15681,7 +15884,13 @@ var Rance;
                         key: "saveGame",
                         onClick: this.togglePopup.bind(this, "saveGame"),
                         tabIndex: menuItemTabIndex
-                    }, "Save")
+                    }, "Save"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "options",
+                        onClick: this.togglePopup.bind(this, "options"),
+                        tabIndex: menuItemTabIndex
+                    }, "Options")
                 ];
                 var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
                 var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
@@ -17118,189 +17327,8 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.NotificationFilterListItem = React.createClass({
-            displayName: "NotificationFilterListItem",
-            propTypes: {
-                displayName: React.PropTypes.string.isRequired,
-                filterState: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-                key: React.PropTypes.string.isRequired,
-                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
-            },
-            getInitialState: function () {
-                return ({
-                    filterState: this.props.filterState
-                });
-            },
-            componentWillReceiveProps: function (newProps) {
-                this.setState({
-                    filterState: newProps.filterState
-                });
-            },
-            handleChangeState: function (state) {
-                var filter = this.props.filter;
-                filter.handleFilterStateChange(this.props.key, state);
-                filter.save();
-                this.setState({
-                    filterState: filter.filters[this.props.key]
-                });
-            },
-            render: function () {
-                var inputElements = [];
-                var filterState = this.state.filterState;
-                for (var state in Rance.NotificationFilterState) {
-                    if (!isFinite(state))
-                        continue;
-                    var numericState = parseInt(state);
-                    var stateIsActive = filterState.indexOf(numericState) !== -1;
-                    inputElements.push(React.DOM.input({
-                        className: "notification-filter-list-item-filter",
-                        type: "checkbox",
-                        id: this.props.key,
-                        key: state,
-                        checked: stateIsActive,
-                        onChange: this.handleChangeState.bind(this, numericState),
-                        title: Rance.NotificationFilterState[numericState]
-                    }));
-                }
-                return (React.DOM.div({
-                    className: "notification-filter-list-item"
-                }, React.DOM.label({
-                    className: "notification-filter-list-item-label",
-                    htmlFor: this.props.key
-                }, this.props.displayName), React.DOM.div({
-                    className: "notification-filter-list-item-filters"
-                }, inputElements)));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../galaxymap/optionsgroup.ts" />
-/// <reference path="notificationfilterlistitem.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.NotificationFilterList = React.createClass({
-            displayName: "NotificationFilterList",
-            propTypes: {
-                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
-            },
-            handleResetCategory: function (category) {
-                var filter = this.props.filter;
-                filter.setDefaultFilterStatesForCategory(category);
-                filter.save();
-                this.forceUpdate();
-            },
-            render: function () {
-                var filter = this.props.filter;
-                var filtersByCategory = filter.getFiltersByCategory();
-                var filterGroupElements = [];
-                for (var category in filtersByCategory) {
-                    var filtersForCategory = filtersByCategory[category];
-                    var filterElementsForCategory = [];
-                    for (var i = 0; i < filtersForCategory.length; i++) {
-                        var notificationTemplate = filtersForCategory[i].notificationTemplate;
-                        filterElementsForCategory.push({
-                            key: notificationTemplate.key,
-                            content: UIComponents.NotificationFilterListItem({
-                                displayName: notificationTemplate.displayName,
-                                filter: filter,
-                                filterState: filtersForCategory[i].filterState,
-                                key: notificationTemplate.key
-                            })
-                        });
-                    }
-                    filterGroupElements.push(UIComponents.OptionsGroup({
-                        header: category,
-                        options: filterElementsForCategory,
-                        key: category,
-                        resetFN: this.handleResetCategory.bind(this, category)
-                    }));
-                }
-                return (React.DOM.div({
-                    className: "notification-filter-list"
-                }, React.DOM.div({
-                    className: "notification-filter-list-header"
-                }, React.DOM.div({
-                    className: "notification-filter-list-item-label"
-                }, "Show"), React.DOM.div({
-                    className: "notification-filter-list-item-filters"
-                }, "Always", "Involved", "Never")), filterGroupElements));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../notificationfilter.ts" />
-/// <reference path="notificationfilterlist.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.NotificationFilterButton = React.createClass({
-            displayName: "NotificationFilterButton",
-            propTypes: {
-                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
-                text: React.PropTypes.string.isRequired
-            },
-            getInitialState: function () {
-                return ({
-                    notificationFilterPopup: undefined
-                });
-            },
-            makePopup: function () {
-                var popupId = this.refs.popupManager.makePopup({
-                    contentConstructor: UIComponents.TopMenuPopup,
-                    contentProps: {
-                        contentConstructor: UIComponents.NotificationFilterList,
-                        contentProps: {
-                            filter: this.props.filter
-                        },
-                        handleClose: this.closePopup
-                    },
-                    popupProps: {
-                        containerDragOnly: true,
-                        preventAutoResize: true
-                    }
-                });
-                this.setState({
-                    notificationFilterPopup: popupId
-                });
-            },
-            closePopup: function () {
-                this.refs.popupManager.closePopup(this.state.notificationFilterPopup);
-                this.setState({
-                    notificationFilterPopup: undefined
-                });
-            },
-            togglePopup: function () {
-                if (isFinite(this.state.notificationFilterPopup)) {
-                    this.closePopup();
-                }
-                else {
-                    this.makePopup();
-                }
-            },
-            render: function () {
-                return (React.DOM.div({
-                    className: "notification-filter-button-container"
-                }, React.DOM.button({
-                    className: "notification-filter-button",
-                    onClick: this.togglePopup
-                }, this.props.text), UIComponents.PopupManager({
-                    ref: "popupManager",
-                    onlyAllowOne: true
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
 /// <reference path="../../notificationlog.ts" />
 /// <reference path="notificationlog.ts" />
-/// <reference path="notificationfilterbutton.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -17318,10 +17346,6 @@ var Rance;
                     log: this.props.log,
                     currentTurn: this.props.currentTurn,
                     key: "log"
-                }), UIComponents.NotificationFilterButton({
-                    filter: this.props.log.notificationFilter,
-                    text: "Filter",
-                    key: "filter"
                 })));
             }
         });
@@ -17435,7 +17459,9 @@ var Rance;
                     game: this.props.game
                 }), UIComponents.TopMenu({
                     player: this.props.player,
-                    game: this.props.game
+                    game: this.props.game,
+                    log: this.props.game.notificationLog,
+                    currentTurn: this.props.game.turnNumber
                 }), React.DOM.div({
                     className: selectionContainerClassName
                 }, UIComponents.FleetSelection({
@@ -17465,14 +17491,14 @@ var Rance;
                 }), UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar,
                     key: "starInfo"
-                }))), expandedActionElement), !Rance.Options.debugMode ? null : UIComponents.MapRendererLayersList({
+                }))), expandedActionElement), React.DOM.div({
+                    className: "galaxy-map-ui-bottom-right",
+                    key: "bottomRight"
+                }, !Rance.Options.debugMode ? null : UIComponents.MapRendererLayersList({
                     mapRenderer: this.props.mapRenderer,
                     mapMode: this.props.mapRenderer.currentMapMode,
                     key: "mapRendererLayersList"
-                }), React.DOM.div({
-                    className: "galaxy-map-ui-bottom-right",
-                    key: "bottomRight"
-                }, !Rance.Options.debugMode ? null : UIComponents.Notifications({
+                }), UIComponents.Notifications({
                     log: this.props.game.notificationLog,
                     currentTurn: this.props.game.turnNumber,
                     key: "notifications"

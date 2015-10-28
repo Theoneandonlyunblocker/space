@@ -160,7 +160,9 @@ module Rance
               UIComponents.TopMenu(
               {
                 player: this.props.player,
-                game: this.props.game
+                game: this.props.game,
+                log: this.props.game.notificationLog,
+                currentTurn: this.props.game.turnNumber
               }),
               React.DOM.div(
               {
@@ -212,18 +214,18 @@ module Rance
               ),
               expandedActionElement
             ),
-            !Options.debugMode ? null : UIComponents.MapRendererLayersList(
-            {
-              mapRenderer: this.props.mapRenderer,
-              mapMode: this.props.mapRenderer.currentMapMode,
-              key: "mapRendererLayersList"
-            }),
             React.DOM.div(
             {
               className: "galaxy-map-ui-bottom-right",
               key: "bottomRight"
             },
-              !Options.debugMode ? null : UIComponents.Notifications(
+              !Options.debugMode ? null : UIComponents.MapRendererLayersList(
+              {
+                mapRenderer: this.props.mapRenderer,
+                mapMode: this.props.mapRenderer.currentMapMode,
+                key: "mapRendererLayersList"
+              }),
+              UIComponents.Notifications(
               {
                 log: this.props.game.notificationLog,
                 currentTurn: this.props.game.turnNumber,

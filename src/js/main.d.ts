@@ -2101,12 +2101,27 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var NotificationFilterListItem: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var NotificationFilterList: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var NotificationFilterButton: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var OptionsCheckbox: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var OptionsList: React.Factory<{}>;
+        var OptionsList: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2195,7 +2210,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var TopMenuPopups: React.Factory<{}>;
+        var TopMenuPopups: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2311,21 +2326,6 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var NotificationLog: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var NotificationFilterListItem: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var NotificationFilterList: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var NotificationFilterButton: React.Factory<any>;
     }
 }
 declare module Rance {

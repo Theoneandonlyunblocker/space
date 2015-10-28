@@ -16,6 +16,13 @@ module Rance
     {
       displayName: "TopMenuPopups",
       cachedPopupRects: {},
+
+      propTypes:
+      {
+        player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+        game: React.PropTypes.instanceOf(Rance.Game).isRequired
+      },
+
       getInitialState: function()
       {
         return(
@@ -122,7 +129,10 @@ module Rance
           case "options":
           {
             contentConstructor = UIComponents.OptionsList;
-            contentProps = {};
+            contentProps =
+            {
+              log: this.props.game.notificationLog
+            };
             break;
           }
           case "diplomacy":

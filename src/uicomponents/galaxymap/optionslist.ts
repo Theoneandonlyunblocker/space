@@ -1,6 +1,9 @@
 /// <reference path="../popups/popupmanager.ts"/>
+/// <reference path="../notifications/notificationfilterbutton.ts" />
 /// <reference path="optionsgroup.ts"/>
 /// <reference path="optionscheckbox.ts" />
+
+/// <reference path="../../notificationlog.ts" />
 
 module Rance
 {
@@ -9,6 +12,11 @@ module Rance
     export var OptionsList = React.createClass(
     {
       displayName: "OptionsList",
+
+      propTypes:
+      {
+        log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
+      },
 
       makeBattleAnimationOption: function(stage: string)
       {
@@ -85,7 +93,12 @@ module Rance
         this.refs.popupManager.makePopup(
         {
           contentConstructor: UIComponents.ConfirmPopup,
-          contentProps: confirmProps
+          contentProps: confirmProps,
+          popupProps:
+          {
+            containerDragOnly: true,
+            preventAutoResize: true
+          }
         });
       },
 
@@ -203,6 +216,16 @@ module Rance
                 this.forceUpdate();
               }.bind(this)
             })
+        });
+
+        uiOptions.push(
+        {
+          key: "notificationLogFilter",
+          content: UIComponents.NotificationFilterButton(
+          {
+            filter: this.props.log.notificationFilter,
+            text: "Message settings"
+          })
         });
 
         allOptions.push(UIComponents.OptionsGroup(

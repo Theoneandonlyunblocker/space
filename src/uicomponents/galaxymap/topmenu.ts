@@ -1,5 +1,8 @@
 /// <reference path="topmenupopups.ts" />
 
+/// <reference path="../../player.ts" />
+/// <reference path="../../game.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -12,6 +15,12 @@ module Rance
       cachedTopMenuWidth: undefined,
       cachedButtonWidths: [],
       cachedMenuButtonWidth: 37,
+
+      propTypes:
+      {
+        player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+        game: React.PropTypes.instanceOf(Rance.Game).isRequired
+      },
 
       getInitialState: function()
       {
@@ -201,13 +210,6 @@ module Rance
           React.DOM.button(
           {
             className: "top-menu-items-button",
-            key: "options",
-            onClick: this.togglePopup.bind(this, "options"),
-            tabIndex: menuItemTabIndex
-          }, "Options"),
-          React.DOM.button(
-          {
-            className: "top-menu-items-button",
             key: "loadGame",
             onClick: this.togglePopup.bind(this, "loadGame"),
             tabIndex: menuItemTabIndex
@@ -218,7 +220,14 @@ module Rance
             key: "saveGame",
             onClick: this.togglePopup.bind(this, "saveGame"),
             tabIndex: menuItemTabIndex
-          }, "Save")
+          }, "Save"),
+          React.DOM.button(
+          {
+            className: "top-menu-items-button",
+            key: "options",
+            onClick: this.togglePopup.bind(this, "options"),
+            tabIndex: menuItemTabIndex
+          }, "Options")
         ]
 
         var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
