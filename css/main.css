@@ -3830,6 +3830,7 @@ button.player-setup-remove-player.disabled {
   border: 1px solid #77abce;
   width: 400px;
   overflow-y: auto;
+  margin-left: -1px;
 }
 .map-gen-options-option-groups :last-child::after {
   content: none;
@@ -4230,7 +4231,6 @@ button.player-setup-remove-player.disabled {
   margin-right: 0;
 }
 .trade-overview {
-  border: 1px solid red;
   display: flex;
   flex-flow: column;
 }
@@ -4244,16 +4244,36 @@ button.player-setup-remove-player.disabled {
   display: flex;
   flex-flow: row;
   overflow-y: hidden;
-  min-height: 2em;
 }
 .tradeable-items-container > * {
   flex: 1 1 50%;
 }
+.available-items-container .tradeable-items {
+  border-bottom: none;
+}
 .tradeable-items {
-  border: 1px solid green;
+  border: 1px solid #c4e5fb;
   display: flex;
   flex-flow: column;
   position: relative;
+  min-height: 3em;
+}
+.tradeable-items + .tradeable-items {
+  border-left: none;
+}
+.tradeable-items-header {
+  display: flex;
+  flex: 0 0 auto;
+  height: 2em;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px;
+  background: linear-gradient(to bottom, #0d2335 0%, #0c1615 50%, #0d2335 100%);
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 0px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
 }
 .trade-buttons-container {
   display: flex;
@@ -4261,6 +4281,7 @@ button.player-setup-remove-player.disabled {
   justify-content: space-around;
   align-items: flex-end;
   flex: 0 0 auto;
+  margin: 10px 0;
 }
 .trade-button {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
@@ -4299,6 +4320,6 @@ button.player-setup-remove-player.disabled {
   color: #f3c620;
 }
 .trade-item-adjust {
-  border: 1px solid #c4e5fb;
+  border: 1px solid #77abce;
   background-color: #0c1615;
 }

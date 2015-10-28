@@ -174,6 +174,7 @@ module Rance
               {
                 header: "tradeable items " + this.props.selfPlayer.name,
                 tradeableItems: selfAvailableItems,
+                noListHeader: true,
                 isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
                 onDragStart: this.handleAvailableDragStart.bind(this, "self"),
                 onDragEnd: this.handleDragEnd,
@@ -184,6 +185,7 @@ module Rance
               {
                 header: "tradeable items " + this.props.otherPlayer.name,
                 tradeableItems: otherAvailableItems,
+                noListHeader: true,
                 isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
                 onDragStart: this.handleAvailableDragStart.bind(this, "other"),
                 onDragEnd: this.handleDragEnd,
