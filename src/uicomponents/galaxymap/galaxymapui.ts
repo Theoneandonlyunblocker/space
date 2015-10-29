@@ -3,7 +3,7 @@
 /// <reference path="fleetselection.ts"/>
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
-/// <reference path="../mapmodes/maprendererlayerslist.ts" />
+/// <reference path="../mapmodes/mapmodesettings.ts" />
 /// <reference path="../notifications/notifications.ts" />
 
 module Rance
@@ -26,7 +26,8 @@ module Rance
           selectedStar: pc.selectedStar,
           attackTargets: pc.currentAttackTargets,
           isPlayerTurn: !this.props.game.playerOrder[0].isAI,
-          expandedActionElement: null
+          expandedActionElement: null,
+          hasMapModeSettingsExpanded: false
         });
       },
 
@@ -80,6 +81,11 @@ module Rance
         {
           expandedActionElement: element
         });
+      },
+
+      toggleMapModeSettingsExpanded: function()
+      {
+        this.setState({hasMapModeSettingsExpanded: !this.state.hasMapModeSettingsExpanded});
       },
 
       updateSelection: function()
@@ -219,12 +225,19 @@ module Rance
               className: "galaxy-map-ui-bottom-right",
               key: "bottomRight"
             },
-              !Options.debugMode ? null : UIComponents.MapRendererLayersList(
+              !this.state.hasMapModeSettingsExpanded ? null : UIComponents.MapModeSettings(
               {
                 mapRenderer: this.props.mapRenderer,
-                mapMode: this.props.mapRenderer.currentMapMode,
                 key: "mapRendererLayersList"
               }),
+              React.DOM.button(
+              {
+                className: "toggle-map-mode-settings-button",
+                tabIndex: -1,
+                onClick: this.toggleMapModeSettingsExpanded
+              },
+                "Map mode"
+              ),
               UIComponents.Notifications(
               {
                 log: this.props.game.notificationLog,

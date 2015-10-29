@@ -1976,7 +1976,7 @@ ol {
 .galaxy-map-ui-bottom-left-column > * {
   pointer-events: auto;
 }
-.map-renderer-layers-list {
+.map-mode-settings {
   display: inline-block;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
@@ -1993,6 +1993,9 @@ ol {
   border-width: 0 0 4px 0;
 }
 .galaxy-map-ui-bottom-right {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-end;
   position: absolute;
   bottom: 0;
   right: 0;
@@ -2000,6 +2003,27 @@ ol {
 }
 .galaxy-map-ui-bottom-right > * {
   pointer-events: auto;
+}
+.toggle-map-mode-settings-button {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  margin-bottom: 1em;
+}
+.toggle-map-mode-settings-button:hover,
+.toggle-map-mode-settings-button:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.toggle-map-mode-settings-button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.toggle-map-mode-settings-button:disabled,
+.toggle-map-mode-settings-button.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .end-turn-button {
   float: right;

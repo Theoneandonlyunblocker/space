@@ -17,11 +17,11 @@
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
 /// <reference path="../templateinterfaces/inotificationtemplate.d.ts" />
-/// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
-/// <reference path="../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="../templateinterfaces/imaprendererlayertemplate.d.ts" />
 /// <reference path="../templateinterfaces/imaprenderermapmodetemplate.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
+/// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
+/// <reference path="../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../templateinterfaces/itechnologytemplate.d.ts" />
 /// <reference path="../templateinterfaces/ieffecttemplate.d.ts" />
@@ -2309,6 +2309,120 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class MapRendererLayer {
+        template: IMapRendererLayerTemplate;
+        container: PIXI.Container;
+        isDirty: boolean;
+        private _alpha;
+        alpha: number;
+        constructor(template: IMapRendererLayerTemplate);
+        resetAlpha(): void;
+        draw(map: GalaxyMap, mapRenderer: MapRenderer): void;
+    }
+}
+declare module Rance {
+    class MapRendererMapMode {
+        template: IMapRendererMapModeTemplate;
+        displayName: string;
+        layers: MapRendererLayer[];
+        activeLayers: {
+            [layerName: string]: boolean;
+        };
+        constructor(template: IMapRendererMapModeTemplate);
+        addLayer(layer: MapRendererLayer, isActive?: boolean): void;
+        getLayerIndex(layer: MapRendererLayer): number;
+        hasLayer(layer: MapRendererLayer): boolean;
+        getLayerIndexInContainer(layer: MapRendererLayer): number;
+        toggleLayer(layer: MapRendererLayer): void;
+        setLayerIndex(layer: MapRendererLayer, newIndex: number): void;
+        insertLayerNextToLayer(toInsert: MapRendererLayer, target: MapRendererLayer, position: string): void;
+        getActiveLayers(): MapRendererLayer[];
+        resetLayers(): void;
+    }
+}
+declare module Rance {
+    function starsOnlyShareNarrowBorder(a: Star, b: Star): boolean;
+    function getBorderingHalfEdges(stars: Star[]): {
+        star: Star;
+        halfEdge: any;
+    }[];
+    function joinPointsWithin(points: Point[], maxDistance: number): void;
+    function convertHalfEdgeDataToOffset(halfEdgeData: {
+        star: Star;
+        halfEdge: any;
+    }[]): OffsetPoint[];
+    function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVoronoiInfo): {
+        points: any[];
+        isClosed: boolean;
+    }[];
+}
+declare module Rance {
+    interface IMapRendererMapMode {
+        name: string;
+        displayName: string;
+        layers: {
+            layer: MapRendererLayer;
+        }[];
+    }
+    class MapRenderer {
+        container: PIXI.Container;
+        parent: PIXI.Container;
+        galaxyMap: GalaxyMap;
+        player: Player;
+        occupationShaders: {
+            [ownerId: string]: {
+                [occupierId: string]: PIXI.AbstractFilter;
+            };
+        };
+        layers: {
+            [name: string]: MapRendererLayer;
+        };
+        mapModes: {
+            [name: string]: MapRendererMapMode;
+        };
+        fowTilingSprite: PIXI.extras.TilingSprite;
+        fowSpriteCache: {
+            [starId: number]: PIXI.Sprite;
+        };
+        fleetTextTextureCache: {
+            [fleetSize: number]: PIXI.Texture;
+        };
+        currentMapMode: MapRendererMapMode;
+        isDirty: boolean;
+        preventRender: boolean;
+        listeners: {
+            [name: string]: Function;
+        };
+        constructor(map: GalaxyMap, player: Player);
+        destroy(): void;
+        init(): void;
+        addEventListeners(): void;
+        setPlayer(player: Player): void;
+        updateShaderOffsets(x: number, y: number): void;
+        updateShaderZoom(zoom: number): void;
+        makeFowSprite(): void;
+        getFowSpriteForStar(star: Star): PIXI.Sprite;
+        getOccupationShader(owner: Player, occupier: Player): PIXI.AbstractFilter;
+        getFleetTextTexture(fleet: Fleet): PIXI.Texture;
+        initLayers(): void;
+        initMapModes(): void;
+        setParent(newParent: PIXI.Container): void;
+        resetContainer(): void;
+        setLayerAsDirty(layerName: string): void;
+        setAllLayersAsDirty(): void;
+        updateMapModeLayers(updatedLayers: MapRendererLayer[]): void;
+        resetMapModeLayersPosition(): void;
+        setMapModeByKey(key: string): void;
+        setMapMode(newMapMode: MapRendererMapMode): void;
+        render(): void;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MapModeSelector: React.Factory<any>;
+    }
+}
+declare module Rance {
     module UIComponents {
         var MapRendererLayersListItem: React.Factory<any>;
     }
@@ -2316,6 +2430,11 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var MapRendererLayersList: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MapModeSettings: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2482,113 +2601,6 @@ declare module Rance {
             ships: Unit[];
         }[];
         attackTarget(target: any): boolean;
-    }
-}
-declare module Rance {
-    class MapRendererLayer {
-        template: IMapRendererLayerTemplate;
-        container: PIXI.Container;
-        isDirty: boolean;
-        private _alpha;
-        alpha: number;
-        constructor(template: IMapRendererLayerTemplate);
-        draw(map: GalaxyMap, mapRenderer: MapRenderer): void;
-    }
-}
-declare module Rance {
-    class MapRendererMapMode {
-        template: IMapRendererMapModeTemplate;
-        displayName: string;
-        layers: MapRendererLayer[];
-        activeLayers: {
-            [layerName: string]: boolean;
-        };
-        constructor(template: IMapRendererMapModeTemplate);
-        addLayer(layer: MapRendererLayer, isActive?: boolean): void;
-        getLayerIndex(layer: MapRendererLayer): number;
-        hasLayer(layer: MapRendererLayer): boolean;
-        getLayerIndexInContainer(layer: MapRendererLayer): number;
-        toggleLayer(layer: MapRendererLayer): void;
-        setLayerIndex(layer: MapRendererLayer, newIndex: number): void;
-        insertLayerNextToLayer(toInsert: MapRendererLayer, target: MapRendererLayer, position: string): void;
-        getActiveLayers(): MapRendererLayer[];
-    }
-}
-declare module Rance {
-    function starsOnlyShareNarrowBorder(a: Star, b: Star): boolean;
-    function getBorderingHalfEdges(stars: Star[]): {
-        star: Star;
-        halfEdge: any;
-    }[];
-    function joinPointsWithin(points: Point[], maxDistance: number): void;
-    function convertHalfEdgeDataToOffset(halfEdgeData: {
-        star: Star;
-        halfEdge: any;
-    }[]): OffsetPoint[];
-    function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVoronoiInfo): {
-        points: any[];
-        isClosed: boolean;
-    }[];
-}
-declare module Rance {
-    interface IMapRendererMapMode {
-        name: string;
-        displayName: string;
-        layers: {
-            layer: MapRendererLayer;
-        }[];
-    }
-    class MapRenderer {
-        container: PIXI.Container;
-        parent: PIXI.Container;
-        galaxyMap: GalaxyMap;
-        player: Player;
-        occupationShaders: {
-            [ownerId: string]: {
-                [occupierId: string]: PIXI.AbstractFilter;
-            };
-        };
-        layers: {
-            [name: string]: MapRendererLayer;
-        };
-        mapModes: {
-            [name: string]: MapRendererMapMode;
-        };
-        fowTilingSprite: PIXI.extras.TilingSprite;
-        fowSpriteCache: {
-            [starId: number]: PIXI.Sprite;
-        };
-        fleetTextTextureCache: {
-            [fleetSize: number]: PIXI.Texture;
-        };
-        currentMapMode: MapRendererMapMode;
-        isDirty: boolean;
-        preventRender: boolean;
-        listeners: {
-            [name: string]: Function;
-        };
-        constructor(map: GalaxyMap, player: Player);
-        destroy(): void;
-        init(): void;
-        addEventListeners(): void;
-        setPlayer(player: Player): void;
-        updateShaderOffsets(x: number, y: number): void;
-        updateShaderZoom(zoom: number): void;
-        makeFowSprite(): void;
-        getFowSpriteForStar(star: Star): PIXI.Sprite;
-        getOccupationShader(owner: Player, occupier: Player): PIXI.AbstractFilter;
-        getFleetTextTexture(fleet: Fleet): PIXI.Texture;
-        initLayers(): void;
-        initMapModes(): void;
-        setParent(newParent: PIXI.Container): void;
-        resetContainer(): void;
-        setLayerAsDirty(layerName: string): void;
-        setAllLayersAsDirty(): void;
-        updateMapModeLayers(updatedLayers: MapRendererLayer[]): void;
-        resetMapModeLayersPosition(): void;
-        setMapModeByKey(key: string): void;
-        setMapMode(newMapMode: MapRendererMapMode): void;
-        render(): void;
     }
 }
 declare var tempCameraId: number;

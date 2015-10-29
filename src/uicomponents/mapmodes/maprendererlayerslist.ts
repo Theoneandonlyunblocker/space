@@ -1,5 +1,7 @@
 /// <reference path="maprendererlayerslistitem.ts" />
 
+/// <reference path="../../maprenderer.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -8,6 +10,12 @@ module Rance
     {
       displayName: "MapRendererLayersList",
       mixins: [React.addons.PureRenderMixin],
+
+      propTypes:
+      {
+        mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired,
+        currentMapMode: React.PropTypes.instanceOf(Rance.MapRendererMapMode).isRequired
+      },
 
       getInitialState: function()
       {
@@ -77,7 +85,7 @@ module Rance
       render: function()
       {
         var mapRenderer: MapRenderer = this.props.mapRenderer;
-        var mapMode = mapRenderer.currentMapMode;
+        var mapMode: MapRendererMapMode = this.props.currentMapMode;
         if (!mapMode) return null;
         var layersData = mapMode.layers;
         var activeLayers = mapMode.getActiveLayers();

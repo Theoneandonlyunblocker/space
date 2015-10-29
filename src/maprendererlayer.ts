@@ -26,6 +26,10 @@ module Rance
       this.container.interactiveChildren = template.interactive;
       this.alpha = template.alpha || 1;
     }
+    resetAlpha()
+    {
+      this.alpha = this.template.alpha || 1;
+    }
     draw(map: GalaxyMap, mapRenderer: MapRenderer)
     {
       if (!this.isDirty) return;

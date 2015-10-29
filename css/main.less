@@ -2569,12 +2569,22 @@ ul, ol
   }
 }
 
-.map-renderer-layers-list
+.map-mode-settings
 {
   display: inline-block;
   .full-border(5px);
   color: @text-color;
   background-color: @bg-color;
+}
+
+.map-mode-selector
+{
+
+}
+
+.map-renderer-layers-list
+{
+
 }
 
 .hover-indicator()
@@ -2596,6 +2606,9 @@ ul, ol
 
 .galaxy-map-ui-bottom-right
 {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-end;
   position: absolute;
   bottom: 0;
   right: 0;
@@ -2604,6 +2617,11 @@ ul, ol
   {
     pointer-events: auto;
   }
+}
+.toggle-map-mode-settings-button
+{
+  .button-style;
+  margin-bottom: 1em;
 }
 .end-turn-button
 {

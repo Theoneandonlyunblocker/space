@@ -7,12 +7,7 @@ module Rance
     export var GalaxyMap = React.createClass(
     {
       displayName: "GalaxyMap",
-      switchMapMode: function()
-      {
-        var newMode = this.refs.mapModeSelector.getDOMNode().value;
-
-        this.props.mapRenderer.setMapModeByKey(newMode);
-      },
+      
       changeScene: function(e: Event)
       {
         var target = <HTMLInputElement> e.target;
@@ -57,14 +52,6 @@ module Rance
             {
               className: "galaxy-map-debug debug"
             },
-              React.DOM.select(
-              {
-                className: "reactui-selector debug",
-                ref: "mapModeSelector",
-                onChange: this.switchMapMode
-              },
-                mapModeOptions
-              ),
               React.DOM.select(
                 {
                   className: "reactui-selector debug",

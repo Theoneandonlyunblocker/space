@@ -85,5 +85,52 @@ module Rance
         return self.activeLayers[layer.template.key];
       }));
     }
+    resetLayers()
+    {
+      var layersByKey:
+      {
+        [key: string]: MapRendererLayer;
+      } = {};
+
+      var newLayers: MapRendererLayer[] = [];
+      var newActive:
+      {
+        [layerName: string]: boolean;
+      } = {};
+
+      var layersInTemplate: MapRendererLayer[] = [];
+      var layersNotInTemplate: MapRendererLayer[] = [];
+
+      for (var i = 0; i < this.layers.length; i++)
+      {
+        var layer = this.layers[i];
+        layersByKey[layer.template.key] = layer;
+      }
+
+      for (var i = 0; i < this.template.layers.length; i++)
+      {
+        var layerTemplate = this.template.layers[i];
+        var layer = layersByKey[layerTemplate.key];
+        newLayers.push(layer);
+        newActive[layerTemplate.key] = true;
+
+        delete layersByKey[layerTemplate.key];
+      }
+
+      for (var key in layersByKey)
+      {
+        var layer = layersByKey[key];
+        newLayers.push(layer);
+        newActive[key] = false;
+      }
+
+      this.layers = newLayers;
+      this.activeLayers = newActive;
+      
+      for (var i = 0; i < this.layers.length; i++)
+      {
+        this.layers[i].resetAlpha();
+      }
+    }
   }
 }

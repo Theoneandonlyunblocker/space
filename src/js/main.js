@@ -17016,6 +17016,714 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="galaxymap.ts" />
+/// <reference path="templateinterfaces/imaprendererlayertemplate.d.ts" />
+var Rance;
+(function (Rance) {
+    var MapRendererLayer = (function () {
+        function MapRendererLayer(template) {
+            this.isDirty = true;
+            this.template = template;
+            this.container = new PIXI.Container();
+            this.container.interactiveChildren = template.interactive;
+            this.alpha = template.alpha || 1;
+        }
+        Object.defineProperty(MapRendererLayer.prototype, "alpha", {
+            get: function () {
+                return this._alpha;
+            },
+            set: function (newAlpha) {
+                this._alpha = newAlpha;
+                this.container.alpha = newAlpha;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        MapRendererLayer.prototype.resetAlpha = function () {
+            this.alpha = this.template.alpha || 1;
+        };
+        MapRendererLayer.prototype.draw = function (map, mapRenderer) {
+            if (!this.isDirty)
+                return;
+            this.container.removeChildren();
+            this.container.addChild(this.template.drawingFunction.call(mapRenderer, map));
+            this.isDirty = false;
+        };
+        return MapRendererLayer;
+    })();
+    Rance.MapRendererLayer = MapRendererLayer;
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/imaprenderermapmodetemplate.d.ts" />
+/// <reference path="maprendererlayer.ts" />
+var Rance;
+(function (Rance) {
+    var MapRendererMapMode = (function () {
+        function MapRendererMapMode(template) {
+            this.layers = [];
+            this.activeLayers = {};
+            this.template = template;
+            this.displayName = template.displayName;
+        }
+        MapRendererMapMode.prototype.addLayer = function (layer, isActive) {
+            if (isActive === void 0) { isActive = true; }
+            if (this.hasLayer(layer)) {
+                throw new Error("Tried to add duplicate layer " + layer.template.key);
+                return;
+            }
+            this.layers.push(layer);
+            this.activeLayers[layer.template.key] = isActive;
+        };
+        MapRendererMapMode.prototype.getLayerIndex = function (layer) {
+            for (var i = 0; i < this.layers.length; i++) {
+                if (this.layers[i] === layer)
+                    return i;
+            }
+            return -1;
+        };
+        MapRendererMapMode.prototype.hasLayer = function (layer) {
+            return this.getLayerIndex(layer) !== -1;
+        };
+        MapRendererMapMode.prototype.getLayerIndexInContainer = function (layer) {
+            var index = -1;
+            for (var i = 0; i < this.layers.length; i++) {
+                if (this.activeLayers[this.layers[i].template.key]) {
+                    index++;
+                }
+                if (this.layers[i] === layer)
+                    return index;
+            }
+            throw new Error("Map mode doesn't have layer " + layer.template.key);
+        };
+        MapRendererMapMode.prototype.toggleLayer = function (layer) {
+            this.activeLayers[layer.template.key] = !this.activeLayers[layer.template.key];
+            if (!this.hasLayer(layer)) {
+                this.addLayer(layer);
+            }
+        };
+        MapRendererMapMode.prototype.setLayerIndex = function (layer, newIndex) {
+            var prevIndex = this.getLayerIndex(layer);
+            var spliced = this.layers.splice(prevIndex, 1)[0];
+            this.layers.splice(newIndex, 0, spliced);
+        };
+        MapRendererMapMode.prototype.insertLayerNextToLayer = function (toInsert, target, position) {
+            var indexAdjust = (position === "top" ? -1 : 0);
+            var newIndex = this.getLayerIndex(target) + indexAdjust;
+            this.setLayerIndex(toInsert, newIndex);
+        };
+        MapRendererMapMode.prototype.getActiveLayers = function () {
+            var self = this;
+            return (this.layers.filter(function (layer) {
+                return self.activeLayers[layer.template.key];
+            }));
+        };
+        MapRendererMapMode.prototype.resetLayers = function () {
+            var layersByKey = {};
+            var newLayers = [];
+            var newActive = {};
+            var layersInTemplate = [];
+            var layersNotInTemplate = [];
+            for (var i = 0; i < this.layers.length; i++) {
+                var layer = this.layers[i];
+                layersByKey[layer.template.key] = layer;
+            }
+            for (var i = 0; i < this.template.layers.length; i++) {
+                var layerTemplate = this.template.layers[i];
+                var layer = layersByKey[layerTemplate.key];
+                newLayers.push(layer);
+                newActive[layerTemplate.key] = true;
+                delete layersByKey[layerTemplate.key];
+            }
+            for (var key in layersByKey) {
+                var layer = layersByKey[key];
+                newLayers.push(layer);
+                newActive[key] = false;
+            }
+            this.layers = newLayers;
+            this.activeLayers = newActive;
+            for (var i = 0; i < this.layers.length; i++) {
+                this.layers[i].resetAlpha();
+            }
+        };
+        return MapRendererMapMode;
+    })();
+    Rance.MapRendererMapMode = MapRendererMapMode;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/offset.d.ts" />
+// some problems with this as well as pixi polyogn rendering can lead to silly behavior sometimes.
+// overlapping lines, acute angles etc etc.
+// probably have to make a shader based version later but this could still be useful for canvas fallback.
+var Rance;
+(function (Rance) {
+    function starsOnlyShareNarrowBorder(a, b) {
+        var minBorderWidth = Rance.Options.display.borderWidth * 2;
+        var edge = a.getEdgeWith(b);
+        if (!edge) {
+            return false;
+        }
+        var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
+        if (edgeLength < minBorderWidth) {
+            var sharedNeighbors = a.getSharedNeighborsWith(b);
+            var sharedOwnedNeighbors = sharedNeighbors.filter(function (sharedNeighbor) {
+                return sharedNeighbor.owner === a.owner;
+            });
+            return sharedOwnedNeighbors.length === 0;
+        }
+        else {
+            return false;
+        }
+    }
+    Rance.starsOnlyShareNarrowBorder = starsOnlyShareNarrowBorder;
+    function getBorderingHalfEdges(stars) {
+        var borderingHalfEdges = [];
+        function getHalfEdgeOppositeSite(halfEdge) {
+            return halfEdge.edge.lSite === halfEdge.site ?
+                halfEdge.edge.rSite : halfEdge.edge.lSite;
+        }
+        function halfEdgeIsBorder(halfEdge) {
+            var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
+            var isBorderWithOtherOwner = !oppositeSite || !oppositeSite.owner || (oppositeSite.owner !== halfEdge.site.owner);
+            var isBorderWithSameOwner = false;
+            if (!isBorderWithOtherOwner) {
+                isBorderWithSameOwner = starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite) ||
+                    halfEdge.site.getDistanceToStar(oppositeSite) > 3;
+            }
+            return isBorderWithOtherOwner || isBorderWithSameOwner;
+        }
+        function halfEdgeSharesOwner(halfEdge) {
+            var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
+            var sharesOwner = Boolean(oppositeSite) && Boolean(oppositeSite.owner) &&
+                (oppositeSite.owner === halfEdge.site.owner);
+            return sharesOwner && !starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite);
+        }
+        function getContiguousHalfEdgeBetweenSharedSites(sharedEdge) {
+            var contiguousEdgeEndPoint = sharedEdge.getStartpoint();
+            var oppositeSite = getHalfEdgeOppositeSite(sharedEdge);
+            for (var i = 0; i < oppositeSite.voronoiCell.halfedges.length; i++) {
+                var halfEdge = oppositeSite.voronoiCell.halfedges[i];
+                if (halfEdge.getStartpoint() === contiguousEdgeEndPoint) {
+                    return halfEdge;
+                }
+            }
+            return false;
+        }
+        var startEdge;
+        var star;
+        for (var i = 0; i < stars.length; i++) {
+            if (star)
+                break;
+            for (var j = 0; j < stars[i].voronoiCell.halfedges.length; j++) {
+                var halfEdge = stars[i].voronoiCell.halfedges[j];
+                if (halfEdgeIsBorder(halfEdge)) {
+                    star = stars[i];
+                    startEdge = halfEdge;
+                    break;
+                }
+            }
+        }
+        if (!star)
+            throw new Error("Couldn't find starting location for border polygon");
+        var hasProcessedStartEdge = false;
+        var contiguousEdge = null;
+        // just a precaution to make sure we don't get into an infinite loop
+        // should always return earlier unless somethings wrong
+        for (var j = 0; j < stars.length * 40; j++) {
+            var indexShift = 0;
+            for (var _i = 0; _i < star.voronoiCell.halfedges.length; _i++) {
+                if (!hasProcessedStartEdge) {
+                    contiguousEdge = startEdge;
+                }
+                if (contiguousEdge) {
+                    indexShift = star.voronoiCell.halfedges.indexOf(contiguousEdge);
+                    contiguousEdge = null;
+                }
+                var i = (_i + indexShift) % (star.voronoiCell.halfedges.length);
+                var halfEdge = star.voronoiCell.halfedges[i];
+                if (halfEdgeIsBorder(halfEdge)) {
+                    borderingHalfEdges.push({
+                        star: star,
+                        halfEdge: halfEdge
+                    });
+                    if (!startEdge) {
+                        startEdge = halfEdge;
+                    }
+                    else if (halfEdge === startEdge) {
+                        if (!hasProcessedStartEdge) {
+                            hasProcessedStartEdge = true;
+                        }
+                        else {
+                            return borderingHalfEdges;
+                        }
+                    }
+                }
+                else if (halfEdgeSharesOwner(halfEdge)) {
+                    contiguousEdge = getContiguousHalfEdgeBetweenSharedSites(halfEdge);
+                    star = contiguousEdge.site;
+                    break;
+                }
+            }
+        }
+        throw new Error("getHalfEdgesConnectingStars got stuck in infinite loop when star id = " + star.id);
+        return borderingHalfEdges;
+    }
+    Rance.getBorderingHalfEdges = getBorderingHalfEdges;
+    function joinPointsWithin(points, maxDistance) {
+        for (var i = points.length - 2; i >= 0; i--) {
+            var x1 = points[i].x;
+            var y1 = points[i].y;
+            var x2 = points[i + 1].x;
+            var y2 = points[i + 1].y;
+            if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance) {
+                var newPoint = {
+                    x: (x1 + x2) / 2,
+                    y: (y1 + y2) / 2
+                };
+                points.splice(i, 2, newPoint);
+            }
+        }
+    }
+    Rance.joinPointsWithin = joinPointsWithin;
+    function convertHalfEdgeDataToOffset(halfEdgeData) {
+        var convertedToPoints = halfEdgeData.map(function (data) {
+            var v1 = data.halfEdge.getStartpoint();
+            return ({
+                x: v1.x,
+                y: v1.y
+            });
+        });
+        joinPointsWithin(convertedToPoints, Rance.Options.display.borderWidth / 2);
+        var offset = new Offset();
+        offset.arcSegments(0);
+        var convertedToOffset = offset.data(convertedToPoints).padding(Rance.Options.display.borderWidth / 2);
+        return convertedToOffset;
+    }
+    Rance.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
+    function getRevealedBorderEdges(revealedStars, voronoiInfo) {
+        var polyLines = [];
+        var processedStarsById = {};
+        for (var ii = 0; ii < revealedStars.length; ii++) {
+            var star = revealedStars[ii];
+            if (processedStarsById[star.id]) {
+                continue;
+            }
+            if (!star.owner.isIndependent) {
+                var ownedIsland = star.getIslandForQualifier(function (a, b) {
+                    // don't count stars if the only shared border between them is smaller than 10px
+                    return (a.owner === b.owner && !starsOnlyShareNarrowBorder(a, b));
+                });
+                var currentPolyLine = [];
+                var halfEdgesDataForIsland = getBorderingHalfEdges(ownedIsland);
+                var offsetted = convertHalfEdgeDataToOffset(halfEdgesDataForIsland);
+                // set stars
+                for (var j = 0; j < offsetted.length; j++) {
+                    var point = offsetted[j];
+                    var nextPoint = offsetted[(j + 1) % offsetted.length];
+                    // offset library can't handle acute angles properly. can lead to crashes if
+                    // angle is at map edge due to points going off the map. clamping should fix crashes at least
+                    var edgeCenter = {
+                        x: Rance.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: Rance.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
+                    };
+                    var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
+                    if (!pointStar) {
+                        pointStar = voronoiInfo.getStarAtPoint(point);
+                        if (!pointStar) {
+                            pointStar = voronoiInfo.getStarAtPoint(nextPoint);
+                        }
+                    }
+                    processedStarsById[pointStar.id] = true;
+                    point.star = pointStar;
+                }
+                // find first point in revealed star preceded by unrevealed star
+                // set that point as start of polygon
+                var startIndex = 0; // default = all stars of polygon are revealed
+                for (var j = 0; j < offsetted.length; j++) {
+                    var currPoint = offsetted[j];
+                    var prevPoint = offsetted[(j === 0 ? offsetted.length - 1 : j - 1)];
+                    if (revealedStars.indexOf(currPoint.star) !== -1 && revealedStars.indexOf(prevPoint.star) === -1) {
+                        startIndex = j;
+                    }
+                }
+                // get polylines
+                for (var _j = startIndex; _j < offsetted.length + startIndex; _j++) {
+                    var j = _j % offsetted.length;
+                    var point = offsetted[j];
+                    if (revealedStars.indexOf(point.star) === -1) {
+                        if (currentPolyLine.length > 1) {
+                            currentPolyLine.push(point);
+                            polyLines.push(currentPolyLine);
+                            currentPolyLine = [];
+                        }
+                    }
+                    else {
+                        currentPolyLine.push(point);
+                    }
+                }
+                if (currentPolyLine.length > 1) {
+                    polyLines.push(currentPolyLine);
+                }
+            }
+        }
+        var polyLinesData = [];
+        for (var i = 0; i < polyLines.length; i++) {
+            var polyLine = polyLines[i];
+            var isClosed = Rance.MapGen2.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            if (isClosed)
+                polyLine.pop();
+            for (var j = 0; j < polyLine.length; j++) {
+                // stupid hack to fix pixi bug with drawing polygons
+                // without this consecutive edges with the same angle disappear
+                polyLine[j].x += (j % 2) * 0.1;
+                polyLine[j].y += (j % 2) * 0.1;
+            }
+            polyLinesData.push({
+                points: polyLine,
+                isClosed: isClosed
+            });
+        }
+        return polyLinesData;
+    }
+    Rance.getRevealedBorderEdges = getRevealedBorderEdges;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="maprenderermapmode.ts" />
+/// <reference path="maprendererlayer.ts" />
+/// <reference path="eventmanager.ts"/>
+/// <reference path="utility.ts"/>
+/// <reference path="color.ts"/>
+/// <reference path="borderpolygon.ts"/>
+/// <reference path="galaxymap.ts" />
+/// <reference path="star.ts" />
+/// <reference path="fleet.ts" />
+/// <reference path="player.ts" />
+var Rance;
+(function (Rance) {
+    var MapRenderer = (function () {
+        function MapRenderer(map, player) {
+            this.occupationShaders = {};
+            this.layers = {};
+            this.mapModes = {};
+            this.fowSpriteCache = {};
+            this.fleetTextTextureCache = {};
+            this.isDirty = true;
+            this.preventRender = false;
+            this.listeners = {};
+            this.container = new PIXI.Container();
+            this.galaxyMap = map;
+            this.player = player;
+        }
+        MapRenderer.prototype.destroy = function () {
+            this.preventRender = true;
+            this.container.renderable = false;
+            for (var name in this.listeners) {
+                Rance.eventManager.removeEventListener(name, this.listeners[name]);
+            }
+            this.container.removeChildren();
+            this.parent.removeChild(this.container);
+            this.player = null;
+            this.container = null;
+            this.parent = null;
+            this.occupationShaders = null;
+            for (var starId in this.fowSpriteCache) {
+                var sprite = this.fowSpriteCache[starId];
+                sprite.renderable = false;
+                sprite.texture.destroy(true);
+                this.fowSpriteCache[starId] = null;
+            }
+            for (var fleetSize in this.fleetTextTextureCache) {
+                var texture = this.fleetTextTextureCache[fleetSize];
+                texture.destroy(true);
+            }
+        };
+        MapRenderer.prototype.init = function () {
+            this.makeFowSprite();
+            this.initLayers();
+            this.initMapModes();
+            this.addEventListeners();
+        };
+        MapRenderer.prototype.addEventListeners = function () {
+            var self = this;
+            this.listeners["renderMap"] =
+                Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
+            this.listeners["renderLayer"] =
+                Rance.eventManager.addEventListener("renderLayer", function (layerName, star) {
+                    var passesStarVisibilityCheck = true;
+                    if (star) {
+                        switch (layerName) {
+                            case "fleets":
+                                {
+                                    passesStarVisibilityCheck = self.player.starIsVisible(star);
+                                    break;
+                                }
+                            default:
+                                {
+                                    passesStarVisibilityCheck = self.player.starIsRevealed(star);
+                                    break;
+                                }
+                        }
+                    }
+                    if (passesStarVisibilityCheck || Rance.Options.debugMode) {
+                        self.setLayerAsDirty(layerName);
+                    }
+                });
+            var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
+            var boundUpdateZoom = this.updateShaderZoom.bind(this);
+            this.listeners["registerOnMoveCallback"] =
+                Rance.eventManager.addEventListener("registerOnMoveCallback", function (callbacks) {
+                    callbacks.push(boundUpdateOffsets);
+                });
+            this.listeners["registerOnZoomCallback"] =
+                Rance.eventManager.addEventListener("registerOnZoomCallback", function (callbacks) {
+                    callbacks.push(boundUpdateZoom);
+                });
+        };
+        MapRenderer.prototype.setPlayer = function (player) {
+            this.player = player;
+            this.setAllLayersAsDirty();
+        };
+        MapRenderer.prototype.updateShaderOffsets = function (x, y) {
+            for (var owner in this.occupationShaders) {
+                for (var occupier in this.occupationShaders[owner]) {
+                    var shader = this.occupationShaders[owner][occupier];
+                    shader.uniforms.offset.value = [-x, y];
+                }
+            }
+        };
+        MapRenderer.prototype.updateShaderZoom = function (zoom) {
+            for (var owner in this.occupationShaders) {
+                for (var occupier in this.occupationShaders[owner]) {
+                    var shader = this.occupationShaders[owner][occupier];
+                    shader.uniforms.zoom.value = zoom;
+                }
+            }
+        };
+        MapRenderer.prototype.makeFowSprite = function () {
+            if (!this.fowTilingSprite) {
+                var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
+                var w = this.galaxyMap.width;
+                var h = this.galaxyMap.height;
+                this.fowTilingSprite = new PIXI.extras.TilingSprite(fowTexture, w, h);
+            }
+        };
+        MapRenderer.prototype.getFowSpriteForStar = function (star) {
+            // silly hack to make sure first texture gets created properly
+            if (!this.fowSpriteCache[star.id] ||
+                Object.keys(this.fowSpriteCache).length < 4) {
+                var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                var gfx = new PIXI.Graphics();
+                gfx.isMask = true;
+                gfx.beginFill(0);
+                gfx.drawShape(poly);
+                gfx.endFill();
+                this.fowTilingSprite.removeChildren();
+                this.fowTilingSprite.mask = gfx;
+                this.fowTilingSprite.addChild(gfx);
+                // triggers bounds update that gets skipped if we just call generateTexture()
+                var bounds = this.fowTilingSprite.getBounds();
+                var rendered = this.fowTilingSprite.generateTexture(app.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
+                var sprite = new PIXI.Sprite(rendered);
+                this.fowSpriteCache[star.id] = sprite;
+                this.fowTilingSprite.mask = null;
+            }
+            return this.fowSpriteCache[star.id];
+        };
+        MapRenderer.prototype.getOccupationShader = function (owner, occupier) {
+            if (!this.occupationShaders[owner.id]) {
+                this.occupationShaders[owner.id] = {};
+            }
+            if (!this.occupationShaders[owner.id][occupier.id]) {
+                var baseColor = PIXI.utils.hex2rgb(owner.color);
+                baseColor.push(1.0);
+                var occupierColor = PIXI.utils.hex2rgb(occupier.color);
+                occupierColor.push(1.0);
+                var uniforms = {
+                    baseColor: { type: "4fv", value: baseColor },
+                    lineColor: { type: "4fv", value: occupierColor },
+                    gapSize: { type: "1f", value: 3.0 },
+                    offset: { type: "2f", value: [0.0, 0.0] },
+                    zoom: { type: "1f", value: 1.0 }
+                };
+                this.occupationShaders[owner.id][occupier.id] = new Rance.OccupationFilter(uniforms);
+            }
+            return this.occupationShaders[owner.id][occupier.id];
+        };
+        MapRenderer.prototype.getFleetTextTexture = function (fleet) {
+            var fleetSize = fleet.ships.length;
+            if (!this.fleetTextTextureCache[fleetSize]) {
+                var text = new PIXI.Text("" + fleet.ships.length, {
+                    fill: "#FFFFFF",
+                    stroke: "#000000",
+                    strokeThickness: 3
+                });
+                // triggers bounds update that gets skipped if we just call generateTexture()
+                text.getBounds();
+                this.fleetTextTextureCache[fleetSize] = text.generateTexture(app.renderer.renderer);
+                window.setTimeout(function () {
+                    text.texture.destroy(true);
+                }, 0);
+            }
+            return this.fleetTextTextureCache[fleetSize];
+        };
+        MapRenderer.prototype.initLayers = function () {
+            for (var layerKey in app.moduleData.Templates.MapRendererLayers) {
+                var template = app.moduleData.Templates.MapRendererLayers[layerKey];
+                var layer = new Rance.MapRendererLayer(template);
+                this.layers[layerKey] = layer;
+            }
+        };
+        MapRenderer.prototype.initMapModes = function () {
+            var buildMapMode = function (template) {
+                var alreadyAdded = {};
+                var mapMode = new Rance.MapRendererMapMode(template);
+                for (var i = 0; i < template.layers.length; i++) {
+                    var layer = template.layers[i];
+                    mapMode.addLayer(this.layers[layer.key], true);
+                    alreadyAdded[layer.key] = true;
+                }
+                for (var layerKey in this.layers) {
+                    if (!alreadyAdded[layerKey]) {
+                        mapMode.addLayer(this.layers[layerKey], false);
+                        alreadyAdded[layerKey] = true;
+                    }
+                }
+                this.mapModes[mapModeKey] = mapMode;
+            }.bind(this);
+            for (var mapModeKey in app.moduleData.Templates.MapRendererMapModes) {
+                var template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
+                buildMapMode(template);
+            }
+            // var customMapModeTemplate: IMapRendererMapModeTemplate =
+            // {
+            //   key: "custom",
+            //   displayName: "Custom",
+            //   layers: this.mapModes[Object.keys(this.mapModes)[0]].template.layers
+            // };
+            // buildMapMode(customMapModeTemplate);
+        };
+        MapRenderer.prototype.setParent = function (newParent) {
+            var oldParent = this.parent;
+            if (oldParent) {
+                oldParent.removeChild(this.container);
+            }
+            this.parent = newParent;
+            newParent.addChild(this.container);
+        };
+        MapRenderer.prototype.resetContainer = function () {
+            this.container.removeChildren();
+        };
+        MapRenderer.prototype.setLayerAsDirty = function (layerName) {
+            var layer = this.layers[layerName];
+            layer.isDirty = true;
+            this.isDirty = true;
+            // TODO
+            this.render();
+        };
+        MapRenderer.prototype.setAllLayersAsDirty = function () {
+            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
+                this.currentMapMode.layers[i].isDirty = true;
+            }
+            this.isDirty = true;
+            // TODO
+            this.render();
+        };
+        MapRenderer.prototype.updateMapModeLayers = function (updatedLayers) {
+            for (var i = 0; i < updatedLayers.length; i++) {
+                var layer = updatedLayers[i];
+                var childIndex = this.container.getChildIndex(layer.container);
+                var mapModeLayerIndex = this.currentMapMode.getLayerIndexInContainer(layer);
+                if (childIndex === -1) {
+                    this.container.addChildAt(layer.container, mapModeLayerIndex);
+                }
+                else {
+                    this.container.removeChildAt(mapModeLayerIndex + 1);
+                }
+                this.setLayerAsDirty(layer.template.key);
+            }
+        };
+        MapRenderer.prototype.resetMapModeLayersPosition = function () {
+            this.resetContainer();
+            var layerData = this.currentMapMode.getActiveLayers();
+            for (var i = 0; i < layerData.length; i++) {
+                var layer = layerData[i];
+                this.container.addChild(layer.container);
+            }
+        };
+        MapRenderer.prototype.setMapModeByKey = function (key) {
+            this.setMapMode(this.mapModes[key]);
+        };
+        MapRenderer.prototype.setMapMode = function (newMapMode) {
+            if (!this.mapModes[newMapMode.template.key]) {
+                throw new Error("Invalid mapmode " + newMapMode.template.key);
+                return;
+            }
+            if (this.currentMapMode && this.currentMapMode === newMapMode) {
+                return;
+            }
+            this.currentMapMode = newMapMode;
+            this.resetContainer();
+            var layerData = this.currentMapMode.getActiveLayers();
+            for (var i = 0; i < layerData.length; i++) {
+                var layer = layerData[i];
+                this.container.addChild(layer.container);
+            }
+            this.setAllLayersAsDirty();
+        };
+        MapRenderer.prototype.render = function () {
+            if (this.preventRender || !this.isDirty)
+                return;
+            var layerData = this.currentMapMode.getActiveLayers();
+            for (var i = 0; i < layerData.length; i++) {
+                var layer = layerData[i];
+                layer.draw(this.galaxyMap, this);
+            }
+            this.isDirty = false;
+        };
+        return MapRenderer;
+    })();
+    Rance.MapRenderer = MapRenderer;
+})(Rance || (Rance = {}));
+/// <reference path="../../maprenderer.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.MapModeSelector = React.createClass({
+            displayName: "MapModeSelector",
+            propTypes: {
+                mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired,
+                onUpdate: React.PropTypes.func
+            },
+            handleChange: function (e) {
+                var target = e.target;
+                var value = target.value;
+                this.props.mapRenderer.setMapModeByKey(value);
+                if (this.props.onUpdate) {
+                    this.props.onUpdate();
+                }
+            },
+            makeOptions: function () {
+                var mapRenderer = this.props.mapRenderer;
+                var options = [];
+                for (var key in mapRenderer.mapModes) {
+                    var mapMode = mapRenderer.mapModes[key];
+                    options.push(React.DOM.option({
+                        value: key,
+                        key: key
+                    }, mapMode.displayName));
+                }
+                return options;
+            },
+            render: function () {
+                var mapRenderer = this.props.mapRenderer;
+                return (React.DOM.select({
+                    className: "map-mode-selector",
+                    value: mapRenderer.currentMapMode.template.key,
+                    onChange: this.handleChange
+                }, this.makeOptions()));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -17104,6 +17812,7 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="maprendererlayerslistitem.ts" />
+/// <reference path="../../maprenderer.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -17111,6 +17820,10 @@ var Rance;
         UIComponents.MapRendererLayersList = React.createClass({
             displayName: "MapRendererLayersList",
             mixins: [React.addons.PureRenderMixin],
+            propTypes: {
+                mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired,
+                currentMapMode: React.PropTypes.instanceOf(Rance.MapRendererMapMode).isRequired
+            },
             getInitialState: function () {
                 return ({
                     currentDraggingLayer: null,
@@ -17155,7 +17868,7 @@ var Rance;
             },
             render: function () {
                 var mapRenderer = this.props.mapRenderer;
-                var mapMode = mapRenderer.currentMapMode;
+                var mapMode = this.props.currentMapMode;
                 if (!mapMode)
                     return null;
                 var layersData = mapMode.layers;
@@ -17182,6 +17895,40 @@ var Rance;
                 return (React.DOM.ol({
                     className: "map-renderer-layers-list"
                 }, listItems));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="mapmodeselector.ts" />
+/// <reference path="maprendererlayerslist.ts" />
+/// <reference path="../../maprenderer.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.MapModeSettings = React.createClass({
+            displayName: "MapModeSettings",
+            propTypes: {
+                mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired
+            },
+            handleReset: function () {
+                this.props.mapRenderer.currentMapMode.resetLayers();
+                this.props.mapRenderer.setAllLayersAsDirty();
+                this.forceUpdate();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "map-mode-settings"
+                }, UIComponents.MapModeSelector({
+                    mapRenderer: this.props.mapRenderer,
+                    onUpdate: this.forceUpdate.bind(this)
+                }), React.DOM.button({
+                    className: "reset-map-mode-button",
+                    onClick: this.handleReset
+                }, "Reset"), UIComponents.MapRendererLayersList({
+                    mapRenderer: this.props.mapRenderer,
+                    currentMapMode: this.props.mapRenderer.currentMapMode
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -17356,7 +18103,7 @@ var Rance;
 /// <reference path="fleetselection.ts"/>
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
-/// <reference path="../mapmodes/maprendererlayerslist.ts" />
+/// <reference path="../mapmodes/mapmodesettings.ts" />
 /// <reference path="../notifications/notifications.ts" />
 var Rance;
 (function (Rance) {
@@ -17373,7 +18120,8 @@ var Rance;
                     selectedStar: pc.selectedStar,
                     attackTargets: pc.currentAttackTargets,
                     isPlayerTurn: !this.props.game.playerOrder[0].isAI,
-                    expandedActionElement: null
+                    expandedActionElement: null,
+                    hasMapModeSettingsExpanded: false
                 });
             },
             componentWillMount: function () {
@@ -17406,6 +18154,9 @@ var Rance;
                 this.setState({
                     expandedActionElement: element
                 });
+            },
+            toggleMapModeSettingsExpanded: function () {
+                this.setState({ hasMapModeSettingsExpanded: !this.state.hasMapModeSettingsExpanded });
             },
             updateSelection: function () {
                 var pc = this.props.playerControl;
@@ -17494,11 +18245,14 @@ var Rance;
                 }))), expandedActionElement), React.DOM.div({
                     className: "galaxy-map-ui-bottom-right",
                     key: "bottomRight"
-                }, !Rance.Options.debugMode ? null : UIComponents.MapRendererLayersList({
+                }, !this.state.hasMapModeSettingsExpanded ? null : UIComponents.MapModeSettings({
                     mapRenderer: this.props.mapRenderer,
-                    mapMode: this.props.mapRenderer.currentMapMode,
                     key: "mapRendererLayersList"
-                }), UIComponents.Notifications({
+                }), React.DOM.button({
+                    className: "toggle-map-mode-settings-button",
+                    tabIndex: -1,
+                    onClick: this.toggleMapModeSettingsExpanded
+                }, "Map mode"), UIComponents.Notifications({
                     log: this.props.game.notificationLog,
                     currentTurn: this.props.game.turnNumber,
                     key: "notifications"
@@ -17514,10 +18268,6 @@ var Rance;
     (function (UIComponents) {
         UIComponents.GalaxyMap = React.createClass({
             displayName: "GalaxyMap",
-            switchMapMode: function () {
-                var newMode = this.refs.mapModeSelector.getDOMNode().value;
-                this.props.mapRenderer.setMapModeByKey(newMode);
-            },
             changeScene: function (e) {
                 var target = e.target;
                 app.reactUI.switchScene(target.value);
@@ -17544,10 +18294,6 @@ var Rance;
                 })), !Rance.Options.debugMode ? null : React.DOM.div({
                     className: "galaxy-map-debug debug"
                 }, React.DOM.select({
-                    className: "reactui-selector debug",
-                    ref: "mapModeSelector",
-                    onChange: this.switchMapMode
-                }, mapModeOptions), React.DOM.select({
                     className: "reactui-selector debug",
                     ref: "sceneSelector",
                     value: app.reactUI.currentScene,
@@ -19340,641 +20086,6 @@ var Rance;
         return PlayerControl;
     })();
     Rance.PlayerControl = PlayerControl;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
-/// <reference path="galaxymap.ts" />
-/// <reference path="templateinterfaces/imaprendererlayertemplate.d.ts" />
-var Rance;
-(function (Rance) {
-    var MapRendererLayer = (function () {
-        function MapRendererLayer(template) {
-            this.isDirty = true;
-            this.template = template;
-            this.container = new PIXI.Container();
-            this.container.interactiveChildren = template.interactive;
-            this.alpha = template.alpha || 1;
-        }
-        Object.defineProperty(MapRendererLayer.prototype, "alpha", {
-            get: function () {
-                return this._alpha;
-            },
-            set: function (newAlpha) {
-                this._alpha = newAlpha;
-                this.container.alpha = newAlpha;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        MapRendererLayer.prototype.draw = function (map, mapRenderer) {
-            if (!this.isDirty)
-                return;
-            this.container.removeChildren();
-            this.container.addChild(this.template.drawingFunction.call(mapRenderer, map));
-            this.isDirty = false;
-        };
-        return MapRendererLayer;
-    })();
-    Rance.MapRendererLayer = MapRendererLayer;
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/imaprenderermapmodetemplate.d.ts" />
-/// <reference path="maprendererlayer.ts" />
-var Rance;
-(function (Rance) {
-    var MapRendererMapMode = (function () {
-        function MapRendererMapMode(template) {
-            this.layers = [];
-            this.activeLayers = {};
-            this.template = template;
-            this.displayName = template.displayName;
-        }
-        MapRendererMapMode.prototype.addLayer = function (layer, isActive) {
-            if (isActive === void 0) { isActive = true; }
-            if (this.hasLayer(layer)) {
-                throw new Error("Tried to add duplicate layer " + layer.template.key);
-                return;
-            }
-            this.layers.push(layer);
-            this.activeLayers[layer.template.key] = isActive;
-        };
-        MapRendererMapMode.prototype.getLayerIndex = function (layer) {
-            for (var i = 0; i < this.layers.length; i++) {
-                if (this.layers[i] === layer)
-                    return i;
-            }
-            return -1;
-        };
-        MapRendererMapMode.prototype.hasLayer = function (layer) {
-            return this.getLayerIndex(layer) !== -1;
-        };
-        MapRendererMapMode.prototype.getLayerIndexInContainer = function (layer) {
-            var index = -1;
-            for (var i = 0; i < this.layers.length; i++) {
-                if (this.activeLayers[this.layers[i].template.key]) {
-                    index++;
-                }
-                if (this.layers[i] === layer)
-                    return index;
-            }
-            throw new Error("Map mode doesn't have layer " + layer.template.key);
-        };
-        MapRendererMapMode.prototype.toggleLayer = function (layer) {
-            this.activeLayers[layer.template.key] = !this.activeLayers[layer.template.key];
-            if (!this.hasLayer(layer)) {
-                this.addLayer(layer);
-            }
-        };
-        MapRendererMapMode.prototype.setLayerIndex = function (layer, newIndex) {
-            var prevIndex = this.getLayerIndex(layer);
-            var spliced = this.layers.splice(prevIndex, 1)[0];
-            this.layers.splice(newIndex, 0, spliced);
-        };
-        MapRendererMapMode.prototype.insertLayerNextToLayer = function (toInsert, target, position) {
-            var indexAdjust = (position === "top" ? -1 : 0);
-            var newIndex = this.getLayerIndex(target) + indexAdjust;
-            this.setLayerIndex(toInsert, newIndex);
-        };
-        MapRendererMapMode.prototype.getActiveLayers = function () {
-            var self = this;
-            return (this.layers.filter(function (layer) {
-                return self.activeLayers[layer.template.key];
-            }));
-        };
-        return MapRendererMapMode;
-    })();
-    Rance.MapRendererMapMode = MapRendererMapMode;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/offset.d.ts" />
-// some problems with this as well as pixi polyogn rendering can lead to silly behavior sometimes.
-// overlapping lines, acute angles etc etc.
-// probably have to make a shader based version later but this could still be useful for canvas fallback.
-var Rance;
-(function (Rance) {
-    function starsOnlyShareNarrowBorder(a, b) {
-        var minBorderWidth = Rance.Options.display.borderWidth * 2;
-        var edge = a.getEdgeWith(b);
-        if (!edge) {
-            return false;
-        }
-        var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
-        if (edgeLength < minBorderWidth) {
-            var sharedNeighbors = a.getSharedNeighborsWith(b);
-            var sharedOwnedNeighbors = sharedNeighbors.filter(function (sharedNeighbor) {
-                return sharedNeighbor.owner === a.owner;
-            });
-            return sharedOwnedNeighbors.length === 0;
-        }
-        else {
-            return false;
-        }
-    }
-    Rance.starsOnlyShareNarrowBorder = starsOnlyShareNarrowBorder;
-    function getBorderingHalfEdges(stars) {
-        var borderingHalfEdges = [];
-        function getHalfEdgeOppositeSite(halfEdge) {
-            return halfEdge.edge.lSite === halfEdge.site ?
-                halfEdge.edge.rSite : halfEdge.edge.lSite;
-        }
-        function halfEdgeIsBorder(halfEdge) {
-            var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
-            var isBorderWithOtherOwner = !oppositeSite || !oppositeSite.owner || (oppositeSite.owner !== halfEdge.site.owner);
-            var isBorderWithSameOwner = false;
-            if (!isBorderWithOtherOwner) {
-                isBorderWithSameOwner = starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite) ||
-                    halfEdge.site.getDistanceToStar(oppositeSite) > 3;
-            }
-            return isBorderWithOtherOwner || isBorderWithSameOwner;
-        }
-        function halfEdgeSharesOwner(halfEdge) {
-            var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
-            var sharesOwner = Boolean(oppositeSite) && Boolean(oppositeSite.owner) &&
-                (oppositeSite.owner === halfEdge.site.owner);
-            return sharesOwner && !starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite);
-        }
-        function getContiguousHalfEdgeBetweenSharedSites(sharedEdge) {
-            var contiguousEdgeEndPoint = sharedEdge.getStartpoint();
-            var oppositeSite = getHalfEdgeOppositeSite(sharedEdge);
-            for (var i = 0; i < oppositeSite.voronoiCell.halfedges.length; i++) {
-                var halfEdge = oppositeSite.voronoiCell.halfedges[i];
-                if (halfEdge.getStartpoint() === contiguousEdgeEndPoint) {
-                    return halfEdge;
-                }
-            }
-            return false;
-        }
-        var startEdge;
-        var star;
-        for (var i = 0; i < stars.length; i++) {
-            if (star)
-                break;
-            for (var j = 0; j < stars[i].voronoiCell.halfedges.length; j++) {
-                var halfEdge = stars[i].voronoiCell.halfedges[j];
-                if (halfEdgeIsBorder(halfEdge)) {
-                    star = stars[i];
-                    startEdge = halfEdge;
-                    break;
-                }
-            }
-        }
-        if (!star)
-            throw new Error("Couldn't find starting location for border polygon");
-        var hasProcessedStartEdge = false;
-        var contiguousEdge = null;
-        // just a precaution to make sure we don't get into an infinite loop
-        // should always return earlier unless somethings wrong
-        for (var j = 0; j < stars.length * 40; j++) {
-            var indexShift = 0;
-            for (var _i = 0; _i < star.voronoiCell.halfedges.length; _i++) {
-                if (!hasProcessedStartEdge) {
-                    contiguousEdge = startEdge;
-                }
-                if (contiguousEdge) {
-                    indexShift = star.voronoiCell.halfedges.indexOf(contiguousEdge);
-                    contiguousEdge = null;
-                }
-                var i = (_i + indexShift) % (star.voronoiCell.halfedges.length);
-                var halfEdge = star.voronoiCell.halfedges[i];
-                if (halfEdgeIsBorder(halfEdge)) {
-                    borderingHalfEdges.push({
-                        star: star,
-                        halfEdge: halfEdge
-                    });
-                    if (!startEdge) {
-                        startEdge = halfEdge;
-                    }
-                    else if (halfEdge === startEdge) {
-                        if (!hasProcessedStartEdge) {
-                            hasProcessedStartEdge = true;
-                        }
-                        else {
-                            return borderingHalfEdges;
-                        }
-                    }
-                }
-                else if (halfEdgeSharesOwner(halfEdge)) {
-                    contiguousEdge = getContiguousHalfEdgeBetweenSharedSites(halfEdge);
-                    star = contiguousEdge.site;
-                    break;
-                }
-            }
-        }
-        throw new Error("getHalfEdgesConnectingStars got stuck in infinite loop when star id = " + star.id);
-        return borderingHalfEdges;
-    }
-    Rance.getBorderingHalfEdges = getBorderingHalfEdges;
-    function joinPointsWithin(points, maxDistance) {
-        for (var i = points.length - 2; i >= 0; i--) {
-            var x1 = points[i].x;
-            var y1 = points[i].y;
-            var x2 = points[i + 1].x;
-            var y2 = points[i + 1].y;
-            if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance) {
-                var newPoint = {
-                    x: (x1 + x2) / 2,
-                    y: (y1 + y2) / 2
-                };
-                points.splice(i, 2, newPoint);
-            }
-        }
-    }
-    Rance.joinPointsWithin = joinPointsWithin;
-    function convertHalfEdgeDataToOffset(halfEdgeData) {
-        var convertedToPoints = halfEdgeData.map(function (data) {
-            var v1 = data.halfEdge.getStartpoint();
-            return ({
-                x: v1.x,
-                y: v1.y
-            });
-        });
-        joinPointsWithin(convertedToPoints, Rance.Options.display.borderWidth / 2);
-        var offset = new Offset();
-        offset.arcSegments(0);
-        var convertedToOffset = offset.data(convertedToPoints).padding(Rance.Options.display.borderWidth / 2);
-        return convertedToOffset;
-    }
-    Rance.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
-    function getRevealedBorderEdges(revealedStars, voronoiInfo) {
-        var polyLines = [];
-        var processedStarsById = {};
-        for (var ii = 0; ii < revealedStars.length; ii++) {
-            var star = revealedStars[ii];
-            if (processedStarsById[star.id]) {
-                continue;
-            }
-            if (!star.owner.isIndependent) {
-                var ownedIsland = star.getIslandForQualifier(function (a, b) {
-                    // don't count stars if the only shared border between them is smaller than 10px
-                    return (a.owner === b.owner && !starsOnlyShareNarrowBorder(a, b));
-                });
-                var currentPolyLine = [];
-                var halfEdgesDataForIsland = getBorderingHalfEdges(ownedIsland);
-                var offsetted = convertHalfEdgeDataToOffset(halfEdgesDataForIsland);
-                // set stars
-                for (var j = 0; j < offsetted.length; j++) {
-                    var point = offsetted[j];
-                    var nextPoint = offsetted[(j + 1) % offsetted.length];
-                    // offset library can't handle acute angles properly. can lead to crashes if
-                    // angle is at map edge due to points going off the map. clamping should fix crashes at least
-                    var edgeCenter = {
-                        x: Rance.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-                        y: Rance.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
-                    };
-                    var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
-                    if (!pointStar) {
-                        pointStar = voronoiInfo.getStarAtPoint(point);
-                        if (!pointStar) {
-                            pointStar = voronoiInfo.getStarAtPoint(nextPoint);
-                        }
-                    }
-                    processedStarsById[pointStar.id] = true;
-                    point.star = pointStar;
-                }
-                // find first point in revealed star preceded by unrevealed star
-                // set that point as start of polygon
-                var startIndex = 0; // default = all stars of polygon are revealed
-                for (var j = 0; j < offsetted.length; j++) {
-                    var currPoint = offsetted[j];
-                    var prevPoint = offsetted[(j === 0 ? offsetted.length - 1 : j - 1)];
-                    if (revealedStars.indexOf(currPoint.star) !== -1 && revealedStars.indexOf(prevPoint.star) === -1) {
-                        startIndex = j;
-                    }
-                }
-                // get polylines
-                for (var _j = startIndex; _j < offsetted.length + startIndex; _j++) {
-                    var j = _j % offsetted.length;
-                    var point = offsetted[j];
-                    if (revealedStars.indexOf(point.star) === -1) {
-                        if (currentPolyLine.length > 1) {
-                            currentPolyLine.push(point);
-                            polyLines.push(currentPolyLine);
-                            currentPolyLine = [];
-                        }
-                    }
-                    else {
-                        currentPolyLine.push(point);
-                    }
-                }
-                if (currentPolyLine.length > 1) {
-                    polyLines.push(currentPolyLine);
-                }
-            }
-        }
-        var polyLinesData = [];
-        for (var i = 0; i < polyLines.length; i++) {
-            var polyLine = polyLines[i];
-            var isClosed = Rance.MapGen2.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
-            if (isClosed)
-                polyLine.pop();
-            for (var j = 0; j < polyLine.length; j++) {
-                // stupid hack to fix pixi bug with drawing polygons
-                // without this consecutive edges with the same angle disappear
-                polyLine[j].x += (j % 2) * 0.1;
-                polyLine[j].y += (j % 2) * 0.1;
-            }
-            polyLinesData.push({
-                points: polyLine,
-                isClosed: isClosed
-            });
-        }
-        return polyLinesData;
-    }
-    Rance.getRevealedBorderEdges = getRevealedBorderEdges;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
-/// <reference path="maprenderermapmode.ts" />
-/// <reference path="maprendererlayer.ts" />
-/// <reference path="eventmanager.ts"/>
-/// <reference path="utility.ts"/>
-/// <reference path="color.ts"/>
-/// <reference path="borderpolygon.ts"/>
-/// <reference path="galaxymap.ts" />
-/// <reference path="star.ts" />
-/// <reference path="fleet.ts" />
-/// <reference path="player.ts" />
-var Rance;
-(function (Rance) {
-    var MapRenderer = (function () {
-        function MapRenderer(map, player) {
-            this.occupationShaders = {};
-            this.layers = {};
-            this.mapModes = {};
-            this.fowSpriteCache = {};
-            this.fleetTextTextureCache = {};
-            this.isDirty = true;
-            this.preventRender = false;
-            this.listeners = {};
-            this.container = new PIXI.Container();
-            this.galaxyMap = map;
-            this.player = player;
-        }
-        MapRenderer.prototype.destroy = function () {
-            this.preventRender = true;
-            this.container.renderable = false;
-            for (var name in this.listeners) {
-                Rance.eventManager.removeEventListener(name, this.listeners[name]);
-            }
-            this.container.removeChildren();
-            this.parent.removeChild(this.container);
-            this.player = null;
-            this.container = null;
-            this.parent = null;
-            this.occupationShaders = null;
-            for (var starId in this.fowSpriteCache) {
-                var sprite = this.fowSpriteCache[starId];
-                sprite.renderable = false;
-                sprite.texture.destroy(true);
-                this.fowSpriteCache[starId] = null;
-            }
-            for (var fleetSize in this.fleetTextTextureCache) {
-                var texture = this.fleetTextTextureCache[fleetSize];
-                texture.destroy(true);
-            }
-        };
-        MapRenderer.prototype.init = function () {
-            this.makeFowSprite();
-            this.initLayers();
-            this.initMapModes();
-            this.addEventListeners();
-        };
-        MapRenderer.prototype.addEventListeners = function () {
-            var self = this;
-            this.listeners["renderMap"] =
-                Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
-            this.listeners["renderLayer"] =
-                Rance.eventManager.addEventListener("renderLayer", function (layerName, star) {
-                    var passesStarVisibilityCheck = true;
-                    if (star) {
-                        switch (layerName) {
-                            case "fleets":
-                                {
-                                    passesStarVisibilityCheck = self.player.starIsVisible(star);
-                                    break;
-                                }
-                            default:
-                                {
-                                    passesStarVisibilityCheck = self.player.starIsRevealed(star);
-                                    break;
-                                }
-                        }
-                    }
-                    if (passesStarVisibilityCheck || Rance.Options.debugMode) {
-                        self.setLayerAsDirty(layerName);
-                    }
-                });
-            var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
-            var boundUpdateZoom = this.updateShaderZoom.bind(this);
-            this.listeners["registerOnMoveCallback"] =
-                Rance.eventManager.addEventListener("registerOnMoveCallback", function (callbacks) {
-                    callbacks.push(boundUpdateOffsets);
-                });
-            this.listeners["registerOnZoomCallback"] =
-                Rance.eventManager.addEventListener("registerOnZoomCallback", function (callbacks) {
-                    callbacks.push(boundUpdateZoom);
-                });
-        };
-        MapRenderer.prototype.setPlayer = function (player) {
-            this.player = player;
-            this.setAllLayersAsDirty();
-        };
-        MapRenderer.prototype.updateShaderOffsets = function (x, y) {
-            for (var owner in this.occupationShaders) {
-                for (var occupier in this.occupationShaders[owner]) {
-                    var shader = this.occupationShaders[owner][occupier];
-                    shader.uniforms.offset.value = [-x, y];
-                }
-            }
-        };
-        MapRenderer.prototype.updateShaderZoom = function (zoom) {
-            for (var owner in this.occupationShaders) {
-                for (var occupier in this.occupationShaders[owner]) {
-                    var shader = this.occupationShaders[owner][occupier];
-                    shader.uniforms.zoom.value = zoom;
-                }
-            }
-        };
-        MapRenderer.prototype.makeFowSprite = function () {
-            if (!this.fowTilingSprite) {
-                var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
-                var w = this.galaxyMap.width;
-                var h = this.galaxyMap.height;
-                this.fowTilingSprite = new PIXI.extras.TilingSprite(fowTexture, w, h);
-            }
-        };
-        MapRenderer.prototype.getFowSpriteForStar = function (star) {
-            // silly hack to make sure first texture gets created properly
-            if (!this.fowSpriteCache[star.id] ||
-                Object.keys(this.fowSpriteCache).length < 4) {
-                var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                var gfx = new PIXI.Graphics();
-                gfx.isMask = true;
-                gfx.beginFill(0);
-                gfx.drawShape(poly);
-                gfx.endFill();
-                this.fowTilingSprite.removeChildren();
-                this.fowTilingSprite.mask = gfx;
-                this.fowTilingSprite.addChild(gfx);
-                // triggers bounds update that gets skipped if we just call generateTexture()
-                var bounds = this.fowTilingSprite.getBounds();
-                var rendered = this.fowTilingSprite.generateTexture(app.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
-                var sprite = new PIXI.Sprite(rendered);
-                this.fowSpriteCache[star.id] = sprite;
-                this.fowTilingSprite.mask = null;
-            }
-            return this.fowSpriteCache[star.id];
-        };
-        MapRenderer.prototype.getOccupationShader = function (owner, occupier) {
-            if (!this.occupationShaders[owner.id]) {
-                this.occupationShaders[owner.id] = {};
-            }
-            if (!this.occupationShaders[owner.id][occupier.id]) {
-                var baseColor = PIXI.utils.hex2rgb(owner.color);
-                baseColor.push(1.0);
-                var occupierColor = PIXI.utils.hex2rgb(occupier.color);
-                occupierColor.push(1.0);
-                var uniforms = {
-                    baseColor: { type: "4fv", value: baseColor },
-                    lineColor: { type: "4fv", value: occupierColor },
-                    gapSize: { type: "1f", value: 3.0 },
-                    offset: { type: "2f", value: [0.0, 0.0] },
-                    zoom: { type: "1f", value: 1.0 }
-                };
-                this.occupationShaders[owner.id][occupier.id] = new Rance.OccupationFilter(uniforms);
-            }
-            return this.occupationShaders[owner.id][occupier.id];
-        };
-        MapRenderer.prototype.getFleetTextTexture = function (fleet) {
-            var fleetSize = fleet.ships.length;
-            if (!this.fleetTextTextureCache[fleetSize]) {
-                var text = new PIXI.Text("" + fleet.ships.length, {
-                    fill: "#FFFFFF",
-                    stroke: "#000000",
-                    strokeThickness: 3
-                });
-                // triggers bounds update that gets skipped if we just call generateTexture()
-                text.getBounds();
-                this.fleetTextTextureCache[fleetSize] = text.generateTexture(app.renderer.renderer);
-                window.setTimeout(function () {
-                    text.texture.destroy(true);
-                }, 0);
-            }
-            return this.fleetTextTextureCache[fleetSize];
-        };
-        MapRenderer.prototype.initLayers = function () {
-            for (var layerKey in app.moduleData.Templates.MapRendererLayers) {
-                var template = app.moduleData.Templates.MapRendererLayers[layerKey];
-                var layer = new Rance.MapRendererLayer(template);
-                this.layers[layerKey] = layer;
-            }
-        };
-        MapRenderer.prototype.initMapModes = function () {
-            var buildMapMode = function (template) {
-                var alreadyAdded = {};
-                var mapMode = new Rance.MapRendererMapMode(template);
-                for (var i = 0; i < template.layers.length; i++) {
-                    var layer = template.layers[i];
-                    mapMode.addLayer(this.layers[layer.key], true);
-                    alreadyAdded[layer.key] = true;
-                }
-                for (var layerKey in this.layers) {
-                    if (!alreadyAdded[layerKey]) {
-                        mapMode.addLayer(this.layers[layerKey], false);
-                        alreadyAdded[layerKey] = true;
-                    }
-                }
-                this.mapModes[mapModeKey] = mapMode;
-            }.bind(this);
-            for (var mapModeKey in app.moduleData.Templates.MapRendererMapModes) {
-                var template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
-                buildMapMode(template);
-            }
-            // var customMapModeTemplate: IMapRendererMapModeTemplate =
-            // {
-            //   key: "custom",
-            //   displayName: "Custom",
-            //   layers: this.mapModes[Object.keys(this.mapModes)[0]].template.layers
-            // };
-            // buildMapMode(customMapModeTemplate);
-        };
-        MapRenderer.prototype.setParent = function (newParent) {
-            var oldParent = this.parent;
-            if (oldParent) {
-                oldParent.removeChild(this.container);
-            }
-            this.parent = newParent;
-            newParent.addChild(this.container);
-        };
-        MapRenderer.prototype.resetContainer = function () {
-            this.container.removeChildren();
-        };
-        MapRenderer.prototype.setLayerAsDirty = function (layerName) {
-            var layer = this.layers[layerName];
-            layer.isDirty = true;
-            this.isDirty = true;
-            // TODO
-            this.render();
-        };
-        MapRenderer.prototype.setAllLayersAsDirty = function () {
-            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
-                this.currentMapMode.layers[i].isDirty = true;
-            }
-            this.isDirty = true;
-            // TODO
-            this.render();
-        };
-        MapRenderer.prototype.updateMapModeLayers = function (updatedLayers) {
-            for (var i = 0; i < updatedLayers.length; i++) {
-                var layer = updatedLayers[i];
-                var childIndex = this.container.getChildIndex(layer.container);
-                var mapModeLayerIndex = this.currentMapMode.getLayerIndexInContainer(layer);
-                if (childIndex === -1) {
-                    this.container.addChildAt(layer.container, mapModeLayerIndex);
-                }
-                else {
-                    this.container.removeChildAt(mapModeLayerIndex + 1);
-                }
-                this.setLayerAsDirty(layer.template.key);
-            }
-        };
-        MapRenderer.prototype.resetMapModeLayersPosition = function () {
-            this.resetContainer();
-            var layerData = this.currentMapMode.getActiveLayers();
-            for (var i = 0; i < layerData.length; i++) {
-                var layer = layerData[i];
-                this.container.addChild(layer.container);
-            }
-        };
-        MapRenderer.prototype.setMapModeByKey = function (key) {
-            this.setMapMode(this.mapModes[key]);
-        };
-        MapRenderer.prototype.setMapMode = function (newMapMode) {
-            if (!this.mapModes[newMapMode.template.key]) {
-                throw new Error("Invalid mapmode " + newMapMode.template.key);
-                return;
-            }
-            if (this.currentMapMode && this.currentMapMode === newMapMode) {
-                return;
-            }
-            this.currentMapMode = newMapMode;
-            this.resetContainer();
-            var layerData = this.currentMapMode.getActiveLayers();
-            for (var i = 0; i < layerData.length; i++) {
-                var layer = layerData[i];
-                this.container.addChild(layer.container);
-            }
-            this.setAllLayersAsDirty();
-        };
-        MapRenderer.prototype.render = function () {
-            if (this.preventRender || !this.isDirty)
-                return;
-            var layerData = this.currentMapMode.getActiveLayers();
-            for (var i = 0; i < layerData.length; i++) {
-                var layer = layerData[i];
-                layer.draw(this.galaxyMap, this);
-            }
-            this.isDirty = false;
-        };
-        return MapRenderer;
-    })();
-    Rance.MapRenderer = MapRenderer;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var tempCameraId = 0;
