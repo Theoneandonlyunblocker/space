@@ -17912,22 +17912,26 @@ var Rance;
                 mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired
             },
             handleReset: function () {
-                this.props.mapRenderer.currentMapMode.resetLayers();
-                this.props.mapRenderer.setAllLayersAsDirty();
-                this.forceUpdate();
+                var mapRenderer = this.props.mapRenderer;
+                mapRenderer.currentMapMode.resetLayers();
+                mapRenderer.resetMapModeLayersPosition();
+                mapRenderer.setAllLayersAsDirty();
+                this.refs.layersList.forceUpdate();
             },
             render: function () {
                 return (React.DOM.div({
                     className: "map-mode-settings"
                 }, UIComponents.MapModeSelector({
                     mapRenderer: this.props.mapRenderer,
-                    onUpdate: this.forceUpdate.bind(this)
+                    onUpdate: this.forceUpdate.bind(this),
+                    ref: "selector"
                 }), React.DOM.button({
                     className: "reset-map-mode-button",
                     onClick: this.handleReset
                 }, "Reset"), UIComponents.MapRendererLayersList({
                     mapRenderer: this.props.mapRenderer,
-                    currentMapMode: this.props.mapRenderer.currentMapMode
+                    currentMapMode: this.props.mapRenderer.currentMapMode,
+                    ref: "layersList"
                 })));
             }
         });

@@ -18,9 +18,11 @@ module Rance
 
       handleReset: function()
       {
-        this.props.mapRenderer.currentMapMode.resetLayers();
-        this.props.mapRenderer.setAllLayersAsDirty();
-        this.forceUpdate();
+        var mapRenderer: MapRenderer = this.props.mapRenderer;
+        mapRenderer.currentMapMode.resetLayers();
+        mapRenderer.resetMapModeLayersPosition();
+        mapRenderer.setAllLayersAsDirty();
+        this.refs.layersList.forceUpdate();
       },
 
       render: function()
@@ -33,7 +35,8 @@ module Rance
             UIComponents.MapModeSelector(
             {
               mapRenderer: this.props.mapRenderer,
-              onUpdate: this.forceUpdate.bind(this)
+              onUpdate: this.forceUpdate.bind(this),
+              ref: "selector"
             }),
             React.DOM.button(
             {
@@ -45,7 +48,8 @@ module Rance
             UIComponents.MapRendererLayersList(
             {
               mapRenderer: this.props.mapRenderer,
-              currentMapMode: this.props.mapRenderer.currentMapMode
+              currentMapMode: this.props.mapRenderer.currentMapMode,
+              ref: "layersList"
             })
           )
         );
