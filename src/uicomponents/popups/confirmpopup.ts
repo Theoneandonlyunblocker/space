@@ -73,6 +73,7 @@ module Rance
                 onClick: this.handleOk,
                 ref: "okButton"
               }, this.props.okText || "Confirm"),
+              this.props.extraButtons,
               React.DOM.button(
               {
                 className: "popup-button",

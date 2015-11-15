@@ -4190,7 +4190,7 @@ var Rance;
                     className: "popup-button",
                     onClick: this.handleOk,
                     ref: "okButton"
-                }, this.props.okText || "Confirm"), React.DOM.button({
+                }, this.props.okText || "Confirm"), this.props.extraButtons, React.DOM.button({
                     className: "popup-button",
                     onClick: this.handleClose
                 }, this.props.cancelText || "Cancel"))));
@@ -14263,6 +14263,7 @@ var Rance;
                 this.setState({
                     filterState: filter.filters[this.props.key]
                 });
+                Rance.eventManager.dispatchEvent("updateNotificationLog");
             },
             render: function () {
                 var inputElements = [];
@@ -14310,6 +14311,7 @@ var Rance;
                 filter.setDefaultFilterStatesForCategory(category);
                 filter.save();
                 this.forceUpdate();
+                Rance.eventManager.dispatchEvent("updateNotificationLog");
             },
             render: function () {
                 var filter = this.props.filter;
@@ -17972,6 +17974,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../../notificationlog.ts" />
 /// <reference path="notification.ts" />
+/// <reference path="notificationfilterbutton.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -18019,6 +18022,7 @@ var Rance;
                 }
             },
             makePopup: function (notification, key) {
+                var log = this.props.log;
                 var popupId = this.refs.popupManager.makePopup({
                     contentConstructor: UIComponents.ConfirmPopup,
                     contentProps: {
@@ -18029,7 +18033,14 @@ var Rance;
                         handleOk: this.handleMarkAsRead.bind(this, notification),
                         handleClose: this.closePopup.bind(this, key),
                         okText: "Mark as read",
-                        cancelText: "Close"
+                        cancelText: "Close",
+                        extraButtons: [
+                            UIComponents.NotificationFilterButton({
+                                key: "notificationFilter",
+                                filter: log.notificationFilter,
+                                text: "Filter"
+                            })
+                        ]
                     },
                     popupProps: {
                         containerDragOnly: true,

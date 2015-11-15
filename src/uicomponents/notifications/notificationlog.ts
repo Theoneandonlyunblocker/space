@@ -1,5 +1,6 @@
 /// <reference path="../../notificationlog.ts" />
 /// <reference path="notification.ts" />
+/// <reference path="notificationfilterbutton.ts" />
 
 module Rance
 {
@@ -75,6 +76,8 @@ module Rance
 
       makePopup: function(notification: Notification, key: string)
       {
+        var log: Rance.NotificationLog = this.props.log;
+
         var popupId = this.refs.popupManager.makePopup(
         {
           contentConstructor: UIComponents.ConfirmPopup,
@@ -88,7 +91,16 @@ module Rance
             handleOk: this.handleMarkAsRead.bind(this, notification),
             handleClose: this.closePopup.bind(this, key),
             okText: "Mark as read",
-            cancelText: "Close"
+            cancelText: "Close",
+            extraButtons:
+            [
+              UIComponents.NotificationFilterButton(
+              {
+                key: "notificationFilter",
+                filter: log.notificationFilter,
+                text: "Filter"
+              })
+            ]
           },
           popupProps:
           {
