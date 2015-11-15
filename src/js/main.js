@@ -27598,14 +27598,10 @@ var Rance;
             uriParser.href = document.URL;
             var hash = uriParser.hash;
             if (hash) {
-                if (hash === "#demo") {
-                }
-                else {
-                    this.reactUI.currentScene = hash.slice(1);
-                }
+                this.reactUI.currentScene = hash.slice(1);
             }
             else {
-                this.reactUI.currentScene = "galaxyMap";
+                this.reactUI.currentScene = "setupGame";
             }
         };
         return App;
