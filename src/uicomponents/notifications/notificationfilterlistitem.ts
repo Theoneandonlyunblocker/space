@@ -38,6 +38,7 @@ module Rance
         {
           filterState: filter.filters[this.props.key]
         });
+        eventManager.dispatchEvent("updateNotificationLog");
       },
       
       render: function()

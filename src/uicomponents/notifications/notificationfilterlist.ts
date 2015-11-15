@@ -18,6 +18,7 @@ module Rance
         filter.setDefaultFilterStatesForCategory(category);
         filter.save();
         this.forceUpdate();
+        eventManager.dispatchEvent("updateNotificationLog");
       },
       render: function()
       {
