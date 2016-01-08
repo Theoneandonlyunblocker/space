@@ -173,6 +173,7 @@ module Rance
     selectFleets(fleets: Fleet[])
     {
       var shouldUpdateSelection = this.hasFleetSelectionChanged(fleets);
+      this.lastSelectedFleetsIds = {};
       if (fleets.length < 1)
       {
         this.clearSelection();
@@ -180,7 +181,6 @@ module Rance
         return;
       }
       
-      this.lastSelectedFleetsIds = {};
       var playerFleets: Fleet[] = [];
       var otherFleets: Fleet[] = [];
       for (var i = 0; i < fleets.length; i++)
