@@ -3876,6 +3876,7 @@ button.player-setup-remove-player.disabled {
   width: 400px;
   overflow-y: auto;
   margin-left: -1px;
+  padding: 5px;
 }
 .map-gen-options-option-groups :last-child::after {
   content: none;
