@@ -34,9 +34,9 @@
 /// <reference path="../templateinterfaces/istatuseffectattributes.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/iunitdrawingfunction.d.ts" />
+/// <reference path="../templateinterfaces/iculturetemplate.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../templateinterfaces/iobjectivetemplate.d.ts" />
-/// <reference path="../templateinterfaces/iculturetemplate.d.ts" />
 /// <reference path="../tutorials/tutorial.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
@@ -3421,6 +3421,17 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             var defaultUnitScene: Rance.Templates.IUnitDrawingFunction;
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Cultures {
+                    var badassCulture: Rance.Templates.ICultureTemplate;
+                }
+            }
         }
     }
 }

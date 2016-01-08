@@ -38,6 +38,7 @@
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />
 
+/// <reference path="templates/cultures.ts" />
 
 module Rance
 {

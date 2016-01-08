@@ -5729,7 +5729,7 @@ var Rance;
                 this.makeFromData(serializedData);
             }
             else {
-                // manufactorydata temporarily in main.ts
+                // TODO manufactory manufactorydata temporarily in main.ts
                 this.capacity = manufactoryData.startingCapacity;
                 this.maxCapacity = manufactoryData.maxCapacity;
             }
@@ -24949,6 +24949,40 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iculturetemplate.d.ts"/>
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Cultures;
+                (function (Cultures) {
+                    Cultures.badassCulture = {
+                        key: "badassCulture",
+                        nameGenerator: function (unit) {
+                            var ownCulture = app.moduleData.Templates.Cultures["badassCulture"];
+                            var title = Rance.getRandomProperty(ownCulture.firstNames).displayName;
+                            return title + " " + unit.template.displayName;
+                        },
+                        firstNames: {
+                            cool: {
+                                key: "cool",
+                                displayName: "Cool"
+                            },
+                            badass: {
+                                key: "badass",
+                                displayName: "Badass"
+                            }
+                        }
+                    };
+                })(Cultures = Templates.Cultures || (Templates.Cultures = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iunittemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
 /// <reference path="../graphics/defaultunitscene.ts" />
@@ -24956,6 +24990,7 @@ var Rance;
 /// <reference path="passiveskills.ts" />
 /// <reference path="unitfamilies.ts" />
 /// <reference path="unitarchetypes.ts" />
+/// <reference path="cultures.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
@@ -25311,7 +25346,7 @@ var Rance;
                         description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
                         archetype: Templates.UnitArchetypes.utility,
                         families: [Templates.UnitFamilies.blue],
-                        cultures: [],
+                        cultures: [Templates.Cultures.badassCulture],
                         sprite: {
                             imageSrc: "scout.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -26122,6 +26157,7 @@ var Rance;
 /// <reference path="ai/expandmanufactorycapacityobjective.ts" />
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />
+/// <reference path="templates/cultures.ts" />
 var Rance;
 (function (Rance) {
     var Modules;

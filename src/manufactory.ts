@@ -29,7 +29,7 @@ module Rance
       }
       else
       {
-        // manufactorydata temporarily in main.ts
+        // TODO manufactory manufactorydata temporarily in main.ts
 
         this.capacity = manufactoryData.startingCapacity;
         this.maxCapacity = manufactoryData.maxCapacity;

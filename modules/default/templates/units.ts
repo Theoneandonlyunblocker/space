@@ -8,6 +8,8 @@
 /// <reference path="unitfamilies.ts" />
 /// <reference path="unitarchetypes.ts" />
 
+/// <reference path="cultures.ts" />
+
 module Rance
 {
   export module Modules
@@ -412,7 +414,7 @@ module Rance
             description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
             archetype: UnitArchetypes.utility,
             families: [UnitFamilies.blue],
-            cultures: [],
+            cultures: [Cultures.badassCulture],
             sprite:
             {
               imageSrc: "scout.png",
