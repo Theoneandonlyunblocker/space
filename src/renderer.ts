@@ -11,7 +11,7 @@ module Rance
   {
     stage: PIXI.Container;
     renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-    pixiContainer: HTMLCanvasElement;
+    pixiContainer: HTMLElement;
     layers:
     {
       [name: string] : PIXI.Container;
@@ -98,7 +98,7 @@ module Rance
         this.renderer.view.parentNode.removeChild(this.renderer.view);
       }
     }
-    bindRendererView(container: HTMLCanvasElement)
+    bindRendererView(container: HTMLElement)
     {
       this.pixiContainer = container;
 

@@ -2866,7 +2866,7 @@ declare module Rance {
     class Renderer {
         stage: PIXI.Container;
         renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-        pixiContainer: HTMLCanvasElement;
+        pixiContainer: HTMLElement;
         layers: {
             [name: string]: PIXI.Container;
         };
@@ -2887,7 +2887,7 @@ declare module Rance {
         init(): void;
         destroy(): void;
         removeRendererView(): void;
-        bindRendererView(container: HTMLCanvasElement): void;
+        bindRendererView(container: HTMLElement): void;
         initLayers(): void;
         setupDefaultLayers(): void;
         setupBackgroundLayers(): void;
