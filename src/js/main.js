@@ -19952,13 +19952,14 @@ var Rance;
         };
         PlayerControl.prototype.selectFleets = function (fleets) {
             var shouldUpdateSelection = this.hasFleetSelectionChanged(fleets);
+            console.log(shouldUpdateSelection, fleets, this.lastSelectedFleetsIds);
+            this.lastSelectedFleetsIds = {};
             if (fleets.length < 1) {
                 this.clearSelection();
                 if (shouldUpdateSelection)
                     this.updateSelection();
                 return;
             }
-            this.lastSelectedFleetsIds = {};
             var playerFleets = [];
             var otherFleets = [];
             for (var i = 0; i < fleets.length; i++) {
@@ -20364,6 +20365,10 @@ var Rance;
             this.drawSelectionRectangle();
         };
         RectangleSelect.prototype.endSelection = function (point) {
+            if (Math.abs(this.start.x - this.current.x) < 10 || Math.abs(this.start.y - this.current.y) < 10) {
+                this.clearSelection();
+                return;
+            }
             this.setSelectionTargets();
             var inSelection = this.getAllInSelection();
             Rance.eventManager.dispatchEvent("selectFleets", inSelection);
