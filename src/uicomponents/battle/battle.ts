@@ -319,18 +319,19 @@ module Rance
           if (effectDelay > 0)
           {
             window.setTimeout(callEffectsFN, effectDelay);
+            
+            this.setState(
+            {
+              battleEffectId: this.idGenerator++,
+              battleEffectDuration: effectDuration,
+              battleEffectSFX: effectData[i].sfx
+            });
           }
           else
           {
             callEffectsFN(false);
           }
 
-          this.setState(
-          {
-            battleEffectId: this.idGenerator++,
-            battleEffectDuration: effectDuration,
-            battleEffectSFX: effectData[i].sfx
-          });
 
           window.setTimeout(finishEffectFN, effectDuration + afterDelay);
         }.bind(this);
