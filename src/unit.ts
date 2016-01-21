@@ -391,6 +391,8 @@ module Rance
           this.removeStatusEffect(this.battleStats.statusEffects[i]);
         }
       }
+
+      this.uiDisplayIsDirty = true;
     }
     setQueuedAction(ability: Templates.IAbilityTemplate, target: Unit)
     {
@@ -414,6 +416,8 @@ module Rance
       {
         this.clearQueuedAction();
       }
+
+      this.uiDisplayIsDirty = true;
     }
     updateQueuedAction()
     {
@@ -421,6 +425,8 @@ module Rance
       if (!action) return;
 
       action.turnsPrepared++;
+
+      this.uiDisplayIsDirty = true;
     }
     isReadyToUseQueuedAction()
     {
@@ -541,6 +547,8 @@ module Rance
       {
         this.passiveSkillsByPhaseAreDirty = true;
       }
+
+      this.uiDisplayIsDirty = true;
     }
     removeStatusEffect(statusEffect: StatusEffect)
     {
@@ -559,6 +567,8 @@ module Rance
       {
         this.passiveSkillsByPhaseAreDirty = true;
       }
+
+      this.uiDisplayIsDirty = true;
     }
     /*
     sort by attribute, positive/negative, additive vs multiplicative

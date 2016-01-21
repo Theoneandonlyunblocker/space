@@ -7676,6 +7676,7 @@ var Rance;
                     this.removeStatusEffect(this.battleStats.statusEffects[i]);
                 }
             }
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.setQueuedAction = function (ability, target) {
             this.battleStats.queuedAction =
@@ -7695,12 +7696,14 @@ var Rance;
             if (action.timesInterrupted >= action.ability.preparation.interruptsNeeded) {
                 this.clearQueuedAction();
             }
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.updateQueuedAction = function () {
             var action = this.battleStats.queuedAction;
             if (!action)
                 return;
             action.turnsPrepared++;
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.isReadyToUseQueuedAction = function () {
             var action = this.battleStats.queuedAction;
@@ -7783,6 +7786,7 @@ var Rance;
             if (statusEffect.template.passiveSkills) {
                 this.passiveSkillsByPhaseAreDirty = true;
             }
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeStatusEffect = function (statusEffect) {
             var index = this.battleStats.statusEffects.indexOf(statusEffect);
@@ -7796,6 +7800,7 @@ var Rance;
             if (statusEffect.template.passiveSkills) {
                 this.passiveSkillsByPhaseAreDirty = true;
             }
+            this.uiDisplayIsDirty = true;
         };
         /*
         sort by attribute, positive/negative, additive vs multiplicative
@@ -23570,11 +23575,17 @@ var Rance;
                         effect: function (user, target, battle, data) {
                             if (!battle)
                                 return; // TODO hack
-                            var unitsLeft = data.unitsLeft || battle.unitsBySide[user.battleStats.side].length;
-                            data.unitsLeft = unitsLeft - 1;
-                            console.log(unitsLeft);
+                            var unitsLeft = data.unitsLeft - 1 || battle.unitsBySide[user.battleStats.side].length - 1;
+                            data.unitsLeft = unitsLeft;
                             var buffStrength = user.attributes.intelligence * 0.05;
-                            var buffsToAllocate;
+                            var buffsLeft = isFinite(data.buffsLeft) ?
+                                data.buffsLeft :
+                                Math.round(2 + user.attributes.intelligence * 0.5);
+                            var minBuffs = Math.max(0, Math.floor(buffsLeft - unitsLeft * 4));
+                            var maxBuffs = Math.min(4, buffsLeft);
+                            var buffsToAllocate = Rance.randInt(minBuffs, maxBuffs);
+                            data.buffsLeft = buffsLeft - buffsToAllocate;
+                            console.log(unitsLeft, buffsLeft, minBuffs, maxBuffs);
                             target.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
                         }
                     };
@@ -24009,9 +24020,7 @@ var Rance;
                         mainEffect: {
                             template: Templates.Effects.buffAllyFleet,
                             sfx: Templates.BattleSFX.guard,
-                            data: {
-                                perInt: 20
-                            }
+                            data: {}
                         }
                     };
                     Abilities.ranceAttack = {
