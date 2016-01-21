@@ -106,7 +106,7 @@ module Rance
             [
               function(user: Unit, battlePrep: BattlePrep)
               {
-                Effects.guardColumn.effect(user, user, {perInt: 0, flat: 50});
+                Effects.guardColumn.effect(user, user, null, {perInt: 0, flat: 50});
               }
             ]
           }

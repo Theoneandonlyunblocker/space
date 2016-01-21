@@ -366,6 +366,56 @@ module Rance
             ],
             unitDrawingFN: defaultUnitScene
           }
+          export var commandShip: Rance.Templates.IUnitTemplate =
+          {
+            type: "commandShip",
+            displayName: "Command Ship",
+            description: "todo",
+            archetype: UnitArchetypes.utility,
+            families: [UnitFamilies.basic],
+            cultures: [],
+            sprite:
+            {
+              imageSrc: "shieldBoat.png",
+              anchor: {x: 0.5, y: 0.5}
+            },
+            isSquadron: false,
+            buildCost: 300,
+            icon: "img\/icons\/sh.png",
+            maxHealth: 0.7,
+            maxMovePoints: 1,
+            visionRange: 1,
+            detectionRange: -1,
+            attributeLevels:
+            {
+              attack: 0.5,
+              defence: 0.6,
+              intelligence: 0.7,
+              speed: 0.6
+            },
+            possibleAbilities:
+            [
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  Abilities.rangedAttack,
+                  Abilities.standBy
+                ]
+              }
+            ],
+            possiblePassiveSkills:
+            [
+              {
+                flatProbability: 1,
+                probabilityItems:
+                [
+                  PassiveSkills.initialGuard
+                ]
+              }
+            ],
+            unitDrawingFN: defaultUnitScene
+          }
 
           export var redShip: Rance.Templates.IUnitTemplate =
           {

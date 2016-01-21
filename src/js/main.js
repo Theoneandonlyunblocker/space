@@ -6629,7 +6629,7 @@ var Rance;
                     for (var i = 0; i < skills.length; i++) {
                         for (var j = 0; j < skills[i].atBattleStart.length; j++) {
                             var effect = skills[i].atBattleStart[j];
-                            effect.template.effect(unit, unit, effect.data);
+                            effect.template.effect(unit, unit, this, effect.data);
                         }
                     }
                 }
@@ -7107,7 +7107,7 @@ var Rance;
             var hasSfx = Boolean(beforeUseEffects[i].sfx);
             if (hasSfx) {
                 data.effectsToCall.push({
-                    effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data)],
+                    effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
                     sfx: beforeUseEffects[i].sfx,
@@ -7115,7 +7115,7 @@ var Rance;
                 });
             }
             else {
-                data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data));
+                data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data));
             }
         }
         data.beforeUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
@@ -7131,12 +7131,12 @@ var Rance;
             var targetsInArea = getUnitsInEffectArea(battle, user, effect.template, data.actualTarget.battleStats.position);
             for (var j = 0; j < targetsInArea.length; j++) {
                 var effectTarget = targetsInArea[j];
-                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
+                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, battle, effect.data)];
                 var attachedEffectsToAddAfter = [];
                 if (effect.attachedEffects) {
                     for (var k = 0; k < effect.attachedEffects.length; k++) {
                         var attachedEffect = effect.attachedEffects[k];
-                        var boundAttachedEffect = attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data);
+                        var boundAttachedEffect = attachedEffect.template.effect.bind(null, user, effectTarget, battle, attachedEffect.data);
                         if (attachedEffect.sfx) {
                             attachedEffectsToAddAfter.push({
                                 effects: [boundAttachedEffect],
@@ -7176,7 +7176,7 @@ var Rance;
             var hasSfx = Boolean(afterUseEffects[i].sfx);
             if (hasSfx) {
                 data.effectsToCall.push({
-                    effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data)],
+                    effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
                     sfx: afterUseEffects[i].sfx,
@@ -7184,7 +7184,7 @@ var Rance;
                 });
             }
             else {
-                data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data));
+                data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data));
             }
         }
         data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
@@ -19952,7 +19952,6 @@ var Rance;
         };
         PlayerControl.prototype.selectFleets = function (fleets) {
             var shouldUpdateSelection = this.hasFleetSelectionChanged(fleets);
-            console.log(shouldUpdateSelection, fleets, this.lastSelectedFleetsIds);
             this.lastSelectedFleetsIds = {};
             if (fleets.length < 1) {
                 this.clearSelection();
@@ -23463,7 +23462,7 @@ var Rance;
                         targetFleets: "enemy",
                         targetingFunction: Rance.targetSingle,
                         targetRange: "all",
-                        effect: function (user, target, data) {
+                        effect: function (user, target, battle, data) {
                             var baseDamage = data.baseDamage;
                             var damageType = data.damageType;
                             var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -23476,7 +23475,7 @@ var Rance;
                         targetFleets: "enemy",
                         targetingFunction: Rance.targetColumnNeighbors,
                         targetRange: "close",
-                        effect: function (user, target) {
+                        effect: function (user, target, battle) {
                             var baseDamage = 0.66;
                             var damageType = Rance.DamageType.physical;
                             var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -23489,7 +23488,7 @@ var Rance;
                         targetFleets: "all",
                         targetingFunction: Rance.targetRow,
                         targetRange: "all",
-                        effect: function (user, target) {
+                        effect: function (user, target, battle) {
                             var baseDamage = 0.75;
                             var damageType = Rance.DamageType.magical;
                             var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -23502,7 +23501,7 @@ var Rance;
                         targetFleets: "enemy",
                         targetingFunction: Rance.targetNeighbors,
                         targetRange: "all",
-                        effect: function (user, target) {
+                        effect: function (user, target, battle) {
                             var baseDamage = 0.5;
                             var damageType = Rance.DamageType.physical;
                             var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -23515,7 +23514,7 @@ var Rance;
                         targetFleets: "all",
                         targetingFunction: Rance.targetSingle,
                         targetRange: "self",
-                        effect: function (user, target, data) {
+                        effect: function (user, target, battle, data) {
                             var data = data || {};
                             var guardPerInt = data.perInt || 0;
                             var flat = data.flat || 0;
@@ -23528,10 +23527,10 @@ var Rance;
                         targetFleets: "all",
                         targetingFunction: Rance.targetSingle,
                         targetRange: "self",
-                        effect: function (user, target, data) {
+                        effect: function (user, target, battle, data) {
                             var counterStrength = target.getCounterAttackStrength();
                             if (counterStrength) {
-                                Templates.Effects.singleTargetDamage.effect(target, user, {
+                                Templates.Effects.singleTargetDamage.effect(target, user, battle, {
                                     baseDamage: data.baseDamage * counterStrength,
                                     damageType: Rance.DamageType.physical
                                 });
@@ -23543,7 +23542,7 @@ var Rance;
                         targetFleets: "enemy",
                         targetingFunction: Rance.targetSingle,
                         targetRange: "all",
-                        effect: function (user, target, data) {
+                        effect: function (user, target, battle, data) {
                             if (!data)
                                 return;
                             if (data.flat) {
@@ -23559,8 +23558,24 @@ var Rance;
                         targetFleets: "all",
                         targetingFunction: Rance.targetSingle,
                         targetRange: "all",
-                        effect: function (user, target) {
+                        effect: function (user, target, battle) {
                             user.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
+                        }
+                    };
+                    Effects.buffAllyFleet = {
+                        name: "buffAllyFleet",
+                        targetFleets: "ally",
+                        targetingFunction: Rance.targetAll,
+                        targetRange: "all",
+                        effect: function (user, target, battle, data) {
+                            if (!battle)
+                                return; // TODO hack
+                            var unitsLeft = data.unitsLeft || battle.unitsBySide[user.battleStats.side].length;
+                            data.unitsLeft = unitsLeft - 1;
+                            console.log(unitsLeft);
+                            var buffStrength = user.attributes.intelligence * 0.05;
+                            var buffsToAllocate;
+                            target.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
                         }
                     };
                     Effects.healTarget = {
@@ -23568,7 +23583,7 @@ var Rance;
                         targetFleets: "ally",
                         targetingFunction: Rance.targetSingle,
                         targetRange: "all",
-                        effect: function (user, target, data) {
+                        effect: function (user, target, battle, data) {
                             var healAmount = 0;
                             if (data.flat) {
                                 healAmount += data.flat;
@@ -23587,8 +23602,8 @@ var Rance;
                         targetFleets: "ally",
                         targetingFunction: Rance.targetSingle,
                         targetRange: "self",
-                        effect: function (user, target, data) {
-                            Templates.Effects.healTarget.effect(user, user, data);
+                        effect: function (user, target, battle, data) {
+                            Templates.Effects.healTarget.effect(user, user, battle, data);
                         }
                     };
                     Effects.standBy = {
@@ -23990,14 +24005,9 @@ var Rance;
                         displayName: "Debug Ability",
                         description: "who knows what its going to do today",
                         moveDelay: 0,
-                        preparation: {
-                            turnsToPrep: 1,
-                            prepDelay: 100,
-                            interruptsNeeded: 1
-                        },
                         actionsUse: 1,
                         mainEffect: {
-                            template: Templates.Effects.guardColumn,
+                            template: Templates.Effects.buffAllyFleet,
                             sfx: Templates.BattleSFX.guard,
                             data: {
                                 perInt: 20
@@ -24372,7 +24382,7 @@ var Rance;
                         ],
                         inBattlePrep: [
                             function (user, battlePrep) {
-                                Templates.Effects.guardColumn.effect(user, user, { perInt: 0, flat: 50 });
+                                Templates.Effects.guardColumn.effect(user, user, null, { perInt: 0, flat: 50 });
                             }
                         ]
                     };
@@ -25296,6 +25306,49 @@ var Rance;
                                 probabilityItems: [
                                     Templates.Abilities.rangedAttack,
                                     Templates.Abilities.guardColumn,
+                                    Templates.Abilities.standBy
+                                ]
+                            }
+                        ],
+                        possiblePassiveSkills: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.PassiveSkills.initialGuard
+                                ]
+                            }
+                        ],
+                        unitDrawingFN: DefaultModule.defaultUnitScene
+                    };
+                    Units.commandShip = {
+                        type: "commandShip",
+                        displayName: "Command Ship",
+                        description: "todo",
+                        archetype: Templates.UnitArchetypes.utility,
+                        families: [Templates.UnitFamilies.basic],
+                        cultures: [],
+                        sprite: {
+                            imageSrc: "shieldBoat.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: false,
+                        buildCost: 300,
+                        icon: "img\/icons\/sh.png",
+                        maxHealth: 0.7,
+                        maxMovePoints: 1,
+                        visionRange: 1,
+                        detectionRange: -1,
+                        attributeLevels: {
+                            attack: 0.5,
+                            defence: 0.6,
+                            intelligence: 0.7,
+                            speed: 0.6
+                        },
+                        possibleAbilities: [
+                            {
+                                flatProbability: 1,
+                                probabilityItems: [
+                                    Templates.Abilities.rangedAttack,
                                     Templates.Abilities.standBy
                                 ]
                             }
@@ -27301,7 +27354,7 @@ var Rance;
             var dummyUser = new Rance.Unit(Rance.getRandomProperty(app.moduleData.Templates.Units));
             var dummyTarget = new Rance.Unit(Rance.getRandomProperty(app.moduleData.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
-                effects[i].template.effect(dummyUser, dummyTarget, effects[i].data);
+                effects[i].template.effect(dummyUser, dummyTarget, null, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
                     return true;
                 }

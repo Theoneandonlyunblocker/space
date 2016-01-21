@@ -19,7 +19,8 @@ module Rance
             targetFleets: "enemy",
             targetingFunction: targetSingle,
             targetRange: "all",
-            effect: function(user: Unit, target: Unit, data: {baseDamage: number; damageType: number;})
+            effect: function(user: Unit, target: Unit, battle: Battle,
+              data: {baseDamage: number; damageType: number;})
             {
               var baseDamage = data.baseDamage;
               var damageType = data.damageType;
@@ -36,7 +37,7 @@ module Rance
             targetFleets: "enemy",
             targetingFunction: targetColumnNeighbors,
             targetRange: "close",
-            effect: function(user: Unit, target: Unit)
+            effect: function(user: Unit, target: Unit, battle: Battle)
             {
               var baseDamage = 0.66;
               var damageType = DamageType.physical;
@@ -53,7 +54,7 @@ module Rance
             targetFleets: "all",
             targetingFunction: targetRow,
             targetRange: "all",
-            effect: function(user: Unit, target: Unit)
+            effect: function(user: Unit, target: Unit, battle: Battle)
             {
               var baseDamage = 0.75;
               var damageType = DamageType.magical;
@@ -71,7 +72,7 @@ module Rance
             targetFleets: "enemy",
             targetingFunction: targetNeighbors,
             targetRange: "all",
-            effect: function(user: Unit, target: Unit)
+            effect: function(user: Unit, target: Unit, battle: Battle)
             {
               var baseDamage = 0.5;
               var damageType = DamageType.physical;
@@ -88,7 +89,7 @@ module Rance
             targetFleets: "all",
             targetingFunction: targetSingle,
             targetRange: "self",
-            effect: function(user: Unit, target: Unit, data?: any)
+            effect: function(user: Unit, target: Unit, battle: Battle, data?: any)
             {
               var data = data || {};
               var guardPerInt = data.perInt || 0;
@@ -104,12 +105,13 @@ module Rance
             targetFleets: "all",
             targetingFunction: targetSingle,
             targetRange: "self",
-            effect: function(user: Unit, target: Unit, data: {baseDamage: number; damageType: number;})
+            effect: function(user: Unit, target: Unit, battle: Battle,
+              data: {baseDamage: number; damageType: number;})
             {
               var counterStrength = target.getCounterAttackStrength();
               if (counterStrength)
               {
-                Templates.Effects.singleTargetDamage.effect(target, user,
+                Templates.Effects.singleTargetDamage.effect(target, user, battle,
                 {
                   baseDamage: data.baseDamage * counterStrength,
                   damageType: DamageType.physical
@@ -123,7 +125,8 @@ module Rance
             targetFleets: "enemy",
             targetingFunction: targetSingle,
             targetRange: "all",
-            effect: function(user: Unit, target: Unit, data: {flat?: number; multiplier?: number;})
+            effect: function(user: Unit, target: Unit, battle: Battle,
+              data: {flat?: number; multiplier?: number;})
             {
               if (!data) return;
               if (data.flat)
@@ -143,9 +146,37 @@ module Rance
             targetFleets: "all",
             targetingFunction: targetSingle,
             targetRange: "all",
-            effect: function(user: Unit, target: Unit)
+            effect: function(user: Unit, target: Unit, battle: Battle)
             {
               user.addStatusEffect(new StatusEffect(StatusEffects.test, 1));
+            }
+          }
+          export var buffAllyFleet: Rance.Templates.IEffectTemplate =
+          {
+            name: "buffAllyFleet",
+            targetFleets: "ally",
+            targetingFunction: targetAll,
+            targetRange: "all",
+            effect: function(user: Unit, target: Unit, battle: Battle,
+              data: {buffsLeft?: number, unitsLeft?: number})
+            {
+              if (!battle) return; // TODO hack
+              var unitsLeft = data.unitsLeft - 1 || battle.unitsBySide[user.battleStats.side].length - 1;
+              data.unitsLeft = unitsLeft;
+
+              var buffStrength = user.attributes.intelligence * 0.05;
+
+              var buffsLeft = isFinite(data.buffsLeft) ?
+                data.buffsLeft :
+                Math.round(2 + user.attributes.intelligence * 0.5);
+
+              var minBuffs = Math.max(0, Math.floor(buffsLeft - unitsLeft * 4));
+              var maxBuffs = Math.min(4, buffsLeft);
+              var buffsToAllocate = randInt(minBuffs, maxBuffs);
+
+              data.buffsLeft = buffsLeft - buffsToAllocate;
+              console.log(unitsLeft, buffsLeft, minBuffs, maxBuffs);
+              target.addStatusEffect(new StatusEffect(StatusEffects.test, 1));
             }
           }
 
@@ -155,8 +186,8 @@ module Rance
             targetFleets: "ally",
             targetingFunction: targetSingle,
             targetRange: "all",
-            effect: function(user: Unit, target: Unit, data:
-              {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
+            effect: function(user: Unit, target: Unit, battle: Battle,
+              data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
             {
               var healAmount = 0;
               if (data.flat)
@@ -182,9 +213,10 @@ module Rance
             targetFleets: "ally",
             targetingFunction: targetSingle,
             targetRange: "self",
-            effect: function(user: Unit, target: Unit, data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
+            effect: function(user: Unit, target: Unit, battle: Battle,
+              data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
             {
-              Templates.Effects.healTarget.effect(user, user, data);
+              Templates.Effects.healTarget.effect(user, user, battle, data);
             }
           }
 

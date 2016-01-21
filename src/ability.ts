@@ -86,7 +86,7 @@ module Rance
       {
         data.effectsToCall.push(
         {
-          effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+          effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle,
             beforeUseEffects[i].data)],
           user: user,
           target: data.actualTarget,
@@ -96,7 +96,7 @@ module Rance
       }
       else
       {
-        data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+        data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle,
           beforeUseEffects[i].data));
       }
     }
@@ -126,7 +126,7 @@ module Rance
       {
         var effectTarget = targetsInArea[j];
 
-        var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
+        var boundEffects = [effect.template.effect.bind(null, user, effectTarget, battle, effect.data)];
         var attachedEffectsToAddAfter: IAbilityUseDataEffect[] = [];
 
 
@@ -136,7 +136,7 @@ module Rance
           {
             var attachedEffect = effect.attachedEffects[k];
             var boundAttachedEffect =
-              attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data);
+              attachedEffect.template.effect.bind(null, user, effectTarget, battle, attachedEffect.data);
 
             if (attachedEffect.sfx)
             {
@@ -195,7 +195,7 @@ module Rance
       {
         data.effectsToCall.push(
         {
-          effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+          effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle,
             afterUseEffects[i].data)],
           user: user,
           target: data.actualTarget,
@@ -205,7 +205,7 @@ module Rance
       }
       else
       {
-        data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+        data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle,
           afterUseEffects[i].data));
       }
     }

@@ -144,7 +144,7 @@ module Rance
             for (var j = 0; j < skills[i].atBattleStart.length; j++)
             {
               var effect = skills[i].atBattleStart[j];
-              effect.template.effect(unit, unit, effect.data);
+              effect.template.effect(unit, unit, this, effect.data);
             }
           }
         }

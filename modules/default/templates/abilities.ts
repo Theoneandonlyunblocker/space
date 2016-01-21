@@ -145,21 +145,12 @@ module Rance
             displayName: "Debug Ability",
             description: "who knows what its going to do today",
             moveDelay: 0,
-            preparation:
-            {
-              turnsToPrep: 1,
-              prepDelay: 100,
-              interruptsNeeded: 1
-            },
             actionsUse: 1,
             mainEffect:
             {
-              template: Effects.guardColumn,
+              template: Effects.buffAllyFleet,
               sfx: BattleSFX.guard,
-              data:
-              {
-                perInt: 20
-              }
+              data: {}
             }
           }
 

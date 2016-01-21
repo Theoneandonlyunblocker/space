@@ -3193,6 +3193,7 @@ declare module Rance {
                     var receiveCounterAttack: Rance.Templates.IEffectTemplate;
                     var increaseCaptureChance: Rance.Templates.IEffectTemplate;
                     var buffTest: Rance.Templates.IEffectTemplate;
+                    var buffAllyFleet: Rance.Templates.IEffectTemplate;
                     var healTarget: Rance.Templates.IEffectTemplate;
                     var healSelf: Rance.Templates.IEffectTemplate;
                     var standBy: Rance.Templates.IEffectTemplate;
@@ -3447,6 +3448,7 @@ declare module Rance {
                     var scout: Rance.Templates.IUnitTemplate;
                     var stealthShip: Rance.Templates.IUnitTemplate;
                     var shieldBoat: Rance.Templates.IUnitTemplate;
+                    var commandShip: Rance.Templates.IUnitTemplate;
                     var redShip: Rance.Templates.IUnitTemplate;
                     var blueShip: Rance.Templates.IUnitTemplate;
                 }
