@@ -148,7 +148,7 @@ module Rance
             actionsUse: 1,
             mainEffect:
             {
-              template: Effects.buffAllyFleet,
+              template: Effects.buffTest,
               sfx: BattleSFX.guard,
               data: {}
             }

@@ -316,7 +316,7 @@ var Rance;
                     var imageSrc = "img\/icons\/statusEffect_" + polarityString + "_" + attribute + ".png";
                     var titleString = "" + attribute + polaritySign + (eff - ite);
                     statusEffects.push(React.DOM.img({
-                        className: "status-effect-icon",
+                        className: "status-effect-icon" + " status-effect-icon-" + attribute,
                         src: imageSrc,
                         key: attribute,
                         title: titleString
@@ -7188,6 +7188,7 @@ var Rance;
             }
         }
         data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
+        data.afterUse.push(user.updateStatusEffects.bind(user));
         return data;
     }
     Rance.getAbilityUseData = getAbilityUseData;
@@ -23564,29 +23565,7 @@ var Rance;
                         targetingFunction: Rance.targetSingle,
                         targetRange: "all",
                         effect: function (user, target, battle) {
-                            user.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
-                        }
-                    };
-                    Effects.buffAllyFleet = {
-                        name: "buffAllyFleet",
-                        targetFleets: "ally",
-                        targetingFunction: Rance.targetAll,
-                        targetRange: "all",
-                        effect: function (user, target, battle, data) {
-                            if (!battle)
-                                return; // TODO hack
-                            var unitsLeft = data.unitsLeft - 1 || battle.unitsBySide[user.battleStats.side].length - 1;
-                            data.unitsLeft = unitsLeft;
-                            var buffStrength = user.attributes.intelligence * 0.05;
-                            var buffsLeft = isFinite(data.buffsLeft) ?
-                                data.buffsLeft :
-                                Math.round(2 + user.attributes.intelligence * 0.5);
-                            var minBuffs = Math.max(0, Math.floor(buffsLeft - unitsLeft * 4));
-                            var maxBuffs = Math.min(4, buffsLeft);
-                            var buffsToAllocate = Rance.randInt(minBuffs, maxBuffs);
-                            data.buffsLeft = buffsLeft - buffsToAllocate;
-                            console.log(unitsLeft, buffsLeft, minBuffs, maxBuffs);
-                            target.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
+                            target.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 2));
                         }
                     };
                     Effects.healTarget = {
@@ -24018,7 +23997,7 @@ var Rance;
                         moveDelay: 0,
                         actionsUse: 1,
                         mainEffect: {
-                            template: Templates.Effects.buffAllyFleet,
+                            template: Templates.Effects.buffTest,
                             sfx: Templates.BattleSFX.guard,
                             data: {}
                         }
@@ -24323,7 +24302,7 @@ var Rance;
                     PassiveSkills.autoHeal = {
                         type: "autoHeal",
                         displayName: "Auto heal",
-                        description: "",
+                        description: "Heal 50 health after every turn",
                         afterAbilityUse: [
                             {
                                 template: Templates.Effects.healSelf,
@@ -24579,9 +24558,6 @@ var Rance;
                             },
                             defence: {
                                 flat: 9
-                            },
-                            intelligence: {
-                                flat: -9
                             },
                             speed: {
                                 flat: 9

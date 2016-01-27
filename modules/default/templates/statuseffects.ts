@@ -25,10 +25,6 @@ module Rance
               {
                 flat: 9
               },
-              intelligence:
-              {
-                flat: -9
-              },
               speed:
               {
                 flat: 9

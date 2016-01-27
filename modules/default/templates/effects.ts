@@ -148,38 +148,9 @@ module Rance
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
-              user.addStatusEffect(new StatusEffect(StatusEffects.test, 1));
+              target.addStatusEffect(new StatusEffect(StatusEffects.test, 2));
             }
           }
-          export var buffAllyFleet: Rance.Templates.IEffectTemplate =
-          {
-            name: "buffAllyFleet",
-            targetFleets: "ally",
-            targetingFunction: targetAll,
-            targetRange: "all",
-            effect: function(user: Unit, target: Unit, battle: Battle,
-              data: {buffsLeft?: number, unitsLeft?: number})
-            {
-              if (!battle) return; // TODO hack
-              var unitsLeft = data.unitsLeft - 1 || battle.unitsBySide[user.battleStats.side].length - 1;
-              data.unitsLeft = unitsLeft;
-
-              var buffStrength = user.attributes.intelligence * 0.05;
-
-              var buffsLeft = isFinite(data.buffsLeft) ?
-                data.buffsLeft :
-                Math.round(2 + user.attributes.intelligence * 0.5);
-
-              var minBuffs = Math.max(0, Math.floor(buffsLeft - unitsLeft * 4));
-              var maxBuffs = Math.min(4, buffsLeft);
-              var buffsToAllocate = randInt(minBuffs, maxBuffs);
-
-              data.buffsLeft = buffsLeft - buffsToAllocate;
-              console.log(unitsLeft, buffsLeft, minBuffs, maxBuffs);
-              target.addStatusEffect(new StatusEffect(StatusEffects.test, 1));
-            }
-          }
-
           export var healTarget: Rance.Templates.IEffectTemplate =
           {
             name: "healTarget",

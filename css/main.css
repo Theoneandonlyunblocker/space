@@ -795,7 +795,24 @@ ol {
 .unit-status-effects-attributes {
   position: absolute;
   height: 12px;
-  bottom: 5px;
+  bottom: 0px;
+  width: 100%;
+}
+.status-effect-icon {
+  width: 16px;
+  position: absolute;
+}
+.status-effect-icon-strength {
+  left: 0px;
+}
+.status-effect-icon-defence {
+  left: 16px;
+}
+.status-effect-icon-intelligence {
+  left: 32px;
+}
+.status-effect-icon-speed {
+  left: 48px;
 }
 .unit-info {
   display: block;

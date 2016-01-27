@@ -31,7 +31,7 @@ module Rance
 
           statusEffects.push(React.DOM.img(
           {
-            className: "status-effect-icon",
+            className: "status-effect-icon" + " status-effect-icon-" + attribute,
             src: imageSrc,
             key: attribute,
             title: titleString

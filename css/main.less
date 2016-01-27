@@ -1092,7 +1092,33 @@ ul, ol
 {
   position: absolute;
   height: 12px;
-  bottom: 5px;
+  bottom: 0px;
+  width: 100%;
+}
+
+@status-effect-icon-width: 16px;
+
+.status-effect-icon
+{
+  width: @status-effect-icon-width;
+  position: absolute;
+}
+
+.status-effect-icon-strength
+{
+  left: 0px;
+}
+.status-effect-icon-defence
+{
+  left: @status-effect-icon-width * 1;
+}
+.status-effect-icon-intelligence
+{
+  left: @status-effect-icon-width * 2;
+}
+.status-effect-icon-speed
+{
+  left: @status-effect-icon-width * 3;
 }
 
 .unit-info

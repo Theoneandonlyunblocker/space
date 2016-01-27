@@ -17,7 +17,7 @@ module Rance
           {
             type: "autoHeal",
             displayName: "Auto heal",
-            description: "",
+            description: "Heal 50 health after every turn",
 
             afterAbilityUse:
             [
