@@ -211,6 +211,7 @@ module Rance
     }
 
     data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
+    data.afterUse.push(user.updateStatusEffects.bind(user));
 
     return data;
   }
