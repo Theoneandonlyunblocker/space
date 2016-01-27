@@ -19945,30 +19945,15 @@ var Rance;
             }
             return true;
         };
-        PlayerControl.prototype.hasFleetSelectionChanged = function (newFleets) {
-            if (newFleets.length !== Object.keys(this.lastSelectedFleetsIds).length) {
-                return true;
-            }
-            for (var i = 0; i < newFleets.length; i++) {
-                if (!this.lastSelectedFleetsIds[newFleets[i].id]) {
-                    return true;
-                }
-            }
-            return false;
-        };
         PlayerControl.prototype.selectFleets = function (fleets) {
-            var shouldUpdateSelection = this.hasFleetSelectionChanged(fleets);
-            this.lastSelectedFleetsIds = {};
             if (fleets.length < 1) {
                 this.clearSelection();
-                if (shouldUpdateSelection)
-                    this.updateSelection();
+                this.updateSelection();
                 return;
             }
             var playerFleets = [];
             var otherFleets = [];
             for (var i = 0; i < fleets.length; i++) {
-                this.lastSelectedFleetsIds[fleets[i].id] = true;
                 if (fleets[i].player === this.player) {
                     playerFleets.push(fleets[i]);
                 }
@@ -19982,8 +19967,7 @@ var Rance;
             else {
                 this.selectOtherFleets(otherFleets);
             }
-            if (shouldUpdateSelection)
-                this.updateSelection();
+            this.updateSelection();
             this.preventGhost(15);
         };
         PlayerControl.prototype.selectPlayerFleets = function (fleets) {

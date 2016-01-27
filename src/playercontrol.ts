@@ -154,30 +154,12 @@ module Rance
 
       return true;
     }
-    hasFleetSelectionChanged(newFleets: Fleet[])
-    {
-      if (newFleets.length !== Object.keys(this.lastSelectedFleetsIds).length)
-      {
-        return true;
-      }
-      for (var i = 0; i < newFleets.length; i++)
-      {
-        if (!this.lastSelectedFleetsIds[newFleets[i].id])
-        {
-          return true;
-        }
-      }
-
-      return false;
-    }
     selectFleets(fleets: Fleet[])
     {
-      var shouldUpdateSelection = this.hasFleetSelectionChanged(fleets);
-      this.lastSelectedFleetsIds = {};
       if (fleets.length < 1)
       {
         this.clearSelection();
-        if (shouldUpdateSelection) this.updateSelection();
+        this.updateSelection();
         return;
       }
       
@@ -185,7 +167,6 @@ module Rance
       var otherFleets: Fleet[] = [];
       for (var i = 0; i < fleets.length; i++)
       {
-        this.lastSelectedFleetsIds[fleets[i].id] = true;
         if (fleets[i].player === this.player)
         {
           playerFleets.push(fleets[i]);
@@ -205,8 +186,7 @@ module Rance
         this.selectOtherFleets(otherFleets);
       }
 
-      if (shouldUpdateSelection) this.updateSelection();
-
+      this.updateSelection();
       this.preventGhost(15);
     }
     selectPlayerFleets(fleets: Fleet[])

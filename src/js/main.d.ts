@@ -2581,7 +2581,6 @@ declare module Rance {
         clearSelection(): void;
         updateSelection(endReorganizingFleets?: boolean): void;
         areAllFleetsInSameLocation(): boolean;
-        hasFleetSelectionChanged(newFleets: Fleet[]): boolean;
         selectFleets(fleets: Fleet[]): void;
         selectPlayerFleets(fleets: Fleet[]): void;
         selectOtherFleets(fleets: Fleet[]): void;
