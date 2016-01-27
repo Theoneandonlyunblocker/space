@@ -26051,8 +26051,9 @@ var Rance;
                         var location = p.location;
                         var message = notification.makeMessage();
                         var attackSuccessString = victor === attacker ? " succesfully " : " unsuccesfully ";
-                        var controllerString = victor === attacker ? " now controls location " :
-                            " maintains control of location ";
+                        var attackerGainedControl = location.owner === attacker;
+                        var controllerString = attackerGainedControl ? " now controls " :
+                            " maintains control of ";
                         return (React.DOM.div({
                             className: "battle-finish-notification draggable-container"
                         }, message + ".", React.DOM.br(null), React.DOM.br(null), "" + attacker.name + attackSuccessString + "attacked " + defender.name + " in " +

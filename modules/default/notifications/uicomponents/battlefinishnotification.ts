@@ -16,13 +16,14 @@ module Rance
             var attacker: Player = p.attacker;
             var defender: Player = p.defender;
             var victor: Player = p.victor;
-            var location: Player = p.location;
+            var location: Star = p.location;
 
             var message = notification.makeMessage();
 
             var attackSuccessString = victor === attacker ? " succesfully " : " unsuccesfully ";
-            var controllerString = victor === attacker ? " now controls location " :
-              " maintains control of location ";
+            var attackerGainedControl = location.owner === attacker;
+            var controllerString = attackerGainedControl ? " now controls " :
+              " maintains control of ";
 
             return(
               React.DOM.div(
