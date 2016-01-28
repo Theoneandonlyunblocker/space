@@ -20150,7 +20150,6 @@ var Rance;
             this.listeners["setCameraToCenterOn"] =
                 Rance.eventManager.addEventListener("setCameraToCenterOn", function (position) {
                     self.toCenterOn = position;
-                    console.log(Date.now(), "set center on", self.toCenterOn, self.tempCameraId);
                 });
             Rance.eventManager.dispatchEvent("registerOnMoveCallback", self.onMoveCallbacks);
             Rance.eventManager.dispatchEvent("registerOnZoomCallback", self.onZoomCallbacks);
@@ -21452,6 +21451,7 @@ var Rance;
             }
             this.camera = new Rance.Camera(this.layers["main"], 0.5);
             this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
+            this.toCenterOn = null;
             this.mouseEventHandler = new Rance.MouseEventHandler(this, this.camera);
             this.pathfindingArrow = new Rance.PathfindingArrow(this.layers["select"]);
         };

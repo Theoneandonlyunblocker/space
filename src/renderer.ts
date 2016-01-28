@@ -173,6 +173,7 @@ module Rance
       }
       this.camera = new Camera(this.layers["main"], 0.5);
       this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
+      this.toCenterOn = null;
 
       this.mouseEventHandler = new MouseEventHandler(this, this.camera);
 

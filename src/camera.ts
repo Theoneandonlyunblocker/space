@@ -40,7 +40,7 @@ module Rance
      * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
      * 0.0 to 1.0]
      */
-    constructor( container:PIXI.Container, bound: number)
+    constructor(container: PIXI.Container, bound: number)
     {
       this.tempCameraId = tempCameraId++;
       this.container = container;
@@ -89,7 +89,6 @@ module Rance
         eventManager.addEventListener("setCameraToCenterOn", function(position: Point)
       {
         self.toCenterOn = position;
-        console.log(Date.now(), "set center on", self.toCenterOn, self.tempCameraId)
       });
 
       
