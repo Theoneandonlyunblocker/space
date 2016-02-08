@@ -2492,6 +2492,7 @@ ol {
 }
 .menu-unit-info {
   display: flex;
+  flex: 1 0 auto;
   flex-flow: column;
   margin-bottom: 5px;
 }
