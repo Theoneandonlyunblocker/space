@@ -32,9 +32,14 @@ module Rance
 
       render: function()
       {
-        if (!this.props.item) return(
-          React.DOM.div({className: "empty-unit-item"})
-        );
+        if (!this.props.item)
+        {
+          var emptyItemTitle = "Item slot: " + this.props.slot;
+          return(
+            React.DOM.div({className: "empty-unit-item", title: emptyItemTitle})
+          );
+
+        }
         var item = this.props.item;
 
         var divProps: any =

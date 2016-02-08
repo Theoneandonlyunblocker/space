@@ -51,6 +51,7 @@ module Rance
             UIComponents.UnitItem(
             {
               item: this.props.item,
+              slot: this.props.slot,
               key: "item",
 
               isDraggable: this.props.isDraggable,

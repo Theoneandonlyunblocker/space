@@ -3106,8 +3106,10 @@ var Rance;
                 }
             },
             render: function () {
-                if (!this.props.item)
-                    return (React.DOM.div({ className: "empty-unit-item" }));
+                if (!this.props.item) {
+                    var emptyItemTitle = "Item slot: " + this.props.slot;
+                    return (React.DOM.div({ className: "empty-unit-item", title: emptyItemTitle }));
+                }
                 var item = this.props.item;
                 var divProps = {
                     className: "unit-item",
@@ -3170,6 +3172,7 @@ var Rance;
                 }
                 return (React.DOM.div(wrapperProps, UIComponents.UnitItem({
                     item: this.props.item,
+                    slot: this.props.slot,
                     key: "item",
                     isDraggable: this.props.isDraggable,
                     onDragStart: this.props.onDragStart,
@@ -3420,7 +3423,7 @@ var Rance;
                 };
                 var barProps = {
                     className: "unit-experience-bar",
-                    title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel
+                    title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp"
                 };
                 if (isReadyToLevelUp) {
                     containerProps.onClick = this.makePopup;

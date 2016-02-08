@@ -113,7 +113,7 @@ module Rance
         var barProps: any =
         {
           className: "unit-experience-bar",
-          title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel
+          title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp"
         }
         if (isReadyToLevelUp)
         {
