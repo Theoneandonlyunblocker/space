@@ -19356,6 +19356,7 @@ var Rance;
                     onChange: this.handleChange
                 }), React.DOM.input({
                     className: "map-gen-option-value",
+                    title: option.displayName,
                     type: "number",
                     min: range.min,
                     max: range.max,

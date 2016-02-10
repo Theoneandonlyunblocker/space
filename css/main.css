@@ -3608,9 +3608,15 @@ ol {
 }
 .player-setup-is-human {
   width: 1em;
+  min-width: 1em;
 }
 .player-setup-name {
   width: 8em;
+}
+@media (max-width: 650px) {
+  .player-setup-name {
+    width: 5em;
+  }
 }
 .color-setter {
   width: 4em;
@@ -3937,7 +3943,7 @@ button.player-setup-remove-player.disabled {
   padding: 0;
   margin: 0;
   flex: 0 1 45%;
-  min-width: 100px;
+  min-width: 70px;
 }
 .map-gen-option-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -3967,6 +3973,11 @@ button.player-setup-remove-player.disabled {
 .map-gen-option-slider::-ms-thumb {
   border: none;
   background: transparent;
+}
+@media (max-width: 650px) {
+  .map-gen-option-slider {
+    display: none;
+  }
 }
 .map-gen-option-slider::-webkit-slider-thumb {
   background-image: url("../img/icons/spentAction.png");

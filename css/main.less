@@ -3718,10 +3718,15 @@ ul, ol
 .player-setup-is-human
 {
   width: 1em;
+  min-width: 1em;
 }
 .player-setup-name
 {
   width: 8em;
+  @media(max-width: 650px)
+  {
+    width: 5em;
+  }
 }
 .color-setter
 {
@@ -4018,7 +4023,12 @@ button.player-setup-remove-player
 {
   .reset-progress-style;
   flex: 0 1 45%;
-  min-width: 100px;
+  min-width: 70px;
+
+  @media(max-width: 650px)
+  {
+    display: none;
+  }
 
   &::-webkit-slider-thumb
   {
