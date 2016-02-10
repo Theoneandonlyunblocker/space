@@ -23191,17 +23191,6 @@ var Rance;
                                         defaultValue: 50
                                     }
                                 }
-                            },
-                            advancedOptions: {
-                                funnyNumber: {
-                                    displayName: "Funny number",
-                                    range: {
-                                        min: 69,
-                                        max: 420,
-                                        step: 351,
-                                        defaultValue: 69
-                                    }
-                                }
                             }
                         }
                     };

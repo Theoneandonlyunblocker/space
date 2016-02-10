@@ -464,7 +464,7 @@ module Rance
             description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
             archetype: UnitArchetypes.utility,
             families: [UnitFamilies.blue],
-            cultures: [Cultures.badassCulture],
+            cultures: [],
             sprite:
             {
               imageSrc: "scout.png",
