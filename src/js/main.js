@@ -7619,6 +7619,7 @@ var Rance;
                 portraitCandidateCultures = Rance.getAllPropertiesWithKey(app.moduleData.Templates.Cultures, "portraits");
                 if (portraitCandidateCultures.length === 0) {
                     console.warn("No culture has portraits specified"); //TODO culture
+                    return;
                 }
             }
             var portraitCandidateCulturesWithWeights = portraitCandidateCultures.map(function (culture) {

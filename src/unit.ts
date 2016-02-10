@@ -293,6 +293,7 @@ module Rance
         if (portraitCandidateCultures.length === 0)
         {
           console.warn("No culture has portraits specified"); //TODO culture
+          return;
         }
       }
 
