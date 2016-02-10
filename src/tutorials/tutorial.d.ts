@@ -2,6 +2,11 @@ declare module Rance
 {
   interface ITutorial
   {
-    pages: any[]; //React elements or strings
+    pages:
+    {
+      content: any; // React elements or strings
+      onOpen?: () => void;
+      onClose?: () => void;
+    }[];
   }
 }

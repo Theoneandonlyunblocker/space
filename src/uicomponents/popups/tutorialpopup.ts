@@ -6,6 +6,13 @@ module Rance
     {
       displayName: "TutorialPopup",
 
+      propTypes:
+      {
+        pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired,
+        closePopup: React.PropTypes.func.isRequired,
+        cancelText: React.PropTypes.string
+      },
+
       getInitialState: function()
       {
         return(
@@ -20,10 +27,19 @@ module Rance
         var newPage = this.state.currentPage + amount;
         newPage = clamp(newPage, 0, lastPage);
 
+        if (this.props.pages[this.state.currentPage].onClose)
+        {
+          this.props.pages[this.state.currentPage].onClose();
+        }
+
+        var onOpenCallback = this.props.pages[newPage].onOpen ?
+          this.props.pages[newPage].onOpen :
+          null;
+
         this.setState(
         {
           currentPage: newPage
-        });
+        }, onOpenCallback);
       },
 
       handleClose: function()
@@ -88,7 +104,7 @@ module Rance
               React.DOM.div(
               {
                 className: "tutorial-popup-content"
-              }, this.props.pages[this.state.currentPage]),
+              }, this.props.pages[this.state.currentPage].content),
 
               forwardElement
             ),
