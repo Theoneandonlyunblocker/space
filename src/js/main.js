@@ -19343,6 +19343,7 @@ var Rance;
                     className: "map-gen-option"
                 }, React.DOM.label({
                     className: "map-gen-option-label",
+                    title: option.displayName,
                     htmlFor: id
                 }, option.displayName), React.DOM.input({
                     className: "map-gen-option-slider",
@@ -24326,7 +24327,7 @@ var Rance;
                     PassiveSkills.overdrive = {
                         type: "overdrive",
                         displayName: "Overdrive",
-                        description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
+                        description: "Gives buffs at battle start but become poisoned",
                         atBattleStart: [
                             {
                                 template: Templates.Effects.buffTest
@@ -25365,7 +25366,7 @@ var Rance;
                         description: "Just used for testing unit distribution. (all the other units are just for testing something too)",
                         archetype: Templates.UnitArchetypes.utility,
                         families: [Templates.UnitFamilies.blue],
-                        cultures: [Templates.Cultures.badassCulture],
+                        cultures: [],
                         sprite: {
                             imageSrc: "scout.png",
                             anchor: { x: 0.5, y: 0.5 }

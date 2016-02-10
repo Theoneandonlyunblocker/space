@@ -43,6 +43,7 @@ module Rance
             React.DOM.label(
             {
               className: "map-gen-option-label",
+              title: option.displayName,
               htmlFor: id
             },
               option.displayName
