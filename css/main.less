@@ -3983,6 +3983,8 @@ button.player-setup-remove-player
 .map-gen-option-label
 {
   flex: 1 1 40%;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .map-gen-slider-thumb-mixin
@@ -4016,6 +4018,7 @@ button.player-setup-remove-player
 {
   .reset-progress-style;
   flex: 0 1 45%;
+  min-width: 100px;
 
   &::-webkit-slider-thumb
   {
@@ -4047,7 +4050,8 @@ button.player-setup-remove-player
 .map-gen-option-value
 {
   margin: 0 1em;
-  flex: 0 0 15%;
+  flex: 0 0 65px;
+  width: 65px;
 }
 
 .collapsible

@@ -3908,6 +3908,8 @@ button.player-setup-remove-player.disabled {
 }
 .map-gen-option-label {
   flex: 1 1 40%;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 .map-gen-slider-thumb-mixin {
   background-image: url("../img/icons/spentAction.png");
@@ -3935,6 +3937,7 @@ button.player-setup-remove-player.disabled {
   padding: 0;
   margin: 0;
   flex: 0 1 45%;
+  min-width: 100px;
 }
 .map-gen-option-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -4018,7 +4021,8 @@ button.player-setup-remove-player.disabled {
 }
 .map-gen-option-value {
   margin: 0 1em;
-  flex: 0 0 15%;
+  flex: 0 0 65px;
+  width: 65px;
 }
 .collapsible {
   cursor: pointer;
