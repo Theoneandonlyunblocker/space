@@ -73,11 +73,11 @@ module Rance
 
           if (this.props.initialPosition.width)
           {
-            rect.width = Math.max(this.props.initialPosition.width, domRect.width);
+            rect.width = Math.min(this.props.initialPosition.width, container.offsetWidth);
           }
           if (this.props.initialPosition.height)
           {
-            rect.height = Math.max(this.props.initialPosition.height, domRect.height);
+            rect.height = Math.min(this.props.initialPosition.height, container.offsetHeight);
           }
 
           if (rect.left || rect.top)

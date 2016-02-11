@@ -4022,10 +4022,10 @@ var Rance;
                     rect.top = this.props.initialPosition.top || rect.top;
                     rect.left = this.props.initialPosition.left || rect.left;
                     if (this.props.initialPosition.width) {
-                        rect.width = Math.max(this.props.initialPosition.width, domRect.width);
+                        rect.width = Math.min(this.props.initialPosition.width, container.offsetWidth);
                     }
                     if (this.props.initialPosition.height) {
-                        rect.height = Math.max(this.props.initialPosition.height, domRect.height);
+                        rect.height = Math.min(this.props.initialPosition.height, container.offsetHeight);
                     }
                     if (rect.left || rect.top) {
                         left = rect.left;
@@ -18203,10 +18203,10 @@ var Rance;
                     popupProps: {
                         resizable: true,
                         containerDragOnly: true,
-                        minWidth: 400,
-                        minHeight: 300,
-                        maxWidth: 500,
-                        maxHeight: 400
+                        initialPosition: {
+                            width: 400,
+                            height: 300
+                        }
                     }
                 });
             },

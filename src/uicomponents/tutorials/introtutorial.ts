@@ -32,10 +32,11 @@ module Rance
           {
             resizable: true,
             containerDragOnly: true,
-            minWidth: 400,
-            minHeight: 300,
-            maxWidth: 500,
-            maxHeight: 400
+            initialPosition:
+            {
+              width: 400,
+              height: 300
+            }
           }
         });
       },
