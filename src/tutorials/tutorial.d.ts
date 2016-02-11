@@ -1,12 +1,9 @@
+/// <reference path="tutorialpage.d.ts" />
+
 declare module Rance
 {
   interface ITutorial
   {
-    pages:
-    {
-      content: any; // React elements or strings
-      onOpen?: () => void;
-      onClose?: () => void;
-    }[];
+    pages: ITutorialPage[];
   }
 }

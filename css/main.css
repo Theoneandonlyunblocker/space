@@ -116,6 +116,9 @@ ol {
   border: none;
   background: transparent;
 }
+.glow {
+  box-shadow: 0px 0px 12px #fff inset, 0px 0px 10px #ff0;
+}
 #react-container {
   height: 100%;
 }
@@ -3220,37 +3223,39 @@ ol {
   padding: 8px;
   box-sizing: border-box;
 }
-.tutorial-popup {
-  min-width: 20em;
-  max-width: 30em;
-}
-.tutorial-popup-inner {
+.tutorial {
   display: flex;
-  flex-flow: row;
-  min-height: 10em;
+  flex-flow: column;
 }
-.tutorial-popup-content {
-  flex: 1;
+.tutorial-inner {
+  display: flex;
+  flex: 1 1 auto;
+  flex-flow: row;
+}
+.dont-show-again-wrapper {
+  flex: 0 0 auto;
+}
+.tutorial-content {
+  flex: 1 1 auto;
   margin: 8px 0;
   padding: 0 1em;
-  max-height: 15em;
   overflow-y: auto;
 }
-.tutorial-popup-flip-page {
+.tutorial-flip-page {
   cursor: pointer;
   display: flex;
   font-size: 1.5em;
   flex: 0 0 1.5em;
   align-items: center;
 }
-.tutorial-popup-flip-page.disabled {
+.tutorial-flip-page.disabled {
   cursor: inherit;
 }
-.tutorial-popup-flip-page-back {
+.tutorial-flip-page-back {
   justify-content: flex-start;
   background: linear-gradient(to left, #0c1615, #0d2335);
 }
-.tutorial-popup-flip-page-forward {
+.tutorial-flip-page-forward {
   justify-content: flex-end;
   background: linear-gradient(to right, #0c1615, #0d2335);
 }
@@ -4262,6 +4267,7 @@ button.player-setup-remove-player.disabled {
 }
 .manufactory-upgrade-button-cost {
   color: #ffeb00;
+  margin-left: 0.5em;
 }
 .manufactory-upgrade-button-cost::after {
   content: "\f111";

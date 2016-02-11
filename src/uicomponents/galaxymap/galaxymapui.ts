@@ -5,6 +5,8 @@
 /// <reference path="../possibleactions/possibleactions.ts"/>
 /// <reference path="../mapmodes/mapmodesettings.ts" />
 /// <reference path="../notifications/notifications.ts" />
+/// <reference path="../tutorials/introtutorial.ts" />
+
 
 module Rance
 {
@@ -154,6 +156,7 @@ module Rance
           {
             className: "galaxy-map-ui"
           },
+            UIComponents.IntroTutorial(),
             React.DOM.div(
             {
               className: "galaxy-map-ui-top"

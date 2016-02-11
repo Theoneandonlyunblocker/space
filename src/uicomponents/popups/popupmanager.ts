@@ -1,7 +1,6 @@
 /// <reference path="popup.ts"/>
-
-/// <reference path="tutorialpopup.ts"/>
 /// <reference path="confirmpopup.ts"/>
+
 module Rance
 {
   export module UIComponents
@@ -9,6 +8,11 @@ module Rance
     export var PopupManager = React.createClass(
     {
       displayName: "PopupManager",
+
+      propTypes:
+      {
+        onlyAllowOne: React.PropTypes.bool
+      },
 
       componentWillMount: function()
       {

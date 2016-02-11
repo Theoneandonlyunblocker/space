@@ -18,8 +18,6 @@
 /// <reference path="templateindexes.ts"/>
 /// <reference path="options.ts"/>
 
-/// <reference path="tutorials/uitutorial.ts"/>
-
 
 // TODO manufactory  move these to module file
 var manufactoryData =

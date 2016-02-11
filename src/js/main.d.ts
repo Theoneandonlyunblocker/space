@@ -20,6 +20,7 @@
 /// <reference path="../templateinterfaces/imaprendererlayertemplate.d.ts" />
 /// <reference path="../templateinterfaces/imaprenderermapmodetemplate.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
+/// <reference path="../tutorials/tutorial.d.ts" />
 /// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
 /// <reference path="../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
@@ -37,7 +38,6 @@
 /// <reference path="../templateinterfaces/iculturetemplate.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../templateinterfaces/iobjectivetemplate.d.ts" />
-/// <reference path="../tutorials/tutorial.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
 declare module Rance {
@@ -315,17 +315,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var TutorialPopup: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
         var ConfirmPopup: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PopupManager: React.Factory<{}>;
+        var PopupManager: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2453,6 +2448,35 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module Tutorials {
+        var introTutorial: {
+            pages: ({
+                content: string;
+                onOpen: () => void;
+                onClose: () => void;
+            } | {
+                content: string;
+                desiredSize: {
+                    width: number;
+                    height: number;
+                };
+            } | {
+                content: React.Descriptor<React.DomAttributes>;
+            })[];
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Tutorial: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var IntroTutorial: React.Factory<{}>;
+    }
+}
+declare module Rance {
     module UIComponents {
         var GalaxyMapUI: React.Factory<{}>;
     }
@@ -3693,21 +3717,6 @@ declare module Rance {
         };
     }
     var Options: any;
-}
-declare module Rance {
-    module Tutorials {
-        var uiTutorial: {
-            pages: ({
-                content: string;
-                onOpen: () => void;
-                onClose: () => void;
-            } | {
-                content: string;
-            } | {
-                content: React.Descriptor<React.DomAttributes>;
-            })[];
-        };
-    }
 }
 declare var manufactoryData: {
     startingCapacity: number;

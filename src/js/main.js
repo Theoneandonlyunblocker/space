@@ -4077,90 +4077,6 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TutorialPopup = React.createClass({
-            displayName: "TutorialPopup",
-            propTypes: {
-                pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired,
-                closePopup: React.PropTypes.func.isRequired,
-                cancelText: React.PropTypes.string
-            },
-            getInitialState: function () {
-                return ({
-                    currentPage: 0
-                });
-            },
-            flipPage: function (amount) {
-                var lastPage = this.props.pages.length - 1;
-                var newPage = this.state.currentPage + amount;
-                newPage = Rance.clamp(newPage, 0, lastPage);
-                if (this.props.pages[this.state.currentPage].onClose) {
-                    this.props.pages[this.state.currentPage].onClose();
-                }
-                var onOpenCallback = this.props.pages[newPage].onOpen ?
-                    this.props.pages[newPage].onOpen :
-                    null;
-                this.setState({
-                    currentPage: newPage
-                }, onOpenCallback);
-            },
-            handleClose: function () {
-                if (this.refs.dontShowAgain.getDOMNode().checked) {
-                }
-                this.props.closePopup();
-            },
-            render: function () {
-                var hasBackArrow = this.state.currentPage > 0;
-                var backElement;
-                if (hasBackArrow) {
-                    backElement = React.DOM.div({
-                        className: "tutorial-popup-flip-page tutorial-popup-flip-page-back",
-                        onClick: this.flipPage.bind(this, -1)
-                    }, "<");
-                }
-                else {
-                    backElement = React.DOM.div({
-                        className: "tutorial-popup-flip-page disabled"
-                    });
-                }
-                var hasForwardArrow = this.state.currentPage < this.props.pages.length - 1;
-                var forwardElement;
-                if (hasForwardArrow) {
-                    forwardElement = React.DOM.div({
-                        className: "tutorial-popup-flip-page tutorial-popup-flip-page-forward",
-                        onClick: this.flipPage.bind(this, 1)
-                    }, ">");
-                }
-                else {
-                    forwardElement = React.DOM.div({
-                        className: "tutorial-popup-flip-page disabled"
-                    });
-                }
-                return (React.DOM.div({
-                    className: "tutorial-popup"
-                }, React.DOM.div({
-                    className: "tutorial-popup-inner"
-                }, backElement, React.DOM.div({
-                    className: "tutorial-popup-content"
-                }, this.props.pages[this.state.currentPage].content), forwardElement), React.DOM.div({
-                    className: "dont-show-again-wrapper"
-                }, React.DOM.label(null, React.DOM.input({
-                    type: "checkBox",
-                    ref: "dontShowAgain",
-                    className: "dont-show-again"
-                }), "Disable tutorial"), React.DOM.div({
-                    className: "popup-buttons"
-                }, React.DOM.button({
-                    className: "popup-button",
-                    onClick: this.handleClose
-                }, this.props.cancelText || "Close")))));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
         UIComponents.ConfirmPopup = React.createClass({
             displayName: "ConfirmPopup",
             mixins: [UIComponents.SplitMultilineText],
@@ -4213,7 +4129,6 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="popup.ts"/>
-/// <reference path="tutorialpopup.ts"/>
 /// <reference path="confirmpopup.ts"/>
 var Rance;
 (function (Rance) {
@@ -4221,6 +4136,9 @@ var Rance;
     (function (UIComponents) {
         UIComponents.PopupManager = React.createClass({
             displayName: "PopupManager",
+            propTypes: {
+                onlyAllowOne: React.PropTypes.bool
+            },
             componentWillMount: function () {
                 this.listeners = {};
                 var self = this;
@@ -18134,6 +18052,160 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="tutorial.d.ts"/>
+var Rance;
+(function (Rance) {
+    var Tutorials;
+    (function (Tutorials) {
+        Tutorials.introTutorial = {
+            pages: [
+                {
+                    content: "This is a tutorial",
+                    onOpen: function () { console.log("tutorial page open"); },
+                    onClose: function () { console.log("tutorial page close"); }
+                },
+                {
+                    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ultricies condimentum ex eget consequat. Cras scelerisque vulputate libero consequat hendrerit. Sed ut mauris sed lorem mattis consectetur feugiat nec enim. Nulla metus magna, aliquam volutpat ornare nec, dictum non tellus. Curabitur quis massa egestas, congue massa at, malesuada velit. Sed ornare dui quam, nec vulputate ipsum blandit sed. Curabitur et consequat nulla. Cras lorem odio, varius ut diam ut, elementum fringilla nisi. In lobortis lectus eu libero volutpat, et viverra metus consectetur. Praesent cursus lacus vitae fermentum dapibus. Aliquam ac auctor eros. Praesent vel felis vel odio congue aliquam a et elit.\n\nDuis ac leo efficitur, lacinia libero at, vulputate lorem. Maecenas elementum aliquet tellus vitae tempus. Aliquam a lectus risus. Mauris porttitor, eros a faucibus vulputate, mauris libero ultricies lectus, eget consectetur orci diam id est. Integer eros nibh, lobortis ac iaculis ut, molestie at mi. Proin sit amet pulvinar ante. Curabitur a purus tempus velit varius sollicitudin. Nullam euismod felis eu elit consectetur tincidunt. Duis sed lobortis purus.\n\nMorbi sit amet sem blandit, cursus felis sit amet, accumsan turpis. Vivamus et facilisis enim. Duis vestibulum sodales neque, ut suscipit nulla ultrices vitae. In ac accumsan erat. Nunc consectetur massa non elit mollis bibendum. Nullam tincidunt augue mi. Vestibulum dapibus et nunc quis auctor. Etiam malesuada cursus purus, et gravida dolor vehicula vel. Nam scelerisque magna ut risus semper, eget iaculis ligula hendrerit. Donec ac varius mauris, a pulvinar diam. Sed elementum, ex molestie dictum suscipit, lectus nunc pellentesque turpis, ac scelerisque tellus odio vel nisi. Donec facilisis, purus id volutpat varius, mi ex accumsan diam, a viverra lectus dui vel turpis. Nam tellus est, volutpat id scelerisque at, auctor id arcu. Proin molestie lobortis tempor. Ut ultricies lectus tincidunt erat consequat, at vestibulum erat commodo.",
+                    desiredSize: {
+                        width: 400,
+                        height: 700
+                    }
+                },
+                {
+                    content: React.DOM.div(null, React.DOM.div(null, "Works with"), React.DOM.button(null, "react elements too"))
+                }
+            ]
+        };
+    })(Tutorials = Rance.Tutorials || (Rance.Tutorials = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Tutorial = React.createClass({
+            displayName: "Tutorial",
+            propTypes: {
+                pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired,
+                cancelText: React.PropTypes.string
+            },
+            getInitialState: function () {
+                return ({
+                    currentPage: 0
+                });
+            },
+            componentDidMount: function () {
+                this.handleEnterPage(this.props.pages[this.state.currentPage]);
+            },
+            componentWillUnmount: function () {
+                this.handleLeavePage(this.props.pages[this.state.currentPage]);
+            },
+            handleEnterPage: function (page) {
+                if (page.onOpen) {
+                    page.onOpen();
+                }
+                if (page.desiredSize) {
+                }
+            },
+            handleLeavePage: function (page) {
+                if (page.onClose) {
+                    page.onClose();
+                }
+                if (page.desiredSize) {
+                }
+            },
+            flipPage: function (amount) {
+                var lastPage = this.props.pages.length - 1;
+                var newPage = this.state.currentPage + amount;
+                newPage = Rance.clamp(newPage, 0, lastPage);
+                this.handleLeavePage(this.props.pages[this.state.currentPage]);
+                this.setState({
+                    currentPage: newPage
+                }, this.handleEnterPage.bind(this, this.props.pages[newPage]));
+            },
+            handleClose: function () {
+                if (this.refs.dontShowAgain.getDOMNode().checked) {
+                }
+            },
+            render: function () {
+                var hasBackArrow = this.state.currentPage > 0;
+                var backElement;
+                if (hasBackArrow) {
+                    backElement = React.DOM.div({
+                        className: "tutorial-flip-page tutorial-flip-page-back",
+                        onClick: this.flipPage.bind(this, -1)
+                    }, "<");
+                }
+                else {
+                    backElement = React.DOM.div({
+                        className: "tutorial-flip-page disabled"
+                    });
+                }
+                var hasForwardArrow = this.state.currentPage < this.props.pages.length - 1;
+                var forwardElement;
+                if (hasForwardArrow) {
+                    forwardElement = React.DOM.div({
+                        className: "tutorial-flip-page tutorial-flip-page-forward",
+                        onClick: this.flipPage.bind(this, 1)
+                    }, ">");
+                }
+                else {
+                    forwardElement = React.DOM.div({
+                        className: "tutorial-flip-page disabled"
+                    });
+                }
+                return (React.DOM.div({
+                    className: "tutorial"
+                }, React.DOM.div({
+                    className: "tutorial-inner"
+                }, backElement, React.DOM.div({
+                    className: "tutorial-content"
+                }, this.props.pages[this.state.currentPage].content), forwardElement)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../popups/popupmanager.ts" />
+/// <reference path="../popups/topmenupopup.ts" />
+/// <reference path="../../tutorials/introtutorial.ts" />
+/// <reference path="tutorial.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.IntroTutorial = React.createClass({
+            displayName: "IntroTutorial",
+            popupId: null,
+            componentDidMount: function () {
+                this.popupId = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.TopMenuPopup,
+                    contentProps: {
+                        handleClose: this.closePopup,
+                        contentConstructor: UIComponents.Tutorial,
+                        contentProps: {
+                            pages: Rance.Tutorials.introTutorial.pages
+                        }
+                    },
+                    popupProps: {
+                        resizable: true,
+                        containerDragOnly: true
+                    }
+                });
+            },
+            componentWillUnmount: function () {
+                this.closePopup();
+            },
+            closePopup: function () {
+                this.refs.popupManager.closePopup(this.popupId);
+            },
+            render: function () {
+                return (UIComponents.PopupManager({
+                    ref: "popupManager",
+                    onlyAllowOne: true
+                }));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
@@ -18141,6 +18213,7 @@ var Rance;
 /// <reference path="../possibleactions/possibleactions.ts"/>
 /// <reference path="../mapmodes/mapmodesettings.ts" />
 /// <reference path="../notifications/notifications.ts" />
+/// <reference path="../tutorials/introtutorial.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -18239,7 +18312,7 @@ var Rance;
                 }
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
-                }, React.DOM.div({
+                }, UIComponents.IntroTutorial(), React.DOM.div({
                     className: "galaxy-map-ui-top"
                 }, UIComponents.TopBar({
                     player: this.props.player,
@@ -27458,28 +27531,6 @@ var Rance;
         };
     })(defaultOptions = Rance.defaultOptions || (Rance.defaultOptions = {}));
 })(Rance || (Rance = {}));
-/// <reference path="tutorial.d.ts"/>
-var Rance;
-(function (Rance) {
-    var Tutorials;
-    (function (Tutorials) {
-        Tutorials.uiTutorial = {
-            pages: [
-                {
-                    content: "This is a tutorial",
-                    onOpen: function () { console.log("tutorial page open"); },
-                    onClose: function () { console.log("tutorial page close"); }
-                },
-                {
-                    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ultricies condimentum ex eget consequat. Cras scelerisque vulputate libero consequat hendrerit. Sed ut mauris sed lorem mattis consectetur feugiat nec enim. Nulla metus magna, aliquam volutpat ornare nec, dictum non tellus. Curabitur quis massa egestas, congue massa at, malesuada velit. Sed ornare dui quam, nec vulputate ipsum blandit sed. Curabitur et consequat nulla. Cras lorem odio, varius ut diam ut, elementum fringilla nisi. In lobortis lectus eu libero volutpat, et viverra metus consectetur. Praesent cursus lacus vitae fermentum dapibus. Aliquam ac auctor eros. Praesent vel felis vel odio congue aliquam a et elit.\n\nDuis ac leo efficitur, lacinia libero at, vulputate lorem. Maecenas elementum aliquet tellus vitae tempus. Aliquam a lectus risus. Mauris porttitor, eros a faucibus vulputate, mauris libero ultricies lectus, eget consectetur orci diam id est. Integer eros nibh, lobortis ac iaculis ut, molestie at mi. Proin sit amet pulvinar ante. Curabitur a purus tempus velit varius sollicitudin. Nullam euismod felis eu elit consectetur tincidunt. Duis sed lobortis purus.\n\nMorbi sit amet sem blandit, cursus felis sit amet, accumsan turpis. Vivamus et facilisis enim. Duis vestibulum sodales neque, ut suscipit nulla ultrices vitae. In ac accumsan erat. Nunc consectetur massa non elit mollis bibendum. Nullam tincidunt augue mi. Vestibulum dapibus et nunc quis auctor. Etiam malesuada cursus purus, et gravida dolor vehicula vel. Nam scelerisque magna ut risus semper, eget iaculis ligula hendrerit. Donec ac varius mauris, a pulvinar diam. Sed elementum, ex molestie dictum suscipit, lectus nunc pellentesque turpis, ac scelerisque tellus odio vel nisi. Donec facilisis, purus id volutpat varius, mi ex accumsan diam, a viverra lectus dui vel turpis. Nam tellus est, volutpat id scelerisque at, auctor id arcu. Proin molestie lobortis tempor. Ut ultricies lectus tincidunt erat consequat, at vestibulum erat commodo."
-                },
-                {
-                    content: React.DOM.div(null, React.DOM.div(null, "Works with"), React.DOM.button(null, "react elements too"))
-                }
-            ]
-        };
-    })(Tutorials = Rance.Tutorials || (Rance.Tutorials = {}));
-})(Rance || (Rance = {}));
 /// <reference path="reactui.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="playercontrol.ts"/>
@@ -27496,7 +27547,6 @@ var Rance;
 /// <reference path="setdynamictemplateproperties.ts"/>
 /// <reference path="templateindexes.ts"/>
 /// <reference path="options.ts"/>
-/// <reference path="tutorials/uitutorial.ts"/>
 // TODO manufactory  move these to module file
 var manufactoryData = {
     startingCapacity: 1,
