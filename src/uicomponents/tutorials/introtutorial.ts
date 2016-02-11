@@ -31,19 +31,27 @@ module Rance
           popupProps:
           {
             resizable: true,
-            containerDragOnly: true
+            containerDragOnly: true,
+            minWidth: 400,
+            minHeight: 300,
+            maxWidth: 500,
+            maxHeight: 400
           }
         });
       },
 
       componentWillUnmount: function()
       {
-        this.closePopup();
+        if (this.popupId)
+        {
+          this.closePopup();
+        }
       },
 
       closePopup: function()
       {
         this.refs.popupManager.closePopup(this.popupId);
+        this.popupId = null;
       },
 
       render: function()

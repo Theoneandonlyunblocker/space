@@ -8,8 +8,7 @@ module Rance
 
       propTypes:
       {
-        pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired, // React.PropTypes.node
-        cancelText: React.PropTypes.string
+        pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired // React.PropTypes.node
       },
 
       getInitialState: function()
@@ -145,7 +144,7 @@ module Rance
             //       ref: "dontShowAgain",
             //       className: "dont-show-again"
             //     }),
-            //     "Disable tutorial"
+            //     "Don't show again"
             //   )
             // )
           )

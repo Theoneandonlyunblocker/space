@@ -310,7 +310,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var Popup: React.Factory<{}>;
+        var Popup: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2450,19 +2450,9 @@ declare module Rance {
 declare module Rance {
     module Tutorials {
         var introTutorial: {
-            pages: ({
+            pages: {
                 content: string;
-                onOpen: () => void;
-                onClose: () => void;
-            } | {
-                content: string;
-                desiredSize: {
-                    width: number;
-                    height: number;
-                };
-            } | {
-                content: React.Descriptor<React.DomAttributes>;
-            })[];
+            }[];
         };
     }
 }
