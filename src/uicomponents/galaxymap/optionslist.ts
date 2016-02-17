@@ -228,6 +228,18 @@ module Rance
           })
         });
 
+        uiOptions.push(
+        {
+          key: "resetTutorials",
+          content: React.DOM.button(
+          {
+            className: "reset-tutorials-button",
+            onClick: Rance.resetTutorialState
+          },
+            "Reset tutorials"
+          )
+        });
+
         allOptions.push(UIComponents.OptionsGroup(
         {
           header: "UI",
