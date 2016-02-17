@@ -1,3 +1,5 @@
+/// <reference path="../mixins/splitmultilinetext.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -5,6 +7,7 @@ module Rance
     export var Tutorial = React.createClass(
     {
       displayName: "Tutorial",
+      mixins: [SplitMultilineText],
 
       propTypes:
       {
@@ -129,24 +132,24 @@ module Rance
               React.DOM.div(
               {
                 className: "tutorial-content"
-              }, this.props.pages[this.state.currentPage].content),
+              }, this.splitMultilineText(this.props.pages[this.state.currentPage].content)),
 
               forwardElement
+            ),
+            React.DOM.div(
+            {
+              className: "dont-show-again-wrapper"
+            },
+              React.DOM.label(null,
+                React.DOM.input(
+                {
+                  type: "checkBox",
+                  ref: "dontShowAgain",
+                  className: "dont-show-again"
+                }),
+                "Don't show again"
+              )
             )
-            // React.DOM.div(
-            // {
-            //   className: "dont-show-again-wrapper"
-            // },
-            //   React.DOM.label(null,
-            //     React.DOM.input(
-            //     {
-            //       type: "checkBox",
-            //       ref: "dontShowAgain",
-            //       className: "dont-show-again"
-            //     }),
-            //     "Don't show again"
-            //   )
-            // )
           )
         );
       }

@@ -9,23 +9,43 @@ module Rance
       pages:
       [
         {
-          content: "This game is very heavily in developement. " +
-          "Many things are still unfinished or unimplemented, including a proper tutorial."
+          content:
+          [
+            "Thanks for checking out spacegame!",
+            "",
+            "This game is still heavily in development. Many things are unfinished or unimplemented, including a proper tutorial."
+          ]
         },
         {
-          content: "To get started, click on \"production\" in the top menu. " +
-          "Click on a ship type on the right of the production window to add it to your build queue. " +
-          "Units in the queue are built at the end of each turn. " +
-          "You can end your turn by clicking the \"End turn\" button at the bottom right of the main window."
+          content:
+          [
+            "To get started, click on \"Production\" in the top menu. ",
+            "",
+            "Click on a ship type on the right of the production window to add it to your build queue. ",
+            "Units in the queue are built at the end of each turn. ",
+            "",
+            "You can end your turn by clicking the \"End turn\" button at the bottom right of the main window."
+          ]
         },
         {
-          content: "Built units are assigned to fleets on the map. " +
-          "To select fleets, drag a rectangle over them on the map or click on the fleet icon. " +
-          "Selected fleets can be moved by right-clicking."
+          content:
+          [
+            "Built units are assigned to fleets on the map. ",
+            "",
+            "To select fleets, drag a rectangle over them on the map or click on the fleet icon. ",
+            "Selected fleets can be moved by right-clicking.",
+            "",
+            "To move the camera, drag the map while holding down middle mouse button or while holding down ctrl/cmd + right click.",
+            "Touchscreen devices aren't supported yet, sorry."
+          ]
         },
         {
-          content: "In the battle setup screen, click \"Auto formation\" or drag units into the formation on the bottom left. " +
-          "To use abilities in battle, hover over the unit you want to target and select the ability to use."
+          content:
+          [
+            "In the battle setup screen, click \"Auto formation\" or drag units into the formation on the bottom left. ",
+            "",
+            "To use abilities in battle, hover over the unit you want to target and select the ability to use."
+          ]
         }
         // {
         //   content: "This is a tutorial",

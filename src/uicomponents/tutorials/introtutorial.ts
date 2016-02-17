@@ -34,8 +34,8 @@ module Rance
             containerDragOnly: true,
             initialPosition:
             {
-              width: 400,
-              height: 300
+              width: 600,
+              height: 350
             }
           }
         });

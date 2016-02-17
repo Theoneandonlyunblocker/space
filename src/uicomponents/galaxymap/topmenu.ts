@@ -172,14 +172,14 @@ module Rance
         [
           React.DOM.button(
           {
-            className: "top-menu-items-button",
+            className: "top-menu-items-button top-menu-items-button-production",
             key: "production",
             onClick: this.togglePopup.bind(this, "production"),
             tabIndex: menuItemTabIndex
           }, "Production"),
           React.DOM.button(
           {
-            className: "top-menu-items-button",
+            className: "top-menu-items-button top-menu-items-button-equip",
             key: "equipItems",
             onClick: this.togglePopup.bind(this, "equipItems"),
             tabIndex: menuItemTabIndex
@@ -187,7 +187,7 @@ module Rance
           /*
           React.DOM.button(
           {
-            className: "top-menu-items-button",
+            className: "top-menu-items-button top-menu-items-button-economy",
             key: "economySummary",
             onClick: this.togglePopup.bind(this, "economySummary"),
             tabIndex: menuItemTabIndex
@@ -195,35 +195,35 @@ module Rance
           */
           React.DOM.button(
           {
-            className: "top-menu-items-button",
+            className: "top-menu-items-button top-menu-items-button-diplomacy",
             key: "diplomacy",
             onClick: this.togglePopup.bind(this, "diplomacy"),
             tabIndex: menuItemTabIndex
           }, "Diplomacy"),
           React.DOM.button(
           {
-            className: "top-menu-items-button",
+            className: "top-menu-items-button top-menu-items-button-technology",
             key: "technologies",
             onClick: this.togglePopup.bind(this, "technologies"),
             tabIndex: menuItemTabIndex
           }, "Technology"),
           React.DOM.button(
           {
-            className: "top-menu-items-button",
+            className: "top-menu-items-button top-menu-items-button-load",
             key: "loadGame",
             onClick: this.togglePopup.bind(this, "loadGame"),
             tabIndex: menuItemTabIndex
           }, "Load"),
           React.DOM.button(
           {
-            className: "top-menu-items-button",
+            className: "top-menu-items-button top-menu-items-button-save",
             key: "saveGame",
             onClick: this.togglePopup.bind(this, "saveGame"),
             tabIndex: menuItemTabIndex
           }, "Save"),
           React.DOM.button(
           {
-            className: "top-menu-items-button",
+            className: "top-menu-items-button top-menu-items-button-options",
             key: "options",
             onClick: this.togglePopup.bind(this, "options"),
             tabIndex: menuItemTabIndex

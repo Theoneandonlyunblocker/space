@@ -15794,13 +15794,13 @@ var Rance;
                 var menuItemTabIndex = this.state.opened ? -1 : 0;
                 var topMenuButtons = [
                     React.DOM.button({
-                        className: "top-menu-items-button",
+                        className: "top-menu-items-button top-menu-items-button-production",
                         key: "production",
                         onClick: this.togglePopup.bind(this, "production"),
                         tabIndex: menuItemTabIndex
                     }, "Production"),
                     React.DOM.button({
-                        className: "top-menu-items-button",
+                        className: "top-menu-items-button top-menu-items-button-equip",
                         key: "equipItems",
                         onClick: this.togglePopup.bind(this, "equipItems"),
                         tabIndex: menuItemTabIndex
@@ -15808,38 +15808,38 @@ var Rance;
                     /*
                     React.DOM.button(
                     {
-                      className: "top-menu-items-button",
+                      className: "top-menu-items-button top-menu-items-button-economy",
                       key: "economySummary",
                       onClick: this.togglePopup.bind(this, "economySummary"),
                       tabIndex: menuItemTabIndex
                     }, "Economy"),
                     */
                     React.DOM.button({
-                        className: "top-menu-items-button",
+                        className: "top-menu-items-button top-menu-items-button-diplomacy",
                         key: "diplomacy",
                         onClick: this.togglePopup.bind(this, "diplomacy"),
                         tabIndex: menuItemTabIndex
                     }, "Diplomacy"),
                     React.DOM.button({
-                        className: "top-menu-items-button",
+                        className: "top-menu-items-button top-menu-items-button-technology",
                         key: "technologies",
                         onClick: this.togglePopup.bind(this, "technologies"),
                         tabIndex: menuItemTabIndex
                     }, "Technology"),
                     React.DOM.button({
-                        className: "top-menu-items-button",
+                        className: "top-menu-items-button top-menu-items-button-load",
                         key: "loadGame",
                         onClick: this.togglePopup.bind(this, "loadGame"),
                         tabIndex: menuItemTabIndex
                     }, "Load"),
                     React.DOM.button({
-                        className: "top-menu-items-button",
+                        className: "top-menu-items-button top-menu-items-button-save",
                         key: "saveGame",
                         onClick: this.togglePopup.bind(this, "saveGame"),
                         tabIndex: menuItemTabIndex
                     }, "Save"),
                     React.DOM.button({
-                        className: "top-menu-items-button",
+                        className: "top-menu-items-button top-menu-items-button-options",
                         key: "options",
                         onClick: this.togglePopup.bind(this, "options"),
                         tabIndex: menuItemTabIndex
@@ -18072,34 +18072,52 @@ var Rance;
         Tutorials.introTutorial = {
             pages: [
                 {
-                    content: "This game is very heavily in developement. " +
-                        "Many things are still unfinished or unimplemented, including a proper tutorial."
+                    content: [
+                        "Thanks for checking out spacegame!",
+                        "",
+                        "This game is still heavily in development. Many things are unfinished or unimplemented, including a proper tutorial."
+                    ]
                 },
                 {
-                    content: "To get started, click on \"production\" in the top menu. " +
-                        "Click on a ship type on the right of the production window to add it to your build queue. " +
-                        "Units in the queue are built at the end of each turn. " +
+                    content: [
+                        "To get started, click on \"Production\" in the top menu. ",
+                        "",
+                        "Click on a ship type on the right of the production window to add it to your build queue. ",
+                        "Units in the queue are built at the end of each turn. ",
+                        "",
                         "You can end your turn by clicking the \"End turn\" button at the bottom right of the main window."
+                    ]
                 },
                 {
-                    content: "Built units are assigned to fleets on the map. " +
-                        "To select fleets, drag a rectangle over them on the map or click on the fleet icon. " +
-                        "Selected fleets can be moved by right-clicking."
+                    content: [
+                        "Built units are assigned to fleets on the map. ",
+                        "",
+                        "To select fleets, drag a rectangle over them on the map or click on the fleet icon. ",
+                        "Selected fleets can be moved by right-clicking.",
+                        "",
+                        "To move the camera, drag the map while holding down middle mouse button or while holding down ctrl/cmd + right click.",
+                        "Touchscreen devices aren't supported yet, sorry."
+                    ]
                 },
                 {
-                    content: "In the battle setup screen, click \"Auto formation\" or drag units into the formation on the bottom left. " +
+                    content: [
+                        "In the battle setup screen, click \"Auto formation\" or drag units into the formation on the bottom left. ",
+                        "",
                         "To use abilities in battle, hover over the unit you want to target and select the ability to use."
+                    ]
                 }
             ]
         };
     })(Tutorials = Rance.Tutorials || (Rance.Tutorials = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../mixins/splitmultilinetext.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.Tutorial = React.createClass({
             displayName: "Tutorial",
+            mixins: [UIComponents.SplitMultilineText],
             propTypes: {
                 pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired // React.PropTypes.node
             },
@@ -18174,7 +18192,13 @@ var Rance;
                     className: "tutorial-inner"
                 }, backElement, React.DOM.div({
                     className: "tutorial-content"
-                }, this.props.pages[this.state.currentPage].content), forwardElement)));
+                }, this.splitMultilineText(this.props.pages[this.state.currentPage].content)), forwardElement), React.DOM.div({
+                    className: "dont-show-again-wrapper"
+                }, React.DOM.label(null, React.DOM.input({
+                    type: "checkBox",
+                    ref: "dontShowAgain",
+                    className: "dont-show-again"
+                }), "Don't show again"))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -18204,8 +18228,8 @@ var Rance;
                         resizable: true,
                         containerDragOnly: true,
                         initialPosition: {
-                            width: 400,
-                            height: 300
+                            width: 600,
+                            height: 350
                         }
                     }
                 });

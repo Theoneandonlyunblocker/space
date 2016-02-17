@@ -129,10 +129,11 @@ ul, ol
     darken(@bg-color, 16%)
   );
 }
-.button-style-no-border
+
+.button-style-no-border(@gradient-direction: to bottom)
 {
   .double-gradient(
-    to bottom,
+    @gradient-direction,
     lighten(@bg-color2, 4%),
     lighten(@bg-color, 0%)
   );
@@ -142,7 +143,7 @@ ul, ol
   &:hover, &:focus
   {
     .double-gradient(
-      to bottom,
+      @gradient-direction,
       lighten(@bg-color2, 12%),
       lighten(@bg-color, 8%)
     );
@@ -150,7 +151,7 @@ ul, ol
   &:active
   {
     .double-gradient(
-      to bottom,
+      @gradient-direction,
       lighten(@bg-color2, 8%),
       lighten(@bg-color, 4%)
     );
@@ -161,9 +162,9 @@ ul, ol
   }
 }
 
-.button-style
+.button-style(@gradient-direction: to bottom)
 {
-  .button-style-no-border;
+  .button-style-no-border(@gradient-direction);
   border: 1px solid @ui-border-color1;
   border-radius: 5px;
 }
@@ -3437,7 +3438,8 @@ ul, ol
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 1em;
+  padding: 0.5em 1em;
+  border-top: 1px solid @ui-border-color2;
 }
 
 .dont-show-again
@@ -3472,7 +3474,7 @@ ul, ol
 .tutorial-content
 {
   flex: 1 1 auto;
-  margin: 8px 0;
+  margin-top: 8px;
   padding: 0 1em;
   overflow-y: auto;
   max-width: 500px;
@@ -3486,6 +3488,7 @@ ul, ol
   font-size: 1.5em;
   flex: 0 0 1.5em;
   align-items: center;
+  // justify-content: center;
 }
 .tutorial-flip-page.disabled
 {

@@ -2451,7 +2451,7 @@ declare module Rance {
     module Tutorials {
         var introTutorial: {
             pages: {
-                content: string;
+                content: string[];
             }[];
         };
     }
