@@ -18076,7 +18076,7 @@ var Rance;
                     content: [
                         "Thanks for checking out spacegame!",
                         "",
-                        "This game is still heavily in development. Many things are unfinished or unimplemented, including a proper tutorial."
+                        "This game is very heavily in development. Plenty of things are still unimplemented, everything else (including this tutorial) is TODO."
                     ]
                 },
                 {
@@ -18102,7 +18102,9 @@ var Rance;
                 },
                 {
                     content: [
-                        "In the battle setup screen, click \"Auto formation\" or drag units into the formation on the bottom left. ",
+                        "To start a battle, move your fleet to a star containing hostile fleets and click on \"attack\" button in the bottom left of the main window.",
+                        "",
+                        "In the battle setup screen, drag units from the unit list on the right into the formation on the bottom left or click the \"Auto formation\" button.",
                         "",
                         "To use abilities in battle, hover over the unit you want to target and select the ability to use."
                     ]
