@@ -1,14 +1,16 @@
+Copyright 2015-2016 github.com/giraluna
+
+
 All files in /lib folder are property of their respective owners.
 
 
-/img/items | CC-BY-SA 3.0 | http://www.meowx.com http://opengameart.org/content/magma-items
-/img/ships | CC-BY-SA 3.0 | http://www.meowx.com http://opengameart.org/content/meowx-shipyard-large-number-of-spaceship-sprites
+modules/default/img/items | CC-BY-SA 3.0 | http://www.meowx.com http://opengameart.org/content/magma-items
+modules/default/img/ships | CC-BY-SA 3.0 | http://www.meowx.com http://opengameart.org/content/meowx-shipyard-large-number-of-spaceship-sprites
 
-/img/battleEffects/rocket.png | CC-BY-SA 3.0 | http://www.ftlgame.com/forum/viewtopic.php?t=15663
+modules/default/img/resources | CC-BY-SA 3.0 | http://opengameart.org/content/painterly-spell-icons-part-4
+
+modules/default/img/battleEffects/rocket.png | CC-BY-SA 3.0 | http://www.ftlgame.com/forum/viewtopic.php?t=15663
 
 
 http://hubblesite.org/about_us/copyright.php
 /img/hs-2005-12-a-resized.jpg | Credit: NASA, ESA, S. Beckwith (STScI), and The Hubble Heritage Team (STScI/AURA) | http://hubblesite.org/gallery/album/galaxy/pr2005012a/
-
-
-Everything else in the repository not otherwise specified: Copyright 2015 github.com/giraluna
