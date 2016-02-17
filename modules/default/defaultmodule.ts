@@ -59,12 +59,15 @@ module Rance
         loadAssets: function(onLoaded: () => void)
         {
           var loader = new PIXI.loaders.Loader();
-          loader.add("units", "img\/units.json");
-          loader.add("buildings", "img\/buildings.json");
 
-          loader.add("img\/fowTexture.png");
-          loader.add("img\/battleEffects\/rocket.png");
-          loader.add("explosion", "img\/battleEffects\/explosion.json");
+          loader.add("img\/fowTexture.png"); // TODO module
+
+
+          loader.add("units", "modules\/default\/img\/units\/units.json");
+          loader.add("buildings", "modules\/default\/img\/buildings\/buildings.json");
+          loader.add("explosion", "modules\/default\/img\/battleEffects\/explosion.json");
+
+          loader.add("modules\/default\/img\/battleEffects\/rocket.png");
 
           for (var templateKey in Templates.SubEmblems)
           {

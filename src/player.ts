@@ -156,13 +156,7 @@ module Rance
       this.isIndependent = true;
 
       var foregroundEmblem = new Emblem(this.secondaryColor);
-      foregroundEmblem.inner = 
-      {
-        key: "pirateEmblem",
-        src: "img\/emblems\/Flag_of_Edward_England.svg",
-        coverage: [SubEmblemCoverage.both],
-        position: [SubEmblemPosition.both]
-      };
+      foregroundEmblem.inner = app.moduleData.Templates.SubEmblems["Flag_of_Edward_England"]; // TODO module
 
       this.flag = new Flag(
       {

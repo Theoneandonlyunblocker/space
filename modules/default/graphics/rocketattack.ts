@@ -14,13 +14,13 @@ module Rance
 
           for (var i = 0; i < 26; i++)
           {
-             var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i+1) + '.png');
+             var explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + '.png');
              explosionTextures.push(explosionTexture);
           }
 
           var props =
           {
-            projectileTextures: [PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png")],
+            projectileTextures: [PIXI.Texture.fromFrame("modules\/default\/img\/battleEffects\/rocket.png")],
             impactTextures: [explosionTextures],
 
             maxSpeed: 3,

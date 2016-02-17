@@ -78,17 +78,6 @@ module Rance
           emblems.push(this.makeEmblemElement(template));
         }
 
-        var pirateTemplate =
-        {
-          key: "pirateEmblem",
-          src: "img\/emblems\/Flag_of_Edward_England.svg",
-          coverage: [SubEmblemCoverage.both],
-          position: [SubEmblemPosition.both]
-        };
-
-        // emblems.push(this.makeEmblemElement(pirateTemplate));
-
-
         var imageInfoMessage: ReactDOMPlaceHolder;
         if (this.props.hasImageFailMessage)
         {

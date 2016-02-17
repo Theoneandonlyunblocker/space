@@ -3097,11 +3097,11 @@ var Rance;
                 switch (techLevel) {
                     case 2:
                         {
-                            return "img\/items\/t2icon.png";
+                            return "img\/icons\/t2icon.png";
                         }
                     case 3:
                         {
-                            return "img\/items\/t3icon.png";
+                            return "img\/icons\/t3icon.png";
                         }
                 }
             },
@@ -5178,35 +5178,35 @@ var Rance;
                     Resources.testResource1 = {
                         type: "testResource1",
                         displayName: "Test Resource 1",
-                        icon: "img\/resources\/test1.png",
+                        icon: "modules\/default\/img\/resources\/test1.png",
                         rarity: 1,
                         distributionGroups: ["common"]
                     };
                     Resources.testResource2 = {
                         type: "testResource2",
                         displayName: "Test Resource 2",
-                        icon: "img\/resources\/test2.png",
+                        icon: "modules\/default\/img\/resources\/test2.png",
                         rarity: 1,
                         distributionGroups: ["common"]
                     };
                     Resources.testResource3 = {
                         type: "testResource3",
                         displayName: "Test Resource 3",
-                        icon: "img\/resources\/test3.png",
+                        icon: "modules\/default\/img\/resources\/test3.png",
                         rarity: 1,
                         distributionGroups: ["common"]
                     };
                     Resources.testResource4 = {
                         type: "testResource4",
                         displayName: "Test Resource 4",
-                        icon: "img\/resources\/test4.png",
+                        icon: "modules\/default\/img\/resources\/test4.png",
                         rarity: 1,
                         distributionGroups: ["rare"]
                     };
                     Resources.testResource5 = {
                         type: "testResource5",
                         displayName: "Test Resource 5",
-                        icon: "img\/resources\/test5.png",
+                        icon: "modules\/default\/img\/resources\/test5.png",
                         rarity: 1,
                         distributionGroups: ["rare"]
                     };
@@ -12385,13 +12385,7 @@ var Rance;
             this.secondaryColor = 0xFFFFFF;
             this.isIndependent = true;
             var foregroundEmblem = new Rance.Emblem(this.secondaryColor);
-            foregroundEmblem.inner =
-                {
-                    key: "pirateEmblem",
-                    src: "img\/emblems\/Flag_of_Edward_England.svg",
-                    coverage: [Rance.SubEmblemCoverage.both],
-                    position: [Rance.SubEmblemPosition.both]
-                };
+            foregroundEmblem.inner = app.moduleData.Templates.SubEmblems["Flag_of_Edward_England"]; // TODO module
             this.flag = new Rance.Flag({
                 width: 46,
                 mainColor: this.color,
@@ -19033,13 +19027,6 @@ var Rance;
                     var template = app.moduleData.Templates.SubEmblems[emblemType];
                     emblems.push(this.makeEmblemElement(template));
                 }
-                var pirateTemplate = {
-                    key: "pirateEmblem",
-                    src: "img\/emblems\/Flag_of_Edward_England.svg",
-                    coverage: [Rance.SubEmblemCoverage.both],
-                    position: [Rance.SubEmblemPosition.both]
-                };
-                // emblems.push(this.makeEmblemElement(pirateTemplate));
                 var imageInfoMessage;
                 if (this.props.hasImageFailMessage) {
                     imageInfoMessage =
@@ -23930,11 +23917,11 @@ var Rance;
                 function rocketAttack(params) {
                     var explosionTextures = [];
                     for (var i = 0; i < 26; i++) {
-                        var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i + 1) + '.png');
+                        var explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i + 1) + '.png');
                         explosionTextures.push(explosionTexture);
                     }
                     var props = {
-                        projectileTextures: [PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png")],
+                        projectileTextures: [PIXI.Texture.fromFrame("modules\/default\/img\/battleEffects\/rocket.png")],
                         impactTextures: [explosionTextures],
                         maxSpeed: 3,
                         acceleration: 0.05,
@@ -24628,7 +24615,7 @@ var Rance;
                         type: "bombLauncher1",
                         displayName: "Bomb Launcher 1",
                         description: "",
-                        icon: "img\/items\/cannon.png",
+                        icon: "modules\/default\/img\/items\/cannon.png",
                         techLevel: 1,
                         buildCost: 100,
                         slot: "high",
@@ -24638,7 +24625,7 @@ var Rance;
                         type: "bombLauncher2",
                         displayName: "Bomb Launcher 2",
                         description: "",
-                        icon: "img\/items\/cannon.png",
+                        icon: "modules\/default\/img\/items\/cannon.png",
                         techLevel: 2,
                         buildCost: 200,
                         attributes: {
@@ -24651,7 +24638,7 @@ var Rance;
                         type: "bombLauncher3",
                         displayName: "Bomb Launcher 3",
                         description: "",
-                        icon: "img\/items\/cannon.png",
+                        icon: "modules\/default\/img\/items\/cannon.png",
                         techLevel: 3,
                         buildCost: 300,
                         attributes: {
@@ -24664,7 +24651,7 @@ var Rance;
                         type: "afterBurner1",
                         displayName: "Afterburner 1",
                         description: "",
-                        icon: "img\/items\/blueThing.png",
+                        icon: "modules\/default\/img\/items\/blueThing.png",
                         techLevel: 1,
                         buildCost: 100,
                         attributes: {
@@ -24677,7 +24664,7 @@ var Rance;
                         type: "afterBurner2",
                         displayName: "Afterburner 2",
                         description: "",
-                        icon: "img\/items\/blueThing.png",
+                        icon: "modules\/default\/img\/items\/blueThing.png",
                         techLevel: 2,
                         buildCost: 200,
                         attributes: {
@@ -24689,7 +24676,7 @@ var Rance;
                         type: "afterBurner3",
                         displayName: "Afterburner 3",
                         description: "",
-                        icon: "img\/items\/blueThing.png",
+                        icon: "modules\/default\/img\/items\/blueThing.png",
                         techLevel: 3,
                         buildCost: 300,
                         attributes: {
@@ -24702,7 +24689,7 @@ var Rance;
                         type: "shieldPlating1",
                         displayName: "Shield Plating 1",
                         description: "",
-                        icon: "img\/items\/armor1.png",
+                        icon: "modules\/default\/img\/items\/armor1.png",
                         techLevel: 1,
                         buildCost: 100,
                         attributes: {
@@ -24714,7 +24701,7 @@ var Rance;
                         type: "shieldPlating2",
                         displayName: "Shield Plating 2",
                         description: "",
-                        icon: "img\/items\/armor1.png",
+                        icon: "modules\/default\/img\/items\/armor1.png",
                         techLevel: 2,
                         buildCost: 200,
                         attributes: {
@@ -24726,7 +24713,7 @@ var Rance;
                         type: "shieldPlating3",
                         displayName: "Shield Plating 3",
                         description: "",
-                        icon: "img\/items\/armor1.png",
+                        icon: "modules\/default\/img\/items\/armor1.png",
                         techLevel: 3,
                         buildCost: 300,
                         attributes: {
@@ -24788,127 +24775,127 @@ var Rance;
                 (function (SubEmblems) {
                     SubEmblems.Aguila_explayada_2 = {
                         key: "Aguila_explayada_2",
-                        src: "img\/emblems\/Aguila_explayada_2.svg",
+                        src: "modules\/default\/img\/emblems\/Aguila_explayada_2.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Berliner_Baer = {
                         key: "Berliner_Baer",
-                        src: "img\/emblems\/Berliner_Baer.svg",
+                        src: "modules\/default\/img\/emblems\/Berliner_Baer.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Cles_en_sautoir = {
                         key: "Cles_en_sautoir",
-                        src: "img\/emblems\/Cles_en_sautoir.svg",
+                        src: "modules\/default\/img\/emblems\/Cles_en_sautoir.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Coa_Illustration_Cross_Bowen_3 = {
                         key: "Coa_Illustration_Cross_Bowen_3",
-                        src: "img\/emblems\/Coa_Illustration_Cross_Bowen_3.svg",
+                        src: "modules\/default\/img\/emblems\/Coa_Illustration_Cross_Bowen_3.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Coa_Illustration_Cross_Malte_1 = {
                         key: "Coa_Illustration_Cross_Malte_1",
-                        src: "img\/emblems\/Coa_Illustration_Cross_Malte_1.svg",
+                        src: "modules\/default\/img\/emblems\/Coa_Illustration_Cross_Malte_1.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Coa_Illustration_Elements_Planet_Moon = {
                         key: "Coa_Illustration_Elements_Planet_Moon",
-                        src: "img\/emblems\/Coa_Illustration_Elements_Planet_Moon.svg",
+                        src: "modules\/default\/img\/emblems\/Coa_Illustration_Elements_Planet_Moon.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Couronne_heraldique_svg = {
                         key: "Couronne_heraldique_svg",
-                        src: "img\/emblems\/Couronne_heraldique_svg.svg",
+                        src: "modules\/default\/img\/emblems\/Couronne_heraldique_svg.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Gomaisasa = {
                         key: "Gomaisasa",
-                        src: "img\/emblems\/Gomaisasa.svg",
+                        src: "modules\/default\/img\/emblems\/Gomaisasa.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Gryphon_Segreant = {
                         key: "Gryphon_Segreant",
-                        src: "img\/emblems\/Gryphon_Segreant.svg",
+                        src: "modules\/default\/img\/emblems\/Gryphon_Segreant.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Heraldic_pentacle = {
                         key: "Heraldic_pentacle",
-                        src: "img\/emblems\/Heraldic_pentacle.svg",
+                        src: "modules\/default\/img\/emblems\/Heraldic_pentacle.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_Crest_Futatsudomoe_1 = {
                         key: "Japanese_Crest_Futatsudomoe_1",
-                        src: "img\/emblems\/Japanese_Crest_Futatsudomoe_1.svg",
+                        src: "modules\/default\/img\/emblems\/Japanese_Crest_Futatsudomoe_1.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_Crest_Hana_Hisi = {
                         key: "Japanese_Crest_Hana_Hisi",
-                        src: "img\/emblems\/Japanese_Crest_Hana_Hisi.svg",
+                        src: "modules\/default\/img\/emblems\/Japanese_Crest_Hana_Hisi.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_Crest_Mitsumori_Janome = {
                         key: "Japanese_Crest_Mitsumori_Janome",
-                        src: "img\/emblems\/Japanese_Crest_Mitsumori_Janome.svg",
+                        src: "modules\/default\/img\/emblems\/Japanese_Crest_Mitsumori_Janome.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_Crest_Oda_ka = {
                         key: "Japanese_Crest_Oda_ka",
-                        src: "img\/emblems\/Japanese_Crest_Oda_ka.svg",
+                        src: "modules\/default\/img\/emblems\/Japanese_Crest_Oda_ka.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_crest_Tsuki_ni_Hoshi = {
                         key: "Japanese_crest_Tsuki_ni_Hoshi",
-                        src: "img\/emblems\/Japanese_crest_Tsuki_ni_Hoshi.svg",
+                        src: "modules\/default\/img\/emblems\/Japanese_crest_Tsuki_ni_Hoshi.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Japanese_Crest_Ume = {
                         key: "Japanese_Crest_Ume",
-                        src: "img\/emblems\/Japanese_Crest_Ume.svg",
+                        src: "modules\/default\/img\/emblems\/Japanese_Crest_Ume.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Mitsuuroko = {
                         key: "Mitsuuroko",
-                        src: "img\/emblems\/Mitsuuroko.svg",
+                        src: "modules\/default\/img\/emblems\/Mitsuuroko.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Musubikashiwa = {
                         key: "Musubikashiwa",
-                        src: "img\/emblems\/Musubi-kashiwa.svg",
+                        src: "modules\/default\/img\/emblems\/Musubi-kashiwa.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Takeda_mon = {
                         key: "Takeda_mon",
-                        src: "img\/emblems\/Takeda_mon.svg",
+                        src: "modules\/default\/img\/emblems\/Takeda_mon.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.threeHorns = {
                         key: "threeHorns",
-                        src: "img\/emblems\/threeHorns.svg",
+                        src: "modules\/default\/img\/emblems\/threeHorns.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both]
                     };
                     SubEmblems.Flag_of_Edward_England = {
                         key: "Flag_of_Edward_England",
-                        src: "img\/emblems\/Flag_of_Edward_England.svg",
+                        src: "modules\/default\/img\/emblems\/Flag_of_Edward_England.svg",
                         coverage: [Rance.SubEmblemCoverage.both],
                         position: [Rance.SubEmblemPosition.both],
                         disallowRandomGeneration: true
@@ -25219,7 +25206,7 @@ var Rance;
                         },
                         isSquadron: false,
                         buildCost: 0,
-                        icon: "img\/icons\/f.png",
+                        icon: "modules\/default\/img\/unitIcons\/f.png",
                         maxHealth: 1,
                         maxMovePoints: 999,
                         visionRange: 1,
@@ -25299,7 +25286,7 @@ var Rance;
                         },
                         isSquadron: true,
                         buildCost: 100,
-                        icon: "img\/icons\/fa.png",
+                        icon: "modules\/default\/img\/unitIcons\/fa.png",
                         maxHealth: 0.7,
                         maxMovePoints: 2,
                         visionRange: 1,
@@ -25335,7 +25322,7 @@ var Rance;
                         },
                         isSquadron: true,
                         buildCost: 200,
-                        icon: "img\/icons\/fb.png",
+                        icon: "modules\/default\/img\/unitIcons\/fb.png",
                         maxHealth: 0.5,
                         maxMovePoints: 1,
                         visionRange: 1,
@@ -25371,7 +25358,7 @@ var Rance;
                         },
                         isSquadron: true,
                         buildCost: 200,
-                        icon: "img\/icons\/bc.png",
+                        icon: "modules\/default\/img\/unitIcons\/bc.png",
                         maxHealth: 1,
                         maxMovePoints: 1,
                         visionRange: 1,
@@ -25407,7 +25394,7 @@ var Rance;
                         },
                         isSquadron: true,
                         buildCost: 200,
-                        icon: "img\/icons\/sc.png",
+                        icon: "modules\/default\/img\/unitIcons\/sc.png",
                         maxHealth: 0.6,
                         maxMovePoints: 2,
                         visionRange: 2,
@@ -25442,7 +25429,7 @@ var Rance;
                         },
                         isSquadron: true,
                         buildCost: 500,
-                        icon: "img\/icons\/sc.png",
+                        icon: "modules\/default\/img\/unitIcons\/sc.png",
                         maxHealth: 0.6,
                         maxMovePoints: 1,
                         visionRange: 1,
@@ -25479,7 +25466,7 @@ var Rance;
                         },
                         isSquadron: true,
                         buildCost: 200,
-                        icon: "img\/icons\/sh.png",
+                        icon: "modules\/default\/img\/unitIcons\/sh.png",
                         maxHealth: 0.9,
                         maxMovePoints: 1,
                         visionRange: 1,
@@ -25523,7 +25510,7 @@ var Rance;
                         },
                         isSquadron: false,
                         buildCost: 300,
-                        icon: "img\/icons\/sh.png",
+                        icon: "modules\/default\/img\/unitIcons\/sh.png",
                         maxHealth: 0.7,
                         maxMovePoints: 1,
                         visionRange: 1,
@@ -25566,7 +25553,7 @@ var Rance;
                         },
                         isSquadron: true,
                         buildCost: 200,
-                        icon: "img\/icons\/sc.png",
+                        icon: "modules\/default\/img\/unitIcons\/sc.png",
                         maxHealth: 0.6,
                         maxMovePoints: 2,
                         visionRange: 2,
@@ -25601,7 +25588,7 @@ var Rance;
                         },
                         isSquadron: true,
                         buildCost: 200,
-                        icon: "img\/icons\/sc.png",
+                        icon: "modules\/default\/img\/unitIcons\/sc.png",
                         maxHealth: 0.6,
                         maxMovePoints: 2,
                         visionRange: 2,
@@ -26423,11 +26410,11 @@ var Rance;
                 },
                 loadAssets: function (onLoaded) {
                     var loader = new PIXI.loaders.Loader();
-                    loader.add("units", "img\/units.json");
-                    loader.add("buildings", "img\/buildings.json");
-                    loader.add("img\/fowTexture.png");
-                    loader.add("img\/battleEffects\/rocket.png");
-                    loader.add("explosion", "img\/battleEffects\/explosion.json");
+                    loader.add("img\/fowTexture.png"); // TODO module
+                    loader.add("units", "modules\/default\/img\/units\/units.json");
+                    loader.add("buildings", "modules\/default\/img\/buildings\/buildings.json");
+                    loader.add("explosion", "modules\/default\/img\/battleEffects\/explosion.json");
+                    loader.add("modules\/default\/img\/battleEffects\/rocket.png");
                     for (var templateKey in DefaultModule.Templates.SubEmblems) {
                         var template = DefaultModule.Templates.SubEmblems[templateKey];
                         loader.add({
@@ -26486,7 +26473,7 @@ var Rance;
                     portraits: {
                         adelaide_hanscom1: {
                             key: "adelaide_hanscom1",
-                            imageSrc: "img\/portraits\/adelaide_hanscom1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/adelaide_hanscom1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26495,7 +26482,7 @@ var Rance;
                         },
                         alessandro_allori1: {
                             key: "alessandro_allori1",
-                            imageSrc: "img\/portraits\/alessandro_allori1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/alessandro_allori1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26504,7 +26491,7 @@ var Rance;
                         },
                         alessandro_allori2: {
                             key: "alessandro_allori2",
-                            imageSrc: "img\/portraits\/alessandro_allori2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/alessandro_allori2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26513,7 +26500,7 @@ var Rance;
                         },
                         alexandre_cabanel1: {
                             key: "alexandre_cabanel1",
-                            imageSrc: "img\/portraits\/alexandre_cabanel1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/alexandre_cabanel1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26522,7 +26509,7 @@ var Rance;
                         },
                         alexei_harlamov1: {
                             key: "alexei_harlamov1",
-                            imageSrc: "img\/portraits\/alexei_harlamov1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/alexei_harlamov1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26531,7 +26518,7 @@ var Rance;
                         },
                         alexey_petrovich_antropov1: {
                             key: "alexey_petrovich_antropov1",
-                            imageSrc: "img\/portraits\/alexey_petrovich_antropov1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/alexey_petrovich_antropov1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26540,7 +26527,7 @@ var Rance;
                         },
                         alice_pike_barney1: {
                             key: "alice_pike_barney1",
-                            imageSrc: "img\/portraits\/alice_pike_barney1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/alice_pike_barney1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26549,7 +26536,7 @@ var Rance;
                         },
                         aman_theodor1: {
                             key: "aman_theodor1",
-                            imageSrc: "img\/portraits\/aman_theodor1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/aman_theodor1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26558,7 +26545,7 @@ var Rance;
                         },
                         antonello_messina1: {
                             key: "antonello_messina1",
-                            imageSrc: "img\/portraits\/antonello_messina1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/antonello_messina1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26567,7 +26554,7 @@ var Rance;
                         },
                         antonio_herrera_toro1: {
                             key: "antonio_herrera_toro1",
-                            imageSrc: "img\/portraits\/antonio_herrera_toro1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/antonio_herrera_toro1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26576,7 +26563,7 @@ var Rance;
                         },
                         benjaminconstant1: {
                             key: "benjaminconstant1",
-                            imageSrc: "img\/portraits\/benjamin-constant1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/benjamin-constant1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26585,7 +26572,7 @@ var Rance;
                         },
                         benoist_marieguillemine1: {
                             key: "benoist_marieguillemine1",
-                            imageSrc: "img\/portraits\/benoist_marie-guillemine1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/benoist_marie-guillemine1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26594,7 +26581,7 @@ var Rance;
                         },
                         bouguereau_williamadolphe1: {
                             key: "bouguereau_williamadolphe1",
-                            imageSrc: "img\/portraits\/bouguereau_william-adolphe1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/bouguereau_william-adolphe1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26603,7 +26590,7 @@ var Rance;
                         },
                         byron1: {
                             key: "byron1",
-                            imageSrc: "img\/portraits\/byron1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/byron1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26612,7 +26599,7 @@ var Rance;
                         },
                         carl_fredric_breda1: {
                             key: "carl_fredric_breda1",
-                            imageSrc: "img\/portraits\/carl_fredric_breda1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/carl_fredric_breda1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26621,7 +26608,7 @@ var Rance;
                         },
                         carl_fredric_breda2: {
                             key: "carl_fredric_breda2",
-                            imageSrc: "img\/portraits\/carl_fredric_breda2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/carl_fredric_breda2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26630,7 +26617,7 @@ var Rance;
                         },
                         cramacj_lucas1: {
                             key: "cramacj_lucas1",
-                            imageSrc: "img\/portraits\/cramacj_lucas1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/cramacj_lucas1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26639,7 +26626,7 @@ var Rance;
                         },
                         cranach_lucas2: {
                             key: "cranach_lucas2",
-                            imageSrc: "img\/portraits\/cranach_lucas2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/cranach_lucas2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26648,7 +26635,7 @@ var Rance;
                         },
                         cristobal_rojas1: {
                             key: "cristobal_rojas1",
-                            imageSrc: "img\/portraits\/cristobal_rojas1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/cristobal_rojas1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26657,7 +26644,7 @@ var Rance;
                         },
                         delacroix_eugene_ferdinand_victor1: {
                             key: "delacroix_eugene_ferdinand_victor1",
-                            imageSrc: "img\/portraits\/delacroix_eugene_ferdinand_victor1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/delacroix_eugene_ferdinand_victor1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26666,7 +26653,7 @@ var Rance;
                         },
                         domenikos_theotokopoulos1: {
                             key: "domenikos_theotokopoulos1",
-                            imageSrc: "img\/portraits\/domenikos_theotokopoulos1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/domenikos_theotokopoulos1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26675,7 +26662,7 @@ var Rance;
                         },
                         edmund_blair_leighton1: {
                             key: "edmund_blair_leighton1",
-                            imageSrc: "img\/portraits\/edmund_blair_leighton1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/edmund_blair_leighton1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26684,7 +26671,7 @@ var Rance;
                         },
                         edmund_blair_leighton2: {
                             key: "edmund_blair_leighton2",
-                            imageSrc: "img\/portraits\/edmund_blair_leighton2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/edmund_blair_leighton2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26693,7 +26680,7 @@ var Rance;
                         },
                         edwin_longsden_long1: {
                             key: "edwin_longsden_long1",
-                            imageSrc: "img\/portraits\/edwin_longsden_long1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/edwin_longsden_long1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26702,7 +26689,7 @@ var Rance;
                         },
                         falero_luis_ricardo1: {
                             key: "falero_luis_ricardo1",
-                            imageSrc: "img\/portraits\/falero_luis_ricardo1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/falero_luis_ricardo1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26711,7 +26698,7 @@ var Rance;
                         },
                         felix_bonfils1: {
                             key: "felix_bonfils1",
-                            imageSrc: "img\/portraits\/felix_bonfils1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/felix_bonfils1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26720,7 +26707,7 @@ var Rance;
                         },
                         francesco_hayez1: {
                             key: "francesco_hayez1",
-                            imageSrc: "img\/portraits\/francesco_hayez1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/francesco_hayez1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26729,7 +26716,7 @@ var Rance;
                         },
                         francisco_goya_lucientes1: {
                             key: "francisco_goya_lucientes1",
-                            imageSrc: "img\/portraits\/francisco_goya_lucientes1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/francisco_goya_lucientes1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26738,7 +26725,7 @@ var Rance;
                         },
                         francisco_goya_lucientes2: {
                             key: "francisco_goya_lucientes2",
-                            imageSrc: "img\/portraits\/francisco_goya_lucientes2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/francisco_goya_lucientes2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26747,7 +26734,7 @@ var Rance;
                         },
                         francisco_zurbaran1: {
                             key: "francisco_zurbaran1",
-                            imageSrc: "img\/portraits\/francisco_zurbaran1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/francisco_zurbaran1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26756,7 +26743,7 @@ var Rance;
                         },
                         franz_von_defregger1: {
                             key: "franz_von_defregger1",
-                            imageSrc: "img\/portraits\/franz_von_defregger1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/franz_von_defregger1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26765,7 +26752,7 @@ var Rance;
                         },
                         franz_von_defregger2: {
                             key: "franz_von_defregger2",
-                            imageSrc: "img\/portraits\/franz_von_defregger2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/franz_von_defregger2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26774,7 +26761,7 @@ var Rance;
                         },
                         franz_von_defregger3: {
                             key: "franz_von_defregger3",
-                            imageSrc: "img\/portraits\/franz_von_defregger3.png",
+                            imageSrc: "modules\/paintingportraits\/img\/franz_von_defregger3.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26783,7 +26770,7 @@ var Rance;
                         },
                         frederick_leighton1: {
                             key: "frederick_leighton1",
-                            imageSrc: "img\/portraits\/frederick_leighton1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/frederick_leighton1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26792,7 +26779,7 @@ var Rance;
                         },
                         frederic_westin1: {
                             key: "frederic_westin1",
-                            imageSrc: "img\/portraits\/frederic_westin1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/frederic_westin1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26801,7 +26788,7 @@ var Rance;
                         },
                         frederic_yates1: {
                             key: "frederic_yates1",
-                            imageSrc: "img\/portraits\/frederic_yates1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/frederic_yates1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26810,7 +26797,7 @@ var Rance;
                         },
                         gaston_bussiere1: {
                             key: "gaston_bussiere1",
-                            imageSrc: "img\/portraits\/gaston_bussiere1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/gaston_bussiere1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26819,7 +26806,7 @@ var Rance;
                         },
                         george_henry_hall1: {
                             key: "george_henry_hall1",
-                            imageSrc: "img\/portraits\/george_henry_hall1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/george_henry_hall1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26828,7 +26815,7 @@ var Rance;
                         },
                         giovanni_battista_tiepolo1: {
                             key: "giovanni_battista_tiepolo1",
-                            imageSrc: "img\/portraits\/giovanni_battista_tiepolo1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/giovanni_battista_tiepolo1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26837,7 +26824,7 @@ var Rance;
                         },
                         giovanni_bellini1: {
                             key: "giovanni_bellini1",
-                            imageSrc: "img\/portraits\/giovanni_bellini1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/giovanni_bellini1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26846,7 +26833,7 @@ var Rance;
                         },
                         hans_holbein1: {
                             key: "hans_holbein1",
-                            imageSrc: "img\/portraits\/hans_holbein1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/hans_holbein1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26855,7 +26842,7 @@ var Rance;
                         },
                         hayez_francesco1: {
                             key: "hayez_francesco1",
-                            imageSrc: "img\/portraits\/hayez_francesco1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/hayez_francesco1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26864,7 +26851,7 @@ var Rance;
                         },
                         henryk_siemiradzki1: {
                             key: "henryk_siemiradzki1",
-                            imageSrc: "img\/portraits\/henryk_siemiradzki1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/henryk_siemiradzki1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26873,7 +26860,7 @@ var Rance;
                         },
                         ilja_jefimowitsch_repin1: {
                             key: "ilja_jefimowitsch_repin1",
-                            imageSrc: "img\/portraits\/ilja_jefimowitsch_repin1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/ilja_jefimowitsch_repin1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26882,7 +26869,7 @@ var Rance;
                         },
                         james_carrol_beckwith1: {
                             key: "james_carrol_beckwith1",
-                            imageSrc: "img\/portraits\/james_carrol_beckwith1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/james_carrol_beckwith1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26891,7 +26878,7 @@ var Rance;
                         },
                         jeanbaptistecamille_corot1: {
                             key: "jeanbaptistecamille_corot1",
-                            imageSrc: "img\/portraits\/jean-baptiste-camille_corot1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/jean-baptiste-camille_corot1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26900,7 +26887,7 @@ var Rance;
                         },
                         jeanbaptistecamille_corot2: {
                             key: "jeanbaptistecamille_corot2",
-                            imageSrc: "img\/portraits\/jean-baptiste-camille_corot2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/jean-baptiste-camille_corot2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26909,7 +26896,7 @@ var Rance;
                         },
                         jeanleon_gerome1: {
                             key: "jeanleon_gerome1",
-                            imageSrc: "img\/portraits\/jean-leon_gerome1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26918,7 +26905,7 @@ var Rance;
                         },
                         jeanleon_gerome2: {
                             key: "jeanleon_gerome2",
-                            imageSrc: "img\/portraits\/jean-leon_gerome2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26927,7 +26914,7 @@ var Rance;
                         },
                         jeanleon_gerome3: {
                             key: "jeanleon_gerome3",
-                            imageSrc: "img\/portraits\/jean-leon_gerome3.png",
+                            imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome3.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26936,7 +26923,7 @@ var Rance;
                         },
                         jeanleon_gerome4: {
                             key: "jeanleon_gerome4",
-                            imageSrc: "img\/portraits\/jean-leon_gerome4.png",
+                            imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome4.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26945,7 +26932,7 @@ var Rance;
                         },
                         john_william_godward1: {
                             key: "john_william_godward1",
-                            imageSrc: "img\/portraits\/john_william_godward1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/john_william_godward1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26954,7 +26941,7 @@ var Rance;
                         },
                         john_william_godward2: {
                             key: "john_william_godward2",
-                            imageSrc: "img\/portraits\/john_william_godward2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/john_william_godward2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26963,7 +26950,7 @@ var Rance;
                         },
                         john_william_godward3: {
                             key: "john_william_godward3",
-                            imageSrc: "img\/portraits\/john_william_godward3.png",
+                            imageSrc: "modules\/paintingportraits\/img\/john_william_godward3.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26972,7 +26959,7 @@ var Rance;
                         },
                         julije_klovic1: {
                             key: "julije_klovic1",
-                            imageSrc: "img\/portraits\/julije_klovic1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/julije_klovic1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26981,7 +26968,7 @@ var Rance;
                         },
                         juriaen_streek1: {
                             key: "juriaen_streek1",
-                            imageSrc: "img\/portraits\/juriaen_streek1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/juriaen_streek1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26990,7 +26977,7 @@ var Rance;
                         },
                         kiprenskij_orest_adamovic1: {
                             key: "kiprenskij_orest_adamovic1",
-                            imageSrc: "img\/portraits\/kiprenskij_orest_adamovic1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/kiprenskij_orest_adamovic1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -26999,7 +26986,7 @@ var Rance;
                         },
                         konstantin_makovsky1: {
                             key: "konstantin_makovsky1",
-                            imageSrc: "img\/portraits\/konstantin_makovsky1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/konstantin_makovsky1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27008,7 +26995,7 @@ var Rance;
                         },
                         lefebvre_jules_joseph1: {
                             key: "lefebvre_jules_joseph1",
-                            imageSrc: "img\/portraits\/lefebvre_jules_joseph1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/lefebvre_jules_joseph1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27017,7 +27004,7 @@ var Rance;
                         },
                         leonfrancois_comerre1: {
                             key: "leonfrancois_comerre1",
-                            imageSrc: "img\/portraits\/leon-francois_comerre1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/leon-francois_comerre1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27026,7 +27013,7 @@ var Rance;
                         },
                         leopold_loffler1: {
                             key: "leopold_loffler1",
-                            imageSrc: "img\/portraits\/leopold_loffler1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/leopold_loffler1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27035,7 +27022,7 @@ var Rance;
                         },
                         lewis_john_frederick1: {
                             key: "lewis_john_frederick1",
-                            imageSrc: "img\/portraits\/lewis_john_frederick1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/lewis_john_frederick1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27044,7 +27031,7 @@ var Rance;
                         },
                         madrazo_garreta_raimundo1: {
                             key: "madrazo_garreta_raimundo1",
-                            imageSrc: "img\/portraits\/madrazo_garreta_raimundo1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/madrazo_garreta_raimundo1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27053,7 +27040,7 @@ var Rance;
                         },
                         marie_bashkirtseff1: {
                             key: "marie_bashkirtseff1",
-                            imageSrc: "img\/portraits\/marie_bashkirtseff1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/marie_bashkirtseff1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27062,7 +27049,7 @@ var Rance;
                         },
                         moritz_kellerhoven1: {
                             key: "moritz_kellerhoven1",
-                            imageSrc: "img\/portraits\/moritz_kellerhoven1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/moritz_kellerhoven1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27071,7 +27058,7 @@ var Rance;
                         },
                         nathaniel_jocelyn1: {
                             key: "nathaniel_jocelyn1",
-                            imageSrc: "img\/portraits\/nathaniel_jocelyn1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/nathaniel_jocelyn1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27080,7 +27067,7 @@ var Rance;
                         },
                         nikolai_alexandrowitsch_jaroschenko1: {
                             key: "nikolai_alexandrowitsch_jaroschenko1",
-                            imageSrc: "img\/portraits\/nikolai_alexandrowitsch_jaroschenko1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/nikolai_alexandrowitsch_jaroschenko1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27089,7 +27076,7 @@ var Rance;
                         },
                         nils_johan_olsson_blommer1: {
                             key: "nils_johan_olsson_blommer1",
-                            imageSrc: "img\/portraits\/nils_johan_olsson_blommer1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/nils_johan_olsson_blommer1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27098,7 +27085,7 @@ var Rance;
                         },
                         paolo_veronese1: {
                             key: "paolo_veronese1",
-                            imageSrc: "img\/portraits\/paolo_veronese1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/paolo_veronese1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27107,7 +27094,7 @@ var Rance;
                         },
                         parmigianino1: {
                             key: "parmigianino1",
-                            imageSrc: "img\/portraits\/parmigianino1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/parmigianino1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27116,7 +27103,7 @@ var Rance;
                         },
                         paul_cesar_helleu1: {
                             key: "paul_cesar_helleu1",
-                            imageSrc: "img\/portraits\/paul_cesar_helleu1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/paul_cesar_helleu1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27125,7 +27112,7 @@ var Rance;
                         },
                         regnault_henri1: {
                             key: "regnault_henri1",
-                            imageSrc: "img\/portraits\/regnault_henri1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/regnault_henri1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27134,7 +27121,7 @@ var Rance;
                         },
                         richard_bergh1: {
                             key: "richard_bergh1",
-                            imageSrc: "img\/portraits\/richard_bergh1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/richard_bergh1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27143,7 +27130,7 @@ var Rance;
                         },
                         richard_bergh2: {
                             key: "richard_bergh2",
-                            imageSrc: "img\/portraits\/richard_bergh2.png",
+                            imageSrc: "modules\/paintingportraits\/img\/richard_bergh2.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27152,7 +27139,7 @@ var Rance;
                         },
                         robert_dampier1: {
                             key: "robert_dampier1",
-                            imageSrc: "img\/portraits\/robert_dampier1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/robert_dampier1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27161,7 +27148,7 @@ var Rance;
                         },
                         robert_lefevre1: {
                             key: "robert_lefevre1",
-                            imageSrc: "img\/portraits\/robert_lefevre1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/robert_lefevre1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27170,7 +27157,7 @@ var Rance;
                         },
                         robert_leopold1: {
                             key: "robert_leopold1",
-                            imageSrc: "img\/portraits\/robert_leopold1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/robert_leopold1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27179,7 +27166,7 @@ var Rance;
                         },
                         sichel_nathanael1: {
                             key: "sichel_nathanael1",
-                            imageSrc: "img\/portraits\/sichel_nathanael1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/sichel_nathanael1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27188,7 +27175,7 @@ var Rance;
                         },
                         svetoslav_roerich1: {
                             key: "svetoslav_roerich1",
-                            imageSrc: "img\/portraits\/svetoslav_roerich1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/svetoslav_roerich1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27197,7 +27184,7 @@ var Rance;
                         },
                         velazquez_diego1: {
                             key: "velazquez_diego1",
-                            imageSrc: "img\/portraits\/velazquez_diego1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/velazquez_diego1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27206,7 +27193,7 @@ var Rance;
                         },
                         viktor_vasnetsov1: {
                             key: "viktor_vasnetsov1",
-                            imageSrc: "img\/portraits\/viktor_vasnetsov1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/viktor_vasnetsov1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,
@@ -27215,7 +27202,7 @@ var Rance;
                         },
                         williamadolphe_bouguereau1: {
                             key: "williamadolphe_bouguereau1",
-                            imageSrc: "img\/portraits\/william-adolphe_bouguereau1.png",
+                            imageSrc: "modules\/paintingportraits\/img\/william-adolphe_bouguereau1.png",
                             generatedFor: [
                                 Rance.RandomGenUnitRarity.common,
                                 Rance.RandomGenUnitRarity.elite,

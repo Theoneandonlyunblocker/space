@@ -21,11 +21,11 @@ module Rance
         {
           case 2:
           {
-            return "img\/items\/t2icon.png"
+            return "img\/icons\/t2icon.png"
           }
           case 3:
           {
-            return "img\/items\/t3icon.png"
+            return "img\/icons\/t3icon.png"
           }
         }
       },

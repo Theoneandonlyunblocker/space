@@ -17,7 +17,7 @@ module Rance
             type: "bombLauncher1",
             displayName: "Bomb Launcher 1",
             description: "",
-            icon: "img\/items\/cannon.png",
+            icon: "modules\/default\/img\/items\/cannon.png",
             
             techLevel: 1,
             buildCost: 100,
@@ -30,7 +30,7 @@ module Rance
             type: "bombLauncher2",
             displayName: "Bomb Launcher 2",
             description: "",
-            icon: "img\/items\/cannon.png",
+            icon: "modules\/default\/img\/items\/cannon.png",
             
             techLevel: 2,
             buildCost: 200,
@@ -48,7 +48,7 @@ module Rance
             type: "bombLauncher3",
             displayName: "Bomb Launcher 3",
             description: "",
-            icon: "img\/items\/cannon.png",
+            icon: "modules\/default\/img\/items\/cannon.png",
             
             techLevel: 3,
             buildCost: 300,
@@ -67,7 +67,7 @@ module Rance
             type: "afterBurner1",
             displayName: "Afterburner 1",
             description: "",
-            icon: "img\/items\/blueThing.png",
+            icon: "modules\/default\/img\/items\/blueThing.png",
             
             techLevel: 1,
             buildCost: 100,
@@ -85,7 +85,7 @@ module Rance
             type: "afterBurner2",
             displayName: "Afterburner 2",
             description: "",
-            icon: "img\/items\/blueThing.png",
+            icon: "modules\/default\/img\/items\/blueThing.png",
             
             techLevel: 2,
             buildCost: 200,
@@ -102,7 +102,7 @@ module Rance
             type: "afterBurner3",
             displayName: "Afterburner 3",
             description: "",
-            icon: "img\/items\/blueThing.png",
+            icon: "modules\/default\/img\/items\/blueThing.png",
             
             techLevel: 3,
             buildCost: 300,
@@ -120,7 +120,7 @@ module Rance
             type: "shieldPlating1",
             displayName: "Shield Plating 1",
             description: "",
-            icon: "img\/items\/armor1.png",
+            icon: "modules\/default\/img\/items\/armor1.png",
             
             techLevel: 1,
             buildCost: 100,
@@ -137,7 +137,7 @@ module Rance
             type: "shieldPlating2",
             displayName: "Shield Plating 2",
             description: "",
-            icon: "img\/items\/armor1.png",
+            icon: "modules\/default\/img\/items\/armor1.png",
             
             techLevel: 2,
             buildCost: 200,
@@ -154,7 +154,7 @@ module Rance
             type: "shieldPlating3",
             displayName: "Shield Plating 3",
             description: "",
-            icon: "img\/items\/armor1.png",
+            icon: "modules\/default\/img\/items\/armor1.png",
             
             techLevel: 3,
             buildCost: 300,
