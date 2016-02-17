@@ -2,8 +2,9 @@ module Rance
 {
   export enum tutorialStatus
   {
-    dontShow = -1,
-    show = 0
+    neverShow = -1,
+    dontShowThisSession = 0,
+    show = 1
   }
 
   export function saveTutorialState()
@@ -17,6 +18,13 @@ module Rance
     {
       var parsedData = JSON.parse(localStorage.getItem("Rance.TutorialState"));
       Rance.TutorialState = extendObject(parsedData, Rance.TutorialState, true);
+      for (var tutorialId in Rance.TutorialState)
+      {
+        if (Rance.TutorialState[tutorialId] === tutorialStatus.dontShowThisSession)
+        {
+          Rance.TutorialState[tutorialId] = Rance.tutorialStatus.show;
+        }
+      }
     }
   }
 

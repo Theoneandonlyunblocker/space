@@ -32,6 +32,7 @@ module Rance
       componentWillUnmount: function()
       {
         this.handleLeavePage(this.props.pages[this.state.currentPage]);
+        this.handleClose();
       },
 
       handleEnterPage: function(page: ITutorialPage)
@@ -76,9 +77,9 @@ module Rance
 
       handleClose: function()
       {
-        if (this.refs.dontShowAgain.getDOMNode().checked)
+        if (Rance.TutorialState[this.props.tutorialId] === tutorialStatus.show)
         {
-          //do stuff
+          Rance.TutorialState[this.props.tutorialId] = tutorialStatus.dontShowThisSession;
         }
       },
 

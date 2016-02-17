@@ -2458,8 +2458,9 @@ declare module Rance {
 }
 declare module Rance {
     enum tutorialStatus {
-        dontShow = -1,
-        show = 0,
+        neverShow = -1,
+        dontShowThisSession = 0,
+        show = 1,
     }
     function saveTutorialState(): void;
     function loadTutorialState(): void;

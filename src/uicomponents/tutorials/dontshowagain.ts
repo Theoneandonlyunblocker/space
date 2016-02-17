@@ -17,7 +17,7 @@ module Rance
       {
         return(
         {
-          isChecked: this.getTutorialState() === tutorialStatus.dontShow
+          isChecked: this.getTutorialState() === tutorialStatus.neverShow
         });
       },
       
@@ -34,7 +34,7 @@ module Rance
         }
         else
         {
-          Rance.TutorialState[this.props.tutorialId] = tutorialStatus.dontShow;
+          Rance.TutorialState[this.props.tutorialId] = tutorialStatus.neverShow;
         }
 
         saveTutorialState();

@@ -18120,8 +18120,9 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (tutorialStatus) {
-        tutorialStatus[tutorialStatus["dontShow"] = -1] = "dontShow";
-        tutorialStatus[tutorialStatus["show"] = 0] = "show";
+        tutorialStatus[tutorialStatus["neverShow"] = -1] = "neverShow";
+        tutorialStatus[tutorialStatus["dontShowThisSession"] = 0] = "dontShowThisSession";
+        tutorialStatus[tutorialStatus["show"] = 1] = "show";
     })(Rance.tutorialStatus || (Rance.tutorialStatus = {}));
     var tutorialStatus = Rance.tutorialStatus;
     function saveTutorialState() {
@@ -18132,6 +18133,11 @@ var Rance;
         if (localStorage["Rance.TutorialState"]) {
             var parsedData = JSON.parse(localStorage.getItem("Rance.TutorialState"));
             Rance.TutorialState = Rance.extendObject(parsedData, Rance.TutorialState, true);
+            for (var tutorialId in Rance.TutorialState) {
+                if (Rance.TutorialState[tutorialId] === tutorialStatus.dontShowThisSession) {
+                    Rance.TutorialState[tutorialId] = Rance.tutorialStatus.show;
+                }
+            }
         }
     }
     Rance.loadTutorialState = loadTutorialState;
@@ -18156,7 +18162,7 @@ var Rance;
             },
             getInitialState: function () {
                 return ({
-                    isChecked: this.getTutorialState() === Rance.tutorialStatus.dontShow
+                    isChecked: this.getTutorialState() === Rance.tutorialStatus.neverShow
                 });
             },
             getTutorialState: function () {
@@ -18167,7 +18173,7 @@ var Rance;
                     Rance.TutorialState[this.props.tutorialId] = Rance.tutorialStatus.show;
                 }
                 else {
-                    Rance.TutorialState[this.props.tutorialId] = Rance.tutorialStatus.dontShow;
+                    Rance.TutorialState[this.props.tutorialId] = Rance.tutorialStatus.neverShow;
                 }
                 Rance.saveTutorialState();
                 this.setState({
@@ -18211,6 +18217,7 @@ var Rance;
             },
             componentWillUnmount: function () {
                 this.handleLeavePage(this.props.pages[this.state.currentPage]);
+                this.handleClose();
             },
             handleEnterPage: function (page) {
                 if (page.onOpen) {
@@ -18236,7 +18243,8 @@ var Rance;
                 }, this.handleEnterPage.bind(this, this.props.pages[newPage]));
             },
             handleClose: function () {
-                if (this.refs.dontShowAgain.getDOMNode().checked) {
+                if (Rance.TutorialState[this.props.tutorialId] === Rance.tutorialStatus.show) {
+                    Rance.TutorialState[this.props.tutorialId] = Rance.tutorialStatus.dontShowThisSession;
                 }
             },
             render: function () {
