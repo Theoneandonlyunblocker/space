@@ -1,4 +1,5 @@
 /// <reference path="../mixins/splitmultilinetext.ts" />
+/// <reference path="dontshowagain.ts" />
 
 module Rance
 {
@@ -11,7 +12,8 @@ module Rance
 
       propTypes:
       {
-        pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired // React.PropTypes.node
+        pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired, // React.PropTypes.node
+        tutorialId: React.PropTypes.string.isRequired
       },
 
       getInitialState: function()
@@ -136,20 +138,10 @@ module Rance
 
               forwardElement
             ),
-            React.DOM.div(
+            UIComponents.DontShowAgain(
             {
-              className: "dont-show-again-wrapper"
-            },
-              React.DOM.label(null,
-                React.DOM.input(
-                {
-                  type: "checkBox",
-                  ref: "dontShowAgain",
-                  className: "dont-show-again"
-                }),
-                "Don't show again"
-              )
-            )
+              tutorialId: this.props.tutorialId
+            })
           )
         );
       }

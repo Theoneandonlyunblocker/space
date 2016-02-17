@@ -18110,7 +18110,79 @@ var Rance;
         };
     })(Tutorials = Rance.Tutorials || (Rance.Tutorials = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (tutorialStatus) {
+        tutorialStatus[tutorialStatus["dontShow"] = -1] = "dontShow";
+        tutorialStatus[tutorialStatus["show"] = 0] = "show";
+    })(Rance.tutorialStatus || (Rance.tutorialStatus = {}));
+    var tutorialStatus = Rance.tutorialStatus;
+    function saveTutorialState() {
+        localStorage.setItem("Rance.TutorialState", JSON.stringify(Rance.TutorialState));
+    }
+    Rance.saveTutorialState = saveTutorialState;
+    function loadTutorialState() {
+        if (localStorage["Rance.TutorialState"]) {
+            var parsedData = JSON.parse(localStorage.getItem("Rance.TutorialState"));
+            Rance.TutorialState = Rance.extendObject(parsedData, Rance.TutorialState, true);
+        }
+    }
+    Rance.loadTutorialState = loadTutorialState;
+    function resetTutorialState() {
+        localStorage.removeItem("Rance.TutorialState");
+        Rance.TutorialState = Rance.extendObject(Rance.defaultTutorialState);
+    }
+    Rance.resetTutorialState = resetTutorialState;
+    Rance.defaultTutorialState = {
+        introTutorial: tutorialStatus.show
+    };
+})(Rance || (Rance = {}));
+/// <reference path="../../tutorials/tutorialstatus.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.DontShowAgain = React.createClass({
+            displayName: "DontShowAgain",
+            propTypes: {
+                tutorialId: React.PropTypes.string.isRequired
+            },
+            getInitialState: function () {
+                return ({
+                    isChecked: this.getTutorialState() === Rance.tutorialStatus.dontShow
+                });
+            },
+            getTutorialState: function () {
+                return Rance.TutorialState[this.props.tutorialId];
+            },
+            toggleState: function () {
+                if (this.state.isChecked) {
+                    Rance.TutorialState[this.props.tutorialId] = Rance.tutorialStatus.show;
+                }
+                else {
+                    Rance.TutorialState[this.props.tutorialId] = Rance.tutorialStatus.dontShow;
+                }
+                Rance.saveTutorialState();
+                this.setState({
+                    isChecked: !this.state.isChecked
+                });
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "dont-show-again-wrapper"
+                }, React.DOM.label(null, React.DOM.input({
+                    type: "checkBox",
+                    ref: "dontShowAgain",
+                    className: "dont-show-again",
+                    checked: this.state.isChecked,
+                    onChange: this.toggleState
+                }), "Don't show again")));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../mixins/splitmultilinetext.ts" />
+/// <reference path="dontshowagain.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -18119,7 +18191,8 @@ var Rance;
             displayName: "Tutorial",
             mixins: [UIComponents.SplitMultilineText],
             propTypes: {
-                pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired // React.PropTypes.node
+                pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired,
+                tutorialId: React.PropTypes.string.isRequired
             },
             getInitialState: function () {
                 return ({
@@ -18192,13 +18265,9 @@ var Rance;
                     className: "tutorial-inner"
                 }, backElement, React.DOM.div({
                     className: "tutorial-content"
-                }, this.splitMultilineText(this.props.pages[this.state.currentPage].content)), forwardElement), React.DOM.div({
-                    className: "dont-show-again-wrapper"
-                }, React.DOM.label(null, React.DOM.input({
-                    type: "checkBox",
-                    ref: "dontShowAgain",
-                    className: "dont-show-again"
-                }), "Don't show again"))));
+                }, this.splitMultilineText(this.props.pages[this.state.currentPage].content)), forwardElement), UIComponents.DontShowAgain({
+                    tutorialId: this.props.tutorialId
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -18214,14 +18283,23 @@ var Rance;
         UIComponents.IntroTutorial = React.createClass({
             displayName: "IntroTutorial",
             popupId: null,
+            getInitialState: function () {
+                return ({
+                    show: Rance.TutorialState["introTutorial"] === Rance.tutorialStatus.show
+                });
+            },
             componentDidMount: function () {
+                if (!this.state.show) {
+                    return;
+                }
                 this.popupId = this.refs.popupManager.makePopup({
                     contentConstructor: UIComponents.TopMenuPopup,
                     contentProps: {
                         handleClose: this.closePopup,
                         contentConstructor: UIComponents.Tutorial,
                         contentProps: {
-                            pages: Rance.Tutorials.introTutorial.pages
+                            pages: Rance.Tutorials.introTutorial.pages,
+                            tutorialId: "introTutorial"
                         }
                     },
                     popupProps: {
@@ -18244,6 +18322,9 @@ var Rance;
                 this.popupId = null;
             },
             render: function () {
+                if (!this.state.show) {
+                    return null;
+                }
                 return (UIComponents.PopupManager({
                     ref: "popupManager",
                     onlyAllowOne: true
@@ -27593,6 +27674,7 @@ var Rance;
 /// <reference path="setdynamictemplateproperties.ts"/>
 /// <reference path="templateindexes.ts"/>
 /// <reference path="options.ts"/>
+/// <reference path="tutorials/tutorialstatus.ts" />
 // TODO manufactory  move these to module file
 var manufactoryData = {
     startingCapacity: 1,
@@ -27630,6 +27712,8 @@ var Rance;
             var startTime = Date.now();
             Rance.Options = Rance.extendObject(Rance.defaultOptions);
             Rance.loadOptions();
+            Rance.TutorialState = Rance.extendObject(Rance.defaultTutorialState);
+            Rance.loadTutorialState();
             Rance.setAllDynamicTemplateProperties();
             Rance.buildTemplateIndexes();
             this.initUI();

@@ -2457,6 +2457,24 @@ declare module Rance {
     }
 }
 declare module Rance {
+    enum tutorialStatus {
+        dontShow = -1,
+        show = 0,
+    }
+    function saveTutorialState(): void;
+    function loadTutorialState(): void;
+    function resetTutorialState(): void;
+    var defaultTutorialState: {
+        introTutorial: tutorialStatus;
+    };
+    var TutorialState: any;
+}
+declare module Rance {
+    module UIComponents {
+        var DontShowAgain: React.Factory<any>;
+    }
+}
+declare module Rance {
     module UIComponents {
         var Tutorial: React.Factory<any>;
     }

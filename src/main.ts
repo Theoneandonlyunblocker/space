@@ -17,6 +17,7 @@
 /// <reference path="setdynamictemplateproperties.ts"/>
 /// <reference path="templateindexes.ts"/>
 /// <reference path="options.ts"/>
+/// <reference path="tutorials/tutorialstatus.ts" />
 
 
 // TODO manufactory  move these to module file
@@ -84,6 +85,9 @@ module Rance
 
       Options = extendObject(defaultOptions);
       loadOptions();
+
+      TutorialState = extendObject(defaultTutorialState);
+      loadTutorialState();
 
       setAllDynamicTemplateProperties();
       buildTemplateIndexes();

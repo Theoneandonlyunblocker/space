@@ -14,8 +14,22 @@ module Rance
       displayName: "IntroTutorial",
       popupId: null,
 
+      getInitialState: function()
+      {
+        return(
+        {
+          show: Rance.TutorialState["introTutorial"] === tutorialStatus.show
+        });
+      },
+      
+
       componentDidMount: function()
       {
+        if (!this.state.show)
+        {
+          return;
+        }
+
         this.popupId = this.refs.popupManager.makePopup(
         {
           contentConstructor: UIComponents.TopMenuPopup,
@@ -25,7 +39,8 @@ module Rance
             contentConstructor: UIComponents.Tutorial,
             contentProps:
             {
-              pages: Rance.Tutorials.introTutorial.pages
+              pages: Rance.Tutorials.introTutorial.pages,
+              tutorialId: "introTutorial"
             }
           },
           popupProps:
@@ -57,6 +72,11 @@ module Rance
 
       render: function()
       {
+        if (!this.state.show)
+        {
+          return null;
+        }
+        
         return(
           UIComponents.PopupManager(
           {
