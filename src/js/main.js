@@ -19625,7 +19625,7 @@ var Rance;
                             var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
                             if (!oldOption)
                                 continue;
-                            var oldValuePercentage = Rance.getRelativeValue(this.getOptionValue(optionName), oldOption.min, oldOption.max);
+                            var oldValuePercentage = Rance.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
                             value = option.min + (option.max - option.min) * oldValuePercentage;
                         }
                         else {

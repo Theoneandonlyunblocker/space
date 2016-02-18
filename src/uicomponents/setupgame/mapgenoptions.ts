@@ -59,7 +59,7 @@ module Rance
               if (!oldOption) continue;
 
               var oldValuePercentage = getRelativeValue(
-                this.getOptionValue(optionName), oldOption.min, oldOption.max);
+                this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
               value = option.min + (option.max - option.min) * oldValuePercentage;
             }
             else
