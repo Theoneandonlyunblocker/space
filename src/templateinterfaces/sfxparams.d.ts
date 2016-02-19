@@ -1,3 +1,5 @@
+/// <reference path="../../lib/pixi.d.ts" />
+
 declare module Rance
 {
   module Templates
@@ -10,7 +12,8 @@ declare module Rance
       height: number;
       duration: number; // in milliseconds
       facingRight: boolean;
-      onLoaded: (canvas: HTMLCanvasElement) => void;
+      triggerStart: (container: PIXI.Container) => void;
+      triggerEnd: () => void;
     }
   }
 }
