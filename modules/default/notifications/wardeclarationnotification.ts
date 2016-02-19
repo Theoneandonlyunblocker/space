@@ -15,7 +15,7 @@ module Rance
           displayName: "War declaration",
           category: "diplomacy",
           defaultFilterState: [NotificationFilterState.showIfInvolved],
-          iconSrc: "img\/resources\/test2.png",
+          iconSrc: "modules\/default\/img\/resources\/test2.png",
           eventListeners: ["makeWarDeclarationNotification"],
           contentConstructor: DefaultModule.UIComponents.WarDeclarationNotification,
           messageConstructor: function(props: any)

@@ -15,7 +15,7 @@ module Rance
           displayName: "Battle finished",
           category: "combat",
           defaultFilterState: [NotificationFilterState.neverShow],
-          iconSrc: "img\/resources\/test1.png",
+          iconSrc: "modules\/default\/img\/resources\/test1.png",
           eventListeners: ["makeBattleFinishNotification"],
           contentConstructor: DefaultModule.UIComponents.BattleFinishNotification,
           messageConstructor: function(props: any)
