@@ -18076,7 +18076,7 @@ var Rance;
                     content: [
                         "Thanks for checking out spacegame!",
                         "",
-                        "This game is very heavily in development. Plenty of things are still unimplemented, everything else (including this tutorial) is TODO."
+                        "This game is still heavily in development. Many things are unfinished or unimplemented, including a proper tutorial."
                     ]
                 },
                 {
