@@ -22424,7 +22424,7 @@ var Rance;
                             containerGfx.lineStyle(1, 0x00000, 1);
                             // debug
                             var front = fleet.ships[0].front;
-                            if (front) {
+                            if (front && Rance.Options.debugMode) {
                                 switch (front.objective.type) {
                                     case "discovery":
                                         {
@@ -26273,7 +26273,7 @@ var Rance;
                     displayName: "Battle finished",
                     category: "combat",
                     defaultFilterState: [Rance.NotificationFilterState.neverShow],
-                    iconSrc: "img\/resources\/test1.png",
+                    iconSrc: "modules\/default\/img\/resources\/test1.png",
                     eventListeners: ["makeBattleFinishNotification"],
                     contentConstructor: DefaultModule.UIComponents.BattleFinishNotification,
                     messageConstructor: function (props) {
@@ -26339,7 +26339,7 @@ var Rance;
                     displayName: "War declaration",
                     category: "diplomacy",
                     defaultFilterState: [Rance.NotificationFilterState.showIfInvolved],
-                    iconSrc: "img\/resources\/test2.png",
+                    iconSrc: "modules\/default\/img\/resources\/test2.png",
                     eventListeners: ["makeWarDeclarationNotification"],
                     contentConstructor: DefaultModule.UIComponents.WarDeclarationNotification,
                     messageConstructor: function (props) {

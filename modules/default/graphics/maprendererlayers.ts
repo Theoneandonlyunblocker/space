@@ -570,7 +570,7 @@ module Rance
               containerGfx.lineStyle(1, 0x00000, 1);
               // debug
               var front = fleet.ships[0].front;
-              if (front)
+              if (front && Options.debugMode)
               {
                 switch (front.objective.type)
                 {
