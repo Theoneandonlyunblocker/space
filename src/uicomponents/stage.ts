@@ -8,6 +8,7 @@
 /// <reference path="setupgame/setupgame.ts"/>
 
 /// <reference path="flagmaker.ts"/>
+/// <reference path="battlescenetester.ts" />
 
 module Rance
 {
@@ -93,6 +94,16 @@ module Rance
               UIComponents.SetupGame(
               {
                 key: "setupGame"
+              })
+            );
+            break;
+          }
+          case "battleSceneTester":
+          {
+            elementsToRender.push(
+              UIComponents.BattleSceneTester(
+              {
+                key: "battleSceneTester"
               })
             );
             break;

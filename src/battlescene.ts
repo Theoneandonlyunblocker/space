@@ -27,9 +27,24 @@ module Rance
     activeSFX: Templates.IBattleSFXTemplate;
     activeUnit: Unit;
 
-    constructor()
+    constructor(pixiContainer: HTMLElement)
     {
+      this.pixiContainer = pixiContainer;
       this.container = new PIXI.Container();
+
+      var pixiContainerStyle = window.getComputedStyle(this.pixiContainer);
+      this.renderer = PIXI.autoDetectRenderer(
+        parseInt(pixiContainerStyle.width),
+        parseInt(pixiContainerStyle.height),
+        {
+          autoResize: false,
+          antialias: true
+        }
+      );
+
+      this.pixiContainer.appendChild(this.renderer.view);
+      this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
+      
       this.initLayers();
     }
     initLayers()
@@ -70,7 +85,7 @@ module Rance
     }
 
     getSFXParams(triggerStart: (container: PIXI.Container) => void,
-      triggerEnd: (container: PIXI.Container) => void)
+      triggerEnd: () => void)
     {
       var bounds = this.getSceneBounds();
       var duration = this.activeSFX.duration; // TODO options timing
@@ -83,6 +98,7 @@ module Rance
         height: bounds.height,
         duration: duration,
         facingRight: this.activeUnit.battleStats.side === "side1",
+        renderer: this.renderer,
         triggerStart: triggerStart,
         triggerEnd: triggerEnd
       });
@@ -149,7 +165,7 @@ module Rance
     {
 
     }
-    exitUnit(unit: Unit)
+    exitUnit()
     {
       // clear overlay
     }

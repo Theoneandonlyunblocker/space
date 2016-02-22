@@ -13,7 +13,7 @@ module Rance
     attacker:
     {
       player: Player;
-      ships: Unit[];
+      ships: Unit[]; // TODO rename property to 'unit'
     };
     defender:
     {

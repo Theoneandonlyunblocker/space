@@ -746,7 +746,8 @@ declare module Rance {
             [id: number]: Unit;
         };
         unitsBySide: {
-            [side: string]: Unit[];
+            side1: Unit[];
+            side2: Unit[];
         };
         side1: Unit[][];
         side1Player: Player;
@@ -849,8 +850,8 @@ declare module Rance {
     function useAbility(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): void;
     function getPreparationDummyData(user: Unit): IAbilityUseData;
     function validateTarget(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): boolean;
-    function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit;
-    function getGuarders(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit[];
+    function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): any;
+    function getGuarders(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): any;
     function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): Unit[];
     function getFleetsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectTemplate): Unit[][];
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): number[][];
@@ -2562,6 +2563,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var BattleSceneTester: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         interface ReactComponentPlaceHolder {
         }
         interface ReactDOMPlaceHolder {
@@ -3206,8 +3212,6 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module BattleSFXFunctions {
-                function makeSprite(imgSrc: string, props: Rance.Templates.SFXParams): HTMLCanvasElement;
-                function makeVideo(videoSrc: string, props: Rance.Templates.SFXParams): HTMLCanvasElement;
             }
         }
     }
@@ -3247,7 +3251,7 @@ declare module Rance {
                         max: number;
                     };
                     impactRate?: number;
-                }, params: Rance.Templates.SFXParams): HTMLCanvasElement;
+                }, params: Rance.Templates.SFXParams): void;
             }
         }
     }
@@ -3256,7 +3260,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module BattleSFXFunctions {
-                function rocketAttack(params: Rance.Templates.SFXParams): HTMLCanvasElement;
+                function rocketAttack(params: Rance.Templates.SFXParams): void;
             }
         }
     }
@@ -3265,7 +3269,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module BattleSFXFunctions {
-                function guard(props: Rance.Templates.SFXParams): HTMLCanvasElement;
+                function guard(props: Rance.Templates.SFXParams): void;
             }
         }
     }
@@ -3726,6 +3730,53 @@ declare module Rance {
         };
     }
     var Options: any;
+}
+declare module Rance {
+    class BattleScene {
+        container: PIXI.Container;
+        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+        pixiContainer: HTMLElement;
+        layers: {
+            battleOverlay: PIXI.Container;
+            side1Container: PIXI.Container;
+            side1UnitOverlay: PIXI.Container;
+            side1Unit: PIXI.Container;
+            side2Container: PIXI.Container;
+            side2UnitOverlay: PIXI.Container;
+            side2Unit: PIXI.Container;
+        };
+        side1Unit: Unit;
+        side2Unit: Unit;
+        activeSFX: Templates.IBattleSFXTemplate;
+        activeUnit: Unit;
+        constructor(pixiContainer: HTMLElement);
+        initLayers(): void;
+        handleResize(): void;
+        getSceneBounds(): {
+            width: number;
+            height: number;
+        };
+        getSFXParams(triggerStart: (container: PIXI.Container) => void, triggerEnd: () => void): {
+            user: Unit;
+            target: Unit;
+            width: number;
+            height: number;
+            duration: number;
+            facingRight: boolean;
+            renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+            triggerStart: (container: PIXI.Container) => void;
+            triggerEnd: () => void;
+        };
+        makeUnitSprite(unit: Unit): void;
+        makeBattleOverlay(): void;
+        addBattleOverlay(overlay: PIXI.Container): void;
+        clearBattleOverlay(): void;
+        makeUnitOverlay(unit: Unit): void;
+        addUnitOverlay(side: string, overlay: PIXI.Container): void;
+        clearUnitOverlay(side: string): void;
+        enterUnit(unit: Unit): void;
+        exitUnit(): void;
+    }
 }
 declare var manufactoryData: {
     startingCapacity: number;

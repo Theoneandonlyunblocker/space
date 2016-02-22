@@ -61,7 +61,8 @@ module Rance
                 },
                 React.DOM.option({value: "galaxyMap"}, "map"),
                 React.DOM.option({value: "flagMaker"}, "make flags"),
-                React.DOM.option({value: "setupGame"}, "setup game")
+                React.DOM.option({value: "setupGame"}, "setup game"),
+                React.DOM.option({value: "battleSceneTester"}, "battle scene test")
               ),
               React.DOM.button(
               {

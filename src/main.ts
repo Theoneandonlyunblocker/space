@@ -19,6 +19,7 @@
 /// <reference path="options.ts"/>
 /// <reference path="tutorials/tutorialstatus.ts" />
 
+/// <reference path="battlescene.ts" />
 
 // TODO manufactory  move these to module file
 var manufactoryData =
