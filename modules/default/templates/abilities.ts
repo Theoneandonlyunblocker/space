@@ -170,13 +170,13 @@ module Rance
                 userSprite: function(props: Rance.Templates.SFXParams)
                 {
                   // cg13600.bmp
-                  return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
-                },
-                battleOverlay: function(props: Rance.Templates.SFXParams)
-                {
-                  // cg40500.bmp - cg40529.bmp converted to webm
-                  return BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+                  return PIXI.Sprite.fromImage("img\/battleEffects\/ranceAttack2.png");
                 }
+                // battleOverlay: function(props: Rance.Templates.SFXParams)
+                // {
+                //   // cg40500.bmp - cg40529.bmp converted to webm
+                //   return BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+                // }
               },
               data:
               {
@@ -209,13 +209,13 @@ module Rance
                   userSprite: function(props: Rance.Templates.SFXParams)
                   {
                     // cg13300.bmp
-                    return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
-                  },
-                  battleOverlay: function(props: Rance.Templates.SFXParams)
-                  {
-                    // cg40000.bmp - cg40029.bmp converted to webm
-                    return BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                    return PIXI.Sprite.fromImage("img\/battleEffects\/ranceAttack.png");
                   }
+                  // battleOverlay: function(props: Rance.Templates.SFXParams)
+                  // {
+                  //   // cg40000.bmp - cg40029.bmp converted to webm
+                  //   return BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                  // }
                 }
               }
             ],

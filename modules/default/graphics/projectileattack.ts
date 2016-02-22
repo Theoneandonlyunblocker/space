@@ -55,10 +55,6 @@ module Rance
           var maxSpeed = (params.width / params.duration) * props.maxSpeed;
           var acceleration = maxSpeed * props.acceleration;
 
-          var renderer = PIXI.autoDetectRenderer(params.width, params.height,
-          {
-            transparent: true
-          });
           var container = new PIXI.Container();
           if (!params.facingRight)
           {
@@ -136,23 +132,19 @@ module Rance
               }
             }
 
-            renderer.render(container);
-
             if (currentTime < endTime)
             {
               requestAnimationFrame(animate)
             }
             else
             {
-              renderer.destroy(true);
+              params.triggerEnd();
             }
           }
 
-          params.onLoaded(renderer.view);
+          params.triggerStart(container);
 
           animate();
-
-          return renderer.view;
         }
       }
     }

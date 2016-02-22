@@ -29,12 +29,12 @@ module Rance
                 },
                 sfx:
                 {
-                  duration: 1200,
-                  battleOverlay: function(props: Rance.Templates.SFXParams)
-                  {
-                    // cg40400.bmp - cg40429.bmp converted to webm
-                    return BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
-                  }
+                  duration: 1200
+                  // battleOverlay: function(props: Rance.Templates.SFXParams)
+                  // {
+                  //   // cg40400.bmp - cg40429.bmp converted to webm
+                  //   return BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
+                  // }
                 },
                 trigger: function(user: Unit, target: Unit)
                 {

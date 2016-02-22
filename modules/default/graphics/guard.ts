@@ -77,18 +77,12 @@ module Rance
           }
 
           var guardFilter = new GuardFilter(uniforms);
-
-          var renderer = PIXI.autoDetectRenderer(props.width, props.height,
-          {
-            transparent: true
-          });
-
           var container = new PIXI.Container();
 
           container.filters = [guardFilter];
           container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
 
-          var renderTexture = new PIXI.RenderTexture(renderer, props.width, props.height);
+          var renderTexture = new PIXI.RenderTexture(props.renderer, props.width, props.height);
           var sprite = new PIXI.Sprite(renderTexture);
           if (!props.facingRight)
           {
@@ -104,7 +98,6 @@ module Rance
 
             renderTexture.clear();
             renderTexture.render(container);
-            renderer.render(sprite);
 
             if (elapsedTime < props.duration)
             {
@@ -112,16 +105,14 @@ module Rance
             }
             else
             {
-              renderer.destroy(true);
+              props.triggerEnd();
             }
           }
 
-          props.onLoaded(renderer.view);
+          props.triggerStart(container);
 
           var startTime = Date.now();
           animate();
-
-          return renderer.view;
         }
       }
     }

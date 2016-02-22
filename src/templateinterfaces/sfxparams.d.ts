@@ -12,6 +12,7 @@ declare module Rance
       height: number;
       duration: number; // in milliseconds
       facingRight: boolean;
+      renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
       triggerStart: (container: PIXI.Container) => void;
       triggerEnd: () => void;
     }
