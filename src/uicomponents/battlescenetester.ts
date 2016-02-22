@@ -15,8 +15,8 @@ module Rance
         var side2Units: Unit[] = [];
         for (var i = 0; i < 5; i++)
         {
-          side1Units.push(this.makeUnit);
-          side2Units.push(this.makeUnit);
+          side1Units.push(this.makeUnit());
+          side2Units.push(this.makeUnit());
         }
 
         var side1Player = this.makePlayer();
@@ -36,6 +36,7 @@ module Rance
       componentDidMount: function()
       {
         var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
+        battleScene.render();
       },
 
       makeUnit: function()
@@ -112,10 +113,10 @@ module Rance
         this.battleScene.enterUnit(unit);
       },
 
-      handleClearHover: function()
+      handleClearHover: function(unit: Unit)
       {
         console.log("clear hover");
-        this.battleScene.exitUnit();
+        this.battleScene.exitUnit(unit);
       },
 
       makeUnitElements: function(units: Unit[])
@@ -129,7 +130,8 @@ module Rance
           {
             className: "battle-scene-test-controls-units-unit",
             onMouseEnter: this.handleUnitHover.bind(this, unit),
-            onMouseLeave: this.handleClearHover
+            onMouseLeave: this.handleClearHover.bind(this, unit),
+            key: "" + unit.id
           },
             unit.name
           ))

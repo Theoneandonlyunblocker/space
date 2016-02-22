@@ -19957,8 +19957,8 @@ var Rance;
                 var side1Units = [];
                 var side2Units = [];
                 for (var i = 0; i < 5; i++) {
-                    side1Units.push(this.makeUnit);
-                    side2Units.push(this.makeUnit);
+                    side1Units.push(this.makeUnit());
+                    side2Units.push(this.makeUnit());
                 }
                 var side1Player = this.makePlayer();
                 var side2Player = this.makePlayer();
@@ -19972,6 +19972,7 @@ var Rance;
             },
             componentDidMount: function () {
                 var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
+                battleScene.render();
             },
             makeUnit: function () {
                 var template = Rance.getRandomProperty(app.moduleData.Templates.Units);
@@ -20020,9 +20021,9 @@ var Rance;
                 console.log("hover unit " + unit.name);
                 this.battleScene.enterUnit(unit);
             },
-            handleClearHover: function () {
+            handleClearHover: function (unit) {
                 console.log("clear hover");
-                this.battleScene.exitUnit();
+                this.battleScene.exitUnit(unit);
             },
             makeUnitElements: function (units) {
                 var unitElements = [];
@@ -20031,7 +20032,8 @@ var Rance;
                     unitElements.push(React.DOM.div({
                         className: "battle-scene-test-controls-units-unit",
                         onMouseEnter: this.handleUnitHover.bind(this, unit),
-                        onMouseLeave: this.handleClearHover
+                        onMouseLeave: this.handleClearHover.bind(this, unit),
+                        key: "" + unit.id
                     }, unit.name));
                 }
                 return unitElements;
@@ -27673,6 +27675,8 @@ var Rance;
 (function (Rance) {
     var BattleScene = (function () {
         function BattleScene(pixiContainer) {
+            this.isPaused = false;
+            this.forceFrame = false;
             this.pixiContainer = pixiContainer;
             this.container = new PIXI.Container();
             var pixiContainerStyle = window.getComputedStyle(this.pixiContainer);
@@ -27771,9 +27775,39 @@ var Rance;
             }
         };
         BattleScene.prototype.enterUnit = function (unit) {
+            var text = new PIXI.Text(unit.name, {
+                fill: "white"
+            });
+            this.addUnitOverlay(unit.battleStats.side, text);
         };
-        BattleScene.prototype.exitUnit = function () {
+        BattleScene.prototype.exitUnit = function (unit) {
             // clear overlay
+            this.clearUnitOverlay(unit.battleStats.side);
+        };
+        BattleScene.prototype.renderOnce = function () {
+            this.forceFrame = true;
+            this.render();
+        };
+        BattleScene.prototype.pause = function () {
+            this.isPaused = true;
+            this.forceFrame = false;
+        };
+        BattleScene.prototype.resume = function () {
+            this.isPaused = false;
+            this.forceFrame = false;
+            this.render();
+        };
+        BattleScene.prototype.render = function () {
+            if (this.isPaused) {
+                if (this.forceFrame) {
+                    this.forceFrame = false;
+                }
+                else {
+                    return;
+                }
+            }
+            this.renderer.render(this.container);
+            window.requestAnimationFrame(this.render.bind(this));
         };
         return BattleScene;
     })();

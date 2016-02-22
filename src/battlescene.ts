@@ -27,6 +27,9 @@ module Rance
     activeSFX: Templates.IBattleSFXTemplate;
     activeUnit: Unit;
 
+    isPaused: boolean = false;
+    forceFrame: boolean = false;
+
     constructor(pixiContainer: HTMLElement)
     {
       this.pixiContainer = pixiContainer;
@@ -84,7 +87,7 @@ module Rance
       });
     }
 
-    getSFXParams(triggerStart: (container: PIXI.Container) => void,
+    getSFXParams(triggerStart: (container: PIXI.DisplayObject) => void,
       triggerEnd: () => void)
     {
       var bounds = this.getSceneBounds();
@@ -113,7 +116,7 @@ module Rance
       var SFXParams = this.getSFXParams(this.addBattleOverlay, this.clearBattleOverlay);
       this.activeSFX.battleOverlay(SFXParams);
     }
-    addBattleOverlay(overlay: PIXI.Container)
+    addBattleOverlay(overlay: PIXI.DisplayObject)
     {
       this.clearBattleOverlay();
       this.layers.battleOverlay.addChild(overlay);
@@ -129,7 +132,7 @@ module Rance
         this.clearUnitOverlay.bind(this, side));
       this.activeSFX.battleOverlay(SFXParams);
     }
-    addUnitOverlay(side: string, overlay: PIXI.Container)
+    addUnitOverlay(side: string, overlay: PIXI.DisplayObject)
     {
       this.clearUnitOverlay(side);
 
@@ -163,11 +166,51 @@ module Rance
     }
     enterUnit(unit: Unit)
     {
-
+      var text = new PIXI.Text(unit.name,
+      {
+        fill: "white"
+      });
+      this.addUnitOverlay(unit.battleStats.side, text);
     }
-    exitUnit()
+    exitUnit(unit: Unit)
     {
       // clear overlay
+      this.clearUnitOverlay(unit.battleStats.side);
+    }
+
+    renderOnce()
+    {
+      this.forceFrame = true;
+      this.render();
+    }
+    pause()
+    {
+      this.isPaused = true;
+      this.forceFrame = false;
+    }
+    resume()
+    {
+      this.isPaused = false;
+      this.forceFrame = false;
+      this.render();
+    }
+    render()
+    {
+      if (this.isPaused)
+      {
+        if (this.forceFrame)
+        {
+          this.forceFrame = false;
+        }
+        else
+        {
+          return;
+        }
+      }
+
+      this.renderer.render(this.container);
+
+      window.requestAnimationFrame(this.render.bind(this));
     }
   }
 }

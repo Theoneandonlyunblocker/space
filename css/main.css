@@ -4373,3 +4373,7 @@ button.player-setup-remove-player.disabled {
   border: 1px solid #77abce;
   background-color: #0c1615;
 }
+.battle-scene-test-pixi-container {
+  width: 700px;
+  height: 400px;
+}

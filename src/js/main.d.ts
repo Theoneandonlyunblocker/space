@@ -3749,6 +3749,8 @@ declare module Rance {
         side2Unit: Unit;
         activeSFX: Templates.IBattleSFXTemplate;
         activeUnit: Unit;
+        isPaused: boolean;
+        forceFrame: boolean;
         constructor(pixiContainer: HTMLElement);
         initLayers(): void;
         handleResize(): void;
@@ -3756,7 +3758,7 @@ declare module Rance {
             width: number;
             height: number;
         };
-        getSFXParams(triggerStart: (container: PIXI.Container) => void, triggerEnd: () => void): {
+        getSFXParams(triggerStart: (container: PIXI.DisplayObject) => void, triggerEnd: () => void): {
             user: Unit;
             target: Unit;
             width: number;
@@ -3764,18 +3766,22 @@ declare module Rance {
             duration: number;
             facingRight: boolean;
             renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-            triggerStart: (container: PIXI.Container) => void;
+            triggerStart: (container: PIXI.DisplayObject) => void;
             triggerEnd: () => void;
         };
         makeUnitSprite(unit: Unit): void;
         makeBattleOverlay(): void;
-        addBattleOverlay(overlay: PIXI.Container): void;
+        addBattleOverlay(overlay: PIXI.DisplayObject): void;
         clearBattleOverlay(): void;
         makeUnitOverlay(unit: Unit): void;
-        addUnitOverlay(side: string, overlay: PIXI.Container): void;
+        addUnitOverlay(side: string, overlay: PIXI.DisplayObject): void;
         clearUnitOverlay(side: string): void;
         enterUnit(unit: Unit): void;
-        exitUnit(): void;
+        exitUnit(unit: Unit): void;
+        renderOnce(): void;
+        pause(): void;
+        resume(): void;
+        render(): void;
     }
 }
 declare var manufactoryData: {
