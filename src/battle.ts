@@ -12,7 +12,8 @@ module Rance
     } = {};
     unitsBySide:
     {
-      [side: string] : Unit[];
+      side1: Unit[];
+      side2: Unit[];
     } =
     {
       side1: [],
@@ -255,7 +256,7 @@ module Rance
       var losingSide = reverseSide(winningSide);
 
       var losingUnits = this.unitsBySide[losingSide].slice(0);
-      losingUnits.sort(function(a, b)
+      losingUnits.sort(function(a: Unit, b: Unit)
       {
         return b.battleStats.captureChance - a.battleStats.captureChance;
       });
