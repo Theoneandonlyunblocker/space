@@ -411,7 +411,6 @@ module Rance
       if (!this.mapModes[newMapMode.template.key])
       {
         throw new Error("Invalid mapmode " + newMapMode.template.key);
-        return;
       }
 
       if (this.currentMapMode && this.currentMapMode === newMapMode)

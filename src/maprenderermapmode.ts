@@ -22,7 +22,6 @@ module Rance
       if (this.hasLayer(layer))
       {
         throw new Error("Tried to add duplicate layer " + layer.template.key);
-        return;
       }
 
       this.layers.push(layer);

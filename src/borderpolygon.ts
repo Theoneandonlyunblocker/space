@@ -162,7 +162,6 @@ module Rance
     }
 
     throw new Error("getHalfEdgesConnectingStars got stuck in infinite loop when star id = " + star.id);
-    return borderingHalfEdges;
   }
   export function joinPointsWithin(points: Point[], maxDistance: number)
   {

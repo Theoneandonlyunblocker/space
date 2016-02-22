@@ -28,7 +28,6 @@ module Rance
       if (this.moduleFiles[moduleFile.key])
       {
         throw new Error("Duplicate module key " + moduleFile.key);
-        return;
       }
 
       this.moduleFiles[moduleFile.key] = moduleFile;
