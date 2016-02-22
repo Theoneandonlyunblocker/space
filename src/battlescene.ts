@@ -17,6 +17,7 @@ module Rance
     container: PIXI.Container;
     renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
     pixiContainer: HTMLElement;
+
     layers:
     {
       battleOverlay: PIXI.Container;
@@ -39,6 +40,8 @@ module Rance
     isPaused: boolean = false;
     forceFrame: boolean = false;
 
+    resizeListener: (e: Event) => void;
+
     constructor(pixiContainer: HTMLElement)
     {
       this.pixiContainer = pixiContainer;
@@ -58,6 +61,26 @@ module Rance
       this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
       
       this.initLayers();
+
+      this.resizeListener = this.handleResize.bind(this);
+      window.addEventListener("resize", this.resizeListener, false);
+    }
+    destroy()
+    {
+      this.container.renderable = false;
+      this.pause();
+
+      if (this.renderer)
+      {
+        this.renderer.destroy(true);
+        this.renderer = null;
+      }
+
+      this.container.destroy(true);
+      this.container = null;
+      this.pixiContainer = null;
+
+      window.removeEventListener("resize", this.resizeListener);
     }
     initLayers()
     {
@@ -174,6 +197,31 @@ module Rance
     }
 
     // UNITS
+    setUnitContainersPosition()
+    {
+      // TODO battle scene. This + unit drawing FN 
+      var sceneBounds = this.getSceneBounds();
+      console.log("set units position");
+      
+      [this.layers.side1Unit, this.layers.side1UnitOverlay,
+        this.layers.side2Unit, this.layers.side2UnitOverlay].forEach(
+        function(container: PIXI.Container, i: number)
+      {
+        var containerBounds = container.getLocalBounds();
+
+        container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y);
+
+        if (i < 2)
+        {
+          container.scale.x = -1;
+          container.x = Math.round(containerBounds.width + containerBounds.x);
+        }
+        else
+        {
+          container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x);
+        }
+      });
+    }
     setUnit(unit: Unit)
     {
       switch (unit.battleStats.side)
@@ -238,6 +286,9 @@ module Rance
           break;
         }
       }
+      console.log("added unit ", unit.battleStats.side);
+
+      this.setUnitContainersPosition();
     }
     clearUnitSprite(unit: Unit)
     {
@@ -255,6 +306,8 @@ module Rance
           break;
         }
       }
+
+      console.log("removed unit ", unit.battleStats.side);
     }
     enterUnitSprite(unit: Unit)
     {

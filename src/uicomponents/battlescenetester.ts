@@ -114,13 +114,11 @@ module Rance
 
       handleUnitHover: function(unit: Unit)
       {
-        console.log("hover unit " + unit.name);
         this.battleScene.setUnitSprite(unit);
       },
 
       handleClearHover: function(unit: Unit)
       {
-        console.log("clear hover " + unit.name);
         this.battleScene.clearUnitSprite(unit);
       },
 

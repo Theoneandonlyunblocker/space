@@ -396,7 +396,7 @@ declare module Rance {
     }, keyToFind: string): any;
     function getRandomKeyWithWeights(target: {
         [prop: string]: number;
-    }): any;
+    }): string;
     function getRandomArrayItemWithWeights<T extends {
         weight?: number;
     }>(arr: T[]): T;
@@ -3766,7 +3766,9 @@ declare module Rance {
         activeUnit: Unit;
         isPaused: boolean;
         forceFrame: boolean;
+        resizeListener: (e: Event) => void;
         constructor(pixiContainer: HTMLElement);
+        destroy(): void;
         initLayers(): void;
         handleResize(): void;
         getSceneBounds(): {
@@ -3788,6 +3790,7 @@ declare module Rance {
         makeBattleOverlay(): void;
         addBattleOverlay(overlay: PIXI.DisplayObject): void;
         clearBattleOverlay(): void;
+        setUnitContainersPosition(): void;
         setUnit(unit: Unit): void;
         clearUnit(unit: Unit): void;
         makeUnitSprite(unit: Unit, SFXParams: Templates.SFXParams): PIXI.DisplayObject;

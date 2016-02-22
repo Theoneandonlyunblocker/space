@@ -5254,7 +5254,7 @@ var Rance;
             return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
         };
         return PriorityQueue;
-    })();
+    }());
     Rance.PriorityQueue = PriorityQueue;
 })(Rance || (Rance = {}));
 /// <reference path="star.ts" />
@@ -5571,7 +5571,7 @@ var Rance;
             return data;
         };
         return Fleet;
-    })();
+    }());
     Rance.Fleet = Fleet;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/ibuildingtemplate.d.ts" />
@@ -5663,7 +5663,7 @@ var Rance;
             return data;
         };
         return Building;
-    })();
+    }());
     Rance.Building = Building;
 })(Rance || (Rance = {}));
 var Rance;
@@ -5837,7 +5837,7 @@ var Rance;
             });
         };
         return Manufactory;
-    })();
+    }());
     Rance.Manufactory = Manufactory;
 })(Rance || (Rance = {}));
 /// <reference path="../modules/default/templates/resources.ts" />
@@ -6200,9 +6200,10 @@ var Rance;
         Star.prototype.getEnemyFleetOwners = function (player, excludedTarget) {
             var fleetOwners = [];
             for (var playerId in this.fleets) {
-                if (playerId == player.id)
+                var intPlayerId = parseInt(playerId);
+                if (intPlayerId == player.id)
                     continue;
-                else if (excludedTarget && playerId == excludedTarget.id)
+                else if (excludedTarget && intPlayerId == excludedTarget.id)
                     continue;
                 else if (this.fleets[playerId].length < 1)
                     continue;
@@ -6495,7 +6496,7 @@ var Rance;
             return data;
         };
         return Star;
-    })();
+    }());
     Rance.Star = Star;
 })(Rance || (Rance = {}));
 /// <reference path="player.ts"/>
@@ -6958,7 +6959,7 @@ var Rance;
             return clone;
         };
         return Battle;
-    })();
+    }());
     Rance.Battle = Battle;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
@@ -7366,7 +7367,7 @@ var Rance;
             return data;
         };
         return Item;
-    })();
+    }());
     Rance.Item = Item;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
@@ -7386,7 +7387,7 @@ var Rance;
             return new StatusEffect(this.template, this.duration);
         };
         return StatusEffect;
-    })();
+    }());
     Rance.StatusEffect = StatusEffect;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iunittemplate.d.ts" />
@@ -8209,7 +8210,7 @@ var Rance;
             return clone;
         };
         return Unit;
-    })();
+    }());
     Rance.Unit = Unit;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
@@ -8824,7 +8825,7 @@ var Rance;
             return (data);
         };
         return Emblem;
-    })();
+    }());
     Rance.Emblem = Emblem;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
@@ -9031,7 +9032,7 @@ var Rance;
             return data;
         };
         return Flag;
-    })();
+    }());
     Rance.Flag = Flag;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
@@ -9066,7 +9067,7 @@ var Rance;
                 for (var i = 0; i < targetActions.length; i++) {
                     if (!this.isBetweenAI || !targetActions[i].disableInAIBattles) {
                         actions.push({
-                            targetId: id,
+                            targetId: parseInt(id),
                             ability: targetActions[i]
                         });
                     }
@@ -9146,7 +9147,7 @@ var Rance;
             var selected = Rance.getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
             var separatorIndex = selected.indexOf(":");
             return ({
-                targetId: selected.slice(0, separatorIndex),
+                targetId: parseInt(selected.slice(0, separatorIndex)),
                 abilityType: selected.slice(separatorIndex + 1)
             });
         };
@@ -9224,7 +9225,7 @@ var Rance;
             }
         };
         return MCTreeNode;
-    })();
+    }());
     Rance.MCTreeNode = MCTreeNode;
 })(Rance || (Rance = {}));
 /// <reference path="mctreenode.ts"/>
@@ -9333,7 +9334,7 @@ var Rance;
             console.log(nodes);
         };
         return MCTree;
-    })();
+    }());
     Rance.MCTree = MCTree;
 })(Rance || (Rance = {}));
 /// <reference path="battle.ts"/>
@@ -9378,7 +9379,7 @@ var Rance;
             this.battle.finishBattle();
         };
         return BattleSimulator;
-    })();
+    }());
     Rance.BattleSimulator = BattleSimulator;
 })(Rance || (Rance = {}));
 /// <reference path="unit.ts"/>
@@ -9626,7 +9627,7 @@ var Rance;
             return battle;
         };
         return BattlePrep;
-    })();
+    }());
     Rance.BattlePrep = BattlePrep;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iattitudemodifiertemplate.d.ts" />
@@ -9717,7 +9718,7 @@ var Rance;
             return data;
         };
         return AttitudeModifier;
-    })();
+    }());
     Rance.AttitudeModifier = AttitudeModifier;
 })(Rance || (Rance = {}));
 /// <reference path="eventmanager.ts" />
@@ -9962,7 +9963,7 @@ var Rance;
             return data;
         };
         return DiplomacyStatus;
-    })();
+    }());
     Rance.DiplomacyStatus = DiplomacyStatus;
 })(Rance || (Rance = {}));
 var Rance;
@@ -10050,7 +10051,7 @@ var Rance;
             return null;
         };
         return MapVoronoiInfo;
-    })();
+    }());
     Rance.MapVoronoiInfo = MapVoronoiInfo;
 })(Rance || (Rance = {}));
 /// <reference path="point.ts" />
@@ -10073,7 +10074,7 @@ var Rance;
             });
         };
         return FillerPoint;
-    })();
+    }());
     Rance.FillerPoint = FillerPoint;
 })(Rance || (Rance = {}));
 /// <reference path="../point.ts"/>
@@ -10161,7 +10162,7 @@ var Rance;
                 return shared;
             };
             return Triangle;
-        })();
+        }());
         MapGen2.Triangle = Triangle;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
@@ -10423,7 +10424,7 @@ var Rance;
                 }
             };
             return MapGenResult;
-        })();
+        }());
         MapGen2.MapGenResult = MapGenResult;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
@@ -10458,7 +10459,7 @@ var Rance;
             return data;
         };
         return Notification;
-    })();
+    }());
     Rance.Notification = Notification;
 })(Rance || (Rance = {}));
 /// <reference path="notificationfilterstate.ts" />
@@ -10584,7 +10585,7 @@ var Rance;
             localStorage.setItem("Rance.NotificationFilter." + slot, data);
         };
         return NotificationFilter;
-    })();
+    }());
     Rance.NotificationFilter = NotificationFilter;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
@@ -10675,7 +10676,7 @@ var Rance;
             return data;
         };
         return NotificationLog;
-    })();
+    }());
     Rance.NotificationLog = NotificationLog;
 })(Rance || (Rance = {}));
 /// <reference path="player.ts"/>
@@ -10804,7 +10805,7 @@ var Rance;
             localStorage.setItem(saveString, stringified);
         };
         return Game;
-    })();
+    }());
     Rance.Game = Game;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
@@ -10858,7 +10859,7 @@ var Rance;
             return data;
         };
         return GalaxyMap;
-    })();
+    }());
     Rance.GalaxyMap = GalaxyMap;
 })(Rance || (Rance = {}));
 /// <reference path="../galaxymap.ts"/>
@@ -11474,7 +11475,7 @@ var Rance;
                 return evaluationByPlayer;
             };
             return MapEvaluator;
-        })();
+        }());
         MapAI.MapEvaluator = MapEvaluator;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
@@ -11541,7 +11542,7 @@ var Rance;
                 return Rance.clamp(desire, 0.1, 1);
             };
             return GrandStrategyAI;
-        })();
+        }());
         MapAI.GrandStrategyAI = GrandStrategyAI;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
@@ -11585,7 +11586,7 @@ var Rance;
                 return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
             };
             return Objective;
-        })();
+        }());
         MapAI.Objective = Objective;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
@@ -11726,7 +11727,7 @@ var Rance;
                 return adjustments;
             };
             return ObjectivesAI;
-        })();
+        }());
         MapAI.ObjectivesAI = ObjectivesAI;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
@@ -11916,7 +11917,7 @@ var Rance;
                 return scores;
             };
             return Front;
-        })();
+        }());
         MapAI.Front = Front;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
@@ -12081,7 +12082,7 @@ var Rance;
                 }
             };
             return FrontsAI;
-        })();
+        }());
         MapAI.FrontsAI = FrontsAI;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
@@ -12175,7 +12176,7 @@ var Rance;
                 manufactory.addThingToQueue(unitType, "unit");
             };
             return EconomyAI;
-        })();
+        }());
         MapAI.EconomyAI = EconomyAI;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
@@ -12218,7 +12219,7 @@ var Rance;
                 objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
             };
             return DiplomacyAI;
-        })();
+        }());
         MapAI.DiplomacyAI = DiplomacyAI;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
@@ -12294,7 +12295,7 @@ var Rance;
                 }
             };
             return AIController;
-        })();
+        }());
         MapAI.AIController = AIController;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
@@ -13019,7 +13020,7 @@ var Rance;
             return data;
         };
         return Player;
-    })();
+    }());
     Rance.Player = Player;
 })(Rance || (Rance = {}));
 /// <reference path="player.ts" />
@@ -13104,7 +13105,7 @@ var Rance;
             this.removeAllStagedItems();
         };
         return Trade;
-    })();
+    }());
     Rance.Trade = Trade;
 })(Rance || (Rance = {}));
 var Rance;
@@ -14220,9 +14221,9 @@ var Rance;
                 var inputElements = [];
                 var filterState = this.state.filterState;
                 for (var state in Rance.NotificationFilterState) {
-                    if (!isFinite(state))
-                        continue;
                     var numericState = parseInt(state);
+                    if (!isFinite(numericState))
+                        continue;
                     var stateIsActive = filterState.indexOf(numericState) !== -1;
                     inputElements.push(React.DOM.input({
                         className: "notification-filter-list-item-filter",
@@ -17011,7 +17012,7 @@ var Rance;
             this.isDirty = false;
         };
         return MapRendererLayer;
-    })();
+    }());
     Rance.MapRendererLayer = MapRendererLayer;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/imaprenderermapmodetemplate.d.ts" />
@@ -17029,7 +17030,6 @@ var Rance;
             if (isActive === void 0) { isActive = true; }
             if (this.hasLayer(layer)) {
                 throw new Error("Tried to add duplicate layer " + layer.template.key);
-                return;
             }
             this.layers.push(layer);
             this.activeLayers[layer.template.key] = isActive;
@@ -17106,7 +17106,7 @@ var Rance;
             }
         };
         return MapRendererMapMode;
-    })();
+    }());
     Rance.MapRendererMapMode = MapRendererMapMode;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/offset.d.ts" />
@@ -17224,7 +17224,6 @@ var Rance;
             }
         }
         throw new Error("getHalfEdgesConnectingStars got stuck in infinite loop when star id = " + star.id);
-        return borderingHalfEdges;
     }
     Rance.getBorderingHalfEdges = getBorderingHalfEdges;
     function joinPointsWithin(points, maxDistance) {
@@ -17614,7 +17613,6 @@ var Rance;
         MapRenderer.prototype.setMapMode = function (newMapMode) {
             if (!this.mapModes[newMapMode.template.key]) {
                 throw new Error("Invalid mapmode " + newMapMode.template.key);
-                return;
             }
             if (this.currentMapMode && this.currentMapMode === newMapMode) {
                 return;
@@ -17639,7 +17637,7 @@ var Rance;
             this.isDirty = false;
         };
         return MapRenderer;
-    })();
+    }());
     Rance.MapRenderer = MapRenderer;
 })(Rance || (Rance = {}));
 /// <reference path="../../maprenderer.ts" />
@@ -20028,11 +20026,9 @@ var Rance;
                 });
             },
             handleUnitHover: function (unit) {
-                console.log("hover unit " + unit.name);
                 this.battleScene.setUnitSprite(unit);
             },
             handleClearHover: function (unit) {
-                console.log("clear hover " + unit.name);
                 this.battleScene.clearUnitSprite(unit);
             },
             makeUnitElements: function (units) {
@@ -20191,7 +20187,7 @@ var Rance;
             }), this.container);
         };
         return ReactUI;
-    })();
+    }());
     Rance.ReactUI = ReactUI;
 })(Rance || (Rance = {}));
 /// <reference path="eventmanager.ts"/>
@@ -20444,7 +20440,7 @@ var Rance;
             this.player.attackTarget(currentLocation, target);
         };
         return PlayerControl;
-    })();
+    }());
     Rance.PlayerControl = PlayerControl;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
@@ -20673,7 +20669,7 @@ var Rance;
             this.container.position.set(x, y);
         };
         return Camera;
-    })();
+    }());
     Rance.Camera = Camera;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
@@ -20770,7 +20766,7 @@ var Rance;
                 (y >= bounds.y1 && y <= bounds.y2));
         };
         return RectangleSelect;
-    })();
+    }());
     Rance.RectangleSelect = RectangleSelect;
 })(Rance || (Rance = {}));
 /// <reference path="fleet.ts"/>
@@ -21034,7 +21030,7 @@ var Rance;
             this.makeUIOpaque();
         };
         return MouseEventHandler;
-    })();
+    }());
     Rance.MouseEventHandler = MouseEventHandler;
 })(Rance || (Rance = {}));
 var Rance;
@@ -21059,7 +21055,7 @@ var Rance;
             }
         };
         return UniformManager;
-    })();
+    }());
     Rance.UniformManager = UniformManager;
 })(Rance || (Rance = {}));
 var Rance;
@@ -21340,7 +21336,7 @@ var Rance;
             _super.call(this, null, Rance.ShaderSources.nebula.join("\n"), uniforms);
         }
         return NebulaFilter;
-    })(PIXI.AbstractFilter);
+    }(PIXI.AbstractFilter));
     Rance.NebulaFilter = NebulaFilter;
     var OccupationFilter = (function (_super) {
         __extends(OccupationFilter, _super);
@@ -21348,7 +21344,7 @@ var Rance;
             _super.call(this, null, Rance.ShaderSources.occupation.join("\n"), uniforms);
         }
         return OccupationFilter;
-    })(PIXI.AbstractFilter);
+    }(PIXI.AbstractFilter));
     Rance.OccupationFilter = OccupationFilter;
     var GuardFilter = (function (_super) {
         __extends(GuardFilter, _super);
@@ -21356,7 +21352,7 @@ var Rance;
             _super.call(this, null, Rance.ShaderSources.guard.join("\n"), uniforms);
         }
         return GuardFilter;
-    })(PIXI.AbstractFilter);
+    }(PIXI.AbstractFilter));
     Rance.GuardFilter = GuardFilter;
     var ShaderManager = (function () {
         function ShaderManager() {
@@ -21384,7 +21380,7 @@ var Rance;
             this.shaders["nebula"] = new NebulaFilter(nebulaUniforms);
         };
         return ShaderManager;
-    })();
+    }());
     Rance.ShaderManager = ShaderManager;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
@@ -21691,7 +21687,7 @@ var Rance;
             });
         };
         return PathfindingArrow;
-    })();
+    }());
     Rance.PathfindingArrow = PathfindingArrow;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
@@ -21927,7 +21923,7 @@ var Rance;
             }
         };
         return Renderer;
-    })();
+    }());
     Rance.Renderer = Renderer;
 })(Rance || (Rance = {}));
 var Rance;
@@ -21995,7 +21991,7 @@ var Rance;
                 throw new Error("Module has no maps registered");
         };
         return ModuleData;
-    })();
+    }());
     Rance.ModuleData = ModuleData;
 })(Rance || (Rance = {}));
 /// <reference path="moduledata.ts" />
@@ -22011,7 +22007,6 @@ var Rance;
         ModuleLoader.prototype.addModuleFile = function (moduleFile) {
             if (this.moduleFiles[moduleFile.key]) {
                 throw new Error("Duplicate module key " + moduleFile.key);
-                return;
             }
             this.moduleFiles[moduleFile.key] = moduleFile;
             this.hasLoaded[moduleFile.key] = false;
@@ -22053,7 +22048,7 @@ var Rance;
             this.moduleData.addSubModule(moduleFile);
         };
         return ModuleLoader;
-    })();
+    }());
     Rance.ModuleLoader = ModuleLoader;
 })(Rance || (Rance = {}));
 var Rance;
@@ -22774,7 +22769,7 @@ var Rance;
                 });
             };
             return Region;
-        })();
+        }());
         MapGen2.Region = Region;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
@@ -22954,7 +22949,7 @@ var Rance;
                 }
             };
             return Sector;
-        })();
+        }());
         MapGen2.Sector = Sector;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
@@ -25029,11 +25024,7 @@ var Rance;
             DefaultModule.defaultUnitScene = function (unit, SFXParams) {
                 var spriteTemplate = unit.template.sprite;
                 var texture = PIXI.Texture.fromFrame(spriteTemplate.imageSrc);
-                var anchor = new PIXI.Point(spriteTemplate.anchor.x, spriteTemplate.anchor.y);
                 var container = new PIXI.Container;
-                if (SFXParams.facingRight) {
-                    container.scale.x = -1;
-                }
                 var props = {
                     zDistance: 8,
                     xDistance: 5,
@@ -25066,64 +25057,60 @@ var Rance;
                     unitsToDraw = Math.round(unitsToDraw * heightRatio);
                     zDistance *= (1 / heightRatio);
                     unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
-                    var xMin, xMax, yMin, yMax;
-                    var rotationAngle = Math.PI / 180 * props.rotationAngle;
-                    var sA = Math.sin(rotationAngle);
-                    var cA = Math.cos(rotationAngle);
-                    var rotationMatrix = [
-                        1, 0, 0,
-                        0, cA, -sA,
-                        0, sA, cA
-                    ];
-                    var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
-                    var desiredHeight = SFXParams.height;
-                    var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
-                    var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
-                    zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
-                    for (var i = unitsToDraw - 1; i >= 0; i--) {
-                        var column = Math.floor(i / maxUnitsPerColumn);
-                        var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
-                        var zPos;
-                        if (isLastColumn) {
-                            var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
-                            if (maxUnitsInThisColumn === 1) {
-                                zPos = (maxUnitsPerColumn - 1) / 2;
-                            }
-                            else {
-                                var positionInLastColumn = i % maxUnitsInThisColumn;
-                                zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
-                            }
+                }
+                var xMin, xMax, yMin, yMax;
+                var rotationAngle = Math.PI / 180 * props.rotationAngle;
+                var sA = Math.sin(rotationAngle);
+                var cA = Math.cos(rotationAngle);
+                var rotationMatrix = [
+                    1, 0, 0,
+                    0, cA, -sA,
+                    0, sA, cA
+                ];
+                var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
+                var desiredHeight = SFXParams.height;
+                console.log(desiredHeight);
+                var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
+                var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
+                zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
+                for (var i = unitsToDraw - 1; i >= 0; i--) {
+                    var column = Math.floor(i / maxUnitsPerColumn);
+                    var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
+                    var zPos;
+                    if (isLastColumn) {
+                        var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
+                        if (maxUnitsInThisColumn === 1) {
+                            zPos = (maxUnitsPerColumn - 1) / 2;
                         }
                         else {
-                            zPos = i % maxUnitsPerColumn;
+                            var positionInLastColumn = i % maxUnitsInThisColumn;
+                            zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
                         }
-                        var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
-                        if (isConvex) {
-                            xOffset = 1 - xOffset;
-                        }
-                        xOffset -= minXOffset;
-                        var scale = 1 - zPos * props.scalingFactor;
-                        var scaledWidth = image.width * scale;
-                        var scaledHeight = image.height * scale;
-                        var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
-                        var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-                        var translated = Rance.transformMat3({ x: x, y: y }, rotationMatrix);
-                        x = Math.round(translated.x);
-                        y = Math.round(translated.y);
-                        xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
-                        xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
-                        yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
-                        yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
-                        var sprite = new PIXI.Sprite(texture);
-                        sprite.anchor = anchor;
-                        sprite.x = x;
-                        sprite.y = y;
-                        sprite.scale.x = sprite.scale.y = scale;
-                        container.addChild(sprite);
                     }
-                    SFXParams.triggerStart(container);
-                    return container;
+                    else {
+                        zPos = i % maxUnitsPerColumn;
+                    }
+                    var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
+                    if (isConvex) {
+                        xOffset = 1 - xOffset;
+                    }
+                    xOffset -= minXOffset;
+                    var scale = 1 - zPos * props.scalingFactor;
+                    var scaledWidth = image.width * scale;
+                    var scaledHeight = image.height * scale;
+                    var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+                    var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
+                    var translated = Rance.transformMat3({ x: x, y: y }, rotationMatrix);
+                    x = Math.round(translated.x);
+                    y = Math.round(translated.y);
+                    var sprite = new PIXI.Sprite(texture);
+                    sprite.scale.x = sprite.scale.y = scale;
+                    sprite.x = x;
+                    sprite.y = y;
+                    container.addChild(sprite);
                 }
+                SFXParams.triggerStart(container);
+                return container;
             };
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -27497,7 +27484,7 @@ var Rance;
             }
         };
         return GameLoader;
-    })();
+    }());
     Rance.GameLoader = GameLoader;
 })(Rance || (Rance = {}));
 /// <reference path="../src/utility.ts" />
@@ -27672,7 +27659,21 @@ var Rance;
             this.pixiContainer.appendChild(this.renderer.view);
             this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
             this.initLayers();
+            this.resizeListener = this.handleResize.bind(this);
+            window.addEventListener("resize", this.resizeListener, false);
         }
+        BattleScene.prototype.destroy = function () {
+            this.container.renderable = false;
+            this.pause();
+            if (this.renderer) {
+                this.renderer.destroy(true);
+                this.renderer = null;
+            }
+            this.container.destroy(true);
+            this.container = null;
+            this.pixiContainer = null;
+            window.removeEventListener("resize", this.resizeListener);
+        };
         BattleScene.prototype.initLayers = function () {
             this.layers =
                 {
@@ -27755,6 +27756,23 @@ var Rance;
             this.layers.battleOverlay.removeChildren();
         };
         // UNITS
+        BattleScene.prototype.setUnitContainersPosition = function () {
+            // TODO battle scene. This + unit drawing FN 
+            var sceneBounds = this.getSceneBounds();
+            console.log("set units position");
+            [this.layers.side1Unit, this.layers.side1UnitOverlay,
+                this.layers.side2Unit, this.layers.side2UnitOverlay].forEach(function (container, i) {
+                var containerBounds = container.getLocalBounds();
+                container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y);
+                if (i < 2) {
+                    container.scale.x = -1;
+                    container.x = Math.round(containerBounds.width + containerBounds.x);
+                }
+                else {
+                    container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x);
+                }
+            });
+        };
         BattleScene.prototype.setUnit = function (unit) {
             switch (unit.battleStats.side) {
                 case "side1":
@@ -27808,6 +27826,8 @@ var Rance;
                         break;
                     }
             }
+            console.log("added unit ", unit.battleStats.side);
+            this.setUnitContainersPosition();
         };
         BattleScene.prototype.clearUnitSprite = function (unit) {
             this.clearUnit(unit);
@@ -27823,6 +27843,7 @@ var Rance;
                         break;
                     }
             }
+            console.log("removed unit ", unit.battleStats.side);
         };
         BattleScene.prototype.enterUnitSprite = function (unit) {
         };
@@ -27894,7 +27915,7 @@ var Rance;
             window.requestAnimationFrame(this.render.bind(this));
         };
         return BattleScene;
-    })();
+    }());
     Rance.BattleScene = BattleScene;
 })(Rance || (Rance = {}));
 /// <reference path="reactui.ts"/>
@@ -28103,7 +28124,7 @@ var Rance;
             }
         };
         return App;
-    })();
+    }());
     Rance.App = App;
 })(Rance || (Rance = {}));
 var app = new Rance.App();
