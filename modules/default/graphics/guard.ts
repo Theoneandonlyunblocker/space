@@ -8,7 +8,7 @@ module Rance
       {
         export function guard(props: Rance.Templates.SFXParams)
         {
-          var userCanvasWidth = props.user.cachedBattleScene.width;
+          var userCanvasWidth = props.user.getBattleSceneBounds(props).width;
           var maxFrontier = Math.max(userCanvasWidth * 1.3, 300);
           var baseTrailDistance = 80;
           var maxTrailDistance = maxFrontier;

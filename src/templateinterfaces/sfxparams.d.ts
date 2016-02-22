@@ -7,14 +7,14 @@ declare module Rance
     interface SFXParams
     {
       user: Unit;
-      target: Unit;
+      target?: Unit;
       width: number;
       height: number;
       duration: number; // in milliseconds
       facingRight: boolean;
       renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
       triggerStart: (container: PIXI.DisplayObject) => void;
-      triggerEnd: () => void;
+      triggerEnd?: () => void;
     }
   }
 }

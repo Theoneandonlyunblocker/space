@@ -933,12 +933,14 @@ declare module Rance {
             inBattlePrep?: Templates.IPassiveSkillTemplate[];
         };
         passiveSkillsByPhaseAreDirty: boolean;
-        sfxDuration: number;
         uiDisplayIsDirty: boolean;
-        cachedBattleScene: HTMLCanvasElement;
-        cachedBattleScenePropsString: string;
-        lastHealthDrawnAt: number;
         front: MapAI.Front;
+        sfxDuration: number;
+        drawBattleScene(SFXParams: Templates.SFXParams): PIXI.DisplayObject;
+        getBattleSceneBounds(SFXParams: Templates.SFXParams): {
+            width: number;
+            height: number;
+        };
         constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
         makeFromData(data: any): void;
         setInitialValues(): void;
@@ -1006,7 +1008,6 @@ declare module Rance {
         getStrengthEvaluation(): number;
         getTotalCost(): number;
         getTurnsToReachStar(star: Star): number;
-        drawBattleScene(props: Templates.IUnitDrawingFunctionProps): HTMLCanvasElement;
         getExperienceToNextLevel(): number;
         addExperience(amount: number): void;
         canLevelUp(): boolean;
@@ -2561,6 +2562,8 @@ declare module Rance {
         var FlagMaker: React.Factory<{}>;
     }
 }
+declare var tester: any;
+declare var bs: Rance.BattleScene;
 declare module Rance {
     module UIComponents {
         var BattleSceneTester: React.Factory<{}>;
@@ -3456,7 +3459,7 @@ declare module Rance {
 declare module Rance {
     module Modules {
         module DefaultModule {
-            var defaultUnitScene: Rance.Templates.IUnitDrawingFunction;
+            var newUnitScene: Rance.Templates.IUnitDrawingFunction;
         }
     }
 }
@@ -3732,6 +3735,11 @@ declare module Rance {
     var Options: any;
 }
 declare module Rance {
+    enum BattleSceneUnitState {
+        entering = 0,
+        stationary = 1,
+        exiting = 2,
+    }
     class BattleScene {
         container: PIXI.Container;
         renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
@@ -3747,6 +3755,8 @@ declare module Rance {
         };
         side1Unit: Unit;
         side2Unit: Unit;
+        unit1State: BattleSceneUnitState;
+        unit2State: BattleSceneUnitState;
         activeSFX: Templates.IBattleSFXTemplate;
         activeUnit: Unit;
         isPaused: boolean;
@@ -3758,26 +3768,32 @@ declare module Rance {
             width: number;
             height: number;
         };
-        getSFXParams(triggerStart: (container: PIXI.DisplayObject) => void, triggerEnd: () => void): {
-            user: Unit;
-            target: Unit;
-            width: number;
-            height: number;
-            duration: number;
-            facingRight: boolean;
-            renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+        getSFXParams(props: {
             triggerStart: (container: PIXI.DisplayObject) => void;
-            triggerEnd: () => void;
-        };
-        makeUnitSprite(unit: Unit): void;
+            triggerEnd?: () => void;
+        }): Templates.SFXParams;
+        getUnitSFXParams(props: {
+            unit: Unit;
+            duration?: number;
+            triggerStart: (container: PIXI.DisplayObject) => void;
+            triggerEnd?: () => void;
+        }): Templates.SFXParams;
+        setActiveSFX(): void;
+        clearActiveSFX(): void;
         makeBattleOverlay(): void;
         addBattleOverlay(overlay: PIXI.DisplayObject): void;
         clearBattleOverlay(): void;
+        setUnit(unit: Unit): void;
+        clearUnit(unit: Unit): void;
+        makeUnitSprite(unit: Unit, SFXParams: Templates.SFXParams): PIXI.DisplayObject;
+        setUnitSprite(unit: Unit): void;
+        addUnitSprite(unit: Unit, sprite: PIXI.DisplayObject): void;
+        clearUnitSprite(unit: Unit): void;
+        enterUnitSprite(unit: Unit): void;
+        exitUnitSprite(unit: Unit): void;
         makeUnitOverlay(unit: Unit): void;
         addUnitOverlay(side: string, overlay: PIXI.DisplayObject): void;
         clearUnitOverlay(side: string): void;
-        enterUnit(unit: Unit): void;
-        exitUnit(unit: Unit): void;
         renderOnce(): void;
         pause(): void;
         resume(): void;

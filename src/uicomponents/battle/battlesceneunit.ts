@@ -214,7 +214,7 @@ module Rance
           }
           else
           {
-            scene = unit.drawBattleScene(this.getSceneProps(unit));
+            // scene = unit.drawBattleScene(this.getSceneProps(unit));
             this.removeAnimations(scene, true);
           }
           scene.classList.add("battle-scene-unit-sprite");

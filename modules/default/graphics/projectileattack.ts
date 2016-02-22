@@ -23,34 +23,9 @@ module Rance
         },
         params: Rance.Templates.SFXParams)
         {
-          var minY: number, maxY: number;
+          var minY = 0;
+          var maxY = 300; // TODO battle scene
 
-          [params.user, params.target].forEach(function(unit: Unit)
-          {
-            if (!unit) return;
-            var unitCanvas = unit.cachedBattleScene;
-            if (unitCanvas)
-            {
-              var rect = unitCanvas.getBoundingClientRect();
-              if (isFinite(minY))
-              {
-                minY = Math.min(minY, rect.top);
-              }
-              else
-              {
-                minY = rect.top;
-              }
-
-              if (isFinite(maxY))
-              {
-                maxY = Math.max(maxY, rect.top + rect.height);
-              }
-              else
-              {
-                maxY = rect.top + rect.height;
-              }
-            }
-          });
 
           var maxSpeed = (params.width / params.duration) * props.maxSpeed;
           var acceleration = maxSpeed * props.acceleration;

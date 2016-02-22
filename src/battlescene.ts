@@ -6,6 +6,12 @@
 
 module Rance
 {
+  export enum BattleSceneUnitState
+  {
+    entering,
+    stationary,
+    exiting
+  }
   export class BattleScene
   {
     container: PIXI.Container;
@@ -23,6 +29,9 @@ module Rance
     };
     side1Unit: Unit;
     side2Unit: Unit;
+
+    unit1State: BattleSceneUnitState;
+    unit2State: BattleSceneUnitState;
 
     activeSFX: Templates.IBattleSFXTemplate;
     activeUnit: Unit;
@@ -86,9 +95,11 @@ module Rance
         height: this.renderer.height
       });
     }
-
-    getSFXParams(triggerStart: (container: PIXI.DisplayObject) => void,
-      triggerEnd: () => void)
+    getSFXParams(props:
+    {
+      triggerStart: (container: PIXI.DisplayObject) => void;
+      triggerEnd?: () => void;
+    }): Templates.SFXParams
     {
       var bounds = this.getSceneBounds();
       var duration = this.activeSFX.duration; // TODO options timing
@@ -102,18 +113,54 @@ module Rance
         duration: duration,
         facingRight: this.activeUnit.battleStats.side === "side1",
         renderer: this.renderer,
-        triggerStart: triggerStart,
-        triggerEnd: triggerEnd
+        triggerStart: props.triggerStart,
+        triggerEnd: props.triggerEnd
       });
     }
 
-    makeUnitSprite(unit: Unit)
+    getUnitSFXParams(props:
+    {
+      unit: Unit;
+      duration?: number;
+      triggerStart: (container: PIXI.DisplayObject) => void;
+      triggerEnd?: () => void;
+    }): Templates.SFXParams
+    {
+      var bounds = this.getSceneBounds();
+      var duration = props.duration || -1;
+
+      return(
+      {
+        user: props.unit,
+        width: bounds.width,
+        height: bounds.height,
+        duration: duration,
+        facingRight: props.unit.battleStats.side === "side1",
+        renderer: this.renderer,
+        triggerStart: props.triggerStart,
+        triggerEnd: props.triggerEnd
+      });
+    }
+
+    
+    setActiveSFX()
     {
 
     }
+    clearActiveSFX()
+    {
+      this.activeSFX = null;
+      this.clearBattleOverlay();
+      this.clearUnitOverlay("side1");
+      this.clearUnitOverlay("side2");
+    }
     makeBattleOverlay()
     {
-      var SFXParams = this.getSFXParams(this.addBattleOverlay, this.clearBattleOverlay);
+      var SFXParams = this.getSFXParams(
+      {
+        triggerStart: this.addBattleOverlay,
+        triggerEnd: this.clearBattleOverlay
+      });
       this.activeSFX.battleOverlay(SFXParams);
     }
     addBattleOverlay(overlay: PIXI.DisplayObject)
@@ -125,11 +172,114 @@ module Rance
     {
       this.layers.battleOverlay.removeChildren();
     }
+
+    // UNITS
+    setUnit(unit: Unit)
+    {
+      switch (unit.battleStats.side)
+      {
+        case "side1":
+        {
+          this.side1Unit = unit;
+          break;
+        }
+        case "side2":
+        {
+          this.side2Unit = unit;
+          break;
+        }
+      }
+    }
+    clearUnit(unit: Unit)
+    {
+      switch (unit.battleStats.side)
+      {
+        case "side1":
+        {
+          this.side1Unit = null;
+          break;
+        }
+        case "side2":
+        {
+          this.side2Unit = null;
+          break;
+        }
+      }
+    }
+
+    makeUnitSprite(unit: Unit, SFXParams: Templates.SFXParams)
+    {
+      return unit.drawBattleScene(SFXParams);
+    }
+    setUnitSprite(unit: Unit)
+    {
+      this.clearUnitSprite(unit);
+      this.setUnit(unit);
+      var SFXParams = this.getUnitSFXParams(
+      {
+        unit: unit,
+        triggerStart: this.addUnitSprite.bind(this, unit)
+      });
+
+      this.makeUnitSprite(unit, SFXParams);
+    }
+    addUnitSprite(unit: Unit, sprite: PIXI.DisplayObject)
+    {
+      switch (unit.battleStats.side)
+      {
+        case "side1":
+        {
+          this.layers.side1Unit.addChild(sprite);
+          break;
+        }
+        case "side2":
+        {
+          this.layers.side2Unit.addChild(sprite);
+          break;
+        }
+      }
+    }
+    clearUnitSprite(unit: Unit)
+    {
+      this.clearUnit(unit);
+      switch (unit.battleStats.side)
+      {
+        case "side1":
+        {
+          this.layers.side1Unit.removeChildren();
+          break;
+        }
+        case "side2":
+        {
+          this.layers.side2Unit.removeChildren();
+          break;
+        }
+      }
+    }
+    enterUnitSprite(unit: Unit)
+    {
+
+    }
+    exitUnitSprite(unit: Unit)
+    {
+      // clear active sfx
+      // if old unit
+      //    start old unit exit
+      //    on exit finish do vvv
+      // enter new unit
+      // on enter finish set state to stationary   
+      // clear overlay
+    }
+
+    // UNIT OVERLAY
     makeUnitOverlay(unit: Unit)
     {
       var side = unit.battleStats.side;
-      var SFXParams = this.getSFXParams(this.addUnitOverlay.bind(this, side),
-        this.clearUnitOverlay.bind(this, side));
+      var SFXParams = this.getSFXParams(
+      {
+        triggerStart: this.addUnitOverlay.bind(this, side),
+        triggerEnd: this.clearUnitOverlay.bind(this, side)
+      });
       this.activeSFX.battleOverlay(SFXParams);
     }
     addUnitOverlay(side: string, overlay: PIXI.DisplayObject)
@@ -142,7 +292,7 @@ module Rance
       }
       else if (side === "side2")
       {
-        this.layers.side1UnitOverlay.addChild(overlay);
+        this.layers.side2UnitOverlay.addChild(overlay);
       }
       else
       {
@@ -164,20 +314,8 @@ module Rance
         throw new Error("Invalid side " + side);
       }
     }
-    enterUnit(unit: Unit)
-    {
-      var text = new PIXI.Text(unit.name,
-      {
-        fill: "white"
-      });
-      this.addUnitOverlay(unit.battleStats.side, text);
-    }
-    exitUnit(unit: Unit)
-    {
-      // clear overlay
-      this.clearUnitOverlay(unit.battleStats.side);
-    }
 
+    // RENDERING
     renderOnce()
     {
       this.forceFrame = true;

@@ -1,17 +1,13 @@
+/// <reference path="../../lib/pixi.d.ts" />
+/// <reference path="sfxparams.d.ts" />
+
 declare module Rance
 {
   module Templates
   {
-    interface IUnitDrawingFunctionProps
-    {
-      facesRight: boolean;
-      maxWidth?: number;
-      maxHeight?: number;
-      desiredHeight?: number;
-    }
     interface IUnitDrawingFunction
     {
-      (unit: Unit, props: IUnitDrawingFunctionProps): HTMLCanvasElement;
+      (unit: Unit, props: SFXParams): PIXI.DisplayObject;
     }
   }
 }

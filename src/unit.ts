@@ -96,12 +96,44 @@ module Rance
     } = {};
     passiveSkillsByPhaseAreDirty: boolean = true;
 
-    sfxDuration: number;
     uiDisplayIsDirty: boolean = true;
-    cachedBattleScene: HTMLCanvasElement;
-    cachedBattleScenePropsString: string = "";
-    lastHealthDrawnAt: number;
     front: MapAI.Front;
+
+    sfxDuration: number;
+
+    // TODO old battle scene
+    // cachedBattleScene: HTMLCanvasElement;
+    // cachedBattleScenePropsString: string = "";
+    // lastHealthDrawnAt: number;
+
+    // drawBattleScene(props: Templates.IUnitDrawingFunctionProps)
+    // {
+    //   var propsString = JSON.stringify(props);
+    //   if (propsString !== this.cachedBattleScenePropsString ||
+    //     this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage)
+    //   {
+    //     this.cachedBattleScene = this.template.unitDrawingFN(this, props);
+    //     this.cachedBattleScenePropsString = propsString;
+    //   }
+
+    //   return this.cachedBattleScene;
+    // }
+
+    // end
+    // new battle scene
+    drawBattleScene(SFXParams: Templates.SFXParams)
+    {
+      return this.template.unitDrawingFN(this, SFXParams);
+    }
+    getBattleSceneBounds(SFXParams: Templates.SFXParams)
+    {
+      var sceneBounds = this.drawBattleScene(SFXParams).getBounds();
+      return(
+      {
+        width: sceneBounds.width,
+        height: sceneBounds.height
+      });
+    }
 
     constructor(template: Templates.IUnitTemplate, id?: number, data?: any)
     {
@@ -957,18 +989,6 @@ module Rance
       }
       distance -= this.currentMovePoints; // current turn
       return distance / this.maxMovePoints; // future turns
-    }
-    drawBattleScene(props: Templates.IUnitDrawingFunctionProps)
-    {
-      var propsString = JSON.stringify(props);
-      if (propsString !== this.cachedBattleScenePropsString ||
-        this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage)
-      {
-        this.cachedBattleScene = this.template.unitDrawingFN(this, props);
-        this.cachedBattleScenePropsString = propsString;
-      }
-
-      return this.cachedBattleScene;
     }
     getExperienceToNextLevel()
     {

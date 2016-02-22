@@ -1,3 +1,6 @@
+var tester: any;
+var bs: Rance.BattleScene;
+
 module Rance
 {
   export module UIComponents
@@ -37,6 +40,8 @@ module Rance
       {
         var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
         battleScene.render();
+        tester = this;
+        bs = battleScene;
       },
 
       makeUnit: function()
@@ -110,13 +115,13 @@ module Rance
       handleUnitHover: function(unit: Unit)
       {
         console.log("hover unit " + unit.name);
-        this.battleScene.enterUnit(unit);
+        this.battleScene.setUnitSprite(unit);
       },
 
       handleClearHover: function(unit: Unit)
       {
-        console.log("clear hover");
-        this.battleScene.exitUnit(unit);
+        console.log("clear hover " + unit.name);
+        this.battleScene.clearUnitSprite(unit);
       },
 
       makeUnitElements: function(units: Unit[])
