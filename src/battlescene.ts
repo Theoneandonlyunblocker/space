@@ -156,6 +156,21 @@ module Rance
       this.layers.battleOverlay.removeChildren();
     }
 
+    getBattleSceneUnit(unit: Unit): BattleSceneUnit
+    {
+      switch (unit.battleStats.side)
+      {
+        case "side1":
+        {
+          return this.side1Unit;
+        }
+        case "side2":
+        {
+          return this.side2Unit;
+        }
+      }
+    }
+
     // UNIT OVERLAY
     // makeUnitOverlay(unit: Unit)
     // {

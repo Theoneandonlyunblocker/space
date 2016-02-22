@@ -114,12 +114,12 @@ module Rance
 
       handleUnitHover: function(unit: Unit)
       {
-        this.battleScene.enterUnitSprite(unit);
+        this.battleScene.getBattleSceneUnit(unit).enterUnitSprite(unit);
       },
 
       handleClearHover: function(unit: Unit)
       {
-        // this.battleScene.exitUnitSprite(unit);
+        this.battleScene.getBattleSceneUnit(unit).exitUnitSpriteWithoutAnimation(unit);
       },
 
       makeUnitElements: function(units: Unit[])

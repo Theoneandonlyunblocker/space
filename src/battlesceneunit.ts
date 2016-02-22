@@ -43,24 +43,25 @@ module Rance
     }
     private initLayers()
     {
-      this.layers.unitSprite = new PIXI.Container;
-      this.layers.unitOverlay = new PIXI.Container;
+      this.layers =
+      {
+        unitSprite: new PIXI.Container,
+        unitOverlay: new PIXI.Container
+      }
+
       this.container.addChild(this.layers.unitSprite);
       this.container.addChild(this.layers.unitOverlay);
     }
 
     // enter without animation
-    enterUnitSpriteInstant(unit: Unit)
+    enterUnitSpriteWithoutAnimation(unit: Unit)
     {
-      this.clearUnit();
-      this.clearUnitSprite();
-
       this.setUnit(unit);
       this.setUnitSprite(unit);
     }
 
     // exit without animation
-    exitUnitSpriteInstant(unit: Unit)
+    exitUnitSpriteWithoutAnimation(unit: Unit)
     {
       this.clearUnit();
       this.clearUnitSprite();
@@ -69,15 +70,8 @@ module Rance
     // enter with animation
     enterUnitSprite(unit: Unit)
     {
-      if (this.unitState === BattleSceneUnitState.entering)
-      {
-        // clear
-        // trigger enter
-        this.clearUnit();
-        this.clearUnitSprite();
-        this.startUnitSpriteEnter(unit);
-      }
-      else if (this.unitState === BattleSceneUnitState.stationary)
+      console.log("enter");
+      if (this.unitState === BattleSceneUnitState.stationary)
       {
         // trigger exit
         // on exit finish:
@@ -91,6 +85,14 @@ module Rance
         // on exit finish:
         //    trigger enter
         this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
+      }
+      else
+      {
+        // clear
+        // trigger enter
+        this.clearUnit();
+        this.clearUnitSprite();
+        this.startUnitSpriteEnter(unit);
       }
     }
     // exit with animation
@@ -107,13 +109,14 @@ module Rance
     private startUnitSpriteEnter(unit: Unit)
     {
       this.setUnit(unit);
+      this.setUnitSprite(unit);
       this.unitState = BattleSceneUnitState.entering;
 
       this.tween = this.makeEnterExitTween("enter", 200);
       this.tween.onStop = this.finishUnitSpriteEnter.bind(this);
       this.tween.start();
     }
-    private finishUnitSpriteEnter(unit: Unit)
+    private finishUnitSpriteEnter()
     {
       this.unitState = BattleSceneUnitState.stationary;
       this.clearTween();
@@ -126,7 +129,7 @@ module Rance
       this.tween.onStop = this.finishUnitSpriteExit.bind(this);
       this.tween.start();
     }
-    private finishUnitSpriteExit(unit: Unit)
+    private finishUnitSpriteExit()
     {
       this.clearUnit();
       this.clearUnitSprite();
@@ -160,14 +163,15 @@ module Rance
         triggerEnd: props.triggerEnd
       });
     }
-    private setContainersPosition()
+    private setContainersPosition(positionOffScreen: boolean = false)
     {
       // TODO battle scene. This & unit drawing FN rely on overly fiddly positioning.
       // This function might not work properly with other drawing functions.
       var sceneBounds = this.getSceneBounds();
+      var shouldReverse = this.activeUnit.battleStats.side === "side1";
       
       [this.layers.unitSprite, this.layers.unitOverlay].forEach(
-        function(container: PIXI.Container, i: number)
+        function(container: PIXI.Container)
       {
         var containerBounds = container.getLocalBounds();
         var xPadding = 30;
@@ -175,7 +179,7 @@ module Rance
 
         container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
 
-        if (i < 2)
+        if (shouldReverse)
         {
           container.scale.x = -1;
           container.x = Math.round(containerBounds.width + containerBounds.x + xPadding);
@@ -218,7 +222,7 @@ module Rance
       var SFXParams = this.getSFXParams(
       {
         unit: unit,
-        triggerStart: this.addUnitSprite.bind(this, unit)
+        triggerStart: this.addUnitSprite.bind(this)
       });
 
       this.makeUnitSprite(unit, SFXParams);
@@ -238,19 +242,18 @@ module Rance
     {
       var side = this.activeUnit.battleStats.side;
       var container = this.layers.unitSprite;
-      var bounds = container.getLocalBounds();
+      var bounds = container.getBounds();
 
       var distanceToMove = bounds.width * 1.25;
       if (side === "side2")
       {
         distanceToMove *= -1;
       }
-      var offscreenLocation = bounds.x + distanceToMove;
-      var stationaryLocation = bounds.x;
+      var offscreenLocation = container.x - distanceToMove;
+      var stationaryLocation = container.x;
 
       var startX = direction === "enter" ? offscreenLocation : stationaryLocation;
       var finishX = direction === "enter" ? stationaryLocation : offscreenLocation;
-
 
       var tween = new TWEEN.Tween(
       {
@@ -263,6 +266,8 @@ module Rance
         container.x = this.x;
       });
 
+      console.log(container.x, bounds.x, offscreenLocation, stationaryLocation, side);
+      container.x = startX;
       return tween;
     }
   }
