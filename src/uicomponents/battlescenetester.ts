@@ -39,7 +39,7 @@ module Rance
       componentDidMount: function()
       {
         var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
-        battleScene.render();
+        battleScene.resume();
         tester = this;
         bs = battleScene;
       },
@@ -114,12 +114,12 @@ module Rance
 
       handleUnitHover: function(unit: Unit)
       {
-        this.battleScene.setUnitSprite(unit);
+        this.battleScene.enterUnitSprite(unit);
       },
 
       handleClearHover: function(unit: Unit)
       {
-        this.battleScene.clearUnitSprite(unit);
+        // this.battleScene.exitUnitSprite(unit);
       },
 
       makeUnitElements: function(units: Unit[])

@@ -3746,6 +3746,46 @@ declare module Rance {
         exiting = 2,
         removed = 3,
     }
+    class BattleSceneUnit {
+        container: PIXI.Container;
+        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+        layers: {
+            unitSprite: PIXI.Container;
+            unitOverlay: PIXI.Container;
+        };
+        activeUnit: Unit;
+        pendingUnit: Unit;
+        unitState: BattleSceneUnitState;
+        onStateChange: () => void;
+        tween: TWEEN.Tween;
+        getSceneBounds: () => {
+            width: number;
+            height: number;
+        };
+        constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
+        destroy(): void;
+        private initLayers();
+        enterUnitSpriteInstant(unit: Unit): void;
+        exitUnitSpriteInstant(unit: Unit): void;
+        enterUnitSprite(unit: Unit): void;
+        exitUnitSprite(unit: Unit): void;
+        private startUnitSpriteEnter(unit);
+        private finishUnitSpriteEnter(unit);
+        private startUnitSpriteExit(unit);
+        private finishUnitSpriteExit(unit);
+        private getSFXParams(props);
+        private setContainersPosition();
+        private setUnit(unit);
+        private clearUnit();
+        private makeUnitSprite(unit, SFXParams);
+        private addUnitSprite(sprite);
+        private clearUnitSprite();
+        private setUnitSprite(unit);
+        private clearTween();
+        private makeEnterExitTween(direction, duration);
+    }
+}
+declare module Rance {
     class BattleScene {
         container: PIXI.Container;
         renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
@@ -3753,23 +3793,16 @@ declare module Rance {
         layers: {
             battleOverlay: PIXI.Container;
             side1Container: PIXI.Container;
-            side1UnitOverlay: PIXI.Container;
-            side1Unit: PIXI.Container;
             side2Container: PIXI.Container;
-            side2UnitOverlay: PIXI.Container;
-            side2Unit: PIXI.Container;
         };
-        side1Unit: Unit;
-        side2Unit: Unit;
-        side1UnitState: BattleSceneUnitState;
-        onSide1UnitStateChange: () => void;
-        side2UnitState: BattleSceneUnitState;
-        onSide2UnitStateChange: () => void;
+        side1Unit: BattleSceneUnit;
+        side2Unit: BattleSceneUnit;
         activeSFX: Templates.IBattleSFXTemplate;
         userUnit: Unit;
         targetUnit: Unit;
         isPaused: boolean;
         forceFrame: boolean;
+        lastTimeStamp: number;
         resizeListener: (e: Event) => void;
         constructor(pixiContainer: HTMLElement);
         destroy(): void;
@@ -3783,41 +3816,15 @@ declare module Rance {
             triggerStart: (container: PIXI.DisplayObject) => void;
             triggerEnd?: () => void;
         }): Templates.SFXParams;
-        getUnitSFXParams(props: {
-            unit: Unit;
-            duration?: number;
-            triggerStart: (container: PIXI.DisplayObject) => void;
-            triggerEnd?: () => void;
-        }): Templates.SFXParams;
         setActiveSFX(): void;
         clearActiveSFX(): void;
         makeBattleOverlay(): void;
         addBattleOverlay(overlay: PIXI.DisplayObject): void;
         clearBattleOverlay(): void;
-        setUnitContainersPosition(): void;
-        setUnit(unit: Unit): void;
-        clearUnit(unit: Unit): void;
-        setUnitState(unit: Unit, state: BattleSceneUnitState): void;
-        getUnitStateForSameSide(unit: Unit): BattleSceneUnitState;
-        getUnitStateChangeCallback(unit: Unit): () => void;
-        setUnitStateChangeCallback(unit: Unit, callback: () => void): void;
-        makeUnitSprite(unit: Unit, SFXParams: Templates.SFXParams): PIXI.DisplayObject;
-        setUnitSprite(unit: Unit): void;
-        addUnitSprite(unit: Unit, sprite: PIXI.DisplayObject): void;
-        clearUnitSprite(unit: Unit): void;
-        enterUnitSprite(unit: Unit): void;
-        startUnitSpriteEnter(unit: Unit): void;
-        finishUnitSpriteEnter(unit: Unit): void;
-        exitUnitSprite(unit: Unit): void;
-        startUnitSpriteExit(unit: Unit): void;
-        finishUnitSpriteExit(unit: Unit): void;
-        makeUnitOverlay(unit: Unit): void;
-        addUnitOverlay(side: string, overlay: PIXI.DisplayObject): void;
-        clearUnitOverlay(side: string): void;
         renderOnce(): void;
         pause(): void;
         resume(): void;
-        render(): void;
+        render(timeStamp?: number): void;
     }
 }
 declare var manufactoryData: {

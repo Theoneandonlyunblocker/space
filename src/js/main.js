@@ -19978,7 +19978,7 @@ var Rance;
             },
             componentDidMount: function () {
                 var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
-                battleScene.render();
+                battleScene.resume();
                 tester = this;
                 bs = battleScene;
             },
@@ -20026,10 +20026,10 @@ var Rance;
                 });
             },
             handleUnitHover: function (unit) {
-                this.battleScene.setUnitSprite(unit);
+                this.battleScene.enterUnitSprite(unit);
             },
             handleClearHover: function (unit) {
-                this.battleScene.clearUnitSprite(unit);
+                // this.battleScene.exitUnitSprite(unit);
             },
             makeUnitElements: function (units) {
                 var unitElements = [];
@@ -27646,10 +27646,191 @@ var Rance;
         BattleSceneUnitState[BattleSceneUnitState["removed"] = 3] = "removed";
     })(Rance.BattleSceneUnitState || (Rance.BattleSceneUnitState = {}));
     var BattleSceneUnitState = Rance.BattleSceneUnitState;
+    var BattleSceneUnit = (function () {
+        function BattleSceneUnit(container, renderer) {
+            this.container = container;
+            this.renderer = renderer;
+            this.initLayers();
+        }
+        BattleSceneUnit.prototype.destroy = function () {
+        };
+        BattleSceneUnit.prototype.initLayers = function () {
+            this.layers.unitSprite = new PIXI.Container;
+            this.layers.unitOverlay = new PIXI.Container;
+            this.container.addChild(this.layers.unitSprite);
+            this.container.addChild(this.layers.unitOverlay);
+        };
+        // enter without animation
+        BattleSceneUnit.prototype.enterUnitSpriteInstant = function (unit) {
+            this.clearUnit();
+            this.clearUnitSprite();
+            this.setUnit(unit);
+            this.setUnitSprite(unit);
+        };
+        // exit without animation
+        BattleSceneUnit.prototype.exitUnitSpriteInstant = function (unit) {
+            this.clearUnit();
+            this.clearUnitSprite();
+        };
+        // enter with animation
+        BattleSceneUnit.prototype.enterUnitSprite = function (unit) {
+            if (this.unitState === BattleSceneUnitState.entering) {
+                // clear
+                // trigger enter
+                this.clearUnit();
+                this.clearUnitSprite();
+                this.startUnitSpriteEnter(unit);
+            }
+            else if (this.unitState === BattleSceneUnitState.stationary) {
+                // trigger exit
+                // on exit finish:
+                //    trigger enter
+                this.exitUnitSprite(unit);
+                this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
+            }
+            else if (this.unitState === BattleSceneUnitState.exiting) {
+                // wait for exit
+                // on exit finish:
+                //    trigger enter
+                this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
+            }
+        };
+        // exit with animation
+        BattleSceneUnit.prototype.exitUnitSprite = function (unit) {
+            if (this.unitState !== BattleSceneUnitState.stationary) {
+                debugger;
+                throw new Error("invalid unit animation state");
+            }
+            this.startUnitSpriteExit(unit);
+        };
+        BattleSceneUnit.prototype.startUnitSpriteEnter = function (unit) {
+            this.setUnit(unit);
+            this.unitState = BattleSceneUnitState.entering;
+            this.tween = this.makeEnterExitTween("enter", 200);
+            this.tween.onStop = this.finishUnitSpriteEnter.bind(this);
+            this.tween.start();
+        };
+        BattleSceneUnit.prototype.finishUnitSpriteEnter = function (unit) {
+            this.unitState = BattleSceneUnitState.stationary;
+            this.clearTween();
+        };
+        BattleSceneUnit.prototype.startUnitSpriteExit = function (unit) {
+            this.unitState = BattleSceneUnitState.exiting;
+            this.tween = this.makeEnterExitTween("exit", 200);
+            this.tween.onStop = this.finishUnitSpriteExit.bind(this);
+            this.tween.start();
+        };
+        BattleSceneUnit.prototype.finishUnitSpriteExit = function (unit) {
+            this.clearUnit();
+            this.clearUnitSprite();
+            if (this.onStateChange) {
+                this.onStateChange();
+                this.onStateChange = null;
+            }
+        };
+        BattleSceneUnit.prototype.getSFXParams = function (props) {
+            var bounds = this.getSceneBounds();
+            return ({
+                user: props.unit,
+                width: bounds.width,
+                height: bounds.height,
+                duration: props.duration,
+                facingRight: props.unit.battleStats.side === "side1",
+                renderer: this.renderer,
+                triggerStart: props.triggerStart,
+                triggerEnd: props.triggerEnd
+            });
+        };
+        BattleSceneUnit.prototype.setContainersPosition = function () {
+            // TODO battle scene. This & unit drawing FN rely on overly fiddly positioning.
+            // This function might not work properly with other drawing functions.
+            var sceneBounds = this.getSceneBounds();
+            [this.layers.unitSprite, this.layers.unitOverlay].forEach(function (container, i) {
+                var containerBounds = container.getLocalBounds();
+                var xPadding = 30;
+                var yPadding = 40;
+                container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
+                if (i < 2) {
+                    container.scale.x = -1;
+                    container.x = Math.round(containerBounds.width + containerBounds.x + xPadding);
+                }
+                else {
+                    container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x - xPadding);
+                }
+            });
+        };
+        BattleSceneUnit.prototype.setUnit = function (unit) {
+            this.clearUnit();
+            this.activeUnit = unit;
+        };
+        BattleSceneUnit.prototype.clearUnit = function () {
+            this.activeUnit = null;
+            this.onStateChange = null;
+            this.clearTween();
+            this.unitState = BattleSceneUnitState.removed;
+        };
+        BattleSceneUnit.prototype.makeUnitSprite = function (unit, SFXParams) {
+            return unit.drawBattleScene(SFXParams);
+        };
+        BattleSceneUnit.prototype.addUnitSprite = function (sprite) {
+            this.layers.unitSprite.addChild(sprite);
+            this.setContainersPosition();
+        };
+        BattleSceneUnit.prototype.clearUnitSprite = function () {
+            this.layers.unitSprite.removeChildren();
+        };
+        BattleSceneUnit.prototype.setUnitSprite = function (unit) {
+            this.clearUnitSprite();
+            var SFXParams = this.getSFXParams({
+                unit: unit,
+                triggerStart: this.addUnitSprite.bind(this, unit)
+            });
+            this.makeUnitSprite(unit, SFXParams);
+            this.unitState = BattleSceneUnitState.stationary;
+        };
+        BattleSceneUnit.prototype.clearTween = function () {
+            if (this.tween) {
+                this.tween.stop();
+                TWEEN.remove(this.tween);
+                this.tween = null;
+            }
+        };
+        BattleSceneUnit.prototype.makeEnterExitTween = function (direction, duration) {
+            var side = this.activeUnit.battleStats.side;
+            var container = this.layers.unitSprite;
+            var bounds = container.getLocalBounds();
+            var distanceToMove = bounds.width * 1.25;
+            if (side === "side2") {
+                distanceToMove *= -1;
+            }
+            var offscreenLocation = bounds.x + distanceToMove;
+            var stationaryLocation = bounds.x;
+            var startX = direction === "enter" ? offscreenLocation : stationaryLocation;
+            var finishX = direction === "enter" ? stationaryLocation : offscreenLocation;
+            var tween = new TWEEN.Tween({
+                x: startX
+            }).to({
+                x: finishX
+            }, duration).onUpdate(function () {
+                container.x = this.x;
+            });
+            return tween;
+        };
+        return BattleSceneUnit;
+    }());
+    Rance.BattleSceneUnit = BattleSceneUnit;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
+/// <reference path="unit.ts" />
+/// <reference path="battlesceneunit.ts" />
+var Rance;
+(function (Rance) {
     var BattleScene = (function () {
         function BattleScene(pixiContainer) {
             this.isPaused = false;
             this.forceFrame = false;
+            this.lastTimeStamp = performance.now();
             this.pixiContainer = pixiContainer;
             this.container = new PIXI.Container();
             var pixiContainerStyle = window.getComputedStyle(this.pixiContainer);
@@ -27680,16 +27861,11 @@ var Rance;
                 {
                     battleOverlay: new PIXI.Container,
                     side1Container: new PIXI.Container,
-                    side1UnitOverlay: new PIXI.Container,
-                    side1Unit: new PIXI.Container,
-                    side2Container: new PIXI.Container,
-                    side2UnitOverlay: new PIXI.Container,
-                    side2Unit: new PIXI.Container
+                    side2Container: new PIXI.Container
                 };
-            this.layers.side1Container.addChild(this.layers.side1Unit);
-            this.layers.side1Container.addChild(this.layers.side1UnitOverlay);
-            this.layers.side2Container.addChild(this.layers.side2Unit);
-            this.layers.side2Container.addChild(this.layers.side2UnitOverlay);
+            this.side1Unit = new Rance.BattleSceneUnit(this.layers.side1Container, this.renderer);
+            this.side2Unit = new Rance.BattleSceneUnit(this.layers.side2Container, this.renderer);
+            this.side1Unit.getSceneBounds = this.side2Unit.getSceneBounds = this.getSceneBounds;
             this.container.addChild(this.layers.side1Container);
             this.container.addChild(this.layers.side2Container);
             this.container.addChild(this.layers.battleOverlay);
@@ -27720,27 +27896,11 @@ var Rance;
                 triggerEnd: props.triggerEnd
             });
         };
-        BattleScene.prototype.getUnitSFXParams = function (props) {
-            var bounds = this.getSceneBounds();
-            var duration = props.duration || -1;
-            return ({
-                user: props.unit,
-                width: bounds.width,
-                height: bounds.height,
-                duration: duration,
-                facingRight: props.unit.battleStats.side === "side1",
-                renderer: this.renderer,
-                triggerStart: props.triggerStart,
-                triggerEnd: props.triggerEnd
-            });
-        };
         BattleScene.prototype.setActiveSFX = function () {
         };
         BattleScene.prototype.clearActiveSFX = function () {
             this.activeSFX = null;
             this.clearBattleOverlay();
-            this.clearUnitOverlay("side1");
-            this.clearUnitOverlay("side2");
         };
         BattleScene.prototype.makeBattleOverlay = function () {
             var SFXParams = this.getSFXParams({
@@ -27756,235 +27916,48 @@ var Rance;
         BattleScene.prototype.clearBattleOverlay = function () {
             this.layers.battleOverlay.removeChildren();
         };
-        // UNITS
-        BattleScene.prototype.setUnitContainersPosition = function () {
-            // TODO battle scene. This & unit drawing FN rely on overly fiddly positioning.
-            // This function might not work properly with other drawing functions.
-            var sceneBounds = this.getSceneBounds();
-            [this.layers.side1Unit, this.layers.side1UnitOverlay,
-                this.layers.side2Unit, this.layers.side2UnitOverlay].forEach(function (container, i) {
-                var containerBounds = container.getLocalBounds();
-                var xPadding = 30;
-                var yPadding = 40;
-                container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
-                if (i < 2) {
-                    container.scale.x = -1;
-                    container.x = Math.round(containerBounds.width + containerBounds.x + xPadding);
-                }
-                else {
-                    container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x - xPadding);
-                }
-            });
-        };
-        BattleScene.prototype.setUnit = function (unit) {
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        this.side1Unit = unit;
-                        break;
-                    }
-                case "side2":
-                    {
-                        this.side2Unit = unit;
-                        break;
-                    }
-            }
-        };
-        BattleScene.prototype.clearUnit = function (unit) {
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        this.side1Unit = null;
-                        break;
-                    }
-                case "side2":
-                    {
-                        this.side2Unit = null;
-                        break;
-                    }
-            }
-            this.setUnitStateChangeCallback(unit, null);
-            this.setUnitState(unit, BattleSceneUnitState.removed);
-        };
-        BattleScene.prototype.setUnitState = function (unit, state) {
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        this.side1UnitState = state;
-                        break;
-                    }
-                case "side2":
-                    {
-                        this.side1UnitState = state;
-                        break;
-                    }
-            }
-        };
-        BattleScene.prototype.getUnitStateForSameSide = function (unit) {
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        return this.side1UnitState;
-                    }
-                case "side2":
-                    {
-                        return this.side2UnitState;
-                    }
-            }
-        };
-        BattleScene.prototype.getUnitStateChangeCallback = function (unit) {
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        return this.onSide1UnitStateChange;
-                    }
-                case "side2":
-                    {
-                        return this.onSide2UnitStateChange;
-                    }
-            }
-        };
-        BattleScene.prototype.setUnitStateChangeCallback = function (unit, callback) {
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        this.onSide1UnitStateChange = callback;
-                        break;
-                    }
-                case "side2":
-                    {
-                        this.onSide2UnitStateChange = callback;
-                        break;
-                    }
-            }
-        };
-        BattleScene.prototype.makeUnitSprite = function (unit, SFXParams) {
-            return unit.drawBattleScene(SFXParams);
-        };
-        BattleScene.prototype.setUnitSprite = function (unit) {
-            this.clearUnitSprite(unit);
-            this.setUnit(unit);
-            var SFXParams = this.getUnitSFXParams({
-                unit: unit,
-                triggerStart: this.addUnitSprite.bind(this, unit)
-            });
-            this.makeUnitSprite(unit, SFXParams);
-            this.setUnitState(unit, BattleSceneUnitState.stationary);
-        };
-        BattleScene.prototype.addUnitSprite = function (unit, sprite) {
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        this.layers.side1Unit.addChild(sprite);
-                        break;
-                    }
-                case "side2":
-                    {
-                        this.layers.side2Unit.addChild(sprite);
-                        break;
-                    }
-            }
-            this.setUnitContainersPosition();
-        };
-        BattleScene.prototype.clearUnitSprite = function (unit) {
-            this.clearUnit(unit);
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        this.layers.side1Unit.removeChildren();
-                        break;
-                    }
-                case "side2":
-                    {
-                        this.layers.side2Unit.removeChildren();
-                        break;
-                    }
-            }
-        };
-        BattleScene.prototype.enterUnitSprite = function (unit) {
-            var currentUnitState = this.getUnitStateForSameSide(unit);
-            if (currentUnitState === BattleSceneUnitState.entering) {
-                // clear
-                // trigger enter
-                this.clearUnitSprite(unit);
-                this.startUnitSpriteEnter(unit);
-            }
-            else if (currentUnitState === BattleSceneUnitState.stationary) {
-                // trigger exit
-                // on exit finish:
-                //    trigger enter
-                this.exitUnitSprite(unit);
-                this.setUnitStateChangeCallback(unit, this.startUnitSpriteEnter.bind(this, unit));
-            }
-            else if (currentUnitState === BattleSceneUnitState.exiting) {
-                // wait for exit
-                // on exit finish:
-                //    trigger enter
-                this.setUnitStateChangeCallback(unit, this.startUnitSpriteEnter.bind(this, unit));
-            }
-        };
-        BattleScene.prototype.startUnitSpriteEnter = function (unit) {
-            this.setUnit(unit);
-            this.setUnitState(unit, BattleSceneUnitState.entering);
-            // TODO play animation
-        };
-        BattleScene.prototype.finishUnitSpriteEnter = function (unit) {
-            this.setUnitState(unit, BattleSceneUnitState.stationary);
-        };
-        BattleScene.prototype.exitUnitSprite = function (unit) {
-            var currentUnitState = this.getUnitStateForSameSide(unit);
-            if (currentUnitState !== BattleSceneUnitState.stationary) {
-                debugger;
-                throw new Error("invalid unit animation state");
-            }
-            this.startUnitSpriteExit(unit);
-        };
-        BattleScene.prototype.startUnitSpriteExit = function (unit) {
-            this.setUnitState(unit, BattleSceneUnitState.exiting);
-            // TODO play animation
-        };
-        BattleScene.prototype.finishUnitSpriteExit = function (unit) {
-            var callback = this.getUnitStateChangeCallback(unit);
-            if (callback) {
-                this.setUnitStateChangeCallback(unit, null);
-                callback();
-            }
-            else {
-                this.clearUnit(unit);
-            }
-        };
         // UNIT OVERLAY
-        BattleScene.prototype.makeUnitOverlay = function (unit) {
-            var side = unit.battleStats.side;
-            var SFXParams = this.getSFXParams({
-                triggerStart: this.addUnitOverlay.bind(this, side),
-                triggerEnd: this.clearUnitOverlay.bind(this, side)
-            });
-            this.activeSFX.battleOverlay(SFXParams);
-        };
-        BattleScene.prototype.addUnitOverlay = function (side, overlay) {
-            this.clearUnitOverlay(side);
-            if (side === "side1") {
-                this.layers.side1UnitOverlay.addChild(overlay);
-            }
-            else if (side === "side2") {
-                this.layers.side2UnitOverlay.addChild(overlay);
-            }
-            else {
-                throw new Error("Invalid side " + side);
-            }
-        };
-        BattleScene.prototype.clearUnitOverlay = function (side) {
-            if (side === "side1") {
-                this.layers.side1UnitOverlay.removeChildren();
-            }
-            else if (side === "side2") {
-                this.layers.side2UnitOverlay.removeChildren();
-            }
-            else {
-                throw new Error("Invalid side " + side);
-            }
-        };
+        // makeUnitOverlay(unit: Unit)
+        // {
+        //   var side = unit.battleStats.side;
+        //   var SFXParams = this.getSFXParams(
+        //   {
+        //     triggerStart: this.addUnitOverlay.bind(this, side),
+        //     triggerEnd: this.clearUnitOverlay.bind(this, side)
+        //   });
+        //   this.activeSFX.battleOverlay(SFXParams);
+        // }
+        // addUnitOverlay(side: string, overlay: PIXI.DisplayObject)
+        // {
+        //   this.clearUnitOverlay(side);
+        //   if (side === "side1")
+        //   {
+        //     this.layers.side1UnitOverlay.addChild(overlay);
+        //   }
+        //   else if (side === "side2")
+        //   {
+        //     this.layers.side2UnitOverlay.addChild(overlay);
+        //   }
+        //   else
+        //   {
+        //     throw new Error("Invalid side " + side);
+        //   }
+        // }
+        // clearUnitOverlay(side: string)
+        // {
+        //   if (side === "side1")
+        //   {
+        //     this.layers.side1UnitOverlay.removeChildren();
+        //   }
+        //   else if (side === "side2")
+        //   {
+        //     this.layers.side2UnitOverlay.removeChildren();
+        //   }
+        //   else
+        //   {
+        //     throw new Error("Invalid side " + side);
+        //   }
+        // }
         // RENDERING
         BattleScene.prototype.renderOnce = function () {
             this.forceFrame = true;
@@ -27997,9 +27970,10 @@ var Rance;
         BattleScene.prototype.resume = function () {
             this.isPaused = false;
             this.forceFrame = false;
+            this.lastTimeStamp = performance.now();
             this.render();
         };
-        BattleScene.prototype.render = function () {
+        BattleScene.prototype.render = function (timeStamp) {
             if (this.isPaused) {
                 if (this.forceFrame) {
                     this.forceFrame = false;
@@ -28009,6 +27983,7 @@ var Rance;
                 }
             }
             this.renderer.render(this.container);
+            TWEEN.update();
             window.requestAnimationFrame(this.render.bind(this));
         };
         return BattleScene;
