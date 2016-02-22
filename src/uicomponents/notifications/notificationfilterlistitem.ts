@@ -48,8 +48,8 @@ module Rance
 
         for (var state in NotificationFilterState)
         {
-          if (!isFinite(state)) continue;
           var numericState = parseInt(state);
+          if (!isFinite(numericState)) continue;
 
           var stateIsActive = filterState.indexOf(numericState) !== -1;
           inputElements.push(React.DOM.input(

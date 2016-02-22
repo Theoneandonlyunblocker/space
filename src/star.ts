@@ -578,8 +578,9 @@ module Rance
 
       for (var playerId in this.fleets)
       {
-        if (playerId == player.id) continue;
-        else if (excludedTarget && playerId == excludedTarget.id) continue;
+        var intPlayerId = parseInt(playerId);
+        if (intPlayerId == player.id) continue;
+        else if (excludedTarget && intPlayerId == excludedTarget.id) continue;
         else if (this.fleets[playerId].length < 1) continue;
 
         fleetOwners.push(this.fleets[playerId][0].player);

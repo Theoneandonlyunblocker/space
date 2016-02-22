@@ -61,7 +61,7 @@ module Rance
           {
             actions.push(
             {
-              targetId: id,
+              targetId: parseInt(id),
               ability: targetActions[i]
             });
           }
@@ -175,8 +175,8 @@ module Rance
 
       return(
       {
-        targetId: <number> selected.slice(0, separatorIndex),
-        abilityType: <string> selected.slice(separatorIndex + 1)
+        targetId: parseInt(selected.slice(0, separatorIndex)),
+        abilityType: selected.slice(separatorIndex + 1)
       });
     }
     simulateOnce(battle: Battle): void
