@@ -5162,6 +5162,12 @@ var Rance;
         return "" + unit.id + " " + unit.template.displayName;
     }
     Rance.defaultNameGenerator = defaultNameGenerator;
+    function transformMat3(a, m) {
+        var x = m[0] * a.x + m[3] * a.y + m[6];
+        var y = m[1] * a.x + m[4] * a.y + m[7];
+        return { x: x, y: y };
+    }
+    Rance.transformMat3 = transformMat3;
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
@@ -7430,23 +7436,6 @@ var Rance;
             enumerable: true,
             configurable: true
         });
-        // TODO old battle scene
-        // cachedBattleScene: HTMLCanvasElement;
-        // cachedBattleScenePropsString: string = "";
-        // lastHealthDrawnAt: number;
-        // drawBattleScene(props: Templates.IUnitDrawingFunctionProps)
-        // {
-        //   var propsString = JSON.stringify(props);
-        //   if (propsString !== this.cachedBattleScenePropsString ||
-        //     this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage)
-        //   {
-        //     this.cachedBattleScene = this.template.unitDrawingFN(this, props);
-        //     this.cachedBattleScenePropsString = propsString;
-        //   }
-        //   return this.cachedBattleScene;
-        // }
-        // end
-        // new battle scene
         Unit.prototype.drawBattleScene = function (SFXParams) {
             return this.template.unitDrawingFN(this, SFXParams);
         };
@@ -25037,13 +25026,104 @@ var Rance;
     (function (Modules) {
         var DefaultModule;
         (function (DefaultModule) {
-            DefaultModule.newUnitScene = function (unit, SFXParams) {
-                // TODO battle scene
+            DefaultModule.defaultUnitScene = function (unit, SFXParams) {
                 var spriteTemplate = unit.template.sprite;
                 var texture = PIXI.Texture.fromFrame(spriteTemplate.imageSrc);
-                var sprite = new PIXI.Sprite(texture);
-                SFXParams.triggerStart(sprite);
-                return sprite;
+                var anchor = new PIXI.Point(spriteTemplate.anchor.x, spriteTemplate.anchor.y);
+                var container = new PIXI.Container;
+                if (SFXParams.facingRight) {
+                    container.scale.x = -1;
+                }
+                var props = {
+                    zDistance: 8,
+                    xDistance: 5,
+                    maxUnitsPerColumn: 7,
+                    degree: -0.5,
+                    rotationAngle: 70,
+                    scalingFactor: 0.04
+                };
+                var maxUnitsPerColumn = props.maxUnitsPerColumn;
+                var isConvex = true;
+                var degree = props.degree;
+                if (degree < 0) {
+                    isConvex = !isConvex;
+                    degree = Math.abs(degree);
+                }
+                var image = app.images[spriteTemplate.imageSrc];
+                var zDistance = props.zDistance;
+                var xDistance = props.xDistance;
+                var unitsToDraw;
+                if (!unit.isSquadron) {
+                    unitsToDraw = 1;
+                }
+                else {
+                    var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
+                    unit.lastHealthDrawnAt = unit.currentHealth;
+                    unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
+                    var heightRatio = 25 / image.height;
+                    heightRatio = Math.min(heightRatio, 1.25);
+                    maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
+                    unitsToDraw = Math.round(unitsToDraw * heightRatio);
+                    zDistance *= (1 / heightRatio);
+                    unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+                    var xMin, xMax, yMin, yMax;
+                    var rotationAngle = Math.PI / 180 * props.rotationAngle;
+                    var sA = Math.sin(rotationAngle);
+                    var cA = Math.cos(rotationAngle);
+                    var rotationMatrix = [
+                        1, 0, 0,
+                        0, cA, -sA,
+                        0, sA, cA
+                    ];
+                    var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
+                    var desiredHeight = SFXParams.height;
+                    var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
+                    var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
+                    zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
+                    for (var i = unitsToDraw - 1; i >= 0; i--) {
+                        var column = Math.floor(i / maxUnitsPerColumn);
+                        var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
+                        var zPos;
+                        if (isLastColumn) {
+                            var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
+                            if (maxUnitsInThisColumn === 1) {
+                                zPos = (maxUnitsPerColumn - 1) / 2;
+                            }
+                            else {
+                                var positionInLastColumn = i % maxUnitsInThisColumn;
+                                zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+                            }
+                        }
+                        else {
+                            zPos = i % maxUnitsPerColumn;
+                        }
+                        var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
+                        if (isConvex) {
+                            xOffset = 1 - xOffset;
+                        }
+                        xOffset -= minXOffset;
+                        var scale = 1 - zPos * props.scalingFactor;
+                        var scaledWidth = image.width * scale;
+                        var scaledHeight = image.height * scale;
+                        var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+                        var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
+                        var translated = Rance.transformMat3({ x: x, y: y }, rotationMatrix);
+                        x = Math.round(translated.x);
+                        y = Math.round(translated.y);
+                        xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
+                        xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
+                        yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
+                        yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
+                        var sprite = new PIXI.Sprite(texture);
+                        sprite.anchor = anchor;
+                        sprite.x = x;
+                        sprite.y = y;
+                        sprite.scale.x = sprite.scale.y = scale;
+                        container.addChild(sprite);
+                    }
+                    SFXParams.triggerStart(container);
+                    return container;
+                }
             };
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -25084,7 +25164,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iunittemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
-/// <reference path="../graphics/newunitscene.ts" />
+/// <reference path="../graphics/defaultunitscene.ts" />
 /// <reference path="abilities.ts"/>
 /// <reference path="passiveskills.ts" />
 /// <reference path="unitfamilies.ts" />
@@ -25178,7 +25258,7 @@ var Rance;
                             Templates.Abilities.closeAttack,
                             [Templates.Abilities.debugAbility, Templates.Abilities.ranceAttack]
                         ],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.fighterSquadron = {
                         type: "fighterSquadron",
@@ -25214,7 +25294,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.bomberSquadron = {
                         type: "bomberSquadron",
@@ -25250,7 +25330,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.battleCruiser = {
                         type: "battleCruiser",
@@ -25286,7 +25366,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.scout = {
                         type: "scout",
@@ -25321,7 +25401,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.stealthShip = {
                         type: "stealthShip",
@@ -25358,7 +25438,7 @@ var Rance;
                             }
                         ],
                         technologyRequirements: [{ technology: Templates.Technologies.stealth, level: 1 }],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.shieldBoat = {
                         type: "shieldBoat",
@@ -25402,7 +25482,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.commandShip = {
                         type: "commandShip",
@@ -25445,7 +25525,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.redShip = {
                         type: "redShip",
@@ -25480,7 +25560,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                     Units.blueShip = {
                         type: "blueShip",
@@ -25515,7 +25595,7 @@ var Rance;
                                 ]
                             }
                         ],
-                        unitDrawingFN: DefaultModule.newUnitScene
+                        unitDrawingFN: DefaultModule.defaultUnitScene
                     };
                 })(Units = Templates.Units || (Templates.Units = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));

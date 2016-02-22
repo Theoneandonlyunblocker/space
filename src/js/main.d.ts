@@ -436,6 +436,10 @@ declare module Rance {
     function meetAllPlayers(): void;
     function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IWeightedProbability<T>[]): T[];
     function defaultNameGenerator(unit: Unit): string;
+    function transformMat3(a: Point, m: number[]): {
+        x: number;
+        y: number;
+    };
 }
 declare module Rance {
     module Modules {
@@ -936,6 +940,7 @@ declare module Rance {
         uiDisplayIsDirty: boolean;
         front: MapAI.Front;
         sfxDuration: number;
+        lastHealthDrawnAt: number;
         drawBattleScene(SFXParams: Templates.SFXParams): PIXI.DisplayObject;
         getBattleSceneBounds(SFXParams: Templates.SFXParams): {
             width: number;
@@ -3459,7 +3464,7 @@ declare module Rance {
 declare module Rance {
     module Modules {
         module DefaultModule {
-            var newUnitScene: Rance.Templates.IUnitDrawingFunction;
+            var defaultUnitScene: Rance.Templates.IUnitDrawingFunction;
         }
     }
 }

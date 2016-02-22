@@ -1,4 +1,6 @@
+/// <reference path="../../../lib/pixi.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/iunitdrawingfunction.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
 
 module Rance
 {
@@ -8,10 +10,21 @@ module Rance
     {
       export var defaultUnitScene: Rance.Templates.IUnitDrawingFunction = function(
         unit: Unit,
-        unitDrawingProps: Rance.Templates.IUnitDrawingFunctionProps
+        SFXParams: Rance.Templates.SFXParams
       )
       {
-        var props = extendObject(unitDrawingProps,
+        var spriteTemplate = unit.template.sprite;
+        var texture = PIXI.Texture.fromFrame(spriteTemplate.imageSrc);
+        var anchor = new PIXI.Point(spriteTemplate.anchor.x, spriteTemplate.anchor.y);
+
+        var container = new PIXI.Container;
+        if (SFXParams.facingRight)
+        {
+          container.scale.x = -1;
+        }
+
+
+        var props =
         {
           zDistance: 8,
           xDistance: 5,
@@ -19,7 +32,8 @@ module Rance
           degree: -0.5,
           rotationAngle: 70,
           scalingFactor: 0.04
-        });
+        };
+
         var maxUnitsPerColumn = props.maxUnitsPerColumn;
         var isConvex = true
         var degree = props.degree;
@@ -29,13 +43,6 @@ module Rance
           degree = Math.abs(degree);
         }
 
-        var canvas = document.createElement("canvas");
-        canvas.width = 2000;
-        canvas.height = 2000;
-
-        var ctx = canvas.getContext("2d");
-
-        var spriteTemplate = unit.template.sprite;
         var image = app.images[spriteTemplate.imageSrc];
 
         var zDistance: number = props.zDistance;
@@ -57,118 +64,92 @@ module Rance
           zDistance *= (1 / heightRatio);
 
           unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
-        }
 
-        var xMin: number, xMax: number, yMin: number, yMax: number;
+          var xMin: number, xMax: number, yMin: number, yMax: number;
 
-        function transformMat3(a: Point, m: number[])
-        {
-          var x = m[0] * a.x + m[3] * a.y + m[6];
-          var y = m[1] * a.x + m[4] * a.y + m[7];
+          var rotationAngle = Math.PI / 180 * props.rotationAngle;
+          var sA = Math.sin(rotationAngle);
+          var cA = Math.cos(rotationAngle);
 
-          return {x: x, y: y};
-        }
+          var rotationMatrix =
+          [
+            1, 0, 0,
+            0, cA, -sA,
+            0, sA, cA
+          ];
 
-        var rotationAngle = Math.PI / 180 * props.rotationAngle;
-        var sA = Math.sin(rotationAngle);
-        var cA = Math.cos(rotationAngle);
+          var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
 
-        var rotationMatrix =
-        [
-          1, 0, 0,
-          0, cA, -sA,
-          0, sA, cA
-        ];
+          var desiredHeight = SFXParams.height;
 
-        var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
-
-        if (props.desiredHeight)
-        {
           var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
-          var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
+          var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
           zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
-        }
 
-        for (var i = unitsToDraw - 1; i >= 0; i--)
-        {
-          var column = Math.floor(i / maxUnitsPerColumn);
-          var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
-
-          var zPos: number;
-          if (isLastColumn)
+          for (var i = unitsToDraw - 1; i >= 0; i--)
           {
-            var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
-            if (maxUnitsInThisColumn === 1)
+            var column = Math.floor(i / maxUnitsPerColumn);
+            var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
+
+            var zPos: number;
+            if (isLastColumn)
             {
-              zPos = (maxUnitsPerColumn - 1) / 2;
+              var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
+              if (maxUnitsInThisColumn === 1)
+              {
+                zPos = (maxUnitsPerColumn - 1) / 2;
+              }
+              else
+              {
+                var positionInLastColumn = i % maxUnitsInThisColumn;
+                zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+              }
             }
             else
             {
-              var positionInLastColumn = i % maxUnitsInThisColumn;
-              zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+              zPos = i % maxUnitsPerColumn;
             }
+
+            var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
+            if (isConvex)
+            {
+              xOffset = 1 - xOffset;
+            }
+
+            xOffset -= minXOffset;
+
+            var scale = 1 - zPos * props.scalingFactor;
+            var scaledWidth = image.width * scale;
+            var scaledHeight = image.height * scale;
+            
+
+            var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+            var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
+
+            var translated = transformMat3({x: x, y: y}, rotationMatrix);
+
+            x = Math.round(translated.x);
+            y = Math.round(translated.y);
+
+            xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
+            xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
+            yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
+            yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
+
+            var sprite = new PIXI.Sprite(texture);
+            sprite.anchor = anchor;
+
+            sprite.x = x;
+            sprite.y = y;
+            sprite.scale.x = sprite.scale.y = scale;
+
+            container.addChild(sprite);
           }
-          else
-          {
-            zPos = i % maxUnitsPerColumn;
-          }
 
-          var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
-          if (isConvex)
-          {
-            xOffset = 1 - xOffset;
-          }
+          SFXParams.triggerStart(container);
 
-          xOffset -= minXOffset;
-
-          var scale = 1 - zPos * props.scalingFactor;
-          var scaledWidth = image.width * scale;
-          var scaledHeight = image.height * scale;
-          
-
-          var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
-          var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-
-          var translated = transformMat3({x: x, y: y}, rotationMatrix);
-
-          x = Math.round(translated.x);
-          y = Math.round(translated.y);
-
-          xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
-          xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
-          yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
-          yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
-
-
-          ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
+          return container;
         }
-
-        var resultCanvas = document.createElement("canvas");
-
-        resultCanvas.width = xMax - xMin;
-        if (props.maxWidth)
-        {
-          resultCanvas.width = Math.min(props.maxWidth, resultCanvas.width)
-        }
-
-        resultCanvas.height = yMax - yMin;
-        if (props.maxHeight)
-        {
-          resultCanvas.height = Math.min(props.maxHeight, resultCanvas.height)
-        }
-
-        var resultCtx = resultCanvas.getContext("2d");
-
-        // flip horizontally
-        if (props.facesRight)
-        {
-          resultCtx.translate(resultCanvas.width, 0);
-          resultCtx.scale(-1, 1);
-        }
-        resultCtx.drawImage(canvas, -xMin, -yMin);
-
-
-        return resultCanvas;
       }
     }
   }

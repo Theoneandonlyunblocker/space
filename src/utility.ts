@@ -581,4 +581,11 @@ module Rance
   {
     return "" + unit.id + " " + unit.template.displayName;
   }
+  export function transformMat3(a: Point, m: number[])
+  {
+    var x = m[0] * a.x + m[3] * a.y + m[6];
+    var y = m[1] * a.x + m[4] * a.y + m[7];
+
+    return {x: x, y: y};
+  }
 }

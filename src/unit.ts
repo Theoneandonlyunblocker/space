@@ -121,6 +121,8 @@ module Rance
 
     // end
     // new battle scene
+    lastHealthDrawnAt: number;
+    
     drawBattleScene(SFXParams: Templates.SFXParams)
     {
       return this.template.unitDrawingFN(this, SFXParams);

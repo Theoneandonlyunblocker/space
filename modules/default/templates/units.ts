@@ -1,7 +1,7 @@
 /// <reference path="../../../src/templateinterfaces/iunittemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
 
-/// <reference path="../graphics/newunitscene.ts" />
+/// <reference path="../graphics/defaultunitscene.ts" />
 
 /// <reference path="abilities.ts"/>
 /// <reference path="passiveskills.ts" />
@@ -108,7 +108,7 @@ module Rance
               Abilities.closeAttack,
               [Abilities.debugAbility, Abilities.ranceAttack]
             ],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
           export var fighterSquadron: Rance.Templates.IUnitTemplate =
           {
@@ -149,7 +149,7 @@ module Rance
                 ]
               }
             ],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
           export var bomberSquadron: Rance.Templates.IUnitTemplate =
           {
@@ -190,7 +190,7 @@ module Rance
                 ]
               }
             ],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
           export var battleCruiser: Rance.Templates.IUnitTemplate =
           {
@@ -231,7 +231,7 @@ module Rance
                 ]
               }
             ],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
           export var scout: Rance.Templates.IUnitTemplate =
           {
@@ -271,7 +271,7 @@ module Rance
                 ]
               }
             ],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
           export var stealthShip: Rance.Templates.IUnitTemplate =
           {
@@ -313,7 +313,7 @@ module Rance
               }
             ],
             technologyRequirements: [{technology: Technologies.stealth, level: 1}],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
           export var shieldBoat: Rance.Templates.IUnitTemplate =
           {
@@ -364,7 +364,7 @@ module Rance
                 ]
               }
             ],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
           export var commandShip: Rance.Templates.IUnitTemplate =
           {
@@ -414,7 +414,7 @@ module Rance
                 ]
               }
             ],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
 
           export var redShip: Rance.Templates.IUnitTemplate =
@@ -455,7 +455,7 @@ module Rance
                 ]
               }
             ],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
           export var blueShip: Rance.Templates.IUnitTemplate =
           {
@@ -495,7 +495,7 @@ module Rance
                 ]
               }
             ],
-            unitDrawingFN: newUnitScene
+            unitDrawingFN: defaultUnitScene
           }
         }
       }
