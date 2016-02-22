@@ -3744,6 +3744,7 @@ declare module Rance {
         entering = 0,
         stationary = 1,
         exiting = 2,
+        removed = 3,
     }
     class BattleScene {
         container: PIXI.Container;
@@ -3760,10 +3761,13 @@ declare module Rance {
         };
         side1Unit: Unit;
         side2Unit: Unit;
-        unit1State: BattleSceneUnitState;
-        unit2State: BattleSceneUnitState;
+        side1UnitState: BattleSceneUnitState;
+        onSide1UnitStateChange: () => void;
+        side2UnitState: BattleSceneUnitState;
+        onSide2UnitStateChange: () => void;
         activeSFX: Templates.IBattleSFXTemplate;
-        activeUnit: Unit;
+        userUnit: Unit;
+        targetUnit: Unit;
         isPaused: boolean;
         forceFrame: boolean;
         resizeListener: (e: Event) => void;
@@ -3793,12 +3797,20 @@ declare module Rance {
         setUnitContainersPosition(): void;
         setUnit(unit: Unit): void;
         clearUnit(unit: Unit): void;
+        setUnitState(unit: Unit, state: BattleSceneUnitState): void;
+        getUnitStateForSameSide(unit: Unit): BattleSceneUnitState;
+        getUnitStateChangeCallback(unit: Unit): () => void;
+        setUnitStateChangeCallback(unit: Unit, callback: () => void): void;
         makeUnitSprite(unit: Unit, SFXParams: Templates.SFXParams): PIXI.DisplayObject;
         setUnitSprite(unit: Unit): void;
         addUnitSprite(unit: Unit, sprite: PIXI.DisplayObject): void;
         clearUnitSprite(unit: Unit): void;
         enterUnitSprite(unit: Unit): void;
+        startUnitSpriteEnter(unit: Unit): void;
+        finishUnitSpriteEnter(unit: Unit): void;
         exitUnitSprite(unit: Unit): void;
+        startUnitSpriteExit(unit: Unit): void;
+        finishUnitSpriteExit(unit: Unit): void;
         makeUnitOverlay(unit: Unit): void;
         addUnitOverlay(side: string, overlay: PIXI.DisplayObject): void;
         clearUnitOverlay(side: string): void;
