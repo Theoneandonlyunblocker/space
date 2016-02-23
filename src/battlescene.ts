@@ -28,8 +28,11 @@ module Rance
     side2Overlay: BattleSceneUnitOverlay;
 
     activeSFX: Templates.IBattleSFXTemplate;
-    userUnit: Unit;
-    targetUnit: Unit;
+
+    targetUnit: Unit;  // being targeted by ability | priority
+    userUnit: Unit;    // using an ability          |
+    activeUnit: Unit;  // next to act in turn order |
+    hoveredUnit: Unit; // hovered by player         V
 
     isPaused: boolean = false;
     forceFrame: boolean = false;
@@ -134,14 +137,81 @@ module Rance
       });
     }
     
-    setActiveSFX()
+    getHighestPriorityUnitForSide(side: "side1" | "side2")
     {
+      var units =
+      [
+        this.targetUnit,
+        this.userUnit,
+        this.activeUnit,
+        this.hoveredUnit
+      ];
+
+      for (var i = 0; i < units.length; i++)
+      {
+        var unit = units[i];
+        if (unit && unit.battleStats.side === side)
+        {
+          return unit;
+        }
+      }
+
+      return null;
+    }
+    setTargetUnit(unit: Unit)
+    {
+      this.targetUnit = unit;
+      this.updateUnits();
+    }
+    setUserUnit(unit: Unit)
+    {
+      this.userUnit = unit;
+      this.updateUnits();
+    }
+    setActiveUnit(unit: Unit)
+    {
+      this.activeUnit = unit;
+      this.updateUnits();
+    }
+    setHoveredUnit(unit: Unit)
+    {
+      this.hoveredUnit = unit;
+      this.updateUnits();
+    }
+    updateUnits()
+    {
+      // var unitsFinishedUpdating =
+      // {
+      //   side1: false,
+      //   side2: false
+      // };
+
+      // var checkIfUnitsAreUpdatedFN = function(afterAllUpdated: () => void, propToUpdate: "side1" | "side2")
+      // {
+      //   unitsFinishedUpdating[propToUpdate] = true;
+      //   if (unitsFinishedUpdating[reverseSide(propToUpdate)])
+      //   {
+      //     afterAllUpdated();
+      //   }
+      // }
+
+      var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
+      this.side1Unit.changeActiveUnit(activeSide1Unit);
+
+      var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
+      this.side2Unit.changeActiveUnit(activeSide2Unit);
+    }
+    setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
+    {
+      this.userUnit = user;
+      this.targetUnit = target;
 
     }
     clearActiveSFX()
     {
       this.activeSFX = null;
       this.clearBattleOverlay();
+      this.clearUnitOverlays();
     }
     makeBattleOverlay()
     {
@@ -160,6 +230,11 @@ module Rance
     clearBattleOverlay()
     {
       this.layers.battleOverlay.removeChildren();
+    }
+    clearUnitOverlays()
+    {
+      this.side1Overlay.clearOverlay();
+      this.side2Overlay.clearOverlay();
     }
 
     getBattleSceneUnit(unit: Unit): BattleSceneUnit
@@ -190,50 +265,6 @@ module Rance
         }
       }
     }
-
-    // UNIT OVERLAY
-    // makeUnitOverlay(unit: Unit)
-    // {
-    //   var side = unit.battleStats.side;
-    //   var SFXParams = this.getSFXParams(
-    //   {
-    //     triggerStart: this.addUnitOverlay.bind(this, side),
-    //     triggerEnd: this.clearUnitOverlay.bind(this, side)
-    //   });
-    //   this.activeSFX.battleOverlay(SFXParams);
-    // }
-    // addUnitOverlay(side: string, overlay: PIXI.DisplayObject)
-    // {
-    //   this.clearUnitOverlay(side);
-
-    //   if (side === "side1")
-    //   {
-    //     this.layers.side1UnitOverlay.addChild(overlay);
-    //   }
-    //   else if (side === "side2")
-    //   {
-    //     this.layers.side2UnitOverlay.addChild(overlay);
-    //   }
-    //   else
-    //   {
-    //     throw new Error("Invalid side " + side);
-    //   }
-    // }
-    // clearUnitOverlay(side: string)
-    // {
-    //   if (side === "side1")
-    //   {
-    //     this.layers.side1UnitOverlay.removeChildren();
-    //   }
-    //   else if (side === "side2")
-    //   {
-    //     this.layers.side2UnitOverlay.removeChildren();
-    //   }
-    //   else
-    //   {
-    //     throw new Error("Invalid side " + side);
-    //   }
-    // }
 
     // RENDERING
     renderOnce()

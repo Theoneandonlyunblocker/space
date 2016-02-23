@@ -18421,7 +18421,9 @@ var Rance;
                         initialPosition: {
                             width: 600,
                             height: 350
-                        }
+                        },
+                        minWidth: 300,
+                        minHeight: 250
                     }
                 });
             },
@@ -20057,7 +20059,6 @@ var Rance;
             idGenerator: 0,
             battle: null,
             battleScene: null,
-            deferredClearHover: null,
             getInitialState: function () {
                 return ({
                     selectedUnit: null
@@ -20130,25 +20131,17 @@ var Rance;
                 });
             },
             handleUnitHover: function (unit) {
-                if (this.deferredClearHover) {
-                    window.clearTimeout(this.deferredClearHover);
-                    this.deferredClearHover = null;
-                }
-                this.battleScene.getBattleSceneUnit(unit).enterUnitSprite(unit);
+                this.battleScene.setHoveredUnit(unit);
             },
-            handleClearHover: function (unit) {
-                this.battleScene.getBattleSceneUnit(unit).exitUnitSprite(unit);
-                // this.deferredClearHover = window.setTimeout(function()
-                // {
-                //   window.clearTimeout(this.deferredClearHover);
-                //   this.deferredClearHover = null;
-                // }.bind(this), 200);
+            handleClearHover: function () {
+                this.battleScene.setHoveredUnit(null);
             },
             selectUnit: function (unit) {
-                console.log("select unit " + unit.name);
+                var newSelectedUnit = (this.state.selectedUnit === unit) ? null : unit;
                 this.setState({
-                    selectedUnit: unit
+                    selectedUnit: newSelectedUnit
                 });
+                this.battleScene.setActiveUnit(newSelectedUnit);
             },
             handleTestAbility1: function () {
                 var overlayTestFN = function (params) {
@@ -27827,11 +27820,13 @@ var Rance;
             this.spriteContainer = new PIXI.Container;
             this.container.addChild(this.spriteContainer);
         };
-        BattleSceneUnit.prototype.changeActiveUnit = function (unit) {
-            if (!unit) {
+        BattleSceneUnit.prototype.changeActiveUnit = function (unit, afterChangedCallback) {
+            if (!unit && this.activeUnit) {
+                this.onFinishExit = afterChangedCallback;
                 this.exitUnitSprite();
             }
-            else {
+            else if (unit && unit !== this.activeUnit) {
+                this.onFinishEnter = afterChangedCallback;
                 this.enterUnitSprite(unit);
             }
         };
@@ -28037,6 +28032,22 @@ var Rance;
             this.overlayContainer = new PIXI.Container;
             this.container.addChild(this.overlayContainer);
         };
+        BattleSceneUnitOverlay.prototype.setOverlay = function (overlayFN, unit, duration) {
+            if (duration <= 0) {
+                return;
+            }
+            if (this.animationIsActive) {
+                console.warn("Triggered new unit overlay animation without clearing previous one");
+            }
+            this.activeUnit = unit;
+            var SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
+            overlayFN(SFXParams);
+        };
+        BattleSceneUnitOverlay.prototype.clearOverlay = function () {
+            this.animationIsActive = false;
+            this.activeUnit = null;
+            this.overlayContainer.removeChildren();
+        };
         BattleSceneUnitOverlay.prototype.getSFXParams = function (duration, triggerStart, triggerEnd) {
             var bounds = this.getSceneBounds();
             return ({
@@ -28059,15 +28070,8 @@ var Rance;
                 this.overlayContainer.x = sceneBounds.width - containerBounds.width;
             }
         };
-        BattleSceneUnitOverlay.prototype.setOverlay = function (overlayFN, unit, duration) {
-            if (duration <= 0) {
-                return;
-            }
-            this.activeUnit = unit;
-            var SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
-            overlayFN(SFXParams);
-        };
         BattleSceneUnitOverlay.prototype.addOverlay = function (overlay) {
+            this.animationIsActive = true;
             this.overlayContainer.addChild(overlay);
             this.setContainerPosition();
         };
@@ -28076,11 +28080,6 @@ var Rance;
                 this.onAnimationFinish();
             }
             this.clearOverlay();
-        };
-        BattleSceneUnitOverlay.prototype.clearOverlay = function () {
-            this.animationIsActive = false;
-            this.activeUnit = null;
-            this.overlayContainer.removeChildren();
         };
         return BattleSceneUnitOverlay;
     }());
@@ -28165,11 +28164,64 @@ var Rance;
                 triggerEnd: props.triggerEnd
             });
         };
-        BattleScene.prototype.setActiveSFX = function () {
+        BattleScene.prototype.getHighestPriorityUnitForSide = function (side) {
+            var units = [
+                this.targetUnit,
+                this.userUnit,
+                this.activeUnit,
+                this.hoveredUnit
+            ];
+            for (var i = 0; i < units.length; i++) {
+                var unit = units[i];
+                if (unit && unit.battleStats.side === side) {
+                    return unit;
+                }
+            }
+            return null;
+        };
+        BattleScene.prototype.setTargetUnit = function (unit) {
+            this.targetUnit = unit;
+            this.updateUnits();
+        };
+        BattleScene.prototype.setUserUnit = function (unit) {
+            this.userUnit = unit;
+            this.updateUnits();
+        };
+        BattleScene.prototype.setActiveUnit = function (unit) {
+            this.activeUnit = unit;
+            this.updateUnits();
+        };
+        BattleScene.prototype.setHoveredUnit = function (unit) {
+            this.hoveredUnit = unit;
+            this.updateUnits();
+        };
+        BattleScene.prototype.updateUnits = function () {
+            // var unitsFinishedUpdating =
+            // {
+            //   side1: false,
+            //   side2: false
+            // };
+            // var checkIfUnitsAreUpdatedFN = function(afterAllUpdated: () => void, propToUpdate: "side1" | "side2")
+            // {
+            //   unitsFinishedUpdating[propToUpdate] = true;
+            //   if (unitsFinishedUpdating[reverseSide(propToUpdate)])
+            //   {
+            //     afterAllUpdated();
+            //   }
+            // }
+            var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
+            this.side1Unit.changeActiveUnit(activeSide1Unit);
+            var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
+            this.side2Unit.changeActiveUnit(activeSide2Unit);
+        };
+        BattleScene.prototype.setActiveSFX = function (SFXTemplate, user, target) {
+            this.userUnit = user;
+            this.targetUnit = target;
         };
         BattleScene.prototype.clearActiveSFX = function () {
             this.activeSFX = null;
             this.clearBattleOverlay();
+            this.clearUnitOverlays();
         };
         BattleScene.prototype.makeBattleOverlay = function () {
             var SFXParams = this.getSFXParams({
@@ -28184,6 +28236,10 @@ var Rance;
         };
         BattleScene.prototype.clearBattleOverlay = function () {
             this.layers.battleOverlay.removeChildren();
+        };
+        BattleScene.prototype.clearUnitOverlays = function () {
+            this.side1Overlay.clearOverlay();
+            this.side2Overlay.clearOverlay();
         };
         BattleScene.prototype.getBattleSceneUnit = function (unit) {
             switch (unit.battleStats.side) {
@@ -28209,48 +28265,6 @@ var Rance;
                     }
             }
         };
-        // UNIT OVERLAY
-        // makeUnitOverlay(unit: Unit)
-        // {
-        //   var side = unit.battleStats.side;
-        //   var SFXParams = this.getSFXParams(
-        //   {
-        //     triggerStart: this.addUnitOverlay.bind(this, side),
-        //     triggerEnd: this.clearUnitOverlay.bind(this, side)
-        //   });
-        //   this.activeSFX.battleOverlay(SFXParams);
-        // }
-        // addUnitOverlay(side: string, overlay: PIXI.DisplayObject)
-        // {
-        //   this.clearUnitOverlay(side);
-        //   if (side === "side1")
-        //   {
-        //     this.layers.side1UnitOverlay.addChild(overlay);
-        //   }
-        //   else if (side === "side2")
-        //   {
-        //     this.layers.side2UnitOverlay.addChild(overlay);
-        //   }
-        //   else
-        //   {
-        //     throw new Error("Invalid side " + side);
-        //   }
-        // }
-        // clearUnitOverlay(side: string)
-        // {
-        //   if (side === "side1")
-        //   {
-        //     this.layers.side1UnitOverlay.removeChildren();
-        //   }
-        //   else if (side === "side2")
-        //   {
-        //     this.layers.side2UnitOverlay.removeChildren();
-        //   }
-        //   else
-        //   {
-        //     throw new Error("Invalid side " + side);
-        //   }
-        // }
         // RENDERING
         BattleScene.prototype.renderOnce = function () {
             this.forceFrame = true;

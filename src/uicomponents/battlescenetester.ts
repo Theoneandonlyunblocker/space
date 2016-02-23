@@ -11,7 +11,6 @@ module Rance
       idGenerator: 0,
       battle: null,
       battleScene: null,
-      deferredClearHover: null,
 
       getInitialState: function()
       {
@@ -123,32 +122,23 @@ module Rance
 
       handleUnitHover: function(unit: Unit)
       {
-        if (this.deferredClearHover)
-        {
-          window.clearTimeout(this.deferredClearHover);
-          this.deferredClearHover = null;
-        }
-
-        this.battleScene.getBattleSceneUnit(unit).enterUnitSprite(unit);
+        this.battleScene.setHoveredUnit(unit);
       },
 
-      handleClearHover: function(unit: Unit)
+      handleClearHover: function()
       {
-        this.battleScene.getBattleSceneUnit(unit).exitUnitSprite(unit);
-        // this.deferredClearHover = window.setTimeout(function()
-        // {
-        //   window.clearTimeout(this.deferredClearHover);
-        //   this.deferredClearHover = null;
-        // }.bind(this), 200);
+        this.battleScene.setHoveredUnit(null);
       },
 
       selectUnit: function(unit: Unit)
       {
-        console.log("select unit " + unit.name);
+        var newSelectedUnit = (this.state.selectedUnit === unit) ? null : unit;
         this.setState(
         {
-          selectedUnit: unit
+          selectedUnit: newSelectedUnit
         });
+
+        this.battleScene.setActiveUnit(newSelectedUnit);
       },
 
       handleTestAbility1: function()

@@ -44,20 +44,22 @@ module Rance
       this.container.addChild(this.spriteContainer);
     }
 
-    changeActiveUnit(unit: Unit)
+    changeActiveUnit(unit: Unit, afterChangedCallback?: () => void)
     {
-      if (!unit)
+      if (!unit && this.activeUnit)
       {
+        this.onFinishExit = afterChangedCallback;
         this.exitUnitSprite();
       }
-      else
+      else if (unit && unit !== this.activeUnit)
       {
+        this.onFinishEnter = afterChangedCallback;
         this.enterUnitSprite(unit);
       }
     }
 
     // enter without animation
-    enterUnitSpriteWithoutAnimation(unit: Unit)
+    private enterUnitSpriteWithoutAnimation(unit: Unit)
     {
       this.setUnit(unit);
       this.setUnitSprite(unit);
@@ -66,13 +68,13 @@ module Rance
     }
 
     // exit without animation
-    exitUnitSpriteWithoutAnimation()
+    private exitUnitSpriteWithoutAnimation()
     {
       this.finishUnitSpriteExit();
     }
 
     // enter with animation
-    enterUnitSprite(unit: Unit)
+    private enterUnitSprite(unit: Unit)
     {
       if (this.unitState === BattleSceneUnitState.stationary)
       {
@@ -101,7 +103,7 @@ module Rance
       // this.startUnitSpriteEnter(unit);
     }
     // exit with animation
-    exitUnitSprite()
+    private exitUnitSprite()
     {
       if (this.unitState === BattleSceneUnitState.entering)
       {

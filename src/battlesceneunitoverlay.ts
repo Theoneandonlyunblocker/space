@@ -33,7 +33,30 @@ module Rance
       this.overlayContainer = new PIXI.Container;
       this.container.addChild(this.overlayContainer);
     }
-    getSFXParams(duration: number,
+    setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number)
+    {
+      if (duration <= 0)
+      {
+        return;
+      }
+      if (this.animationIsActive)
+      {
+        console.warn("Triggered new unit overlay animation without clearing previous one");
+      }
+
+      this.activeUnit = unit;
+      var SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
+
+      overlayFN(SFXParams);
+    }
+    clearOverlay()
+    {
+      this.animationIsActive = false;
+
+      this.activeUnit = null;
+      this.overlayContainer.removeChildren();
+    }
+    private getSFXParams(duration: number,
       triggerStart: (container: PIXI.DisplayObject) => void,
       triggerEnd?: () => void): Templates.SFXParams
     {
@@ -51,7 +74,7 @@ module Rance
         triggerEnd: triggerEnd
       });
     }
-    setContainerPosition()
+    private setContainerPosition()
     {
       var sceneBounds = this.getSceneBounds();
       var shouldLockToRight = this.activeUnit.battleStats.side === "side2";
@@ -64,24 +87,13 @@ module Rance
         this.overlayContainer.x = sceneBounds.width - containerBounds.width;
       }
     }
-    setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number)
+    private addOverlay(overlay: PIXI.DisplayObject)
     {
-      if (duration <= 0)
-      {
-        return;
-      }
-
-      this.activeUnit = unit;
-      var SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
-
-      overlayFN(SFXParams);
-    }
-    addOverlay(overlay: PIXI.DisplayObject)
-    {
+      this.animationIsActive = true;
       this.overlayContainer.addChild(overlay);
       this.setContainerPosition();
     }
-    finishAnimation()
+    private finishAnimation()
     {
       if (this.onAnimationFinish)
       {
@@ -89,13 +101,6 @@ module Rance
       }
 
       this.clearOverlay();
-    }
-    clearOverlay()
-    {
-      this.animationIsActive = false;
-
-      this.activeUnit = null;
-      this.overlayContainer.removeChildren();
     }
   }
 }

@@ -3769,11 +3769,11 @@ declare module Rance {
         constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
         destroy(): void;
         private initLayers();
-        changeActiveUnit(unit: Unit): void;
-        enterUnitSpriteWithoutAnimation(unit: Unit): void;
-        exitUnitSpriteWithoutAnimation(): void;
-        enterUnitSprite(unit: Unit): void;
-        exitUnitSprite(): void;
+        changeActiveUnit(unit: Unit, afterChangedCallback?: () => void): void;
+        private enterUnitSpriteWithoutAnimation(unit);
+        private exitUnitSpriteWithoutAnimation();
+        private enterUnitSprite(unit);
+        private exitUnitSprite();
         private startUnitSpriteEnter(unit);
         private finishUnitSpriteEnter();
         private startUnitSpriteExit();
@@ -3805,12 +3805,12 @@ declare module Rance {
         constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
         destroy(): void;
         private initLayers();
-        getSFXParams(duration: number, triggerStart: (container: PIXI.DisplayObject) => void, triggerEnd?: () => void): Templates.SFXParams;
-        setContainerPosition(): void;
         setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number): void;
-        addOverlay(overlay: PIXI.DisplayObject): void;
-        finishAnimation(): void;
         clearOverlay(): void;
+        private getSFXParams(duration, triggerStart, triggerEnd?);
+        private setContainerPosition();
+        private addOverlay(overlay);
+        private finishAnimation();
     }
 }
 declare module Rance {
@@ -3828,8 +3828,10 @@ declare module Rance {
         side1Overlay: BattleSceneUnitOverlay;
         side2Overlay: BattleSceneUnitOverlay;
         activeSFX: Templates.IBattleSFXTemplate;
-        userUnit: Unit;
         targetUnit: Unit;
+        userUnit: Unit;
+        activeUnit: Unit;
+        hoveredUnit: Unit;
         isPaused: boolean;
         forceFrame: boolean;
         resizeListener: (e: Event) => void;
@@ -3845,11 +3847,18 @@ declare module Rance {
             triggerStart: (container: PIXI.DisplayObject) => void;
             triggerEnd?: () => void;
         }): Templates.SFXParams;
-        setActiveSFX(): void;
+        getHighestPriorityUnitForSide(side: "side1" | "side2"): Unit;
+        setTargetUnit(unit: Unit): void;
+        setUserUnit(unit: Unit): void;
+        setActiveUnit(unit: Unit): void;
+        setHoveredUnit(unit: Unit): void;
+        updateUnits(): void;
+        setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
         clearActiveSFX(): void;
         makeBattleOverlay(): void;
         addBattleOverlay(overlay: PIXI.DisplayObject): void;
         clearBattleOverlay(): void;
+        clearUnitOverlays(): void;
         getBattleSceneUnit(unit: Unit): BattleSceneUnit;
         getBattleSceneUnitOverlay(unit: Unit): BattleSceneUnitOverlay;
         renderOnce(): void;
