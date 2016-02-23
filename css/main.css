@@ -3214,6 +3214,7 @@ ol {
   align-items: center;
 }
 .tutorial-flip-page.disabled {
+  display: none;
   cursor: inherit;
 }
 .tutorial-flip-page-back {
