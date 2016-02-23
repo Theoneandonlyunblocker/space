@@ -109,7 +109,7 @@ module Rance
               {
                 label: props.displayName,
                 id: "options-battle-animation-" + stage,
-                initialValue: Options.battleAnimationTiming[stage],
+                value: Options.battleAnimationTiming[stage],
                 min: props.min,
                 max: props.max,
                 step: props.step,
@@ -275,7 +275,7 @@ module Rance
             min: 0,
             max: 50,
             step: 1,
-            initialValue: Options.display.borderWidth,
+            value: Options.display.borderWidth,
             onChangeFN: function(value: number)
             {
               Options.display.borderWidth = value;

@@ -14405,15 +14405,20 @@ var Rance;
                 onChangeFN: React.PropTypes.func.isRequired,
                 label: React.PropTypes.string.isRequired,
                 id: React.PropTypes.string.isRequired,
-                initialValue: React.PropTypes.number.isRequired,
+                value: React.PropTypes.number.isRequired,
                 min: React.PropTypes.number.isRequired,
                 max: React.PropTypes.number.isRequired,
                 step: React.PropTypes.number.isRequired,
             },
             getInitialState: function () {
                 return ({
-                    value: this.props.initialValue
+                    value: this.props.value
                 });
+            },
+            componentWillReceiveProps: function (newProps) {
+                if (newProps.value !== this.state.value) {
+                    this.setState({ value: newProps.value });
+                }
             },
             triggerOnChangeFN: function () {
                 this.props.onChangeFN(this.state.value);
@@ -14539,7 +14544,7 @@ var Rance;
                         content: UIComponents.OptionsNumericField({
                             label: props.displayName,
                             id: "options-battle-animation-" + stage,
-                            initialValue: Rance.Options.battleAnimationTiming[stage],
+                            value: Rance.Options.battleAnimationTiming[stage],
                             min: props.min,
                             max: props.max,
                             step: props.step,
@@ -14654,7 +14659,7 @@ var Rance;
                         min: 0,
                         max: 50,
                         step: 1,
-                        initialValue: Rance.Options.display.borderWidth,
+                        value: Rance.Options.display.borderWidth,
                         onChangeFN: function (value) {
                             Rance.Options.display.borderWidth = value;
                             Rance.eventManager.dispatchEvent("renderMap");

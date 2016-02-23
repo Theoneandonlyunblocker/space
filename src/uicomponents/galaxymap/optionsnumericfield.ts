@@ -11,7 +11,7 @@ module Rance
         onChangeFN: React.PropTypes.func.isRequired, // (value: number) => void
         label: React.PropTypes.string.isRequired,
         id: React.PropTypes.string.isRequired,
-        initialValue: React.PropTypes.number.isRequired,
+        value: React.PropTypes.number.isRequired,
         min: React.PropTypes.number.isRequired,
         max: React.PropTypes.number.isRequired,
         step: React.PropTypes.number.isRequired,
@@ -21,9 +21,18 @@ module Rance
       {
         return(
         {
-          value: this.props.initialValue
+          value: this.props.value
         });
       },
+
+      componentWillReceiveProps: function(newProps: any)
+      {
+        if (newProps.value !== this.state.value)
+        {
+          this.setState({value: newProps.value});
+        }
+      },
+      
 
       triggerOnChangeFN: function()
       {
