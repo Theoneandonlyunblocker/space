@@ -50,7 +50,7 @@ module Rance
         {
           var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
           unit.lastHealthDrawnAt = unit.currentHealth;
-          unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
+          unitsToDraw = Math.round(lastHealthDrawnAt * 0.04) * (1 / unit.template.maxHealth);
           var heightRatio = 25 / image.height;
           heightRatio = Math.min(heightRatio, 1.25);
           maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
@@ -75,7 +75,8 @@ module Rance
 
         var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
 
-        var desiredHeight = SFXParams.height;
+        var yPadding = Math.min(SFXParams.height * 0.1, 30);
+        var desiredHeight = SFXParams.height - yPadding;
 
         var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
         var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
