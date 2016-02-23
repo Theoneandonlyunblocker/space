@@ -2123,6 +2123,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var OptionsNumericField: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var OptionsList: React.Factory<any>;
     }
 }
@@ -3725,6 +3730,8 @@ declare module Rance {
             before: number;
             effectDuration: number;
             after: number;
+            unitEnter: number;
+            unitExit: number;
         };
         var debugMode: boolean;
         var debugOptions: {
@@ -3754,7 +3761,6 @@ declare module Rance {
             unitOverlay: PIXI.Container;
         };
         activeUnit: Unit;
-        pendingUnit: Unit;
         unitState: BattleSceneUnitState;
         onFinishEnter: () => void;
         onFinishExit: () => void;
@@ -3766,6 +3772,7 @@ declare module Rance {
         constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
         destroy(): void;
         private initLayers();
+        changeActiveUnit(unit: Unit): void;
         enterUnitSpriteWithoutAnimation(unit: Unit): void;
         exitUnitSpriteWithoutAnimation(): void;
         enterUnitSprite(unit: Unit): void;
@@ -3803,7 +3810,6 @@ declare module Rance {
         targetUnit: Unit;
         isPaused: boolean;
         forceFrame: boolean;
-        lastTimeStamp: number;
         resizeListener: (e: Event) => void;
         constructor(pixiContainer: HTMLElement);
         destroy(): void;

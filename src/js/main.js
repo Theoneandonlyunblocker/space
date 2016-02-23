@@ -14395,10 +14395,67 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.OptionsNumericField = React.createClass({
+            displayName: "OptionsNumericField",
+            propTypes: {
+                onChangeFN: React.PropTypes.func.isRequired,
+                label: React.PropTypes.string.isRequired,
+                id: React.PropTypes.string.isRequired,
+                initialValue: React.PropTypes.number.isRequired,
+                min: React.PropTypes.number.isRequired,
+                max: React.PropTypes.number.isRequired,
+                step: React.PropTypes.number.isRequired,
+            },
+            getInitialState: function () {
+                return ({
+                    value: this.props.initialValue
+                });
+            },
+            triggerOnChangeFN: function () {
+                this.props.onChangeFN(this.state.value);
+            },
+            handleChange: function (e) {
+                var target = e.target;
+                var value = parseFloat(target.value);
+                if (!isFinite(value)) {
+                    return;
+                }
+                value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                this.setState({
+                    value: value
+                }, this.triggerOnChangeFN);
+            },
+            render: function () {
+                var inputId = "" + this.props.id + "-input";
+                return (React.DOM.div({
+                    className: "options-numeric-field-container",
+                    id: this.props.id
+                }, React.DOM.input({
+                    className: "options-numeric-field-input",
+                    type: "number",
+                    id: inputId,
+                    value: this.state.value,
+                    min: this.props.min,
+                    max: this.props.max,
+                    step: this.props.step,
+                    onChange: this.handleChange
+                }, null), React.DOM.label({
+                    className: "options-numeric-field-label",
+                    htmlFor: inputId
+                }, this.props.label)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="../notifications/notificationfilterbutton.ts" />
 /// <reference path="optionsgroup.ts"/>
 /// <reference path="optionscheckbox.ts" />
+/// <reference path="optionsnumericfield.ts" />
 /// <reference path="../../notificationlog.ts" />
 var Rance;
 (function (Rance) {
@@ -14408,37 +14465,6 @@ var Rance;
             displayName: "OptionsList",
             propTypes: {
                 log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
-            },
-            makeBattleAnimationOption: function (stage) {
-                if (!isFinite(Rance.Options.battleAnimationTiming[stage])) {
-                    console.warn("Invalid option", stage);
-                    return;
-                }
-                var onChangeFN = function (e) {
-                    var target = e.target;
-                    var value = parseFloat(target.value);
-                    if (!isFinite(value)) {
-                        return;
-                    }
-                    value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
-                    Rance.Options.battleAnimationTiming[stage] = value;
-                    this.forceUpdate();
-                }.bind(this);
-                var key = "battle-animation-option-" + stage;
-                return ({
-                    key: stage,
-                    content: React.DOM.div({}, React.DOM.input({
-                        type: "number",
-                        id: key,
-                        value: Rance.Options.battleAnimationTiming[stage],
-                        min: 0,
-                        max: 10,
-                        step: 0.1,
-                        onChange: onChangeFN
-                    }), React.DOM.label({
-                        htmlFor: key
-                    }, stage))
-                });
             },
             handleResetAllOptions: function () {
                 var resetFN = function () {
@@ -14468,17 +14494,69 @@ var Rance;
                 var allOptions = [];
                 // battle animation timing
                 var battleAnimationOptions = [];
-                for (var stage in Rance.Options.battleAnimationTiming) {
-                    battleAnimationOptions.push(this.makeBattleAnimationOption(stage));
+                var battleAnimationStages = [
+                    {
+                        stage: "before",
+                        displayName: "Before ability",
+                        min: 0,
+                        max: 10,
+                        step: 0.1
+                    },
+                    {
+                        stage: "effectDuration",
+                        displayName: "Ability effect duration",
+                        min: 0,
+                        max: 10,
+                        step: 0.1
+                    },
+                    {
+                        stage: "after",
+                        displayName: "After ability",
+                        min: 0,
+                        max: 10,
+                        step: 0.1
+                    },
+                    {
+                        stage: "unitEnter",
+                        displayName: "Unit enter (ms)",
+                        min: 0,
+                        max: 1000,
+                        step: 10
+                    },
+                    {
+                        stage: "unitExit",
+                        displayName: "Unit exit (ms)",
+                        min: 0,
+                        max: 1000,
+                        step: 10
+                    }
+                ];
+                for (var i = 0; i < battleAnimationStages.length; i++) {
+                    var props = battleAnimationStages[i];
+                    var stage = props.stage;
+                    battleAnimationOptions.push({
+                        key: stage,
+                        content: UIComponents.OptionsNumericField({
+                            label: props.displayName,
+                            id: "options-battle-animation-" + stage,
+                            initialValue: Rance.Options.battleAnimationTiming[stage],
+                            min: props.min,
+                            max: props.max,
+                            step: props.step,
+                            onChangeFN: function (value) {
+                                Rance.Options.battleAnimationTiming[stage] = value;
+                            }
+                        })
+                    });
                 }
                 allOptions.push(UIComponents.OptionsGroup({
+                    key: "battleAnimationOptions",
                     header: "Battle animation timing",
                     options: battleAnimationOptions,
                     resetFN: function () {
                         Rance.extendObject(Rance.defaultOptions.battleAnimationTiming, Rance.Options.battleAnimationTiming);
                         this.forceUpdate();
-                    }.bind(this),
-                    key: "battleAnimationOptions"
+                    }.bind(this)
                 }));
                 var debugOptions = [];
                 debugOptions.push({
@@ -14519,6 +14597,7 @@ var Rance;
                     });
                 }
                 allOptions.push(UIComponents.OptionsGroup({
+                    key: "debug",
                     header: "Debug",
                     options: debugOptions,
                     resetFN: function () {
@@ -14528,8 +14607,7 @@ var Rance;
                             this.forceUpdate();
                             app.reactUI.render();
                         }
-                    }.bind(this),
-                    key: "debug"
+                    }.bind(this)
                 }));
                 var uiOptions = [];
                 uiOptions.push({
@@ -14559,48 +14637,39 @@ var Rance;
                     }, "Reset tutorials")
                 });
                 allOptions.push(UIComponents.OptionsGroup({
+                    key: "ui",
                     header: "UI",
                     options: uiOptions,
                     resetFN: function () {
                         Rance.extendObject(Rance.defaultOptions.ui, Rance.Options.ui);
                         this.forceUpdate();
-                    }.bind(this),
-                    key: "ui"
+                    }.bind(this)
                 }));
                 var displayOptions = [];
                 displayOptions.push({
                     key: "borderWidth",
-                    content: React.DOM.div({}, React.DOM.input({
-                        type: "number",
-                        id: "border-width-input",
-                        value: Rance.Options.display.borderWidth,
+                    content: UIComponents.OptionsNumericField({
+                        label: "Border width",
+                        id: "options-border-width",
                         min: 0,
                         max: 50,
                         step: 1,
-                        onChange: function (e) {
-                            var target = e.target;
-                            var value = parseFloat(target.value);
-                            if (!isFinite(value)) {
-                                return;
-                            }
-                            value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                        initialValue: Rance.Options.display.borderWidth,
+                        onChangeFN: function (value) {
                             Rance.Options.display.borderWidth = value;
                             Rance.eventManager.dispatchEvent("renderMap");
-                            this.forceUpdate();
-                        }.bind(this)
-                    }), React.DOM.label({
-                        htmlFor: "border-width-input"
-                    }, "Border width"))
+                        }
+                    })
                 });
                 allOptions.push(UIComponents.OptionsGroup({
+                    key: "display",
                     header: "Display",
                     options: displayOptions,
                     resetFN: function () {
                         Rance.extendObject(Rance.defaultOptions.display, Rance.Options.display);
                         Rance.eventManager.dispatchEvent("renderMap");
                         this.forceUpdate();
-                    }.bind(this),
-                    key: "display"
+                    }.bind(this)
                 }));
                 return (React.DOM.div({ className: "options" }, UIComponents.PopupManager({
                     ref: "popupManager",
@@ -27621,7 +27690,11 @@ var Rance;
             parsedData = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
         }
         if (parsedData) {
-            Rance.Options = Rance.extendObject(parsedData.options, Rance.Options, true);
+            for (var key in parsedData.options) {
+                if (Rance.Options[key] !== undefined) {
+                    Rance.Options[key] === Rance.extendObject(parsedData.options[key], Rance.Options[key], true);
+                }
+            }
         }
     }
     Rance.loadOptions = loadOptions;
@@ -27630,7 +27703,9 @@ var Rance;
         defaultOptions.battleAnimationTiming = {
             before: 1,
             effectDuration: 1,
-            after: 1
+            after: 1,
+            unitEnter: 200,
+            unitExit: 100
         };
         defaultOptions.debugMode = false;
         defaultOptions.debugOptions = {
@@ -27672,6 +27747,14 @@ var Rance;
                 };
             this.container.addChild(this.layers.unitSprite);
             this.container.addChild(this.layers.unitOverlay);
+        };
+        BattleSceneUnit.prototype.changeActiveUnit = function (unit) {
+            if (!unit) {
+                this.exitUnitSprite();
+            }
+            else {
+                this.enterUnitSprite(unit);
+            }
         };
         // enter without animation
         BattleSceneUnit.prototype.enterUnitSpriteWithoutAnimation = function (unit) {
@@ -27725,10 +27808,15 @@ var Rance;
             }
         };
         BattleSceneUnit.prototype.startUnitSpriteEnter = function (unit) {
+            var enterAnimationDuration = Rance.Options.battleAnimationTiming.unitEnter;
+            if (enterAnimationDuration <= 0) {
+                this.enterUnitSpriteWithoutAnimation(unit);
+                return;
+            }
             this.setUnit(unit);
             this.setUnitSprite(unit);
             this.unitState = BattleSceneUnitState.entering;
-            this.tween = this.makeEnterExitTween("enter", 200, this.finishUnitSpriteEnter.bind(this));
+            this.tween = this.makeEnterExitTween("enter", enterAnimationDuration, this.finishUnitSpriteEnter.bind(this));
             this.tween.start();
         };
         BattleSceneUnit.prototype.finishUnitSpriteEnter = function () {
@@ -27740,8 +27828,13 @@ var Rance;
             }
         };
         BattleSceneUnit.prototype.startUnitSpriteExit = function () {
+            var exitAnimationDuration = Rance.Options.battleAnimationTiming.unitExit;
+            if (exitAnimationDuration <= 0) {
+                this.exitUnitSpriteWithoutAnimation();
+                return;
+            }
             this.unitState = BattleSceneUnitState.exiting;
-            this.tween = this.makeEnterExitTween("exit", 100, this.finishUnitSpriteExit.bind(this));
+            this.tween = this.makeEnterExitTween("exit", exitAnimationDuration, this.finishUnitSpriteExit.bind(this));
             this.tween.start();
         };
         BattleSceneUnit.prototype.finishUnitSpriteExit = function () {
@@ -27858,7 +27951,6 @@ var Rance;
         function BattleScene(pixiContainer) {
             this.isPaused = false;
             this.forceFrame = false;
-            this.lastTimeStamp = performance.now();
             this.pixiContainer = pixiContainer;
             this.container = new PIXI.Container();
             var pixiContainerStyle = window.getComputedStyle(this.pixiContainer);
@@ -28010,7 +28102,6 @@ var Rance;
         BattleScene.prototype.resume = function () {
             this.isPaused = false;
             this.forceFrame = false;
-            this.lastTimeStamp = performance.now();
             this.render();
         };
         BattleScene.prototype.render = function (timeStamp) {
