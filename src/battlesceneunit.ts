@@ -109,7 +109,7 @@ module Rance
       }
       else if (this.unitState === BattleSceneUnitState.exiting)
       {
-
+        this.onStateChange = null;
       }
       else
       {
@@ -124,12 +124,7 @@ module Rance
       this.setUnitSprite(unit);
       this.unitState = BattleSceneUnitState.entering;
 
-      var self = this;
-      // this.tween = this.makeEnterExitTween("enter", 500, function()
-      // {
-      //   self.finishUnitSpriteEnter();
-      // });
-      this.tween = this.makeEnterExitTween("enter", 500, this.finishUnitSpriteEnter.bind(this));
+      this.tween = this.makeEnterExitTween("enter", 200, this.finishUnitSpriteEnter.bind(this));
       this.tween.start();
     }
     private finishUnitSpriteEnter()
@@ -141,13 +136,7 @@ module Rance
     {
       this.unitState = BattleSceneUnitState.exiting;
       
-
-      var self = this;
-      // this.tween = this.makeEnterExitTween("exit", 500, function()
-      // {
-      //   self.finishUnitSpriteExit();
-      // });
-      this.tween = this.makeEnterExitTween("exit", 500, this.finishUnitSpriteExit.bind(this));
+      this.tween = this.makeEnterExitTween("exit", 100, this.finishUnitSpriteExit.bind(this));
       this.tween.start();
     }
     private finishUnitSpriteExit()
