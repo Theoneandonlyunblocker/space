@@ -23,14 +23,19 @@ module Rance
       {
         var resetFN = function()
         {
-          var shouldToggleDebug = false;
-          if (Options.debugMode !== defaultOptions.debugMode) shouldToggleDebug = true;
+          var shouldToggleDebug = (Options.debugMode !== defaultOptions.debugMode);
+          var shouldRenderMap = Options.display.borderWidth !== defaultOptions.display.borderWidth;
+
           Options = extendObject(defaultOptions);
           this.forceUpdate();
 
           if (shouldToggleDebug)
           {
             app.reactUI.render();
+          }
+          if (shouldRenderMap)
+          {
+            eventManager.dispatchEvent("renderMap");
           }
         }.bind(this);
 

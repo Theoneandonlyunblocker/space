@@ -14473,13 +14473,15 @@ var Rance;
             },
             handleResetAllOptions: function () {
                 var resetFN = function () {
-                    var shouldToggleDebug = false;
-                    if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode)
-                        shouldToggleDebug = true;
+                    var shouldToggleDebug = (Rance.Options.debugMode !== Rance.defaultOptions.debugMode);
+                    var shouldRenderMap = Rance.Options.display.borderWidth !== Rance.defaultOptions.display.borderWidth;
                     Rance.Options = Rance.extendObject(Rance.defaultOptions);
                     this.forceUpdate();
                     if (shouldToggleDebug) {
                         app.reactUI.render();
+                    }
+                    if (shouldRenderMap) {
+                        Rance.eventManager.dispatchEvent("renderMap");
                     }
                 }.bind(this);
                 var confirmProps = {
