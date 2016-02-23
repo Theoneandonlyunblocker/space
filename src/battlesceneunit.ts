@@ -16,11 +16,8 @@ module Rance
   {
     container: PIXI.Container;
     renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-    layers:
-    {
-      unitSprite: PIXI.Container;
-      unitOverlay: PIXI.Container;
-    };
+
+    spriteContainer: PIXI.Container;
 
     activeUnit: Unit;
     
@@ -43,14 +40,8 @@ module Rance
     }
     private initLayers()
     {
-      this.layers =
-      {
-        unitSprite: new PIXI.Container,
-        unitOverlay: new PIXI.Container
-      }
-
-      this.container.addChild(this.layers.unitSprite);
-      this.container.addChild(this.layers.unitOverlay);
+      this.spriteContainer = new PIXI.Container;
+      this.container.addChild(this.spriteContainer);
     }
 
     changeActiveUnit(unit: Unit)
@@ -208,32 +199,29 @@ module Rance
         triggerEnd: props.triggerEnd
       });
     }
-    private setContainersPosition(positionOffScreen: boolean = false)
+    private setContainerPosition(positionOffScreen: boolean = false)
     {
       // TODO battle scene. This & unit drawing FN rely on overly fiddly positioning.
       // This function might not work properly with other drawing functions.
       var sceneBounds = this.getSceneBounds();
       var shouldReverse = this.activeUnit.battleStats.side === "side1";
-      
-      [this.layers.unitSprite, this.layers.unitOverlay].forEach(
-        function(container: PIXI.Container)
+      var container = this.spriteContainer;
+
+      var containerBounds = container.getLocalBounds();
+      var xPadding = 30;
+      var yPadding = 40;
+
+      container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
+
+      if (shouldReverse)
       {
-        var containerBounds = container.getLocalBounds();
-        var xPadding = 30;
-        var yPadding = 40;
-
-        container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
-
-        if (shouldReverse)
-        {
-          container.scale.x = -1;
-          container.x = Math.round(containerBounds.width + containerBounds.x + xPadding);
-        }
-        else
-        {
-          container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x - xPadding);
-        }
-      });
+        container.scale.x = -1;
+        container.x = Math.round(containerBounds.width + containerBounds.x + xPadding);
+      }
+      else
+      {
+        container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x - xPadding);
+      }
     }
     private setUnit(unit: Unit)
     {
@@ -253,12 +241,12 @@ module Rance
     }
     private addUnitSprite(sprite: PIXI.DisplayObject)
     {
-      this.layers.unitSprite.addChild(sprite);
-      this.setContainersPosition();
+      this.spriteContainer.addChild(sprite);
+      this.setContainerPosition();
     }
     private clearUnitSprite()
     {
-      this.layers.unitSprite.removeChildren();
+      this.spriteContainer.removeChildren();
     }
     private setUnitSprite(unit: Unit)
     {
@@ -284,7 +272,7 @@ module Rance
     private makeEnterExitTween(direction: "enter" | "exit", duration: number, onComplete: () => void)
     {
       var side = this.activeUnit.battleStats.side;
-      var container = this.layers.unitSprite;
+      var container = this.spriteContainer;
       var bounds = container.getBounds();
 
       var distanceToMove = bounds.width * 1.25;

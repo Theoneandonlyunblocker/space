@@ -13,6 +13,14 @@ module Rance
       battleScene: null,
       deferredClearHover: null,
 
+      getInitialState: function()
+      {
+        return(
+        {
+          selectedUnit: null
+        });
+      },
+
       componentWillMount: function()
       {
         var side1Units: Unit[] = [];
@@ -134,6 +142,65 @@ module Rance
         // }.bind(this), 200);
       },
 
+      selectUnit: function(unit: Unit)
+      {
+        console.log("select unit " + unit.name);
+        this.setState(
+        {
+          selectedUnit: unit
+        });
+      },
+
+      handleTestAbility1: function()
+      {
+        var overlayTestFN = function(params: Templates.SFXParams)
+        {
+          var renderTexture = new PIXI.RenderTexture(params.renderer, params.width, params.height);
+          var sprite = new PIXI.Sprite(renderTexture);
+          var container = new PIXI.Container();
+
+          var gfx = new PIXI.Graphics();
+          gfx.beginFill(0xFF0000);
+          gfx.drawRect(0, 0, 200, 200);
+          gfx.endFill();
+          container.addChild(gfx);
+
+          var alphaPerMillisecond = 1 / params.duration;
+
+          var startTime = Date.now();
+          var endTime = startTime + params.duration;
+          var lastTime = startTime;
+
+          function animate()
+          {
+            var currentTime = Date.now();
+            var elapsedTime = currentTime - lastTime;
+            lastTime = currentTime;
+
+            renderTexture.clear();
+            renderTexture.render(container);
+
+            if (currentTime < endTime)
+            {
+              gfx.alpha -= alphaPerMillisecond * elapsedTime;
+              window.requestAnimationFrame(animate);
+            }
+            else
+            {
+              console.log("trigger overlayTest end");
+              params.triggerEnd();
+            }
+          }
+
+          console.log("trigger overlayTest start");
+          params.triggerStart(container);
+          animate();
+        }
+
+        var overlay = this.battleScene.getBattleSceneUnitOverlay(this.state.selectedUnit);
+        overlay.setOverlay(overlayTestFN, this.state.selectedUnit, 2000);
+      },
+
       makeUnitElements: function(units: Unit[])
       {
         var unitElements: ReactDOMPlaceHolder[] = [];
@@ -141,12 +208,22 @@ module Rance
         for (var i = 0; i < units.length; i++)
         {
           var unit = units[i];
+          var style: any = null;
+          if (unit === this.state.selectedUnit)
+          {
+            style =
+            {
+              backgroundColor: "yellow"
+            }
+          }
           unitElements.push(React.DOM.div(
           {
             className: "battle-scene-test-controls-units-unit",
             onMouseEnter: this.handleUnitHover.bind(this, unit),
             onMouseLeave: this.handleClearHover.bind(this, unit),
-            key: "" + unit.id
+            onClick: this.selectUnit.bind(this, unit),
+            key: "" + unit.id,
+            style: style
           },
             unit.name
           ))
@@ -195,6 +272,14 @@ module Rance
                 },
                   side2UnitElements
                 )
+              ),
+              React.DOM.button(
+              {
+                className: "battle-scene-test-ability1",
+                onClick: this.handleTestAbility1,
+                disabled: !this.state.selectedUnit
+              },
+                "test ability 1"
               )
             )
           )

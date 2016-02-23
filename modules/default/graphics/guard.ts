@@ -109,7 +109,7 @@ module Rance
             }
           }
 
-          props.triggerStart(container);
+          props.triggerStart(sprite);
 
           var startTime = Date.now();
           animate();

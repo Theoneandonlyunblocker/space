@@ -59,7 +59,7 @@ module Rance
           {
             var currentTime = Date.now();
             var elapsedTime = currentTime - lastTime;
-            lastTime = Date.now();
+            lastTime = currentTime;
 
             if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime)
             {

@@ -4,6 +4,7 @@
 
 /// <reference path="unit.ts" />
 /// <reference path="battlesceneunit.ts" />
+/// <reference path="battlesceneunitoverlay.ts" />
 
 module Rance
 {
@@ -22,6 +23,9 @@ module Rance
 
     side1Unit: BattleSceneUnit;
     side2Unit: BattleSceneUnit;
+
+    side1Overlay: BattleSceneUnitOverlay;
+    side2Overlay: BattleSceneUnitOverlay;
 
     activeSFX: Templates.IBattleSFXTemplate;
     userUnit: Unit;
@@ -83,8 +87,11 @@ module Rance
 
       this.side1Unit = new BattleSceneUnit(this.layers.side1Container, this.renderer);
       this.side2Unit = new BattleSceneUnit(this.layers.side2Container, this.renderer);
-
       this.side1Unit.getSceneBounds = this.side2Unit.getSceneBounds = this.getSceneBounds;
+
+      this.side1Overlay = new BattleSceneUnitOverlay(this.layers.side1Container, this.renderer);
+      this.side2Overlay = new BattleSceneUnitOverlay(this.layers.side2Container, this.renderer);
+      this.side1Overlay.getSceneBounds = this.side2Overlay.getSceneBounds = this.getSceneBounds;
 
       this.container.addChild(this.layers.side1Container);
       this.container.addChild(this.layers.side2Container);
@@ -166,6 +173,20 @@ module Rance
         case "side2":
         {
           return this.side2Unit;
+        }
+      }
+    }
+    getBattleSceneUnitOverlay(unit: Unit): BattleSceneUnitOverlay
+    {
+      switch (unit.battleStats.side)
+      {
+        case "side1":
+        {
+          return this.side1Overlay;
+        }
+        case "side2":
+        {
+          return this.side2Overlay;
         }
       }
     }

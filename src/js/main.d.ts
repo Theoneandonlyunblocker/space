@@ -3756,10 +3756,7 @@ declare module Rance {
     class BattleSceneUnit {
         container: PIXI.Container;
         renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-        layers: {
-            unitSprite: PIXI.Container;
-            unitOverlay: PIXI.Container;
-        };
+        spriteContainer: PIXI.Container;
         activeUnit: Unit;
         unitState: BattleSceneUnitState;
         onFinishEnter: () => void;
@@ -3782,7 +3779,7 @@ declare module Rance {
         private startUnitSpriteExit();
         private finishUnitSpriteExit();
         private getSFXParams(props);
-        private setContainersPosition(positionOffScreen?);
+        private setContainerPosition(positionOffScreen?);
         private setUnit(unit);
         private clearUnit();
         private makeUnitSprite(unit, SFXParams);
@@ -3791,6 +3788,29 @@ declare module Rance {
         private setUnitSprite(unit);
         private clearTween();
         private makeEnterExitTween(direction, duration, onComplete);
+    }
+}
+declare module Rance {
+    class BattleSceneUnitOverlay {
+        container: PIXI.Container;
+        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+        overlayContainer: PIXI.Container;
+        activeUnit: Unit;
+        getSceneBounds: () => {
+            width: number;
+            height: number;
+        };
+        animationIsActive: boolean;
+        onAnimationFinish: () => void;
+        constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
+        destroy(): void;
+        private initLayers();
+        getSFXParams(duration: number, triggerStart: (container: PIXI.DisplayObject) => void, triggerEnd?: () => void): Templates.SFXParams;
+        setContainerPosition(): void;
+        setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number): void;
+        addOverlay(overlay: PIXI.DisplayObject): void;
+        finishAnimation(): void;
+        clearOverlay(): void;
     }
 }
 declare module Rance {
@@ -3805,6 +3825,8 @@ declare module Rance {
         };
         side1Unit: BattleSceneUnit;
         side2Unit: BattleSceneUnit;
+        side1Overlay: BattleSceneUnitOverlay;
+        side2Overlay: BattleSceneUnitOverlay;
         activeSFX: Templates.IBattleSFXTemplate;
         userUnit: Unit;
         targetUnit: Unit;
@@ -3829,6 +3851,7 @@ declare module Rance {
         addBattleOverlay(overlay: PIXI.DisplayObject): void;
         clearBattleOverlay(): void;
         getBattleSceneUnit(unit: Unit): BattleSceneUnit;
+        getBattleSceneUnitOverlay(unit: Unit): BattleSceneUnitOverlay;
         renderOnce(): void;
         pause(): void;
         resume(): void;
