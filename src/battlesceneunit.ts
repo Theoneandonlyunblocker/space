@@ -26,7 +26,8 @@ module Rance
     pendingUnit: Unit;
     
     unitState: BattleSceneUnitState;
-    onStateChange: () => void;
+    onFinishEnter: () => void;
+    onFinishExit: () => void;
     tween: TWEEN.Tween;
 
     getSceneBounds: () => {width: number; height: number};
@@ -58,13 +59,14 @@ module Rance
     {
       this.setUnit(unit);
       this.setUnitSprite(unit);
+
+      this.finishUnitSpriteEnter();
     }
 
     // exit without animation
-    exitUnitSpriteWithoutAnimation(unit: Unit)
+    exitUnitSpriteWithoutAnimation()
     {
-      this.clearUnit();
-      this.clearUnitSprite();
+      this.finishUnitSpriteExit();
     }
 
     // enter with animation
@@ -75,14 +77,14 @@ module Rance
         // trigger exit
         // on exit finish:
         //    trigger enter
-        this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
+        this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
         this.exitUnitSprite();
       }
       else if (this.unitState === BattleSceneUnitState.exiting)
       {
         // on exit finish:
         //    trigger enter
-        this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
+        this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
       }
       else
       {
@@ -109,7 +111,7 @@ module Rance
       }
       else if (this.unitState === BattleSceneUnitState.exiting)
       {
-        this.onStateChange = null;
+        this.onFinishExit = null;
       }
       else
       {
@@ -131,6 +133,12 @@ module Rance
     {
       this.unitState = BattleSceneUnitState.stationary;
       this.clearTween();
+
+      if (this.onFinishEnter)
+      {
+        this.onFinishEnter();
+        this.onFinishEnter = null;
+      }
     }
     private startUnitSpriteExit()
     {
@@ -144,10 +152,10 @@ module Rance
       this.clearUnit();
       this.clearUnitSprite();
 
-      if (this.onStateChange)
+      if (this.onFinishExit)
       {
-        this.onStateChange();
-        this.onStateChange = null;
+        this.onFinishExit();
+        this.onFinishExit = null;
       }
     }
 
@@ -235,7 +243,6 @@ module Rance
       });
 
       this.makeUnitSprite(unit, SFXParams);
-      this.unitState = BattleSceneUnitState.stationary;
     }
 
     private clearTween()

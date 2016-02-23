@@ -20039,13 +20039,12 @@ var Rance;
                 this.battleScene.getBattleSceneUnit(unit).enterUnitSprite(unit);
             },
             handleClearHover: function (unit) {
-                console.log("setup clear hover");
-                this.deferredClearHover = window.setTimeout(function () {
-                    console.log("exec clear hover");
-                    this.battleScene.getBattleSceneUnit(unit).exitUnitSprite(unit);
-                    window.clearTimeout(this.deferredClearHover);
-                    this.deferredClearHover = null;
-                }.bind(this), 200);
+                this.battleScene.getBattleSceneUnit(unit).exitUnitSprite(unit);
+                // this.deferredClearHover = window.setTimeout(function()
+                // {
+                //   window.clearTimeout(this.deferredClearHover);
+                //   this.deferredClearHover = null;
+                // }.bind(this), 200);
             },
             makeUnitElements: function (units) {
                 var unitElements = [];
@@ -25061,7 +25060,7 @@ var Rance;
                 else {
                     var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
                     unit.lastHealthDrawnAt = unit.currentHealth;
-                    unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
+                    unitsToDraw = Math.round(lastHealthDrawnAt * 0.04) * (1 / unit.template.maxHealth);
                     var heightRatio = 25 / image.height;
                     heightRatio = Math.min(heightRatio, 1.25);
                     maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
@@ -25079,7 +25078,8 @@ var Rance;
                     0, sA, cA
                 ];
                 var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
-                var desiredHeight = SFXParams.height;
+                var yPadding = Math.min(SFXParams.height * 0.1, 30);
+                var desiredHeight = SFXParams.height - yPadding;
                 var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
                 var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
                 zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
@@ -27677,11 +27677,11 @@ var Rance;
         BattleSceneUnit.prototype.enterUnitSpriteWithoutAnimation = function (unit) {
             this.setUnit(unit);
             this.setUnitSprite(unit);
+            this.finishUnitSpriteEnter();
         };
         // exit without animation
-        BattleSceneUnit.prototype.exitUnitSpriteWithoutAnimation = function (unit) {
-            this.clearUnit();
-            this.clearUnitSprite();
+        BattleSceneUnit.prototype.exitUnitSpriteWithoutAnimation = function () {
+            this.finishUnitSpriteExit();
         };
         // enter with animation
         BattleSceneUnit.prototype.enterUnitSprite = function (unit) {
@@ -27689,13 +27689,13 @@ var Rance;
                 // trigger exit
                 // on exit finish:
                 //    trigger enter
-                this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
+                this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
                 this.exitUnitSprite();
             }
             else if (this.unitState === BattleSceneUnitState.exiting) {
                 // on exit finish:
                 //    trigger enter
-                this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
+                this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
             }
             else {
                 // clear
@@ -27717,6 +27717,7 @@ var Rance;
                 this.startUnitSpriteExit();
             }
             else if (this.unitState === BattleSceneUnitState.exiting) {
+                this.onFinishExit = null;
             }
             else {
                 console.warn("called exitUnitSprite with unintended animation state " +
@@ -27727,34 +27728,28 @@ var Rance;
             this.setUnit(unit);
             this.setUnitSprite(unit);
             this.unitState = BattleSceneUnitState.entering;
-            var self = this;
-            // this.tween = this.makeEnterExitTween("enter", 500, function()
-            // {
-            //   self.finishUnitSpriteEnter();
-            // });
-            this.tween = this.makeEnterExitTween("enter", 500, this.finishUnitSpriteEnter.bind(this));
+            this.tween = this.makeEnterExitTween("enter", 200, this.finishUnitSpriteEnter.bind(this));
             this.tween.start();
         };
         BattleSceneUnit.prototype.finishUnitSpriteEnter = function () {
             this.unitState = BattleSceneUnitState.stationary;
             this.clearTween();
+            if (this.onFinishEnter) {
+                this.onFinishEnter();
+                this.onFinishEnter = null;
+            }
         };
         BattleSceneUnit.prototype.startUnitSpriteExit = function () {
             this.unitState = BattleSceneUnitState.exiting;
-            var self = this;
-            // this.tween = this.makeEnterExitTween("exit", 500, function()
-            // {
-            //   self.finishUnitSpriteExit();
-            // });
-            this.tween = this.makeEnterExitTween("exit", 500, this.finishUnitSpriteExit.bind(this));
+            this.tween = this.makeEnterExitTween("exit", 100, this.finishUnitSpriteExit.bind(this));
             this.tween.start();
         };
         BattleSceneUnit.prototype.finishUnitSpriteExit = function () {
             this.clearUnit();
             this.clearUnitSprite();
-            if (this.onStateChange) {
-                this.onStateChange();
-                this.onStateChange = null;
+            if (this.onFinishExit) {
+                this.onFinishExit();
+                this.onFinishExit = null;
             }
         };
         BattleSceneUnit.prototype.getSFXParams = function (props) {
@@ -27816,7 +27811,6 @@ var Rance;
                 triggerStart: this.addUnitSprite.bind(this)
             });
             this.makeUnitSprite(unit, SFXParams);
-            this.unitState = BattleSceneUnitState.stationary;
         };
         BattleSceneUnit.prototype.clearTween = function () {
             if (this.tween) {

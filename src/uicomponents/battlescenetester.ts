@@ -126,14 +126,12 @@ module Rance
 
       handleClearHover: function(unit: Unit)
       {
-        console.log("setup clear hover");
-        this.deferredClearHover = window.setTimeout(function()
-        {
-          console.log("exec clear hover");
-          this.battleScene.getBattleSceneUnit(unit).exitUnitSprite(unit);
-          window.clearTimeout(this.deferredClearHover);
-          this.deferredClearHover = null;
-        }.bind(this), 200);
+        this.battleScene.getBattleSceneUnit(unit).exitUnitSprite(unit);
+        // this.deferredClearHover = window.setTimeout(function()
+        // {
+        //   window.clearTimeout(this.deferredClearHover);
+        //   this.deferredClearHover = null;
+        // }.bind(this), 200);
       },
 
       makeUnitElements: function(units: Unit[])

@@ -3756,7 +3756,8 @@ declare module Rance {
         activeUnit: Unit;
         pendingUnit: Unit;
         unitState: BattleSceneUnitState;
-        onStateChange: () => void;
+        onFinishEnter: () => void;
+        onFinishExit: () => void;
         tween: TWEEN.Tween;
         getSceneBounds: () => {
             width: number;
@@ -3766,7 +3767,7 @@ declare module Rance {
         destroy(): void;
         private initLayers();
         enterUnitSpriteWithoutAnimation(unit: Unit): void;
-        exitUnitSpriteWithoutAnimation(unit: Unit): void;
+        exitUnitSpriteWithoutAnimation(): void;
         enterUnitSprite(unit: Unit): void;
         exitUnitSprite(): void;
         private startUnitSpriteEnter(unit);
