@@ -51,7 +51,9 @@ module Rance
             {
               width: 600,
               height: 350
-            }
+            },
+            minWidth: 300,
+            minHeight: 250
           }
         });
       },
