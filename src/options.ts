@@ -30,7 +30,13 @@ module Rance
     
     if (parsedData)
     {
-      Rance.Options = extendObject(parsedData.options, Rance.Options, true);
+      for (var key in parsedData.options)
+      {
+        if (Rance.Options[key] !== undefined)
+        {
+          Rance.Options[key] === extendObject(parsedData.options[key], Rance.Options[key], true);
+        }
+      }
     }
   }
   
