@@ -5,21 +5,41 @@ module Rance
     export var OptionsGroup = React.createClass(
     {
       displayName: "OptionsGroup",
+
+      getInitialState: function()
+      {
+        return(
+        {
+          isCollapsed: false
+        });
+      },
+      
+      toggleCollapse: function()
+      {
+        this.setState(
+        {
+          isCollapsed: !this.state.isCollapsed
+        });
+      },
+
       render: function()
       {
         var rows: ReactDOMPlaceHolder[] = [];
 
-        for (var i = 0; i < this.props.options.length; i++)
+        if (!this.state.isCollapsed)
         {
-          var option = this.props.options[i];
-
-          rows.push(React.DOM.div(
+          for (var i = 0; i < this.props.options.length; i++)
           {
-            className: "option-container",
-            key: option.key
-          },
-            option.content
-          ));
+            var option = this.props.options[i];
+
+            rows.push(React.DOM.div(
+            {
+              className: "option-container",
+              key: option.key
+            },
+              option.content
+            ));
+          }
         }
 
         var resetButton: ReactDOMPlaceHolder = null;
@@ -33,8 +53,17 @@ module Rance
         }
 
         var header = this.props.header || resetButton ?
-          React.DOM.div({className: "option-group-header"},
-            this.props.header,
+          React.DOM.div(
+          {
+            className: "option-group-header"
+          },
+            React.DOM.div(
+            {
+              className: "option-group-header-title collapsible" + (this.state.isCollapsed ? " collapsed" : ""),
+              onClick: this.toggleCollapse
+            },
+              this.props.header
+            ),
             resetButton
           ) :
           null

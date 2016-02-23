@@ -3445,6 +3445,11 @@ ol {
 .option-group-header button {
   font-size: initial;
 }
+.option-group-header-title::after {
+  position: relative !important;
+  right: auto !important;
+  margin-left: 1em;
+}
 .reset-options-button {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
