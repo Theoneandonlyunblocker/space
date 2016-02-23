@@ -70,18 +70,16 @@ module Rance
     // enter with animation
     enterUnitSprite(unit: Unit)
     {
-      console.log("enter");
       if (this.unitState === BattleSceneUnitState.stationary)
       {
         // trigger exit
         // on exit finish:
         //    trigger enter
-        this.exitUnitSprite(unit);
         this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
+        this.exitUnitSprite();
       }
       else if (this.unitState === BattleSceneUnitState.exiting)
       {
-        // wait for exit
         // on exit finish:
         //    trigger enter
         this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
@@ -94,16 +92,30 @@ module Rance
         this.clearUnitSprite();
         this.startUnitSpriteEnter(unit);
       }
+      // this.clearUnit();
+      // this.clearUnitSprite();
+      // this.startUnitSpriteEnter(unit);
     }
     // exit with animation
-    exitUnitSprite(unit: Unit)
+    exitUnitSprite()
     {
-      if (this.unitState !== BattleSceneUnitState.stationary)
+      if (this.unitState === BattleSceneUnitState.entering)
       {
-        debugger;
-        throw new Error("invalid unit animation state");
+        this.finishUnitSpriteExit();
       }
-      this.startUnitSpriteExit(unit);
+      else if (this.unitState === BattleSceneUnitState.stationary)
+      {
+        this.startUnitSpriteExit();
+      }
+      else if (this.unitState === BattleSceneUnitState.exiting)
+      {
+
+      }
+      else
+      {
+        console.warn("called exitUnitSprite with unintended animation state " +
+          BattleSceneUnitState[this.unitState]);
+      }
     }
 
     private startUnitSpriteEnter(unit: Unit)
@@ -112,8 +124,12 @@ module Rance
       this.setUnitSprite(unit);
       this.unitState = BattleSceneUnitState.entering;
 
-      this.tween = this.makeEnterExitTween("enter", 200);
-      this.tween.onStop = this.finishUnitSpriteEnter.bind(this);
+      var self = this;
+      // this.tween = this.makeEnterExitTween("enter", 500, function()
+      // {
+      //   self.finishUnitSpriteEnter();
+      // });
+      this.tween = this.makeEnterExitTween("enter", 500, this.finishUnitSpriteEnter.bind(this));
       this.tween.start();
     }
     private finishUnitSpriteEnter()
@@ -121,12 +137,17 @@ module Rance
       this.unitState = BattleSceneUnitState.stationary;
       this.clearTween();
     }
-    private startUnitSpriteExit(unit: Unit)
+    private startUnitSpriteExit()
     {
       this.unitState = BattleSceneUnitState.exiting;
       
-      this.tween = this.makeEnterExitTween("exit", 200);
-      this.tween.onStop = this.finishUnitSpriteExit.bind(this);
+
+      var self = this;
+      // this.tween = this.makeEnterExitTween("exit", 500, function()
+      // {
+      //   self.finishUnitSpriteExit();
+      // });
+      this.tween = this.makeEnterExitTween("exit", 500, this.finishUnitSpriteExit.bind(this));
       this.tween.start();
     }
     private finishUnitSpriteExit()
@@ -197,10 +218,9 @@ module Rance
     }
     private clearUnit()
     {
-      this.activeUnit = null;
-      this.onStateChange = null;
-      this.clearTween();
       this.unitState = BattleSceneUnitState.removed;
+      this.activeUnit = null;
+      this.clearTween();
     }
 
     private makeUnitSprite(unit: Unit, SFXParams: Templates.SFXParams)
@@ -238,7 +258,7 @@ module Rance
         this.tween = null;
       }
     }
-    private makeEnterExitTween(direction: "enter" | "exit", duration: number)
+    private makeEnterExitTween(direction: "enter" | "exit", duration: number, onComplete: () => void)
     {
       var side = this.activeUnit.battleStats.side;
       var container = this.layers.unitSprite;
@@ -255,19 +275,23 @@ module Rance
       var startX = direction === "enter" ? offscreenLocation : stationaryLocation;
       var finishX = direction === "enter" ? stationaryLocation : offscreenLocation;
 
+      container.x = startX;
+
       var tween = new TWEEN.Tween(
       {
         x: startX
       }).to(
       {
         x: finishX
-      }, duration).onUpdate(function()
+      }, duration).onStart(function()
+      {
+        container.x = startX;
+      }).onUpdate(function()
       {
         container.x = this.x;
-      });
+      }).onComplete(onComplete);
 
-      console.log(container.x, bounds.x, offscreenLocation, stationaryLocation, side);
-      container.x = startX;
+      tween.start();
       return tween;
     }
   }

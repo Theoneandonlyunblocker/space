@@ -3768,10 +3768,10 @@ declare module Rance {
         enterUnitSpriteWithoutAnimation(unit: Unit): void;
         exitUnitSpriteWithoutAnimation(unit: Unit): void;
         enterUnitSprite(unit: Unit): void;
-        exitUnitSprite(unit: Unit): void;
+        exitUnitSprite(): void;
         private startUnitSpriteEnter(unit);
         private finishUnitSpriteEnter();
-        private startUnitSpriteExit(unit);
+        private startUnitSpriteExit();
         private finishUnitSpriteExit();
         private getSFXParams(props);
         private setContainersPosition(positionOffScreen?);
@@ -3782,7 +3782,7 @@ declare module Rance {
         private clearUnitSprite();
         private setUnitSprite(unit);
         private clearTween();
-        private makeEnterExitTween(direction, duration);
+        private makeEnterExitTween(direction, duration, onComplete);
     }
 }
 declare module Rance {

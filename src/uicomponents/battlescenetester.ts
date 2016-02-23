@@ -11,6 +11,7 @@ module Rance
       idGenerator: 0,
       battle: null,
       battleScene: null,
+      deferredClearHover: null,
 
       componentWillMount: function()
       {
@@ -114,12 +115,25 @@ module Rance
 
       handleUnitHover: function(unit: Unit)
       {
+        if (this.deferredClearHover)
+        {
+          window.clearTimeout(this.deferredClearHover);
+          this.deferredClearHover = null;
+        }
+
         this.battleScene.getBattleSceneUnit(unit).enterUnitSprite(unit);
       },
 
       handleClearHover: function(unit: Unit)
       {
-        this.battleScene.getBattleSceneUnit(unit).exitUnitSpriteWithoutAnimation(unit);
+        console.log("setup clear hover");
+        this.deferredClearHover = window.setTimeout(function()
+        {
+          console.log("exec clear hover");
+          this.battleScene.getBattleSceneUnit(unit).exitUnitSprite(unit);
+          window.clearTimeout(this.deferredClearHover);
+          this.deferredClearHover = null;
+        }.bind(this), 200);
       },
 
       makeUnitElements: function(units: Unit[])

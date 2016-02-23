@@ -76,7 +76,6 @@ module Rance
         var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
 
         var desiredHeight = SFXParams.height;
-        console.log(desiredHeight);
 
         var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
         var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);

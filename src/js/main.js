@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
@@ -19959,6 +19964,7 @@ var Rance;
             idGenerator: 0,
             battle: null,
             battleScene: null,
+            deferredClearHover: null,
             componentWillMount: function () {
                 var side1Units = [];
                 var side2Units = [];
@@ -20026,10 +20032,20 @@ var Rance;
                 });
             },
             handleUnitHover: function (unit) {
+                if (this.deferredClearHover) {
+                    window.clearTimeout(this.deferredClearHover);
+                    this.deferredClearHover = null;
+                }
                 this.battleScene.getBattleSceneUnit(unit).enterUnitSprite(unit);
             },
             handleClearHover: function (unit) {
-                this.battleScene.getBattleSceneUnit(unit).exitUnitSpriteWithoutAnimation(unit);
+                console.log("setup clear hover");
+                this.deferredClearHover = window.setTimeout(function () {
+                    console.log("exec clear hover");
+                    this.battleScene.getBattleSceneUnit(unit).exitUnitSprite(unit);
+                    window.clearTimeout(this.deferredClearHover);
+                    this.deferredClearHover = null;
+                }.bind(this), 200);
             },
             makeUnitElements: function (units) {
                 var unitElements = [];
@@ -21323,11 +21339,6 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="uniformmanager.ts"/>
 /// <reference path="shaders/converted/shadersources.ts"/>
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var Rance;
 (function (Rance) {
     var NebulaFilter = (function (_super) {
@@ -25069,7 +25080,6 @@ var Rance;
                 ];
                 var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
                 var desiredHeight = SFXParams.height;
-                console.log(desiredHeight);
                 var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
                 var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
                 zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
@@ -27675,16 +27685,14 @@ var Rance;
         };
         // enter with animation
         BattleSceneUnit.prototype.enterUnitSprite = function (unit) {
-            console.log("enter");
             if (this.unitState === BattleSceneUnitState.stationary) {
                 // trigger exit
                 // on exit finish:
                 //    trigger enter
-                this.exitUnitSprite(unit);
                 this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
+                this.exitUnitSprite();
             }
             else if (this.unitState === BattleSceneUnitState.exiting) {
-                // wait for exit
                 // on exit finish:
                 //    trigger enter
                 this.onStateChange = this.startUnitSpriteEnter.bind(this, unit);
@@ -27696,31 +27704,49 @@ var Rance;
                 this.clearUnitSprite();
                 this.startUnitSpriteEnter(unit);
             }
+            // this.clearUnit();
+            // this.clearUnitSprite();
+            // this.startUnitSpriteEnter(unit);
         };
         // exit with animation
-        BattleSceneUnit.prototype.exitUnitSprite = function (unit) {
-            if (this.unitState !== BattleSceneUnitState.stationary) {
-                debugger;
-                throw new Error("invalid unit animation state");
+        BattleSceneUnit.prototype.exitUnitSprite = function () {
+            if (this.unitState === BattleSceneUnitState.entering) {
+                this.finishUnitSpriteExit();
             }
-            this.startUnitSpriteExit(unit);
+            else if (this.unitState === BattleSceneUnitState.stationary) {
+                this.startUnitSpriteExit();
+            }
+            else if (this.unitState === BattleSceneUnitState.exiting) {
+            }
+            else {
+                console.warn("called exitUnitSprite with unintended animation state " +
+                    BattleSceneUnitState[this.unitState]);
+            }
         };
         BattleSceneUnit.prototype.startUnitSpriteEnter = function (unit) {
             this.setUnit(unit);
             this.setUnitSprite(unit);
             this.unitState = BattleSceneUnitState.entering;
-            this.tween = this.makeEnterExitTween("enter", 200);
-            this.tween.onStop = this.finishUnitSpriteEnter.bind(this);
+            var self = this;
+            // this.tween = this.makeEnterExitTween("enter", 500, function()
+            // {
+            //   self.finishUnitSpriteEnter();
+            // });
+            this.tween = this.makeEnterExitTween("enter", 500, this.finishUnitSpriteEnter.bind(this));
             this.tween.start();
         };
         BattleSceneUnit.prototype.finishUnitSpriteEnter = function () {
             this.unitState = BattleSceneUnitState.stationary;
             this.clearTween();
         };
-        BattleSceneUnit.prototype.startUnitSpriteExit = function (unit) {
+        BattleSceneUnit.prototype.startUnitSpriteExit = function () {
             this.unitState = BattleSceneUnitState.exiting;
-            this.tween = this.makeEnterExitTween("exit", 200);
-            this.tween.onStop = this.finishUnitSpriteExit.bind(this);
+            var self = this;
+            // this.tween = this.makeEnterExitTween("exit", 500, function()
+            // {
+            //   self.finishUnitSpriteExit();
+            // });
+            this.tween = this.makeEnterExitTween("exit", 500, this.finishUnitSpriteExit.bind(this));
             this.tween.start();
         };
         BattleSceneUnit.prototype.finishUnitSpriteExit = function () {
@@ -27769,10 +27795,9 @@ var Rance;
             this.activeUnit = unit;
         };
         BattleSceneUnit.prototype.clearUnit = function () {
-            this.activeUnit = null;
-            this.onStateChange = null;
-            this.clearTween();
             this.unitState = BattleSceneUnitState.removed;
+            this.activeUnit = null;
+            this.clearTween();
         };
         BattleSceneUnit.prototype.makeUnitSprite = function (unit, SFXParams) {
             return unit.drawBattleScene(SFXParams);
@@ -27800,7 +27825,7 @@ var Rance;
                 this.tween = null;
             }
         };
-        BattleSceneUnit.prototype.makeEnterExitTween = function (direction, duration) {
+        BattleSceneUnit.prototype.makeEnterExitTween = function (direction, duration, onComplete) {
             var side = this.activeUnit.battleStats.side;
             var container = this.layers.unitSprite;
             var bounds = container.getBounds();
@@ -27812,15 +27837,17 @@ var Rance;
             var stationaryLocation = container.x;
             var startX = direction === "enter" ? offscreenLocation : stationaryLocation;
             var finishX = direction === "enter" ? stationaryLocation : offscreenLocation;
+            container.x = startX;
             var tween = new TWEEN.Tween({
                 x: startX
             }).to({
                 x: finishX
-            }, duration).onUpdate(function () {
+            }, duration).onStart(function () {
+                container.x = startX;
+            }).onUpdate(function () {
                 container.x = this.x;
-            });
-            console.log(container.x, bounds.x, offscreenLocation, stationaryLocation, side);
-            container.x = startX;
+            }).onComplete(onComplete);
+            tween.start();
             return tween;
         };
         return BattleSceneUnit;
