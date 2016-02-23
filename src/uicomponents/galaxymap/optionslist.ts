@@ -2,6 +2,7 @@
 /// <reference path="../notifications/notificationfilterbutton.ts" />
 /// <reference path="optionsgroup.ts"/>
 /// <reference path="optionscheckbox.ts" />
+/// <reference path="optionsnumericfield.ts" />
 
 /// <reference path="../../notificationlog.ts" />
 
