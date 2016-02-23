@@ -46,7 +46,9 @@ module Rance
     {
       before: 1,
       effectDuration: 1,
-      after: 1
+      after: 1,
+      unitEnter: 200,
+      unitExit: 100
     }
     export var debugMode = false;
     export var debugOptions =

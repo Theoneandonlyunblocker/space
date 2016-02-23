@@ -23,7 +23,6 @@ module Rance
     };
 
     activeUnit: Unit;
-    pendingUnit: Unit;
     
     unitState: BattleSceneUnitState;
     onFinishEnter: () => void;
@@ -52,6 +51,18 @@ module Rance
 
       this.container.addChild(this.layers.unitSprite);
       this.container.addChild(this.layers.unitOverlay);
+    }
+
+    changeActiveUnit(unit: Unit)
+    {
+      if (!unit)
+      {
+        this.exitUnitSprite();
+      }
+      else
+      {
+        this.enterUnitSprite(unit);
+      }
     }
 
     // enter without animation
@@ -122,11 +133,19 @@ module Rance
 
     private startUnitSpriteEnter(unit: Unit)
     {
+      var enterAnimationDuration = Options.battleAnimationTiming.unitEnter;
+      if (enterAnimationDuration <= 0)
+      {
+        this.enterUnitSpriteWithoutAnimation(unit);
+        return;
+      }
+
       this.setUnit(unit);
       this.setUnitSprite(unit);
       this.unitState = BattleSceneUnitState.entering;
 
-      this.tween = this.makeEnterExitTween("enter", 200, this.finishUnitSpriteEnter.bind(this));
+      this.tween = this.makeEnterExitTween("enter", enterAnimationDuration,
+        this.finishUnitSpriteEnter.bind(this));
       this.tween.start();
     }
     private finishUnitSpriteEnter()
@@ -142,9 +161,17 @@ module Rance
     }
     private startUnitSpriteExit()
     {
+      var exitAnimationDuration = Options.battleAnimationTiming.unitExit;
+      if (exitAnimationDuration <= 0)
+      {
+        this.exitUnitSpriteWithoutAnimation();
+        return;
+      }
+
       this.unitState = BattleSceneUnitState.exiting;
       
-      this.tween = this.makeEnterExitTween("exit", 100, this.finishUnitSpriteExit.bind(this));
+      this.tween = this.makeEnterExitTween("exit", exitAnimationDuration,
+        this.finishUnitSpriteExit.bind(this));
       this.tween.start();
     }
     private finishUnitSpriteExit()

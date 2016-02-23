@@ -29,7 +29,6 @@ module Rance
 
     isPaused: boolean = false;
     forceFrame: boolean = false;
-    lastTimeStamp: number = performance.now();
 
     resizeListener: (e: Event) => void;
 
@@ -230,7 +229,6 @@ module Rance
     {
       this.isPaused = false;
       this.forceFrame = false;
-      this.lastTimeStamp = performance.now();
       this.render();
     }
     render(timeStamp?: number)
