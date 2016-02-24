@@ -21,7 +21,7 @@ module Rance
 
     activeUnit: Unit;
     
-    unitState: BattleSceneUnitState;
+    unitState: BattleSceneUnitState = BattleSceneUnitState.removed;
     onFinishEnter: () => void;
     onFinishExit: () => void;
     tween: TWEEN.Tween;
