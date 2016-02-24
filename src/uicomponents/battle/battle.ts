@@ -2,8 +2,8 @@
 /// <reference path="turncounter.ts"/>
 /// <reference path="turnorder.ts"/>
 /// <reference path="abilitytooltip.ts"/>
+/// <reference path="battlescene2.ts"/>
 /// <reference path="battlescore.ts"/>
-/// <reference path="battlescene.ts"/>
 /// <reference path="battledisplaystrength.ts"/>
 /// <reference path="battlebackground.ts"/>
 
@@ -599,18 +599,30 @@ module Rance
                 upperFooter,
                 UIComponents.BattleScene(
                 {
-                  unit1: this.state.battleSceneUnit1,
-                  unit2: this.state.battleSceneUnit2,
-                  effectDuration: this.state.battleEffectDuration,
-                  effectSFX: this.state.battleEffectSFX,
-                  unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
-                  effectId: this.state.battleEffectId,
-                  battleIsStarting: this.state.battleIsStarting,
-                  battleHasEnded: battle.ended,
-                  playerWonBattle: playerWonBattle,
-                  player1: battle.side1Player,
-                  player2: battle.side2Player
+                  battleState: "start",
+
+                  
+                  
+                  activeSFX: this.state.effectSFX,
+                  humanPlayerWonBattle: playerWonBattle,
+
+                  side1Player: battle.side1Player,
+                  side2Player: battle.side2Player
                 })
+                // UIComponents.BattleScene(
+                // {
+                //   unit1: this.state.battleSceneUnit1,
+                //   unit2: this.state.battleSceneUnit2,
+                //   effectDuration: this.state.battleEffectDuration,
+                //   effectSFX: this.state.battleEffectSFX,
+                //   unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
+                //   effectId: this.state.battleEffectId,
+                //   battleIsStarting: this.state.battleIsStarting,
+                //   battleHasEnded: battle.ended,
+                //   playerWonBattle: playerWonBattle,
+                //   player1: battle.side1Player,
+                //   player2: battle.side2Player
+                // })
               ),
               React.DOM.div(
               {

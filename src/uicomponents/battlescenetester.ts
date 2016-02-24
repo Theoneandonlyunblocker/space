@@ -158,6 +158,7 @@ module Rance
           var container = new PIXI.Container();
 
           var text = new PIXI.Text("" + params.duration, {fill: color});
+          text.y -= 50;
           container.addChild(text);
 
           var alphaPerMillisecond = 1 / params.duration;
@@ -199,7 +200,7 @@ module Rance
           var container = new PIXI.Container;
 
           var gfx = new PIXI.Graphics();
-          gfx.beginFill(0xFF0000);
+          gfx.beginFill(0x0000FF);
           gfx.drawRect(0, 0, 200, 200);
           gfx.endFill();
           container.addChild(gfx);

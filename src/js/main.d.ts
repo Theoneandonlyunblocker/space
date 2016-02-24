@@ -158,192 +158,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module UIComponents {
-        var PlayerFlag: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BattleScore: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BattleSceneUnit: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BattleScene: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BattleDisplayStrength: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BattleBackground: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var Battle: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var SplitMultilineText: {
-            splitMultilineText: (text: any) => any;
-        };
-    }
-}
-declare module Rance {
-    module UIComponents {
-        interface IListColumn {
-            label: string;
-            title?: string;
-            key: string;
-            defaultOrder?: string;
-            order?: string;
-            notSortable?: boolean;
-            propToSortBy?: string;
-            sortingFunction?: <T>(a: T, b: T) => number;
-        }
-        interface IListItem {
-            key: string | number;
-            data: any;
-        }
-        var List: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitListItem: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ItemListItem: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ItemList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var AbilityList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitItem: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitItemWrapper: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UpgradeAbilities: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UpgradeAttributes: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UpgradeUnit: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitExperience: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var MenuUnitInfo: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ItemEquip: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DefenceBuilding: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DefenceBuildingList: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BattleInfo: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BattlePrep: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var PopupResizeHandle: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var Popup: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ConfirmPopup: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var PopupManager: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var SaveListItem: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var SaveList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var SaveGame: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var LoadGame: React.Factory<{}>;
-    }
-}
-declare module Rance {
     enum RandomGenUnitRarity {
         common = 0,
         elite = 1,
@@ -1994,6 +1808,193 @@ declare module Rance {
         getGloballyBuildableItems(): Templates.IItemTemplate[];
         getManufacturingCapacityFor(template: IManufacturableThing, type: string): number;
         serialize(): any;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleSceneFlag: React.Factory<any>;
+    }
+}
+declare var bs2: any;
+declare module Rance {
+    module UIComponents {
+        var BattleScene: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var PlayerFlag: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleScore: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleDisplayStrength: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleBackground: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Battle: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var SplitMultilineText: {
+            splitMultilineText: (text: any) => any;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
+        interface IListColumn {
+            label: string;
+            title?: string;
+            key: string;
+            defaultOrder?: string;
+            order?: string;
+            notSortable?: boolean;
+            propToSortBy?: string;
+            sortingFunction?: <T>(a: T, b: T) => number;
+        }
+        interface IListItem {
+            key: string | number;
+            data: any;
+        }
+        var List: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitListItem: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ItemListItem: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ItemList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var AbilityList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitItem: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitItemWrapper: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UpgradeAbilities: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UpgradeAttributes: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UpgradeUnit: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitExperience: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MenuUnitInfo: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ItemEquip: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DefenceBuilding: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DefenceBuildingList: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleInfo: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattlePrep: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var PopupResizeHandle: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Popup: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ConfirmPopup: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var PopupManager: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var SaveListItem: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var SaveList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var SaveGame: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var LoadGame: React.Factory<{}>;
     }
 }
 declare module Rance {
@@ -3851,6 +3852,7 @@ declare module Rance {
             triggerEnd?: () => void;
         }): Templates.SFXParams;
         getHighestPriorityUnitForSide(side: "side1" | "side2"): Unit;
+        setUnit(key: string, unit: Unit): void;
         setTargetUnit(unit: Unit): void;
         setUserUnit(unit: Unit): void;
         setActiveUnit(unit: Unit): void;

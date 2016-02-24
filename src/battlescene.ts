@@ -162,25 +162,31 @@ module Rance
 
       return null;
     }
+    setUnit(key: string, unit: Unit)
+    {
+      if (this[key] === unit)
+      {
+        return;
+      }
+
+      this[key] = unit;
+      this.updateUnits
+    }
     setTargetUnit(unit: Unit)
     {
-      this.targetUnit = unit;
-      this.updateUnits();
+      this.setUnit("targetUnit", unit);
     }
     setUserUnit(unit: Unit)
     {
-      this.userUnit = unit;
-      this.updateUnits();
+      this.setUnit("userUnit", unit);
     }
     setActiveUnit(unit: Unit)
     {
-      this.activeUnit = unit;
-      this.updateUnits();
+      this.setUnit("activeUnit", unit);
     }
     setHoveredUnit(unit: Unit)
     {
-      this.hoveredUnit = unit;
-      this.updateUnits();
+      this.setUnit("hoveredUnit", unit);
     }
     haveBothUnitsFinishedUpdating()
     {
