@@ -12,7 +12,7 @@ module Rance
     };
     BattleSFX:
     {
-      [type: string]: Templates.IAbilityTemplate;
+      [type: string]: Templates.IBattleSFXTemplate;
     };
     Buildings:
     {
