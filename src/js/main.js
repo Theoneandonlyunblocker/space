@@ -7406,6 +7406,7 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Unit = (function () {
+        // end
         function Unit(template, id, data) {
             this.abilities = [];
             this.passiveSkills = [];
@@ -7443,14 +7444,7 @@ var Rance;
             configurable: true
         });
         Unit.prototype.drawBattleScene = function (SFXParams) {
-            return this.template.unitDrawingFN(this, SFXParams);
-        };
-        Unit.prototype.getBattleSceneBounds = function (SFXParams) {
-            var sceneBounds = this.drawBattleScene(SFXParams).getBounds();
-            return ({
-                width: sceneBounds.width,
-                height: sceneBounds.height
-            });
+            this.template.unitDrawingFN(this, SFXParams);
         };
         Unit.prototype.makeFromData = function (data) {
             var items = {};
@@ -20188,7 +20182,7 @@ var Rance;
             },
             handleTestAbility2: function () {
                 var user = this.state.activeUnit;
-                var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide2Unit;
+                var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
                 var bs = this.battleScene;
                 var SFXTemplate = app.moduleData.Templates.BattleSFX["guard"];
                 bs.setActiveSFX(SFXTemplate, user, target);
@@ -24132,8 +24126,8 @@ var Rance;
             var BattleSFXFunctions;
             (function (BattleSFXFunctions) {
                 function guard(props) {
-                    var userCanvasWidth = props.user.getBattleSceneBounds(props).width;
-                    var maxFrontier = Math.max(userCanvasWidth * 1.3, 300);
+                    var userCanvasWidth = props.width * 0.4; // TODO BattleSFX
+                    var maxFrontier = userCanvasWidth;
                     var baseTrailDistance = 80;
                     var maxTrailDistance = maxFrontier;
                     var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
@@ -28175,7 +28169,7 @@ var Rance;
         };
         BattleScene.prototype.getSFXParams = function (props) {
             var bounds = this.getSceneBounds();
-            var duration = this.activeSFX.duration; // TODO battle scene options timing
+            var duration = this.activeSFX.duration * Rance.Options.battleAnimationTiming.effectDuration;
             return ({
                 user: this.userUnit,
                 target: this.targetUnit,
@@ -28229,8 +28223,6 @@ var Rance;
             else {
                 this.afterUnitsHaveFinishedUpdatingCallback();
                 this.afterUnitsHaveFinishedUpdatingCallback = null;
-                this.side1UnitHasFinishedUpdating = false;
-                this.side2UnitHasFinishedUpdating = false;
             }
         };
         BattleScene.prototype.finishUpdatingUnit = function (side) {
@@ -28249,6 +28241,8 @@ var Rance;
                 this.afterUnitsHaveFinishedUpdatingCallback = afterFinishedUpdatingCallback;
                 boundAfterFinishFN1 = this.finishUpdatingUnit.bind(this, "side1");
                 boundAfterFinishFN2 = this.finishUpdatingUnit.bind(this, "side2");
+                this.side1UnitHasFinishedUpdating = false;
+                this.side2UnitHasFinishedUpdating = false;
             }
             var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
             this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
@@ -28257,6 +28251,10 @@ var Rance;
         };
         BattleScene.prototype.setActiveSFX = function (SFXTemplate, user, target) {
             this.clearActiveSFX();
+            if (Rance.Options.battleAnimationTiming.effectDuration <= 0) {
+                this.updateUnits();
+                return;
+            }
             this.userUnit = user;
             this.targetUnit = target;
             this.updateUnits(this.triggerSFXStart.bind(this, SFXTemplate));

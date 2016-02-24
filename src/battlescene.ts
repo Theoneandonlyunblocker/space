@@ -125,7 +125,7 @@ module Rance
     }): Templates.SFXParams
     {
       var bounds = this.getSceneBounds();
-      var duration = this.activeSFX.duration; // TODO battle scene options timing
+      var duration = this.activeSFX.duration * Options.battleAnimationTiming.effectDuration;
 
       return(
       {
@@ -235,6 +235,12 @@ module Rance
     setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
     {
       this.clearActiveSFX();
+
+      if (Options.battleAnimationTiming.effectDuration <= 0)
+      {
+        this.updateUnits();
+        return;
+      }
 
       this.userUnit = user;
       this.targetUnit = target;

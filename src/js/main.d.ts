@@ -941,11 +941,7 @@ declare module Rance {
         front: MapAI.Front;
         sfxDuration: number;
         lastHealthDrawnAt: number;
-        drawBattleScene(SFXParams: Templates.SFXParams): PIXI.DisplayObject;
-        getBattleSceneBounds(SFXParams: Templates.SFXParams): {
-            width: number;
-            height: number;
-        };
+        drawBattleScene(SFXParams: Templates.SFXParams): void;
         constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
         makeFromData(data: any): void;
         setInitialValues(): void;
