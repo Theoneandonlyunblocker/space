@@ -1302,7 +1302,7 @@ ol {
     min-height: calc(16em - 74px);
   }
 }
-.battle-prep-left-upper-wrapper canvas {
+.battle-prep-left-upper-wrapper #pixi-canvas {
   z-index: 0;
 }
 .battle-prep-left-upper-inner {
