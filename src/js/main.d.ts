@@ -2962,7 +2962,7 @@ declare module Rance {
             [type: string]: Templates.IAttitudeModifierTemplate;
         };
         BattleSFX: {
-            [type: string]: Templates.IAbilityTemplate;
+            [type: string]: Templates.IBattleSFXTemplate;
         };
         Buildings: {
             [type: string]: Templates.IBuildingTemplate;
@@ -3832,6 +3832,9 @@ declare module Rance {
         userUnit: Unit;
         activeUnit: Unit;
         hoveredUnit: Unit;
+        side1UnitHasFinishedUpdating: boolean;
+        side2UnitHasFinishedUpdating: boolean;
+        afterUnitsHaveFinishedUpdatingCallback: () => void;
         isPaused: boolean;
         forceFrame: boolean;
         resizeListener: (e: Event) => void;
@@ -3852,9 +3855,13 @@ declare module Rance {
         setUserUnit(unit: Unit): void;
         setActiveUnit(unit: Unit): void;
         setHoveredUnit(unit: Unit): void;
-        updateUnits(): void;
+        haveBothUnitsFinishedUpdating(): boolean;
+        executeIfBothUnitsHaveFinishedUpdating(): void;
+        finishUpdatingUnit(side: "side1" | "side2"): void;
+        updateUnits(afterFinishedUpdatingCallback?: () => void): void;
         setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
         clearActiveSFX(): void;
+        triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate): void;
         makeBattleOverlay(): void;
         addBattleOverlay(overlay: PIXI.DisplayObject): void;
         clearBattleOverlay(): void;

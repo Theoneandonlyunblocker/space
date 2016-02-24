@@ -14567,9 +14567,9 @@ var Rance;
                             min: props.min,
                             max: props.max,
                             step: props.step,
-                            onChangeFN: function (value) {
+                            onChangeFN: function (stage, value) {
                                 Rance.Options.battleAnimationTiming[stage] = value;
-                            }
+                            }.bind(null, stage)
                         })
                     });
                 }
@@ -20061,7 +20061,9 @@ var Rance;
             battleScene: null,
             getInitialState: function () {
                 return ({
-                    selectedUnit: null
+                    activeUnit: null,
+                    selectedSide1Unit: null,
+                    selectedSide2Unit: null
                 });
             },
             componentWillMount: function () {
@@ -20137,11 +20139,16 @@ var Rance;
                 this.battleScene.setHoveredUnit(null);
             },
             selectUnit: function (unit) {
-                var newSelectedUnit = (this.state.selectedUnit === unit) ? null : unit;
-                this.setState({
-                    selectedUnit: newSelectedUnit
-                });
-                this.battleScene.setActiveUnit(newSelectedUnit);
+                var statePropForSide = unit.battleStats.side === "side1" ? "selectedSide1Unit" : "selectedSide2Unit";
+                var statePropForOtherSide = unit.battleStats.side === "side1" ? "selectedSide2Unit" : "selectedSide1Unit";
+                var previousSelectedUnit = this.state[statePropForSide];
+                var newSelectedUnit = (previousSelectedUnit === unit) ? null : unit;
+                var newStateObj = {};
+                newStateObj[statePropForSide] = newSelectedUnit;
+                var newActiveUnit = newSelectedUnit || this.state[statePropForOtherSide] || null;
+                newStateObj.activeUnit = newActiveUnit;
+                this.setState(newStateObj);
+                this.battleScene.setActiveUnit(newActiveUnit);
             },
             handleTestAbility1: function () {
                 var overlayTestFN = function (params) {
@@ -20176,19 +20183,26 @@ var Rance;
                     params.triggerStart(container);
                     animate();
                 };
-                var overlay = this.battleScene.getBattleSceneUnitOverlay(this.state.selectedUnit);
-                overlay.setOverlay(overlayTestFN, this.state.selectedUnit, 2000);
+                var overlay = this.battleScene.getBattleSceneUnitOverlay(this.state.activeUnit);
+                overlay.setOverlay(overlayTestFN, this.state.activeUnit, 2000);
+            },
+            handleTestAbility2: function () {
+                var user = this.state.activeUnit;
+                var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide2Unit;
+                var bs = this.battleScene;
+                var SFXTemplate = app.moduleData.Templates.BattleSFX["guard"];
+                bs.setActiveSFX(SFXTemplate, user, target);
             },
             makeUnitElements: function (units) {
                 var unitElements = [];
                 for (var i = 0; i < units.length; i++) {
                     var unit = units[i];
-                    var style = null;
-                    if (unit === this.state.selectedUnit) {
-                        style =
-                            {
-                                backgroundColor: "yellow"
-                            };
+                    var style = {};
+                    if (unit === this.state.activeUnit) {
+                        style.border = "1px solid red";
+                    }
+                    if (unit === this.state.selectedSide1Unit || unit === this.state.selectedSide2Unit) {
+                        style.backgroundColor = "yellow";
                     }
                     unitElements.push(React.DOM.div({
                         className: "battle-scene-test-controls-units-unit",
@@ -20221,8 +20235,12 @@ var Rance;
                 }, side2UnitElements)), React.DOM.button({
                     className: "battle-scene-test-ability1",
                     onClick: this.handleTestAbility1,
-                    disabled: !this.state.selectedUnit
-                }, "test ability 1"))));
+                    disabled: !this.state.activeUnit
+                }, "test ability 1"), React.DOM.button({
+                    className: "battle-scene-test-ability2",
+                    onClick: this.handleTestAbility2,
+                    disabled: !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
+                }, "test ability 2"))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -27810,6 +27828,7 @@ var Rance;
     var BattleSceneUnitState = Rance.BattleSceneUnitState;
     var BattleSceneUnit = (function () {
         function BattleSceneUnit(container, renderer) {
+            this.unitState = BattleSceneUnitState.removed;
             this.container = container;
             this.renderer = renderer;
             this.initLayers();
@@ -27828,6 +27847,9 @@ var Rance;
             else if (unit && unit !== this.activeUnit) {
                 this.onFinishEnter = afterChangedCallback;
                 this.enterUnitSprite(unit);
+            }
+            else if (afterChangedCallback) {
+                afterChangedCallback();
             }
         };
         // enter without animation
@@ -28094,6 +28116,8 @@ var Rance;
 (function (Rance) {
     var BattleScene = (function () {
         function BattleScene(pixiContainer) {
+            this.side1UnitHasFinishedUpdating = false;
+            this.side2UnitHasFinishedUpdating = false;
             this.isPaused = false;
             this.forceFrame = false;
             this.pixiContainer = pixiContainer;
@@ -28195,43 +28219,72 @@ var Rance;
             this.hoveredUnit = unit;
             this.updateUnits();
         };
-        BattleScene.prototype.updateUnits = function () {
-            // var unitsFinishedUpdating =
-            // {
-            //   side1: false,
-            //   side2: false
-            // };
-            // var checkIfUnitsAreUpdatedFN = function(afterAllUpdated: () => void, propToUpdate: "side1" | "side2")
-            // {
-            //   unitsFinishedUpdating[propToUpdate] = true;
-            //   if (unitsFinishedUpdating[reverseSide(propToUpdate)])
-            //   {
-            //     afterAllUpdated();
-            //   }
-            // }
+        BattleScene.prototype.haveBothUnitsFinishedUpdating = function () {
+            return this.side1UnitHasFinishedUpdating && this.side2UnitHasFinishedUpdating;
+        };
+        BattleScene.prototype.executeIfBothUnitsHaveFinishedUpdating = function () {
+            if (!this.afterUnitsHaveFinishedUpdatingCallback || !this.haveBothUnitsFinishedUpdating()) {
+                return;
+            }
+            else {
+                this.afterUnitsHaveFinishedUpdatingCallback();
+                this.afterUnitsHaveFinishedUpdatingCallback = null;
+                this.side1UnitHasFinishedUpdating = false;
+                this.side2UnitHasFinishedUpdating = false;
+            }
+        };
+        BattleScene.prototype.finishUpdatingUnit = function (side) {
+            if (side === "side1") {
+                this.side1UnitHasFinishedUpdating = true;
+            }
+            else {
+                this.side2UnitHasFinishedUpdating = true;
+            }
+            this.executeIfBothUnitsHaveFinishedUpdating();
+        };
+        BattleScene.prototype.updateUnits = function (afterFinishedUpdatingCallback) {
+            var boundAfterFinishFN1 = null;
+            var boundAfterFinishFN2 = null;
+            if (afterFinishedUpdatingCallback) {
+                this.afterUnitsHaveFinishedUpdatingCallback = afterFinishedUpdatingCallback;
+                boundAfterFinishFN1 = this.finishUpdatingUnit.bind(this, "side1");
+                boundAfterFinishFN2 = this.finishUpdatingUnit.bind(this, "side2");
+            }
             var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
-            this.side1Unit.changeActiveUnit(activeSide1Unit);
+            this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
             var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
-            this.side2Unit.changeActiveUnit(activeSide2Unit);
+            this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
         };
         BattleScene.prototype.setActiveSFX = function (SFXTemplate, user, target) {
+            this.clearActiveSFX();
             this.userUnit = user;
             this.targetUnit = target;
+            this.updateUnits(this.triggerSFXStart.bind(this, SFXTemplate));
         };
         BattleScene.prototype.clearActiveSFX = function () {
             this.activeSFX = null;
+            this.userUnit = null;
+            this.targetUnit = null;
             this.clearBattleOverlay();
             this.clearUnitOverlays();
+            this.updateUnits();
+        };
+        BattleScene.prototype.triggerSFXStart = function (SFXTemplate) {
+            this.activeSFX = SFXTemplate;
+            // this.side1Unit.setSFX(SFXTemplate);
+            // this.side2Unit.setSFX(SFXTemplate);
+            // this.side1Overlay.setSFX(SFXTemplate);
+            // this.side2Overlay.setSFX(SFXTemplate);
+            this.makeBattleOverlay();
         };
         BattleScene.prototype.makeBattleOverlay = function () {
             var SFXParams = this.getSFXParams({
-                triggerStart: this.addBattleOverlay,
-                triggerEnd: this.clearBattleOverlay
+                triggerStart: this.addBattleOverlay.bind(this),
+                triggerEnd: this.clearActiveSFX.bind(this)
             });
             this.activeSFX.battleOverlay(SFXParams);
         };
         BattleScene.prototype.addBattleOverlay = function (overlay) {
-            this.clearBattleOverlay();
             this.layers.battleOverlay.addChild(overlay);
         };
         BattleScene.prototype.clearBattleOverlay = function () {

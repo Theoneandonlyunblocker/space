@@ -16,7 +16,9 @@ module Rance
       {
         return(
         {
-          selectedUnit: null
+          activeUnit: null,
+          selectedSide1Unit: null,
+          selectedSide2Unit: null
         });
       },
 
@@ -132,13 +134,19 @@ module Rance
 
       selectUnit: function(unit: Unit)
       {
-        var newSelectedUnit = (this.state.selectedUnit === unit) ? null : unit;
-        this.setState(
-        {
-          selectedUnit: newSelectedUnit
-        });
+        var statePropForSide = unit.battleStats.side === "side1" ? "selectedSide1Unit" : "selectedSide2Unit";
+        var statePropForOtherSide = unit.battleStats.side === "side1" ? "selectedSide2Unit" : "selectedSide1Unit";
+        var previousSelectedUnit = this.state[statePropForSide];
+        var newSelectedUnit = (previousSelectedUnit === unit) ? null : unit;
 
-        this.battleScene.setActiveUnit(newSelectedUnit);
+        var newStateObj: any = {};
+        newStateObj[statePropForSide] = newSelectedUnit;
+
+        var newActiveUnit = newSelectedUnit || this.state[statePropForOtherSide] || null;
+        newStateObj.activeUnit = newActiveUnit;
+
+        this.setState(newStateObj);
+        this.battleScene.setActiveUnit(newActiveUnit);
       },
 
       handleTestAbility1: function()
@@ -187,8 +195,19 @@ module Rance
           animate();
         }
 
-        var overlay = this.battleScene.getBattleSceneUnitOverlay(this.state.selectedUnit);
-        overlay.setOverlay(overlayTestFN, this.state.selectedUnit, 2000);
+        var overlay = this.battleScene.getBattleSceneUnitOverlay(this.state.activeUnit);
+        overlay.setOverlay(overlayTestFN, this.state.activeUnit, 2000);
+      },
+
+      handleTestAbility2: function()
+      {
+        var user = this.state.activeUnit;
+        var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide2Unit;
+
+        var bs: Rance.BattleScene = this.battleScene;
+        var SFXTemplate = app.moduleData.Templates.BattleSFX["guard"];
+
+        bs.setActiveSFX(SFXTemplate, user, target);
       },
 
       makeUnitElements: function(units: Unit[])
@@ -198,14 +217,16 @@ module Rance
         for (var i = 0; i < units.length; i++)
         {
           var unit = units[i];
-          var style: any = null;
-          if (unit === this.state.selectedUnit)
+          var style: any = {};
+          if (unit === this.state.activeUnit)
           {
-            style =
-            {
-              backgroundColor: "yellow"
-            }
+            style.border = "1px solid red";
           }
+          if (unit === this.state.selectedSide1Unit || unit === this.state.selectedSide2Unit)
+          {
+            style.backgroundColor = "yellow";
+          }
+
           unitElements.push(React.DOM.div(
           {
             className: "battle-scene-test-controls-units-unit",
@@ -267,9 +288,17 @@ module Rance
               {
                 className: "battle-scene-test-ability1",
                 onClick: this.handleTestAbility1,
-                disabled: !this.state.selectedUnit
+                disabled: !this.state.activeUnit
               },
                 "test ability 1"
+              ),
+              React.DOM.button(
+              {
+                className: "battle-scene-test-ability2",
+                onClick: this.handleTestAbility2,
+                disabled: !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
+              },
+                "test ability 2"
               )
             )
           )

@@ -34,6 +34,10 @@ module Rance
     activeUnit: Unit;  // next to act in turn order |
     hoveredUnit: Unit; // hovered by player         V
 
+    side1UnitHasFinishedUpdating: boolean = false;
+    side2UnitHasFinishedUpdating: boolean = false;
+    afterUnitsHaveFinishedUpdatingCallback: () => void;
+
     isPaused: boolean = false;
     forceFrame: boolean = false;
 
@@ -178,53 +182,96 @@ module Rance
       this.hoveredUnit = unit;
       this.updateUnits();
     }
-    updateUnits()
+    haveBothUnitsFinishedUpdating()
     {
-      // var unitsFinishedUpdating =
-      // {
-      //   side1: false,
-      //   side2: false
-      // };
+      return this.side1UnitHasFinishedUpdating && this.side2UnitHasFinishedUpdating;
+    }
+    executeIfBothUnitsHaveFinishedUpdating()
+    {
+      if (!this.afterUnitsHaveFinishedUpdatingCallback || !this.haveBothUnitsFinishedUpdating())
+      {
+        return;
+      }
+      else
+      {
+        this.afterUnitsHaveFinishedUpdatingCallback();
+        this.afterUnitsHaveFinishedUpdatingCallback = null;
+        this.side1UnitHasFinishedUpdating = false;
+        this.side2UnitHasFinishedUpdating = false;
+      }
+    }
+    finishUpdatingUnit(side: "side1" | "side2")
+    {
+      if (side === "side1")
+      {
+        this.side1UnitHasFinishedUpdating = true;
+      }
+      else
+      {
+        this.side2UnitHasFinishedUpdating = true;
+      }
 
-      // var checkIfUnitsAreUpdatedFN = function(afterAllUpdated: () => void, propToUpdate: "side1" | "side2")
-      // {
-      //   unitsFinishedUpdating[propToUpdate] = true;
-      //   if (unitsFinishedUpdating[reverseSide(propToUpdate)])
-      //   {
-      //     afterAllUpdated();
-      //   }
-      // }
+      this.executeIfBothUnitsHaveFinishedUpdating();
+    }
+    updateUnits(afterFinishedUpdatingCallback?: () => void)
+    {
+      var boundAfterFinishFN1: () => void = null;
+      var boundAfterFinishFN2: () => void = null;
+      if (afterFinishedUpdatingCallback)
+      {
+        this.afterUnitsHaveFinishedUpdatingCallback = afterFinishedUpdatingCallback;
+
+        boundAfterFinishFN1 = this.finishUpdatingUnit.bind(this, "side1");
+        boundAfterFinishFN2 = this.finishUpdatingUnit.bind(this, "side2");
+      }
 
       var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
-      this.side1Unit.changeActiveUnit(activeSide1Unit);
+      this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
 
       var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
-      this.side2Unit.changeActiveUnit(activeSide2Unit);
+      this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
     }
     setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
     {
+      this.clearActiveSFX();
+
       this.userUnit = user;
       this.targetUnit = target;
 
+      this.updateUnits(this.triggerSFXStart.bind(this, SFXTemplate));
     }
     clearActiveSFX()
     {
       this.activeSFX = null;
+
+      this.userUnit = null;
+      this.targetUnit = null;
+
       this.clearBattleOverlay();
       this.clearUnitOverlays();
+
+      this.updateUnits();
+    }
+    triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate)
+    {
+      this.activeSFX = SFXTemplate;
+      // this.side1Unit.setSFX(SFXTemplate);
+      // this.side2Unit.setSFX(SFXTemplate);
+      // this.side1Overlay.setSFX(SFXTemplate);
+      // this.side2Overlay.setSFX(SFXTemplate);
+      this.makeBattleOverlay();
     }
     makeBattleOverlay()
     {
       var SFXParams = this.getSFXParams(
       {
-        triggerStart: this.addBattleOverlay,
-        triggerEnd: this.clearBattleOverlay
+        triggerStart: this.addBattleOverlay.bind(this),
+        triggerEnd: this.clearActiveSFX.bind(this)
       });
       this.activeSFX.battleOverlay(SFXParams);
     }
     addBattleOverlay(overlay: PIXI.DisplayObject)
     {
-      this.clearBattleOverlay();
       this.layers.battleOverlay.addChild(overlay);
     }
     clearBattleOverlay()
