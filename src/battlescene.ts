@@ -196,8 +196,6 @@ module Rance
       {
         this.afterUnitsHaveFinishedUpdatingCallback();
         this.afterUnitsHaveFinishedUpdatingCallback = null;
-        this.side1UnitHasFinishedUpdating = false;
-        this.side2UnitHasFinishedUpdating = false;
       }
     }
     finishUpdatingUnit(side: "side1" | "side2")
@@ -223,6 +221,9 @@ module Rance
 
         boundAfterFinishFN1 = this.finishUpdatingUnit.bind(this, "side1");
         boundAfterFinishFN2 = this.finishUpdatingUnit.bind(this, "side2");
+
+        this.side1UnitHasFinishedUpdating = false;
+        this.side2UnitHasFinishedUpdating = false;
       }
 
       var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
