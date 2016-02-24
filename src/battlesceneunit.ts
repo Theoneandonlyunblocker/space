@@ -25,6 +25,7 @@ module Rance
     onFinishEnter: () => void;
     onFinishExit: () => void;
     tween: TWEEN.Tween;
+    hasSFXSprite: boolean = false;
 
     getSceneBounds: () => {width: number; height: number};
 
@@ -46,7 +47,20 @@ module Rance
 
     changeActiveUnit(unit: Unit, afterChangedCallback?: () => void)
     {
-      if (!unit && this.activeUnit)
+      if (this.hasSFXSprite)
+      {
+        if (unit)
+        {
+          this.enterUnitSpriteWithoutAnimation(unit);
+        }
+        else
+        {
+          this.exitUnitSpriteWithoutAnimation();
+        }
+
+        this.hasSFXSprite = false;
+      }
+      else if (!unit && this.activeUnit)
       {
         this.onFinishExit = afterChangedCallback;
         this.exitUnitSprite();
@@ -59,6 +73,29 @@ module Rance
       else if (afterChangedCallback)
       {
         afterChangedCallback();
+      }
+    }
+    setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
+    {
+      if (this.activeUnit)
+      {
+        var duration = SFXTemplate.duration * Options.battleAnimationTiming.effectDuration;
+        if (this.activeUnit === user && SFXTemplate.userSprite)
+        {
+          this.setSFXSprite(SFXTemplate.userSprite, duration);
+        }
+        else if (this.activeUnit === target && SFXTemplate.enemySprite)
+        {
+          this.setSFXSprite(SFXTemplate.enemySprite, duration);
+        }
+        else
+        {
+
+        }
+      }
+      else
+      {
+
       }
     }
 
@@ -310,6 +347,19 @@ module Rance
 
       tween.start();
       return tween;
+    }
+    private setSFXSprite(spriteDrawingFN: (props: Templates.SFXParams) => void, duration: number)
+    {
+      this.clearUnitSprite();
+      var SFXParams = this.getSFXParams(
+      {
+        unit: this.activeUnit,
+        duration: duration,
+        triggerStart: this.addUnitSprite.bind(this)
+      });
+
+      this.hasSFXSprite = true;
+      spriteDrawingFN(SFXParams);
     }
   }
 }

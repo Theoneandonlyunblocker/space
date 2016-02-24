@@ -151,27 +151,25 @@ module Rance
 
       handleTestAbility1: function()
       {
-        var overlayTestFN = function(params: Templates.SFXParams)
+        var overlayTestFN = function(color: number, params: Templates.SFXParams)
         {
           var renderTexture = new PIXI.RenderTexture(params.renderer, params.width, params.height);
           var sprite = new PIXI.Sprite(renderTexture);
           var container = new PIXI.Container();
 
-          var gfx = new PIXI.Graphics();
-          gfx.beginFill(0xFF0000);
-          gfx.drawRect(0, 0, 200, 200);
-          gfx.endFill();
-          container.addChild(gfx);
+          var text = new PIXI.Text("" + params.duration, {fill: color});
+          container.addChild(text);
 
           var alphaPerMillisecond = 1 / params.duration;
 
-          var startTime = Date.now();
-          var endTime = startTime + params.duration;
-          var lastTime = startTime;
+          var currentTime = Date.now();
+          var startTime = currentTime;
+          var endTime = currentTime + params.duration;
+          var lastTime = currentTime;
 
           function animate()
           {
-            var currentTime = Date.now();
+            currentTime = Date.now();
             var elapsedTime = currentTime - lastTime;
             lastTime = currentTime;
 
@@ -180,23 +178,52 @@ module Rance
 
             if (currentTime < endTime)
             {
-              gfx.alpha -= alphaPerMillisecond * elapsedTime;
+              if (currentTime > startTime)
+              {
+                text.text = "" + (endTime - currentTime);
+              }
               window.requestAnimationFrame(animate);
             }
             else
             {
-              console.log("trigger overlayTest end");
               params.triggerEnd();
             }
           }
 
-          console.log("trigger overlayTest start");
           params.triggerStart(container);
           animate();
         }
 
-        var overlay = this.battleScene.getBattleSceneUnitOverlay(this.state.activeUnit);
-        overlay.setOverlay(overlayTestFN, this.state.activeUnit, 2000);
+        var spriteTestFN = function(params: Templates.SFXParams)
+        {
+          var container = new PIXI.Container;
+
+          var gfx = new PIXI.Graphics();
+          gfx.beginFill(0xFF0000);
+          gfx.drawRect(0, 0, 200, 200);
+          gfx.endFill();
+          container.addChild(gfx);
+
+          params.triggerStart(container);
+        }
+
+        var testSFX: Templates.IBattleSFXTemplate =
+        {
+          duration: 1000,
+          battleOverlay: app.moduleData.Templates.BattleSFX["guard"].battleOverlay,
+          userOverlay: overlayTestFN.bind(null, 0xFF0000),
+          enemyOverlay: overlayTestFN.bind(null, 0x00FF00),
+          userSprite: spriteTestFN,
+          delay: 0.3
+        }
+
+        var user = this.state.activeUnit;
+        var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
+
+        var bs: Rance.BattleScene = this.battleScene;
+        var SFXTemplate = testSFX;
+
+        bs.setActiveSFX(SFXTemplate, user, target);
       },
 
       handleTestAbility2: function()
@@ -288,7 +315,7 @@ module Rance
               {
                 className: "battle-scene-test-ability1",
                 onClick: this.handleTestAbility1,
-                disabled: !this.state.activeUnit
+                disabled: !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
               },
                 "test ability 1"
               ),

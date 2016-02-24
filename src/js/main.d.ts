@@ -3758,6 +3758,7 @@ declare module Rance {
         onFinishEnter: () => void;
         onFinishExit: () => void;
         tween: TWEEN.Tween;
+        hasSFXSprite: boolean;
         getSceneBounds: () => {
             width: number;
             height: number;
@@ -3766,6 +3767,7 @@ declare module Rance {
         destroy(): void;
         private initLayers();
         changeActiveUnit(unit: Unit, afterChangedCallback?: () => void): void;
+        setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
         private enterUnitSpriteWithoutAnimation(unit);
         private exitUnitSpriteWithoutAnimation();
         private enterUnitSprite(unit);
@@ -3784,6 +3786,7 @@ declare module Rance {
         private setUnitSprite(unit);
         private clearTween();
         private makeEnterExitTween(direction, duration, onComplete);
+        private setSFXSprite(spriteDrawingFN, duration);
     }
 }
 declare module Rance {
@@ -3801,6 +3804,7 @@ declare module Rance {
         constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
         destroy(): void;
         private initLayers();
+        setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
         setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number): void;
         clearOverlay(): void;
         private getSFXParams(duration, triggerStart, triggerEnd?);
@@ -3857,7 +3861,7 @@ declare module Rance {
         updateUnits(afterFinishedUpdatingCallback?: () => void): void;
         setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
         clearActiveSFX(): void;
-        triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate): void;
+        triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
         makeBattleOverlay(): void;
         addBattleOverlay(overlay: PIXI.DisplayObject): void;
         clearBattleOverlay(): void;

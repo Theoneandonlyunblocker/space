@@ -228,9 +228,11 @@ module Rance
 
       var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
       this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
+      this.side1Overlay.activeUnit = activeSide1Unit;
 
       var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
       this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
+      this.side2Overlay.activeUnit = activeSide2Unit;
     }
     setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
     {
@@ -245,7 +247,7 @@ module Rance
       this.userUnit = user;
       this.targetUnit = target;
 
-      this.updateUnits(this.triggerSFXStart.bind(this, SFXTemplate));
+      this.updateUnits(this.triggerSFXStart.bind(this, SFXTemplate, user, target));
     }
     clearActiveSFX()
     {
@@ -259,13 +261,13 @@ module Rance
 
       this.updateUnits();
     }
-    triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate)
+    triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
     {
       this.activeSFX = SFXTemplate;
-      // this.side1Unit.setSFX(SFXTemplate);
-      // this.side2Unit.setSFX(SFXTemplate);
-      // this.side1Overlay.setSFX(SFXTemplate);
-      // this.side2Overlay.setSFX(SFXTemplate);
+      this.side1Unit.setSFX(SFXTemplate, user, target);
+      this.side2Unit.setSFX(SFXTemplate, user, target);
+      this.side1Overlay.setSFX(SFXTemplate, user, target);
+      this.side2Overlay.setSFX(SFXTemplate, user, target);
       this.makeBattleOverlay();
     }
     makeBattleOverlay()

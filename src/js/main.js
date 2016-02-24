@@ -20145,40 +20145,58 @@ var Rance;
                 this.battleScene.setActiveUnit(newActiveUnit);
             },
             handleTestAbility1: function () {
-                var overlayTestFN = function (params) {
+                var overlayTestFN = function (color, params) {
                     var renderTexture = new PIXI.RenderTexture(params.renderer, params.width, params.height);
                     var sprite = new PIXI.Sprite(renderTexture);
                     var container = new PIXI.Container();
-                    var gfx = new PIXI.Graphics();
-                    gfx.beginFill(0xFF0000);
-                    gfx.drawRect(0, 0, 200, 200);
-                    gfx.endFill();
-                    container.addChild(gfx);
+                    var text = new PIXI.Text("" + params.duration, { fill: color });
+                    container.addChild(text);
                     var alphaPerMillisecond = 1 / params.duration;
-                    var startTime = Date.now();
-                    var endTime = startTime + params.duration;
-                    var lastTime = startTime;
+                    var currentTime = Date.now();
+                    var startTime = currentTime;
+                    var endTime = currentTime + params.duration;
+                    var lastTime = currentTime;
                     function animate() {
-                        var currentTime = Date.now();
+                        currentTime = Date.now();
                         var elapsedTime = currentTime - lastTime;
                         lastTime = currentTime;
                         renderTexture.clear();
                         renderTexture.render(container);
                         if (currentTime < endTime) {
-                            gfx.alpha -= alphaPerMillisecond * elapsedTime;
+                            if (currentTime > startTime) {
+                                text.text = "" + (endTime - currentTime);
+                            }
                             window.requestAnimationFrame(animate);
                         }
                         else {
-                            console.log("trigger overlayTest end");
                             params.triggerEnd();
                         }
                     }
-                    console.log("trigger overlayTest start");
                     params.triggerStart(container);
                     animate();
                 };
-                var overlay = this.battleScene.getBattleSceneUnitOverlay(this.state.activeUnit);
-                overlay.setOverlay(overlayTestFN, this.state.activeUnit, 2000);
+                var spriteTestFN = function (params) {
+                    var container = new PIXI.Container;
+                    var gfx = new PIXI.Graphics();
+                    gfx.beginFill(0xFF0000);
+                    gfx.drawRect(0, 0, 200, 200);
+                    gfx.endFill();
+                    container.addChild(gfx);
+                    params.triggerStart(container);
+                };
+                var testSFX = {
+                    duration: 1000,
+                    battleOverlay: app.moduleData.Templates.BattleSFX["guard"].battleOverlay,
+                    userOverlay: overlayTestFN.bind(null, 0xFF0000),
+                    enemyOverlay: overlayTestFN.bind(null, 0x00FF00),
+                    userSprite: spriteTestFN,
+                    delay: 0.3
+                };
+                var user = this.state.activeUnit;
+                var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
+                var bs = this.battleScene;
+                var SFXTemplate = testSFX;
+                bs.setActiveSFX(SFXTemplate, user, target);
             },
             handleTestAbility2: function () {
                 var user = this.state.activeUnit;
@@ -20229,7 +20247,7 @@ var Rance;
                 }, side2UnitElements)), React.DOM.button({
                     className: "battle-scene-test-ability1",
                     onClick: this.handleTestAbility1,
-                    disabled: !this.state.activeUnit
+                    disabled: !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
                 }, "test ability 1"), React.DOM.button({
                     className: "battle-scene-test-ability2",
                     onClick: this.handleTestAbility2,
@@ -27823,6 +27841,7 @@ var Rance;
     var BattleSceneUnit = (function () {
         function BattleSceneUnit(container, renderer) {
             this.unitState = BattleSceneUnitState.removed;
+            this.hasSFXSprite = false;
             this.container = container;
             this.renderer = renderer;
             this.initLayers();
@@ -27834,7 +27853,16 @@ var Rance;
             this.container.addChild(this.spriteContainer);
         };
         BattleSceneUnit.prototype.changeActiveUnit = function (unit, afterChangedCallback) {
-            if (!unit && this.activeUnit) {
+            if (this.hasSFXSprite) {
+                if (unit) {
+                    this.enterUnitSpriteWithoutAnimation(unit);
+                }
+                else {
+                    this.exitUnitSpriteWithoutAnimation();
+                }
+                this.hasSFXSprite = false;
+            }
+            else if (!unit && this.activeUnit) {
                 this.onFinishExit = afterChangedCallback;
                 this.exitUnitSprite();
             }
@@ -27844,6 +27872,21 @@ var Rance;
             }
             else if (afterChangedCallback) {
                 afterChangedCallback();
+            }
+        };
+        BattleSceneUnit.prototype.setSFX = function (SFXTemplate, user, target) {
+            if (this.activeUnit) {
+                var duration = SFXTemplate.duration * Rance.Options.battleAnimationTiming.effectDuration;
+                if (this.activeUnit === user && SFXTemplate.userSprite) {
+                    this.setSFXSprite(SFXTemplate.userSprite, duration);
+                }
+                else if (this.activeUnit === target && SFXTemplate.enemySprite) {
+                    this.setSFXSprite(SFXTemplate.enemySprite, duration);
+                }
+                else {
+                }
+            }
+            else {
             }
         };
         // enter without animation
@@ -28026,6 +28069,16 @@ var Rance;
             tween.start();
             return tween;
         };
+        BattleSceneUnit.prototype.setSFXSprite = function (spriteDrawingFN, duration) {
+            this.clearUnitSprite();
+            var SFXParams = this.getSFXParams({
+                unit: this.activeUnit,
+                duration: duration,
+                triggerStart: this.addUnitSprite.bind(this)
+            });
+            this.hasSFXSprite = true;
+            spriteDrawingFN(SFXParams);
+        };
         return BattleSceneUnit;
     }());
     Rance.BattleSceneUnit = BattleSceneUnit;
@@ -28048,7 +28101,23 @@ var Rance;
             this.overlayContainer = new PIXI.Container;
             this.container.addChild(this.overlayContainer);
         };
+        BattleSceneUnitOverlay.prototype.setSFX = function (SFXTemplate, user, target) {
+            if (this.activeUnit) {
+                var duration = SFXTemplate.duration * Rance.Options.battleAnimationTiming.effectDuration;
+                if (this.activeUnit === user && SFXTemplate.userOverlay) {
+                    this.setOverlay(SFXTemplate.userOverlay, user, duration);
+                }
+                else if (this.activeUnit === target && SFXTemplate.enemyOverlay) {
+                    this.setOverlay(SFXTemplate.enemyOverlay, target, duration);
+                }
+                else {
+                }
+            }
+            else {
+            }
+        };
         BattleSceneUnitOverlay.prototype.setOverlay = function (overlayFN, unit, duration) {
+            this.clearOverlay();
             if (duration <= 0) {
                 return;
             }
@@ -28061,6 +28130,7 @@ var Rance;
         };
         BattleSceneUnitOverlay.prototype.clearOverlay = function () {
             this.animationIsActive = false;
+            this.onAnimationFinish = null;
             this.activeUnit = null;
             this.overlayContainer.removeChildren();
         };
@@ -28246,8 +28316,10 @@ var Rance;
             }
             var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
             this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
+            this.side1Overlay.activeUnit = activeSide1Unit;
             var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
             this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
+            this.side2Overlay.activeUnit = activeSide2Unit;
         };
         BattleScene.prototype.setActiveSFX = function (SFXTemplate, user, target) {
             this.clearActiveSFX();
@@ -28257,7 +28329,7 @@ var Rance;
             }
             this.userUnit = user;
             this.targetUnit = target;
-            this.updateUnits(this.triggerSFXStart.bind(this, SFXTemplate));
+            this.updateUnits(this.triggerSFXStart.bind(this, SFXTemplate, user, target));
         };
         BattleScene.prototype.clearActiveSFX = function () {
             this.activeSFX = null;
@@ -28267,12 +28339,12 @@ var Rance;
             this.clearUnitOverlays();
             this.updateUnits();
         };
-        BattleScene.prototype.triggerSFXStart = function (SFXTemplate) {
+        BattleScene.prototype.triggerSFXStart = function (SFXTemplate, user, target) {
             this.activeSFX = SFXTemplate;
-            // this.side1Unit.setSFX(SFXTemplate);
-            // this.side2Unit.setSFX(SFXTemplate);
-            // this.side1Overlay.setSFX(SFXTemplate);
-            // this.side2Overlay.setSFX(SFXTemplate);
+            this.side1Unit.setSFX(SFXTemplate, user, target);
+            this.side2Unit.setSFX(SFXTemplate, user, target);
+            this.side1Overlay.setSFX(SFXTemplate, user, target);
+            this.side2Overlay.setSFX(SFXTemplate, user, target);
             this.makeBattleOverlay();
         };
         BattleScene.prototype.makeBattleOverlay = function () {

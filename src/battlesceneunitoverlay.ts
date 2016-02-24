@@ -33,8 +33,32 @@ module Rance
       this.overlayContainer = new PIXI.Container;
       this.container.addChild(this.overlayContainer);
     }
+    setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
+    {
+      if (this.activeUnit)
+      {
+        var duration = SFXTemplate.duration * Options.battleAnimationTiming.effectDuration;
+        if (this.activeUnit === user && SFXTemplate.userOverlay)
+        {
+          this.setOverlay(SFXTemplate.userOverlay, user, duration);
+        }
+        else if (this.activeUnit === target && SFXTemplate.enemyOverlay)
+        {
+          this.setOverlay(SFXTemplate.enemyOverlay, target, duration);
+        }
+        else
+        {
+
+        }
+      }
+      else
+      {
+
+      }
+    }
     setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number)
     {
+      this.clearOverlay();
       if (duration <= 0)
       {
         return;
@@ -52,6 +76,7 @@ module Rance
     clearOverlay()
     {
       this.animationIsActive = false;
+      this.onAnimationFinish = null;
 
       this.activeUnit = null;
       this.overlayContainer.removeChildren();
