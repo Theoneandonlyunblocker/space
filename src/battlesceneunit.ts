@@ -56,6 +56,10 @@ module Rance
         this.onFinishEnter = afterChangedCallback;
         this.enterUnitSprite(unit);
       }
+      else if (afterChangedCallback)
+      {
+        afterChangedCallback();
+      }
     }
 
     // enter without animation
