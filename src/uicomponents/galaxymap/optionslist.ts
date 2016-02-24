@@ -118,10 +118,10 @@ module Rance
                 min: props.min,
                 max: props.max,
                 step: props.step,
-                onChangeFN: function(value: number)
+                onChangeFN: function(stage: string, value: number)
                 {
                   Options.battleAnimationTiming[stage] = value;
-                }
+                }.bind(null, stage)
               })
             }
           );
