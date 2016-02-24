@@ -1,4 +1,9 @@
-/// <reference path="battlesceneunit.ts" />
+/// <reference path="../../player.ts" />
+/// <reference path="../../unit.ts" />
+
+/// <reference path="battlesceneflag.ts" />
+
+var bs2: any = null;
 
 module Rance
 {
@@ -7,196 +12,132 @@ module Rance
     export var BattleScene = React.createClass(
     {
       displayName: "BattleScene",
-      mixins: [React.addons.PureRenderMixin],
-      cachedSFXWidth: null,
 
-      componentWillUpdate: function(newProps: any)
+      battleScene: null, // Rance.BattleScene
+
+      propTypes:
       {
-        if (!this.props.battleHasEnded && newProps.battleHasEnded)
-        {
-          this.clearBattleOverlay();
-        }
+        battleState: React.PropTypes.string.isRequired, // "start", "active", "finish"
+
+        targetUnit: React.PropTypes.instanceOf(Rance.Unit),
+        userUnit: React.PropTypes.instanceOf(Rance.Unit),
+        activeUnit: React.PropTypes.instanceOf(Rance.Unit),
+        hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
+
+        forcedSide1Unit: React.PropTypes.instanceOf(Rance.Unit),
+        forcedSide2Unit: React.PropTypes.instanceOf(Rance.Unit),
+
+        activeSFX: React.PropTypes.object, // Templates.IBattleSFXTemplate
+        humanPlayerWonBattle: React.PropTypes.bool,
+
+        side1Player: React.PropTypes.instanceOf(Rance.Player),
+        side2Player: React.PropTypes.instanceOf(Rance.Player)
       },
-      componentDidUpdate: function(oldProps: any)
+
+      shouldComponentUpdate: function(newProps: any)
       {
-        if (this.props.battleHasEnded)
+        var shouldTriggerUpdate =
         {
-          
-        }
-        else if (this.props.effectSFX && this.props.effectSFX.battleOverlay)
+          battleState: true
+        };
+
+        for (var key in newProps)
         {
-          if (oldProps.effectId !== this.props.effectId)
+          if (shouldTriggerUpdate[key] && newProps[key] !== this.props[key])
           {
-            this.drawBattleOverlay();
+            return true;
           }
         }
-        else if (oldProps.effectSFX && oldProps.effectSFX.battleOverlay)
-        {
-          this.clearBattleOverlay();
-        }
+
+        return false;
       },
 
+      componentWillReceiveProps: function(newProps: any)
+      {
+        var self = this;
+
+        if (this.props.battleState === "start" && newProps.battleState === "active")
+        {
+          this.battleScene = new Rance.BattleScene(this.getDOMNode());
+          this.battleScene.resume();
+        }
+        else if (this.props.battleState === "active" && newProps.battleState === "finish")
+        {
+          this.battleScene.destroy();
+          this.battleScene = null;
+        }
+
+        if (this.battleScene)
+        {
+          if (newProps.activeSFX !== this.props.activeSFX)
+          {
+            this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+          }
+          // can wrap in else statement if we switch away from forced units
+          [
+            // "targetUnit",
+            // "userUnit",
+            // "activeUnit",
+            // "hoveredUnit"
+            "forcedSide1Unit",
+            "forcedSide2Unit"
+          ].forEach(function(unitKey: string)
+          {
+            self.battleScene[unitKey] = newProps[unitKey];
+          });
+
+          this.battleScene.updateUnits();
+        }
+      },
+      
       componentDidMount: function()
       {
-        window.addEventListener("resize", this.handleResize, false);
+        bs2 = this;
       },
 
-      componentWillUnmount: function()
-      {
-        window.removeEventListener("resize", this.handleResize);
-      },
-
-      getSceneBounds: function()
-      {
-        return this.refs.wrapper.getDOMNode().getBoundingClientRect();
-      },
-
-      handleResize: function()
-      {
-        if (this.cachedSFXWidth)
-        {
-          this.resizeScene(this.cachedSFXWidth);
-        }
-      },
-
-      resizeSceneToCanvas: function(overlayCanvas: HTMLCanvasElement)
-      {
-        var leftoverWidth = this.resizeScene(overlayCanvas.width);
-        if (leftoverWidth !== 0) this.cachedSFXWidth = overlayCanvas.width;
-      },
-
-      resizeScene: function(width: number)
-      {
-        var scene = this.refs.scene.getDOMNode();
-
-        var wrapperBounds = this.refs.wrapper.getDOMNode().getBoundingClientRect();
-        var leftoverWidth2 = (wrapperBounds.width - width) / 2;
-
-        if (leftoverWidth2 <= 0)
-        {
-          scene.style.width = "";
-          scene.style.left = "";
-        }
-        else
-        {
-          scene.style.width = "" +  width + "px";
-          scene.style.left = "" +  leftoverWidth2 + "px";
-        }
-
-        return leftoverWidth2;
-      },
-      clearBattleOverlay: function(container?: Node)
-      {
-        var container = container || <Node> this.refs.overlay.getDOMNode();
-        if (container.firstChild)
-        {
-          container.removeChild(container.firstChild);
-        }
-      },
-      drawBattleOverlay: function()
-      {
-        var container = this.refs.overlay.getDOMNode();
-        this.clearBattleOverlay(container);
-
-        var bounds = this.getSceneBounds();
-        var battleOverlay = this.props.effectSFX.battleOverlay(
-        {
-          user: this.props.unit1IsActive ? this.props.unit1 : this.props.unit2,
-          target: this.props.unit1IsActive ? this.props.unit2 : this.props.unit1,
-          width: bounds.width,
-          height: bounds.height,
-          duration: this.props.effectDuration,
-          facingRight: this.props.unit1IsActive ? true : false,
-          onLoaded: this.resizeSceneToCanvas
-        });
-
-        container.appendChild(battleOverlay);
-      },
       render: function()
       {
-        var unit1SpriteFN: Function, unit1OverlayFN: Function,
-          unit2SpriteFN: Function, unit2OverlayFN: Function;
-        if (this.props.effectSFX)
+        var componentToRender: ReactDOMPlaceHolder;
+
+        switch (this.props.battleState)
         {
-          if (this.props.unit1IsActive)
+          case "start":
           {
-            unit1SpriteFN = this.props.effectSFX.userSprite;
-            unit1OverlayFN = this.props.effectSFX.userOverlay;
-
-            unit2OverlayFN = this.props.effectSFX.enemyOverlay;
+            componentToRender = React.DOM.div(
+            {
+              className: "battle-scene-flags-container"
+            },
+              UIComponents.BattleSceneFlag(
+              {
+                flag: this.props.side1Player.flag,
+                facingRight: true
+              }),
+              UIComponents.BattleSceneFlag(
+              {
+                flag: this.props.side2Player.flag,
+                facingRight: false
+              })
+            )
+            break;
           }
-          else
+          case "active":
           {
-            unit2SpriteFN = this.props.effectSFX.userSprite;
-            unit2OverlayFN = this.props.effectSFX.userOverlay;
-
-            unit1OverlayFN = this.props.effectSFX.enemyOverlay;
+            componentToRender = null;
+            break;
           }
-        }
-
-        var overlayElement: ReactComponentPlaceHolder = null;
-        if (this.props.battleHasEnded)
-        {
-          overlayElement = React.DOM.div(
+          case "finish":
           {
-            className: "battle-end-overlay"
-          },
-            this.props.playerWonBattle ? "Victory" : "Defeat"
-          )
+            
+            break;
+          }
         }
 
         return(
           React.DOM.div(
           {
-            className: "battle-scene-wrapper",
-            ref: "wrapper"
+            className: "battle-scene"
           },
-            React.DOM.div(
-            {
-              className: "battle-scene",
-              ref: "scene"
-            },
-              React.DOM.div(
-              {
-                className: "battle-scene-units-container"
-              },
-                UIComponents.BattleSceneUnit(
-                {
-                  unit: this.props.unit1,
-                  side: "side1",
-
-                  effectDuration: this.props.effectDuration,
-                  effectSpriteFN: unit1SpriteFN,
-                  effectOverlayFN: unit1OverlayFN,
-
-                  getSceneBounds: this.getSceneBounds,
-
-                  battleIsStarting: this.props.battleIsStarting,
-                  flag: this.props.player1.flag
-                }),
-                UIComponents.BattleSceneUnit(
-                {
-                  unit: this.props.unit2,
-                  side: "side2",
-
-                  effectDuration: this.props.effectDuration,
-                  effectSpriteFN: unit2SpriteFN,
-                  effectOverlayFN: unit2OverlayFN,
-
-                  getSceneBounds: this.getSceneBounds,
-
-                  battleIsStarting: this.props.battleIsStarting,
-                  flag: this.props.player2.flag
-                })
-              ),
-              React.DOM.div(
-              {
-                className: "battle-scene-overlay-container",
-                ref: "overlay"
-              },
-                overlayElement // battle overlay SFX drawn on canvas or battle end gfx
-              )
-            )
+            componentToRender
           )
         );
       }

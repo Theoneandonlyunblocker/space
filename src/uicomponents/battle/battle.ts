@@ -2,7 +2,7 @@
 /// <reference path="turncounter.ts"/>
 /// <reference path="turnorder.ts"/>
 /// <reference path="abilitytooltip.ts"/>
-/// <reference path="battlescene2.ts"/>
+/// <reference path="battlescene.ts"/>
 /// <reference path="battlescore.ts"/>
 /// <reference path="battledisplaystrength.ts"/>
 /// <reference path="battlebackground.ts"/>
