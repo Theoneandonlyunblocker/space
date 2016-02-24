@@ -202,7 +202,7 @@ module Rance
       handleTestAbility2: function()
       {
         var user = this.state.activeUnit;
-        var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide2Unit;
+        var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
         var bs: Rance.BattleScene = this.battleScene;
         var SFXTemplate = app.moduleData.Templates.BattleSFX["guard"];
