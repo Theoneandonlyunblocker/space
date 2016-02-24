@@ -19,16 +19,19 @@ module Rance
       {
         battleState: React.PropTypes.string.isRequired, // "start", "active", "finish"
 
-        targetUnit: React.PropTypes.instanceOf(Unit),
-        userUnit: React.PropTypes.instanceOf(Unit),
-        activeUnit: React.PropTypes.instanceOf(Unit),
-        hoveredUnit: React.PropTypes.instanceOf(Unit),
+        targetUnit: React.PropTypes.instanceOf(Rance.Unit),
+        userUnit: React.PropTypes.instanceOf(Rance.Unit),
+        activeUnit: React.PropTypes.instanceOf(Rance.Unit),
+        hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
+
+        forcedSide1Unit: React.PropTypes.instanceOf(Rance.Unit),
+        forcedSide2Unit: React.PropTypes.instanceOf(Rance.Unit),
 
         activeSFX: React.PropTypes.object, // Templates.IBattleSFXTemplate
         humanPlayerWonBattle: React.PropTypes.bool,
 
-        side1Player: React.PropTypes.instanceOf(Player),
-        side2Player: React.PropTypes.instanceOf(Player)
+        side1Player: React.PropTypes.instanceOf(Rance.Player),
+        side2Player: React.PropTypes.instanceOf(Rance.Player)
       },
 
       shouldComponentUpdate: function(newProps: any)
@@ -64,21 +67,26 @@ module Rance
           this.battleScene = null;
         }
 
-        if (newProps.activeSFX !== this.props.activeSFX)
+        if (this.battleScene)
         {
-          this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
-        }
-        else
-        {
+          if (newProps.activeSFX !== this.props.activeSFX)
+          {
+            this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+          }
+          // can wrap in else statement if we switch away from forced units
           [
-            "targetUnit",
-            "userUnit",
-            "activeUnit",
-            "hoveredUnit"
+            // "targetUnit",
+            // "userUnit",
+            // "activeUnit",
+            // "hoveredUnit"
+            "forcedSide1Unit",
+            "forcedSide2Unit"
           ].forEach(function(unitKey: string)
           {
-            self.battleScene.setUnit(unitKey, newProps[unitKey]);
+            self.battleScene[unitKey] = newProps[unitKey];
           });
+
+          this.battleScene.updateUnits();
         }
       },
       

@@ -29,6 +29,11 @@ module Rance
 
     activeSFX: Templates.IBattleSFXTemplate;
 
+    // used for compability with UIComponents/Battle
+    forcedSide1Unit: Unit;
+    forcedSide2Unit: Unit;
+
+    // not used for now
     targetUnit: Unit;  // being targeted by ability | priority
     userUnit: Unit;    // using an ability          |
     activeUnit: Unit;  // next to act in turn order |
@@ -54,7 +59,8 @@ module Rance
         parseInt(pixiContainerStyle.height),
         {
           autoResize: false,
-          antialias: true
+          antialias: true,
+          transparent: true
         }
       );
 
@@ -143,6 +149,18 @@ module Rance
     
     getHighestPriorityUnitForSide(side: "side1" | "side2")
     {
+      switch (side)
+      {
+        case "side1":
+        {
+          return this.forcedSide1Unit;
+        }
+        case "side2":
+        {
+          return this.forcedSide2Unit;
+        }
+      }
+      /*
       var units =
       [
         this.targetUnit,
@@ -161,6 +179,7 @@ module Rance
       }
 
       return null;
+      */
     }
     setUnit(key: string, unit: Unit)
     {
@@ -169,8 +188,18 @@ module Rance
         return;
       }
 
+      console.log("set unit " + key, (unit ? unit.name : "null"));
+
       this[key] = unit;
-      this.updateUnits
+      this.updateUnits();
+    }
+    setSide1Unit(unit: Unit)
+    {
+      this.setUnit("forcedSide1Unit", unit);
+    }
+    setSide2Unit(unit: Unit)
+    {
+      this.setUnit("forcedSide2Unit", unit);
     }
     setTargetUnit(unit: Unit)
     {

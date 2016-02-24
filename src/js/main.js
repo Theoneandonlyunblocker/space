@@ -9616,10 +9616,12 @@ var Rance;
             battleScene: null,
             propTypes: {
                 battleState: React.PropTypes.string.isRequired,
-                targetUnit: React.PropTypes.instanceOf(UIComponents.Unit),
-                userUnit: React.PropTypes.instanceOf(UIComponents.Unit),
-                activeUnit: React.PropTypes.instanceOf(UIComponents.Unit),
-                hoveredUnit: React.PropTypes.instanceOf(UIComponents.Unit),
+                targetUnit: React.PropTypes.instanceOf(Rance.Unit),
+                userUnit: React.PropTypes.instanceOf(Rance.Unit),
+                activeUnit: React.PropTypes.instanceOf(Rance.Unit),
+                hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
+                forcedSide1Unit: React.PropTypes.instanceOf(Rance.Unit),
+                forcedSide2Unit: React.PropTypes.instanceOf(Rance.Unit),
                 activeSFX: React.PropTypes.object,
                 humanPlayerWonBattle: React.PropTypes.bool,
                 side1Player: React.PropTypes.instanceOf(Rance.Player),
@@ -9646,18 +9648,22 @@ var Rance;
                     this.battleScene.destroy();
                     this.battleScene = null;
                 }
-                if (newProps.activeSFX !== this.props.activeSFX) {
-                    this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
-                }
-                else {
+                if (this.battleScene) {
+                    if (newProps.activeSFX !== this.props.activeSFX) {
+                        this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+                    }
+                    // can wrap in else statement if we switch away from forced units
                     [
-                        "targetUnit",
-                        "userUnit",
-                        "activeUnit",
-                        "hoveredUnit"
+                        // "targetUnit",
+                        // "userUnit",
+                        // "activeUnit",
+                        // "hoveredUnit"
+                        "forcedSide1Unit",
+                        "forcedSide2Unit"
                     ].forEach(function (unitKey) {
-                        self.battleScene.setUnit(unitKey, newProps[unitKey]);
+                        self.battleScene[unitKey] = newProps[unitKey];
                     });
+                    this.battleScene.updateUnits();
                 }
             },
             componentDidMount: function () {
@@ -10312,6 +10318,16 @@ var Rance;
                     });
                     playerWonBattle = this.props.humanPlayer === battle.getVictor();
                 }
+                var battleState = null;
+                if (this.state.battleIsStarting) {
+                    battleState = "start";
+                }
+                else if (battle.ended) {
+                    battleState = "finish";
+                }
+                else {
+                    battleState = "active";
+                }
                 return (UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     backgroundSeed: this.props.battle.battleData.location.getSeed(),
@@ -10324,7 +10340,9 @@ var Rance;
                 }, UIComponents.BattleScore({
                     battle: battle
                 }), upperFooter, UIComponents.BattleScene({
-                    battleState: "start",
+                    battleState: battleState,
+                    forcedSide1Unit: this.state.battleSceneUnit1,
+                    forcedSide2Unit: this.state.battleSceneUnit2,
                     activeSFX: this.state.effectSFX,
                     humanPlayerWonBattle: playerWonBattle,
                     side1Player: battle.side1Player,
@@ -27959,7 +27977,8 @@ var Rance;
             var pixiContainerStyle = window.getComputedStyle(this.pixiContainer);
             this.renderer = PIXI.autoDetectRenderer(parseInt(pixiContainerStyle.width), parseInt(pixiContainerStyle.height), {
                 autoResize: false,
-                antialias: true
+                antialias: true,
+                transparent: true
             });
             this.pixiContainer.appendChild(this.renderer.view);
             this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
@@ -28023,26 +28042,50 @@ var Rance;
             });
         };
         BattleScene.prototype.getHighestPriorityUnitForSide = function (side) {
-            var units = [
-                this.targetUnit,
-                this.userUnit,
-                this.activeUnit,
-                this.hoveredUnit
-            ];
-            for (var i = 0; i < units.length; i++) {
-                var unit = units[i];
-                if (unit && unit.battleStats.side === side) {
-                    return unit;
-                }
+            switch (side) {
+                case "side1":
+                    {
+                        return this.forcedSide1Unit;
+                    }
+                case "side2":
+                    {
+                        return this.forcedSide2Unit;
+                    }
             }
+            /*
+            var units =
+            [
+              this.targetUnit,
+              this.userUnit,
+              this.activeUnit,
+              this.hoveredUnit
+            ];
+      
+            for (var i = 0; i < units.length; i++)
+            {
+              var unit = units[i];
+              if (unit && unit.battleStats.side === side)
+              {
+                return unit;
+              }
+            }
+      
             return null;
+            */
         };
         BattleScene.prototype.setUnit = function (key, unit) {
             if (this[key] === unit) {
                 return;
             }
+            console.log("set unit " + key, (unit ? unit.name : "null"));
             this[key] = unit;
-            this.updateUnits;
+            this.updateUnits();
+        };
+        BattleScene.prototype.setSide1Unit = function (unit) {
+            this.setUnit("forcedSide1Unit", unit);
+        };
+        BattleScene.prototype.setSide2Unit = function (unit) {
+            this.setUnit("forcedSide2Unit", unit);
         };
         BattleScene.prototype.setTargetUnit = function (unit) {
             this.setUnit("targetUnit", unit);

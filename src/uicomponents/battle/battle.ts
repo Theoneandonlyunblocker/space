@@ -575,6 +575,20 @@ module Rance
           playerWonBattle = this.props.humanPlayer === battle.getVictor();
         }
 
+        var battleState: string = null;
+        if (this.state.battleIsStarting)
+        {
+          battleState = "start";
+        }
+        else if (battle.ended)
+        {
+          battleState = "finish";
+        }
+        else
+        {
+          battleState = "active";
+        }
+
         return(
           UIComponents.BattleBackground(
           {
@@ -599,10 +613,11 @@ module Rance
                 upperFooter,
                 UIComponents.BattleScene(
                 {
-                  battleState: "start",
+                  battleState: battleState,
 
-                  
-                  
+                  forcedSide1Unit: this.state.battleSceneUnit1,
+                  forcedSide2Unit: this.state.battleSceneUnit2,
+
                   activeSFX: this.state.effectSFX,
                   humanPlayerWonBattle: playerWonBattle,
 

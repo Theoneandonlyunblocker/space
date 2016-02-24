@@ -3829,6 +3829,8 @@ declare module Rance {
         side1Overlay: BattleSceneUnitOverlay;
         side2Overlay: BattleSceneUnitOverlay;
         activeSFX: Templates.IBattleSFXTemplate;
+        forcedSide1Unit: Unit;
+        forcedSide2Unit: Unit;
         targetUnit: Unit;
         userUnit: Unit;
         activeUnit: Unit;
@@ -3853,6 +3855,8 @@ declare module Rance {
         }): Templates.SFXParams;
         getHighestPriorityUnitForSide(side: "side1" | "side2"): Unit;
         setUnit(key: string, unit: Unit): void;
+        setSide1Unit(unit: Unit): void;
+        setSide2Unit(unit: Unit): void;
         setTargetUnit(unit: Unit): void;
         setUserUnit(unit: Unit): void;
         setActiveUnit(unit: Unit): void;
