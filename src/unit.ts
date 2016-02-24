@@ -125,17 +125,9 @@ module Rance
     
     drawBattleScene(SFXParams: Templates.SFXParams)
     {
-      return this.template.unitDrawingFN(this, SFXParams);
+      this.template.unitDrawingFN(this, SFXParams);
     }
-    getBattleSceneBounds(SFXParams: Templates.SFXParams)
-    {
-      var sceneBounds = this.drawBattleScene(SFXParams).getBounds();
-      return(
-      {
-        width: sceneBounds.width,
-        height: sceneBounds.height
-      });
-    }
+    // end
 
     constructor(template: Templates.IUnitTemplate, id?: number, data?: any)
     {
