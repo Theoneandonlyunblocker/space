@@ -9656,7 +9656,7 @@ var Rance;
                             this.battleScene.updateUnits();
                         }
                     }
-                    else if (!this.props.activeSFX) {
+                    else if (!newProps.activeSFX) {
                         [
                             "targetUnit",
                             "userUnit",
@@ -9665,8 +9665,8 @@ var Rance;
                         ].forEach(function (unitKey) {
                             self.battleScene[unitKey] = newProps[unitKey];
                         });
+                        this.battleScene.updateUnits();
                     }
-                    this.battleScene.updateUnits();
                 }
             },
             componentDidMount: function () {
@@ -27981,7 +27981,7 @@ var Rance;
 /// <reference path="battlesceneunitoverlay.ts" />
 var Rance;
 (function (Rance) {
-    // TODO perdormance
+    // TODO performance
     // BattleScene.render() shouldn't be called unless there's something new to render
     // 
     var BattleScene = (function () {

@@ -78,7 +78,7 @@ module Rance
               this.battleScene.updateUnits();
             }
           }
-          else if (!this.props.activeSFX)
+          else if (!newProps.activeSFX)
           {
             [
               "targetUnit",
@@ -89,9 +89,10 @@ module Rance
             {
               self.battleScene[unitKey] = newProps[unitKey];
             });
+            
+            this.battleScene.updateUnits();
           }
 
-          this.battleScene.updateUnits();
         }
       },
       
