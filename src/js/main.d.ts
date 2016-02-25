@@ -3769,6 +3769,7 @@ declare module Rance {
         private initLayers();
         changeActiveUnit(unit: Unit, afterChangedCallback?: () => void): void;
         setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
+        resize(): void;
         private enterUnitSpriteWithoutAnimation(unit);
         private exitUnitSpriteWithoutAnimation();
         private enterUnitSprite(unit);

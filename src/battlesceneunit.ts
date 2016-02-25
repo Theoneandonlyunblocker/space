@@ -98,6 +98,13 @@ module Rance
 
       }
     }
+    resize()
+    {
+      if (this.spriteContainer.children.length > 0)
+      {
+        this.setContainerPosition();
+      }
+    }
 
     // enter without animation
     private enterUnitSpriteWithoutAnimation(unit: Unit)

@@ -113,6 +113,9 @@ module Rance
       var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
       var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
       this.renderer.resize(w, h);
+
+      this.side1Unit.resize();
+      this.side2Unit.resize();
     }
     getSceneBounds()
     {

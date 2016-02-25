@@ -27715,6 +27715,11 @@ var Rance;
             else {
             }
         };
+        BattleSceneUnit.prototype.resize = function () {
+            if (this.spriteContainer.children.length > 0) {
+                this.setContainerPosition();
+            }
+        };
         // enter without animation
         BattleSceneUnit.prototype.enterUnitSpriteWithoutAnimation = function (unit) {
             this.setUnit(unit);
@@ -28060,6 +28065,8 @@ var Rance;
             var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
             var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
             this.renderer.resize(w, h);
+            this.side1Unit.resize();
+            this.side2Unit.resize();
         };
         BattleScene.prototype.getSceneBounds = function () {
             return ({
