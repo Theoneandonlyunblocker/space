@@ -68,24 +68,24 @@ module Rance
         [
           {
             stage: "before",
-            displayName: "Before ability",
+            displayName: "Before ability (ms)",
             min: 0,
-            max: 10,
-            step: 0.1
+            max: 5000,
+            step: 50
           },
           {
             stage: "effectDuration",
-            displayName: "Ability effect duration",
+            displayName: "Ability effect duration (*)",
             min: 0,
             max: 10,
             step: 0.1
           },
           {
             stage: "after",
-            displayName: "After ability",
+            displayName: "After ability (ms)",
             min: 0,
-            max: 10,
-            step: 0.1
+            max: 5000,
+            step: 50
           },
           {
             stage: "unitEnter",

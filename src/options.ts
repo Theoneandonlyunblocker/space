@@ -33,7 +33,7 @@ module Rance
       // month goes 0-11
       var optionsToResetIfSetEarlierThan =
       {
-        // "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 35)
+        "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50)
       };
 
       var dateOptionsWereSaved = Date.parse(parsedData.date);
@@ -60,9 +60,9 @@ module Rance
   {
     export var battleAnimationTiming =
     {
-      before: 1,
+      before: 750,
       effectDuration: 1,
-      after: 1,
+      after: 1500,
       unitEnter: 200,
       unitExit: 100
     }

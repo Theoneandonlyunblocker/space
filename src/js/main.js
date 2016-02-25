@@ -10117,11 +10117,11 @@ var Rance;
                 if (!this.tempHoveredUnit) {
                     this.tempHoveredUnit = this.state.hoveredUnit;
                 }
-                var beforeDelay = 750 * Rance.Options.battleAnimationTiming["before"];
+                var beforeDelay = Rance.Options.battleAnimationTiming.before;
                 var effectDuration = 0;
                 var effectDelay = 0;
                 if (effectData[i].sfx) {
-                    effectDuration = effectData[i].sfx.duration * Rance.Options.battleAnimationTiming["effectDuration"];
+                    effectDuration = effectData[i].sfx.duration * Rance.Options.battleAnimationTiming.effectDuration;
                     effectDuration /= (1 + Math.log(i + 1));
                     if (effectData[i].sfx.delay) {
                         effectDelay = effectDuration * effectData[i].sfx.delay;
@@ -10129,7 +10129,7 @@ var Rance;
                 }
                 effectData[i].user.sfxDuration = effectDuration;
                 effectData[i].target.sfxDuration = effectDuration;
-                var afterDelay = 1500 * Rance.Options.battleAnimationTiming["after"];
+                var afterDelay = Rance.Options.battleAnimationTiming.after;
                 afterDelay /= effectData.length;
                 this.setState({
                     battleSceneUnit1StartingStrength: previousUnit1Strength,
@@ -14326,24 +14326,24 @@ var Rance;
                 var battleAnimationStages = [
                     {
                         stage: "before",
-                        displayName: "Before ability",
+                        displayName: "Before ability (ms)",
                         min: 0,
-                        max: 10,
-                        step: 0.1
+                        max: 5000,
+                        step: 50
                     },
                     {
                         stage: "effectDuration",
-                        displayName: "Ability effect duration",
+                        displayName: "Ability effect duration (*)",
                         min: 0,
                         max: 10,
                         step: 0.1
                     },
                     {
                         stage: "after",
-                        displayName: "After ability",
+                        displayName: "After ability (ms)",
                         min: 0,
-                        max: 10,
-                        step: 0.1
+                        max: 5000,
+                        step: 50
                     },
                     {
                         stage: "unitEnter",
@@ -27614,7 +27614,7 @@ var Rance;
         if (parsedData) {
             // month goes 0-11
             var optionsToResetIfSetEarlierThan = {
-                "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 35)
+                "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50)
             };
             var dateOptionsWereSaved = Date.parse(parsedData.date);
             for (var key in parsedData.options) {
@@ -27634,9 +27634,9 @@ var Rance;
     var defaultOptions;
     (function (defaultOptions) {
         defaultOptions.battleAnimationTiming = {
-            before: 1,
+            before: 750,
             effectDuration: 1,
-            after: 1,
+            after: 1500,
             unitEnter: 200,
             unitExit: 100
         };

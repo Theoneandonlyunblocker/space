@@ -271,13 +271,13 @@ module Rance
           this.tempHoveredUnit = this.state.hoveredUnit;
         }
 
-        var beforeDelay = 750 * Options.battleAnimationTiming["before"];
+        var beforeDelay = Options.battleAnimationTiming.before;
 
         var effectDuration = 0;
         var effectDelay = 0;
         if (effectData[i].sfx)
         {
-          effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming["effectDuration"];
+          effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming.effectDuration;
           effectDuration /= (1 + Math.log(i + 1));
           if (effectData[i].sfx.delay)
           {
@@ -288,7 +288,7 @@ module Rance
         effectData[i].user.sfxDuration = effectDuration;
         effectData[i].target.sfxDuration = effectDuration;
 
-        var afterDelay = 1500 * Options.battleAnimationTiming["after"];
+        var afterDelay = Options.battleAnimationTiming.after;
         afterDelay /= effectData.length;
 
         this.setState(
