@@ -24,9 +24,6 @@ module Rance
         activeUnit: React.PropTypes.instanceOf(Rance.Unit),
         hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
 
-        forcedSide1Unit: React.PropTypes.instanceOf(Rance.Unit),
-        forcedSide2Unit: React.PropTypes.instanceOf(Rance.Unit),
-
         activeSFX: React.PropTypes.object, // Templates.IBattleSFXTemplate
         humanPlayerWonBattle: React.PropTypes.bool,
 
@@ -71,20 +68,28 @@ module Rance
         {
           if (newProps.activeSFX !== this.props.activeSFX)
           {
-            this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+            if (newProps.activeSFX)
+            {
+              this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+            }
+            else
+            {
+              this.battleScene.clearActiveSFX();
+              this.battleScene.updateUnits();
+            }
           }
-          // can wrap in else statement if we switch away from forced units
-          [
-            // "targetUnit",
-            // "userUnit",
-            // "activeUnit",
-            // "hoveredUnit"
-            "forcedSide1Unit",
-            "forcedSide2Unit"
-          ].forEach(function(unitKey: string)
+          else if (!this.props.activeSFX)
           {
-            self.battleScene[unitKey] = newProps[unitKey];
-          });
+            [
+              "targetUnit",
+              "userUnit",
+              "activeUnit",
+              "hoveredUnit"
+            ].forEach(function(unitKey: string)
+            {
+              self.battleScene[unitKey] = newProps[unitKey];
+            });
+          }
 
           this.battleScene.updateUnits();
         }

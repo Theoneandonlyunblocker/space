@@ -41,6 +41,9 @@ module Rance
         filterContainer.filterArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
         filterContainer.filters = [filter];
 
+        // TODO performance | need to destroy or reuse texture from filterContainer.generateTexture()
+        // creates a new PIXI.FilterManager() every time that doesn't get cleaned up anywhere
+        // balloons up gpu memory
         var texture = filterContainer.generateTexture(
           renderer, PIXI.SCALE_MODES.DEFAULT, 1, filterContainer.filterArea);
 

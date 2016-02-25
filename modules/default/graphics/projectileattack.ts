@@ -23,8 +23,8 @@ module Rance
         },
         params: Rance.Templates.SFXParams)
         {
-          var minY = 0;
-          var maxY = 300; // TODO battle scene
+          var minY = 20;
+          var maxY = params.height - 20; // TODO battleSFX
 
 
           var maxSpeed = (params.width / params.duration) * props.maxSpeed;

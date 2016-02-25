@@ -9620,8 +9620,6 @@ var Rance;
                 userUnit: React.PropTypes.instanceOf(Rance.Unit),
                 activeUnit: React.PropTypes.instanceOf(Rance.Unit),
                 hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
-                forcedSide1Unit: React.PropTypes.instanceOf(Rance.Unit),
-                forcedSide2Unit: React.PropTypes.instanceOf(Rance.Unit),
                 activeSFX: React.PropTypes.object,
                 humanPlayerWonBattle: React.PropTypes.bool,
                 side1Player: React.PropTypes.instanceOf(Rance.Player),
@@ -9650,19 +9648,24 @@ var Rance;
                 }
                 if (this.battleScene) {
                     if (newProps.activeSFX !== this.props.activeSFX) {
-                        this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+                        if (newProps.activeSFX) {
+                            this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+                        }
+                        else {
+                            this.battleScene.clearActiveSFX();
+                            this.battleScene.updateUnits();
+                        }
                     }
-                    // can wrap in else statement if we switch away from forced units
-                    [
-                        // "targetUnit",
-                        // "userUnit",
-                        // "activeUnit",
-                        // "hoveredUnit"
-                        "forcedSide1Unit",
-                        "forcedSide2Unit"
-                    ].forEach(function (unitKey) {
-                        self.battleScene[unitKey] = newProps[unitKey];
-                    });
+                    else if (!this.props.activeSFX) {
+                        [
+                            "targetUnit",
+                            "userUnit",
+                            "activeUnit",
+                            "hoveredUnit"
+                        ].forEach(function (unitKey) {
+                            self.battleScene[unitKey] = newProps[unitKey];
+                        });
+                    }
                     this.battleScene.updateUnits();
                 }
             },
@@ -9947,6 +9950,9 @@ var Rance;
                     targetsInPotentialArea: [],
                     potentialDelay: null,
                     hoveredAbility: null,
+                    targetUnit: null,
+                    userUnit: null,
+                    activeUnit: null,
                     hoveredUnit: null,
                     battleSceneUnit1StartingStrength: null,
                     battleSceneUnit2StartingStrength: null,
@@ -10120,6 +10126,8 @@ var Rance;
                     battleSceneUnit2: side2Unit,
                     playingBattleEffect: true,
                     hoveredUnit: abilityData.originalTarget,
+                    userUnit: effectData[i].user,
+                    targetUnit: effectData[i].target,
                     abilityTooltip: {
                         parentElement: null
                     },
@@ -10159,7 +10167,9 @@ var Rance;
                     battleEffectId: undefined,
                     battleEffectDuration: null,
                     battleEffectSFX: null,
-                    hoveredUnit: null
+                    hoveredUnit: null,
+                    targetUnit: null,
+                    userUnit: null
                 });
                 if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle()) {
                     this.handleMouseEnterUnit(this.tempHoveredUnit);
@@ -10341,9 +10351,11 @@ var Rance;
                     battle: battle
                 }), upperFooter, UIComponents.BattleScene({
                     battleState: battleState,
-                    forcedSide1Unit: this.state.battleSceneUnit1,
-                    forcedSide2Unit: this.state.battleSceneUnit2,
-                    activeSFX: this.state.effectSFX,
+                    targetUnit: this.state.targetUnit,
+                    userUnit: this.state.userUnit,
+                    activeUnit: battle.activeUnit,
+                    hoveredUnit: this.state.hoveredUnit,
+                    activeSFX: this.state.battleEffectSFX,
                     humanPlayerWonBattle: playerWonBattle,
                     side1Player: battle.side1Player,
                     side2Player: battle.side2Player
@@ -22083,6 +22095,9 @@ var Rance;
                 var filterContainer = new PIXI.Container();
                 filterContainer.filterArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
                 filterContainer.filters = [filter];
+                // TODO performance | need to destroy or reuse texture from filterContainer.generateTexture()
+                // creates a new PIXI.FilterManager() every time that doesn't get cleaned up anywhere
+                // balloons up gpu memory
                 var texture = filterContainer.generateTexture(renderer, PIXI.SCALE_MODES.DEFAULT, 1, filterContainer.filterArea);
                 var sprite = new PIXI.Sprite(texture);
                 filterContainer.filters = null;
@@ -23818,8 +23833,8 @@ var Rance;
             var BattleSFXFunctions;
             (function (BattleSFXFunctions) {
                 function projectileAttack(props, params) {
-                    var minY = 0;
-                    var maxY = 300; // TODO battle scene
+                    var minY = 20;
+                    var maxY = params.height - 20; // TODO battleSFX
                     var maxSpeed = (params.width / params.duration) * props.maxSpeed;
                     var acceleration = maxSpeed * props.acceleration;
                     var container = new PIXI.Container();
@@ -27966,6 +27981,9 @@ var Rance;
 /// <reference path="battlesceneunitoverlay.ts" />
 var Rance;
 (function (Rance) {
+    // TODO perdormance
+    // BattleScene.render() shouldn't be called unless there's something new to render
+    // 
     var BattleScene = (function () {
         function BattleScene(pixiContainer) {
             this.side1UnitHasFinishedUpdating = false;
@@ -28042,62 +28060,19 @@ var Rance;
             });
         };
         BattleScene.prototype.getHighestPriorityUnitForSide = function (side) {
-            switch (side) {
-                case "side1":
-                    {
-                        return this.forcedSide1Unit;
-                    }
-                case "side2":
-                    {
-                        return this.forcedSide2Unit;
-                    }
-            }
-            /*
-            var units =
-            [
-              this.targetUnit,
-              this.userUnit,
-              this.activeUnit,
-              this.hoveredUnit
+            var units = [
+                this.targetUnit,
+                this.userUnit,
+                this.activeUnit,
+                this.hoveredUnit
             ];
-      
-            for (var i = 0; i < units.length; i++)
-            {
-              var unit = units[i];
-              if (unit && unit.battleStats.side === side)
-              {
-                return unit;
-              }
+            for (var i = 0; i < units.length; i++) {
+                var unit = units[i];
+                if (unit && unit.battleStats.side === side) {
+                    return unit;
+                }
             }
-      
             return null;
-            */
-        };
-        BattleScene.prototype.setUnit = function (key, unit) {
-            if (this[key] === unit) {
-                return;
-            }
-            console.log("set unit " + key, (unit ? unit.name : "null"));
-            this[key] = unit;
-            this.updateUnits();
-        };
-        BattleScene.prototype.setSide1Unit = function (unit) {
-            this.setUnit("forcedSide1Unit", unit);
-        };
-        BattleScene.prototype.setSide2Unit = function (unit) {
-            this.setUnit("forcedSide2Unit", unit);
-        };
-        BattleScene.prototype.setTargetUnit = function (unit) {
-            this.setUnit("targetUnit", unit);
-        };
-        BattleScene.prototype.setUserUnit = function (unit) {
-            this.setUnit("userUnit", unit);
-        };
-        BattleScene.prototype.setActiveUnit = function (unit) {
-            this.setUnit("activeUnit", unit);
-        };
-        BattleScene.prototype.setHoveredUnit = function (unit) {
-            this.setUnit("hoveredUnit", unit);
         };
         BattleScene.prototype.haveBothUnitsFinishedUpdating = function () {
             return this.side1UnitHasFinishedUpdating && this.side2UnitHasFinishedUpdating;
@@ -28131,9 +28106,9 @@ var Rance;
                 this.side2UnitHasFinishedUpdating = false;
             }
             var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
+            var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
             this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
             this.side1Overlay.activeUnit = activeSide1Unit;
-            var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
             this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
             this.side2Overlay.activeUnit = activeSide2Unit;
         };
@@ -28153,7 +28128,6 @@ var Rance;
             this.targetUnit = null;
             this.clearBattleOverlay();
             this.clearUnitOverlays();
-            this.updateUnits();
         };
         BattleScene.prototype.triggerSFXStart = function (SFXTemplate, user, target) {
             this.activeSFX = SFXTemplate;

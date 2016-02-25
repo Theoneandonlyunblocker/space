@@ -8,6 +8,9 @@
 
 module Rance
 {
+  // TODO performance
+  // BattleScene.render() shouldn't be called unless there's something new to render
+  // 
   export class BattleScene
   {
     container: PIXI.Container;
@@ -29,11 +32,6 @@ module Rance
 
     activeSFX: Templates.IBattleSFXTemplate;
 
-    // used for compability with UIComponents/Battle
-    forcedSide1Unit: Unit;
-    forcedSide2Unit: Unit;
-
-    // not used for now
     targetUnit: Unit;  // being targeted by ability | priority
     userUnit: Unit;    // using an ability          |
     activeUnit: Unit;  // next to act in turn order |
@@ -149,18 +147,6 @@ module Rance
     
     getHighestPriorityUnitForSide(side: "side1" | "side2")
     {
-      switch (side)
-      {
-        case "side1":
-        {
-          return this.forcedSide1Unit;
-        }
-        case "side2":
-        {
-          return this.forcedSide2Unit;
-        }
-      }
-      /*
       var units =
       [
         this.targetUnit,
@@ -179,43 +165,6 @@ module Rance
       }
 
       return null;
-      */
-    }
-    setUnit(key: string, unit: Unit)
-    {
-      if (this[key] === unit)
-      {
-        return;
-      }
-
-      console.log("set unit " + key, (unit ? unit.name : "null"));
-
-      this[key] = unit;
-      this.updateUnits();
-    }
-    setSide1Unit(unit: Unit)
-    {
-      this.setUnit("forcedSide1Unit", unit);
-    }
-    setSide2Unit(unit: Unit)
-    {
-      this.setUnit("forcedSide2Unit", unit);
-    }
-    setTargetUnit(unit: Unit)
-    {
-      this.setUnit("targetUnit", unit);
-    }
-    setUserUnit(unit: Unit)
-    {
-      this.setUnit("userUnit", unit);
-    }
-    setActiveUnit(unit: Unit)
-    {
-      this.setUnit("activeUnit", unit);
-    }
-    setHoveredUnit(unit: Unit)
-    {
-      this.setUnit("hoveredUnit", unit);
     }
     haveBothUnitsFinishedUpdating()
     {
@@ -262,10 +211,11 @@ module Rance
       }
 
       var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
+      var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
+
       this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
       this.side1Overlay.activeUnit = activeSide1Unit;
 
-      var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
       this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
       this.side2Overlay.activeUnit = activeSide2Unit;
     }
@@ -293,8 +243,6 @@ module Rance
 
       this.clearBattleOverlay();
       this.clearUnitOverlays();
-
-      this.updateUnits();
     }
     triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
     {

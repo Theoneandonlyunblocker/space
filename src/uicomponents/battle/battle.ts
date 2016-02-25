@@ -37,6 +37,10 @@ module Rance
           potentialDelay: null,
 
           hoveredAbility: null,
+          
+          targetUnit: null,
+          userUnit: null,
+          activeUnit: null,
           hoveredUnit: null,
 
           battleSceneUnit1StartingStrength: null,
@@ -289,7 +293,11 @@ module Rance
           battleSceneUnit1: side1Unit,
           battleSceneUnit2: side2Unit,
           playingBattleEffect: true,
+
           hoveredUnit: abilityData.originalTarget,
+          userUnit: effectData[i].user,
+          targetUnit: effectData[i].target,
+
           abilityTooltip:
           {
             parentElement: null
@@ -346,7 +354,9 @@ module Rance
           battleEffectId: undefined,
           battleEffectDuration: null,
           battleEffectSFX: null,
-          hoveredUnit: null
+          hoveredUnit: null,
+          targetUnit: null,
+          userUnit: null
         });
 
         if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle())
@@ -615,29 +625,17 @@ module Rance
                 {
                   battleState: battleState,
 
-                  forcedSide1Unit: this.state.battleSceneUnit1,
-                  forcedSide2Unit: this.state.battleSceneUnit2,
+                  targetUnit: this.state.targetUnit,
+                  userUnit: this.state.userUnit,
+                  activeUnit: battle.activeUnit,
+                  hoveredUnit: this.state.hoveredUnit,
 
-                  activeSFX: this.state.effectSFX,
+                  activeSFX: this.state.battleEffectSFX,
                   humanPlayerWonBattle: playerWonBattle,
 
                   side1Player: battle.side1Player,
                   side2Player: battle.side2Player
                 })
-                // UIComponents.BattleScene(
-                // {
-                //   unit1: this.state.battleSceneUnit1,
-                //   unit2: this.state.battleSceneUnit2,
-                //   effectDuration: this.state.battleEffectDuration,
-                //   effectSFX: this.state.battleEffectSFX,
-                //   unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
-                //   effectId: this.state.battleEffectId,
-                //   battleIsStarting: this.state.battleIsStarting,
-                //   battleHasEnded: battle.ended,
-                //   playerWonBattle: playerWonBattle,
-                //   player1: battle.side1Player,
-                //   player2: battle.side2Player
-                // })
               ),
               React.DOM.div(
               {
