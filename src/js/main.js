@@ -27612,8 +27612,9 @@ var Rance;
             parsedData = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
         }
         if (parsedData) {
+            // month goes 0-11
             var optionsToResetIfSetEarlierThan = {
-                "battleAnimationTiming": Date.UTC(2016, 2, 25, 10)
+                "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 35)
             };
             var dateOptionsWereSaved = Date.parse(parsedData.date);
             for (var key in parsedData.options) {

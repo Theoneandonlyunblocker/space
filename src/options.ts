@@ -30,11 +30,27 @@ module Rance
     
     if (parsedData)
     {
+      // month goes 0-11
+      var optionsToResetIfSetEarlierThan =
+      {
+        // "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 35)
+      };
+
+      var dateOptionsWereSaved = Date.parse(parsedData.date);
+
       for (var key in parsedData.options)
       {
         if (Rance.Options[key] !== undefined)
         {
-          Rance.Options[key] === extendObject(parsedData.options[key], Rance.Options[key], true);
+          if (optionsToResetIfSetEarlierThan[key] && dateOptionsWereSaved <= optionsToResetIfSetEarlierThan[key])
+          {
+            console.log("reset option " + key);
+            continue;
+          }
+          else
+          {
+            Rance.Options[key] === extendObject(parsedData.options[key], Rance.Options[key], true);
+          }
         }
       }
     }
