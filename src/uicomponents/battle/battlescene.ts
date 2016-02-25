@@ -133,7 +133,23 @@ module Rance
           }
           case "finish":
           {
-            
+            componentToRender = React.DOM.div(
+            {
+              className: "battle-scene-finish-container"
+            },
+              React.DOM.h1(
+              {
+                className: "battle-scene-finish-header"
+              },
+                this.props.humanPlayerWonBattle ? "You win" : "You lose"
+              ),
+              React.DOM.h3(
+              {
+                className: "battle-scene-finish-subheader"
+              },
+                "Click to continue"
+              )
+            )
             break;
           }
         }

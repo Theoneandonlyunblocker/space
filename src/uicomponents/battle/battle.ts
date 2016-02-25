@@ -218,6 +218,11 @@ module Rance
           });
         }
       },
+      // TODO battleSFX
+      // need to either force BattleScene to play animation as soon as it starts
+      // or have this wait for battle scene units to finish animating.
+      // battleSFX animation can trigger at the earliest after animationTiming.unitEnter, but
+      // actual effect always gets triggered after animationTiming.beforeUse
       playBattleEffect: function(abilityData: IAbilityUseData, i: number)
       {
         var self = this;

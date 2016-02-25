@@ -9695,6 +9695,13 @@ var Rance;
                         }
                     case "finish":
                         {
+                            componentToRender = React.DOM.div({
+                                className: "battle-scene-finish-container"
+                            }, React.DOM.h1({
+                                className: "battle-scene-finish-header"
+                            }, this.props.humanPlayerWonBattle ? "You win" : "You lose"), React.DOM.h3({
+                                className: "battle-scene-finish-subheader"
+                            }, "Click to continue"));
                             break;
                         }
                 }
@@ -10073,6 +10080,11 @@ var Rance;
                     });
                 }
             },
+            // TODO battleSFX
+            // need to either force BattleScene to play animation as soon as it starts
+            // or have this wait for battle scene units to finish animating.
+            // battleSFX animation can trigger at the earliest after animationTiming.unitEnter, but
+            // actual effect always gets triggered after animationTiming.beforeUse
             playBattleEffect: function (abilityData, i) {
                 var self = this;
                 var effectData = abilityData.effectsToCall;
@@ -27600,9 +27612,19 @@ var Rance;
             parsedData = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
         }
         if (parsedData) {
+            var optionsToResetIfSetEarlierThan = {
+                "battleAnimationTiming": Date.UTC(2016, 2, 25, 10)
+            };
+            var dateOptionsWereSaved = Date.parse(parsedData.date);
             for (var key in parsedData.options) {
                 if (Rance.Options[key] !== undefined) {
-                    Rance.Options[key] === Rance.extendObject(parsedData.options[key], Rance.Options[key], true);
+                    if (optionsToResetIfSetEarlierThan[key] && dateOptionsWereSaved <= optionsToResetIfSetEarlierThan[key]) {
+                        console.log("reset option " + key);
+                        continue;
+                    }
+                    else {
+                        Rance.Options[key] === Rance.extendObject(parsedData.options[key], Rance.Options[key], true);
+                    }
                 }
             }
         }
