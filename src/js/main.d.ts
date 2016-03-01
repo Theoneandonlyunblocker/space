@@ -3221,7 +3221,7 @@ declare module Rance {
         function distributeDistributablesPerSector(sectors: Sector[], distributableType: string, allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void): void;
         function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
         function setupPirates(player: Player): void;
-        function severLinksToNonAdjacent(star: Star): void;
+        function severLinksToNonAdjacentStars(star: Star): void;
     }
 }
 declare module Rance {

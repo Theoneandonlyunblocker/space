@@ -23431,7 +23431,7 @@ var Rance;
             player.flag.setForegroundEmblem(foregroundEmblem);
         }
         MapGen2.setupPirates = setupPirates;
-        function severLinksToNonAdjacent(star) {
+        function severLinksToNonAdjacentStars(star) {
             var allLinks = star.getAllLinks();
             var neighborVoronoiIds = star.voronoiCell.getNeighborIds();
             for (var i = 0; i < allLinks.length; i++) {
@@ -23441,7 +23441,7 @@ var Rance;
                 }
             }
         }
-        MapGen2.severLinksToNonAdjacent = severLinksToNonAdjacent;
+        MapGen2.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/utility.ts" />
@@ -23594,7 +23594,7 @@ var Rance;
                                 b.mapGenData.region !== regions[0]);
                         });
                         for (var j = 0; j < regions[i].stars.length; j++) {
-                            Rance.MapGen2.severLinksToNonAdjacent(regions[i].stars[j]);
+                            Rance.MapGen2.severLinksToNonAdjacentStars(regions[i].stars[j]);
                         }
                     }
                     var isConnected = stars[0].getLinkedInRange(stars.length).all.length === stars.length;

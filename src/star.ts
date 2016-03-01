@@ -573,9 +573,12 @@ module Rance
       this.linksTo.push(linkTo);
       linkTo.linksFrom.push(this);
     }
-    removeLink(linkTo: Star)
+    removeLink(linkTo: Star, removeOpposite: boolean = true)
     {
-      if (!this.hasLink(linkTo)) return;
+      if (!this.hasLink(linkTo))
+      {
+        throw new Error("Tried to remove nonexistant link between stars: " + this.id + " <-> " + linkTo.id);
+      }
 
       var toIndex = this.linksTo.indexOf(linkTo);
       if (toIndex >= 0)
@@ -587,7 +590,10 @@ module Rance
         this.linksFrom.splice(this.linksFrom.indexOf(linkTo), 1);
       }
 
-      linkTo.removeLink(this);
+      if (removeOpposite)
+      {
+        linkTo.removeLink(this, false);
+      }
     }
     getAllLinks()
     {
