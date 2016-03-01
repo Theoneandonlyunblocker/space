@@ -422,7 +422,7 @@ module Rance
 
       player.flag.setForegroundEmblem(foregroundEmblem);
     }
-    export function severLinksToNonAdjacent(star: Star)
+    export function severLinksToNonAdjacentStars(star: Star)
     {
       var allLinks = star.getAllLinks();
 
@@ -430,11 +430,11 @@ module Rance
 
       for (var i = 0; i < allLinks.length; i++)
       {
-        var star = allLinks[i];
+        var toSever = allLinks[i];
 
-        if (neighborVoronoiIds.indexOf(star.voronoiId) === -1)
+        if (neighborVoronoiIds.indexOf(toSever.voronoiId) === -1)
         {
-          star.removeLink(star);
+          star.removeLink(toSever);
         }
       }
     }

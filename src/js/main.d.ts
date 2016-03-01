@@ -513,7 +513,7 @@ declare module Rance {
         setResource(resource: Templates.IResourceTemplate): void;
         hasLink(linkTo: Star): boolean;
         addLink(linkTo: Star): void;
-        removeLink(linkTo: Star): void;
+        removeLink(linkTo: Star, removeOpposite?: boolean): void;
         getAllLinks(): Star[];
         getEdgeWith(neighbor: Star): any;
         getSharedNeighborsWith(neighbor: Star): Star[];

@@ -211,11 +211,11 @@ module Rance
 
             for (var j = 0; j < regions[i].stars.length; j++)
             {
-              MapGen2.severLinksToNonAdjacent(regions[i].stars[j]);
+              MapGen2.severLinksToNonAdjacentStars(regions[i].stars[j]);
             }
           }
 
-          var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;
+          var isConnected = stars[0].getLinkedInRange(stars.length).all.length === stars.length;
           if (!isConnected)
           {
             console.log("Regenerated map due to insufficient connections");

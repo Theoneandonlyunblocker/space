@@ -2791,9 +2791,11 @@ var Rance;
             this.linksTo.push(linkTo);
             linkTo.linksFrom.push(this);
         };
-        Star.prototype.removeLink = function (linkTo) {
-            if (!this.hasLink(linkTo))
-                return;
+        Star.prototype.removeLink = function (linkTo, removeOpposite) {
+            if (removeOpposite === void 0) { removeOpposite = true; }
+            if (!this.hasLink(linkTo)) {
+                throw new Error("Tried to remove nonexistant link between stars: " + this.id + " <-> " + linkTo.id);
+            }
             var toIndex = this.linksTo.indexOf(linkTo);
             if (toIndex >= 0) {
                 this.linksTo.splice(toIndex, 1);
@@ -2801,7 +2803,9 @@ var Rance;
             else {
                 this.linksFrom.splice(this.linksFrom.indexOf(linkTo), 1);
             }
-            linkTo.removeLink(this);
+            if (removeOpposite) {
+                linkTo.removeLink(this, false);
+            }
         };
         Star.prototype.getAllLinks = function () {
             return this.linksTo.concat(this.linksFrom);
@@ -23431,9 +23435,9 @@ var Rance;
             var allLinks = star.getAllLinks();
             var neighborVoronoiIds = star.voronoiCell.getNeighborIds();
             for (var i = 0; i < allLinks.length; i++) {
-                var star = allLinks[i];
-                if (neighborVoronoiIds.indexOf(star.voronoiId) === -1) {
-                    star.removeLink(star);
+                var toSever = allLinks[i];
+                if (neighborVoronoiIds.indexOf(toSever.voronoiId) === -1) {
+                    star.removeLink(toSever);
                 }
             }
         }
@@ -23593,7 +23597,7 @@ var Rance;
                             Rance.MapGen2.severLinksToNonAdjacent(regions[i].stars[j]);
                         }
                     }
-                    var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;
+                    var isConnected = stars[0].getLinkedInRange(stars.length).all.length === stars.length;
                     if (!isConnected) {
                         console.log("Regenerated map due to insufficient connections");
                         return spiralGalaxyGeneration(options, players);
