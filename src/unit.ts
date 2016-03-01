@@ -100,34 +100,8 @@ module Rance
     front: MapAI.Front;
 
     sfxDuration: number;
-
-    // TODO old battle scene
-    // cachedBattleScene: HTMLCanvasElement;
-    // cachedBattleScenePropsString: string = "";
-    // lastHealthDrawnAt: number;
-
-    // drawBattleScene(props: Templates.IUnitDrawingFunctionProps)
-    // {
-    //   var propsString = JSON.stringify(props);
-    //   if (propsString !== this.cachedBattleScenePropsString ||
-    //     this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage)
-    //   {
-    //     this.cachedBattleScene = this.template.unitDrawingFN(this, props);
-    //     this.cachedBattleScenePropsString = propsString;
-    //   }
-
-    //   return this.cachedBattleScene;
-    // }
-
-    // end
-    // new battle scene
     lastHealthDrawnAt: number;
     
-    drawBattleScene(SFXParams: Templates.SFXParams)
-    {
-      this.template.unitDrawingFN(this, SFXParams);
-    }
-    // end
 
     constructor(template: Templates.IUnitTemplate, id?: number, data?: any)
     {
@@ -1144,6 +1118,10 @@ module Rance
         var castedNewAbility = <Templates.IAbilityTemplate> newAbility;
         this.abilities.push(castedNewAbility);
       }
+    }
+    drawBattleScene(SFXParams: Templates.SFXParams)
+    {
+      this.template.unitDrawingFN(this, SFXParams);
     }
     serialize(includeItems: boolean = true, includeFluff: boolean = true)
     {

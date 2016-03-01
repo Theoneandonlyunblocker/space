@@ -1,6 +1,6 @@
 module Rance
 {
-  // todo: use a heap instead of this crap
+  // not very efficient. probably doesn't matter though
   export class PriorityQueue
   {
     items:
