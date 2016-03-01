@@ -415,7 +415,7 @@ module Rance
 
       player.flag = new Flag(
       {
-        width: 46, // FLAG_SIZE
+        width: 46, // global FLAG_SIZE
         mainColor: player.color,
         secondaryColor: player.secondaryColor
       });

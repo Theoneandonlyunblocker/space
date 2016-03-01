@@ -152,7 +152,7 @@ module Rance
 
       this.flag = new Flag(
       {
-        width: 46, // FLAG_SIZE
+        width: 46, // global FLAG_SIZE
         mainColor: this.color,
         secondaryColor: this.secondaryColor
       });

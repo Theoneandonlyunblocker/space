@@ -14,7 +14,7 @@ module Rance
       {
         var flag = new Flag(
         {
-          width: 46, // FLAG_SIZE
+          width: 46, // global FLAG_SIZE
           mainColor: this.props.mainColor,
           secondaryColor: this.props.subColor,
           tetriaryColor: this.props.tetriaryColor
