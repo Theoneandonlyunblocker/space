@@ -34,7 +34,7 @@ module Rance
 
     }
 
-    deserializeGame(data: any): Game // TODO make interface for savegame data
+    deserializeGame(data: any): Game // TODO saves | make interface for savegame data
     {
 
       this.map = this.deserializeMap(data.galaxyMap);

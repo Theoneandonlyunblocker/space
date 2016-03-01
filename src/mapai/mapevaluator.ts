@@ -33,7 +33,7 @@ module Rance
         ownInfluence: number;
       }
     }
-    // TODO split into multiple classes eg vision, influence maps etc.
+    // TODO ai | split into multiple classes eg vision, influence maps etc.
     export class MapEvaluator
     {
       map: GalaxyMap;
@@ -134,7 +134,7 @@ module Rance
       {
         var evaluation = 0;
 
-        // TODO manufactory
+        // TODO manufactory TODO ai
 
         return evaluation;
       }
@@ -951,7 +951,7 @@ module Rance
         // perceived threat
         var threat = this.getPerceivedThreatOfPlayer(player);
 
-        return Math.random(); // TODO war
+        return Math.random(); // TODO ai
       }
       getAbilityToGoToWarWith(player: Player)
       {
@@ -966,7 +966,7 @@ module Rance
         // enemy is well liked
         // distance
 
-        return Math.random(); // TODO war
+        return Math.random(); // TODO ai
       }
       getDiplomacyEvaluations(currentTurn: number)
       {

@@ -69,7 +69,7 @@ module Rance
             },
               UIComponents.ManufactoryUpgradeButton(
               {
-                money: this.props.money, // TODO manufactory
+                money: this.props.money,
                 upgradeCost: 0,
                 actionString: "Upgrade items",
                 currentLevel: 0,

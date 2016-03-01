@@ -251,7 +251,7 @@ module Rance
     }
     private setContainerPosition(positionOffScreen: boolean = false)
     {
-      // TODO battle scene. This & unit drawing FN rely on overly fiddly positioning.
+      // TODO battle scene | This & unit drawing FN rely on overly fiddly positioning.
       // This function might not work properly with other drawing functions.
       var sceneBounds = this.getSceneBounds();
       var shouldReverse = this.activeUnit.battleStats.side === "side1";

@@ -749,7 +749,7 @@ module Rance
       tech.totalResearch += amount;
       var overflow: number;
 
-      if (tech.level >= technology.maxLevel) // TODO probably shouldnt happen in the first place
+      if (tech.level >= technology.maxLevel) // probably shouldnt happen in the first place
       {
         overflow = amount;
       }
@@ -768,7 +768,7 @@ module Rance
         }
       }
 
-      // TODO handle overflow
+      // TODO tech | handle overflow
     }
     setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number)
     {

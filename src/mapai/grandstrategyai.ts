@@ -68,7 +68,7 @@ module Rance
           fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
         }
 
-        // TODO penalize for lots of ongoing objectives (maybe in objectivesAI instead)
+        // TODO ai | penalize for lots of ongoing objectives (maybe in objectivesAI instead)
 
         var desire = fromAggressiveness + fromExpansiveness;
 

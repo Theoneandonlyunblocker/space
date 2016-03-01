@@ -231,9 +231,9 @@ module Rance
             }
           }
 
-          // TODO kinda weird
+          // TODO map gen | kinda weird
           var shipAmount = minShips;
-          for (var j = 2; j < distance; j++)
+          for (var j = minShips; j < distance; j++)
           {
             shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
 

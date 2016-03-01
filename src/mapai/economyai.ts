@@ -56,7 +56,6 @@ module Rance
         sort by priority
         fulfill by priority
          */
-        // TODO other requests
         var allRequests: Front[] = this.frontsAI.frontsRequestingUnits;
         allRequests.sort(function(a, b)
         {
@@ -72,7 +71,7 @@ module Rance
           }
           else
           {
-            
+            // TODO ai | handle other requests
           }
         }
       }
@@ -85,8 +84,6 @@ module Rance
           return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
         }
         var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
-        // TODO economy ai
-        if (!star) return;
         var manufactory = star.manufactory;
 
         var archetypeScores = front.getNewUnitArchetypeScores();
@@ -122,11 +119,10 @@ module Rance
         {
           if (buildableUnitTypesByArchetype[sortedScores[i]])
           {
+            // TODO ai | should actually try to figure out which unit type to build
             unitType = getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
             if (this.player.money < unitType.buildCost)
             {
-              // TODO AI should actually try to figure out which individual unit would
-              // be the best
               return;
             }
             else

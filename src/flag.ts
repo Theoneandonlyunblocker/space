@@ -38,7 +38,7 @@ module Rance
 
       this.mainColor = props.mainColor;
       this.secondaryColor = props.secondaryColor;
-      this.tetriaryColor = props.tetriaryColor; // TODO currently never set
+      this.tetriaryColor = props.tetriaryColor; // TODO flag | currently never set
     }
     setColorScheme(main: number, secondary?: number, tetriary?: number)
     {
@@ -122,7 +122,7 @@ module Rance
         emblem.color = this.tetriaryColor
       }
     }
-    // TODO custom images
+    // TODO flag | custom images
     setCustomImage(imageSrc: string)
     {
       this.clearContent();
