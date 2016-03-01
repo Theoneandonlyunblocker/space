@@ -38,21 +38,19 @@ module Rance
 
       var dateOptionsWereSaved = Date.parse(parsedData.date);
 
-      for (var key in parsedData.options)
+      for (var key in optionsToResetIfSetEarlierThan)
       {
         if (Rance.Options[key] !== undefined)
         {
           if (optionsToResetIfSetEarlierThan[key] && dateOptionsWereSaved <= optionsToResetIfSetEarlierThan[key])
           {
-            console.log("reset option " + key);
-            continue;
-          }
-          else
-          {
-            Rance.Options[key] === extendObject(parsedData.options[key], Rance.Options[key], true);
+            parsedData.options[key] = extendObject(Rance.Options[key]);
+            console.log("Reset option: " + key);
           }
         }
       }
+      
+      Rance.Options = deepMerge(Rance.Options, parsedData.options, true);
     }
   }
   
