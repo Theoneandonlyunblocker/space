@@ -465,7 +465,6 @@ declare module Rance {
         buildableUnitTypes: Templates.IUnitTemplate[];
         manufactory: Manufactory;
         constructor(x: number, y: number, id?: number);
-        severLinksToNonAdjacent(): void;
         getBuildableShipTypes(): Templates.IUnitTemplate[];
         addBuilding(building: Building): void;
         removeBuilding(building: Building): void;
@@ -761,7 +760,6 @@ declare module Rance {
         front: MapAI.Front;
         sfxDuration: number;
         lastHealthDrawnAt: number;
-        drawBattleScene(SFXParams: Templates.SFXParams): void;
         constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
         makeFromData(data: any): void;
         setInitialValues(): void;
@@ -843,6 +841,7 @@ declare module Rance {
             };
         };
         upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase): void;
+        drawBattleScene(SFXParams: Templates.SFXParams): void;
         serialize(includeItems?: boolean, includeFluff?: boolean): any;
         makeVirtualClone(): Unit;
     }
@@ -3189,6 +3188,7 @@ declare module Rance {
         function distributeDistributablesPerSector(sectors: Sector[], distributableType: string, allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void): void;
         function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
         function setupPirates(player: Player): void;
+        function severLinksToNonAdjacent(star: Star): void;
     }
 }
 declare module Rance {

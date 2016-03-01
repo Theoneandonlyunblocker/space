@@ -81,22 +81,6 @@ module Rance
       this.y = y;
     }
     // TODO REMOVE
-    severLinksToNonAdjacent()
-    {
-      var allLinks = this.getAllLinks();
-
-      var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
-
-      for (var i = 0; i < allLinks.length; i++)
-      {
-        var star = allLinks[i];
-
-        if (neighborVoronoiIds.indexOf(star.voronoiId) === -1)
-        {
-          this.removeLink(star);
-        }
-      }
-    }
     // TODO manufactory
     getBuildableShipTypes(): Templates.IUnitTemplate[]
     {

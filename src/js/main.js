@@ -1811,7 +1811,7 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    // todo: use a heap instead of this crap
+    // not very efficient. probably doesn't matter though
     var PriorityQueue = (function () {
         function PriorityQueue() {
             this.items = {};
@@ -2070,7 +2070,7 @@ var Rance;
             this.subtractMovePoints();
             this.visionIsDirty = true;
             this.player.visionIsDirty = true;
-            // todo maybe send an event instead?
+            // maybe send an event instead?
             for (var i = 0; i < app.game.playerOrder.length; i++) {
                 var player = app.game.playerOrder[i];
                 if (player.isIndependent || player === this.player) {
@@ -2457,16 +2457,6 @@ var Rance;
             this.y = y;
         }
         // TODO REMOVE
-        Star.prototype.severLinksToNonAdjacent = function () {
-            var allLinks = this.getAllLinks();
-            var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
-            for (var i = 0; i < allLinks.length; i++) {
-                var star = allLinks[i];
-                if (neighborVoronoiIds.indexOf(star.voronoiId) === -1) {
-                    this.removeLink(star);
-                }
-            }
-        };
         // TODO manufactory
         Star.prototype.getBuildableShipTypes = function () {
             var player = this.owner;
@@ -3988,7 +3978,6 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Unit = (function () {
-        // end
         function Unit(template, id, data) {
             this.abilities = [];
             this.passiveSkills = [];
@@ -4025,9 +4014,6 @@ var Rance;
             enumerable: true,
             configurable: true
         });
-        Unit.prototype.drawBattleScene = function (SFXParams) {
-            this.template.unitDrawingFN(this, SFXParams);
-        };
         Unit.prototype.makeFromData = function (data) {
             var items = {};
             ["low", "mid", "high"].forEach(function (slot) {
@@ -4573,21 +4559,21 @@ var Rance;
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.getCounterAttackStrength = function () {
-            return 1; // TODO
+            return 1; // TODO unit
         };
         Unit.prototype.canActThisTurn = function () {
             return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
         };
         Unit.prototype.isStealthy = function () {
-            // TODO
+            // TODO unit
             return this.template.isStealthy;
         };
         Unit.prototype.getVisionRange = function () {
-            // TODO
+            // TODO unit
             return this.template.visionRange;
         };
         Unit.prototype.getDetectionRange = function () {
-            // TODO
+            // TODO unit
             return this.template.detectionRange;
         };
         Unit.prototype.heal = function () {
@@ -4598,7 +4584,7 @@ var Rance;
             this.addStrength(healAmount);
         };
         Unit.prototype.getStrengthEvaluation = function () {
-            // TODO
+            // TODO unit TODO ai
             return this.currentHealth;
         };
         Unit.prototype.getTotalCost = function () {
@@ -4736,6 +4722,9 @@ var Rance;
                 var castedNewAbility = newAbility;
                 this.abilities.push(castedNewAbility);
             }
+        };
+        Unit.prototype.drawBattleScene = function (SFXParams) {
+            this.template.unitDrawingFN(this, SFXParams);
         };
         Unit.prototype.serialize = function (includeItems, includeFluff) {
             if (includeItems === void 0) { includeItems = true; }
@@ -7506,7 +7495,7 @@ var Rance;
                 // neighboring own stars ++
                 // neighboring neutral stars -
                 // neighboring other player stars --
-                // neighboring other player with low trust stars --- TODO
+                // neighboring other player with low trust stars --- TODO ai
                 var nearbyStars = star.getLinkedInRange(2).byRange;
                 for (var rangeString in nearbyStars) {
                     var distanceMultiplier = 1 / parseInt(rangeString);
@@ -7836,7 +7825,7 @@ var Rance;
                     visibleStrength += this.evaluateFleetStrength(fleets[i]);
                 }
                 if (player !== this.player) {
-                    invisibleStrength = visibleStrength * 0.5; // TODO
+                    invisibleStrength = visibleStrength * 0.5; // TODO ai
                 }
                 return visibleStrength + invisibleStrength;
             };
@@ -9339,7 +9328,6 @@ var Rance;
                     ships: target.ships
                 }
             };
-            // TODO
             var battlePrep = new Rance.BattlePrep(battleData);
             if (battlePrep.humanPlayer) {
                 app.reactUI.battlePrep = battlePrep;
@@ -13225,7 +13213,7 @@ var Rance;
                     activeTrade.stageItem(key, 1);
                 }
                 else {
-                    // TODO
+                    // TODO trade TODO ai | don't allow player to stage ai items
                     activeTrade.stageItem(key, availableAmount);
                 }
                 if (!this.state.currentDragItemPlayer) {
@@ -14591,7 +14579,6 @@ var Rance;
                 this.props.player.setTechnologyPriority(this.props.technology, parseFloat(target.value));
             },
             render: function () {
-                var predictedResearchPoints = 30; // TODO
                 return (React.DOM.div({
                     className: "technology-progress-bar-priority-container"
                 }, React.DOM.span({
@@ -23312,6 +23299,17 @@ var Rance;
             player.flag.setForegroundEmblem(foregroundEmblem);
         }
         MapGen2.setupPirates = setupPirates;
+        function severLinksToNonAdjacent(star) {
+            var allLinks = star.getAllLinks();
+            var neighborVoronoiIds = star.voronoiCell.getNeighborIds();
+            for (var i = 0; i < allLinks.length; i++) {
+                var star = allLinks[i];
+                if (neighborVoronoiIds.indexOf(star.voronoiId) === -1) {
+                    star.removeLink(star);
+                }
+            }
+        }
+        MapGen2.severLinksToNonAdjacent = severLinksToNonAdjacent;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/utility.ts" />
@@ -23464,7 +23462,7 @@ var Rance;
                                 b.mapGenData.region !== regions[0]);
                         });
                         for (var j = 0; j < regions[i].stars.length; j++) {
-                            regions[i].stars[j].severLinksToNonAdjacent();
+                            Rance.MapGen2.severLinksToNonAdjacent(regions[i].stars[j]);
                         }
                     }
                     var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;

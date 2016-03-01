@@ -422,5 +422,21 @@ module Rance
 
       player.flag.setForegroundEmblem(foregroundEmblem);
     }
+    export function severLinksToNonAdjacent(star: Star)
+    {
+      var allLinks = star.getAllLinks();
+
+      var neighborVoronoiIds = star.voronoiCell.getNeighborIds();
+
+      for (var i = 0; i < allLinks.length; i++)
+      {
+        var star = allLinks[i];
+
+        if (neighborVoronoiIds.indexOf(star.voronoiId) === -1)
+        {
+          star.removeLink(star);
+        }
+      }
+    }
   }
 }

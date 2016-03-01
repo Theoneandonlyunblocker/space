@@ -211,7 +211,7 @@ module Rance
 
             for (var j = 0; j < regions[i].stars.length; j++)
             {
-              regions[i].stars[j].severLinksToNonAdjacent();
+              MapGen2.severLinksToNonAdjacent(regions[i].stars[j]);
             }
           }
 
