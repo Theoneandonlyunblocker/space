@@ -2255,6 +2255,9 @@ ol {
   padding-bottom: 8px;
   min-width: 70px;
 }
+.buildable-item-list tbody tr.list-spacer {
+  background: none;
+}
 .buildable-item-list tbody tr.list-spacer td {
   padding: 2px 0;
 }
@@ -2695,6 +2698,9 @@ ol {
   padding-bottom: 2px;
   min-width: 0;
 }
+.diplomacy-status-list tbody tr.list-spacer {
+  background: none;
+}
 .diplomacy-status-list tbody tr.list-spacer td {
   padding: 2px 0;
 }
@@ -3051,6 +3057,9 @@ ol {
   padding-bottom: 2px;
   min-width: 0;
 }
+.save-list tbody tr.list-spacer {
+  background: none;
+}
 .save-list tbody tr.list-spacer td {
   padding: 2px 0;
 }
@@ -3274,6 +3283,9 @@ ol {
   padding-top: 2px;
   padding-bottom: 2px;
   min-width: 0;
+}
+.item-purchase-list tbody tr.list-spacer {
+  background: none;
 }
 .item-purchase-list tbody tr.list-spacer td {
   padding: 2px 0;
