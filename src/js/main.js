@@ -1492,6 +1492,68 @@ var Rance;
         return to;
     }
     Rance.extendObject = extendObject;
+    // https://github.com/KyleAMathews/deepmerge
+    function deepMerge(target, src, excludeKeysNotInTarget) {
+        if (excludeKeysNotInTarget === void 0) { excludeKeysNotInTarget = false; }
+        if (excludeKeysNotInTarget) {
+            var merged = deepMerge(target, src, false);
+            return deletePropertiesNotSharedWithTarget(merged, target);
+        }
+        var array = Array.isArray(src);
+        var dst = array && [] || {};
+        if (array) {
+            target = target || [];
+            dst = dst.concat(target);
+            src.forEach(function (e, i) {
+                if (typeof dst[i] === 'undefined') {
+                    dst[i] = e;
+                }
+                else if (typeof e === 'object') {
+                    dst[i] = deepMerge(target[i], e);
+                }
+                else {
+                    if (target.indexOf(e) === -1) {
+                        dst.push(e);
+                    }
+                }
+            });
+        }
+        else {
+            if (target && typeof target === 'object') {
+                Object.keys(target).forEach(function (key) {
+                    dst[key] = target[key];
+                });
+            }
+            Object.keys(src).forEach(function (key) {
+                if (typeof src[key] !== 'object' || !src[key]) {
+                    dst[key] = src[key];
+                }
+                else {
+                    if (!target[key]) {
+                        dst[key] = src[key];
+                    }
+                    else {
+                        dst[key] = deepMerge(target[key], src[key]);
+                    }
+                }
+            });
+        }
+        return dst;
+    }
+    Rance.deepMerge = deepMerge;
+    function deletePropertiesNotSharedWithTarget(source, target) {
+        var dst = {};
+        for (var key in target) {
+            if (typeof target[key] !== "object" || !target[key]) {
+                dst[key] = source[key];
+            }
+            else {
+                dst[key] = deletePropertiesNotSharedWithTarget(source[key], target[key]);
+            }
+        }
+        return dst;
+    }
+    Rance.deletePropertiesNotSharedWithTarget = deletePropertiesNotSharedWithTarget;
     function recursiveRemoveAttribute(parent, attribute) {
         parent.removeAttribute(attribute);
         for (var i = 0; i < parent.children.length; i++) {
@@ -2205,9 +2267,8 @@ var Rance;
                 this.makeFromData(serializedData);
             }
             else {
-                // TODO manufactory manufactorydata temporarily in main.ts
-                this.capacity = manufactoryData.startingCapacity;
-                this.maxCapacity = manufactoryData.maxCapacity;
+                this.capacity = app.moduleData.ruleSet.manufactory.startingCapacity;
+                this.maxCapacity = app.moduleData.ruleSet.manufactory.maxCapacity;
             }
         }
         Manufactory.prototype.makeFromData = function (data) {
@@ -2329,7 +2390,7 @@ var Rance;
             this.capacity = Math.max(1, this.capacity - 1);
         };
         Manufactory.prototype.getCapacityUpgradeCost = function () {
-            return manufactoryData.buildCost * this.capacity;
+            return app.moduleData.ruleSet.manufactory.buildCost * this.capacity;
         };
         Manufactory.prototype.upgradeCapacity = function (amount) {
             this.player.money -= this.getCapacityUpgradeCost();
@@ -15226,19 +15287,19 @@ var Rance;
             },
             getInitialState: function () {
                 return ({
-                    canAfford: this.props.money >= manufactoryData.buildCost
+                    canAfford: this.props.money >= app.moduleData.ruleSet.manufactory.buildCost
                 });
             },
             componentWillReceiveProps: function (newProps) {
                 this.setState({
-                    canAfford: newProps.money >= manufactoryData.buildCost
+                    canAfford: newProps.money >= app.moduleData.ruleSet.manufactory.buildCost
                 });
             },
             handleConstruct: function () {
                 var star = this.props.star;
                 var player = this.props.player;
                 star.buildManufactory();
-                player.money -= manufactoryData.buildCost;
+                player.money -= app.moduleData.ruleSet.manufactory.buildCost;
                 this.props.triggerUpdate();
             },
             render: function () {
@@ -15253,7 +15314,7 @@ var Rance;
                 }, "Construct manufactory"), React.DOM.span({
                     className: "construct-manufactory-cost money-style" +
                         (this.state.canAfford ? "" : " negative")
-                }, manufactoryData.buildCost))));
+                }, app.moduleData.ruleSet.manufactory.buildCost))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -21927,6 +21988,17 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    Rance.defaultRuleSet = {
+        manufactory: {
+            startingCapacity: 1,
+            maxCapacity: 3,
+            buildCost: 1000
+        }
+    };
+})(Rance || (Rance = {}));
+/// <reference path="ruleset.ts" />
+var Rance;
+(function (Rance) {
     var ModuleData = (function () {
         function ModuleData() {
             this.subModuleMetaData = [];
@@ -21955,6 +22027,7 @@ var Rance;
                 UnitFamilies: {},
                 Units: {}
             };
+            this.ruleSet = Rance.extendObject(Rance.defaultRuleSet);
         }
         ModuleData.prototype.copyTemplates = function (source, category) {
             if (!this.Templates[category]) {
@@ -22016,6 +22089,9 @@ var Rance;
             }
             this.moduleLoadStart[moduleFile.key] = Date.now();
             moduleFile.loadAssets(this.finishLoadingModuleFile.bind(this, moduleFile, afterLoaded));
+            if (moduleFile.ruleSet) {
+                this.copyRuleSet(moduleFile.ruleSet);
+            }
         };
         ModuleLoader.prototype.loadAll = function (afterLoaded) {
             var boundCheckAll = function () {
@@ -22045,6 +22121,9 @@ var Rance;
         ModuleLoader.prototype.constructModuleFile = function (moduleFile) {
             moduleFile.constructModule(this.moduleData);
             this.moduleData.addSubModule(moduleFile);
+        };
+        ModuleLoader.prototype.copyRuleSet = function (toCopy) {
+            this.moduleData.ruleSet = Rance.deepMerge(this.moduleData.ruleSet, toCopy);
         };
         return ModuleLoader;
     }());
@@ -26168,7 +26247,7 @@ var Rance;
                                 continue;
                             var expansionCost;
                             if (!star.manufactory)
-                                expansionCost = manufactoryData.buildCost;
+                                expansionCost = app.moduleData.ruleSet.manufactory.buildCost;
                             else {
                                 expansionCost = star.manufactory.getCapacityUpgradeCost();
                             }
@@ -26192,7 +26271,7 @@ var Rance;
                         }
                         else {
                             star.buildManufactory();
-                            player.money -= manufactoryData.buildCost;
+                            player.money -= app.moduleData.ruleSet.manufactory.buildCost;
                         }
                     }
                 };
@@ -26374,6 +26453,9 @@ var Rance;
 (function (Rance) {
     var Modules;
     (function (Modules) {
+        // TODO module | split into smaller modules (DefaultUnits, DefaultRuleSet, etc.)
+        // would allow easier reuse but needs some kind of module management system.
+        // probably not worth doing in the near future
         var DefaultModule;
         (function (DefaultModule) {
             DefaultModule.moduleFile = {
@@ -27618,17 +27700,15 @@ var Rance;
                 "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50)
             };
             var dateOptionsWereSaved = Date.parse(parsedData.date);
-            for (var key in parsedData.options) {
+            for (var key in optionsToResetIfSetEarlierThan) {
                 if (Rance.Options[key] !== undefined) {
                     if (optionsToResetIfSetEarlierThan[key] && dateOptionsWereSaved <= optionsToResetIfSetEarlierThan[key]) {
-                        console.log("reset option " + key);
-                        continue;
-                    }
-                    else {
-                        Rance.Options[key] === Rance.extendObject(parsedData.options[key], Rance.Options[key], true);
+                        parsedData.options[key] = Rance.extendObject(Rance.Options[key]);
+                        console.log("Reset option: " + key);
                     }
                 }
             }
+            Rance.Options = Rance.deepMerge(Rance.Options, parsedData.options, true);
         }
     }
     Rance.loadOptions = loadOptions;
@@ -28258,12 +28338,6 @@ var Rance;
 /// <reference path="options.ts"/>
 /// <reference path="tutorials/tutorialstatus.ts" />
 /// <reference path="battlescene.ts" />
-// TODO manufactory  move these to module file
-var manufactoryData = {
-    startingCapacity: 1,
-    maxCapacity: 3,
-    buildCost: 1000
-};
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {

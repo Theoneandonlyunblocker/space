@@ -29,10 +29,8 @@ module Rance
       }
       else
       {
-        // TODO manufactory manufactorydata temporarily in main.ts
-
-        this.capacity = manufactoryData.startingCapacity;
-        this.maxCapacity = manufactoryData.maxCapacity;
+        this.capacity = app.moduleData.ruleSet.manufactory.startingCapacity;
+        this.maxCapacity = app.moduleData.ruleSet.manufactory.maxCapacity;
       }
     }
     makeFromData(data: any)
@@ -189,7 +187,7 @@ module Rance
     }
     getCapacityUpgradeCost()
     {
-      return manufactoryData.buildCost * this.capacity;
+      return app.moduleData.ruleSet.manufactory.buildCost * this.capacity;
     }
     upgradeCapacity(amount: number)
     {

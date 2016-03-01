@@ -44,6 +44,9 @@ module Rance
 {
   export module Modules
   {
+    // TODO module | split into smaller modules (DefaultUnits, DefaultRuleSet, etc.)
+    // would allow easier reuse but needs some kind of module management system.
+    // probably not worth doing in the near future
     export module DefaultModule
     {
       export var moduleFile: IModuleFile =

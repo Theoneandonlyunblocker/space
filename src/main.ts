@@ -21,14 +21,6 @@
 
 /// <reference path="battlescene.ts" />
 
-// TODO manufactory  move these to module file
-var manufactoryData =
-{
-  startingCapacity: 1,
-  maxCapacity: 3,
-  buildCost: 1000
-}
-
 module Rance
 {
   export var idGenerators =

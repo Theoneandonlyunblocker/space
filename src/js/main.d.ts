@@ -232,6 +232,12 @@ declare module Rance {
     function stringToHex(text: string): number;
     function colorImageInPlayerColor(image: HTMLImageElement, player: Player): string;
     function extendObject(from: any, to?: any, onlyExtendAlreadyPresent?: boolean): any;
+    function deepMerge(target: any, src: any, excludeKeysNotInTarget?: boolean): any;
+    function deletePropertiesNotSharedWithTarget(source: {
+        [key: string]: any;
+    }, target: {
+        [key: string]: any;
+    }): any;
     function recursiveRemoveAttribute(parent: HTMLElement, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
     function roundToNearestMultiple(value: number, multiple: number): number;
@@ -2951,6 +2957,16 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IModuleRuleSet {
+        manufactory?: {
+            startingCapacity?: number;
+            maxCapacity?: number;
+            buildCost?: number;
+        };
+    }
+    var defaultRuleSet: IModuleRuleSet;
+}
+declare module Rance {
     interface ITemplates {
         Abilities: {
             [type: string]: Templates.IAbilityTemplate;
@@ -3027,6 +3043,7 @@ declare module Rance {
         metaData: IModuleMetaData;
         loadAssets: (callback: Function) => void;
         constructModule: (ModuleData: ModuleData) => ModuleData;
+        ruleSet?: IModuleRuleSet;
     }
     class ModuleData {
         private subModuleMetaData;
@@ -3040,6 +3057,7 @@ declare module Rance {
         };
         Templates: ITemplates;
         defaultMap: Templates.IMapGenTemplate;
+        ruleSet: IModuleRuleSet;
         constructor();
         copyTemplates(source: any, category: string): void;
         copyAllTemplates(source: any): void;
@@ -3066,6 +3084,7 @@ declare module Rance {
         hasFinishedLoading(): boolean;
         finishLoadingModuleFile(moduleFile: IModuleFile, afterLoaded: () => void): void;
         constructModuleFile(moduleFile: IModuleFile): void;
+        copyRuleSet(toCopy: IModuleRuleSet): void;
     }
 }
 declare module Rance {
@@ -3872,11 +3891,6 @@ declare module Rance {
         render(timeStamp?: number): void;
     }
 }
-declare var manufactoryData: {
-    startingCapacity: number;
-    maxCapacity: number;
-    buildCost: number;
-};
 declare module Rance {
     var idGenerators: {
         fleet: number;

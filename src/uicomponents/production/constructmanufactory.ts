@@ -21,7 +21,7 @@ module Rance
       {
         return(
         {
-          canAfford: this.props.money >= manufactoryData.buildCost
+          canAfford: this.props.money >= app.moduleData.ruleSet.manufactory.buildCost
         });
       },
       
@@ -29,7 +29,7 @@ module Rance
       {
         this.setState(
         {
-          canAfford: newProps.money >= manufactoryData.buildCost
+          canAfford: newProps.money >= app.moduleData.ruleSet.manufactory.buildCost
         });
       },
 
@@ -38,7 +38,7 @@ module Rance
         var star: Star = this.props.star;
         var player: Player = this.props.player;
         star.buildManufactory();
-        player.money -= manufactoryData.buildCost;
+        player.money -= app.moduleData.ruleSet.manufactory.buildCost;
         this.props.triggerUpdate();
       },
 
@@ -66,7 +66,7 @@ module Rance
                 className: "construct-manufactory-cost money-style" +
                   (this.state.canAfford ? "" : " negative")
               },
-                manufactoryData.buildCost
+                app.moduleData.ruleSet.manufactory.buildCost
               )
             )
           )

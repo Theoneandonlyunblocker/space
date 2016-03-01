@@ -42,6 +42,11 @@ module Rance
 
       this.moduleLoadStart[moduleFile.key] = Date.now();
       moduleFile.loadAssets(this.finishLoadingModuleFile.bind(this, moduleFile, afterLoaded));
+
+      if (moduleFile.ruleSet)
+      {
+        this.copyRuleSet(moduleFile.ruleSet);
+      }
     }
     loadAll(afterLoaded: () => void)
     {
@@ -82,6 +87,10 @@ module Rance
     {
       moduleFile.constructModule(this.moduleData);
       this.moduleData.addSubModule(moduleFile);
+    }
+    copyRuleSet(toCopy: IModuleRuleSet)
+    {
+      this.moduleData.ruleSet = deepMerge(this.moduleData.ruleSet, toCopy);
     }
   }
 }

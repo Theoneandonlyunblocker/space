@@ -43,7 +43,7 @@ module Rance
               if (fullyExpanded) continue;
               
               var expansionCost: number;
-              if (!star.manufactory) expansionCost = manufactoryData.buildCost;
+              if (!star.manufactory) expansionCost = app.moduleData.ruleSet.manufactory.buildCost;
               else
               {
                 expansionCost = star.manufactory.getCapacityUpgradeCost();
@@ -76,7 +76,7 @@ module Rance
             else
             {
               star.buildManufactory();
-              player.money -= manufactoryData.buildCost;
+              player.money -= app.moduleData.ruleSet.manufactory.buildCost;
             }
           }
         }

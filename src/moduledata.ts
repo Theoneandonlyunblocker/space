@@ -1,3 +1,5 @@
+/// <reference path="ruleset.ts" />
+
 module Rance
 {
   export interface ITemplates
@@ -97,13 +99,13 @@ module Rance
     author: string;
     description: string;
   }
-
   export interface IModuleFile
   {
     key: string;
     metaData: IModuleMetaData;
     loadAssets: (callback: Function) => void;
     constructModule: (ModuleData: ModuleData) => ModuleData;
+    ruleSet?: IModuleRuleSet;
   }
 
   export class ModuleData
@@ -150,6 +152,7 @@ module Rance
     };
 
     defaultMap: Templates.IMapGenTemplate;
+    ruleSet: IModuleRuleSet = extendObject(defaultRuleSet);
 
     constructor()
     {
