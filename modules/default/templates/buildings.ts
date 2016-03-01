@@ -136,24 +136,6 @@ module Rance
 
             maxUpgradeLevel: 2
           }
-          export var itemManufactory: Rance.Templates.IBuildingTemplate =
-          {
-            type: "itemManufactory",
-            category: "manufactory",
-            displayName: "Item Manufactory",
-            description: "todo",
-
-            iconSrc: "commercialPort.png",
-            buildCost: 200,
-
-            maxPerType: 1,
-            effect:
-            {
-              itemLevel: 1
-            },
-
-            maxUpgradeLevel: 3 // MANUFACTORY_MAX
-          }
           export var resourceMine: Rance.Templates.IBuildingTemplate =
           {
             type: "resourceMine",
