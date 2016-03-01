@@ -42,7 +42,6 @@ module Rance
       },
       render: function()
       {
-        var predictedResearchPoints: number = 30; // TODO
         return(
           React.DOM.div(
           {

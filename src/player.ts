@@ -669,7 +669,6 @@ module Rance
         }
       }
 
-      // TODO
       var battlePrep = new BattlePrep(battleData);
       if (battlePrep.humanPlayer)
       {

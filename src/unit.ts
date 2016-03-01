@@ -914,7 +914,7 @@ module Rance
     }
     getCounterAttackStrength()
     {
-      return 1; // TODO
+      return 1; // TODO unit
     }
     canActThisTurn(): boolean
     {
@@ -922,17 +922,17 @@ module Rance
     }
     isStealthy(): boolean
     {
-      // TODO
+      // TODO unit
       return this.template.isStealthy;
     }
     getVisionRange(): number
     {
-      // TODO
+      // TODO unit
       return this.template.visionRange;
     }
     getDetectionRange(): number
     {
-      // TODO
+      // TODO unit
       return this.template.detectionRange;
     }
     heal()
@@ -949,7 +949,7 @@ module Rance
     }
     getStrengthEvaluation()
     {
-      // TODO
+      // TODO unit TODO ai
       return this.currentHealth;
     }
     getTotalCost()

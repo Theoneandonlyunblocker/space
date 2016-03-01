@@ -115,7 +115,7 @@ module Rance
 
     startMove()
     {
-      var fleets = app.playerControl.selectedFleets; // TODO
+      var fleets = app.playerControl.selectedFleets;
 
       if (this.active || !fleets || fleets.length < 1)
       {

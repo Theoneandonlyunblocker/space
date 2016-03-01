@@ -146,7 +146,7 @@ module Rance
         // neighboring own stars ++
         // neighboring neutral stars -
         // neighboring other player stars --
-        // neighboring other player with low trust stars --- TODO
+        // neighboring other player with low trust stars --- TODO ai
         var nearbyStars = star.getLinkedInRange(2).byRange;
         for (var rangeString in nearbyStars)
         {
@@ -686,7 +686,7 @@ module Rance
 
         if (player !== this.player)
         {
-          invisibleStrength = visibleStrength * 0.5; // TODO
+          invisibleStrength = visibleStrength * 0.5; // TODO ai
         }
 
         return visibleStrength + invisibleStrength;

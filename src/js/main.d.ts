@@ -3369,7 +3369,6 @@ declare module Rance {
                     var starBase: Rance.Templates.IDefenceBuildingTemplate;
                     var commercialPort: Rance.Templates.IBuildingTemplate;
                     var deepSpaceRadar: Rance.Templates.IBuildingTemplate;
-                    var itemManufactory: Rance.Templates.IBuildingTemplate;
                     var resourceMine: Rance.Templates.IBuildingTemplate;
                     var reserachLab: Rance.Templates.IBuildingTemplate;
                 }

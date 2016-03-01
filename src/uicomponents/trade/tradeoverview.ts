@@ -78,7 +78,7 @@ module Rance
         }
         else
         {
-          // TODO
+          // TODO trade TODO ai | don't allow player to stage ai items
           activeTrade.stageItem(key, availableAmount);
         }
 

@@ -23303,7 +23303,7 @@ var Rance;
             player.secondaryColor = 0xFFFFFF;
             player.isIndependent = true;
             var foregroundEmblem = new Rance.Emblem(player.secondaryColor);
-            foregroundEmblem.inner = app.moduleData.Templates.SubEmblems["Flag_of_Edward_England"]; // TODO module
+            foregroundEmblem.inner = app.moduleData.Templates.SubEmblems["Flag_of_Edward_England"];
             player.flag = new Rance.Flag({
                 width: 46,
                 mainColor: player.color,
@@ -24508,19 +24508,6 @@ var Rance;
                             detection: 0.999
                         },
                         maxUpgradeLevel: 2
-                    };
-                    Buildings.itemManufactory = {
-                        type: "itemManufactory",
-                        category: "manufactory",
-                        displayName: "Item Manufactory",
-                        description: "todo",
-                        iconSrc: "commercialPort.png",
-                        buildCost: 200,
-                        maxPerType: 1,
-                        effect: {
-                            itemLevel: 1
-                        },
-                        maxUpgradeLevel: 3 // MANUFACTORY_MAX
                     };
                     Buildings.resourceMine = {
                         type: "resourceMine",

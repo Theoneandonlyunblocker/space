@@ -358,7 +358,7 @@ module Rance
 
       this.isDirty = true;
 
-      // TODO
+      // TODO performance
       this.render();
     }
     setAllLayersAsDirty()
@@ -370,7 +370,7 @@ module Rance
 
       this.isDirty = true;
 
-      // TODO
+      // TODO performance
       this.render();
     }
     updateMapModeLayers(updatedLayers: MapRendererLayer[])
