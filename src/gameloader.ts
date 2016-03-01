@@ -259,7 +259,10 @@ module Rance
       }
 
       // technology
-      player.initTechnologies(data.researchByTechnology);
+      if (data.researchByTechnology)
+      {
+        player.initTechnologies(data.researchByTechnology);
+      }
 
       return player;
     }

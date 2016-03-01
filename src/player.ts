@@ -852,7 +852,10 @@ module Rance
         data.personality = extendObject(this.AIController.personality);
       }
       
-      data.researchByTechnology = this.playerTechnology.serialize();
+      if (this.playerTechnology)
+      {
+        data.researchByTechnology = this.playerTechnology.serialize();
+      }
 
       return data;
     }
