@@ -6523,6 +6523,235 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var PlayerTechnology = (function () {
+        function PlayerTechnology(getResearchSpeed, savedData) {
+            this.tempOverflowedResearchAmount = 0;
+            this.getResearchSpeed = getResearchSpeed;
+            this.technologies = {};
+            var totalTechnologies = Object.keys(app.moduleData.Templates.Technologies).length;
+            for (var key in app.moduleData.Templates.Technologies) {
+                var technology = app.moduleData.Templates.Technologies[key];
+                this.technologies[key] =
+                    {
+                        technology: technology,
+                        totalResearch: 0,
+                        level: 0,
+                        priority: undefined,
+                        priorityIsLocked: false
+                    };
+                if (savedData && savedData[key]) {
+                    this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
+                    this.technologies[key].priority = savedData[key].priority;
+                    this.technologies[key].priorityIsLocked = savedData[key].priorityIsLocked;
+                }
+            }
+            this.initPriorities();
+        }
+        PlayerTechnology.prototype.initPriorities = function () {
+            var priorityToAllocate = 1;
+            var techsToInit = [];
+            for (var key in this.technologies) {
+                var techData = this.technologies[key];
+                if (techData.priority === undefined) {
+                    techsToInit.push(techData.technology);
+                }
+                else {
+                    priorityToAllocate -= techData.priority;
+                }
+            }
+            techsToInit.sort(function (a, b) {
+                return b.maxLevel - a.maxLevel;
+            });
+            while (techsToInit.length > 0) {
+                var averagePriority = priorityToAllocate / techsToInit.length;
+                var technology = techsToInit.pop();
+                var maxNeededPriority = this.getMaxNeededPriority(technology);
+                var priorityForTech = Math.min(averagePriority, maxNeededPriority);
+                this.technologies[technology.key].priority = priorityForTech;
+                priorityToAllocate -= priorityForTech;
+            }
+        };
+        PlayerTechnology.prototype.allocateResearchPoints = function (amount, iteration) {
+            if (iteration === void 0) { iteration = 0; }
+            // probably not needed as priority should always add up to 1 anyway,
+            // but this is cheap and infrequently called so this is here as a safeguard at least for now
+            var totalPriority = 0;
+            for (var key in this.technologies) {
+                totalPriority += this.technologies[key].priority;
+            }
+            for (var key in this.technologies) {
+                var techData = this.technologies[key];
+                var relativePriority = techData.priority / totalPriority;
+                if (relativePriority > 0) {
+                    this.addResearchTowardsTechnology(techData.technology, relativePriority * amount);
+                }
+            }
+            if (this.tempOverflowedResearchAmount) {
+                if (iteration > 10) {
+                    throw new RangeError("Maximum call stack size exceeded");
+                }
+                this.allocateOverflowedResearchPoints(iteration);
+            }
+            else {
+                this.capTechnologyPrioritiesToMaxNeeded();
+            }
+        };
+        PlayerTechnology.prototype.allocateOverflowedResearchPoints = function (iteration) {
+            if (iteration === void 0) { iteration = 0; }
+            var overflow = this.tempOverflowedResearchAmount;
+            this.tempOverflowedResearchAmount = 0;
+            this.allocateResearchPoints(overflow, ++iteration);
+        };
+        PlayerTechnology.prototype.getResearchNeededForTechnologyLevel = function (level) {
+            if (level <= 0)
+                return 0;
+            if (level === 1)
+                return 40;
+            var a = 20;
+            var b = 40;
+            var swap;
+            var total = 0;
+            for (var i = 0; i < level; i++) {
+                swap = a;
+                a = b;
+                b = swap + b;
+                total += a;
+            }
+            return total;
+        };
+        PlayerTechnology.prototype.addResearchTowardsTechnology = function (technology, amount) {
+            var tech = this.technologies[technology.key];
+            var overflow = 0;
+            if (tech.level >= technology.maxLevel) {
+                return;
+            }
+            else {
+                tech.totalResearch += amount;
+                while (tech.level < technology.maxLevel &&
+                    this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch) {
+                    tech.level++;
+                }
+                if (tech.level === technology.maxLevel) {
+                    var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
+                    overflow += tech.totalResearch - neededForMaxLevel;
+                    tech.totalResearch -= overflow;
+                    this.setTechnologyPriority(technology, 0, true);
+                    tech.priorityIsLocked = true;
+                }
+            }
+            this.tempOverflowedResearchAmount += overflow;
+        };
+        PlayerTechnology.prototype.getMaxNeededPriority = function (technology) {
+            var researchUntilMaxed = this.getResearchNeededForTechnologyLevel(technology.maxLevel) -
+                this.technologies[technology.key].totalResearch;
+            return researchUntilMaxed / this.getResearchSpeed();
+        };
+        PlayerTechnology.prototype.getOpenTechnologiesPriority = function () {
+            var openPriority = 0;
+            for (var key in this.technologies) {
+                var techData = this.technologies[key];
+                if (!techData.priorityIsLocked) {
+                    openPriority += techData.priority;
+                }
+            }
+            return openPriority;
+        };
+        PlayerTechnology.prototype.getRelativeOpenTechnologyPriority = function (technology) {
+            var totalOpenPriority = this.getOpenTechnologiesPriority();
+            if (this.technologies[technology.key].priorityIsLocked || !totalOpenPriority) {
+                return 0;
+            }
+            return this.technologies[technology.key].priority / totalOpenPriority;
+        };
+        PlayerTechnology.prototype.setTechnologyPriority = function (technology, priority, force) {
+            if (force === void 0) { force = false; }
+            var remainingPriority = 1;
+            var totalOtherPriority = 0;
+            var totalOtherPriorityWasZero = false;
+            var totalOthersCount = 0;
+            for (var key in this.technologies) {
+                if (key !== technology.key) {
+                    if (this.technologies[key].priorityIsLocked) {
+                        remainingPriority -= this.technologies[key].priority;
+                    }
+                    else {
+                        totalOtherPriority += this.technologies[key].priority;
+                        totalOthersCount++;
+                    }
+                }
+            }
+            if (totalOthersCount === 0) {
+                if (force) {
+                    this.technologies[technology.key].priority = priority;
+                    Rance.eventManager.dispatchEvent("technologyPrioritiesUpdated");
+                }
+                return;
+            }
+            if (remainingPriority < 0.0001) {
+                remainingPriority = 0;
+            }
+            if (priority > remainingPriority) {
+                priority = remainingPriority;
+            }
+            var priorityNeededForMaxLevel = this.getMaxNeededPriority(technology);
+            var maxNeededPriority = Math.min(priorityNeededForMaxLevel, priority);
+            this.technologies[technology.key].priority = maxNeededPriority;
+            remainingPriority -= maxNeededPriority;
+            if (totalOtherPriority === 0) {
+                totalOtherPriority = 1;
+                totalOtherPriorityWasZero = true;
+            }
+            for (var key in this.technologies) {
+                if (key !== technology.key && !this.technologies[key].priorityIsLocked) {
+                    var techData = this.technologies[key];
+                    if (totalOtherPriorityWasZero) {
+                        techData.priority = 1 / totalOthersCount;
+                    }
+                    var maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
+                    var relativePriority = techData.priority / totalOtherPriority;
+                    var reservedPriority = relativePriority * remainingPriority;
+                    if (reservedPriority > maxNeededPriorityForOtherTech) {
+                        techData.priority = maxNeededPriorityForOtherTech;
+                        var priorityOverflow = reservedPriority - maxNeededPriorityForOtherTech;
+                        remainingPriority += priorityOverflow;
+                    }
+                    else {
+                        techData.priority = reservedPriority;
+                    }
+                }
+            }
+            Rance.eventManager.dispatchEvent("technologyPrioritiesUpdated");
+        };
+        PlayerTechnology.prototype.capTechnologyPrioritiesToMaxNeeded = function () {
+            var overflowPriority = 0;
+            for (var key in this.technologies) {
+                var techData = this.technologies[key];
+                var maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
+                if (techData.priority > maxNeededPriorityForOtherTech) {
+                    overflowPriority += techData.priority - maxNeededPriorityForOtherTech;
+                    this.setTechnologyPriority(techData.technology, maxNeededPriorityForOtherTech, true);
+                    break;
+                }
+            }
+        };
+        PlayerTechnology.prototype.serialize = function () {
+            var data = {};
+            for (var key in this.technologies) {
+                data[key] =
+                    {
+                        totalResearch: this.technologies[key].totalResearch,
+                        priority: this.technologies[key].priority,
+                        priorityIsLocked: this.technologies[key].priorityIsLocked
+                    };
+            }
+            return data;
+        };
+        return PlayerTechnology;
+    }());
+    Rance.PlayerTechnology = PlayerTechnology;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
     function makeRandomPersonality() {
         var unitCompositionPreference = {};
         for (var archetype in app.moduleData.Templates.UnitArchetypes) {
@@ -7307,7 +7536,7 @@ var Rance;
                     var resourceData = allResourceIncomeData[resourceType];
                     player.addResource(resourceData.resource, resourceData.amount);
                 }
-                player.allocateResearchPoints(player.getResearchSpeed());
+                player.playerTechnology.allocateResearchPoints(player.getResearchSpeed());
                 player.getAllManufactories().forEach(function (manufactory) {
                     manufactory.buildAllThings();
                 });
@@ -8863,6 +9092,7 @@ var Rance;
 /// <reference path="battleprep.ts" />
 /// <reference path="diplomacystatus.ts" />
 /// <reference path="manufactory.ts" />
+/// <reference path="playertechnology.ts" />
 /// <reference path="mapai/aicontroller.ts"/>
 var Rance;
 (function (Rance) {
@@ -8881,6 +9111,7 @@ var Rance;
             this.detectedStars = {};
             this.identifiedUnits = {};
             this.tempOverflowedResearchAmount = 0;
+            this.listeners = {};
             this.id = isFinite(id) ? id : Rance.idGenerators.player++;
             this.name = "Player " + this.id;
             this.isAI = isAI;
@@ -8904,6 +9135,9 @@ var Rance;
             this.diplomacyStatus.destroy();
             this.diplomacyStatus = null;
             this.AIController = null;
+            for (var key in this.listeners) {
+                Rance.eventManager.removeEventListener(key, this.listeners[key]);
+            }
         };
         Player.prototype.die = function () {
             console.log(this.name + " died");
@@ -8912,24 +9146,8 @@ var Rance;
             }
         };
         Player.prototype.initTechnologies = function (savedData) {
-            this.technologies = {};
-            var totalTechnologies = Object.keys(app.moduleData.Templates.Technologies).length;
-            for (var key in app.moduleData.Templates.Technologies) {
-                var technology = app.moduleData.Templates.Technologies[key];
-                this.technologies[key] =
-                    {
-                        technology: technology,
-                        totalResearch: 0,
-                        level: 0,
-                        priority: 1 / totalTechnologies,
-                        priorityIsLocked: false
-                    };
-                if (savedData && savedData[key]) {
-                    this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
-                    this.technologies[key].priority = savedData[key].priority;
-                    this.technologies[key].priorityIsLocked = savedData[key].priorityIsLocked;
-                }
-            }
+            this.playerTechnology = new Rance.PlayerTechnology(this.getResearchSpeed.bind(this), savedData);
+            this.listeners["builtBuildingWithEffect_research"] = Rance.eventManager.addEventListener("builtBuildingWithEffect_research", this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology));
         };
         Player.prototype.makeColorScheme = function () {
             var scheme = Rance.generateColorScheme(this.color);
@@ -9330,134 +9548,12 @@ var Rance;
         };
         // research and technology
         Player.prototype.getResearchSpeed = function () {
-            var research = 3000;
+            var research = 0;
+            research += app.moduleData.ruleSet.research.baseResearchSpeed;
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 research += this.controlledLocations[i].getResearchPoints();
             }
             return research;
-        };
-        Player.prototype.allocateResearchPoints = function (amount, iteration) {
-            if (iteration === void 0) { iteration = 0; }
-            // probably not needed as priority should always add up to 1 anyway,
-            // but this is cheap and infrequently called so this is here as a safeguard at least for now
-            var totalPriority = 0;
-            for (var key in this.technologies) {
-                totalPriority += this.technologies[key].priority;
-            }
-            // var researchSpeed = this.getResearchSpeed();
-            for (var key in this.technologies) {
-                var techData = this.technologies[key];
-                var relativePriority = techData.priority / totalPriority;
-                if (relativePriority > 0) {
-                    this.addResearchTowardsTechnology(techData.technology, relativePriority * amount);
-                }
-            }
-            if (this.tempOverflowedResearchAmount) {
-                if (!this.isAI) {
-                    console.log(iteration, amount, this.tempOverflowedResearchAmount);
-                }
-                if (iteration > 10) {
-                    return;
-                }
-                this.allocateOverflowedResearchPoints(iteration);
-            }
-        };
-        Player.prototype.allocateOverflowedResearchPoints = function (iteration) {
-            if (iteration === void 0) { iteration = 0; }
-            // TODO tech overflow
-            var overflow = this.tempOverflowedResearchAmount;
-            this.tempOverflowedResearchAmount = 0;
-            this.allocateResearchPoints(overflow, ++iteration);
-        };
-        Player.prototype.getResearchNeededForTechnologyLevel = function (level) {
-            if (level <= 0)
-                return 0;
-            if (level === 1)
-                return 40;
-            var a = 20;
-            var b = 40;
-            var swap;
-            var total = 0;
-            for (var i = 0; i < level; i++) {
-                swap = a;
-                a = b;
-                b = swap + b;
-                total += a;
-            }
-            return total;
-        };
-        Player.prototype.addResearchTowardsTechnology = function (technology, amount) {
-            var tech = this.technologies[technology.key];
-            var overflow = 0;
-            if (tech.level >= technology.maxLevel) {
-                return;
-            }
-            else {
-                tech.totalResearch += amount;
-                while (tech.level < technology.maxLevel &&
-                    this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch) {
-                    tech.level++;
-                }
-                if (tech.level === technology.maxLevel) {
-                    var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
-                    overflow += tech.totalResearch - neededForMaxLevel;
-                    tech.totalResearch -= overflow;
-                    this.setTechnologyPriority(technology, 0, true);
-                    tech.priorityIsLocked = true;
-                }
-            }
-            if (!this.isAI) {
-                console.log(technology.displayName, amount, overflow);
-            }
-            this.tempOverflowedResearchAmount += overflow;
-        };
-        Player.prototype.setTechnologyPriority = function (technology, priority, force) {
-            if (force === void 0) { force = false; }
-            var remainingPriority = 1;
-            var totalOtherPriority = 0;
-            var totalOtherPriorityWasZero = false;
-            var totalOthersCount = 0;
-            for (var key in this.technologies) {
-                if (key !== technology.key) {
-                    if (this.technologies[key].priorityIsLocked) {
-                        remainingPriority -= this.technologies[key].priority;
-                    }
-                    else {
-                        totalOtherPriority += this.technologies[key].priority;
-                        totalOthersCount++;
-                    }
-                }
-            }
-            if (totalOthersCount === 0) {
-                if (force) {
-                    this.technologies[technology.key].priority = priority;
-                    Rance.eventManager.dispatchEvent("technologyPrioritiesUpdated");
-                }
-                return;
-            }
-            if (remainingPriority < 0.0001) {
-                remainingPriority = 0;
-            }
-            if (priority > remainingPriority) {
-                priority = remainingPriority;
-            }
-            this.technologies[technology.key].priority = priority;
-            remainingPriority -= priority;
-            if (totalOtherPriority === 0) {
-                totalOtherPriority = 1;
-                totalOtherPriorityWasZero = true;
-            }
-            for (var key in this.technologies) {
-                if (key !== technology.key && !this.technologies[key].priorityIsLocked) {
-                    var techData = this.technologies[key];
-                    if (totalOtherPriorityWasZero) {
-                        techData.priority = 1 / totalOthersCount;
-                    }
-                    var relativePriority = techData.priority / totalOtherPriority;
-                    techData.priority = relativePriority * remainingPriority;
-                }
-            }
-            Rance.eventManager.dispatchEvent("technologyPrioritiesUpdated");
         };
         // MANUFACTORIES
         Player.prototype.getAllManufactories = function () {
@@ -9472,7 +9568,7 @@ var Rance;
         Player.prototype.meetsTechnologyRequirements = function (requirements) {
             for (var i = 0; i < requirements.length; i++) {
                 var requirement = requirements[i];
-                if (this.technologies[requirement.technology.key].level < requirement.level) {
+                if (this.playerTechnology.technologies[requirement.technology.key].level < requirement.level) {
                     return false;
                 }
             }
@@ -9574,15 +9670,7 @@ var Rance;
             if (this.isAI && this.AIController) {
                 data.personality = Rance.extendObject(this.AIController.personality);
             }
-            data.researchByTechnology = {};
-            for (var key in this.technologies) {
-                data.researchByTechnology[key] =
-                    {
-                        totalResearch: this.technologies[key].totalResearch,
-                        priority: this.technologies[key].priority,
-                        priorityIsLocked: this.technologies[key].priorityIsLocked
-                    };
-            }
+            data.researchByTechnology = this.playerTechnology.serialize();
             return data;
         };
         return Player;
@@ -14558,12 +14646,18 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../playertechnology.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.TechnologyPrioritySlider = React.createClass({
             displayName: "TechnologyPrioritySlider",
+            propTypes: {
+                playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired,
+                technology: React.PropTypes.object.isRequired,
+                researchPoints: React.PropTypes.number.isRequired
+            },
             getInitialState: function () {
                 return ({
                     priority: this.getPlayerPriority()
@@ -14576,7 +14670,7 @@ var Rance;
                 Rance.eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
             },
             getPlayerPriority: function () {
-                return this.props.player.technologies[this.props.technology.key].priority;
+                return this.props.playerTechnology.technologies[this.props.technology.key].priority;
             },
             updatePriority: function () {
                 this.setState({
@@ -14584,11 +14678,11 @@ var Rance;
                 });
             },
             handlePriorityChange: function (e) {
-                if (this.props.player.technologies[this.props.technology.key].priorityIsLocked) {
+                if (this.props.playerTechnology.technologies[this.props.technology.key].priorityIsLocked) {
                     return;
                 }
                 var target = e.target;
-                this.props.player.setTechnologyPriority(this.props.technology, parseFloat(target.value));
+                this.props.playerTechnology.setTechnologyPriority(this.props.technology, parseFloat(target.value));
             },
             render: function () {
                 return (React.DOM.div({
@@ -14602,12 +14696,14 @@ var Rance;
                     max: 1,
                     step: 0.01,
                     value: this.state.priority,
-                    onChange: this.handlePriorityChange
+                    onChange: this.handlePriorityChange,
+                    disabled: this.props.technology.priorityIsLocked
                 })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../playertechnology.ts" />
 /// <reference path="technologypriorityslider.ts" />
 var Rance;
 (function (Rance) {
@@ -14615,24 +14711,31 @@ var Rance;
     (function (UIComponents) {
         UIComponents.Technology = React.createClass({
             displayName: "Technology",
+            propTypes: {
+                playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired,
+                technology: React.PropTypes.object.isRequired,
+                researchPoints: React.PropTypes.number.isRequired
+            },
             togglePriorityLock: function () {
-                this.props.player.technologies[this.props.technology.key].priorityIsLocked =
-                    !this.props.player.technologies[this.props.technology.key].priorityIsLocked;
+                var pt = this.props.playerTechnology;
+                var technology = this.props.technology;
+                pt.technologies[technology.key].priorityIsLocked = !pt.technologies[technology.key].priorityIsLocked;
                 this.forceUpdate();
             },
             render: function () {
                 var technology = this.props.technology;
                 var isAtMaxLevel = false;
-                var player = this.props.player;
-                var techData = player.technologies[technology.key];
-                var forCurrentLevel = player.getResearchNeededForTechnologyLevel(techData.level);
-                var forNextLevel = player.getResearchNeededForTechnologyLevel(techData.level + 1);
+                var playerTechnology = this.props.playerTechnology;
+                var techData = playerTechnology.technologies[technology.key];
+                var forCurrentLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level);
+                var forNextLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level + 1);
                 var progressForLevel = techData.totalResearch - forCurrentLevel;
                 var neededToProgressLevel = forNextLevel - forCurrentLevel;
                 var relativeProgress;
                 if (techData.level === technology.maxLevel) {
                     relativeProgress = 1;
-                    progressForLevel = techData.totalResearch - player.getResearchNeededForTechnologyLevel(techData.level - 1);
+                    progressForLevel =
+                        techData.totalResearch - playerTechnology.getResearchNeededForTechnologyLevel(techData.level - 1);
                     neededToProgressLevel = progressForLevel;
                     isAtMaxLevel = true;
                 }
@@ -14656,7 +14759,7 @@ var Rance;
                 }), React.DOM.div({
                     className: "technology-progress-bar-value"
                 }, "" + progressForLevel.toFixed(1) + " / " + Math.ceil(neededToProgressLevel)), UIComponents.TechnologyPrioritySlider({
-                    player: this.props.player,
+                    playerTechnology: this.props.playerTechnology,
                     technology: this.props.technology,
                     researchPoints: this.props.researchPoints
                 })), React.DOM.button({
@@ -14668,6 +14771,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../playertechnology.ts" />
 /// <reference path="technology.ts" />
 var Rance;
 (function (Rance) {
@@ -14676,6 +14780,9 @@ var Rance;
         UIComponents.TechnologiesList = React.createClass({
             displayName: "TechnologiesList",
             updateListener: undefined,
+            propTypes: {
+                playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired
+            },
             componentDidMount: function () {
                 this.updateListener = Rance.eventManager.addEventListener("builtBuildingWithEffect_research", this.forceUpdate.bind(this));
             },
@@ -14683,13 +14790,13 @@ var Rance;
                 Rance.eventManager.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
             },
             render: function () {
-                var player = this.props.player;
-                var researchSpeed = player.getResearchSpeed();
+                var playerTechnology = this.props.playerTechnology;
+                var researchSpeed = playerTechnology.getResearchSpeed();
                 var rows = [];
-                for (var key in player.technologies) {
+                for (var key in playerTechnology.technologies) {
                     rows.push(UIComponents.Technology({
-                        player: player,
-                        technology: player.technologies[key].technology,
+                        playerTechnology: playerTechnology,
+                        technology: playerTechnology.technologies[key].technology,
                         researchPoints: researchSpeed,
                         key: key
                     }));
@@ -15607,7 +15714,7 @@ var Rance;
                             contentConstructor = UIComponents.TechnologiesList;
                             contentProps =
                                 {
-                                    player: this.props.player
+                                    playerTechnology: this.props.player.playerTechnology
                                 };
                             popupProps.minWidth = 430;
                             break;
@@ -21983,6 +22090,9 @@ var Rance;
             startingCapacity: 1,
             maxCapacity: 3,
             buildCost: 1000
+        },
+        research: {
+            baseResearchSpeed: 3000
         }
     };
 })(Rance || (Rance = {}));

@@ -9,6 +9,7 @@
 /// <reference path="battleprep.ts" />
 /// <reference path="diplomacystatus.ts" />
 /// <reference path="manufactory.ts" />
+/// <reference path="playertechnology.ts" />
 
 /// <reference path="mapai/aicontroller.ts"/>
 
@@ -74,18 +75,13 @@ module Rance
       [id: number]: Unit;
     } = {};
 
-    technologies:
-    {
-      [technologyKey: string]:
-      {
-        technology: Templates.ITechnologyTemplate;
-        totalResearch: number;
-        level: number;
-        priority: number;
-        priorityIsLocked: boolean;
-      }
-    };
     tempOverflowedResearchAmount: number = 0;
+    playerTechnology: PlayerTechnology;
+
+    listeners:
+    {
+      [key: string]: Function;
+    } = {};
 
     constructor(isAI: boolean, id?: number)
     {
@@ -102,6 +98,11 @@ module Rance
       this.diplomacyStatus.destroy();
       this.diplomacyStatus = null;
       this.AIController = null;
+
+      for (var key in this.listeners)
+      {
+        eventManager.removeEventListener(key, this.listeners[key]);
+      }
     }
     die()
     {
@@ -114,27 +115,12 @@ module Rance
     initTechnologies(savedData?:
       {[key: string]: {totalResearch: number; priority: number; priorityIsLocked: boolean}})
     {
-      this.technologies = {};
-      var totalTechnologies = Object.keys(app.moduleData.Templates.Technologies).length;
-      for (var key in app.moduleData.Templates.Technologies)
-      {
-        var technology = app.moduleData.Templates.Technologies[key]
-        this.technologies[key] =
-        {
-          technology: technology,
-          totalResearch: 0,
-          level: 0,
-          priority: 1 / totalTechnologies,
-          priorityIsLocked: false
-        }
+      this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this), savedData);
 
-        if (savedData && savedData[key])
-        {
-          this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
-          this.technologies[key].priority = savedData[key].priority;
-          this.technologies[key].priorityIsLocked = savedData[key].priorityIsLocked;
-        }
-      }
+      this.listeners["builtBuildingWithEffect_research"] = eventManager.addEventListener(
+        "builtBuildingWithEffect_research",
+        this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology)
+      );
     }
     makeColorScheme()
     {
@@ -692,7 +678,8 @@ module Rance
     // research and technology
     getResearchSpeed(): number
     {
-      var research: number = 3000;
+      var research = 0;
+      research += app.moduleData.ruleSet.research.baseResearchSpeed;
 
       for (var i = 0; i < this.controlledLocations.length; i++)
       {
@@ -700,171 +687,6 @@ module Rance
       }
 
       return research;
-    }
-    allocateResearchPoints(amount: number, iteration: number = 0): void
-    {
-      // probably not needed as priority should always add up to 1 anyway,
-      // but this is cheap and infrequently called so this is here as a safeguard at least for now
-      var totalPriority: number = 0;
-      for (var key in this.technologies)
-      {
-        totalPriority += this.technologies[key].priority;
-      }
-
-      // var researchSpeed = this.getResearchSpeed();
-
-      for (var key in this.technologies)
-      {
-        var techData = this.technologies[key];
-        var relativePriority = techData.priority / totalPriority;
-        if (relativePriority > 0)
-        {
-          this.addResearchTowardsTechnology(techData.technology, relativePriority * amount);
-        }
-      }
-
-      if (this.tempOverflowedResearchAmount)
-      {
-        if (!this.isAI)
-        {
-          console.log(iteration, amount, this.tempOverflowedResearchAmount);
-        }
-        if (iteration > 10)
-        {
-          return;
-        }
-        this.allocateOverflowedResearchPoints(iteration);
-      }
-    }
-    allocateOverflowedResearchPoints(iteration: number = 0)
-    {
-      // TODO tech overflow
-      var overflow = this.tempOverflowedResearchAmount;
-      this.tempOverflowedResearchAmount = 0;
-      this.allocateResearchPoints(overflow, ++iteration);
-
-    }
-    getResearchNeededForTechnologyLevel(level: number): number
-    {
-      if (level <= 0) return 0;
-      if (level === 1) return 40;
-
-      var a = 20;
-      var b = 40;
-      var swap: number;
-
-      var total = 0;
-
-      for (var i = 0; i < level; i++)
-      {
-        swap = a;
-        a = b;
-        b = swap + b;
-        total += a;
-      }
-
-      return total;
-    }
-    addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void
-    {
-      var tech = this.technologies[technology.key]
-      var overflow: number = 0;
-
-      if (tech.level >= technology.maxLevel) // probably shouldnt happen in the first place
-      {
-        return;
-      }
-      else
-      {
-        tech.totalResearch += amount;
-        while (tech.level < technology.maxLevel &&
-          this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch)
-        {
-          tech.level++;
-        }
-        if (tech.level === technology.maxLevel)
-        {
-          var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
-          overflow += tech.totalResearch - neededForMaxLevel;
-          tech.totalResearch -= overflow;
-          this.setTechnologyPriority(technology, 0, true);
-          tech.priorityIsLocked = true;
-        }
-      }
-
-      if (!this.isAI)
-      {
-        console.log(technology.displayName, amount, overflow);
-      }
-      this.tempOverflowedResearchAmount += overflow;
-    }
-    setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number, force: boolean = false)
-    {
-      var remainingPriority = 1;
-
-      var totalOtherPriority: number = 0;
-      var totalOtherPriorityWasZero: boolean = false;
-      var totalOthersCount: number = 0;
-      for (var key in this.technologies)
-      {
-        if (key !== technology.key)
-        {
-          if (this.technologies[key].priorityIsLocked)
-          {
-            remainingPriority -= this.technologies[key].priority;
-          }
-          else
-          {
-            totalOtherPriority += this.technologies[key].priority;
-            totalOthersCount++;
-          }
-        }
-      }
-      if (totalOthersCount === 0)
-      {
-        if (force)
-        {
-          this.technologies[technology.key].priority = priority;
-          eventManager.dispatchEvent("technologyPrioritiesUpdated");
-        }
-        
-        return;
-      }
-
-      if (remainingPriority < 0.0001)
-      {
-        remainingPriority = 0;
-      }
-
-      if (priority > remainingPriority)
-      {
-        priority = remainingPriority;
-      }
-      this.technologies[technology.key].priority = priority;
-      remainingPriority -= priority;
-
-
-      if (totalOtherPriority === 0)
-      {
-        totalOtherPriority = 1;
-        totalOtherPriorityWasZero = true;
-      }
-
-      for (var key in this.technologies)
-      {
-        if (key !== technology.key && !this.technologies[key].priorityIsLocked)
-        {
-          var techData = this.technologies[key];
-          if (totalOtherPriorityWasZero)
-          {
-            techData.priority = 1 / totalOthersCount;
-          }
-          var relativePriority = techData.priority / totalOtherPriority;
-          techData.priority = relativePriority * remainingPriority;
-        }
-      }
-
-      eventManager.dispatchEvent("technologyPrioritiesUpdated");
     }
     // MANUFACTORIES
     getAllManufactories(): Manufactory[]
@@ -886,7 +708,7 @@ module Rance
       for (var i = 0; i < requirements.length; i++)
       {
         var requirement = requirements[i];
-        if (this.technologies[requirement.technology.key].level < requirement.level)
+        if (this.playerTechnology.technologies[requirement.technology.key].level < requirement.level)
         {
           return false;
         }
@@ -1030,16 +852,7 @@ module Rance
         data.personality = extendObject(this.AIController.personality);
       }
       
-      data.researchByTechnology = {};
-      for (var key in this.technologies)
-      {
-        data.researchByTechnology[key] =
-        {
-          totalResearch: this.technologies[key].totalResearch,
-          priority: this.technologies[key].priority,
-          priorityIsLocked: this.technologies[key].priorityIsLocked
-        }
-      }
+      data.researchByTechnology = this.playerTechnology.serialize();
 
       return data;
     }

@@ -1,3 +1,5 @@
+/// <reference path="../../playertechnology.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -5,6 +7,14 @@ module Rance
     export var TechnologyPrioritySlider = React.createClass(
     {
       displayName: "TechnologyPrioritySlider",
+
+      propTypes:
+      {
+        playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired,
+        technology: React.PropTypes.object.isRequired, // Templates.ITechnologyTemplate
+        researchPoints: React.PropTypes.number.isRequired
+      },
+
       getInitialState: function()
       {
         return(
@@ -22,7 +32,7 @@ module Rance
       },
       getPlayerPriority: function()
       {
-        return this.props.player.technologies[this.props.technology.key].priority;
+        return this.props.playerTechnology.technologies[this.props.technology.key].priority;
       },
       updatePriority: function()
       {
@@ -33,12 +43,12 @@ module Rance
       },
       handlePriorityChange: function(e: Event)
       {
-        if (this.props.player.technologies[this.props.technology.key].priorityIsLocked)
+        if (this.props.playerTechnology.technologies[this.props.technology.key].priorityIsLocked)
         {
           return;
         }
         var target = <HTMLInputElement> e.target;
-        this.props.player.setTechnologyPriority(this.props.technology, parseFloat(target.value));
+        this.props.playerTechnology.setTechnologyPriority(this.props.technology, parseFloat(target.value));
       },
       render: function()
       {
@@ -61,7 +71,8 @@ module Rance
               max: 1,
               step: 0.01,
               value: this.state.priority,
-              onChange: this.handlePriorityChange
+              onChange: this.handlePriorityChange,
+              disabled: this.props.technology.priorityIsLocked
             })
           )
         );

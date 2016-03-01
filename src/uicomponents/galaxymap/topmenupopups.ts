@@ -152,7 +152,7 @@ module Rance
             contentConstructor = UIComponents.TechnologiesList;
             contentProps =
             {
-              player: this.props.player
+              playerTechnology: this.props.player.playerTechnology
             }
             popupProps.minWidth = 430;
             break;

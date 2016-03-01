@@ -1,3 +1,5 @@
+/// <reference path="../../playertechnology.ts" />
+
 /// <reference path="technologypriorityslider.ts" />
 
 module Rance
@@ -7,21 +9,31 @@ module Rance
     export var Technology = React.createClass(
     {
       displayName: "Technology",
+
+      propTypes:
+      {
+        playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired,
+        technology: React.PropTypes.object.isRequired, // Templates.ITechnologyTemplate
+        researchPoints: React.PropTypes.number.isRequired
+      },
+
       togglePriorityLock: function()
       {
-        this.props.player.technologies[this.props.technology.key].priorityIsLocked =
-          !this.props.player.technologies[this.props.technology.key].priorityIsLocked;
+        var pt: Rance.PlayerTechnology = this.props.playerTechnology;
+        var technology: Rance.Templates.ITechnologyTemplate = this.props.technology;
+
+        pt.technologies[technology.key].priorityIsLocked = !pt.technologies[technology.key].priorityIsLocked;
         this.forceUpdate();
       },
       render: function()
       {
         var technology: Templates.ITechnologyTemplate = this.props.technology;
         var isAtMaxLevel: boolean = false;
-        var player: Player = this.props.player;
-        var techData = player.technologies[technology.key];
+        var playerTechnology: PlayerTechnology = this.props.playerTechnology;
+        var techData = playerTechnology.technologies[technology.key];
 
-        var forCurrentLevel = player.getResearchNeededForTechnologyLevel(techData.level);
-        var forNextLevel = player.getResearchNeededForTechnologyLevel(techData.level + 1);
+        var forCurrentLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level);
+        var forNextLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level + 1);
 
         var progressForLevel = techData.totalResearch - forCurrentLevel;
         var neededToProgressLevel = forNextLevel - forCurrentLevel;
@@ -30,7 +42,8 @@ module Rance
         if (techData.level === technology.maxLevel)
         {
           relativeProgress = 1;
-          progressForLevel = techData.totalResearch - player.getResearchNeededForTechnologyLevel(techData.level - 1);
+          progressForLevel =
+            techData.totalResearch - playerTechnology.getResearchNeededForTechnologyLevel(techData.level - 1);
           neededToProgressLevel = progressForLevel;
           isAtMaxLevel = true;
         }
@@ -77,7 +90,7 @@ module Rance
               ),
               UIComponents.TechnologyPrioritySlider(
               {
-                player: this.props.player,
+                playerTechnology: this.props.playerTechnology,
                 technology: this.props.technology,
                 researchPoints: this.props.researchPoints
               })

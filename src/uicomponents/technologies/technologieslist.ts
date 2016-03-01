@@ -1,3 +1,5 @@
+/// <reference path="../../playertechnology.ts" />
+
 /// <reference path="technology.ts" />
 
 module Rance
@@ -8,6 +10,11 @@ module Rance
     {
       displayName: "TechnologiesList",
       updateListener: undefined,
+
+      propTypes:
+      {
+        playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired
+      },
 
       componentDidMount: function()
       {
@@ -21,16 +28,17 @@ module Rance
       },
       render: function()
       {
-        var player: Player = this.props.player;
-        var researchSpeed: number = player.getResearchSpeed();
+        var playerTechnology: PlayerTechnology = this.props.playerTechnology;
+        
+        var researchSpeed = playerTechnology.getResearchSpeed();
         var rows: ReactComponentPlaceHolder[] = [];
 
-        for (var key in player.technologies)
+        for (var key in playerTechnology.technologies)
         {
           rows.push(UIComponents.Technology(
           {
-            player: player,
-            technology: player.technologies[key].technology,
+            playerTechnology: playerTechnology,
+            technology: playerTechnology.technologies[key].technology,
             researchPoints: researchSpeed,
             key: key
           }));

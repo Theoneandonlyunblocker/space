@@ -1146,6 +1146,45 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class PlayerTechnology {
+        technologies: {
+            [technologyKey: string]: {
+                technology: Templates.ITechnologyTemplate;
+                totalResearch: number;
+                level: number;
+                priority: number;
+                priorityIsLocked: boolean;
+            };
+        };
+        tempOverflowedResearchAmount: number;
+        getResearchSpeed: () => number;
+        constructor(getResearchSpeed: () => number, savedData?: {
+            [key: string]: {
+                totalResearch: number;
+                priority: number;
+                priorityIsLocked: boolean;
+            };
+        });
+        initPriorities(): void;
+        allocateResearchPoints(amount: number, iteration?: number): void;
+        allocateOverflowedResearchPoints(iteration?: number): void;
+        getResearchNeededForTechnologyLevel(level: number): number;
+        addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void;
+        getMaxNeededPriority(technology: Templates.ITechnologyTemplate): number;
+        getOpenTechnologiesPriority(): number;
+        getRelativeOpenTechnologyPriority(technology: Templates.ITechnologyTemplate): number;
+        setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number, force?: boolean): void;
+        capTechnologyPrioritiesToMaxNeeded(): void;
+        serialize(): {
+            [key: string]: {
+                totalResearch: number;
+                priority: number;
+                priorityIsLocked: boolean;
+            };
+        };
+    }
+}
+declare module Rance {
     interface IArchetypeValues {
         [archetypeType: string]: number;
     }
@@ -1733,16 +1772,11 @@ declare module Rance {
         identifiedUnits: {
             [id: number]: Unit;
         };
-        technologies: {
-            [technologyKey: string]: {
-                technology: Templates.ITechnologyTemplate;
-                totalResearch: number;
-                level: number;
-                priority: number;
-                priorityIsLocked: boolean;
-            };
-        };
         tempOverflowedResearchAmount: number;
+        playerTechnology: PlayerTechnology;
+        listeners: {
+            [key: string]: Function;
+        };
         constructor(isAI: boolean, id?: number);
         destroy(): void;
         die(): void;
@@ -1802,11 +1836,6 @@ declare module Rance {
         getNearestOwnedStarTo(star: Star): Star;
         attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
         getResearchSpeed(): number;
-        allocateResearchPoints(amount: number, iteration?: number): void;
-        allocateOverflowedResearchPoints(iteration?: number): void;
-        getResearchNeededForTechnologyLevel(level: number): number;
-        addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void;
-        setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number, force?: boolean): void;
         getAllManufactories(): Manufactory[];
         meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[]): boolean;
         getGloballyBuildableUnits(): Templates.IUnitTemplate[];
@@ -2135,17 +2164,17 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var TechnologyPrioritySlider: React.Factory<{}>;
+        var TechnologyPrioritySlider: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Technology: React.Factory<{}>;
+        var Technology: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TechnologiesList: React.Factory<{}>;
+        var TechnologiesList: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2961,6 +2990,9 @@ declare module Rance {
             startingCapacity?: number;
             maxCapacity?: number;
             buildCost?: number;
+        };
+        research?: {
+            baseResearchSpeed?: number;
         };
     }
     var defaultRuleSet: IModuleRuleSet;
