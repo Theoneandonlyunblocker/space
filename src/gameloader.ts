@@ -210,35 +210,28 @@ module Rance
       }
 
       var player = new Player(data.isAI, data.id);
-
+      player.name = data.name;
       player.money = data.money;
+      player.isIndependent = data.isIndependent;
 
       if (data.resources)
       {
         player.resources = extendObject(data.resources);
       }
 
-      // color scheme & flag
-      if (data.isIndependent)
+      player.personality = personality;
+      
+      player.color = data.color;
+      player.secondaryColor = data.secondaryColor;
+      player.colorAlpha = data.colorAlpha;
+
+      if (data.flag)
       {
-        player.setupPirates();
+        player.flag = this.deserializeFlag(data.flag);
       }
       else
       {
-        player.personality = personality;
-        
-        player.color = data.color;
-        player.secondaryColor = data.secondaryColor;
-        player.colorAlpha = data.colorAlpha;
-
-        if (data.flag && data.flag.mainColor)
-        {
-          player.flag = this.deserializeFlag(data.flag);
-        }
-        else
-        {
-          player.makeRandomFlag();
-        }
+        player.makeRandomFlag();
       }
 
       // fleets & ships
