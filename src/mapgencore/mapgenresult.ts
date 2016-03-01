@@ -10,7 +10,7 @@
 
 module Rance
 {
-  export module MapGen2
+  export module MapGenCore
   {
     export class MapGenResult
     {
@@ -64,7 +64,7 @@ module Rance
       makeVoronoiInfo(): MapVoronoiInfo
       {
         var voronoiInfo = new MapVoronoiInfo();
-        voronoiInfo.diagram = MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
+        voronoiInfo.diagram = MapGenCore.makeVoronoi(this.getAllPoints(), this.width, this.height);
         voronoiInfo.treeMap = this.makeVoronoiTreeMap();
         voronoiInfo.bounds =
         {
@@ -82,7 +82,7 @@ module Rance
           star.basisY = star.y;
         }
 
-        MapGen2.relaxVoronoi(voronoiInfo.diagram, function(point)
+        MapGenCore.relaxVoronoi(voronoiInfo.diagram, function(point)
         {
           // dont move filler points
           return isFinite(point.id) ? 1 : 0;

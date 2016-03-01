@@ -5,7 +5,7 @@
 
 module Rance
 {
-  export module MapGen2
+  export module MapGenCore
   {
     export function linkAllStars(stars: Star[])
     {

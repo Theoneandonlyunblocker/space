@@ -316,7 +316,7 @@ module Rance
     for (var i = 0; i < polyLines.length; i++)
     {
       var polyLine = polyLines[i];
-      var isClosed = MapGen2.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+      var isClosed = MapGenCore.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
       if (isClosed) polyLine.pop();
       for (var j = 0; j < polyLine.length; j++)
       {

@@ -6868,8 +6868,8 @@ var Rance;
 /// <reference path="../point.ts"/>
 var Rance;
 (function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
+    var MapGenCore;
+    (function (MapGenCore) {
         var Triangle = (function () {
             function Triangle(a, b, c) {
                 this.a = a;
@@ -6951,15 +6951,15 @@ var Rance;
             };
             return Triangle;
         }());
-        MapGen2.Triangle = Triangle;
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+        MapGenCore.Triangle = Triangle;
+    })(MapGenCore = Rance.MapGenCore || (Rance.MapGenCore = {}));
 })(Rance || (Rance = {}));
 /// <reference path="triangle.ts" />
 /// <reference path="../point.ts" />
 var Rance;
 (function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
+    var MapGenCore;
+    (function (MapGenCore) {
         function triangulate(vertices) {
             var triangles = [];
             var superTriangle = makeSuperTriangle(vertices);
@@ -6989,7 +6989,7 @@ var Rance;
                     }
                 }
                 for (var j = 0; j < edgeBuffer.length; j++) {
-                    var newTriangle = new MapGen2.Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
+                    var newTriangle = new MapGenCore.Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
                     triangles.push(newTriangle);
                 }
             }
@@ -7000,7 +7000,7 @@ var Rance;
             }
             return triangles;
         }
-        MapGen2.triangulate = triangulate;
+        MapGenCore.triangulate = triangulate;
         function getCentroid(vertices) {
             var signedArea = 0;
             var x = 0;
@@ -7037,7 +7037,7 @@ var Rance;
                 y: y
             });
         }
-        MapGen2.getCentroid = getCentroid;
+        MapGenCore.getCentroid = getCentroid;
         function makeSuperTriangle(vertices, highestCoordinateValue) {
             var max;
             if (highestCoordinateValue) {
@@ -7054,7 +7054,7 @@ var Rance;
                     }
                 }
             }
-            var triangle = new MapGen2.Triangle({
+            var triangle = new MapGenCore.Triangle({
                 x: 3 * max,
                 y: 0
             }, {
@@ -7069,20 +7069,20 @@ var Rance;
         function pointsEqual(p1, p2) {
             return (p1.x === p2.x && p1.y === p2.y);
         }
-        MapGen2.pointsEqual = pointsEqual;
+        MapGenCore.pointsEqual = pointsEqual;
         function edgesEqual(e1, e2) {
             return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) ||
                 (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
         }
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+    })(MapGenCore = Rance.MapGenCore || (Rance.MapGenCore = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../point.ts" />
 /// <reference path="triangulation.ts" />
 var Rance;
 (function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
+    var MapGenCore;
+    (function (MapGenCore) {
         function makeVoronoi(points, width, height) {
             var boundingBox = {
                 xl: 0,
@@ -7099,7 +7099,7 @@ var Rance;
             }
             return diagram;
         }
-        MapGen2.makeVoronoi = makeVoronoi;
+        MapGenCore.makeVoronoi = makeVoronoi;
         /**
          * Perform one iteration of Lloyd's Algorithm to move points in voronoi diagram to their centroid
          * @param {any}             diagram Voronoi diagram to relax
@@ -7111,7 +7111,7 @@ var Rance;
             for (var i = 0; i < diagram.cells.length; i++) {
                 var cell = diagram.cells[i];
                 var point = cell.site;
-                var centroid = MapGen2.getCentroid(cell.vertices);
+                var centroid = MapGenCore.getCentroid(cell.vertices);
                 if (dampeningFunction) {
                     var dampeningValue = dampeningFunction(point);
                     var xDelta = (centroid.x - point.x) * dampeningValue;
@@ -7123,7 +7123,7 @@ var Rance;
                 }
             }
         }
-        MapGen2.relaxVoronoi = relaxVoronoi;
+        MapGenCore.relaxVoronoi = relaxVoronoi;
         function getVerticesFromCell(cell) {
             var vertices = [];
             for (var i = 0; i < cell.halfedges.length; i++) {
@@ -7131,7 +7131,7 @@ var Rance;
             }
             return vertices;
         }
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+    })(MapGenCore = Rance.MapGenCore || (Rance.MapGenCore = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/quadtree.d.ts" />
 /// <reference path="../mapvoronoiinfo.ts" />
@@ -7142,8 +7142,8 @@ var Rance;
 /// <reference path="voronoi.ts" />
 var Rance;
 (function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
+    var MapGenCore;
+    (function (MapGenCore) {
         var MapGenResult = (function () {
             function MapGenResult(props) {
                 this.stars = props.stars;
@@ -7164,7 +7164,7 @@ var Rance;
             };
             MapGenResult.prototype.makeVoronoiInfo = function () {
                 var voronoiInfo = new Rance.MapVoronoiInfo();
-                voronoiInfo.diagram = MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
+                voronoiInfo.diagram = MapGenCore.makeVoronoi(this.getAllPoints(), this.width, this.height);
                 voronoiInfo.treeMap = this.makeVoronoiTreeMap();
                 voronoiInfo.bounds =
                     {
@@ -7179,7 +7179,7 @@ var Rance;
                     star.basisX = star.x;
                     star.basisY = star.y;
                 }
-                MapGen2.relaxVoronoi(voronoiInfo.diagram, function (point) {
+                MapGenCore.relaxVoronoi(voronoiInfo.diagram, function (point) {
                     // dont move filler points
                     return isFinite(point.id) ? 1 : 0;
                 });
@@ -7213,8 +7213,8 @@ var Rance;
             };
             return MapGenResult;
         }());
-        MapGen2.MapGenResult = MapGenResult;
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+        MapGenCore.MapGenResult = MapGenResult;
+    })(MapGenCore = Rance.MapGenCore || (Rance.MapGenCore = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -7597,7 +7597,7 @@ var Rance;
     Rance.Game = Game;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
-/// <reference path="mapgen2/mapgenresult.ts" />
+/// <reference path="mapgencore/mapgenresult.ts" />
 /// <reference path="game.ts" />
 /// <reference path="fillerpoint.ts" />
 /// <reference path="star.ts" />
@@ -9674,7 +9674,9 @@ var Rance;
             if (this.isAI && this.AIController) {
                 data.personality = Rance.extendObject(this.AIController.personality);
             }
-            data.researchByTechnology = this.playerTechnology.serialize();
+            if (this.playerTechnology) {
+                data.researchByTechnology = this.playerTechnology.serialize();
+            }
             return data;
         };
         return Player;
@@ -17392,7 +17394,7 @@ var Rance;
         var polyLinesData = [];
         for (var i = 0; i < polyLines.length; i++) {
             var polyLine = polyLines[i];
-            var isClosed = Rance.MapGen2.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            var isClosed = Rance.MapGenCore.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
             if (isClosed)
                 polyLine.pop();
             for (var j = 0; j < polyLine.length; j++) {
@@ -22920,8 +22922,8 @@ var Rance;
 /// <reference path="../star.ts" />
 var Rance;
 (function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
+    var MapGenCore;
+    (function (MapGenCore) {
         var Region = (function () {
             function Region(id, isFiller) {
                 this.stars = [];
@@ -22955,15 +22957,15 @@ var Rance;
             };
             return Region;
         }());
-        MapGen2.Region = Region;
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+        MapGenCore.Region = Region;
+    })(MapGenCore = Rance.MapGenCore || (Rance.MapGenCore = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../star.ts" />
 var Rance;
 (function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
+    var MapGenCore;
+    (function (MapGenCore) {
         var Sector = (function () {
             function Sector(id) {
                 this.stars = [];
@@ -23135,16 +23137,16 @@ var Rance;
             };
             return Sector;
         }());
-        MapGen2.Sector = Sector;
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+        MapGenCore.Sector = Sector;
+    })(MapGenCore = Rance.MapGenCore || (Rance.MapGenCore = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../star.ts" />
 /// <reference path="sector.ts" />
 /// <reference path="triangulation.ts" />
 var Rance;
 (function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
+    var MapGenCore;
+    (function (MapGenCore) {
         function linkAllStars(stars) {
             if (stars.length < 3) {
                 if (stars.length === 2) {
@@ -23152,7 +23154,7 @@ var Rance;
                 }
                 return;
             }
-            var triangles = MapGen2.triangulate(stars);
+            var triangles = MapGenCore.triangulate(stars);
             for (var i = 0; i < triangles.length; i++) {
                 var edges = triangles[i].getEdges();
                 for (var j = 0; j < edges.length; j++) {
@@ -23160,7 +23162,7 @@ var Rance;
                 }
             }
         }
-        MapGen2.linkAllStars = linkAllStars;
+        MapGenCore.linkAllStars = linkAllStars;
         function partiallyCutLinks(stars, minConnections, maxCutsPerRegion) {
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
@@ -23199,7 +23201,7 @@ var Rance;
                 }
             }
         }
-        MapGen2.partiallyCutLinks = partiallyCutLinks;
+        MapGenCore.partiallyCutLinks = partiallyCutLinks;
         function calculateConnectedness(stars, maxRange) {
             for (var i = 0; i < stars.length; i++) {
                 var connectedness = 0;
@@ -23211,7 +23213,7 @@ var Rance;
                 stars[i].mapGenData.connectedness = connectedness;
             }
         }
-        MapGen2.calculateConnectedness = calculateConnectedness;
+        MapGenCore.calculateConnectedness = calculateConnectedness;
         function makeSectors(stars, minSize, maxSize) {
             /*
             while average size sectors left to assign && unassigned stars left
@@ -23250,7 +23252,7 @@ var Rance;
                 var seedStar = unassignedStars.pop();
                 var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
                 if (canFormMinSizeSector) {
-                    var sector = new MapGen2.Sector(sectorIdGen++);
+                    var sector = new MapGenCore.Sector(sectorIdGen++);
                     sectorsById[sector.id] = sector;
                     var discoveryStarIndex = 0;
                     sector.addStar(seedStar);
@@ -23329,7 +23331,7 @@ var Rance;
             }
             return sectorsById;
         }
-        MapGen2.makeSectors = makeSectors;
+        MapGenCore.makeSectors = makeSectors;
         function setSectorDistributionFlags(sectors) {
             for (var i = 0; i < sectors.length; i++) {
                 var sector = sectors[i];
@@ -23345,7 +23347,7 @@ var Rance;
                 }
             }
         }
-        MapGen2.setSectorDistributionFlags = setSectorDistributionFlags;
+        MapGenCore.setSectorDistributionFlags = setSectorDistributionFlags;
         function distributeDistributablesPerSector(sectors, distributableType, allDistributables, placerFunction) {
             if (!sectors[0].distributionFlags) {
                 setSectorDistributionFlags(sectors);
@@ -23389,7 +23391,7 @@ var Rance;
                 sector.addedDistributables.push(selectedType);
             }
         }
-        MapGen2.distributeDistributablesPerSector = distributeDistributablesPerSector;
+        MapGenCore.distributeDistributablesPerSector = distributeDistributablesPerSector;
         function addDefenceBuildings(star, amount, addSectorCommand) {
             if (amount === void 0) { amount = 1; }
             if (addSectorCommand === void 0) { addSectorCommand = true; }
@@ -23414,7 +23416,7 @@ var Rance;
                 }));
             }
         }
-        MapGen2.addDefenceBuildings = addDefenceBuildings;
+        MapGenCore.addDefenceBuildings = addDefenceBuildings;
         function setupPirates(player) {
             player.name = "Pirates";
             player.color = 0x000000;
@@ -23430,7 +23432,7 @@ var Rance;
             });
             player.flag.setForegroundEmblem(foregroundEmblem);
         }
-        MapGen2.setupPirates = setupPirates;
+        MapGenCore.setupPirates = setupPirates;
         function severLinksToNonAdjacentStars(star) {
             var allLinks = star.getAllLinks();
             var neighborVoronoiIds = star.voronoiCell.getNeighborIds();
@@ -23441,16 +23443,16 @@ var Rance;
                 }
             }
         }
-        MapGen2.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+        MapGenCore.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
+    })(MapGenCore = Rance.MapGenCore || (Rance.MapGenCore = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/utility.ts" />
 /// <reference path="../../../src/point.ts" />
 /// <reference path="../../../src/player.ts" />
 /// <reference path="../../../src/star.ts" />
-/// <reference path="../../../src/mapgen2/region.ts" />
-/// <reference path="../../../src/mapgen2/mapgenutils.ts" />
-/// <reference path="../../../src/mapgen2/mapgenresult.ts" />
+/// <reference path="../../../src/mapgencore/region.ts" />
+/// <reference path="../../../src/mapgencore/mapgenutils.ts" />
+/// <reference path="../../../src/mapgencore/mapgenresult.ts" />
 /// <reference path="../../../src/templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../../../src/templateinterfaces/mapgenoptions.d.ts" />
@@ -23535,14 +23537,14 @@ var Rance;
                     var stars = [];
                     var fillerPoints = [];
                     var regions = [];
-                    var centerRegion = new Rance.MapGen2.Region("center", false);
+                    var centerRegion = new Rance.MapGenCore.Region("center", false);
                     regions.push(centerRegion);
                     var fillerRegionId = 0;
                     var regionId = 0;
                     for (var i = 0; i < sg.totalArms; i++) {
                         var isFiller = i % 2 !== 0;
                         var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
-                        var region = new Rance.MapGen2.Region(regionName, isFiller);
+                        var region = new Rance.MapGenCore.Region(regionName, isFiller);
                         regions.push(region);
                         var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
                         var amountForThisCenter = sg.amountPerCenter;
@@ -23573,19 +23575,19 @@ var Rance;
                     }
                     var allPoints = fillerPoints.concat(stars);
                     // make voronoi
-                    var voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+                    var voronoi = Rance.MapGenCore.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
                     // relax voronoi
                     var regularity = options.basicOptions["starSizeRegularity"] / 100;
                     var centerDensity = options.basicOptions["centerDensity"] / 100;
                     var inverseCenterDensity = 1 - centerDensity;
                     for (var i = 0; i < 2; i++) {
-                        Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
+                        Rance.MapGenCore.relaxVoronoi(voronoi, function (star) {
                             return (inverseCenterDensity + centerDensity * star.mapGenData.distance) * regularity;
                         });
-                        voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+                        voronoi = Rance.MapGenCore.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
                     }
                     // link stars
-                    Rance.MapGen2.linkAllStars(stars);
+                    Rance.MapGenCore.linkAllStars(stars);
                     // sever links
                     for (var i = 0; i < regions.length; i++) {
                         regions[i].severLinksByQualifier(function (a, b) {
@@ -23594,7 +23596,7 @@ var Rance;
                                 b.mapGenData.region !== regions[0]);
                         });
                         for (var j = 0; j < regions[i].stars.length; j++) {
-                            Rance.MapGen2.severLinksToNonAdjacentStars(regions[i].stars[j]);
+                            Rance.MapGenCore.severLinksToNonAdjacentStars(regions[i].stars[j]);
                         }
                     }
                     var isConnected = stars[0].getLinkedInRange(stars.length).all.length === stars.length;
@@ -23602,9 +23604,9 @@ var Rance;
                         console.log("Regenerated map due to insufficient connections");
                         return spiralGalaxyGeneration(options, players);
                     }
-                    Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
+                    Rance.MapGenCore.partiallyCutLinks(stars, 4, 2);
                     // make sectors
-                    var sectorsById = Rance.MapGen2.makeSectors(stars, 3, 3);
+                    var sectorsById = Rance.MapGenCore.makeSectors(stars, 3, 3);
                     // set resources && local ships
                     var allSectors = [];
                     for (var sectorId in sectorsById) {
@@ -23613,14 +23615,14 @@ var Rance;
                     var resourcePlacerFN = function (sector, resource) {
                         sector.addResource(resource);
                     };
-                    Rance.MapGen2.distributeDistributablesPerSector(allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
+                    Rance.MapGenCore.distributeDistributablesPerSector(allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
                     var localShipPlacerFN = function (sector, shipFamily) {
                         for (var i = 0; i < sector.stars.length; i++) {
                             var star = sector.stars[i];
                             star.buildableUnitTypes = star.buildableUnitTypes.concat(shipFamily.associatedTemplates);
                         }
                     };
-                    Rance.MapGen2.distributeDistributablesPerSector(allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localShipPlacerFN);
+                    Rance.MapGenCore.distributeDistributablesPerSector(allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localShipPlacerFN);
                     // set players
                     var startRegions = (function setStartingRegions() {
                         var armCount = options.basicOptions["arms"];
@@ -23653,16 +23655,16 @@ var Rance;
                         var star = startPositions[i];
                         var player = players[i];
                         player.addStar(star);
-                        Rance.MapGen2.addDefenceBuildings(star, 2);
+                        Rance.MapGenCore.addDefenceBuildings(star, 2);
                         star.buildManufactory();
                     }
                     var pirates = new Rance.Player(true);
-                    Rance.MapGen2.setupPirates(pirates);
+                    Rance.MapGenCore.setupPirates(pirates);
                     for (var i = 0; i < allSectors.length; i++) {
                         var sector = allSectors[i];
                         sector.setupIndependents(pirates, 1, 0);
                     }
-                    return new Rance.MapGen2.MapGenResult({
+                    return new Rance.MapGenCore.MapGenResult({
                         stars: stars,
                         fillerPoints: fillerPoints,
                         width: options.defaultOptions.width,
@@ -27495,7 +27497,7 @@ var Rance;
                 var dataPoint = data.fillerPoints[i];
                 fillerPoints.push(new Rance.FillerPoint(dataPoint.x, dataPoint.y));
             }
-            var mapGenResult = new Rance.MapGen2.MapGenResult({
+            var mapGenResult = new Rance.MapGenCore.MapGenResult({
                 stars: stars,
                 fillerPoints: fillerPoints,
                 width: data.width,
@@ -27588,7 +27590,9 @@ var Rance;
                 player.revealedStars[id] = this.starsById[id];
             }
             // technology
-            player.initTechnologies(data.researchByTechnology);
+            if (data.researchByTechnology) {
+                player.initTechnologies(data.researchByTechnology);
+            }
             return player;
         };
         GameLoader.prototype.deserializeDiplomacyStatus = function (player, data) {

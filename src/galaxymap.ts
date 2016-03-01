@@ -1,6 +1,6 @@
 /// <reference path="../lib/voronoi.d.ts" />
 
-/// <reference path="mapgen2/mapgenresult.ts" />
+/// <reference path="mapgencore/mapgenresult.ts" />
 /// <reference path="game.ts" />
 /// <reference path="fillerpoint.ts" />
 /// <reference path="star.ts" />
@@ -20,7 +20,7 @@ module Rance
     independents: Player[];
     voronoi: MapVoronoiInfo;
 
-    constructor(mapGen: MapGen2.MapGenResult)
+    constructor(mapGen: MapGenCore.MapGenResult)
     {
       this.width = mapGen.width;
       this.height = mapGen.height;

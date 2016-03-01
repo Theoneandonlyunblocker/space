@@ -2,9 +2,9 @@
 /// <reference path="../../../src/point.ts" />
 /// <reference path="../../../src/player.ts" />
 /// <reference path="../../../src/star.ts" />
-/// <reference path="../../../src/mapgen2/region.ts" />
-/// <reference path="../../../src/mapgen2/mapgenutils.ts" />
-/// <reference path="../../../src/mapgen2/mapgenresult.ts" />
+/// <reference path="../../../src/mapgencore/region.ts" />
+/// <reference path="../../../src/mapgencore/mapgenutils.ts" />
+/// <reference path="../../../src/mapgencore/mapgenresult.ts" />
 
 /// <reference path="../../../src/templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts" />
@@ -20,7 +20,7 @@ module Rance
       export module MapGenFunctions
       {
         export function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues,
-          players: Player[]): MapGen2.MapGenResult
+          players: Player[]): MapGenCore.MapGenResult
         {
           // generate points
           
@@ -118,9 +118,9 @@ module Rance
 
           var stars: Star[] = [];
           var fillerPoints: FillerPoint[] = [];
-          var regions: MapGen2.Region[] = [];
+          var regions: MapGenCore.Region[] = [];
 
-          var centerRegion = new MapGen2.Region("center", false);
+          var centerRegion = new MapGenCore.Region("center", false);
           regions.push(centerRegion);
 
           var fillerRegionId = 0;
@@ -130,7 +130,7 @@ module Rance
           {
             var isFiller = i % 2 !== 0;
             var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
-            var region = new MapGen2.Region(regionName, isFiller);
+            var region = new MapGenCore.Region(regionName, isFiller);
             regions.push(region);
 
             var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
@@ -176,7 +176,7 @@ module Rance
           var allPoints: Point[] = fillerPoints.concat(stars);
 
           // make voronoi
-          var voronoi = MapGen2.makeVoronoi(allPoints, options.defaultOptions.width,
+          var voronoi = MapGenCore.makeVoronoi(allPoints, options.defaultOptions.width,
             options.defaultOptions.height);
 
           // relax voronoi
@@ -185,17 +185,17 @@ module Rance
           var inverseCenterDensity = 1 - centerDensity;
           for (var i = 0; i < 2; i++)
           {
-            MapGen2.relaxVoronoi(voronoi, function(star: Star)
+            MapGenCore.relaxVoronoi(voronoi, function(star: Star)
             {
               return (inverseCenterDensity + centerDensity * star.mapGenData.distance) * regularity;
             });
 
-            voronoi = MapGen2.makeVoronoi(allPoints, options.defaultOptions.width,
+            voronoi = MapGenCore.makeVoronoi(allPoints, options.defaultOptions.width,
               options.defaultOptions.height);
           }
 
           // link stars
-          MapGen2.linkAllStars(stars);
+          MapGenCore.linkAllStars(stars);
 
           // sever links
           for (var i = 0; i < regions.length; i++)
@@ -211,7 +211,7 @@ module Rance
 
             for (var j = 0; j < regions[i].stars.length; j++)
             {
-              MapGen2.severLinksToNonAdjacentStars(regions[i].stars[j]);
+              MapGenCore.severLinksToNonAdjacentStars(regions[i].stars[j]);
             }
           }
 
@@ -222,26 +222,26 @@ module Rance
             return spiralGalaxyGeneration(options, players);
           }
 
-          MapGen2.partiallyCutLinks(stars, 4, 2);
+          MapGenCore.partiallyCutLinks(stars, 4, 2);
 
           // make sectors
-          var sectorsById = MapGen2.makeSectors(stars, 3, 3);
+          var sectorsById = MapGenCore.makeSectors(stars, 3, 3);
 
           // set resources && local ships
-          var allSectors: MapGen2.Sector[] = [];
+          var allSectors: MapGenCore.Sector[] = [];
           for (var sectorId in sectorsById)
           {
             allSectors.push(sectorsById[sectorId]);
           }
 
-          var resourcePlacerFN = function(sector: MapGen2.Sector, resource: Rance.Templates.IResourceTemplate)
+          var resourcePlacerFN = function(sector: MapGenCore.Sector, resource: Rance.Templates.IResourceTemplate)
           {
             sector.addResource(resource);
           }
-          MapGen2.distributeDistributablesPerSector(
+          MapGenCore.distributeDistributablesPerSector(
             allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
 
-          var localShipPlacerFN = function(sector: MapGen2.Sector, shipFamily: Rance.Templates.IUnitFamily)
+          var localShipPlacerFN = function(sector: MapGenCore.Sector, shipFamily: Rance.Templates.IUnitFamily)
           {
             for (var i = 0; i < sector.stars.length; i++)
             {
@@ -249,19 +249,19 @@ module Rance
               star.buildableUnitTypes = star.buildableUnitTypes.concat(shipFamily.associatedTemplates);
             }
           }
-          MapGen2.distributeDistributablesPerSector(
+          MapGenCore.distributeDistributablesPerSector(
             allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localShipPlacerFN);
 
           // set players
-          var startRegions: MapGen2.Region[] = (function setStartingRegions()
+          var startRegions: MapGenCore.Region[] = (function setStartingRegions()
           {
             var armCount = options.basicOptions["arms"];
             var playerCount = Math.min(players.length, armCount);
 
             var playerArmStep = armCount / playerCount;
 
-            var startRegions: MapGen2.Region[] = [];
-            var candidateRegions = regions.filter(function(region: MapGen2.Region)
+            var startRegions: MapGenCore.Region[] = [];
+            var candidateRegions = regions.filter(function(region: MapGenCore.Region)
             {
               return region.id.indexOf("arm") !== -1;
             });
@@ -277,7 +277,7 @@ module Rance
             return startRegions;
           })();
 
-          var startPositions: Star[] = (function getStartPoints(regions: MapGen2.Region[])
+          var startPositions: Star[] = (function getStartPoints(regions: MapGenCore.Region[])
           {
             var startPositions: Star[] = [];
 
@@ -304,12 +304,12 @@ module Rance
 
             player.addStar(star);
 
-            MapGen2.addDefenceBuildings(star, 2);
+            MapGenCore.addDefenceBuildings(star, 2);
             star.buildManufactory();
           }
 
           var pirates = new Player(true);
-          MapGen2.setupPirates(pirates);
+          MapGenCore.setupPirates(pirates);
 
           for (var i = 0; i < allSectors.length; i++)
           {
@@ -318,7 +318,7 @@ module Rance
           }
 
 
-          return new MapGen2.MapGenResult(
+          return new MapGenCore.MapGenResult(
           {
             stars: stars,
             fillerPoints: fillerPoints,

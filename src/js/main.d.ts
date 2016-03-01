@@ -1230,7 +1230,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module MapGen2 {
+    module MapGenCore {
         class Triangle {
             a: Point;
             b: Point;
@@ -1249,14 +1249,14 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module MapGen2 {
+    module MapGenCore {
         function triangulate(vertices: Point[]): Triangle[];
         function getCentroid(vertices: Point[]): Point;
         function pointsEqual(p1: Point, p2: Point): boolean;
     }
 }
 declare module Rance {
-    module MapGen2 {
+    module MapGenCore {
         function makeVoronoi(points: Point[], width: number, height: number): any;
         /**
          * Perform one iteration of Lloyd's Algorithm to move points in voronoi diagram to their centroid
@@ -1269,7 +1269,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module MapGen2 {
+    module MapGenCore {
         class MapGenResult {
             stars: Star[];
             fillerPoints: FillerPoint[];
@@ -1387,7 +1387,7 @@ declare module Rance {
         seed: string;
         independents: Player[];
         voronoi: MapVoronoiInfo;
-        constructor(mapGen: MapGen2.MapGenResult);
+        constructor(mapGen: MapGenCore.MapGenResult);
         getIncomeBounds(): {
             min: number;
             max: number;
@@ -3175,7 +3175,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module MapGen2 {
+    module MapGenCore {
         class Region {
             id: string;
             isFiller: boolean;
@@ -3190,7 +3190,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module MapGen2 {
+    module MapGenCore {
         class Sector {
             id: number;
             stars: Star[];
@@ -3210,7 +3210,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module MapGen2 {
+    module MapGenCore {
         function linkAllStars(stars: Star[]): void;
         function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number): void;
         function calculateConnectedness(stars: Star[], maxRange: number): void;
@@ -3228,7 +3228,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module MapGenFunctions {
-                function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues, players: Player[]): MapGen2.MapGenResult;
+                function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues, players: Player[]): MapGenCore.MapGenResult;
             }
         }
     }

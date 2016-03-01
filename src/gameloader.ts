@@ -124,7 +124,7 @@ module Rance
         fillerPoints.push(new FillerPoint(dataPoint.x, dataPoint.y));
       }
 
-      var mapGenResult = new MapGen2.MapGenResult(
+      var mapGenResult = new MapGenCore.MapGenResult(
       {
         stars: stars,
         fillerPoints: fillerPoints,
