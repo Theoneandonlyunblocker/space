@@ -41,6 +41,7 @@ module Rance
         for (var playerId in this.props.statusByPlayer)
         {
           var player = this.props.metPlayers[playerId];
+          var status = this.props.player.diplomacyStatus.statusByPlayer[playerId];
 
           rows.push(
           {
@@ -50,8 +51,8 @@ module Rance
               player: player,
               name: player.name,
               baseOpinion: player.diplomacyStatus.getBaseOpinion(),
-              status: DiplomaticState[this.props.statusByPlayer[playerId]],
-              statusEnum: this.props.statusByPlayer[playerId],
+              status: DiplomaticState[status],
+              statusEnum: status,
               opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
               attitudeModifiers:
                 player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
