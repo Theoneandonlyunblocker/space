@@ -2456,21 +2456,6 @@ var Rance;
             this.x = x;
             this.y = y;
         }
-        // TODO REMOVE
-        // TODO manufactory
-        Star.prototype.getBuildableShipTypes = function () {
-            var player = this.owner;
-            var global = player.getGloballyBuildableUnits();
-            var local = [];
-            for (var i = 0; i < this.buildableUnitTypes.length; i++) {
-                var type = this.buildableUnitTypes[i];
-                if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements)) {
-                    local.push(type);
-                }
-            }
-            return global.concat(local);
-        };
-        // END TO REMOVE
         // BUILDINGS
         Star.prototype.addBuilding = function (building) {
             if (!this.buildings[building.template.category]) {
@@ -10472,6 +10457,7 @@ var Rance;
         UIComponents.List = React.createClass({
             displayName: "List",
             mixins: [UIComponents.SplitMultilineText],
+            sortedItems: [],
             propTypes: {
                 initialColumns: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
                 listItems: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
@@ -10482,8 +10468,7 @@ var Rance;
                 noHeader: React.PropTypes.bool,
                 addSpacer: React.PropTypes.bool,
                 onRowChange: React.PropTypes.func,
-                colStylingFN: React.PropTypes.func,
-                sortedItems: React.PropTypes.arrayOf(React.PropTypes.object) // IListItem[] TODO refactor shouldnt be a prop
+                colStylingFN: React.PropTypes.func // (column: IListColumn, props: any) => any
             },
             getInitialState: function () {
                 var initialColumn = this.props.initialSortOrder ?
@@ -10524,11 +10509,11 @@ var Rance;
                     this.handleSelectRow(this.props.initialSelected);
                 }
                 else if (this.props.autoSelect) {
-                    this.handleSelectRow(this.props.sortedItems[0]);
+                    this.handleSelectRow(this.sortedItems[0]);
                     this.getDOMNode().focus();
                 }
                 else {
-                    this.setState({ selected: this.props.sortedItems[0] });
+                    this.setState({ selected: this.sortedItems[0] });
                 }
             },
             componentWillUnmount: function () {
@@ -10651,20 +10636,20 @@ var Rance;
                     }
                     return 0; // couldnt sort
                 });
-                this.props.sortedItems = itemsToSort;
+                this.sortedItems = itemsToSort;
             },
             shiftSelection: function (amountToShift) {
                 var reverseIndexes = {};
-                for (var i = 0; i < this.props.sortedItems.length; i++) {
-                    reverseIndexes[this.props.sortedItems[i].key] = i;
+                for (var i = 0; i < this.sortedItems.length; i++) {
+                    reverseIndexes[this.sortedItems[i].key] = i;
                 }
                 ;
                 var currSelectedIndex = reverseIndexes[this.state.selected.key];
-                var nextIndex = (currSelectedIndex + amountToShift) % this.props.sortedItems.length;
+                var nextIndex = (currSelectedIndex + amountToShift) % this.sortedItems.length;
                 if (nextIndex < 0) {
-                    nextIndex += this.props.sortedItems.length;
+                    nextIndex += this.sortedItems.length;
                 }
-                this.handleSelectRow(this.props.sortedItems[nextIndex]);
+                this.handleSelectRow(this.sortedItems[nextIndex]);
             },
             render: function () {
                 var self = this;
@@ -10698,7 +10683,7 @@ var Rance;
                     }, column.label))));
                 });
                 this.sort();
-                var sortedItems = this.props.sortedItems;
+                var sortedItems = this.sortedItems;
                 var rows = [];
                 sortedItems.forEach(function (item, i) {
                     item.data.key = item.key;

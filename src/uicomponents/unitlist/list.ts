@@ -25,6 +25,8 @@ module Rance
       displayName: "List",
       mixins: [SplitMultilineText],
 
+      sortedItems: [], // IListItem[]
+
       propTypes:
       {
         initialColumns: React.PropTypes.arrayOf(React.PropTypes.object).isRequired, // IListColumn[]
@@ -36,9 +38,7 @@ module Rance
         noHeader: React.PropTypes.bool, // boolean = false
         addSpacer: React.PropTypes.bool, // boolean = false
         onRowChange: React.PropTypes.func, // (row: IListItem) => void
-        colStylingFN: React.PropTypes.func, // (column: IListColumn, props: any) => any
-
-        sortedItems: React.PropTypes.arrayOf(React.PropTypes.object) // IListItem[] TODO refactor shouldnt be a prop
+        colStylingFN: React.PropTypes.func // (column: IListColumn, props: any) => any
       },
 
       getInitialState: function()
@@ -92,12 +92,12 @@ module Rance
         }
         else if (this.props.autoSelect)
         {
-          this.handleSelectRow(this.props.sortedItems[0]);
+          this.handleSelectRow(this.sortedItems[0]);
           this.getDOMNode().focus();
         }
         else
         {
-          this.setState({selected: this.props.sortedItems[0]});
+          this.setState({selected: this.sortedItems[0]});
         }
       },
 
@@ -283,24 +283,24 @@ module Rance
           return 0; // couldnt sort
         });
 
-        this.props.sortedItems = itemsToSort;
+        this.sortedItems = itemsToSort;
       },
 
       shiftSelection: function(amountToShift: number)
       {
         var reverseIndexes = {};
-        for (var i = 0; i < this.props.sortedItems.length; i++)
+        for (var i = 0; i < this.sortedItems.length; i++)
         {
-          reverseIndexes[this.props.sortedItems[i].key] = i;
+          reverseIndexes[this.sortedItems[i].key] = i;
         };
         var currSelectedIndex = reverseIndexes[this.state.selected.key];
-        var nextIndex = (currSelectedIndex + amountToShift) % this.props.sortedItems.length;
+        var nextIndex = (currSelectedIndex + amountToShift) % this.sortedItems.length;
         if (nextIndex < 0)
         {
-          nextIndex += this.props.sortedItems.length;
+          nextIndex += this.sortedItems.length;
         }
 
-        this.handleSelectRow(this.props.sortedItems[nextIndex]);
+        this.handleSelectRow(this.sortedItems[nextIndex]);
       },
       render: function()
       {
@@ -359,7 +359,7 @@ module Rance
 
         this.sort();
 
-        var sortedItems = this.props.sortedItems;
+        var sortedItems: IListItem[] = this.sortedItems;
         
         var rows: ReactDOMPlaceHolder[] = [];
 

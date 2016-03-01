@@ -465,7 +465,6 @@ declare module Rance {
         buildableUnitTypes: Templates.IUnitTemplate[];
         manufactory: Manufactory;
         constructor(x: number, y: number, id?: number);
-        getBuildableShipTypes(): Templates.IUnitTemplate[];
         addBuilding(building: Building): void;
         removeBuilding(building: Building): void;
         sortDefenceBuildings(): void;
