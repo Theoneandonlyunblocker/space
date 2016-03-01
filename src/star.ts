@@ -80,28 +80,6 @@ module Rance
       this.x = x;
       this.y = y;
     }
-    // TODO REMOVE
-    // TODO manufactory
-    getBuildableShipTypes(): Templates.IUnitTemplate[]
-    {
-      var player = this.owner;
-
-      var global = player.getGloballyBuildableUnits();
-      var local: Templates.IUnitTemplate[] = [];
-
-      for (var i = 0; i < this.buildableUnitTypes.length; i++)
-      {
-        var type = this.buildableUnitTypes[i];
-        if (!type.technologyRequirements || player.meetsTechnologyRequirements(type.technologyRequirements))
-        {
-          local.push(type);
-        }
-      }
-
-      return global.concat(local);
-    }
-    // END TO REMOVE
-
     // BUILDINGS
     addBuilding(building: Building)
     {
