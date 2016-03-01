@@ -146,27 +146,6 @@ module Rance
     {
       this.AIController = new MapAI.AIController(this, game, this.personality);
     }
-    setupPirates()
-    {
-      this.name = "Independents"
-      this.color = 0x000000;
-      this.colorAlpha = 0;
-      this.secondaryColor = 0xFFFFFF;
-
-      this.isIndependent = true;
-
-      var foregroundEmblem = new Emblem(this.secondaryColor);
-      foregroundEmblem.inner = app.moduleData.Templates.SubEmblems["Flag_of_Edward_England"]; // TODO module
-
-      this.flag = new Flag(
-      {
-        width: 46, // FLAG_SIZE
-        mainColor: this.color,
-        secondaryColor: this.secondaryColor
-      });
-
-      this.flag.setForegroundEmblem(foregroundEmblem);
-    }
     makeRandomFlag(seed?: any)
     {
       if (!this.color || !this.secondaryColor) this.makeColorScheme();

@@ -8966,21 +8966,6 @@ var Rance;
         Player.prototype.setupAI = function (game) {
             this.AIController = new Rance.MapAI.AIController(this, game, this.personality);
         };
-        Player.prototype.setupPirates = function () {
-            this.name = "Independents";
-            this.color = 0x000000;
-            this.colorAlpha = 0;
-            this.secondaryColor = 0xFFFFFF;
-            this.isIndependent = true;
-            var foregroundEmblem = new Rance.Emblem(this.secondaryColor);
-            foregroundEmblem.inner = app.moduleData.Templates.SubEmblems["Flag_of_Edward_England"]; // TODO module
-            this.flag = new Rance.Flag({
-                width: 46,
-                mainColor: this.color,
-                secondaryColor: this.secondaryColor
-            });
-            this.flag.setForegroundEmblem(foregroundEmblem);
-        };
         Player.prototype.makeRandomFlag = function (seed) {
             if (!this.color || !this.secondaryColor)
                 this.makeColorScheme();
@@ -17539,7 +17524,7 @@ var Rance;
             var layer = this.layers[layerName];
             layer.isDirty = true;
             this.isDirty = true;
-            // TODO
+            // TODO performance
             this.render();
         };
         MapRenderer.prototype.setAllLayersAsDirty = function () {
@@ -17547,7 +17532,7 @@ var Rance;
                 this.currentMapMode.layers[i].isDirty = true;
             }
             this.isDirty = true;
-            // TODO
+            // TODO performance
             this.render();
         };
         MapRenderer.prototype.updateMapModeLayers = function (updatedLayers) {
@@ -21508,7 +21493,7 @@ var Rance;
             });
         };
         PathfindingArrow.prototype.startMove = function () {
-            var fleets = app.playerControl.selectedFleets; // TODO
+            var fleets = app.playerControl.selectedFleets;
             if (this.active || !fleets || fleets.length < 1) {
                 return;
             }
@@ -23311,6 +23296,22 @@ var Rance;
             }
         }
         MapGen2.addDefenceBuildings = addDefenceBuildings;
+        function setupPirates(player) {
+            player.name = "Pirates";
+            player.color = 0x000000;
+            player.colorAlpha = 0;
+            player.secondaryColor = 0xFFFFFF;
+            player.isIndependent = true;
+            var foregroundEmblem = new Rance.Emblem(player.secondaryColor);
+            foregroundEmblem.inner = app.moduleData.Templates.SubEmblems["Flag_of_Edward_England"]; // TODO module
+            player.flag = new Rance.Flag({
+                width: 46,
+                mainColor: player.color,
+                secondaryColor: player.secondaryColor
+            });
+            player.flag.setForegroundEmblem(foregroundEmblem);
+        }
+        MapGen2.setupPirates = setupPirates;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/utility.ts" />
@@ -23526,7 +23527,7 @@ var Rance;
                         star.buildManufactory();
                     }
                     var pirates = new Rance.Player(true);
-                    pirates.setupPirates();
+                    Rance.MapGen2.setupPirates(pirates);
                     for (var i = 0; i < allSectors.length; i++) {
                         var sector = allSectors[i];
                         sector.setupIndependents(pirates, 1, 0);
@@ -27437,25 +27438,21 @@ var Rance;
                 personality = Rance.extendObject(data.personality, Rance.makeRandomPersonality(), true);
             }
             var player = new Rance.Player(data.isAI, data.id);
+            player.name = data.name;
             player.money = data.money;
+            player.isIndependent = data.isIndependent;
             if (data.resources) {
                 player.resources = Rance.extendObject(data.resources);
             }
-            // color scheme & flag
-            if (data.isIndependent) {
-                player.setupPirates();
+            player.personality = personality;
+            player.color = data.color;
+            player.secondaryColor = data.secondaryColor;
+            player.colorAlpha = data.colorAlpha;
+            if (data.flag) {
+                player.flag = this.deserializeFlag(data.flag);
             }
             else {
-                player.personality = personality;
-                player.color = data.color;
-                player.secondaryColor = data.secondaryColor;
-                player.colorAlpha = data.colorAlpha;
-                if (data.flag && data.flag.mainColor) {
-                    player.flag = this.deserializeFlag(data.flag);
-                }
-                else {
-                    player.makeRandomFlag();
-                }
+                player.makeRandomFlag();
             }
             // fleets & ships
             for (var i = 0; i < data.fleets.length; i++) {
@@ -28338,6 +28335,7 @@ var Rance;
 /// <reference path="options.ts"/>
 /// <reference path="tutorials/tutorialstatus.ts" />
 /// <reference path="battlescene.ts" />
+// TODO game TODO crash | 
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {

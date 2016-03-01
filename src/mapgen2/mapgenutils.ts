@@ -401,5 +401,26 @@ module Rance
         }));
       }
     }
+    export function setupPirates(player: Player)
+    {
+      player.name = "Pirates"
+      player.color = 0x000000;
+      player.colorAlpha = 0;
+      player.secondaryColor = 0xFFFFFF;
+
+      player.isIndependent = true;
+
+      var foregroundEmblem = new Emblem(player.secondaryColor);
+      foregroundEmblem.inner = app.moduleData.Templates.SubEmblems["Flag_of_Edward_England"];
+
+      player.flag = new Flag(
+      {
+        width: 46, // FLAG_SIZE
+        mainColor: player.color,
+        secondaryColor: player.secondaryColor
+      });
+
+      player.flag.setForegroundEmblem(foregroundEmblem);
+    }
   }
 }

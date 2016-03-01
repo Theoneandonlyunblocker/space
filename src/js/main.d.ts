@@ -1756,7 +1756,6 @@ declare module Rance {
         }): void;
         makeColorScheme(): void;
         setupAI(game: Game): void;
-        setupPirates(): void;
         makeRandomFlag(seed?: any): void;
         addUnit(unit: Unit): void;
         removeUnit(unit: Unit): void;
@@ -3189,6 +3188,7 @@ declare module Rance {
         function setSectorDistributionFlags(sectors: Sector[]): void;
         function distributeDistributablesPerSector(sectors: Sector[], distributableType: string, allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void): void;
         function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
+        function setupPirates(player: Player): void;
     }
 }
 declare module Rance {

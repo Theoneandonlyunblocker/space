@@ -309,7 +309,7 @@ module Rance
           }
 
           var pirates = new Player(true);
-          pirates.setupPirates();
+          MapGen2.setupPirates(pirates);
 
           for (var i = 0; i < allSectors.length; i++)
           {

@@ -21,6 +21,8 @@
 
 /// <reference path="battlescene.ts" />
 
+// TODO game TODO crash | 
+
 module Rance
 {
   export var idGenerators =
