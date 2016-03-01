@@ -2837,6 +2837,9 @@ ol {
 .technology-progress-bar {
   background-color: green;
 }
+.technology-progress-bar-max-level {
+  background-color: #004d00;
+}
 .technology-progress-bar-priority-container {
   width: 100%;
   height: 100%;

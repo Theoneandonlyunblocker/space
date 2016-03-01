@@ -37,14 +37,14 @@ module Rance
             key: "test1",
             displayName: "test1",
             description: "test1",
-            maxLevel: 9
+            maxLevel: 1
           }
           export var test2: Rance.Templates.ITechnologyTemplate =
           {
             key: "test2",
             displayName: "test2",
             description: "test2",
-            maxLevel: 9
+            maxLevel: 2
           }
         }
       }

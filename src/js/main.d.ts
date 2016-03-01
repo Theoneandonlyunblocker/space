@@ -1742,6 +1742,7 @@ declare module Rance {
                 priorityIsLocked: boolean;
             };
         };
+        tempOverflowedResearchAmount: number;
         constructor(isAI: boolean, id?: number);
         destroy(): void;
         die(): void;
@@ -1801,10 +1802,11 @@ declare module Rance {
         getNearestOwnedStarTo(star: Star): Star;
         attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
         getResearchSpeed(): number;
-        allocateResearchPoints(): void;
+        allocateResearchPoints(amount: number, iteration?: number): void;
+        allocateOverflowedResearchPoints(iteration?: number): void;
         getResearchNeededForTechnologyLevel(level: number): number;
         addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void;
-        setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number): void;
+        setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number, force?: boolean): void;
         getAllManufactories(): Manufactory[];
         meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[]): boolean;
         getGloballyBuildableUnits(): Templates.IUnitTemplate[];

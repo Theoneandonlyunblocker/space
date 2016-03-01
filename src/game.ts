@@ -115,7 +115,7 @@ module Rance
           player.addResource(resourceData.resource, resourceData.amount);
         }
 
-        player.allocateResearchPoints();
+        player.allocateResearchPoints(player.getResearchSpeed());
         player.getAllManufactories().forEach(function(manufactory: Manufactory)
         {
           manufactory.buildAllThings();

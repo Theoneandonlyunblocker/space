@@ -85,6 +85,7 @@ module Rance
         priorityIsLocked: boolean;
       }
     };
+    tempOverflowedResearchAmount: number = 0;
 
     constructor(isAI: boolean, id?: number)
     {
@@ -691,7 +692,7 @@ module Rance
     // research and technology
     getResearchSpeed(): number
     {
-      var research: number = 30;
+      var research: number = 3000;
 
       for (var i = 0; i < this.controlledLocations.length; i++)
       {
@@ -700,7 +701,7 @@ module Rance
 
       return research;
     }
-    allocateResearchPoints(): void
+    allocateResearchPoints(amount: number, iteration: number = 0): void
     {
       // probably not needed as priority should always add up to 1 anyway,
       // but this is cheap and infrequently called so this is here as a safeguard at least for now
@@ -710,7 +711,7 @@ module Rance
         totalPriority += this.technologies[key].priority;
       }
 
-      var researchSpeed = this.getResearchSpeed();
+      // var researchSpeed = this.getResearchSpeed();
 
       for (var key in this.technologies)
       {
@@ -718,9 +719,30 @@ module Rance
         var relativePriority = techData.priority / totalPriority;
         if (relativePriority > 0)
         {
-          this.addResearchTowardsTechnology(techData.technology, relativePriority * researchSpeed);
+          this.addResearchTowardsTechnology(techData.technology, relativePriority * amount);
         }
       }
+
+      if (this.tempOverflowedResearchAmount)
+      {
+        if (!this.isAI)
+        {
+          console.log(iteration, amount, this.tempOverflowedResearchAmount);
+        }
+        if (iteration > 10)
+        {
+          return;
+        }
+        this.allocateOverflowedResearchPoints(iteration);
+      }
+    }
+    allocateOverflowedResearchPoints(iteration: number = 0)
+    {
+      // TODO tech overflow
+      var overflow = this.tempOverflowedResearchAmount;
+      this.tempOverflowedResearchAmount = 0;
+      this.allocateResearchPoints(overflow, ++iteration);
+
     }
     getResearchNeededForTechnologyLevel(level: number): number
     {
@@ -746,15 +768,15 @@ module Rance
     addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void
     {
       var tech = this.technologies[technology.key]
-      tech.totalResearch += amount;
-      var overflow: number;
+      var overflow: number = 0;
 
       if (tech.level >= technology.maxLevel) // probably shouldnt happen in the first place
       {
-        overflow = amount;
+        return;
       }
       else
       {
+        tech.totalResearch += amount;
         while (tech.level < technology.maxLevel &&
           this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch)
         {
@@ -763,14 +785,20 @@ module Rance
         if (tech.level === technology.maxLevel)
         {
           var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
-          overflow = tech.totalResearch - neededForMaxLevel;
-          tech.totalResearch -= neededForMaxLevel;
+          overflow += tech.totalResearch - neededForMaxLevel;
+          tech.totalResearch -= overflow;
+          this.setTechnologyPriority(technology, 0, true);
+          tech.priorityIsLocked = true;
         }
       }
 
-      // TODO tech | handle overflow
+      if (!this.isAI)
+      {
+        console.log(technology.displayName, amount, overflow);
+      }
+      this.tempOverflowedResearchAmount += overflow;
     }
-    setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number)
+    setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number, force: boolean = false)
     {
       var remainingPriority = 1;
 
@@ -792,7 +820,16 @@ module Rance
           }
         }
       }
-      if (totalOthersCount === 0) return;
+      if (totalOthersCount === 0)
+      {
+        if (force)
+        {
+          this.technologies[technology.key].priority = priority;
+          eventManager.dispatchEvent("technologyPrioritiesUpdated");
+        }
+        
+        return;
+      }
 
       if (remainingPriority < 0.0001)
       {

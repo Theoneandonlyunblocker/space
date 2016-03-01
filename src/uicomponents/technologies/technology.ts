@@ -16,6 +16,7 @@ module Rance
       render: function()
       {
         var technology: Templates.ITechnologyTemplate = this.props.technology;
+        var isAtMaxLevel: boolean = false;
         var player: Player = this.props.player;
         var techData = player.technologies[technology.key];
 
@@ -24,11 +25,14 @@ module Rance
 
         var progressForLevel = techData.totalResearch - forCurrentLevel;
         var neededToProgressLevel = forNextLevel - forCurrentLevel;
+        var relativeProgress: number;
 
-        var relativeProgress: number;  
         if (techData.level === technology.maxLevel)
         {
           relativeProgress = 1;
+          progressForLevel = techData.totalResearch - player.getResearchNeededForTechnologyLevel(techData.level - 1);
+          neededToProgressLevel = progressForLevel;
+          isAtMaxLevel = true;
         }
         else
         {
@@ -58,7 +62,8 @@ module Rance
             },
               React.DOM.div(
               {
-                className: "technology-progress-bar",
+                className: "technology-progress-bar" +
+                  (isAtMaxLevel ? " technology-progress-bar-max-level" : ""),
                 style:
                 {
                   width: "" + (relativeProgress * 100) + "%"
@@ -80,7 +85,8 @@ module Rance
             React.DOM.button(
             {
               className: "technology-toggle-priority-lock" + (techData.priorityIsLocked ? " locked" : " unlocked"),
-              onClick: this.togglePriorityLock
+              onClick: this.togglePriorityLock,
+              disabled: isAtMaxLevel
             },
               null
             )

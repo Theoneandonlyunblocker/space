@@ -2532,7 +2532,7 @@ var Rance;
             Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
             Rance.eventManager.dispatchEvent("renderLayer", "starOwners", this);
             Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
-            // TODO update starOwners if secondary controller changes
+            // TODO display | update starOwners if secondary controller changes
         };
         Star.prototype.updateBuildingsEffect = function () {
             var effect = {};
@@ -5395,7 +5395,7 @@ var Rance;
             this.height = props.height || props.width;
             this.mainColor = props.mainColor;
             this.secondaryColor = props.secondaryColor;
-            this.tetriaryColor = props.tetriaryColor; // TODO currently never set
+            this.tetriaryColor = props.tetriaryColor; // TODO flag | currently never set
         }
         Flag.prototype.setColorScheme = function (main, secondary, tetriary) {
             this.mainColor = main;
@@ -5453,7 +5453,7 @@ var Rance;
                 emblem.color = this.tetriaryColor;
             }
         };
-        // TODO custom images
+        // TODO flag | custom images
         Flag.prototype.setCustomImage = function (imageSrc) {
             this.clearContent();
             this.customImage = imageSrc;
@@ -7307,7 +7307,7 @@ var Rance;
                     var resourceData = allResourceIncomeData[resourceType];
                     player.addResource(resourceData.resource, resourceData.amount);
                 }
-                player.allocateResearchPoints();
+                player.allocateResearchPoints(player.getResearchSpeed());
                 player.getAllManufactories().forEach(function (manufactory) {
                     manufactory.buildAllThings();
                 });
@@ -7437,7 +7437,7 @@ var Rance;
                 productionWeight: 1,
             }
         };
-        // TODO split into multiple classes eg vision, influence maps etc.
+        // TODO ai | split into multiple classes eg vision, influence maps etc.
         var MapEvaluator = (function () {
             function MapEvaluator(map, player, game) {
                 this.cachedInfluenceMaps = {};
@@ -7472,7 +7472,7 @@ var Rance;
             };
             MapEvaluator.prototype.evaluateStarProduction = function (star) {
                 var evaluation = 0;
-                // TODO manufactory
+                // TODO manufactory TODO ai
                 return evaluation;
             };
             MapEvaluator.prototype.evaluateStarDefendability = function (star) {
@@ -7988,7 +7988,7 @@ var Rance;
                 //   enemy ally strength
                 // perceived threat
                 var threat = this.getPerceivedThreatOfPlayer(player);
-                return Math.random(); // TODO war
+                return Math.random(); // TODO ai
             };
             MapEvaluator.prototype.getAbilityToGoToWarWith = function (player) {
                 // perceived strength
@@ -8001,7 +8001,7 @@ var Rance;
                 //   enemy ally strength
                 // enemy is well liked
                 // distance
-                return Math.random(); // TODO war
+                return Math.random(); // TODO ai
             };
             MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
                 var evaluationByPlayer = {};
@@ -8076,7 +8076,7 @@ var Rance;
                 if (availableExpansionTargets.length < minStarsStillDesired) {
                     fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
                 }
-                // TODO penalize for lots of ongoing objectives (maybe in objectivesAI instead)
+                // TODO ai | penalize for lots of ongoing objectives (maybe in objectivesAI instead)
                 var desire = fromAggressiveness + fromExpansiveness;
                 return Rance.clamp(desire, 0, 1);
             };
@@ -8673,7 +8673,6 @@ var Rance;
                 sort by priority
                 fulfill by priority
                  */
-                // TODO other requests
                 var allRequests = this.frontsAI.frontsRequestingUnits;
                 allRequests.sort(function (a, b) {
                     return b.objective.priority - a.objective.priority;
@@ -8694,9 +8693,9 @@ var Rance;
                     return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
                 };
                 var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
-                // TODO economy ai
-                if (!star)
+                if (!star) {
                     return;
+                }
                 var manufactory = star.manufactory;
                 var archetypeScores = front.getNewUnitArchetypeScores();
                 var buildableUnitTypesByArchetype = {};
@@ -8715,10 +8714,9 @@ var Rance;
                 var unitType;
                 for (var i = 0; i < sortedScores.length; i++) {
                     if (buildableUnitTypesByArchetype[sortedScores[i]]) {
+                        // TODO ai | should actually try to figure out which unit type to build
                         unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
                         if (this.player.money < unitType.buildCost) {
-                            // TODO AI should actually try to figure out which individual unit would
-                            // be the best
                             return;
                         }
                         else {
@@ -8882,6 +8880,7 @@ var Rance;
             this.revealedStars = {};
             this.detectedStars = {};
             this.identifiedUnits = {};
+            this.tempOverflowedResearchAmount = 0;
             this.id = isFinite(id) ? id : Rance.idGenerators.player++;
             this.name = "Player " + this.id;
             this.isAI = isAI;
@@ -9331,27 +9330,44 @@ var Rance;
         };
         // research and technology
         Player.prototype.getResearchSpeed = function () {
-            var research = 30;
+            var research = 3000;
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 research += this.controlledLocations[i].getResearchPoints();
             }
             return research;
         };
-        Player.prototype.allocateResearchPoints = function () {
+        Player.prototype.allocateResearchPoints = function (amount, iteration) {
+            if (iteration === void 0) { iteration = 0; }
             // probably not needed as priority should always add up to 1 anyway,
             // but this is cheap and infrequently called so this is here as a safeguard at least for now
             var totalPriority = 0;
             for (var key in this.technologies) {
                 totalPriority += this.technologies[key].priority;
             }
-            var researchSpeed = this.getResearchSpeed();
+            // var researchSpeed = this.getResearchSpeed();
             for (var key in this.technologies) {
                 var techData = this.technologies[key];
                 var relativePriority = techData.priority / totalPriority;
                 if (relativePriority > 0) {
-                    this.addResearchTowardsTechnology(techData.technology, relativePriority * researchSpeed);
+                    this.addResearchTowardsTechnology(techData.technology, relativePriority * amount);
                 }
             }
+            if (this.tempOverflowedResearchAmount) {
+                if (!this.isAI) {
+                    console.log(iteration, amount, this.tempOverflowedResearchAmount);
+                }
+                if (iteration > 10) {
+                    return;
+                }
+                this.allocateOverflowedResearchPoints(iteration);
+            }
+        };
+        Player.prototype.allocateOverflowedResearchPoints = function (iteration) {
+            if (iteration === void 0) { iteration = 0; }
+            // TODO tech overflow
+            var overflow = this.tempOverflowedResearchAmount;
+            this.tempOverflowedResearchAmount = 0;
+            this.allocateResearchPoints(overflow, ++iteration);
         };
         Player.prototype.getResearchNeededForTechnologyLevel = function (level) {
             if (level <= 0)
@@ -9372,25 +9388,31 @@ var Rance;
         };
         Player.prototype.addResearchTowardsTechnology = function (technology, amount) {
             var tech = this.technologies[technology.key];
-            tech.totalResearch += amount;
-            var overflow;
+            var overflow = 0;
             if (tech.level >= technology.maxLevel) {
-                overflow = amount;
+                return;
             }
             else {
+                tech.totalResearch += amount;
                 while (tech.level < technology.maxLevel &&
                     this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch) {
                     tech.level++;
                 }
                 if (tech.level === technology.maxLevel) {
                     var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
-                    overflow = tech.totalResearch - neededForMaxLevel;
-                    tech.totalResearch -= neededForMaxLevel;
+                    overflow += tech.totalResearch - neededForMaxLevel;
+                    tech.totalResearch -= overflow;
+                    this.setTechnologyPriority(technology, 0, true);
+                    tech.priorityIsLocked = true;
                 }
             }
-            // TODO handle overflow
+            if (!this.isAI) {
+                console.log(technology.displayName, amount, overflow);
+            }
+            this.tempOverflowedResearchAmount += overflow;
         };
-        Player.prototype.setTechnologyPriority = function (technology, priority) {
+        Player.prototype.setTechnologyPriority = function (technology, priority, force) {
+            if (force === void 0) { force = false; }
             var remainingPriority = 1;
             var totalOtherPriority = 0;
             var totalOtherPriorityWasZero = false;
@@ -9406,8 +9428,13 @@ var Rance;
                     }
                 }
             }
-            if (totalOthersCount === 0)
+            if (totalOthersCount === 0) {
+                if (force) {
+                    this.technologies[technology.key].priority = priority;
+                    Rance.eventManager.dispatchEvent("technologyPrioritiesUpdated");
+                }
                 return;
+            }
             if (remainingPriority < 0.0001) {
                 remainingPriority = 0;
             }
@@ -14595,6 +14622,7 @@ var Rance;
             },
             render: function () {
                 var technology = this.props.technology;
+                var isAtMaxLevel = false;
                 var player = this.props.player;
                 var techData = player.technologies[technology.key];
                 var forCurrentLevel = player.getResearchNeededForTechnologyLevel(techData.level);
@@ -14604,6 +14632,9 @@ var Rance;
                 var relativeProgress;
                 if (techData.level === technology.maxLevel) {
                     relativeProgress = 1;
+                    progressForLevel = techData.totalResearch - player.getResearchNeededForTechnologyLevel(techData.level - 1);
+                    neededToProgressLevel = progressForLevel;
+                    isAtMaxLevel = true;
                 }
                 else {
                     relativeProgress = progressForLevel / neededToProgressLevel;
@@ -14617,7 +14648,8 @@ var Rance;
                 }, "Level " + techData.level), React.DOM.div({
                     className: "technology-progress-bar-container"
                 }, React.DOM.div({
-                    className: "technology-progress-bar",
+                    className: "technology-progress-bar" +
+                        (isAtMaxLevel ? " technology-progress-bar-max-level" : ""),
                     style: {
                         width: "" + (relativeProgress * 100) + "%"
                     }
@@ -14629,7 +14661,8 @@ var Rance;
                     researchPoints: this.props.researchPoints
                 })), React.DOM.button({
                     className: "technology-toggle-priority-lock" + (techData.priorityIsLocked ? " locked" : " unlocked"),
-                    onClick: this.togglePriorityLock
+                    onClick: this.togglePriorityLock,
+                    disabled: isAtMaxLevel
                 }, null)));
             }
         });
@@ -22955,9 +22988,9 @@ var Rance;
                             localBuildableUnitTypes.push(template);
                         }
                     }
-                    // TODO kinda weird
+                    // TODO map gen | kinda weird
                     var shipAmount = minShips;
-                    for (var j = 2; j < distance; j++) {
+                    for (var j = minShips; j < distance; j++) {
                         shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
                         if (shipAmount >= maxShips) {
                             shipAmount = maxShips;
@@ -23728,13 +23761,13 @@ var Rance;
                         key: "test1",
                         displayName: "test1",
                         description: "test1",
-                        maxLevel: 9
+                        maxLevel: 1
                     };
                     Technologies.test2 = {
                         key: "test2",
                         displayName: "test2",
                         description: "test2",
-                        maxLevel: 9
+                        maxLevel: 2
                     };
                 })(Technologies = Templates.Technologies || (Templates.Technologies = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
@@ -27872,7 +27905,7 @@ var Rance;
         };
         BattleSceneUnit.prototype.setContainerPosition = function (positionOffScreen) {
             if (positionOffScreen === void 0) { positionOffScreen = false; }
-            // TODO battle scene. This & unit drawing FN rely on overly fiddly positioning.
+            // TODO battle scene | This & unit drawing FN rely on overly fiddly positioning.
             // This function might not work properly with other drawing functions.
             var sceneBounds = this.getSceneBounds();
             var shouldReverse = this.activeUnit.battleStats.side === "side1";

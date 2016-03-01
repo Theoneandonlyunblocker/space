@@ -84,6 +84,10 @@ module Rance
           return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
         }
         var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
+        if (!star)
+        {
+          return;
+        }
         var manufactory = star.manufactory;
 
         var archetypeScores = front.getNewUnitArchetypeScores();
