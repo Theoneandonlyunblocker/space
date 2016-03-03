@@ -14,6 +14,12 @@ module Rance
     }
     battle?:
     {
+      rowsPerFormation?: number;
+      cellsPerRow?: number;
+
+      maxUnitsPerSide?: number;
+      maxUnitsPerRow?: number;
+
       baseMaxCapturedUnits?: number;
       absoluteMaxCapturedUnits?: number;
       baseUnitCaptureChance?: number;
@@ -39,6 +45,12 @@ module Rance
     },
     battle:
     {
+      rowsPerFormation: 2, // breaks horribly if not 2
+      cellsPerRow: 4,
+
+      maxUnitsPerSide: 6, // not handled properly for humans
+      maxUnitsPerRow: 3, // not handled properly for humans
+
       baseMaxCapturedUnits: 1,
       absoluteMaxCapturedUnits: 3,
       baseUnitCaptureChance: 0.1,

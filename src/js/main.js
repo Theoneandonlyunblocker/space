@@ -3226,7 +3226,8 @@ var Rance;
             return this.getPlayerForSide(side);
         };
         Battle.prototype.getColumnByPosition = function (position) {
-            var side = position <= 1 ? "side1" : "side2";
+            var side1Rows = app.moduleData.ruleSet.battle.rowsPerFormation - 1;
+            var side = position <= side1Rows ? "side1" : "side2";
             var relativePosition = position % 2;
             return this[side][relativePosition];
         };
@@ -5980,12 +5981,10 @@ var Rance;
             }
         };
         BattlePrep.prototype.makeEmptyFormation = function () {
-            var COLUMNS_PER_FORMATION = 2; // global
-            var SHIPS_PER_COLUMN = 3; // global
             var formation = [];
-            for (var i = 0; i < COLUMNS_PER_FORMATION; i++) {
+            for (var i = 0; i < app.moduleData.ruleSet.battle.rowsPerFormation; i++) {
                 var column = [];
-                for (var j = 0; j < SHIPS_PER_COLUMN; j++) {
+                for (var j = 0; j < app.moduleData.ruleSet.battle.cellsPerRow; j++) {
                     column.push(null);
                 }
                 formation.push(column);
@@ -6022,8 +6021,8 @@ var Rance;
         };
         BattlePrep.prototype.makeAutoFormation = function (units, enemyUnits, player) {
             var self = this;
-            var MAX_UNITS_PER_SIDE = 6; // global
-            var MAX_UNITS_PER_ROW = 3; // global
+            var maxUnitsPerSide = app.moduleData.ruleSet.battle.maxUnitsPerSide;
+            var maxUnitsPerRow = app.moduleData.ruleSet.battle.maxUnitsPerRow;
             var formation = this.makeEmptyFormation();
             var unitsToPlace = units.filter(function (unit) {
                 return unit.canActThisTurn();
@@ -6041,7 +6040,7 @@ var Rance;
                     var scoutedUnits = player.starIsDetected(self.battleData.location) ? enemyUnits : null;
                     rowModifier = archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits);
                 }
-                var idealMaxUnits = Math.ceil(MAX_UNITS_PER_SIDE / archetype.idealWeightInBattle);
+                var idealMaxUnits = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
                 var unitsPlaced = unitsPlacedByArchetype[archetype.type] || 0;
                 var overMax = Math.max(0, unitsPlaced - idealMaxUnits);
                 score *= 1 - overMax * 0.15;
@@ -6052,14 +6051,14 @@ var Rance;
                     row: row
                 });
             };
-            while (unitsToPlace.length > 0 && totalPlaced < MAX_UNITS_PER_SIDE) {
+            while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide) {
                 var positionScores = [];
                 for (var i = 0; i < unitsToPlace.length; i++) {
                     var unit = unitsToPlace[i];
-                    if (placedInFront < MAX_UNITS_PER_ROW) {
+                    if (placedInFront < maxUnitsPerRow) {
                         positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
                     }
-                    if (placedInBack < MAX_UNITS_PER_ROW) {
+                    if (placedInBack < maxUnitsPerRow) {
                         positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
                     }
                 }
@@ -22098,6 +22097,10 @@ var Rance;
             baseResearchSpeed: 3000
         },
         battle: {
+            rowsPerFormation: 2,
+            cellsPerRow: 4,
+            maxUnitsPerSide: 6,
+            maxUnitsPerRow: 3,
             baseMaxCapturedUnits: 1,
             absoluteMaxCapturedUnits: 3,
             baseUnitCaptureChance: 0.1,

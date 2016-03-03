@@ -80,14 +80,11 @@ module Rance
     }
     makeEmptyFormation(): Unit[][]
     {
-      var COLUMNS_PER_FORMATION = 2;
-      var SHIPS_PER_COLUMN = 3;
-
       var formation: Unit[][] = [];
-      for (var i = 0; i < COLUMNS_PER_FORMATION; i++)
+      for (var i = 0; i < app.moduleData.ruleSet.battle.rowsPerFormation; i++)
       {
         var column: Unit[] = [];
-        for (var j = 0; j < SHIPS_PER_COLUMN; j++)
+        for (var j = 0; j < app.moduleData.ruleSet.battle.cellsPerRow; j++)
         {
           column.push(null);
         }
@@ -140,8 +137,8 @@ module Rance
     makeAutoFormation(units: Unit[], enemyUnits: Unit[], player: Player): Unit[][]
     {
       var self = this;
-      var MAX_UNITS_PER_SIDE = 6;
-      var MAX_UNITS_PER_ROW = 3;
+      var maxUnitsPerSide = app.moduleData.ruleSet.battle.maxUnitsPerSide;
+      var maxUnitsPerRow = app.moduleData.ruleSet.battle.maxUnitsPerRow;
 
       var formation = this.makeEmptyFormation();
       var unitsToPlace = units.filter(function(unit: Unit)
@@ -167,7 +164,7 @@ module Rance
           rowModifier = archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits);
         }
 
-        var idealMaxUnits = Math.ceil(MAX_UNITS_PER_SIDE / archetype.idealWeightInBattle);
+        var idealMaxUnits = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
         var unitsPlaced = unitsPlacedByArchetype[archetype.type] || 0;
         var overMax = Math.max(0, unitsPlaced - idealMaxUnits);
 
@@ -182,7 +179,7 @@ module Rance
         });
       }
 
-      while (unitsToPlace.length > 0 && totalPlaced < MAX_UNITS_PER_SIDE)
+      while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide)
       {
         var positionScores:
         {
@@ -195,11 +192,11 @@ module Rance
         {
           var unit = unitsToPlace[i];
 
-          if (placedInFront < MAX_UNITS_PER_ROW)
+          if (placedInFront < maxUnitsPerRow)
           {
             positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
           }
-          if (placedInBack < MAX_UNITS_PER_ROW)
+          if (placedInBack < maxUnitsPerRow)
           {
             positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
           }

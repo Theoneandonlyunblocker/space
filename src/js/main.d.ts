@@ -2998,6 +2998,10 @@ declare module Rance {
             baseResearchSpeed?: number;
         };
         battle?: {
+            rowsPerFormation?: number;
+            cellsPerRow?: number;
+            maxUnitsPerSide?: number;
+            maxUnitsPerRow?: number;
             baseMaxCapturedUnits?: number;
             absoluteMaxCapturedUnits?: number;
             baseUnitCaptureChance?: number;

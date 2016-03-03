@@ -243,7 +243,8 @@ module Rance
     }
     getColumnByPosition(position: number)
     {
-      var side: UnitBattleSide = position <= 1 ? "side1" : "side2";
+      var side1Rows = app.moduleData.ruleSet.battle.rowsPerFormation - 1;
+      var side: UnitBattleSide = position <= side1Rows ? "side1" : "side2";
       var relativePosition = position % 2;
 
       return this[side][relativePosition];
