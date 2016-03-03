@@ -332,7 +332,7 @@ module Rance
         position: null,
         guardAmount: 0,
         guardCoverage: null,
-        captureChance: 0.1, // global BASE_CAPTURE_CHANCE
+        captureChance: app.moduleData.ruleSet.battle.baseUnitCaptureChance,
         statusEffects: [],
         lastHealthBeforeReceivingDamage: this.currentHealth,
         queuedAction: null

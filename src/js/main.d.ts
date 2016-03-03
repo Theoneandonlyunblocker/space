@@ -614,7 +614,8 @@ declare module Rance {
         getSideForPlayer(player: Player): UnitBattleSide;
         getActivePlayer(): Player;
         getColumnByPosition(position: number): any;
-        getCapturedUnits(victor: Player, maxCapturedUnits?: number): Unit[];
+        getCapturedUnits(victor: Player, maxCapturedUnits: number): Unit[];
+        getUnitDeathChance(unit: Unit, victor: Player): number;
         getDeadUnits(capturedUnits: Unit[], victor: Player): Unit[];
         endBattle(): void;
         finishBattle(forcedVictor?: Player): void;
@@ -2995,6 +2996,15 @@ declare module Rance {
         };
         research?: {
             baseResearchSpeed?: number;
+        };
+        battle?: {
+            baseMaxCapturedUnits?: number;
+            absoluteMaxCapturedUnits?: number;
+            baseUnitCaptureChance?: number;
+            humanUnitDeathChance?: number;
+            aiUnitDeathChance?: number;
+            independentUnitDeathChance?: number;
+            loserUnitExtraDeathChance?: number;
         };
     }
     var defaultRuleSet: IModuleRuleSet;

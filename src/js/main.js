@@ -3231,14 +3231,19 @@ var Rance;
             return this[side][relativePosition];
         };
         Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
-            if (maxCapturedUnits === void 0) { maxCapturedUnits = 1; }
             if (!victor || victor.isIndependent)
                 return [];
             var winningSide = this.getSideForPlayer(victor);
             var losingSide = Rance.reverseSide(winningSide);
             var losingUnits = this.unitsBySide[losingSide].slice(0);
             losingUnits.sort(function (a, b) {
-                return b.battleStats.captureChance - a.battleStats.captureChance;
+                var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
+                if (captureChanceSort) {
+                    return captureChanceSort;
+                }
+                else {
+                    return Rance.randInt(0, 1) * 2 - 1; // -1 or 1
+                }
             });
             var capturedUnits = [];
             for (var i = 0; i < losingUnits.length; i++) {
@@ -3252,25 +3257,32 @@ var Rance;
             }
             return capturedUnits;
         };
-        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
-            var INDEPENDENT_DEATH_CHANCE = 1; // base chance for independents
-            var PLAYER_DEATH_CHANCE = 0.65; // base chance for players
-            var LOSER_DEATH_CHANCE = 0.35; // extra chance for losing side
-            if (victor) {
-                var winningSide = this.getSideForPlayer(victor);
-                var losingSide = Rance.reverseSide(winningSide);
-                var losingPlayer = this.getPlayerForSide(losingSide);
+        Battle.prototype.getUnitDeathChance = function (unit, victor) {
+            var ruleSet = app.moduleData.ruleSet;
+            var player = unit.fleet.player;
+            var deathChance;
+            if (player.isIndependent) {
+                deathChance = ruleSet.battle.independentUnitDeathChance;
             }
+            else if (player.isAI) {
+                deathChance = ruleSet.battle.aiUnitDeathChance;
+            }
+            else {
+                deathChance = ruleSet.battle.humanUnitDeathChance;
+            }
+            var playerDidLose = (victor && player !== victor);
+            if (playerDidLose) {
+                deathChance += ruleSet.battle.loserUnitExtraDeathChance;
+            }
+            return deathChance;
+        };
+        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
             var deadUnits = [];
             this.forEachUnit(function (unit) {
                 if (unit.currentHealth <= 0) {
                     var wasCaptured = capturedUnits.indexOf(unit) >= 0;
                     if (!wasCaptured) {
-                        var isIndependent = unit.fleet.player.isIndependent;
-                        var deathChance = isIndependent ? INDEPENDENT_DEATH_CHANCE : PLAYER_DEATH_CHANCE;
-                        if (unit.fleet.player === losingPlayer) {
-                            deathChance += LOSER_DEATH_CHANCE;
-                        }
+                        var deathChance = this.getUnitDeathChance(unit, victor);
                         if (Math.random() < deathChance) {
                             deadUnits.push(unit);
                         }
@@ -3285,29 +3297,10 @@ var Rance;
                 return;
             this.activeUnit = null;
             var victor = this.getVictor();
-            this.capturedUnits = this.getCapturedUnits(victor);
+            var maxCapturedUnits = app.moduleData.ruleSet.battle.baseMaxCapturedUnits;
+            // TODO content | Abilities that increase max captured units
+            this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
             this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
-            /*
-            var _ : any = window;
-      
-            var consoleRows = [];
-            this.forEachUnit(function(unit)
-            {
-              consoleRows.push(
-              {
-                id: unit.id,
-                health: unit.currentHealth,
-                destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
-                captureChance: unit.battleStats.captureChance,
-                captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
-              });
-            }.bind(this));
-      
-            if (_.console.table)
-            {
-              _.console.table(consoleRows);
-            }
-            */
             Rance.eventManager.dispatchEvent("battleEnd", null);
         };
         Battle.prototype.finishBattle = function (forcedVictor) {
@@ -4149,7 +4142,7 @@ var Rance;
                     position: null,
                     guardAmount: 0,
                     guardCoverage: null,
-                    captureChance: 0.1,
+                    captureChance: app.moduleData.ruleSet.battle.baseUnitCaptureChance,
                     statusEffects: [],
                     lastHealthBeforeReceivingDamage: this.currentHealth,
                     queuedAction: null
@@ -5987,8 +5980,8 @@ var Rance;
             }
         };
         BattlePrep.prototype.makeEmptyFormation = function () {
-            var COLUMNS_PER_FORMATION = 2;
-            var SHIPS_PER_COLUMN = 3;
+            var COLUMNS_PER_FORMATION = 2; // global
+            var SHIPS_PER_COLUMN = 3; // global
             var formation = [];
             for (var i = 0; i < COLUMNS_PER_FORMATION; i++) {
                 var column = [];
@@ -6029,8 +6022,8 @@ var Rance;
         };
         BattlePrep.prototype.makeAutoFormation = function (units, enemyUnits, player) {
             var self = this;
-            var MAX_UNITS_PER_SIDE = 6;
-            var MAX_UNITS_PER_ROW = 3;
+            var MAX_UNITS_PER_SIDE = 6; // global
+            var MAX_UNITS_PER_ROW = 3; // global
             var formation = this.makeEmptyFormation();
             var unitsToPlace = units.filter(function (unit) {
                 return unit.canActThisTurn();
@@ -22103,6 +22096,15 @@ var Rance;
         },
         research: {
             baseResearchSpeed: 3000
+        },
+        battle: {
+            baseMaxCapturedUnits: 1,
+            absoluteMaxCapturedUnits: 3,
+            baseUnitCaptureChance: 0.1,
+            humanUnitDeathChance: 0.65,
+            aiUnitDeathChance: 0.65,
+            independentUnitDeathChance: 1.0,
+            loserUnitExtraDeathChance: 0.35
         }
     };
 })(Rance || (Rance = {}));
