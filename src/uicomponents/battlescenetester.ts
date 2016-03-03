@@ -124,12 +124,14 @@ module Rance
 
       handleUnitHover: function(unit: Unit)
       {
-        this.battleScene.setHoveredUnit(unit);
+        this.battleScene.hoveredUnit = unit;
+        this.battleScene.updateUnits();
       },
 
       handleClearHover: function()
       {
-        this.battleScene.setHoveredUnit(null);
+        this.battleScene.hoveredUnit = null;
+        this.battleScene.updateUnits();
       },
 
       selectUnit: function(unit: Unit)
@@ -146,7 +148,8 @@ module Rance
         newStateObj.activeUnit = newActiveUnit;
 
         this.setState(newStateObj);
-        this.battleScene.setActiveUnit(newActiveUnit);
+        this.battleScene.activeUnit = newActiveUnit;
+        this.battleScene.updateUnits();
       },
 
       handleTestAbility1: function()
