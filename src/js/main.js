@@ -3096,7 +3096,7 @@ var Rance;
         }
         Battle.prototype.init = function () {
             var self = this;
-            ["side1", "side2"].forEach(function (sideId) {
+            Rance.UnitBattleSidesArray.forEach(function (sideId) {
                 var side = self[sideId];
                 for (var i = 0; i < side.length; i++) {
                     for (var j = 0; j < side[i].length; j++) {
@@ -3390,7 +3390,7 @@ var Rance;
         Battle.prototype.getEvaluation = function () {
             var self = this;
             var evaluation = 0;
-            ["side1", "side2"].forEach(function (side) {
+            Rance.UnitBattleSidesArray.forEach(function (side) {
                 // positive * sign === good, negative * sign === bad
                 var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
                 var currentHealth = self.getTotalHealthForSide(side).current;
@@ -3966,6 +3966,7 @@ var Rance;
 /// <reference path="statuseffect.ts" />
 var Rance;
 (function (Rance) {
+    Rance.UnitBattleSidesArray = ["side1", "side2"];
     var Unit = (function () {
         function Unit(template, id, data) {
             this.abilities = [];
@@ -20103,10 +20104,12 @@ var Rance;
                 });
             },
             handleUnitHover: function (unit) {
-                this.battleScene.setHoveredUnit(unit);
+                this.battleScene.hoveredUnit = unit;
+                this.battleScene.updateUnits();
             },
             handleClearHover: function () {
-                this.battleScene.setHoveredUnit(null);
+                this.battleScene.hoveredUnit = null;
+                this.battleScene.updateUnits();
             },
             selectUnit: function (unit) {
                 var statePropForSide = unit.battleStats.side === "side1" ? "selectedSide1Unit" : "selectedSide2Unit";
@@ -20118,7 +20121,8 @@ var Rance;
                 var newActiveUnit = newSelectedUnit || this.state[statePropForOtherSide] || null;
                 newStateObj.activeUnit = newActiveUnit;
                 this.setState(newStateObj);
-                this.battleScene.setActiveUnit(newActiveUnit);
+                this.battleScene.activeUnit = newActiveUnit;
+                this.battleScene.updateUnits();
             },
             handleTestAbility1: function () {
                 var overlayTestFN = function (color, params) {

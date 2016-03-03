@@ -74,7 +74,7 @@ module Rance
       var self = this;
 
 
-      ["side1", "side2"].forEach(function(sideId)
+      UnitBattleSidesArray.forEach(function(sideId: UnitBattleSide)
       {
         var side = self[sideId];
         for (var i = 0; i < side.length; i++)
@@ -125,7 +125,7 @@ module Rance
          operator.call(this, this.unitsById[id]);
       }
     }
-    initUnit(unit: Unit, side: string, position: number[])
+    initUnit(unit: Unit, side: UnitBattleSide, position: number[])
     {
       unit.resetBattleStats();
       unit.setBattlePosition(this, side, position);
@@ -221,13 +221,13 @@ module Rance
         this.swapColumnsIfNeeded();
       }
     }
-    getPlayerForSide(side: string)
+    getPlayerForSide(side: UnitBattleSide)
     {
       if (side === "side1") return this.side1Player;
       else if (side === "side2") return this.side2Player;
       else throw new Error("invalid side");
     }
-    getSideForPlayer(player: Player)
+    getSideForPlayer(player: Player): UnitBattleSide
     {
       if (this.side1Player === player) return "side1";
       else if (this.side2Player === player) return "side2";
@@ -243,7 +243,7 @@ module Rance
     }
     getColumnByPosition(position: number)
     {
-      var side = position <= 1 ? "side1" : "side2";
+      var side: UnitBattleSide = position <= 1 ? "side1" : "side2";
       var relativePosition = position % 2;
 
       return this[side][relativePosition];
@@ -448,7 +448,7 @@ module Rance
 
       return total;
     }
-    getTotalHealthForSide(side: string)
+    getTotalHealthForSide(side: UnitBattleSide)
     {
       var health =
       {
@@ -472,7 +472,7 @@ module Rance
       var self = this;
       var evaluation = 0;
 
-      ["side1", "side2"].forEach(function(side)
+      UnitBattleSidesArray.forEach(function(side: UnitBattleSide)
       {
         // positive * sign === good, negative * sign === bad
         var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
@@ -512,7 +512,7 @@ module Rance
 
       return this.evaluation[this.currentTurn];
     }
-    swapColumnsForSide(side: string)
+    swapColumnsForSide(side: UnitBattleSide)
     {
       this[side] = this[side].reverse();
 

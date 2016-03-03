@@ -219,7 +219,7 @@ declare module Rance {
     }, keyToFind: string, parentKey?: string, hasParentKey?: boolean): T;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function flatten2dArray(toFlatten: any[][]): any[];
-    function reverseSide(side: string): string;
+    function reverseSide(side: UnitBattleSide): UnitBattleSide;
     function turnOrderSortFunction(a: Unit, b: Unit): number;
     function sortByManufactoryCapacityFN(a: Star, b: Star): number;
     function rectContains(rect: {
@@ -603,15 +603,15 @@ declare module Rance {
         });
         init(): void;
         forEachUnit(operator: (unit: Unit) => any): void;
-        initUnit(unit: Unit, side: string, position: number[]): void;
+        initUnit(unit: Unit, side: UnitBattleSide, position: number[]): void;
         triggerBattleStartAbilities(): void;
         removeUnitFromTurnOrder(unit: Unit): boolean;
         addUnitToTurnOrder(unit: Unit): boolean;
         updateTurnOrder(): void;
         setActiveUnit(): void;
         endTurn(): void;
-        getPlayerForSide(side: string): Player;
-        getSideForPlayer(player: Player): string;
+        getPlayerForSide(side: UnitBattleSide): Player;
+        getSideForPlayer(player: Player): UnitBattleSide;
         getActivePlayer(): Player;
         getColumnByPosition(position: number): any;
         getCapturedUnits(victor: Player, maxCapturedUnits?: number): Unit[];
@@ -620,12 +620,12 @@ declare module Rance {
         finishBattle(forcedVictor?: Player): void;
         getVictor(): Player;
         getTotalHealthForColumn(position: number): number;
-        getTotalHealthForSide(side: string): {
+        getTotalHealthForSide(side: UnitBattleSide): {
             current: number;
             max: number;
         };
         getEvaluation(): number;
-        swapColumnsForSide(side: string): void;
+        swapColumnsForSide(side: UnitBattleSide): void;
         swapColumnsIfNeeded(): void;
         getGainedExperiencePerSide(): {
             side1: number;
@@ -702,6 +702,8 @@ declare module Rance {
     }
 }
 declare module Rance {
+    type UnitBattleSide = "side1" | "side2";
+    var UnitBattleSidesArray: UnitBattleSide[];
     class Unit {
         template: Templates.IUnitTemplate;
         id: number;
@@ -719,7 +721,7 @@ declare module Rance {
         attributes: IUnitAttributes;
         battleStats: {
             moveDelay: number;
-            side: string;
+            side: UnitBattleSide;
             position: number[];
             currentActionPoints: number;
             guardAmount: number;
@@ -768,7 +770,7 @@ declare module Rance {
         getBaseMoveDelay(): number;
         resetMovePoints(): void;
         resetBattleStats(): void;
-        setBattlePosition(battle: Battle, side: string, position: number[]): void;
+        setBattlePosition(battle: Battle, side: UnitBattleSide, position: number[]): void;
         addStrength(amount: number): void;
         removeStrength(amount: number): void;
         removeActionPoints(amount: number): void;
@@ -3903,10 +3905,10 @@ declare module Rance {
             triggerStart: (container: PIXI.DisplayObject) => void;
             triggerEnd?: () => void;
         }): Templates.SFXParams;
-        getHighestPriorityUnitForSide(side: "side1" | "side2"): Unit;
+        getHighestPriorityUnitForSide(side: UnitBattleSide): Unit;
         haveBothUnitsFinishedUpdating(): boolean;
         executeIfBothUnitsHaveFinishedUpdating(): void;
-        finishUpdatingUnit(side: "side1" | "side2"): void;
+        finishUpdatingUnit(side: UnitBattleSide): void;
         updateUnits(afterFinishedUpdatingCallback?: () => void): void;
         setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
         clearActiveSFX(): void;

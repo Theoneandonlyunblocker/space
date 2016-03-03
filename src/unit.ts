@@ -10,6 +10,9 @@
 
 module Rance
 {
+  export type UnitBattleSide = "side1" | "side2";
+  export var UnitBattleSidesArray: UnitBattleSide[] = ["side1", "side2"];
+
   export class Unit
   {
     template: Templates.IUnitTemplate;
@@ -44,7 +47,7 @@ module Rance
     battleStats:
     {
       moveDelay: number;
-      side: string;
+      side: UnitBattleSide;
       position: number[];
       currentActionPoints: number;
       guardAmount: number;
@@ -340,7 +343,7 @@ module Rance
         isAnnihilated: false
       };
     }
-    setBattlePosition(battle: Battle, side: string, position: number[])
+    setBattlePosition(battle: Battle, side: UnitBattleSide, position: number[])
     {
       this.battleStats.side = side;
       this.battleStats.position = position;

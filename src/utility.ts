@@ -215,7 +215,7 @@ module Rance
 
     return flattened;
   }
-  export function reverseSide(side: string)
+  export function reverseSide(side: UnitBattleSide): UnitBattleSide
   {
     switch (side)
     {

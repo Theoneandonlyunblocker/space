@@ -148,7 +148,7 @@ module Rance
       });
     }
     
-    getHighestPriorityUnitForSide(side: "side1" | "side2")
+    getHighestPriorityUnitForSide(side: UnitBattleSide)
     {
       var units =
       [
@@ -185,7 +185,7 @@ module Rance
         this.afterUnitsHaveFinishedUpdatingCallback = null;
       }
     }
-    finishUpdatingUnit(side: "side1" | "side2")
+    finishUpdatingUnit(side: UnitBattleSide)
     {
       if (side === "side1")
       {
