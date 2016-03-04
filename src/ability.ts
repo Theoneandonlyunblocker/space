@@ -320,11 +320,11 @@ module Rance
     {
       if (!unit.isTargetable) return false;
       
-      if (unit.battleStats.guardCoverage === "all")
+      if (unit.battleStats.guardCoverage === GuardCoverage.all)
       {
         return unit.battleStats.guardAmount > 0;
       }
-      else if (unit.battleStats.guardCoverage === "column")
+      else if (unit.battleStats.guardCoverage === GuardCoverage.row)
       {
         // same column
         if (unit.battleStats.position[0] === target.battleStats.position[0])

@@ -61,7 +61,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var UnitStatus: React.Factory<{}>;
+        var UnitStatus: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -705,6 +705,10 @@ declare module Rance {
 declare module Rance {
     type UnitBattleSide = "side1" | "side2";
     var UnitBattleSidesArray: UnitBattleSide[];
+    enum GuardCoverage {
+        row = 0,
+        all = 1,
+    }
     class Unit {
         template: Templates.IUnitTemplate;
         id: number;
@@ -726,7 +730,7 @@ declare module Rance {
             position: number[];
             currentActionPoints: number;
             guardAmount: number;
-            guardCoverage: string;
+            guardCoverage: GuardCoverage;
             captureChance: number;
             statusEffects: StatusEffect[];
             lastHealthBeforeReceivingDamage: number;
@@ -818,7 +822,7 @@ declare module Rance {
         removeFromPlayer(): void;
         transferToPlayer(newPlayer: Player): void;
         removeGuard(amount: number): void;
-        addGuard(amount: number, coverage: string): void;
+        addGuard(amount: number, coverage: GuardCoverage): void;
         removeAllGuard(): void;
         getCounterAttackStrength(): number;
         canActThisTurn(): boolean;

@@ -13,6 +13,12 @@ module Rance
   export type UnitBattleSide = "side1" | "side2";
   export var UnitBattleSidesArray: UnitBattleSide[] = ["side1", "side2"];
 
+  export enum GuardCoverage
+  {
+    row,
+    all
+  }
+
   export class Unit
   {
     template: Templates.IUnitTemplate;
@@ -51,7 +57,7 @@ module Rance
       position: number[];
       currentActionPoints: number;
       guardAmount: number;
-      guardCoverage: string;
+      guardCoverage: GuardCoverage;
       captureChance: number;
       statusEffects: StatusEffect[];
       lastHealthBeforeReceivingDamage: number;
@@ -875,7 +881,7 @@ module Rance
 
       this.uiDisplayIsDirty = true;
     }
-    addGuard(amount: number, coverage: string)
+    addGuard(amount: number, coverage: GuardCoverage)
     {
       this.battleStats.guardAmount += amount;
       this.battleStats.guardCoverage = coverage;

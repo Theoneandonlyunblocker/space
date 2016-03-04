@@ -96,7 +96,7 @@ module Rance
               var flat = data.flat || 0;
 
               var guardAmount = guardPerInt * user.attributes.intelligence + flat;
-              user.addGuard(guardAmount, "column");
+              user.addGuard(guardAmount, GuardCoverage.row);
             }
           }
           export var receiveCounterAttack: Rance.Templates.IEffectTemplate =

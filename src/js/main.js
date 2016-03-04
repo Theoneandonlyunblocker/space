@@ -173,13 +173,18 @@ var Rance;
     (function (UIComponents) {
         UIComponents.UnitStatus = React.createClass({
             displayName: "UnitStatus",
+            propTypes: {
+                guardAmount: React.PropTypes.number,
+                guardCoverage: React.PropTypes.number,
+                isPreparing: React.PropTypes.bool
+            },
             render: function () {
                 var statusElement = null;
                 if (this.props.guardAmount > 0) {
                     var guard = this.props.guardAmount;
                     var damageReduction = Math.min(50, guard / 2);
                     var guardText = "" + guard + "% chance to protect ";
-                    guardText += (this.props.guardCoverage === "all" ? "all units." : " units in same row.");
+                    guardText += (this.props.guardCoverage === Rance.GuardCoverage.all ? "all units." : " units in same row.");
                     guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks.";
                     statusElement = React.DOM.div({
                         className: "status-container guard-meter-container"
@@ -224,6 +229,21 @@ var Rance;
         UIComponents.UnitInfo = React.createClass({
             displayName: "UnitInfo",
             mixins: [React.addons.PureRenderMixin],
+            propTypes: {
+                name: React.PropTypes.string.isRequired,
+                isSquadron: React.PropTypes.bool.isRequired,
+                maxHealth: React.PropTypes.number.isRequired,
+                currentHealth: React.PropTypes.number.isRequired,
+                maxActionPoints: React.PropTypes.number.isRequired,
+                currentActionPoints: React.PropTypes.number.isRequired,
+                hoveredActionPointExpenditure: React.PropTypes.number.isRequired,
+                isDead: React.PropTypes.bool,
+                isCaptured: React.PropTypes.bool,
+                guardAmount: React.PropTypes.number.isRequired,
+                guardCoverage: React.PropTypes.number,
+                isPreparing: React.PropTypes.bool,
+                animateDuration: React.PropTypes.number
+            },
             render: function () {
                 var battleEndStatus = null;
                 if (this.props.isDead) {
@@ -3776,10 +3796,10 @@ var Rance;
         var guarders = allEnemies.filter(function (unit) {
             if (!unit.isTargetable)
                 return false;
-            if (unit.battleStats.guardCoverage === "all") {
+            if (unit.battleStats.guardCoverage === Rance.GuardCoverage.all) {
                 return unit.battleStats.guardAmount > 0;
             }
-            else if (unit.battleStats.guardCoverage === "column") {
+            else if (unit.battleStats.guardCoverage === Rance.GuardCoverage.row) {
                 // same column
                 if (unit.battleStats.position[0] === target.battleStats.position[0]) {
                     return unit.battleStats.guardAmount > 0;
@@ -3961,6 +3981,11 @@ var Rance;
 var Rance;
 (function (Rance) {
     Rance.UnitBattleSidesArray = ["side1", "side2"];
+    (function (GuardCoverage) {
+        GuardCoverage[GuardCoverage["row"] = 0] = "row";
+        GuardCoverage[GuardCoverage["all"] = 1] = "all";
+    })(Rance.GuardCoverage || (Rance.GuardCoverage = {}));
+    var GuardCoverage = Rance.GuardCoverage;
     var Unit = (function () {
         function Unit(template, id, data) {
             this.abilities = [];
@@ -22098,7 +22123,7 @@ var Rance;
         },
         battle: {
             rowsPerFormation: 2,
-            cellsPerRow: 4,
+            cellsPerRow: 3,
             maxUnitsPerSide: 6,
             maxUnitsPerRow: 3,
             baseMaxCapturedUnits: 1,
@@ -23975,7 +24000,7 @@ var Rance;
                             var guardPerInt = data.perInt || 0;
                             var flat = data.flat || 0;
                             var guardAmount = guardPerInt * user.attributes.intelligence + flat;
-                            user.addGuard(guardAmount, "column");
+                            user.addGuard(guardAmount, Rance.GuardCoverage.row);
                         }
                     };
                     Effects.receiveCounterAttack = {
@@ -28465,7 +28490,6 @@ var Rance;
 /// <reference path="options.ts"/>
 /// <reference path="tutorials/tutorialstatus.ts" />
 /// <reference path="battlescene.ts" />
-// TODO game TODO crash | 
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {
