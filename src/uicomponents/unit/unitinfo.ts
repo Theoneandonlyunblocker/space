@@ -10,6 +10,29 @@ module Rance
     {
       displayName: "UnitInfo",
       mixins: [React.addons.PureRenderMixin],
+
+      propTypes:
+      {
+        name: React.PropTypes.string.isRequired,
+        isSquadron: React.PropTypes.bool.isRequired,
+
+        maxHealth: React.PropTypes.number.isRequired,
+        currentHealth: React.PropTypes.number.isRequired,
+        
+        maxActionPoints: React.PropTypes.number.isRequired,
+        currentActionPoints: React.PropTypes.number.isRequired,
+        hoveredActionPointExpenditure: React.PropTypes.number.isRequired,
+
+        isDead: React.PropTypes.bool,
+        isCaptured: React.PropTypes.bool,
+
+        guardAmount: React.PropTypes.number.isRequired,
+        guardCoverage: React.PropTypes.number, // GuardCoverage enum
+        isPreparing: React.PropTypes.bool,
+
+        animateDuration: React.PropTypes.number
+      },
+
       render: function()
       {
         var battleEndStatus: ReactDOMPlaceHolder = null;

@@ -5,6 +5,14 @@ module Rance
     export var UnitStatus = React.createClass(
     {
       displayName: "UnitStatus",
+
+      propTypes:
+      {
+        guardAmount: React.PropTypes.number,
+        guardCoverage: React.PropTypes.number, // GuardCoverage enum
+        isPreparing: React.PropTypes.bool
+      },
+
       render: function()
       {
         var statusElement: ReactDOMPlaceHolder = null;
