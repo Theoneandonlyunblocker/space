@@ -364,11 +364,17 @@ module Rance
   export function getFleetsToTarget(battle: Battle, user: Unit,
     effect: Templates.IEffectTemplate): Unit[][]
   {
-    var nullFleet: Unit[][] =
-    [
-      [null, null, null, null],
-      [null, null, null, null]
-    ];
+    var nullFleet: Unit[][] = [];
+    var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
+    var columns = app.moduleData.ruleSet.battle.cellsPerRow;
+    for (var i = 0; i < rows; i++)
+    {
+      nullFleet.push([]);
+      for (var j = 0; j < columns; j++)
+      {
+        nullFleet[i].push(null);
+      }
+    }
     var insertNullBefore: boolean;
     var toConcat: Unit[][];
 
