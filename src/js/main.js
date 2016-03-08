@@ -3546,6 +3546,12 @@ var Rance;
 /// <reference path="unit.ts"/>
 var Rance;
 (function (Rance) {
+    (function (TargetFleet) {
+        TargetFleet[TargetFleet["ally"] = 0] = "ally";
+        TargetFleet[TargetFleet["enemy"] = 1] = "enemy";
+        TargetFleet[TargetFleet["either"] = 2] = "either";
+    })(Rance.TargetFleet || (Rance.TargetFleet = {}));
+    var TargetFleet = Rance.TargetFleet;
     Rance.targetSingle = function (units, target) {
         return Rance.getFrom2dArray(units, [target]);
     };
@@ -3847,17 +3853,17 @@ var Rance;
         var insertNullBefore;
         var toConcat;
         switch (effect.targetFleets) {
-            case "all":
+            case Rance.TargetFleet.either:
                 {
                     return battle.side1.concat(battle.side2);
                 }
-            case "ally":
+            case Rance.TargetFleet.ally:
                 {
                     insertNullBefore = user.battleStats.side === "side1" ? false : true;
                     toConcat = battle[user.battleStats.side];
                     break;
                 }
-            case "enemy":
+            case Rance.TargetFleet.enemy:
                 {
                     insertNullBefore = user.battleStats.side === "side1" ? true : false;
                     toConcat = battle[Rance.reverseSide(user.battleStats.side)];
@@ -23940,7 +23946,7 @@ var Rance;
                 (function (Effects) {
                     Effects.singleTargetDamage = {
                         name: "singleTargetDamage",
-                        targetFleets: "enemy",
+                        targetFleets: Rance.TargetFleet.enemy,
                         targetingFunction: Rance.targetSingle,
                         targetRange: "all",
                         effect: function (user, target, battle, data) {
@@ -23953,7 +23959,7 @@ var Rance;
                     };
                     Effects.closeAttack = {
                         name: "closeAttack",
-                        targetFleets: "enemy",
+                        targetFleets: Rance.TargetFleet.enemy,
                         targetingFunction: Rance.targetColumnNeighbors,
                         targetRange: "close",
                         effect: function (user, target, battle) {
@@ -23966,7 +23972,7 @@ var Rance;
                     };
                     Effects.wholeRowAttack = {
                         name: "wholeRowAttack",
-                        targetFleets: "all",
+                        targetFleets: Rance.TargetFleet.either,
                         targetingFunction: Rance.targetRow,
                         targetRange: "all",
                         effect: function (user, target, battle) {
@@ -23979,7 +23985,7 @@ var Rance;
                     };
                     Effects.bombAttack = {
                         name: "bombAttack",
-                        targetFleets: "enemy",
+                        targetFleets: Rance.TargetFleet.enemy,
                         targetingFunction: Rance.targetNeighbors,
                         targetRange: "all",
                         effect: function (user, target, battle) {
@@ -23992,7 +23998,7 @@ var Rance;
                     };
                     Effects.guardColumn = {
                         name: "guardColumn",
-                        targetFleets: "all",
+                        targetFleets: Rance.TargetFleet.either,
                         targetingFunction: Rance.targetSingle,
                         targetRange: "self",
                         effect: function (user, target, battle, data) {
@@ -24005,7 +24011,7 @@ var Rance;
                     };
                     Effects.receiveCounterAttack = {
                         name: "receiveCounterAttack",
-                        targetFleets: "all",
+                        targetFleets: Rance.TargetFleet.either,
                         targetingFunction: Rance.targetSingle,
                         targetRange: "self",
                         effect: function (user, target, battle, data) {
@@ -24020,7 +24026,7 @@ var Rance;
                     };
                     Effects.increaseCaptureChance = {
                         name: "increaseCaptureChance",
-                        targetFleets: "enemy",
+                        targetFleets: Rance.TargetFleet.enemy,
                         targetingFunction: Rance.targetSingle,
                         targetRange: "all",
                         effect: function (user, target, battle, data) {
@@ -24036,7 +24042,7 @@ var Rance;
                     };
                     Effects.buffTest = {
                         name: "buffTest",
-                        targetFleets: "all",
+                        targetFleets: Rance.TargetFleet.either,
                         targetingFunction: Rance.targetSingle,
                         targetRange: "all",
                         effect: function (user, target, battle) {
@@ -24045,7 +24051,7 @@ var Rance;
                     };
                     Effects.healTarget = {
                         name: "healTarget",
-                        targetFleets: "ally",
+                        targetFleets: Rance.TargetFleet.ally,
                         targetingFunction: Rance.targetSingle,
                         targetRange: "all",
                         effect: function (user, target, battle, data) {
@@ -24064,7 +24070,7 @@ var Rance;
                     };
                     Effects.healSelf = {
                         name: "healSelf",
-                        targetFleets: "ally",
+                        targetFleets: Rance.TargetFleet.ally,
                         targetingFunction: Rance.targetSingle,
                         targetRange: "self",
                         effect: function (user, target, battle, data) {
@@ -24073,7 +24079,7 @@ var Rance;
                     };
                     Effects.standBy = {
                         name: "standBy",
-                        targetFleets: "all",
+                        targetFleets: Rance.TargetFleet.either,
                         targetingFunction: Rance.targetSingle,
                         targetRange: "self",
                         effect: function () { }

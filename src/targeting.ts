@@ -9,6 +9,13 @@ module Rance
     (units: Unit[][], target: number[]): Unit[];
   }
 
+  export enum TargetFleet
+  {
+    ally = 0,
+    enemy = 1,
+    either = 2
+  }
+
   //**
   //**
   //X*

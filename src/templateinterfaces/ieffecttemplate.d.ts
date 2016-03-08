@@ -1,3 +1,7 @@
+/// <reference path="../targeting.ts" />
+/// <reference path="../unit.ts" />
+/// <reference path="../battle.ts" />
+
 declare module Rance
 {
   module Templates
@@ -6,9 +10,9 @@ declare module Rance
     {
       name: string;
       
-      targetFleets: string; // ally, enemy, all
+      targetFleets: TargetFleet;
       targetingFunction: TargetingFunction;
-      targetRange: string; // self, close, all
+      targetRange: "self" | "close" | "all"; // todo
       effect: (user: Unit, target: Unit, battle: Battle, data?: any) => void;
     }
   }

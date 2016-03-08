@@ -16,7 +16,7 @@ module Rance
           export var singleTargetDamage: Rance.Templates.IEffectTemplate =
           {
             name: "singleTargetDamage",
-            targetFleets: "enemy",
+            targetFleets: TargetFleet.enemy,
             targetingFunction: targetSingle,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -34,7 +34,7 @@ module Rance
           export var closeAttack: Rance.Templates.IEffectTemplate =
           {
             name: "closeAttack",
-            targetFleets: "enemy",
+            targetFleets: TargetFleet.enemy,
             targetingFunction: targetColumnNeighbors,
             targetRange: "close",
             effect: function(user: Unit, target: Unit, battle: Battle)
@@ -51,7 +51,7 @@ module Rance
           export var wholeRowAttack: Rance.Templates.IEffectTemplate =
           {
             name: "wholeRowAttack",
-            targetFleets: "all",
+            targetFleets: TargetFleet.either,
             targetingFunction: targetRow,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle)
@@ -69,7 +69,7 @@ module Rance
           export var bombAttack: Rance.Templates.IEffectTemplate =
           {
             name: "bombAttack",
-            targetFleets: "enemy",
+            targetFleets: TargetFleet.enemy,
             targetingFunction: targetNeighbors,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle)
@@ -86,7 +86,7 @@ module Rance
           export var guardColumn: Rance.Templates.IEffectTemplate =
           {
             name: "guardColumn",
-            targetFleets: "all",
+            targetFleets: TargetFleet.either,
             targetingFunction: targetSingle,
             targetRange: "self",
             effect: function(user: Unit, target: Unit, battle: Battle, data?: any)
@@ -102,7 +102,7 @@ module Rance
           export var receiveCounterAttack: Rance.Templates.IEffectTemplate =
           {
             name: "receiveCounterAttack",
-            targetFleets: "all",
+            targetFleets: TargetFleet.either,
             targetingFunction: targetSingle,
             targetRange: "self",
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -122,7 +122,7 @@ module Rance
           export var increaseCaptureChance: Rance.Templates.IEffectTemplate =
           {
             name: "increaseCaptureChance",
-            targetFleets: "enemy",
+            targetFleets: TargetFleet.enemy,
             targetingFunction: targetSingle,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -143,7 +143,7 @@ module Rance
           export var buffTest: Rance.Templates.IEffectTemplate =
           {
             name: "buffTest",
-            targetFleets: "all",
+            targetFleets: TargetFleet.either,
             targetingFunction: targetSingle,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle)
@@ -154,7 +154,7 @@ module Rance
           export var healTarget: Rance.Templates.IEffectTemplate =
           {
             name: "healTarget",
-            targetFleets: "ally",
+            targetFleets: TargetFleet.ally,
             targetingFunction: targetSingle,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -181,7 +181,7 @@ module Rance
           export var healSelf: Rance.Templates.IEffectTemplate =
           {
             name: "healSelf",
-            targetFleets: "ally",
+            targetFleets: TargetFleet.ally,
             targetingFunction: targetSingle,
             targetRange: "self",
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -194,7 +194,7 @@ module Rance
           export var standBy: Rance.Templates.IEffectTemplate =
           {
             name: "standBy",
-            targetFleets: "all",
+            targetFleets: TargetFleet.either,
             targetingFunction: targetSingle,
             targetRange: "self",
             effect: function(){}

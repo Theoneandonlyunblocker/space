@@ -640,6 +640,11 @@ declare module Rance {
     interface TargetingFunction {
         (units: Unit[][], target: number[]): Unit[];
     }
+    enum TargetFleet {
+        ally = 0,
+        enemy = 1,
+        either = 2,
+    }
     var targetSingle: TargetingFunction;
     var targetAll: TargetingFunction;
     var targetRow: TargetingFunction;

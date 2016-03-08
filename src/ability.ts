@@ -395,17 +395,17 @@ module Rance
 
     switch (effect.targetFleets)
     {
-      case "all":
+      case TargetFleet.either:
       {
         return battle.side1.concat(battle.side2);
       }
-      case "ally":
+      case TargetFleet.ally:
       {
         insertNullBefore = user.battleStats.side === "side1" ? false : true;
         toConcat = battle[user.battleStats.side];
         break;
       }
-      case "enemy":
+      case TargetFleet.enemy:
       {
         insertNullBefore = user.battleStats.side === "side1" ? true : false;
         toConcat = battle[reverseSide(user.battleStats.side)];
