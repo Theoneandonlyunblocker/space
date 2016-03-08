@@ -613,21 +613,23 @@ declare module Rance {
         getPlayerForSide(side: UnitBattleSide): Player;
         getSideForPlayer(player: Player): UnitBattleSide;
         getActivePlayer(): Player;
-        getColumnByPosition(position: number): any;
+        getRowByPosition(position: number): any;
         getCapturedUnits(victor: Player, maxCapturedUnits: number): Unit[];
         getUnitDeathChance(unit: Unit, victor: Player): number;
         getDeadUnits(capturedUnits: Unit[], victor: Player): Unit[];
         endBattle(): void;
         finishBattle(forcedVictor?: Player): void;
         getVictor(): Player;
-        getTotalHealthForColumn(position: number): number;
+        getTotalHealthForRow(position: number): number;
         getTotalHealthForSide(side: UnitBattleSide): {
             current: number;
             max: number;
         };
         getEvaluation(): number;
-        swapColumnsForSide(side: UnitBattleSide): void;
-        swapColumnsIfNeeded(): void;
+        getAbsolutePositionFromSidePosition(relativePosition: number[], side: UnitBattleSide): number[];
+        updateBattlePositions(side: UnitBattleSide): void;
+        shiftRowsForSide(side: UnitBattleSide): void;
+        shiftRowsIfNeeded(): void;
         getGainedExperiencePerSide(): {
             side1: number;
             side2: number;

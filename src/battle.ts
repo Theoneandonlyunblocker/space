@@ -86,7 +86,7 @@ module Rance
               self.unitsById[side[i][j].id] = side[i][j];
               self.unitsBySide[sideId].push(side[i][j]);
 
-              var pos = sideId === "side1" ? [i, j] : [i+2, j];
+              var pos = self.getAbsolutePositionFromSidePosition([i, j], sideId)
 
               self.initUnit(side[i][j], sideId, pos);
             }
@@ -112,7 +112,7 @@ module Rance
       }
       else
       {
-        this.swapColumnsIfNeeded();
+        this.shiftRowsIfNeeded();
       }
 
       this.triggerBattleStartAbilities();
@@ -218,7 +218,7 @@ module Rance
       }
       else
       {
-        this.swapColumnsIfNeeded();
+        this.shiftRowsIfNeeded();
       }
     }
     getPlayerForSide(side: UnitBattleSide)
@@ -241,11 +241,11 @@ module Rance
 
       return this.getPlayerForSide(side);
     }
-    getColumnByPosition(position: number)
+    getRowByPosition(position: number)
     {
-      var side1Rows = app.moduleData.ruleSet.battle.rowsPerFormation - 1;
-      var side: UnitBattleSide = position <= side1Rows ? "side1" : "side2";
-      var relativePosition = position % 2;
+      var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+      var side: UnitBattleSide = position < rowsPerSide ? "side1" : "side2";
+      var relativePosition = position % rowsPerSide;
 
       return this[side][relativePosition];
     }
@@ -431,16 +431,16 @@ module Rance
       else if (evaluation < 0) return this.side2Player;
       else return null;
     }
-    getTotalHealthForColumn(position: number)
+    getTotalHealthForRow(position: number)
     {
-      var column = this.getColumnByPosition(position);
+      var row = this.getRowByPosition(position);
       var total = 0;
 
-      for (var i = 0; i < column.length; i++)
+      for (var i = 0; i < row.length; i++)
       {
-        if (column[i])
+        if (row[i])
         {
-          total += column[i].currentHealth;
+          total += row[i].currentHealth;
         }
       }
 
@@ -510,35 +510,85 @@ module Rance
 
       return this.evaluation[this.currentTurn];
     }
-    swapColumnsForSide(side: UnitBattleSide)
+    getAbsolutePositionFromSidePosition(relativePosition: number[], side: UnitBattleSide)
     {
-      this[side] = this[side].reverse();
-
-      for (var i = 0; i < this[side].length; i++)
+      if (side === "side1")
       {
-        var column = this[side][i];
-        for (var j = 0; j < column.length; j++)
+        return relativePosition;
+      }
+      else
+      {
+        var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+        return [relativePosition[0] + rowsPerSide, relativePosition[1]];
+      }
+    }
+    updateBattlePositions(side: UnitBattleSide)
+    {
+      var units = this[side];
+      for (var i = 0; i < units.length; i++)
+      {
+        var row = this[side][i];
+        for (var j = 0; j < row.length; j++)
         {
-          var pos = side === "side1" ? [i, j] : [i+2, j];
+          var pos = this.getAbsolutePositionFromSidePosition([i, j], side);
+          var unit = row[j];
 
-          if (column[j])
+          if (unit)
           {
-            column[j].setBattlePosition(this, side, pos);
+            unit.setBattlePosition(this, side, pos);
           }
         }
       }
     }
-    swapColumnsIfNeeded()
+    shiftRowsForSide(side: UnitBattleSide)
     {
-      var side1Front = this.getTotalHealthForColumn(1);
-      if (side1Front <= 0)
+      var formation = this[side];
+      if (side === "side1")
       {
-        this.swapColumnsForSide("side1");
+        formation.reverse();
       }
-      var side2Front = this.getTotalHealthForColumn(2);
-      if (side2Front <= 0)
+
+      var nextHealthyRowIndex: number;
+
+      // start at 1 because frontmost row shouldn't be healthy if this is called
+      for (var i = 1; i < formation.length; i++)
       {
-        this.swapColumnsForSide("side2");
+        if (this.getTotalHealthForRow(i) > 0)
+        {
+          nextHealthyRowIndex = i;
+          break;
+        }
+      }
+
+      if (!isFinite(nextHealthyRowIndex))
+      {
+        throw new Error("Tried to shift battle rows when all rows are defeated");
+      }
+
+      var rowsToShift = formation.splice(0, nextHealthyRowIndex);
+      formation = formation.concat(rowsToShift);
+
+      if (side === "side1")
+      {
+        formation.reverse();
+      }
+
+      this[side] = formation;
+
+      this.updateBattlePositions(side);
+    }
+    shiftRowsIfNeeded()
+    {
+      var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+      var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
+      if (side1FrontRowHealth <= 0)
+      {
+        this.shiftRowsForSide("side1");
+      }
+      var side2FrontRowHealth = this.getTotalHealthForRow(rowsPerSide);
+      if (side2FrontRowHealth <= 0)
+      {
+        this.shiftRowsForSide("side2");
       }
     }
     getGainedExperiencePerSide()
@@ -654,7 +704,7 @@ module Rance
       }
       else
       {
-        clone.swapColumnsIfNeeded();
+        clone.shiftRowsIfNeeded();
       }
 
       return clone;
