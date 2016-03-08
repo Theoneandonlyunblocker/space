@@ -45,7 +45,7 @@ module Rance
     },
     battle:
     {
-      rowsPerFormation: 2, // breaks horribly if not 2
+      rowsPerFormation: 2, // breaks some stuff if not 2
       cellsPerRow: 3,
 
       maxUnitsPerSide: 6, // not handled properly for humans

@@ -3123,7 +3123,7 @@ var Rance;
                         if (side[i][j]) {
                             self.unitsById[side[i][j].id] = side[i][j];
                             self.unitsBySide[sideId].push(side[i][j]);
-                            var pos = sideId === "side1" ? [i, j] : [i + 2, j];
+                            var pos = self.getAbsolutePositionFromSidePosition([i, j], sideId);
                             self.initUnit(side[i][j], sideId, pos);
                         }
                     }
@@ -3143,7 +3143,7 @@ var Rance;
                 this.endBattle();
             }
             else {
-                this.swapColumnsIfNeeded();
+                this.shiftRowsIfNeeded();
             }
             this.triggerBattleStartAbilities();
         };
@@ -3220,7 +3220,7 @@ var Rance;
                 this.endBattle();
             }
             else {
-                this.swapColumnsIfNeeded();
+                this.shiftRowsIfNeeded();
             }
         };
         Battle.prototype.getPlayerForSide = function (side) {
@@ -3245,10 +3245,10 @@ var Rance;
             var side = this.activeUnit.battleStats.side;
             return this.getPlayerForSide(side);
         };
-        Battle.prototype.getColumnByPosition = function (position) {
-            var side1Rows = app.moduleData.ruleSet.battle.rowsPerFormation - 1;
-            var side = position <= side1Rows ? "side1" : "side2";
-            var relativePosition = position % 2;
+        Battle.prototype.getRowByPosition = function (position) {
+            var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+            var side = position < rowsPerSide ? "side1" : "side2";
+            var relativePosition = position % rowsPerSide;
             return this[side][relativePosition];
         };
         Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
@@ -3378,12 +3378,12 @@ var Rance;
             else
                 return null;
         };
-        Battle.prototype.getTotalHealthForColumn = function (position) {
-            var column = this.getColumnByPosition(position);
+        Battle.prototype.getTotalHealthForRow = function (position) {
+            var row = this.getRowByPosition(position);
             var total = 0;
-            for (var i = 0; i < column.length; i++) {
-                if (column[i]) {
-                    total += column[i].currentHealth;
+            for (var i = 0; i < row.length; i++) {
+                if (row[i]) {
+                    total += row[i].currentHealth;
                 }
             }
             return total;
@@ -3432,26 +3432,62 @@ var Rance;
             this.evaluation[this.currentTurn] = evaluation;
             return this.evaluation[this.currentTurn];
         };
-        Battle.prototype.swapColumnsForSide = function (side) {
-            this[side] = this[side].reverse();
-            for (var i = 0; i < this[side].length; i++) {
-                var column = this[side][i];
-                for (var j = 0; j < column.length; j++) {
-                    var pos = side === "side1" ? [i, j] : [i + 2, j];
-                    if (column[j]) {
-                        column[j].setBattlePosition(this, side, pos);
+        Battle.prototype.getAbsolutePositionFromSidePosition = function (relativePosition, side) {
+            if (side === "side1") {
+                return relativePosition;
+            }
+            else {
+                var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+                return [relativePosition[0] + rowsPerSide, relativePosition[1]];
+            }
+        };
+        Battle.prototype.updateBattlePositions = function (side) {
+            var units = this[side];
+            for (var i = 0; i < units.length; i++) {
+                var row = this[side][i];
+                for (var j = 0; j < row.length; j++) {
+                    var pos = this.getAbsolutePositionFromSidePosition([i, j], side);
+                    var unit = row[j];
+                    if (unit) {
+                        unit.setBattlePosition(this, side, pos);
                     }
                 }
             }
         };
-        Battle.prototype.swapColumnsIfNeeded = function () {
-            var side1Front = this.getTotalHealthForColumn(1);
-            if (side1Front <= 0) {
-                this.swapColumnsForSide("side1");
+        Battle.prototype.shiftRowsForSide = function (side) {
+            var formation = this[side];
+            if (side === "side1") {
+                formation.reverse();
             }
-            var side2Front = this.getTotalHealthForColumn(2);
-            if (side2Front <= 0) {
-                this.swapColumnsForSide("side2");
+            var nextHealthyRowIndex;
+            // start at 1 because frontmost row shouldn't be healthy if this is called
+            for (var i = 1; i < formation.length; i++) {
+                var absoluteRow = side === "side1" ? i : i + app.moduleData.ruleSet.battle.rowsPerFormation;
+                if (this.getTotalHealthForRow(absoluteRow) > 0) {
+                    nextHealthyRowIndex = i;
+                    break;
+                }
+            }
+            if (!isFinite(nextHealthyRowIndex)) {
+                throw new Error("Tried to shift battle rows when all rows are defeated");
+            }
+            var rowsToShift = formation.splice(0, nextHealthyRowIndex);
+            formation = formation.concat(rowsToShift);
+            if (side === "side1") {
+                formation.reverse();
+            }
+            this[side] = formation;
+            this.updateBattlePositions(side);
+        };
+        Battle.prototype.shiftRowsIfNeeded = function () {
+            var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+            var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
+            if (side1FrontRowHealth <= 0) {
+                this.shiftRowsForSide("side1");
+            }
+            var side2FrontRowHealth = this.getTotalHealthForRow(rowsPerSide);
+            if (side2FrontRowHealth <= 0) {
+                this.shiftRowsForSide("side2");
             }
         };
         Battle.prototype.getGainedExperiencePerSide = function () {
@@ -3534,7 +3570,7 @@ var Rance;
                 clone.endBattle();
             }
             else {
-                clone.swapColumnsIfNeeded();
+                clone.shiftRowsIfNeeded();
             }
             return clone;
         };
@@ -3867,10 +3903,15 @@ var Rance;
     }
     Rance.getPotentialTargets = getPotentialTargets;
     function getFleetsToTarget(battle, user, effect) {
-        var nullFleet = [
-            [null, null, null, null],
-            [null, null, null, null]
-        ];
+        var nullFleet = [];
+        var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
+        var columns = app.moduleData.ruleSet.battle.cellsPerRow;
+        for (var i = 0; i < rows; i++) {
+            nullFleet.push([]);
+            for (var j = 0; j < columns; j++) {
+                nullFleet[i].push(null);
+            }
+        }
         var insertNullBefore;
         var toConcat;
         switch (effect.targetFleets) {
@@ -6071,6 +6112,7 @@ var Rance;
                 this.enemyPlayer = this.attacker;
             }
         };
+        // TODO ruleset | handle variable amount of rows
         BattlePrep.prototype.makeAutoFormation = function (units, enemyUnits, player) {
             var self = this;
             var maxUnitsPerSide = app.moduleData.ruleSet.battle.maxUnitsPerSide;

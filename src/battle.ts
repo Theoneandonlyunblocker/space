@@ -553,7 +553,8 @@ module Rance
       // start at 1 because frontmost row shouldn't be healthy if this is called
       for (var i = 1; i < formation.length; i++)
       {
-        if (this.getTotalHealthForRow(i) > 0)
+        var absoluteRow = side === "side1" ? i : i + app.moduleData.ruleSet.battle.rowsPerFormation;
+        if (this.getTotalHealthForRow(absoluteRow) > 0)
         {
           nextHealthyRowIndex = i;
           break;

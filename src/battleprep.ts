@@ -133,7 +133,7 @@ module Rance
     }
 
 
-
+    // TODO ruleset | handle variable amount of rows
     makeAutoFormation(units: Unit[], enemyUnits: Unit[], player: Player): Unit[][]
     {
       var self = this;
