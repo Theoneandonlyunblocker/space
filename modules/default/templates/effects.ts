@@ -17,7 +17,7 @@ module Rance
           {
             name: "singleTargetDamage",
             targetFleets: TargetFleet.enemy,
-            targetingFunction: targetSingle,
+            battleAreaFunction: areaSingle,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {baseDamage: number; damageType: number;})
@@ -35,7 +35,7 @@ module Rance
           {
             name: "closeAttack",
             targetFleets: TargetFleet.enemy,
-            targetingFunction: targetColumnNeighbors,
+            battleAreaFunction: areaColumnNeighbors,
             targetRange: "close",
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
@@ -52,7 +52,7 @@ module Rance
           {
             name: "wholeRowAttack",
             targetFleets: TargetFleet.either,
-            targetingFunction: targetRow,
+            battleAreaFunction: areaRow,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
@@ -70,7 +70,7 @@ module Rance
           {
             name: "bombAttack",
             targetFleets: TargetFleet.enemy,
-            targetingFunction: targetNeighbors,
+            battleAreaFunction: areaNeighbors,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
@@ -87,7 +87,7 @@ module Rance
           {
             name: "guardColumn",
             targetFleets: TargetFleet.either,
-            targetingFunction: targetSingle,
+            battleAreaFunction: areaSingle,
             targetRange: "self",
             effect: function(user: Unit, target: Unit, battle: Battle, data?: any)
             {
@@ -103,7 +103,7 @@ module Rance
           {
             name: "receiveCounterAttack",
             targetFleets: TargetFleet.either,
-            targetingFunction: targetSingle,
+            battleAreaFunction: areaSingle,
             targetRange: "self",
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {baseDamage: number; damageType: number;})
@@ -123,7 +123,7 @@ module Rance
           {
             name: "increaseCaptureChance",
             targetFleets: TargetFleet.enemy,
-            targetingFunction: targetSingle,
+            battleAreaFunction: areaSingle,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; multiplier?: number;})
@@ -144,7 +144,7 @@ module Rance
           {
             name: "buffTest",
             targetFleets: TargetFleet.either,
-            targetingFunction: targetSingle,
+            battleAreaFunction: areaSingle,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
@@ -155,7 +155,7 @@ module Rance
           {
             name: "healTarget",
             targetFleets: TargetFleet.ally,
-            targetingFunction: targetSingle,
+            battleAreaFunction: areaSingle,
             targetRange: "all",
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
@@ -182,7 +182,7 @@ module Rance
           {
             name: "healSelf",
             targetFleets: TargetFleet.ally,
-            targetingFunction: targetSingle,
+            battleAreaFunction: areaSingle,
             targetRange: "self",
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
@@ -195,7 +195,7 @@ module Rance
           {
             name: "standBy",
             targetFleets: TargetFleet.either,
-            targetingFunction: targetSingle,
+            battleAreaFunction: areaSingle,
             targetRange: "self",
             effect: function(){}
           }

@@ -463,7 +463,7 @@ module Rance
   {
     var targetFleets = getFleetsToTarget(battle, user, effect);
 
-    var inArea = effect.targetingFunction(targetFleets, target);
+    var inArea = effect.battleAreaFunction(targetFleets, target);
 
     return inArea.filter(function(unit: Unit)
     {

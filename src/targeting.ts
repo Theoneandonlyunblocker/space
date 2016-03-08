@@ -16,12 +16,15 @@ module Rance
     either = 2
   }
 
+  export interface BattleAreaFunction
+  {
+    (units: Unit[][], target: number[]): Unit[];
+  }
   //**
   //**
   //X*
   //**
-  export var targetSingle: TargetingFunction;
-  targetSingle = function(units: Unit[][], target: number[])
+  export var areaSingle: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     return getFrom2dArray(units, [target]);
   };
@@ -30,8 +33,7 @@ module Rance
   //XX
   //XX
   //XX
-  export var targetAll: TargetingFunction;
-  targetAll = function(units: Unit[][], target: number[])
+  export var areaAll: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     return flatten2dArray(units);
   };
@@ -40,8 +42,7 @@ module Rance
   //**
   //XX
   //**
-  export var targetRow: TargetingFunction;
-  targetRow = function(units: Unit[][], target: number[])
+  export var areaRow: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     var y = target[1];
     var targetLocations: number[][] = [];
@@ -58,8 +59,7 @@ module Rance
   //X*
   //X*
   //X*
-  export var targetColumn: TargetingFunction;
-  targetColumn = function(units: Unit[][], target: number[])
+  export var areaColumn: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     var x = target[0];
     var targetLocations: number[][] = [];
@@ -76,8 +76,7 @@ module Rance
   //X*
   //X*
   //X*
-  export var targetColumnNeighbors: TargetingFunction;
-  targetColumnNeighbors = function(units: Unit[][], target: number[])
+  export var areaColumnNeighbors: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     var x = target[0];
     var y = target[1];
@@ -94,8 +93,7 @@ module Rance
   //X*
   //XX
   //X*
-  export var targetNeighbors: TargetingFunction;
-  targetNeighbors = function(units: Unit[][], target: number[])
+  export var areaNeighbors: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     var x = target[0];
     var y = target[1];
