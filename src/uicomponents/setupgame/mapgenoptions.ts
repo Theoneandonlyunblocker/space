@@ -14,18 +14,7 @@ module Rance
 
       getInitialState: function()
       {
-        var defaultValues: any = this.getDefaultValues(this.props.mapGenTemplate);
-
-        var state: any =
-        {
-          defaultOptionsVisible: true,
-          basicOptionsVisible: true,
-          advancedOptionsVisible: false
-        };
-
-        state = extendObject(state, defaultValues);
-
-        return(state);
+        return this.getDefaultValues(this.props.mapGenTemplate);
       },
 
       componentWillReceiveProps: function(newProps: any)
@@ -78,13 +67,6 @@ module Rance
       resetValuesToDefault: function()
       {
         this.setState(this.getDefaultValues(this.props.mapGenTemplate, false));
-      },
-
-      toggleOptionGroupVisibility: function(visibilityProp: string)
-      {
-        var newState: any = {};
-        newState[visibilityProp] = !this.state[visibilityProp];
-        this.setState(newState);
       },
 
       handleOptionChange: function(optionName: string, newValue: number)
@@ -152,17 +134,17 @@ module Rance
           defaultOptions:
           {
             title: "Default Options",
-            visibilityProp: "defaultOptionsVisible"
+            isCollapsedInitially: false
           },
           basicOptions:
           {
             title: "Basic Options",
-            visibilityProp: "basicOptionsVisible"
+            isCollapsedInitially: false
           },
           advancedOptions:
           {
             title: "Advanced Options",
-            visibilityProp: "advancedOptionsVisible"
+            isCollapsedInitially: true
           }
         };
 
@@ -170,52 +152,33 @@ module Rance
         {
           if (!this.props.mapGenTemplate.options[groupName]) continue;
 
-          var visibilityProp = optionGroupsInfo[groupName].visibilityProp;
-          var groupIsVisible = this.state[visibilityProp];
 
           var options: {key: string; content: ReactComponentPlaceHolder;}[] = [];
 
-          if (groupIsVisible)
+          for (var optionName in this.props.mapGenTemplate.options[groupName])
           {
-            for (var optionName in this.props.mapGenTemplate.options[groupName])
-            {
-              var option = this.props.mapGenTemplate.options[groupName][optionName];
+            var option = this.props.mapGenTemplate.options[groupName][optionName];
 
-              options.push(
+            options.push(
+            {
+              key: optionName,
+              content: UIComponents.MapGenOption(
               {
                 key: optionName,
-                content: UIComponents.MapGenOption(
-                {
-                  key: optionName,
-                  id: optionName,
-                  option: option,
-                  value: this.getOptionValue(optionName),
-                  onChange: this.handleOptionChange
-                })
-              });
-            }
+                id: optionName,
+                option: option,
+                value: this.getOptionValue(optionName),
+                onChange: this.handleOptionChange
+              })
+            });
           }
-
-          var headerProps: any =
-          {
-            className: "map-gen-options-group-header collapsible",
-            onClick: this.toggleOptionGroupVisibility.bind(this, visibilityProp)
-          }
-
-          if (!groupIsVisible)
-          {
-            headerProps.className += " collapsed";
-          }
-
-          var header = React.DOM.div(headerProps,
-            optionGroupsInfo[groupName].title
-          )
           
           optionGroups.push(UIComponents.OptionsGroup(
           {
             key: groupName,
-            header: header,
-            options: options
+            header: optionGroupsInfo[groupName].title,
+            options: options,
+            isCollapsedInitially: optionGroupsInfo[groupName].isCollapsedInitially
           }));
         }
 

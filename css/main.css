@@ -3910,7 +3910,7 @@ button.player-setup-remove-player.disabled {
   margin-left: -1px;
   padding: 5px;
 }
-.map-gen-options-option-groups :last-child::after {
+.map-gen-options-option-groups .option-group:last-child::after {
   content: none;
 }
 .map-gen-options-group-header {
