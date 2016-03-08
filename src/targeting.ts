@@ -4,16 +4,30 @@
 
 module Rance
 {
-  export interface TargetingFunction
-  {
-    (units: Unit[][], target: number[]): Unit[];
-  }
-
   export enum TargetFleet
   {
     ally = 0,
     enemy = 1,
     either = 2
+  }
+
+  export interface TargetRangeFunction
+  {
+    (units: Unit[][], user: Unit): Unit[];
+  }
+  export var targetSelf: TargetRangeFunction = function(units: Unit[][], user: Unit)
+  {
+    return [user];
+  }
+  export var targetNextRow: TargetRangeFunction = function(units: Unit[][], user: Unit)
+  {
+    var ownPosition = user.battleStats.position;
+    var increment = user.battleStats.side === "side1" ? 1 : -1;
+    return units[ownPosition[0] + increment];
+  }
+  export var targetAll: TargetRangeFunction = function(units: Unit[][], user: Unit)
+  {
+    return flatten2dArray(units);
   }
 
   export interface BattleAreaFunction

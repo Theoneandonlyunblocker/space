@@ -339,32 +339,11 @@ module Rance
   export function getPotentialTargets(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate): Unit[]
   {
-    if (ability.mainEffect.template.targetRange === "self")
-    {
-      return [user];
-    }
     var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
 
-    if (ability.mainEffect.template.targetRange === "close")
-    {
-      var farColumnForSide =
-      {
-        side1: 0,
-        side2: 3
-      };
+    var targetsInRange = ability.mainEffect.template.targetRangeFunction(fleetsToTarget, user);
 
-      if (user.battleStats.position[0] ===
-        farColumnForSide[user.battleStats.side])
-      {
-        return [];
-      }
-
-      var oppositeSide = reverseSide(user.battleStats.side);
-
-      fleetsToTarget[farColumnForSide[oppositeSide]] = [null];
-    }
-
-    var fleetFilterFN = function(target: Unit)
+    var untargetableFilterFN = function(target: Unit)
     {
       if (!Boolean(target))
       {
@@ -378,7 +357,7 @@ module Rance
       return true;
     }
 
-    var targets = flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
+    var targets = targetsInRange.filter(untargetableFilterFN);
 
     return targets;
   }

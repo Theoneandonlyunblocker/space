@@ -637,20 +637,26 @@ declare module Rance {
     }
 }
 declare module Rance {
-    interface TargetingFunction {
-        (units: Unit[][], target: number[]): Unit[];
-    }
     enum TargetFleet {
         ally = 0,
         enemy = 1,
         either = 2,
     }
-    var targetSingle: TargetingFunction;
-    var targetAll: TargetingFunction;
-    var targetRow: TargetingFunction;
-    var targetColumn: TargetingFunction;
-    var targetColumnNeighbors: TargetingFunction;
-    var targetNeighbors: TargetingFunction;
+    interface TargetRangeFunction {
+        (units: Unit[][], user: Unit): Unit[];
+    }
+    var targetSelf: TargetRangeFunction;
+    var targetNextRow: TargetRangeFunction;
+    var targetAll: TargetRangeFunction;
+    interface BattleAreaFunction {
+        (units: Unit[][], target: number[]): Unit[];
+    }
+    var areaSingle: BattleAreaFunction;
+    var areaAll: BattleAreaFunction;
+    var areaRow: BattleAreaFunction;
+    var areaColumn: BattleAreaFunction;
+    var areaColumnNeighbors: BattleAreaFunction;
+    var areaNeighbors: BattleAreaFunction;
 }
 declare module Rance {
     interface IAbilityUseDataEffect {
@@ -2141,7 +2147,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var OptionsGroup: React.Factory<{}>;
+        var OptionsGroup: React.Factory<any>;
     }
 }
 declare module Rance {

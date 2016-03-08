@@ -18,7 +18,7 @@ module Rance
             name: "singleTargetDamage",
             targetFleets: TargetFleet.enemy,
             battleAreaFunction: areaSingle,
-            targetRange: "all",
+            targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {baseDamage: number; damageType: number;})
             {
@@ -36,7 +36,7 @@ module Rance
             name: "closeAttack",
             targetFleets: TargetFleet.enemy,
             battleAreaFunction: areaColumnNeighbors,
-            targetRange: "close",
+            targetRangeFunction: targetNextRow,
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
               var baseDamage = 0.66;
@@ -53,7 +53,7 @@ module Rance
             name: "wholeRowAttack",
             targetFleets: TargetFleet.either,
             battleAreaFunction: areaRow,
-            targetRange: "all",
+            targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
               var baseDamage = 0.75;
@@ -71,7 +71,7 @@ module Rance
             name: "bombAttack",
             targetFleets: TargetFleet.enemy,
             battleAreaFunction: areaNeighbors,
-            targetRange: "all",
+            targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
               var baseDamage = 0.5;
@@ -88,7 +88,7 @@ module Rance
             name: "guardColumn",
             targetFleets: TargetFleet.either,
             battleAreaFunction: areaSingle,
-            targetRange: "self",
+            targetRangeFunction: targetSelf,
             effect: function(user: Unit, target: Unit, battle: Battle, data?: any)
             {
               var data = data || {};
@@ -104,7 +104,7 @@ module Rance
             name: "receiveCounterAttack",
             targetFleets: TargetFleet.either,
             battleAreaFunction: areaSingle,
-            targetRange: "self",
+            targetRangeFunction: targetSelf,
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {baseDamage: number; damageType: number;})
             {
@@ -124,7 +124,7 @@ module Rance
             name: "increaseCaptureChance",
             targetFleets: TargetFleet.enemy,
             battleAreaFunction: areaSingle,
-            targetRange: "all",
+            targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; multiplier?: number;})
             {
@@ -145,7 +145,7 @@ module Rance
             name: "buffTest",
             targetFleets: TargetFleet.either,
             battleAreaFunction: areaSingle,
-            targetRange: "all",
+            targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
               target.addStatusEffect(new StatusEffect(StatusEffects.test, 2));
@@ -156,7 +156,7 @@ module Rance
             name: "healTarget",
             targetFleets: TargetFleet.ally,
             battleAreaFunction: areaSingle,
-            targetRange: "all",
+            targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
             {
@@ -183,7 +183,7 @@ module Rance
             name: "healSelf",
             targetFleets: TargetFleet.ally,
             battleAreaFunction: areaSingle,
-            targetRange: "self",
+            targetRangeFunction: targetSelf,
             effect: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
             {
@@ -196,7 +196,7 @@ module Rance
             name: "standBy",
             targetFleets: TargetFleet.either,
             battleAreaFunction: areaSingle,
-            targetRange: "self",
+            targetRangeFunction: targetSelf,
             effect: function(){}
           }
         }

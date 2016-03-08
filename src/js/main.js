@@ -3552,13 +3552,36 @@ var Rance;
         TargetFleet[TargetFleet["either"] = 2] = "either";
     })(Rance.TargetFleet || (Rance.TargetFleet = {}));
     var TargetFleet = Rance.TargetFleet;
-    Rance.targetSingle = function (units, target) {
-        return Rance.getFrom2dArray(units, [target]);
+    Rance.targetSelf = function (units, user) {
+        return [user];
     };
-    Rance.targetAll = function (units, target) {
+    Rance.targetNextRow = function (units, user) {
+        var ownPosition = user.battleStats.position;
+        var increment = user.battleStats.side === "side1" ? 1 : -1;
+        return units[ownPosition[0] + increment];
+    };
+    Rance.targetAll = function (units, user) {
         return Rance.flatten2dArray(units);
     };
-    Rance.targetRow = function (units, target) {
+    //**
+    //**
+    //X*
+    //**
+    Rance.areaSingle = function (units, target) {
+        return Rance.getFrom2dArray(units, [target]);
+    };
+    //XX
+    //XX
+    //XX
+    //XX
+    Rance.areaAll = function (units, target) {
+        return Rance.flatten2dArray(units);
+    };
+    //**
+    //**
+    //XX
+    //**
+    Rance.areaRow = function (units, target) {
         var y = target[1];
         var targetLocations = [];
         for (var i = 0; i < units.length; i++) {
@@ -3566,7 +3589,11 @@ var Rance;
         }
         return Rance.getFrom2dArray(units, targetLocations);
     };
-    Rance.targetColumn = function (units, target) {
+    //X*
+    //X*
+    //X*
+    //X*
+    Rance.areaColumn = function (units, target) {
         var x = target[0];
         var targetLocations = [];
         for (var i = 0; i < units[x].length; i++) {
@@ -3574,7 +3601,11 @@ var Rance;
         }
         return Rance.getFrom2dArray(units, targetLocations);
     };
-    Rance.targetColumnNeighbors = function (units, target) {
+    //**
+    //X*
+    //X*
+    //X*
+    Rance.areaColumnNeighbors = function (units, target) {
         var x = target[0];
         var y = target[1];
         var targetLocations = [];
@@ -3583,7 +3614,11 @@ var Rance;
         targetLocations.push([x, y + 1]);
         return Rance.getFrom2dArray(units, targetLocations);
     };
-    Rance.targetNeighbors = function (units, target) {
+    //**
+    //X*
+    //XX
+    //X*
+    Rance.areaNeighbors = function (units, target) {
         var x = target[0];
         var y = target[1];
         var targetLocations = [];
@@ -3816,23 +3851,9 @@ var Rance;
     }
     Rance.getGuarders = getGuarders;
     function getPotentialTargets(battle, user, ability) {
-        if (ability.mainEffect.template.targetRange === "self") {
-            return [user];
-        }
         var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
-        if (ability.mainEffect.template.targetRange === "close") {
-            var farColumnForSide = {
-                side1: 0,
-                side2: 3
-            };
-            if (user.battleStats.position[0] ===
-                farColumnForSide[user.battleStats.side]) {
-                return [];
-            }
-            var oppositeSide = Rance.reverseSide(user.battleStats.side);
-            fleetsToTarget[farColumnForSide[oppositeSide]] = [null];
-        }
-        var fleetFilterFN = function (target) {
+        var targetsInRange = ability.mainEffect.template.targetRangeFunction(fleetsToTarget, user);
+        var untargetableFilterFN = function (target) {
             if (!Boolean(target)) {
                 return false;
             }
@@ -3841,7 +3862,7 @@ var Rance;
             }
             return true;
         };
-        var targets = Rance.flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
+        var targets = targetsInRange.filter(untargetableFilterFN);
         return targets;
     }
     Rance.getPotentialTargets = getPotentialTargets;
@@ -3904,7 +3925,7 @@ var Rance;
     Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
     function getUnitsInEffectArea(battle, user, effect, target) {
         var targetFleets = getFleetsToTarget(battle, user, effect);
-        var inArea = effect.targetingFunction(targetFleets, target);
+        var inArea = effect.battleAreaFunction(targetFleets, target);
         return inArea.filter(function (unit) {
             if (!unit)
                 return false;
@@ -14137,9 +14158,15 @@ var Rance;
     (function (UIComponents) {
         UIComponents.OptionsGroup = React.createClass({
             displayName: "OptionsGroup",
+            propTypes: {
+                isCollapsedInitially: React.PropTypes.bool,
+                resetFN: React.PropTypes.func,
+                header: React.PropTypes.string,
+                options: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
+            },
             getInitialState: function () {
                 return ({
-                    isCollapsed: false
+                    isCollapsed: this.props.isCollapsedInitially || false
                 });
             },
             toggleCollapse: function () {
@@ -19693,14 +19720,7 @@ var Rance;
         UIComponents.MapGenOptions = React.createClass({
             displayName: "MapGenOptions",
             getInitialState: function () {
-                var defaultValues = this.getDefaultValues(this.props.mapGenTemplate);
-                var state = {
-                    defaultOptionsVisible: true,
-                    basicOptionsVisible: true,
-                    advancedOptionsVisible: false
-                };
-                state = Rance.extendObject(state, defaultValues);
-                return (state);
+                return this.getDefaultValues(this.props.mapGenTemplate);
             },
             componentWillReceiveProps: function (newProps) {
                 if (newProps.mapGenTemplate.key !== this.props.mapGenTemplate.key) {
@@ -19737,11 +19757,6 @@ var Rance;
             },
             resetValuesToDefault: function () {
                 this.setState(this.getDefaultValues(this.props.mapGenTemplate, false));
-            },
-            toggleOptionGroupVisibility: function (visibilityProp) {
-                var newState = {};
-                newState[visibilityProp] = !this.state[visibilityProp];
-                this.setState(newState);
             },
             handleOptionChange: function (optionName, newValue) {
                 var changedState = {};
@@ -19783,50 +19798,39 @@ var Rance;
                 var optionGroupsInfo = {
                     defaultOptions: {
                         title: "Default Options",
-                        visibilityProp: "defaultOptionsVisible"
+                        isCollapsedInitially: false
                     },
                     basicOptions: {
                         title: "Basic Options",
-                        visibilityProp: "basicOptionsVisible"
+                        isCollapsedInitially: false
                     },
                     advancedOptions: {
                         title: "Advanced Options",
-                        visibilityProp: "advancedOptionsVisible"
+                        isCollapsedInitially: true
                     }
                 };
                 for (var groupName in optionGroupsInfo) {
                     if (!this.props.mapGenTemplate.options[groupName])
                         continue;
-                    var visibilityProp = optionGroupsInfo[groupName].visibilityProp;
-                    var groupIsVisible = this.state[visibilityProp];
                     var options = [];
-                    if (groupIsVisible) {
-                        for (var optionName in this.props.mapGenTemplate.options[groupName]) {
-                            var option = this.props.mapGenTemplate.options[groupName][optionName];
-                            options.push({
+                    for (var optionName in this.props.mapGenTemplate.options[groupName]) {
+                        var option = this.props.mapGenTemplate.options[groupName][optionName];
+                        options.push({
+                            key: optionName,
+                            content: UIComponents.MapGenOption({
                                 key: optionName,
-                                content: UIComponents.MapGenOption({
-                                    key: optionName,
-                                    id: optionName,
-                                    option: option,
-                                    value: this.getOptionValue(optionName),
-                                    onChange: this.handleOptionChange
-                                })
-                            });
-                        }
+                                id: optionName,
+                                option: option,
+                                value: this.getOptionValue(optionName),
+                                onChange: this.handleOptionChange
+                            })
+                        });
                     }
-                    var headerProps = {
-                        className: "map-gen-options-group-header collapsible",
-                        onClick: this.toggleOptionGroupVisibility.bind(this, visibilityProp)
-                    };
-                    if (!groupIsVisible) {
-                        headerProps.className += " collapsed";
-                    }
-                    var header = React.DOM.div(headerProps, optionGroupsInfo[groupName].title);
                     optionGroups.push(UIComponents.OptionsGroup({
                         key: groupName,
-                        header: header,
-                        options: options
+                        header: optionGroupsInfo[groupName].title,
+                        options: options,
+                        isCollapsedInitially: optionGroupsInfo[groupName].isCollapsedInitially
                     }));
                 }
                 return (React.DOM.div({
@@ -23947,8 +23951,8 @@ var Rance;
                     Effects.singleTargetDamage = {
                         name: "singleTargetDamage",
                         targetFleets: Rance.TargetFleet.enemy,
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "all",
+                        battleAreaFunction: Rance.areaSingle,
+                        targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle, data) {
                             var baseDamage = data.baseDamage;
                             var damageType = data.damageType;
@@ -23960,8 +23964,8 @@ var Rance;
                     Effects.closeAttack = {
                         name: "closeAttack",
                         targetFleets: Rance.TargetFleet.enemy,
-                        targetingFunction: Rance.targetColumnNeighbors,
-                        targetRange: "close",
+                        battleAreaFunction: Rance.areaColumnNeighbors,
+                        targetRangeFunction: Rance.targetNextRow,
                         effect: function (user, target, battle) {
                             var baseDamage = 0.66;
                             var damageType = Rance.DamageType.physical;
@@ -23973,8 +23977,8 @@ var Rance;
                     Effects.wholeRowAttack = {
                         name: "wholeRowAttack",
                         targetFleets: Rance.TargetFleet.either,
-                        targetingFunction: Rance.targetRow,
-                        targetRange: "all",
+                        battleAreaFunction: Rance.areaRow,
+                        targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle) {
                             var baseDamage = 0.75;
                             var damageType = Rance.DamageType.magical;
@@ -23986,8 +23990,8 @@ var Rance;
                     Effects.bombAttack = {
                         name: "bombAttack",
                         targetFleets: Rance.TargetFleet.enemy,
-                        targetingFunction: Rance.targetNeighbors,
-                        targetRange: "all",
+                        battleAreaFunction: Rance.areaNeighbors,
+                        targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle) {
                             var baseDamage = 0.5;
                             var damageType = Rance.DamageType.physical;
@@ -23999,8 +24003,8 @@ var Rance;
                     Effects.guardColumn = {
                         name: "guardColumn",
                         targetFleets: Rance.TargetFleet.either,
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "self",
+                        battleAreaFunction: Rance.areaSingle,
+                        targetRangeFunction: Rance.targetSelf,
                         effect: function (user, target, battle, data) {
                             var data = data || {};
                             var guardPerInt = data.perInt || 0;
@@ -24012,8 +24016,8 @@ var Rance;
                     Effects.receiveCounterAttack = {
                         name: "receiveCounterAttack",
                         targetFleets: Rance.TargetFleet.either,
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "self",
+                        battleAreaFunction: Rance.areaSingle,
+                        targetRangeFunction: Rance.targetSelf,
                         effect: function (user, target, battle, data) {
                             var counterStrength = target.getCounterAttackStrength();
                             if (counterStrength) {
@@ -24027,8 +24031,8 @@ var Rance;
                     Effects.increaseCaptureChance = {
                         name: "increaseCaptureChance",
                         targetFleets: Rance.TargetFleet.enemy,
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "all",
+                        battleAreaFunction: Rance.areaSingle,
+                        targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle, data) {
                             if (!data)
                                 return;
@@ -24043,8 +24047,8 @@ var Rance;
                     Effects.buffTest = {
                         name: "buffTest",
                         targetFleets: Rance.TargetFleet.either,
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "all",
+                        battleAreaFunction: Rance.areaSingle,
+                        targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle) {
                             target.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 2));
                         }
@@ -24052,8 +24056,8 @@ var Rance;
                     Effects.healTarget = {
                         name: "healTarget",
                         targetFleets: Rance.TargetFleet.ally,
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "all",
+                        battleAreaFunction: Rance.areaSingle,
+                        targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle, data) {
                             var healAmount = 0;
                             if (data.flat) {
@@ -24071,8 +24075,8 @@ var Rance;
                     Effects.healSelf = {
                         name: "healSelf",
                         targetFleets: Rance.TargetFleet.ally,
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "self",
+                        battleAreaFunction: Rance.areaSingle,
+                        targetRangeFunction: Rance.targetSelf,
                         effect: function (user, target, battle, data) {
                             Templates.Effects.healTarget.effect(user, user, battle, data);
                         }
@@ -24080,8 +24084,8 @@ var Rance;
                     Effects.standBy = {
                         name: "standBy",
                         targetFleets: Rance.TargetFleet.either,
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "self",
+                        battleAreaFunction: Rance.areaSingle,
+                        targetRangeFunction: Rance.targetSelf,
                         effect: function () { }
                     };
                 })(Effects = Templates.Effects || (Templates.Effects = {}));

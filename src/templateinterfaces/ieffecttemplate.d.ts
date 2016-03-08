@@ -12,7 +12,7 @@ declare module Rance
       
       targetFleets: TargetFleet;
       battleAreaFunction: BattleAreaFunction;
-      targetRange: "self" | "close" | "all"; // todo
+      targetRangeFunction: TargetRangeFunction;
       effect: (user: Unit, target: Unit, battle: Battle, data?: any) => void;
     }
   }
