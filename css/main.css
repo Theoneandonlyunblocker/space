@@ -558,7 +558,7 @@ ol {
 .ability-tooltip-ability:focus {
   background-color: #c8c814;
 }
-.fleets-container {
+.formations-container {
   position: relative;
   display: flex;
   flex-flow: row;
@@ -573,7 +573,7 @@ ol {
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
-.battle-fleets-darken {
+.battle-formations-darken {
   position: absolute;
   top: 0;
   left: 0;
@@ -591,14 +591,14 @@ ol {
   align-self: center;
   min-height: 30px;
 }
-.battle-fleet {
+.battle-formation {
   display: flex;
   flex-flow: row;
   flex: 1 1 520px;
   min-width: 220px;
   max-width: 520px;
 }
-.battle-fleet-row {
+.battle-formation-row {
   display: flex;
   flex-flow: column;
   flex: 1;

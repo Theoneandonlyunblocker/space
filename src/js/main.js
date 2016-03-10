@@ -9577,11 +9577,11 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FleetRow = React.createClass({
-            displayName: "FleetRow",
+        UIComponents.FormationRow = React.createClass({
+            displayName: "FormationRow",
             propTypes: {
                 row: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)).isRequired,
-                rowIndexInOwnFleet: React.PropTypes.number.isRequired,
+                rowIndexInOwnFormation: React.PropTypes.number.isRequired,
                 battle: React.PropTypes.instanceOf(Rance.Battle),
                 facesLeft: React.PropTypes.bool.isRequired,
                 activeUnit: React.PropTypes.instanceOf(Rance.Unit),
@@ -9602,8 +9602,8 @@ var Rance;
                 var row = this.props.row;
                 var side = this.props.facesLeft ? "side2" : "side1";
                 var absoluteRowIndex = side === "side1" ?
-                    this.props.rowIndexInOwnFleet :
-                    this.props.rowIndexInOwnFleet + app.moduleData.ruleSet.battle.rowsPerFormation;
+                    this.props.rowIndexInOwnFormation :
+                    this.props.rowIndexInOwnFormation + app.moduleData.ruleSet.battle.rowsPerFormation;
                 var units = [];
                 for (var i = 0; i < row.length; i++) {
                     var data = {};
@@ -9627,22 +9627,22 @@ var Rance;
                     data.onDragEnd = this.props.onDragEnd;
                     units.push(UIComponents.UnitWrapper(data));
                 }
-                return (React.DOM.div({ className: "battle-fleet-row" }, units));
+                return (React.DOM.div({ className: "battle-formation-row" }, units));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../unit.ts" />
 /// <reference path="../../battle.ts" />
-/// <reference path="fleetrow.ts"/>
+/// <reference path="formationrow.ts"/>
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Fleet = React.createClass({
-            displayName: "Fleet",
+        UIComponents.Formation = React.createClass({
+            displayName: "Formation",
             propTypes: {
-                fleet: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
+                formation: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
                 battle: React.PropTypes.instanceOf(Rance.Battle),
                 facesLeft: React.PropTypes.bool.isRequired,
                 activeUnit: React.PropTypes.instanceOf(Rance.Unit),
@@ -9660,13 +9660,13 @@ var Rance;
                 onDragEnd: React.PropTypes.func
             },
             render: function () {
-                var fleet = this.props.fleet;
-                var fleetRows = [];
-                for (var i = 0; i < fleet.length; i++) {
-                    fleetRows.push(UIComponents.FleetRow({
+                var formation = this.props.formation;
+                var formationRows = [];
+                for (var i = 0; i < formation.length; i++) {
+                    formationRows.push(UIComponents.FormationRow({
                         key: i,
-                        row: fleet[i],
-                        rowIndexInOwnFleet: i,
+                        row: formation[i],
+                        rowIndexInOwnFormation: i,
                         battle: this.props.battle,
                         facesLeft: this.props.facesLeft,
                         activeUnit: this.props.activeUnit,
@@ -9683,7 +9683,7 @@ var Rance;
                         onDragEnd: this.props.onDragEnd
                     }));
                 }
-                return (React.DOM.div({ className: "battle-fleet" }, fleetRows));
+                return (React.DOM.div({ className: "battle-formation" }, formationRows));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -10246,7 +10246,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="fleet.ts"/>
+/// <reference path="formation.ts"/>
 /// <reference path="turncounter.ts"/>
 /// <reference path="turnorder.ts"/>
 /// <reference path="abilitytooltip.ts"/>
@@ -10306,7 +10306,7 @@ var Rance;
                 }
             },
             getBlurArea: function () {
-                return this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
+                return this.refs.formationsContainer.getDOMNode().getBoundingClientRect();
             },
             clearHoveredUnit: function () {
                 this.tempHoveredUnit = null;
@@ -10692,11 +10692,11 @@ var Rance;
                     side1Player: battle.side1Player,
                     side2Player: battle.side2Player
                 })), React.DOM.div({
-                    className: "fleets-container",
-                    ref: "fleetsContainer"
-                }, UIComponents.Fleet({
+                    className: "formations-container",
+                    ref: "formationsContainer"
+                }, UIComponents.Formation({
                     battle: battle,
-                    fleet: battle.side1,
+                    formation: battle.side1,
                     facesLeft: false,
                     activeUnit: battle.activeUnit,
                     hoveredUnit: this.state.hoveredUnit,
@@ -10709,9 +10709,9 @@ var Rance;
                 }), UIComponents.TurnCounter({
                     turnsLeft: battle.turnsLeft,
                     maxTurns: battle.maxTurns
-                }), UIComponents.Fleet({
+                }), UIComponents.Formation({
                     battle: battle,
-                    fleet: battle.side2,
+                    formation: battle.side2,
                     facesLeft: true,
                     activeUnit: battle.activeUnit,
                     hoveredUnit: this.state.hoveredUnit,
@@ -10722,7 +10722,7 @@ var Rance;
                     handleMouseLeaveUnit: this.handleMouseLeaveUnit,
                     activeEffectUnits: activeEffectUnits
                 }), abilityTooltip, this.state.playingBattleEffect ?
-                    React.DOM.div({ className: "battle-fleets-darken" }, null) :
+                    React.DOM.div({ className: "battle-formations-darken" }, null) :
                     null))));
             }
         });
@@ -12153,6 +12153,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="battleinfo.ts"/>
 /// <reference path="../unitlist/menuunitinfo.ts"/>
+/// <reference path="../battle/formation.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -12165,7 +12166,7 @@ var Rance;
                     hoveredUnit: null,
                     selectedUnit: null,
                     currentDragItem: null,
-                    leftLowerElement: "playerFleet" // "playerFleet" || "enemyFleet" || "itemEquip"
+                    leftLowerElement: "playerFormation" // "playerFormation" || "enemyFormation" || "itemEquip"
                 });
             },
             autoMakeFormation: function () {
@@ -12173,7 +12174,7 @@ var Rance;
                 battlePrep.clearPlayerFormation();
                 battlePrep.playerFormation = battlePrep.makeAutoFormation(battlePrep.availableUnits, battlePrep.enemyUnits, battlePrep.humanPlayer);
                 battlePrep.setupPlayerFormation(battlePrep.playerFormation);
-                this.setLeftLowerElement("playerFleet");
+                this.setLeftLowerElement("playerFormation");
                 this.forceUpdate();
             },
             handleSelectRow: function (row) {
@@ -12245,7 +12246,7 @@ var Rance;
                 var newState = {
                     leftLowerElement: newElement
                 };
-                if (oldElement === "enemyFleet" || newElement === "enemyFleet") {
+                if (oldElement === "enemyFormation" || newElement === "enemyFormation") {
                     newState.selectedUnit = null;
                 }
                 this.setState(newState);
@@ -12306,11 +12307,11 @@ var Rance;
                 }
                 var leftLowerElement;
                 switch (this.state.leftLowerElement) {
-                    case "playerFleet":
+                    case "playerFormation":
                         {
-                            leftLowerElement = UIComponents.Fleet({
-                                key: "playerFleet",
-                                fleet: battlePrep.playerFormation.slice(0),
+                            leftLowerElement = UIComponents.Formation({
+                                key: "playerFormation",
+                                formation: battlePrep.playerFormation.slice(0),
                                 facesLeft: false,
                                 hoveredUnit: this.state.hoveredUnit,
                                 activeUnit: this.state.selectedUnit,
@@ -12324,11 +12325,11 @@ var Rance;
                             });
                             break;
                         }
-                    case "enemyFleet":
+                    case "enemyFormation":
                         {
-                            leftLowerElement = UIComponents.Fleet({
-                                key: "enemyFleet",
-                                fleet: battlePrep.enemyFormation,
+                            leftLowerElement = UIComponents.Formation({
+                                key: "enemyFormation",
+                                formation: battlePrep.enemyFormation,
                                 facesLeft: true,
                                 hoveredUnit: this.state.hoveredUnit,
                                 activeUnit: this.state.selectedUnit,
@@ -12366,13 +12367,13 @@ var Rance;
                     disabled: this.state.leftLowerElement === "itemEquip"
                 }, "Equip"), React.DOM.button({
                     className: "battle-prep-controls-button",
-                    onClick: this.setLeftLowerElement.bind(this, "playerFleet"),
-                    disabled: this.state.leftLowerElement === "playerFleet"
+                    onClick: this.setLeftLowerElement.bind(this, "playerFormation"),
+                    disabled: this.state.leftLowerElement === "playerFormation"
                 }, "Own"), React.DOM.button({
                     className: "battle-prep-controls-button",
-                    onClick: this.setLeftLowerElement.bind(this, "enemyFleet"),
-                    disabled: this.state.leftLowerElement === "enemyFleet" || !canScout,
-                    title: canScout ? null : "Can't inspect enemy fleet" +
+                    onClick: this.setLeftLowerElement.bind(this, "enemyFormation"),
+                    disabled: this.state.leftLowerElement === "enemyFormation" || !canScout,
+                    title: canScout ? null : "Can't inspect enemy formation" +
                         " as star is not in detection radius"
                 }, "Enemy"), React.DOM.button({
                     onClick: this.autoMakeFormation
@@ -12405,7 +12406,7 @@ var Rance;
                     reservedUnits: battlePrep.alreadyPlaced,
                     hoveredUnit: this.state.hoveredUnit,
                     checkTimesActed: true,
-                    isDraggable: this.state.leftLowerElement === "playerFleet",
+                    isDraggable: this.state.leftLowerElement === "playerFormation",
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd,
                     onRowChange: this.handleSelectRow,

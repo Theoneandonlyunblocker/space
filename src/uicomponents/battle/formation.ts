@@ -1,19 +1,19 @@
 /// <reference path="../../unit.ts" />
 /// <reference path="../../battle.ts" />
 
-/// <reference path="fleetrow.ts"/>
+/// <reference path="formationrow.ts"/>
 
 module Rance
 {
   export module UIComponents
   {
-    export var Fleet = React.createClass(
+    export var Formation = React.createClass(
     {
-      displayName: "Fleet",
+      displayName: "Formation",
 
       propTypes:
       {
-        fleet: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
+        formation: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
         battle: React.PropTypes.instanceOf(Rance.Battle),
         facesLeft: React.PropTypes.bool.isRequired,
         activeUnit: React.PropTypes.instanceOf(Rance.Unit),
@@ -33,17 +33,17 @@ module Rance
 
       render: function()
       {
-        var fleet = this.props.fleet;
+        var formation = this.props.formation;
 
-        var fleetRows: ReactComponentPlaceHolder[] = [];
+        var formationRows: ReactComponentPlaceHolder[] = [];
 
-        for (var i = 0; i < fleet.length; i++)
+        for (var i = 0; i < formation.length; i++)
         {
-          fleetRows.push(UIComponents.FleetRow(
+          formationRows.push(UIComponents.FormationRow(
           {
             key: i,
-            row: fleet[i],
-            rowIndexInOwnFleet: i,
+            row: formation[i],
+            rowIndexInOwnFormation: i,
             battle: this.props.battle,
             facesLeft: this.props.facesLeft,
             activeUnit: this.props.activeUnit,
@@ -64,8 +64,8 @@ module Rance
         }
 
         return(
-          React.DOM.div({className: "battle-fleet"},
-            fleetRows
+          React.DOM.div({className: "battle-formation"},
+            formationRows
           )
         );
       }

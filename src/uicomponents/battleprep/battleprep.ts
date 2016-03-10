@@ -1,5 +1,6 @@
 /// <reference path="battleinfo.ts"/>
 /// <reference path="../unitlist/menuunitinfo.ts"/>
+/// <reference path="../battle/formation.ts" />
 
 module Rance
 {
@@ -17,7 +18,7 @@ module Rance
           selectedUnit: null,
           currentDragItem: null,
 
-          leftLowerElement: "playerFleet" // "playerFleet" || "enemyFleet" || "itemEquip"
+          leftLowerElement: "playerFormation" // "playerFormation" || "enemyFormation" || "itemEquip"
         });
       },
       autoMakeFormation: function()
@@ -30,7 +31,7 @@ module Rance
 
         battlePrep.setupPlayerFormation(battlePrep.playerFormation);
 
-        this.setLeftLowerElement("playerFleet");
+        this.setLeftLowerElement("playerFormation");
         this.forceUpdate();
       },
 
@@ -138,7 +139,7 @@ module Rance
           leftLowerElement: newElement
         }
 
-        if (oldElement === "enemyFleet" || newElement === "enemyFleet")
+        if (oldElement === "enemyFormation" || newElement === "enemyFormation")
         {
           newState.selectedUnit = null
         }
@@ -228,12 +229,12 @@ module Rance
         var leftLowerElement: ReactComponentPlaceHolder;
         switch (this.state.leftLowerElement)
         {
-          case "playerFleet":
+          case "playerFormation":
           {
-            leftLowerElement = UIComponents.Fleet(
+            leftLowerElement = UIComponents.Formation(
             {
-              key: "playerFleet",
-              fleet: battlePrep.playerFormation.slice(0),
+              key: "playerFormation",
+              formation: battlePrep.playerFormation.slice(0),
               facesLeft: false,
               hoveredUnit: this.state.hoveredUnit,
               activeUnit: this.state.selectedUnit,
@@ -250,12 +251,12 @@ module Rance
             });
             break;
           }
-          case "enemyFleet":
+          case "enemyFormation":
           {
-            leftLowerElement = UIComponents.Fleet(
+            leftLowerElement = UIComponents.Formation(
             {
-              key: "enemyFleet",
-              fleet: battlePrep.enemyFormation,
+              key: "enemyFormation",
+              formation: battlePrep.enemyFormation,
               facesLeft: true,
               hoveredUnit: this.state.hoveredUnit,
               activeUnit: this.state.selectedUnit,
@@ -312,15 +313,15 @@ module Rance
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
-                  onClick: this.setLeftLowerElement.bind(this, "playerFleet"),
-                  disabled: this.state.leftLowerElement === "playerFleet"
+                  onClick: this.setLeftLowerElement.bind(this, "playerFormation"),
+                  disabled: this.state.leftLowerElement === "playerFormation"
                 }, "Own"),
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
-                  onClick: this.setLeftLowerElement.bind(this, "enemyFleet"),
-                  disabled: this.state.leftLowerElement === "enemyFleet" || !canScout,
-                  title: canScout ? null : "Can't inspect enemy fleet" +
+                  onClick: this.setLeftLowerElement.bind(this, "enemyFormation"),
+                  disabled: this.state.leftLowerElement === "enemyFormation" || !canScout,
+                  title: canScout ? null : "Can't inspect enemy formation" +
                     " as star is not in detection radius"
                 }, "Enemy"),
                 React.DOM.button(
@@ -371,7 +372,7 @@ module Rance
 
               checkTimesActed: true,
 
-              isDraggable: this.state.leftLowerElement === "playerFleet",
+              isDraggable: this.state.leftLowerElement === "playerFormation",
               onDragStart: this.handleDragStart,
               onDragEnd: this.handleDragEnd,
 

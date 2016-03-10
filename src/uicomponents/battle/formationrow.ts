@@ -10,14 +10,14 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetRow = React.createClass(
+    export var FormationRow = React.createClass(
     {
-      displayName: "FleetRow",
+      displayName: "FormationRow",
 
       propTypes:
       {
         row: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)).isRequired,
-        rowIndexInOwnFleet: React.PropTypes.number.isRequired,
+        rowIndexInOwnFormation: React.PropTypes.number.isRequired,
         battle: React.PropTypes.instanceOf(Rance.Battle),
         facesLeft: React.PropTypes.bool.isRequired,
         activeUnit: React.PropTypes.instanceOf(Rance.Unit),
@@ -41,8 +41,8 @@ module Rance
 
         var side: UnitBattleSide = this.props.facesLeft ? "side2" : "side1";
         var absoluteRowIndex = side === "side1" ?
-          this.props.rowIndexInOwnFleet :
-          this.props.rowIndexInOwnFleet + app.moduleData.ruleSet.battle.rowsPerFormation;
+          this.props.rowIndexInOwnFormation :
+          this.props.rowIndexInOwnFormation + app.moduleData.ruleSet.battle.rowsPerFormation;
 
         var units: ReactComponentPlaceHolder[] = [];
 
@@ -75,7 +75,7 @@ module Rance
         }
 
         return(
-          React.DOM.div({className: "battle-fleet-row"},
+          React.DOM.div({className: "battle-formation-row"},
             units
           )
         );

@@ -1,4 +1,4 @@
-/// <reference path="fleet.ts"/>
+/// <reference path="formation.ts"/>
 /// <reference path="turncounter.ts"/>
 /// <reference path="turnorder.ts"/>
 /// <reference path="abilitytooltip.ts"/>
@@ -76,7 +76,7 @@ module Rance
 
       getBlurArea: function()
       {
-        return this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
+        return this.refs.formationsContainer.getDOMNode().getBoundingClientRect();
       },
 
       clearHoveredUnit: function()
@@ -644,13 +644,13 @@ module Rance
               ),
               React.DOM.div(
               {
-                className: "fleets-container",
-                ref: "fleetsContainer"
+                className: "formations-container",
+                ref: "formationsContainer"
               },
-                UIComponents.Fleet(
+                UIComponents.Formation(
                 {
                   battle: battle,
-                  fleet: battle.side1,
+                  formation: battle.side1,
                   facesLeft: false,
                   activeUnit: battle.activeUnit,
                   hoveredUnit: this.state.hoveredUnit,
@@ -666,10 +666,10 @@ module Rance
                   turnsLeft: battle.turnsLeft,
                   maxTurns: battle.maxTurns
                 }),
-                UIComponents.Fleet(
+                UIComponents.Formation(
                 {
                   battle: battle,
-                  fleet: battle.side2,
+                  formation: battle.side2,
                   facesLeft: true,
                   activeUnit: battle.activeUnit,
                   hoveredUnit: this.state.hoveredUnit,
@@ -682,7 +682,7 @@ module Rance
                 }),
                 abilityTooltip,
                 this.state.playingBattleEffect ?
-                  React.DOM.div({className: "battle-fleets-darken"}, null):
+                  React.DOM.div({className: "battle-formations-darken"}, null):
                   null
               )
             )

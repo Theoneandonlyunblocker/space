@@ -1816,12 +1816,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var FleetRow: React.Factory<any>;
+        var FormationRow: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Fleet: React.Factory<any>;
+        var Formation: React.Factory<any>;
     }
 }
 declare module Rance {
