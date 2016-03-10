@@ -170,12 +170,26 @@ module Rance
 
       this.abilities = data.abilityTemplateTypes.map(function(key: string)
       {
-        return app.moduleData.Templates.Abilities[key];
+        var template = app.moduleData.Templates.Abilities[key];
+
+        if (!template)
+        {
+          throw new Error("Couldn't find ability " + key);
+        }
+
+        return template;
       });
       
       this.passiveSkills = data.passiveSkillTemplateTypes.map(function(key: string)
       {
-        return app.moduleData.Templates.PassiveSkills[key];
+        var template = app.moduleData.Templates.PassiveSkills[key];
+
+        if (!template)
+        {
+          throw new Error("Couldn't find passive skill " + key);
+        }
+
+        return template;
       });
 
       this.experienceForCurrentLevel = data.experienceForCurrentLevel;
