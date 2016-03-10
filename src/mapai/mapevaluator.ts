@@ -385,44 +385,44 @@ module Rance
 
         return allStars;
       }
-      getHostileShipsAtStar(star: Star)
+      getHostileUnitsAtStar(star: Star)
       {
         var hostilePlayers = star.getEnemyFleetOwners(this.player);
 
-        var shipsByEnemy:
+        var unitsByEnemy:
         {
           [playerId: number]: Unit[];
         } = {};
-        var allShips: Unit[] = [];
+        var allUnits: Unit[] = [];
 
         for (var i = 0; i < hostilePlayers.length; i++)
         {
-          shipsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
-          allShips = allShips.concat(shipsByEnemy[hostilePlayers[i].id]);
+          unitsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
+          allUnits = allUnits.concat(unitsByEnemy[hostilePlayers[i].id]);
         }
 
         return(
         {
-          byEnemy: shipsByEnemy,
-          all: allShips
+          byEnemy: unitsByEnemy,
+          all: allUnits
         });
       }
       getHostileStrengthAtStar(star: Star)
       {
-        var hostileShipsByPlayer = this.getHostileShipsAtStar(star).byEnemy;
+        var hostileUnitsByPlayer = this.getHostileUnitsAtStar(star).byEnemy;
 
         var strengthByEnemy:
         {
           [playerId: number]: number;
         } = {};
 
-        for (var playerId in hostileShipsByPlayer)
+        for (var playerId in hostileUnitsByPlayer)
         {
           var strength = 0;
 
-          for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++)
+          for (var i = 0; i < hostileUnitsByPlayer[playerId].length; i++)
           {
-            strength += hostileShipsByPlayer[playerId][i].getStrengthEvaluation();
+            strength += hostileUnitsByPlayer[playerId][i].getStrengthEvaluation();
           }
 
           strengthByEnemy[playerId] = strength;

@@ -4994,26 +4994,26 @@ var Rance;
                 }
                 return allStars;
             };
-            MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
+            MapEvaluator.prototype.getHostileUnitsAtStar = function (star) {
                 var hostilePlayers = star.getEnemyFleetOwners(this.player);
-                var shipsByEnemy = {};
-                var allShips = [];
+                var unitsByEnemy = {};
+                var allUnits = [];
                 for (var i = 0; i < hostilePlayers.length; i++) {
-                    shipsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
-                    allShips = allShips.concat(shipsByEnemy[hostilePlayers[i].id]);
+                    unitsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
+                    allUnits = allUnits.concat(unitsByEnemy[hostilePlayers[i].id]);
                 }
                 return ({
-                    byEnemy: shipsByEnemy,
-                    all: allShips
+                    byEnemy: unitsByEnemy,
+                    all: allUnits
                 });
             };
             MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
-                var hostileShipsByPlayer = this.getHostileShipsAtStar(star).byEnemy;
+                var hostileUnitsByPlayer = this.getHostileUnitsAtStar(star).byEnemy;
                 var strengthByEnemy = {};
-                for (var playerId in hostileShipsByPlayer) {
+                for (var playerId in hostileUnitsByPlayer) {
                     var strength = 0;
-                    for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
-                        strength += hostileShipsByPlayer[playerId][i].getStrengthEvaluation();
+                    for (var i = 0; i < hostileUnitsByPlayer[playerId].length; i++) {
+                        strength += hostileUnitsByPlayer[playerId][i].getStrengthEvaluation();
                     }
                     strengthByEnemy[playerId] = strength;
                 }
@@ -26184,7 +26184,7 @@ var Rance;
                     var min;
                     var ideal;
                     var star = objective.target;
-                    var hostileShips = mapEvaluator.getHostileShipsAtStar(star).all;
+                    var hostileShips = mapEvaluator.getHostileUnitsAtStar(star).all;
                     if (hostileShips.length <= 1) {
                         min = hostileShips.length + 1;
                         ideal = hostileShips.length + 1;

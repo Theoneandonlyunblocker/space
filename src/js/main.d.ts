@@ -1079,7 +1079,7 @@ declare module Rance {
             };
             getIndependentNeighborStars(): Star[];
             getIndependentNeighborStarIslands(earlyReturnSize?: number): Star[];
-            getHostileShipsAtStar(star: Star): {
+            getHostileUnitsAtStar(star: Star): {
                 byEnemy: {
                     [playerId: number]: Unit[];
                 };

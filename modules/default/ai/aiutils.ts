@@ -313,16 +313,16 @@ module Rance
           var min: number;
           var ideal: number;
           var star = objective.target;
-          var hostileShips = mapEvaluator.getHostileShipsAtStar(star).all;
+          var hostileUnits = mapEvaluator.getHostileUnitsAtStar(star).all;
 
-          if (hostileShips.length <= 1)
+          if (hostileUnits.length <= 1)
           {
-            min = hostileShips.length + 1;
-            ideal = hostileShips.length + 1;
+            min = hostileUnits.length + 1;
+            ideal = hostileUnits.length + 1;
           }
           else
           {
-            min = Math.min(hostileShips.length + 2, 6);
+            min = Math.min(hostileUnits.length + 2, 6);
             ideal = 6;
           }
 
