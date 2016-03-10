@@ -598,7 +598,7 @@ ol {
   min-width: 220px;
   max-width: 520px;
 }
-.battle-fleet-column {
+.battle-fleet-row {
   display: flex;
   flex-flow: column;
   flex: 1;

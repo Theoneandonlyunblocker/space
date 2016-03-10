@@ -234,6 +234,7 @@ module Rance
             {
               key: "playerFleet",
               fleet: battlePrep.playerFormation.slice(0),
+              facesLeft: false,
               hoveredUnit: this.state.hoveredUnit,
               activeUnit: this.state.selectedUnit,
 

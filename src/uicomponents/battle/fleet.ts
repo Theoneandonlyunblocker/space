@@ -1,4 +1,7 @@
-/// <reference path="fleetcolumn.ts"/>
+/// <reference path="../../unit.ts" />
+/// <reference path="../../battle.ts" />
+
+/// <reference path="fleetrow.ts"/>
 
 module Rance
 {
@@ -8,6 +11,26 @@ module Rance
     {
       displayName: "Fleet",
 
+      propTypes:
+      {
+        fleet: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
+        battle: React.PropTypes.instanceOf(Rance.Battle),
+        facesLeft: React.PropTypes.bool.isRequired,
+        activeUnit: React.PropTypes.instanceOf(Rance.Unit),
+        activeTargets: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+        hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
+        hoveredAbility: React.PropTypes.object, // Templates.IAbilityTemplate
+        handleMouseLeaveUnit: React.PropTypes.func,
+        handleMouseEnterUnit: React.PropTypes.func,
+        targetsInPotentialArea: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+        activeEffectUnits: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+        onMouseUp: React.PropTypes.func,
+        onUnitClick: React.PropTypes.func,
+        isDraggable: React.PropTypes.bool,
+        onDragStart: React.PropTypes.func,
+        onDragEnd: React.PropTypes.func
+      },
+
       render: function()
       {
         var fleet = this.props.fleet;
@@ -16,11 +39,11 @@ module Rance
 
         for (var i = 0; i < fleet.length; i++)
         {
-          fleetRows.push(UIComponents.FleetColumn(
+          fleetRows.push(UIComponents.FleetRow(
           {
             key: i,
-            column: fleet[i],
-            columnPosInOwnFleet: i,
+            row: fleet[i],
+            rowIndexInOwnFleet: i,
             battle: this.props.battle,
             facesLeft: this.props.facesLeft,
             activeUnit: this.props.activeUnit,

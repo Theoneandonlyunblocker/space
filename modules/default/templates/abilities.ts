@@ -103,6 +103,7 @@ module Rance
               }
             }
           }
+          export var guardColumn = guardRow; // legacy alias 10.3.2016
           export var boardingHook: Rance.Templates.IAbilityTemplate =
           {
             type: "boardingHook",

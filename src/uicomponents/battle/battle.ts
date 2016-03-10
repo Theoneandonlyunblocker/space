@@ -651,6 +651,7 @@ module Rance
                 {
                   battle: battle,
                   fleet: battle.side1,
+                  facesLeft: false,
                   activeUnit: battle.activeUnit,
                   hoveredUnit: this.state.hoveredUnit,
                   hoveredAbility: this.state.hoveredAbility,

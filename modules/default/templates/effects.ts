@@ -52,7 +52,7 @@ module Rance
           {
             name: "wholeRowAttack",
             targetFleets: TargetFleet.either,
-            battleAreaFunction: areaColumnÄÄfixedÄÄ,
+            battleAreaFunction: areaColumn,
             targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle)
             {

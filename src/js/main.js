@@ -17,1212 +17,6 @@ var Rance;
         }
     };
 })(Rance || (Rance = {}));
-/// <reference path="../../../lib/tween.js.d.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitStrength = React.createClass({
-            displayName: "UnitStrength",
-            getInitialState: function () {
-                return ({
-                    displayedStrength: this.props.currentHealth,
-                    activeTween: null
-                });
-            },
-            componentWillReceiveProps: function (newProps) {
-                if (newProps.animateStrength &&
-                    newProps.currentHealth !== this.props.currentHealth &&
-                    (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)) {
-                    var animateDuration = newProps.animateDuration || 0;
-                    this.animateDisplayedStrength(newProps.currentHealth, animateDuration);
-                }
-                else {
-                    this.updateDisplayStrength(newProps.currentHealth);
-                }
-            },
-            componentWillUnmount: function () {
-                if (this.activeTween) {
-                    this.activeTween.stop();
-                }
-            },
-            updateDisplayStrength: function (newAmount) {
-                this.setState({
-                    displayedStrength: newAmount
-                });
-            },
-            animateDisplayedStrength: function (newAmount, time) {
-                var self = this;
-                var stopped = false;
-                var animateTween = function () {
-                    if (stopped) {
-                        cancelAnimationFrame(self.requestAnimFrame);
-                        return;
-                    }
-                    TWEEN.update();
-                    self.requestAnimFrame = window.requestAnimationFrame(animateTween);
-                };
-                var tween = new TWEEN.Tween({
-                    health: self.state.displayedStrength
-                }).to({
-                    health: newAmount
-                }, time).onUpdate(function () {
-                    self.setState({
-                        displayedStrength: this.health
-                    });
-                }).easing(TWEEN.Easing.Sinusoidal.Out);
-                tween.onStop(function () {
-                    stopped = true;
-                    TWEEN.remove(tween);
-                });
-                this.activeTween = tween;
-                tween.start();
-                animateTween();
-            },
-            makeSquadronInfo: function () {
-                return (React.DOM.div({ className: "unit-strength-container" }, this.makeStrengthText()));
-            },
-            makeCapitalInfo: function () {
-                var text = this.makeStrengthText();
-                var relativeHealth = this.state.displayedStrength / this.props.maxHealth;
-                var bar = React.DOM.div({
-                    className: "unit-strength-bar"
-                }, React.DOM.div({
-                    className: "unit-strength-bar-value",
-                    style: {
-                        width: "" + relativeHealth * 100 + "%"
-                    }
-                }));
-                return (React.DOM.div({ className: "unit-strength-container" }, text, bar));
-            },
-            makeStrengthText: function () {
-                var critThreshhold = 0.3;
-                var currentStyle = {
-                    className: "unit-strength-current"
-                };
-                var healthRatio = this.state.displayedStrength / this.props.maxHealth;
-                if (!this.props.isNotDetected && healthRatio <= critThreshhold) {
-                    currentStyle.className += " critical";
-                }
-                else if (!this.props.isNotDetected && this.state.displayedStrength < this.props.maxHealth) {
-                    currentStyle.className += " wounded";
-                }
-                var containerProps = {
-                    className: (this.props.isSquadron ? "unit-strength-amount" :
-                        "unit-strength-amount-capital")
-                };
-                var displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
-                var max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
-                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, displayed), React.DOM.span({ className: "unit-strength-max" }, "/" + max)));
-            },
-            render: function () {
-                if (this.props.isSquadron) {
-                    return this.makeSquadronInfo();
-                }
-                else {
-                    return this.makeCapitalInfo();
-                }
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="unitstrength.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitActions = React.createClass({
-            displayName: "UnitActions",
-            render: function () {
-                var availableSrc = "img\/icons\/availableAction.png";
-                var hoveredSrc = "img\/icons\/spentAction.png";
-                var spentSrc = "img\/icons\/spentAction.png";
-                var icons = [];
-                var availableCount = this.props.currentActionPoints - this.props.hoveredActionPointExpenditure;
-                for (var i = 0; i < availableCount; i++) {
-                    icons.push(React.DOM.img({
-                        src: availableSrc,
-                        className: "unit-action-point available-action-point",
-                        key: "available" + i
-                    }));
-                }
-                var hoveredCount = Math.min(this.props.hoveredActionPointExpenditure, this.props.currentActionPoints);
-                for (var i = 0; i < hoveredCount; i++) {
-                    icons.push(React.DOM.img({
-                        src: hoveredSrc,
-                        className: "unit-action-point hovered-action-point",
-                        key: "hovered" + i
-                    }));
-                }
-                var spentCount = this.props.maxActionPoints - this.props.currentActionPoints;
-                for (var i = 0; i < spentCount; i++) {
-                    icons.push(React.DOM.img({
-                        src: spentSrc,
-                        className: "unit-action-point spent-action-point",
-                        key: "spent" + i
-                    }));
-                }
-                return (React.DOM.div({ className: "unit-action-points" }, icons));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitStatus = React.createClass({
-            displayName: "UnitStatus",
-            propTypes: {
-                guardAmount: React.PropTypes.number,
-                guardCoverage: React.PropTypes.number,
-                isPreparing: React.PropTypes.bool
-            },
-            render: function () {
-                var statusElement = null;
-                if (this.props.guardAmount > 0) {
-                    var guard = this.props.guardAmount;
-                    var damageReduction = Math.min(50, guard / 2);
-                    var guardText = "" + guard + "% chance to protect ";
-                    guardText += (this.props.guardCoverage === Rance.GuardCoverage.all ? "all units." : " units in same row.");
-                    guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks.";
-                    statusElement = React.DOM.div({
-                        className: "status-container guard-meter-container"
-                    }, React.DOM.div({
-                        className: "guard-meter-value",
-                        style: {
-                            width: "" + Rance.clamp(guard, 0, 100) + "%"
-                        }
-                    }), React.DOM.div({
-                        className: "status-inner-wrapper"
-                    }, React.DOM.div({
-                        className: "guard-text-container status-inner",
-                        title: guardText
-                    }, React.DOM.div({
-                        className: "guard-text status-text"
-                    }, "Guard"), React.DOM.div({
-                        className: "guard-text-value status-text"
-                    }, "" + guard + "%"))));
-                }
-                else if (this.props.isPreparing) {
-                    statusElement = React.DOM.div({
-                        className: "status-container preparation-container"
-                    }, React.DOM.div({
-                        className: "status-inner-wrapper"
-                    }, React.DOM.div({
-                        className: "preparation-text-container status-inner",
-                        title: "Unit is preparing to use ability"
-                    }, "Preparing")));
-                }
-                return (React.DOM.div({ className: "unit-status" }, statusElement));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="unitstrength.ts"/>
-/// <reference path="unitactions.ts"/>
-/// <reference path="unitstatus.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitInfo = React.createClass({
-            displayName: "UnitInfo",
-            mixins: [React.addons.PureRenderMixin],
-            propTypes: {
-                name: React.PropTypes.string.isRequired,
-                isSquadron: React.PropTypes.bool.isRequired,
-                maxHealth: React.PropTypes.number.isRequired,
-                currentHealth: React.PropTypes.number.isRequired,
-                maxActionPoints: React.PropTypes.number.isRequired,
-                currentActionPoints: React.PropTypes.number.isRequired,
-                hoveredActionPointExpenditure: React.PropTypes.number.isRequired,
-                isDead: React.PropTypes.bool,
-                isCaptured: React.PropTypes.bool,
-                guardAmount: React.PropTypes.number.isRequired,
-                guardCoverage: React.PropTypes.number,
-                isPreparing: React.PropTypes.bool,
-                animateDuration: React.PropTypes.number
-            },
-            render: function () {
-                var battleEndStatus = null;
-                if (this.props.isDead) {
-                    battleEndStatus = React.DOM.div({
-                        className: "unit-battle-end-status-container"
-                    }, React.DOM.div({
-                        className: "unit-battle-end-status unit-battle-end-status-dead"
-                    }, "Destroyed"));
-                }
-                else if (this.props.isCaptured) {
-                    battleEndStatus = React.DOM.div({
-                        className: "unit-battle-end-status-container"
-                    }, React.DOM.div({
-                        className: "unit-battle-end-status unit-battle-end-status-captured"
-                    }, "Captured"));
-                }
-                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), React.DOM.div({ className: "unit-info-inner" }, UIComponents.UnitStatus({
-                    guardAmount: this.props.guardAmount,
-                    isPreparing: this.props.isPreparing
-                }), UIComponents.UnitStrength({
-                    maxHealth: this.props.maxHealth,
-                    currentHealth: this.props.currentHealth,
-                    isSquadron: this.props.isSquadron,
-                    animateStrength: true,
-                    animateDuration: this.props.animateDuration
-                }), UIComponents.UnitActions({
-                    maxActionPoints: this.props.maxActionPoints,
-                    currentActionPoints: this.props.currentActionPoints,
-                    hoveredActionPointExpenditure: this.props.hoveredActionPointExpenditure
-                }), battleEndStatus)));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitIcon = React.createClass({
-            displayName: "UnitIcon",
-            mixins: [React.addons.PureRenderMixin],
-            render: function () {
-                var unit = this.props.unit;
-                var containerProps = {
-                    className: "unit-icon-container"
-                };
-                var fillerProps = {
-                    className: "unit-icon-filler"
-                };
-                if (this.props.isActiveUnit) {
-                    fillerProps.className += " active-border";
-                    containerProps.className += " active-border";
-                }
-                if (this.props.isAnnihilated) {
-                    containerProps.className += " icon-annihilated-overlay";
-                }
-                if (this.props.facesLeft) {
-                    fillerProps.className += " unit-border-right";
-                    containerProps.className += " unit-border-no-right";
-                }
-                else {
-                    fillerProps.className += " unit-border-left";
-                    containerProps.className += " unit-border-no-left";
-                }
-                var iconImage = this.props.icon ?
-                    React.DOM.img({
-                        className: "unit-icon",
-                        src: this.props.icon
-                    }) :
-                    null;
-                return (React.DOM.div({ className: "unit-icon-wrapper" }, React.DOM.div(fillerProps), React.DOM.div(containerProps, iconImage), React.DOM.div(fillerProps)));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitStatusEffects = React.createClass({
-            displayName: "UnitStatusEffects",
-            render: function () {
-                var statusEffects = [];
-                var withItems = this.props.unit.getAttributesWithItems();
-                var withEffects = this.props.unit.getAttributesWithEffects();
-                for (var attribute in withEffects) {
-                    if (attribute === "maxActionPoints")
-                        continue;
-                    var ite = withItems[attribute];
-                    var eff = withEffects[attribute];
-                    if (ite === eff)
-                        continue;
-                    var polarityString = eff > ite ? "positive" : "negative";
-                    var polaritySign = eff > ite ? " +" : " ";
-                    var imageSrc = "img\/icons\/statusEffect_" + polarityString + "_" + attribute + ".png";
-                    var titleString = "" + attribute + polaritySign + (eff - ite);
-                    statusEffects.push(React.DOM.img({
-                        className: "status-effect-icon" + " status-effect-icon-" + attribute,
-                        src: imageSrc,
-                        key: attribute,
-                        title: titleString
-                    }));
-                }
-                var passiveSkills = [];
-                var passiveSkillsByPhase = this.props.unit.getPassiveSkillsByPhase();
-                var phasesToCheck = this.props.isBattlePrep ? ["atBattleStart"] : ["beforeAbilityUse", "afterAbilityUse"];
-                phasesToCheck.forEach(function (phase) {
-                    if (passiveSkillsByPhase[phase]) {
-                        for (var i = 0; i < passiveSkillsByPhase[phase].length; i++) {
-                            var skill = passiveSkillsByPhase[phase][i];
-                            if (!skill.isHidden) {
-                                passiveSkills.push(skill);
-                            }
-                        }
-                    }
-                });
-                var passiveSkillsElement = null;
-                if (passiveSkills.length > 0) {
-                    var passiveSkillsElementTitle = "";
-                    for (var i = 0; i < passiveSkills.length; i++) {
-                        passiveSkillsElementTitle += passiveSkills[i].displayName + ": " +
-                            passiveSkills[i].description + "\n";
-                    }
-                    passiveSkillsElement = React.DOM.img({
-                        className: "unit-status-effects-passive-skills",
-                        src: "img\/icons\/availableAction.png",
-                        title: passiveSkillsElementTitle
-                    });
-                }
-                return (React.DOM.div({
-                    className: "unit-status-effects-container"
-                }, passiveSkillsElement, React.DOM.div({
-                    className: "unit-status-effects-attributes"
-                }, statusEffects)));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitPortrait = React.createClass({
-            displayName: "UnitPortrait",
-            render: function () {
-                var props = this.props;
-                props.className = "unit-portrait " + (props.className || "");
-                if (this.props.imageSrc) {
-                    props.style =
-                        {
-                            backgroundImage: 'url("' + this.props.imageSrc + '")'
-                        };
-                }
-                return (React.DOM.div(props, null));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../../lib/react.d.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.Draggable = {
-            getDefaultProps: function () {
-                return ({
-                    dragThreshhold: 5
-                });
-            },
-            getInitialState: function () {
-                return ({
-                    dragging: false,
-                    clone: null
-                });
-            },
-            componentWillMount: function () {
-                this.dragPos = {};
-                this.mouseDown = false;
-                this.dragOffset =
-                    {
-                        x: 0,
-                        y: 0
-                    };
-                this.mouseDownPosition =
-                    {
-                        x: 0,
-                        y: 0
-                    };
-                this.originPosition =
-                    {
-                        x: 0,
-                        y: 0
-                    };
-            },
-            componentDidMount: function () {
-                this.DOMNode = this.getDOMNode();
-                this.containerElement = document.body;
-                if (this.props.containerElement) {
-                    if (this.props.containerElement.getDOMNode) {
-                        // React component
-                        this.containerElement = this.props.containerElement.getDOMNode();
-                    }
-                    else
-                        this.containerElement = this.props.containerElement;
-                }
-                this.setContainerRect();
-                window.addEventListener("resize", this.setContainerRect, false);
-            },
-            componentWillUnmount: function () {
-                this.removeEventListeners();
-                window.removeEventListener("resize", this.setContainerRect);
-            },
-            handleMouseDown: function (e) {
-                if (e.button)
-                    return;
-                if (this.props.containerDragOnly) {
-                    var target = e.target;
-                    if (!target.classList.contains("draggable-container")) {
-                        return;
-                    }
-                }
-                e.preventDefault();
-                e.stopPropagation();
-                if (this.state.dragging)
-                    return;
-                var clientRect = this.getDOMNode().getBoundingClientRect();
-                // var e;
-                // if (isFinite(e.clientX))
-                // {
-                //   e = e;
-                // }
-                // else
-                // {
-                //   e = e.touches[0];
-                //   this.needsFirstTouchUpdate = true;
-                //   this.touchEventTarget = e.target;
-                // }
-                this.addEventListeners();
-                var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset ||
-                    {
-                        x: e.clientX - clientRect.left,
-                        y: e.clientY - clientRect.top
-                    };
-                this.mouseDown = true;
-                this.dragOffset = dragOffset;
-                this.mouseDownPosition =
-                    {
-                        x: e.pageX,
-                        y: e.pageY
-                    };
-                this.originPosition =
-                    {
-                        x: clientRect.left + document.body.scrollLeft,
-                        y: clientRect.top + document.body.scrollTop
-                    };
-                if (this.props.dragThreshhold <= 0) {
-                    this.handleMouseMove(e);
-                }
-            },
-            handleMouseMove: function (e) {
-                if (e.preventDefault)
-                    e.preventDefault();
-                // var e = e.clientX ? e : e.touches[0];
-                if (e.clientX === 0 && e.clientY === 0)
-                    return;
-                if (!this.state.dragging) {
-                    var deltaX = Math.abs(e.pageX - this.mouseDownPosition.x);
-                    var deltaY = Math.abs(e.pageY - this.mouseDownPosition.y);
-                    var delta = deltaX + deltaY;
-                    if (delta >= this.props.dragThreshhold) {
-                        var ownNode = this.getDOMNode();
-                        var stateObj = {
-                            dragging: true
-                        };
-                        if (!this.props.preventAutoResize) {
-                            this.dragPos.width = parseInt(ownNode.offsetWidth);
-                            this.dragPos.height = parseInt(ownNode.offsetHeight);
-                        }
-                        if (this.props.makeClone) {
-                            if (!this.makeDragClone) {
-                                var nextSibling = ownNode.nextSibling;
-                                var clone = ownNode.cloneNode(true);
-                                Rance.recursiveRemoveAttribute(clone, "data-reactid");
-                                ownNode.parentNode.insertBefore(clone, nextSibling);
-                                stateObj.clone = clone;
-                            }
-                            else {
-                                var clone = this.makeDragClone();
-                                document.body.appendChild(clone);
-                                stateObj.clone = clone;
-                            }
-                        }
-                        this.setState(stateObj);
-                        if (this.onDragStart) {
-                            this.onDragStart(e);
-                        }
-                        if (this.onDragMove) {
-                            this.onDragMove(e.pageX - this.dragOffset.x, e.pageY - this.dragOffset.y);
-                        }
-                    }
-                }
-                if (this.state.dragging) {
-                    this.handleDrag(e);
-                }
-            },
-            handleDrag: function (e) {
-                var x = e.pageX - this.dragOffset.x;
-                var y = e.pageY - this.dragOffset.y;
-                var domWidth, domHeight;
-                if (this.makeDragClone) {
-                    domWidth = parseInt(this.state.clone.offsetWidth);
-                    domHeight = parseInt(this.state.clone.offsetHeight);
-                }
-                else {
-                    domWidth = parseInt(this.getDOMNode().offsetWidth);
-                    domHeight = parseInt(this.getDOMNode().offsetHeight);
-                }
-                var minX = this.containerRect.left;
-                var maxX = this.containerRect.right;
-                var minY = this.containerRect.top;
-                var maxY = this.containerRect.bottom;
-                var x2 = x + domWidth;
-                var y2 = y + domHeight;
-                if (x < minX) {
-                    x = minX;
-                }
-                else if (x2 > maxX) {
-                    x = this.containerRect.width - domWidth;
-                }
-                ;
-                if (y < minY) {
-                    y = minY;
-                }
-                else if (y2 > maxY) {
-                    y = this.containerRect.height - domHeight;
-                }
-                ;
-                if (this.onDragMove) {
-                    this.onDragMove(x, y);
-                }
-                else {
-                    this.dragPos.top = y;
-                    this.dragPos.left = x;
-                    this.updateDOMNodeStyle();
-                }
-            },
-            handleMouseUp: function (e) {
-                // if (this.touchEventTarget)
-                // {
-                //   var touch = e.changedTouches[0];
-                //   var dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
-                //   console.log(dropTarget);
-                //   if (dropTarget)
-                //   {
-                //     var reactid = dropTarget.getAttribute("data-reactid");
-                //     eventManager.dispatchEvent("drop" + reactid);
-                //   }
-                // }
-                this.mouseDown = false;
-                this.mouseDownPosition =
-                    {
-                        x: 0,
-                        y: 0
-                    };
-                if (this.state.dragging) {
-                    this.handleDragEnd(e);
-                }
-                this.removeEventListeners();
-            },
-            handleDragEnd: function (e) {
-                if (this.state.clone) {
-                    this.state.clone.parentNode.removeChild(this.state.clone);
-                }
-                if (this.isMounted()) {
-                    this.setState({
-                        dragging: false,
-                        clone: null
-                    });
-                    this.dragOffset =
-                        {
-                            x: 0,
-                            y: 0
-                        };
-                    this.originPosition =
-                        {
-                            x: 0,
-                            y: 0
-                        };
-                }
-                if (this.onDragEnd) {
-                    var endSuccesful = this.onDragEnd(e);
-                }
-            },
-            addEventListeners: function () {
-                var self = this;
-                this.containerElement.addEventListener("mousemove", self.handleMouseMove);
-                document.addEventListener("mouseup", self.handleMouseUp);
-                if (this.touchEventTarget) {
-                    this.touchEventTarget.addEventListener("touchmove", self.handleMouseMove);
-                    this.touchEventTarget.addEventListener("touchend", self.handleMouseUp);
-                }
-            },
-            removeEventListeners: function () {
-                var self = this;
-                this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
-                document.removeEventListener("mouseup", self.handleMouseUp);
-                if (this.touchEventTarget) {
-                    this.touchEventTarget.removeEventListener("touchmove", self.handleMouseMove);
-                    this.touchEventTarget.removeEventListener("touchend", self.handleMouseUp);
-                    this.touchEventTarget = null;
-                }
-            },
-            setContainerRect: function () {
-                this.containerRect = this.containerElement.getBoundingClientRect();
-            },
-            updateDOMNodeStyle: function () {
-                if (this.state.clone) {
-                    var s = this.state.clone.style;
-                    s.top = "" + this.dragPos.top + "px";
-                    s.left = "" + this.dragPos.left + "px";
-                }
-                else {
-                    var s = this.DOMNode.style;
-                    for (var key in this.dragPos) {
-                        s[key] = "" + this.dragPos[key] + "px";
-                    }
-                }
-            }
-        };
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="unitinfo.ts"/>
-/// <reference path="uniticon.ts"/>
-/// <reference path="unitstatuseffects.ts" />
-/// <reference path="unitportrait.ts" />
-/// <reference path="../mixins/draggable.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.Unit = React.createClass({
-            displayName: "Unit",
-            mixins: [UIComponents.Draggable, React.addons.PureRenderMixin],
-            getInitialState: function () {
-                return ({
-                    hasPopup: false,
-                    popupElement: null
-                });
-            },
-            onDragStart: function () {
-                this.props.onDragStart(this.props.unit);
-            },
-            onDragEnd: function () {
-                this.props.onDragEnd();
-            },
-            handleClick: function () {
-                this.props.onUnitClick(this.props.unit);
-            },
-            handleMouseEnter: function () {
-                if (!this.props.handleMouseEnterUnit)
-                    return;
-                if (this.props.unit.currentHealth <= 0)
-                    return;
-                this.props.handleMouseEnterUnit(this.props.unit);
-            },
-            handleMouseLeave: function (e) {
-                if (!this.props.handleMouseLeaveUnit)
-                    return;
-                this.props.handleMouseLeaveUnit(e);
-            },
-            render: function () {
-                var unit = this.props.unit;
-                unit.uiDisplayIsDirty = false;
-                var containerProps = {
-                    className: "unit-container",
-                    id: "unit-id_" + unit.id,
-                    key: "container"
-                };
-                var wrapperProps = {
-                    className: "unit"
-                };
-                wrapperProps.onMouseEnter = this.handleMouseEnter;
-                wrapperProps.onMouseLeave = this.handleMouseLeave;
-                if (this.props.isDraggable) {
-                    wrapperProps.className += " draggable";
-                    wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.handleMouseDown;
-                }
-                if (this.state.dragging) {
-                    wrapperProps.style = this.dragPos;
-                    wrapperProps.className += " dragging";
-                }
-                if (this.props.onUnitClick) {
-                    wrapperProps.onClick = this.handleClick;
-                }
-                if (this.props.facesLeft) {
-                    wrapperProps.className += " enemy-unit";
-                }
-                else {
-                    wrapperProps.className += " friendly-unit";
-                }
-                var isActiveUnit = (this.props.activeUnit &&
-                    unit.id === this.props.activeUnit.id);
-                if (isActiveUnit) {
-                    wrapperProps.className += " active-unit";
-                }
-                var isInPotentialTargetArea = (this.props.targetsInPotentialArea &&
-                    this.props.targetsInPotentialArea.indexOf(unit) >= 0);
-                if (isInPotentialTargetArea) {
-                    wrapperProps.className += " target-unit";
-                }
-                if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id) {
-                    wrapperProps.className += " hovered-unit";
-                }
-                var hoveredActionPointExpenditure = 0;
-                if (isActiveUnit && this.props.hoveredAbility) {
-                    hoveredActionPointExpenditure = this.props.hoveredAbility.actionsUse;
-                }
-                var infoProps = {
-                    key: "info",
-                    name: unit.name,
-                    guardAmount: unit.battleStats.guardAmount,
-                    guardCoverage: unit.battleStats.guardCoverage,
-                    isPreparing: unit.battleStats.queuedAction,
-                    maxHealth: unit.maxHealth,
-                    currentHealth: unit.currentHealth,
-                    isSquadron: unit.isSquadron,
-                    maxActionPoints: unit.attributes.maxActionPoints,
-                    currentActionPoints: unit.battleStats.currentActionPoints,
-                    hoveredActionPointExpenditure: hoveredActionPointExpenditure,
-                    isDead: this.props.isDead,
-                    isCaptured: this.props.isCaptured,
-                    animateDuration: unit.sfxDuration
-                };
-                var containerElements = [
-                    React.DOM.div({
-                        className: "unit-left-container",
-                        key: "leftContainer"
-                    }, UIComponents.UnitPortrait({
-                        imageSrc: (unit.portrait ? unit.portrait.imageSrc : "")
-                    }), UIComponents.UnitStatusEffects({
-                        unit: unit,
-                        isBattlePrep: !this.props.battle
-                    })),
-                    UIComponents.UnitInfo(infoProps),
-                ];
-                if (this.props.facesLeft) {
-                    containerElements = containerElements.reverse();
-                }
-                if (unit.displayFlags.isAnnihilated) {
-                    containerElements.push(React.DOM.div({ key: "overlay", className: "unit-annihilated-overlay" }, "Unit annihilated"));
-                }
-                var allElements = [
-                    React.DOM.div(containerProps, containerElements),
-                    UIComponents.UnitIcon({
-                        icon: unit.template.icon,
-                        facesLeft: this.props.facesLeft,
-                        key: "icon",
-                        isActiveUnit: isActiveUnit,
-                        isAnnihilated: unit.displayFlags.isAnnihilated
-                    })
-                ];
-                if (this.props.facesLeft) {
-                    allElements = allElements.reverse();
-                }
-                return (React.DOM.div(wrapperProps, allElements));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.EmptyUnit = React.createClass({
-            displayName: "EmptyUnit",
-            shouldComponentUpdate: function (newProps) {
-                return newProps.facesLeft === this.props.facesLeft;
-            },
-            render: function () {
-                var wrapperProps = {
-                    className: "unit empty-unit"
-                };
-                var containerProps = {
-                    className: "unit-container",
-                    key: "container"
-                };
-                if (this.props.facesLeft) {
-                    wrapperProps.className += " enemy-unit";
-                }
-                else {
-                    wrapperProps.className += " friendly-unit";
-                }
-                var allElements = [
-                    React.DOM.div(containerProps, null),
-                    UIComponents.UnitIcon({
-                        icon: null,
-                        facesLeft: this.props.facesLeft,
-                        key: "icon"
-                    })
-                ];
-                if (this.props.facesLeft) {
-                    allElements = allElements.reverse();
-                }
-                return (React.DOM.div(wrapperProps, allElements));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-// used to register event listeners for manually firing drop events because touch events suck
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.DropTarget = {
-            componentDidMount: function () {
-                if (!this.handleMouseUp)
-                    console.warn("No mouseUp handler on drop target", this);
-                Rance.eventManager.addEventListener("drop" + this._rootNodeID, this.handleMouseUp);
-            },
-            componentWillUnmount: function () {
-                Rance.eventManager.removeEventListener("drop" + this._rootNodeID, this.handleMouseUp);
-            }
-        };
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../mixins/droptarget.ts"/>
-/// <reference path="uniticon.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitWrapper = React.createClass({
-            displayName: "UnitWrapper",
-            mixins: [UIComponents.DropTarget],
-            shouldComponentUpdate: function (newProps) {
-                if (!this.props.unit && !newProps.unit)
-                    return false;
-                if (newProps.unit && newProps.unit.uiDisplayIsDirty)
-                    return true;
-                var targetedProps = {
-                    activeUnit: true,
-                    hoveredUnit: true,
-                    targetsInPotentialArea: true,
-                    activeEffectUnits: true
-                };
-                for (var prop in newProps) {
-                    if (!targetedProps[prop] && prop !== "position") {
-                        if (newProps[prop] !== this.props[prop]) {
-                            return true;
-                        }
-                    }
-                }
-                for (var prop in targetedProps) {
-                    var unit = newProps.unit;
-                    var oldValue = this.props[prop];
-                    var newValue = newProps[prop];
-                    if (!newValue && !oldValue)
-                        continue;
-                    if (prop === "targetsInPotentialArea" || prop === "activeEffectUnits") {
-                        if (!oldValue) {
-                            if (newValue.indexOf(unit) >= 0)
-                                return true;
-                            else {
-                                continue;
-                            }
-                        }
-                        if ((oldValue.indexOf(unit) >= 0) !==
-                            (newValue.indexOf(unit) >= 0)) {
-                            return true;
-                        }
-                    }
-                    else if (newValue !== oldValue &&
-                        (oldValue === unit || newValue === unit)) {
-                        return true;
-                    }
-                }
-                if (newProps.battle && newProps.battle.ended) {
-                    return true;
-                }
-                return false;
-            },
-            handleMouseUp: function () {
-                console.log("unitMouseUp", this.props.position);
-                this.props.onMouseUp(this.props.position);
-            },
-            render: function () {
-                var allElements = [];
-                var wrapperProps = {
-                    className: "unit-wrapper drop-target"
-                };
-                if (this.props.onMouseUp) {
-                    wrapperProps.onMouseUp = wrapperProps.onTouchEnd = this.handleMouseUp;
-                }
-                ;
-                if (this.props.activeEffectUnits) {
-                    if (this.props.activeEffectUnits.indexOf(this.props.unit) >= 0) {
-                        wrapperProps.className += " active-effect-unit";
-                    }
-                }
-                var empty = UIComponents.EmptyUnit({
-                    facesLeft: this.props.facesLeft,
-                    key: "empty_" + this.props.key,
-                    position: this.props.position
-                });
-                allElements.push(empty);
-                if (this.props.unit) {
-                    var isDead = false;
-                    if (this.props.battle &&
-                        this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0) {
-                        if (this.props.battle.deadUnits.indexOf(this.props.unit) >= 0) {
-                            this.props.isDead = true;
-                        }
-                    }
-                    var isCaptured = false;
-                    if (this.props.battle &&
-                        this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0) {
-                        if (this.props.battle.capturedUnits.indexOf(this.props.unit) >= 0) {
-                            this.props.isCaptured = true;
-                        }
-                    }
-                    var unit = UIComponents.Unit(this.props);
-                    allElements.push(unit);
-                }
-                return (React.DOM.div(wrapperProps, allElements));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../unit/unit.ts"/>
-/// <reference path="../unit/emptyunit.ts"/>
-/// <reference path="../unit/unitwrapper.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.FleetColumn = React.createClass({
-            displayName: "FleetColumn",
-            render: function () {
-                var column = this.props.column;
-                var absoluteColumnPosition = this.props.columnPosInOwnFleet + (this.props.facesLeft ? 2 : 0);
-                var units = [];
-                for (var i = 0; i < column.length; i++) {
-                    var data = {};
-                    data.key = i;
-                    data.unit = column[i];
-                    data.position = [absoluteColumnPosition, i];
-                    data.battle = this.props.battle;
-                    data.facesLeft = this.props.facesLeft;
-                    data.activeUnit = this.props.activeUnit;
-                    data.activeTargets = this.props.activeTargets;
-                    data.hoveredUnit = this.props.hoveredUnit;
-                    data.hoveredAbility = this.props.hoveredAbility;
-                    data.handleMouseLeaveUnit = this.props.handleMouseLeaveUnit;
-                    data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
-                    data.targetsInPotentialArea = this.props.targetsInPotentialArea;
-                    data.activeEffectUnits = this.props.activeEffectUnits;
-                    data.onMouseUp = this.props.onMouseUp;
-                    data.onUnitClick = this.props.onUnitClick;
-                    data.isDraggable = this.props.isDraggable;
-                    data.onDragStart = this.props.onDragStart;
-                    data.onDragEnd = this.props.onDragEnd;
-                    units.push(UIComponents.UnitWrapper(data));
-                }
-                return (React.DOM.div({ className: "battle-fleet-column" }, units));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="fleetcolumn.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.Fleet = React.createClass({
-            displayName: "Fleet",
-            render: function () {
-                var fleet = this.props.fleet;
-                var fleetRows = [];
-                for (var i = 0; i < fleet.length; i++) {
-                    fleetRows.push(UIComponents.FleetColumn({
-                        key: i,
-                        column: fleet[i],
-                        columnPosInOwnFleet: i,
-                        battle: this.props.battle,
-                        facesLeft: this.props.facesLeft,
-                        activeUnit: this.props.activeUnit,
-                        hoveredUnit: this.props.hoveredUnit,
-                        hoveredAbility: this.props.hoveredAbility,
-                        handleMouseEnterUnit: this.props.handleMouseEnterUnit,
-                        handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
-                        targetsInPotentialArea: this.props.targetsInPotentialArea,
-                        activeEffectUnits: this.props.activeEffectUnits,
-                        onMouseUp: this.props.onMouseUp,
-                        onUnitClick: this.props.onUnitClick,
-                        isDraggable: this.props.isDraggable,
-                        onDragStart: this.props.onDragStart,
-                        onDragEnd: this.props.onDragEnd
-                    }));
-                }
-                return (React.DOM.div({ className: "battle-fleet" }, fleetRows));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.TurnCounter = React.createClass({
-            displayName: "TurnCounter",
-            mixins: [React.addons.PureRenderMixin],
-            render: function () {
-                var turnsLeft = this.props.turnsLeft;
-                var turns = [];
-                var usedTurns = this.props.maxTurns - turnsLeft;
-                for (var i = 0; i < usedTurns; i++) {
-                    turns.push(React.DOM.div({
-                        key: "used" + i,
-                        className: "turn-counter used-turn"
-                    }));
-                }
-                for (var i = 0; i < turnsLeft; i++) {
-                    turns.push(React.DOM.div({
-                        key: "available" + i,
-                        className: "turn-counter available-turn"
-                    }));
-                }
-                return (React.DOM.div({
-                    className: "turns-container",
-                    title: "Turns left: " + turnsLeft
-                }, turns));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.TurnOrder = React.createClass({
-            displayName: "TurnOrder",
-            getInitialState: function () {
-                return ({
-                    maxUnits: 7
-                });
-            },
-            componentDidMount: function () {
-                this.setMaxUnits();
-                window.addEventListener("resize", this.setMaxUnits);
-            },
-            componentWillUnmount: function () {
-                window.removeEventListener("resize", this.setMaxUnits);
-            },
-            setMaxUnits: function () {
-                var minUnits = 7;
-                var containerElement = this.getDOMNode();
-                var containerWidth = containerElement.getBoundingClientRect().width;
-                containerWidth -= 30;
-                var unitElementWidth = 160;
-                var ceil = Math.ceil(containerWidth / unitElementWidth);
-                this.setState({
-                    maxUnits: Math.max(ceil, minUnits)
-                });
-            },
-            render: function () {
-                var maxUnits = this.state.maxUnits;
-                var turnOrder = this.props.turnOrder.slice(0);
-                if (this.props.potentialDelay) {
-                    var fake = {
-                        isFake: true,
-                        id: this.props.potentialDelay.id,
-                        battleStats: {
-                            moveDelay: this.props.potentialDelay.delay
-                        }
-                    };
-                    turnOrder.push(fake);
-                    turnOrder.sort(Rance.turnOrderSortFunction);
-                }
-                var maxUnitsWithFake = maxUnits;
-                if (fake && turnOrder.indexOf(fake) <= maxUnits) {
-                    maxUnitsWithFake++;
-                }
-                turnOrder = turnOrder.slice(0, maxUnitsWithFake);
-                var toRender = [];
-                for (var i = 0; i < turnOrder.length; i++) {
-                    var unit = turnOrder[i];
-                    if (unit.isFake) {
-                        toRender.push(React.DOM.div({
-                            className: "turn-order-arrow",
-                            key: "" + i
-                        }));
-                        continue;
-                    }
-                    var data = {
-                        key: "" + i,
-                        className: "turn-order-unit",
-                        title: "delay: " + unit.battleStats.moveDelay + "\n" +
-                            "speed: " + unit.attributes.speed,
-                        onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit),
-                        onMouseLeave: this.props.onMouseLeaveUnit
-                    };
-                    if (this.props.unitsBySide.side1.indexOf(unit) > -1) {
-                        data.className += " turn-order-unit-friendly";
-                    }
-                    else if (this.props.unitsBySide.side2.indexOf(unit) > -1) {
-                        data.className += " turn-order-unit-enemy";
-                    }
-                    if (this.props.hoveredUnit && unit.id === this.props.hoveredUnit.id) {
-                        data.className += " turn-order-unit-hover";
-                    }
-                    toRender.push(React.DOM.div(data, unit.name));
-                }
-                if (this.props.turnOrder.length > maxUnits) {
-                    toRender.push(React.DOM.div({
-                        className: "turn-order-more",
-                        key: "more"
-                    }, "..."));
-                }
-                return (React.DOM.div({ className: "turn-order-container" }, toRender));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.AbilityTooltip = React.createClass({
-            displayName: "AbilityTooltip",
-            shouldComponentUpdate: function (newProps) {
-                for (var prop in newProps) {
-                    if (prop !== "activeTargets") {
-                        if (this.props[prop] !== newProps[prop]) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            },
-            render: function () {
-                var abilities = this.props.activeTargets[this.props.targetUnit.id];
-                var abilityElements = [];
-                var containerProps = {
-                    className: "ability-tooltip",
-                    onMouseLeave: this.props.handleMouseLeave
-                };
-                var parentRect = this.props.parentElement.getBoundingClientRect();
-                containerProps.style =
-                    {
-                        position: "fixed",
-                        top: parentRect.top
-                    };
-                if (this.props.facesLeft) {
-                    containerProps.className += " ability-tooltip-faces-left";
-                    containerProps.style.left = parentRect.left;
-                }
-                else {
-                    containerProps.className += " ability-tooltip-faces-right";
-                    // aligning right to right doesnt work for some reason
-                    containerProps.style.left = parentRect.right - 128;
-                }
-                for (var i = 0; i < abilities.length; i++) {
-                    var ability = abilities[i];
-                    var data = {};
-                    data.className = "ability-tooltip-ability";
-                    data.key = i;
-                    data.onClick = this.props.handleAbilityUse.bind(null, ability, this.props.targetUnit);
-                    data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
-                    data.onMouseLeave = this.props.handleMouseLeaveAbility;
-                    if (ability.description) {
-                        data.title = ability.description;
-                    }
-                    abilityElements.push(React.DOM.div(data, ability.displayName));
-                }
-                return (React.DOM.div(containerProps, abilityElements));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     (function (RandomGenUnitRarity) {
@@ -1828,359 +622,6 @@ var Rance;
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    // not very efficient. probably doesn't matter though
-    var PriorityQueue = (function () {
-        function PriorityQueue() {
-            this.items = {};
-        }
-        PriorityQueue.prototype.isEmpty = function () {
-            if (Object.keys(this.items).length > 0)
-                return false;
-            else
-                return true;
-        };
-        PriorityQueue.prototype.push = function (priority, data) {
-            if (!this.items[priority]) {
-                this.items[priority] = [];
-            }
-            this.items[priority].push(data);
-        };
-        PriorityQueue.prototype.pop = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-            var toReturn = this.items[highestPriority].pop();
-            if (this.items[highestPriority].length < 1) {
-                delete this.items[highestPriority];
-            }
-            return toReturn;
-        };
-        PriorityQueue.prototype.peek = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-            var toReturn = this.items[highestPriority][0];
-            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
-        };
-        return PriorityQueue;
-    }());
-    Rance.PriorityQueue = PriorityQueue;
-})(Rance || (Rance = {}));
-/// <reference path="star.ts" />
-/// <reference path="priorityqueue.ts" />
-var Rance;
-(function (Rance) {
-    function backTrace(graph, target) {
-        var parent = graph[target.id];
-        if (!parent)
-            return [];
-        var path = [
-            {
-                star: target,
-                cost: parent.cost
-            }
-        ];
-        while (parent) {
-            path.push({
-                star: parent.star,
-                cost: parent.cost
-            });
-            parent = graph[parent.star.id];
-        }
-        path.reverse();
-        path[0].cost = null;
-        return path;
-    }
-    Rance.backTrace = backTrace;
-    function aStar(start, target) {
-        var frontier = new Rance.PriorityQueue();
-        frontier.push(0, start);
-        //var frontier = new EasyStar.PriorityQueue("p", 1);
-        //frontier.insert({p: 0, tile: start})
-        var cameFrom = {};
-        var costSoFar = {};
-        cameFrom[start.id] = null;
-        costSoFar[start.id] = 0;
-        while (!frontier.isEmpty()) 
-        //while (frontier.length > 0)
-        {
-            var current = frontier.pop();
-            //var current = frontier.shiftHighestPriorityElement().tile;
-            if (current === target)
-                return { came: cameFrom, cost: costSoFar, queue: frontier };
-            var neighbors = current.getAllLinks();
-            for (var i = 0; i < neighbors.length; i++) {
-                var neigh = neighbors[i];
-                if (!neigh)
-                    continue;
-                var moveCost = 1;
-                var newCost = costSoFar[current.id] + moveCost;
-                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
-                    costSoFar[neigh.id] = newCost;
-                    // ^ done
-                    var dx = Math.abs(neigh.id[1] - target.id[1]);
-                    var dy = Math.abs(neigh.id[2] - target.id[2]);
-                    var priority = newCost;
-                    frontier.push(priority, neigh);
-                    //frontier.insert({p: priority, tile: neigh});
-                    cameFrom[neigh.id] =
-                        {
-                            star: current,
-                            cost: moveCost
-                        };
-                }
-            }
-        }
-        return null; // didnt find path 
-    }
-    Rance.aStar = aStar;
-})(Rance || (Rance = {}));
-/// <reference path="player.ts" />
-/// <reference path="unit.ts" />
-/// <reference path="star.ts" />
-/// <reference path="pathfinding.ts"/>
-var Rance;
-(function (Rance) {
-    var Fleet = (function () {
-        function Fleet(player, ships, location, id, shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            this.ships = [];
-            this.visionIsDirty = true;
-            this.visibleStars = [];
-            this.detectedStars = [];
-            this.player = player;
-            this.location = location;
-            this.id = isFinite(id) ? id : Rance.idGenerators.fleet++;
-            this.name = "Fleet " + this.id;
-            this.location.addFleet(this);
-            this.player.addFleet(this);
-            this.addShips(ships);
-            if (shouldRender) {
-                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-            }
-        }
-        Fleet.prototype.getShipIndex = function (ship) {
-            return this.ships.indexOf(ship);
-        };
-        Fleet.prototype.hasShip = function (ship) {
-            return this.getShipIndex(ship) >= 0;
-        };
-        Fleet.prototype.deleteFleet = function (shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            this.location.removeFleet(this);
-            this.player.removeFleet(this);
-            if (shouldRender) {
-                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-            }
-        };
-        Fleet.prototype.mergeWith = function (fleet, shouldRender) {
-            if (shouldRender === void 0) { shouldRender = true; }
-            if (fleet.isStealthy !== this.isStealthy) {
-                console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
-                return;
-            }
-            fleet.addShips(this.ships);
-            this.deleteFleet(shouldRender);
-        };
-        Fleet.prototype.addShip = function (ship) {
-            if (this.hasShip(ship))
-                return false;
-            if (this.ships.length === 0) {
-                this.isStealthy = ship.isStealthy();
-            }
-            else if (ship.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to add stealthy ship to non stealthy fleet or other way around");
-                return;
-            }
-            this.ships.push(ship);
-            ship.addToFleet(this);
-            this.visionIsDirty = true;
-        };
-        Fleet.prototype.addShips = function (ships) {
-            for (var i = 0; i < ships.length; i++) {
-                this.addShip(ships[i]);
-            }
-        };
-        Fleet.prototype.removeShip = function (ship) {
-            var index = this.getShipIndex(ship);
-            if (index < 0)
-                return false;
-            this.ships.splice(index, 1);
-            ship.removeFromFleet();
-            this.visionIsDirty = true;
-            if (this.ships.length <= 0) {
-                this.deleteFleet();
-            }
-        };
-        Fleet.prototype.removeShips = function (ships) {
-            for (var i = 0; i < ships.length; i++) {
-                this.removeShip(ships[i]);
-            }
-        };
-        Fleet.prototype.transferShip = function (fleet, ship) {
-            if (fleet === this)
-                return;
-            if (ship.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to transfer stealthy ship to non stealthy fleet");
-                return;
-            }
-            var index = this.getShipIndex(ship);
-            if (index < 0)
-                return false;
-            fleet.addShip(ship);
-            this.ships.splice(index, 1);
-            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-        };
-        Fleet.prototype.split = function () {
-            var newFleet = new Fleet(this.player, [], this.location);
-            this.location.addFleet(newFleet);
-            return newFleet;
-        };
-        Fleet.prototype.splitStealthyUnits = function () {
-            var stealthyUnits = this.ships.filter(function (unit) {
-                return unit.isStealthy();
-            });
-            var newFleet = new Fleet(this.player, stealthyUnits, this.location);
-            this.location.addFleet(newFleet);
-            this.removeShips(stealthyUnits);
-            return newFleet;
-        };
-        Fleet.prototype.getMinCurrentMovePoints = function () {
-            if (!this.ships[0])
-                return 0;
-            var min = this.ships[0].currentMovePoints;
-            for (var i = 0; i < this.ships.length; i++) {
-                min = Math.min(this.ships[i].currentMovePoints, min);
-            }
-            return min;
-        };
-        Fleet.prototype.getMinMaxMovePoints = function () {
-            if (!this.ships[0])
-                return 0;
-            var min = this.ships[0].maxMovePoints;
-            for (var i = 0; i < this.ships.length; i++) {
-                min = Math.min(this.ships[i].maxMovePoints, min);
-            }
-            return min;
-        };
-        Fleet.prototype.canMove = function () {
-            for (var i = 0; i < this.ships.length; i++) {
-                if (this.ships[i].currentMovePoints <= 0) {
-                    return false;
-                }
-            }
-            if (this.getMinCurrentMovePoints() > 0) {
-                return true;
-            }
-            return false;
-        };
-        Fleet.prototype.subtractMovePoints = function () {
-            for (var i = 0; i < this.ships.length; i++) {
-                this.ships[i].currentMovePoints--;
-            }
-        };
-        Fleet.prototype.move = function (newLocation) {
-            if (newLocation === this.location)
-                return;
-            if (!this.canMove())
-                return;
-            var oldLocation = this.location;
-            oldLocation.removeFleet(this);
-            this.location = newLocation;
-            newLocation.addFleet(this);
-            this.subtractMovePoints();
-            this.visionIsDirty = true;
-            this.player.visionIsDirty = true;
-            // maybe send an event instead?
-            for (var i = 0; i < app.game.playerOrder.length; i++) {
-                var player = app.game.playerOrder[i];
-                if (player.isIndependent || player === this.player) {
-                    continue;
-                }
-                player.updateAllVisibilityInStar(newLocation);
-            }
-            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
-            Rance.eventManager.dispatchEvent("updateSelection", null);
-        };
-        Fleet.prototype.getPathTo = function (newLocation) {
-            var a = Rance.aStar(this.location, newLocation);
-            if (!a)
-                return;
-            var path = Rance.backTrace(a.came, newLocation);
-            return path;
-        };
-        Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
-            var path = this.getPathTo(newLocation);
-            var interval = window.setInterval(function () {
-                if (!path || path.length <= 0) {
-                    window.clearInterval(interval);
-                    if (afterMove)
-                        afterMove();
-                    return;
-                }
-                var move = path.shift();
-                this.move(move.star);
-                if (onMove)
-                    onMove();
-            }.bind(this), 10);
-        };
-        Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
-            return this.location.fleets[this.player.id];
-        };
-        Fleet.prototype.getTotalStrengthEvaluation = function () {
-            var total = 0;
-            for (var i = 0; i < this.ships.length; i++) {
-                total += this.ships[i].getStrengthEvaluation();
-            }
-            return total;
-        };
-        Fleet.prototype.getTotalHealth = function () {
-            var total = {
-                current: 0,
-                max: 0
-            };
-            for (var i = 0; i < this.ships.length; i++) {
-                total.current += this.ships[i].currentHealth;
-                total.max += this.ships[i].maxHealth;
-            }
-            return total;
-        };
-        Fleet.prototype.updateVisibleStars = function () {
-            var highestVisionRange = 0;
-            var highestDetectionRange = -1;
-            for (var i = 0; i < this.ships.length; i++) {
-                highestVisionRange = Math.max(this.ships[i].getVisionRange(), highestVisionRange);
-                highestDetectionRange = Math.max(this.ships[i].getDetectionRange(), highestDetectionRange);
-            }
-            var inVision = this.location.getLinkedInRange(highestVisionRange);
-            var inDetection = this.location.getLinkedInRange(highestDetectionRange);
-            this.visibleStars = inVision.all;
-            this.detectedStars = inDetection.all;
-            this.visionIsDirty = false;
-        };
-        Fleet.prototype.getVision = function () {
-            if (this.visionIsDirty) {
-                this.updateVisibleStars();
-            }
-            return this.visibleStars;
-        };
-        Fleet.prototype.getDetection = function () {
-            if (this.visionIsDirty) {
-                this.updateVisibleStars();
-            }
-            return this.detectedStars;
-        };
-        Fleet.prototype.serialize = function () {
-            var data = {};
-            data.id = this.id;
-            data.name = this.name;
-            data.locationId = this.location.id;
-            data.playerId = this.player.id;
-            data.ships = this.ships.map(function (ship) { return ship.serialize(false); });
-            return data;
-        };
-        return Fleet;
-    }());
-    Rance.Fleet = Fleet;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/ibuildingtemplate.d.ts" />
 /// <reference path="star.ts" />
@@ -3085,1780 +1526,358 @@ var Rance;
     }());
     Rance.Star = Star;
 })(Rance || (Rance = {}));
-/// <reference path="player.ts"/>
-/// <reference path="unit.ts"/>
-/// <reference path="star.ts"/>
-/// <reference path="building.ts"/>
-/// <reference path="battledata.ts"/>
-/// <reference path="unit.ts"/>
-/// <reference path="eventmanager.ts"/>
 var Rance;
 (function (Rance) {
-    var Battle = (function () {
-        function Battle(props) {
-            this.unitsById = {};
-            this.unitsBySide = {
-                side1: [],
-                side2: []
-            };
-            this.turnOrder = [];
-            this.evaluation = {};
-            this.isSimulated = false; // true when battle is between two
-            // ai players
-            this.isVirtual = false; // true when a clone made by battle ai
-            this.ended = false;
-            this.afterFinishCallbacks = [];
-            this.side1 = props.side1;
-            this.side1Player = props.side1Player;
-            this.side2 = props.side2;
-            this.side2Player = props.side2Player;
-            this.battleData = props.battleData;
+    // not very efficient. probably doesn't matter though
+    var PriorityQueue = (function () {
+        function PriorityQueue() {
+            this.items = {};
         }
-        Battle.prototype.init = function () {
-            var self = this;
-            Rance.UnitBattleSidesArray.forEach(function (sideId) {
-                var side = self[sideId];
-                for (var i = 0; i < side.length; i++) {
-                    for (var j = 0; j < side[i].length; j++) {
-                        if (side[i][j]) {
-                            self.unitsById[side[i][j].id] = side[i][j];
-                            self.unitsBySide[sideId].push(side[i][j]);
-                            var pos = self.getAbsolutePositionFromSidePosition([i, j], sideId);
-                            self.initUnit(side[i][j], sideId, pos);
-                        }
-                    }
-                }
+        PriorityQueue.prototype.isEmpty = function () {
+            if (Object.keys(this.items).length > 0)
+                return false;
+            else
+                return true;
+        };
+        PriorityQueue.prototype.push = function (priority, data) {
+            if (!this.items[priority]) {
+                this.items[priority] = [];
+            }
+            this.items[priority].push(data);
+        };
+        PriorityQueue.prototype.pop = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+            var toReturn = this.items[highestPriority].pop();
+            if (this.items[highestPriority].length < 1) {
+                delete this.items[highestPriority];
+            }
+            return toReturn;
+        };
+        PriorityQueue.prototype.peek = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+            var toReturn = this.items[highestPriority][0];
+            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
+        };
+        return PriorityQueue;
+    }());
+    Rance.PriorityQueue = PriorityQueue;
+})(Rance || (Rance = {}));
+/// <reference path="star.ts" />
+/// <reference path="priorityqueue.ts" />
+var Rance;
+(function (Rance) {
+    function backTrace(graph, target) {
+        var parent = graph[target.id];
+        if (!parent)
+            return [];
+        var path = [
+            {
+                star: target,
+                cost: parent.cost
+            }
+        ];
+        while (parent) {
+            path.push({
+                star: parent.star,
+                cost: parent.cost
             });
-            this.currentTurn = 0;
-            this.maxTurns = 24;
-            this.turnsLeft = this.maxTurns;
-            this.updateTurnOrder();
-            this.setActiveUnit();
-            this.startHealth =
-                {
-                    side1: this.getTotalHealthForSide("side1").current,
-                    side2: this.getTotalHealthForSide("side2").current
-                };
-            if (this.checkBattleEnd()) {
-                this.endBattle();
-            }
-            else {
-                this.shiftRowsIfNeeded();
-            }
-            this.triggerBattleStartAbilities();
-        };
-        Battle.prototype.forEachUnit = function (operator) {
-            for (var id in this.unitsById) {
-                operator.call(this, this.unitsById[id]);
-            }
-        };
-        Battle.prototype.initUnit = function (unit, side, position) {
-            unit.resetBattleStats();
-            unit.setBattlePosition(this, side, position);
-            this.addUnitToTurnOrder(unit);
-            unit.timesActedThisTurn++;
-        };
-        Battle.prototype.triggerBattleStartAbilities = function () {
-            this.forEachUnit(function (unit) {
-                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-                if (passiveSkillsByPhase["atBattleStart"]) {
-                    var skills = passiveSkillsByPhase["atBattleStart"];
-                    for (var i = 0; i < skills.length; i++) {
-                        for (var j = 0; j < skills[i].atBattleStart.length; j++) {
-                            var effect = skills[i].atBattleStart[j];
-                            effect.template.effect(unit, unit, this, effect.data);
-                        }
-                    }
+            parent = graph[parent.star.id];
+        }
+        path.reverse();
+        path[0].cost = null;
+        return path;
+    }
+    Rance.backTrace = backTrace;
+    function aStar(start, target) {
+        var frontier = new Rance.PriorityQueue();
+        frontier.push(0, start);
+        //var frontier = new EasyStar.PriorityQueue("p", 1);
+        //frontier.insert({p: 0, tile: start})
+        var cameFrom = {};
+        var costSoFar = {};
+        cameFrom[start.id] = null;
+        costSoFar[start.id] = 0;
+        while (!frontier.isEmpty()) 
+        //while (frontier.length > 0)
+        {
+            var current = frontier.pop();
+            //var current = frontier.shiftHighestPriorityElement().tile;
+            if (current === target)
+                return { came: cameFrom, cost: costSoFar, queue: frontier };
+            var neighbors = current.getAllLinks();
+            for (var i = 0; i < neighbors.length; i++) {
+                var neigh = neighbors[i];
+                if (!neigh)
+                    continue;
+                var moveCost = 1;
+                var newCost = costSoFar[current.id] + moveCost;
+                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
+                    costSoFar[neigh.id] = newCost;
+                    // ^ done
+                    var dx = Math.abs(neigh.id[1] - target.id[1]);
+                    var dy = Math.abs(neigh.id[2] - target.id[2]);
+                    var priority = newCost;
+                    frontier.push(priority, neigh);
+                    //frontier.insert({p: priority, tile: neigh});
+                    cameFrom[neigh.id] =
+                        {
+                            star: current,
+                            cost: moveCost
+                        };
                 }
+            }
+        }
+        return null; // didnt find path 
+    }
+    Rance.aStar = aStar;
+})(Rance || (Rance = {}));
+/// <reference path="player.ts" />
+/// <reference path="unit.ts" />
+/// <reference path="star.ts" />
+/// <reference path="pathfinding.ts"/>
+var Rance;
+(function (Rance) {
+    var Fleet = (function () {
+        function Fleet(player, ships, location, id, shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            this.ships = [];
+            this.visionIsDirty = true;
+            this.visibleStars = [];
+            this.detectedStars = [];
+            this.player = player;
+            this.location = location;
+            this.id = isFinite(id) ? id : Rance.idGenerators.fleet++;
+            this.name = "Fleet " + this.id;
+            this.location.addFleet(this);
+            this.player.addFleet(this);
+            this.addShips(ships);
+            if (shouldRender) {
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+            }
+        }
+        Fleet.prototype.getShipIndex = function (ship) {
+            return this.ships.indexOf(ship);
+        };
+        Fleet.prototype.hasShip = function (ship) {
+            return this.getShipIndex(ship) >= 0;
+        };
+        Fleet.prototype.deleteFleet = function (shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            this.location.removeFleet(this);
+            this.player.removeFleet(this);
+            if (shouldRender) {
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+            }
+        };
+        Fleet.prototype.mergeWith = function (fleet, shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
+            if (fleet.isStealthy !== this.isStealthy) {
+                console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
+                return;
+            }
+            fleet.addShips(this.ships);
+            this.deleteFleet(shouldRender);
+        };
+        Fleet.prototype.addShip = function (ship) {
+            if (this.hasShip(ship))
+                return false;
+            if (this.ships.length === 0) {
+                this.isStealthy = ship.isStealthy();
+            }
+            else if (ship.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to add stealthy ship to non stealthy fleet or other way around");
+                return;
+            }
+            this.ships.push(ship);
+            ship.addToFleet(this);
+            this.visionIsDirty = true;
+        };
+        Fleet.prototype.addShips = function (ships) {
+            for (var i = 0; i < ships.length; i++) {
+                this.addShip(ships[i]);
+            }
+        };
+        Fleet.prototype.removeShip = function (ship) {
+            var index = this.getShipIndex(ship);
+            if (index < 0)
+                return false;
+            this.ships.splice(index, 1);
+            ship.removeFromFleet();
+            this.visionIsDirty = true;
+            if (this.ships.length <= 0) {
+                this.deleteFleet();
+            }
+        };
+        Fleet.prototype.removeShips = function (ships) {
+            for (var i = 0; i < ships.length; i++) {
+                this.removeShip(ships[i]);
+            }
+        };
+        Fleet.prototype.transferShip = function (fleet, ship) {
+            if (fleet === this)
+                return;
+            if (ship.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to transfer stealthy ship to non stealthy fleet");
+                return;
+            }
+            var index = this.getShipIndex(ship);
+            if (index < 0)
+                return false;
+            fleet.addShip(ship);
+            this.ships.splice(index, 1);
+            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+        };
+        Fleet.prototype.split = function () {
+            var newFleet = new Fleet(this.player, [], this.location);
+            this.location.addFleet(newFleet);
+            return newFleet;
+        };
+        Fleet.prototype.splitStealthyUnits = function () {
+            var stealthyUnits = this.ships.filter(function (unit) {
+                return unit.isStealthy();
             });
+            var newFleet = new Fleet(this.player, stealthyUnits, this.location);
+            this.location.addFleet(newFleet);
+            this.removeShips(stealthyUnits);
+            return newFleet;
         };
-        Battle.prototype.removeUnitFromTurnOrder = function (unit) {
-            var unitIndex = this.turnOrder.indexOf(unit);
-            if (unitIndex < 0)
-                return false; //not in list
-            this.turnOrder.splice(unitIndex, 1);
+        Fleet.prototype.getMinCurrentMovePoints = function () {
+            if (!this.ships[0])
+                return 0;
+            var min = this.ships[0].currentMovePoints;
+            for (var i = 0; i < this.ships.length; i++) {
+                min = Math.min(this.ships[i].currentMovePoints, min);
+            }
+            return min;
         };
-        Battle.prototype.addUnitToTurnOrder = function (unit) {
-            var unitIndex = this.turnOrder.indexOf(unit);
-            if (unitIndex >= 0)
-                return false; //already in list
-            this.turnOrder.push(unit);
+        Fleet.prototype.getMinMaxMovePoints = function () {
+            if (!this.ships[0])
+                return 0;
+            var min = this.ships[0].maxMovePoints;
+            for (var i = 0; i < this.ships.length; i++) {
+                min = Math.min(this.ships[i].maxMovePoints, min);
+            }
+            return min;
         };
-        Battle.prototype.updateTurnOrder = function () {
-            //Sorting function is in utility.ts for reusing in turn order UI.
-            //Maybe should make separate TurnOrder class?
-            this.turnOrder.sort(Rance.turnOrderSortFunction);
-            function turnOrderFilterFunction(unit) {
-                if (unit.battleStats.currentActionPoints <= 0) {
+        Fleet.prototype.canMove = function () {
+            for (var i = 0; i < this.ships.length; i++) {
+                if (this.ships[i].currentMovePoints <= 0) {
                     return false;
                 }
-                if (unit.currentHealth <= 0) {
-                    return false;
-                }
+            }
+            if (this.getMinCurrentMovePoints() > 0) {
                 return true;
             }
-            this.turnOrder = this.turnOrder.filter(turnOrderFilterFunction);
+            return false;
         };
-        Battle.prototype.setActiveUnit = function () {
-            this.activeUnit = this.turnOrder[0];
-        };
-        Battle.prototype.endTurn = function () {
-            this.currentTurn++;
-            this.turnsLeft--;
-            this.updateTurnOrder();
-            this.setActiveUnit();
-            if (!this.isVirtual) {
-                this.forEachUnit(function (unit) {
-                    if (unit.currentHealth <= 0) {
-                        unit.displayFlags.isAnnihilated = true;
-                        unit.uiDisplayIsDirty = true;
-                    }
-                });
-            }
-            var shouldEnd = this.checkBattleEnd();
-            if (shouldEnd) {
-                this.endBattle();
-            }
-            else {
-                this.shiftRowsIfNeeded();
+        Fleet.prototype.subtractMovePoints = function () {
+            for (var i = 0; i < this.ships.length; i++) {
+                this.ships[i].currentMovePoints--;
             }
         };
-        Battle.prototype.getPlayerForSide = function (side) {
-            if (side === "side1")
-                return this.side1Player;
-            else if (side === "side2")
-                return this.side2Player;
-            else
-                throw new Error("invalid side");
-        };
-        Battle.prototype.getSideForPlayer = function (player) {
-            if (this.side1Player === player)
-                return "side1";
-            else if (this.side2Player === player)
-                return "side2";
-            else
-                throw new Error("invalid player");
-        };
-        Battle.prototype.getActivePlayer = function () {
-            if (!this.activeUnit)
-                return null;
-            var side = this.activeUnit.battleStats.side;
-            return this.getPlayerForSide(side);
-        };
-        Battle.prototype.getRowByPosition = function (position) {
-            var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
-            var side = position < rowsPerSide ? "side1" : "side2";
-            var relativePosition = position % rowsPerSide;
-            return this[side][relativePosition];
-        };
-        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
-            if (!victor || victor.isIndependent)
-                return [];
-            var winningSide = this.getSideForPlayer(victor);
-            var losingSide = Rance.reverseSide(winningSide);
-            var losingUnits = this.unitsBySide[losingSide].slice(0);
-            losingUnits.sort(function (a, b) {
-                var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
-                if (captureChanceSort) {
-                    return captureChanceSort;
-                }
-                else {
-                    return Rance.randInt(0, 1) * 2 - 1; // -1 or 1
-                }
-            });
-            var capturedUnits = [];
-            for (var i = 0; i < losingUnits.length; i++) {
-                if (capturedUnits.length >= maxCapturedUnits)
-                    break;
-                var unit = losingUnits[i];
-                if (unit.currentHealth <= 0 &&
-                    Math.random() <= unit.battleStats.captureChance) {
-                    capturedUnits.push(unit);
-                }
-            }
-            return capturedUnits;
-        };
-        Battle.prototype.getUnitDeathChance = function (unit, victor) {
-            var ruleSet = app.moduleData.ruleSet;
-            var player = unit.fleet.player;
-            var deathChance;
-            if (player.isIndependent) {
-                deathChance = ruleSet.battle.independentUnitDeathChance;
-            }
-            else if (player.isAI) {
-                deathChance = ruleSet.battle.aiUnitDeathChance;
-            }
-            else {
-                deathChance = ruleSet.battle.humanUnitDeathChance;
-            }
-            var playerDidLose = (victor && player !== victor);
-            if (playerDidLose) {
-                deathChance += ruleSet.battle.loserUnitExtraDeathChance;
-            }
-            return deathChance;
-        };
-        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
-            var deadUnits = [];
-            this.forEachUnit(function (unit) {
-                if (unit.currentHealth <= 0) {
-                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
-                    if (!wasCaptured) {
-                        var deathChance = this.getUnitDeathChance(unit, victor);
-                        if (Math.random() < deathChance) {
-                            deadUnits.push(unit);
-                        }
-                    }
-                }
-            });
-            return deadUnits;
-        };
-        Battle.prototype.endBattle = function () {
-            this.ended = true;
-            if (this.isVirtual)
+        Fleet.prototype.move = function (newLocation) {
+            if (newLocation === this.location)
                 return;
-            this.activeUnit = null;
-            var victor = this.getVictor();
-            var maxCapturedUnits = app.moduleData.ruleSet.battle.baseMaxCapturedUnits;
-            // TODO content | Abilities that increase max captured units
-            this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
-            this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
-            Rance.eventManager.dispatchEvent("battleEnd", null);
-        };
-        Battle.prototype.finishBattle = function (forcedVictor) {
-            var victor = forcedVictor || this.getVictor();
-            for (var i = 0; i < this.deadUnits.length; i++) {
-                this.deadUnits[i].removeFromPlayer();
-            }
-            var experiencePerSide = this.getGainedExperiencePerSide();
-            this.forEachUnit(function (unit) {
-                unit.addExperience(experiencePerSide[unit.battleStats.side]);
-                unit.resetBattleStats();
-                if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
-                    unit.currentHealth = Math.round(unit.maxHealth * 0.1);
+            if (!this.canMove())
+                return;
+            var oldLocation = this.location;
+            oldLocation.removeFleet(this);
+            this.location = newLocation;
+            newLocation.addFleet(this);
+            this.subtractMovePoints();
+            this.visionIsDirty = true;
+            this.player.visionIsDirty = true;
+            // maybe send an event instead?
+            for (var i = 0; i < app.game.playerOrder.length; i++) {
+                var player = app.game.playerOrder[i];
+                if (player.isIndependent || player === this.player) {
+                    continue;
                 }
-                this.side1Player.identifyUnit(unit);
-                this.side2Player.identifyUnit(unit);
-            });
-            if (victor) {
-                for (var i = 0; i < this.capturedUnits.length; i++) {
-                    this.capturedUnits[i].transferToPlayer(victor);
-                    this.capturedUnits[i].experienceForCurrentLevel = 0;
-                }
+                player.updateAllVisibilityInStar(newLocation);
             }
-            if (this.battleData.building) {
-                if (victor) {
-                    this.battleData.building.setController(victor);
-                }
-            }
-            if (this.isSimulated) {
-                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.battleData.location);
-            }
-            else {
-                Rance.eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
-                Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
-            }
-            if (app.humanPlayer.starIsVisible(this.battleData.location)) {
-                Rance.eventManager.dispatchEvent("makeBattleFinishNotification", {
-                    location: this.battleData.location,
-                    attacker: this.battleData.attacker.player,
-                    defender: this.battleData.defender.player,
-                    victor: victor
-                });
-            }
-            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
-                this.afterFinishCallbacks[i]();
-            }
+            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
+            Rance.eventManager.dispatchEvent("updateSelection", null);
         };
-        Battle.prototype.getVictor = function () {
-            var evaluation = this.getEvaluation();
-            if (evaluation > 0)
-                return this.side1Player;
-            else if (evaluation < 0)
-                return this.side2Player;
-            else
-                return null;
+        Fleet.prototype.getPathTo = function (newLocation) {
+            var a = Rance.aStar(this.location, newLocation);
+            if (!a)
+                return;
+            var path = Rance.backTrace(a.came, newLocation);
+            return path;
         };
-        Battle.prototype.getTotalHealthForRow = function (position) {
-            var row = this.getRowByPosition(position);
+        Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
+            var path = this.getPathTo(newLocation);
+            var interval = window.setInterval(function () {
+                if (!path || path.length <= 0) {
+                    window.clearInterval(interval);
+                    if (afterMove)
+                        afterMove();
+                    return;
+                }
+                var move = path.shift();
+                this.move(move.star);
+                if (onMove)
+                    onMove();
+            }.bind(this), 10);
+        };
+        Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
+            return this.location.fleets[this.player.id];
+        };
+        Fleet.prototype.getTotalStrengthEvaluation = function () {
             var total = 0;
-            for (var i = 0; i < row.length; i++) {
-                if (row[i]) {
-                    total += row[i].currentHealth;
-                }
+            for (var i = 0; i < this.ships.length; i++) {
+                total += this.ships[i].getStrengthEvaluation();
             }
             return total;
         };
-        Battle.prototype.getTotalHealthForSide = function (side) {
-            var health = {
+        Fleet.prototype.getTotalHealth = function () {
+            var total = {
                 current: 0,
                 max: 0
             };
-            var units = this.unitsBySide[side];
-            for (var i = 0; i < units.length; i++) {
-                var unit = units[i];
-                health.current += unit.currentHealth;
-                health.max += unit.maxHealth;
+            for (var i = 0; i < this.ships.length; i++) {
+                total.current += this.ships[i].currentHealth;
+                total.max += this.ships[i].maxHealth;
             }
-            return health;
+            return total;
         };
-        Battle.prototype.getEvaluation = function () {
-            var self = this;
-            var evaluation = 0;
-            Rance.UnitBattleSidesArray.forEach(function (side) {
-                // positive * sign === good, negative * sign === bad
-                var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
-                var currentHealth = self.getTotalHealthForSide(side).current;
-                if (currentHealth <= 0) {
-                    return -999 * sign;
-                }
-                // how much health remains from strating health 0.0-1.0
-                var currentHealthFactor = currentHealth / self.startHealth[side];
-                for (var i = 0; i < self.unitsBySide[side].length; i++) {
-                    if (self.unitsBySide[side][i].currentHealth <= 0) {
-                        evaluation -= 0.2 * sign;
-                    }
-                }
-                var defenderMultiplier = 1;
-                if (self.battleData.building) {
-                    var template = self.battleData.building.template;
-                    var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
-                    if (isDefender) {
-                        defenderMultiplier += template.defenderAdvantage;
-                    }
-                }
-                evaluation += currentHealthFactor * defenderMultiplier * sign;
-            });
-            evaluation = Rance.clamp(evaluation, -1, 1);
-            this.evaluation[this.currentTurn] = evaluation;
-            return this.evaluation[this.currentTurn];
+        Fleet.prototype.updateVisibleStars = function () {
+            var highestVisionRange = 0;
+            var highestDetectionRange = -1;
+            for (var i = 0; i < this.ships.length; i++) {
+                highestVisionRange = Math.max(this.ships[i].getVisionRange(), highestVisionRange);
+                highestDetectionRange = Math.max(this.ships[i].getDetectionRange(), highestDetectionRange);
+            }
+            var inVision = this.location.getLinkedInRange(highestVisionRange);
+            var inDetection = this.location.getLinkedInRange(highestDetectionRange);
+            this.visibleStars = inVision.all;
+            this.detectedStars = inDetection.all;
+            this.visionIsDirty = false;
         };
-        Battle.prototype.getAbsolutePositionFromSidePosition = function (relativePosition, side) {
-            if (side === "side1") {
-                return relativePosition;
+        Fleet.prototype.getVision = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
             }
-            else {
-                var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
-                return [relativePosition[0] + rowsPerSide, relativePosition[1]];
-            }
+            return this.visibleStars;
         };
-        Battle.prototype.updateBattlePositions = function (side) {
-            var units = this[side];
-            for (var i = 0; i < units.length; i++) {
-                var row = this[side][i];
-                for (var j = 0; j < row.length; j++) {
-                    var pos = this.getAbsolutePositionFromSidePosition([i, j], side);
-                    var unit = row[j];
-                    if (unit) {
-                        unit.setBattlePosition(this, side, pos);
-                    }
-                }
+        Fleet.prototype.getDetection = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
             }
+            return this.detectedStars;
         };
-        Battle.prototype.shiftRowsForSide = function (side) {
-            var formation = this[side];
-            if (side === "side1") {
-                formation.reverse();
-            }
-            var nextHealthyRowIndex;
-            // start at 1 because frontmost row shouldn't be healthy if this is called
-            for (var i = 1; i < formation.length; i++) {
-                var absoluteRow = side === "side1" ? i : i + app.moduleData.ruleSet.battle.rowsPerFormation;
-                if (this.getTotalHealthForRow(absoluteRow) > 0) {
-                    nextHealthyRowIndex = i;
-                    break;
-                }
-            }
-            if (!isFinite(nextHealthyRowIndex)) {
-                throw new Error("Tried to shift battle rows when all rows are defeated");
-            }
-            var rowsToShift = formation.splice(0, nextHealthyRowIndex);
-            formation = formation.concat(rowsToShift);
-            if (side === "side1") {
-                formation.reverse();
-            }
-            this[side] = formation;
-            this.updateBattlePositions(side);
-        };
-        Battle.prototype.shiftRowsIfNeeded = function () {
-            var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
-            var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
-            if (side1FrontRowHealth <= 0) {
-                this.shiftRowsForSide("side1");
-            }
-            var side2FrontRowHealth = this.getTotalHealthForRow(rowsPerSide);
-            if (side2FrontRowHealth <= 0) {
-                this.shiftRowsForSide("side2");
-            }
-        };
-        Battle.prototype.getGainedExperiencePerSide = function () {
-            var totalValuePerSide = {
-                side1: 0,
-                side2: 0
-            };
-            for (var side in this.unitsBySide) {
-                var totalValue = 0;
-                var units = this.unitsBySide[side];
-                for (var i = 0; i < units.length; i++) {
-                    totalValuePerSide[side] += units[i].level + 1;
-                }
-            }
-            return ({
-                side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
-                side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
-            });
-        };
-        Battle.prototype.checkBattleEnd = function () {
-            if (!this.activeUnit)
-                return true;
-            if (this.turnsLeft <= 0)
-                return true;
-            if (this.getTotalHealthForSide("side1").current <= 0 ||
-                this.getTotalHealthForSide("side2").current <= 0) {
-                return true;
-            }
-            return false;
-        };
-        Battle.prototype.makeVirtualClone = function () {
-            var battleData = this.battleData;
-            function cloneUnits(units) {
-                var clones = [];
-                for (var i = 0; i < units.length; i++) {
-                    var row = [];
-                    for (var j = 0; j < units[i].length; j++) {
-                        var unit = units[i][j];
-                        if (!unit) {
-                            row.push(unit);
-                        }
-                        else {
-                            row.push(unit.makeVirtualClone());
-                        }
-                    }
-                    clones.push(row);
-                }
-                return clones;
-            }
-            var side1 = cloneUnits(this.side1);
-            var side2 = cloneUnits(this.side2);
-            var side1Player = this.side1Player;
-            var side2Player = this.side2Player;
-            var clone = new Battle({
-                battleData: battleData,
-                side1: side1,
-                side2: side2,
-                side1Player: side1Player,
-                side2Player: side2Player
-            });
-            [side1, side2].forEach(function (side) {
-                for (var i = 0; i < side.length; i++) {
-                    for (var j = 0; j < side[i].length; j++) {
-                        if (!side[i][j])
-                            continue;
-                        clone.addUnitToTurnOrder(side[i][j]);
-                        clone.unitsById[side[i][j].id] = side[i][j];
-                        clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
-                    }
-                }
-            });
-            clone.isVirtual = true;
-            clone.currentTurn = this.currentTurn;
-            clone.maxTurns = this.maxTurns;
-            clone.turnsLeft = this.turnsLeft;
-            clone.startHealth = this.startHealth;
-            clone.updateTurnOrder();
-            clone.setActiveUnit();
-            if (clone.checkBattleEnd()) {
-                clone.endBattle();
-            }
-            else {
-                clone.shiftRowsIfNeeded();
-            }
-            return clone;
-        };
-        return Battle;
-    }());
-    Rance.Battle = Battle;
-})(Rance || (Rance = {}));
-/// <reference path="utility.ts"/>
-/// <reference path="unit.ts"/>
-var Rance;
-(function (Rance) {
-    (function (TargetFleet) {
-        TargetFleet[TargetFleet["ally"] = 0] = "ally";
-        TargetFleet[TargetFleet["enemy"] = 1] = "enemy";
-        TargetFleet[TargetFleet["either"] = 2] = "either";
-    })(Rance.TargetFleet || (Rance.TargetFleet = {}));
-    var TargetFleet = Rance.TargetFleet;
-    Rance.targetSelf = function (units, user) {
-        return [user];
-    };
-    Rance.targetNextRow = function (units, user) {
-        var ownPosition = user.battleStats.position;
-        var increment = user.battleStats.side === "side1" ? 1 : -1;
-        return units[ownPosition[0] + increment];
-    };
-    Rance.targetAll = function (units, user) {
-        return Rance.flatten2dArray(units);
-    };
-    //**
-    //**
-    //X*
-    //**
-    Rance.areaSingle = function (units, target) {
-        return Rance.getFrom2dArray(units, [target]);
-    };
-    //XX
-    //XX
-    //XX
-    //XX
-    Rance.areaAll = function (units, target) {
-        return Rance.flatten2dArray(units);
-    };
-    //**
-    //**
-    //XX
-    //**
-    Rance.areaColumnÄÄfixedÄÄ = function (units, target) {
-        var y = target[1];
-        var targetLocations = [];
-        for (var i = 0; i < units.length; i++) {
-            targetLocations.push([i, y]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    //X*
-    //X*
-    //X*
-    //X*
-    Rance.areaRow = function (units, target) {
-        var x = target[0];
-        var targetLocations = [];
-        for (var i = 0; i < units[x].length; i++) {
-            targetLocations.push([x, i]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    //**
-    //X*
-    //X*
-    //X*
-    Rance.areaRowNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    //**
-    //X*
-    //XX
-    //X*
-    Rance.areaNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x - 1, y]);
-        targetLocations.push([x + 1, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
-/// <reference path="templateinterfaces/iabilitytemplateeffect.d.ts" />
-/// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
-/// <reference path="battle.ts"/>
-/// <reference path="unit.ts"/>
-/// <reference path="targeting.ts"/>
-var Rance;
-(function (Rance) {
-    function getAbilityUseData(battle, user, ability, target) {
-        if (ability.preparation) {
-            if (!user.battleStats.queuedAction) {
-                user.setQueuedAction(ability, target);
-                return getPreparationDummyData(user);
-            }
-            else {
-                user.updateQueuedAction();
-                if (!user.isReadyToUseQueuedAction()) {
-                    return getPreparationDummyData(user);
-                }
-                else {
-                    var action = user.battleStats.queuedAction;
-                    var target = battle.unitsById[action.targetId];
-                    var ability = action.ability;
-                    user.clearQueuedAction();
-                }
-            }
-        }
-        var data = {
-            user: user,
-            originalTarget: target,
-            actualTarget: getTargetOrGuard(battle, user, ability, target),
-            effectsToCall: [],
-            beforeUse: [],
-            afterUse: []
-        };
-        var passiveSkills = user.getPassiveSkillsByPhase();
-        var beforeUseEffects = [];
-        if (ability.beforeUse) {
-            beforeUseEffects = beforeUseEffects.concat(ability.beforeUse);
-        }
-        if (passiveSkills.beforeAbilityUse) {
-            for (var i = 0; i < passiveSkills.beforeAbilityUse.length; i++) {
-                beforeUseEffects = beforeUseEffects.concat(passiveSkills.beforeAbilityUse[i].beforeAbilityUse);
-            }
-        }
-        for (var i = 0; i < beforeUseEffects.length; i++) {
-            var hasSfx = Boolean(beforeUseEffects[i].sfx);
-            if (hasSfx) {
-                data.effectsToCall.push({
-                    effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data)],
-                    user: user,
-                    target: data.actualTarget,
-                    sfx: beforeUseEffects[i].sfx,
-                    trigger: beforeUseEffects[i].trigger
-                });
-            }
-            else {
-                data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data));
-            }
-        }
-        data.beforeUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
-        if (!ability.addsGuard) {
-            data.beforeUse.push(user.removeAllGuard.bind(user));
-        }
-        var effectsToCall = [ability.mainEffect];
-        if (ability.secondaryEffects) {
-            effectsToCall = effectsToCall.concat(ability.secondaryEffects);
-        }
-        for (var i = 0; i < effectsToCall.length; i++) {
-            var effect = effectsToCall[i];
-            var targetsInArea = getUnitsInEffectArea(battle, user, effect.template, data.actualTarget.battleStats.position);
-            for (var j = 0; j < targetsInArea.length; j++) {
-                var effectTarget = targetsInArea[j];
-                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, battle, effect.data)];
-                var attachedEffectsToAddAfter = [];
-                if (effect.attachedEffects) {
-                    for (var k = 0; k < effect.attachedEffects.length; k++) {
-                        var attachedEffect = effect.attachedEffects[k];
-                        var boundAttachedEffect = attachedEffect.template.effect.bind(null, user, effectTarget, battle, attachedEffect.data);
-                        if (attachedEffect.sfx) {
-                            attachedEffectsToAddAfter.push({
-                                effects: [boundAttachedEffect],
-                                user: user,
-                                target: effectTarget,
-                                sfx: attachedEffect.sfx,
-                                trigger: attachedEffect.trigger
-                            });
-                        }
-                        else {
-                            boundEffects.push(boundAttachedEffect);
-                        }
-                    }
-                }
-                data.effectsToCall.push({
-                    effects: boundEffects,
-                    user: user,
-                    target: effectTarget,
-                    sfx: effect.sfx,
-                    trigger: effect.trigger
-                });
-                if (attachedEffectsToAddAfter.length > 0) {
-                    data.effectsToCall = data.effectsToCall.concat(attachedEffectsToAddAfter);
-                }
-            }
-        }
-        var afterUseEffects = [];
-        if (ability.afterUse) {
-            afterUseEffects = afterUseEffects.concat(ability.afterUse);
-        }
-        if (passiveSkills.afterAbilityUse) {
-            for (var i = 0; i < passiveSkills.afterAbilityUse.length; i++) {
-                afterUseEffects = afterUseEffects.concat(passiveSkills.afterAbilityUse[i].afterAbilityUse);
-            }
-        }
-        for (var i = 0; i < afterUseEffects.length; i++) {
-            var hasSfx = Boolean(afterUseEffects[i].sfx);
-            if (hasSfx) {
-                data.effectsToCall.push({
-                    effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data)],
-                    user: user,
-                    target: data.actualTarget,
-                    sfx: afterUseEffects[i].sfx,
-                    trigger: afterUseEffects[i].trigger
-                });
-            }
-            else {
-                data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data));
-            }
-        }
-        data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
-        data.afterUse.push(user.updateStatusEffects.bind(user));
-        return data;
-    }
-    Rance.getAbilityUseData = getAbilityUseData;
-    // used for ai simulation. otherwise UIComponents.Battle steps through ability use data
-    function useAbility(battle, user, ability, target) {
-        var abilityData = getAbilityUseData(battle, user, ability, target);
-        for (var i = 0; i < abilityData.beforeUse.length; i++) {
-            abilityData.beforeUse[i]();
-        }
-        for (var i = 0; i < abilityData.effectsToCall.length; i++) {
-            var effectData = abilityData.effectsToCall[i];
-            if (!effectData.trigger || effectData.trigger(effectData.user, effectData.target)) {
-                for (var j = 0; j < effectData.effects.length; j++) {
-                    effectData.effects[j]();
-                }
-            }
-        }
-        for (var i = 0; i < abilityData.afterUse.length; i++) {
-            abilityData.afterUse[i]();
-        }
-    }
-    Rance.useAbility = useAbility;
-    function getPreparationDummyData(user) {
-        var action = user.battleStats.queuedAction;
-        var dummyData = {
-            user: user,
-            originalTarget: user,
-            actualTarget: user,
-            effectsToCall: [],
-            beforeUse: [],
-            afterUse: []
-        };
-        dummyData.beforeUse.push(user.removeAllGuard.bind(user));
-        dummyData.effectsToCall.push({
-            effects: [],
-            user: user,
-            target: user,
-            sfx: {
-                duration: 100
-            },
-            trigger: null
-        });
-        dummyData.afterUse.push(user.addMoveDelay.bind(user, action.ability.preparation.prepDelay));
-        return dummyData;
-    }
-    Rance.getPreparationDummyData = getPreparationDummyData;
-    function validateTarget(battle, user, ability, target) {
-        var potentialTargets = getPotentialTargets(battle, user, ability);
-        return potentialTargets.indexOf(target) >= 0;
-    }
-    Rance.validateTarget = validateTarget;
-    function getTargetOrGuard(battle, user, ability, target) {
-        if (ability.bypassesGuard) {
-            return target;
-        }
-        var guarding = getGuarders(battle, user, ability, target);
-        guarding = guarding.sort(function (a, b) {
-            return a.battleStats.guardAmount - b.battleStats.guardAmount;
-        });
-        for (var i = 0; i < guarding.length; i++) {
-            var guardRoll = Math.random() * 100;
-            if (guardRoll <= guarding[i].battleStats.guardAmount) {
-                return guarding[i];
-            }
-        }
-        return target;
-    }
-    Rance.getTargetOrGuard = getTargetOrGuard;
-    function getGuarders(battle, user, ability, target) {
-        var enemySide = Rance.reverseSide(user.battleStats.side);
-        if (target.battleStats.side !== enemySide)
-            return [];
-        var allEnemies = battle.unitsBySide[enemySide];
-        var guarders = allEnemies.filter(function (unit) {
-            if (!unit.isTargetable)
-                return false;
-            if (unit.battleStats.guardCoverage === Rance.GuardCoverage.all) {
-                return unit.battleStats.guardAmount > 0;
-            }
-            else if (unit.battleStats.guardCoverage === Rance.GuardCoverage.row) {
-                // same row
-                if (unit.battleStats.position[0] === target.battleStats.position[0]) {
-                    return unit.battleStats.guardAmount > 0;
-                }
-            }
-        });
-        return guarders;
-    }
-    Rance.getGuarders = getGuarders;
-    function getPotentialTargets(battle, user, ability) {
-        var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
-        var targetsInRange = ability.mainEffect.template.targetRangeFunction(fleetsToTarget, user);
-        var untargetableFilterFN = function (target) {
-            if (!Boolean(target)) {
-                return false;
-            }
-            else if (!target.isTargetable()) {
-                return false;
-            }
-            return true;
-        };
-        var targets = targetsInRange.filter(untargetableFilterFN);
-        return targets;
-    }
-    Rance.getPotentialTargets = getPotentialTargets;
-    function getFleetsToTarget(battle, user, effect) {
-        var nullFleet = [];
-        var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
-        var columns = app.moduleData.ruleSet.battle.cellsPerRow;
-        for (var i = 0; i < rows; i++) {
-            nullFleet.push([]);
-            for (var j = 0; j < columns; j++) {
-                nullFleet[i].push(null);
-            }
-        }
-        var insertNullBefore;
-        var toConcat;
-        switch (effect.targetFleets) {
-            case Rance.TargetFleet.either:
-                {
-                    return battle.side1.concat(battle.side2);
-                }
-            case Rance.TargetFleet.ally:
-                {
-                    insertNullBefore = user.battleStats.side === "side1" ? false : true;
-                    toConcat = battle[user.battleStats.side];
-                    break;
-                }
-            case Rance.TargetFleet.enemy:
-                {
-                    insertNullBefore = user.battleStats.side === "side1" ? true : false;
-                    toConcat = battle[Rance.reverseSide(user.battleStats.side)];
-                    break;
-                }
-        }
-        if (insertNullBefore) {
-            return nullFleet.concat(toConcat);
-        }
-        else {
-            return toConcat.concat(nullFleet);
-        }
-    }
-    Rance.getFleetsToTarget = getFleetsToTarget;
-    function getPotentialTargetsByPosition(battle, user, ability) {
-        var targets = getPotentialTargets(battle, user, ability);
-        var targetPositions = [];
-        for (var i = 0; i < targets.length; i++) {
-            targetPositions.push(targets[i].battleStats.position);
-        }
-        return targetPositions;
-    }
-    Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
-    function getUnitsInAbilityArea(battle, user, ability, target) {
-        var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
-        if (ability.secondaryEffects) {
-            for (var i = 0; i < ability.secondaryEffects.length; i++) {
-                var inSecondary = getUnitsInEffectArea(battle, user, ability.secondaryEffects[i].template, target);
-                for (var j = 0; j < inSecondary.length; j++) {
-                    if (inArea.indexOf(inSecondary[j]) === -1) {
-                        inArea.push(inSecondary[j]);
-                    }
-                }
-            }
-        }
-        return inArea;
-    }
-    Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
-    function getUnitsInEffectArea(battle, user, effect, target) {
-        var targetFleets = getFleetsToTarget(battle, user, effect);
-        var inArea = effect.battleAreaFunction(targetFleets, target);
-        return inArea.filter(function (unit) {
-            if (!unit)
-                return false;
-            else
-                return unit.isActiveInBattle();
-        });
-    }
-    Rance.getUnitsInEffectArea = getUnitsInEffectArea;
-    function getTargetsForAllAbilities(battle, user) {
-        if (!user || !battle.activeUnit) {
-            return null;
-        }
-        var allTargets = {};
-        var abilities = user.getAllAbilities();
-        for (var i = 0; i < abilities.length; i++) {
-            var ability = abilities[i];
-            var targets = getPotentialTargets(battle, user, ability);
-            for (var j = 0; j < targets.length; j++) {
-                var target = targets[j];
-                if (!allTargets[target.id]) {
-                    allTargets[target.id] = [];
-                }
-                allTargets[target.id].push(ability);
-            }
-        }
-        return allTargets;
-    }
-    Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/iitemtemplate.d.ts" />
-/// <reference path="unit.ts" />
-var Rance;
-(function (Rance) {
-    var Item = (function () {
-        function Item(template, id) {
-            this.id = isFinite(id) ? id : Rance.idGenerators.item++;
-            this.template = template;
-        }
-        Item.prototype.serialize = function () {
+        Fleet.prototype.serialize = function () {
             var data = {};
-            data.id = this.id;
-            data.templateType = this.template.type;
-            if (this.unit) {
-                data.unitId = this.unit.id;
-            }
-            return data;
-        };
-        return Item;
-    }());
-    Rance.Item = Item;
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
-var Rance;
-(function (Rance) {
-    var StatusEffect = (function () {
-        function StatusEffect(template, duration) {
-            this.template = template;
-            this.duration = duration;
-        }
-        StatusEffect.prototype.processTurnEnd = function () {
-            if (this.duration > 0) {
-                this.duration--;
-            }
-        };
-        StatusEffect.prototype.clone = function () {
-            return new StatusEffect(this.template, this.duration);
-        };
-        return StatusEffect;
-    }());
-    Rance.StatusEffect = StatusEffect;
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/iunittemplate.d.ts" />
-/// <reference path="damagetype.ts" />
-/// <reference path="unitattributes.ts"/>
-/// <reference path="utility.ts"/>
-/// <reference path="ability.ts"/>
-/// <reference path="battle.ts"/>
-/// <reference path="item.ts"/>
-/// <reference path="statuseffect.ts" />
-var Rance;
-(function (Rance) {
-    Rance.UnitBattleSidesArray = ["side1", "side2"];
-    (function (GuardCoverage) {
-        GuardCoverage[GuardCoverage["row"] = 0] = "row";
-        GuardCoverage[GuardCoverage["all"] = 1] = "all";
-    })(Rance.GuardCoverage || (Rance.GuardCoverage = {}));
-    var GuardCoverage = Rance.GuardCoverage;
-    var Unit = (function () {
-        function Unit(template, id, data) {
-            this.abilities = [];
-            this.passiveSkills = [];
-            this.items = {
-                low: null,
-                mid: null,
-                high: null
-            };
-            this.passiveSkillsByPhase = {};
-            this.passiveSkillsByPhaseAreDirty = true;
-            this.uiDisplayIsDirty = true;
-            this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
-            this.template = template;
-            this.isSquadron = template.isSquadron;
-            if (data) {
-                this.makeFromData(data);
-            }
-            else {
-                this.setCulture();
-                this.setInitialValues();
-            }
-            this.displayFlags =
-                {
-                    isAnnihilated: false
-                };
-        }
-        Object.defineProperty(Unit.prototype, "attributes", {
-            get: function () {
-                if (this.attributesAreDirty || !this.cachedAttributes) {
-                    this.updateCachedAttributes();
-                }
-                return this.cachedAttributes;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Unit.prototype.makeFromData = function (data) {
-            var items = {};
-            ["low", "mid", "high"].forEach(function (slot) {
-                if (data.items[slot]) {
-                    var item = data.items[slot];
-                    if (!item)
-                        return;
-                    if (item.templateType) {
-                        items[slot] = new Rance.Item(app.moduleData.Templates.Items[item.templateType], item.id);
-                    }
-                    else {
-                        items[slot] = item;
-                    }
-                }
-            });
-            this.name = data.name;
-            this.maxHealth = data.maxHealth;
-            this.currentHealth = data.currentHealth;
-            this.currentMovePoints = data.currentMovePoints;
-            this.maxMovePoints = data.maxMovePoints;
-            this.timesActedThisTurn = data.timesActedThisTurn;
-            this.baseAttributes = Rance.extendObject(data.baseAttributes);
-            this.attributes = Rance.extendObject(this.baseAttributes);
-            this.abilities = data.abilityTemplateTypes.map(function (key) {
-                return app.moduleData.Templates.Abilities[key];
-            });
-            this.passiveSkills = data.passiveSkillTemplateTypes.map(function (key) {
-                return app.moduleData.Templates.PassiveSkills[key];
-            });
-            this.experienceForCurrentLevel = data.experienceForCurrentLevel;
-            this.level = data.level;
-            var battleStats = {};
-            battleStats.moveDelay = data.battleStats.moveDelay;
-            battleStats.side = data.battleStats.side;
-            battleStats.position = data.battleStats.position;
-            battleStats.currentActionPoints = data.battleStats.currentActionPoints;
-            battleStats.guardAmount = data.battleStats.guardAmount;
-            battleStats.guardCoverage = data.battleStats.guardCoverage;
-            battleStats.captureChance = data.battleStats.captureChance;
-            battleStats.statusEffects = data.battleStats.statusEffects;
-            battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-            battleStats.queuedAction = data.queuedAction;
-            this.battleStats = battleStats;
-            this.items =
-                {
-                    low: null,
-                    mid: null,
-                    high: null
-                };
-            for (var slot in items) {
-                this.addItem(items[slot]);
-            }
-            if (data.portraitKey) {
-                this.portrait = Rance.findItemWithKey(app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
-            }
-        };
-        Unit.prototype.setInitialValues = function () {
-            this.setBaseHealth();
-            this.setAttributes();
-            this.resetBattleStats();
-            this.maxMovePoints = this.template.maxMovePoints;
-            this.resetMovePoints();
-            this.setInitialAbilities();
-            this.setInitialPassiveSkills();
-            this.level = 1;
-            this.experienceForCurrentLevel = 0;
-            this.timesActedThisTurn = 0;
-        };
-        Unit.prototype.setBaseHealth = function (multiplier) {
-            if (multiplier === void 0) { multiplier = 1; }
-            var min = 200 * this.template.maxHealth * multiplier;
-            var max = 300 * this.template.maxHealth * multiplier;
-            this.maxHealth = Rance.randInt(min, max);
-            this.currentHealth = this.maxHealth;
-        };
-        Unit.prototype.setAttributes = function (baseSkill, variance) {
-            if (baseSkill === void 0) { baseSkill = 1; }
-            if (variance === void 0) { variance = 1; }
-            var template = this.template;
-            var attributes = {
-                attack: 1,
-                defence: 1,
-                intelligence: 1,
-                speed: 1,
-                maxActionPoints: Rance.randInt(3, 5)
-            };
-            for (var attribute in template.attributeLevels) {
-                var attributeLevel = template.attributeLevels[attribute];
-                var min = Math.max(3 * baseSkill * attributeLevel, 1);
-                var max = Math.max(5 * baseSkill * attributeLevel + variance, 1);
-                attributes[attribute] = Rance.randInt(min, max);
-                if (attributes[attribute] > 9)
-                    attributes[attribute] = 9;
-            }
-            this.baseAttributes = Rance.extendObject(attributes);
-            this.attributes = attributes;
-            this.attributesAreDirty = true;
-        };
-        Unit.prototype.setCulture = function () {
-            var templateCultures = this.template.cultures;
-            var nameGeneratorFN;
-            var nameGeneratorCandidateCultures = templateCultures.filter(function (cultureTemplate) {
-                return Boolean(cultureTemplate.nameGenerator);
-            });
-            if (nameGeneratorCandidateCultures.length > 0) {
-                nameGeneratorFN = Rance.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
-            }
-            else {
-                nameGeneratorFN = Rance.defaultNameGenerator;
-            }
-            this.name = nameGeneratorFN(this);
-            var portraitCandidateCultures = templateCultures.filter(function (cultureTemplate) {
-                return Boolean(cultureTemplate.portraits);
-            });
-            if (portraitCandidateCultures.length === 0) {
-                portraitCandidateCultures = Rance.getAllPropertiesWithKey(app.moduleData.Templates.Cultures, "portraits");
-                if (portraitCandidateCultures.length === 0) {
-                    console.warn("No culture has portraits specified"); //TODO culture
-                    return;
-                }
-            }
-            var portraitCandidateCulturesWithWeights = portraitCandidateCultures.map(function (culture) {
-                return ({
-                    weight: Object.keys(culture.portraits).length,
-                    culture: culture
-                });
-            });
-            var portraitCulture = Rance.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
-            this.portrait = Rance.getRandomProperty(portraitCulture.portraits);
-        };
-        Unit.prototype.getBaseMoveDelay = function () {
-            return 30 - this.attributes.speed;
-        };
-        Unit.prototype.resetMovePoints = function () {
-            this.currentMovePoints = this.maxMovePoints;
-        };
-        Unit.prototype.resetBattleStats = function () {
-            this.battleStats =
-                {
-                    moveDelay: this.getBaseMoveDelay(),
-                    currentActionPoints: this.attributes.maxActionPoints,
-                    side: null,
-                    position: null,
-                    guardAmount: 0,
-                    guardCoverage: null,
-                    captureChance: app.moduleData.ruleSet.battle.baseUnitCaptureChance,
-                    statusEffects: [],
-                    lastHealthBeforeReceivingDamage: this.currentHealth,
-                    queuedAction: null
-                };
-            this.displayFlags =
-                {
-                    isAnnihilated: false
-                };
-        };
-        Unit.prototype.setBattlePosition = function (battle, side, position) {
-            this.battleStats.side = side;
-            this.battleStats.position = position;
-        };
-        Unit.prototype.addStrength = function (amount) {
-            this.currentHealth += Math.round(amount);
-            if (this.currentHealth > this.maxHealth) {
-                this.currentHealth = this.maxHealth;
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.removeStrength = function (amount) {
-            this.currentHealth -= Math.round(amount);
-            this.currentHealth = Rance.clamp(this.currentHealth, 0, this.maxHealth);
-            if (amount > 0) {
-                this.removeGuard(40);
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.removeActionPoints = function (amount) {
-            this.battleStats.currentActionPoints -= amount;
-            if (this.battleStats.currentActionPoints < 0) {
-                this.battleStats.currentActionPoints = 0;
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.addMoveDelay = function (amount) {
-            this.battleStats.moveDelay += amount;
-        };
-        Unit.prototype.updateStatusEffects = function () {
-            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
-                this.battleStats.statusEffects[i].processTurnEnd();
-                if (this.battleStats.statusEffects[i].duration === 0) {
-                    this.removeStatusEffect(this.battleStats.statusEffects[i]);
-                }
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.setQueuedAction = function (ability, target) {
-            this.battleStats.queuedAction =
-                {
-                    ability: ability,
-                    targetId: target.id,
-                    turnsPrepared: 0,
-                    timesInterrupted: 0
-                };
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.interruptQueuedAction = function (interruptStrength) {
-            var action = this.battleStats.queuedAction;
-            if (!action)
-                return;
-            action.timesInterrupted += interruptStrength;
-            if (action.timesInterrupted >= action.ability.preparation.interruptsNeeded) {
-                this.clearQueuedAction();
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.updateQueuedAction = function () {
-            var action = this.battleStats.queuedAction;
-            if (!action)
-                return;
-            action.turnsPrepared++;
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.isReadyToUseQueuedAction = function () {
-            var action = this.battleStats.queuedAction;
-            return (action && action.turnsPrepared >= action.ability.preparation.turnsToPrep);
-        };
-        Unit.prototype.clearQueuedAction = function () {
-            this.battleStats.queuedAction = null;
-            this.uiDisplayIsDirty = true;
-        };
-        // redundant
-        Unit.prototype.isTargetable = function () {
-            return this.currentHealth > 0;
-        };
-        Unit.prototype.isActiveInBattle = function () {
-            return this.currentHealth > 0;
-        };
-        Unit.prototype.addItem = function (item) {
-            var itemSlot = item.template.slot;
-            if (this.items[itemSlot])
-                return false;
-            if (item.unit) {
-                item.unit.removeItem(item);
-            }
-            this.items[itemSlot] = item;
-            item.unit = this;
-            if (item.template.attributes) {
-                this.attributesAreDirty = true;
-            }
-            if (item.template.passiveSkill) {
-                this.passiveSkillsByPhaseAreDirty = true;
-            }
-        };
-        Unit.prototype.removeItem = function (item) {
-            var itemSlot = item.template.slot;
-            if (this.items[itemSlot] === item) {
-                this.items[itemSlot] = null;
-                item.unit = null;
-                if (item.template.attributes) {
-                    this.attributesAreDirty = true;
-                }
-                if (item.template.passiveSkill) {
-                    this.passiveSkillsByPhaseAreDirty = true;
-                }
-                return true;
-            }
-            return false;
-        };
-        Unit.prototype.destroyAllItems = function () {
-            for (var slot in this.items) {
-                var item = this.items[slot];
-                if (item) {
-                    this.fleet.player.removeItem(item);
-                }
-            }
-        };
-        Unit.prototype.getAttributesWithItems = function () {
-            var attributes = Rance.extendObject(this.baseAttributes);
-            for (var itemSlot in this.items) {
-                if (this.items[itemSlot]) {
-                    var item = this.items[itemSlot];
-                    for (var attribute in item.template.attributes) {
-                        attributes[attribute] = Rance.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
-                    }
-                }
-            }
-            return attributes;
-        };
-        Unit.prototype.addStatusEffect = function (statusEffect) {
-            if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1) {
-                throw new Error("Tried to add duplicate status effect to unit " + this.name);
-            }
-            else if (statusEffect.duration === 0) {
-                console.warn("Tried to add status effect", statusEffect, "with 0 duration");
-                return;
-            }
-            this.battleStats.statusEffects.push(statusEffect);
-            if (statusEffect.template.attributes) {
-                this.attributesAreDirty = true;
-            }
-            if (statusEffect.template.passiveSkills) {
-                this.passiveSkillsByPhaseAreDirty = true;
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.removeStatusEffect = function (statusEffect) {
-            var index = this.battleStats.statusEffects.indexOf(statusEffect);
-            if (index === -1) {
-                throw new Error("Tried to remove status effect not active on unit " + this.name);
-            }
-            this.battleStats.statusEffects.splice(index, 1);
-            if (statusEffect.template.attributes) {
-                this.attributesAreDirty = true;
-            }
-            if (statusEffect.template.passiveSkills) {
-                this.passiveSkillsByPhaseAreDirty = true;
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        /*
-        sort by attribute, positive/negative, additive vs multiplicative
-        apply additive, multiplicative
-         */
-        Unit.prototype.getTotalStatusEffectAttributeAdjustments = function () {
-            if (!this.battleStats || !this.battleStats.statusEffects) {
-                return null;
-            }
-            var adjustments = {};
-            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
-                var statusEffect = this.battleStats.statusEffects[i];
-                if (!statusEffect.template.attributes)
-                    continue;
-                for (var attribute in statusEffect.template.attributes) {
-                    adjustments[attribute] = {};
-                    for (var type in statusEffect.template.attributes[attribute]) {
-                        if (!adjustments[attribute][type]) {
-                            adjustments[attribute][type] = 0;
-                        }
-                        adjustments[attribute][type] += statusEffect.template.attributes[attribute][type];
-                    }
-                }
-            }
-            return adjustments;
-        };
-        Unit.prototype.getAttributesWithEffects = function () {
-            var withItems = this.getAttributesWithItems();
-            var adjustments = this.getTotalStatusEffectAttributeAdjustments();
-            for (var attribute in adjustments) {
-                if (adjustments[attribute].flat) {
-                    withItems[attribute] += adjustments[attribute].flat;
-                }
-                if (adjustments[attribute].multiplier) {
-                    withItems[attribute] *= 1 + adjustments[attribute].multiplier;
-                }
-                withItems[attribute] = Rance.clamp(withItems[attribute], -5, 20);
-            }
-            return withItems;
-        };
-        Unit.prototype.updateCachedAttributes = function () {
-            this.cachedAttributes = this.getAttributesWithEffects();
-        };
-        Unit.prototype.removeItemAtSlot = function (slot) {
-            if (this.items[slot]) {
-                this.removeItem(this.items[slot]);
-                return true;
-            }
-            return false;
-        };
-        Unit.prototype.setInitialAbilities = function () {
-            this.abilities = Rance.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
-        };
-        Unit.prototype.setInitialPassiveSkills = function () {
-            if (this.template.possiblePassiveSkills) {
-                this.passiveSkills = Rance.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
-            }
-        };
-        Unit.prototype.getItemAbilities = function () {
-            var itemAbilities = [];
-            for (var slot in this.items) {
-                if (!this.items[slot] || !this.items[slot].template.ability)
-                    continue;
-                itemAbilities.push(this.items[slot].template.ability);
-            }
-            return itemAbilities;
-        };
-        Unit.prototype.getAllAbilities = function () {
-            return this.abilities.concat(this.getItemAbilities());
-        };
-        Unit.prototype.getItemPassiveSkills = function () {
-            var itemPassiveSkills = [];
-            for (var slot in this.items) {
-                if (!this.items[slot] || !this.items[slot].template.passiveSkill)
-                    continue;
-                itemPassiveSkills.push(this.items[slot].template.passiveSkill);
-            }
-            return itemPassiveSkills;
-        };
-        Unit.prototype.getStatusEffectPassiveSkills = function () {
-            var statusEffectPassiveSkills = [];
-            if (!this.battleStats || !this.battleStats.statusEffects) {
-                return statusEffectPassiveSkills;
-            }
-            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
-                var templateSkills = this.battleStats.statusEffects[i].template.passiveSkills;
-                if (templateSkills) {
-                    statusEffectPassiveSkills = statusEffectPassiveSkills.concat(templateSkills);
-                }
-            }
-            return statusEffectPassiveSkills;
-        };
-        Unit.prototype.getAllPassiveSkills = function () {
-            var allSkills = [];
-            allSkills = allSkills.concat(this.passiveSkills);
-            allSkills = allSkills.concat(this.getItemPassiveSkills());
-            allSkills = allSkills.concat(this.getStatusEffectPassiveSkills());
-            return allSkills;
-        };
-        Unit.prototype.updatePassiveSkillsByPhase = function () {
-            var updatedSkills = {};
-            var allSkills = this.getAllPassiveSkills();
-            for (var i = 0; i < allSkills.length; i++) {
-                var skill = allSkills[i];
-                ["atBattleStart", "beforeAbilityUse", "afterAbilityUse", "atTurnStart", "inBattlePrep"].forEach(function (phase) {
-                    if (skill[phase]) {
-                        if (!updatedSkills[phase]) {
-                            updatedSkills[phase] = [];
-                        }
-                        if (updatedSkills[phase].indexOf(skill) === -1) {
-                            updatedSkills[phase].push(skill);
-                        }
-                    }
-                });
-            }
-            this.passiveSkillsByPhase = updatedSkills;
-            this.passiveSkillsByPhaseAreDirty = false;
-        };
-        Unit.prototype.getPassiveSkillsByPhase = function () {
-            if (this.passiveSkillsByPhaseAreDirty) {
-                this.updatePassiveSkillsByPhase();
-            }
-            return this.passiveSkillsByPhase;
-        };
-        Unit.prototype.receiveDamage = function (amount, damageType) {
-            var damageReduction = this.getReducedDamageFactor(damageType);
-            var adjustedDamage = amount * damageReduction;
-            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-            this.removeStrength(adjustedDamage);
-        };
-        Unit.prototype.getAdjustedTroopSize = function () {
-            // used so unit will always counter with at least 1/3 strength it had before being attacked
-            var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
-            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-            var currentHealth = this.isSquadron ?
-                balancedHealth :
-                Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
-            if (currentHealth <= 500) {
-                return currentHealth;
-            }
-            else if (currentHealth <= 2000) {
-                return currentHealth / 2 + 250;
-            }
-            else {
-                return currentHealth / 4 + 750;
-            }
-        };
-        Unit.prototype.getAttackDamageIncrease = function (damageType) {
-            var attackStat, attackFactor;
-            switch (damageType) {
-                case Rance.DamageType.physical:
-                    {
-                        attackStat = this.attributes.attack;
-                        attackFactor = 0.1;
-                        break;
-                    }
-                case Rance.DamageType.magical:
-                    {
-                        attackStat = this.attributes.intelligence;
-                        attackFactor = 0.1;
-                        break;
-                    }
-            }
-            var troopSize = this.getAdjustedTroopSize() / 4;
-            return (1 + attackStat * attackFactor) * troopSize;
-        };
-        Unit.prototype.getReducedDamageFactor = function (damageType) {
-            var defensiveStat, defenceFactor;
-            var finalDamageMultiplier = 1;
-            switch (damageType) {
-                case Rance.DamageType.physical:
-                    {
-                        defensiveStat = this.attributes.defence;
-                        defenceFactor = 0.045;
-                        var guardAmount = Math.min(this.battleStats.guardAmount, 100);
-                        finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
-                        break;
-                    }
-                case Rance.DamageType.magical:
-                    {
-                        defensiveStat = this.attributes.intelligence;
-                        defenceFactor = 0.045;
-                        break;
-                    }
-            }
-            var damageReduction = defensiveStat * defenceFactor;
-            var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
-            return finalDamageFactor;
-        };
-        Unit.prototype.addToFleet = function (fleet) {
-            this.fleet = fleet;
-        };
-        Unit.prototype.removeFromFleet = function () {
-            this.fleet = null;
-        };
-        Unit.prototype.removeFromPlayer = function () {
-            var player = this.fleet.player;
-            this.destroyAllItems();
-            player.removeUnit(this);
-            this.fleet.removeShip(this);
-            if (this.front) {
-                this.front.removeUnit(this);
-            }
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.transferToPlayer = function (newPlayer) {
-            var oldPlayer = this.fleet.player;
-            var location = this.fleet.location;
-            this.removeFromPlayer();
-            newPlayer.addUnit(this);
-            var newFleet = new Rance.Fleet(newPlayer, [this], location);
-        };
-        Unit.prototype.removeGuard = function (amount) {
-            this.battleStats.guardAmount -= amount;
-            if (this.battleStats.guardAmount < 0)
-                this.removeAllGuard();
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.addGuard = function (amount, coverage) {
-            this.battleStats.guardAmount += amount;
-            this.battleStats.guardCoverage = coverage;
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.removeAllGuard = function () {
-            this.battleStats.guardAmount = 0;
-            this.battleStats.guardCoverage = null;
-            this.uiDisplayIsDirty = true;
-        };
-        Unit.prototype.getCounterAttackStrength = function () {
-            return 1; // TODO unit
-        };
-        Unit.prototype.canActThisTurn = function () {
-            return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
-        };
-        Unit.prototype.isStealthy = function () {
-            // TODO unit
-            return this.template.isStealthy;
-        };
-        Unit.prototype.getVisionRange = function () {
-            // TODO unit
-            return this.template.visionRange;
-        };
-        Unit.prototype.getDetectionRange = function () {
-            // TODO unit
-            return this.template.detectionRange;
-        };
-        Unit.prototype.heal = function () {
-            var location = this.fleet.location;
-            var baseHealFactor = 0.05;
-            var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
-            var healAmount = this.maxHealth * healingFactor;
-            this.addStrength(healAmount);
-        };
-        Unit.prototype.getStrengthEvaluation = function () {
-            // TODO unit TODO ai
-            return this.currentHealth;
-        };
-        Unit.prototype.getTotalCost = function () {
-            var totalCost = 0;
-            totalCost += this.template.buildCost;
-            for (var slot in this.items) {
-                if (this.items[slot]) {
-                    totalCost += this.items[slot].template.buildCost;
-                }
-            }
-            return totalCost;
-        };
-        Unit.prototype.getTurnsToReachStar = function (star) {
-            var currentLocation = this.fleet.location;
-            var distance = currentLocation.getDistanceToStar(star);
-            if (distance <= this.currentMovePoints) {
-                if (this.currentMovePoints === 0) {
-                    return 0;
-                }
-                else {
-                    return distance / this.currentMovePoints;
-                }
-            }
-            distance -= this.currentMovePoints; // current turn
-            return distance / this.maxMovePoints; // future turns
-        };
-        Unit.prototype.getExperienceToNextLevel = function () {
-            return (4 + this.level) * 10;
-        };
-        Unit.prototype.addExperience = function (amount) {
-            this.experienceForCurrentLevel += Math.round(amount);
-        };
-        Unit.prototype.canLevelUp = function () {
-            return this.experienceForCurrentLevel >= this.getExperienceToNextLevel();
-        };
-        Unit.prototype.handleLevelUp = function () {
-            this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
-            this.level++;
-        };
-        Unit.prototype.hasAbility = function (ability, allAbilities) {
-            for (var i = 0; i < allAbilities.length; i++) {
-                if (allAbilities[i].type === ability.type) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        Unit.prototype.getLearnableAbilities = function (allAbilities) {
-            var abilities = [];
-            if (!this.template.learnableAbilities)
-                return abilities;
-            for (var i = 0; i < this.template.learnableAbilities.length; i++) {
-                var learnableItem = this.template.learnableAbilities[i];
-                if (Array.isArray(learnableItem)) {
-                    var hasAbilityFromGroup = false;
-                    for (var j = 0; j < learnableItem.length; j++) {
-                        if (this.hasAbility(learnableItem[j], allAbilities)) {
-                            hasAbilityFromGroup = true;
-                            break;
-                        }
-                    }
-                    if (!hasAbilityFromGroup) {
-                        abilities = abilities.concat(learnableItem);
-                    }
-                }
-                else if (!this.hasAbility(learnableItem, allAbilities)) {
-                    abilities.push(learnableItem);
-                }
-            }
-            return abilities;
-        };
-        Unit.prototype.canUpgradeIntoAbility = function (ability, allAbilities) {
-            if (ability.onlyAllowExplicitUpgrade) {
-                if (!this.template.specialAbilityUpgrades || this.template.specialAbilityUpgrades.indexOf(ability) === -1) {
-                    return false;
-                }
-            }
-            if (this.hasAbility(ability, allAbilities)) {
-                return false;
-            }
-            return true;
-        };
-        Unit.prototype.getAbilityUpgradeData = function () {
-            var upgradeData = {};
-            var allAbilities = this.getAllAbilities();
-            allAbilities = allAbilities.concat(this.getAllPassiveSkills());
-            var templates = app.moduleData.Templates;
-            for (var i = 0; i < allAbilities.length; i++) {
-                var parentAbility = allAbilities[i];
-                if (!parentAbility.canUpgradeInto)
-                    continue;
-                for (var j = 0; j < parentAbility.canUpgradeInto.length; j++) {
-                    var childAbilityType = parentAbility.canUpgradeInto[j];
-                    var childAbility = templates.Abilities[childAbilityType] || templates.PassiveSkills[childAbilityType];
-                    if (!childAbility)
-                        throw new Error("Invalid ability upgrade " + childAbilityType);
-                    if (this.canUpgradeIntoAbility(childAbility, allAbilities)) {
-                        if (!upgradeData[parentAbility.type]) {
-                            upgradeData[parentAbility.type] =
-                                {
-                                    base: parentAbility,
-                                    possibleUpgrades: []
-                                };
-                        }
-                        upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
-                    }
-                }
-            }
-            var learnable = this.getLearnableAbilities(allAbilities);
-            if (learnable.length > 0) {
-                upgradeData["learnable"] =
-                    {
-                        base: null,
-                        possibleUpgrades: learnable
-                    };
-            }
-            return upgradeData;
-        };
-        Unit.prototype.upgradeAbility = function (source, newAbility) {
-            var newAbilityIsPassiveSkill = !newAbility.mainEffect;
-            if (source) {
-                var sourceIsPassiveSkill = !source.mainEffect;
-                if (sourceIsPassiveSkill) {
-                    this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
-                }
-                else {
-                    var castedSource = source;
-                    this.abilities.splice(this.abilities.indexOf(castedSource), 1);
-                }
-            }
-            if (newAbilityIsPassiveSkill) {
-                this.passiveSkills.push(newAbility);
-            }
-            else {
-                var castedNewAbility = newAbility;
-                this.abilities.push(castedNewAbility);
-            }
-        };
-        Unit.prototype.drawBattleScene = function (SFXParams) {
-            this.template.unitDrawingFN(this, SFXParams);
-        };
-        Unit.prototype.serialize = function (includeItems, includeFluff) {
-            if (includeItems === void 0) { includeItems = true; }
-            if (includeFluff === void 0) { includeFluff = true; }
-            var data = {};
-            data.templateType = this.template.type;
             data.id = this.id;
             data.name = this.name;
-            data.maxHealth = this.maxHealth;
-            data.currentHealth = this.currentHealth;
-            data.currentMovePoints = this.currentMovePoints;
-            data.maxMovePoints = this.maxMovePoints;
-            data.timesActedThisTurn = this.timesActedThisTurn;
-            data.baseAttributes = Rance.extendObject(this.baseAttributes);
-            data.abilityTemplateTypes = this.abilities.map(function (ability) {
-                return ability.type;
-            });
-            data.passiveSkillTemplateTypes = this.passiveSkills.map(function (passiveSkill) {
-                return passiveSkill.type;
-            });
-            data.experienceForCurrentLevel = this.experienceForCurrentLevel;
-            data.level = this.level;
-            data.battleStats = {};
-            data.battleStats.moveDelay = this.battleStats.moveDelay;
-            data.battleStats.side = this.battleStats.side;
-            data.battleStats.position = this.battleStats.position;
-            data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
-            data.battleStats.guardAmount = this.battleStats.guardAmount;
-            data.battleStats.guardCoverage = this.battleStats.guardCoverage;
-            data.battleStats.captureChance = this.battleStats.captureChance;
-            data.battleStats.statusEffects = this.battleStats.statusEffects.map(function (statusEffect) {
-                return statusEffect.clone();
-            });
-            data.battleStats.queuedAction = this.battleStats.queuedAction;
-            if (this.fleet) {
-                data.fleetId = this.fleet.id;
-            }
-            data.items = {};
-            if (includeItems) {
-                for (var slot in this.items) {
-                    if (this.items[slot])
-                        data.items[slot] = this.items[slot].serialize();
-                }
-            }
-            if (includeFluff) {
-                data.portraitKey = this.portrait.key;
-            }
+            data.locationId = this.location.id;
+            data.playerId = this.player.id;
+            data.ships = this.ships.map(function (ship) { return ship.serialize(false); });
             return data;
         };
-        Unit.prototype.makeVirtualClone = function () {
-            var data = this.serialize(true, false);
-            var clone = new Unit(this.template, this.id, data);
-            return clone;
-        };
-        return Unit;
+        return Fleet;
     }());
-    Rance.Unit = Unit;
+    Rance.Fleet = Fleet;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
 /// <reference path="range.ts" />
@@ -5681,6 +2700,28 @@ var Rance;
         return Flag;
     }());
     Rance.Flag = Flag;
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/iitemtemplate.d.ts" />
+/// <reference path="unit.ts" />
+var Rance;
+(function (Rance) {
+    var Item = (function () {
+        function Item(template, id) {
+            this.id = isFinite(id) ? id : Rance.idGenerators.item++;
+            this.template = template;
+        }
+        Item.prototype.serialize = function () {
+            var data = {};
+            data.id = this.id;
+            data.templateType = this.template.type;
+            if (this.unit) {
+                data.unitId = this.unit.id;
+            }
+            return data;
+        };
+        return Item;
+    }());
+    Rance.Item = Item;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="battle.ts" />
@@ -9770,6 +6811,3017 @@ var Rance;
     }());
     Rance.Player = Player;
 })(Rance || (Rance = {}));
+/// <reference path="player.ts"/>
+/// <reference path="unit.ts"/>
+/// <reference path="star.ts"/>
+/// <reference path="building.ts"/>
+/// <reference path="battledata.ts"/>
+/// <reference path="unit.ts"/>
+/// <reference path="eventmanager.ts"/>
+var Rance;
+(function (Rance) {
+    var Battle = (function () {
+        function Battle(props) {
+            this.unitsById = {};
+            this.unitsBySide = {
+                side1: [],
+                side2: []
+            };
+            this.turnOrder = [];
+            this.evaluation = {};
+            this.isSimulated = false; // true when battle is between two
+            // ai players
+            this.isVirtual = false; // true when a clone made by battle ai
+            this.ended = false;
+            this.afterFinishCallbacks = [];
+            this.side1 = props.side1;
+            this.side1Player = props.side1Player;
+            this.side2 = props.side2;
+            this.side2Player = props.side2Player;
+            this.battleData = props.battleData;
+        }
+        Battle.prototype.init = function () {
+            var self = this;
+            Rance.UnitBattleSidesArray.forEach(function (sideId) {
+                var side = self[sideId];
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (side[i][j]) {
+                            self.unitsById[side[i][j].id] = side[i][j];
+                            self.unitsBySide[sideId].push(side[i][j]);
+                            var pos = self.getAbsolutePositionFromSidePosition([i, j], sideId);
+                            self.initUnit(side[i][j], sideId, pos);
+                        }
+                    }
+                }
+            });
+            this.currentTurn = 0;
+            this.maxTurns = 24;
+            this.turnsLeft = this.maxTurns;
+            this.updateTurnOrder();
+            this.setActiveUnit();
+            this.startHealth =
+                {
+                    side1: this.getTotalHealthForSide("side1").current,
+                    side2: this.getTotalHealthForSide("side2").current
+                };
+            if (this.checkBattleEnd()) {
+                this.endBattle();
+            }
+            else {
+                this.shiftRowsIfNeeded();
+            }
+            this.triggerBattleStartAbilities();
+        };
+        Battle.prototype.forEachUnit = function (operator) {
+            for (var id in this.unitsById) {
+                operator.call(this, this.unitsById[id]);
+            }
+        };
+        Battle.prototype.initUnit = function (unit, side, position) {
+            unit.resetBattleStats();
+            unit.setBattlePosition(this, side, position);
+            this.addUnitToTurnOrder(unit);
+            unit.timesActedThisTurn++;
+        };
+        Battle.prototype.triggerBattleStartAbilities = function () {
+            this.forEachUnit(function (unit) {
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase["atBattleStart"]) {
+                    var skills = passiveSkillsByPhase["atBattleStart"];
+                    for (var i = 0; i < skills.length; i++) {
+                        for (var j = 0; j < skills[i].atBattleStart.length; j++) {
+                            var effect = skills[i].atBattleStart[j];
+                            effect.template.effect(unit, unit, this, effect.data);
+                        }
+                    }
+                }
+            });
+        };
+        Battle.prototype.removeUnitFromTurnOrder = function (unit) {
+            var unitIndex = this.turnOrder.indexOf(unit);
+            if (unitIndex < 0)
+                return false; //not in list
+            this.turnOrder.splice(unitIndex, 1);
+        };
+        Battle.prototype.addUnitToTurnOrder = function (unit) {
+            var unitIndex = this.turnOrder.indexOf(unit);
+            if (unitIndex >= 0)
+                return false; //already in list
+            this.turnOrder.push(unit);
+        };
+        Battle.prototype.updateTurnOrder = function () {
+            //Sorting function is in utility.ts for reusing in turn order UI.
+            //Maybe should make separate TurnOrder class?
+            this.turnOrder.sort(Rance.turnOrderSortFunction);
+            function turnOrderFilterFunction(unit) {
+                if (unit.battleStats.currentActionPoints <= 0) {
+                    return false;
+                }
+                if (unit.currentHealth <= 0) {
+                    return false;
+                }
+                return true;
+            }
+            this.turnOrder = this.turnOrder.filter(turnOrderFilterFunction);
+        };
+        Battle.prototype.setActiveUnit = function () {
+            this.activeUnit = this.turnOrder[0];
+        };
+        Battle.prototype.endTurn = function () {
+            this.currentTurn++;
+            this.turnsLeft--;
+            this.updateTurnOrder();
+            this.setActiveUnit();
+            if (!this.isVirtual) {
+                this.forEachUnit(function (unit) {
+                    if (unit.currentHealth <= 0) {
+                        unit.displayFlags.isAnnihilated = true;
+                        unit.uiDisplayIsDirty = true;
+                    }
+                });
+            }
+            var shouldEnd = this.checkBattleEnd();
+            if (shouldEnd) {
+                this.endBattle();
+            }
+            else {
+                this.shiftRowsIfNeeded();
+            }
+        };
+        Battle.prototype.getPlayerForSide = function (side) {
+            if (side === "side1")
+                return this.side1Player;
+            else if (side === "side2")
+                return this.side2Player;
+            else
+                throw new Error("invalid side");
+        };
+        Battle.prototype.getSideForPlayer = function (player) {
+            if (this.side1Player === player)
+                return "side1";
+            else if (this.side2Player === player)
+                return "side2";
+            else
+                throw new Error("invalid player");
+        };
+        Battle.prototype.getActivePlayer = function () {
+            if (!this.activeUnit)
+                return null;
+            var side = this.activeUnit.battleStats.side;
+            return this.getPlayerForSide(side);
+        };
+        Battle.prototype.getRowByPosition = function (position) {
+            var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+            var side = position < rowsPerSide ? "side1" : "side2";
+            var relativePosition = position % rowsPerSide;
+            return this[side][relativePosition];
+        };
+        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
+            if (!victor || victor.isIndependent)
+                return [];
+            var winningSide = this.getSideForPlayer(victor);
+            var losingSide = Rance.reverseSide(winningSide);
+            var losingUnits = this.unitsBySide[losingSide].slice(0);
+            losingUnits.sort(function (a, b) {
+                var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
+                if (captureChanceSort) {
+                    return captureChanceSort;
+                }
+                else {
+                    return Rance.randInt(0, 1) * 2 - 1; // -1 or 1
+                }
+            });
+            var capturedUnits = [];
+            for (var i = 0; i < losingUnits.length; i++) {
+                if (capturedUnits.length >= maxCapturedUnits)
+                    break;
+                var unit = losingUnits[i];
+                if (unit.currentHealth <= 0 &&
+                    Math.random() <= unit.battleStats.captureChance) {
+                    capturedUnits.push(unit);
+                }
+            }
+            return capturedUnits;
+        };
+        Battle.prototype.getUnitDeathChance = function (unit, victor) {
+            var ruleSet = app.moduleData.ruleSet;
+            var player = unit.fleet.player;
+            var deathChance;
+            if (player.isIndependent) {
+                deathChance = ruleSet.battle.independentUnitDeathChance;
+            }
+            else if (player.isAI) {
+                deathChance = ruleSet.battle.aiUnitDeathChance;
+            }
+            else {
+                deathChance = ruleSet.battle.humanUnitDeathChance;
+            }
+            var playerDidLose = (victor && player !== victor);
+            if (playerDidLose) {
+                deathChance += ruleSet.battle.loserUnitExtraDeathChance;
+            }
+            return deathChance;
+        };
+        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
+            var deadUnits = [];
+            this.forEachUnit(function (unit) {
+                if (unit.currentHealth <= 0) {
+                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
+                    if (!wasCaptured) {
+                        var deathChance = this.getUnitDeathChance(unit, victor);
+                        if (Math.random() < deathChance) {
+                            deadUnits.push(unit);
+                        }
+                    }
+                }
+            });
+            return deadUnits;
+        };
+        Battle.prototype.endBattle = function () {
+            this.ended = true;
+            if (this.isVirtual)
+                return;
+            this.activeUnit = null;
+            var victor = this.getVictor();
+            var maxCapturedUnits = app.moduleData.ruleSet.battle.baseMaxCapturedUnits;
+            // TODO content | Abilities that increase max captured units
+            this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
+            this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
+            Rance.eventManager.dispatchEvent("battleEnd", null);
+        };
+        Battle.prototype.finishBattle = function (forcedVictor) {
+            var victor = forcedVictor || this.getVictor();
+            for (var i = 0; i < this.deadUnits.length; i++) {
+                this.deadUnits[i].removeFromPlayer();
+            }
+            var experiencePerSide = this.getGainedExperiencePerSide();
+            this.forEachUnit(function (unit) {
+                unit.addExperience(experiencePerSide[unit.battleStats.side]);
+                unit.resetBattleStats();
+                if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
+                    unit.currentHealth = Math.round(unit.maxHealth * 0.1);
+                }
+                this.side1Player.identifyUnit(unit);
+                this.side2Player.identifyUnit(unit);
+            });
+            if (victor) {
+                for (var i = 0; i < this.capturedUnits.length; i++) {
+                    this.capturedUnits[i].transferToPlayer(victor);
+                    this.capturedUnits[i].experienceForCurrentLevel = 0;
+                }
+            }
+            if (this.battleData.building) {
+                if (victor) {
+                    this.battleData.building.setController(victor);
+                }
+            }
+            if (this.isSimulated) {
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.battleData.location);
+            }
+            else {
+                Rance.eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
+                Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
+            }
+            if (app.humanPlayer.starIsVisible(this.battleData.location)) {
+                Rance.eventManager.dispatchEvent("makeBattleFinishNotification", {
+                    location: this.battleData.location,
+                    attacker: this.battleData.attacker.player,
+                    defender: this.battleData.defender.player,
+                    victor: victor
+                });
+            }
+            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
+                this.afterFinishCallbacks[i]();
+            }
+        };
+        Battle.prototype.getVictor = function () {
+            var evaluation = this.getEvaluation();
+            if (evaluation > 0)
+                return this.side1Player;
+            else if (evaluation < 0)
+                return this.side2Player;
+            else
+                return null;
+        };
+        Battle.prototype.getTotalHealthForRow = function (position) {
+            var row = this.getRowByPosition(position);
+            var total = 0;
+            for (var i = 0; i < row.length; i++) {
+                if (row[i]) {
+                    total += row[i].currentHealth;
+                }
+            }
+            return total;
+        };
+        Battle.prototype.getTotalHealthForSide = function (side) {
+            var health = {
+                current: 0,
+                max: 0
+            };
+            var units = this.unitsBySide[side];
+            for (var i = 0; i < units.length; i++) {
+                var unit = units[i];
+                health.current += unit.currentHealth;
+                health.max += unit.maxHealth;
+            }
+            return health;
+        };
+        Battle.prototype.getEvaluation = function () {
+            var self = this;
+            var evaluation = 0;
+            Rance.UnitBattleSidesArray.forEach(function (side) {
+                // positive * sign === good, negative * sign === bad
+                var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
+                var currentHealth = self.getTotalHealthForSide(side).current;
+                if (currentHealth <= 0) {
+                    return -999 * sign;
+                }
+                // how much health remains from strating health 0.0-1.0
+                var currentHealthFactor = currentHealth / self.startHealth[side];
+                for (var i = 0; i < self.unitsBySide[side].length; i++) {
+                    if (self.unitsBySide[side][i].currentHealth <= 0) {
+                        evaluation -= 0.2 * sign;
+                    }
+                }
+                var defenderMultiplier = 1;
+                if (self.battleData.building) {
+                    var template = self.battleData.building.template;
+                    var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
+                    if (isDefender) {
+                        defenderMultiplier += template.defenderAdvantage;
+                    }
+                }
+                evaluation += currentHealthFactor * defenderMultiplier * sign;
+            });
+            evaluation = Rance.clamp(evaluation, -1, 1);
+            this.evaluation[this.currentTurn] = evaluation;
+            return this.evaluation[this.currentTurn];
+        };
+        Battle.prototype.getAbsolutePositionFromSidePosition = function (relativePosition, side) {
+            if (side === "side1") {
+                return relativePosition;
+            }
+            else {
+                var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+                return [relativePosition[0] + rowsPerSide, relativePosition[1]];
+            }
+        };
+        Battle.prototype.updateBattlePositions = function (side) {
+            var units = this[side];
+            for (var i = 0; i < units.length; i++) {
+                var row = this[side][i];
+                for (var j = 0; j < row.length; j++) {
+                    var pos = this.getAbsolutePositionFromSidePosition([i, j], side);
+                    var unit = row[j];
+                    if (unit) {
+                        unit.setBattlePosition(this, side, pos);
+                    }
+                }
+            }
+        };
+        Battle.prototype.shiftRowsForSide = function (side) {
+            var formation = this[side];
+            if (side === "side1") {
+                formation.reverse();
+            }
+            var nextHealthyRowIndex;
+            // start at 1 because frontmost row shouldn't be healthy if this is called
+            for (var i = 1; i < formation.length; i++) {
+                var absoluteRow = side === "side1" ? i : i + app.moduleData.ruleSet.battle.rowsPerFormation;
+                if (this.getTotalHealthForRow(absoluteRow) > 0) {
+                    nextHealthyRowIndex = i;
+                    break;
+                }
+            }
+            if (!isFinite(nextHealthyRowIndex)) {
+                throw new Error("Tried to shift battle rows when all rows are defeated");
+            }
+            var rowsToShift = formation.splice(0, nextHealthyRowIndex);
+            formation = formation.concat(rowsToShift);
+            if (side === "side1") {
+                formation.reverse();
+            }
+            this[side] = formation;
+            this.updateBattlePositions(side);
+        };
+        Battle.prototype.shiftRowsIfNeeded = function () {
+            var rowsPerSide = app.moduleData.ruleSet.battle.rowsPerFormation;
+            var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
+            if (side1FrontRowHealth <= 0) {
+                this.shiftRowsForSide("side1");
+            }
+            var side2FrontRowHealth = this.getTotalHealthForRow(rowsPerSide);
+            if (side2FrontRowHealth <= 0) {
+                this.shiftRowsForSide("side2");
+            }
+        };
+        Battle.prototype.getGainedExperiencePerSide = function () {
+            var totalValuePerSide = {
+                side1: 0,
+                side2: 0
+            };
+            for (var side in this.unitsBySide) {
+                var totalValue = 0;
+                var units = this.unitsBySide[side];
+                for (var i = 0; i < units.length; i++) {
+                    totalValuePerSide[side] += units[i].level + 1;
+                }
+            }
+            return ({
+                side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
+                side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
+            });
+        };
+        Battle.prototype.checkBattleEnd = function () {
+            if (!this.activeUnit)
+                return true;
+            if (this.turnsLeft <= 0)
+                return true;
+            if (this.getTotalHealthForSide("side1").current <= 0 ||
+                this.getTotalHealthForSide("side2").current <= 0) {
+                return true;
+            }
+            return false;
+        };
+        Battle.prototype.makeVirtualClone = function () {
+            var battleData = this.battleData;
+            function cloneUnits(units) {
+                var clones = [];
+                for (var i = 0; i < units.length; i++) {
+                    var row = [];
+                    for (var j = 0; j < units[i].length; j++) {
+                        var unit = units[i][j];
+                        if (!unit) {
+                            row.push(unit);
+                        }
+                        else {
+                            row.push(unit.makeVirtualClone());
+                        }
+                    }
+                    clones.push(row);
+                }
+                return clones;
+            }
+            var side1 = cloneUnits(this.side1);
+            var side2 = cloneUnits(this.side2);
+            var side1Player = this.side1Player;
+            var side2Player = this.side2Player;
+            var clone = new Battle({
+                battleData: battleData,
+                side1: side1,
+                side2: side2,
+                side1Player: side1Player,
+                side2Player: side2Player
+            });
+            [side1, side2].forEach(function (side) {
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (!side[i][j])
+                            continue;
+                        clone.addUnitToTurnOrder(side[i][j]);
+                        clone.unitsById[side[i][j].id] = side[i][j];
+                        clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
+                    }
+                }
+            });
+            clone.isVirtual = true;
+            clone.currentTurn = this.currentTurn;
+            clone.maxTurns = this.maxTurns;
+            clone.turnsLeft = this.turnsLeft;
+            clone.startHealth = this.startHealth;
+            clone.updateTurnOrder();
+            clone.setActiveUnit();
+            if (clone.checkBattleEnd()) {
+                clone.endBattle();
+            }
+            else {
+                clone.shiftRowsIfNeeded();
+            }
+            return clone;
+        };
+        return Battle;
+    }());
+    Rance.Battle = Battle;
+})(Rance || (Rance = {}));
+/// <reference path="utility.ts"/>
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    (function (TargetFleet) {
+        TargetFleet[TargetFleet["ally"] = 0] = "ally";
+        TargetFleet[TargetFleet["enemy"] = 1] = "enemy";
+        TargetFleet[TargetFleet["either"] = 2] = "either";
+    })(Rance.TargetFleet || (Rance.TargetFleet = {}));
+    var TargetFleet = Rance.TargetFleet;
+    Rance.targetSelf = function (units, user) {
+        return [user];
+    };
+    Rance.targetNextRow = function (units, user) {
+        var ownPosition = user.battleStats.position;
+        var increment = user.battleStats.side === "side1" ? 1 : -1;
+        return units[ownPosition[0] + increment];
+    };
+    Rance.targetAll = function (units, user) {
+        return Rance.flatten2dArray(units);
+    };
+    //**
+    //**
+    //X*
+    //**
+    Rance.areaSingle = function (units, target) {
+        return Rance.getFrom2dArray(units, [target]);
+    };
+    //XX
+    //XX
+    //XX
+    //XX
+    Rance.areaAll = function (units, target) {
+        return Rance.flatten2dArray(units);
+    };
+    //**
+    //**
+    //XX
+    //**
+    Rance.areaColumn = function (units, target) {
+        var y = target[1];
+        var targetLocations = [];
+        for (var i = 0; i < units.length; i++) {
+            targetLocations.push([i, y]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    //X*
+    //X*
+    //X*
+    //X*
+    Rance.areaRow = function (units, target) {
+        var x = target[0];
+        var targetLocations = [];
+        for (var i = 0; i < units[x].length; i++) {
+            targetLocations.push([x, i]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    //**
+    //X*
+    //X*
+    //X*
+    Rance.areaRowNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    //**
+    //X*
+    //XX
+    //X*
+    Rance.areaNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x - 1, y]);
+        targetLocations.push([x + 1, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
+/// <reference path="templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
+/// <reference path="battle.ts"/>
+/// <reference path="unit.ts"/>
+/// <reference path="targeting.ts"/>
+var Rance;
+(function (Rance) {
+    function getAbilityUseData(battle, user, ability, target) {
+        if (ability.preparation) {
+            if (!user.battleStats.queuedAction) {
+                user.setQueuedAction(ability, target);
+                return getPreparationDummyData(user);
+            }
+            else {
+                user.updateQueuedAction();
+                if (!user.isReadyToUseQueuedAction()) {
+                    return getPreparationDummyData(user);
+                }
+                else {
+                    var action = user.battleStats.queuedAction;
+                    var target = battle.unitsById[action.targetId];
+                    var ability = action.ability;
+                    user.clearQueuedAction();
+                }
+            }
+        }
+        var data = {
+            user: user,
+            originalTarget: target,
+            actualTarget: getTargetOrGuard(battle, user, ability, target),
+            effectsToCall: [],
+            beforeUse: [],
+            afterUse: []
+        };
+        var passiveSkills = user.getPassiveSkillsByPhase();
+        var beforeUseEffects = [];
+        if (ability.beforeUse) {
+            beforeUseEffects = beforeUseEffects.concat(ability.beforeUse);
+        }
+        if (passiveSkills.beforeAbilityUse) {
+            for (var i = 0; i < passiveSkills.beforeAbilityUse.length; i++) {
+                beforeUseEffects = beforeUseEffects.concat(passiveSkills.beforeAbilityUse[i].beforeAbilityUse);
+            }
+        }
+        for (var i = 0; i < beforeUseEffects.length; i++) {
+            var hasSfx = Boolean(beforeUseEffects[i].sfx);
+            if (hasSfx) {
+                data.effectsToCall.push({
+                    effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data)],
+                    user: user,
+                    target: data.actualTarget,
+                    sfx: beforeUseEffects[i].sfx,
+                    trigger: beforeUseEffects[i].trigger
+                });
+            }
+            else {
+                data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data));
+            }
+        }
+        data.beforeUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
+        if (!ability.addsGuard) {
+            data.beforeUse.push(user.removeAllGuard.bind(user));
+        }
+        var effectsToCall = [ability.mainEffect];
+        if (ability.secondaryEffects) {
+            effectsToCall = effectsToCall.concat(ability.secondaryEffects);
+        }
+        for (var i = 0; i < effectsToCall.length; i++) {
+            var effect = effectsToCall[i];
+            var targetsInArea = getUnitsInEffectArea(battle, user, effect.template, data.actualTarget.battleStats.position);
+            for (var j = 0; j < targetsInArea.length; j++) {
+                var effectTarget = targetsInArea[j];
+                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, battle, effect.data)];
+                var attachedEffectsToAddAfter = [];
+                if (effect.attachedEffects) {
+                    for (var k = 0; k < effect.attachedEffects.length; k++) {
+                        var attachedEffect = effect.attachedEffects[k];
+                        var boundAttachedEffect = attachedEffect.template.effect.bind(null, user, effectTarget, battle, attachedEffect.data);
+                        if (attachedEffect.sfx) {
+                            attachedEffectsToAddAfter.push({
+                                effects: [boundAttachedEffect],
+                                user: user,
+                                target: effectTarget,
+                                sfx: attachedEffect.sfx,
+                                trigger: attachedEffect.trigger
+                            });
+                        }
+                        else {
+                            boundEffects.push(boundAttachedEffect);
+                        }
+                    }
+                }
+                data.effectsToCall.push({
+                    effects: boundEffects,
+                    user: user,
+                    target: effectTarget,
+                    sfx: effect.sfx,
+                    trigger: effect.trigger
+                });
+                if (attachedEffectsToAddAfter.length > 0) {
+                    data.effectsToCall = data.effectsToCall.concat(attachedEffectsToAddAfter);
+                }
+            }
+        }
+        var afterUseEffects = [];
+        if (ability.afterUse) {
+            afterUseEffects = afterUseEffects.concat(ability.afterUse);
+        }
+        if (passiveSkills.afterAbilityUse) {
+            for (var i = 0; i < passiveSkills.afterAbilityUse.length; i++) {
+                afterUseEffects = afterUseEffects.concat(passiveSkills.afterAbilityUse[i].afterAbilityUse);
+            }
+        }
+        for (var i = 0; i < afterUseEffects.length; i++) {
+            var hasSfx = Boolean(afterUseEffects[i].sfx);
+            if (hasSfx) {
+                data.effectsToCall.push({
+                    effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data)],
+                    user: user,
+                    target: data.actualTarget,
+                    sfx: afterUseEffects[i].sfx,
+                    trigger: afterUseEffects[i].trigger
+                });
+            }
+            else {
+                data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data));
+            }
+        }
+        data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
+        data.afterUse.push(user.updateStatusEffects.bind(user));
+        return data;
+    }
+    Rance.getAbilityUseData = getAbilityUseData;
+    // used for ai simulation. otherwise UIComponents.Battle steps through ability use data
+    function useAbility(battle, user, ability, target) {
+        var abilityData = getAbilityUseData(battle, user, ability, target);
+        for (var i = 0; i < abilityData.beforeUse.length; i++) {
+            abilityData.beforeUse[i]();
+        }
+        for (var i = 0; i < abilityData.effectsToCall.length; i++) {
+            var effectData = abilityData.effectsToCall[i];
+            if (!effectData.trigger || effectData.trigger(effectData.user, effectData.target)) {
+                for (var j = 0; j < effectData.effects.length; j++) {
+                    effectData.effects[j]();
+                }
+            }
+        }
+        for (var i = 0; i < abilityData.afterUse.length; i++) {
+            abilityData.afterUse[i]();
+        }
+    }
+    Rance.useAbility = useAbility;
+    function getPreparationDummyData(user) {
+        var action = user.battleStats.queuedAction;
+        var dummyData = {
+            user: user,
+            originalTarget: user,
+            actualTarget: user,
+            effectsToCall: [],
+            beforeUse: [],
+            afterUse: []
+        };
+        dummyData.beforeUse.push(user.removeAllGuard.bind(user));
+        dummyData.effectsToCall.push({
+            effects: [],
+            user: user,
+            target: user,
+            sfx: {
+                duration: 100
+            },
+            trigger: null
+        });
+        dummyData.afterUse.push(user.addMoveDelay.bind(user, action.ability.preparation.prepDelay));
+        return dummyData;
+    }
+    Rance.getPreparationDummyData = getPreparationDummyData;
+    function validateTarget(battle, user, ability, target) {
+        var potentialTargets = getPotentialTargets(battle, user, ability);
+        return potentialTargets.indexOf(target) >= 0;
+    }
+    Rance.validateTarget = validateTarget;
+    function getTargetOrGuard(battle, user, ability, target) {
+        if (ability.bypassesGuard) {
+            return target;
+        }
+        var guarding = getGuarders(battle, user, ability, target);
+        guarding = guarding.sort(function (a, b) {
+            return a.battleStats.guardAmount - b.battleStats.guardAmount;
+        });
+        for (var i = 0; i < guarding.length; i++) {
+            var guardRoll = Math.random() * 100;
+            if (guardRoll <= guarding[i].battleStats.guardAmount) {
+                return guarding[i];
+            }
+        }
+        return target;
+    }
+    Rance.getTargetOrGuard = getTargetOrGuard;
+    function getGuarders(battle, user, ability, target) {
+        var enemySide = Rance.reverseSide(user.battleStats.side);
+        if (target.battleStats.side !== enemySide)
+            return [];
+        var allEnemies = battle.unitsBySide[enemySide];
+        var guarders = allEnemies.filter(function (unit) {
+            if (!unit.isTargetable)
+                return false;
+            if (unit.battleStats.guardCoverage === Rance.GuardCoverage.all) {
+                return unit.battleStats.guardAmount > 0;
+            }
+            else if (unit.battleStats.guardCoverage === Rance.GuardCoverage.row) {
+                // same row
+                if (unit.battleStats.position[0] === target.battleStats.position[0]) {
+                    return unit.battleStats.guardAmount > 0;
+                }
+            }
+        });
+        return guarders;
+    }
+    Rance.getGuarders = getGuarders;
+    function getPotentialTargets(battle, user, ability) {
+        var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
+        var targetsInRange = ability.mainEffect.template.targetRangeFunction(fleetsToTarget, user);
+        var untargetableFilterFN = function (target) {
+            if (!Boolean(target)) {
+                return false;
+            }
+            else if (!target.isTargetable()) {
+                return false;
+            }
+            return true;
+        };
+        var targets = targetsInRange.filter(untargetableFilterFN);
+        return targets;
+    }
+    Rance.getPotentialTargets = getPotentialTargets;
+    function getFleetsToTarget(battle, user, effect) {
+        var nullFleet = [];
+        var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
+        var columns = app.moduleData.ruleSet.battle.cellsPerRow;
+        for (var i = 0; i < rows; i++) {
+            nullFleet.push([]);
+            for (var j = 0; j < columns; j++) {
+                nullFleet[i].push(null);
+            }
+        }
+        var insertNullBefore;
+        var toConcat;
+        switch (effect.targetFleets) {
+            case Rance.TargetFleet.either:
+                {
+                    return battle.side1.concat(battle.side2);
+                }
+            case Rance.TargetFleet.ally:
+                {
+                    insertNullBefore = user.battleStats.side === "side1" ? false : true;
+                    toConcat = battle[user.battleStats.side];
+                    break;
+                }
+            case Rance.TargetFleet.enemy:
+                {
+                    insertNullBefore = user.battleStats.side === "side1" ? true : false;
+                    toConcat = battle[Rance.reverseSide(user.battleStats.side)];
+                    break;
+                }
+        }
+        if (insertNullBefore) {
+            return nullFleet.concat(toConcat);
+        }
+        else {
+            return toConcat.concat(nullFleet);
+        }
+    }
+    Rance.getFleetsToTarget = getFleetsToTarget;
+    function getPotentialTargetsByPosition(battle, user, ability) {
+        var targets = getPotentialTargets(battle, user, ability);
+        var targetPositions = [];
+        for (var i = 0; i < targets.length; i++) {
+            targetPositions.push(targets[i].battleStats.position);
+        }
+        return targetPositions;
+    }
+    Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
+    function getUnitsInAbilityArea(battle, user, ability, target) {
+        var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
+        if (ability.secondaryEffects) {
+            for (var i = 0; i < ability.secondaryEffects.length; i++) {
+                var inSecondary = getUnitsInEffectArea(battle, user, ability.secondaryEffects[i].template, target);
+                for (var j = 0; j < inSecondary.length; j++) {
+                    if (inArea.indexOf(inSecondary[j]) === -1) {
+                        inArea.push(inSecondary[j]);
+                    }
+                }
+            }
+        }
+        return inArea;
+    }
+    Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
+    function getUnitsInEffectArea(battle, user, effect, target) {
+        var targetFleets = getFleetsToTarget(battle, user, effect);
+        var inArea = effect.battleAreaFunction(targetFleets, target);
+        return inArea.filter(function (unit) {
+            if (!unit)
+                return false;
+            else
+                return unit.isActiveInBattle();
+        });
+    }
+    Rance.getUnitsInEffectArea = getUnitsInEffectArea;
+    function getTargetsForAllAbilities(battle, user) {
+        if (!user || !battle.activeUnit) {
+            return null;
+        }
+        var allTargets = {};
+        var abilities = user.getAllAbilities();
+        for (var i = 0; i < abilities.length; i++) {
+            var ability = abilities[i];
+            var targets = getPotentialTargets(battle, user, ability);
+            for (var j = 0; j < targets.length; j++) {
+                var target = targets[j];
+                if (!allTargets[target.id]) {
+                    allTargets[target.id] = [];
+                }
+                allTargets[target.id].push(ability);
+            }
+        }
+        return allTargets;
+    }
+    Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
+var Rance;
+(function (Rance) {
+    var StatusEffect = (function () {
+        function StatusEffect(template, duration) {
+            this.template = template;
+            this.duration = duration;
+        }
+        StatusEffect.prototype.processTurnEnd = function () {
+            if (this.duration > 0) {
+                this.duration--;
+            }
+        };
+        StatusEffect.prototype.clone = function () {
+            return new StatusEffect(this.template, this.duration);
+        };
+        return StatusEffect;
+    }());
+    Rance.StatusEffect = StatusEffect;
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/iunittemplate.d.ts" />
+/// <reference path="damagetype.ts" />
+/// <reference path="unitattributes.ts"/>
+/// <reference path="utility.ts"/>
+/// <reference path="ability.ts"/>
+/// <reference path="battle.ts"/>
+/// <reference path="item.ts"/>
+/// <reference path="statuseffect.ts" />
+var Rance;
+(function (Rance) {
+    Rance.UnitBattleSidesArray = ["side1", "side2"];
+    (function (GuardCoverage) {
+        GuardCoverage[GuardCoverage["row"] = 0] = "row";
+        GuardCoverage[GuardCoverage["all"] = 1] = "all";
+    })(Rance.GuardCoverage || (Rance.GuardCoverage = {}));
+    var GuardCoverage = Rance.GuardCoverage;
+    var Unit = (function () {
+        function Unit(template, id, data) {
+            this.abilities = [];
+            this.passiveSkills = [];
+            this.items = {
+                low: null,
+                mid: null,
+                high: null
+            };
+            this.passiveSkillsByPhase = {};
+            this.passiveSkillsByPhaseAreDirty = true;
+            this.uiDisplayIsDirty = true;
+            this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
+            this.template = template;
+            this.isSquadron = template.isSquadron;
+            if (data) {
+                this.makeFromData(data);
+            }
+            else {
+                this.setCulture();
+                this.setInitialValues();
+            }
+            this.displayFlags =
+                {
+                    isAnnihilated: false
+                };
+        }
+        Object.defineProperty(Unit.prototype, "attributes", {
+            get: function () {
+                if (this.attributesAreDirty || !this.cachedAttributes) {
+                    this.updateCachedAttributes();
+                }
+                return this.cachedAttributes;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Unit.prototype.makeFromData = function (data) {
+            var items = {};
+            ["low", "mid", "high"].forEach(function (slot) {
+                if (data.items[slot]) {
+                    var item = data.items[slot];
+                    if (!item)
+                        return;
+                    if (item.templateType) {
+                        items[slot] = new Rance.Item(app.moduleData.Templates.Items[item.templateType], item.id);
+                    }
+                    else {
+                        items[slot] = item;
+                    }
+                }
+            });
+            this.name = data.name;
+            this.maxHealth = data.maxHealth;
+            this.currentHealth = data.currentHealth;
+            this.currentMovePoints = data.currentMovePoints;
+            this.maxMovePoints = data.maxMovePoints;
+            this.timesActedThisTurn = data.timesActedThisTurn;
+            this.baseAttributes = Rance.extendObject(data.baseAttributes);
+            this.attributes = Rance.extendObject(this.baseAttributes);
+            this.abilities = data.abilityTemplateTypes.map(function (key) {
+                var template = app.moduleData.Templates.Abilities[key];
+                if (!template) {
+                    throw new Error("Couldn't find ability " + key);
+                }
+                return template;
+            });
+            this.passiveSkills = data.passiveSkillTemplateTypes.map(function (key) {
+                var template = app.moduleData.Templates.PassiveSkills[key];
+                if (!template) {
+                    throw new Error("Couldn't find passive skill " + key);
+                }
+                return template;
+            });
+            this.experienceForCurrentLevel = data.experienceForCurrentLevel;
+            this.level = data.level;
+            var battleStats = {};
+            battleStats.moveDelay = data.battleStats.moveDelay;
+            battleStats.side = data.battleStats.side;
+            battleStats.position = data.battleStats.position;
+            battleStats.currentActionPoints = data.battleStats.currentActionPoints;
+            battleStats.guardAmount = data.battleStats.guardAmount;
+            battleStats.guardCoverage = data.battleStats.guardCoverage;
+            battleStats.captureChance = data.battleStats.captureChance;
+            battleStats.statusEffects = data.battleStats.statusEffects;
+            battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+            battleStats.queuedAction = data.queuedAction;
+            this.battleStats = battleStats;
+            this.items =
+                {
+                    low: null,
+                    mid: null,
+                    high: null
+                };
+            for (var slot in items) {
+                this.addItem(items[slot]);
+            }
+            if (data.portraitKey) {
+                this.portrait = Rance.findItemWithKey(app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+            }
+        };
+        Unit.prototype.setInitialValues = function () {
+            this.setBaseHealth();
+            this.setAttributes();
+            this.resetBattleStats();
+            this.maxMovePoints = this.template.maxMovePoints;
+            this.resetMovePoints();
+            this.setInitialAbilities();
+            this.setInitialPassiveSkills();
+            this.level = 1;
+            this.experienceForCurrentLevel = 0;
+            this.timesActedThisTurn = 0;
+        };
+        Unit.prototype.setBaseHealth = function (multiplier) {
+            if (multiplier === void 0) { multiplier = 1; }
+            var min = 200 * this.template.maxHealth * multiplier;
+            var max = 300 * this.template.maxHealth * multiplier;
+            this.maxHealth = Rance.randInt(min, max);
+            this.currentHealth = this.maxHealth;
+        };
+        Unit.prototype.setAttributes = function (baseSkill, variance) {
+            if (baseSkill === void 0) { baseSkill = 1; }
+            if (variance === void 0) { variance = 1; }
+            var template = this.template;
+            var attributes = {
+                attack: 1,
+                defence: 1,
+                intelligence: 1,
+                speed: 1,
+                maxActionPoints: Rance.randInt(3, 5)
+            };
+            for (var attribute in template.attributeLevels) {
+                var attributeLevel = template.attributeLevels[attribute];
+                var min = Math.max(3 * baseSkill * attributeLevel, 1);
+                var max = Math.max(5 * baseSkill * attributeLevel + variance, 1);
+                attributes[attribute] = Rance.randInt(min, max);
+                if (attributes[attribute] > 9)
+                    attributes[attribute] = 9;
+            }
+            this.baseAttributes = Rance.extendObject(attributes);
+            this.attributes = attributes;
+            this.attributesAreDirty = true;
+        };
+        Unit.prototype.setCulture = function () {
+            var templateCultures = this.template.cultures;
+            var nameGeneratorFN;
+            var nameGeneratorCandidateCultures = templateCultures.filter(function (cultureTemplate) {
+                return Boolean(cultureTemplate.nameGenerator);
+            });
+            if (nameGeneratorCandidateCultures.length > 0) {
+                nameGeneratorFN = Rance.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
+            }
+            else {
+                nameGeneratorFN = Rance.defaultNameGenerator;
+            }
+            this.name = nameGeneratorFN(this);
+            var portraitCandidateCultures = templateCultures.filter(function (cultureTemplate) {
+                return Boolean(cultureTemplate.portraits);
+            });
+            if (portraitCandidateCultures.length === 0) {
+                portraitCandidateCultures = Rance.getAllPropertiesWithKey(app.moduleData.Templates.Cultures, "portraits");
+                if (portraitCandidateCultures.length === 0) {
+                    console.warn("No culture has portraits specified"); //TODO culture
+                    return;
+                }
+            }
+            var portraitCandidateCulturesWithWeights = portraitCandidateCultures.map(function (culture) {
+                return ({
+                    weight: Object.keys(culture.portraits).length,
+                    culture: culture
+                });
+            });
+            var portraitCulture = Rance.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
+            this.portrait = Rance.getRandomProperty(portraitCulture.portraits);
+        };
+        Unit.prototype.getBaseMoveDelay = function () {
+            return 30 - this.attributes.speed;
+        };
+        Unit.prototype.resetMovePoints = function () {
+            this.currentMovePoints = this.maxMovePoints;
+        };
+        Unit.prototype.resetBattleStats = function () {
+            this.battleStats =
+                {
+                    moveDelay: this.getBaseMoveDelay(),
+                    currentActionPoints: this.attributes.maxActionPoints,
+                    side: null,
+                    position: null,
+                    guardAmount: 0,
+                    guardCoverage: null,
+                    captureChance: app.moduleData.ruleSet.battle.baseUnitCaptureChance,
+                    statusEffects: [],
+                    lastHealthBeforeReceivingDamage: this.currentHealth,
+                    queuedAction: null
+                };
+            this.displayFlags =
+                {
+                    isAnnihilated: false
+                };
+        };
+        Unit.prototype.setBattlePosition = function (battle, side, position) {
+            this.battleStats.side = side;
+            this.battleStats.position = position;
+        };
+        Unit.prototype.addStrength = function (amount) {
+            this.currentHealth += Math.round(amount);
+            if (this.currentHealth > this.maxHealth) {
+                this.currentHealth = this.maxHealth;
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.removeStrength = function (amount) {
+            this.currentHealth -= Math.round(amount);
+            this.currentHealth = Rance.clamp(this.currentHealth, 0, this.maxHealth);
+            if (amount > 0) {
+                this.removeGuard(40);
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.removeActionPoints = function (amount) {
+            this.battleStats.currentActionPoints -= amount;
+            if (this.battleStats.currentActionPoints < 0) {
+                this.battleStats.currentActionPoints = 0;
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.addMoveDelay = function (amount) {
+            this.battleStats.moveDelay += amount;
+        };
+        Unit.prototype.updateStatusEffects = function () {
+            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
+                this.battleStats.statusEffects[i].processTurnEnd();
+                if (this.battleStats.statusEffects[i].duration === 0) {
+                    this.removeStatusEffect(this.battleStats.statusEffects[i]);
+                }
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.setQueuedAction = function (ability, target) {
+            this.battleStats.queuedAction =
+                {
+                    ability: ability,
+                    targetId: target.id,
+                    turnsPrepared: 0,
+                    timesInterrupted: 0
+                };
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.interruptQueuedAction = function (interruptStrength) {
+            var action = this.battleStats.queuedAction;
+            if (!action)
+                return;
+            action.timesInterrupted += interruptStrength;
+            if (action.timesInterrupted >= action.ability.preparation.interruptsNeeded) {
+                this.clearQueuedAction();
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.updateQueuedAction = function () {
+            var action = this.battleStats.queuedAction;
+            if (!action)
+                return;
+            action.turnsPrepared++;
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.isReadyToUseQueuedAction = function () {
+            var action = this.battleStats.queuedAction;
+            return (action && action.turnsPrepared >= action.ability.preparation.turnsToPrep);
+        };
+        Unit.prototype.clearQueuedAction = function () {
+            this.battleStats.queuedAction = null;
+            this.uiDisplayIsDirty = true;
+        };
+        // redundant
+        Unit.prototype.isTargetable = function () {
+            return this.currentHealth > 0;
+        };
+        Unit.prototype.isActiveInBattle = function () {
+            return this.currentHealth > 0;
+        };
+        Unit.prototype.addItem = function (item) {
+            var itemSlot = item.template.slot;
+            if (this.items[itemSlot])
+                return false;
+            if (item.unit) {
+                item.unit.removeItem(item);
+            }
+            this.items[itemSlot] = item;
+            item.unit = this;
+            if (item.template.attributes) {
+                this.attributesAreDirty = true;
+            }
+            if (item.template.passiveSkill) {
+                this.passiveSkillsByPhaseAreDirty = true;
+            }
+        };
+        Unit.prototype.removeItem = function (item) {
+            var itemSlot = item.template.slot;
+            if (this.items[itemSlot] === item) {
+                this.items[itemSlot] = null;
+                item.unit = null;
+                if (item.template.attributes) {
+                    this.attributesAreDirty = true;
+                }
+                if (item.template.passiveSkill) {
+                    this.passiveSkillsByPhaseAreDirty = true;
+                }
+                return true;
+            }
+            return false;
+        };
+        Unit.prototype.destroyAllItems = function () {
+            for (var slot in this.items) {
+                var item = this.items[slot];
+                if (item) {
+                    this.fleet.player.removeItem(item);
+                }
+            }
+        };
+        Unit.prototype.getAttributesWithItems = function () {
+            var attributes = Rance.extendObject(this.baseAttributes);
+            for (var itemSlot in this.items) {
+                if (this.items[itemSlot]) {
+                    var item = this.items[itemSlot];
+                    for (var attribute in item.template.attributes) {
+                        attributes[attribute] = Rance.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
+                    }
+                }
+            }
+            return attributes;
+        };
+        Unit.prototype.addStatusEffect = function (statusEffect) {
+            if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1) {
+                throw new Error("Tried to add duplicate status effect to unit " + this.name);
+            }
+            else if (statusEffect.duration === 0) {
+                console.warn("Tried to add status effect", statusEffect, "with 0 duration");
+                return;
+            }
+            this.battleStats.statusEffects.push(statusEffect);
+            if (statusEffect.template.attributes) {
+                this.attributesAreDirty = true;
+            }
+            if (statusEffect.template.passiveSkills) {
+                this.passiveSkillsByPhaseAreDirty = true;
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.removeStatusEffect = function (statusEffect) {
+            var index = this.battleStats.statusEffects.indexOf(statusEffect);
+            if (index === -1) {
+                throw new Error("Tried to remove status effect not active on unit " + this.name);
+            }
+            this.battleStats.statusEffects.splice(index, 1);
+            if (statusEffect.template.attributes) {
+                this.attributesAreDirty = true;
+            }
+            if (statusEffect.template.passiveSkills) {
+                this.passiveSkillsByPhaseAreDirty = true;
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        /*
+        sort by attribute, positive/negative, additive vs multiplicative
+        apply additive, multiplicative
+         */
+        Unit.prototype.getTotalStatusEffectAttributeAdjustments = function () {
+            if (!this.battleStats || !this.battleStats.statusEffects) {
+                return null;
+            }
+            var adjustments = {};
+            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
+                var statusEffect = this.battleStats.statusEffects[i];
+                if (!statusEffect.template.attributes)
+                    continue;
+                for (var attribute in statusEffect.template.attributes) {
+                    adjustments[attribute] = {};
+                    for (var type in statusEffect.template.attributes[attribute]) {
+                        if (!adjustments[attribute][type]) {
+                            adjustments[attribute][type] = 0;
+                        }
+                        adjustments[attribute][type] += statusEffect.template.attributes[attribute][type];
+                    }
+                }
+            }
+            return adjustments;
+        };
+        Unit.prototype.getAttributesWithEffects = function () {
+            var withItems = this.getAttributesWithItems();
+            var adjustments = this.getTotalStatusEffectAttributeAdjustments();
+            for (var attribute in adjustments) {
+                if (adjustments[attribute].flat) {
+                    withItems[attribute] += adjustments[attribute].flat;
+                }
+                if (adjustments[attribute].multiplier) {
+                    withItems[attribute] *= 1 + adjustments[attribute].multiplier;
+                }
+                withItems[attribute] = Rance.clamp(withItems[attribute], -5, 20);
+            }
+            return withItems;
+        };
+        Unit.prototype.updateCachedAttributes = function () {
+            this.cachedAttributes = this.getAttributesWithEffects();
+        };
+        Unit.prototype.removeItemAtSlot = function (slot) {
+            if (this.items[slot]) {
+                this.removeItem(this.items[slot]);
+                return true;
+            }
+            return false;
+        };
+        Unit.prototype.setInitialAbilities = function () {
+            this.abilities = Rance.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
+        };
+        Unit.prototype.setInitialPassiveSkills = function () {
+            if (this.template.possiblePassiveSkills) {
+                this.passiveSkills = Rance.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
+            }
+        };
+        Unit.prototype.getItemAbilities = function () {
+            var itemAbilities = [];
+            for (var slot in this.items) {
+                if (!this.items[slot] || !this.items[slot].template.ability)
+                    continue;
+                itemAbilities.push(this.items[slot].template.ability);
+            }
+            return itemAbilities;
+        };
+        Unit.prototype.getAllAbilities = function () {
+            return this.abilities.concat(this.getItemAbilities());
+        };
+        Unit.prototype.getItemPassiveSkills = function () {
+            var itemPassiveSkills = [];
+            for (var slot in this.items) {
+                if (!this.items[slot] || !this.items[slot].template.passiveSkill)
+                    continue;
+                itemPassiveSkills.push(this.items[slot].template.passiveSkill);
+            }
+            return itemPassiveSkills;
+        };
+        Unit.prototype.getStatusEffectPassiveSkills = function () {
+            var statusEffectPassiveSkills = [];
+            if (!this.battleStats || !this.battleStats.statusEffects) {
+                return statusEffectPassiveSkills;
+            }
+            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
+                var templateSkills = this.battleStats.statusEffects[i].template.passiveSkills;
+                if (templateSkills) {
+                    statusEffectPassiveSkills = statusEffectPassiveSkills.concat(templateSkills);
+                }
+            }
+            return statusEffectPassiveSkills;
+        };
+        Unit.prototype.getAllPassiveSkills = function () {
+            var allSkills = [];
+            allSkills = allSkills.concat(this.passiveSkills);
+            allSkills = allSkills.concat(this.getItemPassiveSkills());
+            allSkills = allSkills.concat(this.getStatusEffectPassiveSkills());
+            return allSkills;
+        };
+        Unit.prototype.updatePassiveSkillsByPhase = function () {
+            var updatedSkills = {};
+            var allSkills = this.getAllPassiveSkills();
+            for (var i = 0; i < allSkills.length; i++) {
+                var skill = allSkills[i];
+                ["atBattleStart", "beforeAbilityUse", "afterAbilityUse", "atTurnStart", "inBattlePrep"].forEach(function (phase) {
+                    if (skill[phase]) {
+                        if (!updatedSkills[phase]) {
+                            updatedSkills[phase] = [];
+                        }
+                        if (updatedSkills[phase].indexOf(skill) === -1) {
+                            updatedSkills[phase].push(skill);
+                        }
+                    }
+                });
+            }
+            this.passiveSkillsByPhase = updatedSkills;
+            this.passiveSkillsByPhaseAreDirty = false;
+        };
+        Unit.prototype.getPassiveSkillsByPhase = function () {
+            if (this.passiveSkillsByPhaseAreDirty) {
+                this.updatePassiveSkillsByPhase();
+            }
+            return this.passiveSkillsByPhase;
+        };
+        Unit.prototype.receiveDamage = function (amount, damageType) {
+            var damageReduction = this.getReducedDamageFactor(damageType);
+            var adjustedDamage = amount * damageReduction;
+            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+            this.removeStrength(adjustedDamage);
+        };
+        Unit.prototype.getAdjustedTroopSize = function () {
+            // used so unit will always counter with at least 1/3 strength it had before being attacked
+            var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
+            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+            var currentHealth = this.isSquadron ?
+                balancedHealth :
+                Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
+            if (currentHealth <= 500) {
+                return currentHealth;
+            }
+            else if (currentHealth <= 2000) {
+                return currentHealth / 2 + 250;
+            }
+            else {
+                return currentHealth / 4 + 750;
+            }
+        };
+        Unit.prototype.getAttackDamageIncrease = function (damageType) {
+            var attackStat, attackFactor;
+            switch (damageType) {
+                case Rance.DamageType.physical:
+                    {
+                        attackStat = this.attributes.attack;
+                        attackFactor = 0.1;
+                        break;
+                    }
+                case Rance.DamageType.magical:
+                    {
+                        attackStat = this.attributes.intelligence;
+                        attackFactor = 0.1;
+                        break;
+                    }
+            }
+            var troopSize = this.getAdjustedTroopSize() / 4;
+            return (1 + attackStat * attackFactor) * troopSize;
+        };
+        Unit.prototype.getReducedDamageFactor = function (damageType) {
+            var defensiveStat, defenceFactor;
+            var finalDamageMultiplier = 1;
+            switch (damageType) {
+                case Rance.DamageType.physical:
+                    {
+                        defensiveStat = this.attributes.defence;
+                        defenceFactor = 0.045;
+                        var guardAmount = Math.min(this.battleStats.guardAmount, 100);
+                        finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
+                        break;
+                    }
+                case Rance.DamageType.magical:
+                    {
+                        defensiveStat = this.attributes.intelligence;
+                        defenceFactor = 0.045;
+                        break;
+                    }
+            }
+            var damageReduction = defensiveStat * defenceFactor;
+            var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
+            return finalDamageFactor;
+        };
+        Unit.prototype.addToFleet = function (fleet) {
+            this.fleet = fleet;
+        };
+        Unit.prototype.removeFromFleet = function () {
+            this.fleet = null;
+        };
+        Unit.prototype.removeFromPlayer = function () {
+            var player = this.fleet.player;
+            this.destroyAllItems();
+            player.removeUnit(this);
+            this.fleet.removeShip(this);
+            if (this.front) {
+                this.front.removeUnit(this);
+            }
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.transferToPlayer = function (newPlayer) {
+            var oldPlayer = this.fleet.player;
+            var location = this.fleet.location;
+            this.removeFromPlayer();
+            newPlayer.addUnit(this);
+            var newFleet = new Rance.Fleet(newPlayer, [this], location);
+        };
+        Unit.prototype.removeGuard = function (amount) {
+            this.battleStats.guardAmount -= amount;
+            if (this.battleStats.guardAmount < 0)
+                this.removeAllGuard();
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.addGuard = function (amount, coverage) {
+            this.battleStats.guardAmount += amount;
+            this.battleStats.guardCoverage = coverage;
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.removeAllGuard = function () {
+            this.battleStats.guardAmount = 0;
+            this.battleStats.guardCoverage = null;
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.getCounterAttackStrength = function () {
+            return 1; // TODO unit
+        };
+        Unit.prototype.canActThisTurn = function () {
+            return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
+        };
+        Unit.prototype.isStealthy = function () {
+            // TODO unit
+            return this.template.isStealthy;
+        };
+        Unit.prototype.getVisionRange = function () {
+            // TODO unit
+            return this.template.visionRange;
+        };
+        Unit.prototype.getDetectionRange = function () {
+            // TODO unit
+            return this.template.detectionRange;
+        };
+        Unit.prototype.heal = function () {
+            var location = this.fleet.location;
+            var baseHealFactor = 0.05;
+            var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
+            var healAmount = this.maxHealth * healingFactor;
+            this.addStrength(healAmount);
+        };
+        Unit.prototype.getStrengthEvaluation = function () {
+            // TODO unit TODO ai
+            return this.currentHealth;
+        };
+        Unit.prototype.getTotalCost = function () {
+            var totalCost = 0;
+            totalCost += this.template.buildCost;
+            for (var slot in this.items) {
+                if (this.items[slot]) {
+                    totalCost += this.items[slot].template.buildCost;
+                }
+            }
+            return totalCost;
+        };
+        Unit.prototype.getTurnsToReachStar = function (star) {
+            var currentLocation = this.fleet.location;
+            var distance = currentLocation.getDistanceToStar(star);
+            if (distance <= this.currentMovePoints) {
+                if (this.currentMovePoints === 0) {
+                    return 0;
+                }
+                else {
+                    return distance / this.currentMovePoints;
+                }
+            }
+            distance -= this.currentMovePoints; // current turn
+            return distance / this.maxMovePoints; // future turns
+        };
+        Unit.prototype.getExperienceToNextLevel = function () {
+            return (4 + this.level) * 10;
+        };
+        Unit.prototype.addExperience = function (amount) {
+            this.experienceForCurrentLevel += Math.round(amount);
+        };
+        Unit.prototype.canLevelUp = function () {
+            return this.experienceForCurrentLevel >= this.getExperienceToNextLevel();
+        };
+        Unit.prototype.handleLevelUp = function () {
+            this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
+            this.level++;
+        };
+        Unit.prototype.hasAbility = function (ability, allAbilities) {
+            for (var i = 0; i < allAbilities.length; i++) {
+                if (allAbilities[i].type === ability.type) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        Unit.prototype.getLearnableAbilities = function (allAbilities) {
+            var abilities = [];
+            if (!this.template.learnableAbilities)
+                return abilities;
+            for (var i = 0; i < this.template.learnableAbilities.length; i++) {
+                var learnableItem = this.template.learnableAbilities[i];
+                if (Array.isArray(learnableItem)) {
+                    var hasAbilityFromGroup = false;
+                    for (var j = 0; j < learnableItem.length; j++) {
+                        if (this.hasAbility(learnableItem[j], allAbilities)) {
+                            hasAbilityFromGroup = true;
+                            break;
+                        }
+                    }
+                    if (!hasAbilityFromGroup) {
+                        abilities = abilities.concat(learnableItem);
+                    }
+                }
+                else if (!this.hasAbility(learnableItem, allAbilities)) {
+                    abilities.push(learnableItem);
+                }
+            }
+            return abilities;
+        };
+        Unit.prototype.canUpgradeIntoAbility = function (ability, allAbilities) {
+            if (ability.onlyAllowExplicitUpgrade) {
+                if (!this.template.specialAbilityUpgrades || this.template.specialAbilityUpgrades.indexOf(ability) === -1) {
+                    return false;
+                }
+            }
+            if (this.hasAbility(ability, allAbilities)) {
+                return false;
+            }
+            return true;
+        };
+        Unit.prototype.getAbilityUpgradeData = function () {
+            var upgradeData = {};
+            var allAbilities = this.getAllAbilities();
+            allAbilities = allAbilities.concat(this.getAllPassiveSkills());
+            var templates = app.moduleData.Templates;
+            for (var i = 0; i < allAbilities.length; i++) {
+                var parentAbility = allAbilities[i];
+                if (!parentAbility.canUpgradeInto)
+                    continue;
+                for (var j = 0; j < parentAbility.canUpgradeInto.length; j++) {
+                    var childAbilityType = parentAbility.canUpgradeInto[j];
+                    var childAbility = templates.Abilities[childAbilityType] || templates.PassiveSkills[childAbilityType];
+                    if (!childAbility)
+                        throw new Error("Invalid ability upgrade " + childAbilityType);
+                    if (this.canUpgradeIntoAbility(childAbility, allAbilities)) {
+                        if (!upgradeData[parentAbility.type]) {
+                            upgradeData[parentAbility.type] =
+                                {
+                                    base: parentAbility,
+                                    possibleUpgrades: []
+                                };
+                        }
+                        upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
+                    }
+                }
+            }
+            var learnable = this.getLearnableAbilities(allAbilities);
+            if (learnable.length > 0) {
+                upgradeData["learnable"] =
+                    {
+                        base: null,
+                        possibleUpgrades: learnable
+                    };
+            }
+            return upgradeData;
+        };
+        Unit.prototype.upgradeAbility = function (source, newAbility) {
+            var newAbilityIsPassiveSkill = !newAbility.mainEffect;
+            if (source) {
+                var sourceIsPassiveSkill = !source.mainEffect;
+                if (sourceIsPassiveSkill) {
+                    this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
+                }
+                else {
+                    var castedSource = source;
+                    this.abilities.splice(this.abilities.indexOf(castedSource), 1);
+                }
+            }
+            if (newAbilityIsPassiveSkill) {
+                this.passiveSkills.push(newAbility);
+            }
+            else {
+                var castedNewAbility = newAbility;
+                this.abilities.push(castedNewAbility);
+            }
+        };
+        Unit.prototype.drawBattleScene = function (SFXParams) {
+            this.template.unitDrawingFN(this, SFXParams);
+        };
+        Unit.prototype.serialize = function (includeItems, includeFluff) {
+            if (includeItems === void 0) { includeItems = true; }
+            if (includeFluff === void 0) { includeFluff = true; }
+            var data = {};
+            data.templateType = this.template.type;
+            data.id = this.id;
+            data.name = this.name;
+            data.maxHealth = this.maxHealth;
+            data.currentHealth = this.currentHealth;
+            data.currentMovePoints = this.currentMovePoints;
+            data.maxMovePoints = this.maxMovePoints;
+            data.timesActedThisTurn = this.timesActedThisTurn;
+            data.baseAttributes = Rance.extendObject(this.baseAttributes);
+            data.abilityTemplateTypes = this.abilities.map(function (ability) {
+                return ability.type;
+            });
+            data.passiveSkillTemplateTypes = this.passiveSkills.map(function (passiveSkill) {
+                return passiveSkill.type;
+            });
+            data.experienceForCurrentLevel = this.experienceForCurrentLevel;
+            data.level = this.level;
+            data.battleStats = {};
+            data.battleStats.moveDelay = this.battleStats.moveDelay;
+            data.battleStats.side = this.battleStats.side;
+            data.battleStats.position = this.battleStats.position;
+            data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
+            data.battleStats.guardAmount = this.battleStats.guardAmount;
+            data.battleStats.guardCoverage = this.battleStats.guardCoverage;
+            data.battleStats.captureChance = this.battleStats.captureChance;
+            data.battleStats.statusEffects = this.battleStats.statusEffects.map(function (statusEffect) {
+                return statusEffect.clone();
+            });
+            data.battleStats.queuedAction = this.battleStats.queuedAction;
+            if (this.fleet) {
+                data.fleetId = this.fleet.id;
+            }
+            data.items = {};
+            if (includeItems) {
+                for (var slot in this.items) {
+                    if (this.items[slot])
+                        data.items[slot] = this.items[slot].serialize();
+                }
+            }
+            if (includeFluff) {
+                data.portraitKey = this.portrait.key;
+            }
+            return data;
+        };
+        Unit.prototype.makeVirtualClone = function () {
+            var data = this.serialize(true, false);
+            var clone = new Unit(this.template, this.id, data);
+            return clone;
+        };
+        return Unit;
+    }());
+    Rance.Unit = Unit;
+})(Rance || (Rance = {}));
+/// <reference path="../../../lib/tween.js.d.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitStrength = React.createClass({
+            displayName: "UnitStrength",
+            getInitialState: function () {
+                return ({
+                    displayedStrength: this.props.currentHealth,
+                    activeTween: null
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                if (newProps.animateStrength &&
+                    newProps.currentHealth !== this.props.currentHealth &&
+                    (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)) {
+                    var animateDuration = newProps.animateDuration || 0;
+                    this.animateDisplayedStrength(newProps.currentHealth, animateDuration);
+                }
+                else {
+                    this.updateDisplayStrength(newProps.currentHealth);
+                }
+            },
+            componentWillUnmount: function () {
+                if (this.activeTween) {
+                    this.activeTween.stop();
+                }
+            },
+            updateDisplayStrength: function (newAmount) {
+                this.setState({
+                    displayedStrength: newAmount
+                });
+            },
+            animateDisplayedStrength: function (newAmount, time) {
+                var self = this;
+                var stopped = false;
+                var animateTween = function () {
+                    if (stopped) {
+                        cancelAnimationFrame(self.requestAnimFrame);
+                        return;
+                    }
+                    TWEEN.update();
+                    self.requestAnimFrame = window.requestAnimationFrame(animateTween);
+                };
+                var tween = new TWEEN.Tween({
+                    health: self.state.displayedStrength
+                }).to({
+                    health: newAmount
+                }, time).onUpdate(function () {
+                    self.setState({
+                        displayedStrength: this.health
+                    });
+                }).easing(TWEEN.Easing.Sinusoidal.Out);
+                tween.onStop(function () {
+                    stopped = true;
+                    TWEEN.remove(tween);
+                });
+                this.activeTween = tween;
+                tween.start();
+                animateTween();
+            },
+            makeSquadronInfo: function () {
+                return (React.DOM.div({ className: "unit-strength-container" }, this.makeStrengthText()));
+            },
+            makeCapitalInfo: function () {
+                var text = this.makeStrengthText();
+                var relativeHealth = this.state.displayedStrength / this.props.maxHealth;
+                var bar = React.DOM.div({
+                    className: "unit-strength-bar"
+                }, React.DOM.div({
+                    className: "unit-strength-bar-value",
+                    style: {
+                        width: "" + relativeHealth * 100 + "%"
+                    }
+                }));
+                return (React.DOM.div({ className: "unit-strength-container" }, text, bar));
+            },
+            makeStrengthText: function () {
+                var critThreshhold = 0.3;
+                var currentStyle = {
+                    className: "unit-strength-current"
+                };
+                var healthRatio = this.state.displayedStrength / this.props.maxHealth;
+                if (!this.props.isNotDetected && healthRatio <= critThreshhold) {
+                    currentStyle.className += " critical";
+                }
+                else if (!this.props.isNotDetected && this.state.displayedStrength < this.props.maxHealth) {
+                    currentStyle.className += " wounded";
+                }
+                var containerProps = {
+                    className: (this.props.isSquadron ? "unit-strength-amount" :
+                        "unit-strength-amount-capital")
+                };
+                var displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
+                var max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
+                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, displayed), React.DOM.span({ className: "unit-strength-max" }, "/" + max)));
+            },
+            render: function () {
+                if (this.props.isSquadron) {
+                    return this.makeSquadronInfo();
+                }
+                else {
+                    return this.makeCapitalInfo();
+                }
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="unitstrength.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitActions = React.createClass({
+            displayName: "UnitActions",
+            render: function () {
+                var availableSrc = "img\/icons\/availableAction.png";
+                var hoveredSrc = "img\/icons\/spentAction.png";
+                var spentSrc = "img\/icons\/spentAction.png";
+                var icons = [];
+                var availableCount = this.props.currentActionPoints - this.props.hoveredActionPointExpenditure;
+                for (var i = 0; i < availableCount; i++) {
+                    icons.push(React.DOM.img({
+                        src: availableSrc,
+                        className: "unit-action-point available-action-point",
+                        key: "available" + i
+                    }));
+                }
+                var hoveredCount = Math.min(this.props.hoveredActionPointExpenditure, this.props.currentActionPoints);
+                for (var i = 0; i < hoveredCount; i++) {
+                    icons.push(React.DOM.img({
+                        src: hoveredSrc,
+                        className: "unit-action-point hovered-action-point",
+                        key: "hovered" + i
+                    }));
+                }
+                var spentCount = this.props.maxActionPoints - this.props.currentActionPoints;
+                for (var i = 0; i < spentCount; i++) {
+                    icons.push(React.DOM.img({
+                        src: spentSrc,
+                        className: "unit-action-point spent-action-point",
+                        key: "spent" + i
+                    }));
+                }
+                return (React.DOM.div({ className: "unit-action-points" }, icons));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitStatus = React.createClass({
+            displayName: "UnitStatus",
+            propTypes: {
+                guardAmount: React.PropTypes.number,
+                guardCoverage: React.PropTypes.number,
+                isPreparing: React.PropTypes.bool
+            },
+            render: function () {
+                var statusElement = null;
+                if (this.props.guardAmount > 0) {
+                    var guard = this.props.guardAmount;
+                    var damageReduction = Math.min(50, guard / 2);
+                    var guardText = "" + guard + "% chance to protect ";
+                    guardText += (this.props.guardCoverage === Rance.GuardCoverage.all ? "all units." : " units in same row.");
+                    guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks.";
+                    statusElement = React.DOM.div({
+                        className: "status-container guard-meter-container"
+                    }, React.DOM.div({
+                        className: "guard-meter-value",
+                        style: {
+                            width: "" + Rance.clamp(guard, 0, 100) + "%"
+                        }
+                    }), React.DOM.div({
+                        className: "status-inner-wrapper"
+                    }, React.DOM.div({
+                        className: "guard-text-container status-inner",
+                        title: guardText
+                    }, React.DOM.div({
+                        className: "guard-text status-text"
+                    }, "Guard"), React.DOM.div({
+                        className: "guard-text-value status-text"
+                    }, "" + guard + "%"))));
+                }
+                else if (this.props.isPreparing) {
+                    statusElement = React.DOM.div({
+                        className: "status-container preparation-container"
+                    }, React.DOM.div({
+                        className: "status-inner-wrapper"
+                    }, React.DOM.div({
+                        className: "preparation-text-container status-inner",
+                        title: "Unit is preparing to use ability"
+                    }, "Preparing")));
+                }
+                return (React.DOM.div({ className: "unit-status" }, statusElement));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="unitstrength.ts"/>
+/// <reference path="unitactions.ts"/>
+/// <reference path="unitstatus.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitInfo = React.createClass({
+            displayName: "UnitInfo",
+            mixins: [React.addons.PureRenderMixin],
+            propTypes: {
+                name: React.PropTypes.string.isRequired,
+                isSquadron: React.PropTypes.bool.isRequired,
+                maxHealth: React.PropTypes.number.isRequired,
+                currentHealth: React.PropTypes.number.isRequired,
+                maxActionPoints: React.PropTypes.number.isRequired,
+                currentActionPoints: React.PropTypes.number.isRequired,
+                hoveredActionPointExpenditure: React.PropTypes.number.isRequired,
+                isDead: React.PropTypes.bool,
+                isCaptured: React.PropTypes.bool,
+                guardAmount: React.PropTypes.number.isRequired,
+                guardCoverage: React.PropTypes.number,
+                isPreparing: React.PropTypes.bool,
+                animateDuration: React.PropTypes.number
+            },
+            render: function () {
+                var battleEndStatus = null;
+                if (this.props.isDead) {
+                    battleEndStatus = React.DOM.div({
+                        className: "unit-battle-end-status-container"
+                    }, React.DOM.div({
+                        className: "unit-battle-end-status unit-battle-end-status-dead"
+                    }, "Destroyed"));
+                }
+                else if (this.props.isCaptured) {
+                    battleEndStatus = React.DOM.div({
+                        className: "unit-battle-end-status-container"
+                    }, React.DOM.div({
+                        className: "unit-battle-end-status unit-battle-end-status-captured"
+                    }, "Captured"));
+                }
+                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), React.DOM.div({ className: "unit-info-inner" }, UIComponents.UnitStatus({
+                    guardAmount: this.props.guardAmount,
+                    isPreparing: this.props.isPreparing
+                }), UIComponents.UnitStrength({
+                    maxHealth: this.props.maxHealth,
+                    currentHealth: this.props.currentHealth,
+                    isSquadron: this.props.isSquadron,
+                    animateStrength: true,
+                    animateDuration: this.props.animateDuration
+                }), UIComponents.UnitActions({
+                    maxActionPoints: this.props.maxActionPoints,
+                    currentActionPoints: this.props.currentActionPoints,
+                    hoveredActionPointExpenditure: this.props.hoveredActionPointExpenditure
+                }), battleEndStatus)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitIcon = React.createClass({
+            displayName: "UnitIcon",
+            mixins: [React.addons.PureRenderMixin],
+            render: function () {
+                var unit = this.props.unit;
+                var containerProps = {
+                    className: "unit-icon-container"
+                };
+                var fillerProps = {
+                    className: "unit-icon-filler"
+                };
+                if (this.props.isActiveUnit) {
+                    fillerProps.className += " active-border";
+                    containerProps.className += " active-border";
+                }
+                if (this.props.isAnnihilated) {
+                    containerProps.className += " icon-annihilated-overlay";
+                }
+                if (this.props.facesLeft) {
+                    fillerProps.className += " unit-border-right";
+                    containerProps.className += " unit-border-no-right";
+                }
+                else {
+                    fillerProps.className += " unit-border-left";
+                    containerProps.className += " unit-border-no-left";
+                }
+                var iconImage = this.props.icon ?
+                    React.DOM.img({
+                        className: "unit-icon",
+                        src: this.props.icon
+                    }) :
+                    null;
+                return (React.DOM.div({ className: "unit-icon-wrapper" }, React.DOM.div(fillerProps), React.DOM.div(containerProps, iconImage), React.DOM.div(fillerProps)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitStatusEffects = React.createClass({
+            displayName: "UnitStatusEffects",
+            render: function () {
+                var statusEffects = [];
+                var withItems = this.props.unit.getAttributesWithItems();
+                var withEffects = this.props.unit.getAttributesWithEffects();
+                for (var attribute in withEffects) {
+                    if (attribute === "maxActionPoints")
+                        continue;
+                    var ite = withItems[attribute];
+                    var eff = withEffects[attribute];
+                    if (ite === eff)
+                        continue;
+                    var polarityString = eff > ite ? "positive" : "negative";
+                    var polaritySign = eff > ite ? " +" : " ";
+                    var imageSrc = "img\/icons\/statusEffect_" + polarityString + "_" + attribute + ".png";
+                    var titleString = "" + attribute + polaritySign + (eff - ite);
+                    statusEffects.push(React.DOM.img({
+                        className: "status-effect-icon" + " status-effect-icon-" + attribute,
+                        src: imageSrc,
+                        key: attribute,
+                        title: titleString
+                    }));
+                }
+                var passiveSkills = [];
+                var passiveSkillsByPhase = this.props.unit.getPassiveSkillsByPhase();
+                var phasesToCheck = this.props.isBattlePrep ? ["atBattleStart"] : ["beforeAbilityUse", "afterAbilityUse"];
+                phasesToCheck.forEach(function (phase) {
+                    if (passiveSkillsByPhase[phase]) {
+                        for (var i = 0; i < passiveSkillsByPhase[phase].length; i++) {
+                            var skill = passiveSkillsByPhase[phase][i];
+                            if (!skill.isHidden) {
+                                passiveSkills.push(skill);
+                            }
+                        }
+                    }
+                });
+                var passiveSkillsElement = null;
+                if (passiveSkills.length > 0) {
+                    var passiveSkillsElementTitle = "";
+                    for (var i = 0; i < passiveSkills.length; i++) {
+                        passiveSkillsElementTitle += passiveSkills[i].displayName + ": " +
+                            passiveSkills[i].description + "\n";
+                    }
+                    passiveSkillsElement = React.DOM.img({
+                        className: "unit-status-effects-passive-skills",
+                        src: "img\/icons\/availableAction.png",
+                        title: passiveSkillsElementTitle
+                    });
+                }
+                return (React.DOM.div({
+                    className: "unit-status-effects-container"
+                }, passiveSkillsElement, React.DOM.div({
+                    className: "unit-status-effects-attributes"
+                }, statusEffects)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitPortrait = React.createClass({
+            displayName: "UnitPortrait",
+            render: function () {
+                var props = this.props;
+                props.className = "unit-portrait " + (props.className || "");
+                if (this.props.imageSrc) {
+                    props.style =
+                        {
+                            backgroundImage: 'url("' + this.props.imageSrc + '")'
+                        };
+                }
+                return (React.DOM.div(props, null));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../lib/react.d.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Draggable = {
+            getDefaultProps: function () {
+                return ({
+                    dragThreshhold: 5
+                });
+            },
+            getInitialState: function () {
+                return ({
+                    dragging: false,
+                    clone: null
+                });
+            },
+            componentWillMount: function () {
+                this.dragPos = {};
+                this.mouseDown = false;
+                this.dragOffset =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+                this.mouseDownPosition =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+                this.originPosition =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+            },
+            componentDidMount: function () {
+                this.DOMNode = this.getDOMNode();
+                this.containerElement = document.body;
+                if (this.props.containerElement) {
+                    if (this.props.containerElement.getDOMNode) {
+                        // React component
+                        this.containerElement = this.props.containerElement.getDOMNode();
+                    }
+                    else
+                        this.containerElement = this.props.containerElement;
+                }
+                this.setContainerRect();
+                window.addEventListener("resize", this.setContainerRect, false);
+            },
+            componentWillUnmount: function () {
+                this.removeEventListeners();
+                window.removeEventListener("resize", this.setContainerRect);
+            },
+            handleMouseDown: function (e) {
+                if (e.button)
+                    return;
+                if (this.props.containerDragOnly) {
+                    var target = e.target;
+                    if (!target.classList.contains("draggable-container")) {
+                        return;
+                    }
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                if (this.state.dragging)
+                    return;
+                var clientRect = this.getDOMNode().getBoundingClientRect();
+                // var e;
+                // if (isFinite(e.clientX))
+                // {
+                //   e = e;
+                // }
+                // else
+                // {
+                //   e = e.touches[0];
+                //   this.needsFirstTouchUpdate = true;
+                //   this.touchEventTarget = e.target;
+                // }
+                this.addEventListeners();
+                var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset ||
+                    {
+                        x: e.clientX - clientRect.left,
+                        y: e.clientY - clientRect.top
+                    };
+                this.mouseDown = true;
+                this.dragOffset = dragOffset;
+                this.mouseDownPosition =
+                    {
+                        x: e.pageX,
+                        y: e.pageY
+                    };
+                this.originPosition =
+                    {
+                        x: clientRect.left + document.body.scrollLeft,
+                        y: clientRect.top + document.body.scrollTop
+                    };
+                if (this.props.dragThreshhold <= 0) {
+                    this.handleMouseMove(e);
+                }
+            },
+            handleMouseMove: function (e) {
+                if (e.preventDefault)
+                    e.preventDefault();
+                // var e = e.clientX ? e : e.touches[0];
+                if (e.clientX === 0 && e.clientY === 0)
+                    return;
+                if (!this.state.dragging) {
+                    var deltaX = Math.abs(e.pageX - this.mouseDownPosition.x);
+                    var deltaY = Math.abs(e.pageY - this.mouseDownPosition.y);
+                    var delta = deltaX + deltaY;
+                    if (delta >= this.props.dragThreshhold) {
+                        var ownNode = this.getDOMNode();
+                        var stateObj = {
+                            dragging: true
+                        };
+                        if (!this.props.preventAutoResize) {
+                            this.dragPos.width = parseInt(ownNode.offsetWidth);
+                            this.dragPos.height = parseInt(ownNode.offsetHeight);
+                        }
+                        if (this.props.makeClone) {
+                            if (!this.makeDragClone) {
+                                var nextSibling = ownNode.nextSibling;
+                                var clone = ownNode.cloneNode(true);
+                                Rance.recursiveRemoveAttribute(clone, "data-reactid");
+                                ownNode.parentNode.insertBefore(clone, nextSibling);
+                                stateObj.clone = clone;
+                            }
+                            else {
+                                var clone = this.makeDragClone();
+                                document.body.appendChild(clone);
+                                stateObj.clone = clone;
+                            }
+                        }
+                        this.setState(stateObj);
+                        if (this.onDragStart) {
+                            this.onDragStart(e);
+                        }
+                        if (this.onDragMove) {
+                            this.onDragMove(e.pageX - this.dragOffset.x, e.pageY - this.dragOffset.y);
+                        }
+                    }
+                }
+                if (this.state.dragging) {
+                    this.handleDrag(e);
+                }
+            },
+            handleDrag: function (e) {
+                var x = e.pageX - this.dragOffset.x;
+                var y = e.pageY - this.dragOffset.y;
+                var domWidth, domHeight;
+                if (this.makeDragClone) {
+                    domWidth = parseInt(this.state.clone.offsetWidth);
+                    domHeight = parseInt(this.state.clone.offsetHeight);
+                }
+                else {
+                    domWidth = parseInt(this.getDOMNode().offsetWidth);
+                    domHeight = parseInt(this.getDOMNode().offsetHeight);
+                }
+                var minX = this.containerRect.left;
+                var maxX = this.containerRect.right;
+                var minY = this.containerRect.top;
+                var maxY = this.containerRect.bottom;
+                var x2 = x + domWidth;
+                var y2 = y + domHeight;
+                if (x < minX) {
+                    x = minX;
+                }
+                else if (x2 > maxX) {
+                    x = this.containerRect.width - domWidth;
+                }
+                ;
+                if (y < minY) {
+                    y = minY;
+                }
+                else if (y2 > maxY) {
+                    y = this.containerRect.height - domHeight;
+                }
+                ;
+                if (this.onDragMove) {
+                    this.onDragMove(x, y);
+                }
+                else {
+                    this.dragPos.top = y;
+                    this.dragPos.left = x;
+                    this.updateDOMNodeStyle();
+                }
+            },
+            handleMouseUp: function (e) {
+                // if (this.touchEventTarget)
+                // {
+                //   var touch = e.changedTouches[0];
+                //   var dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
+                //   console.log(dropTarget);
+                //   if (dropTarget)
+                //   {
+                //     var reactid = dropTarget.getAttribute("data-reactid");
+                //     eventManager.dispatchEvent("drop" + reactid);
+                //   }
+                // }
+                this.mouseDown = false;
+                this.mouseDownPosition =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+                if (this.state.dragging) {
+                    this.handleDragEnd(e);
+                }
+                this.removeEventListeners();
+            },
+            handleDragEnd: function (e) {
+                if (this.state.clone) {
+                    this.state.clone.parentNode.removeChild(this.state.clone);
+                }
+                if (this.isMounted()) {
+                    this.setState({
+                        dragging: false,
+                        clone: null
+                    });
+                    this.dragOffset =
+                        {
+                            x: 0,
+                            y: 0
+                        };
+                    this.originPosition =
+                        {
+                            x: 0,
+                            y: 0
+                        };
+                }
+                if (this.onDragEnd) {
+                    var endSuccesful = this.onDragEnd(e);
+                }
+            },
+            addEventListeners: function () {
+                var self = this;
+                this.containerElement.addEventListener("mousemove", self.handleMouseMove);
+                document.addEventListener("mouseup", self.handleMouseUp);
+                if (this.touchEventTarget) {
+                    this.touchEventTarget.addEventListener("touchmove", self.handleMouseMove);
+                    this.touchEventTarget.addEventListener("touchend", self.handleMouseUp);
+                }
+            },
+            removeEventListeners: function () {
+                var self = this;
+                this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
+                document.removeEventListener("mouseup", self.handleMouseUp);
+                if (this.touchEventTarget) {
+                    this.touchEventTarget.removeEventListener("touchmove", self.handleMouseMove);
+                    this.touchEventTarget.removeEventListener("touchend", self.handleMouseUp);
+                    this.touchEventTarget = null;
+                }
+            },
+            setContainerRect: function () {
+                this.containerRect = this.containerElement.getBoundingClientRect();
+            },
+            updateDOMNodeStyle: function () {
+                if (this.state.clone) {
+                    var s = this.state.clone.style;
+                    s.top = "" + this.dragPos.top + "px";
+                    s.left = "" + this.dragPos.left + "px";
+                }
+                else {
+                    var s = this.DOMNode.style;
+                    for (var key in this.dragPos) {
+                        s[key] = "" + this.dragPos[key] + "px";
+                    }
+                }
+            }
+        };
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="unitinfo.ts"/>
+/// <reference path="uniticon.ts"/>
+/// <reference path="unitstatuseffects.ts" />
+/// <reference path="unitportrait.ts" />
+/// <reference path="../mixins/draggable.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Unit = React.createClass({
+            displayName: "Unit",
+            mixins: [UIComponents.Draggable, React.addons.PureRenderMixin],
+            getInitialState: function () {
+                return ({
+                    hasPopup: false,
+                    popupElement: null
+                });
+            },
+            onDragStart: function () {
+                this.props.onDragStart(this.props.unit);
+            },
+            onDragEnd: function () {
+                this.props.onDragEnd();
+            },
+            handleClick: function () {
+                this.props.onUnitClick(this.props.unit);
+            },
+            handleMouseEnter: function () {
+                if (!this.props.handleMouseEnterUnit)
+                    return;
+                if (this.props.unit.currentHealth <= 0)
+                    return;
+                this.props.handleMouseEnterUnit(this.props.unit);
+            },
+            handleMouseLeave: function (e) {
+                if (!this.props.handleMouseLeaveUnit)
+                    return;
+                this.props.handleMouseLeaveUnit(e);
+            },
+            render: function () {
+                var unit = this.props.unit;
+                unit.uiDisplayIsDirty = false;
+                var containerProps = {
+                    className: "unit-container",
+                    id: "unit-id_" + unit.id,
+                    key: "container"
+                };
+                var wrapperProps = {
+                    className: "unit"
+                };
+                wrapperProps.onMouseEnter = this.handleMouseEnter;
+                wrapperProps.onMouseLeave = this.handleMouseLeave;
+                if (this.props.isDraggable) {
+                    wrapperProps.className += " draggable";
+                    wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.handleMouseDown;
+                }
+                if (this.state.dragging) {
+                    wrapperProps.style = this.dragPos;
+                    wrapperProps.className += " dragging";
+                }
+                if (this.props.onUnitClick) {
+                    wrapperProps.onClick = this.handleClick;
+                }
+                if (this.props.facesLeft) {
+                    wrapperProps.className += " enemy-unit";
+                }
+                else {
+                    wrapperProps.className += " friendly-unit";
+                }
+                var isActiveUnit = (this.props.activeUnit &&
+                    unit.id === this.props.activeUnit.id);
+                if (isActiveUnit) {
+                    wrapperProps.className += " active-unit";
+                }
+                var isInPotentialTargetArea = (this.props.targetsInPotentialArea &&
+                    this.props.targetsInPotentialArea.indexOf(unit) >= 0);
+                if (isInPotentialTargetArea) {
+                    wrapperProps.className += " target-unit";
+                }
+                if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id) {
+                    wrapperProps.className += " hovered-unit";
+                }
+                var hoveredActionPointExpenditure = 0;
+                if (isActiveUnit && this.props.hoveredAbility) {
+                    hoveredActionPointExpenditure = this.props.hoveredAbility.actionsUse;
+                }
+                var infoProps = {
+                    key: "info",
+                    name: unit.name,
+                    guardAmount: unit.battleStats.guardAmount,
+                    guardCoverage: unit.battleStats.guardCoverage,
+                    isPreparing: unit.battleStats.queuedAction,
+                    maxHealth: unit.maxHealth,
+                    currentHealth: unit.currentHealth,
+                    isSquadron: unit.isSquadron,
+                    maxActionPoints: unit.attributes.maxActionPoints,
+                    currentActionPoints: unit.battleStats.currentActionPoints,
+                    hoveredActionPointExpenditure: hoveredActionPointExpenditure,
+                    isDead: this.props.isDead,
+                    isCaptured: this.props.isCaptured,
+                    animateDuration: unit.sfxDuration
+                };
+                var containerElements = [
+                    React.DOM.div({
+                        className: "unit-left-container",
+                        key: "leftContainer"
+                    }, UIComponents.UnitPortrait({
+                        imageSrc: (unit.portrait ? unit.portrait.imageSrc : "")
+                    }), UIComponents.UnitStatusEffects({
+                        unit: unit,
+                        isBattlePrep: !this.props.battle
+                    })),
+                    UIComponents.UnitInfo(infoProps),
+                ];
+                if (this.props.facesLeft) {
+                    containerElements = containerElements.reverse();
+                }
+                if (unit.displayFlags.isAnnihilated) {
+                    containerElements.push(React.DOM.div({ key: "overlay", className: "unit-annihilated-overlay" }, "Unit annihilated"));
+                }
+                var allElements = [
+                    React.DOM.div(containerProps, containerElements),
+                    UIComponents.UnitIcon({
+                        icon: unit.template.icon,
+                        facesLeft: this.props.facesLeft,
+                        key: "icon",
+                        isActiveUnit: isActiveUnit,
+                        isAnnihilated: unit.displayFlags.isAnnihilated
+                    })
+                ];
+                if (this.props.facesLeft) {
+                    allElements = allElements.reverse();
+                }
+                return (React.DOM.div(wrapperProps, allElements));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.EmptyUnit = React.createClass({
+            displayName: "EmptyUnit",
+            shouldComponentUpdate: function (newProps) {
+                return newProps.facesLeft === this.props.facesLeft;
+            },
+            render: function () {
+                var wrapperProps = {
+                    className: "unit empty-unit"
+                };
+                var containerProps = {
+                    className: "unit-container",
+                    key: "container"
+                };
+                if (this.props.facesLeft) {
+                    wrapperProps.className += " enemy-unit";
+                }
+                else {
+                    wrapperProps.className += " friendly-unit";
+                }
+                var allElements = [
+                    React.DOM.div(containerProps, null),
+                    UIComponents.UnitIcon({
+                        icon: null,
+                        facesLeft: this.props.facesLeft,
+                        key: "icon"
+                    })
+                ];
+                if (this.props.facesLeft) {
+                    allElements = allElements.reverse();
+                }
+                return (React.DOM.div(wrapperProps, allElements));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+// used to register event listeners for manually firing drop events because touch events suck
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.DropTarget = {
+            componentDidMount: function () {
+                if (!this.handleMouseUp)
+                    console.warn("No mouseUp handler on drop target", this);
+                Rance.eventManager.addEventListener("drop" + this._rootNodeID, this.handleMouseUp);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("drop" + this._rootNodeID, this.handleMouseUp);
+            }
+        };
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../mixins/droptarget.ts"/>
+/// <reference path="uniticon.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitWrapper = React.createClass({
+            displayName: "UnitWrapper",
+            mixins: [UIComponents.DropTarget],
+            shouldComponentUpdate: function (newProps) {
+                if (!this.props.unit && !newProps.unit)
+                    return false;
+                if (newProps.unit && newProps.unit.uiDisplayIsDirty)
+                    return true;
+                var targetedProps = {
+                    activeUnit: true,
+                    hoveredUnit: true,
+                    targetsInPotentialArea: true,
+                    activeEffectUnits: true
+                };
+                for (var prop in newProps) {
+                    if (!targetedProps[prop] && prop !== "position") {
+                        if (newProps[prop] !== this.props[prop]) {
+                            return true;
+                        }
+                    }
+                }
+                for (var prop in targetedProps) {
+                    var unit = newProps.unit;
+                    var oldValue = this.props[prop];
+                    var newValue = newProps[prop];
+                    if (!newValue && !oldValue)
+                        continue;
+                    if (prop === "targetsInPotentialArea" || prop === "activeEffectUnits") {
+                        if (!oldValue) {
+                            if (newValue.indexOf(unit) >= 0)
+                                return true;
+                            else {
+                                continue;
+                            }
+                        }
+                        if ((oldValue.indexOf(unit) >= 0) !==
+                            (newValue.indexOf(unit) >= 0)) {
+                            return true;
+                        }
+                    }
+                    else if (newValue !== oldValue &&
+                        (oldValue === unit || newValue === unit)) {
+                        return true;
+                    }
+                }
+                if (newProps.battle && newProps.battle.ended) {
+                    return true;
+                }
+                return false;
+            },
+            handleMouseUp: function () {
+                console.log("unitMouseUp", this.props.position);
+                this.props.onMouseUp(this.props.position);
+            },
+            render: function () {
+                var allElements = [];
+                var wrapperProps = {
+                    className: "unit-wrapper drop-target"
+                };
+                if (this.props.onMouseUp) {
+                    wrapperProps.onMouseUp = wrapperProps.onTouchEnd = this.handleMouseUp;
+                }
+                ;
+                if (this.props.activeEffectUnits) {
+                    if (this.props.activeEffectUnits.indexOf(this.props.unit) >= 0) {
+                        wrapperProps.className += " active-effect-unit";
+                    }
+                }
+                var empty = UIComponents.EmptyUnit({
+                    facesLeft: this.props.facesLeft,
+                    key: "empty_" + this.props.key,
+                    position: this.props.position
+                });
+                allElements.push(empty);
+                if (this.props.unit) {
+                    var isDead = false;
+                    if (this.props.battle &&
+                        this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0) {
+                        if (this.props.battle.deadUnits.indexOf(this.props.unit) >= 0) {
+                            this.props.isDead = true;
+                        }
+                    }
+                    var isCaptured = false;
+                    if (this.props.battle &&
+                        this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0) {
+                        if (this.props.battle.capturedUnits.indexOf(this.props.unit) >= 0) {
+                            this.props.isCaptured = true;
+                        }
+                    }
+                    var unit = UIComponents.Unit(this.props);
+                    allElements.push(unit);
+                }
+                return (React.DOM.div(wrapperProps, allElements));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../unit.ts" />
+/// <reference path="../../battle.ts" />
+/// <reference path="../unit/unit.ts"/>
+/// <reference path="../unit/emptyunit.ts"/>
+/// <reference path="../unit/unitwrapper.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.FleetRow = React.createClass({
+            displayName: "FleetRow",
+            propTypes: {
+                row: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)).isRequired,
+                rowIndexInOwnFleet: React.PropTypes.number.isRequired,
+                battle: React.PropTypes.instanceOf(Rance.Battle),
+                facesLeft: React.PropTypes.bool.isRequired,
+                activeUnit: React.PropTypes.instanceOf(Rance.Unit),
+                activeTargets: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+                hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
+                hoveredAbility: React.PropTypes.object,
+                handleMouseLeaveUnit: React.PropTypes.func,
+                handleMouseEnterUnit: React.PropTypes.func,
+                targetsInPotentialArea: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+                activeEffectUnits: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+                onMouseUp: React.PropTypes.func,
+                onUnitClick: React.PropTypes.func,
+                isDraggable: React.PropTypes.bool,
+                onDragStart: React.PropTypes.func,
+                onDragEnd: React.PropTypes.func
+            },
+            render: function () {
+                var row = this.props.row;
+                var side = this.props.facesLeft ? "side2" : "side1";
+                var absoluteRowIndex = side === "side1" ?
+                    this.props.rowIndexInOwnFleet :
+                    this.props.rowIndexInOwnFleet + app.moduleData.ruleSet.battle.rowsPerFormation;
+                var units = [];
+                for (var i = 0; i < row.length; i++) {
+                    var data = {};
+                    data.key = i;
+                    data.unit = row[i];
+                    data.position = [absoluteRowIndex, i];
+                    data.battle = this.props.battle;
+                    data.facesLeft = this.props.facesLeft;
+                    data.activeUnit = this.props.activeUnit;
+                    data.activeTargets = this.props.activeTargets;
+                    data.hoveredUnit = this.props.hoveredUnit;
+                    data.hoveredAbility = this.props.hoveredAbility;
+                    data.handleMouseLeaveUnit = this.props.handleMouseLeaveUnit;
+                    data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
+                    data.targetsInPotentialArea = this.props.targetsInPotentialArea;
+                    data.activeEffectUnits = this.props.activeEffectUnits;
+                    data.onMouseUp = this.props.onMouseUp;
+                    data.onUnitClick = this.props.onUnitClick;
+                    data.isDraggable = this.props.isDraggable;
+                    data.onDragStart = this.props.onDragStart;
+                    data.onDragEnd = this.props.onDragEnd;
+                    units.push(UIComponents.UnitWrapper(data));
+                }
+                return (React.DOM.div({ className: "battle-fleet-row" }, units));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../unit.ts" />
+/// <reference path="../../battle.ts" />
+/// <reference path="fleetrow.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Fleet = React.createClass({
+            displayName: "Fleet",
+            propTypes: {
+                fleet: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
+                battle: React.PropTypes.instanceOf(Rance.Battle),
+                facesLeft: React.PropTypes.bool.isRequired,
+                activeUnit: React.PropTypes.instanceOf(Rance.Unit),
+                activeTargets: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+                hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
+                hoveredAbility: React.PropTypes.object,
+                handleMouseLeaveUnit: React.PropTypes.func,
+                handleMouseEnterUnit: React.PropTypes.func,
+                targetsInPotentialArea: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+                activeEffectUnits: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+                onMouseUp: React.PropTypes.func,
+                onUnitClick: React.PropTypes.func,
+                isDraggable: React.PropTypes.bool,
+                onDragStart: React.PropTypes.func,
+                onDragEnd: React.PropTypes.func
+            },
+            render: function () {
+                var fleet = this.props.fleet;
+                var fleetRows = [];
+                for (var i = 0; i < fleet.length; i++) {
+                    fleetRows.push(UIComponents.FleetRow({
+                        key: i,
+                        row: fleet[i],
+                        rowIndexInOwnFleet: i,
+                        battle: this.props.battle,
+                        facesLeft: this.props.facesLeft,
+                        activeUnit: this.props.activeUnit,
+                        hoveredUnit: this.props.hoveredUnit,
+                        hoveredAbility: this.props.hoveredAbility,
+                        handleMouseEnterUnit: this.props.handleMouseEnterUnit,
+                        handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
+                        targetsInPotentialArea: this.props.targetsInPotentialArea,
+                        activeEffectUnits: this.props.activeEffectUnits,
+                        onMouseUp: this.props.onMouseUp,
+                        onUnitClick: this.props.onUnitClick,
+                        isDraggable: this.props.isDraggable,
+                        onDragStart: this.props.onDragStart,
+                        onDragEnd: this.props.onDragEnd
+                    }));
+                }
+                return (React.DOM.div({ className: "battle-fleet" }, fleetRows));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TurnCounter = React.createClass({
+            displayName: "TurnCounter",
+            mixins: [React.addons.PureRenderMixin],
+            render: function () {
+                var turnsLeft = this.props.turnsLeft;
+                var turns = [];
+                var usedTurns = this.props.maxTurns - turnsLeft;
+                for (var i = 0; i < usedTurns; i++) {
+                    turns.push(React.DOM.div({
+                        key: "used" + i,
+                        className: "turn-counter used-turn"
+                    }));
+                }
+                for (var i = 0; i < turnsLeft; i++) {
+                    turns.push(React.DOM.div({
+                        key: "available" + i,
+                        className: "turn-counter available-turn"
+                    }));
+                }
+                return (React.DOM.div({
+                    className: "turns-container",
+                    title: "Turns left: " + turnsLeft
+                }, turns));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TurnOrder = React.createClass({
+            displayName: "TurnOrder",
+            getInitialState: function () {
+                return ({
+                    maxUnits: 7
+                });
+            },
+            componentDidMount: function () {
+                this.setMaxUnits();
+                window.addEventListener("resize", this.setMaxUnits);
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.setMaxUnits);
+            },
+            setMaxUnits: function () {
+                var minUnits = 7;
+                var containerElement = this.getDOMNode();
+                var containerWidth = containerElement.getBoundingClientRect().width;
+                containerWidth -= 30;
+                var unitElementWidth = 160;
+                var ceil = Math.ceil(containerWidth / unitElementWidth);
+                this.setState({
+                    maxUnits: Math.max(ceil, minUnits)
+                });
+            },
+            render: function () {
+                var maxUnits = this.state.maxUnits;
+                var turnOrder = this.props.turnOrder.slice(0);
+                if (this.props.potentialDelay) {
+                    var fake = {
+                        isFake: true,
+                        id: this.props.potentialDelay.id,
+                        battleStats: {
+                            moveDelay: this.props.potentialDelay.delay
+                        }
+                    };
+                    turnOrder.push(fake);
+                    turnOrder.sort(Rance.turnOrderSortFunction);
+                }
+                var maxUnitsWithFake = maxUnits;
+                if (fake && turnOrder.indexOf(fake) <= maxUnits) {
+                    maxUnitsWithFake++;
+                }
+                turnOrder = turnOrder.slice(0, maxUnitsWithFake);
+                var toRender = [];
+                for (var i = 0; i < turnOrder.length; i++) {
+                    var unit = turnOrder[i];
+                    if (unit.isFake) {
+                        toRender.push(React.DOM.div({
+                            className: "turn-order-arrow",
+                            key: "" + i
+                        }));
+                        continue;
+                    }
+                    var data = {
+                        key: "" + i,
+                        className: "turn-order-unit",
+                        title: "delay: " + unit.battleStats.moveDelay + "\n" +
+                            "speed: " + unit.attributes.speed,
+                        onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit),
+                        onMouseLeave: this.props.onMouseLeaveUnit
+                    };
+                    if (this.props.unitsBySide.side1.indexOf(unit) > -1) {
+                        data.className += " turn-order-unit-friendly";
+                    }
+                    else if (this.props.unitsBySide.side2.indexOf(unit) > -1) {
+                        data.className += " turn-order-unit-enemy";
+                    }
+                    if (this.props.hoveredUnit && unit.id === this.props.hoveredUnit.id) {
+                        data.className += " turn-order-unit-hover";
+                    }
+                    toRender.push(React.DOM.div(data, unit.name));
+                }
+                if (this.props.turnOrder.length > maxUnits) {
+                    toRender.push(React.DOM.div({
+                        className: "turn-order-more",
+                        key: "more"
+                    }, "..."));
+                }
+                return (React.DOM.div({ className: "turn-order-container" }, toRender));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.AbilityTooltip = React.createClass({
+            displayName: "AbilityTooltip",
+            shouldComponentUpdate: function (newProps) {
+                for (var prop in newProps) {
+                    if (prop !== "activeTargets") {
+                        if (this.props[prop] !== newProps[prop]) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            },
+            render: function () {
+                var abilities = this.props.activeTargets[this.props.targetUnit.id];
+                var abilityElements = [];
+                var containerProps = {
+                    className: "ability-tooltip",
+                    onMouseLeave: this.props.handleMouseLeave
+                };
+                var parentRect = this.props.parentElement.getBoundingClientRect();
+                containerProps.style =
+                    {
+                        position: "fixed",
+                        top: parentRect.top
+                    };
+                if (this.props.facesLeft) {
+                    containerProps.className += " ability-tooltip-faces-left";
+                    containerProps.style.left = parentRect.left;
+                }
+                else {
+                    containerProps.className += " ability-tooltip-faces-right";
+                    // aligning right to right doesnt work for some reason
+                    containerProps.style.left = parentRect.right - 128;
+                }
+                for (var i = 0; i < abilities.length; i++) {
+                    var ability = abilities[i];
+                    var data = {};
+                    data.className = "ability-tooltip-ability";
+                    data.key = i;
+                    data.onClick = this.props.handleAbilityUse.bind(null, ability, this.props.targetUnit);
+                    data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
+                    data.onMouseLeave = this.props.handleMouseLeaveAbility;
+                    if (ability.description) {
+                        data.title = ability.description;
+                    }
+                    abilityElements.push(React.DOM.div(data, ability.displayName));
+                }
+                return (React.DOM.div(containerProps, abilityElements));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../flag.ts" />
 var Rance;
 (function (Rance) {
@@ -10604,6 +10656,7 @@ var Rance;
                 }, UIComponents.Fleet({
                     battle: battle,
                     fleet: battle.side1,
+                    facesLeft: false,
                     activeUnit: battle.activeUnit,
                     hoveredUnit: this.state.hoveredUnit,
                     hoveredAbility: this.state.hoveredAbility,
@@ -12217,6 +12270,7 @@ var Rance;
                             leftLowerElement = UIComponents.Fleet({
                                 key: "playerFleet",
                                 fleet: battlePrep.playerFormation.slice(0),
+                                facesLeft: false,
                                 hoveredUnit: this.state.hoveredUnit,
                                 activeUnit: this.state.selectedUnit,
                                 onMouseUp: this.handleDrop,
@@ -24019,7 +24073,7 @@ var Rance;
                     Effects.wholeRowAttack = {
                         name: "wholeRowAttack",
                         targetFleets: Rance.TargetFleet.either,
-                        battleAreaFunction: Rance.areaColumnÄÄfixedÄÄ,
+                        battleAreaFunction: Rance.areaColumn,
                         targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle) {
                             var baseDamage = 0.75;
@@ -24459,6 +24513,7 @@ var Rance;
                             }
                         }
                     };
+                    Abilities.guardColumn = Abilities.guardRow; // legacy alias 10.3.2016
                     Abilities.boardingHook = {
                         type: "boardingHook",
                         displayName: "Boarding Hook",

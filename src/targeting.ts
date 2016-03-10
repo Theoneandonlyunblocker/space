@@ -56,7 +56,7 @@ module Rance
   //**
   //XX
   //**
-  export var areaColumnÄÄfixedÄÄ: BattleAreaFunction = function(units: Unit[][], target: number[])
+  export var areaColumn: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     var y = target[1];
     var targetLocations: number[][] = [];
