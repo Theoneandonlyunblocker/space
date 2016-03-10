@@ -432,12 +432,12 @@ module Rance
       }
       getIndependentStrengthAtStar(star: Star): number
       {
-        var ships = star.getIndependentShips();
+        var units = star.getIndependentShips();
         var total = 0;
 
-        for (var i = 0; i < ships.length; i++)
+        for (var i = 0; i < units.length; i++)
         {
-          total += ships[i].getStrengthEvaluation();
+          total += units[i].getStrengthEvaluation();
         }
 
         return total;
@@ -784,14 +784,14 @@ module Rance
       estimateFleetRange(fleet: Fleet, baseRange: number, afterSixUnits: number, getRangeFNName: string)
       {
         var range: number = baseRange;
-        if (fleet.ships.length >= 6)
+        if (fleet.units.length >= 6)
         {
           range += afterSixUnits;
         }
 
-        for (var i = 0; i < fleet.ships.length; i++)
+        for (var i = 0; i < fleet.units.length; i++)
         {
-          var unit = fleet.ships[i];
+          var unit = fleet.units[i];
           if (this.player.unitIsIdentified(unit))
           {
             range = Math.max(range, unit[getRangeFNName]());

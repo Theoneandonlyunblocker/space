@@ -9,7 +9,7 @@ module Rance
   export class Fleet
   {
     player: Player;
-    ships: Unit[] = [];
+    units: Unit[] = [];
     location: Star;
 
     visionIsDirty: boolean = true;
@@ -20,7 +20,7 @@ module Rance
     id: number;
     name: string;
 
-    constructor(player: Player, ships: Unit[], location: Star,
+    constructor(player: Player, units: Unit[], location: Star,
       id?: number, shouldRender: boolean = true)
     {
       this.player = player;
@@ -31,20 +31,20 @@ module Rance
       this.location.addFleet(this);
       this.player.addFleet(this);
 
-      this.addShips(ships);
+      this.addUnits(units);
 
       if (shouldRender)
       {
         eventManager.dispatchEvent("renderLayer", "fleets", this.location);
       }
     }
-    getShipIndex(ship: Unit)
+    getUnitIndex(unit: Unit)
     {
-      return this.ships.indexOf(ship);
+      return this.units.indexOf(unit);
     }
-    hasShip(ship: Unit)
+    hasUnit(unit: Unit)
     {
-      return this.getShipIndex(ship) >= 0;
+      return this.getUnitIndex(unit) >= 0;
     }
     deleteFleet(shouldRender: boolean = true)
     {
@@ -64,73 +64,73 @@ module Rance
         return;
       }
 
-      fleet.addShips(this.ships);
+      fleet.addUnits(this.units);
       this.deleteFleet(shouldRender);
     }
-    addShip(ship: Unit)
+    addUnit(unit: Unit)
     {
-      if (this.hasShip(ship)) return false;
+      if (this.hasUnit(unit)) return false;
 
-      if (this.ships.length === 0)
+      if (this.units.length === 0)
       {
-        this.isStealthy = ship.isStealthy();
+        this.isStealthy = unit.isStealthy();
       }
-      else if (ship.isStealthy() !== this.isStealthy)
+      else if (unit.isStealthy() !== this.isStealthy)
       {
-        console.warn("Tried to add stealthy ship to non stealthy fleet or other way around");
+        console.warn("Tried to add stealthy unit to non stealthy fleet or other way around");
         return;
       }
 
-      this.ships.push(ship);
-      ship.addToFleet(this);
+      this.units.push(unit);
+      unit.addToFleet(this);
 
       this.visionIsDirty = true;
     }
-    addShips(ships: Unit[])
+    addUnits(units: Unit[])
     {
-      for (var i = 0; i < ships.length; i++)
+      for (var i = 0; i < units.length; i++)
       {
-        this.addShip(ships[i]);
+        this.addUnit(units[i]);
       }
     }
-    removeShip(ship: Unit)
+    removeUnit(unit: Unit)
     {
-      var index = this.getShipIndex(ship);
+      var index = this.getUnitIndex(unit);
 
       if (index < 0) return false;
 
-      this.ships.splice(index, 1);
-      ship.removeFromFleet();
+      this.units.splice(index, 1);
+      unit.removeFromFleet();
 
       this.visionIsDirty = true;
 
-      if (this.ships.length <= 0)
+      if (this.units.length <= 0)
       {
         this.deleteFleet();
       }
     }
-    removeShips(ships: Unit[])
+    removeUnits(units: Unit[])
     {
-      for (var i = 0; i < ships.length; i++)
+      for (var i = 0; i < units.length; i++)
       {
-        this.removeShip(ships[i]);
+        this.removeUnit(units[i]);
       }
     }
-    transferShip(fleet: Fleet, ship: Unit)
+    transferUnit(fleet: Fleet, unit: Unit)
     {
       if (fleet === this) return;
-      if (ship.isStealthy() !== this.isStealthy)
+      if (unit.isStealthy() !== this.isStealthy)
       {
-        console.warn("Tried to transfer stealthy ship to non stealthy fleet");
+        console.warn("Tried to transfer stealthy unit to non stealthy fleet");
         return;
       }
-      var index = this.getShipIndex(ship);
+      var index = this.getUnitIndex(unit);
 
       if (index < 0) return false;
 
-      fleet.addShip(ship);
+      fleet.addUnit(unit);
 
-      this.ships.splice(index, 1);
+      this.units.splice(index, 1);
       eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     }
     split()
@@ -143,46 +143,46 @@ module Rance
     }
     splitStealthyUnits()
     {
-      var stealthyUnits = this.ships.filter(function(unit: Unit)
+      var stealthyUnits = this.units.filter(function(unit: Unit)
       {
         return unit.isStealthy();
       });
 
       var newFleet = new Fleet(this.player, stealthyUnits, this.location);
       this.location.addFleet(newFleet);
-      this.removeShips(stealthyUnits);
+      this.removeUnits(stealthyUnits);
 
       return newFleet;
     }
     getMinCurrentMovePoints()
     {
-      if (!this.ships[0]) return 0;
+      if (!this.units[0]) return 0;
 
-      var min = this.ships[0].currentMovePoints;
+      var min = this.units[0].currentMovePoints;
 
-      for (var i = 0; i < this.ships.length; i++)
+      for (var i = 0; i < this.units.length; i++)
       {
-        min = Math.min(this.ships[i].currentMovePoints, min);
+        min = Math.min(this.units[i].currentMovePoints, min);
       }
       return min;
     }
     getMinMaxMovePoints()
     {
-      if (!this.ships[0]) return 0;
+      if (!this.units[0]) return 0;
 
-      var min = this.ships[0].maxMovePoints;
+      var min = this.units[0].maxMovePoints;
 
-      for (var i = 0; i < this.ships.length; i++)
+      for (var i = 0; i < this.units.length; i++)
       {
-        min = Math.min(this.ships[i].maxMovePoints, min);
+        min = Math.min(this.units[i].maxMovePoints, min);
       }
       return min;
     }
     canMove()
     {
-      for (var i = 0; i < this.ships.length; i++)
+      for (var i = 0; i < this.units.length; i++)
       {
-        if (this.ships[i].currentMovePoints <= 0)
+        if (this.units[i].currentMovePoints <= 0)
         {
           return false;
         }
@@ -197,9 +197,9 @@ module Rance
     }
     subtractMovePoints()
     {
-      for (var i = 0; i < this.ships.length; i++)
+      for (var i = 0; i < this.units.length; i++)
       {
-        this.ships[i].currentMovePoints--;
+        this.units[i].currentMovePoints--;
       }
     }
     move(newLocation: Star)
@@ -271,9 +271,9 @@ module Rance
     {
       var total = 0;
 
-      for (var i = 0; i < this.ships.length; i++)
+      for (var i = 0; i < this.units.length; i++)
       {
-        total += this.ships[i].getStrengthEvaluation();
+        total += this.units[i].getStrengthEvaluation();
       }
 
       return total;
@@ -286,10 +286,10 @@ module Rance
         max: 0
       }
 
-      for (var i = 0; i < this.ships.length; i++)
+      for (var i = 0; i < this.units.length; i++)
       {
-        total.current += this.ships[i].currentHealth;
-        total.max += this.ships[i].maxHealth;
+        total.current += this.units[i].currentHealth;
+        total.max += this.units[i].maxHealth;
       }
 
       return total;
@@ -299,10 +299,10 @@ module Rance
       var highestVisionRange = 0;
       var highestDetectionRange = -1;
 
-      for (var i = 0; i < this.ships.length; i++)
+      for (var i = 0; i < this.units.length; i++)
       {
-        highestVisionRange = Math.max(this.ships[i].getVisionRange(), highestVisionRange);
-        highestDetectionRange = Math.max(this.ships[i].getDetectionRange(), highestDetectionRange);
+        highestVisionRange = Math.max(this.units[i].getVisionRange(), highestVisionRange);
+        highestDetectionRange = Math.max(this.units[i].getDetectionRange(), highestDetectionRange);
       }
 
       var inVision = this.location.getLinkedInRange(highestVisionRange);
@@ -340,7 +340,7 @@ module Rance
 
       data.locationId = this.location.id;
       data.playerId = this.player.id;
-      data.ships = this.ships.map(function(ship){return ship.serialize(false)});
+      data.ships = this.units.map(function(ship){return ship.serialize(false)});
 
       return data;
     }

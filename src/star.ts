@@ -439,7 +439,7 @@ module Rance
 
       for (var i = 0; i < fleets.length; i++)
       {
-        allShips = allShips.concat(fleets[i].ships);
+        allShips = allShips.concat(fleets[i].units);
       }
 
       return allShips;

@@ -398,7 +398,7 @@ declare module Rance {
 declare module Rance {
     class Fleet {
         player: Player;
-        ships: Unit[];
+        units: Unit[];
         location: Star;
         visionIsDirty: boolean;
         visibleStars: Star[];
@@ -406,16 +406,16 @@ declare module Rance {
         isStealthy: boolean;
         id: number;
         name: string;
-        constructor(player: Player, ships: Unit[], location: Star, id?: number, shouldRender?: boolean);
-        getShipIndex(ship: Unit): number;
-        hasShip(ship: Unit): boolean;
+        constructor(player: Player, units: Unit[], location: Star, id?: number, shouldRender?: boolean);
+        getUnitIndex(unit: Unit): number;
+        hasUnit(unit: Unit): boolean;
         deleteFleet(shouldRender?: boolean): void;
         mergeWith(fleet: Fleet, shouldRender?: boolean): void;
-        addShip(ship: Unit): boolean;
-        addShips(ships: Unit[]): void;
-        removeShip(ship: Unit): boolean;
-        removeShips(ships: Unit[]): void;
-        transferShip(fleet: Fleet, ship: Unit): boolean;
+        addUnit(unit: Unit): boolean;
+        addUnits(units: Unit[]): void;
+        removeUnit(unit: Unit): boolean;
+        removeUnits(units: Unit[]): void;
+        transferUnit(fleet: Fleet, unit: Unit): boolean;
         split(): Fleet;
         splitStealthyUnits(): Fleet;
         getMinCurrentMovePoints(): number;
@@ -2298,7 +2298,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var FleetControls: React.Factory<{}>;
+        var FleetControls: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2318,12 +2318,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var FleetContents: React.Factory<{}>;
+        var FleetContents: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetReorganization: React.Factory<{}>;
+        var FleetReorganization: React.Factory<any>;
     }
 }
 declare module Rance {

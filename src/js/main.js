@@ -1157,7 +1157,7 @@ var Rance;
             if (!fleets)
                 return [];
             for (var i = 0; i < fleets.length; i++) {
-                allShips = allShips.concat(fleets[i].ships);
+                allShips = allShips.concat(fleets[i].units);
             }
             return allShips;
         };
@@ -1638,9 +1638,9 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Fleet = (function () {
-        function Fleet(player, ships, location, id, shouldRender) {
+        function Fleet(player, units, location, id, shouldRender) {
             if (shouldRender === void 0) { shouldRender = true; }
-            this.ships = [];
+            this.units = [];
             this.visionIsDirty = true;
             this.visibleStars = [];
             this.detectedStars = [];
@@ -1650,16 +1650,16 @@ var Rance;
             this.name = "Fleet " + this.id;
             this.location.addFleet(this);
             this.player.addFleet(this);
-            this.addShips(ships);
+            this.addUnits(units);
             if (shouldRender) {
                 Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
             }
         }
-        Fleet.prototype.getShipIndex = function (ship) {
-            return this.ships.indexOf(ship);
+        Fleet.prototype.getUnitIndex = function (unit) {
+            return this.units.indexOf(unit);
         };
-        Fleet.prototype.hasShip = function (ship) {
-            return this.getShipIndex(ship) >= 0;
+        Fleet.prototype.hasUnit = function (unit) {
+            return this.getUnitIndex(unit) >= 0;
         };
         Fleet.prototype.deleteFleet = function (shouldRender) {
             if (shouldRender === void 0) { shouldRender = true; }
@@ -1675,56 +1675,56 @@ var Rance;
                 console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
                 return;
             }
-            fleet.addShips(this.ships);
+            fleet.addUnits(this.units);
             this.deleteFleet(shouldRender);
         };
-        Fleet.prototype.addShip = function (ship) {
-            if (this.hasShip(ship))
+        Fleet.prototype.addUnit = function (unit) {
+            if (this.hasUnit(unit))
                 return false;
-            if (this.ships.length === 0) {
-                this.isStealthy = ship.isStealthy();
+            if (this.units.length === 0) {
+                this.isStealthy = unit.isStealthy();
             }
-            else if (ship.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to add stealthy ship to non stealthy fleet or other way around");
+            else if (unit.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to add stealthy unit to non stealthy fleet or other way around");
                 return;
             }
-            this.ships.push(ship);
-            ship.addToFleet(this);
+            this.units.push(unit);
+            unit.addToFleet(this);
             this.visionIsDirty = true;
         };
-        Fleet.prototype.addShips = function (ships) {
-            for (var i = 0; i < ships.length; i++) {
-                this.addShip(ships[i]);
+        Fleet.prototype.addUnits = function (units) {
+            for (var i = 0; i < units.length; i++) {
+                this.addUnit(units[i]);
             }
         };
-        Fleet.prototype.removeShip = function (ship) {
-            var index = this.getShipIndex(ship);
+        Fleet.prototype.removeUnit = function (unit) {
+            var index = this.getUnitIndex(unit);
             if (index < 0)
                 return false;
-            this.ships.splice(index, 1);
-            ship.removeFromFleet();
+            this.units.splice(index, 1);
+            unit.removeFromFleet();
             this.visionIsDirty = true;
-            if (this.ships.length <= 0) {
+            if (this.units.length <= 0) {
                 this.deleteFleet();
             }
         };
-        Fleet.prototype.removeShips = function (ships) {
-            for (var i = 0; i < ships.length; i++) {
-                this.removeShip(ships[i]);
+        Fleet.prototype.removeUnits = function (units) {
+            for (var i = 0; i < units.length; i++) {
+                this.removeUnit(units[i]);
             }
         };
-        Fleet.prototype.transferShip = function (fleet, ship) {
+        Fleet.prototype.transferUnit = function (fleet, unit) {
             if (fleet === this)
                 return;
-            if (ship.isStealthy() !== this.isStealthy) {
-                console.warn("Tried to transfer stealthy ship to non stealthy fleet");
+            if (unit.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to transfer stealthy unit to non stealthy fleet");
                 return;
             }
-            var index = this.getShipIndex(ship);
+            var index = this.getUnitIndex(unit);
             if (index < 0)
                 return false;
-            fleet.addShip(ship);
-            this.ships.splice(index, 1);
+            fleet.addUnit(unit);
+            this.units.splice(index, 1);
             Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
         };
         Fleet.prototype.split = function () {
@@ -1733,35 +1733,35 @@ var Rance;
             return newFleet;
         };
         Fleet.prototype.splitStealthyUnits = function () {
-            var stealthyUnits = this.ships.filter(function (unit) {
+            var stealthyUnits = this.units.filter(function (unit) {
                 return unit.isStealthy();
             });
             var newFleet = new Fleet(this.player, stealthyUnits, this.location);
             this.location.addFleet(newFleet);
-            this.removeShips(stealthyUnits);
+            this.removeUnits(stealthyUnits);
             return newFleet;
         };
         Fleet.prototype.getMinCurrentMovePoints = function () {
-            if (!this.ships[0])
+            if (!this.units[0])
                 return 0;
-            var min = this.ships[0].currentMovePoints;
-            for (var i = 0; i < this.ships.length; i++) {
-                min = Math.min(this.ships[i].currentMovePoints, min);
+            var min = this.units[0].currentMovePoints;
+            for (var i = 0; i < this.units.length; i++) {
+                min = Math.min(this.units[i].currentMovePoints, min);
             }
             return min;
         };
         Fleet.prototype.getMinMaxMovePoints = function () {
-            if (!this.ships[0])
+            if (!this.units[0])
                 return 0;
-            var min = this.ships[0].maxMovePoints;
-            for (var i = 0; i < this.ships.length; i++) {
-                min = Math.min(this.ships[i].maxMovePoints, min);
+            var min = this.units[0].maxMovePoints;
+            for (var i = 0; i < this.units.length; i++) {
+                min = Math.min(this.units[i].maxMovePoints, min);
             }
             return min;
         };
         Fleet.prototype.canMove = function () {
-            for (var i = 0; i < this.ships.length; i++) {
-                if (this.ships[i].currentMovePoints <= 0) {
+            for (var i = 0; i < this.units.length; i++) {
+                if (this.units[i].currentMovePoints <= 0) {
                     return false;
                 }
             }
@@ -1771,8 +1771,8 @@ var Rance;
             return false;
         };
         Fleet.prototype.subtractMovePoints = function () {
-            for (var i = 0; i < this.ships.length; i++) {
-                this.ships[i].currentMovePoints--;
+            for (var i = 0; i < this.units.length; i++) {
+                this.units[i].currentMovePoints--;
             }
         };
         Fleet.prototype.move = function (newLocation) {
@@ -1825,8 +1825,8 @@ var Rance;
         };
         Fleet.prototype.getTotalStrengthEvaluation = function () {
             var total = 0;
-            for (var i = 0; i < this.ships.length; i++) {
-                total += this.ships[i].getStrengthEvaluation();
+            for (var i = 0; i < this.units.length; i++) {
+                total += this.units[i].getStrengthEvaluation();
             }
             return total;
         };
@@ -1835,18 +1835,18 @@ var Rance;
                 current: 0,
                 max: 0
             };
-            for (var i = 0; i < this.ships.length; i++) {
-                total.current += this.ships[i].currentHealth;
-                total.max += this.ships[i].maxHealth;
+            for (var i = 0; i < this.units.length; i++) {
+                total.current += this.units[i].currentHealth;
+                total.max += this.units[i].maxHealth;
             }
             return total;
         };
         Fleet.prototype.updateVisibleStars = function () {
             var highestVisionRange = 0;
             var highestDetectionRange = -1;
-            for (var i = 0; i < this.ships.length; i++) {
-                highestVisionRange = Math.max(this.ships[i].getVisionRange(), highestVisionRange);
-                highestDetectionRange = Math.max(this.ships[i].getDetectionRange(), highestDetectionRange);
+            for (var i = 0; i < this.units.length; i++) {
+                highestVisionRange = Math.max(this.units[i].getVisionRange(), highestVisionRange);
+                highestDetectionRange = Math.max(this.units[i].getDetectionRange(), highestDetectionRange);
             }
             var inVision = this.location.getLinkedInRange(highestVisionRange);
             var inDetection = this.location.getLinkedInRange(highestDetectionRange);
@@ -1872,7 +1872,7 @@ var Rance;
             data.name = this.name;
             data.locationId = this.location.id;
             data.playerId = this.player.id;
-            data.ships = this.ships.map(function (ship) { return ship.serialize(false); });
+            data.ships = this.units.map(function (ship) { return ship.serialize(false); });
             return data;
         };
         return Fleet;
@@ -5019,10 +5019,10 @@ var Rance;
                 return strengthByEnemy;
             };
             MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
-                var ships = star.getIndependentShips();
+                var units = star.getIndependentShips();
                 var total = 0;
-                for (var i = 0; i < ships.length; i++) {
-                    total += ships[i].getStrengthEvaluation();
+                for (var i = 0; i < units.length; i++) {
+                    total += units[i].getStrengthEvaluation();
                 }
                 return total;
             };
@@ -5235,11 +5235,11 @@ var Rance;
             };
             MapEvaluator.prototype.estimateFleetRange = function (fleet, baseRange, afterSixUnits, getRangeFNName) {
                 var range = baseRange;
-                if (fleet.ships.length >= 6) {
+                if (fleet.units.length >= 6) {
                     range += afterSixUnits;
                 }
-                for (var i = 0; i < fleet.ships.length; i++) {
-                    var unit = fleet.ships[i];
+                for (var i = 0; i < fleet.units.length; i++) {
+                    var unit = fleet.units[i];
                     if (this.player.unitIsIdentified(unit)) {
                         range = Math.max(range, unit[getRangeFNName]());
                     }
@@ -5668,9 +5668,9 @@ var Rance;
                 // pure fleet only has units belonging to this front in it
                 /*
                 get all pure fleets + location
-                get all ships in impure fleets + location
+                get all units in impure fleets + location
                 merge pure fleets at same location
-                move impure ships to pure fleets at location if possible
+                move impure units to pure fleets at location if possible
                 create new pure fleets with remaining impure units
                  */
                 var allFleets = this.getAssociatedFleets();
@@ -5679,7 +5679,7 @@ var Rance;
                 var ownUnitFilterFN = function (unit) {
                     return this.getUnitIndex(unit) >= 0;
                 }.bind(this);
-                // build indexes of pure fleets and impure ships
+                // build indexes of pure fleets and impure units
                 for (var i = 0; i < allFleets.length; i++) {
                     var fleet = allFleets[i];
                     var star = fleet.location;
@@ -5690,7 +5690,7 @@ var Rance;
                         pureFleetsByLocation[star.id].push(fleet);
                     }
                     else {
-                        var ownUnits = fleet.ships.filter(ownUnitFilterFN);
+                        var ownUnits = fleet.units.filter(ownUnitFilterFN);
                         for (var j = 0; j < ownUnits.length; j++) {
                             if (!impureFleetMembersByLocation[star.id]) {
                                 impureFleetMembersByLocation[star.id] = [];
@@ -5700,7 +5700,7 @@ var Rance;
                     }
                 }
                 var sortFleetsBySizeFN = function (a, b) {
-                    return b.ships.length - a.ships.length;
+                    return b.units.length - a.units.length;
                 };
                 for (var starId in pureFleetsByLocation) {
                     // combine pure fleets at same location
@@ -5713,29 +5713,29 @@ var Rance;
                             fleets.splice(i, 1);
                         }
                     }
-                    // move impure ships to pure fleets at same location
+                    // move impure units to pure fleets at same location
                     if (impureFleetMembersByLocation[starId]) {
                         for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
-                            var ship = impureFleetMembersByLocation[starId][i];
-                            ship.fleet.transferShip(fleets[0], ship);
+                            var unit = impureFleetMembersByLocation[starId][i];
+                            unit.fleet.transferUnit(fleets[0], unit);
                             impureFleetMembersByLocation[starId].splice(i, 1);
                         }
                     }
                 }
-                // create new pure fleets from leftover impure ships
+                // create new pure fleets from leftover impure units
                 for (var starId in impureFleetMembersByLocation) {
-                    var ships = impureFleetMembersByLocation[starId];
-                    if (ships.length < 1)
+                    var units = impureFleetMembersByLocation[starId];
+                    if (units.length < 1)
                         continue;
-                    var newFleet = new Rance.Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
-                    for (var i = ships.length - 1; i >= 0; i--) {
-                        ships[i].fleet.transferShip(newFleet, ships[i]);
+                    var newFleet = new Rance.Fleet(units[0].fleet.player, [], units[0].fleet.location);
+                    for (var i = units.length - 1; i >= 0; i--) {
+                        units[i].fleet.transferUnit(newFleet, units[i]);
                     }
                 }
             };
             Front.prototype.isFleetPure = function (fleet) {
-                for (var i = 0; i < fleet.ships.length; i++) {
-                    if (this.getUnitIndex(fleet.ships[i]) === -1) {
+                for (var i = 0; i < fleet.units.length; i++) {
+                    if (this.getUnitIndex(fleet.units[i]) === -1) {
                         return false;
                     }
                 }
@@ -6625,8 +6625,8 @@ var Rance;
             if (Rance.Options.debugMode && !this.isAI) {
                 return true;
             }
-            for (var i = 0; i < fleet.ships.length; i++) {
-                if (!this.identifiedUnits[fleet.ships[i].id]) {
+            for (var i = 0; i < fleet.units.length; i++) {
+                if (!this.identifiedUnits[fleet.units[i].id]) {
                     return false;
                 }
             }
@@ -8318,7 +8318,7 @@ var Rance;
             var player = this.fleet.player;
             this.destroyAllItems();
             player.removeUnit(this);
-            this.fleet.removeShip(this);
+            this.fleet.removeUnit(this);
             if (this.front) {
                 this.front.removeUnit(this);
             }
@@ -16247,12 +16247,18 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../fleet.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.FleetControls = React.createClass({
             displayName: "FleetControls",
+            propTypes: {
+                fleet: React.PropTypes.instanceOf(Rance.Fleet).isRequired,
+                isInspecting: React.PropTypes.bool,
+                hasMultipleSelected: React.PropTypes.bool
+            },
             deselectFleet: function () {
                 Rance.eventManager.dispatchEvent("deselectFleet", this.props.fleet);
             },
@@ -16263,10 +16269,11 @@ var Rance;
                 Rance.eventManager.dispatchEvent("splitFleet", this.props.fleet);
             },
             render: function () {
+                var fleet = this.props.fleet;
                 var splitButtonProps = {
                     className: "fleet-controls-split"
                 };
-                if (this.props.fleet.ships.length > 1 && !this.props.isInspecting) {
+                if (fleet.units.length > 1 && !this.props.isInspecting) {
                     splitButtonProps.onClick = this.splitFleet;
                 }
                 else {
@@ -16420,12 +16427,22 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="shipinfo.ts"/>
+/// <reference path="../../fleet.ts" />
+/// <reference path="../../player.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.FleetContents = React.createClass({
             displayName: "FleetContents",
+            propTypes: {
+                fleet: React.PropTypes.instanceOf(Rance.Fleet).isRequired,
+                player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+                onMouseUp: React.PropTypes.func,
+                onDragStart: React.PropTypes.func,
+                onDragEnd: React.PropTypes.func,
+                onDragMove: React.PropTypes.func,
+            },
             handleMouseUp: function () {
                 if (!this.props.onMouseUp)
                     return;
@@ -16433,10 +16450,11 @@ var Rance;
             },
             render: function () {
                 var shipInfos = [];
+                var fleet = this.props.fleet;
                 var hasDraggableContent = (this.props.onDragStart ||
                     this.props.onDragEnd);
-                for (var i = 0; i < this.props.fleet.ships.length; i++) {
-                    var ship = this.props.fleet.ships[i];
+                for (var i = 0; i < fleet.units.length; i++) {
+                    var ship = fleet.units[i];
                     shipInfos.push(UIComponents.ShipInfo({
                         key: ship.id,
                         ship: ship,
@@ -16462,12 +16480,17 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleetcontents.ts"/>
+/// <reference path="../../fleet.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
         UIComponents.FleetReorganization = React.createClass({
             displayName: "FleetReorganization",
+            propTypes: {
+                closeReorganization: React.PropTypes.func,
+                fleets: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Fleet))
+            },
             getInitialState: function () {
                 return ({
                     currentDragUnit: null
@@ -16488,7 +16511,7 @@ var Rance;
                 var draggingUnit = this.state.currentDragUnit;
                 if (draggingUnit) {
                     var oldFleet = draggingUnit.fleet;
-                    oldFleet.transferShip(fleet, draggingUnit);
+                    oldFleet.transferUnit(fleet, draggingUnit);
                     Rance.eventManager.dispatchEvent("playerControlUpdated", null);
                 }
                 this.handleDragEnd(true);
@@ -17722,9 +17745,9 @@ var Rance;
             return this.occupationShaders[owner.id][occupier.id];
         };
         MapRenderer.prototype.getFleetTextTexture = function (fleet) {
-            var fleetSize = fleet.ships.length;
+            var fleetSize = fleet.units.length;
             if (!this.fleetTextTextureCache[fleetSize]) {
-                var text = new PIXI.Text("" + fleet.ships.length, {
+                var text = new PIXI.Text("" + fleetSize, {
                     fill: "#FFFFFF",
                     stroke: "#000000",
                     strokeThickness: 3
@@ -20619,7 +20642,7 @@ var Rance;
         PlayerControl.prototype.selectPlayerFleets = function (fleets) {
             this.clearSelection();
             for (var i = 0; i < fleets.length; i++) {
-                if (fleets[i].ships.length < 1) {
+                if (fleets[i].units.length < 1) {
                     if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0)
                         continue;
                     fleets[i].deleteFleet();
@@ -20687,7 +20710,7 @@ var Rance;
             }
         };
         PlayerControl.prototype.splitFleet = function (fleet) {
-            if (fleet.ships.length <= 0)
+            if (fleet.units.length <= 0)
                 return;
             this.endReorganizingFleets();
             var newFleet = fleet.split();
@@ -20709,7 +20732,7 @@ var Rance;
         PlayerControl.prototype.endReorganizingFleets = function () {
             for (var i = 0; i < this.currentlyReorganizing.length; i++) {
                 var fleet = this.currentlyReorganizing[i];
-                if (fleet.ships.length <= 0) {
+                if (fleet.units.length <= 0) {
                     var selectedIndex = this.selectedFleets.indexOf(fleet);
                     if (selectedIndex >= 0) {
                         this.selectedFleets.splice(selectedIndex, 1);
@@ -22857,8 +22880,8 @@ var Rance;
                         };
                         var mouseOverFN = function (fleet) {
                             Rance.eventManager.dispatchEvent("hoverStar", fleet.location);
-                            if (Rance.Options.debugMode && fleet.ships.length > 0 && fleet.ships[0].front) {
-                                var objective = fleet.ships[0].front.objective;
+                            if (Rance.Options.debugMode && fleet.units.length > 0 && fleet.units[0].front) {
+                                var objective = fleet.units[0].front.objective;
                                 var target = objective.target ? objective.target.id : null;
                                 console.log(objective.type, target, objective.priority);
                             }
@@ -22879,7 +22902,7 @@ var Rance;
                             var containerGfx = new PIXI.Graphics();
                             containerGfx.lineStyle(1, 0x00000, 1);
                             // debug
-                            var front = fleet.ships[0].front;
+                            var front = fleet.units[0].front;
                             if (front && Rance.Options.debugMode) {
                                 switch (front.objective.type) {
                                     case "discovery":
@@ -22923,7 +22946,7 @@ var Rance;
                             fleetsContainer.x = star.x;
                             fleetsContainer.y = star.y - 40;
                             for (var j = 0; j < fleets.length; j++) {
-                                if (fleets[j].ships.length === 0) {
+                                if (fleets[j].units.length === 0) {
                                     continue;
                                 }
                                 if (fleets[j].isStealthy && this.player && !this.player.starIsDetected(fleets[j].location)) {
@@ -25976,7 +25999,7 @@ var Rance;
                     for (var i = 0; i < fleets.length; i++) {
                         var distance = fleets[i].location.getDistanceToStar(front.targetLocation);
                         if (fleets[i].getMinCurrentMovePoints() >= distance) {
-                            inRangeOfTarget += fleets[i].ships.length;
+                            inRangeOfTarget += fleets[i].units.length;
                         }
                     }
                     if (front.hasMustered) {

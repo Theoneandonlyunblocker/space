@@ -1,5 +1,8 @@
 /// <reference path="shipinfo.ts"/>
 
+/// <reference path="../../fleet.ts" />
+/// <reference path="../../player.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -7,6 +10,18 @@ module Rance
     export var FleetContents = React.createClass(
     {
       displayName: "FleetContents",
+
+      propTypes:
+      {
+        fleet: React.PropTypes.instanceOf(Rance.Fleet).isRequired,
+        player: React.PropTypes.instanceOf(Rance.Player).isRequired,
+
+        onMouseUp: React.PropTypes.func,
+        onDragStart: React.PropTypes.func,
+        onDragEnd: React.PropTypes.func,
+        onDragMove: React.PropTypes.func,
+      },
+
       handleMouseUp: function()
       {
         if (!this.props.onMouseUp) return;
@@ -17,6 +32,7 @@ module Rance
       render: function()
       {
         var shipInfos: ReactComponentPlaceHolder[] = [];
+        var fleet: Rance.Fleet = this.props.fleet;
 
         var hasDraggableContent =
         (
@@ -24,9 +40,9 @@ module Rance
           this.props.onDragEnd
         );
 
-        for (var i = 0; i < this.props.fleet.ships.length; i++)
+        for (var i = 0; i < fleet.units.length; i++)
         {
-          var ship = this.props.fleet.ships[i];
+          var ship = fleet.units[i];
           shipInfos.push(UIComponents.ShipInfo(
           {
             key: ship.id,

@@ -47,9 +47,9 @@ module Rance
         // pure fleet only has units belonging to this front in it
         /*
         get all pure fleets + location
-        get all ships in impure fleets + location
+        get all units in impure fleets + location
         merge pure fleets at same location
-        move impure ships to pure fleets at location if possible
+        move impure units to pure fleets at location if possible
         create new pure fleets with remaining impure units
          */
         var allFleets = this.getAssociatedFleets();
@@ -68,7 +68,7 @@ module Rance
           return this.getUnitIndex(unit) >= 0;
         }.bind(this);
 
-        // build indexes of pure fleets and impure ships
+        // build indexes of pure fleets and impure units
         for (var i = 0; i < allFleets.length; i++)
         {
           var fleet = allFleets[i];
@@ -85,7 +85,7 @@ module Rance
           }
           else
           {
-            var ownUnits = fleet.ships.filter(ownUnitFilterFN);
+            var ownUnits = fleet.units.filter(ownUnitFilterFN);
 
             for (var j = 0; j < ownUnits.length; j++)
             {
@@ -101,7 +101,7 @@ module Rance
 
         var sortFleetsBySizeFN = function(a: Fleet, b: Fleet)
         {
-          return b.ships.length - a.ships.length;
+          return b.units.length - a.units.length;
         }
 
         for (var starId in pureFleetsByLocation)
@@ -120,37 +120,37 @@ module Rance
             }
           }
 
-          // move impure ships to pure fleets at same location
+          // move impure units to pure fleets at same location
           if (impureFleetMembersByLocation[starId])
           {
             for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--)
             {
-              var ship = impureFleetMembersByLocation[starId][i];
-              ship.fleet.transferShip(fleets[0], ship);
+              var unit = impureFleetMembersByLocation[starId][i];
+              unit.fleet.transferUnit(fleets[0], unit);
               impureFleetMembersByLocation[starId].splice(i, 1);
             }
           }
         }
 
-        // create new pure fleets from leftover impure ships
+        // create new pure fleets from leftover impure units
         for (var starId in impureFleetMembersByLocation)
         {
-          var ships = impureFleetMembersByLocation[starId];
-          if (ships.length < 1) continue;
-          var newFleet = new Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
+          var units = impureFleetMembersByLocation[starId];
+          if (units.length < 1) continue;
+          var newFleet = new Fleet(units[0].fleet.player, [], units[0].fleet.location);
 
-          for (var i = ships.length - 1; i >= 0; i--)
+          for (var i = units.length - 1; i >= 0; i--)
           {
-            ships[i].fleet.transferShip(newFleet, ships[i]);
+            units[i].fleet.transferUnit(newFleet, units[i]);
           }
         }
 
       }
       isFleetPure(fleet: Fleet): boolean
       {
-        for (var i = 0; i < fleet.ships.length; i++)
+        for (var i = 0; i < fleet.units.length; i++)
         {
-          if (this.getUnitIndex(fleet.ships[i]) === -1)
+          if (this.getUnitIndex(fleet.units[i]) === -1)
           {
             return false;
           }

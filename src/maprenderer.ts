@@ -263,11 +263,11 @@ module Rance
     }
     getFleetTextTexture(fleet: Fleet)
     {
-      var fleetSize = fleet.ships.length;
+      var fleetSize = fleet.units.length;
 
       if (!this.fleetTextTextureCache[fleetSize])
       {
-        var text = new PIXI.Text("" + fleet.ships.length,
+        var text = new PIXI.Text("" + fleetSize,
         {
           fill: "#FFFFFF",
           stroke: "#000000",

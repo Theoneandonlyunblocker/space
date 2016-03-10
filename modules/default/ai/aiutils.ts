@@ -68,7 +68,7 @@ module Rance
             var distance = fleets[i].location.getDistanceToStar(front.targetLocation);
             if (fleets[i].getMinCurrentMovePoints() >= distance)
             {
-              inRangeOfTarget += fleets[i].ships.length;
+              inRangeOfTarget += fleets[i].units.length;
             }
           }
 

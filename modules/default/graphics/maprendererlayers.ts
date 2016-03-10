@@ -541,9 +541,9 @@ module Rance
             var mouseOverFN = function(fleet: Fleet)
             {
               eventManager.dispatchEvent("hoverStar", fleet.location);
-              if (Options.debugMode && fleet.ships.length > 0 && fleet.ships[0].front)
+              if (Options.debugMode && fleet.units.length > 0 && fleet.units[0].front)
               {
-                var objective = fleet.ships[0].front.objective;
+                var objective = fleet.units[0].front.objective;
                 var target = objective.target ? objective.target.id : null;
                 console.log(objective.type, target, objective.priority);
               }
@@ -569,7 +569,7 @@ module Rance
               var containerGfx = new PIXI.Graphics();
               containerGfx.lineStyle(1, 0x00000, 1);
               // debug
-              var front = fleet.ships[0].front;
+              var front = fleet.units[0].front;
               if (front && Options.debugMode)
               {
                 switch (front.objective.type)
@@ -624,7 +624,7 @@ module Rance
 
               for (var j = 0; j < fleets.length; j++)
               {
-                if (fleets[j].ships.length === 0)
+                if (fleets[j].units.length === 0)
                 {
                   continue;
                 }

@@ -1,3 +1,5 @@
+/// <reference path="../../fleet.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -5,6 +7,13 @@ module Rance
     export var FleetControls = React.createClass(
     {
       displayName: "FleetControls",
+
+      propTypes:
+      {
+        fleet: React.PropTypes.instanceOf(Rance.Fleet).isRequired,
+        isInspecting: React.PropTypes.bool,
+        hasMultipleSelected: React.PropTypes.bool
+      },
 
       deselectFleet: function()
       {
@@ -23,11 +32,13 @@ module Rance
 
       render: function()
       {
+        var fleet: Rance.Fleet = this.props.fleet;
+
         var splitButtonProps: any =
         {
           className: "fleet-controls-split"
         };
-        if (this.props.fleet.ships.length > 1 && !this.props.isInspecting)
+        if (fleet.units.length > 1 && !this.props.isInspecting)
         {
           splitButtonProps.onClick = this.splitFleet;
         }

@@ -195,7 +195,7 @@ module Rance
 
       for (var i = 0; i < fleets.length; i++)
       {
-        if (fleets[i].ships.length < 1)
+        if (fleets[i].units.length < 1)
         {
           if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0) continue;
           fleets[i].deleteFleet();
@@ -288,7 +288,7 @@ module Rance
     }
     splitFleet(fleet: Fleet)
     {
-      if (fleet.ships.length <= 0) return;
+      if (fleet.units.length <= 0) return;
       this.endReorganizingFleets();
       var newFleet = fleet.split();
 
@@ -318,7 +318,7 @@ module Rance
       for (var i = 0; i < this.currentlyReorganizing.length; i++)
       {
         var fleet = this.currentlyReorganizing[i];
-        if (fleet.ships.length <= 0)
+        if (fleet.units.length <= 0)
         {
           var selectedIndex = this.selectedFleets.indexOf(fleet);
           if (selectedIndex >= 0)

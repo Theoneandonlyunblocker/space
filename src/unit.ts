@@ -869,7 +869,7 @@ module Rance
 
       this.destroyAllItems();
       player.removeUnit(this);
-      this.fleet.removeShip(this);
+      this.fleet.removeUnit(this);
 
       if (this.front)
       {

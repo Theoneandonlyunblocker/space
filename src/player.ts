@@ -604,9 +604,9 @@ module Rance
       {
         return true;
       }
-      for (var i = 0; i < fleet.ships.length; i++)
+      for (var i = 0; i < fleet.units.length; i++)
       {
-        if (!this.identifiedUnits[fleet.ships[i].id])
+        if (!this.identifiedUnits[fleet.units[i].id])
         {
           return false;
         }

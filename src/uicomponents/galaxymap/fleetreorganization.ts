@@ -1,5 +1,7 @@
 /// <reference path="fleetcontents.ts"/>
 
+/// <reference path="../../fleet.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -7,6 +9,13 @@ module Rance
     export var FleetReorganization = React.createClass(
     {
       displayName: "FleetReorganization",
+
+      propTypes:
+      {
+        closeReorganization: React.PropTypes.func,
+        fleets: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Fleet))
+      },
+
       getInitialState: function()
       {
         return(
@@ -36,9 +45,9 @@ module Rance
         var draggingUnit = this.state.currentDragUnit;
         if (draggingUnit)
         {
-          var oldFleet = draggingUnit.fleet;
+          var oldFleet: Rance.Fleet = draggingUnit.fleet;
           
-          oldFleet.transferShip(fleet, draggingUnit);
+          oldFleet.transferUnit(fleet, draggingUnit);
           eventManager.dispatchEvent("playerControlUpdated", null);
         }
 
@@ -60,7 +69,7 @@ module Rance
 
       render: function()
       {
-        var selectedFleets = this.props.fleets;
+        var selectedFleets: Rance.Fleet[] = this.props.fleets;
         if (!selectedFleets || selectedFleets.length < 1)
         {
           return null;
