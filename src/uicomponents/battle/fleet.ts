@@ -17,7 +17,7 @@ module Rance
         battle: React.PropTypes.instanceOf(Rance.Battle),
         facesLeft: React.PropTypes.bool.isRequired,
         activeUnit: React.PropTypes.instanceOf(Rance.Unit),
-        activeTargets: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+        activeTargets: React.PropTypes.object, // {[id: number]: Templates.IAbilityTemplate[];}
         hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
         hoveredAbility: React.PropTypes.object, // Templates.IAbilityTemplate
         handleMouseLeaveUnit: React.PropTypes.func,
