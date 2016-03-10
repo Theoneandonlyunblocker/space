@@ -8,6 +8,8 @@
 /// <reference path="manufactory.ts" />
 /// <reference path="ifleetattacktarget.d.ts" />
 
+/// <reference path="savedata/istarsavedata.d.ts" />
+
 module Rance
 {
   export class Star implements Point
@@ -939,42 +941,47 @@ module Rance
     {
       this.manufactory = new Manufactory(this);
     }
-    serialize()
+    serialize(): IStarSaveData
     {
-      var data: any = {};
-
-      data.id = this.id;
-      data.x = this.basisX;
-      data.y = this.basisY;
-
-      data.baseIncome = this.baseIncome;
-
-      data.name = this.name;
-      data.ownerId = this.owner ? this.owner.id : null;
-
-      data.linksToIds = this.linksTo.map(function(star){return star.id});
-      data.linksFromIds = this.linksFrom.map(function(star){return star.id});
-
-      data.seed = this.seed;
-      if (this.resource)
-      {
-        data.resourceType = this.resource.type;
-      }
-
-      data.buildableUnitTypes = this.buildableUnitTypes.map(function(template)
-      {
-        return template.type;
-      });
-
-      data.buildings = {};
+      var buildings: IStarBuildingsSaveData = {};
 
       for (var category in this.buildings)
       {
-        data.buildings[category] = [];
+        buildings[category] = [];
         for (var i = 0; i < this.buildings[category].length; i++)
         {
-          data.buildings[category].push(this.buildings[category][i].serialize())
+          buildings[category].push(this.buildings[category][i].serialize())
         }
+      }
+
+
+      var data: IStarSaveData =
+      {
+        id: this.id,
+        x: this.basisX,
+        y: this.basisY,
+
+        baseIncome: this.baseIncome,
+
+        name: this.name,
+        ownerId: this.owner ? this.owner.id : null,
+
+        linksToIds: this.linksTo.map(function(star){return star.id}),
+        linksFromIds: this.linksFrom.map(function(star){return star.id}),
+
+        seed: this.seed,
+
+        buildableUnitTypes: this.buildableUnitTypes.map(function(template)
+        {
+          return template.type;
+        }),
+
+        buildings: buildings,
+      };
+
+      if (this.resource)
+      {
+        data.resourceType = this.resource.type;
       }
 
       if (this.manufactory)

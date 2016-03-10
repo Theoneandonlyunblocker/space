@@ -1,4 +1,5 @@
 /// <reference path="templateinterfaces/ibuildingtemplate.d.ts" />
+/// <reference path="savedata/ibuildingsavedata.d.ts" />
 
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />
@@ -131,16 +132,17 @@ module Rance
     }
     serialize()
     {
-      var data: any = {};
+      var data: IBuildingSaveData =
+      {
+        templateType: this.template.type,
+        id: this.id,
 
-      data.templateType = this.template.type;
-      data.id = this.id;
+        locationId: this.location.id,
+        controllerId: this.controller.id,
 
-      data.locationId = this.location.id;
-      data.controllerId = this.controller.id;
-
-      data.upgradeLevel = this.upgradeLevel;
-      data.totalCost = this.totalCost;
+        upgradeLevel: this.upgradeLevel,
+        totalCost: this.totalCost
+      };
 
       return data;
     }

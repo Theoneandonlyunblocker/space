@@ -1,4 +1,5 @@
 /// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
+/// <reference path="savedata/inotificationsavedata.d.ts" />
 
 module Rance
 {
@@ -20,15 +21,17 @@ module Rance
     {
       return this.template.messageConstructor(this.props);
     }
-    serialize()
+    serialize(): INotificationSaveData
     {
-      var data: any = {};
+      var data: INotificationSaveData =
+      {
+        templateKey: this.template.key,
+        hasBeenRead: this.hasBeenRead,
+        turn: this.turn,
 
-      data.templateKey = this.template.key;
-      data.hasBeenRead = this.hasBeenRead;
-      data.turn = this.turn;
+        props: this.template.serializeProps(this.props)
+      };
 
-      data.props = this.template.serializeProps(this.props);
 
       return data;
     }

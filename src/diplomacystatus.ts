@@ -3,6 +3,8 @@
 /// <reference path="player.ts" />
 /// <reference path="attitudemodifier.ts" />
 
+/// <reference path="savedata/idiplomacystatussavedata.d.ts" />
+
 module Rance
 {
   export enum DiplomaticState
@@ -346,19 +348,21 @@ module Rance
       }
     }
 
-    serialize()
+    serialize(): IDiplomacyStatusSaveData
     {
-      var data: any = {};
-
-      data.metPlayerIds = [];
+      var metPlayerIds: number[] = [];
       for (var playerId in this.metPlayers)
       {
-        data.metPlayerIds.push(this.metPlayers[playerId].id);
+        metPlayerIds.push(this.metPlayers[playerId].id);
       }
 
       data.statusByPlayer = this.statusByPlayer;
 
-      data.attitudeModifiersByPlayer = [];
+
+      var attitudeModifiersByPlayer:
+      {
+        [playerId: number]: IAttitudeModifierSaveData[];
+      } = {};
       for (var playerId in this.attitudeModifiersByPlayer)
       {
         var serializedModifiers =
@@ -366,9 +370,16 @@ module Rance
           {
             return modifier.serialize();
           });
-        data.attitudeModifiersByPlayer[playerId] = serializedModifiers;
+        attitudeModifiersByPlayer[playerId] = serializedModifiers;
       }
 
+
+      var data: IDiplomacyStatusSaveData =
+      {
+        metPlayerIds: metPlayerIds,
+        statusByPlayer: this.statusByPlayer,
+        attitudeModifiersByPlayer: attitudeModifiersByPlayer
+      };
 
       return data;
     }

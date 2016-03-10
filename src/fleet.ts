@@ -3,6 +3,8 @@
 /// <reference path="star.ts" />
 /// <reference path="pathfinding.ts"/>
 
+/// <reference path="savedata/ifleetsavedata.d.ts" />
+
 module Rance
 {
 
@@ -331,19 +333,20 @@ module Rance
 
       return this.detectedStars;
     }
-    serialize()
+    serialize(): IFleetSaveData
     {
-      var data: any = {};
-
-      data.id = this.id;
-      data.name = this.name;
-
-      data.locationId = this.location.id;
-      data.playerId = this.player.id;
-      data.units = this.units.map(function(unit: Unit)
+      var data: IFleetSaveData =
       {
-        return unit.serialize(false);
-      });
+        id: this.id,
+        name: this.name,
+
+        locationId: this.location.id,
+        playerId: this.player.id,
+        units: this.units.map(function(unit: Unit)
+        {
+          return unit.serialize(false);
+        })
+      };
 
       return data;
     }

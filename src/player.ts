@@ -14,6 +14,8 @@
 
 /// <reference path="mapai/aicontroller.ts"/>
 
+/// <reference path="savedata/iplayersavedata.d.ts" />
+
 module Rance
 {
 
@@ -804,58 +806,60 @@ module Rance
 
       return totalCapacity;
     }
-    serialize()
+    serialize(): IPlayerSaveData
     {
-      var data: any = {}; // TODO serialization type
+      var unitIds: number[] = [];
+      for (var id in this.units)
+      {
+        unitIds.push(this.units[id].id);
+      }
+      
+      var revealedStarIds: number[] = [];
+      for (var id in this.revealedStars)
+      {
+        revealedStarIds.push(this.revealedStars[id].id);
+      }
 
-      data.id = this.id;
-      data.name = this.name;
-      data.color = this.color;
-      data.colorAlpha = this.colorAlpha;
-      data.secondaryColor = this.secondaryColor;
-      data.isIndependent = this.isIndependent;
-      data.isAI = this.isAI;
-      data.resources = extendObject(this.resources);
+      var identifiedUnitIds: number[] = [];
+      for (var id in this.identifiedUnits)
+      {
+        identifiedUnitIds.push(this.identifiedUnits[id].id);
+      }
 
-      data.diplomacyStatus = this.diplomacyStatus.serialize();
+      var data: IPlayerSaveData =
+      {
+        id: this.id,
+        name: this.name,
+        color: this.color,
+        colorAlpha: this.colorAlpha,
+        secondaryColor: this.secondaryColor,
+        isIndependent: this.isIndependent,
+        isAI: this.isAI,
+        resources: extendObject(this.resources),
+
+        diplomacyStatus: this.diplomacyStatus.serialize(),
+
+        fleets: this.fleets.map(function(fleet){return fleet.serialize()}),
+        money: this.money,
+        controlledLocationIds: this.controlledLocations.map(function(star){return star.id}),
+
+        items: this.items.map(function(item){return item.serialize()}),
+        researchByTechnology: this.playerTechnology.serialize(),
+
+        unitIds: unitIds,
+        revealedStarIds: revealedStarIds,
+        identifiedUnitIds: identifiedUnitIds
+      };
+
 
       if (this.flag)
       {
         data.flag = this.flag.serialize();
       }
 
-      data.unitIds = [];
-      for (var id in this.units)
-      {
-        data.unitIds.push(id);
-      }
-      data.fleets = this.fleets.map(function(fleet){return fleet.serialize()});
-      data.money = this.money;
-      data.controlledLocationIds =
-        this.controlledLocations.map(function(star){return star.id});
-
-      data.items = this.items.map(function(item){return item.serialize()});
-
-      data.revealedStarIds = [];
-      for (var id in this.revealedStars)
-      {
-        data.revealedStarIds.push(this.revealedStars[id].id);
-      }
-
-      data.identifiedUnitIds = [];
-      for (var id in this.identifiedUnits)
-      {
-        data.identifiedUnitIds.push(this.identifiedUnits[id].id);
-      }
-
       if (this.isAI && this.AIController)
       {
         data.personality = extendObject(this.AIController.personality);
-      }
-      
-      if (this.playerTechnology)
-      {
-        data.researchByTechnology = this.playerTechnology.serialize();
       }
 
       return data;

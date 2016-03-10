@@ -1,3 +1,7 @@
+/// <reference path="templateinterfaces/imanufacturablething.d.ts" />
+
+/// <reference path="savedata/imanufactorysavedata.d.ts" />
+
 module Rance
 {
   export interface IManufacturableThingWithType
@@ -209,9 +213,9 @@ module Rance
       this.player.money -= this.getUnitUpgradeCost();
       this.unitHealthModifier += amount;
     }
-    serialize()
+    serialize(): IManufactorySaveData
     {
-      var buildQueue = this.buildQueue.map(function(thingData)
+      var buildQueue = this.buildQueue.map(function(thingData: IManufacturableThingWithType)
       {
         return(
         {

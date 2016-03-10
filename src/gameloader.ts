@@ -77,15 +77,18 @@ module Rance
 
       return game;
     }
-    deserializeNotificationLog(data: any[])
+    deserializeNotificationLog(data: any)
     {
+      // legacy savedata 10.3.2016
+      var notificationsData = data.notifications || (Array.isArray(data) ? data : null);
+
       var notificationLog = new NotificationLog(this.humanPlayer);
-      for (var i = 0; i < data.length; i++)
+      for (var i = 0; i < notificationsData.length; i++)
       {
-        var template = app.moduleData.Templates.Notifications[data[i].templateKey];
-        var props = template.deserializeProps(data[i].props, this);
-        var notification = new Notification(template, props, data[i].turn);
-        notification.hasBeenRead = data[i].hasBeenRead;
+        var template = app.moduleData.Templates.Notifications[notificationsData[i].templateKey];
+        var props = template.deserializeProps(notificationsData[i].props, this);
+        var notification = new Notification(template, props, notificationsData[i].turn);
+        notification.hasBeenRead = notificationsData[i].hasBeenRead;
 
         notificationLog.addNotification(notification);
       }
@@ -259,10 +262,7 @@ module Rance
       }
 
       // technology
-      if (data.researchByTechnology)
-      {
-        player.initTechnologies(data.researchByTechnology);
-      }
+      player.initTechnologies(data.researchByTechnology);
 
       return player;
     }

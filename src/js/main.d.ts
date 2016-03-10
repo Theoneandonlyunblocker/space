@@ -2,21 +2,38 @@
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../templateinterfaces/idistributable.d.ts" />
 /// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
+/// <reference path="../savedata/ibuildingsavedata.d.ts" />
+/// <reference path="../templateinterfaces/imanufacturablething.d.ts" />
+/// <reference path="../savedata/imanufactorysavedata.d.ts" />
 /// <reference path="../ifleetattacktarget.d.ts" />
+/// <reference path="../savedata/istarsavedata.d.ts" />
+/// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
+/// <reference path="../savedata/ifleetsavedata.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
+/// <reference path="../savedata/iemblemsavedata.d.ts" />
+/// <reference path="../savedata/iflagsavedata.d.ts" />
 /// <reference path="../templateinterfaces/iitemtemplate.d.ts" />
+/// <reference path="../savedata/iitemsavedata.d.ts" />
 /// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="../ibattledata.d.ts" />
 /// <reference path="../templateinterfaces/iattitudemodifiertemplate.d.ts" />
+/// <reference path="../savedata/iattitudemodifiersavedata.d.ts" />
+/// <reference path="../savedata/idiplomacystatussavedata.d.ts" />
+/// <reference path="../savedata/iplayertechnologysavedata.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
 /// <reference path="../templateinterfaces/inotificationtemplate.d.ts" />
+/// <reference path="../savedata/inotificationsavedata.d.ts" />
+/// <reference path="../savedata/igamesavedata.d.ts" />
+/// <reference path="../savedata/igalaxymapsavedata.d.ts" />
+/// <reference path="../savedata/iplayersavedata.d.ts" />
 /// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
 /// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
-/// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
+/// <reference path="../iunitattributes.d.ts" />
+/// <reference path="../savedata/iunitsavedata.d.ts" />
 /// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="../templateinterfaces/imaprendererlayertemplate.d.ts" />
@@ -62,15 +79,6 @@ declare module Rance {
     enum DamageType {
         physical = 0,
         magical = 1,
-    }
-}
-declare module Rance {
-    interface IUnitAttributes {
-        maxActionPoints: number;
-        attack: number;
-        defence: number;
-        intelligence: number;
-        speed: number;
     }
 }
 declare module Rance {
@@ -202,7 +210,7 @@ declare module Rance {
         getPossibleUpgrades(): IBuildingUpgradeData[];
         upgrade(): void;
         setController(newController: Player): void;
-        serialize(): any;
+        serialize(): IBuildingSaveData;
     }
 }
 declare module Rance {
@@ -240,16 +248,7 @@ declare module Rance {
         getUnitUpgradeCost(): number;
         upgradeUnitStatsModifier(amount: number): void;
         upgradeUnitHealthModifier(amount: number): void;
-        serialize(): {
-            capacity: number;
-            maxCapacity: number;
-            unitStatsModifier: number;
-            unitHealthModifier: number;
-            buildQueue: {
-                type: string;
-                templateType: string;
-            }[];
-        };
+        serialize(): IManufactorySaveData;
     }
 }
 declare module Rance {
@@ -366,7 +365,7 @@ declare module Rance {
         };
         getSeed(): string;
         buildManufactory(): void;
-        serialize(): any;
+        serialize(): IStarSaveData;
     }
 }
 declare module Rance {
@@ -391,6 +390,15 @@ declare module Rance {
         cost: any;
         queue: PriorityQueue;
     };
+}
+declare module Rance {
+    class StatusEffect {
+        template: Templates.IStatusEffectTemplate;
+        duration: number;
+        constructor(template: Templates.IStatusEffectTemplate, duration: number);
+        processTurnEnd(): void;
+        clone(): StatusEffect;
+    }
 }
 declare module Rance {
     class Fleet {
@@ -434,7 +442,7 @@ declare module Rance {
         updateVisibleStars(): void;
         getVision(): Star[];
         getDetection(): Star[];
-        serialize(): any;
+        serialize(): IFleetSaveData;
     }
 }
 declare module Rance {
@@ -521,7 +529,7 @@ declare module Rance {
         canAddBackground(): boolean;
         drawSubEmblem(toDraw: Templates.ISubEmblemTemplate, maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
         draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
-        serialize(): any;
+        serialize(): IEmblemSaveData;
     }
 }
 declare module Rance {
@@ -555,7 +563,7 @@ declare module Rance {
         setCustomImage(imageSrc: string): void;
         getCanvas(width: number, height: number, stretch?: boolean, useCache?: boolean): HTMLCanvasElement;
         draw(width?: number, height?: number, stretch?: boolean): HTMLCanvasElement;
-        serialize(): any;
+        serialize(): IFlagSaveData;
     }
 }
 declare module Rance {
@@ -564,7 +572,7 @@ declare module Rance {
         template: Templates.IItemTemplate;
         unit: Unit;
         constructor(template: Templates.IItemTemplate, id?: number);
-        serialize(): any;
+        serialize(): IItemSaveData;
     }
 }
 declare module Rance {
@@ -699,7 +707,7 @@ declare module Rance {
         getAdjustedStrength(currentTurn?: number): number;
         hasExpired(currentTurn?: number): boolean;
         shouldEnd(evaluation: IDiplomacyEvaluation): boolean;
-        serialize(): any;
+        serialize(): IAttitudeModifierSaveData;
     }
 }
 declare module Rance {
@@ -743,7 +751,7 @@ declare module Rance {
         addAttitudeModifier(player: Player, modifier: AttitudeModifier): void;
         triggerAttitudeModifier(template: Templates.IAttitudeModifierTemplate, player: Player, source: Player): void;
         processAttitudeModifiersForPlayer(player: Player, evaluation: IDiplomacyEvaluation): void;
-        serialize(): any;
+        serialize(): IDiplomacyStatusSaveData;
     }
 }
 declare module Rance {
@@ -776,13 +784,7 @@ declare module Rance {
         getRelativeOpenTechnologyPriority(technology: Templates.ITechnologyTemplate): number;
         setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number, force?: boolean): void;
         capTechnologyPrioritiesToMaxNeeded(): void;
-        serialize(): {
-            [key: string]: {
-                totalResearch: number;
-                priority: number;
-                priorityIsLocked: boolean;
-            };
-        };
+        serialize(): IPlayerTechnologySaveData;
     }
 }
 declare module Rance {
@@ -824,10 +826,7 @@ declare module Rance {
         voronoiId: number;
         constructor(x: number, y: number);
         setPosition(x: number, y: number): void;
-        serialize(): {
-            x: number;
-            y: number;
-        };
+        serialize(): Point;
     }
 }
 declare module Rance {
@@ -910,7 +909,7 @@ declare module Rance {
         hasBeenRead: boolean;
         constructor(template: Templates.INotificationTemplate, props: any, turn: number);
         makeMessage(): string;
-        serialize(): any;
+        serialize(): INotificationSaveData;
     }
 }
 declare module Rance {
@@ -956,7 +955,7 @@ declare module Rance {
         markAsRead(notification: Notification): void;
         getUnreadNotificationsForTurn(turn: number): Notification[];
         filterNotifications(notifications: Notification[]): Notification[];
-        serialize(): any[];
+        serialize(): INotificationLogSaveData;
     }
 }
 declare module Rance {
@@ -975,7 +974,7 @@ declare module Rance {
         processPlayerStartTurn(player: Player): void;
         setNextPlayer(): void;
         killPlayer(playerToKill: Player): void;
-        serialize(): any;
+        serialize(): IGameSaveData;
         save(name: string): void;
     }
 }
@@ -993,7 +992,7 @@ declare module Rance {
             min: number;
             max: number;
         };
-        serialize(): any;
+        serialize(): IGalaxyMapSaveData;
     }
 }
 declare module Rance {
@@ -1442,7 +1441,7 @@ declare module Rance {
         getGloballyBuildableUnits(): Templates.IUnitTemplate[];
         getGloballyBuildableItems(): Templates.IItemTemplate[];
         getManufacturingCapacityFor(template: IManufacturableThing, type: string): number;
-        serialize(): any;
+        serialize(): IPlayerSaveData;
     }
 }
 declare module Rance {
@@ -1581,20 +1580,17 @@ declare module Rance {
     };
 }
 declare module Rance {
-    class StatusEffect {
-        template: Templates.IStatusEffectTemplate;
-        duration: number;
-        constructor(template: Templates.IStatusEffectTemplate, duration: number);
-        processTurnEnd(): void;
-        clone(): StatusEffect;
-    }
-}
-declare module Rance {
     type UnitBattleSide = "side1" | "side2";
     var UnitBattleSidesArray: UnitBattleSide[];
     enum GuardCoverage {
         row = 0,
         all = 1,
+    }
+    interface IQueuedActionData {
+        ability: Templates.IAbilityTemplate;
+        targetId: number;
+        turnsPrepared: number;
+        timesInterrupted: number;
     }
     class Unit {
         template: Templates.IUnitTemplate;
@@ -1621,12 +1617,7 @@ declare module Rance {
             captureChance: number;
             statusEffects: StatusEffect[];
             lastHealthBeforeReceivingDamage: number;
-            queuedAction: {
-                ability: Templates.IAbilityTemplate;
-                targetId: number;
-                turnsPrepared: number;
-                timesInterrupted: number;
-            };
+            queuedAction: IQueuedActionData;
         };
         abilities: Templates.IAbilityTemplate[];
         passiveSkills: Templates.IPassiveSkillTemplate[];
@@ -1735,7 +1726,7 @@ declare module Rance {
         };
         upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase): void;
         drawBattleScene(SFXParams: Templates.SFXParams): void;
-        serialize(includeItems?: boolean, includeFluff?: boolean): any;
+        serialize(includeItems?: boolean, includeFluff?: boolean): IUnitSaveData;
         makeVirtualClone(): Unit;
     }
 }
@@ -3751,7 +3742,7 @@ declare module Rance {
         };
         constructor();
         deserializeGame(data: any): Game;
-        deserializeNotificationLog(data: any[]): NotificationLog;
+        deserializeNotificationLog(data: any): NotificationLog;
         deserializeMap(data: any): GalaxyMap;
         deserializeStar(data: any): Star;
         deserializeBuildings(data: any): void;

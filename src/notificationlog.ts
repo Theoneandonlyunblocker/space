@@ -4,6 +4,8 @@
 /// <reference path="eventmanager.ts" />
 /// <reference path="star.ts" />
 
+/// <reference path="savedata/inotificationsavedata.d.ts" />
+
 module Rance
 {
   export class NotificationLog
@@ -112,18 +114,23 @@ module Rance
 
       return filtered;
     }
-    serialize()
+    serialize(): INotificationLogSaveData
     {
-      var data: any[] = []
+      var notificationsSaveData: INotificationSaveData[] = []
 
       for (var turnNumber in this.byTurn)
       {
         var notifications = this.byTurn[turnNumber];
         for (var i = 0; i < notifications.length; i++)
         {
-          data.push(notifications[i].serialize());
+          notificationsSaveData.push(notifications[i].serialize());
         }
       }
+
+      var data: INotificationLogSaveData =
+      {
+        notifications: notificationsSaveData
+      };
 
       return data;
     }

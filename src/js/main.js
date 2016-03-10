@@ -624,6 +624,7 @@ var Rance;
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/ibuildingtemplate.d.ts" />
+/// <reference path="savedata/ibuildingsavedata.d.ts" />
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />
 var Rance;
@@ -702,19 +703,22 @@ var Rance;
             this.location.updateController();
         };
         Building.prototype.serialize = function () {
-            var data = {};
-            data.templateType = this.template.type;
-            data.id = this.id;
-            data.locationId = this.location.id;
-            data.controllerId = this.controller.id;
-            data.upgradeLevel = this.upgradeLevel;
-            data.totalCost = this.totalCost;
+            var data = {
+                templateType: this.template.type,
+                id: this.id,
+                locationId: this.location.id,
+                controllerId: this.controller.id,
+                upgradeLevel: this.upgradeLevel,
+                totalCost: this.totalCost
+            };
             return data;
         };
         return Building;
     }());
     Rance.Building = Building;
 })(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/imanufacturablething.d.ts" />
+/// <reference path="savedata/imanufactorysavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var Manufactory = (function () {
@@ -896,6 +900,7 @@ var Rance;
 /// <reference path="building.ts" />
 /// <reference path="manufactory.ts" />
 /// <reference path="ifleetattacktarget.d.ts" />
+/// <reference path="savedata/istarsavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var Star = (function () {
@@ -1495,28 +1500,30 @@ var Rance;
             this.manufactory = new Rance.Manufactory(this);
         };
         Star.prototype.serialize = function () {
-            var data = {};
-            data.id = this.id;
-            data.x = this.basisX;
-            data.y = this.basisY;
-            data.baseIncome = this.baseIncome;
-            data.name = this.name;
-            data.ownerId = this.owner ? this.owner.id : null;
-            data.linksToIds = this.linksTo.map(function (star) { return star.id; });
-            data.linksFromIds = this.linksFrom.map(function (star) { return star.id; });
-            data.seed = this.seed;
+            var buildings = {};
+            for (var category in this.buildings) {
+                buildings[category] = [];
+                for (var i = 0; i < this.buildings[category].length; i++) {
+                    buildings[category].push(this.buildings[category][i].serialize());
+                }
+            }
+            var data = {
+                id: this.id,
+                x: this.basisX,
+                y: this.basisY,
+                baseIncome: this.baseIncome,
+                name: this.name,
+                ownerId: this.owner ? this.owner.id : null,
+                linksToIds: this.linksTo.map(function (star) { return star.id; }),
+                linksFromIds: this.linksFrom.map(function (star) { return star.id; }),
+                seed: this.seed,
+                buildableUnitTypes: this.buildableUnitTypes.map(function (template) {
+                    return template.type;
+                }),
+                buildings: buildings,
+            };
             if (this.resource) {
                 data.resourceType = this.resource.type;
-            }
-            data.buildableUnitTypes = this.buildableUnitTypes.map(function (template) {
-                return template.type;
-            });
-            data.buildings = {};
-            for (var category in this.buildings) {
-                data.buildings[category] = [];
-                for (var i = 0; i < this.buildings[category].length; i++) {
-                    data.buildings[category].push(this.buildings[category][i].serialize());
-                }
             }
             if (this.manufactory) {
                 data.manufactory = this.manufactory.serialize();
@@ -1632,10 +1639,31 @@ var Rance;
     }
     Rance.aStar = aStar;
 })(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
+var Rance;
+(function (Rance) {
+    var StatusEffect = (function () {
+        function StatusEffect(template, duration) {
+            this.template = template;
+            this.duration = duration;
+        }
+        StatusEffect.prototype.processTurnEnd = function () {
+            if (this.duration > 0) {
+                this.duration--;
+            }
+        };
+        StatusEffect.prototype.clone = function () {
+            return new StatusEffect(this.template, this.duration);
+        };
+        return StatusEffect;
+    }());
+    Rance.StatusEffect = StatusEffect;
+})(Rance || (Rance = {}));
 /// <reference path="player.ts" />
 /// <reference path="unit.ts" />
 /// <reference path="star.ts" />
 /// <reference path="pathfinding.ts"/>
+/// <reference path="savedata/ifleetsavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var Fleet = (function () {
@@ -1868,14 +1896,15 @@ var Rance;
             return this.detectedStars;
         };
         Fleet.prototype.serialize = function () {
-            var data = {};
-            data.id = this.id;
-            data.name = this.name;
-            data.locationId = this.location.id;
-            data.playerId = this.player.id;
-            data.units = this.units.map(function (unit) {
-                return unit.serialize(false);
-            });
+            var data = {
+                id: this.id,
+                name: this.name,
+                locationId: this.location.id,
+                playerId: this.player.id,
+                units: this.units.map(function (unit) {
+                    return unit.serialize(false);
+                })
+            };
             return data;
         };
         return Fleet;
@@ -2348,6 +2377,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="templateinterfaces/isubemblemtemplate.d.ts" />
+/// <reference path="savedata/iemblemsavedata.d.ts" />
 /// <reference path="color.ts"/>
 var Rance;
 (function (Rance) {
@@ -2489,9 +2519,10 @@ var Rance;
                 alpha: this.alpha,
                 innerKey: this.inner.key
             };
-            if (this.outer)
+            if (this.outer) {
                 data.outerKey = this.outer.key;
-            return (data);
+            }
+            return data;
         };
         return Emblem;
     }());
@@ -2500,6 +2531,7 @@ var Rance;
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="emblem.ts" />
 /// <reference path="color.ts"/>
+/// <reference path="savedata/iflagsavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var Flag = (function () {
@@ -2706,6 +2738,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iitemtemplate.d.ts" />
 /// <reference path="unit.ts" />
+/// <reference path="savedata/iitemsavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var Item = (function () {
@@ -2714,9 +2747,10 @@ var Rance;
             this.template = template;
         }
         Item.prototype.serialize = function () {
-            var data = {};
-            data.id = this.id;
-            data.templateType = this.template.type;
+            var data = {
+                id: this.id,
+                templateType: this.template.type
+            };
             if (this.unit) {
                 data.unitId = this.unit.id;
             }
@@ -3321,6 +3355,7 @@ var Rance;
     Rance.BattlePrep = BattlePrep;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iattitudemodifiertemplate.d.ts" />
+/// <reference path="savedata/iattitudemodifiersavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var AttitudeModifier = (function () {
@@ -3400,11 +3435,12 @@ var Rance;
             }
         };
         AttitudeModifier.prototype.serialize = function () {
-            var data = {};
-            data.templateType = this.template.type;
-            data.startTurn = this.startTurn;
-            data.endTurn = this.endTurn;
-            data.strength = this.strength;
+            var data = {
+                templateType: this.template.type,
+                startTurn: this.startTurn,
+                endTurn: this.endTurn,
+                strength: this.strength
+            };
             return data;
         };
         return AttitudeModifier;
@@ -3414,6 +3450,7 @@ var Rance;
 /// <reference path="eventmanager.ts" />
 /// <reference path="player.ts" />
 /// <reference path="attitudemodifier.ts" />
+/// <reference path="savedata/idiplomacystatussavedata.d.ts" />
 var Rance;
 (function (Rance) {
     (function (DiplomaticState) {
@@ -3637,25 +3674,30 @@ var Rance;
             }
         };
         DiplomacyStatus.prototype.serialize = function () {
-            var data = {};
-            data.metPlayerIds = [];
+            var metPlayerIds = [];
             for (var playerId in this.metPlayers) {
-                data.metPlayerIds.push(this.metPlayers[playerId].id);
+                metPlayerIds.push(this.metPlayers[playerId].id);
             }
             data.statusByPlayer = this.statusByPlayer;
-            data.attitudeModifiersByPlayer = [];
+            var attitudeModifiersByPlayer = {};
             for (var playerId in this.attitudeModifiersByPlayer) {
                 var serializedModifiers = this.attitudeModifiersByPlayer[playerId].map(function (modifier) {
                     return modifier.serialize();
                 });
-                data.attitudeModifiersByPlayer[playerId] = serializedModifiers;
+                attitudeModifiersByPlayer[playerId] = serializedModifiers;
             }
+            var data = {
+                metPlayerIds: metPlayerIds,
+                statusByPlayer: this.statusByPlayer,
+                attitudeModifiersByPlayer: attitudeModifiersByPlayer
+            };
             return data;
         };
         return DiplomacyStatus;
     }());
     Rance.DiplomacyStatus = DiplomacyStatus;
 })(Rance || (Rance = {}));
+/// <reference path="savedata/iplayertechnologysavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var PlayerTechnology = (function () {
@@ -4357,6 +4399,7 @@ var Rance;
     var NotificationFilterState = Rance.NotificationFilterState;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
+/// <reference path="savedata/inotificationsavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var Notification = (function () {
@@ -4370,11 +4413,12 @@ var Rance;
             return this.template.messageConstructor(this.props);
         };
         Notification.prototype.serialize = function () {
-            var data = {};
-            data.templateKey = this.template.key;
-            data.hasBeenRead = this.hasBeenRead;
-            data.turn = this.turn;
-            data.props = this.template.serializeProps(this.props);
+            var data = {
+                templateKey: this.template.key,
+                hasBeenRead: this.hasBeenRead,
+                turn: this.turn,
+                props: this.template.serializeProps(this.props)
+            };
             return data;
         };
         return Notification;
@@ -4512,6 +4556,7 @@ var Rance;
 /// <reference path="notificationfilter.ts" />
 /// <reference path="eventmanager.ts" />
 /// <reference path="star.ts" />
+/// <reference path="savedata/inotificationsavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var NotificationLog = (function () {
@@ -4585,13 +4630,16 @@ var Rance;
             return filtered;
         };
         NotificationLog.prototype.serialize = function () {
-            var data = [];
+            var notificationsSaveData = [];
             for (var turnNumber in this.byTurn) {
                 var notifications = this.byTurn[turnNumber];
                 for (var i = 0; i < notifications.length; i++) {
-                    data.push(notifications[i].serialize());
+                    notificationsSaveData.push(notifications[i].serialize());
                 }
             }
+            var data = {
+                notifications: notificationsSaveData
+            };
             return data;
         };
         return NotificationLog;
@@ -4603,6 +4651,7 @@ var Rance;
 /// <reference path="eventmanager.ts"/>
 /// <reference path="notificationlog.ts" />
 /// <reference path="manufactory.ts" />
+/// <reference path="savedata/igamesavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var Game = (function () {
@@ -4696,17 +4745,19 @@ var Rance;
             this.playerOrder.splice(playerOrderIndex, 1);
         };
         Game.prototype.serialize = function () {
-            var data = {};
-            data.turnNumber = this.turnNumber;
-            data.galaxyMap = this.galaxyMap.serialize();
-            data.players = this.playerOrder.map(function (player) {
+            var playersSaveData = this.playerOrder.map(function (player) {
                 return player.serialize();
             });
-            data.players = data.players.concat(this.independents.map(function (player) {
+            var independentsSaveData = this.independents.map(function (player) {
                 return player.serialize();
-            }));
-            data.humanPlayerId = this.humanPlayer.id;
-            data.notificationLog = this.notificationLog.serialize();
+            });
+            var data = {
+                turnNumber: this.turnNumber,
+                galaxyMap: this.galaxyMap.serialize(),
+                players: playersSaveData.concat(independentsSaveData),
+                humanPlayerId: this.humanPlayer.id,
+                notificationLog: this.notificationLog.serialize()
+            };
             return data;
         };
         Game.prototype.save = function (name) {
@@ -4733,6 +4784,7 @@ var Rance;
 /// <reference path="fillerpoint.ts" />
 /// <reference path="star.ts" />
 /// <reference path="mapvoronoiinfo.ts" />
+/// <reference path="savedata/igalaxymapsavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var GalaxyMap = (function () {
@@ -4765,16 +4817,17 @@ var Rance;
             });
         };
         GalaxyMap.prototype.serialize = function () {
-            var data = {};
-            data.stars = this.stars.map(function (star) {
-                return star.serialize();
-            });
-            data.fillerPoints = this.fillerPoints.map(function (fillerPoint) {
-                return fillerPoint.serialize();
-            });
-            data.width = this.width;
-            data.height = this.height;
-            data.seed = this.seed;
+            var data = {
+                stars: this.stars.map(function (star) {
+                    return star.serialize();
+                }),
+                fillerPoints: this.fillerPoints.map(function (fillerPoint) {
+                    return fillerPoint.serialize();
+                }),
+                width: this.width,
+                height: this.height,
+                seed: this.seed
+            };
             return data;
         };
         return GalaxyMap;
@@ -6230,6 +6283,7 @@ var Rance;
 /// <reference path="playertechnology.ts" />
 /// <reference path="ifleetattacktarget.d.ts" />
 /// <reference path="mapai/aicontroller.ts"/>
+/// <reference path="savedata/iplayersavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var Player = (function () {
@@ -6773,41 +6827,42 @@ var Rance;
             return totalCapacity;
         };
         Player.prototype.serialize = function () {
-            var data = {}; // TODO serialization type
-            data.id = this.id;
-            data.name = this.name;
-            data.color = this.color;
-            data.colorAlpha = this.colorAlpha;
-            data.secondaryColor = this.secondaryColor;
-            data.isIndependent = this.isIndependent;
-            data.isAI = this.isAI;
-            data.resources = Rance.extendObject(this.resources);
-            data.diplomacyStatus = this.diplomacyStatus.serialize();
+            var unitIds = [];
+            for (var id in this.units) {
+                unitIds.push(this.units[id].id);
+            }
+            var revealedStarIds = [];
+            for (var id in this.revealedStars) {
+                revealedStarIds.push(this.revealedStars[id].id);
+            }
+            var identifiedUnitIds = [];
+            for (var id in this.identifiedUnits) {
+                identifiedUnitIds.push(this.identifiedUnits[id].id);
+            }
+            var data = {
+                id: this.id,
+                name: this.name,
+                color: this.color,
+                colorAlpha: this.colorAlpha,
+                secondaryColor: this.secondaryColor,
+                isIndependent: this.isIndependent,
+                isAI: this.isAI,
+                resources: Rance.extendObject(this.resources),
+                diplomacyStatus: this.diplomacyStatus.serialize(),
+                fleets: this.fleets.map(function (fleet) { return fleet.serialize(); }),
+                money: this.money,
+                controlledLocationIds: this.controlledLocations.map(function (star) { return star.id; }),
+                items: this.items.map(function (item) { return item.serialize(); }),
+                researchByTechnology: this.playerTechnology.serialize(),
+                unitIds: unitIds,
+                revealedStarIds: revealedStarIds,
+                identifiedUnitIds: identifiedUnitIds
+            };
             if (this.flag) {
                 data.flag = this.flag.serialize();
             }
-            data.unitIds = [];
-            for (var id in this.units) {
-                data.unitIds.push(id);
-            }
-            data.fleets = this.fleets.map(function (fleet) { return fleet.serialize(); });
-            data.money = this.money;
-            data.controlledLocationIds =
-                this.controlledLocations.map(function (star) { return star.id; });
-            data.items = this.items.map(function (item) { return item.serialize(); });
-            data.revealedStarIds = [];
-            for (var id in this.revealedStars) {
-                data.revealedStarIds.push(this.revealedStars[id].id);
-            }
-            data.identifiedUnitIds = [];
-            for (var id in this.identifiedUnits) {
-                data.identifiedUnitIds.push(this.identifiedUnits[id].id);
-            }
             if (this.isAI && this.AIController) {
                 data.personality = Rance.extendObject(this.AIController.personality);
-            }
-            if (this.playerTechnology) {
-                data.researchByTechnology = this.playerTechnology.serialize();
             }
             return data;
         };
@@ -7722,34 +7777,15 @@ var Rance;
     }
     Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
 })(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
-var Rance;
-(function (Rance) {
-    var StatusEffect = (function () {
-        function StatusEffect(template, duration) {
-            this.template = template;
-            this.duration = duration;
-        }
-        StatusEffect.prototype.processTurnEnd = function () {
-            if (this.duration > 0) {
-                this.duration--;
-            }
-        };
-        StatusEffect.prototype.clone = function () {
-            return new StatusEffect(this.template, this.duration);
-        };
-        return StatusEffect;
-    }());
-    Rance.StatusEffect = StatusEffect;
-})(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="damagetype.ts" />
-/// <reference path="unitattributes.ts"/>
+/// <reference path="iunitattributes.d.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
 /// <reference path="item.ts"/>
 /// <reference path="statuseffect.ts" />
+/// <reference path="savedata/iunitsavedata.d.ts" />
 var Rance;
 (function (Rance) {
     Rance.UnitBattleSidesArray = ["side1", "side2"];
@@ -8518,45 +8554,50 @@ var Rance;
         Unit.prototype.serialize = function (includeItems, includeFluff) {
             if (includeItems === void 0) { includeItems = true; }
             if (includeFluff === void 0) { includeFluff = true; }
-            var data = {};
-            data.templateType = this.template.type;
-            data.id = this.id;
-            data.name = this.name;
-            data.maxHealth = this.maxHealth;
-            data.currentHealth = this.currentHealth;
-            data.currentMovePoints = this.currentMovePoints;
-            data.maxMovePoints = this.maxMovePoints;
-            data.timesActedThisTurn = this.timesActedThisTurn;
-            data.baseAttributes = Rance.extendObject(this.baseAttributes);
-            data.abilityTemplateTypes = this.abilities.map(function (ability) {
-                return ability.type;
-            });
-            data.passiveSkillTemplateTypes = this.passiveSkills.map(function (passiveSkill) {
-                return passiveSkill.type;
-            });
-            data.experienceForCurrentLevel = this.experienceForCurrentLevel;
-            data.level = this.level;
-            data.battleStats = {};
-            data.battleStats.moveDelay = this.battleStats.moveDelay;
-            data.battleStats.side = this.battleStats.side;
-            data.battleStats.position = this.battleStats.position;
-            data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
-            data.battleStats.guardAmount = this.battleStats.guardAmount;
-            data.battleStats.guardCoverage = this.battleStats.guardCoverage;
-            data.battleStats.captureChance = this.battleStats.captureChance;
-            data.battleStats.statusEffects = this.battleStats.statusEffects.map(function (statusEffect) {
-                return statusEffect.clone();
-            });
-            data.battleStats.queuedAction = this.battleStats.queuedAction;
-            if (this.fleet) {
-                data.fleetId = this.fleet.id;
-            }
-            data.items = {};
+            var itemsSaveData = {};
             if (includeItems) {
                 for (var slot in this.items) {
-                    if (this.items[slot])
-                        data.items[slot] = this.items[slot].serialize();
+                    if (this.items[slot]) {
+                        itemsSaveData[slot] = this.items[slot].serialize();
+                    }
                 }
+            }
+            var battleStatsSavedData = {
+                moveDelay: this.battleStats.moveDelay,
+                side: this.battleStats.side,
+                position: this.battleStats.position,
+                currentActionPoints: this.battleStats.currentActionPoints,
+                guardAmount: this.battleStats.guardAmount,
+                guardCoverage: this.battleStats.guardCoverage,
+                captureChance: this.battleStats.captureChance,
+                statusEffects: this.battleStats.statusEffects.map(function (statusEffect) {
+                    return statusEffect.clone();
+                }),
+                queuedAction: this.battleStats.queuedAction
+            };
+            var data = {
+                templateType: this.template.type,
+                id: this.id,
+                name: this.name,
+                maxHealth: this.maxHealth,
+                currentHealth: this.currentHealth,
+                currentMovePoints: this.currentMovePoints,
+                maxMovePoints: this.maxMovePoints,
+                timesActedThisTurn: this.timesActedThisTurn,
+                baseAttributes: Rance.extendObject(this.baseAttributes),
+                abilityTemplateTypes: this.abilities.map(function (ability) {
+                    return ability.type;
+                }),
+                passiveSkillTemplateTypes: this.passiveSkills.map(function (passiveSkill) {
+                    return passiveSkill.type;
+                }),
+                experienceForCurrentLevel: this.experienceForCurrentLevel,
+                level: this.level,
+                items: itemsSaveData,
+                battleStats: battleStatsSavedData
+            };
+            if (this.fleet) {
+                data.fleetId = this.fleet.id;
             }
             if (includeFluff) {
                 data.portraitKey = this.portrait.key;
@@ -27645,12 +27686,14 @@ var Rance;
             return game;
         };
         GameLoader.prototype.deserializeNotificationLog = function (data) {
+            // legacy savedata 10.3.2016
+            var notificationsData = data.notifications || (Array.isArray(data) ? data : null);
             var notificationLog = new Rance.NotificationLog(this.humanPlayer);
-            for (var i = 0; i < data.length; i++) {
-                var template = app.moduleData.Templates.Notifications[data[i].templateKey];
-                var props = template.deserializeProps(data[i].props, this);
-                var notification = new Rance.Notification(template, props, data[i].turn);
-                notification.hasBeenRead = data[i].hasBeenRead;
+            for (var i = 0; i < notificationsData.length; i++) {
+                var template = app.moduleData.Templates.Notifications[notificationsData[i].templateKey];
+                var props = template.deserializeProps(notificationsData[i].props, this);
+                var notification = new Rance.Notification(template, props, notificationsData[i].turn);
+                notification.hasBeenRead = notificationsData[i].hasBeenRead;
                 notificationLog.addNotification(notification);
             }
             return notificationLog;
@@ -27769,9 +27812,7 @@ var Rance;
                 player.revealedStars[id] = this.starsById[id];
             }
             // technology
-            if (data.researchByTechnology) {
-                player.initTechnologies(data.researchByTechnology);
-            }
+            player.initTechnologies(data.researchByTechnology);
             return player;
         };
         GameLoader.prototype.deserializeDiplomacyStatus = function (player, data) {

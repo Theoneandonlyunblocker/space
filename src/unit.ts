@@ -1,12 +1,14 @@
 /// <reference path="templateinterfaces/iunittemplate.d.ts" />
 
 /// <reference path="damagetype.ts" />
-/// <reference path="unitattributes.ts"/>
+/// <reference path="iunitattributes.d.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
 /// <reference path="item.ts"/>
 /// <reference path="statuseffect.ts" />
+
+/// <reference path="savedata/iunitsavedata.d.ts" />
 
 module Rance
 {
@@ -17,6 +19,14 @@ module Rance
   {
     row,
     all
+  }
+
+  export interface IQueuedActionData
+  {
+    ability: Templates.IAbilityTemplate;
+    targetId: number;
+    turnsPrepared: number;
+    timesInterrupted: number;
   }
 
   export class Unit
@@ -61,13 +71,7 @@ module Rance
       captureChance: number;
       statusEffects: StatusEffect[];
       lastHealthBeforeReceivingDamage: number;
-      queuedAction:
-      {
-        ability: Templates.IAbilityTemplate;
-        targetId: number;
-        turnsPrepared: number;
-        timesInterrupted: number;
-      }
+      queuedAction: IQueuedActionData;
     };
 
     abilities: Templates.IAbilityTemplate[] = [];
@@ -1146,64 +1150,74 @@ module Rance
     {
       this.template.unitDrawingFN(this, SFXParams);
     }
-    serialize(includeItems: boolean = true, includeFluff: boolean = true)
+    serialize(includeItems: boolean = true, includeFluff: boolean = true): IUnitSaveData
     {
-      var data: any = {};
+      var itemsSaveData: IUnitItemsSaveData = {};
 
-      data.templateType = this.template.type;
-      data.id = this.id;
-      data.name = this.name;
-
-      data.maxHealth = this.maxHealth;
-      data.currentHealth = this.currentHealth;
-
-      data.currentMovePoints = this.currentMovePoints;
-      data.maxMovePoints = this.maxMovePoints;
-
-      data.timesActedThisTurn = this.timesActedThisTurn;
-
-      data.baseAttributes = extendObject(this.baseAttributes);
-      data.abilityTemplateTypes = this.abilities.map(function(ability: Templates.IAbilityTemplate)
+      if (includeItems)
       {
-        return ability.type;
-      });
-      data.passiveSkillTemplateTypes = this.passiveSkills.map(function(
-        passiveSkill: Templates.IPassiveSkillTemplate)
+        for (var slot in this.items)
+        {
+          if (this.items[slot])
+          {
+            itemsSaveData[slot] = this.items[slot].serialize();
+          }
+        }
+      }
+      var battleStatsSavedData: IUnitBattleStatsSaveData =
       {
-        return passiveSkill.type;
-      });
+        moveDelay: this.battleStats.moveDelay,
+        side: this.battleStats.side,
+        position: this.battleStats.position,
+        currentActionPoints: this.battleStats.currentActionPoints,
+        guardAmount: this.battleStats.guardAmount,
+        guardCoverage: this.battleStats.guardCoverage,
+        captureChance: this.battleStats.captureChance,
+        statusEffects: this.battleStats.statusEffects.map(function(statusEffect)
+        {
+          return statusEffect.clone();
+        }),
+        queuedAction: this.battleStats.queuedAction
+      };
 
-      data.experienceForCurrentLevel = this.experienceForCurrentLevel;
-      data.level = this.level;
-
-      data.battleStats = {};
-      data.battleStats.moveDelay = this.battleStats.moveDelay;
-      data.battleStats.side = this.battleStats.side;
-      data.battleStats.position = this.battleStats.position;
-      data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
-      data.battleStats.guardAmount = this.battleStats.guardAmount;
-      data.battleStats.guardCoverage = this.battleStats.guardCoverage;
-      data.battleStats.captureChance = this.battleStats.captureChance;
-      data.battleStats.statusEffects = this.battleStats.statusEffects.map(function(statusEffect)
+      var data: IUnitSaveData =
       {
-        return statusEffect.clone();
-      });
-      data.battleStats.queuedAction = this.battleStats.queuedAction;
+        templateType: this.template.type,
+        id: this.id,
+        name: this.name,
+
+        maxHealth: this.maxHealth,
+        currentHealth: this.currentHealth,
+
+        currentMovePoints: this.currentMovePoints,
+        maxMovePoints: this.maxMovePoints,
+
+        timesActedThisTurn: this.timesActedThisTurn,
+
+        baseAttributes: extendObject(this.baseAttributes),
+        abilityTemplateTypes: this.abilities.map(function(ability: Templates.IAbilityTemplate)
+        {
+          return ability.type;
+        }),
+        passiveSkillTemplateTypes: this.passiveSkills.map(function(
+          passiveSkill: Templates.IPassiveSkillTemplate)
+        {
+          return passiveSkill.type;
+        }),
+
+        experienceForCurrentLevel: this.experienceForCurrentLevel,
+        level: this.level,
+
+        items: itemsSaveData,
+        battleStats: battleStatsSavedData
+      };
+
 
       if (this.fleet)
       {
         data.fleetId = this.fleet.id;
       }
 
-      data.items = {};
-
-      if (includeItems)
-      {
-        for (var slot in this.items)
-        {
-          if (this.items[slot]) data.items[slot] = this.items[slot].serialize();
-        }
-      }
       if (includeFluff)
       {
         data.portraitKey = this.portrait.key;

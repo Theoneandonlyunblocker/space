@@ -1,4 +1,5 @@
 /// <reference path="templateinterfaces/iattitudemodifiertemplate.d.ts" />
+/// <reference path="savedata/iattitudemodifiersavedata.d.ts" />
 
 module Rance
 {
@@ -116,14 +117,15 @@ module Rance
       }
     }
 
-    serialize()
+    serialize(): IAttitudeModifierSaveData
     {
-      var data: any = {};
-
-      data.templateType = this.template.type;
-      data.startTurn = this.startTurn;
-      data.endTurn = this.endTurn;
-      data.strength = this.strength;
+      var data: IAttitudeModifierSaveData =
+      {
+        templateType: this.template.type,
+        startTurn: this.startTurn,
+        endTurn: this.endTurn,
+        strength: this.strength
+      };
 
       return data;
     }

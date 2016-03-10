@@ -1,6 +1,6 @@
-module Rance
+declare module Rance
 {
-  export interface IUnitAttributes
+  interface IUnitAttributes
   {
     maxActionPoints: number;
     attack: number;

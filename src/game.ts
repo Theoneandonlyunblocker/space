@@ -4,6 +4,8 @@
 /// <reference path="notificationlog.ts" />
 /// <reference path="manufactory.ts" />
 
+/// <reference path="savedata/igamesavedata.d.ts" />
+
 module Rance
 {
   export class Game
@@ -147,22 +149,26 @@ module Rance
 
       this.playerOrder.splice(playerOrderIndex, 1);
     }
-    serialize()
+    serialize(): IGameSaveData
     {
-      var data: any = {};
-
-      data.turnNumber = this.turnNumber;
-      data.galaxyMap = this.galaxyMap.serialize();
-      data.players = this.playerOrder.map(function(player)
+      var playersSaveData: IPlayerSaveData[] = this.playerOrder.map(function(player: Player)
       {
         return player.serialize()
       });
-      data.players = data.players.concat(this.independents.map(function(player)
+
+      var independentsSaveData: IPlayerSaveData[] = this.independents.map(function(player: Player)
       {
-        return player.serialize();
-      }));
-      data.humanPlayerId = this.humanPlayer.id;
-      data.notificationLog = this.notificationLog.serialize();
+        return player.serialize()
+      });
+
+      var data: IGameSaveData =
+      {
+        turnNumber: this.turnNumber,
+        galaxyMap: this.galaxyMap.serialize(),
+        players: playersSaveData.concat(independentsSaveData),
+        humanPlayerId: this.humanPlayer.id,
+        notificationLog: this.notificationLog.serialize()
+      };
 
       return data;
     }

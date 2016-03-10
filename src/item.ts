@@ -1,6 +1,8 @@
 /// <reference path="templateinterfaces/iitemtemplate.d.ts" />
 /// <reference path="unit.ts" />
 
+/// <reference path="savedata/iitemsavedata.d.ts" />
+
 module Rance
 {
 
@@ -18,12 +20,14 @@ module Rance
       this.template = template;
     }
 
-    serialize()
+    serialize(): IItemSaveData
     {
-      var data: any = {};
+      var data: IItemSaveData =
+      {
+        id: this.id,
+        templateType: this.template.type
+      };
 
-      data.id = this.id;
-      data.templateType = this.template.type;
       if (this.unit)
       {
         data.unitId = this.unit.id;

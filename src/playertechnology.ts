@@ -1,3 +1,5 @@
+/// <reference path="savedata/iplayertechnologysavedata.d.ts" />
+
 module Rance
 {
   export class PlayerTechnology
@@ -309,17 +311,9 @@ module Rance
         }
       }
     }
-    serialize()
+    serialize(): IPlayerTechnologySaveData
     {
-      var data:
-      {
-        [key: string]:
-        {
-          totalResearch: number;
-          priority: number;
-          priorityIsLocked: boolean;
-        }
-      } = {};
+      var data: IPlayerTechnologySaveData = {};
 
       for (var key in this.technologies)
       {

@@ -21,7 +21,7 @@ module Rance
       this.x = x;
       this.y = y;
     }
-    serialize()
+    serialize(): Point
     {
       return(
       {

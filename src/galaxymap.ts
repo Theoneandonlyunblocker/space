@@ -5,7 +5,7 @@
 /// <reference path="fillerpoint.ts" />
 /// <reference path="star.ts" />
 /// <reference path="mapvoronoiinfo.ts" />
-
+/// <reference path="savedata/igalaxymapsavedata.d.ts" />
 
 module Rance
 {
@@ -55,23 +55,25 @@ module Rance
         max: max
       });
     }
-    serialize()
+    serialize(): IGalaxyMapSaveData
     {
-      var data: any = {};
-
-      data.stars = this.stars.map(function(star)
+      var data: IGalaxyMapSaveData =
       {
-        return star.serialize();
-      });
+        stars: this.stars.map(function(star)
+        {
+          return star.serialize();
+        }),
 
-      data.fillerPoints = this.fillerPoints.map(function(fillerPoint)
-      {
-        return fillerPoint.serialize();
-      });
+        fillerPoints: this.fillerPoints.map(function(fillerPoint)
+        {
+          return fillerPoint.serialize();
+        }),
 
-      data.width = this.width;
-      data.height = this.height;
-      data.seed = this.seed;
+        width: this.width,
+        height: this.height,
+        seed: this.seed
+      };
+
 
       return data;
     }

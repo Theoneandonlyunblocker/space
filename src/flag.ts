@@ -2,6 +2,8 @@
 /// <reference path="emblem.ts" />
 /// <reference path="color.ts"/>
 
+/// <reference path="savedata/iflagsavedata.d.ts" />
+
 module Rance
 {
   export class Flag
@@ -262,9 +264,9 @@ module Rance
       
       return canvas;
     }
-    serialize()
+    serialize(): IFlagSaveData
     {
-      var data: any =
+      var data: IFlagSaveData =
       {
         mainColor: this.mainColor
       };

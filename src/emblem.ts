@@ -1,5 +1,6 @@
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="templateinterfaces/isubemblemtemplate.d.ts" />
+/// <reference path="savedata/iemblemsavedata.d.ts" />
 
 /// <reference path="color.ts"/>
 
@@ -190,17 +191,20 @@ module Rance
 
     //   return container;
     // }
-    serialize()
+    serialize(): IEmblemSaveData
     {
-      var data: any =
+      var data: IEmblemSaveData =
       {
         alpha: this.alpha,
         innerKey: this.inner.key
       };
 
-      if (this.outer) data.outerKey = this.outer.key;
+      if (this.outer)
+      {
+        data.outerKey = this.outer.key;
+      }
 
-      return(data);
+      return data;
     }
   }
 }
