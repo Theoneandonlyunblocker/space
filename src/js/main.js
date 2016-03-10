@@ -27645,6 +27645,22 @@ var Rance;
 /// <reference path="galaxymap.ts"/>
 /// <reference path="star.ts" />
 /// <reference path="fillerpoint.ts" />
+/// <reference path="savedata/iattitudemodifiersavedata.d.ts" />
+/// <reference path="savedata/iitemsavedata.d.ts" />
+/// <reference path="savedata/ibuildingsavedata.d.ts" />
+/// <reference path="savedata/imanufactorysavedata.d.ts" />
+/// <reference path="savedata/idiplomacystatussavedata.d.ts" />
+/// <reference path="savedata/inotificationlogsavedata.d.ts" />
+/// <reference path="savedata/iemblemsavedata.d.ts" />
+/// <reference path="savedata/inotificationsavedata.d.ts" />
+/// <reference path="savedata/iflagsavedata.d.ts" />
+/// <reference path="savedata/iplayersavedata.d.ts" />
+/// <reference path="savedata/ifleetsavedata.d.ts" />
+/// <reference path="savedata/iplayertechnologysavedata.d.ts" />
+/// <reference path="savedata/igalaxymapsavedata.d.ts" />
+/// <reference path="savedata/istarsavedata.d.ts" />
+/// <reference path="savedata/igamesavedata.d.ts" />
+/// <reference path="savedata/iunitsavedata.d.ts" />
 var Rance;
 (function (Rance) {
     var GameLoader = (function () {
@@ -27685,9 +27701,9 @@ var Rance;
             }
             return game;
         };
+        // legacy savedata 10.3.2016
         GameLoader.prototype.deserializeNotificationLog = function (data) {
-            // legacy savedata 10.3.2016
-            var notificationsData = data.notifications || (Array.isArray(data) ? data : null);
+            var notificationsData = Array.isArray(data) ? data : data.notifications;
             var notificationLog = new Rance.NotificationLog(this.humanPlayer);
             for (var i = 0; i < notificationsData.length; i++) {
                 var template = app.moduleData.Templates.Notifications[notificationsData[i].templateKey];
@@ -27849,13 +27865,13 @@ var Rance;
                 }
             }
         };
+        GameLoader.prototype.deserializeEmblem = function (emblemData, color) {
+            var inner = app.moduleData.Templates.SubEmblems[emblemData.innerKey];
+            var outer = emblemData.outerKey ?
+                app.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
+            return new Rance.Emblem(color, emblemData.alpha, inner, outer);
+        };
         GameLoader.prototype.deserializeFlag = function (data) {
-            var deserializeEmblem = function (emblemData, color) {
-                var inner = app.moduleData.Templates.SubEmblems[emblemData.innerKey];
-                var outer = emblemData.outerKey ?
-                    app.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
-                return new Rance.Emblem(color, emblemData.alpha, inner, outer);
-            };
             var flag = new Rance.Flag({
                 width: 46,
                 mainColor: data.mainColor,
@@ -27870,11 +27886,11 @@ var Rance;
             }
             else {
                 if (data.foregroundEmblem) {
-                    var fgEmblem = deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
+                    var fgEmblem = this.deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
                     flag.setForegroundEmblem(fgEmblem);
                 }
                 if (data.backgroundEmblem) {
-                    var bgEmblem = deserializeEmblem(data.backgroundEmblem, data.tetriaryColor);
+                    var bgEmblem = this.deserializeEmblem(data.backgroundEmblem, data.tetriaryColor);
                     flag.setBackgroundEmblem(bgEmblem);
                 }
             }
@@ -27882,9 +27898,11 @@ var Rance;
         };
         GameLoader.prototype.deserializeFleet = function (player, data) {
             var units = [];
-            var toDeserialize = data.units || data.ships; // legacy alias 10.3.2016
-            for (var i = 0; i < toDeserialize.length; i++) {
-                var unit = this.deserializeUnit(toDeserialize[i]);
+            // legacy savedata 10.3.2016
+            var castedData = data;
+            var unitsToDeserialize = castedData.units || castedData.ships;
+            for (var i = 0; i < unitsToDeserialize.length; i++) {
+                var unit = this.deserializeUnit(unitsToDeserialize[i]);
                 player.addUnit(unit);
                 units.push(unit);
             }

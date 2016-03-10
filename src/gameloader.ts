@@ -4,6 +4,23 @@
 /// <reference path="star.ts" />
 /// <reference path="fillerpoint.ts" />
 
+/// <reference path="savedata/iattitudemodifiersavedata.d.ts" />
+/// <reference path="savedata/iitemsavedata.d.ts" />
+/// <reference path="savedata/ibuildingsavedata.d.ts" />
+/// <reference path="savedata/imanufactorysavedata.d.ts" />
+/// <reference path="savedata/idiplomacystatussavedata.d.ts" />
+/// <reference path="savedata/inotificationlogsavedata.d.ts" />
+/// <reference path="savedata/iemblemsavedata.d.ts" />
+/// <reference path="savedata/inotificationsavedata.d.ts" />
+/// <reference path="savedata/iflagsavedata.d.ts" />
+/// <reference path="savedata/iplayersavedata.d.ts" />
+/// <reference path="savedata/ifleetsavedata.d.ts" />
+/// <reference path="savedata/iplayertechnologysavedata.d.ts" />
+/// <reference path="savedata/igalaxymapsavedata.d.ts" />
+/// <reference path="savedata/istarsavedata.d.ts" />
+/// <reference path="savedata/igamesavedata.d.ts" />
+/// <reference path="savedata/iunitsavedata.d.ts" />
+
 module Rance
 {
   export class GameLoader
@@ -34,9 +51,8 @@ module Rance
 
     }
 
-    deserializeGame(data: any): Game // TODO saves | make interface for savegame data
+    deserializeGame(data: IGameSaveData): Game
     {
-
       this.map = this.deserializeMap(data.galaxyMap);
 
       for (var i = 0; i < data.players.length; i++)
@@ -77,10 +93,10 @@ module Rance
 
       return game;
     }
-    deserializeNotificationLog(data: any)
+    // legacy savedata 10.3.2016
+    deserializeNotificationLog(data: INotificationLogSaveData | INotificationSaveData[]): NotificationLog
     {
-      // legacy savedata 10.3.2016
-      var notificationsData = data.notifications || (Array.isArray(data) ? data : null);
+      var notificationsData: INotificationSaveData[] = Array.isArray(data) ? data : data.notifications;
 
       var notificationLog = new NotificationLog(this.humanPlayer);
       for (var i = 0; i < notificationsData.length; i++)
@@ -95,7 +111,7 @@ module Rance
 
       return notificationLog;
     }
-    deserializeMap(data: any)
+    deserializeMap(data: IGalaxyMapSaveData): GalaxyMap
     {
       var stars: Star[] = [];
 
@@ -141,7 +157,7 @@ module Rance
 
       return galaxyMap;
     }
-    deserializeStar(data: any)
+    deserializeStar(data: IStarSaveData): Star
     {
       var star = new Star(data.x, data.y, data.id);
       star.name = data.name;
@@ -163,7 +179,7 @@ module Rance
 
       return star;
     }
-    deserializeBuildings(data: any)
+    deserializeBuildings(data: IGalaxyMapSaveData): void
     {
       for (var i = 0; i < data.stars.length; i++)
       {
@@ -187,7 +203,7 @@ module Rance
         }
       }
     }
-    deserializeBuilding(data: any)
+    deserializeBuilding(data: IBuildingSaveData): Building
     {
       var template = app.moduleData.Templates.Buildings[data.templateType];
       var building = new Building(
@@ -203,7 +219,7 @@ module Rance
 
       return building;
     }
-    deserializePlayer(data: any)
+    deserializePlayer(data: IPlayerSaveData): Player
     {
       var personality: IPersonality;
 
@@ -266,7 +282,7 @@ module Rance
 
       return player;
     }
-    deserializeDiplomacyStatus(player: Player, data: any)
+    deserializeDiplomacyStatus(player: Player, data: IDiplomacyStatusSaveData): void
     {
       if (data)
       {
@@ -304,7 +320,7 @@ module Rance
         }
       }
     }
-    deserializeIdentifiedUnits(player: Player, data: number[])
+    deserializeIdentifiedUnits(player: Player, data: number[]): void
     {
       for (var i = 0; i < data.length; i++)
       {
@@ -315,18 +331,16 @@ module Rance
         }
       }
     }
-    deserializeFlag(data: any)
+    deserializeEmblem(emblemData: IEmblemSaveData, color: number): Emblem
     {
-      var deserializeEmblem = function(emblemData: any, color: number)
-      {
-        var inner = app.moduleData.Templates.SubEmblems[emblemData.innerKey];
-        var outer = emblemData.outerKey ?
-          app.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
+      var inner = app.moduleData.Templates.SubEmblems[emblemData.innerKey];
+      var outer = emblemData.outerKey ?
+        app.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
 
-        return new Emblem(color, emblemData.alpha, inner, outer);
-
-      };
-
+      return new Emblem(color, emblemData.alpha, inner, outer);
+    }
+    deserializeFlag(data: IFlagSaveData): Flag
+    {
       var flag = new Flag(
       {
         width: 46, // global FLAG_SIZE
@@ -347,27 +361,29 @@ module Rance
       {
         if (data.foregroundEmblem)
         {
-          var fgEmblem = deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
+          var fgEmblem = this.deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
           flag.setForegroundEmblem(fgEmblem);
         }
         if (data.backgroundEmblem)
         {
-          var bgEmblem = deserializeEmblem(data.backgroundEmblem, data.tetriaryColor);
+          var bgEmblem = this.deserializeEmblem(data.backgroundEmblem, data.tetriaryColor);
           flag.setBackgroundEmblem(bgEmblem);
         }
       }
 
       return flag;
     }
-    deserializeFleet(player: Player, data: any)
+    deserializeFleet(player: Player, data: IFleetSaveData): Fleet
     {
       var units: Unit[] = [];
 
-      var toDeserialize = data.units || data.ships; // legacy alias 10.3.2016
+      // legacy savedata 10.3.2016
+      var castedData = <any> data;
+      var unitsToDeserialize: IUnitSaveData[] = castedData.units || castedData.ships;
 
-      for (var i = 0; i < toDeserialize.length; i++)
+      for (var i = 0; i < unitsToDeserialize.length; i++)
       {
-        var unit = this.deserializeUnit(toDeserialize[i]);
+        var unit = this.deserializeUnit(unitsToDeserialize[i]);
         player.addUnit(unit);
         units.push(unit);
       }
@@ -376,7 +392,7 @@ module Rance
       fleet.name = data.name;
       return fleet;
     }
-    deserializeUnit(data: any)
+    deserializeUnit(data: IUnitSaveData): Unit
     {
       var template = app.moduleData.Templates.Units[data.templateType];
 
@@ -386,7 +402,7 @@ module Rance
 
       return unit;
     }
-    deserializeItem(data: any, player: Player)
+    deserializeItem(data: IItemSaveData, player: Player): void
     {
       var template = app.moduleData.Templates.Items[data.templateType];
 

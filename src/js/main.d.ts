@@ -57,6 +57,7 @@
 /// <reference path="../templateinterfaces/iculturetemplate.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="../savedata/inotificationlogsavedata.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
 declare module Rance {
@@ -3741,19 +3742,20 @@ declare module Rance {
             [id: number]: Building;
         };
         constructor();
-        deserializeGame(data: any): Game;
-        deserializeNotificationLog(data: any): NotificationLog;
-        deserializeMap(data: any): GalaxyMap;
-        deserializeStar(data: any): Star;
-        deserializeBuildings(data: any): void;
-        deserializeBuilding(data: any): Building;
-        deserializePlayer(data: any): Player;
-        deserializeDiplomacyStatus(player: Player, data: any): void;
+        deserializeGame(data: IGameSaveData): Game;
+        deserializeNotificationLog(data: INotificationLogSaveData | INotificationSaveData[]): NotificationLog;
+        deserializeMap(data: IGalaxyMapSaveData): GalaxyMap;
+        deserializeStar(data: IStarSaveData): Star;
+        deserializeBuildings(data: IGalaxyMapSaveData): void;
+        deserializeBuilding(data: IBuildingSaveData): Building;
+        deserializePlayer(data: IPlayerSaveData): Player;
+        deserializeDiplomacyStatus(player: Player, data: IDiplomacyStatusSaveData): void;
         deserializeIdentifiedUnits(player: Player, data: number[]): void;
-        deserializeFlag(data: any): Flag;
-        deserializeFleet(player: Player, data: any): Fleet;
-        deserializeUnit(data: any): Unit;
-        deserializeItem(data: any, player: Player): void;
+        deserializeEmblem(emblemData: IEmblemSaveData, color: number): Emblem;
+        deserializeFlag(data: IFlagSaveData): Flag;
+        deserializeFleet(player: Player, data: IFleetSaveData): Fleet;
+        deserializeUnit(data: IUnitSaveData): Unit;
+        deserializeItem(data: IItemSaveData, player: Player): void;
     }
 }
 declare module Rance {
