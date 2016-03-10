@@ -2,7 +2,7 @@
 /// <reference path="player.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="star.ts"/>
-/// <reference path="battledata.ts"/>
+/// <reference path="ibattledata.d.ts"/>
 /// <reference path="ifleetattacktarget.d.ts" />
 
 module Rance

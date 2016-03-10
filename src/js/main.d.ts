@@ -8,6 +8,7 @@
 /// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
 /// <reference path="../templateinterfaces/iitemtemplate.d.ts" />
 /// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
+/// <reference path="../ibattledata.d.ts" />
 /// <reference path="../templateinterfaces/iattitudemodifiertemplate.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
@@ -674,7 +675,7 @@ declare module Rance {
         swapUnits(unit1: Unit, unit2: Unit): void;
         removeUnit(unit: Unit): void;
         humanFormationIsValid(): boolean;
-        forEachShipInFormation(formation: Unit[][], operator: (unit: Unit) => any): void;
+        forEachUnitInFormation(formation: Unit[][], operator: (unit: Unit) => any): void;
         makeBattle(): Battle;
     }
 }
@@ -1442,20 +1443,6 @@ declare module Rance {
         getGloballyBuildableItems(): Templates.IItemTemplate[];
         getManufacturingCapacityFor(template: IManufacturableThing, type: string): number;
         serialize(): any;
-    }
-}
-declare module Rance {
-    interface IBattleData {
-        location: Star;
-        building: Building;
-        attacker: {
-            player: Player;
-            ships: Unit[];
-        };
-        defender: {
-            player: Player;
-            ships: Unit[];
-        };
     }
 }
 declare module Rance {

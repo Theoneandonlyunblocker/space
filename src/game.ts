@@ -81,12 +81,12 @@ module Rance
     }
     processPlayerStartTurn(player: Player)
     {
-      var shipStartTurnFN = function(ship: Unit)
+      var unitStartTurnFN = function(unit: Unit)
       {
-        ship.resetMovePoints();
-        ship.heal();
+        unit.resetMovePoints();
+        unit.heal();
 
-        var passiveSkillsByPhase = ship.getPassiveSkillsByPhase();
+        var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
         if (passiveSkillsByPhase.atTurnStart)
         {
           for (var i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++)
@@ -94,15 +94,15 @@ module Rance
             var skill = passiveSkillsByPhase.atTurnStart[i];
             for (var j = 0; j < skill.atTurnStart.length; j++)
             {
-              skill.atTurnStart[j](ship);
+              skill.atTurnStart[j](unit);
             }
           }
         }
 
-        ship.timesActedThisTurn = 0;
+        unit.timesActedThisTurn = 0;
       }
 
-      player.forEachUnit(shipStartTurnFN);
+      player.forEachUnit(unitStartTurnFN);
 
       if (!player.isIndependent)
       {

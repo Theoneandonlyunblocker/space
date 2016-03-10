@@ -4,21 +4,21 @@
 /// <reference path="building.ts"/>
 
 
-module Rance
+declare module Rance
 {
-  export interface IBattleData
+  interface IBattleData
   {
     location: Star;
     building: Building;
     attacker:
     {
       player: Player;
-      ships: Unit[]; // TODO rename property to 'unit'
+      units: Unit[];
     };
     defender:
     {
       player: Player;
-      ships: Unit[];
+      units: Unit[];
     };
   }
 }

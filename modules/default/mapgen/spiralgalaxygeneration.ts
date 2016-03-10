@@ -227,7 +227,7 @@ module Rance
           // make sectors
           var sectorsById = MapGenCore.makeSectors(stars, 3, 3);
 
-          // set resources && local ships
+          // set resources && local units
           var allSectors: MapGenCore.Sector[] = [];
           for (var sectorId in sectorsById)
           {
@@ -241,16 +241,16 @@ module Rance
           MapGenCore.distributeDistributablesPerSector(
             allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
 
-          var localShipPlacerFN = function(sector: MapGenCore.Sector, shipFamily: Rance.Templates.IUnitFamily)
+          var localUnitPlacerFN = function(sector: MapGenCore.Sector, unitFamily: Rance.Templates.IUnitFamily)
           {
             for (var i = 0; i < sector.stars.length; i++)
             {
               var star = sector.stars[i];
-              star.buildableUnitTypes = star.buildableUnitTypes.concat(shipFamily.associatedTemplates);
+              star.buildableUnitTypes = star.buildableUnitTypes.concat(unitFamily.associatedTemplates);
             }
           }
           MapGenCore.distributeDistributablesPerSector(
-            allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localShipPlacerFN);
+            allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localUnitPlacerFN);
 
           // set players
           var startRegions: MapGenCore.Region[] = (function setStartingRegions()

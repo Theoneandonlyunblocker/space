@@ -105,12 +105,12 @@ module Rance
             attacker:
             {
               player: props.side1Player,
-              ships: props.side1Units
+              units: props.side1Units
             },
             defender:
             {
               player: props.side2Player,
-              ships: props.side2Units
+              units: props.side2Units
             }
           },
 

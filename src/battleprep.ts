@@ -1,7 +1,7 @@
 /// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="battle.ts"/>
-/// <reference path="battledata.ts"/>
+/// <reference path="ibattledata.d.ts"/>
 
 module Rance
 {
@@ -35,9 +35,9 @@ module Rance
     constructor(battleData: IBattleData)
     {
       this.attacker = battleData.attacker.player;
-      this.attackerUnits = battleData.attacker.ships;
+      this.attackerUnits = battleData.attacker.units;
       this.defender = battleData.defender.player;
-      this.defenderUnits = battleData.defender.ships;
+      this.defenderUnits = battleData.defender.units;
       this.battleData = battleData;
 
       this.resetBattleStats();
@@ -99,12 +99,12 @@ module Rance
       if (this.attacker.isAI)
       {
         this.attackerFormation = this.makeAutoFormation(
-          this.battleData.attacker.ships, this.battleData.defender.ships, this.attacker);
+          this.battleData.attacker.units, this.battleData.defender.units, this.attacker);
       }
       if (this.defender.isAI)
       {
         this.defenderFormation = this.makeAutoFormation(
-          this.battleData.defender.ships, this.battleData.attacker.ships, this.defender);
+          this.battleData.defender.units, this.battleData.attacker.units, this.defender);
       }
     }
 
@@ -112,8 +112,8 @@ module Rance
     {
       if (!this.attacker.isAI)
       {
-        this.availableUnits = this.battleData.attacker.ships;
-        this.enemyUnits = this.battleData.defender.ships;
+        this.availableUnits = this.battleData.attacker.units;
+        this.enemyUnits = this.battleData.defender.units;
         this.attackerFormation = this.makeEmptyFormation();
         this.playerFormation = this.attackerFormation;
         this.enemyFormation = this.defenderFormation;
@@ -122,8 +122,8 @@ module Rance
       }
       else if (!this.defender.isAI)
       {
-        this.availableUnits = this.battleData.defender.ships;
-        this.enemyUnits = this.battleData.attacker.ships;
+        this.availableUnits = this.battleData.defender.units;
+        this.enemyUnits = this.battleData.attacker.units;
         this.defenderFormation = this.makeEmptyFormation();
         this.playerFormation = this.defenderFormation;
         this.enemyFormation = this.attackerFormation;
@@ -306,37 +306,37 @@ module Rance
     {
       /*
       invalid if 
-        attacking and no ships placed
-        battle is in territory not controlled by either and ships placed
-          is smaller than requirement and player hasn't placed all available ships
+        attacking and no units placed
+        battle is in territory not controlled by either and units placed
+          is smaller than requirement and player hasn't placed all available units
        */
       
-      var shipsPlaced = 0;
+      var unitsPlaced = 0;
 
-      this.forEachShipInFormation(this.playerFormation, function(unit: Unit)
+      this.forEachUnitInFormation(this.playerFormation, function(unit: Unit)
       {
-        if (unit) shipsPlaced++;
+        if (unit) unitsPlaced++;
       });
 
-      var minShips: number = 0;
+      var minRequiredUnits: number = 0;
 
       if (!this.attacker.isAI)
       {
-        minShips = 1;
+        minRequiredUnits = 1;
       }
       else if (!this.battleData.building)
       {
-        minShips = this.minDefendersInNeutralTerritory;
+        minRequiredUnits = this.minDefendersInNeutralTerritory;
       }
 
-      minShips = Math.min(minShips, this.availableUnits.length);
+      minRequiredUnits = Math.min(minRequiredUnits, this.availableUnits.length);
 
-      return shipsPlaced >= minShips;
+      return unitsPlaced >= minRequiredUnits;
     }
 
     // end player formation
 
-    forEachShipInFormation(formation: Unit[][], operator: (unit: Unit) => any): void
+    forEachUnitInFormation(formation: Unit[][], operator: (unit: Unit) => any): void
     {
       for (var i = 0; i < formation.length; i++)
       {

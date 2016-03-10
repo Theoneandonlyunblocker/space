@@ -209,8 +209,8 @@ module Rance
           return b.mapGenData.connectedness - a.mapGenData.connectedness;
         })[0];
 
-        var minShips = 2;
-        var maxShips = 5;
+        var minUnits = 2;
+        var maxUnits = 5;
 
         var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
 
@@ -232,19 +232,19 @@ module Rance
           }
 
           // TODO map gen | kinda weird
-          var shipAmount = minShips;
-          for (var j = minShips; j < distance; j++)
+          var unitsToAddCount = minUnits;
+          for (var j = minUnits; j < distance; j++)
           {
-            shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
+            unitsToAddCount += (1 - variance + Math.random() * distance * variance) * intensity;
 
-            if (shipAmount >= maxShips)
+            if (unitsToAddCount >= maxUnits)
             {
-              shipAmount = maxShips;
+              unitsToAddCount = maxUnits;
               break;
             }
           }
 
-          var elitesAmount = Math.floor(shipAmount / 2);
+          var elitesAmount = Math.floor(unitsToAddCount / 2);
 
           var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
           var units: Unit[] = [];
@@ -255,7 +255,7 @@ module Rance
             commander.name = "Pirate commander";
             units.push(commander);
           }
-          for (var j = 0; j < shipAmount; j++)
+          for (var j = 0; j < unitsToAddCount; j++)
           {
             var isElite = j < elitesAmount;
             var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;

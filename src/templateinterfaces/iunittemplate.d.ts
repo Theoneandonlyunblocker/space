@@ -27,7 +27,7 @@ declare module Rance
       
       // archetype is used by the ai to balance unit composition
       archetype: IUnitArchetype;
-      // family is used to group ships for local specialties and AI favorites
+      // family is used to group units for local specialties and AI favorites
       // f.ex. sector specializes in producing units with beam weapons
       families : IUnitFamily[];
       // culture is used for portrait and name
@@ -36,7 +36,7 @@ declare module Rance
       // how many stars away unit can see
       // -1: no vision, 0: current star only, 1: current & 1 away etc.
       visionRange: number;
-      // like vision but for stealthy ships
+      // like vision but for stealthy units. also reveals unit type & health etc.
       detectionRange: number;
       isStealthy?: boolean;
       

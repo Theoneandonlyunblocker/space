@@ -3074,7 +3074,7 @@ var Rance;
 /// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="battle.ts"/>
-/// <reference path="battledata.ts"/>
+/// <reference path="ibattledata.d.ts"/>
 var Rance;
 (function (Rance) {
     var BattlePrep = (function () {
@@ -3083,9 +3083,9 @@ var Rance;
             this.minDefendersInNeutralTerritory = 1;
             this.afterBattleFinishCallbacks = [];
             this.attacker = battleData.attacker.player;
-            this.attackerUnits = battleData.attacker.ships;
+            this.attackerUnits = battleData.attacker.units;
             this.defender = battleData.defender.player;
-            this.defenderUnits = battleData.defender.ships;
+            this.defenderUnits = battleData.defender.units;
             this.battleData = battleData;
             this.resetBattleStats();
             this.triggerPassiveSkills();
@@ -3128,16 +3128,16 @@ var Rance;
         };
         BattlePrep.prototype.makeAIFormations = function () {
             if (this.attacker.isAI) {
-                this.attackerFormation = this.makeAutoFormation(this.battleData.attacker.ships, this.battleData.defender.ships, this.attacker);
+                this.attackerFormation = this.makeAutoFormation(this.battleData.attacker.units, this.battleData.defender.units, this.attacker);
             }
             if (this.defender.isAI) {
-                this.defenderFormation = this.makeAutoFormation(this.battleData.defender.ships, this.battleData.attacker.ships, this.defender);
+                this.defenderFormation = this.makeAutoFormation(this.battleData.defender.units, this.battleData.attacker.units, this.defender);
             }
         };
         BattlePrep.prototype.setupPlayer = function () {
             if (!this.attacker.isAI) {
-                this.availableUnits = this.battleData.attacker.ships;
-                this.enemyUnits = this.battleData.defender.ships;
+                this.availableUnits = this.battleData.attacker.units;
+                this.enemyUnits = this.battleData.defender.units;
                 this.attackerFormation = this.makeEmptyFormation();
                 this.playerFormation = this.attackerFormation;
                 this.enemyFormation = this.defenderFormation;
@@ -3145,8 +3145,8 @@ var Rance;
                 this.enemyPlayer = this.defender;
             }
             else if (!this.defender.isAI) {
-                this.availableUnits = this.battleData.defender.ships;
-                this.enemyUnits = this.battleData.attacker.ships;
+                this.availableUnits = this.battleData.defender.units;
+                this.enemyUnits = this.battleData.attacker.units;
                 this.defenderFormation = this.makeEmptyFormation();
                 this.playerFormation = this.defenderFormation;
                 this.enemyFormation = this.attackerFormation;
@@ -3271,27 +3271,27 @@ var Rance;
         BattlePrep.prototype.humanFormationIsValid = function () {
             /*
             invalid if
-              attacking and no ships placed
-              battle is in territory not controlled by either and ships placed
-                is smaller than requirement and player hasn't placed all available ships
+              attacking and no units placed
+              battle is in territory not controlled by either and units placed
+                is smaller than requirement and player hasn't placed all available units
              */
-            var shipsPlaced = 0;
-            this.forEachShipInFormation(this.playerFormation, function (unit) {
+            var unitsPlaced = 0;
+            this.forEachUnitInFormation(this.playerFormation, function (unit) {
                 if (unit)
-                    shipsPlaced++;
+                    unitsPlaced++;
             });
-            var minShips = 0;
+            var minRequiredUnits = 0;
             if (!this.attacker.isAI) {
-                minShips = 1;
+                minRequiredUnits = 1;
             }
             else if (!this.battleData.building) {
-                minShips = this.minDefendersInNeutralTerritory;
+                minRequiredUnits = this.minDefendersInNeutralTerritory;
             }
-            minShips = Math.min(minShips, this.availableUnits.length);
-            return shipsPlaced >= minShips;
+            minRequiredUnits = Math.min(minRequiredUnits, this.availableUnits.length);
+            return unitsPlaced >= minRequiredUnits;
         };
         // end player formation
-        BattlePrep.prototype.forEachShipInFormation = function (formation, operator) {
+        BattlePrep.prototype.forEachUnitInFormation = function (formation, operator) {
             for (var i = 0; i < formation.length; i++) {
                 for (var j = 0; j < formation[i].length; j++) {
                     operator(formation[i][j]);
@@ -4647,21 +4647,21 @@ var Rance;
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
         Game.prototype.processPlayerStartTurn = function (player) {
-            var shipStartTurnFN = function (ship) {
-                ship.resetMovePoints();
-                ship.heal();
-                var passiveSkillsByPhase = ship.getPassiveSkillsByPhase();
+            var unitStartTurnFN = function (unit) {
+                unit.resetMovePoints();
+                unit.heal();
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
                 if (passiveSkillsByPhase.atTurnStart) {
                     for (var i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++) {
                         var skill = passiveSkillsByPhase.atTurnStart[i];
                         for (var j = 0; j < skill.atTurnStart.length; j++) {
-                            skill.atTurnStart[j](ship);
+                            skill.atTurnStart[j](unit);
                         }
                     }
                 }
-                ship.timesActedThisTurn = 0;
+                unit.timesActedThisTurn = 0;
             };
-            player.forEachUnit(shipStartTurnFN);
+            player.forEachUnit(unitStartTurnFN);
             if (!player.isIndependent) {
                 player.money += player.getIncome();
                 var allResourceIncomeData = player.getResourceIncome();
@@ -6434,7 +6434,7 @@ var Rance;
             if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
                 this.meetPlayersInStarByVisibility(star, "detected");
             }
-            // identify ships
+            // identify units
             var unitsToIdentify = star.getAllUnits();
             for (var i = 0; i < unitsToIdentify.length; i++) {
                 this.identifyUnit(unitsToIdentify[i]);
@@ -6657,11 +6657,11 @@ var Rance;
                 building: target.building,
                 attacker: {
                     player: this,
-                    ships: location.getAllUnitsOfPlayer(this)
+                    units: location.getAllUnitsOfPlayer(this)
                 },
                 defender: {
                     player: target.enemy,
-                    ships: target.units
+                    units: target.units
                 }
             };
             var battlePrep = new Rance.BattlePrep(battleData);
@@ -6813,11 +6813,7 @@ var Rance;
     }());
     Rance.Player = Player;
 })(Rance || (Rance = {}));
-/// <reference path="player.ts"/>
-/// <reference path="unit.ts"/>
-/// <reference path="star.ts"/>
-/// <reference path="building.ts"/>
-/// <reference path="battledata.ts"/>
+/// <reference path="ibattledata.d.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="eventmanager.ts"/>
 var Rance;
@@ -20238,11 +20234,11 @@ var Rance;
                         building: null,
                         attacker: {
                             player: props.side1Player,
-                            ships: props.side1Units
+                            units: props.side1Units
                         },
                         defender: {
                             player: props.side2Player,
-                            ships: props.side2Units
+                            units: props.side2Units
                         }
                     },
                     side1: this.makeFormation(props.side1Units),
@@ -20514,7 +20510,7 @@ var Rance;
 /// <reference path="player.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="star.ts"/>
-/// <reference path="battledata.ts"/>
+/// <reference path="ibattledata.d.ts"/>
 /// <reference path="ifleetattacktarget.d.ts" />
 var Rance;
 (function (Rance) {
@@ -23256,8 +23252,8 @@ var Rance;
                 var commanderStar = starsAtMaxDistance.sort(function (a, b) {
                     return b.mapGenData.connectedness - a.mapGenData.connectedness;
                 })[0];
-                var minShips = 2;
-                var maxShips = 5;
+                var minUnits = 2;
+                var maxUnits = 5;
                 var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
                 for (var i = 0; i < independentStars.length; i++) {
                     var star = independentStars[i];
@@ -23272,15 +23268,15 @@ var Rance;
                         }
                     }
                     // TODO map gen | kinda weird
-                    var shipAmount = minShips;
-                    for (var j = minShips; j < distance; j++) {
-                        shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
-                        if (shipAmount >= maxShips) {
-                            shipAmount = maxShips;
+                    var unitsToAddCount = minUnits;
+                    for (var j = minUnits; j < distance; j++) {
+                        unitsToAddCount += (1 - variance + Math.random() * distance * variance) * intensity;
+                        if (unitsToAddCount >= maxUnits) {
+                            unitsToAddCount = maxUnits;
                             break;
                         }
                     }
-                    var elitesAmount = Math.floor(shipAmount / 2);
+                    var elitesAmount = Math.floor(unitsToAddCount / 2);
                     var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
                     var units = [];
                     if (star === commanderStar) {
@@ -23289,7 +23285,7 @@ var Rance;
                         commander.name = "Pirate commander";
                         units.push(commander);
                     }
-                    for (var j = 0; j < shipAmount; j++) {
+                    for (var j = 0; j < unitsToAddCount; j++) {
                         var isElite = j < elitesAmount;
                         var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
                         var unitStatsModifier = (isElite ? 1.2 : 1);
@@ -23774,7 +23770,7 @@ var Rance;
                     Rance.MapGenCore.partiallyCutLinks(stars, 4, 2);
                     // make sectors
                     var sectorsById = Rance.MapGenCore.makeSectors(stars, 3, 3);
-                    // set resources && local ships
+                    // set resources && local units
                     var allSectors = [];
                     for (var sectorId in sectorsById) {
                         allSectors.push(sectorsById[sectorId]);
@@ -23783,13 +23779,13 @@ var Rance;
                         sector.addResource(resource);
                     };
                     Rance.MapGenCore.distributeDistributablesPerSector(allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
-                    var localShipPlacerFN = function (sector, shipFamily) {
+                    var localUnitPlacerFN = function (sector, unitFamily) {
                         for (var i = 0; i < sector.stars.length; i++) {
                             var star = sector.stars[i];
-                            star.buildableUnitTypes = star.buildableUnitTypes.concat(shipFamily.associatedTemplates);
+                            star.buildableUnitTypes = star.buildableUnitTypes.concat(unitFamily.associatedTemplates);
                         }
                     };
-                    Rance.MapGenCore.distributeDistributablesPerSector(allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localShipPlacerFN);
+                    Rance.MapGenCore.distributeDistributablesPerSector(allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localUnitPlacerFN);
                     // set players
                     var startRegions = (function setStartingRegions() {
                         var armCount = options.basicOptions["arms"];
@@ -26184,13 +26180,13 @@ var Rance;
                     var min;
                     var ideal;
                     var star = objective.target;
-                    var hostileShips = mapEvaluator.getHostileUnitsAtStar(star).all;
-                    if (hostileShips.length <= 1) {
-                        min = hostileShips.length + 1;
-                        ideal = hostileShips.length + 1;
+                    var hostileUnits = mapEvaluator.getHostileUnitsAtStar(star).all;
+                    if (hostileUnits.length <= 1) {
+                        min = hostileUnits.length + 1;
+                        ideal = hostileUnits.length + 1;
                     }
                     else {
-                        min = Math.min(hostileShips.length + 2, 6);
+                        min = Math.min(hostileUnits.length + 2, 6);
                         ideal = 6;
                     }
                     return ({

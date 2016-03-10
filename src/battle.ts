@@ -1,4 +1,4 @@
-/// <reference path="battledata.ts"/>
+/// <reference path="ibattledata.d.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="eventmanager.ts"/>
 
