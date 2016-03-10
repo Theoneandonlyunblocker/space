@@ -240,7 +240,8 @@ module Rance
           content: UIComponents.NotificationFilterButton(
           {
             filter: this.props.log.notificationFilter,
-            text: "Message settings"
+            text: "Message settings",
+            highlightedOptionKey: null
           })
         });
 

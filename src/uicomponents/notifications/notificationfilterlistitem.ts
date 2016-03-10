@@ -10,7 +10,8 @@ module Rance
         displayName: React.PropTypes.string.isRequired,
         filterState: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
         key: React.PropTypes.string.isRequired,
-        filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
+        filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
+        isHighlighted: React.PropTypes.bool.isRequired
       },
 
       getInitialState: function()
@@ -67,7 +68,7 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "notification-filter-list-item"
+            className: "notification-filter-list-item" + (this.props.isHighlighted ? " highlighted" : "")
           },
             React.DOM.label(
             {

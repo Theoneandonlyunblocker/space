@@ -23,7 +23,6 @@ ul, ol
 @bg-color: darken(#101C1B, 2%);
 @bg-color2: darken(#0F283D, 2%);
 @bg-color3: mix(@bg-color, @bg-color2);
-@highlight-bg-color: lighten(saturate(@bg-color, 20%), 10%);
 @ui-border-color1: #C4E5FB;
 @ui-border-color2: #77ABCE;
 @text-color: #EEEEEC;
@@ -2720,7 +2719,6 @@ ul, ol
   display: flex;
   flex: 0 0 auto;
   flex-flow: row;
-  width: 350px;
 }
 .notification-filter-list-body
 {
@@ -2733,7 +2731,16 @@ ul, ol
 {
   display: flex;
   flex-flow: row;
-  width: 350px;
+
+  &.highlighted
+  {
+    color: white;
+
+    background: linear-gradient(to bottom,
+      @bg-color 0%,
+      @bg-color2 80%
+    );
+  }
 }
 .notification-filter-list-item-label
 {

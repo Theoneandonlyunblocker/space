@@ -14357,7 +14357,8 @@ var Rance;
                 displayName: React.PropTypes.string.isRequired,
                 filterState: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
                 key: React.PropTypes.string.isRequired,
-                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
+                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
+                isHighlighted: React.PropTypes.bool.isRequired
             },
             getInitialState: function () {
                 return ({
@@ -14397,7 +14398,7 @@ var Rance;
                     }));
                 }
                 return (React.DOM.div({
-                    className: "notification-filter-list-item"
+                    className: "notification-filter-list-item" + (this.props.isHighlighted ? " highlighted" : "")
                 }, React.DOM.label({
                     className: "notification-filter-list-item-label",
                     htmlFor: this.props.key
@@ -14417,7 +14418,8 @@ var Rance;
         UIComponents.NotificationFilterList = React.createClass({
             displayName: "NotificationFilterList",
             propTypes: {
-                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
+                filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
+                highlightedOptionKey: React.PropTypes.string
             },
             handleResetCategory: function (category) {
                 var filter = this.props.filter;
@@ -14425,6 +14427,9 @@ var Rance;
                 filter.save();
                 this.forceUpdate();
                 Rance.eventManager.dispatchEvent("updateNotificationLog");
+            },
+            componentDidMount: function () {
+                // TODO ui | scroll to highlighted
             },
             render: function () {
                 var filter = this.props.filter;
@@ -14435,13 +14440,16 @@ var Rance;
                     var filterElementsForCategory = [];
                     for (var i = 0; i < filtersForCategory.length; i++) {
                         var notificationTemplate = filtersForCategory[i].notificationTemplate;
+                        var isHighlighted = Boolean(this.props.highlightedOptionKey &&
+                            this.props.highlightedOptionKey === notificationTemplate.key);
                         filterElementsForCategory.push({
                             key: notificationTemplate.key,
                             content: UIComponents.NotificationFilterListItem({
                                 displayName: notificationTemplate.displayName,
                                 filter: filter,
                                 filterState: filtersForCategory[i].filterState,
-                                key: notificationTemplate.key
+                                key: notificationTemplate.key,
+                                isHighlighted: isHighlighted
                             })
                         });
                     }
@@ -14477,7 +14485,8 @@ var Rance;
             displayName: "NotificationFilterButton",
             propTypes: {
                 filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
-                text: React.PropTypes.string.isRequired
+                text: React.PropTypes.string.isRequired,
+                highlightedOptionKey: React.PropTypes.string
             },
             getInitialState: function () {
                 return ({
@@ -14490,7 +14499,8 @@ var Rance;
                     contentProps: {
                         contentConstructor: UIComponents.NotificationFilterList,
                         contentProps: {
-                            filter: this.props.filter
+                            filter: this.props.filter,
+                            highlightedOptionKey: this.props.highlightedOptionKey
                         },
                         handleClose: this.closePopup
                     },
@@ -14794,7 +14804,8 @@ var Rance;
                     key: "notificationLogFilter",
                     content: UIComponents.NotificationFilterButton({
                         filter: this.props.log.notificationFilter,
-                        text: "Message settings"
+                        text: "Message settings",
+                        highlightedOptionKey: null
                     })
                 });
                 uiOptions.push({
@@ -18296,7 +18307,8 @@ var Rance;
                             UIComponents.NotificationFilterButton({
                                 key: "notificationFilter",
                                 filter: log.notificationFilter,
-                                text: "Filter"
+                                text: "Filter",
+                                highlightedOptionKey: notification.template.key
                             })
                         ]
                     },

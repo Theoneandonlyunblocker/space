@@ -11,7 +11,8 @@ module Rance
       propTypes:
       {
         filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
-        text: React.PropTypes.string.isRequired
+        text: React.PropTypes.string.isRequired,
+        highlightedOptionKey: React.PropTypes.string
       },
 
       getInitialState: function()
@@ -32,7 +33,8 @@ module Rance
             contentConstructor: UIComponents.NotificationFilterList,
             contentProps:
             {
-              filter: this.props.filter
+              filter: this.props.filter,
+              highlightedOptionKey: this.props.highlightedOptionKey
             },
             handleClose: this.closePopup
           },

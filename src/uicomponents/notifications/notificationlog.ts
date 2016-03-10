@@ -98,7 +98,8 @@ module Rance
               {
                 key: "notificationFilter",
                 filter: log.notificationFilter,
-                text: "Filter"
+                text: "Filter",
+                highlightedOptionKey: notification.template.key
               })
             ]
           },

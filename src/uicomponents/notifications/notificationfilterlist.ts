@@ -10,7 +10,8 @@ module Rance
       displayName: "NotificationFilterList",
       propTypes:
       {
-        filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired
+        filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
+        highlightedOptionKey: React.PropTypes.string
       },
       handleResetCategory: function(category: string)
       {
@@ -19,6 +20,10 @@ module Rance
         filter.save();
         this.forceUpdate();
         eventManager.dispatchEvent("updateNotificationLog");
+      },
+      componentDidMount: function()
+      {
+        // TODO ui | scroll to highlighted
       },
       render: function()
       {
@@ -34,6 +39,9 @@ module Rance
           for (var i = 0; i < filtersForCategory.length; i++)
           {
             var notificationTemplate = filtersForCategory[i].notificationTemplate
+            var isHighlighted = Boolean(this.props.highlightedOptionKey &&
+              this.props.highlightedOptionKey === notificationTemplate.key);
+
             filterElementsForCategory.push(
             {
               key: notificationTemplate.key,
@@ -42,7 +50,8 @@ module Rance
                 displayName: notificationTemplate.displayName,
                 filter: filter,
                 filterState: filtersForCategory[i].filterState,
-                key: notificationTemplate.key
+                key: notificationTemplate.key,
+                isHighlighted: isHighlighted
               })
             });
           }

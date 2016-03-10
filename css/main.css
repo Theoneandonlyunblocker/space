@@ -2075,7 +2075,6 @@ ol {
   display: flex;
   flex: 0 0 auto;
   flex-flow: row;
-  width: 350px;
 }
 .notification-filter-list-body {
   display: flex;
@@ -2086,7 +2085,10 @@ ol {
 .notification-filter-list-item {
   display: flex;
   flex-flow: row;
-  width: 350px;
+}
+.notification-filter-list-item.highlighted {
+  color: white;
+  background: linear-gradient(to bottom, #0c1615 0%, #0d2335 80%);
 }
 .notification-filter-list-item-label {
   flex: 1 0 140px;
