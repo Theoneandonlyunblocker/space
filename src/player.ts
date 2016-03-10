@@ -10,6 +10,7 @@
 /// <reference path="diplomacystatus.ts" />
 /// <reference path="manufactory.ts" />
 /// <reference path="playertechnology.ts" />
+/// <reference path="ifleetattacktarget.d.ts" />
 
 /// <reference path="mapai/aicontroller.ts"/>
 
@@ -638,7 +639,7 @@ module Rance
 
       return star.getNearestStarForQualifier(isOwnedByThisFN);
     }
-    attackTarget(location: Star, target: any, battleFinishCallback?: any)
+    attackTarget(location: Star, target: IFleetAttackTarget, battleFinishCallback?: () => void)
     {
       var battleData: IBattleData =
       {
@@ -652,7 +653,7 @@ module Rance
         defender:
         {
           player: target.enemy,
-          ships: target.ships
+          ships: target.units
         }
       }
 
@@ -805,7 +806,7 @@ module Rance
     }
     serialize()
     {
-      var data: any = {};
+      var data: any = {}; // TODO serialization type
 
       data.id = this.id;
       data.name = this.name;

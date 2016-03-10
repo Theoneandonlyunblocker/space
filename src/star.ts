@@ -6,6 +6,7 @@
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
 /// <reference path="manufactory.ts" />
+/// <reference path="ifleetattacktarget.d.ts" />
 
 module Rance
 {
@@ -478,13 +479,7 @@ module Rance
 
       var diplomacyStatus = player.diplomacyStatus;
 
-      var targets:
-      {
-        type: string;
-        enemy: Player;
-        building: Building;
-        ships: Unit[]
-      }[] = [];
+      var targets: IFleetAttackTarget[] = [];
 
       if (buildingTarget &&
         (

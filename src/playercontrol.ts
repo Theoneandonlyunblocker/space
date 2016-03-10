@@ -3,6 +3,7 @@
 /// <reference path="fleet.ts"/>
 /// <reference path="star.ts"/>
 /// <reference path="battledata.ts"/>
+/// <reference path="ifleetattacktarget.d.ts" />
 
 module Rance
 {
@@ -18,7 +19,7 @@ module Rance
       [fleetId: number]: boolean;
     } = {};
 
-    currentAttackTargets: any[];
+    currentAttackTargets: IFleetAttackTarget[];
 
     selectedStar: Star;
 
@@ -33,7 +34,7 @@ module Rance
       this.player = player;
       this.addEventListeners();
     }
-    destroy()
+    destroy(): void
     {
       this.removeEventListeners();
       
@@ -43,24 +44,24 @@ module Rance
       this.currentAttackTargets = null;
       this.selectedStar = null;
     }
-    removeEventListener(name: string)
+    removeEventListener(name: string): void
     {
       eventManager.removeEventListener(name, this.listeners[name]);
     }
-    removeEventListeners()
+    removeEventListeners(): void
     {
       for (var name in this.listeners)
       {
         this.removeEventListener(name);
       }
     }
-    addEventListener(name: string, handler: Function)
+    addEventListener(name: string, handler: Function): void
     {
       this.listeners[name] = handler;
 
       eventManager.addEventListener(name, handler);
     }
-    addEventListeners()
+    addEventListeners(): void
     {
       var self = this;
 
@@ -110,12 +111,12 @@ module Rance
           self.player.getFleetsWithPositions.bind(self.player);
       });
 
-      this.addEventListener("attackTarget", function(target: any)
+      this.addEventListener("attackTarget", function(target: IFleetAttackTarget)
       {
         self.attackTarget(target);
       });
     }
-    preventGhost(delay: number)
+    preventGhost(delay: number): void
     {
       this.preventingGhost = true;
       var self = this;
@@ -125,13 +126,13 @@ module Rance
         window.clearTimeout(timeout);
       }, delay);
     }
-    clearSelection()
+    clearSelection(): void
     {
       this.selectedFleets = [];
       this.inspectedFleets = [];
       this.selectedStar = null;
     }
-    updateSelection(endReorganizingFleets: boolean = true)
+    updateSelection(endReorganizingFleets: boolean = true): void
     {
       if (endReorganizingFleets) this.endReorganizingFleets();
       this.currentAttackTargets = this.getCurrentAttackTargets();
@@ -140,7 +141,7 @@ module Rance
       eventManager.dispatchEvent("clearPossibleActions", null);
     }
 
-    areAllFleetsInSameLocation()
+    areAllFleetsInSameLocation(): boolean
     {
       if (this.selectedFleets.length <= 0) return false;
       
@@ -154,7 +155,7 @@ module Rance
 
       return true;
     }
-    selectFleets(fleets: Fleet[])
+    selectFleets(fleets: Fleet[]): void
     {
       if (fleets.length < 1)
       {
@@ -189,7 +190,7 @@ module Rance
       this.updateSelection();
       this.preventGhost(15);
     }
-    selectPlayerFleets(fleets: Fleet[])
+    selectPlayerFleets(fleets: Fleet[]): void
     {
       this.clearSelection();
 
@@ -207,11 +208,11 @@ module Rance
 
       this.selectedFleets = fleets;
     }
-    selectOtherFleets(fleets: Fleet[])
+    selectOtherFleets(fleets: Fleet[]): void
     {
       this.inspectedFleets = fleets;
     }
-    deselectFleet(fleet: Fleet)
+    deselectFleet(fleet: Fleet): void
     {
       var fleetsContainer = this.selectedFleets.length > 0 ? this.selectedFleets : this.inspectedFleets;
       var fleetIndex = fleetsContainer.indexOf(fleet);
@@ -227,7 +228,7 @@ module Rance
 
       this.updateSelection();
     }
-    getMasterFleetForMerge(fleets: Fleet[])
+    getMasterFleetForMerge(fleets: Fleet[]): Fleet
     {
       return fleets[0];
     }
@@ -247,7 +248,7 @@ module Rance
 
       return [master];
     }
-    mergeFleets()
+    mergeFleets(): void
     {
       var allFleets = this.selectedFleets;
       var normalFleets: Fleet[] = [];
@@ -270,7 +271,7 @@ module Rance
         this.mergeFleetsOfSameType(normalFleets).concat(this.mergeFleetsOfSameType(stealthyFleets));
       this.updateSelection();
     }
-    selectStar(star: Star)
+    selectStar(star: Star): void
     {
       if (this.preventingGhost || this.selectedStar === star) return;
       this.clearSelection();
@@ -279,14 +280,14 @@ module Rance
 
       this.updateSelection();
     }
-    moveFleets(star: Star)
+    moveFleets(star: Star): void
     {
       for (var i = 0; i < this.selectedFleets.length; i++)
       {
         this.selectedFleets[i].pathFind(star);
       }
     }
-    splitFleet(fleet: Fleet)
+    splitFleet(fleet: Fleet): void
     {
       if (fleet.units.length <= 0) return;
       this.endReorganizingFleets();
@@ -297,7 +298,7 @@ module Rance
 
       this.updateSelection(false);
     }
-    startReorganizingFleets(fleets: Fleet[])
+    startReorganizingFleets(fleets: Fleet[]): void
     {
       if (
         fleets.length !== 2 ||
@@ -313,7 +314,7 @@ module Rance
 
       this.updateSelection(false);
     }
-    endReorganizingFleets()
+    endReorganizingFleets(): void
     {
       for (var i = 0; i < this.currentlyReorganizing.length; i++)
       {
@@ -330,7 +331,7 @@ module Rance
       }
       this.currentlyReorganizing = [];
     }
-    getCurrentAttackTargets()
+    getCurrentAttackTargets(): IFleetAttackTarget[]
     {
       if (this.selectedFleets.length < 1) return [];
       if (!this.areAllFleetsInSameLocation()) return [];
@@ -341,9 +342,12 @@ module Rance
       return possibleTargets;
     }
 
-    attackTarget(target: any)
+    attackTarget(target: IFleetAttackTarget): void
     {
-      if (this.currentAttackTargets.indexOf(target) < 0) return false;
+      if (this.currentAttackTargets.indexOf(target) < 0)
+      {
+        throw new Error("Invalid attack target")
+      }
 
       var currentLocation = this.selectedFleets[0].location;
 

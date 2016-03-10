@@ -895,6 +895,7 @@ var Rance;
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
 /// <reference path="manufactory.ts" />
+/// <reference path="ifleetattacktarget.d.ts" />
 var Rance;
 (function (Rance) {
     var Star = (function () {
@@ -1151,33 +1152,33 @@ var Rance;
                 this.removeFleet(fleets[i]);
             }
         };
-        Star.prototype.getAllShipsOfPlayer = function (player) {
-            var allShips = [];
+        Star.prototype.getAllUnitsOfPlayer = function (player) {
+            var allUnits = [];
             var fleets = this.fleets[player.id];
             if (!fleets)
                 return [];
             for (var i = 0; i < fleets.length; i++) {
-                allShips = allShips.concat(fleets[i].units);
+                allUnits = allUnits.concat(fleets[i].units);
             }
-            return allShips;
+            return allUnits;
         };
-        Star.prototype.getAllShips = function () {
-            var allShips = [];
+        Star.prototype.getAllUnits = function () {
+            var allUnits = [];
             for (var playerId in this.fleets) {
                 var fleets = this.fleets[playerId];
-                allShips = allShips.concat(this.getAllShipsOfPlayer(fleets[0].player));
+                allUnits = allUnits.concat(this.getAllUnitsOfPlayer(fleets[0].player));
             }
-            return allShips;
+            return allUnits;
         };
-        Star.prototype.getIndependentShips = function () {
-            var ships = [];
+        Star.prototype.getIndependentUnits = function () {
+            var units = [];
             for (var playerId in this.fleets) {
                 var player = this.fleets[playerId][0].player;
                 if (player.isIndependent) {
-                    ships = ships.concat(this.getAllShipsOfPlayer(player));
+                    units = units.concat(this.getAllUnitsOfPlayer(player));
                 }
             }
-            return ships;
+            return units;
         };
         Star.prototype.getTargetsForPlayer = function (player) {
             var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
@@ -1192,7 +1193,7 @@ var Rance;
                     type: "building",
                     enemy: buildingTarget.controller,
                     building: buildingTarget,
-                    ships: this.getAllShipsOfPlayer(buildingTarget.controller)
+                    units: this.getAllUnitsOfPlayer(buildingTarget.controller)
                 });
             }
             for (var i = 0; i < fleetOwners.length; i++) {
@@ -1201,7 +1202,7 @@ var Rance;
                         type: "fleet",
                         enemy: fleetOwners[i],
                         building: null,
-                        ships: this.getAllShipsOfPlayer(fleetOwners[i])
+                        units: this.getAllUnitsOfPlayer(fleetOwners[i])
                     });
                 }
             }
@@ -3093,14 +3094,14 @@ var Rance;
         }
         BattlePrep.prototype.resetBattleStats = function () {
             var star = this.battleData.location;
-            var allUnits = star.getAllShipsOfPlayer(this.attacker).concat(star.getAllShipsOfPlayer(this.defender));
+            var allUnits = star.getAllUnitsOfPlayer(this.attacker).concat(star.getAllUnitsOfPlayer(this.defender));
             for (var i = 0; i < allUnits.length; i++) {
                 allUnits[i].resetBattleStats();
             }
         };
         BattlePrep.prototype.triggerPassiveSkills = function () {
             var star = this.battleData.location;
-            var allUnits = star.getAllShipsOfPlayer(this.attacker).concat(star.getAllShipsOfPlayer(this.defender));
+            var allUnits = star.getAllUnitsOfPlayer(this.attacker).concat(star.getAllUnitsOfPlayer(this.defender));
             for (var i = 0; i < allUnits.length; i++) {
                 var unit = allUnits[i];
                 var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
@@ -4998,7 +4999,7 @@ var Rance;
                 var shipsByEnemy = {};
                 var allShips = [];
                 for (var i = 0; i < hostilePlayers.length; i++) {
-                    shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
+                    shipsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
                     allShips = allShips.concat(shipsByEnemy[hostilePlayers[i].id]);
                 }
                 return ({
@@ -5019,7 +5020,7 @@ var Rance;
                 return strengthByEnemy;
             };
             MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
-                var units = star.getIndependentShips();
+                var units = star.getIndependentUnits();
                 var total = 0;
                 for (var i = 0; i < units.length; i++) {
                     total += units[i].getStrengthEvaluation();
@@ -6225,6 +6226,7 @@ var Rance;
 /// <reference path="diplomacystatus.ts" />
 /// <reference path="manufactory.ts" />
 /// <reference path="playertechnology.ts" />
+/// <reference path="ifleetattacktarget.d.ts" />
 /// <reference path="mapai/aicontroller.ts"/>
 var Rance;
 (function (Rance) {
@@ -6433,7 +6435,7 @@ var Rance;
                 this.meetPlayersInStarByVisibility(star, "detected");
             }
             // identify ships
-            var unitsToIdentify = star.getAllShips();
+            var unitsToIdentify = star.getAllUnits();
             for (var i = 0; i < unitsToIdentify.length; i++) {
                 this.identifyUnit(unitsToIdentify[i]);
             }
@@ -6655,11 +6657,11 @@ var Rance;
                 building: target.building,
                 attacker: {
                     player: this,
-                    ships: location.getAllShipsOfPlayer(this)
+                    ships: location.getAllUnitsOfPlayer(this)
                 },
                 defender: {
                     player: target.enemy,
-                    ships: target.ships
+                    ships: target.units
                 }
             };
             var battlePrep = new Rance.BattlePrep(battleData);
@@ -6769,7 +6771,7 @@ var Rance;
             return totalCapacity;
         };
         Player.prototype.serialize = function () {
-            var data = {};
+            var data = {}; // TODO serialization type
             data.id = this.id;
             data.name = this.name;
             data.color = this.color;
@@ -20513,6 +20515,7 @@ var Rance;
 /// <reference path="fleet.ts"/>
 /// <reference path="star.ts"/>
 /// <reference path="battledata.ts"/>
+/// <reference path="ifleetattacktarget.d.ts" />
 var Rance;
 (function (Rance) {
     var PlayerControl = (function () {
@@ -20752,8 +20755,9 @@ var Rance;
             return possibleTargets;
         };
         PlayerControl.prototype.attackTarget = function (target) {
-            if (this.currentAttackTargets.indexOf(target) < 0)
-                return false;
+            if (this.currentAttackTargets.indexOf(target) < 0) {
+                throw new Error("Invalid attack target");
+            }
             var currentLocation = this.selectedFleets[0].location;
             this.player.attackTarget(currentLocation, target);
         };
@@ -24945,7 +24949,7 @@ var Rance;
                         atTurnStart: [
                             function (user) {
                                 var star = user.fleet.location;
-                                var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
+                                var allFriendlyUnits = star.getAllUnitsOfPlayer(user.fleet.player);
                                 for (var i = 0; i < allFriendlyUnits.length; i++) {
                                     allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth);
                                 }
@@ -26364,7 +26368,7 @@ var Rance;
                     creatorFunction: function (grandStrategyAI, mapEvaluator, objectivesAI) {
                         var basePriority = grandStrategyAI.desireForExpansion;
                         var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function (star) {
-                            return star.getIndependentShips().length > 0 && !star.getSecondaryController();
+                            return star.getIndependentUnits().length > 0 && !star.getSecondaryController();
                         });
                         var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
                         var scores = mapEvaluator.scoreIndependentTargets(evaluations);

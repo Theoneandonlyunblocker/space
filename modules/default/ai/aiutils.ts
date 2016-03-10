@@ -50,7 +50,7 @@ module Rance
           return target.building && target.enemy === target.building.controller;
         }
         export function musterAndAttackRoutine(targetFilter: (target: any) => boolean,
-          front: MapAI.Front, afterMoveCallback: Function)
+          front: MapAI.Front, afterMoveCallback: () => void)
         {
           var shouldMoveToTarget: boolean;
 

@@ -2,6 +2,7 @@
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../templateinterfaces/idistributable.d.ts" />
 /// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
+/// <reference path="../ifleetattacktarget.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
@@ -322,15 +323,10 @@ declare module Rance {
         addFleets(fleets: Fleet[]): void;
         removeFleet(fleet: Fleet): boolean;
         removeFleets(fleets: Fleet[]): void;
-        getAllShipsOfPlayer(player: Player): Unit[];
-        getAllShips(): Unit[];
-        getIndependentShips(): Unit[];
-        getTargetsForPlayer(player: Player): {
-            type: string;
-            enemy: Player;
-            building: Building;
-            ships: Unit[];
-        }[];
+        getAllUnitsOfPlayer(player: Player): Unit[];
+        getAllUnits(): Unit[];
+        getIndependentUnits(): Unit[];
+        getTargetsForPlayer(player: Player): IFleetAttackTarget[];
         getFirstEnemyDefenceBuilding(player: Player): Building;
         getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[];
         setPosition(x: number, y: number): void;
@@ -1438,7 +1434,7 @@ declare module Rance {
         addItem(item: Item): void;
         removeItem(item: Item): void;
         getNearestOwnedStarTo(star: Star): Star;
-        attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
+        attackTarget(location: Star, target: IFleetAttackTarget, battleFinishCallback?: () => void): void;
         getResearchSpeed(): number;
         getAllManufactories(): Manufactory[];
         meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[]): boolean;
@@ -2668,7 +2664,7 @@ declare module Rance {
         lastSelectedFleetsIds: {
             [fleetId: number]: boolean;
         };
-        currentAttackTargets: any[];
+        currentAttackTargets: IFleetAttackTarget[];
         selectedStar: Star;
         preventingGhost: boolean;
         listeners: {
@@ -2696,13 +2692,8 @@ declare module Rance {
         splitFleet(fleet: Fleet): void;
         startReorganizingFleets(fleets: Fleet[]): void;
         endReorganizingFleets(): void;
-        getCurrentAttackTargets(): {
-            type: string;
-            enemy: Player;
-            building: Building;
-            ships: Unit[];
-        }[];
-        attackTarget(target: any): boolean;
+        getCurrentAttackTargets(): IFleetAttackTarget[];
+        attackTarget(target: IFleetAttackTarget): void;
     }
 }
 declare var tempCameraId: number;
@@ -3599,7 +3590,7 @@ declare module Rance {
                 function moveToRoutine(front: MapAI.Front, afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star): void;
                 function independentTargetFilter(target: any): any;
                 function buildingControllerFilter(target: any): boolean;
-                function musterAndAttackRoutine(targetFilter: (target: any) => boolean, front: MapAI.Front, afterMoveCallback: Function): void;
+                function musterAndAttackRoutine(targetFilter: (target: any) => boolean, front: MapAI.Front, afterMoveCallback: () => void): void;
                 function defaultUnitDesireFN(front: MapAI.Front): number;
                 function defaultUnitFitFN(unit: Unit, front: MapAI.Front, lowHealthThreshhold?: number, healthAdjust?: number, distanceAdjust?: number): number;
                 function scoutingUnitDesireFN(front: MapAI.Front): number;
