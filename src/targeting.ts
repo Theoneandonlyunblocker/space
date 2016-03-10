@@ -56,7 +56,7 @@ module Rance
   //**
   //XX
   //**
-  export var areaRow: BattleAreaFunction = function(units: Unit[][], target: number[])
+  export var areaColumnÄÄfixedÄÄ: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     var y = target[1];
     var targetLocations: number[][] = [];
@@ -73,7 +73,7 @@ module Rance
   //X*
   //X*
   //X*
-  export var areaColumn: BattleAreaFunction = function(units: Unit[][], target: number[])
+  export var areaRow: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     var x = target[0];
     var targetLocations: number[][] = [];
@@ -90,7 +90,7 @@ module Rance
   //X*
   //X*
   //X*
-  export var areaColumnNeighbors: BattleAreaFunction = function(units: Unit[][], target: number[])
+  export var areaRowNeighbors: BattleAreaFunction = function(units: Unit[][], target: number[])
   {
     var x = target[0];
     var y = target[1];

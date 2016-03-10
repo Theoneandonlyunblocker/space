@@ -35,7 +35,7 @@ module Rance
           {
             name: "closeAttack",
             targetFleets: TargetFleet.enemy,
-            battleAreaFunction: areaColumnNeighbors,
+            battleAreaFunction: areaRowNeighbors,
             targetRangeFunction: targetNextRow,
             effect: function(user: Unit, target: Unit, battle: Battle)
             {
@@ -52,7 +52,7 @@ module Rance
           {
             name: "wholeRowAttack",
             targetFleets: TargetFleet.either,
-            battleAreaFunction: areaRow,
+            battleAreaFunction: areaColumnÄÄfixedÄÄ,
             targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle)
             {

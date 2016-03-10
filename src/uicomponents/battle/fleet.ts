@@ -12,11 +12,11 @@ module Rance
       {
         var fleet = this.props.fleet;
 
-        var columns: ReactComponentPlaceHolder[] = [];
+        var fleetRows: ReactComponentPlaceHolder[] = [];
 
         for (var i = 0; i < fleet.length; i++)
         {
-          columns.push(UIComponents.FleetColumn(
+          fleetRows.push(UIComponents.FleetColumn(
           {
             key: i,
             column: fleet[i],
@@ -42,7 +42,7 @@ module Rance
 
         return(
           React.DOM.div({className: "battle-fleet"},
-            columns
+            fleetRows
           )
         );
       }

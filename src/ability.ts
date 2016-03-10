@@ -326,7 +326,7 @@ module Rance
       }
       else if (unit.battleStats.guardCoverage === GuardCoverage.row)
       {
-        // same column
+        // same row
         if (unit.battleStats.position[0] === target.battleStats.position[0])
         {
           return unit.battleStats.guardAmount > 0;

@@ -655,9 +655,9 @@ declare module Rance {
     }
     var areaSingle: BattleAreaFunction;
     var areaAll: BattleAreaFunction;
+    var areaColumnÄÄfixedÄÄ: BattleAreaFunction;
     var areaRow: BattleAreaFunction;
-    var areaColumn: BattleAreaFunction;
-    var areaColumnNeighbors: BattleAreaFunction;
+    var areaRowNeighbors: BattleAreaFunction;
     var areaNeighbors: BattleAreaFunction;
 }
 declare module Rance {

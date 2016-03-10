@@ -83,12 +83,12 @@ module Rance
       var formation: Unit[][] = [];
       for (var i = 0; i < app.moduleData.ruleSet.battle.rowsPerFormation; i++)
       {
-        var column: Unit[] = [];
+        var row: Unit[] = [];
         for (var j = 0; j < app.moduleData.ruleSet.battle.cellsPerRow; j++)
         {
-          column.push(null);
+          row.push(null);
         }
-        formation.push(column);
+        formation.push(row);
       }
 
       return formation;

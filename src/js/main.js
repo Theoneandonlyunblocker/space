@@ -1021,9 +1021,9 @@ var Rance;
             displayName: "Fleet",
             render: function () {
                 var fleet = this.props.fleet;
-                var columns = [];
+                var fleetRows = [];
                 for (var i = 0; i < fleet.length; i++) {
-                    columns.push(UIComponents.FleetColumn({
+                    fleetRows.push(UIComponents.FleetColumn({
                         key: i,
                         column: fleet[i],
                         columnPosInOwnFleet: i,
@@ -1043,7 +1043,7 @@ var Rance;
                         onDragEnd: this.props.onDragEnd
                     }));
                 }
-                return (React.DOM.div({ className: "battle-fleet" }, columns));
+                return (React.DOM.div({ className: "battle-fleet" }, fleetRows));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3523,17 +3523,17 @@ var Rance;
             function cloneUnits(units) {
                 var clones = [];
                 for (var i = 0; i < units.length; i++) {
-                    var column = [];
+                    var row = [];
                     for (var j = 0; j < units[i].length; j++) {
                         var unit = units[i][j];
                         if (!unit) {
-                            column.push(unit);
+                            row.push(unit);
                         }
                         else {
-                            column.push(unit.makeVirtualClone());
+                            row.push(unit.makeVirtualClone());
                         }
                     }
-                    clones.push(column);
+                    clones.push(row);
                 }
                 return clones;
             }
@@ -3617,7 +3617,7 @@ var Rance;
     //**
     //XX
     //**
-    Rance.areaRow = function (units, target) {
+    Rance.areaColumnÄÄfixedÄÄ = function (units, target) {
         var y = target[1];
         var targetLocations = [];
         for (var i = 0; i < units.length; i++) {
@@ -3629,7 +3629,7 @@ var Rance;
     //X*
     //X*
     //X*
-    Rance.areaColumn = function (units, target) {
+    Rance.areaRow = function (units, target) {
         var x = target[0];
         var targetLocations = [];
         for (var i = 0; i < units[x].length; i++) {
@@ -3641,7 +3641,7 @@ var Rance;
     //X*
     //X*
     //X*
-    Rance.areaColumnNeighbors = function (units, target) {
+    Rance.areaRowNeighbors = function (units, target) {
         var x = target[0];
         var y = target[1];
         var targetLocations = [];
@@ -3877,7 +3877,7 @@ var Rance;
                 return unit.battleStats.guardAmount > 0;
             }
             else if (unit.battleStats.guardCoverage === Rance.GuardCoverage.row) {
-                // same column
+                // same row
                 if (unit.battleStats.position[0] === target.battleStats.position[0]) {
                     return unit.battleStats.guardAmount > 0;
                 }
@@ -6076,11 +6076,11 @@ var Rance;
         BattlePrep.prototype.makeEmptyFormation = function () {
             var formation = [];
             for (var i = 0; i < app.moduleData.ruleSet.battle.rowsPerFormation; i++) {
-                var column = [];
+                var row = [];
                 for (var j = 0; j < app.moduleData.ruleSet.battle.cellsPerRow; j++) {
-                    column.push(null);
+                    row.push(null);
                 }
-                formation.push(column);
+                formation.push(row);
             }
             return formation;
         };
@@ -24006,7 +24006,7 @@ var Rance;
                     Effects.closeAttack = {
                         name: "closeAttack",
                         targetFleets: Rance.TargetFleet.enemy,
-                        battleAreaFunction: Rance.areaColumnNeighbors,
+                        battleAreaFunction: Rance.areaRowNeighbors,
                         targetRangeFunction: Rance.targetNextRow,
                         effect: function (user, target, battle) {
                             var baseDamage = 0.66;
@@ -24019,7 +24019,7 @@ var Rance;
                     Effects.wholeRowAttack = {
                         name: "wholeRowAttack",
                         targetFleets: Rance.TargetFleet.either,
-                        battleAreaFunction: Rance.areaRow,
+                        battleAreaFunction: Rance.areaColumnÄÄfixedÄÄ,
                         targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle) {
                             var baseDamage = 0.75;

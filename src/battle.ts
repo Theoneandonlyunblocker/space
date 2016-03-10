@@ -640,21 +640,21 @@ module Rance
         var clones: Unit[][] = [];
         for (var i = 0; i < units.length; i++)
         {
-          var column: Unit[] = [];
+          var row: Unit[] = [];
 
           for (var j = 0; j < units[i].length; j++)
           {
             var unit = units[i][j];
             if (!unit)
             {
-              column.push(unit);
+              row.push(unit);
             }
             else
             {
-              column.push(unit.makeVirtualClone());
+              row.push(unit.makeVirtualClone());
             }
           }
-          clones.push(column);
+          clones.push(row);
         }
 
         return clones;
