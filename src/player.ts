@@ -109,11 +109,15 @@ module Rance
     }
     die()
     {
-      console.log(this.name + " died");
       for (var i = 0; i < this.fleets.length; i++)
       {
         this.fleets[i].deleteFleet(false);
       }
+      eventManager.dispatchEvent("makePlayerDiedNotification",
+      {
+        deadPlayerName: this.name
+      });
+      console.log(this.name + " died");
     }
     initTechnologies(savedData?:
       {[key: string]: {totalResearch: number; priority: number; priorityIsLocked: boolean}})

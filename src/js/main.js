@@ -6330,10 +6330,13 @@ var Rance;
             }
         };
         Player.prototype.die = function () {
-            console.log(this.name + " died");
             for (var i = 0; i < this.fleets.length; i++) {
                 this.fleets[i].deleteFleet(false);
             }
+            Rance.eventManager.dispatchEvent("makePlayerDiedNotification", {
+                deadPlayerName: this.name
+            });
+            console.log(this.name + " died");
         };
         Player.prototype.initTechnologies = function (savedData) {
             this.playerTechnology = new Rance.PlayerTechnology(this.getResearchSpeed.bind(this), savedData);
@@ -26757,6 +26760,64 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var UIComponents;
+            (function (UIComponents) {
+                UIComponents.PlayerDiedNotification = React.createClass({
+                    displayName: "PlayerDiedNotification",
+                    render: function () {
+                        var notification = this.props.notification;
+                        return (React.DOM.div({
+                            className: "player-died-notification draggable-container"
+                        }, "Here lies " + notification.props.deadPlayerName + ".", React.DOM.br(null), React.DOM.br(null), "He never scored."));
+                    }
+                });
+            })(UIComponents = DefaultModule.UIComponents || (DefaultModule.UIComponents = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/inotificationtemplate.d.ts"/>
+/// <reference path="uicomponents/playerdiednotification.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Notifications;
+            (function (Notifications) {
+                Notifications.playerDiedNotification = {
+                    key: "playerDiedNotification",
+                    displayName: "Player died",
+                    category: "game",
+                    defaultFilterState: [Rance.NotificationFilterState.alwaysShow],
+                    iconSrc: "modules\/default\/img\/resources\/test1.png",
+                    eventListeners: ["makePlayerDiedNotification"],
+                    contentConstructor: DefaultModule.UIComponents.PlayerDiedNotification,
+                    messageConstructor: function (props) {
+                        var message = "Player " + props.deadPlayerName + " died";
+                        return message;
+                    },
+                    serializeProps: function (props) {
+                        return ({
+                            deadPlayerName: props.deadPlayerName
+                        });
+                    },
+                    deserializeProps: function (props, gameLoader) {
+                        return ({
+                            deadPlayerName: props.deadPlayerName
+                        });
+                    }
+                };
+            })(Notifications = DefaultModule.Notifications || (DefaultModule.Notifications = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../src/moduledata.ts" />
 /// <reference path="../../src/spritesheetcachingfunctions.ts" />
 /// <reference path="graphics/drawnebula.ts" />
@@ -26789,6 +26850,7 @@ var Rance;
 /// <reference path="ai/expandmanufactorycapacityobjective.ts" />
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />
+/// <reference path="notifications/playerdiednotification.ts" />
 /// <reference path="templates/cultures.ts" />
 var Rance;
 (function (Rance) {

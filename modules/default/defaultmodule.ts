@@ -37,6 +37,7 @@
 
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />
+/// <reference path="notifications/playerdiednotification.ts" />
 
 /// <reference path="templates/cultures.ts" />
 

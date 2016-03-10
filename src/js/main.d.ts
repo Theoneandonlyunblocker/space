@@ -3703,6 +3703,24 @@ declare module Rance {
 declare module Rance {
     module Modules {
         module DefaultModule {
+            module UIComponents {
+                var PlayerDiedNotification: React.Factory<{}>;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Notifications {
+                var playerDiedNotification: Rance.Templates.INotificationTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
             var moduleFile: IModuleFile;
         }
     }
