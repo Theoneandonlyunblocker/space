@@ -2291,12 +2291,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var ShipInfoName: React.Factory<{}>;
+        var FleetUnitInfoName: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ShipInfo: React.Factory<{}>;
+        var FleetUnitInfo: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -3761,7 +3761,7 @@ declare module Rance {
         deserializeIdentifiedUnits(player: Player, data: number[]): void;
         deserializeFlag(data: any): Flag;
         deserializeFleet(player: Player, data: any): Fleet;
-        deserializeShip(data: any): Unit;
+        deserializeUnit(data: any): Unit;
         deserializeItem(data: any, player: Player): void;
     }
 }

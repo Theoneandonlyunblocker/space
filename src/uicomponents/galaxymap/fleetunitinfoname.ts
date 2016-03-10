@@ -1,10 +1,18 @@
+/// <reference path="../../unit.ts" />
+
 module Rance
 {
   export module UIComponents
   {
-    export var ShipInfoName = React.createClass(
+    export var FleetUnitInfoName = React.createClass(
     {
-      displayName: "ShipInfoName",
+      displayName: "FleetUnitInfoName",
+
+      propTypes:
+      {
+        unit: React.PropTypes.instanceOf(Rance.Unit).isRequired,
+        isNotDetected: React.PropTypes.bool.isRequired
+      },
 
       getInitialState: function()
       {
@@ -24,7 +32,7 @@ module Rance
         return(
           React.DOM.input(
           {
-            className: "ship-info-name",
+            className: "fleet-unit-info-name",
             value: this.props.isNotDetected ? "Unidentified ship" : this.state.value,
             onChange: this.props.isNotDetected ? null :  this.onChange,
             readOnly: this.props.isNotDetected

@@ -1818,9 +1818,6 @@ ol {
   text-overflow: ellipsis;
   cursor: text;
 }
-.fleet-info-shipcount {
-  margin-right: 5px;
-}
 .fleet-info-strength {
   margin-right: 5px;
 }
@@ -1828,13 +1825,13 @@ ol {
   display: flex;
   flex-flow: column;
 }
-.fleet-contents .ship-info + .ship-info {
+.fleet-contents .fleet-unit-info + .fleet-unit-info {
   border-top: 0;
 }
-.fleet-contents-dummy-ship {
+.fleet-contents-dummy-unit {
   height: 36px;
 }
-.ship-info {
+.fleet-unit-info {
   display: inline-flex;
   flex-flow: row;
   flex-shrink: 0;
@@ -1842,30 +1839,30 @@ ol {
   border: 1px solid #666;
   color: #eeeeec;
 }
-.ship-info.draggable .ship-info-name {
+.fleet-unit-info.draggable .fleet-unit-info-name {
   cursor: move;
 }
-.ship-info.dragging {
+.fleet-unit-info.dragging {
   border-top: 1px solid #666 !important;
 }
-.ship-info .ship-info-name,
-.ship-info .unit-strength-amount {
+.fleet-unit-info .fleet-unit-info-name,
+.fleet-unit-info .unit-strength-amount {
   background-color: #0d2335;
 }
-.ship-info-name {
+.fleet-unit-info-name {
   border: 0;
   padding: 0;
   color: #eeeeec;
   width: 100%;
   text-overflow: ellipsis;
 }
-.ship-info-icon-container {
+.fleet-unit-info-icon-container {
   display: flex;
 }
-.ship-info-icon {
+.fleet-unit-info-icon {
   align-self: center;
 }
-.ship-info-info {
+.fleet-unit-info-info {
   flex: 1;
 }
 .fleet-reorganization {

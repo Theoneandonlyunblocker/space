@@ -1873,7 +1873,9 @@ var Rance;
             data.name = this.name;
             data.locationId = this.location.id;
             data.playerId = this.player.id;
-            data.ships = this.units.map(function (ship) { return ship.serialize(false); });
+            data.units = this.units.map(function (unit) {
+                return unit.serialize(false);
+            });
             return data;
         };
         return Fleet;
@@ -16345,12 +16347,17 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../unit.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ShipInfoName = React.createClass({
-            displayName: "ShipInfoName",
+        UIComponents.FleetUnitInfoName = React.createClass({
+            displayName: "FleetUnitInfoName",
+            propTypes: {
+                unit: React.PropTypes.instanceOf(Rance.Unit).isRequired,
+                isNotDetected: React.PropTypes.bool.isRequired
+            },
             getInitialState: function () {
                 return ({
                     value: this.props.unit.name
@@ -16363,7 +16370,7 @@ var Rance;
             },
             render: function () {
                 return (React.DOM.input({
-                    className: "ship-info-name",
+                    className: "fleet-unit-info-name",
                     value: this.props.isNotDetected ? "Unidentified ship" : this.state.value,
                     onChange: this.props.isNotDetected ? null : this.onChange,
                     readOnly: this.props.isNotDetected
@@ -16373,25 +16380,33 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unit/unitstrength.ts"/>
-/// <reference path="shipinfoname.ts"/>
+/// <reference path="fleetunitinfoname.ts"/>
+/// <reference path="../../unit.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ShipInfo = React.createClass({
-            displayName: "ShipInfo",
+        UIComponents.FleetUnitInfo = React.createClass({
+            displayName: "FleetUnitInfo",
             mixins: [UIComponents.Draggable],
+            propTypes: {
+                unit: React.PropTypes.instanceOf(Rance.Unit),
+                isIdentified: React.PropTypes.bool.isRequired,
+                isDraggable: React.PropTypes.bool.isRequired,
+                onDragStart: React.PropTypes.func,
+                onDragEnd: React.PropTypes.func
+            },
             onDragStart: function () {
-                this.props.onDragStart(this.props.ship);
+                this.props.onDragStart(this.props.unit);
             },
             onDragEnd: function (e) {
                 this.props.onDragEnd(e);
             },
             render: function () {
-                var ship = this.props.ship;
+                var unit = this.props.unit;
                 var isNotDetected = !this.props.isIdentified;
                 var divProps = {
-                    className: "ship-info"
+                    className: "fleet-unit-info"
                 };
                 if (this.props.isDraggable) {
                     divProps.className += " draggable";
@@ -16403,20 +16418,20 @@ var Rance;
                     }
                 }
                 return (React.DOM.div(divProps, React.DOM.div({
-                    className: "ship-info-icon-container"
+                    className: "fleet-unit-info-icon-container"
                 }, React.DOM.img({
-                    className: "ship-info-icon",
-                    src: isNotDetected ? "img\/icons\/unDetected.png" : ship.template.icon
+                    className: "fleet-unit-info-icon",
+                    src: isNotDetected ? "img\/icons\/unDetected.png" : unit.template.icon
                 })), React.DOM.div({
-                    className: "ship-info-info"
-                }, UIComponents.ShipInfoName({
-                    unit: ship,
+                    className: "fleet-unit-info-info"
+                }, UIComponents.FleetUnitInfoName({
+                    unit: unit,
                     isNotDetected: isNotDetected
                 }), React.DOM.div({
-                    className: "ship-info-type"
-                }, isNotDetected ? "???" : ship.template.displayName)), UIComponents.UnitStrength({
-                    maxHealth: ship.maxHealth,
-                    currentHealth: ship.currentHealth,
+                    className: "fleet-unit-info-type"
+                }, isNotDetected ? "???" : unit.template.displayName)), UIComponents.UnitStrength({
+                    maxHealth: unit.maxHealth,
+                    currentHealth: unit.currentHealth,
                     isSquadron: true,
                     isNotDetected: isNotDetected
                 })));
@@ -16424,7 +16439,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="shipinfo.ts"/>
+/// <reference path="fleetunitinfo.ts"/>
 /// <reference path="../../fleet.ts" />
 /// <reference path="../../player.ts" />
 var Rance;
@@ -16447,32 +16462,32 @@ var Rance;
                 this.props.onMouseUp(this.props.fleet);
             },
             render: function () {
-                var shipInfos = [];
+                var fleetUnitInfos = [];
                 var fleet = this.props.fleet;
-                var hasDraggableContent = (this.props.onDragStart ||
+                var hasDraggableContent = Boolean(this.props.onDragStart ||
                     this.props.onDragEnd);
                 for (var i = 0; i < fleet.units.length; i++) {
-                    var ship = fleet.units[i];
-                    shipInfos.push(UIComponents.ShipInfo({
-                        key: ship.id,
-                        ship: ship,
+                    var unit = fleet.units[i];
+                    fleetUnitInfos.push(UIComponents.FleetUnitInfo({
+                        key: unit.id,
+                        unit: unit,
                         isDraggable: hasDraggableContent,
                         onDragStart: this.props.onDragStart,
                         onDragMove: this.props.onDragMove,
                         onDragEnd: this.props.onDragEnd,
-                        isIdentified: this.props.player.unitIsIdentified(ship)
+                        isIdentified: this.props.player.unitIsIdentified(unit)
                     }));
                 }
                 if (hasDraggableContent) {
-                    shipInfos.push(React.DOM.div({
-                        className: "fleet-contents-dummy-ship",
+                    fleetUnitInfos.push(React.DOM.div({
+                        className: "fleet-contents-dummy-unit",
                         key: "dummy"
                     }));
                 }
                 return (React.DOM.div({
                     className: "fleet-contents",
                     onMouseUp: this.handleMouseUp
-                }, shipInfos));
+                }, fleetUnitInfos));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -27737,7 +27752,7 @@ var Rance;
             else {
                 player.makeRandomFlag();
             }
-            // fleets & ships
+            // fleets & units
             for (var i = 0; i < data.fleets.length; i++) {
                 var fleet = data.fleets[i];
                 player.addFleet(this.deserializeFleet(player, fleet));
@@ -27825,21 +27840,22 @@ var Rance;
             return flag;
         };
         GameLoader.prototype.deserializeFleet = function (player, data) {
-            var ships = [];
-            for (var i = 0; i < data.ships.length; i++) {
-                var ship = this.deserializeShip(data.ships[i]);
-                player.addUnit(ship);
-                ships.push(ship);
+            var units = [];
+            var toDeserialize = data.units || data.ships; // legacy alias 10.3.2016
+            for (var i = 0; i < toDeserialize.length; i++) {
+                var unit = this.deserializeUnit(toDeserialize[i]);
+                player.addUnit(unit);
+                units.push(unit);
             }
-            var fleet = new Rance.Fleet(player, ships, this.starsById[data.locationId], data.id, false);
+            var fleet = new Rance.Fleet(player, units, this.starsById[data.locationId], data.id, false);
             fleet.name = data.name;
             return fleet;
         };
-        GameLoader.prototype.deserializeShip = function (data) {
+        GameLoader.prototype.deserializeUnit = function (data) {
             var template = app.moduleData.Templates.Units[data.templateType];
-            var ship = new Rance.Unit(template, data.id, data);
-            this.unitsById[ship.id] = ship;
-            return ship;
+            var unit = new Rance.Unit(template, data.id, data);
+            this.unitsById[unit.id] = unit;
+            return unit;
         };
         GameLoader.prototype.deserializeItem = function (data, player) {
             var template = app.moduleData.Templates.Items[data.templateType];

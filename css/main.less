@@ -2433,11 +2433,6 @@ ul, ol
   cursor: text;
 }
 
-.fleet-info-shipcount
-{
-  margin-right: 5px;
-}
-
 .fleet-info-strength
 {
   margin-right: 5px;
@@ -2449,18 +2444,18 @@ ul, ol
   flex-flow: column;
 
   // + selector: b immediately following a
-  .ship-info + .ship-info
+  .fleet-unit-info + .fleet-unit-info
   {
     border-top: 0;
   }
 }
 
-.fleet-contents-dummy-ship
+.fleet-contents-dummy-unit
 {
   height: 36px;
 }
 
-.ship-info
+.fleet-unit-info
 {
   display: inline-flex;
   flex-flow: row;
@@ -2471,7 +2466,7 @@ ul, ol
 
   &.draggable
   {
-    .ship-info-name
+    .fleet-unit-info-name
     {
       cursor: move;
     }
@@ -2482,13 +2477,13 @@ ul, ol
     border-top: 1px solid #666 !important;
   }
 
-  .ship-info-name, .unit-strength-amount
+  .fleet-unit-info-name, .unit-strength-amount
   {
     background-color: @bg-color2;
   }
 }
 
-.ship-info-name
+.fleet-unit-info-name
 {
   border: 0;
   padding: 0;
@@ -2497,16 +2492,16 @@ ul, ol
   text-overflow: ellipsis;
 }
 
-.ship-info-icon-container
+.fleet-unit-info-icon-container
 {
   display: flex;
 }
-.ship-info-icon
+.fleet-unit-info-icon
 {
   align-self: center;
 }
 
-.ship-info-info
+.fleet-unit-info-info
 {
   flex: 1;
 }

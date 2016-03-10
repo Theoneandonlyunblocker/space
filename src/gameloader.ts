@@ -234,7 +234,7 @@ module Rance
         player.makeRandomFlag();
       }
 
-      // fleets & ships
+      // fleets & units
       for (var i = 0; i < data.fleets.length; i++)
       {
         var fleet = data.fleets[i];
@@ -361,28 +361,30 @@ module Rance
     }
     deserializeFleet(player: Player, data: any)
     {
-      var ships: Unit[] = [];
+      var units: Unit[] = [];
 
-      for (var i = 0; i < data.ships.length; i++)
+      var toDeserialize = data.units || data.ships; // legacy alias 10.3.2016
+
+      for (var i = 0; i < toDeserialize.length; i++)
       {
-        var ship = this.deserializeShip(data.ships[i]);
-        player.addUnit(ship);
-        ships.push(ship);
+        var unit = this.deserializeUnit(toDeserialize[i]);
+        player.addUnit(unit);
+        units.push(unit);
       }
 
-      var fleet = new Fleet(player, ships, this.starsById[data.locationId], data.id, false);
+      var fleet = new Fleet(player, units, this.starsById[data.locationId], data.id, false);
       fleet.name = data.name;
       return fleet;
     }
-    deserializeShip(data: any)
+    deserializeUnit(data: any)
     {
       var template = app.moduleData.Templates.Units[data.templateType];
 
-      var ship = new Unit(template, data.id, data);
+      var unit = new Unit(template, data.id, data);
 
-      this.unitsById[ship.id] = ship;
+      this.unitsById[unit.id] = unit;
 
-      return ship;
+      return unit;
     }
     deserializeItem(data: any, player: Player)
     {

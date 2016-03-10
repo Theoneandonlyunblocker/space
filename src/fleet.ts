@@ -340,7 +340,10 @@ module Rance
 
       data.locationId = this.location.id;
       data.playerId = this.player.id;
-      data.ships = this.units.map(function(ship){return ship.serialize(false)});
+      data.units = this.units.map(function(unit: Unit)
+      {
+        return unit.serialize(false);
+      });
 
       return data;
     }

@@ -1,18 +1,30 @@
 /// <reference path="../unit/unitstrength.ts"/>
-/// <reference path="shipinfoname.ts"/>
+/// <reference path="fleetunitinfoname.ts"/>
+
+/// <reference path="../../unit.ts" />
 
 module Rance
 {
   export module UIComponents
   {
-    export var ShipInfo = React.createClass(
+    export var FleetUnitInfo = React.createClass(
     {
-      displayName: "ShipInfo",
+      displayName: "FleetUnitInfo",
       mixins: [Draggable],
+
+      propTypes:
+      {
+        unit: React.PropTypes.instanceOf(Rance.Unit),
+        isIdentified: React.PropTypes.bool.isRequired,
+
+        isDraggable: React.PropTypes.bool.isRequired,
+        onDragStart: React.PropTypes.func,
+        onDragEnd: React.PropTypes.func
+      },
 
       onDragStart: function()
       {
-        this.props.onDragStart(this.props.ship);
+        this.props.onDragStart(this.props.unit);
       },
       onDragEnd: function(e: DragEvent)
       {
@@ -21,12 +33,12 @@ module Rance
 
       render: function()
       {
-        var ship = this.props.ship;
+        var unit: Unit = this.props.unit;
         var isNotDetected = !this.props.isIdentified;
 
         var divProps: any =
         {
-          className: "ship-info"
+          className: "fleet-unit-info"
         };
 
         if (this.props.isDraggable)
@@ -46,34 +58,34 @@ module Rance
           React.DOM.div(divProps,
             React.DOM.div(
             {
-              className: "ship-info-icon-container"
+              className: "fleet-unit-info-icon-container"
             },
               React.DOM.img(
               {
-                className: "ship-info-icon",
-                src: isNotDetected ? "img\/icons\/unDetected.png" : ship.template.icon
+                className: "fleet-unit-info-icon",
+                src: isNotDetected ? "img\/icons\/unDetected.png" : unit.template.icon
               })
             ),
             React.DOM.div(
             {
-              className: "ship-info-info"
+              className: "fleet-unit-info-info"
             },
-              UIComponents.ShipInfoName(
+              UIComponents.FleetUnitInfoName(
               {
-                unit: ship,
+                unit: unit,
                 isNotDetected: isNotDetected
               }),
               React.DOM.div(
               {
-                className: "ship-info-type"
+                className: "fleet-unit-info-type"
               },
-                isNotDetected ? "???" : ship.template.displayName
+                isNotDetected ? "???" : unit.template.displayName
               )
             ),
             UIComponents.UnitStrength(
             {
-              maxHealth: ship.maxHealth,
-              currentHealth: ship.currentHealth,
+              maxHealth: unit.maxHealth,
+              currentHealth: unit.currentHealth,
               isSquadron: true,
               isNotDetected: isNotDetected
             })
