@@ -72,7 +72,7 @@ module Rance
                   },
                   {
                     weight: 0.33,
-                    probabilityItems: [Abilities.guardColumn]
+                    probabilityItems: [Abilities.guardRow]
                   }
                 ]
               }
@@ -104,7 +104,7 @@ module Rance
             ],
             learnableAbilities:
             [
-              Abilities.guardColumn,
+              Abilities.guardRow,
               Abilities.closeAttack,
               [Abilities.debugAbility, Abilities.ranceAttack]
             ],
@@ -349,7 +349,7 @@ module Rance
                 probabilityItems:
                 [
                   Abilities.rangedAttack,
-                  Abilities.guardColumn,
+                  Abilities.guardRow,
                   Abilities.standBy
                 ]
               }

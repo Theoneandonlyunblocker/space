@@ -3320,7 +3320,7 @@ declare module Rance {
                     var closeAttack: Rance.Templates.IEffectTemplate;
                     var wholeRowAttack: Rance.Templates.IEffectTemplate;
                     var bombAttack: Rance.Templates.IEffectTemplate;
-                    var guardColumn: Rance.Templates.IEffectTemplate;
+                    var guardRow: Rance.Templates.IEffectTemplate;
                     var receiveCounterAttack: Rance.Templates.IEffectTemplate;
                     var increaseCaptureChance: Rance.Templates.IEffectTemplate;
                     var buffTest: Rance.Templates.IEffectTemplate;
@@ -3390,7 +3390,7 @@ declare module Rance {
                     var closeAttack: Rance.Templates.IAbilityTemplate;
                     var wholeRowAttack: Rance.Templates.IAbilityTemplate;
                     var bombAttack: Rance.Templates.IAbilityTemplate;
-                    var guardColumn: Rance.Templates.IAbilityTemplate;
+                    var guardRow: Rance.Templates.IAbilityTemplate;
                     var boardingHook: Rance.Templates.IAbilityTemplate;
                     var debugAbility: Rance.Templates.IAbilityTemplate;
                     var ranceAttack: Rance.Templates.IAbilityTemplate;

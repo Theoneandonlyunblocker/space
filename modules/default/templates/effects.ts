@@ -83,9 +83,9 @@ module Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var guardColumn: Rance.Templates.IEffectTemplate =
+          export var guardRow: Rance.Templates.IEffectTemplate =
           {
-            name: "guardColumn",
+            name: "guardRow",
             targetFleets: TargetFleet.either,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetSelf,

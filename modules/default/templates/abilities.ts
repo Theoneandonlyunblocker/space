@@ -86,16 +86,16 @@ module Rance
               sfx: BattleSFX.rocketAttack
             }
           }
-          export var guardColumn: Rance.Templates.IAbilityTemplate =
+          export var guardRow: Rance.Templates.IAbilityTemplate =
           {
-            type: "guardColumn",
-            displayName: "Guard Column",
+            type: "guardRow",
+            displayName: "Guard Row",
             description: "Protect allies in the same row and boost defence up to 2x",
             moveDelay: 100,
             actionsUse: 1,
             mainEffect:
             {
-              template: Effects.guardColumn,
+              template: Effects.guardRow,
               sfx: BattleSFX.guard,
               data:
               {

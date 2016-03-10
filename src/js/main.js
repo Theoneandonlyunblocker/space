@@ -24042,8 +24042,8 @@ var Rance;
                             target.receiveDamage(damage, damageType);
                         }
                     };
-                    Effects.guardColumn = {
-                        name: "guardColumn",
+                    Effects.guardRow = {
+                        name: "guardRow",
                         targetFleets: Rance.TargetFleet.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
@@ -24445,14 +24445,14 @@ var Rance;
                             sfx: Templates.BattleSFX.rocketAttack
                         }
                     };
-                    Abilities.guardColumn = {
-                        type: "guardColumn",
-                        displayName: "Guard Column",
+                    Abilities.guardRow = {
+                        type: "guardRow",
+                        displayName: "Guard Row",
                         description: "Protect allies in the same row and boost defence up to 2x",
                         moveDelay: 100,
                         actionsUse: 1,
                         mainEffect: {
-                            template: Templates.Effects.guardColumn,
+                            template: Templates.Effects.guardRow,
                             sfx: Templates.BattleSFX.guard,
                             data: {
                                 perInt: 20
@@ -24837,13 +24837,13 @@ var Rance;
                         isHidden: true,
                         atBattleStart: [
                             {
-                                template: Templates.Effects.guardColumn,
+                                template: Templates.Effects.guardRow,
                                 data: { perInt: 0, flat: 50 }
                             }
                         ],
                         inBattlePrep: [
                             function (user, battlePrep) {
-                                Templates.Effects.guardColumn.effect(user, user, null, { perInt: 0, flat: 50 });
+                                Templates.Effects.guardRow.effect(user, user, null, { perInt: 0, flat: 50 });
                             }
                         ]
                     };
@@ -25002,7 +25002,7 @@ var Rance;
                             speed: -1
                         },
                         slot: "low",
-                        ability: Templates.Abilities.guardColumn
+                        ability: Templates.Abilities.guardRow
                     };
                 })(Items = Templates.Items || (Templates.Items = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
@@ -25500,7 +25500,7 @@ var Rance;
                                     },
                                     {
                                         weight: 0.33,
-                                        probabilityItems: [Templates.Abilities.guardColumn]
+                                        probabilityItems: [Templates.Abilities.guardRow]
                                     }
                                 ]
                             }
@@ -25528,7 +25528,7 @@ var Rance;
                             Templates.Abilities.ranceAttack
                         ],
                         learnableAbilities: [
-                            Templates.Abilities.guardColumn,
+                            Templates.Abilities.guardRow,
                             Templates.Abilities.closeAttack,
                             [Templates.Abilities.debugAbility, Templates.Abilities.ranceAttack]
                         ],
@@ -25743,7 +25743,7 @@ var Rance;
                                 flatProbability: 1,
                                 probabilityItems: [
                                     Templates.Abilities.rangedAttack,
-                                    Templates.Abilities.guardColumn,
+                                    Templates.Abilities.guardRow,
                                     Templates.Abilities.standBy
                                 ]
                             }

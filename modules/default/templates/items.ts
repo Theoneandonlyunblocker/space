@@ -166,7 +166,7 @@ module Rance
             },
 
             slot: "low",
-            ability: Abilities.guardColumn
+            ability: Abilities.guardRow
           }
         }
       }

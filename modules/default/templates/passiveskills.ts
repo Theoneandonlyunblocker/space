@@ -98,7 +98,7 @@ module Rance
             atBattleStart:
             [
               {
-                template: Effects.guardColumn,
+                template: Effects.guardRow,
                 data: {perInt: 0, flat: 50}
               }
             ],
@@ -106,7 +106,7 @@ module Rance
             [
               function(user: Unit, battlePrep: BattlePrep)
               {
-                Effects.guardColumn.effect(user, user, null, {perInt: 0, flat: 50});
+                Effects.guardRow.effect(user, user, null, {perInt: 0, flat: 50});
               }
             ]
           }
