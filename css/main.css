@@ -2066,10 +2066,22 @@ ol {
 .notification-message {
   color: #eeeeec;
 }
+.notification-filter-list {
+  display: flex;
+  flex-flow: column;
+  overflow-y: hidden;
+}
 .notification-filter-list-header {
   display: flex;
+  flex: 0 0 auto;
   flex-flow: row;
   width: 350px;
+}
+.notification-filter-list-body {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  overflow-y: auto;
 }
 .notification-filter-list-item {
   display: flex;

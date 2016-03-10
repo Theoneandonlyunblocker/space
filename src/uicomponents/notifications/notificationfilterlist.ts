@@ -79,7 +79,12 @@ module Rance
                 "Never"
               )
             ),
-            filterGroupElements
+            React.DOM.div(
+            {
+              className: "notification-filter-list-body"
+            },
+              filterGroupElements
+            )
           )
         );
       }

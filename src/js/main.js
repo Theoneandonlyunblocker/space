@@ -14460,7 +14460,9 @@ var Rance;
                     className: "notification-filter-list-item-label"
                 }, "Show"), React.DOM.div({
                     className: "notification-filter-list-item-filters"
-                }, "Always", "Involved", "Never")), filterGroupElements));
+                }, "Always", "Involved", "Never")), React.DOM.div({
+                    className: "notification-filter-list-body"
+                }, filterGroupElements)));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -14495,7 +14497,9 @@ var Rance;
                     popupProps: {
                         containerDragOnly: true,
                         preventAutoResize: true,
-                        resizable: true
+                        resizable: true,
+                        minWidth: 440,
+                        minHeight: 150
                     }
                 });
                 this.setState({

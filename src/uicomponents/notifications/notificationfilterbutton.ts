@@ -40,7 +40,9 @@ module Rance
           {
             containerDragOnly: true,
             preventAutoResize: true,
-            resizable: true
+            resizable: true,
+            minWidth: 440,
+            minHeight: 150
           }
         });
 
