@@ -339,9 +339,9 @@ module Rance
   export function getPotentialTargets(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate): Unit[]
   {
-    var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
+    var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.template);
 
-    var targetsInRange = ability.mainEffect.template.targetRangeFunction(fleetsToTarget, user);
+    var targetsInRange = ability.mainEffect.template.targetRangeFunction(targetFormations, user);
 
     var untargetableFilterFN = function(target: Unit)
     {
@@ -361,36 +361,36 @@ module Rance
 
     return targets;
   }
-  export function getFleetsToTarget(battle: Battle, user: Unit,
+  export function getFormationsToTarget(battle: Battle, user: Unit,
     effect: Templates.IEffectTemplate): Unit[][]
   {
-    var nullFleet: Unit[][] = [];
+    var nullFormation: Unit[][] = [];
     var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
     var columns = app.moduleData.ruleSet.battle.cellsPerRow;
     for (var i = 0; i < rows; i++)
     {
-      nullFleet.push([]);
+      nullFormation.push([]);
       for (var j = 0; j < columns; j++)
       {
-        nullFleet[i].push(null);
+        nullFormation[i].push(null);
       }
     }
     var insertNullBefore: boolean;
     var toConcat: Unit[][];
 
-    switch (effect.targetFleets)
+    switch (effect.targetFormations)
     {
-      case TargetFleet.either:
+      case TargetFormation.either:
       {
         return battle.side1.concat(battle.side2);
       }
-      case TargetFleet.ally:
+      case TargetFormation.ally:
       {
         insertNullBefore = user.battleStats.side === "side1" ? false : true;
         toConcat = battle[user.battleStats.side];
         break;
       }
-      case TargetFleet.enemy:
+      case TargetFormation.enemy:
       {
         insertNullBefore = user.battleStats.side === "side1" ? true : false;
         toConcat = battle[reverseSide(user.battleStats.side)];
@@ -400,11 +400,11 @@ module Rance
 
     if (insertNullBefore)
     {
-      return nullFleet.concat(toConcat);
+      return nullFormation.concat(toConcat);
     }
     else
     {
-      return toConcat.concat(nullFleet);
+      return toConcat.concat(nullFormation);
     }
   }
   export function getPotentialTargetsByPosition(battle: Battle, user: Unit,
@@ -446,9 +446,9 @@ module Rance
   export function getUnitsInEffectArea(battle: Battle, user: Unit,
     effect: Templates.IEffectTemplate, target: number[]): Unit[]
   {
-    var targetFleets = getFleetsToTarget(battle, user, effect);
+    var targetFormations = getFormationsToTarget(battle, user, effect);
 
-    var inArea = effect.battleAreaFunction(targetFleets, target);
+    var inArea = effect.battleAreaFunction(targetFormations, target);
 
     return inArea.filter(function(unit: Unit)
     {

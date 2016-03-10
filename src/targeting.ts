@@ -4,7 +4,7 @@
 
 module Rance
 {
-  export enum TargetFleet
+  export enum TargetFormation
   {
     ally = 0,
     enemy = 1,

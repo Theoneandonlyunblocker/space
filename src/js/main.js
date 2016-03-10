@@ -7363,12 +7363,12 @@ var Rance;
 /// <reference path="unit.ts"/>
 var Rance;
 (function (Rance) {
-    (function (TargetFleet) {
-        TargetFleet[TargetFleet["ally"] = 0] = "ally";
-        TargetFleet[TargetFleet["enemy"] = 1] = "enemy";
-        TargetFleet[TargetFleet["either"] = 2] = "either";
-    })(Rance.TargetFleet || (Rance.TargetFleet = {}));
-    var TargetFleet = Rance.TargetFleet;
+    (function (TargetFormation) {
+        TargetFormation[TargetFormation["ally"] = 0] = "ally";
+        TargetFormation[TargetFormation["enemy"] = 1] = "enemy";
+        TargetFormation[TargetFormation["either"] = 2] = "either";
+    })(Rance.TargetFormation || (Rance.TargetFormation = {}));
+    var TargetFormation = Rance.TargetFormation;
     Rance.targetSelf = function (units, user) {
         return [user];
     };
@@ -7668,8 +7668,8 @@ var Rance;
     }
     Rance.getGuarders = getGuarders;
     function getPotentialTargets(battle, user, ability) {
-        var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
-        var targetsInRange = ability.mainEffect.template.targetRangeFunction(fleetsToTarget, user);
+        var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.template);
+        var targetsInRange = ability.mainEffect.template.targetRangeFunction(targetFormations, user);
         var untargetableFilterFN = function (target) {
             if (!Boolean(target)) {
                 return false;
@@ -7683,30 +7683,30 @@ var Rance;
         return targets;
     }
     Rance.getPotentialTargets = getPotentialTargets;
-    function getFleetsToTarget(battle, user, effect) {
-        var nullFleet = [];
+    function getFormationsToTarget(battle, user, effect) {
+        var nullFormation = [];
         var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
         var columns = app.moduleData.ruleSet.battle.cellsPerRow;
         for (var i = 0; i < rows; i++) {
-            nullFleet.push([]);
+            nullFormation.push([]);
             for (var j = 0; j < columns; j++) {
-                nullFleet[i].push(null);
+                nullFormation[i].push(null);
             }
         }
         var insertNullBefore;
         var toConcat;
-        switch (effect.targetFleets) {
-            case Rance.TargetFleet.either:
+        switch (effect.targetFormations) {
+            case Rance.TargetFormation.either:
                 {
                     return battle.side1.concat(battle.side2);
                 }
-            case Rance.TargetFleet.ally:
+            case Rance.TargetFormation.ally:
                 {
                     insertNullBefore = user.battleStats.side === "side1" ? false : true;
                     toConcat = battle[user.battleStats.side];
                     break;
                 }
-            case Rance.TargetFleet.enemy:
+            case Rance.TargetFormation.enemy:
                 {
                     insertNullBefore = user.battleStats.side === "side1" ? true : false;
                     toConcat = battle[Rance.reverseSide(user.battleStats.side)];
@@ -7714,13 +7714,13 @@ var Rance;
                 }
         }
         if (insertNullBefore) {
-            return nullFleet.concat(toConcat);
+            return nullFormation.concat(toConcat);
         }
         else {
-            return toConcat.concat(nullFleet);
+            return toConcat.concat(nullFormation);
         }
     }
-    Rance.getFleetsToTarget = getFleetsToTarget;
+    Rance.getFormationsToTarget = getFormationsToTarget;
     function getPotentialTargetsByPosition(battle, user, ability) {
         var targets = getPotentialTargets(battle, user, ability);
         var targetPositions = [];
@@ -7746,8 +7746,8 @@ var Rance;
     }
     Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
     function getUnitsInEffectArea(battle, user, effect, target) {
-        var targetFleets = getFleetsToTarget(battle, user, effect);
-        var inArea = effect.battleAreaFunction(targetFleets, target);
+        var targetFormations = getFormationsToTarget(battle, user, effect);
+        var inArea = effect.battleAreaFunction(targetFormations, target);
         return inArea.filter(function (unit) {
             if (!unit)
                 return false;
@@ -24126,7 +24126,7 @@ var Rance;
                 (function (Effects) {
                     Effects.singleTargetDamage = {
                         name: "singleTargetDamage",
-                        targetFleets: Rance.TargetFleet.enemy,
+                        targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle, data) {
@@ -24139,7 +24139,7 @@ var Rance;
                     };
                     Effects.closeAttack = {
                         name: "closeAttack",
-                        targetFleets: Rance.TargetFleet.enemy,
+                        targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaRowNeighbors,
                         targetRangeFunction: Rance.targetNextRow,
                         effect: function (user, target, battle) {
@@ -24152,7 +24152,7 @@ var Rance;
                     };
                     Effects.wholeRowAttack = {
                         name: "wholeRowAttack",
-                        targetFleets: Rance.TargetFleet.either,
+                        targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaColumn,
                         targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle) {
@@ -24165,7 +24165,7 @@ var Rance;
                     };
                     Effects.bombAttack = {
                         name: "bombAttack",
-                        targetFleets: Rance.TargetFleet.enemy,
+                        targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaNeighbors,
                         targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle) {
@@ -24178,7 +24178,7 @@ var Rance;
                     };
                     Effects.guardRow = {
                         name: "guardRow",
-                        targetFleets: Rance.TargetFleet.either,
+                        targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
                         effect: function (user, target, battle, data) {
@@ -24191,7 +24191,7 @@ var Rance;
                     };
                     Effects.receiveCounterAttack = {
                         name: "receiveCounterAttack",
-                        targetFleets: Rance.TargetFleet.either,
+                        targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
                         effect: function (user, target, battle, data) {
@@ -24206,7 +24206,7 @@ var Rance;
                     };
                     Effects.increaseCaptureChance = {
                         name: "increaseCaptureChance",
-                        targetFleets: Rance.TargetFleet.enemy,
+                        targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle, data) {
@@ -24222,7 +24222,7 @@ var Rance;
                     };
                     Effects.buffTest = {
                         name: "buffTest",
-                        targetFleets: Rance.TargetFleet.either,
+                        targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle) {
@@ -24231,7 +24231,7 @@ var Rance;
                     };
                     Effects.healTarget = {
                         name: "healTarget",
-                        targetFleets: Rance.TargetFleet.ally,
+                        targetFormations: Rance.TargetFormation.ally,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetAll,
                         effect: function (user, target, battle, data) {
@@ -24250,7 +24250,7 @@ var Rance;
                     };
                     Effects.healSelf = {
                         name: "healSelf",
-                        targetFleets: Rance.TargetFleet.ally,
+                        targetFormations: Rance.TargetFormation.ally,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
                         effect: function (user, target, battle, data) {
@@ -24259,7 +24259,7 @@ var Rance;
                     };
                     Effects.standBy = {
                         name: "standBy",
-                        targetFleets: Rance.TargetFleet.either,
+                        targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
                         effect: function () { }

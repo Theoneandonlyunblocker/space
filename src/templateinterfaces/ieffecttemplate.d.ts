@@ -10,7 +10,7 @@ declare module Rance
     {
       name: string;
       
-      targetFleets: TargetFleet;
+      targetFormations: TargetFormation;
       battleAreaFunction: BattleAreaFunction;
       targetRangeFunction: TargetRangeFunction;
       effect: (user: Unit, target: Unit, battle: Battle, data?: any) => void;

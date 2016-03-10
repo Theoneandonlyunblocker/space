@@ -1522,7 +1522,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    enum TargetFleet {
+    enum TargetFormation {
         ally = 0,
         enemy = 1,
         either = 2,
@@ -1572,7 +1572,7 @@ declare module Rance {
     function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): any;
     function getGuarders(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): any;
     function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): Unit[];
-    function getFleetsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectTemplate): Unit[][];
+    function getFormationsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectTemplate): Unit[][];
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): number[][];
     function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: number[]): Unit[];
     function getUnitsInEffectArea(battle: Battle, user: Unit, effect: Templates.IEffectTemplate, target: number[]): Unit[];

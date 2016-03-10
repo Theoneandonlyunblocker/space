@@ -16,7 +16,7 @@ module Rance
           export var singleTargetDamage: Rance.Templates.IEffectTemplate =
           {
             name: "singleTargetDamage",
-            targetFleets: TargetFleet.enemy,
+            targetFormations: TargetFormation.enemy,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -34,7 +34,7 @@ module Rance
           export var closeAttack: Rance.Templates.IEffectTemplate =
           {
             name: "closeAttack",
-            targetFleets: TargetFleet.enemy,
+            targetFormations: TargetFormation.enemy,
             battleAreaFunction: areaRowNeighbors,
             targetRangeFunction: targetNextRow,
             effect: function(user: Unit, target: Unit, battle: Battle)
@@ -51,7 +51,7 @@ module Rance
           export var wholeRowAttack: Rance.Templates.IEffectTemplate =
           {
             name: "wholeRowAttack",
-            targetFleets: TargetFleet.either,
+            targetFormations: TargetFormation.either,
             battleAreaFunction: areaColumn,
             targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle)
@@ -69,7 +69,7 @@ module Rance
           export var bombAttack: Rance.Templates.IEffectTemplate =
           {
             name: "bombAttack",
-            targetFleets: TargetFleet.enemy,
+            targetFormations: TargetFormation.enemy,
             battleAreaFunction: areaNeighbors,
             targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle)
@@ -86,7 +86,7 @@ module Rance
           export var guardRow: Rance.Templates.IEffectTemplate =
           {
             name: "guardRow",
-            targetFleets: TargetFleet.either,
+            targetFormations: TargetFormation.either,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetSelf,
             effect: function(user: Unit, target: Unit, battle: Battle, data?: any)
@@ -102,7 +102,7 @@ module Rance
           export var receiveCounterAttack: Rance.Templates.IEffectTemplate =
           {
             name: "receiveCounterAttack",
-            targetFleets: TargetFleet.either,
+            targetFormations: TargetFormation.either,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetSelf,
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -122,7 +122,7 @@ module Rance
           export var increaseCaptureChance: Rance.Templates.IEffectTemplate =
           {
             name: "increaseCaptureChance",
-            targetFleets: TargetFleet.enemy,
+            targetFormations: TargetFormation.enemy,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -143,7 +143,7 @@ module Rance
           export var buffTest: Rance.Templates.IEffectTemplate =
           {
             name: "buffTest",
-            targetFleets: TargetFleet.either,
+            targetFormations: TargetFormation.either,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle)
@@ -154,7 +154,7 @@ module Rance
           export var healTarget: Rance.Templates.IEffectTemplate =
           {
             name: "healTarget",
-            targetFleets: TargetFleet.ally,
+            targetFormations: TargetFormation.ally,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetAll,
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -181,7 +181,7 @@ module Rance
           export var healSelf: Rance.Templates.IEffectTemplate =
           {
             name: "healSelf",
-            targetFleets: TargetFleet.ally,
+            targetFormations: TargetFormation.ally,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetSelf,
             effect: function(user: Unit, target: Unit, battle: Battle,
@@ -194,7 +194,7 @@ module Rance
           export var standBy: Rance.Templates.IEffectTemplate =
           {
             name: "standBy",
-            targetFleets: TargetFleet.either,
+            targetFormations: TargetFormation.either,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetSelf,
             effect: function(){}
