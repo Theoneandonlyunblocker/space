@@ -28,6 +28,6 @@ declare module Rance
     items: IItemSaveData[];
     revealedStarIds: number[];
     identifiedUnitIds: number[];
-    researchByTechnology: IPlayerTechnologySaveData;
+    researchByTechnology?: IPlayerTechnologySaveData;
   }
 }

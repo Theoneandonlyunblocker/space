@@ -848,13 +848,16 @@ module Rance
         controlledLocationIds: this.controlledLocations.map(function(star){return star.id}),
 
         items: this.items.map(function(item){return item.serialize()}),
-        researchByTechnology: this.playerTechnology.serialize(),
 
         unitIds: unitIds,
         revealedStarIds: revealedStarIds,
         identifiedUnitIds: identifiedUnitIds
       };
 
+      if (this.playerTechnology)
+      {
+        data.researchByTechnology = this.playerTechnology.serialize();
+      }
 
       if (this.flag)
       {

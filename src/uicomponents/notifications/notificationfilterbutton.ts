@@ -39,7 +39,8 @@ module Rance
           popupProps:
           {
             containerDragOnly: true,
-            preventAutoResize: true
+            preventAutoResize: true,
+            resizable: true
           }
         });
 

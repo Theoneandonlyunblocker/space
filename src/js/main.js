@@ -3678,7 +3678,6 @@ var Rance;
             for (var playerId in this.metPlayers) {
                 metPlayerIds.push(this.metPlayers[playerId].id);
             }
-            data.statusByPlayer = this.statusByPlayer;
             var attitudeModifiersByPlayer = {};
             for (var playerId in this.attitudeModifiersByPlayer) {
                 var serializedModifiers = this.attitudeModifiersByPlayer[playerId].map(function (modifier) {
@@ -6856,11 +6855,13 @@ var Rance;
                 money: this.money,
                 controlledLocationIds: this.controlledLocations.map(function (star) { return star.id; }),
                 items: this.items.map(function (item) { return item.serialize(); }),
-                researchByTechnology: this.playerTechnology.serialize(),
                 unitIds: unitIds,
                 revealedStarIds: revealedStarIds,
                 identifiedUnitIds: identifiedUnitIds
             };
+            if (this.playerTechnology) {
+                data.researchByTechnology = this.playerTechnology.serialize();
+            }
             if (this.flag) {
                 data.flag = this.flag.serialize();
             }
@@ -14493,7 +14494,8 @@ var Rance;
                     },
                     popupProps: {
                         containerDragOnly: true,
-                        preventAutoResize: true
+                        preventAutoResize: true,
+                        resizable: true
                     }
                 });
                 this.setState({

@@ -356,9 +356,6 @@ module Rance
         metPlayerIds.push(this.metPlayers[playerId].id);
       }
 
-      data.statusByPlayer = this.statusByPlayer;
-
-
       var attitudeModifiersByPlayer:
       {
         [playerId: number]: IAttitudeModifierSaveData[];
