@@ -139,7 +139,7 @@ module Rance
               function(user: Unit)
               {
                 var star = user.fleet.location;
-                var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
+                var allFriendlyUnits = star.getAllUnitsOfPlayer(user.fleet.player);
                 for (var i = 0; i < allFriendlyUnits.length; i++)
                 {
                   allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth)

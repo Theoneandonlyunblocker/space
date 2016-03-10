@@ -50,7 +50,7 @@ module Rance
     resetBattleStats()
     {
       var star = this.battleData.location;
-      var allUnits = star.getAllShipsOfPlayer(this.attacker).concat(star.getAllShipsOfPlayer(this.defender));
+      var allUnits = star.getAllUnitsOfPlayer(this.attacker).concat(star.getAllUnitsOfPlayer(this.defender));
 
       for (var i = 0; i < allUnits.length; i++)
       {
@@ -60,7 +60,7 @@ module Rance
     triggerPassiveSkills()
     {
       var star = this.battleData.location;
-      var allUnits = star.getAllShipsOfPlayer(this.attacker).concat(star.getAllShipsOfPlayer(this.defender));
+      var allUnits = star.getAllUnitsOfPlayer(this.attacker).concat(star.getAllUnitsOfPlayer(this.defender));
       for (var i = 0; i < allUnits.length; i++)
       {
         var unit = allUnits[i]

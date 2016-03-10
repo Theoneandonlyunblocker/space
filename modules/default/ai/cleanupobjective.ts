@@ -30,7 +30,7 @@ module Rance
 
             var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function(star: Star)
             {
-              return star.getIndependentShips().length > 0 && !star.getSecondaryController();
+              return star.getIndependentUnits().length > 0 && !star.getSecondaryController();
             });
 
             var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);

@@ -430,47 +430,47 @@ module Rance
         this.removeFleet(fleets[i]);
       }
     }
-    getAllShipsOfPlayer(player: Player): Unit[]
+    getAllUnitsOfPlayer(player: Player): Unit[]
     {
-      var allShips: Unit[] = [];
+      var allUnits: Unit[] = [];
 
       var fleets = this.fleets[player.id];
       if (!fleets) return [];
 
       for (var i = 0; i < fleets.length; i++)
       {
-        allShips = allShips.concat(fleets[i].units);
+        allUnits = allUnits.concat(fleets[i].units);
       }
 
-      return allShips;
+      return allUnits;
     }
-    getAllShips(): Unit[]
+    getAllUnits(): Unit[]
     {
-      var allShips: Unit[] = [];
+      var allUnits: Unit[] = [];
       for (var playerId in this.fleets)
       {
         var fleets = this.fleets[playerId];
-        allShips = allShips.concat(this.getAllShipsOfPlayer(fleets[0].player));
+        allUnits = allUnits.concat(this.getAllUnitsOfPlayer(fleets[0].player));
       }
 
-      return allShips;
+      return allUnits;
     }
-    getIndependentShips(): Unit[]
+    getIndependentUnits(): Unit[]
     {
-      var ships: Unit[] = [];
+      var units: Unit[] = [];
 
       for (var playerId in this.fleets)
       {
         var player = this.fleets[playerId][0].player;
         if (player.isIndependent)
         {
-          ships = ships.concat(this.getAllShipsOfPlayer(player));
+          units = units.concat(this.getAllUnitsOfPlayer(player));
         }
       }
 
-      return ships;
+      return units;
     }
-    getTargetsForPlayer(player: Player)
+    getTargetsForPlayer(player: Player): IFleetAttackTarget[]
     {
       var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
       var buildingController = buildingTarget ? buildingTarget.controller : null;
@@ -498,7 +498,7 @@ module Rance
           type: "building",
           enemy: buildingTarget.controller,
           building: buildingTarget,
-          ships: this.getAllShipsOfPlayer(buildingTarget.controller)
+          units: this.getAllUnitsOfPlayer(buildingTarget.controller)
         });
       }
       for (var i = 0; i < fleetOwners.length; i++)
@@ -510,7 +510,7 @@ module Rance
             type: "fleet",
             enemy: fleetOwners[i],
             building: null,
-            ships: this.getAllShipsOfPlayer(fleetOwners[i])
+            units: this.getAllUnitsOfPlayer(fleetOwners[i])
           });
         }
       }

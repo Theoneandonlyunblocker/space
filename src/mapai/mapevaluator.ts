@@ -397,7 +397,7 @@ module Rance
 
         for (var i = 0; i < hostilePlayers.length; i++)
         {
-          shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
+          shipsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
           allShips = allShips.concat(shipsByEnemy[hostilePlayers[i].id]);
         }
 
@@ -432,7 +432,7 @@ module Rance
       }
       getIndependentStrengthAtStar(star: Star): number
       {
-        var units = star.getIndependentShips();
+        var units = star.getIndependentUnits();
         var total = 0;
 
         for (var i = 0; i < units.length; i++)

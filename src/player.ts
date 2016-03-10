@@ -348,7 +348,7 @@ module Rance
         this.meetPlayersInStarByVisibility(star, "detected");
       }
       // identify ships
-      var unitsToIdentify = star.getAllShips();
+      var unitsToIdentify = star.getAllUnits();
       for (var i = 0; i < unitsToIdentify.length; i++)
       {
         this.identifyUnit(unitsToIdentify[i]);
@@ -647,7 +647,7 @@ module Rance
         attacker:
         {
           player: this,
-          ships: location.getAllShipsOfPlayer(this)
+          ships: location.getAllUnitsOfPlayer(this)
         },
         defender:
         {
