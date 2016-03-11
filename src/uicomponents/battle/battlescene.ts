@@ -66,17 +66,22 @@ module Rance
 
         if (this.battleScene)
         {
-          if (newProps.activeSFX !== this.props.activeSFX)
+          var activeSFXChanged = newProps.activeSFX !== this.props.activeSFX;
+          var shouldPlaySFX = newProps.activeSFX &&
+          (
+            activeSFXChanged ||
+            newProps.targetUnit !== this.props.targetUnit ||
+            newProps.userUnit !== this.props.userUnit
+          );
+
+          if (shouldPlaySFX)
           {
-            if (newProps.activeSFX)
-            {
-              this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
-            }
-            else
-            {
-              this.battleScene.clearActiveSFX();
-              this.battleScene.updateUnits();
-            }
+            this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+          }
+          else if (activeSFXChanged)
+          {
+            this.battleScene.clearActiveSFX();
+            this.battleScene.updateUnits();
           }
           else if (!newProps.activeSFX)
           {
@@ -92,7 +97,6 @@ module Rance
             
             this.battleScene.updateUnits();
           }
-
         }
       },
       

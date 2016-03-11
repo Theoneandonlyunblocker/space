@@ -9971,14 +9971,17 @@ var Rance;
                     this.battleScene = null;
                 }
                 if (this.battleScene) {
-                    if (newProps.activeSFX !== this.props.activeSFX) {
-                        if (newProps.activeSFX) {
-                            this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
-                        }
-                        else {
-                            this.battleScene.clearActiveSFX();
-                            this.battleScene.updateUnits();
-                        }
+                    var activeSFXChanged = newProps.activeSFX !== this.props.activeSFX;
+                    var shouldPlaySFX = newProps.activeSFX &&
+                        (activeSFXChanged ||
+                            newProps.targetUnit !== this.props.targetUnit ||
+                            newProps.userUnit !== this.props.userUnit);
+                    if (shouldPlaySFX) {
+                        this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+                    }
+                    else if (activeSFXChanged) {
+                        this.battleScene.clearActiveSFX();
+                        this.battleScene.updateUnits();
                     }
                     else if (!newProps.activeSFX) {
                         [
