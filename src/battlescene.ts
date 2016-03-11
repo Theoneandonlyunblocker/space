@@ -402,12 +402,19 @@ module Rance
     }
     private makeBattleOverlay(afterFinishedCallback: () => void = this.clearActiveSFX.bind(this))
     {
-      var SFXParams = this.getSFXParams(
+      if (!this.activeSFX.battleOverlay)
       {
-        triggerStart: this.addBattleOverlay.bind(this),
-        triggerEnd: afterFinishedCallback
-      });
-      this.activeSFX.battleOverlay(SFXParams);
+        afterFinishedCallback();
+      }
+      else
+      {
+        var SFXParams = this.getSFXParams(
+        {
+          triggerStart: this.addBattleOverlay.bind(this),
+          triggerEnd: afterFinishedCallback
+        });
+        this.activeSFX.battleOverlay(SFXParams);
+      }
     }
     private addBattleOverlay(overlay: PIXI.DisplayObject)
     {
