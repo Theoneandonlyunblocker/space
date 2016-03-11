@@ -217,8 +217,7 @@ module Rance
           battleOverlay: app.moduleData.Templates.BattleSFX["guard"].battleOverlay,
           userOverlay: overlayTestFN.bind(null, 0xFF0000),
           enemyOverlay: overlayTestFN.bind(null, 0x00FF00),
-          userSprite: spriteTestFN,
-          delay: 0.3
+          userSprite: spriteTestFN
         }
 
         var user = this.state.activeUnit;
@@ -238,7 +237,15 @@ module Rance
         var bs: Rance.BattleScene = this.battleScene;
         var SFXTemplate = app.moduleData.Templates.BattleSFX["guard"];
 
-        bs.setActiveSFX(SFXTemplate, user, target);
+        bs.handleAbilityUse(
+        {
+          user: user,
+          target: target,
+          SFXTemplate: SFXTemplate,
+          triggerEffectCallback: function(){console.log("triggerEffect")},
+          afterFinishedCallback: function(){console.log("afterFinishedCallback")}
+        });
+        // bs.setActiveSFX(SFXTemplate, user, target);
       },
 
       makeUnitElements: function(units: Unit[])

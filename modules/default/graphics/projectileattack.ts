@@ -55,6 +55,8 @@ module Rance
             hasImpact: boolean;
           }[] = []
 
+          var hasTriggeredEffect = false;
+
           function animate()
           {
             var currentTime = Date.now();
@@ -95,6 +97,12 @@ module Rance
               if (!projectile.hasImpact && projectile.willImpact &&
                 projectile.sprite.x >= projectile.impactX)
               {
+                if (params.triggerEffect && !hasTriggeredEffect)
+                {
+                  hasTriggeredEffect = true;
+                  params.triggerEffect();
+                }
+
                 projectile.hasImpact = true;
                 var impactTextures = getRandomArrayItem(props.impactTextures);
                 var impactClip = new PIXI.extras.MovieClip(impactTextures);

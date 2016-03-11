@@ -53,6 +53,31 @@ module Rance
       Rance.Options = deepMerge(Rance.Options, parsedData.options, true);
     }
   }
+
+  export interface IOptions
+  {
+    battleAnimationTiming:
+    {
+      before: number;
+      effectDuration: number;
+      after: number;
+      unitEnter: number;
+      unitExit: number;
+    }
+    debugMode: boolean;
+    debugOptions:
+    {
+      battleSimulationDepth: number;
+    };
+    ui:
+    {
+      noHamburger: boolean;
+    };
+    display:
+    {
+      borderWidth: number;
+    };
+  }
   
   export module defaultOptions
   {
@@ -79,5 +104,5 @@ module Rance
     };
   }
 
-  export var Options: any;
+  export var Options: IOptions;
 }

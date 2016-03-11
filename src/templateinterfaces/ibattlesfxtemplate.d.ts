@@ -9,7 +9,7 @@ declare module Rance
     interface IBattleSFXTemplate
     {
       duration: number;
-      delay?: number; // 0.0 - 1.0; how far in the sfx the effect function should be called. default = 0.0
+      SFXWillTriggerEffect?: boolean; // true if one of the sfx functions calls SFXParams.triggerEffect()
       userSprite?: (props: SFXParams) => void;
       enemySprite?: (props: SFXParams) => void;
       userOverlay?: (props: SFXParams) => void;

@@ -55,6 +55,7 @@ module Rance
           }
 
           var travelTime = 0.2;
+          var hasTriggeredEffect = false;
 
           var syncUniformsFN = function(time: number)
           {
@@ -65,6 +66,11 @@ module Rance
             }
             else
             {
+              if (props.triggerEffect && !hasTriggeredEffect)
+              {
+                hasTriggeredEffect = true;
+                props.triggerEffect();
+              }
               var adjustedtime = getRelativeValue(time, travelTime - 0.02, 1);
               adjustedtime = Math.pow(adjustedtime, 4);
 

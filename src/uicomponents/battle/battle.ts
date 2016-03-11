@@ -274,15 +274,16 @@ module Rance
         var beforeDelay = Options.battleAnimationTiming.before;
 
         var effectDuration = 0;
-        var effectDelay = 0;
         if (effectData[i].sfx)
         {
           effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming.effectDuration;
-          effectDuration /= (1 + Math.log(i + 1));
-          if (effectData[i].sfx.delay)
-          {
-            effectDelay = effectDuration * effectData[i].sfx.delay;
-          }
+          // effectDuration /= (1 + Math.log(i + 1)); // TODO battle scene | re-add this
+
+          // TODO battle scene | allow SFX function to trigger effect when it wants
+          // if (effectData[i].sfx.delay)
+          // {
+          //   effectDelay = effectDuration * effectData[i].sfx.delay;
+          // }
         }
 
         effectData[i].user.sfxDuration = effectDuration;
@@ -329,21 +330,22 @@ module Rance
 
         var startEffectFN = function()
         {
-          if (effectDelay > 0)
-          {
-            window.setTimeout(callEffectsFN, effectDelay);
+          // if (effectDelay > 0)
+          // {
+          //   window.setTimeout(callEffectsFN, effectDelay);
             
-            this.setState(
-            {
-              battleEffectId: this.idGenerator++,
-              battleEffectDuration: effectDuration,
-              battleEffectSFX: effectData[i].sfx
-            });
-          }
-          else
-          {
-            callEffectsFN(false);
-          }
+          //   this.setState(
+          //   {
+          //     battleEffectId: this.idGenerator++,
+          //     battleEffectDuration: effectDuration,
+          //     battleEffectSFX: effectData[i].sfx
+          //   });
+          // }
+          // else
+          // {
+          //   callEffectsFN(false);
+          // }
+          callEffectsFN(false);
 
 
           window.setTimeout(finishEffectFN, effectDuration + afterDelay);

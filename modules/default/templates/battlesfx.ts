@@ -17,13 +17,13 @@ module Rance
           {
             duration: 1500,
             battleOverlay: BattleSFXFunctions.rocketAttack,
-            delay: 0.3
+            SFXWillTriggerEffect: true
           }
           export var guard: Rance.Templates.IBattleSFXTemplate =
           {
             duration: 1000,
             battleOverlay: BattleSFXFunctions.guard,
-            delay: 0.3
+            SFXWillTriggerEffect: true
           }
         }
       }

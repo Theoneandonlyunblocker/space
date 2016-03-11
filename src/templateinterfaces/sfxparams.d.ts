@@ -14,6 +14,7 @@ declare module Rance
       facingRight: boolean;
       renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
       triggerStart: (container: PIXI.DisplayObject) => void;
+      triggerEffect?: () => void;
       triggerEnd?: () => void;
     }
   }

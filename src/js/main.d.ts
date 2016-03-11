@@ -3796,6 +3796,25 @@ declare module Rance {
 declare module Rance {
     function saveOptions(slot?: number): void;
     function loadOptions(slot?: number): void;
+    interface IOptions {
+        battleAnimationTiming: {
+            before: number;
+            effectDuration: number;
+            after: number;
+            unitEnter: number;
+            unitExit: number;
+        };
+        debugMode: boolean;
+        debugOptions: {
+            battleSimulationDepth: number;
+        };
+        ui: {
+            noHamburger: boolean;
+        };
+        display: {
+            borderWidth: number;
+        };
+    }
     module defaultOptions {
         var battleAnimationTiming: {
             before: number;
@@ -3815,7 +3834,7 @@ declare module Rance {
             borderWidth: number;
         };
     }
-    var Options: any;
+    var Options: IOptions;
 }
 declare module Rance {
     enum BattleSceneUnitState {
@@ -3911,39 +3930,54 @@ declare module Rance {
         side1UnitHasFinishedUpdating: boolean;
         side2UnitHasFinishedUpdating: boolean;
         afterUnitsHaveFinishedUpdatingCallback: () => void;
+        beforeUseDelayHasFinishedCallback: () => void;
+        activeSFXHasFinishedCallback: () => void;
+        afterUseDelayHasFinishedCallback: () => void;
+        abilityUseHasFinishedCallback: () => void;
+        triggerEffectCallback: () => void;
         isPaused: boolean;
         forceFrame: boolean;
         resizeListener: (e: Event) => void;
         constructor(pixiContainer: HTMLElement);
         destroy(): void;
-        initLayers(): void;
-        handleResize(): void;
-        getSceneBounds(): {
-            width: number;
-            height: number;
-        };
-        getSFXParams(props: {
-            triggerStart: (container: PIXI.DisplayObject) => void;
-            triggerEnd?: () => void;
-        }): Templates.SFXParams;
-        getHighestPriorityUnitForSide(side: UnitBattleSide): Unit;
-        haveBothUnitsFinishedUpdating(): boolean;
-        executeIfBothUnitsHaveFinishedUpdating(): void;
-        finishUpdatingUnit(side: UnitBattleSide): void;
+        private initLayers();
+        private handleResize();
+        private getSceneBounds();
+        private getSFXParams(props);
+        private getHighestPriorityUnitForSide(side);
+        private haveBothUnitsFinishedUpdating();
+        private executeIfBothUnitsHaveFinishedUpdating();
+        private finishUpdatingUnit(side);
+        handleAbilityUse(props: {
+            SFXTemplate: Templates.IBattleSFXTemplate;
+            triggerEffectCallback: () => void;
+            user: Unit;
+            target: Unit;
+            afterFinishedCallback: () => void;
+        }): void;
+        private executeBeforeUseDelayHasFinishedCallback();
+        private executeTriggerEffectCallback();
+        private executeActiveSFXHasFinishedCallback();
+        private executeAfterUseDelayHasFinishedCallback();
+        private executeAbilityUseHasFinishedCallback();
+        private prepareSFX();
+        private playSFX();
+        private handleActiveSFXEnd();
+        private cleanUpAfterSFX();
         updateUnits(afterFinishedUpdatingCallback?: () => void): void;
         setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
         clearActiveSFX(): void;
-        triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
-        makeBattleOverlay(): void;
-        addBattleOverlay(overlay: PIXI.DisplayObject): void;
-        clearBattleOverlay(): void;
-        clearUnitOverlays(): void;
-        getBattleSceneUnit(unit: Unit): BattleSceneUnit;
-        getBattleSceneUnitOverlay(unit: Unit): BattleSceneUnitOverlay;
+        private triggerSFXStart(SFXTemplate, user, target, afterFinishedCallback?);
+        private makeBattleOverlay(afterFinishedCallback?);
+        private addBattleOverlay(overlay);
+        private clearBattleOverlay();
+        private clearUnitOverlays();
+        private getBattleSceneUnit(unit);
+        private getBattleSceneUnitOverlay(unit);
         renderOnce(): void;
         pause(): void;
         resume(): void;
-        render(timeStamp?: number): void;
+        private render(timeStamp?);
     }
 }
 declare module Rance {

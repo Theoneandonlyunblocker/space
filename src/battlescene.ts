@@ -32,14 +32,21 @@ module Rance
 
     activeSFX: Templates.IBattleSFXTemplate;
 
-    targetUnit: Unit;  // being targeted by ability | priority
-    userUnit: Unit;    // using an ability          |
-    activeUnit: Unit;  // next to act in turn order |
-    hoveredUnit: Unit; // hovered by player         V
+    targetUnit: Unit;  // being targeted by ability      | priority
+    userUnit: Unit;    // using an ability               |
+    activeUnit: Unit;  // currently acting in turn order |
+    hoveredUnit: Unit; // hovered by player              V
 
     side1UnitHasFinishedUpdating: boolean = false;
     side2UnitHasFinishedUpdating: boolean = false;
     afterUnitsHaveFinishedUpdatingCallback: () => void;
+
+    beforeUseDelayHasFinishedCallback: () => void;
+    activeSFXHasFinishedCallback: () => void;
+    afterUseDelayHasFinishedCallback: () => void;
+    abilityUseHasFinishedCallback: () => void;
+
+    triggerEffectCallback: () => void;
 
     isPaused: boolean = false;
     forceFrame: boolean = false;
@@ -70,7 +77,7 @@ module Rance
       this.resizeListener = this.handleResize.bind(this);
       window.addEventListener("resize", this.resizeListener, false);
     }
-    destroy()
+    public destroy()
     {
       this.container.renderable = false;
       this.pause();
@@ -87,7 +94,7 @@ module Rance
 
       window.removeEventListener("resize", this.resizeListener);
     }
-    initLayers()
+    private initLayers()
     {
       this.layers =
       {
@@ -108,7 +115,7 @@ module Rance
       this.container.addChild(this.layers.side2Container);
       this.container.addChild(this.layers.battleOverlay);
     }
-    handleResize()
+    private handleResize()
     {
       var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
       var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
@@ -117,7 +124,7 @@ module Rance
       this.side1Unit.resize();
       this.side2Unit.resize();
     }
-    getSceneBounds()
+    private getSceneBounds()
     {
       return(
       {
@@ -125,7 +132,7 @@ module Rance
         height: this.renderer.height
       });
     }
-    getSFXParams(props:
+    private getSFXParams(props:
     {
       triggerStart: (container: PIXI.DisplayObject) => void;
       triggerEnd?: () => void;
@@ -144,11 +151,12 @@ module Rance
         facingRight: this.userUnit.battleStats.side === "side1",
         renderer: this.renderer,
         triggerStart: props.triggerStart,
+        triggerEffect: this.triggerEffectCallback,
         triggerEnd: props.triggerEnd
       });
     }
     
-    getHighestPriorityUnitForSide(side: UnitBattleSide)
+    private getHighestPriorityUnitForSide(side: UnitBattleSide)
     {
       var units =
       [
@@ -169,11 +177,11 @@ module Rance
 
       return null;
     }
-    haveBothUnitsFinishedUpdating()
+    private haveBothUnitsFinishedUpdating()
     {
       return this.side1UnitHasFinishedUpdating && this.side2UnitHasFinishedUpdating;
     }
-    executeIfBothUnitsHaveFinishedUpdating()
+    private executeIfBothUnitsHaveFinishedUpdating()
     {
       if (!this.afterUnitsHaveFinishedUpdatingCallback || !this.haveBothUnitsFinishedUpdating())
       {
@@ -185,7 +193,7 @@ module Rance
         this.afterUnitsHaveFinishedUpdatingCallback = null;
       }
     }
-    finishUpdatingUnit(side: UnitBattleSide)
+    private finishUpdatingUnit(side: UnitBattleSide)
     {
       if (side === "side1")
       {
@@ -198,7 +206,151 @@ module Rance
 
       this.executeIfBothUnitsHaveFinishedUpdating();
     }
-    updateUnits(afterFinishedUpdatingCallback?: () => void)
+    public handleAbilityUse(props:
+    {
+      SFXTemplate: Templates.IBattleSFXTemplate;
+      triggerEffectCallback: () => void;
+      user: Unit;
+      target: Unit;
+      afterFinishedCallback: () => void;
+    })
+    {
+      this.clearActiveSFX();
+
+      this.userUnit = props.user;
+      this.targetUnit = props.target;
+      this.activeSFX = props.SFXTemplate;
+
+      // this.afterUseDelayHasFinishedCallback = props.afterFinishedCallback;
+
+      this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
+      this.activeSFXHasFinishedCallback = this.cleanUpAfterSFX.bind(this);
+
+      this.triggerEffectCallback = props.triggerEffectCallback;
+      this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
+      this.prepareSFX();
+
+      // this.prepareSFX();
+      // this.playSFX();
+      // props.triggerEffectCallback();
+      // this.cleanUpAfterSFX();
+      // props.afterFinishedCallback();
+    }
+
+    private executeBeforeUseDelayHasFinishedCallback()
+    {
+      if (!this.beforeUseDelayHasFinishedCallback)
+      {
+        throw new Error("No callback set for 'before ability use delay' finish.");
+      }
+
+      this.beforeUseDelayHasFinishedCallback();
+      this.beforeUseDelayHasFinishedCallback = null;
+    }
+    private executeTriggerEffectCallback()
+    {
+      if (!this.triggerEffectCallback)
+      {
+        throw new Error("No callback set for triggering battle effects.");
+      }
+
+      this.triggerEffectCallback();
+      this.triggerEffectCallback = null;
+    }
+    private executeActiveSFXHasFinishedCallback()
+    {
+      if (!this.activeSFXHasFinishedCallback)
+      {
+        throw new Error("No callback set for active SFX finish.");
+      }
+
+      this.activeSFXHasFinishedCallback();
+      this.activeSFXHasFinishedCallback = null;
+    }
+    private executeAfterUseDelayHasFinishedCallback()
+    {
+      if (!this.afterUseDelayHasFinishedCallback)
+      {
+        throw new Error("No callback set for 'after ability use delay' finish.");
+      }
+
+      this.afterUseDelayHasFinishedCallback();
+      this.afterUseDelayHasFinishedCallback = null;
+    }
+    private executeAbilityUseHasFinishedCallback()
+    {
+      if (!this.abilityUseHasFinishedCallback)
+      {
+        throw new Error("No callback set for ability use finish.");
+      }
+
+      this.abilityUseHasFinishedCallback();
+      this.abilityUseHasFinishedCallback = null;
+    }
+
+    private prepareSFX()
+    {
+      var beforeUseDelay = Options.battleAnimationTiming.before;
+
+      var afterUnitsHaveFinishedUpdatingCallback = function()
+      {
+        if (beforeUseDelay >= 0)
+        {
+          window.setTimeout(this.executeBeforeUseDelayHasFinishedCallback.bind(this),
+            beforeUseDelay);
+        }
+        else
+        {
+          this.executeBeforeUseDelayHasFinishedCallback();
+        }
+      }.bind(this);
+
+      this.updateUnits(afterUnitsHaveFinishedUpdatingCallback);
+    }
+    private playSFX()
+    {
+      var SFXDuration = Options.battleAnimationTiming.effectDuration *
+        this.activeSFX.duration;
+
+      if (SFXDuration <= 0)
+      {
+        this.executeTriggerEffectCallback();
+        this.handleActiveSFXEnd();
+      }
+      else
+      {
+        this.triggerSFXStart(this.activeSFX, this.userUnit,
+          this.targetUnit, this.handleActiveSFXEnd.bind(this));
+      }
+    }
+    private handleActiveSFXEnd()
+    {
+      this.activeSFX = null;
+      this.clearBattleOverlay();
+      this.clearUnitOverlays();
+      this.executeActiveSFXHasFinishedCallback();
+    }
+    private cleanUpAfterSFX()
+    {
+      var afterUseDelay = Options.battleAnimationTiming.after;
+
+      this.afterUseDelayHasFinishedCallback = function()
+      {
+        this.userUnit = null;
+        this.targetUnit = null;
+        this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
+      }.bind(this);
+      // wait for after delay
+      if (afterUseDelay >= 0)
+      {
+        window.setTimeout(this.executeAfterUseDelayHasFinishedCallback.bind(this), afterUseDelay);
+      }
+      else
+      {
+        this.executeAfterUseDelayHasFinishedCallback();
+      }
+    }
+    public updateUnits(afterFinishedUpdatingCallback?: () => void)
     {
       var boundAfterFinishFN1: () => void = null;
       var boundAfterFinishFN2: () => void = null;
@@ -222,7 +374,7 @@ module Rance
       this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
       this.side2Overlay.activeUnit = activeSide2Unit;
     }
-    setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
+    public setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
     {
       this.clearActiveSFX();
 
@@ -237,7 +389,7 @@ module Rance
 
       this.updateUnits(this.triggerSFXStart.bind(this, SFXTemplate, user, target));
     }
-    clearActiveSFX()
+    public clearActiveSFX()
     {
       this.activeSFX = null;
 
@@ -247,39 +399,40 @@ module Rance
       this.clearBattleOverlay();
       this.clearUnitOverlays();
     }
-    triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
+    private triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit,
+      afterFinishedCallback?: () => void)
     {
       this.activeSFX = SFXTemplate;
       this.side1Unit.setSFX(SFXTemplate, user, target);
       this.side2Unit.setSFX(SFXTemplate, user, target);
       this.side1Overlay.setSFX(SFXTemplate, user, target);
       this.side2Overlay.setSFX(SFXTemplate, user, target);
-      this.makeBattleOverlay();
+      this.makeBattleOverlay(afterFinishedCallback);
     }
-    makeBattleOverlay()
+    private makeBattleOverlay(afterFinishedCallback: () => void = this.clearActiveSFX.bind(this))
     {
       var SFXParams = this.getSFXParams(
       {
         triggerStart: this.addBattleOverlay.bind(this),
-        triggerEnd: this.clearActiveSFX.bind(this)
+        triggerEnd: afterFinishedCallback
       });
       this.activeSFX.battleOverlay(SFXParams);
     }
-    addBattleOverlay(overlay: PIXI.DisplayObject)
+    private addBattleOverlay(overlay: PIXI.DisplayObject)
     {
       this.layers.battleOverlay.addChild(overlay);
     }
-    clearBattleOverlay()
+    private clearBattleOverlay()
     {
       this.layers.battleOverlay.removeChildren();
     }
-    clearUnitOverlays()
+    private clearUnitOverlays()
     {
       this.side1Overlay.clearOverlay();
       this.side2Overlay.clearOverlay();
     }
 
-    getBattleSceneUnit(unit: Unit): BattleSceneUnit
+    private getBattleSceneUnit(unit: Unit): BattleSceneUnit
     {
       switch (unit.battleStats.side)
       {
@@ -293,7 +446,7 @@ module Rance
         }
       }
     }
-    getBattleSceneUnitOverlay(unit: Unit): BattleSceneUnitOverlay
+    private getBattleSceneUnitOverlay(unit: Unit): BattleSceneUnitOverlay
     {
       switch (unit.battleStats.side)
       {
@@ -309,23 +462,23 @@ module Rance
     }
 
     // RENDERING
-    renderOnce()
+    public renderOnce()
     {
       this.forceFrame = true;
       this.render();
     }
-    pause()
+    public pause()
     {
       this.isPaused = true;
       this.forceFrame = false;
     }
-    resume()
+    public resume()
     {
       this.isPaused = false;
       this.forceFrame = false;
       this.render();
     }
-    render(timeStamp?: number)
+    private render(timeStamp?: number)
     {
       if (this.isPaused)
       {

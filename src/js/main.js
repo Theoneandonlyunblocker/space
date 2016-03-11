@@ -10446,13 +10446,8 @@ var Rance;
                 }
                 var beforeDelay = Rance.Options.battleAnimationTiming.before;
                 var effectDuration = 0;
-                var effectDelay = 0;
                 if (effectData[i].sfx) {
                     effectDuration = effectData[i].sfx.duration * Rance.Options.battleAnimationTiming.effectDuration;
-                    effectDuration /= (1 + Math.log(i + 1));
-                    if (effectData[i].sfx.delay) {
-                        effectDelay = effectDuration * effectData[i].sfx.delay;
-                    }
                 }
                 effectData[i].user.sfxDuration = effectDuration;
                 effectData[i].target.sfxDuration = effectDuration;
@@ -10485,17 +10480,21 @@ var Rance;
                     }
                 };
                 var startEffectFN = function () {
-                    if (effectDelay > 0) {
-                        window.setTimeout(callEffectsFN, effectDelay);
-                        this.setState({
-                            battleEffectId: this.idGenerator++,
-                            battleEffectDuration: effectDuration,
-                            battleEffectSFX: effectData[i].sfx
-                        });
-                    }
-                    else {
-                        callEffectsFN(false);
-                    }
+                    // if (effectDelay > 0)
+                    // {
+                    //   window.setTimeout(callEffectsFN, effectDelay);
+                    //   this.setState(
+                    //   {
+                    //     battleEffectId: this.idGenerator++,
+                    //     battleEffectDuration: effectDuration,
+                    //     battleEffectSFX: effectData[i].sfx
+                    //   });
+                    // }
+                    // else
+                    // {
+                    //   callEffectsFN(false);
+                    // }
+                    callEffectsFN(false);
                     window.setTimeout(finishEffectFN, effectDuration + afterDelay);
                 }.bind(this);
                 window.setTimeout(startEffectFN, beforeDelay);
@@ -20409,8 +20408,7 @@ var Rance;
                     battleOverlay: app.moduleData.Templates.BattleSFX["guard"].battleOverlay,
                     userOverlay: overlayTestFN.bind(null, 0xFF0000),
                     enemyOverlay: overlayTestFN.bind(null, 0x00FF00),
-                    userSprite: spriteTestFN,
-                    delay: 0.3
+                    userSprite: spriteTestFN
                 };
                 var user = this.state.activeUnit;
                 var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
@@ -20423,7 +20421,14 @@ var Rance;
                 var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
                 var bs = this.battleScene;
                 var SFXTemplate = app.moduleData.Templates.BattleSFX["guard"];
-                bs.setActiveSFX(SFXTemplate, user, target);
+                bs.handleAbilityUse({
+                    user: user,
+                    target: target,
+                    SFXTemplate: SFXTemplate,
+                    triggerEffectCallback: function () { console.log("triggerEffect"); },
+                    afterFinishedCallback: function () { console.log("afterFinishedCallback"); }
+                });
+                // bs.setActiveSFX(SFXTemplate, user, target);
             },
             makeUnitElements: function (units) {
                 var unitElements = [];
@@ -24333,6 +24338,7 @@ var Rance;
                     var amountToSpawn = Rance.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
                     var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
                     var projectiles = [];
+                    var hasTriggeredEffect = false;
                     function animate() {
                         var currentTime = Date.now();
                         var elapsedTime = currentTime - lastTime;
@@ -24362,6 +24368,10 @@ var Rance;
                             }
                             if (!projectile.hasImpact && projectile.willImpact &&
                                 projectile.sprite.x >= projectile.impactX) {
+                                if (params.triggerEffect && !hasTriggeredEffect) {
+                                    hasTriggeredEffect = true;
+                                    params.triggerEffect();
+                                }
                                 projectile.hasImpact = true;
                                 var impactTextures = Rance.getRandomArrayItem(props.impactTextures);
                                 var impactClip = new PIXI.extras.MovieClip(impactTextures);
@@ -24467,12 +24477,17 @@ var Rance;
                         }
                     };
                     var travelTime = 0.2;
+                    var hasTriggeredEffect = false;
                     var syncUniformsFN = function (time) {
                         if (time < travelTime) {
                             var adjustedtime = time / travelTime;
                             uniforms.frontier.value = maxFrontier * adjustedtime;
                         }
                         else {
+                            if (props.triggerEffect && !hasTriggeredEffect) {
+                                hasTriggeredEffect = true;
+                                props.triggerEffect();
+                            }
                             var adjustedtime = Rance.getRelativeValue(time, travelTime - 0.02, 1);
                             adjustedtime = Math.pow(adjustedtime, 4);
                             uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * adjustedtime;
@@ -24531,12 +24546,12 @@ var Rance;
                     BattleSFX.rocketAttack = {
                         duration: 1500,
                         battleOverlay: DefaultModule.BattleSFXFunctions.rocketAttack,
-                        delay: 0.3
+                        SFXWillTriggerEffect: true
                     };
                     BattleSFX.guard = {
                         duration: 1000,
                         battleOverlay: DefaultModule.BattleSFXFunctions.guard,
-                        delay: 0.3
+                        SFXWillTriggerEffect: true
                     };
                 })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
@@ -28622,6 +28637,7 @@ var Rance;
                 facingRight: this.userUnit.battleStats.side === "side1",
                 renderer: this.renderer,
                 triggerStart: props.triggerStart,
+                triggerEffect: this.triggerEffectCallback,
                 triggerEnd: props.triggerEnd
             });
         };
@@ -28661,6 +28677,102 @@ var Rance;
             }
             this.executeIfBothUnitsHaveFinishedUpdating();
         };
+        BattleScene.prototype.handleAbilityUse = function (props) {
+            this.clearActiveSFX();
+            this.userUnit = props.user;
+            this.targetUnit = props.target;
+            this.activeSFX = props.SFXTemplate;
+            // this.afterUseDelayHasFinishedCallback = props.afterFinishedCallback;
+            this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
+            this.activeSFXHasFinishedCallback = this.cleanUpAfterSFX.bind(this);
+            this.triggerEffectCallback = props.triggerEffectCallback;
+            this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
+            this.prepareSFX();
+            // this.prepareSFX();
+            // this.playSFX();
+            // props.triggerEffectCallback();
+            // this.cleanUpAfterSFX();
+            // props.afterFinishedCallback();
+        };
+        BattleScene.prototype.executeBeforeUseDelayHasFinishedCallback = function () {
+            if (!this.beforeUseDelayHasFinishedCallback) {
+                throw new Error("No callback set for 'before ability use delay' finish.");
+            }
+            this.beforeUseDelayHasFinishedCallback();
+            this.beforeUseDelayHasFinishedCallback = null;
+        };
+        BattleScene.prototype.executeTriggerEffectCallback = function () {
+            if (!this.triggerEffectCallback) {
+                throw new Error("No callback set for triggering battle effects.");
+            }
+            this.triggerEffectCallback();
+            this.triggerEffectCallback = null;
+        };
+        BattleScene.prototype.executeActiveSFXHasFinishedCallback = function () {
+            if (!this.activeSFXHasFinishedCallback) {
+                throw new Error("No callback set for active SFX finish.");
+            }
+            this.activeSFXHasFinishedCallback();
+            this.activeSFXHasFinishedCallback = null;
+        };
+        BattleScene.prototype.executeAfterUseDelayHasFinishedCallback = function () {
+            if (!this.afterUseDelayHasFinishedCallback) {
+                throw new Error("No callback set for 'after ability use delay' finish.");
+            }
+            this.afterUseDelayHasFinishedCallback();
+            this.afterUseDelayHasFinishedCallback = null;
+        };
+        BattleScene.prototype.executeAbilityUseHasFinishedCallback = function () {
+            if (!this.abilityUseHasFinishedCallback) {
+                throw new Error("No callback set for ability use finish.");
+            }
+            this.abilityUseHasFinishedCallback();
+            this.abilityUseHasFinishedCallback = null;
+        };
+        BattleScene.prototype.prepareSFX = function () {
+            var beforeUseDelay = Rance.Options.battleAnimationTiming.before;
+            var afterUnitsHaveFinishedUpdatingCallback = function () {
+                if (beforeUseDelay >= 0) {
+                    window.setTimeout(this.executeBeforeUseDelayHasFinishedCallback.bind(this), beforeUseDelay);
+                }
+                else {
+                    this.executeBeforeUseDelayHasFinishedCallback();
+                }
+            }.bind(this);
+            this.updateUnits(afterUnitsHaveFinishedUpdatingCallback);
+        };
+        BattleScene.prototype.playSFX = function () {
+            var SFXDuration = Rance.Options.battleAnimationTiming.effectDuration *
+                this.activeSFX.duration;
+            if (SFXDuration <= 0) {
+                this.executeTriggerEffectCallback();
+                this.handleActiveSFXEnd();
+            }
+            else {
+                this.triggerSFXStart(this.activeSFX, this.userUnit, this.targetUnit, this.handleActiveSFXEnd.bind(this));
+            }
+        };
+        BattleScene.prototype.handleActiveSFXEnd = function () {
+            this.activeSFX = null;
+            this.clearBattleOverlay();
+            this.clearUnitOverlays();
+            this.executeActiveSFXHasFinishedCallback();
+        };
+        BattleScene.prototype.cleanUpAfterSFX = function () {
+            var afterUseDelay = Rance.Options.battleAnimationTiming.after;
+            this.afterUseDelayHasFinishedCallback = function () {
+                this.userUnit = null;
+                this.targetUnit = null;
+                this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
+            }.bind(this);
+            // wait for after delay
+            if (afterUseDelay >= 0) {
+                window.setTimeout(this.executeAfterUseDelayHasFinishedCallback.bind(this), afterUseDelay);
+            }
+            else {
+                this.executeAfterUseDelayHasFinishedCallback();
+            }
+        };
         BattleScene.prototype.updateUnits = function (afterFinishedUpdatingCallback) {
             var boundAfterFinishFN1 = null;
             var boundAfterFinishFN2 = null;
@@ -28695,18 +28807,19 @@ var Rance;
             this.clearBattleOverlay();
             this.clearUnitOverlays();
         };
-        BattleScene.prototype.triggerSFXStart = function (SFXTemplate, user, target) {
+        BattleScene.prototype.triggerSFXStart = function (SFXTemplate, user, target, afterFinishedCallback) {
             this.activeSFX = SFXTemplate;
             this.side1Unit.setSFX(SFXTemplate, user, target);
             this.side2Unit.setSFX(SFXTemplate, user, target);
             this.side1Overlay.setSFX(SFXTemplate, user, target);
             this.side2Overlay.setSFX(SFXTemplate, user, target);
-            this.makeBattleOverlay();
+            this.makeBattleOverlay(afterFinishedCallback);
         };
-        BattleScene.prototype.makeBattleOverlay = function () {
+        BattleScene.prototype.makeBattleOverlay = function (afterFinishedCallback) {
+            if (afterFinishedCallback === void 0) { afterFinishedCallback = this.clearActiveSFX.bind(this); }
             var SFXParams = this.getSFXParams({
                 triggerStart: this.addBattleOverlay.bind(this),
-                triggerEnd: this.clearActiveSFX.bind(this)
+                triggerEnd: afterFinishedCallback
             });
             this.activeSFX.battleOverlay(SFXParams);
         };
