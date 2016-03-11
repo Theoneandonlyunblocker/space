@@ -21,9 +21,14 @@ module Rance
         this.forceUpdate();
         eventManager.dispatchEvent("updateNotificationLog");
       },
-      componentDidMount: function()
+      scrollToHighlighted: function()
       {
-        // TODO ui | scroll to highlighted
+        if (this.props.highlightedOptionKey)
+        {
+          var domNode = this.refs["body"].getDOMNode();
+          var highlightedNode = domNode.getElementsByClassName("highlighted")[0];
+          domNode.scrollTop = highlightedNode.offsetTop + domNode.scrollHeight / 3;
+        }
       },
       render: function()
       {
@@ -90,7 +95,8 @@ module Rance
             ),
             React.DOM.div(
             {
-              className: "notification-filter-list-body"
+              className: "notification-filter-list-body",
+              ref: "body"
             },
               filterGroupElements
             )

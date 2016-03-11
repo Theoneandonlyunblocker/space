@@ -8,6 +8,9 @@ module Rance
 
       render: function()
       {
+        var contentProps = this.props.contentProps;
+        contentProps.ref = "content";
+
         return(
           React.DOM.div(
           {
@@ -22,7 +25,7 @@ module Rance
             {
               className: "light-box-content"
             },
-              this.props.contentConstructor(this.props.contentProps)
+              this.props.contentConstructor(contentProps)
             )
           )
         );

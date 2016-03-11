@@ -25,6 +25,13 @@ module Rance
       
       makePopup: function()
       {
+        var scrollToHighlightedFN = function()
+        {
+          var popup = this.refs[this.popupId - 1];
+          var content = popup.refs["content"].refs["content"];
+          content.scrollToHighlighted();
+        }.bind(this.refs.popupManager);
+
         var popupId = this.refs.popupManager.makePopup(
         {
           contentConstructor: UIComponents.TopMenuPopup,
@@ -44,7 +51,8 @@ module Rance
             preventAutoResize: true,
             resizable: true,
             minWidth: 440,
-            minHeight: 150
+            minHeight: 150,
+            finishedMountingCallback: scrollToHighlightedFN
           }
         });
 

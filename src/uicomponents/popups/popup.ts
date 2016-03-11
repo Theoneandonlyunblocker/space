@@ -23,7 +23,8 @@ module Rance
 
         closePopup: React.PropTypes.func.isRequired,
         incrementZIndex: React.PropTypes.func.isRequired,
-        getInitialPosition: React.PropTypes.func.isRequired
+        getInitialPosition: React.PropTypes.func.isRequired,
+        finishedMountingCallback: React.PropTypes.func
       },
 
       getInitialState: function()
@@ -104,7 +105,7 @@ module Rance
         this.setState(
         {
           zIndex: this.props.incrementZIndex(this.state.zIndex)
-        });
+        }, this.props.finishedMountingCallback);
       },
 
       handleResizeMove: function(x: number, y: number)
@@ -147,6 +148,7 @@ module Rance
         var contentProps = this.props.contentProps;
 
         contentProps.closePopup = this.props.closePopup
+        contentProps.ref = "content";
 
         var resizeHandle = !this.props.resizable ? null : UIComponents.PopupResizeHandle(
         {

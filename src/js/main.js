@@ -12471,7 +12471,8 @@ var Rance;
                 contentProps: React.PropTypes.object.isRequired,
                 closePopup: React.PropTypes.func.isRequired,
                 incrementZIndex: React.PropTypes.func.isRequired,
-                getInitialPosition: React.PropTypes.func.isRequired
+                getInitialPosition: React.PropTypes.func.isRequired,
+                finishedMountingCallback: React.PropTypes.func
             },
             getInitialState: function () {
                 return ({
@@ -12528,7 +12529,7 @@ var Rance;
                 this.dragPos.height = Math.min(window.innerHeight, rect.height);
                 this.setState({
                     zIndex: this.props.incrementZIndex(this.state.zIndex)
-                });
+                }, this.props.finishedMountingCallback);
             },
             handleResizeMove: function (x, y) {
                 var minWidth = this.props.minWidth || 0;
@@ -12560,6 +12561,7 @@ var Rance;
                 }
                 var contentProps = this.props.contentProps;
                 contentProps.closePopup = this.props.closePopup;
+                contentProps.ref = "content";
                 var resizeHandle = !this.props.resizable ? null : UIComponents.PopupResizeHandle({
                     handleResize: this.handleResizeMove
                 });
@@ -12631,6 +12633,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.PopupManager = React.createClass({
             displayName: "PopupManager",
+            popupId: 0,
             propTypes: {
                 onlyAllowOne: React.PropTypes.bool
             },
@@ -12697,8 +12700,6 @@ var Rance;
                 }
             },
             getPopupId: function () {
-                if (!this.popupId)
-                    this.popupId = 0;
                 return this.popupId++;
             },
             getPopup: function (id) {
@@ -14428,8 +14429,12 @@ var Rance;
                 this.forceUpdate();
                 Rance.eventManager.dispatchEvent("updateNotificationLog");
             },
-            componentDidMount: function () {
-                // TODO ui | scroll to highlighted
+            scrollToHighlighted: function () {
+                if (this.props.highlightedOptionKey) {
+                    var domNode = this.refs["body"].getDOMNode();
+                    var highlightedNode = domNode.getElementsByClassName("highlighted")[0];
+                    domNode.scrollTop = highlightedNode.offsetTop + domNode.scrollHeight / 3;
+                }
             },
             render: function () {
                 var filter = this.props.filter;
@@ -14469,7 +14474,8 @@ var Rance;
                 }, "Show"), React.DOM.div({
                     className: "notification-filter-list-item-filters"
                 }, "Always", "Involved", "Never")), React.DOM.div({
-                    className: "notification-filter-list-body"
+                    className: "notification-filter-list-body",
+                    ref: "body"
                 }, filterGroupElements)));
             }
         });
@@ -14494,6 +14500,11 @@ var Rance;
                 });
             },
             makePopup: function () {
+                var scrollToHighlightedFN = function () {
+                    var popup = this.refs[this.popupId - 1];
+                    var content = popup.refs["content"].refs["content"];
+                    content.scrollToHighlighted();
+                }.bind(this.refs.popupManager);
                 var popupId = this.refs.popupManager.makePopup({
                     contentConstructor: UIComponents.TopMenuPopup,
                     contentProps: {
@@ -14509,7 +14520,8 @@ var Rance;
                         preventAutoResize: true,
                         resizable: true,
                         minWidth: 440,
-                        minHeight: 150
+                        minHeight: 150,
+                        finishedMountingCallback: scrollToHighlightedFN
                     }
                 });
                 this.setState({
@@ -15783,6 +15795,8 @@ var Rance;
         UIComponents.TopMenuPopup = React.createClass({
             displayName: "TopMenuPopup",
             render: function () {
+                var contentProps = this.props.contentProps;
+                contentProps.ref = "content";
                 return (React.DOM.div({
                     className: "top-menu-popup-container draggable-container"
                 }, React.DOM.button({
@@ -15790,7 +15804,7 @@ var Rance;
                     onClick: this.props.handleClose
                 }, "X"), React.DOM.div({
                     className: "light-box-content"
-                }, this.props.contentConstructor(this.props.contentProps))));
+                }, this.props.contentConstructor(contentProps))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));

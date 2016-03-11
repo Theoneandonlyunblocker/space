@@ -8,6 +8,7 @@ module Rance
     export var PopupManager = React.createClass(
     {
       displayName: "PopupManager",
+      popupId: 0,
 
       propTypes:
       {
@@ -102,8 +103,6 @@ module Rance
 
       getPopupId: function()
       {
-        if (!this.popupId) this.popupId = 0;
-
         return this.popupId++;
       },
 
