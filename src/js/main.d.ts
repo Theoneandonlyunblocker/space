@@ -2598,8 +2598,6 @@ declare module Rance {
         var FlagMaker: React.Factory<{}>;
     }
 }
-declare var tester: any;
-declare var bs: Rance.BattleScene;
 declare module Rance {
     module UIComponents {
         var BattleSceneTester: React.Factory<{}>;

@@ -1,6 +1,3 @@
-var tester: any;
-var bs: Rance.BattleScene;
-
 module Rance
 {
   export module UIComponents
@@ -50,8 +47,6 @@ module Rance
       {
         var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
         battleScene.resume();
-        tester = this;
-        bs = battleScene;
       },
 
       makeUnit: function()

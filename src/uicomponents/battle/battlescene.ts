@@ -84,7 +84,6 @@ module Rance
 
           if (shouldPlaySFX)
           {
-            console.log("ui component will play sfx", newProps.targetUnit.name);
             battleScene.handleAbilityUse(
             {
               user: newProps.userUnit,
@@ -97,21 +96,25 @@ module Rance
           else if (activeSFXChanged)
           {
             battleScene.clearActiveSFX();
-            battleScene.updateUnits();
           }
-          else if (!newProps.activeSFX)
+
+          var unitsHaveUpdated = false;
+          [
+            "targetUnit",
+            "userUnit",
+            "activeUnit",
+            "hoveredUnit"
+          ].forEach(function(unitKey: string)
           {
-            debugger;
-            [
-              "targetUnit",
-              "userUnit",
-              "activeUnit",
-              "hoveredUnit"
-            ].forEach(function(unitKey: string)
+            if (battleScene[unitKey] !== newProps[unitKey])
             {
-              battleScene[unitKey] = newProps[unitKey];
-            });
-            
+              unitsHaveUpdated = true;
+            }
+            battleScene[unitKey] = newProps[unitKey];
+          });
+
+          if (unitsHaveUpdated && !shouldPlaySFX && !newProps.activeSFX)
+          {
             battleScene.updateUnits();
           }
         }

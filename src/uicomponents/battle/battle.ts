@@ -11,6 +11,8 @@ module Rance
 {
   export module UIComponents
   {
+    // TODO refactor
+    // should have separate non-react class for battle logic
     export var Battle = React.createClass(
     {
       displayName: "Battle",
@@ -42,6 +44,7 @@ module Rance
           userUnit: null,
           activeUnit: null,
           hoveredUnit: null,
+          highlightedUnit: null,
 
           battleSceneUnit1StartingStrength: null,
           battleSceneUnit2StartingStrength: null,
@@ -87,6 +90,7 @@ module Rance
         this.setState(
         {
           hoveredUnit: null,
+          highlightedUnit: null,
           abilityTooltip:
           {
             parentElement: null
@@ -100,9 +104,11 @@ module Rance
       },
       handleMouseLeaveUnit: function(e: React.MouseEvent)
       {
-        this.tempHoveredUnit = null;
-
-        if (!this.state.hoveredUnit || this.state.playingBattleEffect) return;
+        if (!this.state.hoveredUnit || this.state.playingBattleEffect)
+        {
+          this.tempHoveredUnit = null;
+          return;
+        }
 
         var nativeEvent = <MouseEvent> e.nativeEvent;
 
@@ -148,8 +154,10 @@ module Rance
             parentElement: parentElement,
             facesLeft: facesLeft
           },
-          hoveredUnit: unit
+          hoveredUnit: unit,
+          highlightedUnit: unit
         });
+
 
         this.setBattleSceneUnits(unit);
       },
@@ -268,11 +276,6 @@ module Rance
         var previousUnit1Strength = side1Unit ? side1Unit.currentHealth : null;
         var previousUnit2Strength = side2Unit ? side2Unit.currentHealth : null;
 
-        if (!this.tempHoveredUnit)
-        {
-          this.tempHoveredUnit = this.state.hoveredUnit;
-        }
-
         var hasSFX = effectData[i].sfx;
         var shouldDeferCallingEffects = false;
         var effectDuration = 0;
@@ -312,7 +315,8 @@ module Rance
           battleSceneUnit2: side2Unit,
           playingBattleEffect: true,
 
-          hoveredUnit: abilityData.originalTarget,
+          hoveredUnit: null,
+          highlightedUnit: abilityData.originalTarget,
           userUnit: effectData[i].user,
           targetUnit: effectData[i].target,
 
@@ -334,6 +338,15 @@ module Rance
       },
       clearBattleEffect: function()
       {
+        var newHoveredUnit: Unit = null;
+        if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle())
+        {
+          newHoveredUnit = this.tempHoveredUnit;
+          this.tempHoveredUnit = null;
+        }
+        var afterStateUpdateCallback = newHoveredUnit ?
+          this.handleMouseEnterUnit.bind(this, newHoveredUnit) : this.clearHoveredUnit;
+
         this.setState(
         {
           playingBattleEffect: false,
@@ -343,16 +356,10 @@ module Rance
           afterAbilityFinishedCallback: null,
           triggerEffectCallback: null,
           hoveredUnit: null,
+          highlightedUnit: null,
           targetUnit: null,
           userUnit: null
-        });
-
-        console.log(this.tempHoveredUnit.name);
-        if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle())
-        {
-          this.handleMouseEnterUnit(this.tempHoveredUnit);
-          this.tempHoveredUnit = null;
-        }
+        }, afterStateUpdateCallback);
       },
 
       handleTurnEnd: function()
@@ -503,7 +510,7 @@ module Rance
             turnOrder: battle.turnOrder,
             unitsBySide: battle.unitsBySide,
             potentialDelay: this.state.potentialDelay,
-            hoveredUnit: this.state.hoveredUnit,
+            hoveredUnit: this.state.highlightedUnit,
             onMouseEnterUnit: this.handleMouseEnterUnit,
             onMouseLeaveUnit: this.handleMouseLeaveUnit
           })
@@ -641,7 +648,7 @@ module Rance
                   formation: battle.side1,
                   facesLeft: false,
                   activeUnit: battle.activeUnit,
-                  hoveredUnit: this.state.hoveredUnit,
+                  hoveredUnit: this.state.highlightedUnit,
                   hoveredAbility: this.state.hoveredAbility,
                   activeTargets: activeTargets,
                   targetsInPotentialArea: this.state.targetsInPotentialArea,
@@ -660,7 +667,7 @@ module Rance
                   formation: battle.side2,
                   facesLeft: true,
                   activeUnit: battle.activeUnit,
-                  hoveredUnit: this.state.hoveredUnit,
+                  hoveredUnit: this.state.highlightedUnit,
                   hoveredAbility: this.state.hoveredAbility,
                   activeTargets: activeTargets,
                   targetsInPotentialArea: this.state.targetsInPotentialArea,

@@ -9981,7 +9981,6 @@ var Rance;
                             newProps.targetUnit !== this.props.targetUnit ||
                             newProps.userUnit !== this.props.userUnit));
                     if (shouldPlaySFX) {
-                        console.log("ui component will play sfx", newProps.targetUnit.name);
                         battleScene.handleAbilityUse({
                             user: newProps.userUnit,
                             target: newProps.targetUnit,
@@ -9992,18 +9991,20 @@ var Rance;
                     }
                     else if (activeSFXChanged) {
                         battleScene.clearActiveSFX();
-                        battleScene.updateUnits();
                     }
-                    else if (!newProps.activeSFX) {
-                        debugger;
-                        [
-                            "targetUnit",
-                            "userUnit",
-                            "activeUnit",
-                            "hoveredUnit"
-                        ].forEach(function (unitKey) {
-                            battleScene[unitKey] = newProps[unitKey];
-                        });
+                    var unitsHaveUpdated = false;
+                    [
+                        "targetUnit",
+                        "userUnit",
+                        "activeUnit",
+                        "hoveredUnit"
+                    ].forEach(function (unitKey) {
+                        if (battleScene[unitKey] !== newProps[unitKey]) {
+                            unitsHaveUpdated = true;
+                        }
+                        battleScene[unitKey] = newProps[unitKey];
+                    });
+                    if (unitsHaveUpdated && !shouldPlaySFX && !newProps.activeSFX) {
                         battleScene.updateUnits();
                     }
                 }
@@ -10274,6 +10275,8 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
+        // TODO refactor
+        // should have separate non-react class for battle logic
         UIComponents.Battle = React.createClass({
             displayName: "Battle",
             // set as a property of the class instead of its state
@@ -10297,6 +10300,7 @@ var Rance;
                     userUnit: null,
                     activeUnit: null,
                     hoveredUnit: null,
+                    highlightedUnit: null,
                     battleSceneUnit1StartingStrength: null,
                     battleSceneUnit2StartingStrength: null,
                     battleSceneUnit1: null,
@@ -10330,6 +10334,7 @@ var Rance;
                 this.tempHoveredUnit = null;
                 this.setState({
                     hoveredUnit: null,
+                    highlightedUnit: null,
                     abilityTooltip: {
                         parentElement: null
                     },
@@ -10340,9 +10345,10 @@ var Rance;
                 this.setBattleSceneUnits(null);
             },
             handleMouseLeaveUnit: function (e) {
-                this.tempHoveredUnit = null;
-                if (!this.state.hoveredUnit || this.state.playingBattleEffect)
+                if (!this.state.hoveredUnit || this.state.playingBattleEffect) {
+                    this.tempHoveredUnit = null;
                     return;
+                }
                 var nativeEvent = e.nativeEvent;
                 var toElement = nativeEvent.toElement || nativeEvent.relatedTarget;
                 if (!toElement) {
@@ -10371,7 +10377,8 @@ var Rance;
                         parentElement: parentElement,
                         facesLeft: facesLeft
                     },
-                    hoveredUnit: unit
+                    hoveredUnit: unit,
+                    highlightedUnit: unit
                 });
                 this.setBattleSceneUnits(unit);
             },
@@ -10452,9 +10459,6 @@ var Rance;
                 });
                 var previousUnit1Strength = side1Unit ? side1Unit.currentHealth : null;
                 var previousUnit2Strength = side2Unit ? side2Unit.currentHealth : null;
-                if (!this.tempHoveredUnit) {
-                    this.tempHoveredUnit = this.state.hoveredUnit;
-                }
                 var hasSFX = effectData[i].sfx;
                 var shouldDeferCallingEffects = false;
                 var effectDuration = 0;
@@ -10483,7 +10487,8 @@ var Rance;
                     battleSceneUnit1: side1Unit,
                     battleSceneUnit2: side2Unit,
                     playingBattleEffect: true,
-                    hoveredUnit: abilityData.originalTarget,
+                    hoveredUnit: null,
+                    highlightedUnit: abilityData.originalTarget,
                     userUnit: effectData[i].user,
                     targetUnit: effectData[i].target,
                     battleEffectId: hasSFX ? this.idGenerator++ : null,
@@ -10500,6 +10505,13 @@ var Rance;
                 });
             },
             clearBattleEffect: function () {
+                var newHoveredUnit = null;
+                if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle()) {
+                    newHoveredUnit = this.tempHoveredUnit;
+                    this.tempHoveredUnit = null;
+                }
+                var afterStateUpdateCallback = newHoveredUnit ?
+                    this.handleMouseEnterUnit.bind(this, newHoveredUnit) : this.clearHoveredUnit;
                 this.setState({
                     playingBattleEffect: false,
                     battleEffectId: undefined,
@@ -10508,14 +10520,10 @@ var Rance;
                     afterAbilityFinishedCallback: null,
                     triggerEffectCallback: null,
                     hoveredUnit: null,
+                    highlightedUnit: null,
                     targetUnit: null,
                     userUnit: null
-                });
-                console.log(this.tempHoveredUnit.name);
-                if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle()) {
-                    this.handleMouseEnterUnit(this.tempHoveredUnit);
-                    this.tempHoveredUnit = null;
-                }
+                }, afterStateUpdateCallback);
             },
             handleTurnEnd: function () {
                 if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable()) {
@@ -10620,7 +10628,7 @@ var Rance;
                         turnOrder: battle.turnOrder,
                         unitsBySide: battle.unitsBySide,
                         potentialDelay: this.state.potentialDelay,
-                        hoveredUnit: this.state.hoveredUnit,
+                        hoveredUnit: this.state.highlightedUnit,
                         onMouseEnterUnit: this.handleMouseEnterUnit,
                         onMouseLeaveUnit: this.handleMouseLeaveUnit
                     });
@@ -10710,7 +10718,7 @@ var Rance;
                     formation: battle.side1,
                     facesLeft: false,
                     activeUnit: battle.activeUnit,
-                    hoveredUnit: this.state.hoveredUnit,
+                    hoveredUnit: this.state.highlightedUnit,
                     hoveredAbility: this.state.hoveredAbility,
                     activeTargets: activeTargets,
                     targetsInPotentialArea: this.state.targetsInPotentialArea,
@@ -10725,7 +10733,7 @@ var Rance;
                     formation: battle.side2,
                     facesLeft: true,
                     activeUnit: battle.activeUnit,
-                    hoveredUnit: this.state.hoveredUnit,
+                    hoveredUnit: this.state.highlightedUnit,
                     hoveredAbility: this.state.hoveredAbility,
                     activeTargets: activeTargets,
                     targetsInPotentialArea: this.state.targetsInPotentialArea,
@@ -20262,8 +20270,6 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-var tester;
-var bs;
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -20300,8 +20306,6 @@ var Rance;
             componentDidMount: function () {
                 var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
                 battleScene.resume();
-                tester = this;
-                bs = battleScene;
             },
             makeUnit: function () {
                 var template = Rance.getRandomProperty(app.moduleData.Templates.Units);
@@ -28821,11 +28825,16 @@ var Rance;
         };
         BattleScene.prototype.makeBattleOverlay = function (afterFinishedCallback) {
             if (afterFinishedCallback === void 0) { afterFinishedCallback = this.clearActiveSFX.bind(this); }
-            var SFXParams = this.getSFXParams({
-                triggerStart: this.addBattleOverlay.bind(this),
-                triggerEnd: afterFinishedCallback
-            });
-            this.activeSFX.battleOverlay(SFXParams);
+            if (!this.activeSFX.battleOverlay) {
+                afterFinishedCallback();
+            }
+            else {
+                var SFXParams = this.getSFXParams({
+                    triggerStart: this.addBattleOverlay.bind(this),
+                    triggerEnd: afterFinishedCallback
+                });
+                this.activeSFX.battleOverlay(SFXParams);
+            }
         };
         BattleScene.prototype.addBattleOverlay = function (overlay) {
             this.layers.battleOverlay.addChild(overlay);
