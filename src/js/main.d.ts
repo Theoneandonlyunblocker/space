@@ -1844,7 +1844,7 @@ declare module Rance {
         var BattleSceneFlag: React.Factory<any>;
     }
 }
-declare var bs2: any;
+declare var bs: any;
 declare module Rance {
     module UIComponents {
         var BattleScene: React.Factory<any>;
@@ -3965,7 +3965,6 @@ declare module Rance {
         private handleActiveSFXEnd();
         private cleanUpAfterSFX();
         updateUnits(afterFinishedUpdatingCallback?: () => void): void;
-        setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
         clearActiveSFX(): void;
         private triggerSFXStart(SFXTemplate, user, target, afterFinishedCallback?);
         private makeBattleOverlay(afterFinishedCallback?);

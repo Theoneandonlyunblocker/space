@@ -3,7 +3,7 @@
 
 /// <reference path="battlesceneflag.ts" />
 
-var bs2: any = null;
+var bs: any;
 
 module Rance
 {
@@ -25,6 +25,10 @@ module Rance
         hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
 
         activeSFX: React.PropTypes.object, // Templates.IBattleSFXTemplate
+
+        afterAbilityFinishedCallback: React.PropTypes.func,
+        triggerEffectCallback: React.PropTypes.func,
+
         humanPlayerWonBattle: React.PropTypes.bool,
 
         side1Player: React.PropTypes.instanceOf(Rance.Player),
@@ -51,6 +55,7 @@ module Rance
 
       componentWillReceiveProps: function(newProps: any)
       {
+        bs = this;
         var self = this;
 
         if (this.props.battleState === "start" && newProps.battleState === "active")
@@ -64,27 +69,39 @@ module Rance
           this.battleScene = null;
         }
 
-        if (this.battleScene)
+        var battleScene: Rance.BattleScene = this.battleScene;
+
+        if (battleScene)
         {
           var activeSFXChanged = newProps.activeSFX !== this.props.activeSFX;
-          var shouldPlaySFX = newProps.activeSFX &&
+          var shouldPlaySFX = Boolean(newProps.activeSFX &&
           (
             activeSFXChanged ||
             newProps.targetUnit !== this.props.targetUnit ||
             newProps.userUnit !== this.props.userUnit
-          );
+          ));
+
 
           if (shouldPlaySFX)
           {
-            this.battleScene.setActiveSFX(newProps.activeSFX, newProps.userUnit, newProps.targetUnit);
+            console.log("ui component will play sfx", newProps.targetUnit.name);
+            battleScene.handleAbilityUse(
+            {
+              user: newProps.userUnit,
+              target: newProps.targetUnit,
+              SFXTemplate: newProps.activeSFX,
+              afterFinishedCallback: newProps.afterAbilityFinishedCallback,
+              triggerEffectCallback: newProps.triggerEffectCallback
+            });
           }
           else if (activeSFXChanged)
           {
-            this.battleScene.clearActiveSFX();
-            this.battleScene.updateUnits();
+            battleScene.clearActiveSFX();
+            battleScene.updateUnits();
           }
           else if (!newProps.activeSFX)
           {
+            debugger;
             [
               "targetUnit",
               "userUnit",
@@ -92,17 +109,12 @@ module Rance
               "hoveredUnit"
             ].forEach(function(unitKey: string)
             {
-              self.battleScene[unitKey] = newProps[unitKey];
+              battleScene[unitKey] = newProps[unitKey];
             });
             
-            this.battleScene.updateUnits();
+            battleScene.updateUnits();
           }
         }
-      },
-      
-      componentDidMount: function()
-      {
-        bs2 = this;
       },
 
       render: function()

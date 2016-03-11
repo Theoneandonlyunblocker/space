@@ -226,7 +226,14 @@ module Rance
         var bs: Rance.BattleScene = this.battleScene;
         var SFXTemplate = testSFX;
 
-        bs.setActiveSFX(SFXTemplate, user, target);
+        bs.handleAbilityUse(
+        {
+          user: user,
+          target: target,
+          SFXTemplate: SFXTemplate,
+          triggerEffectCallback: function(){console.log("triggerEffect")},
+          afterFinishedCallback: function(){console.log("afterFinishedCallback")}
+        });
       },
 
       handleTestAbility2: function()
@@ -245,7 +252,6 @@ module Rance
           triggerEffectCallback: function(){console.log("triggerEffect")},
           afterFinishedCallback: function(){console.log("afterFinishedCallback")}
         });
-        // bs.setActiveSFX(SFXTemplate, user, target);
       },
 
       makeUnitElements: function(units: Unit[])

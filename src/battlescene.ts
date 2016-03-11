@@ -151,7 +151,7 @@ module Rance
         facingRight: this.userUnit.battleStats.side === "side1",
         renderer: this.renderer,
         triggerStart: props.triggerStart,
-        triggerEffect: this.triggerEffectCallback,
+        triggerEffect: this.executeTriggerEffectCallback.bind(this),
         triggerEnd: props.triggerEnd
       });
     }
@@ -183,14 +183,15 @@ module Rance
     }
     private executeIfBothUnitsHaveFinishedUpdating()
     {
-      if (!this.afterUnitsHaveFinishedUpdatingCallback || !this.haveBothUnitsFinishedUpdating())
+      if (this.afterUnitsHaveFinishedUpdatingCallback && this.haveBothUnitsFinishedUpdating())
       {
-        return;
+        var temp = this.afterUnitsHaveFinishedUpdatingCallback
+        this.afterUnitsHaveFinishedUpdatingCallback = null;
+        temp();
       }
       else
       {
-        this.afterUnitsHaveFinishedUpdatingCallback();
-        this.afterUnitsHaveFinishedUpdatingCallback = null;
+        return;
       }
     }
     private finishUpdatingUnit(side: UnitBattleSide)
@@ -221,7 +222,6 @@ module Rance
       this.targetUnit = props.target;
       this.activeSFX = props.SFXTemplate;
 
-      // this.afterUseDelayHasFinishedCallback = props.afterFinishedCallback;
 
       this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
       this.activeSFXHasFinishedCallback = this.cleanUpAfterSFX.bind(this);
@@ -244,18 +244,21 @@ module Rance
         throw new Error("No callback set for 'before ability use delay' finish.");
       }
 
-      this.beforeUseDelayHasFinishedCallback();
+      var temp = this.beforeUseDelayHasFinishedCallback;
       this.beforeUseDelayHasFinishedCallback = null;
+      temp();
     }
     private executeTriggerEffectCallback()
     {
       if (!this.triggerEffectCallback)
       {
-        throw new Error("No callback set for triggering battle effects.");
+        return;
+        // throw new Error("No callback set for triggering battle effects.");
       }
 
-      this.triggerEffectCallback();
+      var temp = this.triggerEffectCallback;
       this.triggerEffectCallback = null;
+      temp();
     }
     private executeActiveSFXHasFinishedCallback()
     {
@@ -264,8 +267,9 @@ module Rance
         throw new Error("No callback set for active SFX finish.");
       }
 
-      this.activeSFXHasFinishedCallback();
+      var temp = this.activeSFXHasFinishedCallback;
       this.activeSFXHasFinishedCallback = null;
+      temp();
     }
     private executeAfterUseDelayHasFinishedCallback()
     {
@@ -274,8 +278,9 @@ module Rance
         throw new Error("No callback set for 'after ability use delay' finish.");
       }
 
-      this.afterUseDelayHasFinishedCallback();
+      var temp = this.afterUseDelayHasFinishedCallback;
       this.afterUseDelayHasFinishedCallback = null;
+      temp();
     }
     private executeAbilityUseHasFinishedCallback()
     {
@@ -284,8 +289,9 @@ module Rance
         throw new Error("No callback set for ability use finish.");
       }
 
-      this.abilityUseHasFinishedCallback();
+      var temp = this.abilityUseHasFinishedCallback;
       this.abilityUseHasFinishedCallback = null;
+      temp();
     }
 
     private prepareSFX()
@@ -340,7 +346,7 @@ module Rance
         this.targetUnit = null;
         this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
       }.bind(this);
-      // wait for after delay
+
       if (afterUseDelay >= 0)
       {
         window.setTimeout(this.executeAfterUseDelayHasFinishedCallback.bind(this), afterUseDelay);
@@ -373,21 +379,6 @@ module Rance
 
       this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
       this.side2Overlay.activeUnit = activeSide2Unit;
-    }
-    public setActiveSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
-    {
-      this.clearActiveSFX();
-
-      if (Options.battleAnimationTiming.effectDuration <= 0)
-      {
-        this.updateUnits();
-        return;
-      }
-
-      this.userUnit = user;
-      this.targetUnit = target;
-
-      this.updateUnits(this.triggerSFXStart.bind(this, SFXTemplate, user, target));
     }
     public clearActiveSFX()
     {

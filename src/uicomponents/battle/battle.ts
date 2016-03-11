@@ -51,6 +51,8 @@ module Rance
           battleEffectId: undefined,
           battleEffectDuration: null,
           battleEffectSFX: null,
+          afterAbilityFinishedCallback: null,
+          triggerEffectCallback: null,
           battleIsStarting: true
         });
       },
@@ -271,48 +273,17 @@ module Rance
           this.tempHoveredUnit = this.state.hoveredUnit;
         }
 
-        var beforeDelay = Options.battleAnimationTiming.before;
-
+        var hasSFX = effectData[i].sfx;
+        var shouldDeferCallingEffects = false;
         var effectDuration = 0;
-        if (effectData[i].sfx)
+        if (hasSFX)
         {
           effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming.effectDuration;
-          // effectDuration /= (1 + Math.log(i + 1)); // TODO battle scene | re-add this
-
-          // TODO battle scene | allow SFX function to trigger effect when it wants
-          // if (effectData[i].sfx.delay)
-          // {
-          //   effectDelay = effectDuration * effectData[i].sfx.delay;
-          // }
+          shouldDeferCallingEffects = Boolean(effectData[i].sfx.SFXWillTriggerEffect);
         }
 
         effectData[i].user.sfxDuration = effectDuration;
         effectData[i].target.sfxDuration = effectDuration;
-
-        var afterDelay = Options.battleAnimationTiming.after;
-        afterDelay /= effectData.length;
-
-        this.setState(
-        {
-          battleSceneUnit1StartingStrength: previousUnit1Strength,
-          battleSceneUnit2StartingStrength: previousUnit2Strength,
-          battleSceneUnit1: side1Unit,
-          battleSceneUnit2: side2Unit,
-          playingBattleEffect: true,
-
-          hoveredUnit: abilityData.originalTarget,
-          userUnit: effectData[i].user,
-          targetUnit: effectData[i].target,
-
-          abilityTooltip:
-          {
-            parentElement: null
-          },
-          hoveredAbility: null,
-          potentialDelay: null,
-          targetsInPotentialArea: []
-        });
-
 
         var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
@@ -328,30 +299,38 @@ module Rance
           }
         }
 
-        var startEffectFN = function()
+        if (!shouldDeferCallingEffects)
         {
-          // if (effectDelay > 0)
-          // {
-          //   window.setTimeout(callEffectsFN, effectDelay);
-            
-          //   this.setState(
-          //   {
-          //     battleEffectId: this.idGenerator++,
-          //     battleEffectDuration: effectDuration,
-          //     battleEffectSFX: effectData[i].sfx
-          //   });
-          // }
-          // else
-          // {
-          //   callEffectsFN(false);
-          // }
           callEffectsFN(false);
+        }
 
+        this.setState(
+        {
+          battleSceneUnit1StartingStrength: previousUnit1Strength,
+          battleSceneUnit2StartingStrength: previousUnit2Strength,
+          battleSceneUnit1: side1Unit,
+          battleSceneUnit2: side2Unit,
+          playingBattleEffect: true,
 
-          window.setTimeout(finishEffectFN, effectDuration + afterDelay);
-        }.bind(this);
+          hoveredUnit: abilityData.originalTarget,
+          userUnit: effectData[i].user,
+          targetUnit: effectData[i].target,
 
-        window.setTimeout(startEffectFN, beforeDelay);
+          battleEffectId: hasSFX ? this.idGenerator++ : null,
+          battleEffectDuration: effectDuration,
+          battleEffectSFX: effectData[i].sfx,
+
+          afterAbilityFinishedCallback: finishEffectFN,
+          triggerEffectCallback: callEffectsFN,
+
+          abilityTooltip:
+          {
+            parentElement: null
+          },
+          hoveredAbility: null,
+          potentialDelay: null,
+          targetsInPotentialArea: []
+        });
       },
       clearBattleEffect: function()
       {
@@ -361,11 +340,14 @@ module Rance
           battleEffectId: undefined,
           battleEffectDuration: null,
           battleEffectSFX: null,
+          afterAbilityFinishedCallback: null,
+          triggerEffectCallback: null,
           hoveredUnit: null,
           targetUnit: null,
           userUnit: null
         });
 
+        console.log(this.tempHoveredUnit.name);
         if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle())
         {
           this.handleMouseEnterUnit(this.tempHoveredUnit);
@@ -638,6 +620,10 @@ module Rance
                   hoveredUnit: this.state.hoveredUnit,
 
                   activeSFX: this.state.battleEffectSFX,
+
+                  afterAbilityFinishedCallback: this.state.afterAbilityFinishedCallback,
+                  triggerEffectCallback: this.state.triggerEffectCallback,
+
                   humanPlayerWonBattle: playerWonBattle,
 
                   side1Player: battle.side1Player,
