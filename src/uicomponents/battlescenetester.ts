@@ -237,7 +237,7 @@ module Rance
         var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
         var bs: Rance.BattleScene = this.battleScene;
-        var SFXTemplate = app.moduleData.Templates.BattleSFX["guard"];
+        var SFXTemplate = app.moduleData.Templates.BattleSFX["particleTest"];
 
         bs.handleAbilityUse(
         {

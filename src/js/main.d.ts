@@ -47,6 +47,7 @@
 /// <reference path="../templateinterfaces/ieffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/sfxparams.d.ts" />
 /// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
+/// <reference path="../templateinterfaces/iculturetemplate.d.ts" />
 /// <reference path="../templateinterfaces/ipassiveskilltemplate.d.ts" />
 /// <reference path="../templateinterfaces/ibattleprepeffect.d.ts" />
 /// <reference path="../templateinterfaces/iturnstarteffect.d.ts" />
@@ -54,9 +55,9 @@
 /// <reference path="../templateinterfaces/istatuseffectattributes.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/iunitdrawingfunction.d.ts" />
-/// <reference path="../templateinterfaces/iculturetemplate.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="../../lib/proton.d.ts" />
 /// <reference path="../savedata/inotificationlogsavedata.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
@@ -3415,6 +3416,17 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module Templates {
+                module Cultures {
+                    var badassCulture: Rance.Templates.ICultureTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
                 module PassiveSkills {
                     var autoHeal: Rance.Templates.IPassiveSkillTemplate;
                     var poisoned: Rance.Templates.IPassiveSkillTemplate;
@@ -3520,17 +3532,6 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             var defaultUnitScene: Rance.Templates.IUnitDrawingFunction;
-        }
-    }
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Cultures {
-                    var badassCulture: Rance.Templates.ICultureTemplate;
-                }
-            }
         }
     }
 }
@@ -3712,6 +3713,38 @@ declare module Rance {
         module DefaultModule {
             module Notifications {
                 var playerDiedNotification: Rance.Templates.INotificationTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            class ProtonWrapper {
+                pixiRenderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+                container: PIXI.Container;
+                proton: Proton;
+                protonRenderer: Proton.Renderer;
+                emitters: Proton.Emitter[];
+                constructor(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, container: PIXI.Container);
+                destroy(): void;
+                private initProtonRenderer();
+                private onProtonParticleCreated(particle);
+                private onProtonParticleUpdated(particle);
+                private onProtonParticleDead(particle);
+                private destroyEmitter(emitter);
+                addEmitter(emitter: Proton.Emitter): void;
+                removeEmitter(emitter: Proton.Emitter): void;
+                update(): void;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module BattleSFXFunctions {
+                function particleTest(props: Rance.Templates.SFXParams): void;
             }
         }
     }

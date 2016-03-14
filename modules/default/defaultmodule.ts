@@ -5,6 +5,7 @@
 /// <reference path="graphics/maprendererlayers.ts" />
 /// <reference path="graphics/maprenderermapmodes.ts" />
 
+
 /// <reference path="mapgen/spiralgalaxy.ts" />
 /// <reference path="mapgen/test.ts" />
 
@@ -13,6 +14,7 @@
 /// <reference path="templates/attitudemodifiers.ts" />
 /// <reference path="templates/battlesfx.ts" />
 /// <reference path="templates/buildings.ts" />
+/// <reference path="templates/cultures.ts" />
 /// <reference path="templates/effects.ts" />
 /// <reference path="templates/items.ts" />
 /// <reference path="templates/passiveskills.ts" />
@@ -39,7 +41,8 @@
 /// <reference path="notifications/wardeclarationnotification.ts" />
 /// <reference path="notifications/playerdiednotification.ts" />
 
-/// <reference path="templates/cultures.ts" />
+
+/// <reference path="graphics/particletest.ts" />
 
 module Rance
 {

@@ -20435,7 +20435,7 @@ var Rance;
                 var user = this.state.activeUnit;
                 var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
                 var bs = this.battleScene;
-                var SFXTemplate = app.moduleData.Templates.BattleSFX["guard"];
+                var SFXTemplate = app.moduleData.Templates.BattleSFX["particleTest"];
                 bs.handleAbilityUse({
                     user: user,
                     target: target,
@@ -24335,9 +24335,9 @@ var Rance;
             var BattleSFXFunctions;
             (function (BattleSFXFunctions) {
                 function projectileAttack(props, params) {
-                    // TODO battleSFX
-                    // var minY = 20; // from top
-                    var minY = Math.max(params.height * 0.3, 30);
+                    // TODO battleSFX | would be nice to draw SFX based on unit scenes
+                    // eg. height here = unit scene height
+                    var minY = Math.max(params.height * 0.3, 30); // from top
                     var maxY = params.height - 30;
                     var maxSpeed = (params.width / params.duration) * props.maxSpeed;
                     var acceleration = maxSpeed * props.acceleration;
@@ -24962,6 +24962,40 @@ var Rance;
                         maxUpgradeLevel: 3
                     };
                 })(Buildings = Templates.Buildings || (Templates.Buildings = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iculturetemplate.d.ts"/>
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Cultures;
+                (function (Cultures) {
+                    Cultures.badassCulture = {
+                        key: "badassCulture",
+                        nameGenerator: function (unit) {
+                            var ownCulture = app.moduleData.Templates.Cultures["badassCulture"];
+                            var title = Rance.getRandomProperty(ownCulture.firstNames).displayName;
+                            return title + " " + unit.template.displayName;
+                        },
+                        firstNames: {
+                            cool: {
+                                key: "cool",
+                                displayName: "Cool"
+                            },
+                            badass: {
+                                key: "badass",
+                                displayName: "Badass"
+                            }
+                        }
+                    };
+                })(Cultures = Templates.Cultures || (Templates.Cultures = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -25603,40 +25637,6 @@ var Rance;
                 SFXParams.triggerStart(container);
                 return container;
             };
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/iculturetemplate.d.ts"/>
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var Cultures;
-                (function (Cultures) {
-                    Cultures.badassCulture = {
-                        key: "badassCulture",
-                        nameGenerator: function (unit) {
-                            var ownCulture = app.moduleData.Templates.Cultures["badassCulture"];
-                            var title = Rance.getRandomProperty(ownCulture.firstNames).displayName;
-                            return title + " " + unit.template.displayName;
-                        },
-                        firstNames: {
-                            cool: {
-                                key: "cool",
-                                displayName: "Cool"
-                            },
-                            badass: {
-                                key: "badass",
-                                displayName: "Badass"
-                            }
-                        }
-                    };
-                })(Cultures = Templates.Cultures || (Templates.Cultures = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
@@ -26884,6 +26884,122 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../lib/proton.d.ts" />
+/// <reference path="../../../lib/pixi.d.ts" />
+// Proton.Rate(amountOfParticlesPerEmit, timeBetweenEmits)
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var ProtonWrapper = (function () {
+                function ProtonWrapper(renderer, container) {
+                    this.proton = new Proton();
+                    this.pixiRenderer = renderer;
+                    this.container = container;
+                    this.initProtonRenderer();
+                }
+                ProtonWrapper.prototype.destroy = function () {
+                    this.pixiRenderer = null;
+                    for (var i = 0; i < this.emitters.length; i++) {
+                        this.destroyEmitter(this.emitters[i]);
+                    }
+                    this.emitters = [];
+                    this.protonRenderer.stop(); // start() initializes renderer, stop() destroys it
+                    this.proton.destroy();
+                    this.proton = null;
+                };
+                ProtonWrapper.prototype.initProtonRenderer = function () {
+                    var renderer = this.protonRenderer = new Proton.Renderer("other", this.proton);
+                    // TODO performance | .bind might be too much un-needed overhead
+                    renderer.onParticleCreated = this.onProtonParticleCreated.bind(this);
+                    renderer.onParticleUpdate = this.onProtonParticleUpdated.bind(this);
+                    renderer.onParticleDead = this.onProtonParticleDead.bind(this);
+                    renderer.start(); // start() initializes renderer, stop() destroys it
+                };
+                ProtonWrapper.prototype.onProtonParticleCreated = function (particle) {
+                    var sprite = new PIXI.Sprite(particle.target);
+                    particle.sprite = sprite;
+                    this.container.addChild(sprite);
+                };
+                ProtonWrapper.prototype.onProtonParticleUpdated = function (particle) {
+                    var sprite = particle.sprite;
+                    sprite.position.x = particle.p.x;
+                    sprite.position.y = particle.p.y;
+                    // todo update other transforms
+                };
+                ProtonWrapper.prototype.onProtonParticleDead = function (particle) {
+                    this.container.removeChild(particle.sprite);
+                };
+                ProtonWrapper.prototype.destroyEmitter = function (emitter) {
+                    emitter.stopEmit();
+                    emitter.removeAllParticles();
+                    emitter.destroy();
+                };
+                ProtonWrapper.prototype.addEmitter = function (emitter) {
+                    this.emitters.push(emitter);
+                    emitter.emit(); // Emitter.emit() initializes emitter
+                    this.proton.addEmitter(emitter);
+                };
+                ProtonWrapper.prototype.removeEmitter = function (emitter) {
+                    var i = this.emitters.indexOf(emitter);
+                    if (i === -1) {
+                        throw new Error("No such emitter");
+                    }
+                    this.emitters.splice(i, 1);
+                    this.destroyEmitter(emitter);
+                };
+                ProtonWrapper.prototype.update = function () {
+                    this.proton.update();
+                };
+                return ProtonWrapper;
+            }());
+            DefaultModule.ProtonWrapper = ProtonWrapper;
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="protonwrapper.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var BattleSFXFunctions;
+            (function (BattleSFXFunctions) {
+                function particleTest(props) {
+                    var particleContainer = new PIXI.ParticleContainer();
+                    var proton = new DefaultModule.ProtonWrapper(props.renderer, particleContainer);
+                    var emitter = new Proton.BehaviourEmitter();
+                    emitter.rate = new Proton.Rate(new Proton.Span(50, 50), // particles per emit
+                    new Proton.Span(3, 3) // time between emits
+                    );
+                    emitter.p.x = props.width / 2;
+                    emitter.p.y = props.height / 2;
+                    // emitter.addInitialize(new Proton.Mass(1));
+                    emitter.addInitialize(new Proton.Life(3, 3));
+                    proton.addEmitter(emitter);
+                    function animate() {
+                        var elapsedTime = Date.now() - startTime;
+                        proton.update();
+                        if (elapsedTime < props.duration) {
+                            requestAnimationFrame(animate);
+                        }
+                        else {
+                            proton.destroy();
+                            props.triggerEnd();
+                        }
+                    }
+                    props.triggerStart(particleContainer);
+                    var startTime = Date.now();
+                    animate();
+                }
+                BattleSFXFunctions.particleTest = particleTest;
+            })(BattleSFXFunctions = DefaultModule.BattleSFXFunctions || (DefaultModule.BattleSFXFunctions = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../src/moduledata.ts" />
 /// <reference path="../../src/spritesheetcachingfunctions.ts" />
 /// <reference path="graphics/drawnebula.ts" />
@@ -26896,6 +27012,7 @@ var Rance;
 /// <reference path="templates/attitudemodifiers.ts" />
 /// <reference path="templates/battlesfx.ts" />
 /// <reference path="templates/buildings.ts" />
+/// <reference path="templates/cultures.ts" />
 /// <reference path="templates/effects.ts" />
 /// <reference path="templates/items.ts" />
 /// <reference path="templates/passiveskills.ts" />
@@ -26917,7 +27034,7 @@ var Rance;
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />
 /// <reference path="notifications/playerdiednotification.ts" />
-/// <reference path="templates/cultures.ts" />
+/// <reference path="graphics/particletest.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
