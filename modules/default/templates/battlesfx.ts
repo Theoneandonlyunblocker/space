@@ -2,6 +2,7 @@
 /// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
 /// <reference path="../graphics/rocketattack.ts" />
 /// <reference path="../graphics/guard.ts" />
+/// <reference path="../graphics/particletest.ts" />
 
 module Rance
 {
@@ -24,6 +25,12 @@ module Rance
             duration: 1000,
             battleOverlay: BattleSFXFunctions.guard,
             SFXWillTriggerEffect: true
+          }
+          export var particleTest: Rance.Templates.IBattleSFXTemplate =
+          {
+            duration: 5000,
+            battleOverlay: BattleSFXFunctions.particleTest,
+            SFXWillTriggerEffect: false
           }
         }
       }

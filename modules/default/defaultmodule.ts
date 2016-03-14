@@ -41,9 +41,6 @@
 /// <reference path="notifications/wardeclarationnotification.ts" />
 /// <reference path="notifications/playerdiednotification.ts" />
 
-
-/// <reference path="graphics/particletest.ts" />
-
 module Rance
 {
   export module Modules

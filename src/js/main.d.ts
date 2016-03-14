@@ -45,6 +45,7 @@
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../templateinterfaces/itechnologytemplate.d.ts" />
 /// <reference path="../templateinterfaces/ieffecttemplate.d.ts" />
+/// <reference path="../../lib/proton.d.ts" />
 /// <reference path="../templateinterfaces/sfxparams.d.ts" />
 /// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
 /// <reference path="../templateinterfaces/iculturetemplate.d.ts" />
@@ -57,7 +58,6 @@
 /// <reference path="../templateinterfaces/iunitdrawingfunction.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../templateinterfaces/iobjectivetemplate.d.ts" />
-/// <reference path="../../lib/proton.d.ts" />
 /// <reference path="../savedata/inotificationlogsavedata.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
@@ -3341,10 +3341,43 @@ declare module Rance {
 declare module Rance {
     module Modules {
         module DefaultModule {
+            class ProtonWrapper {
+                pixiRenderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+                container: PIXI.Container;
+                proton: Proton;
+                protonRenderer: Proton.Renderer;
+                emitters: Proton.Emitter[];
+                constructor(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, container: PIXI.Container);
+                destroy(): void;
+                private initProtonRenderer();
+                private onProtonParticleCreated(particle);
+                private onProtonParticleUpdated(particle);
+                private onProtonParticleDead(particle);
+                private destroyEmitter(emitter);
+                addEmitter(emitter: Proton.Emitter): void;
+                removeEmitter(emitter: Proton.Emitter): void;
+                update(): void;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module BattleSFXFunctions {
+                function particleTest(props: Rance.Templates.SFXParams): void;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
             module Templates {
                 module BattleSFX {
                     var rocketAttack: Rance.Templates.IBattleSFXTemplate;
                     var guard: Rance.Templates.IBattleSFXTemplate;
+                    var particleTest: Rance.Templates.IBattleSFXTemplate;
                 }
             }
         }
@@ -3713,38 +3746,6 @@ declare module Rance {
         module DefaultModule {
             module Notifications {
                 var playerDiedNotification: Rance.Templates.INotificationTemplate;
-            }
-        }
-    }
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            class ProtonWrapper {
-                pixiRenderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-                container: PIXI.Container;
-                proton: Proton;
-                protonRenderer: Proton.Renderer;
-                emitters: Proton.Emitter[];
-                constructor(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, container: PIXI.Container);
-                destroy(): void;
-                private initProtonRenderer();
-                private onProtonParticleCreated(particle);
-                private onProtonParticleUpdated(particle);
-                private onProtonParticleDead(particle);
-                private destroyEmitter(emitter);
-                addEmitter(emitter: Proton.Emitter): void;
-                removeEmitter(emitter: Proton.Emitter): void;
-                update(): void;
-            }
-        }
-    }
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module BattleSFXFunctions {
-                function particleTest(props: Rance.Templates.SFXParams): void;
             }
         }
     }

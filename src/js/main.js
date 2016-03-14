@@ -24545,10 +24545,127 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../lib/proton.d.ts" />
+/// <reference path="../../../lib/pixi.d.ts" />
+// Proton.Rate(amountOfParticlesPerEmit, timeBetweenEmits)
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var ProtonWrapper = (function () {
+                function ProtonWrapper(renderer, container) {
+                    this.proton = new Proton();
+                    this.pixiRenderer = renderer;
+                    this.container = container;
+                    this.initProtonRenderer();
+                }
+                ProtonWrapper.prototype.destroy = function () {
+                    this.pixiRenderer = null;
+                    for (var i = 0; i < this.emitters.length; i++) {
+                        this.destroyEmitter(this.emitters[i]);
+                    }
+                    this.emitters = [];
+                    this.protonRenderer.stop(); // start() initializes renderer, stop() destroys it
+                    this.proton.destroy();
+                    this.proton = null;
+                };
+                ProtonWrapper.prototype.initProtonRenderer = function () {
+                    var renderer = this.protonRenderer = new Proton.Renderer("other", this.proton);
+                    // TODO performance | .bind might be too much un-needed overhead
+                    renderer.onParticleCreated = this.onProtonParticleCreated.bind(this);
+                    renderer.onParticleUpdate = this.onProtonParticleUpdated.bind(this);
+                    renderer.onParticleDead = this.onProtonParticleDead.bind(this);
+                    renderer.start(); // start() initializes renderer, stop() destroys it
+                };
+                ProtonWrapper.prototype.onProtonParticleCreated = function (particle) {
+                    var sprite = new PIXI.Sprite(particle.target);
+                    particle.sprite = sprite;
+                    this.container.addChild(sprite);
+                };
+                ProtonWrapper.prototype.onProtonParticleUpdated = function (particle) {
+                    var sprite = particle.sprite;
+                    sprite.position.x = particle.p.x;
+                    sprite.position.y = particle.p.y;
+                    // todo update other transforms
+                };
+                ProtonWrapper.prototype.onProtonParticleDead = function (particle) {
+                    this.container.removeChild(particle.sprite);
+                };
+                ProtonWrapper.prototype.destroyEmitter = function (emitter) {
+                    emitter.stopEmit();
+                    emitter.removeAllParticles();
+                    emitter.destroy();
+                };
+                ProtonWrapper.prototype.addEmitter = function (emitter) {
+                    this.emitters.push(emitter);
+                    emitter.emit(); // Emitter.emit() initializes emitter
+                    this.proton.addEmitter(emitter);
+                };
+                ProtonWrapper.prototype.removeEmitter = function (emitter) {
+                    var i = this.emitters.indexOf(emitter);
+                    if (i === -1) {
+                        throw new Error("No such emitter");
+                    }
+                    this.emitters.splice(i, 1);
+                    this.destroyEmitter(emitter);
+                };
+                ProtonWrapper.prototype.update = function () {
+                    this.proton.update();
+                };
+                return ProtonWrapper;
+            }());
+            DefaultModule.ProtonWrapper = ProtonWrapper;
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="protonwrapper.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var BattleSFXFunctions;
+            (function (BattleSFXFunctions) {
+                function particleTest(props) {
+                    var particleContainer = new PIXI.ParticleContainer();
+                    var proton = new DefaultModule.ProtonWrapper(props.renderer, particleContainer);
+                    var emitter = new Proton.BehaviourEmitter();
+                    emitter.rate = new Proton.Rate(new Proton.Span(50, 50), // particles per emit
+                    new Proton.Span(3, 3) // time between emits
+                    );
+                    emitter.p.x = props.width / 2;
+                    emitter.p.y = props.height / 2;
+                    // emitter.addInitialize(new Proton.Mass(1));
+                    emitter.addInitialize(new Proton.Life(3, 3));
+                    proton.addEmitter(emitter);
+                    function animate() {
+                        var elapsedTime = Date.now() - startTime;
+                        proton.update();
+                        if (elapsedTime < props.duration) {
+                            requestAnimationFrame(animate);
+                        }
+                        else {
+                            proton.destroy();
+                            props.triggerEnd();
+                        }
+                    }
+                    props.triggerStart(particleContainer);
+                    var startTime = Date.now();
+                    animate();
+                }
+                BattleSFXFunctions.particleTest = particleTest;
+            })(BattleSFXFunctions = DefaultModule.BattleSFXFunctions || (DefaultModule.BattleSFXFunctions = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/ibattlesfxtemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
 /// <reference path="../graphics/rocketattack.ts" />
 /// <reference path="../graphics/guard.ts" />
+/// <reference path="../graphics/particletest.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
@@ -24568,6 +24685,11 @@ var Rance;
                         duration: 1000,
                         battleOverlay: DefaultModule.BattleSFXFunctions.guard,
                         SFXWillTriggerEffect: true
+                    };
+                    BattleSFX.particleTest = {
+                        duration: 5000,
+                        battleOverlay: DefaultModule.BattleSFXFunctions.particleTest,
+                        SFXWillTriggerEffect: false
                     };
                 })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
@@ -26884,122 +27006,6 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../../lib/proton.d.ts" />
-/// <reference path="../../../lib/pixi.d.ts" />
-// Proton.Rate(amountOfParticlesPerEmit, timeBetweenEmits)
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var ProtonWrapper = (function () {
-                function ProtonWrapper(renderer, container) {
-                    this.proton = new Proton();
-                    this.pixiRenderer = renderer;
-                    this.container = container;
-                    this.initProtonRenderer();
-                }
-                ProtonWrapper.prototype.destroy = function () {
-                    this.pixiRenderer = null;
-                    for (var i = 0; i < this.emitters.length; i++) {
-                        this.destroyEmitter(this.emitters[i]);
-                    }
-                    this.emitters = [];
-                    this.protonRenderer.stop(); // start() initializes renderer, stop() destroys it
-                    this.proton.destroy();
-                    this.proton = null;
-                };
-                ProtonWrapper.prototype.initProtonRenderer = function () {
-                    var renderer = this.protonRenderer = new Proton.Renderer("other", this.proton);
-                    // TODO performance | .bind might be too much un-needed overhead
-                    renderer.onParticleCreated = this.onProtonParticleCreated.bind(this);
-                    renderer.onParticleUpdate = this.onProtonParticleUpdated.bind(this);
-                    renderer.onParticleDead = this.onProtonParticleDead.bind(this);
-                    renderer.start(); // start() initializes renderer, stop() destroys it
-                };
-                ProtonWrapper.prototype.onProtonParticleCreated = function (particle) {
-                    var sprite = new PIXI.Sprite(particle.target);
-                    particle.sprite = sprite;
-                    this.container.addChild(sprite);
-                };
-                ProtonWrapper.prototype.onProtonParticleUpdated = function (particle) {
-                    var sprite = particle.sprite;
-                    sprite.position.x = particle.p.x;
-                    sprite.position.y = particle.p.y;
-                    // todo update other transforms
-                };
-                ProtonWrapper.prototype.onProtonParticleDead = function (particle) {
-                    this.container.removeChild(particle.sprite);
-                };
-                ProtonWrapper.prototype.destroyEmitter = function (emitter) {
-                    emitter.stopEmit();
-                    emitter.removeAllParticles();
-                    emitter.destroy();
-                };
-                ProtonWrapper.prototype.addEmitter = function (emitter) {
-                    this.emitters.push(emitter);
-                    emitter.emit(); // Emitter.emit() initializes emitter
-                    this.proton.addEmitter(emitter);
-                };
-                ProtonWrapper.prototype.removeEmitter = function (emitter) {
-                    var i = this.emitters.indexOf(emitter);
-                    if (i === -1) {
-                        throw new Error("No such emitter");
-                    }
-                    this.emitters.splice(i, 1);
-                    this.destroyEmitter(emitter);
-                };
-                ProtonWrapper.prototype.update = function () {
-                    this.proton.update();
-                };
-                return ProtonWrapper;
-            }());
-            DefaultModule.ProtonWrapper = ProtonWrapper;
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-/// <reference path="protonwrapper.ts" />
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var BattleSFXFunctions;
-            (function (BattleSFXFunctions) {
-                function particleTest(props) {
-                    var particleContainer = new PIXI.ParticleContainer();
-                    var proton = new DefaultModule.ProtonWrapper(props.renderer, particleContainer);
-                    var emitter = new Proton.BehaviourEmitter();
-                    emitter.rate = new Proton.Rate(new Proton.Span(50, 50), // particles per emit
-                    new Proton.Span(3, 3) // time between emits
-                    );
-                    emitter.p.x = props.width / 2;
-                    emitter.p.y = props.height / 2;
-                    // emitter.addInitialize(new Proton.Mass(1));
-                    emitter.addInitialize(new Proton.Life(3, 3));
-                    proton.addEmitter(emitter);
-                    function animate() {
-                        var elapsedTime = Date.now() - startTime;
-                        proton.update();
-                        if (elapsedTime < props.duration) {
-                            requestAnimationFrame(animate);
-                        }
-                        else {
-                            proton.destroy();
-                            props.triggerEnd();
-                        }
-                    }
-                    props.triggerStart(particleContainer);
-                    var startTime = Date.now();
-                    animate();
-                }
-                BattleSFXFunctions.particleTest = particleTest;
-            })(BattleSFXFunctions = DefaultModule.BattleSFXFunctions || (DefaultModule.BattleSFXFunctions = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
 /// <reference path="../../src/moduledata.ts" />
 /// <reference path="../../src/spritesheetcachingfunctions.ts" />
 /// <reference path="graphics/drawnebula.ts" />
@@ -27034,7 +27040,6 @@ var Rance;
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />
 /// <reference path="notifications/playerdiednotification.ts" />
-/// <reference path="graphics/particletest.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
