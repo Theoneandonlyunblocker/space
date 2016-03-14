@@ -23,9 +23,10 @@ module Rance
         },
         params: Rance.Templates.SFXParams)
         {
-          var minY = 20;
-          var maxY = params.height - 20; // TODO battleSFX
-
+          // TODO battleSFX | would be nice to draw SFX based on unit scenes
+          // eg. height here = unit scene height
+          var minY = Math.max(params.height * 0.3, 30); // from top
+          var maxY = params.height - 30;
 
           var maxSpeed = (params.width / params.duration) * props.maxSpeed;
           var acceleration = maxSpeed * props.acceleration;

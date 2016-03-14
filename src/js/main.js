@@ -24335,8 +24335,10 @@ var Rance;
             var BattleSFXFunctions;
             (function (BattleSFXFunctions) {
                 function projectileAttack(props, params) {
-                    var minY = 20;
-                    var maxY = params.height - 20; // TODO battleSFX
+                    // TODO battleSFX
+                    // var minY = 20; // from top
+                    var minY = Math.max(params.height * 0.3, 30);
+                    var maxY = params.height - 30;
                     var maxSpeed = (params.width / params.duration) * props.maxSpeed;
                     var acceleration = maxSpeed * props.acceleration;
                     var container = new PIXI.Container();
