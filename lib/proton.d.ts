@@ -49,6 +49,7 @@ declare module Proton
 
   export class Emitter extends Particle
   {
+    damping: number;
     rate: Rate;
     emitTime: number;
 

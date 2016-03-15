@@ -25,7 +25,7 @@ module Rance
 
           var gfx = new PIXI.Graphics();
           gfx.beginFill(0x5ECAB1);
-          gfx.drawCircle(30, 30, 10);
+          gfx.drawCircle(30, 30, 5);
           gfx.endFill();
           // gfx.beginFill(0xFF0000);
           // gfx.drawRect(width2/2, height2/2, width2, height2);
@@ -55,15 +55,16 @@ module Rance
 
           emitter.addInitialize(new Proton.Life(new Proton.Span(2, props.duration / 1000)));
           // emitter.addInitialize(new Proton.Mass(1));
-          emitter.addInitialize(new Proton.Velocity(1, new Proton.Span(270, 20, true), 'polar'));
+          emitter.addInitialize(new Proton.Velocity(2, new Proton.Span(270, 30, true), 'polar'));
+          emitter.damping = 0.009;
 
-          var zoneHeight2 = 50;
+          var zoneHeight2 = 10;
           var emitterZone = new Proton.RectZone(0, -zoneHeight2, width2, zoneHeight2);
           emitter.addInitialize(new Proton.Position(emitterZone));
 
           // emitter.addBehaviour(new Proton.Gravity(8));
-          emitter.addBehaviour(new Proton.Scale(new Proton.Span(1, 1.4), 0));
-          emitter.addBehaviour(new Proton.Alpha(1, 0));
+          emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.6, 1), 0));
+          emitter.addBehaviour(new Proton.Alpha(0.8, 0));
           // emitter.addBehaviour(new Proton.Rotate(0, Proton.getSpan(-10, 10), 'add'));
           emitter.addBehaviour(new Proton.CrossZone(new Proton.RectZone(0, 0, props.width, props.height), "dead"));
 

@@ -21752,8 +21752,6 @@ var Rance;
             "}",
         ];
         ShaderSources.shinyparticle = [
-            "#define PI 3.141592",
-            "",
             "precision mediump float;",
             "",
             "varying vec2 vTextureCoord;",
@@ -21762,43 +21760,52 @@ var Rance;
             "",
             "uniform float lifeLeft;",
             "",
-            "const vec3 color = vec3(0.3686274509803922, 0.792156862745098, 0.6941176470588235);",
+            "const vec3 spikeColor = vec3(0.3686274509803922, 0.792156862745098, 0.6941176470588235);",
+            "const vec3 highlightColor = vec3(1.0);",
             "const vec2 center = vec2(0.5, 0.5);",
+            "const float angle = -0.1 * 3.141592;",
             "",
-            "",
-            "float diffraction(vec2 r)",
+            "float diffractionSpike(vec2 pos)",
             "{",
-            "  float xDist = abs(r.x - center.x);",
-            "  float yDist = abs(r.y - center.y);",
-            "  float proximityToCenter = 1.0 - (xDist + yDist);",
-            "  float proximityToOrthogonal = 0.5 - min(xDist, yDist);",
+            "  vec2 aligned = pos - center;",
             "",
-            "  return 1.0;",
+            "  vec2 rotated;",
+            "  rotated.x = cos(angle) * aligned.x - sin(angle) * aligned.y;",
+            "  rotated.y = sin(angle) * aligned.x + cos(angle) * aligned.y;",
+            "",
+            "  float xStrength = max(0.5 - abs(rotated.x), 0.0);",
+            "  float yStrength = max(0.5 - abs(rotated.y), 0.0);",
+            "",
+            "  return xStrength + yStrength;",
+            "}",
+            "",
+            "float centerHighlight(vec2 r)",
+            "{",
+            "  return 1.0 - distance(r, center);",
             "}",
             "",
             "void main()",
             "{",
             "  vec2 uv = vTextureCoord;",
-            "  vec2 r = uv - center;",
             "",
-            "  // float angle = 0.25 * PI;",
-            "  float angle = 0.0001;",
-            "  vec2 q;",
-            "  q.x = cos(angle) * r.x - sin(angle) * r.y;",
-            "  q.y = sin(angle) * r.x + cos(angle) * r.y;",
+            "  vec4 color = texture2D(uSampler, uv);",
             "",
+            "  // diffraction spike",
+            "  float spikeStrength = diffractionSpike(uv);",
+            "  spikeStrength = pow(spikeStrength, 1.5);",
+            "  spikeStrength -= (1.0 - lifeLeft) * 0.1;",
+            "  // spikeStrength *= 0.4;",
             "",
-            "  float xDist = abs(q.x);",
-            "  float yDist = abs(q.y);",
+            "  color += vec4(spikeColor, 1.0) * spikeStrength;",
             "",
-            "  float proximityToCenter = 1.0 - 2.0 * (xDist + yDist);",
+            "  // center highlight",
+            "  float highlightStrength = centerHighlight(uv);",
+            "  highlightStrength = pow(highlightStrength, 3.0);",
+            "  highlightStrength *= pow(lifeLeft, 3.0) * 0.5;",
             "",
-            "  float intensity = proximityToCenter * lifeLeft;",
+            "  color += vec4(highlightColor, 1.0) * highlightStrength;",
             "",
-            "  // float dist = 1.0 - distance(uv, center);",
-            "  // float intensity = pow(dist, 3.0) * lifeLeft;",
-            "",
-            "  gl_FragColor = mix(texture2D(uSampler, uv), vec4(1.0, 0.0, 0.0, 1.0), intensity);",
+            "  gl_FragColor = color;",
             "}",
         ];
     })(ShaderSources = Rance.ShaderSources || (Rance.ShaderSources = {}));
@@ -24719,7 +24726,7 @@ var Rance;
                     var endColor = 0x5ECAB1;
                     var gfx = new PIXI.Graphics();
                     gfx.beginFill(0x5ECAB1);
-                    gfx.drawCircle(30, 30, 10);
+                    gfx.drawCircle(30, 30, 5);
                     gfx.endFill();
                     // gfx.beginFill(0xFF0000);
                     // gfx.drawRect(width2/2, height2/2, width2, height2);
@@ -24743,13 +24750,14 @@ var Rance;
                     emitter.addInitialize(new Proton.ImageTarget(texture));
                     emitter.addInitialize(new Proton.Life(new Proton.Span(2, props.duration / 1000)));
                     // emitter.addInitialize(new Proton.Mass(1));
-                    emitter.addInitialize(new Proton.Velocity(1, new Proton.Span(270, 20, true), 'polar'));
-                    var zoneHeight2 = 50;
+                    emitter.addInitialize(new Proton.Velocity(2, new Proton.Span(270, 30, true), 'polar'));
+                    emitter.damping = 0.009;
+                    var zoneHeight2 = 10;
                     var emitterZone = new Proton.RectZone(0, -zoneHeight2, width2, zoneHeight2);
                     emitter.addInitialize(new Proton.Position(emitterZone));
                     // emitter.addBehaviour(new Proton.Gravity(8));
-                    emitter.addBehaviour(new Proton.Scale(new Proton.Span(1, 1.4), 0));
-                    emitter.addBehaviour(new Proton.Alpha(1, 0));
+                    emitter.addBehaviour(new Proton.Scale(new Proton.Span(0.6, 1), 0));
+                    emitter.addBehaviour(new Proton.Alpha(0.8, 0));
                     // emitter.addBehaviour(new Proton.Rotate(0, Proton.getSpan(-10, 10), 'add'));
                     emitter.addBehaviour(new Proton.CrossZone(new Proton.RectZone(0, 0, props.width, props.height), "dead"));
                     // emitter.addSelfBehaviour(new Proton.Gravity(5));
