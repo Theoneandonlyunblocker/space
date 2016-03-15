@@ -2864,6 +2864,7 @@ declare module Rance {
         var guard: string[];
         var nebula: string[];
         var occupation: string[];
+        var shinyparticle: string[];
     }
 }
 declare module Rance {
@@ -3346,7 +3347,15 @@ declare module Rance {
                 container: PIXI.Container;
                 proton: Proton;
                 protonRenderer: Proton.Renderer;
-                emitters: Proton.Emitter[];
+                emitters: {
+                    [key: string]: Proton.Emitter;
+                };
+                emitterKeysByID: {
+                    [emitterId: string]: string;
+                };
+                onSpriteCreated: {
+                    [key: string]: (sprite: PIXI.Sprite) => void;
+                };
                 constructor(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, container: PIXI.Container);
                 destroy(): void;
                 private initProtonRenderer();
@@ -3354,7 +3363,10 @@ declare module Rance {
                 private onProtonParticleUpdated(particle);
                 private onProtonParticleDead(particle);
                 private destroyEmitter(emitter);
-                addEmitter(emitter: Proton.Emitter): void;
+                addEmitter(emitter: Proton.Emitter, key: string): void;
+                private getEmitterKeyWithID(id);
+                private getEmitterKey(emitter);
+                removeEmitterWithKey(key: string): void;
                 removeEmitter(emitter: Proton.Emitter): void;
                 update(): void;
             }
@@ -3365,6 +3377,9 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module BattleSFXFunctions {
+                class ShinyParticleFilter extends PIXI.AbstractFilter {
+                    constructor(uniforms?: any);
+                }
                 function particleTest(props: Rance.Templates.SFXParams): void;
             }
         }

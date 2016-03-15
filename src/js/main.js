@@ -21751,6 +21751,56 @@ var Rance;
             "  }",
             "}",
         ];
+        ShaderSources.shinyparticle = [
+            "#define PI 3.141592",
+            "",
+            "precision mediump float;",
+            "",
+            "varying vec2 vTextureCoord;",
+            "",
+            "uniform sampler2D uSampler;",
+            "",
+            "uniform float lifeLeft;",
+            "",
+            "const vec3 color = vec3(0.3686274509803922, 0.792156862745098, 0.6941176470588235);",
+            "const vec2 center = vec2(0.5, 0.5);",
+            "",
+            "",
+            "float diffraction(vec2 r)",
+            "{",
+            "  float xDist = abs(r.x - center.x);",
+            "  float yDist = abs(r.y - center.y);",
+            "  float proximityToCenter = 1.0 - (xDist + yDist);",
+            "  float proximityToOrthogonal = 0.5 - min(xDist, yDist);",
+            "",
+            "  return 1.0;",
+            "}",
+            "",
+            "void main()",
+            "{",
+            "  vec2 uv = vTextureCoord;",
+            "  vec2 r = uv - center;",
+            "",
+            "  // float angle = 0.25 * PI;",
+            "  float angle = 0.0001;",
+            "  vec2 q;",
+            "  q.x = cos(angle) * r.x - sin(angle) * r.y;",
+            "  q.y = sin(angle) * r.x + cos(angle) * r.y;",
+            "",
+            "",
+            "  float xDist = abs(q.x);",
+            "  float yDist = abs(q.y);",
+            "",
+            "  float proximityToCenter = 1.0 - 2.0 * (xDist + yDist);",
+            "",
+            "  float intensity = proximityToCenter * lifeLeft;",
+            "",
+            "  // float dist = 1.0 - distance(uv, center);",
+            "  // float intensity = pow(dist, 3.0) * lifeLeft;",
+            "",
+            "  gl_FragColor = mix(texture2D(uSampler, uv), vec4(1.0, 0.0, 0.0, 1.0), intensity);",
+            "}",
+        ];
     })(ShaderSources = Rance.ShaderSources || (Rance.ShaderSources = {}));
 })(Rance || (Rance = {}));
 /// <reference path="uniformmanager.ts"/>
@@ -24556,6 +24606,10 @@ var Rance;
         (function (DefaultModule) {
             var ProtonWrapper = (function () {
                 function ProtonWrapper(renderer, container) {
+                    // emitters: Proton.Emitter[];
+                    this.emitters = {};
+                    this.emitterKeysByID = {};
+                    this.onSpriteCreated = {};
                     this.proton = new Proton();
                     this.pixiRenderer = renderer;
                     this.container = container;
@@ -24563,10 +24617,10 @@ var Rance;
                 }
                 ProtonWrapper.prototype.destroy = function () {
                     this.pixiRenderer = null;
-                    for (var i = 0; i < this.emitters.length; i++) {
-                        this.destroyEmitter(this.emitters[i]);
+                    for (var key in this.emitters) {
+                        this.removeEmitterWithKey(key);
                     }
-                    this.emitters = [];
+                    this.emitters = {};
                     this.protonRenderer.stop(); // start() initializes renderer, stop() destroys it
                     this.proton.destroy();
                     this.proton = null;
@@ -24581,35 +24635,56 @@ var Rance;
                 };
                 ProtonWrapper.prototype.onProtonParticleCreated = function (particle) {
                     var sprite = new PIXI.Sprite(particle.target);
+                    sprite.anchor.x = 0.5;
+                    sprite.anchor.y = 0.5;
                     particle.sprite = sprite;
+                    var emitter = particle.parent;
+                    var emitterKey = this.emitterKeysByID[emitter.id];
+                    if (this.onSpriteCreated[emitterKey]) {
+                        this.onSpriteCreated[emitterKey](sprite);
+                    }
                     this.container.addChild(sprite);
                 };
                 ProtonWrapper.prototype.onProtonParticleUpdated = function (particle) {
                     var sprite = particle.sprite;
                     sprite.position.x = particle.p.x;
                     sprite.position.y = particle.p.y;
+                    sprite.scale.x = particle.scale;
+                    sprite.scale.y = particle.scale;
+                    sprite.alpha = particle.alpha;
+                    sprite.rotation = particle.rotation * PIXI.DEG_TO_RAD;
                     // todo update other transforms
                 };
                 ProtonWrapper.prototype.onProtonParticleDead = function (particle) {
                     this.container.removeChild(particle.sprite);
+                    console.log("kill particle");
                 };
                 ProtonWrapper.prototype.destroyEmitter = function (emitter) {
                     emitter.stopEmit();
                     emitter.removeAllParticles();
                     emitter.destroy();
                 };
-                ProtonWrapper.prototype.addEmitter = function (emitter) {
-                    this.emitters.push(emitter);
-                    emitter.emit(); // Emitter.emit() initializes emitter
+                ProtonWrapper.prototype.addEmitter = function (emitter, key) {
+                    this.emitters[key] = emitter;
+                    this.emitterKeysByID[emitter.id] = key;
                     this.proton.addEmitter(emitter);
                 };
-                ProtonWrapper.prototype.removeEmitter = function (emitter) {
-                    var i = this.emitters.indexOf(emitter);
-                    if (i === -1) {
-                        throw new Error("No such emitter");
-                    }
-                    this.emitters.splice(i, 1);
+                ProtonWrapper.prototype.getEmitterKeyWithID = function (id) {
+                    return this.emitterKeysByID[id];
+                };
+                ProtonWrapper.prototype.getEmitterKey = function (emitter) {
+                    return this.getEmitterKeyWithID(emitter.id) || null;
+                };
+                ProtonWrapper.prototype.removeEmitterWithKey = function (key) {
+                    var emitter = this.emitters[key];
                     this.destroyEmitter(emitter);
+                    this.emitterKeysByID[emitter.id] = null;
+                    delete this.emitterKeysByID[emitter.id];
+                    this.emitters[key] = null;
+                    delete this.emitters[key];
+                };
+                ProtonWrapper.prototype.removeEmitter = function (emitter) {
+                    this.removeEmitterWithKey(this.getEmitterKey(emitter));
                 };
                 ProtonWrapper.prototype.update = function () {
                     this.proton.update();
@@ -24629,21 +24704,74 @@ var Rance;
         (function (DefaultModule) {
             var BattleSFXFunctions;
             (function (BattleSFXFunctions) {
+                var ShinyParticleFilter = (function (_super) {
+                    __extends(ShinyParticleFilter, _super);
+                    function ShinyParticleFilter(uniforms) {
+                        _super.call(this, null, Rance.ShaderSources.shinyparticle.join("\n"), uniforms);
+                    }
+                    return ShinyParticleFilter;
+                }(PIXI.AbstractFilter));
+                BattleSFXFunctions.ShinyParticleFilter = ShinyParticleFilter;
                 function particleTest(props) {
-                    var particleContainer = new PIXI.ParticleContainer();
+                    var width2 = props.width / 2;
+                    var height2 = props.height / 2;
+                    var startColor = 0xD1FFF4;
+                    var endColor = 0x5ECAB1;
+                    var gfx = new PIXI.Graphics();
+                    gfx.beginFill(0x5ECAB1);
+                    gfx.drawCircle(30, 30, 10);
+                    gfx.endFill();
+                    // gfx.beginFill(0xFF0000);
+                    // gfx.drawRect(width2/2, height2/2, width2, height2);
+                    // gfx.endFill();
+                    var textureSize = new PIXI.Rectangle(0, 0, 60, 60);
+                    var texture = gfx.generateTexture(props.renderer, 1, PIXI.SCALE_MODES.DEFAULT, textureSize);
+                    // var texture = gfx.generateTexture(props.renderer, 1, PIXI.SCALE_MODES.DEFAULT);
+                    var particleContainer = new PIXI.Container();
                     var proton = new DefaultModule.ProtonWrapper(props.renderer, particleContainer);
+                    var bg = new PIXI.Graphics();
+                    bg.beginFill(0x000000);
+                    bg.drawRect(0, 0, props.width, props.height);
+                    bg.endFill();
+                    particleContainer.addChild(bg);
                     var emitter = new Proton.BehaviourEmitter();
-                    emitter.rate = new Proton.Rate(new Proton.Span(50, 50), // particles per emit
-                    new Proton.Span(3, 3) // time between emits
+                    emitter.rate = new Proton.Rate(50, // particles per emit
+                    0 // time between emits in seconds
                     );
-                    emitter.p.x = props.width / 2;
-                    emitter.p.y = props.height / 2;
+                    emitter.p.x = width2;
+                    emitter.p.y = height2;
+                    emitter.addInitialize(new Proton.ImageTarget(texture));
+                    emitter.addInitialize(new Proton.Life(new Proton.Span(2, props.duration / 1000)));
                     // emitter.addInitialize(new Proton.Mass(1));
-                    emitter.addInitialize(new Proton.Life(3, 3));
-                    proton.addEmitter(emitter);
+                    emitter.addInitialize(new Proton.Velocity(1, new Proton.Span(270, 20, true), 'polar'));
+                    var zoneHeight2 = 50;
+                    var emitterZone = new Proton.RectZone(0, -zoneHeight2, width2, zoneHeight2);
+                    emitter.addInitialize(new Proton.Position(emitterZone));
+                    // emitter.addBehaviour(new Proton.Gravity(8));
+                    emitter.addBehaviour(new Proton.Scale(new Proton.Span(1, 1.4), 0));
+                    emitter.addBehaviour(new Proton.Alpha(1, 0));
+                    // emitter.addBehaviour(new Proton.Rotate(0, Proton.getSpan(-10, 10), 'add'));
+                    emitter.addBehaviour(new Proton.CrossZone(new Proton.RectZone(0, 0, props.width, props.height), "dead"));
+                    // emitter.addSelfBehaviour(new Proton.Gravity(5));
+                    emitter.addSelfBehaviour(new Proton.RandomDrift(30, 30, .1));
+                    proton.addEmitter(emitter, "shinyParticles");
+                    var filter = new ShinyParticleFilter({
+                        lifeLeft: {
+                            type: "1f",
+                            value: 1
+                        }
+                    });
+                    proton.onSpriteCreated["shinyParticles"] = function (sprite) {
+                        sprite.shader = filter;
+                        sprite.blendMode = PIXI.BLEND_MODES.ADD;
+                    };
+                    emitter.emit();
+                    emitter.emitTotalTimes = "once";
                     function animate() {
                         var elapsedTime = Date.now() - startTime;
                         proton.update();
+                        filter.uniforms.lifeLeft.value = 1 - elapsedTime / props.duration;
+                        console.log(filter.uniforms.lifeLeft.value);
                         if (elapsedTime < props.duration) {
                             requestAnimationFrame(animate);
                         }
@@ -24687,7 +24815,7 @@ var Rance;
                         SFXWillTriggerEffect: true
                     };
                     BattleSFX.particleTest = {
-                        duration: 5000,
+                        duration: 3000,
                         battleOverlay: DefaultModule.BattleSFXFunctions.particleTest,
                         SFXWillTriggerEffect: false
                     };

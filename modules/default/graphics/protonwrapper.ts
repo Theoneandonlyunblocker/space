@@ -17,7 +17,21 @@ module Rance
         proton: Proton;
         protonRenderer: Proton.Renderer;
 
-        emitters: Proton.Emitter[];
+        // emitters: Proton.Emitter[];
+        emitters:
+        {
+          [key: string]: Proton.Emitter;
+        } = {};
+
+        emitterKeysByID:
+        {
+          [emitterId: string]: string;
+        } = {};
+
+        onSpriteCreated:
+        {
+          [key: string]: (sprite: PIXI.Sprite) => void;
+        } = {};
 
         public constructor(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, container: PIXI.Container)
         {
@@ -32,12 +46,11 @@ module Rance
         {
           this.pixiRenderer = null;
 
-          for (var i = 0; i < this.emitters.length; i++)
+          for (var key in this.emitters)
           {
-            this.destroyEmitter(this.emitters[i]);
+            this.removeEmitterWithKey(key);
           }
-
-          this.emitters = [];
+          this.emitters = {};
 
           this.protonRenderer.stop(); // start() initializes renderer, stop() destroys it
 
@@ -60,7 +73,16 @@ module Rance
         private onProtonParticleCreated(particle: Proton.Particle)
         {
           var sprite = new PIXI.Sprite(particle.target);
+          sprite.anchor.x = 0.5;
+          sprite.anchor.y = 0.5;
           particle.sprite = sprite;
+          var emitter = <Proton.Emitter> particle.parent;
+          var emitterKey = this.emitterKeysByID[emitter.id];
+          if (this.onSpriteCreated[emitterKey])
+          {
+            this.onSpriteCreated[emitterKey](sprite);
+          }
+
           this.container.addChild(sprite);
         }
 
@@ -70,12 +92,21 @@ module Rance
 
           sprite.position.x = particle.p.x;
           sprite.position.y = particle.p.y;
+
+          sprite.scale.x = particle.scale;
+          sprite.scale.y = particle.scale;
+
+          sprite.alpha = particle.alpha;
+
+          sprite.rotation = particle.rotation * PIXI.DEG_TO_RAD;
+
           // todo update other transforms
         }
 
         private onProtonParticleDead(particle: Proton.Particle)
         {
           this.container.removeChild(particle.sprite);
+          console.log("kill particle");
         }
 
         private destroyEmitter(emitter: Proton.Emitter)
@@ -85,25 +116,36 @@ module Rance
           emitter.destroy();
         }
 
-        public addEmitter(emitter: Proton.Emitter)
+        public addEmitter(emitter: Proton.Emitter, key: string)
         {
-          this.emitters.push(emitter);
-          emitter.emit() // Emitter.emit() initializes emitter
+          this.emitters[key] = emitter;
+          this.emitterKeysByID[emitter.id] = key;
 
           this.proton.addEmitter(emitter);
         }
+        private getEmitterKeyWithID(id: string)
+        {
+          return this.emitterKeysByID[id];
+        }
+        private getEmitterKey(emitter: Proton.Emitter)
+        {
+          return this.getEmitterKeyWithID(emitter.id) || null;
+        }
+        public removeEmitterWithKey(key: string)
+        {
+          var emitter = this.emitters[key];
 
+          this.destroyEmitter(emitter);
+
+          this.emitterKeysByID[emitter.id] = null;
+          delete this.emitterKeysByID[emitter.id];
+          
+          this.emitters[key] = null;
+          delete this.emitters[key];
+        }
         public removeEmitter(emitter: Proton.Emitter)
         {
-          var i = this.emitters.indexOf(emitter);
-
-          if (i === -1)
-          {
-            throw new Error("No such emitter");
-          }
-
-          this.emitters.splice(i, 1);
-          this.destroyEmitter(emitter);
+          this.removeEmitterWithKey(this.getEmitterKey(emitter));
         }
 
         public update()
