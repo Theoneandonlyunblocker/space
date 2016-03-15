@@ -868,7 +868,7 @@ declare module PIXI {
         anchor: Point;
         tint: number;
         blendMode: number;
-        shader: Shader;
+        shader: Shader | AbstractFilter;
         texture: Texture;
 
         width: number;
