@@ -106,7 +106,6 @@ module Rance
         private onProtonParticleDead(particle: Proton.Particle)
         {
           this.container.removeChild(particle.sprite);
-          console.log("kill particle");
         }
 
         private destroyEmitter(emitter: Proton.Emitter)
@@ -147,7 +146,15 @@ module Rance
         {
           this.removeEmitterWithKey(this.getEmitterKey(emitter));
         }
+        public addInitializeToExistingParticles(emitter: Proton.Emitter, initialize: Proton.Initialize)
+        {
+          emitter.particles.forEach(function(particle: Proton.Particle)
+          {
+            initialize.initialize(particle);
+          });
 
+          emitter.addInitialize(initialize);
+        }
         public update()
         {
           this.proton.update();

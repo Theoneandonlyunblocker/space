@@ -4429,4 +4429,5 @@ button.player-setup-remove-player.disabled {
 .battle-scene-test-pixi-container {
   width: 700px;
   height: 400px;
+  background: linear-gradient(to right, #ffff00, #ffc0cb);
 }

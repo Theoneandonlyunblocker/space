@@ -677,4 +677,67 @@ module Rance
 
     return {x: x, y: y};
   }
+  // creating a dummy sprite for attaching a shader to
+  // works much better than using pixi filters
+  export function createDummySpriteForShader(x?: number, y?: number,
+    width?: number, height?: number)
+  {
+    var texture = getDummyTextureForShader();
+
+    var sprite = new PIXI.Sprite(texture);
+    if (x || y)
+    {
+      sprite.position = new PIXI.Point(x || 0, y || 0);
+    }
+    if (width)
+    {
+      sprite.width = width;
+    }
+    if (height)
+    {
+      sprite.height = height;
+    }
+
+    return sprite;
+  }
+  export function getDummyTextureForShader()
+  {
+    var canvas = <any> document.createElement("canvas");
+    canvas._pixiId = "dummyShaderTexture"; // pixi will reuse basetexture with this set
+    canvas.width = 1;
+    canvas.height = 1;
+    return PIXI.Texture.fromCanvas(canvas);
+  }
+  export function findEasingFunctionHighPoint(easingFunction: (x: number) => number,
+    resolution: number = 10, maxIterations: number = 4,
+    startIndex: number = 0, endIndex: number = 1, iteration: number = 0): number
+  {
+    if (iteration >= maxIterations)
+    {
+      return (startIndex + endIndex) / 2;
+    }
+
+    var highestValue: number;
+    var highestValueIndex: number
+
+    var step = (endIndex - startIndex) / resolution;
+    for (var i = 0; i < resolution; i++)
+    {
+      var currentIndex = startIndex + i * step;
+      var currentValue = easingFunction(currentIndex);
+
+      if (!isFinite(highestValue) || currentValue > highestValue)
+      {
+        highestValue = currentValue;
+        highestValueIndex = currentIndex;
+      }
+    }
+
+    return findEasingFunctionHighPoint(easingFunction,
+      resolution, maxIterations,
+      highestValueIndex - step / 2,
+      highestValueIndex + step / 2,
+      iteration + 1
+    );
+  }
 }

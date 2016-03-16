@@ -17,7 +17,7 @@ module Rance
           export var rocketAttack: Rance.Templates.IBattleSFXTemplate =
           {
             duration: 1500,
-            battleOverlay: BattleSFXFunctions.rocketAttack,
+            battleOverlay: BattleSFXFunctions.particleTest,
             SFXWillTriggerEffect: true
           }
           export var guard: Rance.Templates.IBattleSFXTemplate =

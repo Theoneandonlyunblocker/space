@@ -49,10 +49,12 @@ declare module Proton
 
   export class Emitter extends Particle
   {
+    particles: Particle[];
     damping: number;
     rate: Rate;
     emitTime: number;
 
+    // doesn't actually count times emitted, just time since emission start
     // like life, but for emitting particles. only difference is, if life expires emitter gets destroyed
     // if this fills it just stops emitting particles. also has a few special values
     // 
@@ -87,7 +89,7 @@ declare module Proton
   }
   export class Initialize
   {
-
+    initialize(target: Particle): void;
   }
   export class ImageTarget extends Initialize
   {

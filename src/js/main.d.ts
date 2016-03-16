@@ -164,6 +164,9 @@ declare module Rance {
         x: number;
         y: number;
     };
+    function createDummySpriteForShader(x?: number, y?: number, width?: number, height?: number): PIXI.Sprite;
+    function getDummyTextureForShader(): PIXI.Texture;
+    function findEasingFunctionHighPoint(easingFunction: (x: number) => number, resolution?: number, maxIterations?: number, startIndex?: number, endIndex?: number, iteration?: number): number;
 }
 declare module Rance {
     module Modules {
@@ -2862,6 +2865,7 @@ declare module Rance {
 declare module Rance {
     module ShaderSources {
         var guard: string[];
+        var lightburst: string[];
         var nebula: string[];
         var occupation: string[];
         var shinyparticle: string[];
@@ -3368,6 +3372,7 @@ declare module Rance {
                 private getEmitterKey(emitter);
                 removeEmitterWithKey(key: string): void;
                 removeEmitter(emitter: Proton.Emitter): void;
+                addInitializeToExistingParticles(emitter: Proton.Emitter, initialize: Proton.Initialize): void;
                 update(): void;
             }
         }
@@ -3378,6 +3383,9 @@ declare module Rance {
         module DefaultModule {
             module BattleSFXFunctions {
                 class ShinyParticleFilter extends PIXI.AbstractFilter {
+                    constructor(uniforms?: any);
+                }
+                class LightBurstFilter extends PIXI.AbstractFilter {
                     constructor(uniforms?: any);
                 }
                 function particleTest(props: Rance.Templates.SFXParams): void;
