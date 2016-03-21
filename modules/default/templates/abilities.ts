@@ -69,7 +69,7 @@ module Rance
             mainEffect:
             {
               template: Effects.wholeRowAttack,
-              sfx: BattleSFX.rocketAttack
+              sfx: BattleSFX.particleTest
             }
           }
 
