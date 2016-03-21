@@ -62,6 +62,7 @@ declare module Proton
     emitTotalTimes: number | "once" | "none";
 
     addInitialize(...initializesToAdd: Initialize[]): void;
+    removeInitialize(initialize: Initialize): void;
     destroy(): void;
     // <'once'> emitTime: only emit 1 partice. <anything else> emitTime: no clue
     // <number> life: how long emitter will live. <anything else> life: no clue

@@ -24971,7 +24971,8 @@ var Rance;
                     shinyEmitter.p.x = beamOrigin.x;
                     shinyEmitter.p.y = beamOrigin.y;
                     shinyEmitter.addInitialize(new Proton.ImageTarget(particleTexture));
-                    shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000)));
+                    var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
+                    shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
                     // shinyEmitter.addInitialize(new Proton.Mass(1));
                     shinyEmitter.damping = 0.009;
                     var emitterZone = new Proton.RectZone(0, -5, props.width + 100 - shinyEmitter.p.x, 5);
@@ -25099,6 +25100,8 @@ var Rance;
                                 impactHasOccurred = true;
                                 var velocityInitialize = new Proton.Velocity(2, new Proton.Span(270, 35, true), 'polar');
                                 protonWrapper.addInitializeToExistingParticles(shinyEmitter, velocityInitialize);
+                                shinyEmitter.removeInitialize(shinyEmitterLifeInitialize);
+                                shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * lifeLeft / 3000, props.duration * lifeLeft / 1000)));
                                 shinyEmitter.rate = new Proton.Rate(150, 0);
                                 shinyEmitter.emit("once");
                                 // smallEmitter.rate = new Proton.Rate(250, 0);
@@ -25152,7 +25155,7 @@ var Rance;
                 (function (BattleSFX) {
                     BattleSFX.rocketAttack = {
                         duration: 1500,
-                        battleOverlay: DefaultModule.BattleSFXFunctions.particleTest,
+                        battleOverlay: DefaultModule.BattleSFXFunctions.rocketAttack,
                         SFXWillTriggerEffect: true
                     };
                     BattleSFX.guard = {
@@ -25163,7 +25166,7 @@ var Rance;
                     BattleSFX.particleTest = {
                         duration: 3000,
                         battleOverlay: DefaultModule.BattleSFXFunctions.particleTest,
-                        SFXWillTriggerEffect: false
+                        SFXWillTriggerEffect: true
                     };
                 })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
@@ -25230,7 +25233,7 @@ var Rance;
                         bypassesGuard: true,
                         mainEffect: {
                             template: Templates.Effects.wholeRowAttack,
-                            sfx: Templates.BattleSFX.rocketAttack
+                            sfx: Templates.BattleSFX.particleTest
                         }
                     };
                     Abilities.bombAttack = {
