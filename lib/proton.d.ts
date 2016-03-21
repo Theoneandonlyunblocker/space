@@ -85,6 +85,8 @@ declare module Proton
   export class Span
   {
     // if center == true: from = center point; to = variation from center point;
+    // eg. span(0, 5, true) => -5...5
+    // span(0, 5, false) => 0...5
     constructor(from: number, to: number, center?: boolean);
     constructor(span: number[]);
   }
@@ -171,7 +173,6 @@ declare module Proton
       type: string, // 'pixi' | 'dom' | 'canvas' | 'webgl' | 'easel' | 'easeljs' | 'pixel'
       proton: Proton,
 
-      // element dom/div canvas/canvas easeljs/cantainer(or stage)
       element?: any // used by renderer
     );
     start(): void;
