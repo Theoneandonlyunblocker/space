@@ -15,7 +15,8 @@ module Rance
         {
           activeUnit: null,
           selectedSide1Unit: null,
-          selectedSide2Unit: null
+          selectedSide2Unit: null,
+          selectedSFXTemplateKey: null
         });
       },
 
@@ -147,6 +148,15 @@ module Rance
         this.battleScene.updateUnits();
       },
 
+      handleSelectSFXTemplate: function(e: Event)
+      {
+        var target = <HTMLInputElement> e.target;
+        this.setState(
+        {
+          selectedSFXTemplateKey: target.value
+        });
+      },
+
       handleTestAbility1: function()
       {
         var overlayTestFN = function(color: number, params: Templates.SFXParams)
@@ -231,13 +241,13 @@ module Rance
         });
       },
 
-      handleTestAbility2: function()
+      useSelectedAbility: function()
       {
         var user = this.state.activeUnit;
         var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
         var bs: Rance.BattleScene = this.battleScene;
-        var SFXTemplate = app.moduleData.Templates.BattleSFX["particleTest"];
+        var SFXTemplate = app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey];
 
         bs.handleAbilityUse(
         {
@@ -290,6 +300,31 @@ module Rance
         var side1UnitElements: ReactDOMPlaceHolder[] = this.makeUnitElements(battle.unitsBySide["side1"]);
         var side2UnitElements: ReactDOMPlaceHolder[] = this.makeUnitElements(battle.unitsBySide["side2"]);
 
+        var SFXTemplateSelectOptions: ReactDOMPlaceHolder[] = [];
+
+        SFXTemplateSelectOptions.push(React.DOM.option(
+        {
+          value: null,
+          key: "null"
+        },
+          "null"
+        ))
+
+        for (var key in app.moduleData.Templates.BattleSFX)
+        {
+          var template = app.moduleData.Templates.BattleSFX[key];
+
+          SFXTemplateSelectOptions.push(React.DOM.option(
+          {
+            value: key,
+            key: key
+          },
+            key
+          ));
+        }
+
+        console.log(this.state.selectedSFXTemplateKey);
+
         return(
           React.DOM.div(
           {
@@ -323,21 +358,20 @@ module Rance
                   side2UnitElements
                 )
               ),
-              React.DOM.button(
+              React.DOM.select(
               {
-                className: "battle-scene-test-ability1",
-                onClick: this.handleTestAbility1,
-                disabled: !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
+                value: this.state.selectedSFXTemplateKey,
+                onChange: this.handleSelectSFXTemplate
               },
-                "test ability 1"
+                SFXTemplateSelectOptions
               ),
               React.DOM.button(
               {
                 className: "battle-scene-test-ability2",
-                onClick: this.handleTestAbility2,
-                disabled: !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
+                onClick: this.useSelectedAbility,
+                disabled: !this.state.selectedSFXTemplateKey || !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
               },
-                "test ability 2"
+                "use ability"
               )
             )
           )
