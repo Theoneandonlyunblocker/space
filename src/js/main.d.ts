@@ -2865,6 +2865,7 @@ declare module Rance {
 declare module Rance {
     module ShaderSources {
         var guard: string[];
+        var intersectingellipses: string[];
         var lightburst: string[];
         var nebula: string[];
         var occupation: string[];
@@ -3386,6 +3387,9 @@ declare module Rance {
                     constructor(uniforms?: any);
                 }
                 class LightBurstFilter extends PIXI.AbstractFilter {
+                    constructor(uniforms?: any);
+                }
+                class IntersectingEllipsesFilter extends PIXI.AbstractFilter {
                     constructor(uniforms?: any);
                 }
                 function particleTest(props: Rance.Templates.SFXParams): void;

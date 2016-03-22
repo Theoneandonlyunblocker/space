@@ -22,6 +22,13 @@ module Rance
             super(null, ShaderSources.lightburst.join("\n"), uniforms);
           }
         }
+        export class IntersectingEllipsesFilter extends PIXI.AbstractFilter
+        {
+          constructor(uniforms?: any)
+          {
+            super(null, ShaderSources.intersectingellipses.join("\n"), uniforms);
+          }
+        }
         export function particleTest(props: Rance.Templates.SFXParams)
         {
           //----------INIT GENERAL

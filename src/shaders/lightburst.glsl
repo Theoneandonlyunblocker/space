@@ -29,7 +29,7 @@ precision mediump float;
   const float centerBloomStrength = 5.0;
 #endif
 
-//----------------------------------------------------------------------------------------
+//--------------------------------------------------------------------
 
 // https://www.shadertoy.com/view/4dlGW2
 // Tileable noise, for creating useful textures. By David Hoskins, Sept. 2013.
@@ -82,7 +82,7 @@ float fbm(in vec2 p)
   return min(f, 1.0);
 }
 
-//----------------------------------------------------------------------------------------
+//--------------------------------------------------------------------
 
 float ray(vec2 q, float angleAdjust)
 {
