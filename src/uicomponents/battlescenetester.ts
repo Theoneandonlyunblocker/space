@@ -323,8 +323,6 @@ module Rance
           ));
         }
 
-        console.log(this.state.selectedSFXTemplateKey);
-
         return(
           React.DOM.div(
           {

@@ -20537,7 +20537,6 @@ var Rance;
                         key: key
                     }, key));
                 }
-                console.log(this.state.selectedSFXTemplateKey);
                 return (React.DOM.div({
                     className: "battle-scene-test"
                 }, React.DOM.div({
@@ -21665,7 +21664,7 @@ var Rance;
         ShaderSources.intersectingellipses = [
             "precision mediump float;",
             "",
-            "#define DOMAIN 1 // 0 == pixi, 1 == shdr.bkcore.com",
+            "#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com",
             "",
             "#if DOMAIN == 0",
             "  varying vec2 vTextureCoord;",
@@ -21675,7 +21674,7 @@ var Rance;
             "",
             "  uniform vec2 intersectingEllipseCenter;",
             "  uniform vec2 intersectingEllipseSize;",
-            "  uniform float intersecingEllipseSharpness;",
+            "  uniform float intersectingEllipseSharpness;",
             "",
             "  uniform vec2 mainEllipseSize;",
             "  uniform float mainEllipseSharpness;",
@@ -21688,7 +21687,7 @@ var Rance;
             "",
             "  const vec2 intersectingEllipseCenter = vec2(0.4, 0.0);",
             "  const vec2 intersectingEllipseSize = vec2(0.8, 1.0);",
-            "  const float intersecingEllipseSharpness = 0.6;",
+            "  const float intersectingEllipseSharpness = 0.6;",
             "",
             "  const vec2 mainEllipseSize = vec2(0.5, 0.9);",
             "  const float mainEllipseSharpness = 0.8;",
@@ -21725,10 +21724,10 @@ var Rance;
             "",
             "  float intersectingDist = ellipseGradient(q, intersectingEllipseCenter, intersectingEllipseSize);",
             "",
-            "  float intersectingMask = step(intersecingEllipseSharpness, intersectingDist);",
+            "  float intersectingMask = step(intersectingEllipseSharpness, intersectingDist);",
             "  color *= intersectingMask;",
             "",
-            "  float intersectingGradient = smoothstep(intersecingEllipseSharpness, 1.0, intersectingDist);",
+            "  float intersectingGradient = smoothstep(intersectingEllipseSharpness, 1.0, intersectingDist);",
             "  color *=  intersectingGradient;",
             "",
             "  gl_FragColor = color;",
@@ -25118,7 +25117,7 @@ var Rance;
                     //----------INIT PARTICLES
                     var particleContainer = new PIXI.Container();
                     particleContainer.alpha = 0.1;
-                    mainContainer.addChild(particleContainer);
+                    // mainContainer.addChild(particleContainer);
                     var protonWrapper = new DefaultModule.ProtonWrapper(props.renderer, particleContainer);
                     var particleTexture = Rance.getDummyTextureForShader();
                     var particleShaderColor = {
@@ -25243,7 +25242,6 @@ var Rance;
                             value: 5.0
                         }
                     });
-                    var lightBurstContainer = new PIXI.Container;
                     var lightBurstSize = {
                         x: props.height + 200,
                         y: props.height + 200
@@ -25251,8 +25249,7 @@ var Rance;
                     var lightBurstSprite = Rance.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
                     lightBurstSprite.shader = lightBurstFilter;
                     lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-                    lightBurstContainer.addChild(lightBurstSprite);
-                    mainContainer.addChild(lightBurstContainer);
+                    // mainContainer.addChild(lightBurstSprite);
                     function getLightBurstIntensity(time) {
                         var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
                         rampUpValue = Math.pow(rampUpValue, 7.0);
@@ -25271,21 +25268,40 @@ var Rance;
                         },
                         intersectingEllipseSize: {
                             type: "2fv",
-                            value: [0, 0]
+                            value: [0.0, 0.0]
                         },
-                        intersecingEllipseSharpness: {
+                        intersectingEllipseSharpness: {
                             type: "1f",
-                            value: 0.95
+                            value: 0.9
                         },
                         mainEllipseSize: {
                             type: "2fv",
-                            value: [0, 0]
+                            value: [0.0, 0.0]
                         },
                         mainEllipseSharpness: {
                             type: "1f",
                             value: 0.95
                         }
                     });
+                    console.log(props);
+                    var shockWaveSpriteSize = {
+                        x: props.height + 200,
+                        y: props.height + 200
+                    };
+                    var shockWaveSprite = Rance.createDummySpriteForShader(beamOrigin.x - shockWaveSpriteSize.x / 2, beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
+                    shockWaveSprite.shader = shockWaveFilter;
+                    // shockWaveSprite.shader = lightBurstFilter;
+                    shockWaveSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+                    mainContainer.addChild(shockWaveSprite);
+                    var shockWaveMainEllipseMaxSize = {
+                        x: 0.5,
+                        y: 0.9
+                    };
+                    var shockWaveIntersectingEllipseMaxSize = {
+                        x: 0.8,
+                        y: 1.0
+                    };
+                    //----------ANIMATE
                     function animate() {
                         var elapsedTime = Date.now() - startTime;
                         protonWrapper.update();
@@ -25319,6 +25335,20 @@ var Rance;
                         lightBurstFilter.uniforms.centerSize.value = Math.pow(lightBurstIntensity, 2.0);
                         lightBurstFilter.uniforms.centerBloomStrength.value = Math.pow(lightBurstIntensity, 2.0) * 5.0;
                         lightBurstFilter.uniforms.rayStrength.value = Math.pow(lightBurstIntensity, 3.0);
+                        shockWaveFilter.uniforms.mainEllipseSize.value =
+                            [
+                                shockWaveMainEllipseMaxSize.x * timePassed,
+                                shockWaveMainEllipseMaxSize.y * timePassed
+                            ];
+                        shockWaveFilter.uniforms.intersectingEllipseSize.value =
+                            [
+                                0.0, 0.0
+                            ];
+                        shockWaveFilter.uniforms.intersectingEllipseCenter.value =
+                            [
+                                0.1 + 0.3 * timePassed,
+                                0.0
+                            ];
                         renderTexture.clear();
                         renderTexture.render(mainContainer);
                         if (elapsedTime < props.duration) {

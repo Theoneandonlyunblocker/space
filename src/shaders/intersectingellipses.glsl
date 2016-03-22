@@ -1,6 +1,6 @@
 precision mediump float;
 
-#define DOMAIN 1 // 0 == pixi, 1 == shdr.bkcore.com
+#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com
 
 #if DOMAIN == 0
   varying vec2 vTextureCoord;
@@ -10,7 +10,7 @@ precision mediump float;
   
   uniform vec2 intersectingEllipseCenter;
   uniform vec2 intersectingEllipseSize;
-  uniform float intersecingEllipseSharpness;
+  uniform float intersectingEllipseSharpness;
 
   uniform vec2 mainEllipseSize;
   uniform float mainEllipseSharpness;
@@ -23,7 +23,7 @@ precision mediump float;
   
   const vec2 intersectingEllipseCenter = vec2(0.4, 0.0);
   const vec2 intersectingEllipseSize = vec2(0.8, 1.0);
-  const float intersecingEllipseSharpness = 0.6;
+  const float intersectingEllipseSharpness = 0.6;
 
   const vec2 mainEllipseSize = vec2(0.5, 0.9);
   const float mainEllipseSharpness = 0.8;
@@ -60,10 +60,10 @@ void main()
 
   float intersectingDist = ellipseGradient(q, intersectingEllipseCenter, intersectingEllipseSize);
 
-  float intersectingMask = step(intersecingEllipseSharpness, intersectingDist);
+  float intersectingMask = step(intersectingEllipseSharpness, intersectingDist);
   color *= intersectingMask;
 
-  float intersectingGradient = smoothstep(intersecingEllipseSharpness, 1.0, intersectingDist);
+  float intersectingGradient = smoothstep(intersectingEllipseSharpness, 1.0, intersectingDist);
   color *=  intersectingGradient;
 
   gl_FragColor = color;

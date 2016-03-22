@@ -8,6 +8,7 @@ module Rance
     {
       export module BattleSFXFunctions
       {
+        // TODO refactor | move shaders
         export class ShinyParticleFilter extends PIXI.AbstractFilter
         {
           constructor(uniforms?: any)
@@ -63,7 +64,7 @@ module Rance
           //----------INIT PARTICLES
           var particleContainer = new PIXI.Container();
           particleContainer.alpha = 0.1;
-          mainContainer.addChild(particleContainer);
+          // mainContainer.addChild(particleContainer);
           var protonWrapper = new ProtonWrapper(props.renderer, particleContainer);
 
           var particleTexture = getDummyTextureForShader();
@@ -245,8 +246,6 @@ module Rance
             }
           });
 
-          var lightBurstContainer = new PIXI.Container;
-
           var lightBurstSize =
           {
             x: props.height + 200,
@@ -260,9 +259,8 @@ module Rance
           );
           lightBurstSprite.shader = lightBurstFilter;
           lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-          lightBurstContainer.addChild(lightBurstSprite);
 
-          mainContainer.addChild(lightBurstContainer);
+          // mainContainer.addChild(lightBurstSprite);
 
           function getLightBurstIntensity(time: number)
           {
@@ -273,6 +271,83 @@ module Rance
 
             return rampUpValue - rampDownValue;
           }
+
+          //----------INIT SHOCKWAVE
+
+          var shockWaveFilter = new IntersectingEllipsesFilter(
+          {
+            mainColor:
+            {
+              type: "4fv",
+              value: [1, 1, 1, 1]
+            },
+            intersectingEllipseCenter:
+            {
+              type: "2fv",
+              value: [0.2, 0]
+            },
+            intersectingEllipseSize:
+            {
+              type: "2fv",
+              value: [0.0, 0.0]
+            },
+            intersectingEllipseSharpness:
+            {
+              type: "1f",
+              value: 0.9
+            },
+            mainEllipseSize:
+            {
+              type: "2fv",
+              value: [0.0, 0.0]
+            },
+            mainEllipseSharpness:
+            {
+              type: "1f",
+              value: 0.95
+            }
+          });
+          console.log(props);
+
+          var shockWaveSpriteSize =
+          {
+            x: props.height + 200,
+            y: props.height + 200
+          }
+          var shockWaveSprite = createDummySpriteForShader(
+            beamOrigin.x - shockWaveSpriteSize.x / 2,
+            beamOrigin.y - shockWaveSpriteSize.y / 2,
+            shockWaveSpriteSize.x,
+            shockWaveSpriteSize.y
+          );
+          shockWaveSprite.shader = shockWaveFilter;
+          // shockWaveSprite.shader = lightBurstFilter;
+          shockWaveSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+
+          mainContainer.addChild(shockWaveSprite);
+
+          var shockWaveMainEllipseMaxSize =
+          {
+            x: 0.5,
+            y: 0.9
+          }
+          var shockWaveIntersectingEllipseMaxSize =
+          {
+            x: 0.8,
+            y: 1.0
+          }
+
+          function getShockWaveSize(x: number)
+          {
+            var rampUpValue = Math.min(x / relativeImpactTime, 1.0);
+            rampUpValue = Math.pow(rampUpValue, 7.0);
+
+            var rampDownValue = Math.pow(x, 2.0);
+
+            return rampUpValue - rampDownValue;
+          }
+
+          //----------ANIMATE
 
           function animate()
           {
@@ -320,10 +395,30 @@ module Rance
             shinyEmitterFilter.uniforms.spikeIntensity.value = 1 - timePassed * 0.1;
             shinyEmitterFilter.uniforms.highlightIntensity.value = Math.pow(lifeLeft, 2.0);
 
+
             var lightBurstIntensity = getLightBurstIntensity(timePassed);
             lightBurstFilter.uniforms.centerSize.value = Math.pow(lightBurstIntensity, 2.0);
             lightBurstFilter.uniforms.centerBloomStrength.value = Math.pow(lightBurstIntensity, 2.0) * 5.0;
             lightBurstFilter.uniforms.rayStrength.value = Math.pow(lightBurstIntensity, 3.0);
+
+
+            shockWaveFilter.uniforms.mainEllipseSize.value =
+            [
+              shockWaveMainEllipseMaxSize.x * timePassed,
+              shockWaveMainEllipseMaxSize.y * timePassed
+            ];
+            shockWaveFilter.uniforms.intersectingEllipseSize.value =
+            [
+              0.0, 0.0
+              // shockWaveIntersectingEllipseMaxSize.x * Math.pow(timePassed, 1.8),
+              // shockWaveIntersectingEllipseMaxSize.y * Math.pow(timePassed, 1.8)
+            ];
+            shockWaveFilter.uniforms.intersectingEllipseCenter.value =
+            [
+              0.1 + 0.3 * timePassed,
+              0.0
+            ];
+
 
             renderTexture.clear();
             renderTexture.render(mainContainer);
