@@ -84,6 +84,7 @@ module Rance
             }, props.duration / 2
           );
 
+          var particlesAmountScale = props.width / 700;
 
           //----------INIT SHINY EMITTER
           var shinyEmitter = new Proton.BehaviourEmitter();
@@ -142,7 +143,7 @@ module Rance
           };
           
           shinyEmitter.rate = new Proton.Rate(
-            100, // particles per emit
+            100 * particlesAmountScale, // particles per emit
             0 // time between emits in seconds
           );
           shinyEmitter.emit("once");
@@ -294,10 +295,10 @@ module Rance
                 shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * lifeLeft / 3000,
                   props.duration * lifeLeft / 1000)))
 
-                shinyEmitter.rate = new Proton.Rate(150, 0);
+                shinyEmitter.rate = new Proton.Rate(150 * particlesAmountScale, 0);
                 shinyEmitter.emit("once");
 
-                // smallEmitter.rate = new Proton.Rate(250, 0);
+                // smallEmitter.rate = new Proton.Rate(250 * particlesAmountScale, 0);
                 // smallEmitter.emit("once");
 
                 props.triggerEffect();
