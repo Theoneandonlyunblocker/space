@@ -974,7 +974,7 @@ declare module PIXI {
         scaleMode: number;
         hasLoaded: boolean;
         isLoading: boolean;
-        source: HTMLImageElement | HTMLCanvasElement;
+        source: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement;
         premultipliedAlpha: boolean;
         imageUrl: string;
         isPowerOfTwo: boolean;
@@ -1089,6 +1089,7 @@ declare module PIXI {
         constructor(source: HTMLVideoElement, scaleMode?: number);
 
         autoUpdate: boolean;
+        source: HTMLVideoElement;
 
         destroy(): void;
 
