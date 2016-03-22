@@ -10,6 +10,14 @@ module Rance
   {
     export module DefaultModule
     {
+      // TODO refactor | move shaders
+      export class BlackToAlphaFilter extends PIXI.AbstractFilter
+      {
+        constructor()
+        {
+          super(null, ShaderSources.blacktoalpha.join("\n"), null);
+        }
+      }
       export module Templates
       {
         export module BattleSFX
@@ -30,6 +38,17 @@ module Rance
           {
             duration: 3000,
             battleOverlay: BattleSFXFunctions.particleTest,
+            SFXWillTriggerEffect: true
+          }
+          export var videoTest: Rance.Templates.IBattleSFXTemplate =
+          {
+            duration: 1000,
+            battleOverlay: BattleSFXFunctions.makeSFXFromVideo.bind(null, "img/bushiAttack.webm",
+              function(sprite: PIXI.Sprite)
+              {
+                sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+                sprite.shader = new BlackToAlphaFilter();
+              }),
             SFXWillTriggerEffect: true
           }
         }

@@ -2864,6 +2864,7 @@ declare module Rance {
 }
 declare module Rance {
     module ShaderSources {
+        var blacktoalpha: string[];
         var guard: string[];
         var intersectingellipses: string[];
         var lightburst: string[];
@@ -3282,6 +3283,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module BattleSFXFunctions {
+                function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void, props: Rance.Templates.SFXParams): void;
             }
         }
     }
@@ -3400,11 +3402,15 @@ declare module Rance {
 declare module Rance {
     module Modules {
         module DefaultModule {
+            class BlackToAlphaFilter extends PIXI.AbstractFilter {
+                constructor();
+            }
             module Templates {
                 module BattleSFX {
                     var rocketAttack: Rance.Templates.IBattleSFXTemplate;
                     var guard: Rance.Templates.IBattleSFXTemplate;
                     var particleTest: Rance.Templates.IBattleSFXTemplate;
+                    var videoTest: Rance.Templates.IBattleSFXTemplate;
                 }
             }
         }

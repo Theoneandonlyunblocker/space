@@ -20331,7 +20331,8 @@ var Rance;
                 return ({
                     activeUnit: null,
                     selectedSide1Unit: null,
-                    selectedSide2Unit: null
+                    selectedSide2Unit: null,
+                    selectedSFXTemplateKey: null
                 });
             },
             componentWillMount: function () {
@@ -20419,6 +20420,12 @@ var Rance;
                 this.battleScene.activeUnit = newActiveUnit;
                 this.battleScene.updateUnits();
             },
+            handleSelectSFXTemplate: function (e) {
+                var target = e.target;
+                this.setState({
+                    selectedSFXTemplateKey: target.value
+                });
+            },
             handleTestAbility1: function () {
                 var overlayTestFN = function (color, params) {
                     var renderTexture = new PIXI.RenderTexture(params.renderer, params.width, params.height);
@@ -20479,11 +20486,11 @@ var Rance;
                     afterFinishedCallback: function () { console.log("afterFinishedCallback"); }
                 });
             },
-            handleTestAbility2: function () {
+            useSelectedAbility: function () {
                 var user = this.state.activeUnit;
                 var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
                 var bs = this.battleScene;
-                var SFXTemplate = app.moduleData.Templates.BattleSFX["particleTest"];
+                var SFXTemplate = app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey];
                 bs.handleAbilityUse({
                     user: user,
                     target: target,
@@ -20518,6 +20525,19 @@ var Rance;
                 var battle = this.battle;
                 var side1UnitElements = this.makeUnitElements(battle.unitsBySide["side1"]);
                 var side2UnitElements = this.makeUnitElements(battle.unitsBySide["side2"]);
+                var SFXTemplateSelectOptions = [];
+                SFXTemplateSelectOptions.push(React.DOM.option({
+                    value: null,
+                    key: "null"
+                }, "null"));
+                for (var key in app.moduleData.Templates.BattleSFX) {
+                    var template = app.moduleData.Templates.BattleSFX[key];
+                    SFXTemplateSelectOptions.push(React.DOM.option({
+                        value: key,
+                        key: key
+                    }, key));
+                }
+                console.log(this.state.selectedSFXTemplateKey);
                 return (React.DOM.div({
                     className: "battle-scene-test"
                 }, React.DOM.div({
@@ -20531,15 +20551,14 @@ var Rance;
                     className: "battle-scene-test-controls-units-side1"
                 }, side1UnitElements), React.DOM.div({
                     className: "battle-scene-test-controls-units-side2"
-                }, side2UnitElements)), React.DOM.button({
-                    className: "battle-scene-test-ability1",
-                    onClick: this.handleTestAbility1,
-                    disabled: !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
-                }, "test ability 1"), React.DOM.button({
+                }, side2UnitElements)), React.DOM.select({
+                    value: this.state.selectedSFXTemplateKey,
+                    onChange: this.handleSelectSFXTemplate
+                }, SFXTemplateSelectOptions), React.DOM.button({
                     className: "battle-scene-test-ability2",
-                    onClick: this.handleTestAbility2,
-                    disabled: !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
-                }, "test ability 2"))));
+                    onClick: this.useSelectedAbility,
+                    disabled: !this.state.selectedSFXTemplateKey || !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
+                }, "use ability"))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -21542,6 +21561,20 @@ var Rance;
 (function (Rance) {
     var ShaderSources;
     (function (ShaderSources) {
+        ShaderSources.blacktoalpha = [
+            "precision mediump float;",
+            "",
+            "varying vec2 vTextureCoord;",
+            "uniform sampler2D uSampler;",
+            "",
+            "void main()",
+            "{",
+            "  vec4 color = texture2D(uSampler, vTextureCoord);",
+            "  color.a = (color.r + color.g + color.b) / 3.0;",
+            "",
+            "  gl_FragColor = color;",
+            "}",
+        ];
         ShaderSources.guard = [
             "precision mediump float;",
             "",
@@ -24480,6 +24513,68 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var BattleSFXFunctions;
+            (function (BattleSFXFunctions) {
+                function makeSFXFromVideo(videoSrc, onStartFN, props) {
+                    function clearBaseTextureListeners() {
+                        baseTexture.removeListener("loaded", onVideoLoaded);
+                        baseTexture.removeListener("error", onVideoError);
+                    }
+                    function onVideoLoaded() {
+                        clearBaseTextureListeners();
+                        baseTexture.autoUpdate = false;
+                        if (onStartFN) {
+                            onStartFN(sprite);
+                        }
+                        startTime = Date.now();
+                        props.triggerStart(sprite);
+                        animate();
+                    }
+                    function onVideoError() {
+                        clearBaseTextureListeners();
+                        throw new Error("Video " + videoSrc + " failed to load.");
+                    }
+                    var baseTexture = PIXI.VideoBaseTexture.fromUrl(videoSrc);
+                    var texture = new PIXI.Texture(baseTexture);
+                    var sprite = new PIXI.Sprite(texture);
+                    if (!props.facingRight) {
+                        sprite.x = props.width;
+                        sprite.scale.x = -1;
+                    }
+                    if (baseTexture.hasLoaded) {
+                        onVideoLoaded();
+                    }
+                    else if (baseTexture.isLoading) {
+                        baseTexture.on("loaded", onVideoLoaded);
+                        baseTexture.on("error", onVideoError);
+                    }
+                    else {
+                        onVideoError();
+                    }
+                    var startTime;
+                    function animate() {
+                        var elapsedTime = Date.now() - startTime;
+                        baseTexture.update();
+                        if (elapsedTime < props.duration && !baseTexture.source.paused) {
+                            requestAnimationFrame(animate);
+                        }
+                        else {
+                            props.triggerEnd();
+                            sprite.destroy(true, true);
+                        }
+                    }
+                }
+                BattleSFXFunctions.makeSFXFromVideo = makeSFXFromVideo;
+            })(BattleSFXFunctions = DefaultModule.BattleSFXFunctions || (DefaultModule.BattleSFXFunctions = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/ieffecttemplate.d.ts"/>
 /// <reference path="../../../src/targeting.ts" />
 /// <reference path="../../../src/unit.ts" />
@@ -24972,6 +25067,7 @@ var Rance;
         (function (DefaultModule) {
             var BattleSFXFunctions;
             (function (BattleSFXFunctions) {
+                // TODO refactor | move shaders
                 var ShinyParticleFilter = (function (_super) {
                     __extends(ShinyParticleFilter, _super);
                     function ShinyParticleFilter(uniforms) {
@@ -25163,6 +25259,33 @@ var Rance;
                         var rampDownValue = Math.pow(time, 2.0);
                         return rampUpValue - rampDownValue;
                     }
+                    //----------INIT SHOCKWAVE
+                    var shockWaveFilter = new IntersectingEllipsesFilter({
+                        mainColor: {
+                            type: "4fv",
+                            value: [1, 1, 1, 1]
+                        },
+                        intersectingEllipseCenter: {
+                            type: "2fv",
+                            value: [0.2, 0]
+                        },
+                        intersectingEllipseSize: {
+                            type: "2fv",
+                            value: [0, 0]
+                        },
+                        intersecingEllipseSharpness: {
+                            type: "1f",
+                            value: 0.95
+                        },
+                        mainEllipseSize: {
+                            type: "2fv",
+                            value: [0, 0]
+                        },
+                        mainEllipseSharpness: {
+                            type: "1f",
+                            value: 0.95
+                        }
+                    });
                     function animate() {
                         var elapsedTime = Date.now() - startTime;
                         protonWrapper.update();
@@ -25227,6 +25350,15 @@ var Rance;
     (function (Modules) {
         var DefaultModule;
         (function (DefaultModule) {
+            // TODO refactor | move shaders
+            var BlackToAlphaFilter = (function (_super) {
+                __extends(BlackToAlphaFilter, _super);
+                function BlackToAlphaFilter() {
+                    _super.call(this, null, Rance.ShaderSources.blacktoalpha.join("\n"), null);
+                }
+                return BlackToAlphaFilter;
+            }(PIXI.AbstractFilter));
+            DefaultModule.BlackToAlphaFilter = BlackToAlphaFilter;
             var Templates;
             (function (Templates) {
                 var BattleSFX;
@@ -25244,6 +25376,14 @@ var Rance;
                     BattleSFX.particleTest = {
                         duration: 3000,
                         battleOverlay: DefaultModule.BattleSFXFunctions.particleTest,
+                        SFXWillTriggerEffect: true
+                    };
+                    BattleSFX.videoTest = {
+                        duration: 1000,
+                        battleOverlay: DefaultModule.BattleSFXFunctions.makeSFXFromVideo.bind(null, "img/bushiAttack.webm", function (sprite) {
+                            sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+                            sprite.shader = new BlackToAlphaFilter();
+                        }),
                         SFXWillTriggerEffect: true
                     };
                 })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));

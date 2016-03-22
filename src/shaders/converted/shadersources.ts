@@ -2,6 +2,21 @@ module Rance
 {
   export module ShaderSources
   {
+      export var blacktoalpha =
+      [
+        "precision mediump float;",
+        "",
+        "varying vec2 vTextureCoord;",
+        "uniform sampler2D uSampler;",
+        "",
+        "void main()",
+        "{",
+        "  vec4 color = texture2D(uSampler, vTextureCoord);",
+        "  color.a = (color.r + color.g + color.b) / 3.0;",
+        "",
+        "  gl_FragColor = color;",
+        "}",
+      ]
       export var guard =
       [
         "precision mediump float;",
