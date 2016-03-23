@@ -21560,6 +21560,103 @@ var Rance;
 (function (Rance) {
     var ShaderSources;
     (function (ShaderSources) {
+        ShaderSources.beam = [
+            "precision mediump float;",
+            "",
+            "#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com",
+            "",
+            "#if DOMAIN == 0",
+            "  varying vec2 vTextureCoord;",
+            "  uniform sampler2D uSampler;",
+            "",
+            "  uniform float aspectRatio;",
+            "",
+            "  uniform vec4 beamColor;",
+            "",
+            "  uniform float lineIntensity;",
+            "  uniform float bulgeIntensity;",
+            "",
+            "  uniform float bulgeXPosition;",
+            "  uniform vec2 bulgeSize;",
+            "  uniform float bulgeSharpness;",
+            "",
+            "  uniform vec2 lineXSize;",
+            "  uniform float lineXSharpness;",
+            "",
+            "  uniform float lineYSize;",
+            "  uniform float lineYSharpness;",
+            "",
+            "",
+            "#elif DOMAIN == 1",
+            "  uniform vec2 resolution;",
+            "  uniform float time;",
+            "",
+            "  float aspectRatio = resolution.x / resolution.y;",
+            "",
+            "  const vec4 beamColor = vec4(1.0, 0.5, 0.5, 1.0);",
+            "",
+            "  const float bulgeXPosition = 0.4;",
+            "  const vec2 bulgeSize = vec2(0.8, 0.4);",
+            "  const float bulgeSharpness = 0.4;",
+            "  const float bulgeIntensity = 3.0;",
+            "",
+            "  const vec2 lineXSize = vec2(0.4, 1.0);",
+            "  const float lineXSharpness = 0.3;",
+            "",
+            "  const float lineYSize = 0.02;",
+            "  const float lineYSharpness = 0.8;",
+            "  const float lineIntensity = 5.0;",
+            "",
+            "",
+            "#endif",
+            "",
+            "",
+            "float ellipseGradient(vec2 p, float ellipseXPosition, vec2 ellipseSize)",
+            "{",
+            "  vec2 q = vec2(-1.0 + 2.0 * p.x, p.y); // (-1, -1) -> (1, 1)",
+            "  q.x -= -1.0 + 2.0 * ellipseXPosition;",
+            "  q.x *= aspectRatio;",
+            "  q /= ellipseSize;",
+            "",
+            "  float dist = length(q);",
+            "",
+            "  return dist;",
+            "}",
+            "",
+            "void main()",
+            "{",
+            "  #if DOMAIN == 0",
+            "    vec2 uv = vTextureCoord;",
+            "    vec4 color = texture2D(uSampler, vTextureCoord);",
+            "  #elif DOMAIN == 1",
+            "    vec2 uv = gl_FragCoord.xy / resolution;",
+            "    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);",
+            "  #endif",
+            "",
+            "  vec2 q = vec2(uv.x, -1.0 + 2.0 * uv.y); // (0, -1) -> (1, 1)",
+            "",
+            "  float yDistFromCenter = abs(q.y);",
+            "  float insideLineY = step(yDistFromCenter, lineYSize);",
+            "  float lineYDist = max(1.0 - distance(yDistFromCenter, lineYSize), insideLineY);",
+            "  float lineYGradient = smoothstep(lineYSharpness, 1.0, lineYDist);",
+            "",
+            "  float insideLineX = step(lineXSize.x, q.x) * step(q.x, lineXSize.y);",
+            "  float lineXDist = 1.0 - min(distance(q.x, lineXSize.x), distance(q.x, lineXSize.y));",
+            "  lineXDist = max(insideLineX, lineXDist);",
+            "",
+            "  float lineXGradient = smoothstep(lineXSharpness, 1.0, lineXDist);",
+            "",
+            "  float lineGradient = (lineYGradient * lineXGradient) * lineIntensity;",
+            "",
+            "  float bulgeGradient = 1.0 - ellipseGradient(q, bulgeXPosition, bulgeSize);",
+            "  bulgeGradient = smoothstep(0.0, 1.0 - bulgeSharpness, bulgeGradient) * bulgeIntensity;",
+            "",
+            "  float beamGradient = lineGradient + bulgeGradient;",
+            "  color += beamGradient * beamColor;",
+            "",
+            "  gl_FragColor = color;",
+            "}",
+        ];
         ShaderSources.blacktoalpha = [
             "precision mediump float;",
             "",
@@ -21671,6 +21768,7 @@ var Rance;
             "  uniform sampler2D uSampler;",
             "",
             "  uniform vec4 mainColor;",
+            "  uniform float mainAlpha;",
             "",
             "  uniform vec2 intersectingEllipseCenter;",
             "  uniform vec2 intersectingEllipseSize;",
@@ -21684,6 +21782,7 @@ var Rance;
             "  uniform float time;",
             "",
             "  const vec4 mainColor = vec4(1.0, 1.0, 1.0, 1.0);",
+            "  const float mainAlpha = 1.0;",
             "",
             "  const vec2 intersectingEllipseCenter = vec2(0.4, 0.0);",
             "  const vec2 intersectingEllipseSize = vec2(0.8, 1.0);",
@@ -21730,7 +21829,7 @@ var Rance;
             "  float intersectingGradient = smoothstep(intersectingEllipseSharpness, 1.0, intersectingDist);",
             "  color *=  intersectingGradient;",
             "",
-            "  gl_FragColor = color;",
+            "  gl_FragColor = color * mainAlpha;",
             "}",
         ];
         ShaderSources.lightburst = [
@@ -22069,7 +22168,7 @@ var Rance;
             "    vec4 color = texture2D(uSampler, uv);",
             "  #elif DOMAIN == 1",
             "    vec2 uv = gl_FragCoord.xy / resolution;",
-            "    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);",
+            "    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);",
             "  #endif",
             "",
             "  vec2 q = uv - 0.5;",
@@ -25057,9 +25156,79 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="protonwrapper.ts" />
 var Rance;
 (function (Rance) {
+    var UniformSyncer = (function () {
+        function UniformSyncer(uniformTypes, updaterFunction) {
+            this.uniformTypes = uniformTypes;
+            this.updaterFunction = updaterFunction;
+            this.initUniforms(uniformTypes);
+        }
+        UniformSyncer.prototype.initUniforms = function (uniformTypes) {
+            for (var key in uniformTypes) {
+                this.uniforms[key] =
+                    {
+                        type: uniformTypes[key],
+                        value: undefined
+                    };
+            }
+        };
+        UniformSyncer.prototype.sync = function (time) {
+            var newValues = this.updaterFunction(time);
+            for (var key in newValues) {
+                this.uniforms[key].value = newValues[key];
+            }
+        };
+        UniformSyncer.prototype.set = function (key, value) {
+            this.uniforms[key].value = value;
+        };
+        UniformSyncer.prototype.getUniformsObject = function () {
+            return this.uniforms;
+        };
+        UniformSyncer.prototype.makeClone = function () {
+            return new UniformSyncer(this.uniformTypes, this.updaterFunction);
+        };
+        return UniformSyncer;
+    }());
+    Rance.UniformSyncer = UniformSyncer;
+})(Rance || (Rance = {}));
+/// <reference path="protonwrapper.ts" />
+/// <reference path="uniformsyncer.ts" />
+var Rance;
+(function (Rance) {
+    // TODO temporary
+    function drawEasingFunctionGraph(easingFunction) {
+        var canvas = document.createElement("canvas");
+        canvas.width = 180;
+        canvas.height = 100;
+        var context = canvas.getContext("2d");
+        context.fillStyle = "rgb(250,250,250)";
+        context.fillRect(0, 0, 180, 100);
+        context.lineWidth = 0.5;
+        context.strokeStyle = "rgb(230,230,230)";
+        context.beginPath();
+        context.moveTo(0, 20);
+        context.lineTo(180, 20);
+        context.moveTo(0, 80);
+        context.lineTo(180, 80);
+        context.closePath();
+        context.stroke();
+        context.lineWidth = 2;
+        context.strokeStyle = "rgb(255,127,127)";
+        context.beginPath();
+        context.moveTo(5, 80);
+        var resolution = 100;
+        for (var i = 0; i < resolution; i++) {
+            var x = i / resolution;
+            var y = easingFunction(x);
+            var canvasX = 5 + x * (canvas.width - 10);
+            var canvasY = 80 - y * (canvas.height - 40);
+            context.lineTo(canvasX, canvasY);
+        }
+        context.stroke();
+        document.body.appendChild(canvas);
+    }
+    Rance.drawEasingFunctionGraph = drawEasingFunctionGraph;
     var Modules;
     (function (Modules) {
         var DefaultModule;
@@ -25091,6 +25260,14 @@ var Rance;
                     return IntersectingEllipsesFilter;
                 }(PIXI.AbstractFilter));
                 BattleSFXFunctions.IntersectingEllipsesFilter = IntersectingEllipsesFilter;
+                var BeamFilter = (function (_super) {
+                    __extends(BeamFilter, _super);
+                    function BeamFilter(uniforms) {
+                        _super.call(this, null, Rance.ShaderSources.beam.join("\n"), uniforms);
+                    }
+                    return BeamFilter;
+                }(PIXI.AbstractFilter));
+                BattleSFXFunctions.BeamFilter = BeamFilter;
                 function particleTest(props) {
                     //----------INIT GENERAL
                     var width2 = props.width / 2;
@@ -25108,18 +25285,26 @@ var Rance;
                         x: 100,
                         y: props.height * 0.66
                     };
+                    var relativeBeamOrigin = {
+                        x: beamOrigin.x / props.width,
+                        y: beamOrigin.y / props.height
+                    };
                     var renderTexture = new PIXI.RenderTexture(props.renderer, props.width, props.height);
                     var renderedSprite = new PIXI.Sprite(renderTexture);
                     if (!props.facingRight) {
                         renderedSprite.x = props.width;
                         renderedSprite.scale.x = -1;
                     }
+                    var finalColor = [
+                        0.368627450980392,
+                        0.792156862745098,
+                        0.694117647058823
+                    ];
                     //----------INIT PARTICLES
                     var particleContainer = new PIXI.Container();
-                    particleContainer.alpha = 0.1;
-                    // mainContainer.addChild(particleContainer);
+                    // particleContainer.alpha = 0.1;
+                    mainContainer.addChild(particleContainer);
                     var protonWrapper = new DefaultModule.ProtonWrapper(props.renderer, particleContainer);
-                    var particleTexture = Rance.getDummyTextureForShader();
                     var particleShaderColor = {
                         r: 1.0,
                         g: 1.0,
@@ -25133,29 +25318,143 @@ var Rance;
                         particleShaderColor.a
                     ];
                     var particleShaderColorTween = new TWEEN.Tween(particleShaderColor).to({
-                        r: 0.3686274509803922,
-                        g: 0.792156862745098,
-                        b: 0.6941176470588235,
+                        r: finalColor[0],
+                        g: finalColor[1],
+                        b: finalColor[2],
                         a: 1.0
                     }, props.duration / 2);
                     var particlesAmountScale = props.width / 700;
+                    //----------INIT BEAM
+                    var beamSpriteSize = {
+                        x: props.width,
+                        y: props.height
+                    };
+                    var beamUniforms = new Rance.UniformSyncer({
+                        aspectRatio: "1f",
+                        beamColor: "4fv",
+                        lineIntensity: "1f",
+                        bulgeIntensity: "1f",
+                        bulgeXPosition: "1f",
+                        bulgeSize: "2fv",
+                        bulgeSharpness: "1f",
+                        lineXSize: "2fv",
+                        lineXSharpness: "1f",
+                        lineYSize: "1f",
+                        lineYSharpness: "1f"
+                    }, function (time) {
+                        var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
+                        rampUpValue = Math.pow(rampUpValue, 7.0);
+                        var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
+                        var relativeTimeAfterImpact = Rance.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
+                        var rampDownValue = Math.pow(relativeTimeAfterImpact, 2.0);
+                        var beamIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
+                        return ({});
+                    });
+                    beamUniforms.set("aspectRatio", beamSpriteSize.x / beamSpriteSize.y);
+                    beamUniforms.set("bulgeXPosition", relativeBeamOrigin.x + 0.1);
+                    var beamFilter = new BeamFilter({
+                        aspectRatio: {
+                            type: "1f",
+                            value: beamSpriteSize.x / beamSpriteSize.y
+                        },
+                        beamColor: {
+                            type: "4fv",
+                            value: [finalColor[0], finalColor[1], finalColor[2], 1.0]
+                        },
+                        lineIntensity: {
+                            type: "1f",
+                            value: 3.0
+                        },
+                        bulgeIntensity: {
+                            type: "1f",
+                            value: 2.0
+                        },
+                        bulgeXPosition: {
+                            type: "1f",
+                            value: relativeBeamOrigin.x + 0.1
+                        },
+                        bulgeSize: {
+                            type: "2fv",
+                            value: [0.4, 0.25]
+                        },
+                        bulgeSharpness: {
+                            type: "1f",
+                            value: 0.3
+                        },
+                        lineXSize: {
+                            type: "2fv",
+                            value: [relativeBeamOrigin.x + 0.2, 1.0]
+                        },
+                        lineXSharpness: {
+                            type: "1f",
+                            value: 0.6
+                        },
+                        lineYSize: {
+                            type: "1f",
+                            value: 0.02
+                        },
+                        lineYSharpness: {
+                            type: "1f",
+                            value: 0.8
+                        }
+                    });
+                    var beamSprite = Rance.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
+                    beamSprite.shader = beamFilter;
+                    beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+                    mainContainer.addChild(beamSprite);
+                    //----------INIT SMALL EMITTER
+                    var smallEmitter = new Proton.BehaviourEmitter();
+                    smallEmitter.p.x = beamOrigin.x + 50;
+                    smallEmitter.p.y = beamOrigin.y;
+                    smallEmitter.damping = 0.013;
+                    var smallParticleGraphicsSize = {
+                        x: 4,
+                        y: 4
+                    };
+                    var smallParticleGraphics = new PIXI.Graphics();
+                    smallParticleGraphics.beginFill(0x5ECAB1, 1.0);
+                    smallParticleGraphics.drawRect(smallParticleGraphicsSize.x / 2, smallParticleGraphicsSize.y / 2, smallParticleGraphicsSize.x, smallParticleGraphicsSize.y);
+                    smallParticleGraphics.endFill();
+                    var smallParticleTexture = smallParticleGraphics.generateTexture(props.renderer, 1, PIXI.SCALE_MODES.DEFAULT, new PIXI.Rectangle(0, 0, smallParticleGraphicsSize.x * 1.5, smallParticleGraphicsSize.y * 1.5));
+                    smallEmitter.addInitialize(new Proton.ImageTarget(smallParticleTexture));
+                    smallEmitter.addInitialize(new Proton.Velocity(new Proton.Span(3, 5), new Proton.Span(270, 50, true), 'polar'));
+                    smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(0, -30, props.width + 100 - smallEmitter.p.x, 30)));
+                    smallEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * (1.0 - relativeImpactTime) / 4000, props.duration * (1.0 - relativeImpactTime) / 1000)));
+                    smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
+                    smallEmitter.addBehaviour(new Proton.Alpha(1, 0));
+                    smallEmitter.addBehaviour(new Proton.RandomDrift(20, 30, props.duration / 2000));
+                    protonWrapper.addEmitter(smallEmitter, "smallParticles");
+                    var smallEmitterFilter = new ShinyParticleFilter({
+                        spikeColor: {
+                            type: "4fv",
+                            value: particleShaderColorArray
+                        },
+                        spikeIntensity: {
+                            type: "1f",
+                            value: 0.6
+                        },
+                        highlightIntensity: {
+                            type: "1f",
+                            value: 2.5
+                        }
+                    });
+                    protonWrapper.onSpriteCreated["smallParticles"] = function (sprite) {
+                        sprite.shader = smallEmitterFilter;
+                        sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+                    };
                     //----------INIT SHINY EMITTER
                     var shinyEmitter = new Proton.BehaviourEmitter();
                     shinyEmitter.p.x = beamOrigin.x;
                     shinyEmitter.p.y = beamOrigin.y;
-                    shinyEmitter.addInitialize(new Proton.ImageTarget(particleTexture));
+                    var shinyParticleTexture = Rance.getDummyTextureForShader();
+                    shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
                     var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
                     shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
-                    // shinyEmitter.addInitialize(new Proton.Mass(1));
                     shinyEmitter.damping = 0.009;
                     var emitterZone = new Proton.RectZone(0, -5, props.width + 100 - shinyEmitter.p.x, 5);
                     shinyEmitter.addInitialize(new Proton.Position(emitterZone));
-                    // shinyEmitter.addBehaviour(new Proton.Gravity(8));
-                    shinyEmitter.addBehaviour(new Proton.Scale(new Proton.Span(60, 80), 0));
+                    shinyEmitter.addBehaviour(new Proton.Scale(new Proton.Span(60, 100), 0));
                     shinyEmitter.addBehaviour(new Proton.Alpha(1, 0));
-                    // shinyEmitter.addBehaviour(new Proton.Rotate(0, Proton.getSpan(-10, 10), 'add'));
-                    // shinyEmitter.addBehaviour(new Proton.CrossZone(new Proton.RectZone(0, 0, props.width, props.height), "dead"));
-                    // shinyEmitter.addSelfBehaviour(new Proton.Gravity(5));
                     // shinyEmitter.addBehaviour(new Proton.RandomDrift(5, 10, 0.3));
                     protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
                     var shinyEmitterFilter = new ShinyParticleFilter({
@@ -25176,41 +25475,64 @@ var Rance;
                         sprite.shader = shinyEmitterFilter;
                         sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
                     };
-                    shinyEmitter.rate = new Proton.Rate(100 * particlesAmountScale, // particles per emit
+                    shinyEmitter.rate = new Proton.Rate(150 * particlesAmountScale, // particles per emit
                     0 // time between emits in seconds
                     );
                     shinyEmitter.emit("once");
-                    //----------INIT SMALL EMITTER
-                    var smallEmitter = new Proton.BehaviourEmitter();
-                    smallEmitter.p.x = beamOrigin.x + 50;
-                    smallEmitter.p.y = beamOrigin.y;
-                    smallEmitter.damping = 0.011;
-                    smallEmitter.addInitialize(new Proton.ImageTarget(particleTexture));
-                    smallEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration / 5000, props.duration / 1000)));
-                    smallEmitter.addInitialize(new Proton.Velocity(3, new Proton.Span(270, 35, true), 'polar'));
-                    smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(0, -30, props.width + 100 - smallEmitter.p.x, 30)));
-                    smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(20, 24), 0));
-                    smallEmitter.addBehaviour(new Proton.Alpha(1, 0));
-                    smallEmitter.addBehaviour(new Proton.RandomDrift(5, 10, props.duration / 10000));
-                    protonWrapper.addEmitter(smallEmitter, "smallParticles");
-                    var smallEmitterFilter = new ShinyParticleFilter({
-                        spikeColor: {
-                            type: "4fv",
-                            value: particleShaderColorArray
-                        },
-                        spikeIntensity: {
-                            type: "1f",
-                            value: 0.6
-                        },
-                        highlightIntensity: {
-                            type: "1f",
-                            value: 2.5
-                        }
-                    });
-                    protonWrapper.onSpriteCreated["smallParticles"] = function (sprite) {
-                        sprite.shader = smallEmitterFilter;
-                        sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+                    //----------INIT SHOCKWAVE
+                    var shockWaveMainEllipseMaxSize = {
+                        x: 0.3,
+                        y: 0.9
                     };
+                    var shockWaveIntersectingEllipseMaxSize = {
+                        x: 0.8,
+                        y: 1.0
+                    };
+                    var shockWaveUniforms = new Rance.UniformSyncer({
+                        mainColor: "4fv",
+                        mainAlpha: "1f",
+                        intersectingEllipseCenter: "2fv",
+                        intersectingEllipseSize: "2fv",
+                        intersectingEllipseSharpness: "1f",
+                        mainEllipseSize: "2fv",
+                        mainEllipseSharpness: "1f"
+                    }, function (time) {
+                        var burstX;
+                        if (time < (relativeImpactTime - 0.02)) {
+                            burstX = 0;
+                        }
+                        else {
+                            burstX = time - (relativeImpactTime - 0.02);
+                        }
+                        var shockWaveSize = TWEEN.Easing.Quintic.Out(burstX);
+                        return ({
+                            mainEllipseSize: [
+                                shockWaveMainEllipseMaxSize.x * shockWaveSize,
+                                shockWaveMainEllipseMaxSize.y * shockWaveSize
+                            ],
+                            intersectingEllipseSize: [
+                                shockWaveIntersectingEllipseMaxSize.x * shockWaveSize,
+                                shockWaveIntersectingEllipseMaxSize.y * shockWaveSize
+                            ],
+                            intersectingEllipseCenter: [
+                                0.05 + 0.3 * shockWaveSize,
+                                0.0
+                            ],
+                            mainEllipseSharpness: 0.8 + 0.18 * (1.0 - shockWaveSize),
+                            intersectingEllipseSharpness: 0.4 + 0.4 * (1.0 - shockWaveSize),
+                            mainAlpha: 1.0 - shockWaveSize
+                        });
+                    });
+                    shockWaveUniforms.set("mainColor", [1, 1, 1, 1]);
+                    var shockWaveFilter = new IntersectingEllipsesFilter(shockWaveUniforms.getUniformsObject());
+                    var shockWaveSpriteSize = {
+                        x: props.height * 3.0,
+                        y: props.height * 3.0
+                    };
+                    var shockWaveSprite = Rance.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
+                    shockWaveSprite.shader = shockWaveFilter;
+                    // shockWaveSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+                    mainContainer.addChild(shockWaveSprite);
                     //----------INIT LIGHTBURST
                     var lightBurstFilter = new LightBurstFilter({
                         seed: {
@@ -25231,7 +25553,7 @@ var Rance;
                         },
                         rayColor: {
                             type: "4fv",
-                            value: [0.6, 0.6, 0.5, 1.0]
+                            value: [0.75, 0.75, 0.62, 1.0]
                         },
                         centerSize: {
                             type: "1f",
@@ -25243,90 +25565,49 @@ var Rance;
                         }
                     });
                     var lightBurstSize = {
-                        x: props.height + 200,
-                        y: props.height + 200
+                        x: props.height * 1.5,
+                        y: props.height * 3
                     };
                     var lightBurstSprite = Rance.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
                     lightBurstSprite.shader = lightBurstFilter;
                     lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-                    // mainContainer.addChild(lightBurstSprite);
+                    mainContainer.addChild(lightBurstSprite);
                     function getLightBurstIntensity(time) {
                         var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
                         rampUpValue = Math.pow(rampUpValue, 7.0);
-                        var rampDownValue = Math.pow(time, 2.0);
-                        return rampUpValue - rampDownValue;
+                        var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
+                        var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
+                        return Math.max(rampUpValue - rampDownValue, 0.0);
                     }
-                    //----------INIT SHOCKWAVE
-                    var shockWaveFilter = new IntersectingEllipsesFilter({
-                        mainColor: {
-                            type: "4fv",
-                            value: [1, 1, 1, 1]
-                        },
-                        intersectingEllipseCenter: {
-                            type: "2fv",
-                            value: [0.2, 0]
-                        },
-                        intersectingEllipseSize: {
-                            type: "2fv",
-                            value: [0.0, 0.0]
-                        },
-                        intersectingEllipseSharpness: {
-                            type: "1f",
-                            value: 0.9
-                        },
-                        mainEllipseSize: {
-                            type: "2fv",
-                            value: [0.0, 0.0]
-                        },
-                        mainEllipseSharpness: {
-                            type: "1f",
-                            value: 0.95
-                        }
-                    });
-                    console.log(props);
-                    var shockWaveSpriteSize = {
-                        x: props.height + 200,
-                        y: props.height + 200
-                    };
-                    var shockWaveSprite = Rance.createDummySpriteForShader(beamOrigin.x - shockWaveSpriteSize.x / 2, beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
-                    shockWaveSprite.shader = shockWaveFilter;
-                    // shockWaveSprite.shader = lightBurstFilter;
-                    shockWaveSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-                    mainContainer.addChild(shockWaveSprite);
-                    var shockWaveMainEllipseMaxSize = {
-                        x: 0.5,
-                        y: 0.9
-                    };
-                    var shockWaveIntersectingEllipseMaxSize = {
-                        x: 0.8,
-                        y: 1.0
-                    };
                     //----------ANIMATE
                     function animate() {
                         var elapsedTime = Date.now() - startTime;
                         protonWrapper.update();
-                        particleShaderColorTween.update(window.performance.now());
+                        var tweenTime = window.performance.now();
+                        particleShaderColorTween.update(tweenTime);
                         particleShaderColorArray[0] = particleShaderColor.r;
                         particleShaderColorArray[1] = particleShaderColor.g;
                         particleShaderColorArray[2] = particleShaderColor.b;
                         particleShaderColorArray[3] = particleShaderColor.a;
                         var timePassed = elapsedTime / props.duration;
                         var lifeLeft = 1 - timePassed;
+                        var timePassedSinceImpact = Rance.getRelativeValue(timePassed, relativeImpactTime, 1.0);
                         if (timePassed >= relativeImpactTime - 0.02) {
                             if (!impactHasOccurred) {
                                 impactHasOccurred = true;
-                                var velocityInitialize = new Proton.Velocity(2, new Proton.Span(270, 35, true), 'polar');
+                                var velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3), new Proton.Span(270, 35, true), 'polar');
                                 protonWrapper.addInitializeToExistingParticles(shinyEmitter, velocityInitialize);
                                 shinyEmitter.removeInitialize(shinyEmitterLifeInitialize);
                                 shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * lifeLeft / 3000, props.duration * lifeLeft / 1000)));
-                                shinyEmitter.rate = new Proton.Rate(150 * particlesAmountScale, 0);
+                                shinyEmitter.rate = new Proton.Rate(100 * particlesAmountScale, 0);
                                 shinyEmitter.emit("once");
-                                // smallEmitter.rate = new Proton.Rate(250 * particlesAmountScale, 0);
-                                // smallEmitter.emit("once");
+                                smallEmitter.rate = new Proton.Rate(150 * particlesAmountScale, 0);
+                                smallEmitter.emit("once");
                                 props.triggerEffect();
                             }
                             smallEmitterFilter.uniforms.spikeColor.value = particleShaderColorArray;
                             smallEmitterFilter.uniforms.spikeIntensity.value = Math.pow(lifeLeft, 1.5) * 0.4;
+                            smallEmitterFilter.uniforms.highlightIntensity.value = Math.pow(lifeLeft, 1.5);
                         }
                         shinyEmitterFilter.uniforms.spikeColor.value = particleShaderColorArray;
                         shinyEmitterFilter.uniforms.spikeIntensity.value = 1 - timePassed * 0.1;
@@ -25335,26 +25616,14 @@ var Rance;
                         lightBurstFilter.uniforms.centerSize.value = Math.pow(lightBurstIntensity, 2.0);
                         lightBurstFilter.uniforms.centerBloomStrength.value = Math.pow(lightBurstIntensity, 2.0) * 5.0;
                         lightBurstFilter.uniforms.rayStrength.value = Math.pow(lightBurstIntensity, 3.0);
-                        shockWaveFilter.uniforms.mainEllipseSize.value =
-                            [
-                                shockWaveMainEllipseMaxSize.x * timePassed,
-                                shockWaveMainEllipseMaxSize.y * timePassed
-                            ];
-                        shockWaveFilter.uniforms.intersectingEllipseSize.value =
-                            [
-                                0.0, 0.0
-                            ];
-                        shockWaveFilter.uniforms.intersectingEllipseCenter.value =
-                            [
-                                0.1 + 0.3 * timePassed,
-                                0.0
-                            ];
+                        shockWaveUniforms.sync(elapsedTime);
                         renderTexture.clear();
                         renderTexture.render(mainContainer);
                         if (elapsedTime < props.duration) {
                             requestAnimationFrame(animate);
                         }
                         else {
+                            smallParticleTexture.destroy(true);
                             protonWrapper.destroy();
                             props.triggerEnd();
                         }
@@ -25421,7 +25690,7 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../graphics/battlesfxutils.ts"/>
+/// <reference path="../graphics/makesfxfromvideo.ts"/>
 /// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>

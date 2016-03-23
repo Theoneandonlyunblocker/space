@@ -3,6 +3,48 @@
 
 module Rance
 {
+  // TODO temporary
+  export function drawEasingFunctionGraph(easingFunction: (x: number) => number)
+  {
+    var canvas = document.createElement("canvas");
+    canvas.width = 180;
+    canvas.height = 100;
+
+    var context = canvas.getContext("2d");
+    context.fillStyle = "rgb(250,250,250)";
+    context.fillRect( 0, 0, 180, 100 );
+
+    context.lineWidth = 0.5;
+    context.strokeStyle = "rgb(230,230,230)";
+
+    context.beginPath();
+    context.moveTo( 0, 20 );
+    context.lineTo( 180, 20 );
+    context.moveTo( 0, 80 );
+    context.lineTo( 180, 80 );
+    context.closePath();
+    context.stroke();
+
+    context.lineWidth = 2;
+    context.strokeStyle = "rgb(255,127,127)";
+
+    context.beginPath();
+    context.moveTo(5, 80);
+
+    var resolution = 100;
+    for (var i = 0; i < resolution; i++)
+    {
+      var x = i / resolution;
+      var y = easingFunction(x);
+      var canvasX = 5 + x * (canvas.width - 10);
+      var canvasY = 80 - y * (canvas.height - 40);
+      context.lineTo(canvasX, canvasY);
+    }
+
+    context.stroke();
+
+    document.body.appendChild(canvas);
+  }
   export module Modules
   {
     export module DefaultModule

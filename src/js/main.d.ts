@@ -2864,6 +2864,7 @@ declare module Rance {
 }
 declare module Rance {
     module ShaderSources {
+        var beam: string[];
         var blacktoalpha: string[];
         var guard: string[];
         var intersectingellipses: string[];
@@ -3382,6 +3383,32 @@ declare module Rance {
     }
 }
 declare module Rance {
+    type UniformValue = number | number[];
+    type UniformsUpdaterFunction = (time: number) => {
+        [key: string]: UniformValue;
+    };
+    interface IUniformsObject {
+        [uniformKey: string]: {
+            type: string;
+            value: UniformValue;
+        };
+    }
+    class UniformSyncer {
+        private uniformTypes;
+        private uniforms;
+        private updaterFunction;
+        constructor(uniformTypes: {
+            [key: string]: string;
+        }, updaterFunction: UniformsUpdaterFunction);
+        private initUniforms(uniformTypes);
+        sync(time: number): void;
+        set(key: string, value: UniformValue): void;
+        getUniformsObject(): IUniformsObject;
+        makeClone(): UniformSyncer;
+    }
+}
+declare module Rance {
+    function drawEasingFunctionGraph(easingFunction: (x: number) => number): void;
     module Modules {
         module DefaultModule {
             module BattleSFXFunctions {
@@ -3392,6 +3419,9 @@ declare module Rance {
                     constructor(uniforms?: any);
                 }
                 class IntersectingEllipsesFilter extends PIXI.AbstractFilter {
+                    constructor(uniforms?: any);
+                }
+                class BeamFilter extends PIXI.AbstractFilter {
                     constructor(uniforms?: any);
                 }
                 function particleTest(props: Rance.Templates.SFXParams): void;
