@@ -1,4 +1,5 @@
 /// <reference path="protonwrapper.ts" />
+/// <reference path="uniformsyncer.ts" />
 
 module Rance
 {
@@ -30,6 +31,13 @@ module Rance
             super(null, ShaderSources.intersectingellipses.join("\n"), uniforms);
           }
         }
+        export class BeamFilter extends PIXI.AbstractFilter
+        {
+          constructor(uniforms?: any)
+          {
+            super(null, ShaderSources.beam.join("\n"), uniforms);
+          }
+        }
         export function particleTest(props: Rance.Templates.SFXParams)
         {
           //----------INIT GENERAL
@@ -52,6 +60,11 @@ module Rance
             x: 100,
             y: props.height * 0.66
           }
+          var relativeBeamOrigin =
+          {
+            x: beamOrigin.x / props.width,
+            y: beamOrigin.y / props.height
+          }
 
           var renderTexture = new PIXI.RenderTexture(props.renderer, props.width, props.height);
           var renderedSprite = new PIXI.Sprite(renderTexture);
@@ -61,13 +74,18 @@ module Rance
             renderedSprite.scale.x = -1;
           }
 
+          var finalColor = 
+          [
+            0.368627450980392,
+            0.792156862745098,
+            0.694117647058823
+          ];
+
           //----------INIT PARTICLES
           var particleContainer = new PIXI.Container();
-          particleContainer.alpha = 0.1;
-          // mainContainer.addChild(particleContainer);
+          // particleContainer.alpha = 0.1;
+          mainContainer.addChild(particleContainer);
           var protonWrapper = new ProtonWrapper(props.renderer, particleContainer);
-
-          var particleTexture = getDummyTextureForShader();
 
           var particleShaderColor =
           {
@@ -85,25 +103,206 @@ module Rance
           ];
           var particleShaderColorTween = new TWEEN.Tween(particleShaderColor).to(
             {
-              r: 0.3686274509803922,
-              g: 0.792156862745098,
-              b: 0.6941176470588235,
+              r: finalColor[0],
+              g: finalColor[1],
+              b: finalColor[2],
               a: 1.0
             }, props.duration / 2
           );
 
           var particlesAmountScale = props.width / 700;
 
+          //----------INIT BEAM
+          var beamSpriteSize =
+          {
+            x: props.width,
+            y: props.height
+          }
+
+          var beamUniforms = new UniformSyncer(
+          {
+            aspectRatio: "1f",
+            beamColor: "4fv",
+            lineIntensity: "1f",
+            bulgeIntensity: "1f",
+            bulgeXPosition: "1f",
+            bulgeSize: "2fv",
+            bulgeSharpness: "1f",
+            lineXSize: "2fv",
+            lineXSharpness: "1f",
+            lineYSize: "1f",
+            lineYSharpness: "1f"
+          }, function(time: number)
+          {
+            var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
+            rampUpValue = Math.pow(rampUpValue, 7.0);
+
+            var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
+            var relativeTimeAfterImpact = getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
+            var rampDownValue = Math.pow(relativeTimeAfterImpact, 2.0);
+
+            var beamIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
+
+            return(
+            {
+
+            });
+          });
+
+          beamUniforms.set("aspectRatio", beamSpriteSize.x / beamSpriteSize.y);
+          beamUniforms.set("bulgeXPosition", relativeBeamOrigin.x + 0.1);
+
+          var beamFilter = new BeamFilter(
+          {
+            aspectRatio:
+            {
+              type: "1f",
+              value: beamSpriteSize.x / beamSpriteSize.y
+            },
+            beamColor:
+            {
+              type: "4fv",
+              value: [finalColor[0], finalColor[1], finalColor[2], 1.0]
+            },
+            lineIntensity:
+            {
+              type: "1f",
+              value: 3.0
+            },
+            bulgeIntensity:
+            {
+              type: "1f",
+              value: 2.0
+            },
+            bulgeXPosition:
+            {
+              type: "1f",
+              value: relativeBeamOrigin.x + 0.1
+            },
+            bulgeSize:
+            {
+              type: "2fv",
+              value: [0.4, 0.25]
+            },
+            bulgeSharpness:
+            {
+              type: "1f",
+              value: 0.3
+            },
+            lineXSize:
+            {
+              type: "2fv",
+              value: [relativeBeamOrigin.x + 0.2, 1.0]
+            },
+            lineXSharpness:
+            {
+              type: "1f",
+              value: 0.6
+            },
+            lineYSize:
+            {
+              type: "1f",
+              value: 0.02
+            },
+            lineYSharpness:
+            {
+              type: "1f",
+              value: 0.8
+            }
+          });
+
+          var beamSprite = createDummySpriteForShader(
+            0,
+            beamOrigin.y - beamSpriteSize.y / 2,
+            beamSpriteSize.x,
+            beamSpriteSize.y
+          );
+          beamSprite.shader = beamFilter;
+          beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+
+          mainContainer.addChild(beamSprite);
+
+          //----------INIT SMALL EMITTER
+          var smallEmitter = new Proton.BehaviourEmitter();
+          smallEmitter.p.x = beamOrigin.x + 50;
+          smallEmitter.p.y = beamOrigin.y;
+          smallEmitter.damping = 0.013;
+
+          var smallParticleGraphicsSize =
+          {
+            x: 4,
+            y: 4
+          };
+          var smallParticleGraphics = new PIXI.Graphics();
+          smallParticleGraphics.beginFill(0x5ECAB1, 1.0);
+          smallParticleGraphics.drawRect(
+            smallParticleGraphicsSize.x / 2,
+            smallParticleGraphicsSize.y / 2,
+            smallParticleGraphicsSize.x,
+            smallParticleGraphicsSize.y
+            );
+          smallParticleGraphics.endFill();
+
+          var smallParticleTexture = smallParticleGraphics.generateTexture(props.renderer, 1, PIXI.SCALE_MODES.DEFAULT,
+            new PIXI.Rectangle(0, 0, smallParticleGraphicsSize.x * 1.5, smallParticleGraphicsSize.y * 1.5)
+          );
+
+          smallEmitter.addInitialize(new Proton.ImageTarget(smallParticleTexture));
+          smallEmitter.addInitialize(new Proton.Velocity(new Proton.Span(3, 5),
+            new Proton.Span(270, 50, true), 'polar'));
+          smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(
+            0,
+            -30,
+            props.width + 100 - smallEmitter.p.x,
+            30
+          )));
+          smallEmitter.addInitialize(new Proton.Life(new Proton.Span(
+            props.duration * (1.0 - relativeImpactTime) / 4000,
+            props.duration * (1.0 - relativeImpactTime) / 1000
+          )));
+
+          smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
+          smallEmitter.addBehaviour(new Proton.Alpha(1, 0));
+
+          smallEmitter.addBehaviour(new Proton.RandomDrift(20, 30, props.duration / 2000));
+
+          protonWrapper.addEmitter(smallEmitter, "smallParticles");
+
+          var smallEmitterFilter = new ShinyParticleFilter(
+          {
+            spikeColor:
+            {
+              type: "4fv",
+              value: particleShaderColorArray
+            },
+            spikeIntensity:
+            {
+              type: "1f",
+              value: 0.6
+            },
+            highlightIntensity:
+            {
+              type: "1f",
+              value: 2.5
+            }
+          });
+
+          protonWrapper.onSpriteCreated["smallParticles"] = function(sprite: PIXI.Sprite)
+          {
+            sprite.shader = smallEmitterFilter;
+            sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+          };
+
           //----------INIT SHINY EMITTER
           var shinyEmitter = new Proton.BehaviourEmitter();
           shinyEmitter.p.x = beamOrigin.x;
           shinyEmitter.p.y = beamOrigin.y;
 
-          shinyEmitter.addInitialize(new Proton.ImageTarget(particleTexture));
+          var shinyParticleTexture = getDummyTextureForShader();
+          shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
 
           var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
           shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
-          // shinyEmitter.addInitialize(new Proton.Mass(1));
           shinyEmitter.damping = 0.009;
 
           var emitterZone = new Proton.RectZone(
@@ -114,13 +313,8 @@ module Rance
           );
           shinyEmitter.addInitialize(new Proton.Position(emitterZone));
 
-          // shinyEmitter.addBehaviour(new Proton.Gravity(8));
-          shinyEmitter.addBehaviour(new Proton.Scale(new Proton.Span(60, 80), 0));
+          shinyEmitter.addBehaviour(new Proton.Scale(new Proton.Span(60, 100), 0));
           shinyEmitter.addBehaviour(new Proton.Alpha(1, 0));
-          // shinyEmitter.addBehaviour(new Proton.Rotate(0, Proton.getSpan(-10, 10), 'add'));
-          // shinyEmitter.addBehaviour(new Proton.CrossZone(new Proton.RectZone(0, 0, props.width, props.height), "dead"));
-
-          // shinyEmitter.addSelfBehaviour(new Proton.Gravity(5));
           // shinyEmitter.addBehaviour(new Proton.RandomDrift(5, 10, 0.3));
 
           protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
@@ -151,60 +345,90 @@ module Rance
           };
           
           shinyEmitter.rate = new Proton.Rate(
-            100 * particlesAmountScale, // particles per emit
+            150 * particlesAmountScale, // particles per emit
             0 // time between emits in seconds
           );
           shinyEmitter.emit("once");
 
 
-          //----------INIT SMALL EMITTER
-          var smallEmitter = new Proton.BehaviourEmitter();
-          smallEmitter.p.x = beamOrigin.x + 50;
-          smallEmitter.p.y = beamOrigin.y;
-          smallEmitter.damping = 0.011;
-
-          smallEmitter.addInitialize(new Proton.ImageTarget(particleTexture));
-          smallEmitter.addInitialize(new Proton.Life(
-            new Proton.Span(props.duration / 5000, props.duration / 1000)));
-          smallEmitter.addInitialize(new Proton.Velocity(3, new Proton.Span(270, 35, true), 'polar'));
-          smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(
-            0,
-            -30,
-            props.width + 100 - smallEmitter.p.x,
-            30
-          )));
-
-          smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(20, 24), 0));
-          smallEmitter.addBehaviour(new Proton.Alpha(1, 0));
-
-          smallEmitter.addBehaviour(new Proton.RandomDrift(5, 10, props.duration / 10000));
-
-          protonWrapper.addEmitter(smallEmitter, "smallParticles");
-
-          var smallEmitterFilter = new ShinyParticleFilter(
+          //----------INIT SHOCKWAVE
+          var shockWaveMainEllipseMaxSize =
           {
-            spikeColor:
+            x: 0.3,
+            y: 0.9
+          }
+          var shockWaveIntersectingEllipseMaxSize =
+          {
+            x: 0.8,
+            y: 1.0
+          }
+
+          var shockWaveUniforms = new UniformSyncer(
+          {
+            mainColor: "4fv",
+            mainAlpha: "1f",
+            intersectingEllipseCenter: "2fv",
+            intersectingEllipseSize: "2fv",
+            intersectingEllipseSharpness: "1f",
+            mainEllipseSize: "2fv",
+            mainEllipseSharpness: "1f"
+          }, function(time: number)
+          {
+            var burstX: number;
+
+            if (time < (relativeImpactTime - 0.02))
             {
-              type: "4fv",
-              value: particleShaderColorArray
-            },
-            spikeIntensity:
-            {
-              type: "1f",
-              value: 0.6
-            },
-            highlightIntensity:
-            {
-              type: "1f",
-              value: 2.5
+              burstX = 0;
             }
-          });
+            else
+            {
+              burstX = time - (relativeImpactTime - 0.02);
+            }
 
-          protonWrapper.onSpriteCreated["smallParticles"] = function(sprite: PIXI.Sprite)
+            var shockWaveSize = TWEEN.Easing.Quintic.Out(burstX);
+
+            return(
+            {
+              mainEllipseSize:
+              [
+                shockWaveMainEllipseMaxSize.x * shockWaveSize,
+                shockWaveMainEllipseMaxSize.y * shockWaveSize
+              ],
+              intersectingEllipseSize:
+              [
+                shockWaveIntersectingEllipseMaxSize.x * shockWaveSize,
+                shockWaveIntersectingEllipseMaxSize.y * shockWaveSize
+              ],
+              intersectingEllipseCenter:
+              [
+                0.05 + 0.3 * shockWaveSize,
+                0.0
+              ],
+              mainEllipseSharpness: 0.8 + 0.18 * (1.0 - shockWaveSize),
+              intersectingEllipseSharpness: 0.4 + 0.4 * (1.0 - shockWaveSize),
+              mainAlpha: 1.0 - shockWaveSize
+            });
+          });
+          shockWaveUniforms.set("mainColor", [1, 1, 1, 1]);
+
+          var shockWaveFilter = new IntersectingEllipsesFilter(shockWaveUniforms.getUniformsObject());
+
+          var shockWaveSpriteSize =
           {
-            sprite.shader = smallEmitterFilter;
-            sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-          };
+            x: props.height * 3.0,
+            y: props.height * 3.0
+          }
+          var shockWaveSprite = createDummySpriteForShader(
+            beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04),
+            beamOrigin.y - shockWaveSpriteSize.y / 2,
+            shockWaveSpriteSize.x,
+            shockWaveSpriteSize.y
+          );
+          shockWaveSprite.shader = shockWaveFilter;
+          // shockWaveSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+
+          mainContainer.addChild(shockWaveSprite);
+
 
           //----------INIT LIGHTBURST
           var lightBurstFilter = new LightBurstFilter(
@@ -232,7 +456,7 @@ module Rance
             rayColor:
             {
               type: "4fv",
-              value: [0.6, 0.6, 0.5, 1.0]
+              value: [0.75, 0.75, 0.62, 1.0]
             },
             centerSize:
             {
@@ -248,8 +472,8 @@ module Rance
 
           var lightBurstSize =
           {
-            x: props.height + 200,
-            y: props.height + 200
+            x: props.height * 1.5,
+            y: props.height * 3
           }
           var lightBurstSprite = createDummySpriteForShader(
             beamOrigin.x - lightBurstSize.x / 2,
@@ -260,91 +484,17 @@ module Rance
           lightBurstSprite.shader = lightBurstFilter;
           lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
 
-          // mainContainer.addChild(lightBurstSprite);
+          mainContainer.addChild(lightBurstSprite);
 
           function getLightBurstIntensity(time: number)
           {
             var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
             rampUpValue = Math.pow(rampUpValue, 7.0);
 
-            var rampDownValue = Math.pow(time, 2.0);
+            var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
+            var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
 
-            return rampUpValue - rampDownValue;
-          }
-
-          //----------INIT SHOCKWAVE
-
-          var shockWaveFilter = new IntersectingEllipsesFilter(
-          {
-            mainColor:
-            {
-              type: "4fv",
-              value: [1, 1, 1, 1]
-            },
-            intersectingEllipseCenter:
-            {
-              type: "2fv",
-              value: [0.2, 0]
-            },
-            intersectingEllipseSize:
-            {
-              type: "2fv",
-              value: [0.0, 0.0]
-            },
-            intersectingEllipseSharpness:
-            {
-              type: "1f",
-              value: 0.9
-            },
-            mainEllipseSize:
-            {
-              type: "2fv",
-              value: [0.0, 0.0]
-            },
-            mainEllipseSharpness:
-            {
-              type: "1f",
-              value: 0.95
-            }
-          });
-          console.log(props);
-
-          var shockWaveSpriteSize =
-          {
-            x: props.height + 200,
-            y: props.height + 200
-          }
-          var shockWaveSprite = createDummySpriteForShader(
-            beamOrigin.x - shockWaveSpriteSize.x / 2,
-            beamOrigin.y - shockWaveSpriteSize.y / 2,
-            shockWaveSpriteSize.x,
-            shockWaveSpriteSize.y
-          );
-          shockWaveSprite.shader = shockWaveFilter;
-          // shockWaveSprite.shader = lightBurstFilter;
-          shockWaveSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-
-          mainContainer.addChild(shockWaveSprite);
-
-          var shockWaveMainEllipseMaxSize =
-          {
-            x: 0.5,
-            y: 0.9
-          }
-          var shockWaveIntersectingEllipseMaxSize =
-          {
-            x: 0.8,
-            y: 1.0
-          }
-
-          function getShockWaveSize(x: number)
-          {
-            var rampUpValue = Math.min(x / relativeImpactTime, 1.0);
-            rampUpValue = Math.pow(rampUpValue, 7.0);
-
-            var rampDownValue = Math.pow(x, 2.0);
-
-            return rampUpValue - rampDownValue;
+            return Math.max(rampUpValue - rampDownValue, 0.0);
           }
 
           //----------ANIMATE
@@ -355,7 +505,9 @@ module Rance
 
             protonWrapper.update();
 
-            particleShaderColorTween.update(window.performance.now());
+            var tweenTime = window.performance.now();
+
+            particleShaderColorTween.update(tweenTime);
             particleShaderColorArray[0] = particleShaderColor.r;
             particleShaderColorArray[1] = particleShaderColor.g;
             particleShaderColorArray[2] = particleShaderColor.b;
@@ -363,6 +515,7 @@ module Rance
 
             var timePassed = elapsedTime / props.duration
             var lifeLeft = 1 - timePassed;
+            var timePassedSinceImpact = getRelativeValue(timePassed, relativeImpactTime, 1.0);
 
             if (timePassed >= relativeImpactTime - 0.02)
             {
@@ -370,25 +523,27 @@ module Rance
               {
                 impactHasOccurred = true;
 
-                var velocityInitialize = new Proton.Velocity(2, new Proton.Span(270, 35, true), 'polar')
+                var velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3),
+                  new Proton.Span(270, 35, true), 'polar')
                 protonWrapper.addInitializeToExistingParticles(shinyEmitter, velocityInitialize);
 
                 shinyEmitter.removeInitialize(shinyEmitterLifeInitialize);
                 shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * lifeLeft / 3000,
                   props.duration * lifeLeft / 1000)))
 
-                shinyEmitter.rate = new Proton.Rate(150 * particlesAmountScale, 0);
+                shinyEmitter.rate = new Proton.Rate(100 * particlesAmountScale, 0);
                 shinyEmitter.emit("once");
 
-                // smallEmitter.rate = new Proton.Rate(250 * particlesAmountScale, 0);
-                // smallEmitter.emit("once");
+
+                smallEmitter.rate = new Proton.Rate(150 * particlesAmountScale, 0);
+                smallEmitter.emit("once");
 
                 props.triggerEffect();
               }
               
               smallEmitterFilter.uniforms.spikeColor.value = particleShaderColorArray;
               smallEmitterFilter.uniforms.spikeIntensity.value = Math.pow(lifeLeft, 1.5) * 0.4;
-              // smallEmitterFilter.uniforms.highlightIntensity.value = Math.pow(lifeLeft, 1.5);
+              smallEmitterFilter.uniforms.highlightIntensity.value = Math.pow(lifeLeft, 1.5);
             }
 
             shinyEmitterFilter.uniforms.spikeColor.value = particleShaderColorArray;
@@ -402,23 +557,7 @@ module Rance
             lightBurstFilter.uniforms.rayStrength.value = Math.pow(lightBurstIntensity, 3.0);
 
 
-            shockWaveFilter.uniforms.mainEllipseSize.value =
-            [
-              shockWaveMainEllipseMaxSize.x * timePassed,
-              shockWaveMainEllipseMaxSize.y * timePassed
-            ];
-            shockWaveFilter.uniforms.intersectingEllipseSize.value =
-            [
-              0.0, 0.0
-              // shockWaveIntersectingEllipseMaxSize.x * Math.pow(timePassed, 1.8),
-              // shockWaveIntersectingEllipseMaxSize.y * Math.pow(timePassed, 1.8)
-            ];
-            shockWaveFilter.uniforms.intersectingEllipseCenter.value =
-            [
-              0.1 + 0.3 * timePassed,
-              0.0
-            ];
-
+            shockWaveUniforms.sync(elapsedTime);
 
             renderTexture.clear();
             renderTexture.render(mainContainer);
@@ -429,6 +568,7 @@ module Rance
             }
             else
             {
+              smallParticleTexture.destroy(true);
               protonWrapper.destroy();
               props.triggerEnd();
             }
