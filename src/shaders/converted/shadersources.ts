@@ -214,6 +214,7 @@ module Rance
         "  uniform sampler2D uSampler;",
         "",
         "  uniform vec4 mainColor;",
+        "  uniform float mainAlpha;",
         "",
         "  uniform vec2 intersectingEllipseCenter;",
         "  uniform vec2 intersectingEllipseSize;",
@@ -227,6 +228,7 @@ module Rance
         "  uniform float time;",
         "",
         "  const vec4 mainColor = vec4(1.0, 1.0, 1.0, 1.0);",
+        "  const float mainAlpha = 1.0;",
         "",
         "  const vec2 intersectingEllipseCenter = vec2(0.4, 0.0);",
         "  const vec2 intersectingEllipseSize = vec2(0.8, 1.0);",
@@ -273,7 +275,7 @@ module Rance
         "  float intersectingGradient = smoothstep(intersectingEllipseSharpness, 1.0, intersectingDist);",
         "  color *=  intersectingGradient;",
         "",
-        "  gl_FragColor = color;",
+        "  gl_FragColor = color * mainAlpha;",
         "}",
       ]
       export var lightburst =
