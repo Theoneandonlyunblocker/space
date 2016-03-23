@@ -618,7 +618,7 @@ module Rance
         "    vec4 color = texture2D(uSampler, uv);",
         "  #elif DOMAIN == 1",
         "    vec2 uv = gl_FragCoord.xy / resolution;",
-        "    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);",
+        "    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);",
         "  #endif",
         "",
         "  vec2 q = uv - 0.5;",
