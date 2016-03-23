@@ -3,6 +3,10 @@ module Rance
   export type UniformValue = number | number[];
   export type UniformsUpdaterFunction = (time: number) => {[key: string]: UniformValue};
 
+  export interface IUniformTypesObject
+  {
+    [key: string]: string;
+  }
   export interface IUniformsObject
   {
     [uniformKey: string]:
@@ -13,19 +17,21 @@ module Rance
   }
   export class UniformSyncer
   {
-    private uniformTypes: {[key: string]: string};
+    private uniformTypes: IUniformTypesObject;
     private uniforms: IUniformsObject;
     private updaterFunction: UniformsUpdaterFunction;
 
-    constructor(uniformTypes: {[key: string]: string},
+    constructor(uniformTypes: IUniformTypesObject,
       updaterFunction: UniformsUpdaterFunction)
     {
       this.uniformTypes = uniformTypes;
       this.updaterFunction = updaterFunction;
       this.initUniforms(uniformTypes);
     }
-    private initUniforms(uniformTypes: {[key: string]: string})
+    private initUniforms(uniformTypes: IUniformTypesObject)
     {
+      this.uniforms = {};
+
       for (var key in uniformTypes)
       {
         this.uniforms[key] =

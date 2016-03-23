@@ -25165,6 +25165,7 @@ var Rance;
             this.initUniforms(uniformTypes);
         }
         UniformSyncer.prototype.initUniforms = function (uniformTypes) {
+            this.uniforms = {};
             for (var key in uniformTypes) {
                 this.uniforms[key] =
                     {
@@ -25241,6 +25242,13 @@ var Rance;
                     function ShinyParticleFilter(uniforms) {
                         _super.call(this, null, Rance.ShaderSources.shinyparticle.join("\n"), uniforms);
                     }
+                    ShinyParticleFilter.getUniformTypes = function () {
+                        return ({
+                            spikeColor: "4fv",
+                            spikeIntensity: "1f",
+                            highlightIntensity: "1f"
+                        });
+                    };
                     return ShinyParticleFilter;
                 }(PIXI.AbstractFilter));
                 BattleSFXFunctions.ShinyParticleFilter = ShinyParticleFilter;
@@ -25249,6 +25257,17 @@ var Rance;
                     function LightBurstFilter(uniforms) {
                         _super.call(this, null, Rance.ShaderSources.lightburst.join("\n"), uniforms);
                     }
+                    LightBurstFilter.getUniformTypes = function () {
+                        return ({
+                            seed: "2fv",
+                            rotation: "1f",
+                            rayStrength: "1f",
+                            raySharpness: "1f",
+                            rayColor: "4fv",
+                            centerSize: "1f",
+                            centerBloomStrength: "1f"
+                        });
+                    };
                     return LightBurstFilter;
                 }(PIXI.AbstractFilter));
                 BattleSFXFunctions.LightBurstFilter = LightBurstFilter;
@@ -25257,6 +25276,17 @@ var Rance;
                     function IntersectingEllipsesFilter(uniforms) {
                         _super.call(this, null, Rance.ShaderSources.intersectingellipses.join("\n"), uniforms);
                     }
+                    IntersectingEllipsesFilter.getUniformTypes = function () {
+                        return ({
+                            mainColor: "4fv",
+                            mainAlpha: "1f",
+                            intersectingEllipseCenter: "2fv",
+                            intersectingEllipseSize: "2fv",
+                            intersectingEllipseSharpness: "1f",
+                            mainEllipseSize: "2fv",
+                            mainEllipseSharpness: "1f"
+                        });
+                    };
                     return IntersectingEllipsesFilter;
                 }(PIXI.AbstractFilter));
                 BattleSFXFunctions.IntersectingEllipsesFilter = IntersectingEllipsesFilter;
@@ -25265,6 +25295,21 @@ var Rance;
                     function BeamFilter(uniforms) {
                         _super.call(this, null, Rance.ShaderSources.beam.join("\n"), uniforms);
                     }
+                    BeamFilter.getUniformTypes = function () {
+                        return ({
+                            aspectRatio: "1f",
+                            beamColor: "4fv",
+                            lineIntensity: "1f",
+                            bulgeIntensity: "1f",
+                            bulgeXPosition: "1f",
+                            bulgeSize: "2fv",
+                            bulgeSharpness: "1f",
+                            lineXSize: "2fv",
+                            lineXSharpness: "1f",
+                            lineYSize: "1f",
+                            lineYSharpness: "1f"
+                        });
+                    };
                     return BeamFilter;
                 }(PIXI.AbstractFilter));
                 BattleSFXFunctions.BeamFilter = BeamFilter;
@@ -25329,19 +25374,7 @@ var Rance;
                         x: props.width,
                         y: props.height
                     };
-                    var beamUniforms = new Rance.UniformSyncer({
-                        aspectRatio: "1f",
-                        beamColor: "4fv",
-                        lineIntensity: "1f",
-                        bulgeIntensity: "1f",
-                        bulgeXPosition: "1f",
-                        bulgeSize: "2fv",
-                        bulgeSharpness: "1f",
-                        lineXSize: "2fv",
-                        lineXSharpness: "1f",
-                        lineYSize: "1f",
-                        lineYSharpness: "1f"
-                    }, function (time) {
+                    var beamUniforms = new Rance.UniformSyncer(BeamFilter.getUniformTypes(), function (time) {
                         var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
                         rampUpValue = Math.pow(rampUpValue, 7.0);
                         var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
@@ -25352,56 +25385,11 @@ var Rance;
                     });
                     beamUniforms.set("aspectRatio", beamSpriteSize.x / beamSpriteSize.y);
                     beamUniforms.set("bulgeXPosition", relativeBeamOrigin.x + 0.1);
-                    var beamFilter = new BeamFilter({
-                        aspectRatio: {
-                            type: "1f",
-                            value: beamSpriteSize.x / beamSpriteSize.y
-                        },
-                        beamColor: {
-                            type: "4fv",
-                            value: [finalColor[0], finalColor[1], finalColor[2], 1.0]
-                        },
-                        lineIntensity: {
-                            type: "1f",
-                            value: 3.0
-                        },
-                        bulgeIntensity: {
-                            type: "1f",
-                            value: 2.0
-                        },
-                        bulgeXPosition: {
-                            type: "1f",
-                            value: relativeBeamOrigin.x + 0.1
-                        },
-                        bulgeSize: {
-                            type: "2fv",
-                            value: [0.4, 0.25]
-                        },
-                        bulgeSharpness: {
-                            type: "1f",
-                            value: 0.3
-                        },
-                        lineXSize: {
-                            type: "2fv",
-                            value: [relativeBeamOrigin.x + 0.2, 1.0]
-                        },
-                        lineXSharpness: {
-                            type: "1f",
-                            value: 0.6
-                        },
-                        lineYSize: {
-                            type: "1f",
-                            value: 0.02
-                        },
-                        lineYSharpness: {
-                            type: "1f",
-                            value: 0.8
-                        }
-                    });
+                    var beamFilter = new BeamFilter(beamUniforms.getUniformsObject());
                     var beamSprite = Rance.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
                     beamSprite.shader = beamFilter;
                     beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-                    mainContainer.addChild(beamSprite);
+                    // mainContainer.addChild(beamSprite);
                     //----------INIT SMALL EMITTER
                     var smallEmitter = new Proton.BehaviourEmitter();
                     smallEmitter.p.x = beamOrigin.x + 50;
@@ -25424,22 +25412,17 @@ var Rance;
                     smallEmitter.addBehaviour(new Proton.Alpha(1, 0));
                     smallEmitter.addBehaviour(new Proton.RandomDrift(20, 30, props.duration / 2000));
                     protonWrapper.addEmitter(smallEmitter, "smallParticles");
-                    var smallEmitterFilter = new ShinyParticleFilter({
-                        spikeColor: {
-                            type: "4fv",
-                            value: particleShaderColorArray
-                        },
-                        spikeIntensity: {
-                            type: "1f",
-                            value: 0.6
-                        },
-                        highlightIntensity: {
-                            type: "1f",
-                            value: 2.5
-                        }
+                    var smallParticleUniforms = new Rance.UniformSyncer(ShinyParticleFilter.getUniformTypes(), function (time) {
+                        var lifeLeft = 1.0 - time;
+                        return ({
+                            spikeColor: particleShaderColorArray,
+                            spikeIntensity: Math.pow(lifeLeft, 1.5) * 0.4,
+                            highlightIntensity: Math.pow(lifeLeft, 1.5)
+                        });
                     });
+                    var smallParticleFilter = new ShinyParticleFilter(smallParticleUniforms.getUniformsObject());
                     protonWrapper.onSpriteCreated["smallParticles"] = function (sprite) {
-                        sprite.shader = smallEmitterFilter;
+                        sprite.shader = smallParticleFilter;
                         sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
                     };
                     //----------INIT SHINY EMITTER
@@ -25457,22 +25440,17 @@ var Rance;
                     shinyEmitter.addBehaviour(new Proton.Alpha(1, 0));
                     // shinyEmitter.addBehaviour(new Proton.RandomDrift(5, 10, 0.3));
                     protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
-                    var shinyEmitterFilter = new ShinyParticleFilter({
-                        spikeColor: {
-                            type: "4fv",
-                            value: particleShaderColorArray
-                        },
-                        spikeIntensity: {
-                            type: "1f",
-                            value: 1
-                        },
-                        highlightIntensity: {
-                            type: "1f",
-                            value: 0.1
-                        }
+                    var shinyParticleUniforms = new Rance.UniformSyncer(ShinyParticleFilter.getUniformTypes(), function (time) {
+                        var lifeLeft = 1.0 - time;
+                        return ({
+                            spikeColor: particleShaderColorArray,
+                            spikeIntensity: 1 - time * 0.1,
+                            highlightIntensity: Math.pow(lifeLeft, 2.0)
+                        });
                     });
+                    var shinyParticleFilter = new ShinyParticleFilter(shinyParticleUniforms.getUniformsObject());
                     protonWrapper.onSpriteCreated["shinyParticles"] = function (sprite) {
-                        sprite.shader = shinyEmitterFilter;
+                        sprite.shader = shinyParticleFilter;
                         sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
                     };
                     shinyEmitter.rate = new Proton.Rate(150 * particlesAmountScale, // particles per emit
@@ -25488,15 +25466,7 @@ var Rance;
                         x: 0.8,
                         y: 1.0
                     };
-                    var shockWaveUniforms = new Rance.UniformSyncer({
-                        mainColor: "4fv",
-                        mainAlpha: "1f",
-                        intersectingEllipseCenter: "2fv",
-                        intersectingEllipseSize: "2fv",
-                        intersectingEllipseSharpness: "1f",
-                        mainEllipseSize: "2fv",
-                        mainEllipseSharpness: "1f"
-                    }, function (time) {
+                    var shockWaveUniforms = new Rance.UniformSyncer(IntersectingEllipsesFilter.getUniformTypes(), function (time) {
                         var burstX;
                         if (time < (relativeImpactTime - 0.02)) {
                             burstX = 0;
@@ -25534,36 +25504,23 @@ var Rance;
                     // shockWaveSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
                     mainContainer.addChild(shockWaveSprite);
                     //----------INIT LIGHTBURST
-                    var lightBurstFilter = new LightBurstFilter({
-                        seed: {
-                            type: "2fv",
-                            value: [Math.random() * 69, Math.random() * 420]
-                        },
-                        rotation: {
-                            type: "1f",
-                            value: 0.0
-                        },
-                        rayStrength: {
-                            type: "1f",
-                            value: 0.9
-                        },
-                        raySharpness: {
-                            type: "1f",
-                            value: 2.0
-                        },
-                        rayColor: {
-                            type: "4fv",
-                            value: [0.75, 0.75, 0.62, 1.0]
-                        },
-                        centerSize: {
-                            type: "1f",
-                            value: 1.0
-                        },
-                        centerBloomStrength: {
-                            type: "1f",
-                            value: 5.0
-                        }
+                    var lightBurstUniforms = new Rance.UniformSyncer(LightBurstFilter.getUniformTypes(), function (time) {
+                        var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
+                        rampUpValue = Math.pow(rampUpValue, 7.0);
+                        var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
+                        var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
+                        var lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
+                        return ({
+                            centerSize: Math.pow(lightBurstIntensity, 2.0),
+                            centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
+                            rayStrength: Math.pow(lightBurstIntensity, 3.0)
+                        });
                     });
+                    lightBurstUniforms.set("seed", [Math.random() * 69, Math.random() * 420]);
+                    lightBurstUniforms.set("rotation", 0.0);
+                    lightBurstUniforms.set("raySharpness", 2.0);
+                    lightBurstUniforms.set("rayColor", [0.75, 0.75, 0.62, 1.0]);
+                    var lightBurstFilter = new LightBurstFilter(lightBurstUniforms.getUniformsObject());
                     var lightBurstSize = {
                         x: props.height * 1.5,
                         y: props.height * 3
@@ -25572,13 +25529,6 @@ var Rance;
                     lightBurstSprite.shader = lightBurstFilter;
                     lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
                     mainContainer.addChild(lightBurstSprite);
-                    function getLightBurstIntensity(time) {
-                        var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
-                        rampUpValue = Math.pow(rampUpValue, 7.0);
-                        var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-                        var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
-                        return Math.max(rampUpValue - rampDownValue, 0.0);
-                    }
                     //----------ANIMATE
                     function animate() {
                         var elapsedTime = Date.now() - startTime;
@@ -25605,18 +25555,11 @@ var Rance;
                                 smallEmitter.emit("once");
                                 props.triggerEffect();
                             }
-                            smallEmitterFilter.uniforms.spikeColor.value = particleShaderColorArray;
-                            smallEmitterFilter.uniforms.spikeIntensity.value = Math.pow(lifeLeft, 1.5) * 0.4;
-                            smallEmitterFilter.uniforms.highlightIntensity.value = Math.pow(lifeLeft, 1.5);
+                            smallParticleUniforms.sync(timePassed);
                         }
-                        shinyEmitterFilter.uniforms.spikeColor.value = particleShaderColorArray;
-                        shinyEmitterFilter.uniforms.spikeIntensity.value = 1 - timePassed * 0.1;
-                        shinyEmitterFilter.uniforms.highlightIntensity.value = Math.pow(lifeLeft, 2.0);
-                        var lightBurstIntensity = getLightBurstIntensity(timePassed);
-                        lightBurstFilter.uniforms.centerSize.value = Math.pow(lightBurstIntensity, 2.0);
-                        lightBurstFilter.uniforms.centerBloomStrength.value = Math.pow(lightBurstIntensity, 2.0) * 5.0;
-                        lightBurstFilter.uniforms.rayStrength.value = Math.pow(lightBurstIntensity, 3.0);
-                        shockWaveUniforms.sync(elapsedTime);
+                        shinyParticleUniforms.sync(timePassed);
+                        lightBurstUniforms.sync(timePassed);
+                        shockWaveUniforms.sync(timePassed);
                         renderTexture.clear();
                         renderTexture.render(mainContainer);
                         if (elapsedTime < props.duration) {

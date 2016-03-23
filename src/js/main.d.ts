@@ -3387,6 +3387,9 @@ declare module Rance {
     type UniformsUpdaterFunction = (time: number) => {
         [key: string]: UniformValue;
     };
+    interface IUniformTypesObject {
+        [key: string]: string;
+    }
     interface IUniformsObject {
         [uniformKey: string]: {
             type: string;
@@ -3397,9 +3400,7 @@ declare module Rance {
         private uniformTypes;
         private uniforms;
         private updaterFunction;
-        constructor(uniformTypes: {
-            [key: string]: string;
-        }, updaterFunction: UniformsUpdaterFunction);
+        constructor(uniformTypes: IUniformTypesObject, updaterFunction: UniformsUpdaterFunction);
         private initUniforms(uniformTypes);
         sync(time: number): void;
         set(key: string, value: UniformValue): void;
@@ -3414,15 +3415,19 @@ declare module Rance {
             module BattleSFXFunctions {
                 class ShinyParticleFilter extends PIXI.AbstractFilter {
                     constructor(uniforms?: any);
+                    static getUniformTypes(): IUniformTypesObject;
                 }
                 class LightBurstFilter extends PIXI.AbstractFilter {
                     constructor(uniforms?: any);
+                    static getUniformTypes(): IUniformTypesObject;
                 }
                 class IntersectingEllipsesFilter extends PIXI.AbstractFilter {
                     constructor(uniforms?: any);
+                    static getUniformTypes(): IUniformTypesObject;
                 }
                 class BeamFilter extends PIXI.AbstractFilter {
                     constructor(uniforms?: any);
+                    static getUniformTypes(): IUniformTypesObject;
                 }
                 function particleTest(props: Rance.Templates.SFXParams): void;
             }

@@ -58,12 +58,34 @@ module Rance
           {
             super(null, ShaderSources.shinyparticle.join("\n"), uniforms);
           }
+          static getUniformTypes(): IUniformTypesObject
+          {
+            return(
+            {
+              spikeColor: "4fv",
+              spikeIntensity: "1f",
+              highlightIntensity: "1f"
+            });
+          }
         }
         export class LightBurstFilter extends PIXI.AbstractFilter
         {
           constructor(uniforms?: any)
           {
             super(null, ShaderSources.lightburst.join("\n"), uniforms);
+          }
+          static getUniformTypes(): IUniformTypesObject
+          {
+            return(
+            {
+              seed: "2fv",
+              rotation: "1f",
+              rayStrength: "1f",
+              raySharpness: "1f",
+              rayColor: "4fv",
+              centerSize: "1f",
+              centerBloomStrength: "1f"
+            });
           }
         }
         export class IntersectingEllipsesFilter extends PIXI.AbstractFilter
@@ -72,12 +94,42 @@ module Rance
           {
             super(null, ShaderSources.intersectingellipses.join("\n"), uniforms);
           }
+          static getUniformTypes(): IUniformTypesObject
+          {
+            return(
+            {
+              mainColor: "4fv",
+              mainAlpha: "1f",
+              intersectingEllipseCenter: "2fv",
+              intersectingEllipseSize: "2fv",
+              intersectingEllipseSharpness: "1f",
+              mainEllipseSize: "2fv",
+              mainEllipseSharpness: "1f"
+            });
+          }
         }
         export class BeamFilter extends PIXI.AbstractFilter
         {
           constructor(uniforms?: any)
           {
             super(null, ShaderSources.beam.join("\n"), uniforms);
+          }
+          static getUniformTypes(): IUniformTypesObject
+          {
+            return(
+            {
+              aspectRatio: "1f",
+              beamColor: "4fv",
+              lineIntensity: "1f",
+              bulgeIntensity: "1f",
+              bulgeXPosition: "1f",
+              bulgeSize: "2fv",
+              bulgeSharpness: "1f",
+              lineXSize: "2fv",
+              lineXSharpness: "1f",
+              lineYSize: "1f",
+              lineYSharpness: "1f"
+            });
           }
         }
         export function particleTest(props: Rance.Templates.SFXParams)
@@ -161,20 +213,7 @@ module Rance
             y: props.height
           }
 
-          var beamUniforms = new UniformSyncer(
-          {
-            aspectRatio: "1f",
-            beamColor: "4fv",
-            lineIntensity: "1f",
-            bulgeIntensity: "1f",
-            bulgeXPosition: "1f",
-            bulgeSize: "2fv",
-            bulgeSharpness: "1f",
-            lineXSize: "2fv",
-            lineXSharpness: "1f",
-            lineYSize: "1f",
-            lineYSharpness: "1f"
-          }, function(time: number)
+          var beamUniforms = new UniformSyncer(BeamFilter.getUniformTypes(), function(time: number)
           {
             var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
             rampUpValue = Math.pow(rampUpValue, 7.0);
@@ -194,64 +233,7 @@ module Rance
           beamUniforms.set("aspectRatio", beamSpriteSize.x / beamSpriteSize.y);
           beamUniforms.set("bulgeXPosition", relativeBeamOrigin.x + 0.1);
 
-          var beamFilter = new BeamFilter(
-          {
-            aspectRatio:
-            {
-              type: "1f",
-              value: beamSpriteSize.x / beamSpriteSize.y
-            },
-            beamColor:
-            {
-              type: "4fv",
-              value: [finalColor[0], finalColor[1], finalColor[2], 1.0]
-            },
-            lineIntensity:
-            {
-              type: "1f",
-              value: 3.0
-            },
-            bulgeIntensity:
-            {
-              type: "1f",
-              value: 2.0
-            },
-            bulgeXPosition:
-            {
-              type: "1f",
-              value: relativeBeamOrigin.x + 0.1
-            },
-            bulgeSize:
-            {
-              type: "2fv",
-              value: [0.4, 0.25]
-            },
-            bulgeSharpness:
-            {
-              type: "1f",
-              value: 0.3
-            },
-            lineXSize:
-            {
-              type: "2fv",
-              value: [relativeBeamOrigin.x + 0.2, 1.0]
-            },
-            lineXSharpness:
-            {
-              type: "1f",
-              value: 0.6
-            },
-            lineYSize:
-            {
-              type: "1f",
-              value: 0.02
-            },
-            lineYSharpness:
-            {
-              type: "1f",
-              value: 0.8
-            }
-          });
+          var beamFilter = new BeamFilter(beamUniforms.getUniformsObject());
 
           var beamSprite = createDummySpriteForShader(
             0,
@@ -262,7 +244,7 @@ module Rance
           beamSprite.shader = beamFilter;
           beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
 
-          mainContainer.addChild(beamSprite);
+          // mainContainer.addChild(beamSprite);
 
           //----------INIT SMALL EMITTER
           var smallEmitter = new Proton.BehaviourEmitter();
@@ -310,28 +292,23 @@ module Rance
 
           protonWrapper.addEmitter(smallEmitter, "smallParticles");
 
-          var smallEmitterFilter = new ShinyParticleFilter(
+          var smallParticleUniforms = new UniformSyncer(ShinyParticleFilter.getUniformTypes(),
+            function(time: number)
           {
-            spikeColor:
+            var lifeLeft = 1.0 - time;
+
+            return(
             {
-              type: "4fv",
-              value: particleShaderColorArray
-            },
-            spikeIntensity:
-            {
-              type: "1f",
-              value: 0.6
-            },
-            highlightIntensity:
-            {
-              type: "1f",
-              value: 2.5
-            }
+              spikeColor: particleShaderColorArray,
+              spikeIntensity: Math.pow(lifeLeft, 1.5) * 0.4,
+              highlightIntensity: Math.pow(lifeLeft, 1.5)
+            });
           });
+          var smallParticleFilter = new ShinyParticleFilter(smallParticleUniforms.getUniformsObject());
 
           protonWrapper.onSpriteCreated["smallParticles"] = function(sprite: PIXI.Sprite)
           {
-            sprite.shader = smallEmitterFilter;
+            sprite.shader = smallParticleFilter;
             sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
           };
 
@@ -361,28 +338,23 @@ module Rance
 
           protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
 
-          var shinyEmitterFilter = new ShinyParticleFilter(
+          var shinyParticleUniforms = new UniformSyncer(ShinyParticleFilter.getUniformTypes(),
+            function(time: number)
           {
-            spikeColor:
+            var lifeLeft = 1.0 - time;
+
+            return(
             {
-              type: "4fv",
-              value: particleShaderColorArray
-            },
-            spikeIntensity:
-            {
-              type: "1f",
-              value: 1
-            },
-            highlightIntensity:
-            {
-              type: "1f",
-              value: 0.1
-            }
+              spikeColor: particleShaderColorArray,
+              spikeIntensity: 1 - time * 0.1,
+              highlightIntensity: Math.pow(lifeLeft, 2.0)
+            });
           });
+          var shinyParticleFilter = new ShinyParticleFilter(shinyParticleUniforms.getUniformsObject());
 
           protonWrapper.onSpriteCreated["shinyParticles"] = function(sprite: PIXI.Sprite)
           {
-            sprite.shader = shinyEmitterFilter;
+            sprite.shader = shinyParticleFilter;
             sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
           };
           
@@ -405,16 +377,8 @@ module Rance
             y: 1.0
           }
 
-          var shockWaveUniforms = new UniformSyncer(
-          {
-            mainColor: "4fv",
-            mainAlpha: "1f",
-            intersectingEllipseCenter: "2fv",
-            intersectingEllipseSize: "2fv",
-            intersectingEllipseSharpness: "1f",
-            mainEllipseSize: "2fv",
-            mainEllipseSharpness: "1f"
-          }, function(time: number)
+          var shockWaveUniforms = new UniformSyncer(IntersectingEllipsesFilter.getUniformTypes(),
+            function(time: number)
           {
             var burstX: number;
 
@@ -473,44 +437,31 @@ module Rance
 
 
           //----------INIT LIGHTBURST
-          var lightBurstFilter = new LightBurstFilter(
+          var lightBurstUniforms = new UniformSyncer(LightBurstFilter.getUniformTypes(),
+            function(time: number)
           {
-            seed:
+            var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
+            rampUpValue = Math.pow(rampUpValue, 7.0);
+
+            var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
+            var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
+
+            var lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
+
+            return(
             {
-              type: "2fv",
-              value: [Math.random() * 69, Math.random() * 420]
-            },
-            rotation:
-            {
-              type: "1f",
-              value: 0.0
-            },
-            rayStrength:
-            {
-              type: "1f",
-              value: 0.9
-            },
-            raySharpness:
-            {
-              type: "1f",
-              value: 2.0
-            },
-            rayColor:
-            {
-              type: "4fv",
-              value: [0.75, 0.75, 0.62, 1.0]
-            },
-            centerSize:
-            {
-              type: "1f",
-              value: 1.0
-            },
-            centerBloomStrength:
-            {
-              type: "1f",
-              value: 5.0
-            }
+              centerSize: Math.pow(lightBurstIntensity, 2.0),
+              centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
+              rayStrength: Math.pow(lightBurstIntensity, 3.0)
+            });
           });
+
+          lightBurstUniforms.set("seed", [Math.random() * 69, Math.random() * 420]);
+          lightBurstUniforms.set("rotation", 0.0);
+          lightBurstUniforms.set("raySharpness", 2.0);
+          lightBurstUniforms.set("rayColor", [0.75, 0.75, 0.62, 1.0]);
+
+          var lightBurstFilter = new LightBurstFilter(lightBurstUniforms.getUniformsObject());
 
           var lightBurstSize =
           {
@@ -527,17 +478,6 @@ module Rance
           lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
 
           mainContainer.addChild(lightBurstSprite);
-
-          function getLightBurstIntensity(time: number)
-          {
-            var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
-            rampUpValue = Math.pow(rampUpValue, 7.0);
-
-            var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-            var rampDownValue = Math.pow(timeAfterImpact * 5.0, 2.0);
-
-            return Math.max(rampUpValue - rampDownValue, 0.0);
-          }
 
           //----------ANIMATE
 
@@ -582,24 +522,13 @@ module Rance
 
                 props.triggerEffect();
               }
-              
-              smallEmitterFilter.uniforms.spikeColor.value = particleShaderColorArray;
-              smallEmitterFilter.uniforms.spikeIntensity.value = Math.pow(lifeLeft, 1.5) * 0.4;
-              smallEmitterFilter.uniforms.highlightIntensity.value = Math.pow(lifeLeft, 1.5);
+
+              smallParticleUniforms.sync(timePassed);
             }
 
-            shinyEmitterFilter.uniforms.spikeColor.value = particleShaderColorArray;
-            shinyEmitterFilter.uniforms.spikeIntensity.value = 1 - timePassed * 0.1;
-            shinyEmitterFilter.uniforms.highlightIntensity.value = Math.pow(lifeLeft, 2.0);
-
-
-            var lightBurstIntensity = getLightBurstIntensity(timePassed);
-            lightBurstFilter.uniforms.centerSize.value = Math.pow(lightBurstIntensity, 2.0);
-            lightBurstFilter.uniforms.centerBloomStrength.value = Math.pow(lightBurstIntensity, 2.0) * 5.0;
-            lightBurstFilter.uniforms.rayStrength.value = Math.pow(lightBurstIntensity, 3.0);
-
-
-            shockWaveUniforms.sync(elapsedTime);
+            shinyParticleUniforms.sync(timePassed);
+            lightBurstUniforms.sync(timePassed);
+            shockWaveUniforms.sync(timePassed);
 
             renderTexture.clear();
             renderTexture.render(mainContainer);
