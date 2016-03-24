@@ -20573,7 +20573,8 @@ var Rance;
                     min: 100,
                     max: 20000,
                     value: this.state.duration,
-                    onChange: this.handleChangeDuration
+                    onChange: this.handleChangeDuration,
+                    placeholder: "duration"
                 }, null))));
             }
         });
