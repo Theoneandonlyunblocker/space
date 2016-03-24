@@ -25343,7 +25343,8 @@ var Rance;
                     var finalColor = [
                         0.368627450980392,
                         0.792156862745098,
-                        0.694117647058823
+                        0.694117647058823,
+                        1.0
                     ];
                     //----------INIT PARTICLES
                     var particleContainer = new PIXI.Container();
@@ -25379,17 +25380,33 @@ var Rance;
                         rampUpValue = Math.pow(rampUpValue, 7.0);
                         var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
                         var relativeTimeAfterImpact = Rance.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
-                        var rampDownValue = Math.pow(relativeTimeAfterImpact, 2.0);
-                        var beamIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
-                        return ({});
+                        var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 2.0, 5.0), 1.0);
+                        var beamIntensity = rampUpValue - rampDownValue;
+                        return ({
+                            lineIntensity: 2.0 + 3.0 * beamIntensity,
+                            bulgeIntensity: 6.0 * beamIntensity,
+                            bulgeSize: [
+                                0.7 * Math.pow(beamIntensity, 1.5),
+                                0.4 * Math.pow(beamIntensity, 1.5)
+                            ],
+                            bulgeSharpness: 0.3 + 0.35 * beamIntensity,
+                            lineXSize: [
+                                relativeBeamOrigin.x * rampUpValue,
+                                1.0
+                            ],
+                            lineXSharpness: 0.99 - beamIntensity * 0.99,
+                            lineYSize: 0.001 + beamIntensity * 0.03,
+                            lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
+                        });
                     });
+                    beamUniforms.set("beamColor", finalColor);
                     beamUniforms.set("aspectRatio", beamSpriteSize.x / beamSpriteSize.y);
                     beamUniforms.set("bulgeXPosition", relativeBeamOrigin.x + 0.1);
                     var beamFilter = new BeamFilter(beamUniforms.getUniformsObject());
                     var beamSprite = Rance.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
                     beamSprite.shader = beamFilter;
                     beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-                    // mainContainer.addChild(beamSprite);
+                    mainContainer.addChild(beamSprite);
                     //----------INIT SMALL EMITTER
                     var smallEmitter = new Proton.BehaviourEmitter();
                     smallEmitter.p.x = beamOrigin.x + 50;
@@ -25557,6 +25574,7 @@ var Rance;
                             }
                             smallParticleUniforms.sync(timePassed);
                         }
+                        beamUniforms.sync(timePassed);
                         shinyParticleUniforms.sync(timePassed);
                         lightBurstUniforms.sync(timePassed);
                         shockWaveUniforms.sync(timePassed);
