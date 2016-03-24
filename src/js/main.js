@@ -20328,14 +20328,6 @@ var Rance;
             battle: null,
             battleScene: null,
             getInitialState: function () {
-                return ({
-                    activeUnit: null,
-                    selectedSide1Unit: null,
-                    selectedSide2Unit: null,
-                    selectedSFXTemplateKey: null
-                });
-            },
-            componentWillMount: function () {
                 var side1Units = [];
                 var side2Units = [];
                 for (var i = 0; i < 5; i++) {
@@ -20351,10 +20343,19 @@ var Rance;
                     side2Player: side2Player
                 });
                 battle.init();
+                return ({
+                    activeUnit: side1Units[0],
+                    selectedSide1Unit: side1Units[0],
+                    selectedSide2Unit: side2Units[0],
+                    selectedSFXTemplateKey: "particleTest",
+                    duration: null
+                });
             },
             componentDidMount: function () {
                 var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
                 battleScene.resume();
+                battleScene.activeUnit = this.state.selectedSide1Unit;
+                battleScene.updateUnits();
             },
             makeUnit: function () {
                 var template = Rance.getRandomProperty(app.moduleData.Templates.Units);
@@ -20426,6 +20427,12 @@ var Rance;
                     selectedSFXTemplateKey: target.value
                 });
             },
+            handleChangeDuration: function (e) {
+                var target = e.target;
+                this.setState({
+                    duration: target.value
+                });
+            },
             handleTestAbility1: function () {
                 var overlayTestFN = function (color, params) {
                     var renderTexture = new PIXI.RenderTexture(params.renderer, params.width, params.height);
@@ -20490,7 +20497,10 @@ var Rance;
                 var user = this.state.activeUnit;
                 var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
                 var bs = this.battleScene;
-                var SFXTemplate = app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey];
+                var SFXTemplate = Rance.extendObject(app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+                if (this.state.duration) {
+                    SFXTemplate.duration = this.state.duration;
+                }
                 bs.handleAbilityUse({
                     user: user,
                     target: target,
@@ -20557,7 +20567,14 @@ var Rance;
                     className: "battle-scene-test-ability2",
                     onClick: this.useSelectedAbility,
                     disabled: !this.state.selectedSFXTemplateKey || !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
-                }, "use ability"))));
+                }, "use ability"), React.DOM.input({
+                    type: "number",
+                    step: 100,
+                    min: 100,
+                    max: 20000,
+                    value: this.state.duration,
+                    onChange: this.handleChangeDuration
+                }, null))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -25380,7 +25397,7 @@ var Rance;
                         rampUpValue = Math.pow(rampUpValue, 7.0);
                         var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
                         var relativeTimeAfterImpact = Rance.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
-                        var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 2.0, 5.0), 1.0);
+                        var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
                         var beamIntensity = rampUpValue - rampDownValue;
                         return ({
                             lineIntensity: 2.0 + 3.0 * beamIntensity,
@@ -25422,9 +25439,9 @@ var Rance;
                     smallParticleGraphics.endFill();
                     var smallParticleTexture = smallParticleGraphics.generateTexture(props.renderer, 1, PIXI.SCALE_MODES.DEFAULT, new PIXI.Rectangle(0, 0, smallParticleGraphicsSize.x * 1.5, smallParticleGraphicsSize.y * 1.5));
                     smallEmitter.addInitialize(new Proton.ImageTarget(smallParticleTexture));
-                    smallEmitter.addInitialize(new Proton.Velocity(new Proton.Span(3, 5), new Proton.Span(270, 50, true), 'polar'));
+                    smallEmitter.addInitialize(new Proton.Velocity(new Proton.Span(2.5, 3.5), new Proton.Span(270, 35, true), 'polar'));
                     smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(0, -30, props.width + 100 - smallEmitter.p.x, 30)));
-                    smallEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * (1.0 - relativeImpactTime) / 4000, props.duration * (1.0 - relativeImpactTime) / 1000)));
+                    smallEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * (1.0 - relativeImpactTime) / 6000, props.duration * (1.0 - relativeImpactTime) / 3000)));
                     smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
                     smallEmitter.addBehaviour(new Proton.Alpha(1, 0));
                     smallEmitter.addBehaviour(new Proton.RandomDrift(20, 30, props.duration / 2000));
@@ -25562,14 +25579,18 @@ var Rance;
                         if (timePassed >= relativeImpactTime - 0.02) {
                             if (!impactHasOccurred) {
                                 impactHasOccurred = true;
-                                var velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3), new Proton.Span(270, 35, true), 'polar');
+                                var lifeLeftInSeconds = props.duration * lifeLeft / 1000;
+                                var emitterLife = lifeLeftInSeconds * 0.8;
+                                var velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3), new Proton.Span(270, 25, true), 'polar');
                                 protonWrapper.addInitializeToExistingParticles(shinyEmitter, velocityInitialize);
                                 shinyEmitter.removeInitialize(shinyEmitterLifeInitialize);
-                                shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * lifeLeft / 3000, props.duration * lifeLeft / 1000)));
-                                shinyEmitter.rate = new Proton.Rate(100 * particlesAmountScale, 0);
-                                shinyEmitter.emit("once");
-                                smallEmitter.rate = new Proton.Rate(150 * particlesAmountScale, 0);
-                                smallEmitter.emit("once");
+                                shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(emitterLife / 4, emitterLife / 2.5)));
+                                shinyEmitter.rate = new Proton.Rate(4 * particlesAmountScale, 0.02);
+                                shinyEmitter.life = emitterLife;
+                                shinyEmitter.emit();
+                                smallEmitter.rate = new Proton.Rate(6 * particlesAmountScale, 0.02);
+                                smallEmitter.life = emitterLife;
+                                smallEmitter.emit();
                                 props.triggerEffect();
                             }
                             smallParticleUniforms.sync(timePassed);

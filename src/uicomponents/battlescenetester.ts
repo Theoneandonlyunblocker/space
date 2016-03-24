@@ -11,17 +11,6 @@ module Rance
 
       getInitialState: function()
       {
-        return(
-        {
-          activeUnit: null,
-          selectedSide1Unit: null,
-          selectedSide2Unit: null,
-          selectedSFXTemplateKey: null
-        });
-      },
-
-      componentWillMount: function()
-      {
         var side1Units: Unit[] = [];
         var side2Units: Unit[] = [];
         for (var i = 0; i < 5; i++)
@@ -42,12 +31,24 @@ module Rance
         });
 
         battle.init();
+
+        return(
+        {
+          activeUnit: side1Units[0],
+          selectedSide1Unit: side1Units[0],
+          selectedSide2Unit: side2Units[0],
+          selectedSFXTemplateKey: "particleTest",
+
+          duration: null
+        });
       },
 
       componentDidMount: function()
       {
         var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
         battleScene.resume();
+        battleScene.activeUnit = this.state.selectedSide1Unit;
+        battleScene.updateUnits()
       },
 
       makeUnit: function()
@@ -157,6 +158,15 @@ module Rance
         });
       },
 
+      handleChangeDuration: function(e: Event)
+      {
+        var target = <HTMLInputElement> e.target;
+        this.setState(
+        {
+          duration: target.value
+        });
+      },
+
       handleTestAbility1: function()
       {
         var overlayTestFN = function(color: number, params: Templates.SFXParams)
@@ -247,7 +257,12 @@ module Rance
         var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
         var bs: Rance.BattleScene = this.battleScene;
-        var SFXTemplate = app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey];
+        var SFXTemplate = extendObject(app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+
+        if (this.state.duration)
+        {
+          SFXTemplate.duration = this.state.duration;
+        }
 
         bs.handleAbilityUse(
         {
@@ -370,6 +385,17 @@ module Rance
                 disabled: !this.state.selectedSFXTemplateKey || !(this.state.selectedSide1Unit && this.state.selectedSide2Unit)
               },
                 "use ability"
+              ),
+              React.DOM.input(
+              {
+                type: "number",
+                step: 100,
+                min: 100,
+                max: 20000,
+                value: this.state.duration,
+                onChange: this.handleChangeDuration
+              },
+                null
               )
             )
           )
