@@ -36,7 +36,7 @@ module Rance
           }
           export var particleTest: Rance.Templates.IBattleSFXTemplate =
           {
-            duration: 3000,
+            duration: 4500,
             battleOverlay: BattleSFXFunctions.particleTest,
             SFXWillTriggerEffect: true
           }

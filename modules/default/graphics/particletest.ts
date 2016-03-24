@@ -118,7 +118,10 @@ module Rance
           {
             return(
             {
+              time: "1f",
+              seed: "1f",
               aspectRatio: "1f",
+              noiseAmplitude: "1f",
               beamColor: "4fv",
               lineIntensity: "1f",
               bulgeIntensity: "1f",
@@ -147,7 +150,7 @@ module Rance
           // mainContainer.addChild(bg);
 
           var impactHasOccurred = false;
-          var relativeImpactTime = 0.24;
+          var relativeImpactTime = 0.18;
 
           var beamOrigin =
           {
@@ -227,6 +230,8 @@ module Rance
 
             return(
             {
+              time: time * 100,
+              noiseAmplitude: 0.4 * beamIntensity,
               lineIntensity: 2.0 + 3.0 * beamIntensity,
               bulgeIntensity: 6.0 * beamIntensity,
 
@@ -249,6 +254,7 @@ module Rance
             });
           });
 
+          beamUniforms.set("seed", Math.random() * 100);
           beamUniforms.set("beamColor", finalColor);
           beamUniforms.set("aspectRatio", beamSpriteSize.x / beamSpriteSize.y);
           beamUniforms.set("bulgeXPosition", relativeBeamOrigin.x + 0.1);

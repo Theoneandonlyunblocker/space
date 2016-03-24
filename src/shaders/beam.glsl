@@ -6,6 +6,10 @@ precision mediump float;
   varying vec2 vTextureCoord;
   uniform sampler2D uSampler;
 
+  uniform float time;
+  uniform float seed;
+  uniform float noiseAmplitude;
+
   uniform float aspectRatio;
 
   uniform vec4 beamColor;
@@ -28,6 +32,8 @@ precision mediump float;
   uniform vec2 resolution;
   uniform float time;
 
+  const float seed = 420.69;
+  const float noiseAmplitude = 0.5;
   float aspectRatio = resolution.x / resolution.y;
 
   const vec4 beamColor = vec4(1.0, 0.5, 0.5, 1.0);
@@ -47,6 +53,22 @@ precision mediump float;
 
 #endif
 
+float hash(vec2 p)
+{
+  return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));
+}
+
+float noise(vec2 x)
+{
+  vec2 i = floor(x);
+  vec2 f = fract(x);
+  float a = hash(i);
+  float b = hash(i + vec2(1.0, 0.0));
+  float c = hash(i + vec2(0.0, 1.0));
+  float d = hash(i + vec2(1.0, 1.0));
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+}
 
 float ellipseGradient(vec2 p, float ellipseXPosition, vec2 ellipseSize)
 {
@@ -71,6 +93,8 @@ void main()
   #endif
 
   vec2 q = vec2(uv.x, -1.0 + 2.0 * uv.y); // (0, -1) -> (1, 1)
+  float noiseValue = -1.0 + 2.0 * noise(vec2(q.x - time, seed));
+  noiseValue *= noiseAmplitude;
   
   float yDistFromCenter = abs(q.y);
   float insideLineY = step(yDistFromCenter, lineYSize);
@@ -84,9 +108,11 @@ void main()
   float lineXGradient = smoothstep(lineXSharpness, 1.0, lineXDist);
 
   float lineGradient = (lineYGradient * lineXGradient) * lineIntensity;
+  lineGradient *= 1.0 + noiseValue;
 
   float bulgeGradient = 1.0 - ellipseGradient(q, bulgeXPosition, bulgeSize);
   bulgeGradient = smoothstep(0.0, 1.0 - bulgeSharpness, bulgeGradient) * bulgeIntensity;
+  bulgeGradient *= 1.0 + noiseValue * 0.5;
 
   float beamGradient = lineGradient + bulgeGradient;
   color += beamGradient * beamColor;
