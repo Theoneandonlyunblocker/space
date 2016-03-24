@@ -222,7 +222,7 @@ module Rance
             var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
             var relativeTimeAfterImpact = getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
 
-            var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 2.0, 5.0), 1.0);
+            var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
             var beamIntensity = rampUpValue - rampDownValue;
 
             return(
@@ -292,8 +292,8 @@ module Rance
           );
 
           smallEmitter.addInitialize(new Proton.ImageTarget(smallParticleTexture));
-          smallEmitter.addInitialize(new Proton.Velocity(new Proton.Span(3, 5),
-            new Proton.Span(270, 50, true), 'polar'));
+          smallEmitter.addInitialize(new Proton.Velocity(new Proton.Span(2.5, 3.5),
+            new Proton.Span(270, 35, true), 'polar'));
           smallEmitter.addInitialize(new Proton.Position(new Proton.RectZone(
             0,
             -30,
@@ -301,8 +301,8 @@ module Rance
             30
           )));
           smallEmitter.addInitialize(new Proton.Life(new Proton.Span(
-            props.duration * (1.0 - relativeImpactTime) / 4000,
-            props.duration * (1.0 - relativeImpactTime) / 1000
+            props.duration * (1.0 - relativeImpactTime) / 6000,
+            props.duration * (1.0 - relativeImpactTime) / 3000
           )));
 
           smallEmitter.addBehaviour(new Proton.Scale(new Proton.Span(0.8, 1), 0));
@@ -524,21 +524,24 @@ module Rance
               if (!impactHasOccurred)
               {
                 impactHasOccurred = true;
+                var lifeLeftInSeconds = props.duration * lifeLeft / 1000;
+                var emitterLife = lifeLeftInSeconds * 0.8;
 
                 var velocityInitialize = new Proton.Velocity(new Proton.Span(1.5, 3),
-                  new Proton.Span(270, 35, true), 'polar')
+                  new Proton.Span(270, 25, true), 'polar')
                 protonWrapper.addInitializeToExistingParticles(shinyEmitter, velocityInitialize);
 
                 shinyEmitter.removeInitialize(shinyEmitterLifeInitialize);
-                shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(props.duration * lifeLeft / 3000,
-                  props.duration * lifeLeft / 1000)))
+                shinyEmitter.addInitialize(new Proton.Life(new Proton.Span(emitterLife / 4, emitterLife / 2.5)));
 
-                shinyEmitter.rate = new Proton.Rate(100 * particlesAmountScale, 0);
-                shinyEmitter.emit("once");
+                shinyEmitter.rate = new Proton.Rate(4 * particlesAmountScale, 0.02);
+                shinyEmitter.life = emitterLife;
+                shinyEmitter.emit();
 
 
-                smallEmitter.rate = new Proton.Rate(150 * particlesAmountScale, 0);
-                smallEmitter.emit("once");
+                smallEmitter.rate = new Proton.Rate(6 * particlesAmountScale, 0.02);
+                smallEmitter.life = emitterLife;
+                smallEmitter.emit();
 
                 props.triggerEffect();
               }
