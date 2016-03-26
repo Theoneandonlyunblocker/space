@@ -80,11 +80,6 @@ module Rance
     experienceForCurrentLevel: number;
     level: number;
 
-    displayFlags:
-    {
-      isAnnihilated: boolean;
-    };
-    
     fleet: Fleet;
 
     items:
@@ -109,13 +104,22 @@ module Rance
     } = {};
     passiveSkillsByPhaseAreDirty: boolean = true;
 
-    uiDisplayIsDirty: boolean = true;
+    
     front: MapAI.Front;
 
+    uiDisplayIsDirty: boolean = true;
+    displayFlags:
+    {
+      isAnnihilated: boolean;
+    };
+    // todo old
     sfxDuration: number;
     lastHealthDrawnAt: number;
+    // end old
+    // new
+    displayedHealth: number;
     
-
+    // end new
     constructor(template: Templates.IUnitTemplate, id?: number, data?: any)
     {
       this.id = isFinite(id) ? id : idGenerators.unit++;
@@ -468,10 +472,10 @@ module Rance
       this.uiDisplayIsDirty = true;
     }
     
-    // redundant
+    // TODO gameplay | allow units to become untargetable in battle (cloaking?)
     isTargetable()
     {
-      return this.currentHealth > 0;
+      return this.isActiveInBattle();
     }
     isActiveInBattle()
     {

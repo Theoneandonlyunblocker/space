@@ -2,6 +2,7 @@ declare module Rance
 {
   module Templates
   {
+    // base interface for abilities and passive skills
     interface IAbilityBase
     {
       type: string;

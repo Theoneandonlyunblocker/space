@@ -25688,7 +25688,7 @@ var Rance;
                         SFXWillTriggerEffect: true
                     };
                     BattleSFX.particleTest = {
-                        duration: 4500,
+                        duration: 3500,
                         battleOverlay: DefaultModule.BattleSFXFunctions.particleTest,
                         SFXWillTriggerEffect: true
                     };
