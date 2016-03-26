@@ -44,7 +44,7 @@
 /// <reference path="../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../templateinterfaces/itechnologytemplate.d.ts" />
-/// <reference path="../templateinterfaces/ieffecttemplate.d.ts" />
+/// <reference path="../templateinterfaces/ieffectactiontemplate.d.ts" />
 /// <reference path="../../lib/proton.d.ts" />
 /// <reference path="../templateinterfaces/sfxparams.d.ts" />
 /// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
@@ -1576,10 +1576,10 @@ declare module Rance {
     function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): any;
     function getGuarders(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): any;
     function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): Unit[];
-    function getFormationsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectTemplate): Unit[][];
+    function getFormationsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectActionTemplate): Unit[][];
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): number[][];
     function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: number[]): Unit[];
-    function getUnitsInEffectArea(battle: Battle, user: Unit, effect: Templates.IEffectTemplate, target: number[]): Unit[];
+    function getUnitsInEffectArea(battle: Battle, user: Unit, effect: Templates.IEffectActionTemplate, target: number[]): Unit[];
     function getTargetsForAllAbilities(battle: Battle, user: Unit): {
         [id: number]: Templates.IAbilityTemplate[];
     };
@@ -1628,9 +1628,6 @@ declare module Rance {
         passiveSkills: Templates.IPassiveSkillTemplate[];
         experienceForCurrentLevel: number;
         level: number;
-        displayFlags: {
-            isAnnihilated: boolean;
-        };
         fleet: Fleet;
         items: {
             low: Item;
@@ -1645,10 +1642,14 @@ declare module Rance {
             inBattlePrep?: Templates.IPassiveSkillTemplate[];
         };
         passiveSkillsByPhaseAreDirty: boolean;
-        uiDisplayIsDirty: boolean;
         front: MapAI.Front;
+        uiDisplayIsDirty: boolean;
+        displayFlags: {
+            isAnnihilated: boolean;
+        };
         sfxDuration: number;
         lastHealthDrawnAt: number;
+        displayedHealth: number;
         constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
         makeFromData(data: any): void;
         setInitialValues(): void;
@@ -3025,7 +3026,7 @@ declare module Rance {
             [key: string]: Templates.ICultureTemplate;
         };
         Effects: {
-            [type: string]: Templates.IEffectTemplate;
+            [type: string]: Templates.IEffectActionTemplate;
         };
         Items: {
             [type: string]: Templates.IItemTemplate;
@@ -3294,17 +3295,17 @@ declare module Rance {
         module DefaultModule {
             module Templates {
                 module Effects {
-                    var singleTargetDamage: Rance.Templates.IEffectTemplate;
-                    var closeAttack: Rance.Templates.IEffectTemplate;
-                    var wholeRowAttack: Rance.Templates.IEffectTemplate;
-                    var bombAttack: Rance.Templates.IEffectTemplate;
-                    var guardRow: Rance.Templates.IEffectTemplate;
-                    var receiveCounterAttack: Rance.Templates.IEffectTemplate;
-                    var increaseCaptureChance: Rance.Templates.IEffectTemplate;
-                    var buffTest: Rance.Templates.IEffectTemplate;
-                    var healTarget: Rance.Templates.IEffectTemplate;
-                    var healSelf: Rance.Templates.IEffectTemplate;
-                    var standBy: Rance.Templates.IEffectTemplate;
+                    var singleTargetDamage: Rance.Templates.IEffectActionTemplate;
+                    var closeAttack: Rance.Templates.IEffectActionTemplate;
+                    var wholeRowAttack: Rance.Templates.IEffectActionTemplate;
+                    var bombAttack: Rance.Templates.IEffectActionTemplate;
+                    var guardRow: Rance.Templates.IEffectActionTemplate;
+                    var receiveCounterAttack: Rance.Templates.IEffectActionTemplate;
+                    var increaseCaptureChance: Rance.Templates.IEffectActionTemplate;
+                    var buffTest: Rance.Templates.IEffectActionTemplate;
+                    var healTarget: Rance.Templates.IEffectActionTemplate;
+                    var healSelf: Rance.Templates.IEffectActionTemplate;
+                    var standBy: Rance.Templates.IEffectActionTemplate;
                 }
             }
         }

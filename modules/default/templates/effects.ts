@@ -1,4 +1,4 @@
-/// <reference path="../../../src/templateinterfaces/ieffecttemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/ieffectactiontemplate.d.ts"/>
 /// <reference path="../../../src/targeting.ts" />
 /// <reference path="../../../src/unit.ts" />
 /// <reference path="../../../src/damagetype.ts" />
@@ -13,13 +13,13 @@ module Rance
       {
         export module Effects
         {
-          export var singleTargetDamage: Rance.Templates.IEffectTemplate =
+          export var singleTargetDamage: Rance.Templates.IEffectActionTemplate =
           {
             name: "singleTargetDamage",
             targetFormations: TargetFormation.enemy,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetAll,
-            effect: function(user: Unit, target: Unit, battle: Battle,
+            executeAction: function(user: Unit, target: Unit, battle: Battle,
               data: {baseDamage: number; damageType: number;})
             {
               var baseDamage = data.baseDamage;
@@ -31,13 +31,13 @@ module Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var closeAttack: Rance.Templates.IEffectTemplate =
+          export var closeAttack: Rance.Templates.IEffectActionTemplate =
           {
             name: "closeAttack",
             targetFormations: TargetFormation.enemy,
             battleAreaFunction: areaRowNeighbors,
             targetRangeFunction: targetNextRow,
-            effect: function(user: Unit, target: Unit, battle: Battle)
+            executeAction: function(user: Unit, target: Unit, battle: Battle)
             {
               var baseDamage = 0.66;
               var damageType = DamageType.physical;
@@ -48,13 +48,13 @@ module Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var wholeRowAttack: Rance.Templates.IEffectTemplate =
+          export var wholeRowAttack: Rance.Templates.IEffectActionTemplate =
           {
             name: "wholeRowAttack",
             targetFormations: TargetFormation.either,
             battleAreaFunction: areaColumn,
             targetRangeFunction: targetAll,
-            effect: function(user: Unit, target: Unit, battle: Battle)
+            executeAction: function(user: Unit, target: Unit, battle: Battle)
             {
               var baseDamage = 0.75;
               var damageType = DamageType.magical;
@@ -66,13 +66,13 @@ module Rance
             }
           }
 
-          export var bombAttack: Rance.Templates.IEffectTemplate =
+          export var bombAttack: Rance.Templates.IEffectActionTemplate =
           {
             name: "bombAttack",
             targetFormations: TargetFormation.enemy,
             battleAreaFunction: areaNeighbors,
             targetRangeFunction: targetAll,
-            effect: function(user: Unit, target: Unit, battle: Battle)
+            executeAction: function(user: Unit, target: Unit, battle: Battle)
             {
               var baseDamage = 0.5;
               var damageType = DamageType.physical;
@@ -83,13 +83,13 @@ module Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var guardRow: Rance.Templates.IEffectTemplate =
+          export var guardRow: Rance.Templates.IEffectActionTemplate =
           {
             name: "guardRow",
             targetFormations: TargetFormation.either,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetSelf,
-            effect: function(user: Unit, target: Unit, battle: Battle, data?: any)
+            executeAction: function(user: Unit, target: Unit, battle: Battle, data?: any)
             {
               var data = data || {};
               var guardPerInt = data.perInt || 0;
@@ -99,19 +99,19 @@ module Rance
               user.addGuard(guardAmount, GuardCoverage.row);
             }
           }
-          export var receiveCounterAttack: Rance.Templates.IEffectTemplate =
+          export var receiveCounterAttack: Rance.Templates.IEffectActionTemplate =
           {
             name: "receiveCounterAttack",
             targetFormations: TargetFormation.either,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetSelf,
-            effect: function(user: Unit, target: Unit, battle: Battle,
+            executeAction: function(user: Unit, target: Unit, battle: Battle,
               data: {baseDamage: number; damageType: number;})
             {
               var counterStrength = target.getCounterAttackStrength();
               if (counterStrength)
               {
-                Templates.Effects.singleTargetDamage.effect(target, user, battle,
+                Templates.Effects.singleTargetDamage.executeAction(target, user, battle,
                 {
                   baseDamage: data.baseDamage * counterStrength,
                   damageType: DamageType.physical
@@ -119,13 +119,13 @@ module Rance
               }
             }
           }
-          export var increaseCaptureChance: Rance.Templates.IEffectTemplate =
+          export var increaseCaptureChance: Rance.Templates.IEffectActionTemplate =
           {
             name: "increaseCaptureChance",
             targetFormations: TargetFormation.enemy,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetAll,
-            effect: function(user: Unit, target: Unit, battle: Battle,
+            executeAction: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; multiplier?: number;})
             {
               if (!data) return;
@@ -140,24 +140,24 @@ module Rance
 
             }
           }
-          export var buffTest: Rance.Templates.IEffectTemplate =
+          export var buffTest: Rance.Templates.IEffectActionTemplate =
           {
             name: "buffTest",
             targetFormations: TargetFormation.either,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetAll,
-            effect: function(user: Unit, target: Unit, battle: Battle)
+            executeAction: function(user: Unit, target: Unit, battle: Battle)
             {
               target.addStatusEffect(new StatusEffect(StatusEffects.test, 2));
             }
           }
-          export var healTarget: Rance.Templates.IEffectTemplate =
+          export var healTarget: Rance.Templates.IEffectActionTemplate =
           {
             name: "healTarget",
             targetFormations: TargetFormation.ally,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetAll,
-            effect: function(user: Unit, target: Unit, battle: Battle,
+            executeAction: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
             {
               var healAmount = 0;
@@ -178,26 +178,26 @@ module Rance
             }
           }
 
-          export var healSelf: Rance.Templates.IEffectTemplate =
+          export var healSelf: Rance.Templates.IEffectActionTemplate =
           {
             name: "healSelf",
             targetFormations: TargetFormation.ally,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetSelf,
-            effect: function(user: Unit, target: Unit, battle: Battle,
+            executeAction: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
             {
-              Templates.Effects.healTarget.effect(user, user, battle, data);
+              Templates.Effects.healTarget.executeAction(user, user, battle, data);
             }
           }
 
-          export var standBy: Rance.Templates.IEffectTemplate =
+          export var standBy: Rance.Templates.IEffectActionTemplate =
           {
             name: "standBy",
             targetFormations: TargetFormation.either,
             battleAreaFunction: areaSingle,
             targetRangeFunction: targetSelf,
-            effect: function(){}
+            executeAction: function(){}
           }
         }
       }

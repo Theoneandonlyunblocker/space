@@ -6999,7 +6999,7 @@ var Rance;
                     for (var i = 0; i < skills.length; i++) {
                         for (var j = 0; j < skills[i].atBattleStart.length; j++) {
                             var effect = skills[i].atBattleStart[j];
-                            effect.template.effect(unit, unit, this, effect.data);
+                            effect.template.executeAction(unit, unit, this, effect.data);
                         }
                     }
                 }
@@ -7505,6 +7505,7 @@ var Rance;
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
+// /// <reference path="battleabilityprocessor.ts" />
 var Rance;
 (function (Rance) {
     function getAbilityUseData(battle, user, ability, target) {
@@ -7548,7 +7549,7 @@ var Rance;
             var hasSfx = Boolean(beforeUseEffects[i].sfx);
             if (hasSfx) {
                 data.effectsToCall.push({
-                    effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data)],
+                    effects: [beforeUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
                     sfx: beforeUseEffects[i].sfx,
@@ -7556,7 +7557,7 @@ var Rance;
                 });
             }
             else {
-                data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data));
+                data.beforeUse.push(beforeUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data));
             }
         }
         data.beforeUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
@@ -7572,12 +7573,12 @@ var Rance;
             var targetsInArea = getUnitsInEffectArea(battle, user, effect.template, data.actualTarget.battleStats.position);
             for (var j = 0; j < targetsInArea.length; j++) {
                 var effectTarget = targetsInArea[j];
-                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, battle, effect.data)];
+                var boundEffects = [effect.template.executeAction.bind(null, user, effectTarget, battle, effect.data)];
                 var attachedEffectsToAddAfter = [];
                 if (effect.attachedEffects) {
                     for (var k = 0; k < effect.attachedEffects.length; k++) {
                         var attachedEffect = effect.attachedEffects[k];
-                        var boundAttachedEffect = attachedEffect.template.effect.bind(null, user, effectTarget, battle, attachedEffect.data);
+                        var boundAttachedEffect = attachedEffect.template.executeAction.bind(null, user, effectTarget, battle, attachedEffect.data);
                         if (attachedEffect.sfx) {
                             attachedEffectsToAddAfter.push({
                                 effects: [boundAttachedEffect],
@@ -7617,7 +7618,7 @@ var Rance;
             var hasSfx = Boolean(afterUseEffects[i].sfx);
             if (hasSfx) {
                 data.effectsToCall.push({
-                    effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data)],
+                    effects: [afterUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
                     sfx: afterUseEffects[i].sfx,
@@ -7625,7 +7626,7 @@ var Rance;
                 });
             }
             else {
-                data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data));
+                data.afterUse.push(afterUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data));
             }
         }
         data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
@@ -7847,6 +7848,7 @@ var Rance;
     })(Rance.GuardCoverage || (Rance.GuardCoverage = {}));
     var GuardCoverage = Rance.GuardCoverage;
     var Unit = (function () {
+        // end new
         function Unit(template, id, data) {
             this.abilities = [];
             this.passiveSkills = [];
@@ -8119,9 +8121,9 @@ var Rance;
             this.battleStats.queuedAction = null;
             this.uiDisplayIsDirty = true;
         };
-        // redundant
+        // TODO gameplay | allow units to become untargetable in battle (cloaking?)
         Unit.prototype.isTargetable = function () {
-            return this.currentHealth > 0;
+            return this.isActiveInBattle();
         };
         Unit.prototype.isActiveInBattle = function () {
             return this.currentHealth > 0;
@@ -24717,7 +24719,7 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/ieffecttemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/ieffectactiontemplate.d.ts"/>
 /// <reference path="../../../src/targeting.ts" />
 /// <reference path="../../../src/unit.ts" />
 /// <reference path="../../../src/damagetype.ts" />
@@ -24736,7 +24738,7 @@ var Rance;
                         targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetAll,
-                        effect: function (user, target, battle, data) {
+                        executeAction: function (user, target, battle, data) {
                             var baseDamage = data.baseDamage;
                             var damageType = data.damageType;
                             var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -24749,7 +24751,7 @@ var Rance;
                         targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaRowNeighbors,
                         targetRangeFunction: Rance.targetNextRow,
-                        effect: function (user, target, battle) {
+                        executeAction: function (user, target, battle) {
                             var baseDamage = 0.66;
                             var damageType = Rance.DamageType.physical;
                             var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -24762,7 +24764,7 @@ var Rance;
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaColumn,
                         targetRangeFunction: Rance.targetAll,
-                        effect: function (user, target, battle) {
+                        executeAction: function (user, target, battle) {
                             var baseDamage = 0.75;
                             var damageType = Rance.DamageType.magical;
                             var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -24775,7 +24777,7 @@ var Rance;
                         targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaNeighbors,
                         targetRangeFunction: Rance.targetAll,
-                        effect: function (user, target, battle) {
+                        executeAction: function (user, target, battle) {
                             var baseDamage = 0.5;
                             var damageType = Rance.DamageType.physical;
                             var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -24788,7 +24790,7 @@ var Rance;
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
-                        effect: function (user, target, battle, data) {
+                        executeAction: function (user, target, battle, data) {
                             var data = data || {};
                             var guardPerInt = data.perInt || 0;
                             var flat = data.flat || 0;
@@ -24801,10 +24803,10 @@ var Rance;
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
-                        effect: function (user, target, battle, data) {
+                        executeAction: function (user, target, battle, data) {
                             var counterStrength = target.getCounterAttackStrength();
                             if (counterStrength) {
-                                Templates.Effects.singleTargetDamage.effect(target, user, battle, {
+                                Templates.Effects.singleTargetDamage.executeAction(target, user, battle, {
                                     baseDamage: data.baseDamage * counterStrength,
                                     damageType: Rance.DamageType.physical
                                 });
@@ -24816,7 +24818,7 @@ var Rance;
                         targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetAll,
-                        effect: function (user, target, battle, data) {
+                        executeAction: function (user, target, battle, data) {
                             if (!data)
                                 return;
                             if (data.flat) {
@@ -24832,7 +24834,7 @@ var Rance;
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetAll,
-                        effect: function (user, target, battle) {
+                        executeAction: function (user, target, battle) {
                             target.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 2));
                         }
                     };
@@ -24841,7 +24843,7 @@ var Rance;
                         targetFormations: Rance.TargetFormation.ally,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetAll,
-                        effect: function (user, target, battle, data) {
+                        executeAction: function (user, target, battle, data) {
                             var healAmount = 0;
                             if (data.flat) {
                                 healAmount += data.flat;
@@ -24860,8 +24862,8 @@ var Rance;
                         targetFormations: Rance.TargetFormation.ally,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
-                        effect: function (user, target, battle, data) {
-                            Templates.Effects.healTarget.effect(user, user, battle, data);
+                        executeAction: function (user, target, battle, data) {
+                            Templates.Effects.healTarget.executeAction(user, user, battle, data);
                         }
                     };
                     Effects.standBy = {
@@ -24869,7 +24871,7 @@ var Rance;
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
-                        effect: function () { }
+                        executeAction: function () { }
                     };
                 })(Effects = Templates.Effects || (Templates.Effects = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
@@ -26212,7 +26214,7 @@ var Rance;
                         ],
                         inBattlePrep: [
                             function (user, battlePrep) {
-                                Templates.Effects.guardRow.effect(user, user, null, { perInt: 0, flat: 50 });
+                                Templates.Effects.guardRow.executeAction(user, user, null, { perInt: 0, flat: 50 });
                             }
                         ]
                     };
@@ -29207,7 +29209,7 @@ var Rance;
             var dummyUser = new Rance.Unit(Rance.getRandomProperty(app.moduleData.Templates.Units));
             var dummyTarget = new Rance.Unit(Rance.getRandomProperty(app.moduleData.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
-                effects[i].template.effect(dummyUser, dummyTarget, null, effects[i].data);
+                effects[i].template.executeAction(dummyUser, dummyTarget, null, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
                     return true;
                 }

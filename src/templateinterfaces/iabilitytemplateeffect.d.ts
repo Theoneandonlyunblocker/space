@@ -4,7 +4,7 @@ declare module Rance
   {
     interface IAbilityTemplateEffect
     {
-      template: IEffectTemplate;
+      template: IEffectActionTemplate;
       trigger?: (user: Unit, target: Unit) => boolean;
       data?: any;
       // called after parent effect with same user and effect target

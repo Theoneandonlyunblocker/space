@@ -26,7 +26,7 @@ module Rance
     };
     Effects:
     {
-      [type: string]: Templates.IEffectTemplate;
+      [type: string]: Templates.IEffectActionTemplate;
     };
     Items:
     {

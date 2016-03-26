@@ -5,6 +5,8 @@
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
 
+// /// <reference path="battleabilityprocessor.ts" />
+
 module Rance
 {
   export interface IAbilityUseDataEffect
@@ -86,7 +88,7 @@ module Rance
       {
         data.effectsToCall.push(
         {
-          effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle,
+          effects: [beforeUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle,
             beforeUseEffects[i].data)],
           user: user,
           target: data.actualTarget,
@@ -96,7 +98,7 @@ module Rance
       }
       else
       {
-        data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle,
+        data.beforeUse.push(beforeUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle,
           beforeUseEffects[i].data));
       }
     }
@@ -126,7 +128,7 @@ module Rance
       {
         var effectTarget = targetsInArea[j];
 
-        var boundEffects = [effect.template.effect.bind(null, user, effectTarget, battle, effect.data)];
+        var boundEffects = [effect.template.executeAction.bind(null, user, effectTarget, battle, effect.data)];
         var attachedEffectsToAddAfter: IAbilityUseDataEffect[] = [];
 
 
@@ -136,7 +138,7 @@ module Rance
           {
             var attachedEffect = effect.attachedEffects[k];
             var boundAttachedEffect =
-              attachedEffect.template.effect.bind(null, user, effectTarget, battle, attachedEffect.data);
+              attachedEffect.template.executeAction.bind(null, user, effectTarget, battle, attachedEffect.data);
 
             if (attachedEffect.sfx)
             {
@@ -195,7 +197,7 @@ module Rance
       {
         data.effectsToCall.push(
         {
-          effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle,
+          effects: [afterUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle,
             afterUseEffects[i].data)],
           user: user,
           target: data.actualTarget,
@@ -205,7 +207,7 @@ module Rance
       }
       else
       {
-        data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, battle,
+        data.afterUse.push(afterUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle,
           afterUseEffects[i].data));
       }
     }
@@ -362,7 +364,7 @@ module Rance
     return targets;
   }
   export function getFormationsToTarget(battle: Battle, user: Unit,
-    effect: Templates.IEffectTemplate): Unit[][]
+    effect: Templates.IEffectActionTemplate): Unit[][]
   {
     var nullFormation: Unit[][] = [];
     var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
@@ -444,7 +446,7 @@ module Rance
     return inArea;
   }
   export function getUnitsInEffectArea(battle: Battle, user: Unit,
-    effect: Templates.IEffectTemplate, target: number[]): Unit[]
+    effect: Templates.IEffectActionTemplate, target: number[]): Unit[]
   {
     var targetFormations = getFormationsToTarget(battle, user, effect);
 

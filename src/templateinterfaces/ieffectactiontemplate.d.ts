@@ -6,14 +6,14 @@ declare module Rance
 {
   module Templates
   {
-    interface IEffectTemplate
+    interface IEffectActionTemplate
     {
       name: string;
       
       targetFormations: TargetFormation;
       battleAreaFunction: BattleAreaFunction;
       targetRangeFunction: TargetRangeFunction;
-      effect: (user: Unit, target: Unit, battle: Battle, data?: any) => void;
+      executeAction: (user: Unit, target: Unit, battle: Battle, data?: any) => void;
     }
   }
 }
