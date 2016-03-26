@@ -1,16 +1,1 @@
-*sublime-project
-*sublime-workspace
-*bat
-*pdn
-*.old
 *js.map
-*jsx
-*.blend[12345]
-*.dmp
-node_modules
-*.log
-sr battle animation frame data.txt
-*.sls
-img/battleEffects/*.webm
-img/battleEffects/rance*
-*.py
