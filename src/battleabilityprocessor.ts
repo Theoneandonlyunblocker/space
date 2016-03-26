@@ -1,5 +1,5 @@
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
-/// <reference path="templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="templateinterfaces/iabilityeffecttemplate.d.ts" />
 /// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
 
 /// <reference path="battle.ts"/>
@@ -16,7 +16,7 @@ module Rance
   }
   export interface IAbilityEffectData
   {
-    templateEffect?: Templates.IAbilityTemplateEffect;
+    templateEffect?: Templates.IAbilityEffectTemplate;
     callbacksToExecute: {(): void;}[];
     user: Unit;
     target: Unit;
@@ -194,7 +194,7 @@ module Rance
     }
     private getAbilityEffectDataFor(effect: Templates.IEffectActionTemplate, user: Unit, target: Unit): IAbilityEffectData
     {
-      var boundEffect = effect.template.executeAction.bind(null, user, target, this.battle, effect.data);
+      var boundEffect = effect.action.executeAction.bind(null, user, target, this.battle, effect.data);
       return(
       {
         
@@ -212,7 +212,7 @@ module Rance
 
       var effectData: IAbilityEffectData[] = [];
 
-      var beforeUseEffects: Templates.IAbilityTemplateEffect[] = [];
+      var beforeUseEffects: Templates.IAbilityEffectTemplate[] = [];
       if (abilityUseData.ability.beforeUse)
       {
         beforeUseEffects = beforeUseEffects.concat(abilityUseData.ability.beforeUse);

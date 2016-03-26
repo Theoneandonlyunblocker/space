@@ -1,7 +1,7 @@
 /// <reference path="../graphics/makesfxfromvideo.ts"/>
 /// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iabilityeffecttemplate.d.ts"/>
 /// <reference path="effectactions.ts" />
 /// <reference path="battlesfx.ts" />
 
@@ -25,7 +25,7 @@ module Rance
             actionsUse: 1,
             mainEffect:
             {
-              template: Effects.singleTargetDamage,
+              action: EffectActions.singleTargetDamage,
               sfx: BattleSFX.rocketAttack,
               data:
               {
@@ -35,7 +35,7 @@ module Rance
               attachedEffects:
               [
                 {
-                  template: Effects.receiveCounterAttack,
+                  action: EffectActions.receiveCounterAttack,
                   data:
                   {
                     baseDamage: 0.5
@@ -54,7 +54,7 @@ module Rance
             actionsUse: 2,
             mainEffect:
             {
-              template: Effects.closeAttack,
+              action: EffectActions.closeAttack,
               sfx: BattleSFX.rocketAttack
             }
           }
@@ -68,7 +68,7 @@ module Rance
             bypassesGuard: true,
             mainEffect:
             {
-              template: Effects.wholeRowAttack,
+              action: EffectActions.wholeRowAttack,
               sfx: BattleSFX.particleTest
             }
           }
@@ -82,7 +82,7 @@ module Rance
             actionsUse: 1,
             mainEffect:
             {
-              template: Effects.bombAttack,
+              action: EffectActions.bombAttack,
               sfx: BattleSFX.rocketAttack
             }
           }
@@ -95,7 +95,7 @@ module Rance
             actionsUse: 1,
             mainEffect:
             {
-              template: Effects.guardRow,
+              action: EffectActions.guardRow,
               sfx: BattleSFX.guard,
               data:
               {
@@ -113,7 +113,7 @@ module Rance
             actionsUse: 1,
             mainEffect:
             {
-              template: Effects.singleTargetDamage,
+              action: EffectActions.singleTargetDamage,
               sfx: BattleSFX.rocketAttack,
               data:
               {
@@ -123,14 +123,14 @@ module Rance
               attachedEffects:
               [
                 {
-                  template: Effects.increaseCaptureChance,
+                  action: EffectActions.increaseCaptureChance,
                   data:
                   {
                     flat: 0.5
                   }
                 },
                 {
-                  template: Effects.receiveCounterAttack,
+                  action: EffectActions.receiveCounterAttack,
                   data:
                   {
                     baseDamage: 0.5
@@ -149,7 +149,7 @@ module Rance
             actionsUse: 1,
             mainEffect:
             {
-              template: Effects.buffTest,
+              action: EffectActions.buffTest,
               sfx: BattleSFX.guard,
               data: {}
             }
@@ -164,7 +164,7 @@ module Rance
             actionsUse: 0,
             mainEffect:
             {
-              template: Effects.singleTargetDamage,
+              action: EffectActions.singleTargetDamage,
               sfx:
               {
                 duration: 1200,
@@ -188,7 +188,7 @@ module Rance
             secondaryEffects:
             [
               {
-                template: Effects.singleTargetDamage,
+                action: EffectActions.singleTargetDamage,
                 data:
                 {
                   baseDamage: 0.1,
@@ -197,7 +197,7 @@ module Rance
                 attachedEffects:
                 [
                   {
-                    template: Effects.receiveCounterAttack,
+                    action: EffectActions.receiveCounterAttack,
                     data:
                     {
                       baseDamage: 0.5
@@ -235,7 +235,7 @@ module Rance
             disableInAIBattles: true,
             mainEffect:
             {
-              template: Effects.standBy,
+              action: EffectActions.standBy,
               sfx:
               {
                 duration: 750

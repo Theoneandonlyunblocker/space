@@ -10,7 +10,7 @@ declare module Rance
       description: string;
       isHidden?: boolean;
       // used to check if it's a passive ability or not
-      mainEffect?: IAbilityTemplateEffect;
+      mainEffect?: IAbilityEffectTemplate;
 
       // list of ability types this ability can be upgraded into
       // string[] because ability templates referencing ability templates can be a bit messy

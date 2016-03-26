@@ -11,7 +11,7 @@ module Rance
     {
       export module Templates
       {
-        export module Effects
+        export module EffectActions
         {
           export var singleTargetDamage: Rance.Templates.IEffectActionTemplate =
           {
@@ -111,7 +111,7 @@ module Rance
               var counterStrength = target.getCounterAttackStrength();
               if (counterStrength)
               {
-                Templates.Effects.singleTargetDamage.executeAction(target, user, battle,
+                Templates.EffectActions.singleTargetDamage.executeAction(target, user, battle,
                 {
                   baseDamage: data.baseDamage * counterStrength,
                   damageType: DamageType.physical
@@ -187,7 +187,7 @@ module Rance
             executeAction: function(user: Unit, target: Unit, battle: Battle,
               data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
             {
-              Templates.Effects.healTarget.executeAction(user, user, battle, data);
+              Templates.EffectActions.healTarget.executeAction(user, user, battle, data);
             }
           }
 

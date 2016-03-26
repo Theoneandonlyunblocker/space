@@ -1,5 +1,5 @@
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
-/// <reference path="templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="templateinterfaces/iabilityeffecttemplate.d.ts" />
 /// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
@@ -66,7 +66,7 @@ module Rance
     var passiveSkills = user.getPassiveSkillsByPhase();
 
 
-    var beforeUseEffects: Templates.IAbilityTemplateEffect[] = [];
+    var beforeUseEffects: Templates.IAbilityEffectTemplate[] = [];
 
     if (ability.beforeUse)
     {
@@ -88,7 +88,7 @@ module Rance
       {
         data.effectsToCall.push(
         {
-          effects: [beforeUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle,
+          effects: [beforeUseEffects[i].action.executeAction.bind(null, user, data.actualTarget, battle,
             beforeUseEffects[i].data)],
           user: user,
           target: data.actualTarget,
@@ -98,7 +98,7 @@ module Rance
       }
       else
       {
-        data.beforeUse.push(beforeUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle,
+        data.beforeUse.push(beforeUseEffects[i].action.executeAction.bind(null, user, data.actualTarget, battle,
           beforeUseEffects[i].data));
       }
     }
@@ -121,14 +121,14 @@ module Rance
     for (var i = 0; i < effectsToCall.length; i++)
     {
       var effect = effectsToCall[i];
-      var targetsInArea = getUnitsInEffectArea(battle, user, effect.template,
+      var targetsInArea = getUnitsInEffectArea(battle, user, effect.action,
         data.actualTarget.battleStats.position);
 
       for (var j = 0; j < targetsInArea.length; j++)
       {
         var effectTarget = targetsInArea[j];
 
-        var boundEffects = [effect.template.executeAction.bind(null, user, effectTarget, battle, effect.data)];
+        var boundEffects = [effect.action.executeAction.bind(null, user, effectTarget, battle, effect.data)];
         var attachedEffectsToAddAfter: IAbilityUseDataEffect[] = [];
 
 
@@ -138,7 +138,7 @@ module Rance
           {
             var attachedEffect = effect.attachedEffects[k];
             var boundAttachedEffect =
-              attachedEffect.template.executeAction.bind(null, user, effectTarget, battle, attachedEffect.data);
+              attachedEffect.action.executeAction.bind(null, user, effectTarget, battle, attachedEffect.data);
 
             if (attachedEffect.sfx)
             {
@@ -175,7 +175,7 @@ module Rance
       }
     }
 
-    var afterUseEffects: Templates.IAbilityTemplateEffect[] = [];
+    var afterUseEffects: Templates.IAbilityEffectTemplate[] = [];
 
     if (ability.afterUse)
     {
@@ -197,7 +197,7 @@ module Rance
       {
         data.effectsToCall.push(
         {
-          effects: [afterUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle,
+          effects: [afterUseEffects[i].action.executeAction.bind(null, user, data.actualTarget, battle,
             afterUseEffects[i].data)],
           user: user,
           target: data.actualTarget,
@@ -207,7 +207,7 @@ module Rance
       }
       else
       {
-        data.afterUse.push(afterUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle,
+        data.afterUse.push(afterUseEffects[i].action.executeAction.bind(null, user, data.actualTarget, battle,
           afterUseEffects[i].data));
       }
     }
@@ -341,9 +341,9 @@ module Rance
   export function getPotentialTargets(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate): Unit[]
   {
-    var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.template);
+    var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
 
-    var targetsInRange = ability.mainEffect.template.targetRangeFunction(targetFormations, user);
+    var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
 
     var untargetableFilterFN = function(target: Unit)
     {
@@ -425,14 +425,14 @@ module Rance
   export function getUnitsInAbilityArea(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: number[]): Unit[]
   {
-    var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
+    var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.action, target);
 
     if (ability.secondaryEffects)
     {
       for (var i = 0; i < ability.secondaryEffects.length; i++)
       {
         var inSecondary = getUnitsInEffectArea(
-          battle, user, ability.secondaryEffects[i].template, target);
+          battle, user, ability.secondaryEffects[i].action, target);
         for (var j = 0; j < inSecondary.length; j++)
         {
           if (inArea.indexOf(inSecondary[j]) === -1)

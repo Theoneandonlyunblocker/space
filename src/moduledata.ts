@@ -24,7 +24,7 @@ module Rance
     {
       [key: string]: Templates.ICultureTemplate;
     };
-    Effects:
+    EffectActions:
     {
       [type: string]: Templates.IEffectActionTemplate;
     };
@@ -133,7 +133,7 @@ module Rance
       BattleSFX: {},
       Buildings: {},
       Cultures: {},
-      Effects: {},
+      EffectActions: {},
       Items: {},
       MapGen: {},
       MapRendererLayers: {},

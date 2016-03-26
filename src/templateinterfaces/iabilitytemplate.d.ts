@@ -21,13 +21,13 @@ declare module Rance
       bypassesGuard?: boolean;
       
       // determines targeting range of function, called first
-      mainEffect: IAbilityTemplateEffect;
+      mainEffect: IAbilityEffectTemplate;
       // combined with mainEffect, determines target area of function, called second
       // uses same user and target as maineffect, can have own target area
-      secondaryEffects?: IAbilityTemplateEffect[];
+      secondaryEffects?: IAbilityEffectTemplate[];
       
-      beforeUse?: IAbilityTemplateEffect[];
-      afterUse?: IAbilityTemplateEffect[];
+      beforeUse?: IAbilityEffectTemplate[];
+      afterUse?: IAbilityEffectTemplate[];
       
       // how likely the AI will consider using this ability relative to other available ones
       // doesn't affect AI's final decision on which ability to use, but can guide it

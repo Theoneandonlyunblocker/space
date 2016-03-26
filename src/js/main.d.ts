@@ -29,7 +29,7 @@
 /// <reference path="../savedata/igamesavedata.d.ts" />
 /// <reference path="../savedata/igalaxymapsavedata.d.ts" />
 /// <reference path="../savedata/iplayersavedata.d.ts" />
-/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="../templateinterfaces/iabilityeffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../iunitattributes.d.ts" />
@@ -3025,7 +3025,7 @@ declare module Rance {
         Cultures: {
             [key: string]: Templates.ICultureTemplate;
         };
-        Effects: {
+        EffectActions: {
             [type: string]: Templates.IEffectActionTemplate;
         };
         Items: {
@@ -3294,7 +3294,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module Templates {
-                module Effects {
+                module EffectActions {
                     var singleTargetDamage: Rance.Templates.IEffectActionTemplate;
                     var closeAttack: Rance.Templates.IEffectActionTemplate;
                     var wholeRowAttack: Rance.Templates.IEffectActionTemplate;

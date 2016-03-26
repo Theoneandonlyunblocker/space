@@ -22,7 +22,7 @@ module Rance
             afterAbilityUse:
             [
               {
-                template: Effects.healSelf,
+                action: EffectActions.healSelf,
                 data:
                 {
                   flat: 50
@@ -51,7 +51,7 @@ module Rance
             afterAbilityUse:
             [
               {
-                template: Effects.healSelf,
+                action: EffectActions.healSelf,
                 data:
                 {
                   maxHealthPercentage: -0.1
@@ -84,7 +84,7 @@ module Rance
             atBattleStart:
             [
               {
-                template: Effects.buffTest
+                action: EffectActions.buffTest
               }
             ]
           }
@@ -98,7 +98,7 @@ module Rance
             atBattleStart:
             [
               {
-                template: Effects.guardRow,
+                action: EffectActions.guardRow,
                 data: {perInt: 0, flat: 50}
               }
             ],
@@ -106,7 +106,7 @@ module Rance
             [
               function(user: Unit, battlePrep: BattlePrep)
               {
-                Effects.guardRow.executeAction(user, user, null, {perInt: 0, flat: 50});
+                EffectActions.guardRow.executeAction(user, user, null, {perInt: 0, flat: 50});
               }
             ]
           }

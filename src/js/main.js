@@ -6999,7 +6999,7 @@ var Rance;
                     for (var i = 0; i < skills.length; i++) {
                         for (var j = 0; j < skills[i].atBattleStart.length; j++) {
                             var effect = skills[i].atBattleStart[j];
-                            effect.template.executeAction(unit, unit, this, effect.data);
+                            effect.action.executeAction(unit, unit, this, effect.data);
                         }
                     }
                 }
@@ -7500,7 +7500,7 @@ var Rance;
     };
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
-/// <reference path="templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="templateinterfaces/iabilityeffecttemplate.d.ts" />
 /// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
@@ -7549,7 +7549,7 @@ var Rance;
             var hasSfx = Boolean(beforeUseEffects[i].sfx);
             if (hasSfx) {
                 data.effectsToCall.push({
-                    effects: [beforeUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data)],
+                    effects: [beforeUseEffects[i].action.executeAction.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
                     sfx: beforeUseEffects[i].sfx,
@@ -7557,7 +7557,7 @@ var Rance;
                 });
             }
             else {
-                data.beforeUse.push(beforeUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data));
+                data.beforeUse.push(beforeUseEffects[i].action.executeAction.bind(null, user, data.actualTarget, battle, beforeUseEffects[i].data));
             }
         }
         data.beforeUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
@@ -7570,15 +7570,15 @@ var Rance;
         }
         for (var i = 0; i < effectsToCall.length; i++) {
             var effect = effectsToCall[i];
-            var targetsInArea = getUnitsInEffectArea(battle, user, effect.template, data.actualTarget.battleStats.position);
+            var targetsInArea = getUnitsInEffectArea(battle, user, effect.action, data.actualTarget.battleStats.position);
             for (var j = 0; j < targetsInArea.length; j++) {
                 var effectTarget = targetsInArea[j];
-                var boundEffects = [effect.template.executeAction.bind(null, user, effectTarget, battle, effect.data)];
+                var boundEffects = [effect.action.executeAction.bind(null, user, effectTarget, battle, effect.data)];
                 var attachedEffectsToAddAfter = [];
                 if (effect.attachedEffects) {
                     for (var k = 0; k < effect.attachedEffects.length; k++) {
                         var attachedEffect = effect.attachedEffects[k];
-                        var boundAttachedEffect = attachedEffect.template.executeAction.bind(null, user, effectTarget, battle, attachedEffect.data);
+                        var boundAttachedEffect = attachedEffect.action.executeAction.bind(null, user, effectTarget, battle, attachedEffect.data);
                         if (attachedEffect.sfx) {
                             attachedEffectsToAddAfter.push({
                                 effects: [boundAttachedEffect],
@@ -7618,7 +7618,7 @@ var Rance;
             var hasSfx = Boolean(afterUseEffects[i].sfx);
             if (hasSfx) {
                 data.effectsToCall.push({
-                    effects: [afterUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data)],
+                    effects: [afterUseEffects[i].action.executeAction.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
                     sfx: afterUseEffects[i].sfx,
@@ -7626,7 +7626,7 @@ var Rance;
                 });
             }
             else {
-                data.afterUse.push(afterUseEffects[i].template.executeAction.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data));
+                data.afterUse.push(afterUseEffects[i].action.executeAction.bind(null, user, data.actualTarget, battle, afterUseEffects[i].data));
             }
         }
         data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
@@ -7721,8 +7721,8 @@ var Rance;
     }
     Rance.getGuarders = getGuarders;
     function getPotentialTargets(battle, user, ability) {
-        var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.template);
-        var targetsInRange = ability.mainEffect.template.targetRangeFunction(targetFormations, user);
+        var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
+        var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
         var untargetableFilterFN = function (target) {
             if (!Boolean(target)) {
                 return false;
@@ -7784,10 +7784,10 @@ var Rance;
     }
     Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
     function getUnitsInAbilityArea(battle, user, ability, target) {
-        var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
+        var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.action, target);
         if (ability.secondaryEffects) {
             for (var i = 0; i < ability.secondaryEffects.length; i++) {
-                var inSecondary = getUnitsInEffectArea(battle, user, ability.secondaryEffects[i].template, target);
+                var inSecondary = getUnitsInEffectArea(battle, user, ability.secondaryEffects[i].action, target);
                 for (var j = 0; j < inSecondary.length; j++) {
                     if (inArea.indexOf(inSecondary[j]) === -1) {
                         inArea.push(inSecondary[j]);
@@ -22883,7 +22883,7 @@ var Rance;
                 BattleSFX: {},
                 Buildings: {},
                 Cultures: {},
-                Effects: {},
+                EffectActions: {},
                 Items: {},
                 MapGen: {},
                 MapRendererLayers: {},
@@ -24731,9 +24731,9 @@ var Rance;
         (function (DefaultModule) {
             var Templates;
             (function (Templates) {
-                var Effects;
-                (function (Effects) {
-                    Effects.singleTargetDamage = {
+                var EffectActions;
+                (function (EffectActions) {
+                    EffectActions.singleTargetDamage = {
                         name: "singleTargetDamage",
                         targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaSingle,
@@ -24746,7 +24746,7 @@ var Rance;
                             target.receiveDamage(damage, damageType);
                         }
                     };
-                    Effects.closeAttack = {
+                    EffectActions.closeAttack = {
                         name: "closeAttack",
                         targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaRowNeighbors,
@@ -24759,7 +24759,7 @@ var Rance;
                             target.receiveDamage(damage, damageType);
                         }
                     };
-                    Effects.wholeRowAttack = {
+                    EffectActions.wholeRowAttack = {
                         name: "wholeRowAttack",
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaColumn,
@@ -24772,7 +24772,7 @@ var Rance;
                             target.receiveDamage(damage, damageType);
                         }
                     };
-                    Effects.bombAttack = {
+                    EffectActions.bombAttack = {
                         name: "bombAttack",
                         targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaNeighbors,
@@ -24785,7 +24785,7 @@ var Rance;
                             target.receiveDamage(damage, damageType);
                         }
                     };
-                    Effects.guardRow = {
+                    EffectActions.guardRow = {
                         name: "guardRow",
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
@@ -24798,7 +24798,7 @@ var Rance;
                             user.addGuard(guardAmount, Rance.GuardCoverage.row);
                         }
                     };
-                    Effects.receiveCounterAttack = {
+                    EffectActions.receiveCounterAttack = {
                         name: "receiveCounterAttack",
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
@@ -24806,14 +24806,14 @@ var Rance;
                         executeAction: function (user, target, battle, data) {
                             var counterStrength = target.getCounterAttackStrength();
                             if (counterStrength) {
-                                Templates.Effects.singleTargetDamage.executeAction(target, user, battle, {
+                                Templates.EffectActions.singleTargetDamage.executeAction(target, user, battle, {
                                     baseDamage: data.baseDamage * counterStrength,
                                     damageType: Rance.DamageType.physical
                                 });
                             }
                         }
                     };
-                    Effects.increaseCaptureChance = {
+                    EffectActions.increaseCaptureChance = {
                         name: "increaseCaptureChance",
                         targetFormations: Rance.TargetFormation.enemy,
                         battleAreaFunction: Rance.areaSingle,
@@ -24829,7 +24829,7 @@ var Rance;
                             }
                         }
                     };
-                    Effects.buffTest = {
+                    EffectActions.buffTest = {
                         name: "buffTest",
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
@@ -24838,7 +24838,7 @@ var Rance;
                             target.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 2));
                         }
                     };
-                    Effects.healTarget = {
+                    EffectActions.healTarget = {
                         name: "healTarget",
                         targetFormations: Rance.TargetFormation.ally,
                         battleAreaFunction: Rance.areaSingle,
@@ -24857,23 +24857,23 @@ var Rance;
                             target.removeStrength(-healAmount);
                         }
                     };
-                    Effects.healSelf = {
+                    EffectActions.healSelf = {
                         name: "healSelf",
                         targetFormations: Rance.TargetFormation.ally,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
                         executeAction: function (user, target, battle, data) {
-                            Templates.Effects.healTarget.executeAction(user, user, battle, data);
+                            Templates.EffectActions.healTarget.executeAction(user, user, battle, data);
                         }
                     };
-                    Effects.standBy = {
+                    EffectActions.standBy = {
                         name: "standBy",
                         targetFormations: Rance.TargetFormation.either,
                         battleAreaFunction: Rance.areaSingle,
                         targetRangeFunction: Rance.targetSelf,
                         executeAction: function () { }
                     };
-                })(Effects = Templates.Effects || (Templates.Effects = {}));
+                })(EffectActions = Templates.EffectActions || (Templates.EffectActions = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -25710,8 +25710,8 @@ var Rance;
 /// <reference path="../graphics/makesfxfromvideo.ts"/>
 /// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
-/// <reference path="effects.ts" />
+/// <reference path="../../../src/templateinterfaces/iabilityeffecttemplate.d.ts"/>
+/// <reference path="effectactions.ts" />
 /// <reference path="battlesfx.ts" />
 var Rance;
 (function (Rance) {
@@ -25730,7 +25730,7 @@ var Rance;
                         moveDelay: 100,
                         actionsUse: 1,
                         mainEffect: {
-                            template: Templates.Effects.singleTargetDamage,
+                            action: Templates.EffectActions.singleTargetDamage,
                             sfx: Templates.BattleSFX.rocketAttack,
                             data: {
                                 baseDamage: 1,
@@ -25738,7 +25738,7 @@ var Rance;
                             },
                             attachedEffects: [
                                 {
-                                    template: Templates.Effects.receiveCounterAttack,
+                                    action: Templates.EffectActions.receiveCounterAttack,
                                     data: {
                                         baseDamage: 0.5
                                     }
@@ -25754,7 +25754,7 @@ var Rance;
                         moveDelay: 90,
                         actionsUse: 2,
                         mainEffect: {
-                            template: Templates.Effects.closeAttack,
+                            action: Templates.EffectActions.closeAttack,
                             sfx: Templates.BattleSFX.rocketAttack
                         }
                     };
@@ -25766,7 +25766,7 @@ var Rance;
                         actionsUse: 1,
                         bypassesGuard: true,
                         mainEffect: {
-                            template: Templates.Effects.wholeRowAttack,
+                            action: Templates.EffectActions.wholeRowAttack,
                             sfx: Templates.BattleSFX.particleTest
                         }
                     };
@@ -25777,7 +25777,7 @@ var Rance;
                         moveDelay: 120,
                         actionsUse: 1,
                         mainEffect: {
-                            template: Templates.Effects.bombAttack,
+                            action: Templates.EffectActions.bombAttack,
                             sfx: Templates.BattleSFX.rocketAttack
                         }
                     };
@@ -25788,7 +25788,7 @@ var Rance;
                         moveDelay: 100,
                         actionsUse: 1,
                         mainEffect: {
-                            template: Templates.Effects.guardRow,
+                            action: Templates.EffectActions.guardRow,
                             sfx: Templates.BattleSFX.guard,
                             data: {
                                 perInt: 20
@@ -25803,7 +25803,7 @@ var Rance;
                         moveDelay: 100,
                         actionsUse: 1,
                         mainEffect: {
-                            template: Templates.Effects.singleTargetDamage,
+                            action: Templates.EffectActions.singleTargetDamage,
                             sfx: Templates.BattleSFX.rocketAttack,
                             data: {
                                 baseDamage: 0.8,
@@ -25811,13 +25811,13 @@ var Rance;
                             },
                             attachedEffects: [
                                 {
-                                    template: Templates.Effects.increaseCaptureChance,
+                                    action: Templates.EffectActions.increaseCaptureChance,
                                     data: {
                                         flat: 0.5
                                     }
                                 },
                                 {
-                                    template: Templates.Effects.receiveCounterAttack,
+                                    action: Templates.EffectActions.receiveCounterAttack,
                                     data: {
                                         baseDamage: 0.5
                                     }
@@ -25832,7 +25832,7 @@ var Rance;
                         moveDelay: 0,
                         actionsUse: 1,
                         mainEffect: {
-                            template: Templates.Effects.buffTest,
+                            action: Templates.EffectActions.buffTest,
                             sfx: Templates.BattleSFX.guard,
                             data: {}
                         }
@@ -25844,7 +25844,7 @@ var Rance;
                         moveDelay: 0,
                         actionsUse: 0,
                         mainEffect: {
-                            template: Templates.Effects.singleTargetDamage,
+                            action: Templates.EffectActions.singleTargetDamage,
                             sfx: {
                                 duration: 1200,
                                 userSprite: function (props) {
@@ -25859,14 +25859,14 @@ var Rance;
                         },
                         secondaryEffects: [
                             {
-                                template: Templates.Effects.singleTargetDamage,
+                                action: Templates.EffectActions.singleTargetDamage,
                                 data: {
                                     baseDamage: 0.1,
                                     damageType: Rance.DamageType.physical
                                 },
                                 attachedEffects: [
                                     {
-                                        template: Templates.Effects.receiveCounterAttack,
+                                        action: Templates.EffectActions.receiveCounterAttack,
                                         data: {
                                             baseDamage: 0.5
                                         }
@@ -25893,7 +25893,7 @@ var Rance;
                         AIScoreAdjust: -0.1,
                         disableInAIBattles: true,
                         mainEffect: {
-                            template: Templates.Effects.standBy,
+                            action: Templates.EffectActions.standBy,
                             sfx: {
                                 duration: 750
                             }
@@ -26153,7 +26153,7 @@ var Rance;
                         description: "Heal 50 health after every turn",
                         afterAbilityUse: [
                             {
-                                template: Templates.Effects.healSelf,
+                                action: Templates.EffectActions.healSelf,
                                 data: {
                                     flat: 50
                                 },
@@ -26172,7 +26172,7 @@ var Rance;
                         description: "-10% max health per turn",
                         afterAbilityUse: [
                             {
-                                template: Templates.Effects.healSelf,
+                                action: Templates.EffectActions.healSelf,
                                 data: {
                                     maxHealthPercentage: -0.1
                                 },
@@ -26197,7 +26197,7 @@ var Rance;
                         description: "Gives buffs at battle start but become poisoned",
                         atBattleStart: [
                             {
-                                template: Templates.Effects.buffTest
+                                action: Templates.EffectActions.buffTest
                             }
                         ]
                     };
@@ -26208,13 +26208,13 @@ var Rance;
                         isHidden: true,
                         atBattleStart: [
                             {
-                                template: Templates.Effects.guardRow,
+                                action: Templates.EffectActions.guardRow,
                                 data: { perInt: 0, flat: 50 }
                             }
                         ],
                         inBattlePrep: [
                             function (user, battlePrep) {
-                                Templates.Effects.guardRow.executeAction(user, user, null, { perInt: 0, flat: 50 });
+                                Templates.EffectActions.guardRow.executeAction(user, user, null, { perInt: 0, flat: 50 });
                             }
                         ]
                     };
@@ -28030,7 +28030,7 @@ var Rance;
 /// <reference path="templates/battlesfx.ts" />
 /// <reference path="templates/buildings.ts" />
 /// <reference path="templates/cultures.ts" />
-/// <reference path="templates/effects.ts" />
+/// <reference path="templates/effectactions.ts" />
 /// <reference path="templates/items.ts" />
 /// <reference path="templates/passiveskills.ts" />
 /// <reference path="templates/personalities.ts" />
@@ -29209,7 +29209,7 @@ var Rance;
             var dummyUser = new Rance.Unit(Rance.getRandomProperty(app.moduleData.Templates.Units));
             var dummyTarget = new Rance.Unit(Rance.getRandomProperty(app.moduleData.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
-                effects[i].template.executeAction(dummyUser, dummyTarget, null, effects[i].data);
+                effects[i].action.executeAction(dummyUser, dummyTarget, null, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
                     return true;
                 }

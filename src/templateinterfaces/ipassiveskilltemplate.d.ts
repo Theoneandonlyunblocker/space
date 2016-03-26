@@ -11,9 +11,9 @@ declare module Rance
       description: string;
       isHidden?: boolean;
       
-      atBattleStart?: IAbilityTemplateEffect[];
-      beforeAbilityUse?: IAbilityTemplateEffect[];
-      afterAbilityUse?: IAbilityTemplateEffect[];
+      atBattleStart?: IAbilityEffectTemplate[];
+      beforeAbilityUse?: IAbilityEffectTemplate[];
+      afterAbilityUse?: IAbilityEffectTemplate[];
       atTurnStart?: ITurnStartEffect[];
       inBattlePrep?: IBattlePrepEffect[];
     }
