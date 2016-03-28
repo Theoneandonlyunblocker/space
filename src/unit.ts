@@ -1181,7 +1181,14 @@ module Rance
         {
           return statusEffect.clone();
         }),
-        queuedAction: this.battleStats.queuedAction
+        queuedAction: this.battleStats.queuedAction ? null :
+        {
+          abilityTemplateKey: this.battleStats.queuedAction.ability.type,
+          targetId: this.battleStats.queuedAction.targetId,
+          turnsPrepared: this.battleStats.queuedAction.turnsPrepared,
+          timesInterrupted: this.battleStats.queuedAction.timesInterrupted
+        },
+        isAnnihilated: this.battleStats.isAnnihilated
       };
 
       var data: IUnitSaveData =

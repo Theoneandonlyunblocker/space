@@ -6,6 +6,12 @@ declare module Rance
   interface IUnitItemsSaveData
   {
     [slot: string]: IItemSaveData[];
+  interface IQueuedActionSaveData
+  {
+    abilityTemplateKey: string;
+    targetId: number;
+    turnsPrepared: number;
+    timesInterrupted: number;
   }
   interface IUnitBattleStatsSaveData
   {
@@ -17,7 +23,7 @@ declare module Rance
     guardCoverage: GuardCoverage;
     captureChance: number;
     statusEffects: StatusEffect[];
-    queuedAction: IQueuedActionData;
+    queuedAction: IQueuedActionSaveData;
   }
   interface IUnitSaveData
   {
