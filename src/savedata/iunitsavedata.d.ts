@@ -25,6 +25,7 @@ declare module Rance
     captureChance: number;
     statusEffects: StatusEffect[];
     queuedAction: IQueuedActionSaveData;
+    isAnnihilated: boolean;
   }
   interface IUnitSaveData
   {

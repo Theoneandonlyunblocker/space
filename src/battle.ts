@@ -199,18 +199,6 @@ module Rance
       this.updateTurnOrder();
       this.setActiveUnit();
 
-      if (!this.isVirtual)
-      {
-        this.forEachUnit(function(unit)
-        {
-          if (unit.currentHealth <= 0)
-          {
-            unit.displayFlags.isAnnihilated = true;
-            unit.uiDisplayIsDirty = true;
-          }
-        });
-      }
-
       var shouldEnd = this.checkBattleEnd();
       if (shouldEnd)
       {

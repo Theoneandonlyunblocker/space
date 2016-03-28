@@ -113,11 +113,11 @@ module Rance
     front: MapAI.Front;
 
     uiDisplayIsDirty: boolean = true;
+    // todo old
     displayFlags:
     {
       isAnnihilated: boolean;
     };
-    // todo old
     sfxDuration: number;
     lastHealthDrawnAt: number;
     // end old
@@ -366,7 +366,8 @@ module Rance
         captureChance: app.moduleData.ruleSet.battle.baseUnitCaptureChance,
         statusEffects: [],
         lastHealthBeforeReceivingDamage: this.currentHealth,
-        queuedAction: null
+        queuedAction: null,
+        isAnnihilated: false
       };
 
       this.displayFlags =
@@ -398,6 +399,11 @@ module Rance
       if (amount > 0)
       {
         this.removeGuard(40);
+      }
+
+      if (this.currentHealth === 0)
+      {
+        this.battleStats.isAnnihilated = true;
       }
 
       this.uiDisplayIsDirty = true;
@@ -482,7 +488,7 @@ module Rance
     }
     isActiveInBattle()
     {
-      return this.currentHealth > 0;
+      return this.currentHealth > 0 && !this.battleStats.isAnnihilated;
     }
 
     addItem(item: Item)

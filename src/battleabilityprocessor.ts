@@ -72,7 +72,6 @@ module Rance
     public destroy()
     {
       this.battle = null;
-      this.battleScene = null;
     }
     
     public getAbilityEffectDataByPhase(abilityUseData: IAbilityUseDataNEW): IAbilityEffectDataByPhase
