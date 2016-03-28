@@ -1,3 +1,5 @@
+// TODO remove
+
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="templateinterfaces/iabilityeffecttemplate.d.ts" />
 /// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
@@ -5,7 +7,7 @@
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
 
-// /// <reference path="battleabilityprocessor.ts" />
+/// <reference path="battleabilityuser.ts" />
 
 module Rance
 {

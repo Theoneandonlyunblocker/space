@@ -16,31 +16,20 @@ module Rance
   }
   export interface IAbilityEffectData
   {
-    templateEffect?: Templates.IAbilityEffectTemplate;
-    callbacksToExecute: {(): void;}[];
+    templateEffect: Templates.IAbilityEffectTemplate;
     user: Unit;
     target: Unit;
     trigger: (user: Unit, target: Unit) => boolean;
   }
-  export interface IUnitChanges
+  export interface IAbilityEffectDataByPhase
   {
-    newHealth: number;
-    newGuardAmount: number;
-    newGuardType: GuardCoverage;
-    isPreparing: boolean;
-    isAnnihilated: boolean;
-    newActionPoints: number;
-    newStatusEffects: StatusEffect[];
+    beforeUse: IAbilityEffectData[];
+    abilityEffects: IAbilityEffectData[];
+    afterUse: IAbilityEffectData[];
   }
-  export interface IAbilityUseEffect
+  export interface IAbilityUseSystemAction
   {
-    unitChanges:
-    {
-      [unitId: number]: IUnitChanges;
-    }
-    sfx: Templates.IBattleSFXTemplate;
-    sfxUser: Unit;
-    sfxTarget: Unit;
+    executeSystemAction: () => void;
   }
 
   // IAbilityUseDataNEW ->
@@ -50,19 +39,16 @@ module Rance
   // IAbilityUseEffect[]
 
   /**
-   * Processes IAbilityUseDataNEW and returns IAbilityEffectData
+   * Processes IAbilityUseDataNEW and returns IAbilityEffectDataByPhase
    */
   export class BattleAbilityProcessor
   {
     private battle: Battle;
-    private battleScene: BattleScene;
-
     private nullFormation: Unit[][];
 
     constructor(battle: Battle)
     {
       this.battle = battle;
-
       this.nullFormation = this.createNullFormation();
     }
     private createNullFormation(): Unit[][]
@@ -83,10 +69,37 @@ module Rance
       return nullFormation;
     }
 
-    public handleAbilityUse(abilityUseData: IAbilityUseDataNEW)
+    public destroy()
+    {
+      this.battle = null;
+      this.battleScene = null;
+    }
+    
+    public getAbilityEffectDataByPhase(abilityUseData: IAbilityUseDataNEW): IAbilityEffectDataByPhase
     {
       abilityUseData.actualTarget = this.getTargetOrGuard(abilityUseData);
-      var abilityEffectsData = this.getAbilityEffectsData(abilityUseData);
+
+      var beforeUse = this.getAbilityEffectDataFromEffectTemplates(
+        abilityUseData,
+        this.getBeforeAbilityUseEffectTemplates(abilityUseData)
+      );
+
+      var abilityEffects = this.getAbilityEffectDataFromEffectTemplates(
+        abilityUseData,
+        this.getAbilityUseEffectTemplates(abilityUseData)
+      );
+
+      var afterUse = this.getAbilityEffectDataFromEffectTemplates(
+        abilityUseData,
+        this.getAfterAbilityUseEffectTemplates(abilityUseData)
+      );
+
+      return(
+      {
+        beforeUse: beforeUse,
+        abilityEffects: abilityEffects,
+        afterUse: afterUse
+      });
     }
 
     private getTargetOrGuard(abilityUseData: IAbilityUseDataNEW): Unit
@@ -192,33 +205,41 @@ module Rance
 
       return inArea.filter(BattleAbilityProcessor.activeUnitsFilterFN);
     }
-    private getAbilityEffectDataFor(effect: Templates.IEffectActionTemplate, user: Unit, target: Unit): IAbilityEffectData
-    {
-      var boundEffect = effect.action.executeAction.bind(null, user, target, this.battle, effect.data);
-      return(
-      {
-        
-      });
-    }
 
-    private getAbilityEffectsData(abilityUseData: IAbilityUseDataNEW): IAbilityEffectData[]
+    private getAbilityEffectDataFromEffectTemplates(abilityUseData: IAbilityUseDataNEW,
+      effectTemplates: Templates.IAbilityEffectTemplate[]): IAbilityEffectData[]
     {
-      return null;
-    }
-    private getBeforeAbilityUseEffectData(abilityUseData: IAbilityUseDataNEW): IAbilityEffectData[]
-    {
-      var abilityUser = abilityUseData.user;
-      var abilityTarget = abilityUseData.actualTarget;
-
       var effectData: IAbilityEffectData[] = [];
 
+      for (var i = 0; i < effectTemplates.length; i++)
+      {
+        var templateEffect = effectTemplates[i];
+        var targetsForEffect = this.getUnitsInEffectArea(
+          templateEffect.action, abilityUseData.user, abilityUseData.actualTarget);
+
+        for (var j = 0; j < targetsForEffect.length; j++)
+        {
+          effectData.push(
+          {
+            templateEffect: templateEffect,
+            user: abilityUseData.user,
+            target: targetsForEffect[j],
+            trigger: templateEffect.trigger
+          });
+        }
+      }
+
+      return effectData;
+    }
+    private getBeforeAbilityUseEffectTemplates(abilityUseData: IAbilityUseDataNEW): Templates.IAbilityEffectTemplate[]
+    {
       var beforeUseEffects: Templates.IAbilityEffectTemplate[] = [];
       if (abilityUseData.ability.beforeUse)
       {
         beforeUseEffects = beforeUseEffects.concat(abilityUseData.ability.beforeUse);
       }
 
-      var passiveSkills = abilityUser.getPassiveSkillsByPhase().beforeAbilityUse;
+      var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().beforeAbilityUse;
       if (passiveSkills)
       {
         for (var i = 0; i < passiveSkills.length; i++)
@@ -227,29 +248,40 @@ module Rance
         }
       }
 
-      // remove action points
-      // beforeUseEffects
-      for (var i = 0; i < beforeUseEffects.length; i++)
-      {
-        var templateEffect = beforeUseEffects[i];
-        var targetsForEffect = this.getUnitsInEffectArea(
-          templateEffect.template, abilityUser, abilityTarget);
+      return beforeUseEffects;
+      // TODO remove guard & action points
+    }
+    private getAbilityUseEffectTemplates(abilityUseData: IAbilityUseDataNEW): Templates.IAbilityEffectTemplate[]
+    {
+      var effects: Templates.IAbilityEffectTemplate[] = [];
+      effects.push(abilityUseData.ability.mainEffect);
 
-        for (var j = 0; j < targetsForEffect.length; j++)
+      if (abilityUseData.ability.secondaryEffects)
+      {
+        effects = effects.concat(abilityUseData.ability.secondaryEffects);
+      }
+
+      return effects;
+    }
+    private getAfterAbilityUseEffectTemplates(abilityUseData: IAbilityUseDataNEW): Templates.IAbilityEffectTemplate[]
+    {
+      var afterUseEffects: Templates.IAbilityEffectTemplate[] = [];
+      if (abilityUseData.ability.afterUse)
+      {
+        afterUseEffects = afterUseEffects.concat(abilityUseData.ability.afterUse);
+      }
+
+      var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().afterAbilityUse;
+      if (passiveSkills)
+      {
+        for (var i = 0; i < passiveSkills.length; i++)
         {
-          effectData.push(
-          {
-            templateEffect: templateEffect,
-            callbacksToExecute: null,
-            user: abilityUser,
-            target: targetsForEffect[j],
-            trigger: templateEffect.trigger
-          });
+          afterUseEffects = afterUseEffects.concat(passiveSkills[i].afterAbilityUse);
         }
       }
-      // remove guard
 
-      return effectData;
+      return afterUseEffects;
+      // TODO add move delay & update status effects
     }
   }
 }
