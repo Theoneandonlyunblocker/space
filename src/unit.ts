@@ -1190,7 +1190,7 @@ module Rance
         {
           return statusEffect.clone();
         }),
-        queuedAction: this.battleStats.queuedAction ? null :
+        queuedAction: !this.battleStats.queuedAction ? null :
         {
           abilityTemplateKey: this.battleStats.queuedAction.ability.type,
           targetId: this.battleStats.queuedAction.targetId,
