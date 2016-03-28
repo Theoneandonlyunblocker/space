@@ -18,12 +18,12 @@ declare module Rance
         prepDelay: number;
       };
       actionsUse: number;
+      // if true, ability will always hit intended target. guard can still provide defensive benefits
       bypassesGuard?: boolean;
       
       // determines targeting range of function, called first
       mainEffect: IAbilityEffectTemplate;
-      // combined with mainEffect, determines target area of function, called second
-      // uses same user and target as maineffect, can have own target area
+      // uses same user and target as mainEffect, called after mainEffect
       secondaryEffects?: IAbilityEffectTemplate[];
       
       beforeUse?: IAbilityEffectTemplate[];
