@@ -29,8 +29,8 @@
 /// <reference path="../savedata/igamesavedata.d.ts" />
 /// <reference path="../savedata/igalaxymapsavedata.d.ts" />
 /// <reference path="../savedata/iplayersavedata.d.ts" />
-/// <reference path="../templateinterfaces/iabilityeffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
+/// <reference path="../templateinterfaces/iabilityeffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../iunitattributes.d.ts" />
 /// <reference path="../savedata/iunitsavedata.d.ts" />
@@ -1546,6 +1546,204 @@ declare module Rance {
     var areaRow: BattleAreaFunction;
     var areaRowNeighbors: BattleAreaFunction;
     var areaNeighbors: BattleAreaFunction;
+}
+declare module Rance {
+    enum BattleSceneUnitState {
+        entering = 0,
+        stationary = 1,
+        exiting = 2,
+        removed = 3,
+    }
+    class BattleSceneUnit {
+        container: PIXI.Container;
+        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+        spriteContainer: PIXI.Container;
+        activeUnit: Unit;
+        unitState: BattleSceneUnitState;
+        onFinishEnter: () => void;
+        onFinishExit: () => void;
+        tween: TWEEN.Tween;
+        hasSFXSprite: boolean;
+        getSceneBounds: () => {
+            width: number;
+            height: number;
+        };
+        constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
+        destroy(): void;
+        private initLayers();
+        changeActiveUnit(unit: Unit, afterChangedCallback?: () => void): void;
+        setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
+        resize(): void;
+        private enterUnitSpriteWithoutAnimation(unit);
+        private exitUnitSpriteWithoutAnimation();
+        private enterUnitSprite(unit);
+        private exitUnitSprite();
+        private startUnitSpriteEnter(unit);
+        private finishUnitSpriteEnter();
+        private startUnitSpriteExit();
+        private finishUnitSpriteExit();
+        private getSFXParams(props);
+        private setContainerPosition(positionOffScreen?);
+        private setUnit(unit);
+        private clearUnit();
+        private makeUnitSprite(unit, SFXParams);
+        private addUnitSprite(sprite);
+        private clearUnitSprite();
+        private setUnitSprite(unit);
+        private clearTween();
+        private makeEnterExitTween(direction, duration, onComplete);
+        private setSFXSprite(spriteDrawingFN, duration);
+    }
+}
+declare module Rance {
+    class BattleSceneUnitOverlay {
+        container: PIXI.Container;
+        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+        overlayContainer: PIXI.Container;
+        activeUnit: Unit;
+        getSceneBounds: () => {
+            width: number;
+            height: number;
+        };
+        animationIsActive: boolean;
+        onAnimationFinish: () => void;
+        constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
+        destroy(): void;
+        private initLayers();
+        setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
+        setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number): void;
+        clearOverlay(): void;
+        private getSFXParams(duration, triggerStart, triggerEnd?);
+        private setContainerPosition();
+        private addOverlay(overlay);
+        private finishAnimation();
+    }
+}
+declare module Rance {
+    class BattleScene {
+        container: PIXI.Container;
+        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+        pixiContainer: HTMLElement;
+        layers: {
+            battleOverlay: PIXI.Container;
+            side1Container: PIXI.Container;
+            side2Container: PIXI.Container;
+        };
+        side1Unit: BattleSceneUnit;
+        side2Unit: BattleSceneUnit;
+        side1Overlay: BattleSceneUnitOverlay;
+        side2Overlay: BattleSceneUnitOverlay;
+        activeSFX: Templates.IBattleSFXTemplate;
+        targetUnit: Unit;
+        userUnit: Unit;
+        activeUnit: Unit;
+        hoveredUnit: Unit;
+        side1UnitHasFinishedUpdating: boolean;
+        side2UnitHasFinishedUpdating: boolean;
+        afterUnitsHaveFinishedUpdatingCallback: () => void;
+        beforeUseDelayHasFinishedCallback: () => void;
+        activeSFXHasFinishedCallback: () => void;
+        afterUseDelayHasFinishedCallback: () => void;
+        abilityUseHasFinishedCallback: () => void;
+        triggerEffectCallback: () => void;
+        isPaused: boolean;
+        forceFrame: boolean;
+        resizeListener: (e: Event) => void;
+        constructor(pixiContainer: HTMLElement);
+        destroy(): void;
+        private initLayers();
+        private handleResize();
+        private getSceneBounds();
+        private getSFXParams(props);
+        private getHighestPriorityUnitForSide(side);
+        private haveBothUnitsFinishedUpdating();
+        private executeIfBothUnitsHaveFinishedUpdating();
+        private finishUpdatingUnit(side);
+        handleAbilityUse(props: {
+            SFXTemplate: Templates.IBattleSFXTemplate;
+            triggerEffectCallback: () => void;
+            user: Unit;
+            target: Unit;
+            afterFinishedCallback: () => void;
+        }): void;
+        private executeBeforeUseDelayHasFinishedCallback();
+        private executeTriggerEffectCallback();
+        private executeActiveSFXHasFinishedCallback();
+        private executeAfterUseDelayHasFinishedCallback();
+        private executeAbilityUseHasFinishedCallback();
+        private prepareSFX();
+        private playSFX();
+        private handleActiveSFXEnd();
+        private cleanUpAfterSFX();
+        updateUnits(afterFinishedUpdatingCallback?: () => void): void;
+        clearActiveSFX(): void;
+        private triggerSFXStart(SFXTemplate, user, target, afterFinishedCallback?);
+        private makeBattleOverlay(afterFinishedCallback?);
+        private addBattleOverlay(overlay);
+        private clearBattleOverlay();
+        private clearUnitOverlays();
+        private getBattleSceneUnit(unit);
+        private getBattleSceneUnitOverlay(unit);
+        renderOnce(): void;
+        pause(): void;
+        resume(): void;
+        private render(timeStamp?);
+    }
+}
+declare module Rance {
+    interface IAbilityUseDataNEW {
+        ability: Templates.IAbilityTemplate;
+        user: Unit;
+        intendedTarget: Unit;
+        actualTarget: Unit;
+    }
+    interface IAbilityEffectData {
+        templateEffect: Templates.IAbilityEffectTemplate;
+        user: Unit;
+        target: Unit;
+        trigger: (user: Unit, target: Unit) => boolean;
+    }
+    interface IAbilityUseSystemAction {
+        executeSystemAction: () => void;
+    }
+    interface IUnitChanges {
+        newHealth: number;
+        newGuardAmount: number;
+        newGuardType: GuardCoverage;
+        isPreparing: boolean;
+        isAnnihilated: boolean;
+        newActionPoints: number;
+        newStatusEffects: StatusEffect[];
+    }
+    interface IAbilityUseEffect {
+        unitChanges: {
+            [unitId: number]: IUnitChanges;
+        };
+        sfx: Templates.IBattleSFXTemplate;
+        sfxUser: Unit;
+        sfxTarget: Unit;
+    }
+    /**
+     * Processes IAbilityUseDataNEW and returns IAbilityEffectData
+     */
+    class BattleAbilityProcessor {
+        private battle;
+        private battleScene;
+        private nullFormation;
+        constructor(battle: Battle);
+        private createNullFormation();
+        handleAbilityUse(abilityUseData: IAbilityUseDataNEW): void;
+        private getTargetOrGuard(abilityUseData);
+        private getGuarders(abilityUseData);
+        private getFormationsToTarget(user, effect);
+        private static activeUnitsFilterFN(unit);
+        private getUnitsInEffectArea(effect, user, target);
+        private getFullAbilityEffectData(abilityUseData);
+        private getAbilityEffectDataFromEffectTemplates(abilityUseData, effectTemplates);
+        private getBeforeAbilityUseEffectTemplates(abilityUseData);
+        private getAbilityUseEffectTemplates(abilityUseData);
+        private getAfterAbilityUseEffectTemplates(abilityUseData);
+    }
 }
 declare module Rance {
     interface IAbilityUseDataEffect {
@@ -3936,149 +4134,6 @@ declare module Rance {
         };
     }
     var Options: IOptions;
-}
-declare module Rance {
-    enum BattleSceneUnitState {
-        entering = 0,
-        stationary = 1,
-        exiting = 2,
-        removed = 3,
-    }
-    class BattleSceneUnit {
-        container: PIXI.Container;
-        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-        spriteContainer: PIXI.Container;
-        activeUnit: Unit;
-        unitState: BattleSceneUnitState;
-        onFinishEnter: () => void;
-        onFinishExit: () => void;
-        tween: TWEEN.Tween;
-        hasSFXSprite: boolean;
-        getSceneBounds: () => {
-            width: number;
-            height: number;
-        };
-        constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
-        destroy(): void;
-        private initLayers();
-        changeActiveUnit(unit: Unit, afterChangedCallback?: () => void): void;
-        setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
-        resize(): void;
-        private enterUnitSpriteWithoutAnimation(unit);
-        private exitUnitSpriteWithoutAnimation();
-        private enterUnitSprite(unit);
-        private exitUnitSprite();
-        private startUnitSpriteEnter(unit);
-        private finishUnitSpriteEnter();
-        private startUnitSpriteExit();
-        private finishUnitSpriteExit();
-        private getSFXParams(props);
-        private setContainerPosition(positionOffScreen?);
-        private setUnit(unit);
-        private clearUnit();
-        private makeUnitSprite(unit, SFXParams);
-        private addUnitSprite(sprite);
-        private clearUnitSprite();
-        private setUnitSprite(unit);
-        private clearTween();
-        private makeEnterExitTween(direction, duration, onComplete);
-        private setSFXSprite(spriteDrawingFN, duration);
-    }
-}
-declare module Rance {
-    class BattleSceneUnitOverlay {
-        container: PIXI.Container;
-        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-        overlayContainer: PIXI.Container;
-        activeUnit: Unit;
-        getSceneBounds: () => {
-            width: number;
-            height: number;
-        };
-        animationIsActive: boolean;
-        onAnimationFinish: () => void;
-        constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
-        destroy(): void;
-        private initLayers();
-        setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
-        setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number): void;
-        clearOverlay(): void;
-        private getSFXParams(duration, triggerStart, triggerEnd?);
-        private setContainerPosition();
-        private addOverlay(overlay);
-        private finishAnimation();
-    }
-}
-declare module Rance {
-    class BattleScene {
-        container: PIXI.Container;
-        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-        pixiContainer: HTMLElement;
-        layers: {
-            battleOverlay: PIXI.Container;
-            side1Container: PIXI.Container;
-            side2Container: PIXI.Container;
-        };
-        side1Unit: BattleSceneUnit;
-        side2Unit: BattleSceneUnit;
-        side1Overlay: BattleSceneUnitOverlay;
-        side2Overlay: BattleSceneUnitOverlay;
-        activeSFX: Templates.IBattleSFXTemplate;
-        targetUnit: Unit;
-        userUnit: Unit;
-        activeUnit: Unit;
-        hoveredUnit: Unit;
-        side1UnitHasFinishedUpdating: boolean;
-        side2UnitHasFinishedUpdating: boolean;
-        afterUnitsHaveFinishedUpdatingCallback: () => void;
-        beforeUseDelayHasFinishedCallback: () => void;
-        activeSFXHasFinishedCallback: () => void;
-        afterUseDelayHasFinishedCallback: () => void;
-        abilityUseHasFinishedCallback: () => void;
-        triggerEffectCallback: () => void;
-        isPaused: boolean;
-        forceFrame: boolean;
-        resizeListener: (e: Event) => void;
-        constructor(pixiContainer: HTMLElement);
-        destroy(): void;
-        private initLayers();
-        private handleResize();
-        private getSceneBounds();
-        private getSFXParams(props);
-        private getHighestPriorityUnitForSide(side);
-        private haveBothUnitsFinishedUpdating();
-        private executeIfBothUnitsHaveFinishedUpdating();
-        private finishUpdatingUnit(side);
-        handleAbilityUse(props: {
-            SFXTemplate: Templates.IBattleSFXTemplate;
-            triggerEffectCallback: () => void;
-            user: Unit;
-            target: Unit;
-            afterFinishedCallback: () => void;
-        }): void;
-        private executeBeforeUseDelayHasFinishedCallback();
-        private executeTriggerEffectCallback();
-        private executeActiveSFXHasFinishedCallback();
-        private executeAfterUseDelayHasFinishedCallback();
-        private executeAbilityUseHasFinishedCallback();
-        private prepareSFX();
-        private playSFX();
-        private handleActiveSFXEnd();
-        private cleanUpAfterSFX();
-        updateUnits(afterFinishedUpdatingCallback?: () => void): void;
-        clearActiveSFX(): void;
-        private triggerSFXStart(SFXTemplate, user, target, afterFinishedCallback?);
-        private makeBattleOverlay(afterFinishedCallback?);
-        private addBattleOverlay(overlay);
-        private clearBattleOverlay();
-        private clearUnitOverlays();
-        private getBattleSceneUnit(unit);
-        private getBattleSceneUnitOverlay(unit);
-        renderOnce(): void;
-        pause(): void;
-        resume(): void;
-        private render(timeStamp?);
-    }
 }
 declare module Rance {
     var idGenerators: {
