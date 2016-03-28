@@ -5,7 +5,8 @@ declare module Rance
 {
   interface IUnitItemsSaveData
   {
-    [slot: string]: IItemSaveData[];
+    [slot: string]: IItemSaveData;
+  }
   interface IQueuedActionSaveData
   {
     abilityTemplateKey: string;

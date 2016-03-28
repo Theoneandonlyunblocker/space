@@ -1703,46 +1703,65 @@ declare module Rance {
         target: Unit;
         trigger: (user: Unit, target: Unit) => boolean;
     }
+    interface IAbilityEffectDataByPhase {
+        beforeUse: IAbilityEffectData[];
+        abilityEffects: IAbilityEffectData[];
+        afterUse: IAbilityEffectData[];
+    }
     interface IAbilityUseSystemAction {
         executeSystemAction: () => void;
     }
-    interface IUnitChanges {
-        newHealth: number;
-        newGuardAmount: number;
-        newGuardType: GuardCoverage;
-        isPreparing: boolean;
-        isAnnihilated: boolean;
-        newActionPoints: number;
-        newStatusEffects: StatusEffect[];
-    }
-    interface IAbilityUseEffect {
-        unitChanges: {
-            [unitId: number]: IUnitChanges;
-        };
-        sfx: Templates.IBattleSFXTemplate;
-        sfxUser: Unit;
-        sfxTarget: Unit;
-    }
     /**
-     * Processes IAbilityUseDataNEW and returns IAbilityEffectData
+     * Processes IAbilityUseDataNEW and returns IAbilityEffectDataByPhase
      */
     class BattleAbilityProcessor {
         private battle;
-        private battleScene;
         private nullFormation;
         constructor(battle: Battle);
         private createNullFormation();
-        handleAbilityUse(abilityUseData: IAbilityUseDataNEW): void;
+        destroy(): void;
+        getAbilityEffectDataByPhase(abilityUseData: IAbilityUseDataNEW): IAbilityEffectDataByPhase;
         private getTargetOrGuard(abilityUseData);
         private getGuarders(abilityUseData);
         private getFormationsToTarget(user, effect);
         private static activeUnitsFilterFN(unit);
         private getUnitsInEffectArea(effect, user, target);
-        private getFullAbilityEffectData(abilityUseData);
         private getAbilityEffectDataFromEffectTemplates(abilityUseData, effectTemplates);
         private getBeforeAbilityUseEffectTemplates(abilityUseData);
         private getAbilityUseEffectTemplates(abilityUseData);
         private getAfterAbilityUseEffectTemplates(abilityUseData);
+    }
+}
+declare module Rance {
+    interface IUnitDisplayData {
+        health: number;
+        guardAmount: number;
+        guardType: GuardCoverage;
+        actionPoints: number;
+        isPreparing: boolean;
+        isAnnihilated: boolean;
+    }
+    interface IUnitDisplayDataById {
+        [unitId: number]: IUnitDisplayData;
+    }
+    interface IAbilityUseEffect {
+        unitDisplayDataById: IUnitDisplayDataById;
+        sfx: Templates.IBattleSFXTemplate;
+        sfxUser: Unit;
+        sfxTarget: Unit;
+    }
+    /**
+     * takes IAbilityEffectDataByPhase, executes effect actions and produces IAbilityUseEffect
+     */
+    class BattleAbilityUser {
+        private battle;
+        private abilityEffectData;
+        private currentlyRecordingUnitChanges;
+        constructor(battle: Battle, abilityEffectData: IAbilityEffectDataByPhase);
+        destroy(): void;
+        private getUnitDisplayData(unit);
+        private shouldEffectActionTrigger(abilityEffectData);
+        private executeAbilityEffectData(abilityEffectData);
     }
 }
 declare module Rance {
@@ -1795,6 +1814,24 @@ declare module Rance {
         turnsPrepared: number;
         timesInterrupted: number;
     }
+    interface IUnitBattleStats {
+        moveDelay: number;
+        side: UnitBattleSide;
+        position: number[];
+        currentActionPoints: number;
+        guardAmount: number;
+        guardCoverage: GuardCoverage;
+        captureChance: number;
+        statusEffects: StatusEffect[];
+        lastHealthBeforeReceivingDamage: number;
+        queuedAction: IQueuedActionData;
+        isAnnihilated: boolean;
+    }
+    interface IUnitItems {
+        low: Item;
+        mid: Item;
+        high: Item;
+    }
     class Unit {
         template: Templates.IUnitTemplate;
         id: number;
@@ -1810,28 +1847,13 @@ declare module Rance {
         attributesAreDirty: boolean;
         cachedAttributes: IUnitAttributes;
         attributes: IUnitAttributes;
-        battleStats: {
-            moveDelay: number;
-            side: UnitBattleSide;
-            position: number[];
-            currentActionPoints: number;
-            guardAmount: number;
-            guardCoverage: GuardCoverage;
-            captureChance: number;
-            statusEffects: StatusEffect[];
-            lastHealthBeforeReceivingDamage: number;
-            queuedAction: IQueuedActionData;
-        };
+        battleStats: IUnitBattleStats;
         abilities: Templates.IAbilityTemplate[];
         passiveSkills: Templates.IPassiveSkillTemplate[];
         experienceForCurrentLevel: number;
         level: number;
         fleet: Fleet;
-        items: {
-            low: Item;
-            mid: Item;
-            high: Item;
-        };
+        items: IUnitItems;
         passiveSkillsByPhase: {
             atBattleStart?: Templates.IPassiveSkillTemplate[];
             beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
@@ -1848,8 +1870,8 @@ declare module Rance {
         sfxDuration: number;
         lastHealthDrawnAt: number;
         displayedHealth: number;
-        constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
-        makeFromData(data: any): void;
+        constructor(template: Templates.IUnitTemplate, id?: number, data?: IUnitSaveData);
+        makeFromData(data: IUnitSaveData): void;
         setInitialValues(): void;
         setBaseHealth(multiplier?: number): void;
         setAttributes(baseSkill?: number, variance?: number): void;

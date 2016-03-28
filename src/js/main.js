@@ -7040,14 +7040,6 @@ var Rance;
             this.turnsLeft--;
             this.updateTurnOrder();
             this.setActiveUnit();
-            if (!this.isVirtual) {
-                this.forEachUnit(function (unit) {
-                    if (unit.currentHealth <= 0) {
-                        unit.displayFlags.isAnnihilated = true;
-                        unit.uiDisplayIsDirty = true;
-                    }
-                });
-            }
             var shouldEnd = this.checkBattleEnd();
             if (shouldEnd) {
                 this.endBattle();
@@ -8196,7 +8188,7 @@ var Rance;
     //   execute IAbilityEffectData[] ->
     // IAbilityUseEffect[]
     /**
-     * Processes IAbilityUseDataNEW and returns IAbilityEffectData
+     * Processes IAbilityUseDataNEW and returns IAbilityEffectDataByPhase
      */
     var BattleAbilityProcessor = (function () {
         function BattleAbilityProcessor(battle) {
@@ -8215,9 +8207,19 @@ var Rance;
             }
             return nullFormation;
         };
-        BattleAbilityProcessor.prototype.handleAbilityUse = function (abilityUseData) {
+        BattleAbilityProcessor.prototype.destroy = function () {
+            this.battle = null;
+        };
+        BattleAbilityProcessor.prototype.getAbilityEffectDataByPhase = function (abilityUseData) {
             abilityUseData.actualTarget = this.getTargetOrGuard(abilityUseData);
-            var abilityEffectsData = this.getFullAbilityEffectData(abilityUseData);
+            var beforeUse = this.getAbilityEffectDataFromEffectTemplates(abilityUseData, this.getBeforeAbilityUseEffectTemplates(abilityUseData));
+            var abilityEffects = this.getAbilityEffectDataFromEffectTemplates(abilityUseData, this.getAbilityUseEffectTemplates(abilityUseData));
+            var afterUse = this.getAbilityEffectDataFromEffectTemplates(abilityUseData, this.getAfterAbilityUseEffectTemplates(abilityUseData));
+            return ({
+                beforeUse: beforeUse,
+                abilityEffects: abilityEffects,
+                afterUse: afterUse
+            });
         };
         BattleAbilityProcessor.prototype.getTargetOrGuard = function (abilityUseData) {
             if (abilityUseData.ability.bypassesGuard) {
@@ -8289,12 +8291,6 @@ var Rance;
             var inArea = effect.battleAreaFunction(targetFormations, target.battleStats.position);
             return inArea.filter(BattleAbilityProcessor.activeUnitsFilterFN);
         };
-        BattleAbilityProcessor.prototype.getFullAbilityEffectData = function (abilityUseData) {
-            var beforeUse = this.getAbilityEffectDataFromEffectTemplates(abilityUseData, this.getBeforeAbilityUseEffectTemplates(abilityUseData));
-            var abilityEffects = this.getAbilityEffectDataFromEffectTemplates(abilityUseData, this.getAbilityUseEffectTemplates(abilityUseData));
-            var afterUse = this.getAbilityEffectDataFromEffectTemplates(abilityUseData, this.getAfterAbilityUseEffectTemplates(abilityUseData));
-            return beforeUse.concat(abilityEffects, afterUse);
-        };
         BattleAbilityProcessor.prototype.getAbilityEffectDataFromEffectTemplates = function (abilityUseData, effectTemplates) {
             var effectData = [];
             for (var i = 0; i < effectTemplates.length; i++) {
@@ -8351,13 +8347,50 @@ var Rance;
     }());
     Rance.BattleAbilityProcessor = BattleAbilityProcessor;
 })(Rance || (Rance = {}));
+/// <reference path="battleabilityprocessor.ts" />
+var Rance;
+(function (Rance) {
+    /**
+     * takes IAbilityEffectDataByPhase, executes effect actions and produces IAbilityUseEffect
+     */
+    var BattleAbilityUser = (function () {
+        function BattleAbilityUser(battle, abilityEffectData) {
+            this.currentlyRecordingUnitChanges = {};
+            this.battle = battle;
+            this.abilityEffectData = abilityEffectData;
+        }
+        BattleAbilityUser.prototype.destroy = function () {
+            this.battle = null;
+            this.abilityEffectData = null;
+        };
+        BattleAbilityUser.prototype.getUnitDisplayData = function (unit) {
+            return ({
+                health: unit.currentHealth,
+                guardAmount: unit.battleStats.guardAmount,
+                guardType: unit.battleStats.guardCoverage,
+                actionPoints: unit.battleStats.currentActionPoints,
+                isPreparing: Boolean(unit.battleStats.queuedAction),
+                isAnnihilated: unit.displayFlags.isAnnihilated
+            });
+        };
+        BattleAbilityUser.prototype.shouldEffectActionTrigger = function (abilityEffectData) {
+            return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
+        };
+        BattleAbilityUser.prototype.executeAbilityEffectData = function (abilityEffectData) {
+            var unitChanges = {};
+        };
+        return BattleAbilityUser;
+    }());
+    Rance.BattleAbilityUser = BattleAbilityUser;
+})(Rance || (Rance = {}));
+// TODO remove
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="templateinterfaces/iabilityeffecttemplate.d.ts" />
 /// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
-/// <reference path="battleabilityprocessor.ts" />
+/// <reference path="battleabilityuser.ts" />
 var Rance;
 (function (Rance) {
     function getAbilityUseData(battle, user, ability, target) {
@@ -8738,20 +8771,6 @@ var Rance;
             configurable: true
         });
         Unit.prototype.makeFromData = function (data) {
-            var items = {};
-            ["low", "mid", "high"].forEach(function (slot) {
-                if (data.items[slot]) {
-                    var item = data.items[slot];
-                    if (!item)
-                        return;
-                    if (item.templateType) {
-                        items[slot] = new Rance.Item(app.moduleData.Templates.Items[item.templateType], item.id);
-                    }
-                    else {
-                        items[slot] = item;
-                    }
-                }
-            });
             this.name = data.name;
             this.maxHealth = data.maxHealth;
             this.currentHealth = data.currentHealth;
@@ -8776,18 +8795,35 @@ var Rance;
             });
             this.experienceForCurrentLevel = data.experienceForCurrentLevel;
             this.level = data.level;
-            var battleStats = {};
-            battleStats.moveDelay = data.battleStats.moveDelay;
-            battleStats.side = data.battleStats.side;
-            battleStats.position = data.battleStats.position;
-            battleStats.currentActionPoints = data.battleStats.currentActionPoints;
-            battleStats.guardAmount = data.battleStats.guardAmount;
-            battleStats.guardCoverage = data.battleStats.guardCoverage;
-            battleStats.captureChance = data.battleStats.captureChance;
-            battleStats.statusEffects = data.battleStats.statusEffects;
-            battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-            battleStats.queuedAction = data.queuedAction;
-            this.battleStats = battleStats;
+            this.battleStats =
+                {
+                    moveDelay: data.battleStats.moveDelay,
+                    side: data.battleStats.side,
+                    position: data.battleStats.position,
+                    currentActionPoints: data.battleStats.currentActionPoints,
+                    guardAmount: data.battleStats.guardAmount,
+                    guardCoverage: data.battleStats.guardCoverage,
+                    captureChance: data.battleStats.captureChance,
+                    statusEffects: data.battleStats.statusEffects,
+                    lastHealthBeforeReceivingDamage: this.currentHealth,
+                    queuedAction: !data.battleStats.queuedAction ? null :
+                        {
+                            ability: app.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+                            targetId: data.battleStats.queuedAction.targetId,
+                            turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
+                            timesInterrupted: data.battleStats.queuedAction.timesInterrupted
+                        },
+                    isAnnihilated: data.battleStats.isAnnihilated
+                };
+            var items = {};
+            ["low", "mid", "high"].forEach(function (slot) {
+                if (data.items[slot]) {
+                    var item = data.items[slot];
+                    if (!item)
+                        return;
+                    items[slot] = new Rance.Item(app.moduleData.Templates.Items[item.templateType], item.id);
+                }
+            });
             this.items =
                 {
                     low: null,
@@ -8893,7 +8929,8 @@ var Rance;
                     captureChance: app.moduleData.ruleSet.battle.baseUnitCaptureChance,
                     statusEffects: [],
                     lastHealthBeforeReceivingDamage: this.currentHealth,
-                    queuedAction: null
+                    queuedAction: null,
+                    isAnnihilated: false
                 };
             this.displayFlags =
                 {
@@ -8916,6 +8953,9 @@ var Rance;
             this.currentHealth = Rance.clamp(this.currentHealth, 0, this.maxHealth);
             if (amount > 0) {
                 this.removeGuard(40);
+            }
+            if (this.currentHealth === 0) {
+                this.battleStats.isAnnihilated = true;
             }
             this.uiDisplayIsDirty = true;
         };
@@ -8978,7 +9018,7 @@ var Rance;
             return this.isActiveInBattle();
         };
         Unit.prototype.isActiveInBattle = function () {
-            return this.currentHealth > 0;
+            return this.currentHealth > 0 && !this.battleStats.isAnnihilated;
         };
         Unit.prototype.addItem = function (item) {
             var itemSlot = item.template.slot;
@@ -9479,7 +9519,14 @@ var Rance;
                 statusEffects: this.battleStats.statusEffects.map(function (statusEffect) {
                     return statusEffect.clone();
                 }),
-                queuedAction: this.battleStats.queuedAction
+                queuedAction: this.battleStats.queuedAction ? null :
+                    {
+                        abilityTemplateKey: this.battleStats.queuedAction.ability.type,
+                        targetId: this.battleStats.queuedAction.targetId,
+                        turnsPrepared: this.battleStats.queuedAction.turnsPrepared,
+                        timesInterrupted: this.battleStats.queuedAction.timesInterrupted
+                    },
+                isAnnihilated: this.battleStats.isAnnihilated
             };
             var data = {
                 templateType: this.template.type,

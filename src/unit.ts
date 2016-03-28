@@ -29,6 +29,28 @@ module Rance
     timesInterrupted: number;
   }
 
+  export interface IUnitBattleStats
+  {
+    moveDelay: number;
+    side: UnitBattleSide;
+    position: number[];
+    currentActionPoints: number;
+    guardAmount: number;
+    guardCoverage: GuardCoverage;
+    captureChance: number;
+    statusEffects: StatusEffect[];
+    lastHealthBeforeReceivingDamage: number;
+    queuedAction: IQueuedActionData;
+    isAnnihilated: boolean;
+  }
+
+  export interface IUnitItems
+  {
+    low: Item;
+    mid: Item;
+    high: Item;
+  }
+
   export class Unit
   {
     template: Templates.IUnitTemplate;
@@ -60,19 +82,7 @@ module Rance
       return this.cachedAttributes;
     }
 
-    battleStats:
-    {
-      moveDelay: number;
-      side: UnitBattleSide;
-      position: number[];
-      currentActionPoints: number;
-      guardAmount: number;
-      guardCoverage: GuardCoverage;
-      captureChance: number;
-      statusEffects: StatusEffect[];
-      lastHealthBeforeReceivingDamage: number;
-      queuedAction: IQueuedActionData;
-    };
+    battleStats: IUnitBattleStats;
 
     abilities: Templates.IAbilityTemplate[] = [];
     passiveSkills: Templates.IPassiveSkillTemplate[] = [];
@@ -82,12 +92,7 @@ module Rance
 
     fleet: Fleet;
 
-    items:
-    {
-      low: Item;
-      mid: Item;
-      high: Item;
-    } =
+    items: IUnitItems =
     {
       low: null,
       mid: null,
@@ -120,7 +125,7 @@ module Rance
     displayedHealth: number;
     
     // end new
-    constructor(template: Templates.IUnitTemplate, id?: number, data?: any)
+    constructor(template: Templates.IUnitTemplate, id?: number, data?: IUnitSaveData)
     {
       this.id = isFinite(id) ? id : idGenerators.unit++;
 
@@ -141,28 +146,8 @@ module Rance
         isAnnihilated: false
       };
     }
-    makeFromData(data: any)
+    makeFromData(data: IUnitSaveData)
     {
-      var items: any = {};
-
-      ["low", "mid", "high"].forEach(function(slot)
-      {
-        if (data.items[slot])
-        {
-          var item = data.items[slot];
-          if (!item) return;
-
-          if (item.templateType)
-          {
-            items[slot] = new Item(app.moduleData.Templates.Items[item.templateType], item.id);
-          }
-          else
-          {
-            items[slot] = item;
-          }
-        }
-      });
-
       this.name = data.name;
 
       this.maxHealth = data.maxHealth;
@@ -203,21 +188,39 @@ module Rance
       this.experienceForCurrentLevel = data.experienceForCurrentLevel;
       this.level = data.level;
 
-      var battleStats: any = {};
+      this.battleStats =
+      {
+        moveDelay: data.battleStats.moveDelay,
+        side: data.battleStats.side,
+        position: data.battleStats.position,
+        currentActionPoints: data.battleStats.currentActionPoints,
+        guardAmount: data.battleStats.guardAmount,
+        guardCoverage: data.battleStats.guardCoverage,
+        captureChance: data.battleStats.captureChance,
+        statusEffects: data.battleStats.statusEffects,
+        lastHealthBeforeReceivingDamage: this.currentHealth,
+        queuedAction: !data.battleStats.queuedAction ? null :
+        {
+          ability: app.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+          targetId: data.battleStats.queuedAction.targetId,
+          turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
+          timesInterrupted: data.battleStats.queuedAction.timesInterrupted
+        },
+        isAnnihilated: data.battleStats.isAnnihilated
+      };
 
-      battleStats.moveDelay = data.battleStats.moveDelay;
-      battleStats.side = data.battleStats.side;
-      battleStats.position = data.battleStats.position;
-      battleStats.currentActionPoints = data.battleStats.currentActionPoints;
-      battleStats.guardAmount = data.battleStats.guardAmount;
-      battleStats.guardCoverage = data.battleStats.guardCoverage;
-      battleStats.captureChance = data.battleStats.captureChance;
-      battleStats.statusEffects = data.battleStats.statusEffects;
-      battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-      battleStats.queuedAction = data.queuedAction;
+      var items: any = {};
 
-      this.battleStats = battleStats;
+      ["low", "mid", "high"].forEach(function(slot)
+      {
+        if (data.items[slot])
+        {
+          var item = data.items[slot];
+          if (!item) return;
 
+          items[slot] = new Item(app.moduleData.Templates.Items[item.templateType], item.id);
+        }
+      });
 
       this.items =
       {
