@@ -18,31 +18,74 @@ module Rance
   }
   export interface IAbilityUseEffect
   {
-    unitDisplayDataById: IUnitDisplayDataById;
+    actionName: string;
+    unitDisplayDataAfterUsingById: IUnitDisplayDataById;
     sfx: Templates.IBattleSFXTemplate;
     sfxUser: Unit;
     sfxTarget: Unit;
   }
 
   /**
-   * takes IAbilityEffectDataByPhase, executes effect actions and produces IAbilityUseEffect
+   * takes IAbilityEffectDataByPhase, executes effect actions and produces IAbilityUseEffect[]
    */
   export class BattleAbilityUser
   {
     private battle: Battle;
-    private abilityEffectData: IAbilityEffectDataByPhase;
+    private battleAbilityProcessor: BattleAbilityProcessor;
 
-    private currentlyRecordingUnitChanges: IUnitDisplayDataById = {};
-
-    constructor(battle: Battle, abilityEffectData: IAbilityEffectDataByPhase)
+    constructor(battle: Battle)
     {
       this.battle = battle;
-      this.abilityEffectData = abilityEffectData;
+      this.battleAbilityProcessor = new BattleAbilityProcessor(battle);
     }
     public destroy()
     {
       this.battle = null;
-      this.abilityEffectData = null;
+      this.battleAbilityProcessor.destroy();
+      this.battleAbilityProcessor = null;
+    }
+
+    public executeFullAbilityEffects(abilityEffectData: IAbilityEffectDataByPhase,
+      getUseEffects: boolean): IAbilityUseEffect[]
+    {
+      var beforeUse = this.executeMultipleEffects(abilityEffectData.beforeUse, getUseEffects);
+      var abilityEffects = this.executeMultipleEffects(abilityEffectData.abilityEffects, getUseEffects);
+      var afterUse = this.executeMultipleEffects(abilityEffectData.afterUse, getUseEffects);
+
+      if (getUseEffects)
+      {
+        return beforeUse.concat(abilityEffects, afterUse);
+      }
+      else
+      {
+        return null;
+      }
+    }
+    private executeMultipleEffects(abilityEffectData: IAbilityEffectData[],
+      getUseEffects: boolean): IAbilityUseEffect[]
+    {
+      if (getUseEffects)
+      {
+        var useEffects: IAbilityUseEffect[] = [];
+
+        for (var i = 0; i < abilityEffectData.length; i++)
+        {
+          var useEffect = this.executeAbilityEffectDataAndGetUseEffect(abilityEffectData[i]);
+          if (useEffect)
+          {
+            useEffects.push(useEffect);
+          }
+        }
+
+        return useEffects;
+      }
+      else
+      {
+        for (var i = 0; i < abilityEffectData.length; i++)
+        {
+          this.executeAbilityEffectData(abilityEffectData[i]);
+        }
+      }
     }
 
     private getUnitDisplayData(unit: Unit): IUnitDisplayData
@@ -55,17 +98,55 @@ module Rance
         actionPoints: unit.battleStats.currentActionPoints,
 
         isPreparing: Boolean(unit.battleStats.queuedAction),
-        isAnnihilated: unit.displayFlags.isAnnihilated
+        isAnnihilated: unit.battleStats.isAnnihilated
       });
     }
 
     private shouldEffectActionTrigger(abilityEffectData: IAbilityEffectData)
     {
+      if (!abilityEffectData.trigger)
+      {
+        return true;
+      }
+
       return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
     }
-    private executeAbilityEffectData(abilityEffectData: IAbilityEffectData): IAbilityUseEffect
+    private executeAbilityEffectData(abilityEffectData: IAbilityUseData): boolean
     {
-      var unitChanges: IUnitDisplayDataById = {};
+      if (!this.shouldEffectActionTrigger(abilityEffectData))
+      {
+        return false;
+      }
+
+      abilityEffectData.templateEffect.action.executeAction(
+        abilityEffectData.user,
+        abilityEffectData.target,
+        this.battle,
+        abilityEffectData.templateEffect.data
+      );
+
+      return true;
+    }
+    private executeAbilityEffectDataAndGetUseEffect(abilityEffectData: IAbilityEffectData): IAbilityUseEffect
+    {
+      var didTriggerAction = this.executeAbilityEffectData(abilityEffectData);
+      if (!didTriggerAction)
+      {
+        return null;
+      }
+
+      var unitDisplayData: IUnitDisplayDataById = {}
+      unitDisplayData[abilityEffectData.user.id] = this.getUnitDisplayData(abilityEffectData.user);
+      unitDisplayData[abilityEffectData.target.id] = this.getUnitDisplayData(abilityEffectData.target);
+
+      return(
+      {
+        actionName: abilityEffectData.templateEffect.action.name,
+        unitDisplayDataAfterUsingById: unitDisplayData,
+        sfx: abilityEffectData.templateEffect.sfx,
+        sfxUser: abilityEffectData.user,
+        sfxTarget: abilityEffectData.target
+      })
     }
   }
 }
