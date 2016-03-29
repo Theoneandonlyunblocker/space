@@ -165,7 +165,7 @@ module Rance
       else
       {
         var userSide = user.battleStats.side;
-        var insertNullBefore = (userSide === "side1") ? false : true;
+        var insertNullBefore = (userSide === "side1") ? true : false;
         var toConcat: Unit[][];
       }
 
