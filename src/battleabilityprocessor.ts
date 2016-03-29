@@ -252,15 +252,30 @@ module Rance
     }
     private getAbilityUseEffectTemplates(abilityUseData: IAbilityUseDataNEW): Templates.IAbilityEffectTemplate[]
     {
-      var effects: Templates.IAbilityEffectTemplate[] = [];
-      effects.push(abilityUseData.ability.mainEffect);
+      var primaryEffects: Templates.IAbilityEffectTemplate[] = [];
+      primaryEffects.push(abilityUseData.ability.mainEffect);
 
       if (abilityUseData.ability.secondaryEffects)
       {
-        effects = effects.concat(abilityUseData.ability.secondaryEffects);
+        primaryEffects = primaryEffects.concat(abilityUseData.ability.secondaryEffects);
       }
 
-      return effects;
+      var allEffects: Templates.IAbilityEffectTemplate[] = [];
+
+      for (var i = 0; i < primaryEffects.length; i++)
+      {
+        var effect = primaryEffects[i];
+        allEffects.push(effect);
+        if (effect.attachedEffects)
+        {
+          for (var j = 0; j < effect.attachedEffects.length; j++)
+          {
+            allEffects.push(effect.attachedEffects[j]);
+          }
+        }
+      }
+
+      return allEffects;
     }
     private getAfterAbilityUseEffectTemplates(abilityUseData: IAbilityUseDataNEW): Templates.IAbilityEffectTemplate[]
     {
