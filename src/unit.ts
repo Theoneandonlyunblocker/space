@@ -3,7 +3,6 @@
 /// <reference path="damagetype.ts" />
 /// <reference path="iunitattributes.d.ts"/>
 /// <reference path="utility.ts"/>
-/// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
 /// <reference path="item.ts"/>
 /// <reference path="statuseffect.ts" />

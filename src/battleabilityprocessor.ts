@@ -1,13 +1,14 @@
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="templateinterfaces/iabilityeffecttemplate.d.ts" />
-/// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
 
 /// <reference path="battle.ts"/>
 /// <reference path="battlescene.ts" />
+/// <reference path="targeting.ts"/>
+/// <reference path="unit.ts" />
 
 module Rance
 {
-  export interface IAbilityUseDataNEW
+  export interface IAbilityUseData
   {
     ability: Templates.IAbilityTemplate;
     user: Unit;
@@ -32,14 +33,14 @@ module Rance
     executeSystemAction: () => void;
   }
 
-  // IAbilityUseDataNEW ->
-  // IAbilityUseDataNEW with actualTarget ->
+  // IAbilityUseData ->
+  // IAbilityUseData with actualTarget ->
   // IAbilityEffectData[] ->
   //   execute IAbilityEffectData[] ->
   // IAbilityUseEffect[]
 
   /**
-   * Processes IAbilityUseDataNEW and returns IAbilityEffectDataByPhase
+   * Processes IAbilityUseData and returns IAbilityEffectDataByPhase
    */
   export class BattleAbilityProcessor
   {
@@ -74,7 +75,7 @@ module Rance
       this.battle = null;
     }
     
-    public getAbilityEffectDataByPhase(abilityUseData: IAbilityUseDataNEW): IAbilityEffectDataByPhase
+    public getAbilityEffectDataByPhase(abilityUseData: IAbilityUseData): IAbilityEffectDataByPhase
     {
       abilityUseData.actualTarget = this.getTargetOrGuard(abilityUseData);
 
@@ -101,7 +102,7 @@ module Rance
       });
     }
 
-    private getTargetOrGuard(abilityUseData: IAbilityUseDataNEW): Unit
+    private getTargetOrGuard(abilityUseData: IAbilityUseData): Unit
     {
       if (abilityUseData.ability.bypassesGuard)
       {
@@ -126,7 +127,7 @@ module Rance
 
       return abilityUseData.intendedTarget;
     }
-    private getGuarders(abilityUseData: IAbilityUseDataNEW): Unit[]
+    private getGuarders(abilityUseData: IAbilityUseData): Unit[]
     {
       var userSide = abilityUseData.user.battleStats.side;
       var targetSide = abilityUseData.intendedTarget.battleStats.side;
@@ -205,7 +206,7 @@ module Rance
       return inArea.filter(BattleAbilityProcessor.activeUnitsFilterFN);
     }
 
-    private getAbilityEffectDataFromEffectTemplates(abilityUseData: IAbilityUseDataNEW,
+    private getAbilityEffectDataFromEffectTemplates(abilityUseData: IAbilityUseData,
       effectTemplates: Templates.IAbilityEffectTemplate[]): IAbilityEffectData[]
     {
       var effectData: IAbilityEffectData[] = [];
@@ -230,7 +231,7 @@ module Rance
 
       return effectData;
     }
-    private getBeforeAbilityUseEffectTemplates(abilityUseData: IAbilityUseDataNEW): Templates.IAbilityEffectTemplate[]
+    private getBeforeAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): Templates.IAbilityEffectTemplate[]
     {
       var beforeUseEffects: Templates.IAbilityEffectTemplate[] = [];
       if (abilityUseData.ability.beforeUse)
@@ -250,7 +251,7 @@ module Rance
       return beforeUseEffects;
       // TODO remove guard & action points
     }
-    private getAbilityUseEffectTemplates(abilityUseData: IAbilityUseDataNEW): Templates.IAbilityEffectTemplate[]
+    private getAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): Templates.IAbilityEffectTemplate[]
     {
       var primaryEffects: Templates.IAbilityEffectTemplate[] = [];
       primaryEffects.push(abilityUseData.ability.mainEffect);
@@ -277,7 +278,7 @@ module Rance
 
       return allEffects;
     }
-    private getAfterAbilityUseEffectTemplates(abilityUseData: IAbilityUseDataNEW): Templates.IAbilityEffectTemplate[]
+    private getAfterAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): Templates.IAbilityEffectTemplate[]
     {
       var afterUseEffects: Templates.IAbilityEffectTemplate[] = [];
       if (abilityUseData.ability.afterUse)
