@@ -45,6 +45,19 @@ module Rance
       this.battleAbilityProcessor = null;
     }
 
+    public useAbility(ability: Templates.IAbilityTemplate, user: Unit, target: Unit, getEffects: boolean)
+    {
+      var effectDataByPhase = this.battleAbilityProcessor.getAbilityEffectDataByPhase(
+      {
+        ability: ability,
+        user: user,
+        intendedTarget: target
+      });
+
+      var useData = this.executeFullAbilityEffects(effectDataByPhase, getEffects);
+
+      return useData;
+    }
     public executeFullAbilityEffects(abilityEffectData: IAbilityEffectDataByPhase,
       getUseEffects: boolean): IAbilityUseEffect[]
     {
@@ -61,6 +74,11 @@ module Rance
         return null;
       }
     }
+    public getTargetsForAllAbilities(user: Unit)
+    {
+      return this.battleAbilityProcessor.getTargetsForAllAbilities(user);
+    }
+
     private executeMultipleEffects(abilityEffectData: IAbilityEffectData[],
       getUseEffects: boolean): IAbilityUseEffect[]
     {
@@ -111,7 +129,7 @@ module Rance
 
       return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
     }
-    private executeAbilityEffectData(abilityEffectData: IAbilityUseData): boolean
+    private executeAbilityEffectData(abilityEffectData: IAbilityEffectData): boolean
     {
       if (!this.shouldEffectActionTrigger(abilityEffectData))
       {
