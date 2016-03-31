@@ -6,7 +6,7 @@ module Rance
     {
       export module UIComponents
       {
-        export var BattleFinishNotification = React.createClass(
+        export var BattleFinishNotification = React.createFactory(React.createClass(
         {
           displayName: "BattleFinishNotification",
           render: function()
@@ -38,7 +38,7 @@ module Rance
               )
             );
           }
-        })
+        }));
       }
     }
   }

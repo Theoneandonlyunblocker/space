@@ -6,7 +6,7 @@ module Rance
     {
       export module UIComponents
       {
-        export var PlayerDiedNotification = React.createClass(
+        export var PlayerDiedNotification = React.createFactory(React.createClass(
         {
           displayName: "PlayerDiedNotification",
           render: function()
@@ -25,7 +25,7 @@ module Rance
               )
             );
           }
-        })
+        }));
       }
     }
   }

@@ -6,7 +6,7 @@ module Rance
     {
       export module UIComponents
       {
-        export var WarDeclarationNotification = React.createClass(
+        export var WarDeclarationNotification = React.createFactory(React.createClass(
         {
           displayName: "WarDeclarationNotification",
           render: function()
@@ -22,7 +22,7 @@ module Rance
               )
             );
           }
-        })
+        }));
       }
     }
   }
