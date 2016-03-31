@@ -21,6 +21,9 @@
 
 /// <reference path="battlescene.ts" />
 
+// TODO | temporary
+/// <reference path="battleabilityusage.ts" />
+
 module Rance
 {
   export var idGenerators =

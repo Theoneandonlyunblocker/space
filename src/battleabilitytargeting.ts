@@ -3,27 +3,29 @@
 
 module Rance
 {
-  var nullFormation: Unit[][];
-  setNullFormation(); // TODO | set when module is loaded
-  export function setNullFormation()
+  var _nullFormation: Unit[][];
+  export function getNullFormation()
   {
-    var formation: Unit[][] = [];
-
-    var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
-    var columns = app.moduleData.ruleSet.battle.cellsPerRow;
-    for (var i = 0; i < rows; i++)
+    if (!_nullFormation)
     {
-      formation.push([]);
-      for (var j = 0; j < columns; j++)
+      _nullFormation = [];
+
+      var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
+      var columns = app.moduleData.ruleSet.battle.cellsPerRow;
+      for (var i = 0; i < rows; i++)
       {
-        formation[i].push(null);
+        _nullFormation.push([]);
+        for (var j = 0; j < columns; j++)
+        {
+          _nullFormation[i].push(null);
+        }
       }
     }
 
-    nullFormation = formation;
+    return _nullFormation;
   }
 
-  function getFormationsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectActionTemplate): Unit[][]
+  export function getFormationsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectActionTemplate): Unit[][]
   {
     if (effect.targetFormations === TargetFormation.either)
     {
@@ -51,11 +53,11 @@ module Rance
 
     if (insertNullBefore)
     {
-      return nullFormation.concat(toConcat);
+      return getNullFormation().concat(toConcat);
     }
     else
     {
-      return toConcat.concat(nullFormation);
+      return toConcat.concat(getNullFormation());
     }
   }
 
@@ -65,7 +67,7 @@ module Rance
   }
   function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): Unit[]
   {
-    var targetFormations = this.getFormationsToTarget(user, ability.mainEffect.action);
+    var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
 
     var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
 
@@ -91,7 +93,7 @@ module Rance
     {
       var ability = abilities[i];
 
-      var targets = getPotentialTargets(user, ability);
+      var targets = getPotentialTargets(battle, user, ability);
 
       for (var j = 0; j < targets.length; j++)
       {

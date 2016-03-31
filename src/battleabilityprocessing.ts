@@ -30,16 +30,19 @@ module Rance
     abilityUseData.actualTarget = getTargetOrGuard(battle, abilityUseData);
 
     var beforeUse = getAbilityEffectDataFromEffectTemplates(
+      battle,
       abilityUseData,
       getBeforeAbilityUseEffectTemplates(abilityUseData)
     );
 
     var abilityEffects = getAbilityEffectDataFromEffectTemplates(
+      battle,
       abilityUseData,
       getAbilityUseEffectTemplates(abilityUseData)
     );
 
     var afterUse = getAbilityEffectDataFromEffectTemplates(
+      battle,
       abilityUseData,
       getAfterAbilityUseEffectTemplates(abilityUseData)
     );
@@ -77,7 +80,7 @@ module Rance
 
     return abilityUseData.intendedTarget;
   }
-  function canGuardFN(unit: Unit, intendedTarget: Unit)
+  function canGuardFN(intendedTarget: Unit, unit: Unit)
   {
     if (!unit.isTargetable())
     {
@@ -91,7 +94,7 @@ module Rance
     else if (unit.battleStats.guardCoverage === GuardCoverage.row)
     {
       // same row
-      if (unit.battleStats.position[0] === abilityUseData.intendedTarget.battleStats.position[0])
+      if (unit.battleStats.position[0] === intendedTarget.battleStats.position[0])
       {
         return unit.battleStats.guardAmount > 0;
       }
@@ -106,7 +109,7 @@ module Rance
 
     var allEnemies = battle.unitsBySide[targetSide];
 
-    var guarders = allEnemies.filter(canGuardFilterFN);
+    var guarders = allEnemies.filter(canGuardFN.bind(null, abilityUseData.intendedTarget));
 
     return guarders;
   }
@@ -153,7 +156,7 @@ module Rance
   function getEffectTemplatesWithAttachedEffects(templates: Templates.IAbilityEffectTemplate[]):
     Templates.IAbilityEffectTemplate[]
   {
-    var withAttached: Templates.IAbilityEffectTemplate[];
+    var withAttached: Templates.IAbilityEffectTemplate[] = [];
 
     for (var i = 0; i < templates.length; i++)
     {
