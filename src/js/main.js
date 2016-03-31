@@ -20277,7 +20277,7 @@ var Rance;
         }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../lib/react.d.ts" />
+/// <reference path="../../lib/react-global-0.13.3.d.ts" />
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
 /// <reference path="unitlist/itemequip.ts"/>
@@ -20357,7 +20357,7 @@ var Rance;
         }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../lib/react.d.ts" />
+/// <reference path="../lib/react-global-0.13.3.d.ts" />
 /// <reference path="eventmanager.ts"/>
 /// <reference path="uicomponents/stage.ts"/>
 var Rance;

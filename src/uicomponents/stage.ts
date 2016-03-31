@@ -1,4 +1,4 @@
-/// <reference path="../../lib/react.d.ts" />
+/// <reference path="../../lib/react-global-0.13.3.d.ts" />
 
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
