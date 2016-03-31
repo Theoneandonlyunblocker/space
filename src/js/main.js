@@ -221,15 +221,6 @@ var Rance;
         }
     }
     Rance.reverseSide = reverseSide;
-    function turnOrderSortFunction(a, b) {
-        if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
-            return a.battleStats.moveDelay - b.battleStats.moveDelay;
-        }
-        else {
-            return a.id - b.id;
-        }
-    }
-    Rance.turnOrderSortFunction = turnOrderSortFunction;
     function sortByManufactoryCapacityFN(a, b) {
         var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
         var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
@@ -6922,9 +6913,63 @@ var Rance;
     }());
     Rance.Player = Player;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var BattleTurnOrder = (function () {
+        function BattleTurnOrder() {
+            this.allUnits = [];
+            this.orderedUnits = [];
+        }
+        BattleTurnOrder.prototype.destroy = function () {
+            this.allUnits = null;
+            this.orderedUnits = null;
+        };
+        BattleTurnOrder.prototype.addUnit = function (unit) {
+            if (this.hasUnit(unit)) {
+                throw new Error("Unit " + unit.name + " is already part of turn order");
+            }
+            this.allUnits.push(unit);
+            this.orderedUnits.push(unit);
+        };
+        BattleTurnOrder.prototype.update = function () {
+            this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
+            this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
+        };
+        BattleTurnOrder.prototype.getActiveUnit = function () {
+            return this.orderedUnits[0];
+        };
+        BattleTurnOrder.prototype.getDisplayData = function () {
+            // TODO
+            return [];
+        };
+        BattleTurnOrder.prototype.hasUnit = function (unit) {
+            return this.allUnits.indexOf(unit) !== -1;
+        };
+        BattleTurnOrder.turnOrderFilterFN = function (unit) {
+            if (unit.battleStats.currentActionPoints <= 0) {
+                return false;
+            }
+            if (unit.currentHealth <= 0) {
+                return false;
+            }
+            return true;
+        };
+        BattleTurnOrder.turnOrderSortFN = function (a, b) {
+            if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
+                return a.battleStats.moveDelay - b.battleStats.moveDelay;
+            }
+            else {
+                return a.id - b.id;
+            }
+        };
+        return BattleTurnOrder;
+    }());
+    Rance.BattleTurnOrder = BattleTurnOrder;
+})(Rance || (Rance = {}));
 /// <reference path="ibattledata.d.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="eventmanager.ts"/>
+/// <reference path="battleturnorder.ts" />
 var Rance;
 (function (Rance) {
     var Battle = (function () {
@@ -6934,7 +6979,6 @@ var Rance;
                 side1: [],
                 side2: []
             };
-            this.turnOrder = [];
             this.evaluation = {};
             this.isSimulated = false; // true when battle is between two
             // ai players
@@ -6966,7 +7010,6 @@ var Rance;
             this.maxTurns = 24;
             this.turnsLeft = this.maxTurns;
             this.updateTurnOrder();
-            this.setActiveUnit();
             this.startHealth =
                 {
                     side1: this.getTotalHealthForSide("side1").current,
@@ -6988,7 +7031,7 @@ var Rance;
         Battle.prototype.initUnit = function (unit, side, position) {
             unit.resetBattleStats();
             unit.setBattlePosition(this, side, position);
-            this.addUnitToTurnOrder(unit);
+            this.turnOrder.addUnit(unit);
             unit.timesActedThisTurn++;
         };
         Battle.prototype.triggerBattleStartAbilities = function () {
@@ -7005,41 +7048,10 @@ var Rance;
                 }
             });
         };
-        Battle.prototype.removeUnitFromTurnOrder = function (unit) {
-            var unitIndex = this.turnOrder.indexOf(unit);
-            if (unitIndex < 0)
-                return false; //not in list
-            this.turnOrder.splice(unitIndex, 1);
-        };
-        Battle.prototype.addUnitToTurnOrder = function (unit) {
-            var unitIndex = this.turnOrder.indexOf(unit);
-            if (unitIndex >= 0)
-                return false; //already in list
-            this.turnOrder.push(unit);
-        };
-        Battle.prototype.updateTurnOrder = function () {
-            //Sorting function is in utility.ts for reusing in turn order UI.
-            //Maybe should make separate TurnOrder class?
-            this.turnOrder.sort(Rance.turnOrderSortFunction);
-            function turnOrderFilterFunction(unit) {
-                if (unit.battleStats.currentActionPoints <= 0) {
-                    return false;
-                }
-                if (unit.currentHealth <= 0) {
-                    return false;
-                }
-                return true;
-            }
-            this.turnOrder = this.turnOrder.filter(turnOrderFilterFunction);
-        };
-        Battle.prototype.setActiveUnit = function () {
-            this.activeUnit = this.turnOrder[0];
-        };
         Battle.prototype.endTurn = function () {
             this.currentTurn++;
             this.turnsLeft--;
             this.updateTurnOrder();
-            this.setActiveUnit();
             var shouldEnd = this.checkBattleEnd();
             if (shouldEnd) {
                 this.endBattle();
@@ -7075,67 +7087,6 @@ var Rance;
             var side = position < rowsPerSide ? "side1" : "side2";
             var relativePosition = position % rowsPerSide;
             return this[side][relativePosition];
-        };
-        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
-            if (!victor || victor.isIndependent)
-                return [];
-            var winningSide = this.getSideForPlayer(victor);
-            var losingSide = Rance.reverseSide(winningSide);
-            var losingUnits = this.unitsBySide[losingSide].slice(0);
-            losingUnits.sort(function (a, b) {
-                var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
-                if (captureChanceSort) {
-                    return captureChanceSort;
-                }
-                else {
-                    return Rance.randInt(0, 1) * 2 - 1; // -1 or 1
-                }
-            });
-            var capturedUnits = [];
-            for (var i = 0; i < losingUnits.length; i++) {
-                if (capturedUnits.length >= maxCapturedUnits)
-                    break;
-                var unit = losingUnits[i];
-                if (unit.currentHealth <= 0 &&
-                    Math.random() <= unit.battleStats.captureChance) {
-                    capturedUnits.push(unit);
-                }
-            }
-            return capturedUnits;
-        };
-        Battle.prototype.getUnitDeathChance = function (unit, victor) {
-            var ruleSet = app.moduleData.ruleSet;
-            var player = unit.fleet.player;
-            var deathChance;
-            if (player.isIndependent) {
-                deathChance = ruleSet.battle.independentUnitDeathChance;
-            }
-            else if (player.isAI) {
-                deathChance = ruleSet.battle.aiUnitDeathChance;
-            }
-            else {
-                deathChance = ruleSet.battle.humanUnitDeathChance;
-            }
-            var playerDidLose = (victor && player !== victor);
-            if (playerDidLose) {
-                deathChance += ruleSet.battle.loserUnitExtraDeathChance;
-            }
-            return deathChance;
-        };
-        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
-            var deadUnits = [];
-            this.forEachUnit(function (unit) {
-                if (unit.currentHealth <= 0) {
-                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
-                    if (!wasCaptured) {
-                        var deathChance = this.getUnitDeathChance(unit, victor);
-                        if (Math.random() < deathChance) {
-                            deadUnits.push(unit);
-                        }
-                    }
-                }
-            });
-            return deadUnits;
         };
         Battle.prototype.endBattle = function () {
             this.ended = true;
@@ -7378,7 +7329,7 @@ var Rance;
                     for (var j = 0; j < side[i].length; j++) {
                         if (!side[i][j])
                             continue;
-                        clone.addUnitToTurnOrder(side[i][j]);
+                        clone.turnOrder.addUnit(side[i][j]);
                         clone.unitsById[side[i][j].id] = side[i][j];
                         clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
                     }
@@ -7390,7 +7341,6 @@ var Rance;
             clone.turnsLeft = this.turnsLeft;
             clone.startHealth = this.startHealth;
             clone.updateTurnOrder();
-            clone.setActiveUnit();
             if (clone.checkBattleEnd()) {
                 clone.endBattle();
             }
@@ -7398,6 +7348,73 @@ var Rance;
                 clone.shiftRowsIfNeeded();
             }
             return clone;
+        };
+        // BattleEndProcessor
+        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
+            if (!victor || victor.isIndependent)
+                return [];
+            var winningSide = this.getSideForPlayer(victor);
+            var losingSide = Rance.reverseSide(winningSide);
+            var losingUnits = this.unitsBySide[losingSide].slice(0);
+            losingUnits.sort(function (a, b) {
+                var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
+                if (captureChanceSort) {
+                    return captureChanceSort;
+                }
+                else {
+                    return Rance.randInt(0, 1) * 2 - 1; // -1 or 1
+                }
+            });
+            var capturedUnits = [];
+            for (var i = 0; i < losingUnits.length; i++) {
+                if (capturedUnits.length >= maxCapturedUnits)
+                    break;
+                var unit = losingUnits[i];
+                if (unit.currentHealth <= 0 &&
+                    Math.random() <= unit.battleStats.captureChance) {
+                    capturedUnits.push(unit);
+                }
+            }
+            return capturedUnits;
+        };
+        Battle.prototype.getUnitDeathChance = function (unit, victor) {
+            var ruleSet = app.moduleData.ruleSet;
+            var player = unit.fleet.player;
+            var deathChance;
+            if (player.isIndependent) {
+                deathChance = ruleSet.battle.independentUnitDeathChance;
+            }
+            else if (player.isAI) {
+                deathChance = ruleSet.battle.aiUnitDeathChance;
+            }
+            else {
+                deathChance = ruleSet.battle.humanUnitDeathChance;
+            }
+            var playerDidLose = (victor && player !== victor);
+            if (playerDidLose) {
+                deathChance += ruleSet.battle.loserUnitExtraDeathChance;
+            }
+            return deathChance;
+        };
+        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
+            var deadUnits = [];
+            this.forEachUnit(function (unit) {
+                if (unit.currentHealth <= 0) {
+                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
+                    if (!wasCaptured) {
+                        var deathChance = this.getUnitDeathChance(unit, victor);
+                        if (Math.random() < deathChance) {
+                            deadUnits.push(unit);
+                        }
+                    }
+                }
+            });
+            return deadUnits;
+        };
+        // 
+        Battle.prototype.updateTurnOrder = function () {
+            this.turnOrder.update();
+            this.activeUnit = this.turnOrder.getActiveUnit();
         };
         return Battle;
     }());
@@ -9400,7 +9417,7 @@ var Rance;
                         }
                     };
                     turnOrder.push(fake);
-                    turnOrder.sort(Rance.turnOrderSortFunction);
+                    turnOrder.sort(turnOrderSortFunction);
                 }
                 var maxUnitsWithFake = maxUnits;
                 if (fake && turnOrder.indexOf(fake) <= maxUnits) {
@@ -30018,6 +30035,7 @@ var Rance;
 /// <reference path="options.ts"/>
 /// <reference path="tutorials/tutorialstatus.ts" />
 /// <reference path="battlescene.ts" />
+// TODO | temporary
 /// <reference path="battleabilityusage.ts" />
 var Rance;
 (function (Rance) {

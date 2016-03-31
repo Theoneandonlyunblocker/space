@@ -124,7 +124,6 @@ declare module Rance {
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: UnitBattleSide): UnitBattleSide;
-    function turnOrderSortFunction(a: Unit, b: Unit): number;
     function sortByManufactoryCapacityFN(a: Star, b: Star): number;
     function rectContains(rect: {
         x1: number;
@@ -1450,6 +1449,27 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface ITurnOrderDisplayData {
+        moveDelay: number;
+        isGhost: boolean;
+        unit: Unit;
+        displayName: string;
+    }
+    class BattleTurnOrder {
+        private allUnits;
+        private orderedUnits;
+        constructor();
+        destroy(): void;
+        addUnit(unit: Unit): void;
+        update(): void;
+        getActiveUnit(): Unit;
+        getDisplayData(): ITurnOrderDisplayData[];
+        private hasUnit(unit);
+        private static turnOrderFilterFN(unit);
+        private static turnOrderSortFN(a, b);
+    }
+}
+declare module Rance {
     class Battle {
         unitsById: {
             [id: number]: Unit;
@@ -1463,7 +1483,7 @@ declare module Rance {
         side2: Unit[][];
         side2Player: Player;
         battleData: IBattleData;
-        turnOrder: Unit[];
+        turnOrder: BattleTurnOrder;
         activeUnit: Unit;
         currentTurn: number;
         maxTurns: number;
@@ -1492,18 +1512,11 @@ declare module Rance {
         forEachUnit(operator: (unit: Unit) => any): void;
         initUnit(unit: Unit, side: UnitBattleSide, position: number[]): void;
         triggerBattleStartAbilities(): void;
-        removeUnitFromTurnOrder(unit: Unit): boolean;
-        addUnitToTurnOrder(unit: Unit): boolean;
-        updateTurnOrder(): void;
-        setActiveUnit(): void;
         endTurn(): void;
         getPlayerForSide(side: UnitBattleSide): Player;
         getSideForPlayer(player: Player): UnitBattleSide;
         getActivePlayer(): Player;
         getRowByPosition(position: number): any;
-        getCapturedUnits(victor: Player, maxCapturedUnits: number): Unit[];
-        getUnitDeathChance(unit: Unit, victor: Player): number;
-        getDeadUnits(capturedUnits: Unit[], victor: Player): Unit[];
         endBattle(): void;
         finishBattle(forcedVictor?: Player): void;
         getVictor(): Player;
@@ -1523,6 +1536,10 @@ declare module Rance {
         };
         checkBattleEnd(): boolean;
         makeVirtualClone(): Battle;
+        getCapturedUnits(victor: Player, maxCapturedUnits: number): Unit[];
+        getUnitDeathChance(unit: Unit, victor: Player): number;
+        getDeadUnits(capturedUnits: Unit[], victor: Player): Unit[];
+        private updateTurnOrder();
     }
 }
 declare module Rance {

@@ -1,6 +1,7 @@
 /// <reference path="ibattledata.d.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="eventmanager.ts"/>
+/// <reference path="battleturnorder.ts" />
 
 module Rance
 {
@@ -26,7 +27,8 @@ module Rance
 
     battleData: IBattleData;
 
-    turnOrder: Unit[] = [];
+
+    turnOrder: BattleTurnOrder;
     activeUnit: Unit;
 
     currentTurn: number;
@@ -98,7 +100,6 @@ module Rance
       this.maxTurns = 24;
       this.turnsLeft = this.maxTurns;
       this.updateTurnOrder();
-      this.setActiveUnit();
 
       this.startHealth =
       {
@@ -129,7 +130,7 @@ module Rance
     {
       unit.resetBattleStats();
       unit.setBattlePosition(this, side, position);
-      this.addUnitToTurnOrder(unit);
+      this.turnOrder.addUnit(unit);
       unit.timesActedThisTurn++;
     }
     triggerBattleStartAbilities()
@@ -151,53 +152,11 @@ module Rance
         }
       });
     }
-    removeUnitFromTurnOrder(unit: Unit)
-    {
-      var unitIndex = this.turnOrder.indexOf(unit);
-      if (unitIndex < 0) return false; //not in list
-
-      this.turnOrder.splice(unitIndex, 1);
-    }
-    addUnitToTurnOrder(unit: Unit)
-    {
-      var unitIndex = this.turnOrder.indexOf(unit);
-      if (unitIndex >= 0) return false; //already in list
-
-      this.turnOrder.push(unit);
-    }
-    updateTurnOrder()
-    {
-      //Sorting function is in utility.ts for reusing in turn order UI.
-      //Maybe should make separate TurnOrder class?
-      this.turnOrder.sort(turnOrderSortFunction);
-
-      function turnOrderFilterFunction(unit: Unit)
-      {
-        if (unit.battleStats.currentActionPoints <= 0)
-        {
-          return false;
-        }
-
-        if (unit.currentHealth <= 0)
-        {
-          return false;
-        }
-
-        return true;
-      }
-
-      this.turnOrder = this.turnOrder.filter(turnOrderFilterFunction);
-    }
-    setActiveUnit()
-    {
-      this.activeUnit = this.turnOrder[0];
-    }
     endTurn()
     {
       this.currentTurn++;
       this.turnsLeft--;
       this.updateTurnOrder();
-      this.setActiveUnit();
 
       var shouldEnd = this.checkBattleEnd();
       if (shouldEnd)
@@ -670,7 +629,7 @@ module Rance
           for (var j = 0; j < side[i].length; j++)
           {
             if (!side[i][j]) continue;
-            clone.addUnitToTurnOrder(side[i][j]);
+            clone.turnOrder.addUnit(side[i][j]);
             clone.unitsById[side[i][j].id] = side[i][j];
             clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
           }
@@ -684,7 +643,6 @@ module Rance
       clone.turnsLeft = this.turnsLeft;
       clone.startHealth = this.startHealth;
       clone.updateTurnOrder();
-      clone.setActiveUnit();
 
 
       if (clone.checkBattleEnd())
@@ -697,6 +655,14 @@ module Rance
       }
 
       return clone;
+    }
+
+
+    // 
+    private updateTurnOrder(): void
+    {
+      this.turnOrder.update();
+      this.activeUnit = this.turnOrder.getActiveUnit();
     }
   }
 }

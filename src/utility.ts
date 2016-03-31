@@ -233,18 +233,6 @@ module Rance
       }
     }
   }
-
-  export function turnOrderSortFunction(a: Unit, b: Unit)
-  {
-    if (a.battleStats.moveDelay !== b.battleStats.moveDelay)
-    {
-      return a.battleStats.moveDelay - b.battleStats.moveDelay;
-    }
-    else
-    {
-      return a.id - b.id;
-    }
-  }
   export function sortByManufactoryCapacityFN(a: Star, b: Star)
   {
     var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
