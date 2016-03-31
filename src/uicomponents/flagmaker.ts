@@ -1,8 +1,8 @@
 /// <reference path="playerflag.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var FlagMaker = React.createFactory(React.createClass(
     {

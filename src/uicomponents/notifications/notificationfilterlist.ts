@@ -1,9 +1,9 @@
 /// <reference path="../galaxymap/optionsgroup.ts" />
 /// <reference path="notificationfilterlistitem.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var NotificationFilterList = React.createFactory(React.createClass(
     {

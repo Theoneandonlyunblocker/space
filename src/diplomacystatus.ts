@@ -5,7 +5,7 @@
 
 /// <reference path="savedata/idiplomacystatussavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export enum DiplomaticState
   {

@@ -1,6 +1,6 @@
 /// <reference path="inotificationsavedata.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   interface INotificationLogSaveData
   {

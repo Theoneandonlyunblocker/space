@@ -1,12 +1,12 @@
 /// <reference path="../../../src/templateinterfaces/imaprendererlayertemplate.d.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module MapRendererLayers
+      export namespace MapRendererLayers
       {
         export var nonFillerStars: IMapRendererLayerTemplate =
         {

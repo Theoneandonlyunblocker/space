@@ -1,6 +1,6 @@
 /// <reference path="imaprendererlayertemplate.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   export interface IMapRendererMapModeTemplate
   {

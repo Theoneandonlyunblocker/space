@@ -3,7 +3,7 @@
 
 /// <reference path="battleabilitytargeting.ts" />
 
-module Rance
+namespace Rance
 {
   export interface IAbilityUseData
   {

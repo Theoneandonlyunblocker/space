@@ -3,9 +3,9 @@
 /// <reference path="../../fleet.ts" />
 /// <reference path="../../player.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var FleetContents = React.createFactory(React.createClass(
     {

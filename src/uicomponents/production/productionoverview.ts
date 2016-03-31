@@ -8,9 +8,9 @@
 /// <reference path="../../player.ts" />
 /// <reference path="../../star.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var ProductionOverview = React.createFactory(React.createClass(
     {

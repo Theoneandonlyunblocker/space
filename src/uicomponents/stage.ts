@@ -10,9 +10,9 @@
 /// <reference path="flagmaker.ts"/>
 /// <reference path="battlescenetester.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export interface ReactComponentPlaceHolder
     {

@@ -1,4 +1,4 @@
-module Rance
+namespace Rance
 {
   export function buildTemplateIndexes()
   {
@@ -63,7 +63,7 @@ module Rance
 
     return itemsByTechLevel;
   }
-  export module TemplateIndexes
+  export namespace TemplateIndexes
   {
     export var distributablesByDistributionGroup:
     {

@@ -3,9 +3,9 @@
 /// <reference path="sector.ts" />
 /// <reference path="triangulation.ts" />
 
-module Rance
+namespace Rance
 {
-  export module MapGenCore
+  export namespace MapGenCore
   {
     export function linkAllStars(stars: Star[])
     {

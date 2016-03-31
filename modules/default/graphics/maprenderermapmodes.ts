@@ -1,13 +1,13 @@
 /// <reference path="../../../src/templateinterfaces/imaprenderermapmodetemplate.d.ts" />
 /// <reference path="maprendererlayers.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module MapRendererMapModes
+      export namespace MapRendererMapModes
       {
         export var defaultMapMode: IMapRendererMapModeTemplate =
         {

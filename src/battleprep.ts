@@ -3,7 +3,7 @@
 /// <reference path="battle.ts"/>
 /// <reference path="ibattledata.d.ts"/>
 
-module Rance
+namespace Rance
 {
   export class BattlePrep
   {

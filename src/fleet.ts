@@ -5,7 +5,7 @@
 
 /// <reference path="savedata/ifleetsavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
 
   export class Fleet

@@ -1,4 +1,4 @@
-module Rance
+namespace Rance
 {
   export interface ITurnOrderDisplayData
   {

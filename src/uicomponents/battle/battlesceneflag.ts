@@ -1,8 +1,8 @@
 /// <reference path="../../flag.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var BattleSceneFlag = React.createFactory(React.createClass(
     {

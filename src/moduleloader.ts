@@ -1,6 +1,6 @@
 /// <reference path="moduledata.ts" />
 
-module Rance
+namespace Rance
 {
   export class ModuleLoader
   {

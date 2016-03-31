@@ -1,9 +1,9 @@
 /// <reference path="list.ts" />
 /// <reference path="unitlistitem.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var UnitList = React.createFactory(React.createClass(
     {

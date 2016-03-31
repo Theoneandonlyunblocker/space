@@ -1,9 +1,9 @@
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="trademoney.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var TradeableItemsList = React.createFactory(React.createClass(
     {

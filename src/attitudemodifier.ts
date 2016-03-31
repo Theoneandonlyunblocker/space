@@ -1,7 +1,7 @@
 /// <reference path="templateinterfaces/iattitudemodifiertemplate.d.ts" />
 /// <reference path="savedata/iattitudemodifiersavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class AttitudeModifier
   {

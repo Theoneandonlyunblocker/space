@@ -2,7 +2,7 @@
 /// <reference path="building.ts" />
 /// <reference path="unit.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   interface IFleetAttackTarget
   {

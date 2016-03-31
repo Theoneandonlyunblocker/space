@@ -1,7 +1,7 @@
 /// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
 /// <reference path="savedata/inotificationsavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class Notification
   {

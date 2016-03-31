@@ -9,7 +9,7 @@
 
 /// <reference path="battleabilityuser.ts" />
 
-module Rance
+namespace Rance
 {
   export interface IAbilityUseDataEffect
   {

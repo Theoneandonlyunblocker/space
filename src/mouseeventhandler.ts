@@ -3,7 +3,7 @@
 /// <reference path="renderer.ts"/>
 /// <reference path="rectangleselect.ts"/>
 
-module Rance
+namespace Rance
 {
   export class MouseEventHandler
   {

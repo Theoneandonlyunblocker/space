@@ -1,9 +1,9 @@
 /// <reference path="../../notificationlog.ts" />
 /// <reference path="notificationlog.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var Notifications = React.createFactory(React.createClass(
     {

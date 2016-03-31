@@ -1,9 +1,9 @@
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="savelist.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var LoadGame = React.createFactory(React.createClass(
     {

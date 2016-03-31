@@ -1,7 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 
 var tempCameraId = 0;
-module Rance
+namespace Rance
 {
   /**
    * @class Camera

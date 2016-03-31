@@ -3,9 +3,9 @@
 
 /// <reference path="buildingupgradelistitem.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var BuildingUpgradeList = React.createFactory(React.createClass(
     {

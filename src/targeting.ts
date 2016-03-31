@@ -2,7 +2,7 @@
 /// <reference path="unit.ts"/>
 
 
-module Rance
+namespace Rance
 {
   export enum TargetFormation
   {

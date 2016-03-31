@@ -1,6 +1,6 @@
 /// <reference path="../src/utility.ts" />
 
-module Rance
+namespace Rance
 {
   export function saveOptions(slot: number = 0)
   {
@@ -79,7 +79,7 @@ module Rance
     };
   }
   
-  export module defaultOptions
+  export namespace defaultOptions
   {
     export var battleAnimationTiming =
     {

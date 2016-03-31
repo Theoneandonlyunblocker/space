@@ -2,9 +2,9 @@
 /// <reference path="unititemwrapper.ts"/>
 /// <reference path="unitexperience.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var MenuUnitInfo = React.createFactory(React.createClass(
     {

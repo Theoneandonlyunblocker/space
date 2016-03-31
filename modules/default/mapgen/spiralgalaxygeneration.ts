@@ -11,13 +11,13 @@
 /// <reference path="../../../src/templateinterfaces/mapgenoptions.d.ts" />
 
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module MapGenFunctions
+      export namespace MapGenFunctions
       {
         export function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues,
           players: Player[]): MapGenCore.MapGenResult

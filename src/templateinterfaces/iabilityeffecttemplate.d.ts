@@ -1,6 +1,6 @@
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface IAbilityEffectTemplate
     {

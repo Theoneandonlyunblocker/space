@@ -1,9 +1,9 @@
 /// <reference path="colorsetter.ts" />
 /// <reference path="flagsetter.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var PlayerSetup = React.createFactory(React.createClass(
     {

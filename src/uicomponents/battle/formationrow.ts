@@ -6,9 +6,9 @@
 
 /// <reference path="../unit/unitwrapper.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var FormationRow = React.createFactory(React.createClass(
     {

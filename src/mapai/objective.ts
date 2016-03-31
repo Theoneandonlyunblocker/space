@@ -12,9 +12,9 @@ objectives:
   ~~building
  */
 
-module Rance
+namespace Rance
 {
-  export module MapAI
+  export namespace MapAI
   {
     export class Objective
     {

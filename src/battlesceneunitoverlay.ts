@@ -2,7 +2,7 @@
 /// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
 /// <reference path="unit.ts" />
 
-module Rance
+namespace Rance
 {
   export class BattleSceneUnitOverlay
   {

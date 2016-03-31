@@ -1,8 +1,8 @@
 /// <reference path="galaxymapui.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var GalaxyMap = React.createFactory(React.createClass(
     {

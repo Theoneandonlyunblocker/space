@@ -24,7 +24,7 @@
 // TODO | temporary
 /// <reference path="battleabilityusage.ts" />
 
-module Rance
+namespace Rance
 {
   export var idGenerators =
   {

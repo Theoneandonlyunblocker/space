@@ -1,9 +1,9 @@
 /// <reference path="../galaxymap/defencebuildinglist.ts"/>
 /// <reference path="../playerflag.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var BattleInfo = React.createFactory(React.createClass(
     {

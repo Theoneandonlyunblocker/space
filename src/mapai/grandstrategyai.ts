@@ -1,9 +1,9 @@
 /// <reference path="../../modules/default/templates/personalities.ts" />
 /// <reference path="mapevaluator.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module MapAI
+  export namespace MapAI
   {
     export class GrandStrategyAI
     {

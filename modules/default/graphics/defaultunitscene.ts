@@ -2,11 +2,11 @@
 /// <reference path="../../../src/templateinterfaces/iunitdrawingfunction.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
       export var defaultUnitScene: Rance.Templates.IUnitDrawingFunction = function(
         unit: Unit,

@@ -1,15 +1,15 @@
 /// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Templates
+      export namespace Templates
       {
-        export module Resources
+        export namespace Resources
         {
           export var testResource1: Rance.Templates.IResourceTemplate =
           {

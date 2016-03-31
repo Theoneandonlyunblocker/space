@@ -5,7 +5,7 @@
 /// <reference path="ibattledata.d.ts"/>
 /// <reference path="ifleetattacktarget.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class PlayerControl
   {

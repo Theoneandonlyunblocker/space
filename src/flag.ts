@@ -4,7 +4,7 @@
 
 /// <reference path="savedata/iflagsavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class Flag
   {

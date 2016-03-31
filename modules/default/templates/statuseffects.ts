@@ -1,15 +1,15 @@
 /// <reference path="../../../src/templateinterfaces/istatuseffectattributeadjustment.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/istatuseffectattributes.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/istatuseffecttemplate.d.ts"/>
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Templates
+      export namespace Templates
       {
-        export module StatusEffects
+        export namespace StatusEffects
         {
           export var test: Rance.Templates.IStatusEffectTemplate =
           {

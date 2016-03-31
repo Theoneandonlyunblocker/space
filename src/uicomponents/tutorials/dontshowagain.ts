@@ -1,8 +1,8 @@
 /// <reference path="../../tutorials/tutorialstatus.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var DontShowAgain = React.createFactory(React.createClass(
     {

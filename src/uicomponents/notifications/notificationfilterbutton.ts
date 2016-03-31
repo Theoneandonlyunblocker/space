@@ -1,9 +1,9 @@
 /// <reference path="../../notificationfilter.ts" />
 /// <reference path="notificationfilterlist.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var NotificationFilterButton = React.createFactory(React.createClass(
     {

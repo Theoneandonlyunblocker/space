@@ -5,7 +5,7 @@
 /// <reference path="shadermanager.ts"/>
 /// <reference path="pathfindingarrow.ts"/>
 
-module Rance
+namespace Rance
 {
   export class Renderer
   {

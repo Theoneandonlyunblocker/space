@@ -1,8 +1,8 @@
 /// <reference path="../mixins/splitmultilinetext.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export interface IListColumn
     {

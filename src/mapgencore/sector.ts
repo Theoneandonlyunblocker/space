@@ -1,9 +1,9 @@
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../star.ts" />
 
-module Rance
+namespace Rance
 {
-  export module MapGenCore
+  export namespace MapGenCore
   {
     export class Sector
     {

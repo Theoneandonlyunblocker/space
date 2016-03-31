@@ -2,9 +2,9 @@
 /// <reference path="../playerflag.ts" />
 
 /// <reference path="flagpicker.ts" />
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var FlagSetter = React.createFactory(React.createClass(
     {

@@ -1,15 +1,15 @@
 /// <reference path="spiralgalaxygeneration.ts" />
 /// <reference path="../../../src/templateinterfaces/imapgentemplate.d.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Templates
+      export namespace Templates
       {
-        export module MapGen
+        export namespace MapGen
         {
           export var spiralGalaxy: Rance.Templates.IMapGenTemplate =
           {

@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/tween.js.d.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var UnitStrength = React.createFactory(React.createClass(
     {

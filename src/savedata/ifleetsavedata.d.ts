@@ -1,6 +1,6 @@
 /// <reference path="iunitsavedata.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   interface IFleetSaveData
   {

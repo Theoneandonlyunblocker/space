@@ -62,7 +62,7 @@
 /// <reference path="../savedata/inotificationlogsavedata.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
-declare module Rance {
+declare namespace Rance {
     var eventEmitter: EventEmitter3;
     var eventManager: {
         dispatchEvent: any;
@@ -71,20 +71,20 @@ declare module Rance {
         addEventListener: (eventType: string, listener: Function) => Function;
     };
 }
-declare module Rance {
+declare namespace Rance {
     enum RandomGenUnitRarity {
         common = 0,
         elite = 1,
         commander = 2,
     }
 }
-declare module Rance {
+declare namespace Rance {
     enum DamageType {
         physical = 0,
         magical = 1,
     }
 }
-declare module Rance {
+declare namespace Rance {
     function randInt(min: number, max: number): number;
     function randRange(min: number, max: number): number;
     function getRandomArrayKey(target: any[]): number;
@@ -168,11 +168,11 @@ declare module Rance {
     function getDummyTextureForShader(): PIXI.Texture;
     function findEasingFunctionHighPoint(easingFunction: (x: number) => number, resolution?: number, maxIterations?: number, startIndex?: number, endIndex?: number, iteration?: number): number;
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Resources {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace Resources {
                     var testResource1: Rance.Templates.IResourceTemplate;
                     var testResource2: Rance.Templates.IResourceTemplate;
                     var testResource3: Rance.Templates.IResourceTemplate;
@@ -183,13 +183,13 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface Point {
         x: number;
         y: number;
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface IBuildingUpgradeData {
         template: Templates.IBuildingTemplate;
         level: number;
@@ -218,7 +218,7 @@ declare module Rance {
         serialize(): IBuildingSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface IManufacturableThingWithType {
         type: string;
         template: IManufacturableThing;
@@ -256,7 +256,7 @@ declare module Rance {
         serialize(): IManufactorySaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class Star implements Point {
         id: number;
         x: number;
@@ -373,7 +373,7 @@ declare module Rance {
         serialize(): IStarSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class PriorityQueue {
         items: {
             [priority: number]: any[];
@@ -385,7 +385,7 @@ declare module Rance {
         peek(): any[];
     }
 }
-declare module Rance {
+declare namespace Rance {
     function backTrace(graph: any, target: Star): {
         star: Star;
         cost: any;
@@ -396,7 +396,7 @@ declare module Rance {
         queue: PriorityQueue;
     };
 }
-declare module Rance {
+declare namespace Rance {
     class StatusEffect {
         template: Templates.IStatusEffectTemplate;
         duration: number;
@@ -405,7 +405,7 @@ declare module Rance {
         clone(): StatusEffect;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class Fleet {
         player: Player;
         units: Unit[];
@@ -450,7 +450,7 @@ declare module Rance {
         serialize(): IFleetSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface IRange {
         min?: number;
         max?: number;
@@ -458,7 +458,7 @@ declare module Rance {
         defaultValue?: number;
     }
 }
-declare module Rance {
+declare namespace Rance {
     function hex2rgb(hex: number): number[];
     function rgb2hex(rgb: number[]): number;
     function hsvToRgb(h: number, s: number, v: number): number[];
@@ -510,7 +510,7 @@ declare module Rance {
     };
     function checkRandomGenHues(amt: number): void;
 }
-declare module Rance {
+declare namespace Rance {
     enum SubEmblemCoverage {
         inner = 0,
         outer = 1,
@@ -537,7 +537,7 @@ declare module Rance {
         serialize(): IEmblemSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class Flag {
         seed: any;
         width: number;
@@ -571,7 +571,7 @@ declare module Rance {
         serialize(): IFlagSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class Item {
         id: number;
         template: Templates.IItemTemplate;
@@ -580,7 +580,7 @@ declare module Rance {
         serialize(): IItemSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface IMove {
         ability: Templates.IAbilityTemplate;
         targetId: number;
@@ -622,7 +622,7 @@ declare module Rance {
         getRecursiveBestUctChild(): MCTreeNode;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class MCTree {
         rootNode: MCTreeNode;
         actualBattle: Battle;
@@ -640,7 +640,7 @@ declare module Rance {
         printToConsole(nodes: MCTreeNode[]): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class BattleSimulator {
         battle: Battle;
         tree: MCTree;
@@ -653,7 +653,7 @@ declare module Rance {
         finishBattle(): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class BattlePrep {
         attacker: Player;
         defender: Player;
@@ -692,7 +692,7 @@ declare module Rance {
         makeBattle(): Battle;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class AttitudeModifier {
         template: Templates.IAttitudeModifierTemplate;
         startTurn: number;
@@ -715,7 +715,7 @@ declare module Rance {
         serialize(): IAttitudeModifierSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     enum DiplomaticState {
         peace = 0,
         coldWar = 1,
@@ -759,7 +759,7 @@ declare module Rance {
         serialize(): IDiplomacyStatusSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class PlayerTechnology {
         technologies: {
             [technologyKey: string]: {
@@ -792,7 +792,7 @@ declare module Rance {
         serialize(): IPlayerTechnologySaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface IArchetypeValues {
         [archetypeType: string]: number;
     }
@@ -804,7 +804,7 @@ declare module Rance {
     }
     function makeRandomPersonality(): IPersonality;
 }
-declare module Rance {
+declare namespace Rance {
     class MapVoronoiInfo {
         treeMap: any;
         diagram: any;
@@ -822,7 +822,7 @@ declare module Rance {
         getStarAtPoint(point: Point): any;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class FillerPoint implements Point {
         x: number;
         y: number;
@@ -834,8 +834,8 @@ declare module Rance {
         serialize(): Point;
     }
 }
-declare module Rance {
-    module MapGenCore {
+declare namespace Rance {
+    namespace MapGenCore {
         class Triangle {
             a: Point;
             b: Point;
@@ -853,15 +853,15 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapGenCore {
+declare namespace Rance {
+    namespace MapGenCore {
         function triangulate(vertices: Point[]): Triangle[];
         function getCentroid(vertices: Point[]): Point;
         function pointsEqual(p1: Point, p2: Point): boolean;
     }
 }
-declare module Rance {
-    module MapGenCore {
+declare namespace Rance {
+    namespace MapGenCore {
         function makeVoronoi(points: Point[], width: number, height: number): any;
         /**
          * Perform one iteration of Lloyd's Algorithm to move points in voronoi diagram to their centroid
@@ -873,8 +873,8 @@ declare module Rance {
         function relaxVoronoi(diagram: any, dampeningFunction?: (point: any) => number): void;
     }
 }
-declare module Rance {
-    module MapGenCore {
+declare namespace Rance {
+    namespace MapGenCore {
         class MapGenResult {
             stars: Star[];
             fillerPoints: FillerPoint[];
@@ -899,14 +899,14 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
+declare namespace Rance {
     enum NotificationFilterState {
         alwaysShow = 0,
         showIfInvolved = 1,
         neverShow = 2,
     }
 }
-declare module Rance {
+declare namespace Rance {
     class Notification {
         template: Templates.INotificationTemplate;
         props: any;
@@ -917,7 +917,7 @@ declare module Rance {
         serialize(): INotificationSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class NotificationFilter {
         filters: {
             [notificationKey: string]: NotificationFilterState[];
@@ -939,7 +939,7 @@ declare module Rance {
         save(slot?: number): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class NotificationLog {
         byTurn: {
             [turnNumber: number]: Notification[];
@@ -963,7 +963,7 @@ declare module Rance {
         serialize(): INotificationLogSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class Game {
         turnNumber: number;
         independents: Player[];
@@ -983,7 +983,7 @@ declare module Rance {
         save(name: string): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class GalaxyMap {
         stars: Star[];
         fillerPoints: FillerPoint[];
@@ -1000,8 +1000,8 @@ declare module Rance {
         serialize(): IGalaxyMapSaveData;
     }
 }
-declare module Rance {
-    module MapAI {
+declare namespace Rance {
+    namespace MapAI {
         var defaultEvaluationParameters: {
             starDesirability: {
                 neighborRange: number;
@@ -1158,8 +1158,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapAI {
+declare namespace Rance {
+    namespace MapAI {
         class GrandStrategyAI {
             personality: IPersonality;
             mapEvaluator: MapEvaluator;
@@ -1175,8 +1175,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapAI {
+declare namespace Rance {
+    namespace MapAI {
         class Objective {
             id: number;
             template: Templates.IObjectiveTemplate;
@@ -1194,8 +1194,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapAI {
+declare namespace Rance {
+    namespace MapAI {
         class ObjectivesAI {
             mapEvaluator: MapEvaluator;
             map: GalaxyMap;
@@ -1222,8 +1222,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapAI {
+declare namespace Rance {
+    namespace MapAI {
         class Front {
             id: number;
             objective: Objective;
@@ -1259,8 +1259,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapAI {
+declare namespace Rance {
+    namespace MapAI {
         class FrontsAI {
             player: Player;
             map: GalaxyMap;
@@ -1284,8 +1284,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapAI {
+declare namespace Rance {
+    namespace MapAI {
         class EconomyAI {
             objectivesAI: ObjectivesAI;
             frontsAI: FrontsAI;
@@ -1304,8 +1304,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapAI {
+declare namespace Rance {
+    namespace MapAI {
         class DiplomacyAI {
             game: Game;
             player: Player;
@@ -1320,8 +1320,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapAI {
+declare namespace Rance {
+    namespace MapAI {
         class AIController {
             player: Player;
             game: Game;
@@ -1340,7 +1340,7 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
+declare namespace Rance {
     class Player {
         id: number;
         name: string;
@@ -1449,7 +1449,7 @@ declare module Rance {
         serialize(): IPlayerSaveData;
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface ITurnOrderDisplayData {
         moveDelay: number;
         isGhost: boolean;
@@ -1473,7 +1473,7 @@ declare module Rance {
         getDisplayData(ghostMoveDelay?: number, ghostId?: number): ITurnOrderDisplayData[];
     }
 }
-declare module Rance {
+declare namespace Rance {
     class Battle {
         unitsById: {
             [id: number]: Unit;
@@ -1546,7 +1546,7 @@ declare module Rance {
         private updateTurnOrder();
     }
 }
-declare module Rance {
+declare namespace Rance {
     type UnitBattleSide = "side1" | "side2";
     var UnitBattleSidesArray: UnitBattleSide[];
     enum GuardCoverage {
@@ -1701,43 +1701,43 @@ declare module Rance {
         makeVirtualClone(): Unit;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitStrength: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitActions: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitStatus: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitInfo: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitIcon: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitStatusEffects: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitPortrait: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Draggable: {
             getDefaultProps: () => {
                 dragThreshhold: number;
@@ -1761,99 +1761,99 @@ declare module Rance {
         };
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Unit: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var EmptyUnit: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var DropTarget: {
             componentDidMount: () => void;
             componentWillUnmount: () => void;
         };
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitWrapper: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FormationRow: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Formation: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TurnCounter: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TurnOrder: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var AbilityTooltip: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BattleSceneFlag: React.ClassicFactory<{}>;
     }
 }
 declare var bs: any;
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BattleScene: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var PlayerFlag: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BattleScore: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BattleDisplayStrength: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BattleBackground: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Battle: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var SplitMultilineText: {
             splitMultilineText: (text: any) => any;
         };
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         interface IListColumn {
             label: string;
             title?: string;
@@ -1871,132 +1871,132 @@ declare module Rance {
         var List: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitListItem: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ItemListItem: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ItemList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var AbilityList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitItem: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitItemWrapper: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UpgradeAbilities: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UpgradeAttributes: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UpgradeUnit: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UnitExperience: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var MenuUnitInfo: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ItemEquip: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var DefenceBuilding: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var DefenceBuildingList: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BattleInfo: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BattlePrep: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var PopupResizeHandle: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Popup: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ConfirmPopup: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var PopupManager: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var SaveListItem: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var SaveList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var SaveGame: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var LoadGame: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface ITradeableItem {
         key: string;
         amount: number;
@@ -2020,33 +2020,33 @@ declare module Rance {
         updateAfterExecutedTrade(): void;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TradeMoney: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TradeableItemsList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TradeableItems: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TradeOverview: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var DiplomacyActions: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var AutoPosition: {
             componentDidMount: () => void;
             componentDidUpdate: () => void;
@@ -2057,73 +2057,73 @@ declare module Rance {
         };
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var AttitudeModifierInfo: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var AttitudeModifierList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Opinion: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var DiplomaticStatusPlayer: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var DiplomacyOverview: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var EconomySummaryItem: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var EconomySummary: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var OptionsGroup: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var NotificationFilterListItem: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var NotificationFilterList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var NotificationFilterButton: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var OptionsCheckbox: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var OptionsNumericField: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var OptionsList: React.ClassicFactory<{}>;
     }
 }
@@ -2137,63 +2137,63 @@ declare module "src/uicomponents/technologies/technologyPrioritySlider" {
 }
 declare module "src/uicomponents/technologies/technology" {
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TechnologiesList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ManufactoryStarsListItem: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ManufactoryStarsList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ManufacturableThingsListItem: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ManufacturableThingsList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ManufactoryUpgradeButton: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BuildQueue: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ManufacturableUnits: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ManufacturableItems: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ManufacturableThings: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ConstructManufactory: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var UpdateWhenMoneyChanges: {
             handleMoneyChange: () => void;
             componentDidMount: () => void;
@@ -2201,117 +2201,117 @@ declare module Rance {
         };
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ProductionOverview: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TopMenuPopup: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TopMenuPopups: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TopMenu: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var PlayerMoney: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Resource: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TopBarResources: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var TopBar: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FleetControls: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FleetInfo: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FleetUnitInfoName: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FleetUnitInfo: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FleetContents: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FleetReorganization: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FleetSelection: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var StarInfo: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var AttackTarget: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BuildableBuilding: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BuildableBuildingList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BuildingUpgradeListItem: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BuildingUpgradeList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var PossibleActions: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class MapRendererLayer {
         template: IMapRendererLayerTemplate;
         container: PIXI.Container;
@@ -2323,7 +2323,7 @@ declare module Rance {
         draw(map: GalaxyMap, mapRenderer: MapRenderer): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class MapRendererMapMode {
         template: IMapRendererMapModeTemplate;
         displayName: string;
@@ -2343,7 +2343,7 @@ declare module Rance {
         resetLayers(): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     function starsOnlyShareNarrowBorder(a: Star, b: Star): boolean;
     function getBorderingHalfEdges(stars: Star[]): {
         star: Star;
@@ -2359,7 +2359,7 @@ declare module Rance {
         isClosed: boolean;
     }[];
 }
-declare module Rance {
+declare namespace Rance {
     interface IMapRendererMapMode {
         name: string;
         displayName: string;
@@ -2420,43 +2420,43 @@ declare module Rance {
         render(): void;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var MapModeSelector: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var MapRendererLayersListItem: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var MapRendererLayersList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var MapModeSettings: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Notification: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var NotificationLog: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Notifications: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module Tutorials {
+declare namespace Rance {
+    namespace Tutorials {
         var introTutorial: {
             pages: {
                 content: string[];
@@ -2464,7 +2464,7 @@ declare module Rance {
         };
     }
 }
-declare module Rance {
+declare namespace Rance {
     enum tutorialStatus {
         neverShow = -1,
         dontShowThisSession = 0,
@@ -2478,33 +2478,33 @@ declare module Rance {
     };
     var TutorialState: any;
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var DontShowAgain: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var Tutorial: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var IntroTutorial: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var GalaxyMapUI: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var GalaxyMap: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FocusTimer: {
             componentDidMount: () => void;
             registerFocusTimerListener: () => void;
@@ -2513,68 +2513,68 @@ declare module Rance {
         };
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ColorPicker: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var ColorSetter: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FlagPicker: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FlagSetter: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var PlayerSetup: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var SetupGamePlayers: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var MapGenOption: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var MapGenOptions: React.ClassicFactory<any>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var MapSetup: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var SetupGame: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var FlagMaker: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         var BattleSceneTester: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
+declare namespace Rance {
+    namespace UIComponents {
         interface ReactComponentPlaceHolder {
         }
         interface ReactDOMPlaceHolder {
@@ -2582,7 +2582,7 @@ declare module Rance {
         var Stage: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class ReactUI {
         container: HTMLElement;
         currentScene: string;
@@ -2602,7 +2602,7 @@ declare module Rance {
         render(): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class PlayerControl {
         player: Player;
         selectedFleets: Fleet[];
@@ -2644,7 +2644,7 @@ declare module Rance {
     }
 }
 declare var tempCameraId: number;
-declare module Rance {
+declare namespace Rance {
     /**
      * @class Camera
      * @constructor
@@ -2736,7 +2736,7 @@ declare module Rance {
         private clampEdges();
     }
 }
-declare module Rance {
+declare namespace Rance {
     class RectangleSelect {
         parentContainer: PIXI.Container;
         graphics: PIXI.Graphics;
@@ -2772,7 +2772,7 @@ declare module Rance {
         selectionContains(point: Point): boolean;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class MouseEventHandler {
         renderer: Renderer;
         camera: Camera;
@@ -2817,7 +2817,7 @@ declare module Rance {
         endSelect(event: PIXI.interaction.InteractionEvent): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class UniformManager {
         registeredObjects: {
             [uniformType: string]: any[];
@@ -2828,8 +2828,8 @@ declare module Rance {
         updateTime(): void;
     }
 }
-declare module Rance {
-    module ShaderSources {
+declare namespace Rance {
+    namespace ShaderSources {
         var beam: string[];
         var blacktoalpha: string[];
         var guard: string[];
@@ -2840,7 +2840,7 @@ declare module Rance {
         var shinyparticle: string[];
     }
 }
-declare module Rance {
+declare namespace Rance {
     class NebulaFilter extends PIXI.AbstractFilter {
         constructor(uniforms: any);
     }
@@ -2859,7 +2859,7 @@ declare module Rance {
         initNebula(): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class PathfindingArrow {
         parentContainer: PIXI.Container;
         container: PIXI.Container;
@@ -2907,7 +2907,7 @@ declare module Rance {
         };
     }
 }
-declare module Rance {
+declare namespace Rance {
     class Renderer {
         stage: PIXI.Container;
         renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
@@ -2947,7 +2947,7 @@ declare module Rance {
         render(renderLoopId?: number): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface IModuleRuleSet {
         manufactory?: {
             startingCapacity?: number;
@@ -2973,7 +2973,7 @@ declare module Rance {
     }
     var defaultRuleSet: IModuleRuleSet;
 }
-declare module Rance {
+declare namespace Rance {
     interface ITemplates {
         Abilities: {
             [type: string]: Templates.IAbilityTemplate;
@@ -3072,7 +3072,7 @@ declare module Rance {
         getDefaultMap(): Templates.IMapGenTemplate;
     }
 }
-declare module Rance {
+declare namespace Rance {
     class ModuleLoader {
         moduleData: ModuleData;
         moduleFiles: {
@@ -3094,7 +3094,7 @@ declare module Rance {
         copyRuleSet(toCopy: IModuleRuleSet): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface ISpriteSheetFrame {
         x: number;
         y: number;
@@ -3111,17 +3111,17 @@ declare module Rance {
     }
     function cacheSpriteSheetAsImages(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement): void;
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
             function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer): PIXI.Sprite;
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module MapRendererLayers {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace MapRendererLayers {
                 var nonFillerStars: IMapRendererLayerTemplate;
                 var starOwners: IMapRendererLayerTemplate;
                 var fogOfWar: IMapRendererLayerTemplate;
@@ -3137,10 +3137,10 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module MapRendererMapModes {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace MapRendererMapModes {
                 var defaultMapMode: IMapRendererMapModeTemplate;
                 var noStatic: IMapRendererMapModeTemplate;
                 var income: IMapRendererMapModeTemplate;
@@ -3150,8 +3150,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapGenCore {
+declare namespace Rance {
+    namespace MapGenCore {
         class Region {
             id: string;
             isFiller: boolean;
@@ -3165,8 +3165,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapGenCore {
+declare namespace Rance {
+    namespace MapGenCore {
         class Sector {
             id: number;
             stars: Star[];
@@ -3185,8 +3185,8 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module MapGenCore {
+declare namespace Rance {
+    namespace MapGenCore {
         function linkAllStars(stars: Star[]): void;
         function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number): void;
         function calculateConnectedness(stars: Star[], maxRange: number): void;
@@ -3200,42 +3200,42 @@ declare module Rance {
         function severLinksToNonAdjacentStars(star: Star): void;
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module MapGenFunctions {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace MapGenFunctions {
                 function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues, players: Player[]): MapGenCore.MapGenResult;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module MapGen {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace MapGen {
                     var spiralGalaxy: Rance.Templates.IMapGenTemplate;
                 }
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module MapGen {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace MapGen {
                     var tinierSpiralGalaxy: Rance.Templates.IMapGenTemplate;
                 }
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Technologies {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace Technologies {
                     var stealth: Rance.Templates.ITechnologyTemplate;
                     var lasers: Rance.Templates.ITechnologyTemplate;
                     var missiles: Rance.Templates.ITechnologyTemplate;
@@ -3246,16 +3246,16 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module BattleSFXFunctions {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace BattleSFXFunctions {
                 function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void, props: Rance.Templates.SFXParams): void;
             }
         }
     }
 }
-declare module Rance {
+declare namespace Rance {
     enum TargetFormation {
         ally = 0,
         enemy = 1,
@@ -3277,11 +3277,11 @@ declare module Rance {
     var areaRowNeighbors: BattleAreaFunction;
     var areaNeighbors: BattleAreaFunction;
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module EffectActions {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace EffectActions {
                     var singleTargetDamage: Rance.Templates.IEffectActionTemplate;
                     var closeAttack: Rance.Templates.IEffectActionTemplate;
                     var wholeRowAttack: Rance.Templates.IEffectActionTemplate;
@@ -3298,10 +3298,10 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module BattleSFXFunctions {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace BattleSFXFunctions {
                 function projectileAttack(props: {
                     projectileTextures: PIXI.Texture[];
                     impactTextures?: PIXI.Texture[][];
@@ -3317,27 +3317,27 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module BattleSFXFunctions {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace BattleSFXFunctions {
                 function rocketAttack(params: Rance.Templates.SFXParams): void;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module BattleSFXFunctions {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace BattleSFXFunctions {
                 function guard(props: Rance.Templates.SFXParams): void;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
             class ProtonWrapper {
                 pixiRenderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
                 container: PIXI.Container;
@@ -3370,7 +3370,7 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
+declare namespace Rance {
     type UniformValue = number | number[];
     type UniformsUpdaterFunction = (time: number) => {
         [key: string]: UniformValue;
@@ -3396,11 +3396,11 @@ declare module Rance {
         makeClone(): UniformSyncer;
     }
 }
-declare module Rance {
+declare namespace Rance {
     function drawEasingFunctionGraph(easingFunction: (x: number) => number): void;
-    module Modules {
-        module DefaultModule {
-            module BattleSFXFunctions {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace BattleSFXFunctions {
                 class ShinyParticleFilter extends PIXI.AbstractFilter {
                     constructor(uniforms?: any);
                     static getUniformTypes(): IUniformTypesObject;
@@ -3422,14 +3422,14 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
             class BlackToAlphaFilter extends PIXI.AbstractFilter {
                 constructor();
             }
-            module Templates {
-                module BattleSFX {
+            namespace Templates {
+                namespace BattleSFX {
                     var rocketAttack: Rance.Templates.IBattleSFXTemplate;
                     var guard: Rance.Templates.IBattleSFXTemplate;
                     var particleTest: Rance.Templates.IBattleSFXTemplate;
@@ -3439,11 +3439,11 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Abilities {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace Abilities {
                     var rangedAttack: Rance.Templates.IAbilityTemplate;
                     var closeAttack: Rance.Templates.IAbilityTemplate;
                     var wholeRowAttack: Rance.Templates.IAbilityTemplate;
@@ -3459,7 +3459,7 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
+declare namespace Rance {
     interface IDiplomacyEvaluation {
         currentTurn: number;
         currentStatus: DiplomaticState;
@@ -3471,10 +3471,10 @@ declare module Rance {
         history = 1,
         current = 2,
     }
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module AttitudeModifiers {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace AttitudeModifiers {
                     var neighborStars: Rance.Templates.IAttitudeModifierTemplate;
                     var atWar: Rance.Templates.IAttitudeModifierTemplate;
                     var declaredWar: Rance.Templates.IAttitudeModifierTemplate;
@@ -3483,11 +3483,11 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Buildings {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace Buildings {
                     var sectorCommand: Rance.Templates.IDefenceBuildingTemplate;
                     var sectorCommand1: Rance.Templates.IDefenceBuildingTemplate;
                     var sectorCommand2: Rance.Templates.IDefenceBuildingTemplate;
@@ -3501,22 +3501,22 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Cultures {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace Cultures {
                     var badassCulture: Rance.Templates.ICultureTemplate;
                 }
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module PassiveSkills {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace PassiveSkills {
                     var autoHeal: Rance.Templates.IPassiveSkillTemplate;
                     var poisoned: Rance.Templates.IPassiveSkillTemplate;
                     var overdrive: Rance.Templates.IPassiveSkillTemplate;
@@ -3528,11 +3528,11 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Items {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace Items {
                     var bombLauncher1: Rance.Templates.IItemTemplate;
                     var bombLauncher2: Rance.Templates.IItemTemplate;
                     var bombLauncher3: Rance.Templates.IItemTemplate;
@@ -3547,22 +3547,22 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module StatusEffects {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace StatusEffects {
                     var test: Rance.Templates.IStatusEffectTemplate;
                 }
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module SubEmblems {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace SubEmblems {
                     var Aguila_explayada_2: Rance.Templates.ISubEmblemTemplate;
                     var Berliner_Baer: Rance.Templates.ISubEmblemTemplate;
                     var Cles_en_sautoir: Rance.Templates.ISubEmblemTemplate;
@@ -3589,11 +3589,11 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module UnitArchetypes {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace UnitArchetypes {
                     var combat: Rance.Templates.IUnitArchetype;
                     var utility: Rance.Templates.IUnitArchetype;
                     var scouting: Rance.Templates.IUnitArchetype;
@@ -3603,11 +3603,11 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module UnitFamilies {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace UnitFamilies {
                     var debug: Rance.Templates.IUnitFamily;
                     var basic: Rance.Templates.IUnitFamily;
                     var red: Rance.Templates.IUnitFamily;
@@ -3617,18 +3617,18 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
             var defaultUnitScene: Rance.Templates.IUnitDrawingFunction;
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Units {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Templates {
+                namespace Units {
                     var cheatShip: Rance.Templates.IUnitTemplate;
                     var fighterSquadron: Rance.Templates.IUnitTemplate;
                     var bomberSquadron: Rance.Templates.IUnitTemplate;
@@ -3644,10 +3644,10 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module AIUtils {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace AIUtils {
                 interface IScoresByStar {
                     [starId: number]: {
                         star: Star;
@@ -3680,156 +3680,156 @@ declare module Rance {
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Objectives {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Objectives {
                 var discovery: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Objectives {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Objectives {
                 var heal: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Objectives {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Objectives {
                 var expansion: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Objectives {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Objectives {
                 var cleanUpPirates: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Objectives {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Objectives {
                 var scoutingPerimeter: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Objectives {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Objectives {
                 var conquer: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Objectives {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Objectives {
                 var declareWar: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Objectives {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Objectives {
                 var expandManufactoryCapacity: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module UIComponents {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace UIComponents {
                 var BattleFinishNotification: React.ClassicFactory<{}>;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Notifications {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Notifications {
                 var battleFinishNotification: Rance.Templates.INotificationTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module UIComponents {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace UIComponents {
                 var WarDeclarationNotification: React.ClassicFactory<{}>;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Notifications {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Notifications {
                 var WarDeclarationNotification: Rance.Templates.INotificationTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module UIComponents {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace UIComponents {
                 var PlayerDiedNotification: React.ClassicFactory<{}>;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Notifications {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
+            namespace Notifications {
                 var playerDiedNotification: Rance.Templates.INotificationTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module DefaultModule {
+declare namespace Rance {
+    namespace Modules {
+        namespace DefaultModule {
             var moduleFile: IModuleFile;
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module PaintingPortraits {
-            module Culture {
+declare namespace Rance {
+    namespace Modules {
+        namespace PaintingPortraits {
+            namespace Culture {
                 var paintingPortraitsCulture: Rance.Templates.ICultureTemplate;
             }
         }
     }
 }
-declare module Rance {
-    module Modules {
-        module PaintingPortraits {
+declare namespace Rance {
+    namespace Modules {
+        namespace PaintingPortraits {
             var moduleFile: IModuleFile;
         }
     }
 }
-declare module Rance {
+declare namespace Rance {
     class GameLoader {
         map: GalaxyMap;
         humanPlayer: Player;
@@ -3864,12 +3864,12 @@ declare module Rance {
         deserializeItem(data: IItemSaveData, player: Player): void;
     }
 }
-declare module Rance {
+declare namespace Rance {
     function setAllDynamicTemplateProperties(): void;
 }
-declare module Rance {
+declare namespace Rance {
     function buildTemplateIndexes(): void;
-    module TemplateIndexes {
+    namespace TemplateIndexes {
         var distributablesByDistributionGroup: {
             [groupName: string]: {
                 unitFamilies: Templates.IUnitFamily[];
@@ -3881,7 +3881,7 @@ declare module Rance {
         };
     }
 }
-declare module Rance {
+declare namespace Rance {
     function saveOptions(slot?: number): void;
     function loadOptions(slot?: number): void;
     interface IOptions {
@@ -3903,7 +3903,7 @@ declare module Rance {
             borderWidth: number;
         };
     }
-    module defaultOptions {
+    namespace defaultOptions {
         var battleAnimationTiming: {
             before: number;
             effectDuration: number;
@@ -3924,7 +3924,7 @@ declare module Rance {
     }
     var Options: IOptions;
 }
-declare module Rance {
+declare namespace Rance {
     enum BattleSceneUnitState {
         entering = 0,
         stationary = 1,
@@ -3972,7 +3972,7 @@ declare module Rance {
         private setSFXSprite(spriteDrawingFN, duration);
     }
 }
-declare module Rance {
+declare namespace Rance {
     class BattleSceneUnitOverlay {
         container: PIXI.Container;
         renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
@@ -3996,7 +3996,7 @@ declare module Rance {
         private finishAnimation();
     }
 }
-declare module Rance {
+declare namespace Rance {
     class BattleScene {
         container: PIXI.Container;
         renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
@@ -4067,14 +4067,14 @@ declare module Rance {
         private render(timeStamp?);
     }
 }
-declare module Rance {
+declare namespace Rance {
     function getNullFormation(): Unit[][];
     function getFormationsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectActionTemplate): Unit[][];
     function getTargetsForAllAbilities(battle: Battle, user: Unit): {
         [id: number]: Templates.IAbilityTemplate[];
     };
 }
-declare module Rance {
+declare namespace Rance {
     interface IAbilityUseData {
         ability: Templates.IAbilityTemplate;
         user: Unit;
@@ -4094,7 +4094,7 @@ declare module Rance {
     }
     function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: IAbilityUseData): IAbilityEffectDataByPhase;
 }
-declare module Rance {
+declare namespace Rance {
     interface IUnitDisplayData {
         health: number;
         guardAmount: number;
@@ -4115,7 +4115,7 @@ declare module Rance {
     }
     function useAbility(battle: Battle, ability: Templates.IAbilityTemplate, user: Unit, target: Unit, getEffects: boolean): IAbilityUseEffect[];
 }
-declare module Rance {
+declare namespace Rance {
     var idGenerators: {
         fleet: number;
         item: number;

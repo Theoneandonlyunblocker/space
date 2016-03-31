@@ -2,9 +2,9 @@
 
 /// <reference path="../trade/tradeoverview.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var DiplomacyActions = React.createFactory(React.createClass(
     {

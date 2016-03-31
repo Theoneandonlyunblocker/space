@@ -2,9 +2,9 @@
 /// <reference path="unitactions.ts"/>
 /// <reference path="unitstatus.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var UnitInfo = React.createFactory(React.createClass(
     {

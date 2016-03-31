@@ -1,4 +1,4 @@
-declare module Rance
+declare namespace Rance
 {
   interface IRoutineAdjustment
   {
@@ -9,7 +9,7 @@ declare module Rance
   {
     [targetId: number]: IRoutineAdjustment;
   }
-  module Templates
+  namespace Templates
   {
     interface IObjectiveTemplate
     {

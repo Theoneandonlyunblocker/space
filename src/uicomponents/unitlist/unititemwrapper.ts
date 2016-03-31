@@ -2,9 +2,9 @@
 
 /// <reference path="unititem.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var UnitItemWrapper = React.createFactory(React.createClass(
     {

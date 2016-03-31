@@ -41,14 +41,14 @@
 /// <reference path="notifications/wardeclarationnotification.ts" />
 /// <reference path="notifications/playerdiednotification.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
     // TODO module | split into smaller modules (DefaultUnits, DefaultRuleSet, etc.)
     // would allow easier reuse but needs some kind of module management system.
     // probably not worth doing in the near future
-    export module DefaultModule
+    export namespace DefaultModule
     {
       export var moduleFile: IModuleFile =
       {

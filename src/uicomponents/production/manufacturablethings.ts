@@ -4,9 +4,9 @@
 /// <reference path="../../star.ts" />
 /// <reference path="../../manufactory.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var ManufacturableThings = React.createFactory(React.createClass(
     {

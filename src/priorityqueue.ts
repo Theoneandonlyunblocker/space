@@ -1,4 +1,4 @@
-module Rance
+namespace Rance
 {
   // not very efficient. probably doesn't matter though
   export class PriorityQueue

@@ -5,9 +5,9 @@
 /// <reference path="mapevaluator.ts"/>
 /// <reference path="objectivesai.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module MapAI
+  export namespace MapAI
   {
     export class DiplomacyAI
     {

@@ -1,8 +1,8 @@
 /// <reference path="fleetcontrols.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var FleetInfo = React.createFactory(React.createClass(
     {

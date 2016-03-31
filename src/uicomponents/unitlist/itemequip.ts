@@ -2,9 +2,9 @@
 /// <reference path="unitlist.ts" />
 /// <reference path="menuunitinfo.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var ItemEquip = React.createFactory(React.createClass(
     {

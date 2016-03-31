@@ -1,9 +1,9 @@
 /// <reference path="../../player.ts" />
 /// <reference path="../mixins/updatewhenmoneychanges.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var BuildingUpgradeListItem = React.createFactory(React.createClass(
     {

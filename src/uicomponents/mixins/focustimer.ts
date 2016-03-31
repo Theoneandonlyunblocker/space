@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var FocusTimer =
     {

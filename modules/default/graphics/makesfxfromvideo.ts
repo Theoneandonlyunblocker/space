@@ -1,10 +1,10 @@
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module BattleSFXFunctions
+      export namespace BattleSFXFunctions
       {
         export function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void,
           props: Rance.Templates.SFXParams)

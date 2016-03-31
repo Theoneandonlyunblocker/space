@@ -4,7 +4,7 @@
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />
 
-module Rance
+namespace Rance
 {
   export interface IBuildingUpgradeData
   {

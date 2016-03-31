@@ -1,7 +1,7 @@
 /// <reference path="templateinterfaces/imaprenderermapmodetemplate.d.ts" />
 /// <reference path="maprendererlayer.ts" />
 
-module Rance
+namespace Rance
 {
   export class MapRendererMapMode
   {

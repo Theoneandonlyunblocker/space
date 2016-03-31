@@ -10,7 +10,7 @@
 
 /// <reference path="savedata/istarsavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class Star implements Point
   {

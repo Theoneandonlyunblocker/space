@@ -7,9 +7,9 @@
 /// <reference path="battledisplaystrength.ts"/>
 /// <reference path="battlebackground.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     // TODO refactor
     // should have separate non-react class for battle logic

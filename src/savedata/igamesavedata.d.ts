@@ -2,7 +2,7 @@
 /// <reference path="iplayersavedata.d.ts" />
 /// <reference path="inotificationlogsavedata.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   interface IGameSaveData
   {

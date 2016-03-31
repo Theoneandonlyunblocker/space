@@ -1,8 +1,8 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface SFXParams
     {

@@ -1,15 +1,15 @@
 /// <reference path="../../../src/templateinterfaces/itechnologytemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Templates
+      export namespace Templates
       {
-        export module Technologies
+        export namespace Technologies
         {
           export var stealth: Rance.Templates.ITechnologyTemplate =
           {

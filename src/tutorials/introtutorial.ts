@@ -1,8 +1,8 @@
 /// <reference path="tutorial.d.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module Tutorials
+  export namespace Tutorials
   {
     export var introTutorial =
     {

@@ -1,6 +1,6 @@
-module Rance
+namespace Rance
 {
-  export module ShaderSources
+  export namespace ShaderSources
   {
       export var beam =
       [

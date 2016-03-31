@@ -4,7 +4,7 @@
 
 /// <reference path="point.ts" />
 
-module Rance
+namespace Rance
 {
   export class RectangleSelect
   {

@@ -1,9 +1,9 @@
 /// <reference path="../../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="mapgenoptions.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var MapSetup = React.createFactory(React.createClass(
     {

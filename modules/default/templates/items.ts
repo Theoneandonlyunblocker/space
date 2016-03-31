@@ -2,15 +2,15 @@
 /// <reference path="abilities.ts" />
 /// <reference path="passiveskills.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Templates
+      export namespace Templates
       {
-        export module Items
+        export namespace Items
         {
           export var bombLauncher1: Rance.Templates.IItemTemplate =
           {

@@ -1,7 +1,7 @@
 /// <reference path="../src/utility.ts" />
 /// <reference path="../src/unit.ts" />
 
-module Rance
+namespace Rance
 {
   export function setAllDynamicTemplateProperties()
   {

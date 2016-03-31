@@ -1,6 +1,6 @@
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var Notification = React.createFactory(React.createClass(
     {

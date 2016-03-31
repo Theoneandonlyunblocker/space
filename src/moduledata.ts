@@ -1,6 +1,6 @@
 /// <reference path="ruleset.ts" />
 
-module Rance
+namespace Rance
 {
   export interface ITemplates
   {

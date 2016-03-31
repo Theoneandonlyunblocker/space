@@ -1,9 +1,9 @@
 /// <reference path="upgradeabilities.ts" />
 /// <reference path="upgradeattributes.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var UpgradeUnit = React.createFactory(React.createClass(
     {

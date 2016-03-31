@@ -1,6 +1,6 @@
 /// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class StatusEffect
   {

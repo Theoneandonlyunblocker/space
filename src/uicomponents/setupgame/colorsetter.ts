@@ -2,9 +2,9 @@
 
 /// <reference path="colorpicker.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var ColorSetter = React.createFactory(React.createClass(
     {

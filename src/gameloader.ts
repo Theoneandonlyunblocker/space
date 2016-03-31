@@ -21,7 +21,7 @@
 /// <reference path="savedata/igamesavedata.d.ts" />
 /// <reference path="savedata/iunitsavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class GameLoader
   {

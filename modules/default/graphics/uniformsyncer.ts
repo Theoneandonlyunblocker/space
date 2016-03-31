@@ -1,4 +1,4 @@
-module Rance
+namespace Rance
 {
   export type UniformValue = number | number[];
   export type UniformsUpdaterFunction = (time: number) => {[key: string]: UniformValue};

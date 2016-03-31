@@ -3,15 +3,15 @@
 /// <reference path="../../../src/unit.ts" />
 /// <reference path="../../../src/damagetype.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Templates
+      export namespace Templates
       {
-        export module EffectActions
+        export namespace EffectActions
         {
           export var singleTargetDamage: Rance.Templates.IEffectActionTemplate =
           {

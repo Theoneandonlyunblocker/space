@@ -3,7 +3,7 @@
 
 /// <reference path="savedata/iitemsavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
 
   export class Item

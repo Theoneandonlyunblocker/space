@@ -1,13 +1,13 @@
 /// <reference path="../../../src/templateinterfaces/inotificationtemplate.d.ts"/>
 /// <reference path="uicomponents/playerdiednotification.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Notifications
+      export namespace Notifications
       {
         export var playerDiedNotification: Rance.Templates.INotificationTemplate =
         {

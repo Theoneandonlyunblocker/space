@@ -6,7 +6,7 @@
 
 /// <reference path="savedata/inotificationsavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class NotificationLog
   {

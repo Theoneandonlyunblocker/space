@@ -1,8 +1,8 @@
 /// <reference path="savelistitem.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var SaveList = React.createFactory(React.createClass(
     {

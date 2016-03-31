@@ -8,9 +8,9 @@
 /// <reference path="../tutorials/introtutorial.ts" />
 
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var GalaxyMapUI = React.createFactory(React.createClass(
     {

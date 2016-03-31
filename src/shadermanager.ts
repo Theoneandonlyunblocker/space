@@ -1,7 +1,7 @@
 /// <reference path="uniformmanager.ts"/>
 /// <reference path="shaders/converted/shadersources.ts"/>
 
-module Rance
+namespace Rance
 {
   export class NebulaFilter extends PIXI.AbstractFilter
   {

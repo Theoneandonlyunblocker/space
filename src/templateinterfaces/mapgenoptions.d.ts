@@ -1,8 +1,8 @@
 /// <reference path="../range.ts" />
 
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface IMapGenOption
     {

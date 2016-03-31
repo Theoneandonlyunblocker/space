@@ -1,8 +1,8 @@
 /// <reference path="../notificationfilterstate.ts" />
 
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface INotificationTemplate
     {

@@ -9,9 +9,9 @@
 /// <reference path="iunitfamily.d.ts" />
 /// <reference path="iweightedprobability.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface IUnitTemplate extends IManufacturableThing
     {

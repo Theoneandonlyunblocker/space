@@ -2,7 +2,7 @@
 /// <reference path="galaxymap.ts" />
 /// <reference path="templateinterfaces/imaprendererlayertemplate.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class MapRendererLayer
   {

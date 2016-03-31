@@ -1,9 +1,9 @@
 /// <reference path="triangle.ts" />
 /// <reference path="../point.ts" />
 
-module Rance
+namespace Rance
 {
-  export module MapGenCore
+  export namespace MapGenCore
   {
     export function triangulate(vertices: Point[])
     {

@@ -3,9 +3,9 @@
 /// <reference path="../../player.ts" />
 /// <reference path="../../game.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var TopMenu = React.createFactory(React.createClass(
     {

@@ -1,9 +1,9 @@
 /// <reference path="mapgenoptions.d.ts" />
 /// <reference path="imapgenfunction.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface IMapGenTemplate
     {

@@ -1,9 +1,9 @@
 /// <reference path="manufacturablethingslist.ts" />
 /// <reference path="manufactoryupgradebutton.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var ManufacturableUnits = React.createFactory(React.createClass(
     {

@@ -1,7 +1,7 @@
 /// <reference path="battle.ts"/>
 /// <reference path="mctree.ts"/>
 
-module Rance
+namespace Rance
 {
   export class BattleSimulator
   {

@@ -1,8 +1,8 @@
 /// <reference path="iabilitybase.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface IPassiveSkillTemplate extends IAbilityBase
     {

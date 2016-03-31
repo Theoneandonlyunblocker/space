@@ -1,8 +1,8 @@
 /// <reference path="resource.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var TopBarResources = React.createFactory(React.createClass(
     {

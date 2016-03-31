@@ -1,6 +1,6 @@
 /// <reference path="tutorialpage.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   interface ITutorial
   {

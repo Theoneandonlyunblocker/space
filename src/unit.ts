@@ -9,7 +9,7 @@
 
 /// <reference path="savedata/iunitsavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export type UnitBattleSide = "side1" | "side2";
   export var UnitBattleSidesArray: UnitBattleSide[] = ["side1", "side2"];

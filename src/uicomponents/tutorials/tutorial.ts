@@ -1,9 +1,9 @@
 /// <reference path="../mixins/splitmultilinetext.ts" />
 /// <reference path="dontshowagain.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var Tutorial = React.createFactory(React.createClass(
     {

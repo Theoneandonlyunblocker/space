@@ -2,9 +2,9 @@
 
 /// <reference path="uniticon.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var UnitWrapper = React.createFactory(React.createClass(
     {

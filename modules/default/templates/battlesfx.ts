@@ -4,11 +4,11 @@
 /// <reference path="../graphics/guard.ts" />
 /// <reference path="../graphics/particletest.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
       // TODO refactor | move shaders
       export class BlackToAlphaFilter extends PIXI.AbstractFilter
@@ -18,9 +18,9 @@ module Rance
           super(null, ShaderSources.blacktoalpha.join("\n"), null);
         }
       }
-      export module Templates
+      export namespace Templates
       {
-        export module BattleSFX
+        export namespace BattleSFX
         {
           export var rocketAttack: Rance.Templates.IBattleSFXTemplate =
           {

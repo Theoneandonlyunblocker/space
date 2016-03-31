@@ -1,9 +1,9 @@
 /// <reference path="../fillerpoint.ts" />
 /// <reference path="../star.ts" />
 
-module Rance
+namespace Rance
 {
-  export module MapGenCore
+  export namespace MapGenCore
   {
     export class Region
     {

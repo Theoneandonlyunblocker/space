@@ -3,9 +3,9 @@
 /// <reference path="../battle/formation.ts" />
 /// <reference path="../battle/battlebackground.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var BattlePrep = React.createFactory(React.createClass(
     {

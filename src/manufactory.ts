@@ -2,7 +2,7 @@
 
 /// <reference path="savedata/imanufactorysavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export interface IManufacturableThingWithType
   {

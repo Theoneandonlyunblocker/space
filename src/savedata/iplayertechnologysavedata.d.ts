@@ -1,4 +1,4 @@
-declare module Rance
+declare namespace Rance
 {
   interface IPlayerTechnologySaveData
   {

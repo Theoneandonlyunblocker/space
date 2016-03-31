@@ -2,9 +2,9 @@
 /// <reference path="topbarresources.ts" />
 /// <reference path="../playerflag.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var TopBar = React.createFactory(React.createClass(
     {

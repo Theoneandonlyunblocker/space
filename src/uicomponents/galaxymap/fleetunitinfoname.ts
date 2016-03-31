@@ -1,8 +1,8 @@
 /// <reference path="../../unit.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var FleetUnitInfoName = React.createFactory(React.createClass(
     {

@@ -1,6 +1,6 @@
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     // base interface for abilities and passive skills
     interface IAbilityBase

@@ -1,9 +1,9 @@
 /// <reference path="diplomacyactions.ts" />
 /// <reference path="diplomaticstatusplayer.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var DiplomacyOverview = React.createFactory(React.createClass(
     {

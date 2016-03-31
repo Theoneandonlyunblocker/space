@@ -1,7 +1,7 @@
 /// <reference path="protonwrapper.ts" />
 /// <reference path="uniformsyncer.ts" />
 
-module Rance
+namespace Rance
 {
   // TODO temporary
   export function drawEasingFunctionGraph(easingFunction: (x: number) => number)
@@ -45,11 +45,11 @@ module Rance
 
     document.body.appendChild(canvas);
   }
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module BattleSFXFunctions
+      export namespace BattleSFXFunctions
       {
         // TODO refactor | move shaders
         export class ShinyParticleFilter extends PIXI.AbstractFilter

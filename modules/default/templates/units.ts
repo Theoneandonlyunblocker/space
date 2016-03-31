@@ -10,15 +10,15 @@
 
 /// <reference path="cultures.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Templates
+      export namespace Templates
       {
-        export module Units
+        export namespace Units
         {
           export var cheatShip: Rance.Templates.IUnitTemplate =
           {

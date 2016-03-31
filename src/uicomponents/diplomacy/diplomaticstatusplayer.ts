@@ -1,9 +1,9 @@
 /// <reference path="../playerflag.ts" />
 /// <reference path="opinion.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var DiplomaticStatusPlayer = React.createFactory(React.createClass(
     {

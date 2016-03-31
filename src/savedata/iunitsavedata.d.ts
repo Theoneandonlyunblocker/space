@@ -1,7 +1,7 @@
 /// <reference path="../unit.ts" />
 /// <reference path="../statuseffect.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   interface IUnitItemsSaveData
   {

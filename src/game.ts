@@ -6,7 +6,7 @@
 
 /// <reference path="savedata/igamesavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class Game
   {

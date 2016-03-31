@@ -1,12 +1,12 @@
 /// <reference path="../../src/templateinterfaces/iculturetemplate.d.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module PaintingPortraits
+    export namespace PaintingPortraits
     {
-      export module Culture
+      export namespace Culture
       {
         export var paintingPortraitsCulture: Rance.Templates.ICultureTemplate =
         {

@@ -3,9 +3,9 @@
 
 /// <reference path="tradeableitems.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var TradeOverview = React.createFactory(React.createClass(
     {

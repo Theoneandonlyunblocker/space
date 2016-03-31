@@ -4,7 +4,7 @@
 /// <reference path="building.ts"/>
 
 
-declare module Rance
+declare namespace Rance
 {
   interface IBattleData
   {

@@ -1,7 +1,7 @@
 /// <reference path="istarsavedata.d.ts" />
 /// <reference path="../point.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   interface IGalaxyMapSaveData
   {

@@ -7,7 +7,7 @@
 /// <reference path="mapvoronoiinfo.ts" />
 /// <reference path="savedata/igalaxymapsavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class GalaxyMap
   {

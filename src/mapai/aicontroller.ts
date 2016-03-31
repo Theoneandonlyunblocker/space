@@ -11,9 +11,9 @@
 /// <reference path="diplomacyai.ts"/>
 /// <reference path="grandstrategyai.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module MapAI
+  export namespace MapAI
   {
     export class AIController
     {

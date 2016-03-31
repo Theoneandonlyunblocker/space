@@ -2,13 +2,13 @@
 
 /// <reference path="aiutils.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Objectives
+      export namespace Objectives
       {
         export var expansion: Rance.Templates.IObjectiveTemplate =
         {

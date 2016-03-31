@@ -7,9 +7,9 @@
 /// <reference path="objectivesai.ts"/>
 /// <reference path="frontsai.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module MapAI
+  export namespace MapAI
   {
     export class EconomyAI
     {

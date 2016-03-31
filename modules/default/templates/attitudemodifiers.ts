@@ -1,5 +1,5 @@
 /// <reference path="../../../src/templateinterfaces/iattitudemodifiertemplate.d.ts"/>
-module Rance
+namespace Rance
 {
   export interface IDiplomacyEvaluation
   {
@@ -14,13 +14,13 @@ module Rance
     history,
     current
   }
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Templates
+      export namespace Templates
       {
-        export module AttitudeModifiers
+        export namespace AttitudeModifiers
         {
           export var neighborStars: Rance.Templates.IAttitudeModifierTemplate =
           {

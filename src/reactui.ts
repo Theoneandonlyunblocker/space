@@ -3,7 +3,7 @@
 /// <reference path="eventmanager.ts"/>
 /// <reference path="uicomponents/stage.ts"/>
 
-module Rance
+namespace Rance
 {
   export class ReactUI
   {

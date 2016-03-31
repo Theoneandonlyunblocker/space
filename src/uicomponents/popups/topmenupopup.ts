@@ -1,6 +1,6 @@
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var TopMenuPopup = React.createFactory(React.createClass(
     {

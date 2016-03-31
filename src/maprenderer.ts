@@ -13,7 +13,7 @@
 /// <reference path="fleet.ts" />
 /// <reference path="player.ts" />
 
-module Rance
+namespace Rance
 {
   
   export interface IMapRendererMapMode

@@ -1,9 +1,9 @@
 /// <reference path="../unitlist/list.ts"/>
 /// <reference path="economysummaryitem.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var EconomySummary = React.createFactory(React.createClass(
     {

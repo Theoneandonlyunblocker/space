@@ -4,7 +4,7 @@
 
 /// <reference path="color.ts"/>
 
-module Rance
+namespace Rance
 {
   export enum SubEmblemCoverage
   {

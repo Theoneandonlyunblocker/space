@@ -1,9 +1,9 @@
 /// <reference path="../mixins/draggable.ts" />
 /// <reference path="../unit/unitstrength.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var UnitListItem = React.createFactory(React.createClass(
     {

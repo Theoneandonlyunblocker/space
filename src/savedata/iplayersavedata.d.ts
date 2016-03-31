@@ -1,7 +1,7 @@
 /// <reference path="idiplomacystatussavedata.d.ts" />
 /// <reference path="iplayertechnologysavedata.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   interface IPlayerSaveData
   {

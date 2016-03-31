@@ -1,6 +1,6 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-module Rance
+namespace Rance
 {
   export function randInt(min: number, max: number)
   {

@@ -8,9 +8,9 @@
 
 /// <reference path="voronoi.ts" />
 
-module Rance
+namespace Rance
 {
-  export module MapGenCore
+  export namespace MapGenCore
   {
     export class MapGenResult
     {

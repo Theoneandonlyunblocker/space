@@ -1,9 +1,9 @@
 /// <reference path="../unit.ts"/>
 /// <reference path="../star.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module MapAI
+  export namespace MapAI
   {
     export class Front
     {

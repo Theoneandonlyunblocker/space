@@ -1,8 +1,8 @@
 /// <reference path="../../player.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var PlayerMoney = React.createFactory(React.createClass(
     {

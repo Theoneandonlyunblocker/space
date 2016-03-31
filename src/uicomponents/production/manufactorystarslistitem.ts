@@ -1,8 +1,8 @@
 /// <reference path="../../star.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var ManufactoryStarsListItem = React.createFactory(React.createClass(
     {

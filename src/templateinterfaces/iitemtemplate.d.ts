@@ -1,8 +1,8 @@
 /// <reference path="imanufacturablething.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface IItemTemplate extends IManufacturableThing
     {

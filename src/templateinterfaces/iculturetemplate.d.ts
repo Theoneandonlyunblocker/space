@@ -1,9 +1,9 @@
 /// <reference path="inametemplate.d.ts" />
 /// <reference path="iportraittemplate.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface ICultureTemplate
     {

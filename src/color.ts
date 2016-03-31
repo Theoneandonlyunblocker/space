@@ -2,7 +2,7 @@
 
 /// <reference path="range.ts" />
 
-module Rance
+namespace Rance
 {
   export function hex2rgb(hex: number): number[]
   {

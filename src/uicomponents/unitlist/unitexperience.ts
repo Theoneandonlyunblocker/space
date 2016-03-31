@@ -1,8 +1,8 @@
 /// <reference path="upgradeunit.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var UnitExperience = React.createFactory(React.createClass(
     {

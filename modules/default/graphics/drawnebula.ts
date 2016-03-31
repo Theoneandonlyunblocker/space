@@ -1,8 +1,8 @@
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
       export function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
       {

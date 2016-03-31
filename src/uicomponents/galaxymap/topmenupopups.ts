@@ -8,9 +8,9 @@
 /// <reference path="../production/productionoverview.ts" />
 
 /// <reference path="../popups/topmenupopup.ts" />
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var TopMenuPopups = React.createFactory(React.createClass(
     {

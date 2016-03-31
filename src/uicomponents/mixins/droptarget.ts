@@ -1,7 +1,7 @@
 // used to register event listeners for manually firing drop events because touch events suck
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var DropTarget =
     {

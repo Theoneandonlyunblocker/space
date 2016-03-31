@@ -1,6 +1,6 @@
 /// <reference path="imanufactorysavedata.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
   interface IStarBuildingsSaveData
   {

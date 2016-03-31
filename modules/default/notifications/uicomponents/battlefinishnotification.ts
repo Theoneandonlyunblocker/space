@@ -1,10 +1,10 @@
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module UIComponents
+      export namespace UIComponents
       {
         export var BattleFinishNotification = React.createFactory(React.createClass(
         {

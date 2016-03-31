@@ -2,9 +2,9 @@
 
 /// <reference path="../../maprenderer.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var MapRendererLayersList = React.createFactory(React.createClass(
     {

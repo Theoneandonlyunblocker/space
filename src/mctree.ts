@@ -1,7 +1,7 @@
 /// <reference path="mctreenode.ts"/>
 /// <reference path="battle.ts"/>
 
-module Rance
+namespace Rance
 {
   export class MCTree
   {

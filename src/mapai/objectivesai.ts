@@ -35,9 +35,9 @@ scouting objectives
     create perimeter of vision around own locations
  */
 
-module Rance
+namespace Rance
 {
-  export module MapAI
+  export namespace MapAI
   {
     export class ObjectivesAI
     {

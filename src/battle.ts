@@ -3,7 +3,7 @@
 /// <reference path="eventmanager.ts"/>
 /// <reference path="battleturnorder.ts" />
 
-module Rance
+namespace Rance
 {
   export class Battle
   {

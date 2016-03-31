@@ -6,7 +6,7 @@
 /// <reference path="battlesceneunit.ts" />
 /// <reference path="battlesceneunitoverlay.ts" />
 
-module Rance
+namespace Rance
 {
   // TODO performance
   // BattleScene.render() shouldn't be called unless there's something new to render

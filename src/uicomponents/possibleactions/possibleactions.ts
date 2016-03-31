@@ -3,9 +3,9 @@
 /// <reference path="buildablebuildinglist.ts"/>
 /// <reference path="buildingupgradelist.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var PossibleActions = React.createFactory(React.createClass(
     {

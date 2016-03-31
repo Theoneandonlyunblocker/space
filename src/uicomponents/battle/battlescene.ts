@@ -5,9 +5,9 @@
 
 var bs: any;
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var BattleScene = React.createFactory(React.createClass(
     {

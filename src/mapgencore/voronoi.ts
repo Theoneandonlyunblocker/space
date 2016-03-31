@@ -3,9 +3,9 @@
 /// <reference path="../point.ts" />
 /// <reference path="triangulation.ts" />
 
-module Rance
+namespace Rance
 {
-  export module MapGenCore
+  export namespace MapGenCore
   {
     export function makeVoronoi(points: Point[], width: number, height: number)
     {

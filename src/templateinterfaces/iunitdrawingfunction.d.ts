@@ -1,9 +1,9 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="sfxparams.d.ts" />
 
-declare module Rance
+declare namespace Rance
 {
-  module Templates
+  namespace Templates
   {
     interface IUnitDrawingFunction
     {

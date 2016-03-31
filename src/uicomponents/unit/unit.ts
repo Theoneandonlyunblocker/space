@@ -4,9 +4,9 @@
 /// <reference path="unitportrait.ts" />
 /// <reference path="../mixins/draggable.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var Unit = React.createFactory(React.createClass(
     {

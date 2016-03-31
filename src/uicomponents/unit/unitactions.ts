@@ -1,8 +1,8 @@
 /// <reference path="unitstrength.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var UnitActions = React.createFactory(React.createClass(
     {

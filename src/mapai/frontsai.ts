@@ -6,9 +6,9 @@
 /// <reference path="front.ts"/>
 /// <reference path="mapevaluator.ts"/>
 
-module Rance
+namespace Rance
 {
-  export module MapAI
+  export namespace MapAI
   {
     interface IFrontUnitScore
     {

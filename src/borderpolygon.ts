@@ -4,7 +4,7 @@
 // overlapping lines, acute angles etc etc.
 // probably have to make a shader based version later but this could still be useful for canvas fallback.
 
-module Rance
+namespace Rance
 {
   export function starsOnlyShareNarrowBorder(a: Star, b: Star)
   {

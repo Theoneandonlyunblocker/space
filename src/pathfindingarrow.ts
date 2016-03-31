@@ -5,7 +5,7 @@
 /// <reference path="fleet.ts" />
 /// <reference path="star.ts" />
 
-module Rance
+namespace Rance
 {
   interface IPathFindingArrowCurveStyle
   {

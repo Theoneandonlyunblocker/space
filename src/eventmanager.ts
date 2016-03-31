@@ -5,7 +5,7 @@ declare class EventEmitter3 extends PIXI.EventEmitter
   
 }
 
-module Rance
+namespace Rance
 {
   export var eventEmitter = new EventEmitter3();
   export var eventManager =

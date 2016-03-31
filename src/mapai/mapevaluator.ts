@@ -4,9 +4,9 @@
 /// <reference path="../game.ts" />
 /// <reference path="../fleet.ts" />
 
-module Rance
+namespace Rance
 {
-  export module MapAI
+  export namespace MapAI
   {
     export var defaultEvaluationParameters =
     {

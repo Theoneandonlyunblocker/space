@@ -2,9 +2,9 @@
 
 /// <reference path="attitudemodifierinfo.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var AttitudeModifierList = React.createFactory(React.createClass(
     {

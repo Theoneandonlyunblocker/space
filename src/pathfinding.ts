@@ -1,7 +1,7 @@
 /// <reference path="star.ts" />
 /// <reference path="priorityqueue.ts" />
 
-module Rance
+namespace Rance
 {
 
   export function backTrace(graph: any, target: Star)

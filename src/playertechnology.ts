@@ -1,6 +1,6 @@
 /// <reference path="savedata/iplayertechnologysavedata.d.ts" />
 
-module Rance
+namespace Rance
 {
   export class PlayerTechnology
   {

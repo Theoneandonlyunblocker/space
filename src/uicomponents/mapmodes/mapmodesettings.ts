@@ -3,9 +3,9 @@
 
 /// <reference path="../../maprenderer.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var MapModeSettings = React.createFactory(React.createClass(
     {

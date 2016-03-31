@@ -1,11 +1,11 @@
 /// <reference path="../../src/moduledata.ts" />
 /// <reference path="culture.ts" />
 
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module PaintingPortraits
+    export namespace PaintingPortraits
     {
       export var moduleFile: IModuleFile =
       {

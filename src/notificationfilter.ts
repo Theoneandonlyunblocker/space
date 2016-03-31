@@ -2,7 +2,7 @@
 /// <reference path="notification.ts" />
 /// <reference path="player.ts" />
 
-module Rance
+namespace Rance
 {
   export class NotificationFilter
   {

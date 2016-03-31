@@ -1,13 +1,13 @@
 /// <reference path="../../../src/templateinterfaces/isubemblemtemplate.d.ts"/>
-module Rance
+namespace Rance
 {
-  export module Modules
+  export namespace Modules
   {
-    export module DefaultModule
+    export namespace DefaultModule
     {
-      export module Templates
+      export namespace Templates
       {
-        export module SubEmblems
+        export namespace SubEmblems
         {
           export var Aguila_explayada_2: Rance.Templates.ISubEmblemTemplate =
           {

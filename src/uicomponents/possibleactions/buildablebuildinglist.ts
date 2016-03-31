@@ -1,9 +1,9 @@
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="buildablebuilding.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var BuildableBuildingList = React.createFactory(React.createClass(
     {

@@ -1,8 +1,8 @@
 /// <reference path="../mixins/draggable.ts" />
 
-module Rance
+namespace Rance
 {
-  export module UIComponents
+  export namespace UIComponents
   {
     export var PopupResizeHandle = React.createFactory(React.createClass(
     {
