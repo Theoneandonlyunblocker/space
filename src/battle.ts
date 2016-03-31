@@ -196,6 +196,7 @@ module Rance
 
       return this[side][relativePosition];
     }
+    // BattleEndProcessor
     getCapturedUnits(victor: Player, maxCapturedUnits: number)
     {
       if (!victor || victor.isIndependent) return [];
@@ -284,6 +285,7 @@ module Rance
 
       return deadUnits;
     }
+    // End BattleEndProcessor
     endBattle()
     {
       this.ended = true;
