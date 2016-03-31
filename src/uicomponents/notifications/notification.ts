@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var Notification = React.createClass(
+    export var Notification = React.createFactory(React.createClass(
     {
       displayName: "Notification",
 
@@ -45,6 +45,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

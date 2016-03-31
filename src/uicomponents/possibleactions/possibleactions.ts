@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var PossibleActions = React.createClass(
+    export var PossibleActions = React.createFactory(React.createClass(
     {
       displayName: "PossibleActions",
 
@@ -242,6 +242,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

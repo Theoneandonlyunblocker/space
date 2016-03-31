@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var FlagPicker = React.createClass(
+    export var FlagPicker = React.createFactory(React.createClass(
     {
       displayName: "FlagPicker",
       getInitialState: function()
@@ -136,6 +136,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

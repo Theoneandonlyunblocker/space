@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetSelection = React.createClass(
+    export var FleetSelection = React.createFactory(React.createClass(
     {
       displayName: "FleetSelection",
       mergeFleets: function()
@@ -208,6 +208,6 @@ module Rance
         );
       }
 
-    });
+    }));
   }
 }

@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ColorSetter = React.createClass(
+    export var ColorSetter = React.createFactory(React.createClass(
     {
       displayName: "ColorSetter",
       mixins: [FocusTimer],
@@ -137,6 +137,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

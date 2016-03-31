@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TopMenuPopup = React.createClass(
+    export var TopMenuPopup = React.createFactory(React.createClass(
     {
       displayName: "TopMenuPopup",
 
@@ -30,6 +30,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

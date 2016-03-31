@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var Tutorial = React.createClass(
+    export var Tutorial = React.createFactory(React.createClass(
     {
       displayName: "Tutorial",
       mixins: [SplitMultilineText],
@@ -146,6 +146,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

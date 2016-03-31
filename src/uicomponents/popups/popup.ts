@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var Popup = React.createClass(
+    export var Popup = React.createFactory(React.createClass(
     {
       displayName: "Popup",
       mixins: [Draggable],
@@ -162,6 +162,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

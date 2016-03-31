@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var AttitudeModifierInfo = React.createClass(
+    export var AttitudeModifierInfo = React.createFactory(React.createClass(
     {
       displayName: "AttitudeModifierInfo",
 
@@ -88,6 +88,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var SaveGame = React.createClass(
+    export var SaveGame = React.createFactory(React.createClass(
     {
       displayName: "SaveGame",
 
@@ -113,6 +113,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

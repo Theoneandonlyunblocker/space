@@ -12,7 +12,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var GalaxyMapUI = React.createClass(
+    export var GalaxyMapUI = React.createFactory(React.createClass(
     {
       displayName: "GalaxyMapUI",
 
@@ -252,6 +252,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitWrapper = React.createClass(
+    export var UnitWrapper = React.createFactory(React.createClass(
     {
       displayName: "UnitWrapper",
       mixins: [DropTarget],
@@ -142,6 +142,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BattleSceneTester = React.createClass(
+    export var BattleSceneTester = React.createFactory(React.createClass(
     {
       displayName: "BattleSceneTester",
       idGenerator: 0,
@@ -402,6 +402,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

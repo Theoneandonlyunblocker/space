@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TechnologiesList = React.createClass(
+    export var TechnologiesList = React.createFactory(React.createClass(
     {
       displayName: "TechnologiesList",
       updateListener: undefined,
@@ -64,6 +64,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

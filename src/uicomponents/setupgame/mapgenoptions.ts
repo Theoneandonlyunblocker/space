@@ -8,7 +8,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var MapGenOptions = React.createClass(
+    export var MapGenOptions = React.createFactory(React.createClass(
     {
       displayName: "MapGenOptions",
 
@@ -215,6 +215,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

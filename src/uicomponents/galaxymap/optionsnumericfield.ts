@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var OptionsNumericField = React.createClass(
+    export var OptionsNumericField = React.createFactory(React.createClass(
     {
       displayName: "OptionsNumericField",
 
@@ -90,6 +90,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

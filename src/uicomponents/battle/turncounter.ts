@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TurnCounter = React.createClass(
+    export var TurnCounter = React.createFactory(React.createClass(
     {
       displayName: "TurnCounter",
       mixins: [React.addons.PureRenderMixin],
@@ -46,6 +46,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

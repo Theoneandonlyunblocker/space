@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var DefenceBuilding = React.createClass(
+    export var DefenceBuilding = React.createFactory(React.createClass(
     {
       displayName: "DefenceBuilding",
       shouldComponentUpdate: function(newProps: any)
@@ -41,6 +41,6 @@ module Rance
         );
       }
 
-    });
+    }));
   }
 }

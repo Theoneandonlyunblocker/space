@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var GalaxyMap = React.createClass(
+    export var GalaxyMap = React.createFactory(React.createClass(
     {
       displayName: "GalaxyMap",
       
@@ -122,6 +122,6 @@ module Rance
         this.props.renderer.pause();
         this.props.renderer.removeRendererView();
       }
-    });
+    }));
   }
 }

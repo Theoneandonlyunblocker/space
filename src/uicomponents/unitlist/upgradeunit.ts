@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UpgradeUnit = React.createClass(
+    export var UpgradeUnit = React.createFactory(React.createClass(
     {
       displayName: "UpgradeUnit",
       getInitialState: function()
@@ -127,6 +127,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

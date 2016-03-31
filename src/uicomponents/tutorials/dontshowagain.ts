@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var DontShowAgain = React.createClass(
+    export var DontShowAgain = React.createFactory(React.createClass(
     {
       displayName: "DontShowAgain",
 
@@ -66,6 +66,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

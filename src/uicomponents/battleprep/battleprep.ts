@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BattlePrep = React.createClass(
+    export var BattlePrep = React.createFactory(React.createClass(
     {
       displayName: "BattlePrep",
       getInitialState: function()
@@ -385,6 +385,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

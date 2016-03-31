@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var AttitudeModifierList = React.createClass(
+    export var AttitudeModifierList = React.createFactory(React.createClass(
     {
       displayName: "AttitudeModifierList",
       mixins: [AutoPosition],
@@ -82,6 +82,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

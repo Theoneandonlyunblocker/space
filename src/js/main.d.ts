@@ -1702,37 +1702,37 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var UnitStrength: React.Factory<any>;
+        var UnitStrength: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitActions: React.Factory<{}>;
+        var UnitActions: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitStatus: React.Factory<any>;
+        var UnitStatus: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitInfo: React.Factory<any>;
+        var UnitInfo: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitIcon: React.Factory<any>;
+        var UnitIcon: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitStatusEffects: React.Factory<{}>;
+        var UnitStatusEffects: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitPortrait: React.Factory<{}>;
+        var UnitPortrait: any;
     }
 }
 declare module Rance {
@@ -1762,12 +1762,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var Unit: React.Factory<any>;
+        var Unit: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var EmptyUnit: React.Factory<any>;
+        var EmptyUnit: any;
     }
 }
 declare module Rance {
@@ -1780,68 +1780,68 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var UnitWrapper: React.Factory<any>;
+        var UnitWrapper: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FormationRow: React.Factory<any>;
+        var FormationRow: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Formation: React.Factory<any>;
+        var Formation: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TurnCounter: React.Factory<any>;
+        var TurnCounter: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TurnOrder: React.Factory<{}>;
+        var TurnOrder: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var AbilityTooltip: React.Factory<any>;
+        var AbilityTooltip: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleSceneFlag: React.Factory<any>;
+        var BattleSceneFlag: any;
     }
 }
 declare var bs: any;
 declare module Rance {
     module UIComponents {
-        var BattleScene: React.Factory<any>;
+        var BattleScene: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PlayerFlag: React.Factory<any>;
+        var PlayerFlag: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleScore: React.Factory<any>;
+        var BattleScore: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleDisplayStrength: React.Factory<{}>;
+        var BattleDisplayStrength: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleBackground: React.Factory<{}>;
+        var BattleBackground: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Battle: React.Factory<{}>;
+        var Battle: any;
     }
 }
 declare module Rance {
@@ -1867,132 +1867,132 @@ declare module Rance {
             key: string | number;
             data: any;
         }
-        var List: React.Factory<any>;
+        var List: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitListItem: React.Factory<{}>;
+        var UnitListItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitList: React.Factory<{}>;
+        var UnitList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ItemListItem: React.Factory<{}>;
+        var ItemListItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ItemList: React.Factory<{}>;
+        var ItemList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var AbilityList: React.Factory<{}>;
+        var AbilityList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitItem: React.Factory<{}>;
+        var UnitItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitItemWrapper: React.Factory<{}>;
+        var UnitItemWrapper: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UpgradeAbilities: React.Factory<{}>;
+        var UpgradeAbilities: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UpgradeAttributes: React.Factory<{}>;
+        var UpgradeAttributes: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UpgradeUnit: React.Factory<{}>;
+        var UpgradeUnit: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitExperience: React.Factory<{}>;
+        var UnitExperience: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MenuUnitInfo: React.Factory<{}>;
+        var MenuUnitInfo: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ItemEquip: React.Factory<{}>;
+        var ItemEquip: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DefenceBuilding: React.Factory<any>;
+        var DefenceBuilding: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DefenceBuildingList: React.Factory<any>;
+        var DefenceBuildingList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleInfo: React.Factory<{}>;
+        var BattleInfo: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattlePrep: React.Factory<{}>;
+        var BattlePrep: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PopupResizeHandle: React.Factory<{}>;
+        var PopupResizeHandle: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Popup: React.Factory<any>;
+        var Popup: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ConfirmPopup: React.Factory<{}>;
+        var ConfirmPopup: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PopupManager: React.Factory<any>;
+        var PopupManager: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SaveListItem: React.Factory<{}>;
+        var SaveListItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SaveList: React.Factory<{}>;
+        var SaveList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SaveGame: React.Factory<{}>;
+        var SaveGame: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var LoadGame: React.Factory<{}>;
+        var LoadGame: any;
     }
 }
 declare module Rance {
@@ -2021,27 +2021,27 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var TradeMoney: React.Factory<any>;
+        var TradeMoney: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TradeableItemsList: React.Factory<any>;
+        var TradeableItemsList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TradeableItems: React.Factory<any>;
+        var TradeableItems: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TradeOverview: React.Factory<any>;
+        var TradeOverview: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DiplomacyActions: React.Factory<any>;
+        var DiplomacyActions: any;
     }
 }
 declare module Rance {
@@ -2058,137 +2058,137 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var AttitudeModifierInfo: React.Factory<{}>;
+        var AttitudeModifierInfo: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var AttitudeModifierList: React.Factory<{}>;
+        var AttitudeModifierList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Opinion: React.Factory<{}>;
+        var Opinion: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DiplomaticStatusPlayer: React.Factory<{}>;
+        var DiplomaticStatusPlayer: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DiplomacyOverview: React.Factory<{}>;
+        var DiplomacyOverview: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var EconomySummaryItem: React.Factory<{}>;
+        var EconomySummaryItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var EconomySummary: React.Factory<{}>;
+        var EconomySummary: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var OptionsGroup: React.Factory<any>;
+        var OptionsGroup: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var NotificationFilterListItem: React.Factory<any>;
+        var NotificationFilterListItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var NotificationFilterList: React.Factory<any>;
+        var NotificationFilterList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var NotificationFilterButton: React.Factory<any>;
+        var NotificationFilterButton: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var OptionsCheckbox: React.Factory<{}>;
+        var OptionsCheckbox: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var OptionsNumericField: React.Factory<any>;
+        var OptionsNumericField: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var OptionsList: React.Factory<any>;
+        var OptionsList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TechnologyPrioritySlider: React.Factory<any>;
+        var TechnologyPrioritySlider: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Technology: React.Factory<any>;
+        var Technology: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TechnologiesList: React.Factory<any>;
+        var TechnologiesList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ManufactoryStarsListItem: React.Factory<any>;
+        var ManufactoryStarsListItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ManufactoryStarsList: React.Factory<any>;
+        var ManufactoryStarsList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ManufacturableThingsListItem: React.Factory<any>;
+        var ManufacturableThingsListItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ManufacturableThingsList: React.Factory<any>;
+        var ManufacturableThingsList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ManufactoryUpgradeButton: React.Factory<any>;
+        var ManufactoryUpgradeButton: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildQueue: React.Factory<any>;
+        var BuildQueue: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ManufacturableUnits: React.Factory<any>;
+        var ManufacturableUnits: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ManufacturableItems: React.Factory<any>;
+        var ManufacturableItems: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ManufacturableThings: React.Factory<any>;
+        var ManufacturableThings: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ConstructManufactory: React.Factory<any>;
+        var ConstructManufactory: any;
     }
 }
 declare module Rance {
@@ -2202,112 +2202,112 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var ProductionOverview: React.Factory<any>;
+        var ProductionOverview: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TopMenuPopup: React.Factory<{}>;
+        var TopMenuPopup: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TopMenuPopups: React.Factory<any>;
+        var TopMenuPopups: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TopMenu: React.Factory<any>;
+        var TopMenu: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PlayerMoney: React.Factory<any>;
+        var PlayerMoney: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Resource: React.Factory<{}>;
+        var Resource: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TopBarResources: React.Factory<{}>;
+        var TopBarResources: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TopBar: React.Factory<{}>;
+        var TopBar: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetControls: React.Factory<any>;
+        var FleetControls: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetInfo: React.Factory<{}>;
+        var FleetInfo: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetUnitInfoName: React.Factory<any>;
+        var FleetUnitInfoName: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetUnitInfo: React.Factory<any>;
+        var FleetUnitInfo: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetContents: React.Factory<any>;
+        var FleetContents: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetReorganization: React.Factory<any>;
+        var FleetReorganization: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetSelection: React.Factory<{}>;
+        var FleetSelection: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var StarInfo: React.Factory<any>;
+        var StarInfo: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var AttackTarget: React.Factory<{}>;
+        var AttackTarget: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildableBuilding: React.Factory<any>;
+        var BuildableBuilding: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildableBuildingList: React.Factory<{}>;
+        var BuildableBuildingList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildingUpgradeListItem: React.Factory<any>;
+        var BuildingUpgradeListItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildingUpgradeList: React.Factory<any>;
+        var BuildingUpgradeList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PossibleActions: React.Factory<any>;
+        var PossibleActions: any;
     }
 }
 declare module Rance {
@@ -2421,37 +2421,37 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var MapModeSelector: React.Factory<any>;
+        var MapModeSelector: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MapRendererLayersListItem: React.Factory<any>;
+        var MapRendererLayersListItem: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MapRendererLayersList: React.Factory<any>;
+        var MapRendererLayersList: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MapModeSettings: React.Factory<any>;
+        var MapModeSettings: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Notification: React.Factory<{}>;
+        var Notification: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var NotificationLog: React.Factory<any>;
+        var NotificationLog: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Notifications: React.Factory<any>;
+        var Notifications: any;
     }
 }
 declare module Rance {
@@ -2479,27 +2479,27 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var DontShowAgain: React.Factory<any>;
+        var DontShowAgain: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Tutorial: React.Factory<any>;
+        var Tutorial: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var IntroTutorial: React.Factory<{}>;
+        var IntroTutorial: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var GalaxyMapUI: React.Factory<{}>;
+        var GalaxyMapUI: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var GalaxyMap: React.Factory<{}>;
+        var GalaxyMap: any;
     }
 }
 declare module Rance {
@@ -2514,62 +2514,62 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var ColorPicker: React.Factory<{}>;
+        var ColorPicker: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ColorSetter: React.Factory<any>;
+        var ColorSetter: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FlagPicker: React.Factory<{}>;
+        var FlagPicker: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FlagSetter: React.Factory<any>;
+        var FlagSetter: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PlayerSetup: React.Factory<{}>;
+        var PlayerSetup: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SetupGamePlayers: React.Factory<any>;
+        var SetupGamePlayers: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MapGenOption: React.Factory<any>;
+        var MapGenOption: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MapGenOptions: React.Factory<any>;
+        var MapGenOptions: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MapSetup: React.Factory<{}>;
+        var MapSetup: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SetupGame: React.Factory<{}>;
+        var SetupGame: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FlagMaker: React.Factory<{}>;
+        var FlagMaker: any;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleSceneTester: React.Factory<{}>;
+        var BattleSceneTester: any;
     }
 }
 declare module Rance {
@@ -2578,7 +2578,7 @@ declare module Rance {
         }
         interface ReactDOMPlaceHolder {
         }
-        var Stage: React.Factory<{}>;
+        var Stage: any;
     }
 }
 declare module Rance {
@@ -3755,7 +3755,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module UIComponents {
-                var BattleFinishNotification: React.Factory<{}>;
+                var BattleFinishNotification: any;
             }
         }
     }
@@ -3773,7 +3773,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module UIComponents {
-                var WarDeclarationNotification: React.Factory<{}>;
+                var WarDeclarationNotification: any;
             }
         }
     }
@@ -3791,7 +3791,7 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module UIComponents {
-                var PlayerDiedNotification: React.Factory<{}>;
+                var PlayerDiedNotification: any;
             }
         }
     }

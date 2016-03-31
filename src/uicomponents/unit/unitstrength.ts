@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitStrength = React.createClass(
+    export var UnitStrength = React.createFactory(React.createClass(
     {
       displayName: "UnitStrength",
       getInitialState: function()
@@ -168,6 +168,6 @@ module Rance
           return this.makeCapitalInfo()
         }
       }
-    });
+    }));
   }
 }

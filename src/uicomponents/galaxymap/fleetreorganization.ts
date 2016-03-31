@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetReorganization = React.createClass(
+    export var FleetReorganization = React.createFactory(React.createClass(
     {
       displayName: "FleetReorganization",
 
@@ -144,6 +144,6 @@ module Rance
         );
       }
 
-    });
+    }));
   }
 }

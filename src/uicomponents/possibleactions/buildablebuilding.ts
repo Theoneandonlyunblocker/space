@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BuildableBuilding = React.createClass(
+    export var BuildableBuilding = React.createFactory(React.createClass(
     {
       displayName: "BuildableBuilding",
       mixins: [UpdateWhenMoneyChanges],
@@ -97,6 +97,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

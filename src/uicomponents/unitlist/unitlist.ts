@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitList = React.createClass(
+    export var UnitList = React.createFactory(React.createClass(
     {
       displayName: "UnitList",
       render: function()
@@ -118,6 +118,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

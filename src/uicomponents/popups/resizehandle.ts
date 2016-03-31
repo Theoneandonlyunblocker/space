@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var PopupResizeHandle = React.createClass(
+    export var PopupResizeHandle = React.createFactory(React.createClass(
     {
       displayName: "PopupResizeHandle",
       mixins: [Draggable],
@@ -37,6 +37,6 @@ module Rance
           })
         );
       }
-    })
+    }));
   }
 }

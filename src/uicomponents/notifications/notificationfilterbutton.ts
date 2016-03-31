@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var NotificationFilterButton = React.createClass(
+    export var NotificationFilterButton = React.createFactory(React.createClass(
     {
       displayName: "NotificationFilterButton",
       propTypes:
@@ -105,6 +105,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

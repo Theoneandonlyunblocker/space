@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TopBarResources = React.createClass(
+    export var TopBarResources = React.createFactory(React.createClass(
     {
       displayName: "TopBarResources",
       updateListener: undefined,
@@ -61,6 +61,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TopMenu = React.createClass(
+    export var TopMenu = React.createFactory(React.createClass(
     {
       displayName: "TopMenu",
       mixins: [React.addons.PureRenderMixin],
@@ -283,6 +283,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

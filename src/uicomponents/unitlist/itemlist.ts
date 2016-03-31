@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ItemList = React.createClass(
+    export var ItemList = React.createFactory(React.createClass(
     {
       displayName: "ItemList",
 
@@ -182,6 +182,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

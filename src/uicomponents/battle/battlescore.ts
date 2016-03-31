@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BattleScore = React.createClass(
+    export var BattleScore = React.createFactory(React.createClass(
     {
       displayName: "BattleScore",
       lastEvaluation: undefined,
@@ -87,6 +87,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

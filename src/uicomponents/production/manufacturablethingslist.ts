@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ManufacturableThingsList = React.createClass(
+    export var ManufacturableThingsList = React.createFactory(React.createClass(
     {
       displayName: "ManufacturableThingsList",
       mixins: [React.addons.PureRenderMixin],
@@ -55,6 +55,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

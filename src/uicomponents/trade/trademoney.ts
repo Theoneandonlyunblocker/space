@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TradeMoney = React.createClass(
+    export var TradeMoney = React.createFactory(React.createClass(
     {
       displayName: "TradeMoney",
       mixins: [Draggable],
@@ -115,6 +115,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var SaveList = React.createClass(
+    export var SaveList = React.createFactory(React.createClass(
     {
       displayName: "SaveList",
       render: function()
@@ -100,6 +100,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

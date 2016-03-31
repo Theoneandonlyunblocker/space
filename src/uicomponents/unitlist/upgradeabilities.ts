@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UpgradeAbilities = React.createClass(
+    export var UpgradeAbilities = React.createFactory(React.createClass(
     {
       displayName: "UpgradeAbilities",
       render: function()
@@ -47,6 +47,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

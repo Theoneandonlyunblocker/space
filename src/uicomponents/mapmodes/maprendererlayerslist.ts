@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var MapRendererLayersList = React.createClass(
+    export var MapRendererLayersList = React.createFactory(React.createClass(
     {
       displayName: "MapRendererLayersList",
       mixins: [React.addons.PureRenderMixin],
@@ -123,6 +123,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

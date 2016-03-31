@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var MapModeSettings = React.createClass(
+    export var MapModeSettings = React.createFactory(React.createClass(
     {
       displayName: "MapModeSettings",
 
@@ -54,6 +54,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

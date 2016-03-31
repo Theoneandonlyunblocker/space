@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var Opinion = React.createClass(
+    export var Opinion = React.createFactory(React.createClass(
     {
       displayName: "Opinion",
 
@@ -89,6 +89,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

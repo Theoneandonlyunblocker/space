@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ItemEquip = React.createClass(
+    export var ItemEquip = React.createFactory(React.createClass(
     {
       displayName: "ItemEquip",
       getInitialState: function()
@@ -106,6 +106,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

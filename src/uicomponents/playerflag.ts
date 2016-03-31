@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var PlayerFlag = React.createClass(
+    export var PlayerFlag = React.createFactory(React.createClass(
     {
       displayName: "PlayerFlag",
       mixins: [React.addons.PureRenderMixin],
@@ -62,6 +62,6 @@ module Rance
           );
         }
       }
-    })
+    }));
   }
 }

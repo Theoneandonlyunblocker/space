@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var AbilityTooltip = React.createClass(
+    export var AbilityTooltip = React.createFactory(React.createClass(
     {
       displayName: "AbilityTooltip",
 
@@ -83,6 +83,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

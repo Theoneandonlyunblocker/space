@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var SetupGamePlayers = React.createClass(
+    export var SetupGamePlayers = React.createFactory(React.createClass(
     {
       displayName: "SetupGamePlayers",
 
@@ -196,6 +196,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

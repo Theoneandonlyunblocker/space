@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var AbilityList = React.createClass(
+    export var AbilityList = React.createFactory(React.createClass(
     {
       displayName: "AbilityList",
       render: function()
@@ -87,6 +87,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

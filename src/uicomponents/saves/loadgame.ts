@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var LoadGame = React.createClass(
+    export var LoadGame = React.createFactory(React.createClass(
     {
       displayName: "LoadGame",
       popupId: undefined,
@@ -225,6 +225,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetContents = React.createClass(
+    export var FleetContents = React.createFactory(React.createClass(
     {
       displayName: "FleetContents",
 
@@ -74,6 +74,6 @@ module Rance
         );
       }
 
-    });
+    }));
   }
 }

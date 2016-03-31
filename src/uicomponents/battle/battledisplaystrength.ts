@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BattleDisplayStrength = React.createClass(
+    export var BattleDisplayStrength = React.createFactory(React.createClass(
     {
       displayName: "BattleDisplayStrength",
       getInitialState: function()
@@ -91,6 +91,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

@@ -8310,7 +8310,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitStrength = React.createClass({
+        UIComponents.UnitStrength = React.createFactory(React.createClass({
             displayName: "UnitStrength",
             getInitialState: function () {
                 return ({
@@ -8411,7 +8411,7 @@ var Rance;
                     return this.makeCapitalInfo();
                 }
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="unitstrength.ts"/>
@@ -8419,7 +8419,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitActions = React.createClass({
+        UIComponents.UnitActions = React.createFactory(React.createClass({
             displayName: "UnitActions",
             render: function () {
                 var availableSrc = "img\/icons\/availableAction.png";
@@ -8452,14 +8452,14 @@ var Rance;
                 }
                 return (React.DOM.div({ className: "unit-action-points" }, icons));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitStatus = React.createClass({
+        UIComponents.UnitStatus = React.createFactory(React.createClass({
             displayName: "UnitStatus",
             propTypes: {
                 guardAmount: React.PropTypes.number,
@@ -8504,7 +8504,7 @@ var Rance;
                 }
                 return (React.DOM.div({ className: "unit-status" }, statusElement));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="unitstrength.ts"/>
@@ -8514,7 +8514,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitInfo = React.createClass({
+        UIComponents.UnitInfo = React.createFactory(React.createClass({
             displayName: "UnitInfo",
             mixins: [React.addons.PureRenderMixin],
             propTypes: {
@@ -8563,14 +8563,14 @@ var Rance;
                     hoveredActionPointExpenditure: this.props.hoveredActionPointExpenditure
                 }), battleEndStatus)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitIcon = React.createClass({
+        UIComponents.UnitIcon = React.createFactory(React.createClass({
             displayName: "UnitIcon",
             mixins: [React.addons.PureRenderMixin],
             render: function () {
@@ -8604,14 +8604,14 @@ var Rance;
                     null;
                 return (React.DOM.div({ className: "unit-icon-wrapper" }, React.DOM.div(fillerProps), React.DOM.div(containerProps, iconImage), React.DOM.div(fillerProps)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitStatusEffects = React.createClass({
+        UIComponents.UnitStatusEffects = React.createFactory(React.createClass({
             displayName: "UnitStatusEffects",
             render: function () {
                 var statusEffects = [];
@@ -8667,14 +8667,14 @@ var Rance;
                     className: "unit-status-effects-attributes"
                 }, statusEffects)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitPortrait = React.createClass({
+        UIComponents.UnitPortrait = React.createFactory(React.createClass({
             displayName: "UnitPortrait",
             render: function () {
                 var props = this.props;
@@ -8687,7 +8687,7 @@ var Rance;
                 }
                 return (React.DOM.div(props, null));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../lib/react.d.ts" />
@@ -8972,7 +8972,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Unit = React.createClass({
+        UIComponents.Unit = React.createFactory(React.createClass({
             displayName: "Unit",
             mixins: [UIComponents.Draggable, React.addons.PureRenderMixin],
             getInitialState: function () {
@@ -9098,14 +9098,14 @@ var Rance;
                 }
                 return (React.DOM.div(wrapperProps, allElements));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.EmptyUnit = React.createClass({
+        UIComponents.EmptyUnit = React.createFactory(React.createClass({
             displayName: "EmptyUnit",
             shouldComponentUpdate: function (newProps) {
                 return newProps.facesLeft === this.props.facesLeft;
@@ -9137,7 +9137,7 @@ var Rance;
                 }
                 return (React.DOM.div(wrapperProps, allElements));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 // used to register event listeners for manually firing drop events because touch events suck
@@ -9163,7 +9163,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitWrapper = React.createClass({
+        UIComponents.UnitWrapper = React.createFactory(React.createClass({
             displayName: "UnitWrapper",
             mixins: [UIComponents.DropTarget],
             shouldComponentUpdate: function (newProps) {
@@ -9257,7 +9257,7 @@ var Rance;
                 }
                 return (React.DOM.div(wrapperProps, allElements));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../unit.ts" />
@@ -9269,7 +9269,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FormationRow = React.createClass({
+        UIComponents.FormationRow = React.createFactory(React.createClass({
             displayName: "FormationRow",
             propTypes: {
                 row: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)).isRequired,
@@ -9321,7 +9321,7 @@ var Rance;
                 }
                 return (React.DOM.div({ className: "battle-formation-row" }, units));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../unit.ts" />
@@ -9331,7 +9331,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Formation = React.createClass({
+        UIComponents.Formation = React.createFactory(React.createClass({
             displayName: "Formation",
             propTypes: {
                 formation: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
@@ -9377,14 +9377,14 @@ var Rance;
                 }
                 return (React.DOM.div({ className: "battle-formation" }, formationRows));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TurnCounter = React.createClass({
+        UIComponents.TurnCounter = React.createFactory(React.createClass({
             displayName: "TurnCounter",
             mixins: [React.addons.PureRenderMixin],
             render: function () {
@@ -9408,14 +9408,14 @@ var Rance;
                     title: "Turns left: " + turnsLeft
                 }, turns));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TurnOrder = React.createClass({
+        UIComponents.TurnOrder = React.createFactory(React.createClass({
             displayName: "TurnOrder",
             getInitialState: function () {
                 return ({
@@ -9495,14 +9495,14 @@ var Rance;
                 }
                 return (React.DOM.div({ className: "turn-order-container" }, toRender));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.AbilityTooltip = React.createClass({
+        UIComponents.AbilityTooltip = React.createFactory(React.createClass({
             displayName: "AbilityTooltip",
             shouldComponentUpdate: function (newProps) {
                 for (var prop in newProps) {
@@ -9551,7 +9551,7 @@ var Rance;
                 }
                 return (React.DOM.div(containerProps, abilityElements));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../flag.ts" />
@@ -9559,7 +9559,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BattleSceneFlag = React.createClass({
+        UIComponents.BattleSceneFlag = React.createFactory(React.createClass({
             displayName: "BattleSceneFlag",
             flagCanvas: null,
             propTypes: {
@@ -9611,7 +9611,7 @@ var Rance;
                     className: "battle-scene-flag-container"
                 }, null));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../player.ts" />
@@ -9622,7 +9622,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BattleScene = React.createClass({
+        UIComponents.BattleScene = React.createFactory(React.createClass({
             displayName: "BattleScene",
             battleScene: null,
             propTypes: {
@@ -9733,14 +9733,14 @@ var Rance;
                     className: "battle-scene"
                 }, componentToRender));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.PlayerFlag = React.createClass({
+        UIComponents.PlayerFlag = React.createFactory(React.createClass({
             displayName: "PlayerFlag",
             mixins: [React.addons.PureRenderMixin],
             canUseDataURL: function () {
@@ -9780,7 +9780,7 @@ var Rance;
                     return (React.DOM.div(props, null));
                 }
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../playerflag.ts" />
@@ -9788,7 +9788,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BattleScore = React.createClass({
+        UIComponents.BattleScore = React.createFactory(React.createClass({
             displayName: "BattleScore",
             lastEvaluation: undefined,
             shouldComponentUpdate: function (newProps) {
@@ -9838,14 +9838,14 @@ var Rance;
                     flag: battle.side2Player.flag
                 }))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BattleDisplayStrength = React.createClass({
+        UIComponents.BattleDisplayStrength = React.createFactory(React.createClass({
             displayName: "BattleDisplayStrength",
             getInitialState: function () {
                 return ({
@@ -9902,7 +9902,7 @@ var Rance;
             render: function () {
                 return (React.DOM.div({ className: "unit-strength-battle-display" }, Math.ceil(this.state.displayedStrength)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
@@ -9916,7 +9916,7 @@ var Rance;
           backgroundSeed
           getBlurAreaFN()
          */
-        UIComponents.BattleBackground = React.createClass({
+        UIComponents.BattleBackground = React.createFactory(React.createClass({
             displayName: "BattleBackground",
             handleResize: function () {
                 // TODO this seems to trigger before any breakpoints, leading to 1 px immediately after
@@ -9947,7 +9947,7 @@ var Rance;
                     ref: "pixiContainer"
                 }, this.props.children));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="formation.ts"/>
@@ -9964,7 +9964,7 @@ var Rance;
     (function (UIComponents) {
         // TODO refactor
         // should have separate non-react class for battle logic
-        UIComponents.Battle = React.createClass({
+        UIComponents.Battle = React.createFactory(React.createClass({
             displayName: "Battle",
             // set as a property of the class instead of its state
             // as its not used for trigger updates
@@ -10485,7 +10485,7 @@ var Rance;
                     React.DOM.div({ className: "battle-formations-darken" }, null) :
                     null))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
@@ -10516,7 +10516,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.List = React.createClass({
+        UIComponents.List = React.createFactory(React.createClass({
             displayName: "List",
             mixins: [UIComponents.SplitMultilineText],
             sortedItems: [],
@@ -10773,7 +10773,7 @@ var Rance;
                     className: "react-list"
                 }, React.DOM.colgroup(null, columns), React.DOM.thead({ className: "fixed-table-actual-header", ref: "header" }, React.DOM.tr(null, headerLabels)), React.DOM.thead({ className: "fixed-table-hidden-header" }, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/draggable.ts" />
@@ -10782,7 +10782,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitListItem = React.createClass({
+        UIComponents.UnitListItem = React.createFactory(React.createClass({
             displayName: "UnitListItem",
             mixins: [UIComponents.Draggable],
             componentDidMount: function () {
@@ -10915,7 +10915,7 @@ var Rance;
                 }
                 return (React.DOM.tr(rowProps, cells));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="list.ts" />
@@ -10924,7 +10924,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitList = React.createClass({
+        UIComponents.UnitList = React.createFactory(React.createClass({
             displayName: "UnitList",
             render: function () {
                 var rows = [];
@@ -11013,14 +11013,14 @@ var Rance;
                     keyboardSelect: true
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ItemListItem = React.createClass({
+        UIComponents.ItemListItem = React.createFactory(React.createClass({
             displayName: "ItemListItem",
             mixins: [UIComponents.Draggable],
             onDragStart: function () {
@@ -11093,7 +11093,7 @@ var Rance;
                 }
                 return (React.DOM.tr(rowProps, cells));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="list.ts" />
@@ -11102,7 +11102,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ItemList = React.createClass({
+        UIComponents.ItemList = React.createFactory(React.createClass({
             displayName: "ItemList",
             getSlotIndex: function (slot) {
                 if (slot === "high") {
@@ -11249,14 +11249,14 @@ var Rance;
                     keyboardSelect: true
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.AbilityList = React.createClass({
+        UIComponents.AbilityList = React.createFactory(React.createClass({
             displayName: "AbilityList",
             render: function () {
                 var abilities = this.props.abilities;
@@ -11314,14 +11314,14 @@ var Rance;
                     className: "ability-list"
                 }, abilityElements));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitItem = React.createClass({
+        UIComponents.UnitItem = React.createFactory(React.createClass({
             displayName: "UnitItem",
             mixins: [UIComponents.Draggable],
             onDragStart: function () {
@@ -11371,7 +11371,7 @@ var Rance;
                     src: this.getTechIcon(item.template.techLevel)
                 }) : null)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/droptarget.ts"/>
@@ -11380,7 +11380,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitItemWrapper = React.createClass({
+        UIComponents.UnitItemWrapper = React.createFactory(React.createClass({
             displayName: "UnitItemWrapper",
             mixins: [UIComponents.DropTarget],
             handleMouseUp: function () {
@@ -11416,7 +11416,7 @@ var Rance;
                     onDragEnd: this.props.onDragEnd
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="abilitylist.ts" />
@@ -11424,7 +11424,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UpgradeAbilities = React.createClass({
+        UIComponents.UpgradeAbilities = React.createFactory(React.createClass({
             displayName: "UpgradeAbilities",
             render: function () {
                 if (this.props.abilities.length === 0) {
@@ -11449,14 +11449,14 @@ var Rance;
                     handleClick: this.props.handleClick
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UpgradeAttributes = React.createClass({
+        UIComponents.UpgradeAttributes = React.createFactory(React.createClass({
             displayName: "UpgradeAttributes",
             upgradeAttribute: function (attribute, e) {
                 if (e.button)
@@ -11485,7 +11485,7 @@ var Rance;
                     className: "upgrade-attributes-header"
                 }, "Upgrade stats"), rows));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="upgradeabilities.ts" />
@@ -11494,7 +11494,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UpgradeUnit = React.createClass({
+        UIComponents.UpgradeUnit = React.createFactory(React.createClass({
             displayName: "UpgradeUnit",
             getInitialState: function () {
                 return ({
@@ -11578,7 +11578,7 @@ var Rance;
                     handleClick: this.upgradeAttribute
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="upgradeunit.ts" />
@@ -11586,7 +11586,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.UnitExperience = React.createClass({
+        UIComponents.UnitExperience = React.createFactory(React.createClass({
             displayName: "UnitExperience",
             getInitialState: function () {
                 return ({
@@ -11675,7 +11675,7 @@ var Rance;
                     className: "ready-to-level-up-message"
                 }, "Click to level up"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="abilitylist.ts" />
@@ -11685,7 +11685,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.MenuUnitInfo = React.createClass({
+        UIComponents.MenuUnitInfo = React.createFactory(React.createClass({
             displayName: "MenuUnitInfo",
             handleUnitUpgrade: function () {
                 this.forceUpdate();
@@ -11726,7 +11726,7 @@ var Rance;
                     className: "menu-unit-info-items-wrapper"
                 }, itemSlots)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="itemlist.ts" />
@@ -11736,7 +11736,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ItemEquip = React.createClass({
+        UIComponents.ItemEquip = React.createFactory(React.createClass({
             displayName: "ItemEquip",
             getInitialState: function () {
                 return ({
@@ -11804,7 +11804,7 @@ var Rance;
                     autoSelect: true
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../playerflag.ts" />
@@ -11812,7 +11812,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.DefenceBuilding = React.createClass({
+        UIComponents.DefenceBuilding = React.createFactory(React.createClass({
             displayName: "DefenceBuilding",
             shouldComponentUpdate: function (newProps) {
                 return newProps.building !== this.props.building;
@@ -11835,7 +11835,7 @@ var Rance;
                     flag: building.controller.flag
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="defencebuilding.ts"/>
@@ -11843,7 +11843,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.DefenceBuildingList = React.createClass({
+        UIComponents.DefenceBuildingList = React.createFactory(React.createClass({
             displayName: "DefenceBuildingList",
             shouldComponentUpdate: function (newProps) {
                 var newBuildings = newProps.buildings;
@@ -11875,7 +11875,7 @@ var Rance;
                     className: "defence-building-list"
                 }, buildings));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../galaxymap/defencebuildinglist.ts"/>
@@ -11884,7 +11884,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BattleInfo = React.createClass({
+        UIComponents.BattleInfo = React.createFactory(React.createClass({
             displayName: "BattleInfo",
             render: function () {
                 var battlePrep = this.props.battlePrep;
@@ -11908,7 +11908,7 @@ var Rance;
                     reverse: isAttacker
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="battleinfo.ts"/>
@@ -11919,7 +11919,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BattlePrep = React.createClass({
+        UIComponents.BattlePrep = React.createFactory(React.createClass({
             displayName: "BattlePrep",
             getInitialState: function () {
                 return ({
@@ -12175,7 +12175,7 @@ var Rance;
                     onMouseLeave: this.handleMouseLeaveUnit
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/draggable.ts" />
@@ -12183,7 +12183,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.PopupResizeHandle = React.createClass({
+        UIComponents.PopupResizeHandle = React.createFactory(React.createClass({
             displayName: "PopupResizeHandle",
             mixins: [UIComponents.Draggable],
             // originBottom: undefined,
@@ -12206,7 +12206,7 @@ var Rance;
                     onMouseDown: this.handleMouseDown
                 }));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/draggable.ts" />
@@ -12215,7 +12215,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Popup = React.createClass({
+        UIComponents.Popup = React.createFactory(React.createClass({
             displayName: "Popup",
             mixins: [UIComponents.Draggable],
             propTypes: {
@@ -12324,14 +12324,14 @@ var Rance;
                 });
                 return (React.DOM.div(divProps, this.props.contentConstructor(contentProps), resizeHandle));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ConfirmPopup = React.createClass({
+        UIComponents.ConfirmPopup = React.createFactory(React.createClass({
             displayName: "ConfirmPopup",
             mixins: [UIComponents.SplitMultilineText],
             componentDidMount: function () {
@@ -12379,7 +12379,7 @@ var Rance;
                     onClick: this.handleClose
                 }, this.props.cancelText || "Cancel"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="popup.ts"/>
@@ -12388,7 +12388,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.PopupManager = React.createClass({
+        UIComponents.PopupManager = React.createFactory(React.createClass({
             displayName: "PopupManager",
             popupId: 0,
             propTypes: {
@@ -12531,14 +12531,14 @@ var Rance;
                     className: "popup-container"
                 }, toRender));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.SaveListItem = React.createClass({
+        UIComponents.SaveListItem = React.createFactory(React.createClass({
             displayName: "SaveListItem",
             handleDelete: function (e) {
                 e.stopPropagation();
@@ -12591,7 +12591,7 @@ var Rance;
                 }
                 return (React.DOM.tr(rowProps, cells));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="savelistitem.ts"/>
@@ -12599,7 +12599,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.SaveList = React.createClass({
+        UIComponents.SaveList = React.createFactory(React.createClass({
             displayName: "SaveList",
             render: function () {
                 var rows = [];
@@ -12670,7 +12670,7 @@ var Rance;
                     addSpacer: true
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts"/>
@@ -12679,7 +12679,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.SaveGame = React.createClass({
+        UIComponents.SaveGame = React.createFactory(React.createClass({
             displayName: "SaveGame",
             componentDidMount: function () {
                 if (app.game.gameStorageKey) {
@@ -12749,7 +12749,7 @@ var Rance;
                     onClick: this.handleClose
                 }, "Cancel"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts"/>
@@ -12758,7 +12758,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.LoadGame = React.createClass({
+        UIComponents.LoadGame = React.createFactory(React.createClass({
             displayName: "LoadGame",
             popupId: undefined,
             getInitialState: function () {
@@ -12915,7 +12915,7 @@ var Rance;
                     disabled: this.state.saveKeysToDelete.length < 1
                 }, "Delete"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="player.ts" />
@@ -13007,7 +13007,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TradeMoney = React.createClass({
+        UIComponents.TradeMoney = React.createFactory(React.createClass({
             displayName: "TradeMoney",
             mixins: [UIComponents.Draggable],
             propTypes: {
@@ -13077,7 +13077,7 @@ var Rance;
                     className: "trade-money-title"
                 }, this.props.title), moneyElement)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unitlist/list.ts" />
@@ -13086,7 +13086,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TradeableItemsList = React.createClass({
+        UIComponents.TradeableItemsList = React.createFactory(React.createClass({
             displayName: "TradeableItemsList",
             propTypes: {
                 tradeableItems: React.PropTypes.object,
@@ -13155,7 +13155,7 @@ var Rance;
                     noHeader: this.props.noListHeader
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../player.ts" />
@@ -13164,7 +13164,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TradeableItems = React.createClass({
+        UIComponents.TradeableItems = React.createFactory(React.createClass({
             displayName: "TradeableItems",
             mixins: [UIComponents.DropTarget],
             propTypes: {
@@ -13205,7 +13205,7 @@ var Rance;
                     adjustItemAmount: this.props.adjustItemAmount
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../player.ts" />
@@ -13215,7 +13215,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TradeOverview = React.createClass({
+        UIComponents.TradeOverview = React.createFactory(React.createClass({
             displayName: "TradeOverview",
             selfPlayerTrade: undefined,
             otherPlayerTrade: undefined,
@@ -13374,7 +13374,7 @@ var Rance;
                     onClick: this.handleOk
                 }, "Ok"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../player.ts" />
@@ -13383,7 +13383,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.DiplomacyActions = React.createClass({
+        UIComponents.DiplomacyActions = React.createFactory(React.createClass({
             displayName: "DiplomacyActions",
             propTypes: {
                 player: React.PropTypes.instanceOf(Rance.Player).isRequired,
@@ -13493,7 +13493,7 @@ var Rance;
                     onClick: this.togglePopup.bind(this, "trade")
                 }, "Trade"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
@@ -13613,7 +13613,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.AttitudeModifierInfo = React.createClass({
+        UIComponents.AttitudeModifierInfo = React.createFactory(React.createClass({
             displayName: "AttitudeModifierInfo",
             makeCell: function (type) {
                 var cellProps = {};
@@ -13671,7 +13671,7 @@ var Rance;
                 };
                 return (React.DOM.tr(rowProps, cells));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/autoposition.ts" />
@@ -13680,7 +13680,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.AttitudeModifierList = React.createClass({
+        UIComponents.AttitudeModifierList = React.createFactory(React.createClass({
             displayName: "AttitudeModifierList",
             mixins: [UIComponents.AutoPosition],
             render: function () {
@@ -13735,7 +13735,7 @@ var Rance;
                     initialSortOrder: [columns[0], columns[1], columns[2]]
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="attitudemodifierlist.ts" />
@@ -13743,7 +13743,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Opinion = React.createClass({
+        UIComponents.Opinion = React.createFactory(React.createClass({
             displayName: "Opinion",
             getInitialState: function () {
                 return ({
@@ -13797,7 +13797,7 @@ var Rance;
                     }
                 }, this.props.opinion), tooltip));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../playerflag.ts" />
@@ -13806,7 +13806,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.DiplomaticStatusPlayer = React.createClass({
+        UIComponents.DiplomaticStatusPlayer = React.createFactory(React.createClass({
             displayName: "DiplomaticStatusPlayer",
             getInitialState: function () {
                 return ({
@@ -13863,7 +13863,7 @@ var Rance;
                 };
                 return (React.DOM.tr(rowProps, cells));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="diplomacyactions.ts" />
@@ -13872,7 +13872,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.DiplomacyOverview = React.createClass({
+        UIComponents.DiplomacyOverview = React.createFactory(React.createClass({
             displayName: "DiplomacyOverview",
             makeDiplomacyActionsPopup: function (rowItem) {
                 var player = rowItem.data.player;
@@ -13958,14 +13958,14 @@ var Rance;
                     onRowChange: this.makeDiplomacyActionsPopup
                 }))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.EconomySummaryItem = React.createClass({
+        UIComponents.EconomySummaryItem = React.createFactory(React.createClass({
             displayName: "EconomySummaryItem",
             makeCell: function (type) {
                 var cellProps = {};
@@ -13998,7 +13998,7 @@ var Rance;
                 ;
                 return (React.DOM.tr(rowProps, cells));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unitlist/list.ts"/>
@@ -14007,7 +14007,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.EconomySummary = React.createClass({
+        UIComponents.EconomySummary = React.createFactory(React.createClass({
             displayName: "EconomySummary",
             render: function () {
                 var rows = [];
@@ -14049,14 +14049,14 @@ var Rance;
                     initialSortOrder: [columns[2]]
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.OptionsGroup = React.createClass({
+        UIComponents.OptionsGroup = React.createFactory(React.createClass({
             displayName: "OptionsGroup",
             propTypes: {
                 isCollapsedInitially: React.PropTypes.bool,
@@ -14102,14 +14102,14 @@ var Rance;
                     null;
                 return (React.DOM.div({ className: "option-group" }, header, rows));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.NotificationFilterListItem = React.createClass({
+        UIComponents.NotificationFilterListItem = React.createFactory(React.createClass({
             displayName: "NotificationFilterListItem",
             propTypes: {
                 displayName: React.PropTypes.string.isRequired,
@@ -14164,7 +14164,7 @@ var Rance;
                     className: "notification-filter-list-item-filters"
                 }, inputElements)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../galaxymap/optionsgroup.ts" />
@@ -14173,7 +14173,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.NotificationFilterList = React.createClass({
+        UIComponents.NotificationFilterList = React.createFactory(React.createClass({
             displayName: "NotificationFilterList",
             propTypes: {
                 filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
@@ -14235,7 +14235,7 @@ var Rance;
                     ref: "body"
                 }, filterGroupElements)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../notificationfilter.ts" />
@@ -14244,7 +14244,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.NotificationFilterButton = React.createClass({
+        UIComponents.NotificationFilterButton = React.createFactory(React.createClass({
             displayName: "NotificationFilterButton",
             propTypes: {
                 filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
@@ -14310,14 +14310,14 @@ var Rance;
                     onlyAllowOne: true
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.OptionsCheckbox = React.createClass({
+        UIComponents.OptionsCheckbox = React.createFactory(React.createClass({
             displayName: "OptionsCheckbox",
             render: function () {
                 var key = "options-checkbox-" + this.props.label;
@@ -14332,14 +14332,14 @@ var Rance;
                     htmlFor: key
                 }, this.props.label)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.OptionsNumericField = React.createClass({
+        UIComponents.OptionsNumericField = React.createFactory(React.createClass({
             displayName: "OptionsNumericField",
             propTypes: {
                 onChangeFN: React.PropTypes.func.isRequired,
@@ -14393,7 +14393,7 @@ var Rance;
                     htmlFor: inputId
                 }, this.props.label)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts"/>
@@ -14406,7 +14406,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.OptionsList = React.createClass({
+        UIComponents.OptionsList = React.createFactory(React.createClass({
             displayName: "OptionsList",
             propTypes: {
                 log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
@@ -14627,7 +14627,7 @@ var Rance;
                     onClick: this.handleResetAllOptions
                 }, "Reset all options")), allOptions));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../playertechnology.ts" />
@@ -14635,7 +14635,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TechnologyPrioritySlider = React.createClass({
+        UIComponents.TechnologyPrioritySlider = React.createFactory(React.createClass({
             displayName: "TechnologyPrioritySlider",
             propTypes: {
                 playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired,
@@ -14684,7 +14684,7 @@ var Rance;
                     disabled: this.props.technology.priorityIsLocked
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../playertechnology.ts" />
@@ -14693,7 +14693,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Technology = React.createClass({
+        UIComponents.Technology = React.createFactory(React.createClass({
             displayName: "Technology",
             propTypes: {
                 playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired,
@@ -14752,7 +14752,7 @@ var Rance;
                     disabled: isAtMaxLevel
                 }, null)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../playertechnology.ts" />
@@ -14761,7 +14761,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TechnologiesList = React.createClass({
+        UIComponents.TechnologiesList = React.createFactory(React.createClass({
             displayName: "TechnologiesList",
             updateListener: undefined,
             propTypes: {
@@ -14793,7 +14793,7 @@ var Rance;
                     className: "technologies-list-research-speed"
                 }, "Research speed: " + researchSpeed + " per turn")));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../star.ts" />
@@ -14801,7 +14801,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ManufactoryStarsListItem = React.createClass({
+        UIComponents.ManufactoryStarsListItem = React.createFactory(React.createClass({
             displayName: "ManufactoryStarsListItem",
             propTypes: {
                 star: React.PropTypes.instanceOf(Rance.Star).isRequired,
@@ -14832,7 +14832,7 @@ var Rance;
                     className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : "")
                 }, "" + usedCapacity + "/" + totalCapacity)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="manufactorystarslistitem.ts" />
@@ -14841,7 +14841,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ManufactoryStarsList = React.createClass({
+        UIComponents.ManufactoryStarsList = React.createFactory(React.createClass({
             displayName: "ManufactoryStarsList",
             propTypes: {
                 starsWithManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Star)).isRequired,
@@ -14886,14 +14886,14 @@ var Rance;
                     className: "manufactory-stars-list"
                 }, rows));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ManufacturableThingsListItem = React.createClass({
+        UIComponents.ManufacturableThingsListItem = React.createFactory(React.createClass({
             displayName: "ManufacturableThingsListItem",
             propTypes: {
                 template: React.PropTypes.any.isRequired,
@@ -14937,7 +14937,7 @@ var Rance;
                         (this.state.canAfford ? "" : " negative")
                 }, template.buildCost)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="manufacturablethingslistitem.ts" />
@@ -14945,7 +14945,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ManufacturableThingsList = React.createClass({
+        UIComponents.ManufacturableThingsList = React.createFactory(React.createClass({
             displayName: "ManufacturableThingsList",
             mixins: [React.addons.PureRenderMixin],
             propTypes: {
@@ -14976,14 +14976,14 @@ var Rance;
                     className: "manufacturable-things-list"
                 }, items));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ManufactoryUpgradeButton = React.createClass({
+        UIComponents.ManufactoryUpgradeButton = React.createFactory(React.createClass({
             displayName: "ManufactoryUpgradeButton",
             propTypes: {
                 money: React.PropTypes.number.isRequired,
@@ -15031,7 +15031,7 @@ var Rance;
                     className: unitUpgradeCostBaseClassName
                 }, this.props.upgradeCost)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="manufacturablethingslist.ts" />
@@ -15041,7 +15041,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BuildQueue = React.createClass({
+        UIComponents.BuildQueue = React.createFactory(React.createClass({
             displayName: "BuildQueue",
             propTypes: {
                 manufactory: React.PropTypes.instanceOf(Rance.Manufactory).isRequired,
@@ -15084,7 +15084,7 @@ var Rance;
                     showCost: false
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="manufacturablethingslist.ts" />
@@ -15093,7 +15093,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ManufacturableUnits = React.createClass({
+        UIComponents.ManufacturableUnits = React.createFactory(React.createClass({
             displayName: "ManufacturableUnits",
             propTypes: {
                 selectedStar: React.PropTypes.instanceOf(Rance.Star),
@@ -15176,7 +15176,7 @@ var Rance;
                     money: this.props.money
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="manufactoryupgradebutton.ts" />
@@ -15184,7 +15184,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ManufacturableItems = React.createClass({
+        UIComponents.ManufacturableItems = React.createFactory(React.createClass({
             displayName: "ManufacturableItems",
             propTypes: {
                 selectedStar: React.PropTypes.instanceOf(Rance.Star),
@@ -15238,7 +15238,7 @@ var Rance;
                     money: this.props.money
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="manufacturableunits.ts" />
@@ -15249,7 +15249,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ManufacturableThings = React.createClass({
+        UIComponents.ManufacturableThings = React.createFactory(React.createClass({
             displayName: "ManufacturableThings",
             propTypes: {
                 selectedStar: React.PropTypes.instanceOf(Rance.Star),
@@ -15349,7 +15349,7 @@ var Rance;
                     className: "manufacturable-things-active-tab"
                 }, this.makeTab(this.state.activeTab))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../star.ts" />
@@ -15357,7 +15357,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ConstructManufactory = React.createClass({
+        UIComponents.ConstructManufactory = React.createFactory(React.createClass({
             displayName: "ConstructManufactory",
             mixins: [React.addons.PureRenderMixin],
             propTypes: {
@@ -15397,7 +15397,7 @@ var Rance;
                         (this.state.canAfford ? "" : " negative")
                 }, app.moduleData.ruleSet.manufactory.buildCost))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../lib/react.d.ts" />
@@ -15436,7 +15436,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ProductionOverview = React.createClass({
+        UIComponents.ProductionOverview = React.createFactory(React.createClass({
             displayName: "ProductionOverview",
             mixins: [UIComponents.UpdateWhenMoneyChanges],
             propTypes: {
@@ -15542,14 +15542,14 @@ var Rance;
                     triggerUpdate: this.triggerUpdate
                 }))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TopMenuPopup = React.createClass({
+        UIComponents.TopMenuPopup = React.createFactory(React.createClass({
             displayName: "TopMenuPopup",
             render: function () {
                 var contentProps = this.props.contentProps;
@@ -15563,7 +15563,7 @@ var Rance;
                     className: "light-box-content"
                 }, this.props.contentConstructor(contentProps))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../saves/savegame.ts"/>
@@ -15579,7 +15579,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TopMenuPopups = React.createClass({
+        UIComponents.TopMenuPopups = React.createFactory(React.createClass({
             displayName: "TopMenuPopups",
             cachedPopupRects: {},
             propTypes: {
@@ -15732,7 +15732,7 @@ var Rance;
                     ref: "popupManager"
                 }));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="topmenupopups.ts" />
@@ -15742,7 +15742,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TopMenu = React.createClass({
+        UIComponents.TopMenu = React.createFactory(React.createClass({
             displayName: "TopMenu",
             mixins: [React.addons.PureRenderMixin],
             cachedTopMenuWidth: undefined,
@@ -15932,7 +15932,7 @@ var Rance;
                     game: this.props.game
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../player.ts" />
@@ -15940,7 +15940,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.PlayerMoney = React.createClass({
+        UIComponents.PlayerMoney = React.createFactory(React.createClass({
             displayName: "PlayerMoney",
             lastAmountRendered: undefined,
             propTypes: {
@@ -15963,14 +15963,14 @@ var Rance;
                     className: "player-money"
                 }, "Money: " + this.props.player.money));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Resource = React.createClass({
+        UIComponents.Resource = React.createFactory(React.createClass({
             displayName: "Resource",
             render: function () {
                 var sign = this.props.income < 0 ? "-" : "+";
@@ -15984,7 +15984,7 @@ var Rance;
                     className: "resource-amount"
                 }, "" + this.props.amount + " (" + sign + this.props.income + ")")));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="resource.ts" />
@@ -15992,7 +15992,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TopBarResources = React.createClass({
+        UIComponents.TopBarResources = React.createFactory(React.createClass({
             displayName: "TopBarResources",
             updateListener: undefined,
             componentDidMount: function () {
@@ -16029,7 +16029,7 @@ var Rance;
                     className: "top-bar-resources"
                 }, resources));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="playermoney.ts" />
@@ -16039,7 +16039,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.TopBar = React.createClass({
+        UIComponents.TopBar = React.createFactory(React.createClass({
             displayName: "TopBar",
             updateListener: undefined,
             componentDidMount: function () {
@@ -16077,7 +16077,7 @@ var Rance;
                     player: player
                 }))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../fleet.ts" />
@@ -16085,7 +16085,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FleetControls = React.createClass({
+        UIComponents.FleetControls = React.createFactory(React.createClass({
             displayName: "FleetControls",
             propTypes: {
                 fleet: React.PropTypes.instanceOf(Rance.Fleet).isRequired,
@@ -16123,7 +16123,7 @@ var Rance;
                     onClick: this.selectFleet
                 }, "select")));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleetcontrols.ts"/>
@@ -16131,7 +16131,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FleetInfo = React.createClass({
+        UIComponents.FleetInfo = React.createFactory(React.createClass({
             displayName: "FleetInfo",
             setFleetName: function (e) {
                 var target = e.target;
@@ -16177,7 +16177,7 @@ var Rance;
                 }, isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
                     fleet.getMinMaxMovePoints())));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../unit.ts" />
@@ -16185,7 +16185,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FleetUnitInfoName = React.createClass({
+        UIComponents.FleetUnitInfoName = React.createFactory(React.createClass({
             displayName: "FleetUnitInfoName",
             propTypes: {
                 unit: React.PropTypes.instanceOf(Rance.Unit).isRequired,
@@ -16209,7 +16209,7 @@ var Rance;
                     readOnly: this.props.isNotDetected
                 }));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unit/unitstrength.ts"/>
@@ -16219,7 +16219,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FleetUnitInfo = React.createClass({
+        UIComponents.FleetUnitInfo = React.createFactory(React.createClass({
             displayName: "FleetUnitInfo",
             mixins: [UIComponents.Draggable],
             propTypes: {
@@ -16269,7 +16269,7 @@ var Rance;
                     isNotDetected: isNotDetected
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleetunitinfo.ts"/>
@@ -16279,7 +16279,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FleetContents = React.createClass({
+        UIComponents.FleetContents = React.createFactory(React.createClass({
             displayName: "FleetContents",
             propTypes: {
                 fleet: React.PropTypes.instanceOf(Rance.Fleet).isRequired,
@@ -16322,7 +16322,7 @@ var Rance;
                     onMouseUp: this.handleMouseUp
                 }, fleetUnitInfos));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleetcontents.ts"/>
@@ -16331,7 +16331,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FleetReorganization = React.createClass({
+        UIComponents.FleetReorganization = React.createFactory(React.createClass({
             displayName: "FleetReorganization",
             propTypes: {
                 closeReorganization: React.PropTypes.func,
@@ -16413,7 +16413,7 @@ var Rance;
                     onClick: this.handleClose
                 }, "Close"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleetinfo.ts"/>
@@ -16423,7 +16423,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FleetSelection = React.createClass({
+        UIComponents.FleetSelection = React.createFactory(React.createClass({
             displayName: "FleetSelection",
             mergeFleets: function () {
                 Rance.eventManager.dispatchEvent("mergeFleets", null);
@@ -16551,7 +16551,7 @@ var Rance;
                     ref: "selected"
                 }, hasMultipleSelected ? fleetInfos : null, fleetContents), reorganizeElement)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="defencebuildinglist.ts"/>
@@ -16559,7 +16559,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.StarInfo = React.createClass({
+        UIComponents.StarInfo = React.createFactory(React.createClass({
             displayName: "StarInfo",
             shouldComponentUpdate: function (newProps) {
                 return this.props.selectedStar !== newProps.selectedStar;
@@ -16593,7 +16593,7 @@ var Rance;
                     buildings: star.buildings["defence"]
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../playerflag.ts" />
@@ -16601,7 +16601,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.AttackTarget = React.createClass({
+        UIComponents.AttackTarget = React.createFactory(React.createClass({
             displayName: "AttackTarget",
             handleAttack: function () {
                 Rance.eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
@@ -16620,7 +16620,7 @@ var Rance;
                     }
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/updatewhenmoneychanges.ts" />
@@ -16629,7 +16629,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BuildableBuilding = React.createClass({
+        UIComponents.BuildableBuilding = React.createFactory(React.createClass({
             displayName: "BuildableBuilding",
             mixins: [UIComponents.UpdateWhenMoneyChanges],
             propTypes: {
@@ -16687,7 +16687,7 @@ var Rance;
                 }
                 return (React.DOM.tr(props, cells));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unitlist/list.ts" />
@@ -16696,7 +16696,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BuildableBuildingList = React.createClass({
+        UIComponents.BuildableBuildingList = React.createFactory(React.createClass({
             displayName: "BuildableBuildingList",
             getInitialState: function () {
                 return ({
@@ -16761,7 +16761,7 @@ var Rance;
                     addSpacer: true
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../player.ts" />
@@ -16770,7 +16770,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BuildingUpgradeListItem = React.createClass({
+        UIComponents.BuildingUpgradeListItem = React.createFactory(React.createClass({
             displayName: "BuildingUpgradeListItem",
             mixins: [UIComponents.UpdateWhenMoneyChanges],
             propTypes: {
@@ -16814,7 +16814,7 @@ var Rance;
                     className: "building-upgrade-list-item-name"
                 }, upgradeData.template.displayName + " " + (upgradeData.level > 1 ? upgradeData.level : "")), React.DOM.td(costProps, upgradeData.cost)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../player.ts" />
@@ -16824,7 +16824,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BuildingUpgradeList = React.createClass({
+        UIComponents.BuildingUpgradeList = React.createFactory(React.createClass({
             displayName: "BuildingUpgradeList",
             propTypes: {
                 star: React.PropTypes.instanceOf(Rance.Star).isRequired,
@@ -16905,7 +16905,7 @@ var Rance;
                     className: "building-upgrade-list"
                 }, upgradeGroups));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../star.ts" />
@@ -16916,7 +16916,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.PossibleActions = React.createClass({
+        UIComponents.PossibleActions = React.createFactory(React.createClass({
             displayName: "PossibleActions",
             propTypes: {
                 player: React.PropTypes.instanceOf(Rance.Player).isRequired,
@@ -17058,7 +17058,7 @@ var Rance;
                         (this.state.expandedAction ? " has-expanded-action" : "")
                 }, possibleActions)));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
@@ -17729,7 +17729,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.MapModeSelector = React.createClass({
+        UIComponents.MapModeSelector = React.createFactory(React.createClass({
             displayName: "MapModeSelector",
             propTypes: {
                 mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired,
@@ -17763,14 +17763,14 @@ var Rance;
                     onChange: this.handleChange
                 }, this.makeOptions()));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.MapRendererLayersListItem = React.createClass({
+        UIComponents.MapRendererLayersListItem = React.createFactory(React.createClass({
             displayName: "MapRendererLayersListItem",
             mixins: [UIComponents.Draggable, UIComponents.DropTarget, React.addons.PureRenderMixin],
             cachedMidPoint: undefined,
@@ -17850,7 +17850,7 @@ var Rance;
                     onChange: this.setLayerAlpha
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="maprendererlayerslistitem.ts" />
@@ -17859,7 +17859,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.MapRendererLayersList = React.createClass({
+        UIComponents.MapRendererLayersList = React.createFactory(React.createClass({
             displayName: "MapRendererLayersList",
             mixins: [React.addons.PureRenderMixin],
             propTypes: {
@@ -17938,7 +17938,7 @@ var Rance;
                     className: "map-renderer-layers-list"
                 }, listItems));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="mapmodeselector.ts" />
@@ -17948,7 +17948,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.MapModeSettings = React.createClass({
+        UIComponents.MapModeSettings = React.createFactory(React.createClass({
             displayName: "MapModeSettings",
             propTypes: {
                 mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired
@@ -17976,14 +17976,14 @@ var Rance;
                     ref: "layersList"
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Notification = React.createClass({
+        UIComponents.Notification = React.createFactory(React.createClass({
             displayName: "Notification",
             handleClose: function () {
                 this.props.markAsRead(this.props.notification);
@@ -18009,7 +18009,7 @@ var Rance;
                     className: "notification-message"
                 }, notification.makeMessage())));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../notificationlog.ts" />
@@ -18019,7 +18019,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.NotificationLog = React.createClass({
+        UIComponents.NotificationLog = React.createFactory(React.createClass({
             displayName: "NotificationLog",
             mixins: [React.addons.PureRenderMixin],
             updateListener: undefined,
@@ -18127,7 +18127,7 @@ var Rance;
                     ref: "popupManager"
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../notificationlog.ts" />
@@ -18136,7 +18136,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Notifications = React.createClass({
+        UIComponents.Notifications = React.createFactory(React.createClass({
             displayName: "Notifications",
             propTypes: {
                 log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
@@ -18151,7 +18151,7 @@ var Rance;
                     key: "log"
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="tutorial.d.ts"/>
@@ -18240,7 +18240,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.DontShowAgain = React.createClass({
+        UIComponents.DontShowAgain = React.createFactory(React.createClass({
             displayName: "DontShowAgain",
             propTypes: {
                 tutorialId: React.PropTypes.string.isRequired
@@ -18276,7 +18276,7 @@ var Rance;
                     onChange: this.toggleState
                 }), "Don't show again")));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/splitmultilinetext.ts" />
@@ -18285,7 +18285,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Tutorial = React.createClass({
+        UIComponents.Tutorial = React.createFactory(React.createClass({
             displayName: "Tutorial",
             mixins: [UIComponents.SplitMultilineText],
             propTypes: {
@@ -18369,7 +18369,7 @@ var Rance;
                     tutorialId: this.props.tutorialId
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts" />
@@ -18380,7 +18380,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.IntroTutorial = React.createClass({
+        UIComponents.IntroTutorial = React.createFactory(React.createClass({
             displayName: "IntroTutorial",
             popupId: null,
             getInitialState: function () {
@@ -18432,7 +18432,7 @@ var Rance;
                     onlyAllowOne: true
                 }));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="topmenu.ts"/>
@@ -18447,7 +18447,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.GalaxyMapUI = React.createClass({
+        UIComponents.GalaxyMapUI = React.createFactory(React.createClass({
             displayName: "GalaxyMapUI",
             getInitialState: function () {
                 var pc = this.props.playerControl;
@@ -18596,7 +18596,7 @@ var Rance;
                     key: "notifications"
                 }), React.DOM.button(endTurnButtonProps, "End turn"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="galaxymapui.ts"/>
@@ -18604,7 +18604,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.GalaxyMap = React.createClass({
+        UIComponents.GalaxyMap = React.createFactory(React.createClass({
             displayName: "GalaxyMap",
             changeScene: function (e) {
                 var target = e.target;
@@ -18675,7 +18675,7 @@ var Rance;
                 this.props.renderer.pause();
                 this.props.renderer.removeRendererView();
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../lib/react.d.ts" />
@@ -18704,7 +18704,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ColorPicker = React.createClass({
+        UIComponents.ColorPicker = React.createFactory(React.createClass({
             displayName: "ColorPicker",
             onChangeTimeout: null,
             getInitialState: function () {
@@ -18962,7 +18962,7 @@ var Rance;
                     onPaste: this.setHex
                 }))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/focustimer.ts" />
@@ -18971,7 +18971,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.ColorSetter = React.createClass({
+        UIComponents.ColorSetter = React.createFactory(React.createClass({
             displayName: "ColorSetter",
             mixins: [UIComponents.FocusTimer],
             getInitialState: function () {
@@ -19063,14 +19063,14 @@ var Rance;
                         getParentPosition: this.getClientRect
                     }) : null));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FlagPicker = React.createClass({
+        UIComponents.FlagPicker = React.createFactory(React.createClass({
             displayName: "FlagPicker",
             getInitialState: function () {
                 var initialEmblem = null;
@@ -19145,7 +19145,7 @@ var Rance;
                     className: "emblem-picker"
                 }, React.DOM.div({ className: "flag-picker-title" }, "Emblems"), React.DOM.div({ className: "emblem-picker-emblem-list" }, emblems))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/focustimer.ts" />
@@ -19155,7 +19155,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FlagSetter = React.createClass({
+        UIComponents.FlagSetter = React.createFactory(React.createClass({
             displayName: "FlagSetter",
             mixins: [UIComponents.FocusTimer],
             getInitialState: function () {
@@ -19374,7 +19374,7 @@ var Rance;
                         uploadFiles: this.handleUpload
                     }) : null));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="colorsetter.ts" />
@@ -19383,7 +19383,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.PlayerSetup = React.createClass({
+        UIComponents.PlayerSetup = React.createFactory(React.createClass({
             displayName: "PlayerSetup",
             getInitialState: function () {
                 return ({
@@ -19499,7 +19499,7 @@ var Rance;
                     onClick: this.handleRemove
                 }, "X")));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="playersetup.ts" />
@@ -19507,7 +19507,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.SetupGamePlayers = React.createClass({
+        UIComponents.SetupGamePlayers = React.createFactory(React.createClass({
             displayName: "SetupGamePlayers",
             getInitialState: function () {
                 this.newPlayerId = 0;
@@ -19618,14 +19618,14 @@ var Rance;
                     disabled: !canAddPlayers
                 }, "Add new player"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.MapGenOption = React.createClass({
+        UIComponents.MapGenOption = React.createFactory(React.createClass({
             displayName: "MapGenOption",
             handleChange: function (e) {
                 var target = e.target;
@@ -19672,7 +19672,7 @@ var Rance;
                     onChange: this.handleChange
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../utility.ts" />
@@ -19683,7 +19683,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.MapGenOptions = React.createClass({
+        UIComponents.MapGenOptions = React.createFactory(React.createClass({
             displayName: "MapGenOptions",
             getInitialState: function () {
                 return this.getDefaultValues(this.props.mapGenTemplate);
@@ -19813,7 +19813,7 @@ var Rance;
                     onClick: this.resetValuesToDefault
                 }, "reset"))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../templateinterfaces/imapgentemplate.d.ts" />
@@ -19822,7 +19822,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.MapSetup = React.createClass({
+        UIComponents.MapSetup = React.createFactory(React.createClass({
             displayName: "MapSetup",
             getInitialState: function () {
                 var mapGenTemplates = [];
@@ -19883,7 +19883,7 @@ var Rance;
                     ref: "mapGenOptions"
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="setupgameplayers.ts" />
@@ -19892,7 +19892,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.SetupGame = React.createClass({
+        UIComponents.SetupGame = React.createFactory(React.createClass({
             displayName: "SetupGame",
             getInitialState: function () {
                 return ({
@@ -19943,7 +19943,7 @@ var Rance;
                     onClick: this.startGame
                 }, "Start game")))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="playerflag.ts" />
@@ -19951,7 +19951,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.FlagMaker = React.createClass({
+        UIComponents.FlagMaker = React.createFactory(React.createClass({
             setStateTimeout: undefined,
             sizeValue: 46,
             getInitialState: function () {
@@ -20009,14 +20009,14 @@ var Rance;
                     type: "number"
                 })));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.BattleSceneTester = React.createClass({
+        UIComponents.BattleSceneTester = React.createFactory(React.createClass({
             displayName: "BattleSceneTester",
             idGenerator: 0,
             battle: null,
@@ -20271,7 +20271,7 @@ var Rance;
                     placeholder: "duration"
                 }, null))));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
@@ -20287,7 +20287,7 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.Stage = React.createClass({
+        UIComponents.Stage = React.createFactory(React.createClass({
             displayName: "Stage",
             changeScene: function () {
                 var newScene = this.refs.sceneSelector.getDOMNode().value;
@@ -20351,7 +20351,7 @@ var Rance;
                 }
                 return (React.DOM.div({ className: "react-stage" }, elementsToRender));
             }
-        });
+        }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../lib/react.d.ts" />

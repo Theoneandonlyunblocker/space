@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var Technology = React.createClass(
+    export var Technology = React.createFactory(React.createClass(
     {
       displayName: "Technology",
 
@@ -106,6 +106,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ManufactoryUpgradeButton = React.createClass(
+    export var ManufactoryUpgradeButton = React.createFactory(React.createClass(
     {
       displayName: "ManufactoryUpgradeButton",
 
@@ -83,6 +83,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

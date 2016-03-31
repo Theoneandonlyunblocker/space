@@ -10,7 +10,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var OptionsList = React.createClass(
+    export var OptionsList = React.createFactory(React.createClass(
     {
       displayName: "OptionsList",
 
@@ -326,6 +326,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

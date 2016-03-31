@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var MapSetup = React.createClass(
+    export var MapSetup = React.createFactory(React.createClass(
     {
       displayName: "MapSetup",
 
@@ -114,6 +114,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

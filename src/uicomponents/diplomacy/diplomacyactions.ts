@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var DiplomacyActions = React.createClass(
+    export var DiplomacyActions = React.createFactory(React.createClass(
     {
       displayName: "DiplomacyActions",
 
@@ -179,6 +179,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

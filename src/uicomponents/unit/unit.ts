@@ -8,7 +8,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var Unit = React.createClass(
+    export var Unit = React.createFactory(React.createClass(
     {
       displayName: "Unit",
       mixins: [Draggable, React.addons.PureRenderMixin],
@@ -202,6 +202,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

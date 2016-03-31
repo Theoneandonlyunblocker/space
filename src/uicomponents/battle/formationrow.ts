@@ -10,7 +10,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var FormationRow = React.createClass(
+    export var FormationRow = React.createFactory(React.createClass(
     {
       displayName: "FormationRow",
 
@@ -80,6 +80,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

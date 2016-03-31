@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitIcon = React.createClass(
+    export var UnitIcon = React.createFactory(React.createClass(
     {
       displayName: "UnitIcon",
       mixins: [React.addons.PureRenderMixin],
@@ -60,6 +60,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

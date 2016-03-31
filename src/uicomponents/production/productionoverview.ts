@@ -12,7 +12,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ProductionOverview = React.createClass(
+    export var ProductionOverview = React.createFactory(React.createClass(
     {
       displayName: "ProductionOverview",
       mixins: [UpdateWhenMoneyChanges],
@@ -174,6 +174,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

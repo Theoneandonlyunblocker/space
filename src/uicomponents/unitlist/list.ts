@@ -21,7 +21,7 @@ module Rance
       key: string | number;
       data: any;
     }
-    export var List = React.createClass({
+    export var List = React.createFactory(React.createClass({
       displayName: "List",
       mixins: [SplitMultilineText],
 
@@ -434,6 +434,6 @@ module Rance
         );
       }
       
-    });
+    }));
   }
 }

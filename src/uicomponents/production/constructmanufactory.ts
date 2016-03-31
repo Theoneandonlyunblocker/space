@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ConstructManufactory = React.createClass(
+    export var ConstructManufactory = React.createFactory(React.createClass(
     {
       displayName: "ConstructManufactory",
       mixins: [React.addons.PureRenderMixin],
@@ -72,6 +72,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

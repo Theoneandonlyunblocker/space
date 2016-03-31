@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TurnOrder = React.createClass(
+    export var TurnOrder = React.createFactory(React.createClass(
     {
       displayName: "TurnOrder",
       getInitialState: function()
@@ -134,6 +134,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

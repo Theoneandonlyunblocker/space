@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var LightBox = React.createClass(
+    export var LightBox = React.createFactory(React.createClass(
     {
       displayName: "LightBox",
 
@@ -96,6 +96,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

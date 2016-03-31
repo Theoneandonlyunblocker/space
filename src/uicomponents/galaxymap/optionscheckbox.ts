@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var OptionsCheckbox = React.createClass(
+    export var OptionsCheckbox = React.createFactory(React.createClass(
     {
       displayName: "OptionsCheckbox",
       render: function()
@@ -30,6 +30,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

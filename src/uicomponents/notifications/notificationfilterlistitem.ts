@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var NotificationFilterListItem = React.createClass(
+    export var NotificationFilterListItem = React.createFactory(React.createClass(
     {
       displayName: "NotificationFilterListItem",
       propTypes:
@@ -86,6 +86,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

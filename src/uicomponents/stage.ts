@@ -22,7 +22,7 @@ module Rance
     {
       
     }
-    export var Stage = React.createClass(
+    export var Stage = React.createFactory(React.createClass(
     {
       displayName: "Stage",
       changeScene: function()
@@ -115,6 +115,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

@@ -13,7 +13,7 @@ module Rance
   {
     // TODO refactor
     // should have separate non-react class for battle logic
-    export var Battle = React.createClass(
+    export var Battle = React.createFactory(React.createClass(
     {
       displayName: "Battle",
 
@@ -693,6 +693,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

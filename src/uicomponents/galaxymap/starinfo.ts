@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var StarInfo = React.createClass(
+    export var StarInfo = React.createFactory(React.createClass(
     {
       displayName: "StarInfo",
       shouldComponentUpdate: function(newProps: any)
@@ -72,6 +72,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

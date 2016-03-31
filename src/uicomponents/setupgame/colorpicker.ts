@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ColorPicker = React.createClass(
+    export var ColorPicker = React.createFactory(React.createClass(
     {
       displayName: "ColorPicker",
       onChangeTimeout: null,
@@ -366,6 +366,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

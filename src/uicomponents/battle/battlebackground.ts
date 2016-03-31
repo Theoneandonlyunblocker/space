@@ -9,7 +9,7 @@ module Rance
       backgroundSeed
       getBlurAreaFN()
      */
-    export var BattleBackground = React.createClass(
+    export var BattleBackground = React.createFactory(React.createClass(
     {
       displayName: "BattleBackground",
 
@@ -58,6 +58,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

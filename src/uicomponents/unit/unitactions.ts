@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitActions = React.createClass(
+    export var UnitActions = React.createFactory(React.createClass(
     {
       displayName: "UnitActions",
       render: function()
@@ -58,6 +58,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

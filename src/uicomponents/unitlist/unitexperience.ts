@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitExperience = React.createClass(
+    export var UnitExperience = React.createFactory(React.createClass(
     {
       displayName: "UnitExperience",
 
@@ -145,6 +145,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

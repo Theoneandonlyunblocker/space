@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TradeableItems = React.createClass(
+    export var TradeableItems = React.createFactory(React.createClass(
     {
       displayName: "TradeableItems",
       mixins: [DropTarget],
@@ -68,6 +68,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var NotificationLog = React.createClass(
+    export var NotificationLog = React.createFactory(React.createClass(
     {
       displayName: "NotificationLog",
       mixins: [React.addons.PureRenderMixin],
@@ -173,6 +173,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

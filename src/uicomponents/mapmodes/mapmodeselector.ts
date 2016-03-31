@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var MapModeSelector = React.createClass(
+    export var MapModeSelector = React.createFactory(React.createClass(
     {
       displayName: "MapModeSelector",
 
@@ -62,6 +62,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var OptionsGroup = React.createClass(
+    export var OptionsGroup = React.createFactory(React.createClass(
     {
       displayName: "OptionsGroup",
 
@@ -83,6 +83,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

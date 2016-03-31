@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var MenuUnitInfo = React.createClass(
+    export var MenuUnitInfo = React.createFactory(React.createClass(
     {
       displayName: "MenuUnitInfo",
       handleUnitUpgrade: function()
@@ -75,6 +75,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

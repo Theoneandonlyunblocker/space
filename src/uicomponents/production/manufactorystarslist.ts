@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ManufactoryStarsList = React.createClass(
+    export var ManufactoryStarsList = React.createFactory(React.createClass(
     {
       displayName: "ManufactoryStarsList",
 
@@ -73,6 +73,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

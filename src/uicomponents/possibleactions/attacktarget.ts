@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var AttackTarget = React.createClass(
+    export var AttackTarget = React.createFactory(React.createClass(
     {
       displayName: "AttackTarget",
       handleAttack: function()
@@ -37,6 +37,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

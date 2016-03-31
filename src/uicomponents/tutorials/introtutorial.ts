@@ -9,7 +9,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var IntroTutorial = React.createClass(
+    export var IntroTutorial = React.createFactory(React.createClass(
     {
       displayName: "IntroTutorial",
       popupId: null,
@@ -87,6 +87,6 @@ module Rance
           })
         );
       }
-    })
+    }));
   }
 }

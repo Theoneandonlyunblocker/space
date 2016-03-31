@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var PlayerMoney = React.createClass(
+    export var PlayerMoney = React.createFactory(React.createClass(
     {
       displayName: "PlayerMoney",
       lastAmountRendered: undefined,
@@ -45,6 +45,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

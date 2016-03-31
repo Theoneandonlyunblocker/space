@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var FlagMaker = React.createClass(
+    export var FlagMaker = React.createFactory(React.createClass(
     {
       setStateTimeout: undefined,
       sizeValue: 46,
@@ -90,6 +90,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

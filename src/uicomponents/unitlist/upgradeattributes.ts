@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UpgradeAttributes = React.createClass(
+    export var UpgradeAttributes = React.createFactory(React.createClass(
     {
       displayName: "UpgradeAttributes",
       upgradeAttribute: function(attribute: string, e: MouseEvent)
@@ -51,6 +51,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

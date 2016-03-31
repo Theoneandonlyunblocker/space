@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ItemListItem = React.createClass(
+    export var ItemListItem = React.createFactory(React.createClass(
     {
       displayName: "ItemListItem",
       mixins: [Draggable],
@@ -116,6 +116,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

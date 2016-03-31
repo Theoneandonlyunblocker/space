@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitPortrait = React.createClass(
+    export var UnitPortrait = React.createFactory(React.createClass(
     {
       displayName: "UnitPortrait",
       render: function()
@@ -23,6 +23,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

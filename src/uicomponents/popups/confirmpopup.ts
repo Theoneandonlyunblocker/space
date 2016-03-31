@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ConfirmPopup = React.createClass(
+    export var ConfirmPopup = React.createFactory(React.createClass(
     {
       displayName: "ConfirmPopup",
       mixins: [SplitMultilineText],
@@ -83,6 +83,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var PopupManager = React.createClass(
+    export var PopupManager = React.createFactory(React.createClass(
     {
       displayName: "PopupManager",
       popupId: 0,
@@ -231,6 +231,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var FlagSetter = React.createClass(
+    export var FlagSetter = React.createFactory(React.createClass(
     {
       displayName: "FlagSetter",
       mixins: [FocusTimer],
@@ -328,6 +328,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BuildingUpgradeList = React.createClass(
+    export var BuildingUpgradeList = React.createFactory(React.createClass(
     {
       displayName: "BuildingUpgradeList",
 
@@ -138,6 +138,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

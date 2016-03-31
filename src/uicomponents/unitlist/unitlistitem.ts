@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitListItem = React.createClass(
+    export var UnitListItem = React.createFactory(React.createClass(
     {
       displayName: "UnitListItem",
       mixins: [Draggable],
@@ -210,6 +210,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

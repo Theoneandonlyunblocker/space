@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var DiplomaticStatusPlayer = React.createClass(
+    export var DiplomaticStatusPlayer = React.createFactory(React.createClass(
     {
       displayName: "DiplomaticStatusPlayer",
 
@@ -109,6 +109,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

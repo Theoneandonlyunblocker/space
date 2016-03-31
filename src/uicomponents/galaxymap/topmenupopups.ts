@@ -12,7 +12,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TopMenuPopups = React.createClass(
+    export var TopMenuPopups = React.createFactory(React.createClass(
     {
       displayName: "TopMenuPopups",
       cachedPopupRects: {},
@@ -197,6 +197,6 @@ module Rance
           })
         );
       }
-    })
+    }));
   }
 }

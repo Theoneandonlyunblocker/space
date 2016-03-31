@@ -6,7 +6,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitInfo = React.createClass(
+    export var UnitInfo = React.createFactory(React.createClass(
     {
       displayName: "UnitInfo",
       mixins: [React.addons.PureRenderMixin],
@@ -96,6 +96,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

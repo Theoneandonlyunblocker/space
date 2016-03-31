@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var Resource = React.createClass(
+    export var Resource = React.createFactory(React.createClass(
     {
       displayName: "Resource",
       render: function()
@@ -30,6 +30,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

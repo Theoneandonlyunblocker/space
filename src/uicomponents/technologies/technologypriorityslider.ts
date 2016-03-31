@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TechnologyPrioritySlider = React.createClass(
+    export var TechnologyPrioritySlider = React.createFactory(React.createClass(
     {
       displayName: "TechnologyPrioritySlider",
 
@@ -77,6 +77,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

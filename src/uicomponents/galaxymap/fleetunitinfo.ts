@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetUnitInfo = React.createClass(
+    export var FleetUnitInfo = React.createFactory(React.createClass(
     {
       displayName: "FleetUnitInfo",
       mixins: [Draggable],
@@ -93,6 +93,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

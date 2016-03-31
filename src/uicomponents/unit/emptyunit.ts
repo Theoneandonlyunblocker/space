@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var EmptyUnit = React.createClass(
+    export var EmptyUnit = React.createFactory(React.createClass(
     {
       displayName: "EmptyUnit",
       shouldComponentUpdate: function(newProps: any)
@@ -55,6 +55,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

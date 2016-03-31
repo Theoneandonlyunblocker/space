@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitStatus = React.createClass(
+    export var UnitStatus = React.createFactory(React.createClass(
     {
       displayName: "UnitStatus",
 
@@ -84,6 +84,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

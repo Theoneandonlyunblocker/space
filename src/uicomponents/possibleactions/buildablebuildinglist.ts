@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BuildableBuildingList = React.createClass(
+    export var BuildableBuildingList = React.createFactory(React.createClass(
     {
       displayName: "BuildableBuildingList",
       getInitialState: function()
@@ -101,6 +101,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

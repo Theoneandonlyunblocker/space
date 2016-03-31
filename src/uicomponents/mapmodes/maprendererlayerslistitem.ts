@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var MapRendererLayersListItem = React.createClass(
+    export var MapRendererLayersListItem = React.createFactory(React.createClass(
     {
       displayName: "MapRendererLayersListItem",
       mixins: [Draggable, DropTarget, React.addons.PureRenderMixin],
@@ -127,6 +127,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

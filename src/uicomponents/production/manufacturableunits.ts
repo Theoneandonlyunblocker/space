@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var ManufacturableUnits = React.createClass(
+    export var ManufacturableUnits = React.createFactory(React.createClass(
     {
       displayName: "ManufacturableUnits",
 
@@ -126,6 +126,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

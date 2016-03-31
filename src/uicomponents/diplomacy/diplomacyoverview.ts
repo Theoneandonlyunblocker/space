@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var DiplomacyOverview = React.createClass(
+    export var DiplomacyOverview = React.createFactory(React.createClass(
     {
       displayName: "DiplomacyOverview",
 
@@ -123,6 +123,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

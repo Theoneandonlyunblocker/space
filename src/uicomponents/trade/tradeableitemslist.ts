@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TradeableItemsList = React.createClass(
+    export var TradeableItemsList = React.createFactory(React.createClass(
     {
       displayName: "TradeableItemsList",
 
@@ -97,6 +97,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

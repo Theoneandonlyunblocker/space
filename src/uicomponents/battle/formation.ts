@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var Formation = React.createClass(
+    export var Formation = React.createFactory(React.createClass(
     {
       displayName: "Formation",
 
@@ -69,6 +69,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

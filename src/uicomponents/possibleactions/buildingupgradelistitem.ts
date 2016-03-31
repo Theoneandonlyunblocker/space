@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BuildingUpgradeListItem = React.createClass(
+    export var BuildingUpgradeListItem = React.createFactory(React.createClass(
     {
       displayName: "BuildingUpgradeListItem",
       mixins: [UpdateWhenMoneyChanges],
@@ -75,6 +75,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

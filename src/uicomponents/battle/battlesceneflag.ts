@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BattleSceneFlag = React.createClass(
+    export var BattleSceneFlag = React.createFactory(React.createClass(
     {
       displayName: "BattleSceneFlag",
       flagCanvas: null,
@@ -87,6 +87,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

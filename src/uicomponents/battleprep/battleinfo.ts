@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BattleInfo = React.createClass(
+    export var BattleInfo = React.createFactory(React.createClass(
     {
       displayName: "BattleInfo",
       render: function()
@@ -52,6 +52,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

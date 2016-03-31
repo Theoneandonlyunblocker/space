@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var BuildQueue = React.createClass(
+    export var BuildQueue = React.createFactory(React.createClass(
     {
       displayName: "BuildQueue",
 
@@ -75,6 +75,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

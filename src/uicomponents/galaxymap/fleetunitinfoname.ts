@@ -4,7 +4,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetUnitInfoName = React.createClass(
+    export var FleetUnitInfoName = React.createFactory(React.createClass(
     {
       displayName: "FleetUnitInfoName",
 
@@ -39,6 +39,6 @@ module Rance
           })
         );
       }
-    });
+    }));
   }
 }

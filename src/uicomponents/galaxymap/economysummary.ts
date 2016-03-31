@@ -5,7 +5,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var EconomySummary = React.createClass(
+    export var EconomySummary = React.createFactory(React.createClass(
     {
       displayName: "EconomySummary",
 
@@ -66,6 +66,6 @@ module Rance
           )
         );
       }
-    });
+    }));
   }
 }

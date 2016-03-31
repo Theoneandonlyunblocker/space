@@ -7,7 +7,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var TradeOverview = React.createClass(
+    export var TradeOverview = React.createFactory(React.createClass(
     {
       displayName: "TradeOverview",
       selfPlayerTrade: undefined,
@@ -244,6 +244,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }

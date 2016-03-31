@@ -2,7 +2,7 @@ module Rance
 {
   export module UIComponents
   {
-    export var UnitStatusEffects = React.createClass(
+    export var UnitStatusEffects = React.createFactory(React.createClass(
     {
       displayName: "UnitStatusEffects",
 
@@ -90,6 +90,6 @@ module Rance
           )
         );
       }
-    })
+    }));
   }
 }
