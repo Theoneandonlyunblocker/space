@@ -1,8 +1,8 @@
 import
 {
-getMatchingLocalstorageItemsByDate,
-deepMerge,
-extendObject
+  getMatchingLocalstorageItemsByDate,
+  deepMerge,
+  extendObject
 } from "./utility.ts";
 
 export interface IOptions

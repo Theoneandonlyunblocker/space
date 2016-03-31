@@ -5,3 +5,5 @@ export interface Range
   step?: number;
   defaultValue?: number;
 }
+
+export default Range;
