@@ -1,6 +1,4 @@
 /// <reference path="../../lib/pixi.d.ts" />
-/// <reference path="../../lib/react.d.ts" />
-/// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../templateinterfaces/idistributable.d.ts" />
 /// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
@@ -34,6 +32,8 @@
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../iunitattributes.d.ts" />
 /// <reference path="../savedata/iunitsavedata.d.ts" />
+/// <reference path="../../lib/tween.js.d.ts" />
+/// <reference path="../../lib/react.d.ts" />
 /// <reference path="../templateinterfaces/imaprendererlayertemplate.d.ts" />
 /// <reference path="../templateinterfaces/imaprenderermapmodetemplate.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
@@ -69,155 +69,6 @@ declare module Rance {
         removeAllListeners: any;
         addEventListener: (eventType: string, listener: Function) => Function;
     };
-}
-declare module Rance {
-    module UIComponents {
-        var SplitMultilineText: {
-            splitMultilineText: (text: any) => any;
-        };
-    }
-}
-declare module Rance {
-    module UIComponents {
-        interface IListColumn {
-            label: string;
-            title?: string;
-            key: string;
-            defaultOrder?: string;
-            order?: string;
-            notSortable?: boolean;
-            propToSortBy?: string;
-            sortingFunction?: <T>(a: T, b: T) => number;
-        }
-        interface IListItem {
-            key: string | number;
-            data: any;
-        }
-        var List: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var Draggable: {
-            getDefaultProps: () => {
-                dragThreshhold: number;
-            };
-            getInitialState: () => {
-                dragging: boolean;
-                clone: Node;
-            };
-            componentWillMount: () => void;
-            componentDidMount: () => void;
-            componentWillUnmount: () => void;
-            handleMouseDown: (e: MouseEvent) => void;
-            handleMouseMove: (e: MouseEvent) => void;
-            handleDrag: (e: MouseEvent) => void;
-            handleMouseUp: (e: MouseEvent) => void;
-            handleDragEnd: (e: MouseEvent) => void;
-            addEventListeners: () => void;
-            removeEventListeners: () => void;
-            setContainerRect: () => void;
-            updateDOMNodeStyle: () => void;
-        };
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitStrength: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitListItem: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ItemListItem: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ItemList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var AbilityList: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DropTarget: {
-            componentDidMount: () => void;
-            componentWillUnmount: () => void;
-        };
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitItem: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitItemWrapper: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UpgradeAbilities: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UpgradeAttributes: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UpgradeUnit: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var UnitExperience: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var MenuUnitInfo: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ItemEquip: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var PlayerFlag: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DefenceBuilding: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DefenceBuildingList: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var BattleInfo: React.Factory<{}>;
-    }
 }
 declare module Rance {
     enum RandomGenUnitRarity {
@@ -1851,6 +1702,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var UnitStrength: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var UnitActions: React.Factory<{}>;
     }
 }
@@ -1881,12 +1737,45 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var Draggable: {
+            getDefaultProps: () => {
+                dragThreshhold: number;
+            };
+            getInitialState: () => {
+                dragging: boolean;
+                clone: Node;
+            };
+            componentWillMount: () => void;
+            componentDidMount: () => void;
+            componentWillUnmount: () => void;
+            handleMouseDown: (e: MouseEvent) => void;
+            handleMouseMove: (e: MouseEvent) => void;
+            handleDrag: (e: MouseEvent) => void;
+            handleMouseUp: (e: MouseEvent) => void;
+            handleDragEnd: (e: MouseEvent) => void;
+            addEventListeners: () => void;
+            removeEventListeners: () => void;
+            setContainerRect: () => void;
+            updateDOMNodeStyle: () => void;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Unit: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
         var EmptyUnit: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DropTarget: {
+            componentDidMount: () => void;
+            componentWillUnmount: () => void;
+        };
     }
 }
 declare module Rance {
@@ -1906,7 +1795,159 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var TurnCounter: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TurnOrder: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var AbilityTooltip: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleSceneFlag: React.Factory<any>;
+    }
+}
+declare var bs: any;
+declare module Rance {
+    module UIComponents {
+        var BattleScene: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var PlayerFlag: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleScore: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleDisplayStrength: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var BattleBackground: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Battle: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var SplitMultilineText: {
+            splitMultilineText: (text: any) => any;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
+        interface IListColumn {
+            label: string;
+            title?: string;
+            key: string;
+            defaultOrder?: string;
+            order?: string;
+            notSortable?: boolean;
+            propToSortBy?: string;
+            sortingFunction?: <T>(a: T, b: T) => number;
+        }
+        interface IListItem {
+            key: string | number;
+            data: any;
+        }
+        var List: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitListItem: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ItemListItem: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ItemList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var AbilityList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitItem: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitItemWrapper: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UpgradeAbilities: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UpgradeAttributes: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UpgradeUnit: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitExperience: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MenuUnitInfo: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ItemEquip: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DefenceBuilding: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DefenceBuildingList: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleInfo: React.Factory<{}>;
     }
 }
 declare module Rance {

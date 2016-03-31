@@ -208,6 +208,8 @@ module Rance
 
       handleAbilityUse: function(ability: Templates.IAbilityTemplate, target: Unit, wasByPlayer: boolean)
       {
+        // TODO
+        /* 
         var abilityData = getAbilityUseData(this.props.battle,
           this.props.battle.activeUnit, ability, target);
 
@@ -227,6 +229,7 @@ module Rance
             targetId: "" + abilityData.actualTarget.id
           });
         }
+        */
       },
       // TODO battleSFX
       // need to either force BattleScene to play animation as soon as it starts
@@ -235,6 +238,8 @@ module Rance
       // actual effect always gets triggered after animationTiming.beforeUse
       playBattleEffect: function(abilityData: IAbilityUseData, i: number)
       {
+        // TODO
+        /* 
         var self = this;
         var effectData = abilityData.effectsToCall;
         if (!effectData[i])
@@ -335,6 +340,7 @@ module Rance
           potentialDelay: null,
           targetsInPotentialArea: []
         });
+        */
       },
       clearBattleEffect: function()
       {
@@ -424,6 +430,8 @@ module Rance
 
       handleMouseEnterAbility: function(ability: Templates.IAbilityTemplate)
       {
+// TODO
+/* 
         var targetsInPotentialArea = getUnitsInAbilityArea(
           this.props.battle,
           this.props.battle.activeUnit,
@@ -445,6 +453,7 @@ module Rance
           },
           targetsInPotentialArea: targetsInPotentialArea
         });
+*/
       },
       handleMouseLeaveAbility: function()
       {

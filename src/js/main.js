@@ -19,1875 +19,6 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.SplitMultilineText = {
-            splitMultilineText: function (text) {
-                if (Array.isArray(text)) {
-                    var returnArr = [];
-                    for (var i = 0; i < text.length; i++) {
-                        returnArr.push(text[i]);
-                        returnArr.push(React.DOM.br({
-                            key: "" + i
-                        }));
-                    }
-                    return returnArr;
-                }
-                else {
-                    return text;
-                }
-            }
-        };
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../mixins/splitmultilinetext.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.List = React.createClass({
-            displayName: "List",
-            mixins: [UIComponents.SplitMultilineText],
-            sortedItems: [],
-            propTypes: {
-                initialColumns: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-                listItems: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-                initialSortOrder: React.PropTypes.arrayOf(React.PropTypes.object),
-                keyboardSelect: React.PropTypes.bool,
-                initialSelected: React.PropTypes.object,
-                tabIndex: React.PropTypes.number,
-                noHeader: React.PropTypes.bool,
-                addSpacer: React.PropTypes.bool,
-                onRowChange: React.PropTypes.func,
-                colStylingFN: React.PropTypes.func // (column: IListColumn, props: any) => any
-            },
-            getInitialState: function () {
-                var initialColumn = this.props.initialSortOrder ?
-                    this.props.initialSortOrder[0] :
-                    this.props.initialColumns[0];
-                return ({
-                    columns: this.props.initialColumns,
-                    selected: null,
-                    selectedColumn: initialColumn,
-                    sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
-                });
-            },
-            componentDidMount: function () {
-                var self = this;
-                window.addEventListener("resize", this.setDesiredHeight, false);
-                Rance.eventManager.addEventListener("popupResized", this.setDesiredHeight);
-                if (this.props.keyboardSelect) {
-                    this.getDOMNode().addEventListener("keydown", function (event) {
-                        switch (event.keyCode) {
-                            case 40:
-                                {
-                                    self.shiftSelection(1);
-                                    break;
-                                }
-                            case 38:
-                                {
-                                    self.shiftSelection(-1);
-                                    break;
-                                }
-                            default:
-                                {
-                                    return;
-                                }
-                        }
-                    });
-                }
-                if (this.props.initialSelected) {
-                    this.handleSelectRow(this.props.initialSelected);
-                }
-                else if (this.props.autoSelect) {
-                    this.handleSelectRow(this.sortedItems[0]);
-                    this.getDOMNode().focus();
-                }
-                else {
-                    this.setState({ selected: this.sortedItems[0] });
-                }
-            },
-            componentWillUnmount: function () {
-                window.removeEventListener("resize", this.setDesiredHeight);
-                Rance.eventManager.removeEventListener("popupResized", this.setDesiredHeight);
-            },
-            componentDidUpdate: function () {
-                this.setDesiredHeight();
-            },
-            setDesiredHeight: function () {
-                var ownNode = this.getDOMNode();
-                var innerNode = this.refs.inner.getDOMNode();
-                ownNode.style.height = "auto";
-                innerNode.style.height = "auto";
-                var parentHeight = ownNode.parentNode.getBoundingClientRect().height;
-                var ownRect = ownNode.getBoundingClientRect();
-                var ownHeight = ownRect.height;
-                var strippedOwnHeight = parseInt(getComputedStyle(ownNode).height);
-                var extraHeight = ownHeight - strippedOwnHeight;
-                var desiredHeight = parentHeight - extraHeight;
-                var maxHeight = window.innerHeight - ownRect.top - extraHeight;
-                desiredHeight = Math.min(desiredHeight, maxHeight);
-                ownNode.style.height = "" + desiredHeight + "px";
-                innerNode.style.height = "" + desiredHeight + "px";
-            },
-            handleScroll: function (e) {
-                // scrolls header to match list contents
-                var target = e.target;
-                var header = this.refs.header.getDOMNode();
-                var titles = header.getElementsByClassName("fixed-table-th-inner");
-                var marginString = "-" + target.scrollLeft + "px";
-                for (var i = 0; i < titles.length; i++) {
-                    titles[i].style.marginLeft = marginString;
-                }
-            },
-            makeInitialSortingOrder: function (columns, initialColumn) {
-                var initialSortOrder = this.props.initialSortOrder;
-                if (!initialSortOrder || initialSortOrder.length < 1) {
-                    initialSortOrder = [initialColumn];
-                }
-                var order = initialSortOrder;
-                for (var i = 0; i < columns.length; i++) {
-                    if (!columns[i].order) {
-                        columns[i].order = columns[i].defaultOrder;
-                    }
-                    if (initialSortOrder.indexOf(columns[i]) < 0) {
-                        order.push(columns[i]);
-                    }
-                }
-                return order;
-            },
-            getNewSortingOrder: function (newColumn) {
-                var order = this.state.sortingOrder.slice(0);
-                var current = order.indexOf(newColumn);
-                if (current >= 0) {
-                    order.splice(current);
-                }
-                order.unshift(newColumn);
-                return order;
-            },
-            handleSelectColumn: function (column) {
-                if (column.notSortable)
-                    return;
-                function getReverseOrder(order) {
-                    return order === "desc" ? "asc" : "desc";
-                }
-                if (this.state.selectedColumn.key === column.key) {
-                    column.order = getReverseOrder(column.order);
-                    this.forceUpdate();
-                }
-                else {
-                    column.order = column.defaultOrder;
-                    this.setState({
-                        selectedColumn: column,
-                        sortingOrder: this.getNewSortingOrder(column)
-                    });
-                }
-            },
-            handleSelectRow: function (row) {
-                if (this.props.onRowChange && row)
-                    this.props.onRowChange.call(null, row);
-                this.setState({
-                    selected: row
-                });
-            },
-            sort: function () {
-                var itemsToSort = this.props.listItems;
-                var columnsToTry = this.state.columns;
-                var sortOrder = this.state.sortingOrder;
-                var sortFunctions = {};
-                function makeSortingFunction(column) {
-                    if (column.sortingFunction)
-                        return column.sortingFunction;
-                    var propToSortBy = column.propToSortBy || column.key;
-                    return (function (a, b) {
-                        var a1 = a.data[propToSortBy];
-                        var b1 = b.data[propToSortBy];
-                        if (a1 > b1)
-                            return 1;
-                        else if (a1 < b1)
-                            return -1;
-                        else
-                            return 0;
-                    });
-                }
-                itemsToSort.sort(function (a, b) {
-                    var result = 0;
-                    for (var i = 0; i < sortOrder.length; i++) {
-                        var columnToSortBy = sortOrder[i];
-                        if (!sortFunctions[columnToSortBy.key]) {
-                            sortFunctions[columnToSortBy.key] = makeSortingFunction(columnToSortBy);
-                        }
-                        var sortFunction = sortFunctions[columnToSortBy.key];
-                        result = sortFunction(a, b);
-                        if (columnToSortBy.order === "desc") {
-                            result *= -1;
-                        }
-                        if (result)
-                            return result;
-                    }
-                    return 0; // couldnt sort
-                });
-                this.sortedItems = itemsToSort;
-            },
-            shiftSelection: function (amountToShift) {
-                var reverseIndexes = {};
-                for (var i = 0; i < this.sortedItems.length; i++) {
-                    reverseIndexes[this.sortedItems[i].key] = i;
-                }
-                ;
-                var currSelectedIndex = reverseIndexes[this.state.selected.key];
-                var nextIndex = (currSelectedIndex + amountToShift) % this.sortedItems.length;
-                if (nextIndex < 0) {
-                    nextIndex += this.sortedItems.length;
-                }
-                this.handleSelectRow(this.sortedItems[nextIndex]);
-            },
-            render: function () {
-                var self = this;
-                var columns = [];
-                var headerLabels = [];
-                this.state.columns.forEach(function (column) {
-                    var colProps = {
-                        key: column.key
-                    };
-                    if (self.props.colStylingFN) {
-                        colProps = self.props.colStylingFN(column, colProps);
-                    }
-                    columns.push(React.DOM.col(colProps));
-                    var sortStatus = "";
-                    if (!column.notSortable)
-                        sortStatus = " sortable";
-                    if (self.state.selectedColumn.key === column.key) {
-                        sortStatus += " sorted-" + column.order;
-                    }
-                    else if (!column.notSortable)
-                        sortStatus += " unsorted";
-                    headerLabels.push(React.DOM.th({
-                        key: column.key
-                    }, React.DOM.div({
-                        className: "fixed-table-th-inner"
-                    }, React.DOM.div({
-                        className: "fixed-table-th-content" + sortStatus,
-                        title: column.title || colProps.title || null,
-                        onMouseDown: self.handleSelectColumn.bind(null, column),
-                        onTouchStart: self.handleSelectColumn.bind(null, column),
-                    }, column.label))));
-                });
-                this.sort();
-                var sortedItems = this.sortedItems;
-                var rows = [];
-                sortedItems.forEach(function (item, i) {
-                    item.data.key = item.key;
-                    item.data.activeColumns = self.state.columns;
-                    item.data.handleClick = self.handleSelectRow.bind(null, item);
-                    var row = item.data.rowConstructor(item.data);
-                    rows.push(row);
-                    if (self.props.addSpacer && i < sortedItems.length - 1) {
-                        rows.push(React.DOM.tr({
-                            className: "list-spacer",
-                            key: "spacer" + i
-                        }, React.DOM.td({
-                            colSpan: 20
-                        }, null)));
-                    }
-                });
-                return (React.DOM.div({
-                    className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
-                    tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
-                }, React.DOM.div({ className: "fixed-table-header-background" }), React.DOM.div({
-                    className: "fixed-table-container-inner",
-                    ref: "inner",
-                    onScroll: this.handleScroll
-                }, React.DOM.table({
-                    className: "react-list"
-                }, React.DOM.colgroup(null, columns), React.DOM.thead({ className: "fixed-table-actual-header", ref: "header" }, React.DOM.tr(null, headerLabels)), React.DOM.thead({ className: "fixed-table-hidden-header" }, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)))));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../../lib/react.d.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.Draggable = {
-            getDefaultProps: function () {
-                return ({
-                    dragThreshhold: 5
-                });
-            },
-            getInitialState: function () {
-                return ({
-                    dragging: false,
-                    clone: null
-                });
-            },
-            componentWillMount: function () {
-                this.dragPos = {};
-                this.mouseDown = false;
-                this.dragOffset =
-                    {
-                        x: 0,
-                        y: 0
-                    };
-                this.mouseDownPosition =
-                    {
-                        x: 0,
-                        y: 0
-                    };
-                this.originPosition =
-                    {
-                        x: 0,
-                        y: 0
-                    };
-            },
-            componentDidMount: function () {
-                this.DOMNode = this.getDOMNode();
-                this.containerElement = document.body;
-                if (this.props.containerElement) {
-                    if (this.props.containerElement.getDOMNode) {
-                        // React component
-                        this.containerElement = this.props.containerElement.getDOMNode();
-                    }
-                    else
-                        this.containerElement = this.props.containerElement;
-                }
-                this.setContainerRect();
-                window.addEventListener("resize", this.setContainerRect, false);
-            },
-            componentWillUnmount: function () {
-                this.removeEventListeners();
-                window.removeEventListener("resize", this.setContainerRect);
-            },
-            handleMouseDown: function (e) {
-                if (e.button)
-                    return;
-                if (this.props.containerDragOnly) {
-                    var target = e.target;
-                    if (!target.classList.contains("draggable-container")) {
-                        return;
-                    }
-                }
-                e.preventDefault();
-                e.stopPropagation();
-                if (this.state.dragging)
-                    return;
-                var clientRect = this.getDOMNode().getBoundingClientRect();
-                // var e;
-                // if (isFinite(e.clientX))
-                // {
-                //   e = e;
-                // }
-                // else
-                // {
-                //   e = e.touches[0];
-                //   this.needsFirstTouchUpdate = true;
-                //   this.touchEventTarget = e.target;
-                // }
-                this.addEventListeners();
-                var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset ||
-                    {
-                        x: e.clientX - clientRect.left,
-                        y: e.clientY - clientRect.top
-                    };
-                this.mouseDown = true;
-                this.dragOffset = dragOffset;
-                this.mouseDownPosition =
-                    {
-                        x: e.pageX,
-                        y: e.pageY
-                    };
-                this.originPosition =
-                    {
-                        x: clientRect.left + document.body.scrollLeft,
-                        y: clientRect.top + document.body.scrollTop
-                    };
-                if (this.props.dragThreshhold <= 0) {
-                    this.handleMouseMove(e);
-                }
-            },
-            handleMouseMove: function (e) {
-                if (e.preventDefault)
-                    e.preventDefault();
-                // var e = e.clientX ? e : e.touches[0];
-                if (e.clientX === 0 && e.clientY === 0)
-                    return;
-                if (!this.state.dragging) {
-                    var deltaX = Math.abs(e.pageX - this.mouseDownPosition.x);
-                    var deltaY = Math.abs(e.pageY - this.mouseDownPosition.y);
-                    var delta = deltaX + deltaY;
-                    if (delta >= this.props.dragThreshhold) {
-                        var ownNode = this.getDOMNode();
-                        var stateObj = {
-                            dragging: true
-                        };
-                        if (!this.props.preventAutoResize) {
-                            this.dragPos.width = parseInt(ownNode.offsetWidth);
-                            this.dragPos.height = parseInt(ownNode.offsetHeight);
-                        }
-                        if (this.props.makeClone) {
-                            if (!this.makeDragClone) {
-                                var nextSibling = ownNode.nextSibling;
-                                var clone = ownNode.cloneNode(true);
-                                Rance.recursiveRemoveAttribute(clone, "data-reactid");
-                                ownNode.parentNode.insertBefore(clone, nextSibling);
-                                stateObj.clone = clone;
-                            }
-                            else {
-                                var clone = this.makeDragClone();
-                                document.body.appendChild(clone);
-                                stateObj.clone = clone;
-                            }
-                        }
-                        this.setState(stateObj);
-                        if (this.onDragStart) {
-                            this.onDragStart(e);
-                        }
-                        if (this.onDragMove) {
-                            this.onDragMove(e.pageX - this.dragOffset.x, e.pageY - this.dragOffset.y);
-                        }
-                    }
-                }
-                if (this.state.dragging) {
-                    this.handleDrag(e);
-                }
-            },
-            handleDrag: function (e) {
-                var x = e.pageX - this.dragOffset.x;
-                var y = e.pageY - this.dragOffset.y;
-                var domWidth, domHeight;
-                if (this.makeDragClone) {
-                    domWidth = parseInt(this.state.clone.offsetWidth);
-                    domHeight = parseInt(this.state.clone.offsetHeight);
-                }
-                else {
-                    domWidth = parseInt(this.getDOMNode().offsetWidth);
-                    domHeight = parseInt(this.getDOMNode().offsetHeight);
-                }
-                var minX = this.containerRect.left;
-                var maxX = this.containerRect.right;
-                var minY = this.containerRect.top;
-                var maxY = this.containerRect.bottom;
-                var x2 = x + domWidth;
-                var y2 = y + domHeight;
-                if (x < minX) {
-                    x = minX;
-                }
-                else if (x2 > maxX) {
-                    x = this.containerRect.width - domWidth;
-                }
-                ;
-                if (y < minY) {
-                    y = minY;
-                }
-                else if (y2 > maxY) {
-                    y = this.containerRect.height - domHeight;
-                }
-                ;
-                if (this.onDragMove) {
-                    this.onDragMove(x, y);
-                }
-                else {
-                    this.dragPos.top = y;
-                    this.dragPos.left = x;
-                    this.updateDOMNodeStyle();
-                }
-            },
-            handleMouseUp: function (e) {
-                // if (this.touchEventTarget)
-                // {
-                //   var touch = e.changedTouches[0];
-                //   var dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
-                //   console.log(dropTarget);
-                //   if (dropTarget)
-                //   {
-                //     var reactid = dropTarget.getAttribute("data-reactid");
-                //     eventManager.dispatchEvent("drop" + reactid);
-                //   }
-                // }
-                this.mouseDown = false;
-                this.mouseDownPosition =
-                    {
-                        x: 0,
-                        y: 0
-                    };
-                if (this.state.dragging) {
-                    this.handleDragEnd(e);
-                }
-                this.removeEventListeners();
-            },
-            handleDragEnd: function (e) {
-                if (this.state.clone) {
-                    this.state.clone.parentNode.removeChild(this.state.clone);
-                }
-                if (this.isMounted()) {
-                    this.setState({
-                        dragging: false,
-                        clone: null
-                    });
-                    this.dragOffset =
-                        {
-                            x: 0,
-                            y: 0
-                        };
-                    this.originPosition =
-                        {
-                            x: 0,
-                            y: 0
-                        };
-                }
-                if (this.onDragEnd) {
-                    var endSuccesful = this.onDragEnd(e);
-                }
-            },
-            addEventListeners: function () {
-                var self = this;
-                this.containerElement.addEventListener("mousemove", self.handleMouseMove);
-                document.addEventListener("mouseup", self.handleMouseUp);
-                if (this.touchEventTarget) {
-                    this.touchEventTarget.addEventListener("touchmove", self.handleMouseMove);
-                    this.touchEventTarget.addEventListener("touchend", self.handleMouseUp);
-                }
-            },
-            removeEventListeners: function () {
-                var self = this;
-                this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
-                document.removeEventListener("mouseup", self.handleMouseUp);
-                if (this.touchEventTarget) {
-                    this.touchEventTarget.removeEventListener("touchmove", self.handleMouseMove);
-                    this.touchEventTarget.removeEventListener("touchend", self.handleMouseUp);
-                    this.touchEventTarget = null;
-                }
-            },
-            setContainerRect: function () {
-                this.containerRect = this.containerElement.getBoundingClientRect();
-            },
-            updateDOMNodeStyle: function () {
-                if (this.state.clone) {
-                    var s = this.state.clone.style;
-                    s.top = "" + this.dragPos.top + "px";
-                    s.left = "" + this.dragPos.left + "px";
-                }
-                else {
-                    var s = this.DOMNode.style;
-                    for (var key in this.dragPos) {
-                        s[key] = "" + this.dragPos[key] + "px";
-                    }
-                }
-            }
-        };
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../../lib/tween.js.d.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitStrength = React.createClass({
-            displayName: "UnitStrength",
-            getInitialState: function () {
-                return ({
-                    displayedStrength: this.props.currentHealth,
-                    activeTween: null
-                });
-            },
-            componentWillReceiveProps: function (newProps) {
-                if (newProps.animateStrength &&
-                    newProps.currentHealth !== this.props.currentHealth &&
-                    (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)) {
-                    var animateDuration = newProps.animateDuration || 0;
-                    this.animateDisplayedStrength(newProps.currentHealth, animateDuration);
-                }
-                else {
-                    this.updateDisplayStrength(newProps.currentHealth);
-                }
-            },
-            componentWillUnmount: function () {
-                if (this.activeTween) {
-                    this.activeTween.stop();
-                }
-            },
-            updateDisplayStrength: function (newAmount) {
-                this.setState({
-                    displayedStrength: newAmount
-                });
-            },
-            animateDisplayedStrength: function (newAmount, time) {
-                var self = this;
-                var stopped = false;
-                var animateTween = function () {
-                    if (stopped) {
-                        cancelAnimationFrame(self.requestAnimFrame);
-                        return;
-                    }
-                    TWEEN.update();
-                    self.requestAnimFrame = window.requestAnimationFrame(animateTween);
-                };
-                var tween = new TWEEN.Tween({
-                    health: self.state.displayedStrength
-                }).to({
-                    health: newAmount
-                }, time).onUpdate(function () {
-                    self.setState({
-                        displayedStrength: this.health
-                    });
-                }).easing(TWEEN.Easing.Sinusoidal.Out);
-                tween.onStop(function () {
-                    stopped = true;
-                    TWEEN.remove(tween);
-                });
-                this.activeTween = tween;
-                tween.start();
-                animateTween();
-            },
-            makeSquadronInfo: function () {
-                return (React.DOM.div({ className: "unit-strength-container" }, this.makeStrengthText()));
-            },
-            makeCapitalInfo: function () {
-                var text = this.makeStrengthText();
-                var relativeHealth = this.state.displayedStrength / this.props.maxHealth;
-                var bar = React.DOM.div({
-                    className: "unit-strength-bar"
-                }, React.DOM.div({
-                    className: "unit-strength-bar-value",
-                    style: {
-                        width: "" + relativeHealth * 100 + "%"
-                    }
-                }));
-                return (React.DOM.div({ className: "unit-strength-container" }, text, bar));
-            },
-            makeStrengthText: function () {
-                var critThreshhold = 0.3;
-                var currentStyle = {
-                    className: "unit-strength-current"
-                };
-                var healthRatio = this.state.displayedStrength / this.props.maxHealth;
-                if (!this.props.isNotDetected && healthRatio <= critThreshhold) {
-                    currentStyle.className += " critical";
-                }
-                else if (!this.props.isNotDetected && this.state.displayedStrength < this.props.maxHealth) {
-                    currentStyle.className += " wounded";
-                }
-                var containerProps = {
-                    className: (this.props.isSquadron ? "unit-strength-amount" :
-                        "unit-strength-amount-capital")
-                };
-                var displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
-                var max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
-                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, displayed), React.DOM.span({ className: "unit-strength-max" }, "/" + max)));
-            },
-            render: function () {
-                if (this.props.isSquadron) {
-                    return this.makeSquadronInfo();
-                }
-                else {
-                    return this.makeCapitalInfo();
-                }
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../mixins/draggable.ts" />
-/// <reference path="../unit/unitstrength.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitListItem = React.createClass({
-            displayName: "UnitListItem",
-            mixins: [UIComponents.Draggable],
-            componentDidMount: function () {
-                if (!this.props.isDraggable)
-                    return;
-                var container = document.getElementsByClassName("unit-wrapper")[0];
-                this.forcedDragOffset =
-                    {
-                        x: container.offsetWidth / 2,
-                        y: container.offsetHeight / 2
-                    };
-            },
-            componentDidUpdate: function () {
-                if (this.needsFirstTouchUpdate && this.refs.dragClone) {
-                    var node = this.refs.dragClone.getDOMNode();
-                    node.classList.add("draggable");
-                    node.classList.add("dragging");
-                    var container = document.getElementsByClassName("unit-wrapper")[0];
-                    node.style.width = "" + container.offsetWidth + "px";
-                    node.style.height = "" + container.offsetHeight + "px";
-                    this.needsFirstTouchUpdate = false;
-                }
-            },
-            onDragStart: function () {
-                this.props.onDragStart(this.props.unit);
-            },
-            onDragMove: function (x, y) {
-                if (!this.refs.dragClone)
-                    return;
-                var node = this.refs.dragClone.getDOMNode();
-                node.classList.add("draggable");
-                node.classList.add("dragging");
-                node.style.left = "" + x + "px";
-                node.style.top = "" + y + "px";
-                var container = document.getElementsByClassName("unit-wrapper")[0];
-                node.style.width = "" + container.offsetWidth + "px";
-                node.style.height = "" + container.offsetHeight + "px";
-                this.forcedDragOffset =
-                    {
-                        x: container.offsetWidth / 2,
-                        y: container.offsetHeight / 2
-                    };
-            },
-            onDragEnd: function () {
-                this.props.onDragEnd();
-            },
-            handleMouseEnter: function () {
-                this.props.onMouseEnter(this.props.unit);
-            },
-            handleMouseLeave: function () {
-                this.props.onMouseLeave();
-            },
-            makeCell: function (type) {
-                var unit = this.props.unit;
-                var cellProps = {};
-                cellProps.key = type;
-                cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
-                var cellContent;
-                switch (type) {
-                    case "strength":
-                        {
-                            cellContent = UIComponents.UnitStrength({
-                                maxHealth: this.props.maxHealth,
-                                currentHealth: this.props.currentHealth,
-                                isSquadron: true
-                            });
-                            break;
-                        }
-                    case "attack":
-                    case "defence":
-                    case "intelligence":
-                    case "speed":
-                        {
-                            cellContent = this.props[type];
-                            if (unit.attributes[type] < unit.baseAttributes[type]) {
-                                cellProps.className += " lowered-stat";
-                            }
-                            else if (unit.attributes[type] > unit.baseAttributes[type]) {
-                                cellProps.className += " raised-stat";
-                            }
-                            break;
-                        }
-                    default:
-                        {
-                            cellContent = this.props[type];
-                            break;
-                        }
-                }
-                return (React.DOM.td(cellProps, cellContent));
-            },
-            render: function () {
-                var unit = this.props.unit;
-                var columns = this.props.activeColumns;
-                if (this.state.dragging) {
-                    return (UIComponents.Unit({
-                        ref: "dragClone",
-                        unit: unit
-                    }));
-                }
-                var cells = [];
-                for (var i = 0; i < columns.length; i++) {
-                    var cell = this.makeCell(columns[i].key);
-                    cells.push(cell);
-                }
-                var rowProps = {
-                    className: "unit-list-item",
-                    onClick: this.props.handleClick
-                };
-                if (this.props.isDraggable && !this.props.noActionsLeft) {
-                    rowProps.className += " draggable";
-                    rowProps.onTouchStart = rowProps.onMouseDown =
-                        this.handleMouseDown;
-                }
-                if (this.props.isSelected) {
-                    rowProps.className += " selected-unit";
-                }
-                ;
-                if (this.props.isReserved) {
-                    rowProps.className += " reserved-unit";
-                }
-                if (this.props.isHovered) {
-                    rowProps.className += " unit-list-item-hovered";
-                }
-                if (this.props.noActionsLeft) {
-                    rowProps.className += " no-actions-left";
-                }
-                else if (this.props.onMouseEnter) {
-                    rowProps.onMouseEnter = this.handleMouseEnter;
-                    rowProps.onMouseLeave = this.handleMouseLeave;
-                }
-                return (React.DOM.tr(rowProps, cells));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="list.ts" />
-/// <reference path="unitlistitem.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitList = React.createClass({
-            displayName: "UnitList",
-            render: function () {
-                var rows = [];
-                for (var id in this.props.units) {
-                    var unit = this.props.units[id];
-                    var data = {
-                        unit: unit,
-                        id: unit.id,
-                        name: unit.name,
-                        typeName: unit.template.displayName,
-                        strength: "" + unit.currentHealth + " / " + unit.maxHealth,
-                        currentHealth: unit.currentHealth,
-                        maxHealth: unit.maxHealth,
-                        maxActionPoints: unit.attributes.maxActionPoints,
-                        attack: unit.attributes.attack,
-                        defence: unit.attributes.defence,
-                        intelligence: unit.attributes.intelligence,
-                        speed: unit.attributes.speed,
-                        rowConstructor: UIComponents.UnitListItem,
-                        makeClone: true,
-                        isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
-                        noActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),
-                        isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
-                        isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
-                        onMouseEnter: this.props.onMouseEnter,
-                        onMouseLeave: this.props.onMouseLeave,
-                        isDraggable: this.props.isDraggable,
-                        onDragStart: this.props.onDragStart,
-                        onDragEnd: this.props.onDragEnd
-                    };
-                    rows.push({
-                        key: unit.id,
-                        data: data
-                    });
-                }
-                var columns = [
-                    {
-                        label: "Id",
-                        key: "id",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Type",
-                        key: "typeName",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Strength",
-                        key: "strength",
-                        defaultOrder: "desc",
-                        sortingFunction: function (a, b) {
-                            return a.data.currentHealth - b.data.currentHealth;
-                        }
-                    },
-                    {
-                        label: "Act",
-                        key: "maxActionPoints",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Atk",
-                        key: "attack",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Def",
-                        key: "defence",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Int",
-                        key: "intelligence",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Spd",
-                        key: "speed",
-                        defaultOrder: "desc"
-                    }
-                ];
-                return (React.DOM.div({ className: "unit-list fixed-table-parent" }, UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    onRowChange: this.props.onRowChange,
-                    autoSelect: this.props.autoSelect,
-                    keyboardSelect: true
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.ItemListItem = React.createClass({
-            displayName: "ItemListItem",
-            mixins: [UIComponents.Draggable],
-            onDragStart: function () {
-                console.log("onDragStart", this.props.item.template.displayName);
-                this.props.onDragStart(this.props.item);
-            },
-            onDragEnd: function () {
-                this.props.onDragEnd();
-            },
-            makeCell: function (type) {
-                var cellProps = {};
-                cellProps.key = type;
-                cellProps.className = "item-list-item-cell" + " item-list-" + type;
-                var cellContent;
-                switch (type) {
-                    case "abilityName":
-                        {
-                            if (this.props.ability) {
-                                cellProps.title = this.props.ability.description;
-                                if (this.props.abilityIsPassive) {
-                                    cellProps.className += " passive-skill";
-                                }
-                            }
-                        }
-                    default:
-                        {
-                            cellContent = this.props[type];
-                            if (isFinite(cellContent)) {
-                                cellProps.className += " center-text";
-                            }
-                            break;
-                        }
-                }
-                return (React.DOM.td(cellProps, cellContent));
-            },
-            makeDragClone: function () {
-                var clone = new Image();
-                clone.src = this.props.item.template.icon;
-                clone.className = "item-icon-base draggable dragging";
-                return clone;
-            },
-            render: function () {
-                var item = this.props.item;
-                var columns = this.props.activeColumns;
-                if (this.state.dragging && this.state.clone) {
-                    this.state.clone.style.left = "" + this.dragPos.left + "px";
-                    this.state.clone.style.top = "" + this.dragPos.top + "px";
-                }
-                var cells = [];
-                for (var i = 0; i < columns.length; i++) {
-                    var cell = this.makeCell(columns[i].key);
-                    cells.push(cell);
-                }
-                var rowProps = {
-                    className: "item-list-item",
-                    onClick: this.props.handleClick,
-                    key: this.props.key
-                };
-                if (this.props.isDraggable) {
-                    rowProps.className += " draggable";
-                    rowProps.onTouchStart = rowProps.onMouseDown =
-                        this.handleMouseDown;
-                }
-                if (this.props.isSelected) {
-                    rowProps.className += " selected-item";
-                }
-                ;
-                if (this.props.isReserved) {
-                    rowProps.className += " reserved-item";
-                }
-                return (React.DOM.tr(rowProps, cells));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="list.ts" />
-/// <reference path="itemlistitem.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.ItemList = React.createClass({
-            displayName: "ItemList",
-            getSlotIndex: function (slot) {
-                if (slot === "high") {
-                    return 2;
-                }
-                else if (slot === "mid") {
-                    return 1;
-                }
-                else
-                    return 0;
-            },
-            render: function () {
-                var rows = [];
-                var items = this.props.items;
-                for (var i = 0; i < items.length; i++) {
-                    var item = items[i];
-                    var ability = null;
-                    var abilityIsPassive = false;
-                    if (item.template.ability) {
-                        ability = item.template.ability;
-                    }
-                    else if (item.template.passiveSkill) {
-                        ability = item.template.passiveSkill;
-                        abilityIsPassive = true;
-                    }
-                    var data = {
-                        item: item,
-                        key: item.id,
-                        id: item.id,
-                        typeName: item.template.displayName,
-                        slot: item.template.slot,
-                        slotIndex: this.getSlotIndex(item.template.slot),
-                        unit: item.unit ? item.unit : null,
-                        unitName: item.unit ? item.unit.name : "",
-                        techLevel: item.template.techLevel,
-                        cost: item.template.buildCost,
-                        ability: ability,
-                        abilityName: ability ? ability.displayName : "",
-                        abilityIsPassive: abilityIsPassive,
-                        isReserved: Boolean(item.unit),
-                        makeClone: true,
-                        forcedDragOffset: { x: 32, y: 32 },
-                        rowConstructor: UIComponents.ItemListItem,
-                        isDraggable: this.props.isDraggable,
-                        onDragStart: this.props.onDragStart,
-                        onDragEnd: this.props.onDragEnd
-                    };
-                    ["maxActionPoints", "attack", "defence",
-                        "intelligence", "speed"].forEach(function (stat) {
-                        if (!item.template.attributes)
-                            data[stat] = null;
-                        else
-                            data[stat] = item.template.attributes[stat] || null;
-                    });
-                    rows.push({
-                        key: item.id,
-                        data: data
-                    });
-                }
-                var columns;
-                if (this.props.isItemPurchaseList) {
-                    columns =
-                        [
-                            {
-                                label: "Type",
-                                key: "typeName",
-                                defaultOrder: "asc"
-                            },
-                            {
-                                label: "Slot",
-                                key: "slot",
-                                propToSortBy: "slotIndex",
-                                defaultOrder: "desc"
-                            },
-                            {
-                                label: "Tech",
-                                key: "techLevel",
-                                defaultOrder: "asc"
-                            },
-                            {
-                                label: "Cost",
-                                key: "cost",
-                                defaultOrder: "asc"
-                            }
-                        ];
-                }
-                else {
-                    columns =
-                        [
-                            {
-                                label: "Type",
-                                key: "typeName",
-                                defaultOrder: "asc"
-                            },
-                            {
-                                label: "Slot",
-                                key: "slot",
-                                propToSortBy: "slotIndex",
-                                defaultOrder: "desc"
-                            },
-                            {
-                                label: "Unit",
-                                key: "unitName",
-                                defaultOrder: "desc"
-                            },
-                            {
-                                label: "Act",
-                                key: "maxActionPoints",
-                                defaultOrder: "desc"
-                            },
-                            {
-                                label: "Atk",
-                                key: "attack",
-                                defaultOrder: "desc"
-                            },
-                            {
-                                label: "Def",
-                                key: "defence",
-                                defaultOrder: "desc"
-                            },
-                            {
-                                label: "Int",
-                                key: "intelligence",
-                                defaultOrder: "desc"
-                            },
-                            {
-                                label: "Spd",
-                                key: "speed",
-                                defaultOrder: "desc"
-                            },
-                            {
-                                label: "Ability",
-                                key: "abilityName",
-                                defaultOrder: "desc"
-                            }
-                        ];
-                }
-                return (React.DOM.div({ className: "item-list fixed-table-parent" }, UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    initialSortOrder: [columns[1], columns[2]],
-                    onRowChange: this.props.onRowChange,
-                    tabIndex: 2,
-                    keyboardSelect: true
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.AbilityList = React.createClass({
-            displayName: "AbilityList",
-            render: function () {
-                var abilities = this.props.abilities;
-                var baseClassName = "unit-info-ability";
-                if (abilities.length < 1)
-                    return null;
-                var abilityElements = [];
-                var addedAbilityTypes = {};
-                abilities.sort(function (_a, _b) {
-                    if (_a.mainEffect && !_b.mainEffect)
-                        return -1;
-                    else if (_b.mainEffect && !_a.mainEffect)
-                        return 1;
-                    if (_a.type === "learnable")
-                        return 1;
-                    else if (_b.type === "learnable")
-                        return -1;
-                    var a = _a.displayName.toLowerCase();
-                    var b = _b.displayName.toLowerCase();
-                    if (a > b)
-                        return 1;
-                    else if (a < b)
-                        return -1;
-                    else
-                        return 0;
-                });
-                for (var i = 0; i < abilities.length; i++) {
-                    var ability = abilities[i];
-                    if (ability.isHidden) {
-                        continue;
-                    }
-                    if (!addedAbilityTypes[ability.type]) {
-                        addedAbilityTypes[ability.type] = 0;
-                    }
-                    var className = "unit-info-ability";
-                    var isPassiveSkill = !ability.mainEffect;
-                    if (isPassiveSkill) {
-                        className += " passive-skill";
-                    }
-                    else {
-                        className += " active-skill";
-                    }
-                    if (addedAbilityTypes[ability.type] >= 1) {
-                        className += " redundant-ability";
-                    }
-                    abilityElements.push(React.DOM.li({
-                        className: className,
-                        title: ability.description,
-                        key: ability.type + addedAbilityTypes[ability.type],
-                        onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined)
-                    }, "[" + ability.displayName + "]"));
-                    addedAbilityTypes[ability.type]++;
-                }
-                return (React.DOM.ul({
-                    className: "ability-list"
-                }, abilityElements));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-// used to register event listeners for manually firing drop events because touch events suck
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.DropTarget = {
-            componentDidMount: function () {
-                if (!this.handleMouseUp)
-                    console.warn("No mouseUp handler on drop target", this);
-                Rance.eventManager.addEventListener("drop" + this._rootNodeID, this.handleMouseUp);
-            },
-            componentWillUnmount: function () {
-                Rance.eventManager.removeEventListener("drop" + this._rootNodeID, this.handleMouseUp);
-            }
-        };
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitItem = React.createClass({
-            displayName: "UnitItem",
-            mixins: [UIComponents.Draggable],
-            onDragStart: function () {
-                this.props.onDragStart(this.props.item);
-            },
-            onDragEnd: function () {
-                this.props.onDragEnd();
-            },
-            getTechIcon: function (techLevel) {
-                switch (techLevel) {
-                    case 2:
-                        {
-                            return "img\/icons\/t2icon.png";
-                        }
-                    case 3:
-                        {
-                            return "img\/icons\/t3icon.png";
-                        }
-                }
-            },
-            render: function () {
-                if (!this.props.item) {
-                    var emptyItemTitle = "Item slot: " + this.props.slot;
-                    return (React.DOM.div({ className: "empty-unit-item", title: emptyItemTitle }));
-                }
-                var item = this.props.item;
-                var divProps = {
-                    className: "unit-item",
-                    title: item.template.displayName
-                };
-                if (this.props.isDraggable) {
-                    divProps.className += " draggable";
-                    divProps.onMouseDown = divProps.onTouchStart =
-                        this.handleMouseDown;
-                }
-                if (this.state.dragging) {
-                    divProps.style = this.dragPos;
-                    divProps.className += " dragging";
-                }
-                return (React.DOM.div(divProps, React.DOM.div({
-                    className: "item-icon-container"
-                }, React.DOM.img({
-                    className: "item-icon-base",
-                    src: item.template.icon
-                }), item.template.techLevel > 1 ? React.DOM.img({
-                    className: "item-icon-tech-level",
-                    src: this.getTechIcon(item.template.techLevel)
-                }) : null)));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../mixins/droptarget.ts"/>
-/// <reference path="unititem.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitItemWrapper = React.createClass({
-            displayName: "UnitItemWrapper",
-            mixins: [UIComponents.DropTarget],
-            handleMouseUp: function () {
-                this.props.onMouseUp(this.props.slot);
-            },
-            render: function () {
-                var item = this.props.item;
-                var wrapperProps = {
-                    className: "unit-item-wrapper"
-                };
-                // if this is declared inside the conditional block
-                // the component won't accept the first drop properly
-                if (this.props.onMouseUp) {
-                    wrapperProps.onMouseUp = this.handleMouseUp;
-                }
-                ;
-                if (this.props.currentDragItem) {
-                    var dragItem = this.props.currentDragItem;
-                    if (dragItem.template.slot === this.props.slot) {
-                        wrapperProps.className += " drop-target";
-                    }
-                    else {
-                        wrapperProps.onMouseUp = null;
-                        wrapperProps.className += " invalid-drop-target";
-                    }
-                }
-                return (React.DOM.div(wrapperProps, UIComponents.UnitItem({
-                    item: this.props.item,
-                    slot: this.props.slot,
-                    key: "item",
-                    isDraggable: this.props.isDraggable,
-                    onDragStart: this.props.onDragStart,
-                    onDragEnd: this.props.onDragEnd
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="abilitylist.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UpgradeAbilities = React.createClass({
-            displayName: "UpgradeAbilities",
-            render: function () {
-                if (this.props.abilities.length === 0) {
-                    return null;
-                }
-                var headerText;
-                if (this.props.learningNewability) {
-                    headerText = "Learn ability";
-                }
-                else {
-                    headerText = "Upgrade ability";
-                    if (this.props.sourceAbility) {
-                        headerText += " " + this.props.sourceAbility.displayName;
-                    }
-                }
-                return (React.DOM.div({
-                    className: "upgrade-abilities"
-                }, React.DOM.div({
-                    className: "upgrade-abilities-header"
-                }, headerText), UIComponents.AbilityList({
-                    abilities: this.props.abilities,
-                    handleClick: this.props.handleClick
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UpgradeAttributes = React.createClass({
-            displayName: "UpgradeAttributes",
-            upgradeAttribute: function (attribute, e) {
-                if (e.button)
-                    return;
-                this.props.handleClick(attribute);
-            },
-            render: function () {
-                var unit = this.props.unit;
-                var rows = [];
-                for (var attribute in unit.baseAttributes) {
-                    var maxAttribute = attribute === "maxActionPoints" ? 6 : 9;
-                    if (unit.baseAttributes[attribute] < maxAttribute) {
-                        rows.push(React.DOM.div({
-                            className: "upgrade-attributes-attribute",
-                            onClick: this.upgradeAttribute.bind(this, attribute),
-                            key: attribute
-                        }, attribute + ": " + unit.baseAttributes[attribute] + " -> " + (unit.baseAttributes[attribute] + 1)));
-                    }
-                }
-                if (rows.length === 0) {
-                    return null;
-                }
-                return (React.DOM.div({
-                    className: "upgrade-attributes"
-                }, React.DOM.div({
-                    className: "upgrade-attributes-header"
-                }, "Upgrade stats"), rows));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="upgradeabilities.ts" />
-/// <reference path="upgradeattributes.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UpgradeUnit = React.createClass({
-            displayName: "UpgradeUnit",
-            getInitialState: function () {
-                return ({
-                    upgradeData: this.props.unit.getAbilityUpgradeData(),
-                    popupId: undefined
-                });
-            },
-            upgradeAbility: function (source, newAbility) {
-                var unit = this.props.unit;
-                unit.upgradeAbility(source, newAbility);
-                unit.handleLevelUp();
-                this.setState({
-                    upgradeData: unit.getAbilityUpgradeData()
-                });
-                this.closePopup();
-                this.props.onUnitUpgrade();
-            },
-            upgradeAttribute: function (attribute) {
-                var unit = this.props.unit;
-                unit.baseAttributes[attribute] += 1;
-                unit.attributesAreDirty = true;
-                unit.handleLevelUp();
-                this.props.onUnitUpgrade();
-            },
-            makeAbilityLearnPopup: function (ability) {
-                var upgradeData = this.state.upgradeData[ability.type];
-                var popupId = this.refs.popupManager.makePopup({
-                    contentConstructor: UIComponents.TopMenuPopup,
-                    contentProps: {
-                        handleClose: this.closePopup,
-                        contentConstructor: UIComponents.UpgradeAbilities,
-                        contentProps: {
-                            abilities: upgradeData.possibleUpgrades,
-                            handleClick: this.upgradeAbility.bind(this, upgradeData.base),
-                            sourceAbility: upgradeData.base,
-                            learningNewability: !Boolean(upgradeData.base)
-                        }
-                    },
-                    popupProps: {
-                        preventAutoResize: true,
-                        containerDragOnly: true
-                    }
-                });
-                this.setState({
-                    popupId: popupId
-                });
-            },
-            closePopup: function () {
-                this.refs.popupManager.closePopup(this.state.popupId);
-                this.setState({
-                    popupId: undefined
-                });
-            },
-            render: function () {
-                var unit = this.props.unit;
-                var upgradableAbilities = [];
-                for (var source in this.state.upgradeData) {
-                    if (this.state.upgradeData[source].base) {
-                        upgradableAbilities.push(this.state.upgradeData[source].base);
-                    }
-                    else {
-                        upgradableAbilities.push({
-                            type: source,
-                            displayName: "** New ability **",
-                            description: ""
-                        });
-                    }
-                }
-                return (React.DOM.div({
-                    className: "upgrade-unit"
-                }, UIComponents.PopupManager({
-                    ref: "popupManager",
-                    onlyAllowOne: true
-                }), React.DOM.div({
-                    className: "upgrade-unit-header"
-                }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)), UIComponents.UpgradeAbilities({
-                    abilities: upgradableAbilities,
-                    handleClick: this.makeAbilityLearnPopup
-                }), UIComponents.UpgradeAttributes({
-                    unit: unit,
-                    handleClick: this.upgradeAttribute
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="upgradeunit.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.UnitExperience = React.createClass({
-            displayName: "UnitExperience",
-            getInitialState: function () {
-                return ({
-                    upgradePopupId: undefined
-                });
-            },
-            makePopup: function () {
-                var popupId = this.refs.popupManager.makePopup({
-                    contentConstructor: UIComponents.TopMenuPopup,
-                    contentProps: {
-                        handleClose: this.closePopup,
-                        contentConstructor: UIComponents.UpgradeUnit,
-                        contentProps: {
-                            unit: this.props.unit,
-                            onUnitUpgrade: this.handleUnitUpgrade
-                        }
-                    },
-                    popupProps: {
-                        preventAutoResize: true,
-                        containerDragOnly: true
-                    }
-                });
-                this.setState({
-                    upgradePopupId: popupId
-                });
-            },
-            closePopup: function () {
-                this.refs.popupManager.closePopup(this.state.upgradePopupId);
-                this.setState({
-                    upgradePopupId: undefined
-                });
-            },
-            handleUnitUpgrade: function () {
-                if (!this.props.unit.canLevelUp()) {
-                    this.closePopup();
-                }
-                else {
-                    this.refs.popupManager.forceUpdate();
-                }
-                this.props.onUnitUpgrade();
-            },
-            render: function () {
-                var rows = [];
-                var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
-                var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);
-                var lastBarWidth = (10 * (this.props.experienceForCurrentLevel % 10));
-                for (var i = 0; i < totalBars; i++) {
-                    var bgProps = {
-                        className: "unit-experience-bar-point-background"
-                    };
-                    if (i < filledBars) {
-                        bgProps.className += " filled";
-                        if (i === filledBars - 1 && lastBarWidth !== 0) {
-                            bgProps.style =
-                                {
-                                    width: "" + lastBarWidth + "%"
-                                };
-                        }
-                    }
-                    else {
-                        bgProps.className += " empty";
-                    }
-                    rows.push(React.DOM.div({
-                        className: "unit-experience-bar-point",
-                        key: "" + i
-                    }, React.DOM.div(bgProps, null)));
-                }
-                var isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
-                var containerProps = {
-                    className: "unit-experience-bar-container"
-                };
-                var barProps = {
-                    className: "unit-experience-bar",
-                    title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp"
-                };
-                if (isReadyToLevelUp) {
-                    containerProps.onClick = this.makePopup;
-                    barProps.className += " ready-to-level-up";
-                }
-                return (React.DOM.div({
-                    className: "unit-experience-wrapper"
-                }, UIComponents.PopupManager({
-                    ref: "popupManager",
-                    onlyAllowOne: true
-                }), React.DOM.div(containerProps, React.DOM.div(barProps, rows), !isReadyToLevelUp ? null : React.DOM.span({
-                    className: "ready-to-level-up-message"
-                }, "Click to level up"))));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="abilitylist.ts" />
-/// <reference path="unititemwrapper.ts"/>
-/// <reference path="unitexperience.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.MenuUnitInfo = React.createClass({
-            displayName: "MenuUnitInfo",
-            handleUnitUpgrade: function () {
-                this.forceUpdate();
-            },
-            render: function () {
-                var unit = this.props.unit;
-                if (!unit)
-                    return (React.DOM.div({ className: "menu-unit-info" }));
-                var itemSlots = [];
-                for (var slot in unit.items) {
-                    itemSlots.push(UIComponents.UnitItemWrapper({
-                        key: slot,
-                        slot: slot,
-                        item: unit.items[slot],
-                        onMouseUp: this.props.onMouseUp,
-                        isDraggable: this.props.isDraggable,
-                        onDragStart: this.props.onDragStart,
-                        onDragEnd: this.props.onDragEnd,
-                        currentDragItem: this.props.currentDragItem
-                    }));
-                }
-                var unitAbilities = unit.getAllAbilities();
-                unitAbilities = unitAbilities.concat(unit.getAllPassiveSkills());
-                return (React.DOM.div({
-                    className: "menu-unit-info"
-                }, React.DOM.div({
-                    className: "menu-unit-info-name"
-                }, unit.name), React.DOM.div({
-                    className: "menu-unit-info-abilities"
-                }, UIComponents.AbilityList({
-                    abilities: unitAbilities
-                })), UIComponents.UnitExperience({
-                    experienceForCurrentLevel: unit.experienceForCurrentLevel,
-                    experienceToNextLevel: unit.getExperienceToNextLevel(),
-                    unit: unit,
-                    onUnitUpgrade: this.handleUnitUpgrade
-                }), React.DOM.div({
-                    className: "menu-unit-info-items-wrapper"
-                }, itemSlots)));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="itemlist.ts" />
-/// <reference path="unitlist.ts" />
-/// <reference path="menuunitinfo.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.ItemEquip = React.createClass({
-            displayName: "ItemEquip",
-            getInitialState: function () {
-                return ({
-                    selectedUnit: null,
-                    currentDragItem: null
-                });
-            },
-            handleSelectRow: function (row) {
-                if (!row.data.unit)
-                    return;
-                this.setState({
-                    selectedUnit: row.data.unit
-                });
-            },
-            handleDragStart: function (item) {
-                this.setState({
-                    currentDragItem: item
-                });
-            },
-            handleDragEnd: function (dropSuccesful) {
-                if (dropSuccesful === void 0) { dropSuccesful = false; }
-                if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit) {
-                    var item = this.state.currentDragItem;
-                    if (this.state.selectedUnit.items[item.template.slot] === item) {
-                        this.state.selectedUnit.removeItem(item);
-                    }
-                }
-                this.setState({
-                    currentDragItem: null
-                });
-            },
-            handleDrop: function () {
-                var item = this.state.currentDragItem;
-                var unit = this.state.selectedUnit;
-                if (unit && item) {
-                    if (unit.items[item.template.slot]) {
-                        unit.removeItemAtSlot(item.template.slot);
-                    }
-                    unit.addItem(item);
-                }
-                this.handleDragEnd(true);
-            },
-            render: function () {
-                var player = this.props.player;
-                return (React.DOM.div({ className: "item-equip" }, React.DOM.div({ className: "item-equip-left" }, UIComponents.MenuUnitInfo({
-                    unit: this.state.selectedUnit,
-                    onMouseUp: this.handleDrop,
-                    isDraggable: true,
-                    onDragStart: this.handleDragStart,
-                    onDragEnd: this.handleDragEnd,
-                    currentDragItem: this.state.currentDragItem
-                }), UIComponents.ItemList({
-                    items: player.items,
-                    // only used to trigger updates
-                    selectedUnit: this.state.selectedUnit,
-                    isDraggable: true,
-                    onDragStart: this.handleDragStart,
-                    onDragEnd: this.handleDragEnd,
-                    onRowChange: this.handleSelectRow
-                })), UIComponents.UnitList({
-                    units: player.units,
-                    selectedUnit: this.state.selectedUnit,
-                    isDraggable: false,
-                    onRowChange: this.handleSelectRow,
-                    autoSelect: true
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.PlayerFlag = React.createClass({
-            displayName: "PlayerFlag",
-            mixins: [React.addons.PureRenderMixin],
-            canUseDataURL: function () {
-                var uaString = navigator.userAgent.toLowerCase();
-                var isIE = uaString.indexOf("msie") !== -1 || uaString.indexOf("trident/") !== -1;
-                return !isIE;
-            },
-            componentDidMount: function () {
-                if (this.refs.container && !this.props.isMutable) {
-                    var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
-                    canvas.style.maxWidth = "100%";
-                    canvas.style.maxHeight = "100%";
-                    this.refs.container.getDOMNode().appendChild(canvas);
-                }
-            },
-            componentDidUpdate: function () {
-                if (this.refs.container && this.props.isMutable) {
-                    var containerNode = this.refs.container.getDOMNode();
-                    if (containerNode.firstChild) {
-                        containerNode.removeChild(containerNode.firstChild);
-                    }
-                    var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
-                    canvas.style.maxWidth = "100%";
-                    canvas.style.maxHeight = "100%";
-                    containerNode.appendChild(canvas);
-                }
-            },
-            render: function () {
-                var props = this.props.props;
-                if (this.canUseDataURL()) {
-                    var flag = this.props.flag;
-                    props.src = flag.getCanvas(this.props.width, this.props.height, this.props.stretch, !this.props.isMutable).toDataURL();
-                    return (React.DOM.img(props, null));
-                }
-                else {
-                    props.ref = "container";
-                    return (React.DOM.div(props, null));
-                }
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../playerflag.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.DefenceBuilding = React.createClass({
-            displayName: "DefenceBuilding",
-            shouldComponentUpdate: function (newProps) {
-                return newProps.building !== this.props.building;
-            },
-            render: function () {
-                var building = this.props.building;
-                var image = app.images[building.template.iconSrc];
-                return (React.DOM.div({
-                    className: "defence-building"
-                }, React.DOM.img({
-                    className: "defence-building-icon",
-                    src: Rance.colorImageInPlayerColor(image, building.controller),
-                    title: building.template.displayName
-                }), UIComponents.PlayerFlag({
-                    props: {
-                        className: "defence-building-controller",
-                        title: building.controller.name
-                    },
-                    key: "flag",
-                    flag: building.controller.flag
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="defencebuilding.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.DefenceBuildingList = React.createClass({
-            displayName: "DefenceBuildingList",
-            shouldComponentUpdate: function (newProps) {
-                var newBuildings = newProps.buildings;
-                var oldBuildings = this.props.buildings;
-                if (newBuildings.length !== oldBuildings.length)
-                    return true;
-                else {
-                    for (var i = 0; i < newBuildings.length; i++) {
-                        if (oldBuildings.indexOf(newBuildings[i]) === -1)
-                            return true;
-                    }
-                }
-                return false;
-            },
-            render: function () {
-                if (!this.props.buildings)
-                    return null;
-                var buildings = [];
-                for (var i = 0; i < this.props.buildings.length; i++) {
-                    buildings.push(UIComponents.DefenceBuilding({
-                        key: this.props.buildings[i].id,
-                        building: this.props.buildings[i]
-                    }));
-                }
-                if (this.props.reverse) {
-                    buildings.reverse();
-                }
-                return (React.DOM.div({
-                    className: "defence-building-list"
-                }, buildings));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../galaxymap/defencebuildinglist.ts"/>
-/// <reference path="../playerflag.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.BattleInfo = React.createClass({
-            displayName: "BattleInfo",
-            render: function () {
-                var battlePrep = this.props.battlePrep;
-                var star = battlePrep.battleData.location;
-                var isAttacker = battlePrep.humanPlayer === battlePrep.attacker;
-                return (React.DOM.div({
-                    className: "battle-info"
-                }, React.DOM.div({
-                    className: "battle-info-opponent"
-                }, UIComponents.PlayerFlag({
-                    flag: battlePrep.enemyPlayer.flag,
-                    props: {
-                        className: "battle-info-opponent-icon",
-                    }
-                }), React.DOM.div({
-                    className: "battle-info-opponent-name"
-                }, battlePrep.enemyPlayer.name)), React.DOM.div({
-                    className: "battle-info-summary"
-                }, star.name + ": " + (isAttacker ? "Attacking" : "Defending")), UIComponents.DefenceBuildingList({
-                    buildings: star.buildings["defence"],
-                    reverse: isAttacker
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
     (function (RandomGenUnitRarity) {
         RandomGenUnitRarity[RandomGenUnitRarity["common"] = 0] = "common";
         RandomGenUnitRarity[RandomGenUnitRarity["elite"] = 1] = "elite";
@@ -10174,6 +8305,115 @@ var Rance;
     }());
     Rance.Unit = Unit;
 })(Rance || (Rance = {}));
+/// <reference path="../../../lib/tween.js.d.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitStrength = React.createClass({
+            displayName: "UnitStrength",
+            getInitialState: function () {
+                return ({
+                    displayedStrength: this.props.currentHealth,
+                    activeTween: null
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                if (newProps.animateStrength &&
+                    newProps.currentHealth !== this.props.currentHealth &&
+                    (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)) {
+                    var animateDuration = newProps.animateDuration || 0;
+                    this.animateDisplayedStrength(newProps.currentHealth, animateDuration);
+                }
+                else {
+                    this.updateDisplayStrength(newProps.currentHealth);
+                }
+            },
+            componentWillUnmount: function () {
+                if (this.activeTween) {
+                    this.activeTween.stop();
+                }
+            },
+            updateDisplayStrength: function (newAmount) {
+                this.setState({
+                    displayedStrength: newAmount
+                });
+            },
+            animateDisplayedStrength: function (newAmount, time) {
+                var self = this;
+                var stopped = false;
+                var animateTween = function () {
+                    if (stopped) {
+                        cancelAnimationFrame(self.requestAnimFrame);
+                        return;
+                    }
+                    TWEEN.update();
+                    self.requestAnimFrame = window.requestAnimationFrame(animateTween);
+                };
+                var tween = new TWEEN.Tween({
+                    health: self.state.displayedStrength
+                }).to({
+                    health: newAmount
+                }, time).onUpdate(function () {
+                    self.setState({
+                        displayedStrength: this.health
+                    });
+                }).easing(TWEEN.Easing.Sinusoidal.Out);
+                tween.onStop(function () {
+                    stopped = true;
+                    TWEEN.remove(tween);
+                });
+                this.activeTween = tween;
+                tween.start();
+                animateTween();
+            },
+            makeSquadronInfo: function () {
+                return (React.DOM.div({ className: "unit-strength-container" }, this.makeStrengthText()));
+            },
+            makeCapitalInfo: function () {
+                var text = this.makeStrengthText();
+                var relativeHealth = this.state.displayedStrength / this.props.maxHealth;
+                var bar = React.DOM.div({
+                    className: "unit-strength-bar"
+                }, React.DOM.div({
+                    className: "unit-strength-bar-value",
+                    style: {
+                        width: "" + relativeHealth * 100 + "%"
+                    }
+                }));
+                return (React.DOM.div({ className: "unit-strength-container" }, text, bar));
+            },
+            makeStrengthText: function () {
+                var critThreshhold = 0.3;
+                var currentStyle = {
+                    className: "unit-strength-current"
+                };
+                var healthRatio = this.state.displayedStrength / this.props.maxHealth;
+                if (!this.props.isNotDetected && healthRatio <= critThreshhold) {
+                    currentStyle.className += " critical";
+                }
+                else if (!this.props.isNotDetected && this.state.displayedStrength < this.props.maxHealth) {
+                    currentStyle.className += " wounded";
+                }
+                var containerProps = {
+                    className: (this.props.isSquadron ? "unit-strength-amount" :
+                        "unit-strength-amount-capital")
+                };
+                var displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
+                var max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
+                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, displayed), React.DOM.span({ className: "unit-strength-max" }, "/" + max)));
+            },
+            render: function () {
+                if (this.props.isSquadron) {
+                    return this.makeSquadronInfo();
+                }
+                else {
+                    return this.makeCapitalInfo();
+                }
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="unitstrength.ts"/>
 var Rance;
 (function (Rance) {
@@ -10450,6 +8690,279 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../lib/react.d.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Draggable = {
+            getDefaultProps: function () {
+                return ({
+                    dragThreshhold: 5
+                });
+            },
+            getInitialState: function () {
+                return ({
+                    dragging: false,
+                    clone: null
+                });
+            },
+            componentWillMount: function () {
+                this.dragPos = {};
+                this.mouseDown = false;
+                this.dragOffset =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+                this.mouseDownPosition =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+                this.originPosition =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+            },
+            componentDidMount: function () {
+                this.DOMNode = this.getDOMNode();
+                this.containerElement = document.body;
+                if (this.props.containerElement) {
+                    if (this.props.containerElement.getDOMNode) {
+                        // React component
+                        this.containerElement = this.props.containerElement.getDOMNode();
+                    }
+                    else
+                        this.containerElement = this.props.containerElement;
+                }
+                this.setContainerRect();
+                window.addEventListener("resize", this.setContainerRect, false);
+            },
+            componentWillUnmount: function () {
+                this.removeEventListeners();
+                window.removeEventListener("resize", this.setContainerRect);
+            },
+            handleMouseDown: function (e) {
+                if (e.button)
+                    return;
+                if (this.props.containerDragOnly) {
+                    var target = e.target;
+                    if (!target.classList.contains("draggable-container")) {
+                        return;
+                    }
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                if (this.state.dragging)
+                    return;
+                var clientRect = this.getDOMNode().getBoundingClientRect();
+                // var e;
+                // if (isFinite(e.clientX))
+                // {
+                //   e = e;
+                // }
+                // else
+                // {
+                //   e = e.touches[0];
+                //   this.needsFirstTouchUpdate = true;
+                //   this.touchEventTarget = e.target;
+                // }
+                this.addEventListeners();
+                var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset ||
+                    {
+                        x: e.clientX - clientRect.left,
+                        y: e.clientY - clientRect.top
+                    };
+                this.mouseDown = true;
+                this.dragOffset = dragOffset;
+                this.mouseDownPosition =
+                    {
+                        x: e.pageX,
+                        y: e.pageY
+                    };
+                this.originPosition =
+                    {
+                        x: clientRect.left + document.body.scrollLeft,
+                        y: clientRect.top + document.body.scrollTop
+                    };
+                if (this.props.dragThreshhold <= 0) {
+                    this.handleMouseMove(e);
+                }
+            },
+            handleMouseMove: function (e) {
+                if (e.preventDefault)
+                    e.preventDefault();
+                // var e = e.clientX ? e : e.touches[0];
+                if (e.clientX === 0 && e.clientY === 0)
+                    return;
+                if (!this.state.dragging) {
+                    var deltaX = Math.abs(e.pageX - this.mouseDownPosition.x);
+                    var deltaY = Math.abs(e.pageY - this.mouseDownPosition.y);
+                    var delta = deltaX + deltaY;
+                    if (delta >= this.props.dragThreshhold) {
+                        var ownNode = this.getDOMNode();
+                        var stateObj = {
+                            dragging: true
+                        };
+                        if (!this.props.preventAutoResize) {
+                            this.dragPos.width = parseInt(ownNode.offsetWidth);
+                            this.dragPos.height = parseInt(ownNode.offsetHeight);
+                        }
+                        if (this.props.makeClone) {
+                            if (!this.makeDragClone) {
+                                var nextSibling = ownNode.nextSibling;
+                                var clone = ownNode.cloneNode(true);
+                                Rance.recursiveRemoveAttribute(clone, "data-reactid");
+                                ownNode.parentNode.insertBefore(clone, nextSibling);
+                                stateObj.clone = clone;
+                            }
+                            else {
+                                var clone = this.makeDragClone();
+                                document.body.appendChild(clone);
+                                stateObj.clone = clone;
+                            }
+                        }
+                        this.setState(stateObj);
+                        if (this.onDragStart) {
+                            this.onDragStart(e);
+                        }
+                        if (this.onDragMove) {
+                            this.onDragMove(e.pageX - this.dragOffset.x, e.pageY - this.dragOffset.y);
+                        }
+                    }
+                }
+                if (this.state.dragging) {
+                    this.handleDrag(e);
+                }
+            },
+            handleDrag: function (e) {
+                var x = e.pageX - this.dragOffset.x;
+                var y = e.pageY - this.dragOffset.y;
+                var domWidth, domHeight;
+                if (this.makeDragClone) {
+                    domWidth = parseInt(this.state.clone.offsetWidth);
+                    domHeight = parseInt(this.state.clone.offsetHeight);
+                }
+                else {
+                    domWidth = parseInt(this.getDOMNode().offsetWidth);
+                    domHeight = parseInt(this.getDOMNode().offsetHeight);
+                }
+                var minX = this.containerRect.left;
+                var maxX = this.containerRect.right;
+                var minY = this.containerRect.top;
+                var maxY = this.containerRect.bottom;
+                var x2 = x + domWidth;
+                var y2 = y + domHeight;
+                if (x < minX) {
+                    x = minX;
+                }
+                else if (x2 > maxX) {
+                    x = this.containerRect.width - domWidth;
+                }
+                ;
+                if (y < minY) {
+                    y = minY;
+                }
+                else if (y2 > maxY) {
+                    y = this.containerRect.height - domHeight;
+                }
+                ;
+                if (this.onDragMove) {
+                    this.onDragMove(x, y);
+                }
+                else {
+                    this.dragPos.top = y;
+                    this.dragPos.left = x;
+                    this.updateDOMNodeStyle();
+                }
+            },
+            handleMouseUp: function (e) {
+                // if (this.touchEventTarget)
+                // {
+                //   var touch = e.changedTouches[0];
+                //   var dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
+                //   console.log(dropTarget);
+                //   if (dropTarget)
+                //   {
+                //     var reactid = dropTarget.getAttribute("data-reactid");
+                //     eventManager.dispatchEvent("drop" + reactid);
+                //   }
+                // }
+                this.mouseDown = false;
+                this.mouseDownPosition =
+                    {
+                        x: 0,
+                        y: 0
+                    };
+                if (this.state.dragging) {
+                    this.handleDragEnd(e);
+                }
+                this.removeEventListeners();
+            },
+            handleDragEnd: function (e) {
+                if (this.state.clone) {
+                    this.state.clone.parentNode.removeChild(this.state.clone);
+                }
+                if (this.isMounted()) {
+                    this.setState({
+                        dragging: false,
+                        clone: null
+                    });
+                    this.dragOffset =
+                        {
+                            x: 0,
+                            y: 0
+                        };
+                    this.originPosition =
+                        {
+                            x: 0,
+                            y: 0
+                        };
+                }
+                if (this.onDragEnd) {
+                    var endSuccesful = this.onDragEnd(e);
+                }
+            },
+            addEventListeners: function () {
+                var self = this;
+                this.containerElement.addEventListener("mousemove", self.handleMouseMove);
+                document.addEventListener("mouseup", self.handleMouseUp);
+                if (this.touchEventTarget) {
+                    this.touchEventTarget.addEventListener("touchmove", self.handleMouseMove);
+                    this.touchEventTarget.addEventListener("touchend", self.handleMouseUp);
+                }
+            },
+            removeEventListeners: function () {
+                var self = this;
+                this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
+                document.removeEventListener("mouseup", self.handleMouseUp);
+                if (this.touchEventTarget) {
+                    this.touchEventTarget.removeEventListener("touchmove", self.handleMouseMove);
+                    this.touchEventTarget.removeEventListener("touchend", self.handleMouseUp);
+                    this.touchEventTarget = null;
+                }
+            },
+            setContainerRect: function () {
+                this.containerRect = this.containerElement.getBoundingClientRect();
+            },
+            updateDOMNodeStyle: function () {
+                if (this.state.clone) {
+                    var s = this.state.clone.style;
+                    s.top = "" + this.dragPos.top + "px";
+                    s.left = "" + this.dragPos.left + "px";
+                }
+                else {
+                    var s = this.DOMNode.style;
+                    for (var key in this.dragPos) {
+                        s[key] = "" + this.dragPos[key] + "px";
+                    }
+                }
+            }
+        };
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="unitinfo.ts"/>
 /// <reference path="uniticon.ts"/>
 /// <reference path="unitstatuseffects.ts" />
@@ -10625,6 +9138,23 @@ var Rance;
                 return (React.DOM.div(wrapperProps, allElements));
             }
         });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+// used to register event listeners for manually firing drop events because touch events suck
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.DropTarget = {
+            componentDidMount: function () {
+                if (!this.handleMouseUp)
+                    console.warn("No mouseUp handler on drop target", this);
+                Rance.eventManager.addEventListener("drop" + this._rootNodeID, this.handleMouseUp);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("drop" + this._rootNodeID, this.handleMouseUp);
+            }
+        };
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/droptarget.ts"/>
@@ -10854,6 +9384,531 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
+        UIComponents.TurnCounter = React.createClass({
+            displayName: "TurnCounter",
+            mixins: [React.addons.PureRenderMixin],
+            render: function () {
+                var turnsLeft = this.props.turnsLeft;
+                var turns = [];
+                var usedTurns = this.props.maxTurns - turnsLeft;
+                for (var i = 0; i < usedTurns; i++) {
+                    turns.push(React.DOM.div({
+                        key: "used" + i,
+                        className: "turn-counter used-turn"
+                    }));
+                }
+                for (var i = 0; i < turnsLeft; i++) {
+                    turns.push(React.DOM.div({
+                        key: "available" + i,
+                        className: "turn-counter available-turn"
+                    }));
+                }
+                return (React.DOM.div({
+                    className: "turns-container",
+                    title: "Turns left: " + turnsLeft
+                }, turns));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TurnOrder = React.createClass({
+            displayName: "TurnOrder",
+            getInitialState: function () {
+                return ({
+                    maxUnits: 7
+                });
+            },
+            componentDidMount: function () {
+                this.setMaxUnits();
+                window.addEventListener("resize", this.setMaxUnits);
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.setMaxUnits);
+            },
+            setMaxUnits: function () {
+                var minUnits = 7;
+                var containerElement = this.getDOMNode();
+                var containerWidth = containerElement.getBoundingClientRect().width;
+                containerWidth -= 30;
+                var unitElementWidth = 160;
+                var ceil = Math.ceil(containerWidth / unitElementWidth);
+                this.setState({
+                    maxUnits: Math.max(ceil, minUnits)
+                });
+            },
+            render: function () {
+                var maxUnits = this.state.maxUnits;
+                var turnOrder = this.props.turnOrder.slice(0);
+                if (this.props.potentialDelay) {
+                    var fake = {
+                        isFake: true,
+                        id: this.props.potentialDelay.id,
+                        battleStats: {
+                            moveDelay: this.props.potentialDelay.delay
+                        }
+                    };
+                    turnOrder.push(fake);
+                }
+                var maxUnitsWithFake = maxUnits;
+                if (fake && turnOrder.indexOf(fake) <= maxUnits) {
+                    maxUnitsWithFake++;
+                }
+                turnOrder = turnOrder.slice(0, maxUnitsWithFake);
+                var toRender = [];
+                for (var i = 0; i < turnOrder.length; i++) {
+                    var unit = turnOrder[i];
+                    if (unit.isFake) {
+                        toRender.push(React.DOM.div({
+                            className: "turn-order-arrow",
+                            key: "" + i
+                        }));
+                        continue;
+                    }
+                    var data = {
+                        key: "" + i,
+                        className: "turn-order-unit",
+                        title: "delay: " + unit.battleStats.moveDelay + "\n" +
+                            "speed: " + unit.attributes.speed,
+                        onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit),
+                        onMouseLeave: this.props.onMouseLeaveUnit
+                    };
+                    if (this.props.unitsBySide.side1.indexOf(unit) > -1) {
+                        data.className += " turn-order-unit-friendly";
+                    }
+                    else if (this.props.unitsBySide.side2.indexOf(unit) > -1) {
+                        data.className += " turn-order-unit-enemy";
+                    }
+                    if (this.props.hoveredUnit && unit.id === this.props.hoveredUnit.id) {
+                        data.className += " turn-order-unit-hover";
+                    }
+                    toRender.push(React.DOM.div(data, unit.name));
+                }
+                if (this.props.turnOrder.length > maxUnits) {
+                    toRender.push(React.DOM.div({
+                        className: "turn-order-more",
+                        key: "more"
+                    }, "..."));
+                }
+                return (React.DOM.div({ className: "turn-order-container" }, toRender));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.AbilityTooltip = React.createClass({
+            displayName: "AbilityTooltip",
+            shouldComponentUpdate: function (newProps) {
+                for (var prop in newProps) {
+                    if (prop !== "activeTargets") {
+                        if (this.props[prop] !== newProps[prop]) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            },
+            render: function () {
+                var abilities = this.props.activeTargets[this.props.targetUnit.id];
+                var abilityElements = [];
+                var containerProps = {
+                    className: "ability-tooltip",
+                    onMouseLeave: this.props.handleMouseLeave
+                };
+                var parentRect = this.props.parentElement.getBoundingClientRect();
+                containerProps.style =
+                    {
+                        position: "fixed",
+                        top: parentRect.top
+                    };
+                if (this.props.facesLeft) {
+                    containerProps.className += " ability-tooltip-faces-left";
+                    containerProps.style.left = parentRect.left;
+                }
+                else {
+                    containerProps.className += " ability-tooltip-faces-right";
+                    // aligning right to right doesnt work for some reason
+                    containerProps.style.left = parentRect.right - 128;
+                }
+                for (var i = 0; i < abilities.length; i++) {
+                    var ability = abilities[i];
+                    var data = {};
+                    data.className = "ability-tooltip-ability";
+                    data.key = i;
+                    data.onClick = this.props.handleAbilityUse.bind(null, ability, this.props.targetUnit);
+                    data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
+                    data.onMouseLeave = this.props.handleMouseLeaveAbility;
+                    if (ability.description) {
+                        data.title = ability.description;
+                    }
+                    abilityElements.push(React.DOM.div(data, ability.displayName));
+                }
+                return (React.DOM.div(containerProps, abilityElements));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../flag.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.BattleSceneFlag = React.createClass({
+            displayName: "BattleSceneFlag",
+            flagCanvas: null,
+            propTypes: {
+                flag: React.PropTypes.instanceOf(Rance.Flag).isRequired,
+                facingRight: React.PropTypes.bool.isRequired
+            },
+            componentDidMount: function () {
+                this.setFlag();
+                window.addEventListener("resize", this.handleResize, false);
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.handleResize);
+            },
+            handleResize: function () {
+                this.setFlag();
+            },
+            setFlag: function () {
+                var DOMNode = this.getDOMNode();
+                if (this.flagCanvas) {
+                    DOMNode.removeChild(this.flagCanvas);
+                }
+                this.flagCanvas = this.drawFlag();
+                this.getDOMNode().appendChild(this.flagCanvas);
+            },
+            drawFlag: function () {
+                var bounds = this.getDOMNode().getBoundingClientRect();
+                var width = bounds.width;
+                var canvas = this.props.flag.getCanvas(width, bounds.height, true, false);
+                var context = canvas.getContext("2d");
+                context.globalCompositeOperation = "destination-out";
+                var gradient;
+                if (this.props.facingRight) {
+                    gradient = context.createLinearGradient(0, 0, width, 0);
+                }
+                else {
+                    gradient = context.createLinearGradient(width, 0, 0, 0);
+                }
+                gradient.addColorStop(0.0, "rgba(255, 255, 255, 0.3)");
+                gradient.addColorStop(0.6, "rgba(255, 255, 255, 0.5)");
+                gradient.addColorStop(0.8, "rgba(255, 255, 255, 0.8)");
+                gradient.addColorStop(1.0, "rgba(255, 255, 255, 1.0)");
+                context.fillStyle = gradient;
+                context.fillRect(0, 0, width, bounds.height);
+                canvas.classList.add("battle-scene-start-player-flag");
+                return canvas;
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "battle-scene-flag-container"
+                }, null));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../player.ts" />
+/// <reference path="../../unit.ts" />
+/// <reference path="battlesceneflag.ts" />
+var bs;
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.BattleScene = React.createClass({
+            displayName: "BattleScene",
+            battleScene: null,
+            propTypes: {
+                battleState: React.PropTypes.string.isRequired,
+                targetUnit: React.PropTypes.instanceOf(Rance.Unit),
+                userUnit: React.PropTypes.instanceOf(Rance.Unit),
+                activeUnit: React.PropTypes.instanceOf(Rance.Unit),
+                hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
+                activeSFX: React.PropTypes.object,
+                afterAbilityFinishedCallback: React.PropTypes.func,
+                triggerEffectCallback: React.PropTypes.func,
+                humanPlayerWonBattle: React.PropTypes.bool,
+                side1Player: React.PropTypes.instanceOf(Rance.Player),
+                side2Player: React.PropTypes.instanceOf(Rance.Player)
+            },
+            shouldComponentUpdate: function (newProps) {
+                var shouldTriggerUpdate = {
+                    battleState: true
+                };
+                for (var key in newProps) {
+                    if (shouldTriggerUpdate[key] && newProps[key] !== this.props[key]) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            componentWillReceiveProps: function (newProps) {
+                bs = this;
+                var self = this;
+                if (this.props.battleState === "start" && newProps.battleState === "active") {
+                    this.battleScene = new Rance.BattleScene(this.getDOMNode());
+                    this.battleScene.resume();
+                }
+                else if (this.props.battleState === "active" && newProps.battleState === "finish") {
+                    this.battleScene.destroy();
+                    this.battleScene = null;
+                }
+                var battleScene = this.battleScene;
+                if (battleScene) {
+                    var activeSFXChanged = newProps.activeSFX !== this.props.activeSFX;
+                    var shouldPlaySFX = Boolean(newProps.activeSFX &&
+                        (activeSFXChanged ||
+                            newProps.targetUnit !== this.props.targetUnit ||
+                            newProps.userUnit !== this.props.userUnit));
+                    if (shouldPlaySFX) {
+                        battleScene.handleAbilityUse({
+                            user: newProps.userUnit,
+                            target: newProps.targetUnit,
+                            SFXTemplate: newProps.activeSFX,
+                            afterFinishedCallback: newProps.afterAbilityFinishedCallback,
+                            triggerEffectCallback: newProps.triggerEffectCallback
+                        });
+                    }
+                    else if (activeSFXChanged) {
+                        battleScene.clearActiveSFX();
+                    }
+                    var unitsHaveUpdated = false;
+                    [
+                        "targetUnit",
+                        "userUnit",
+                        "activeUnit",
+                        "hoveredUnit"
+                    ].forEach(function (unitKey) {
+                        if (battleScene[unitKey] !== newProps[unitKey]) {
+                            unitsHaveUpdated = true;
+                        }
+                        battleScene[unitKey] = newProps[unitKey];
+                    });
+                    if (unitsHaveUpdated && !shouldPlaySFX && !newProps.activeSFX) {
+                        battleScene.updateUnits();
+                    }
+                }
+            },
+            render: function () {
+                var componentToRender;
+                switch (this.props.battleState) {
+                    case "start":
+                        {
+                            componentToRender = React.DOM.div({
+                                className: "battle-scene-flags-container"
+                            }, UIComponents.BattleSceneFlag({
+                                flag: this.props.side1Player.flag,
+                                facingRight: true
+                            }), UIComponents.BattleSceneFlag({
+                                flag: this.props.side2Player.flag,
+                                facingRight: false
+                            }));
+                            break;
+                        }
+                    case "active":
+                        {
+                            componentToRender = null;
+                            break;
+                        }
+                    case "finish":
+                        {
+                            componentToRender = React.DOM.div({
+                                className: "battle-scene-finish-container"
+                            }, React.DOM.h1({
+                                className: "battle-scene-finish-header"
+                            }, this.props.humanPlayerWonBattle ? "You win" : "You lose"), React.DOM.h3({
+                                className: "battle-scene-finish-subheader"
+                            }, "Click to continue"));
+                            break;
+                        }
+                }
+                return (React.DOM.div({
+                    className: "battle-scene"
+                }, componentToRender));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.PlayerFlag = React.createClass({
+            displayName: "PlayerFlag",
+            mixins: [React.addons.PureRenderMixin],
+            canUseDataURL: function () {
+                var uaString = navigator.userAgent.toLowerCase();
+                var isIE = uaString.indexOf("msie") !== -1 || uaString.indexOf("trident/") !== -1;
+                return !isIE;
+            },
+            componentDidMount: function () {
+                if (this.refs.container && !this.props.isMutable) {
+                    var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
+                    canvas.style.maxWidth = "100%";
+                    canvas.style.maxHeight = "100%";
+                    this.refs.container.getDOMNode().appendChild(canvas);
+                }
+            },
+            componentDidUpdate: function () {
+                if (this.refs.container && this.props.isMutable) {
+                    var containerNode = this.refs.container.getDOMNode();
+                    if (containerNode.firstChild) {
+                        containerNode.removeChild(containerNode.firstChild);
+                    }
+                    var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
+                    canvas.style.maxWidth = "100%";
+                    canvas.style.maxHeight = "100%";
+                    containerNode.appendChild(canvas);
+                }
+            },
+            render: function () {
+                var props = this.props.props;
+                if (this.canUseDataURL()) {
+                    var flag = this.props.flag;
+                    props.src = flag.getCanvas(this.props.width, this.props.height, this.props.stretch, !this.props.isMutable).toDataURL();
+                    return (React.DOM.img(props, null));
+                }
+                else {
+                    props.ref = "container";
+                    return (React.DOM.div(props, null));
+                }
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../playerflag.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.BattleScore = React.createClass({
+            displayName: "BattleScore",
+            lastEvaluation: undefined,
+            shouldComponentUpdate: function (newProps) {
+                var oldEvaluation = this.lastEvaluation;
+                this.lastEvaluation = newProps.battle.getEvaluation();
+                return this.lastEvaluation !== oldEvaluation;
+            },
+            componentWillMount: function () {
+                this.lastEvaluation = this.props.battle.getEvaluation();
+            },
+            render: function () {
+                var battle = this.props.battle;
+                var evaluation = this.lastEvaluation;
+                var evaluationPercentage = 50 + evaluation * 50;
+                return (React.DOM.div({
+                    className: "battle-score-wrapper"
+                }, React.DOM.div({
+                    className: "battle-score-container"
+                }, React.DOM.img({
+                    className: "battle-score-mid-point",
+                    src: "img\/icons\/battleScoreMidPoint.png"
+                }, null), UIComponents.PlayerFlag({
+                    props: {
+                        className: "battle-score-flag"
+                    },
+                    flag: battle.side1Player.flag
+                }), React.DOM.div({
+                    className: "battle-score-bar-container"
+                }, React.DOM.div({
+                    className: "battle-score-bar-value battle-score-bar-side1",
+                    style: {
+                        width: "" + evaluationPercentage + "%",
+                        backgroundColor: "#" + Rance.hexToString(battle.side1Player.color),
+                        borderColor: "#" + Rance.hexToString(battle.side1Player.secondaryColor)
+                    }
+                }), React.DOM.div({
+                    className: "battle-score-bar-value battle-score-bar-side2",
+                    style: {
+                        width: "" + (100 - evaluationPercentage) + "%",
+                        backgroundColor: "#" + Rance.hexToString(battle.side2Player.color),
+                        borderColor: "#" + Rance.hexToString(battle.side2Player.secondaryColor)
+                    }
+                })), UIComponents.PlayerFlag({
+                    props: {
+                        className: "battle-score-flag"
+                    },
+                    flag: battle.side2Player.flag
+                }))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.BattleDisplayStrength = React.createClass({
+            displayName: "BattleDisplayStrength",
+            getInitialState: function () {
+                return ({
+                    displayedStrength: this.props.from,
+                    activeTween: null
+                });
+            },
+            componentDidMount: function () {
+                this.animateDisplayedStrength(this.props.from, this.props.to, this.props.delay);
+            },
+            componentWillUnmount: function () {
+                if (this.activeTween) {
+                    this.activeTween.stop();
+                }
+            },
+            updateDisplayStrength: function (newAmount) {
+                this.setState({
+                    displayedStrength: newAmount
+                });
+            },
+            animateDisplayedStrength: function (from, newAmount, time) {
+                var self = this;
+                var stopped = false;
+                if (this.activeTween) {
+                    this.activeTween.stop();
+                }
+                if (from === newAmount)
+                    return;
+                var animateTween = function () {
+                    if (stopped) {
+                        return;
+                    }
+                    TWEEN.update();
+                    self.requestAnimFrame = window.requestAnimationFrame(animateTween);
+                };
+                var tween = new TWEEN.Tween({
+                    health: from
+                }).to({
+                    health: newAmount
+                }, time).onUpdate(function () {
+                    self.setState({
+                        displayedStrength: this.health
+                    });
+                }).easing(TWEEN.Easing.Sinusoidal.Out);
+                tween.onStop(function () {
+                    cancelAnimationFrame(self.requestAnimFrame);
+                    stopped = true;
+                    TWEEN.remove(tween);
+                });
+                this.activeTween = tween;
+                tween.start();
+                animateTween();
+            },
+            render: function () {
+                return (React.DOM.div({ className: "unit-strength-battle-display" }, Math.ceil(this.state.displayedStrength)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
         /*
         props
     
@@ -10891,6 +9946,1967 @@ var Rance;
                     className: "battle-pixi-container",
                     ref: "pixiContainer"
                 }, this.props.children));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="formation.ts"/>
+/// <reference path="turncounter.ts"/>
+/// <reference path="turnorder.ts"/>
+/// <reference path="abilitytooltip.ts"/>
+/// <reference path="battlescene.ts"/>
+/// <reference path="battlescore.ts"/>
+/// <reference path="battledisplaystrength.ts"/>
+/// <reference path="battlebackground.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        // TODO refactor
+        // should have separate non-react class for battle logic
+        UIComponents.Battle = React.createClass({
+            displayName: "Battle",
+            // set as a property of the class instead of its state
+            // as its not used for trigger updates
+            // and needs to be changed synchronously
+            tempHoveredUnit: null,
+            idGenerator: 0,
+            MCTree: null,
+            battleStartStartTime: undefined,
+            battleEndStartTime: undefined,
+            getInitialState: function () {
+                return ({
+                    abilityTooltip: {
+                        parentElement: null,
+                        facesLeft: null
+                    },
+                    targetsInPotentialArea: [],
+                    potentialDelay: null,
+                    hoveredAbility: null,
+                    targetUnit: null,
+                    userUnit: null,
+                    activeUnit: null,
+                    hoveredUnit: null,
+                    highlightedUnit: null,
+                    battleSceneUnit1StartingStrength: null,
+                    battleSceneUnit2StartingStrength: null,
+                    battleSceneUnit1: null,
+                    battleSceneUnit2: null,
+                    playingBattleEffect: false,
+                    battleEffectId: undefined,
+                    battleEffectDuration: null,
+                    battleEffectSFX: null,
+                    afterAbilityFinishedCallback: null,
+                    triggerEffectCallback: null,
+                    battleIsStarting: true
+                });
+            },
+            componentDidMount: function () {
+                this.battleStartStartTime = Date.now();
+            },
+            endBattleStart: function () {
+                if (Date.now() < this.battleStartStartTime + 1000)
+                    return;
+                this.setState({
+                    battleIsStarting: false
+                }, this.setBattleSceneUnits(this.state.hoveredUnit));
+                if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
+                    this.useAIAbility();
+                }
+            },
+            getBlurArea: function () {
+                return this.refs.formationsContainer.getDOMNode().getBoundingClientRect();
+            },
+            clearHoveredUnit: function () {
+                this.tempHoveredUnit = null;
+                this.setState({
+                    hoveredUnit: null,
+                    highlightedUnit: null,
+                    abilityTooltip: {
+                        parentElement: null
+                    },
+                    hoveredAbility: null,
+                    potentialDelay: null,
+                    targetsInPotentialArea: []
+                });
+                this.setBattleSceneUnits(null);
+            },
+            handleMouseLeaveUnit: function (e) {
+                if (!this.state.hoveredUnit || this.state.playingBattleEffect) {
+                    this.tempHoveredUnit = null;
+                    return;
+                }
+                var nativeEvent = e.nativeEvent;
+                var toElement = nativeEvent.toElement || nativeEvent.relatedTarget;
+                if (!toElement) {
+                    this.clearHoveredUnit();
+                    return;
+                }
+                if (!this.refs.abilityTooltip) {
+                    this.clearHoveredUnit();
+                    return;
+                }
+                var tooltipElement = this.refs.abilityTooltip.getDOMNode();
+                if (toElement !== this.state.abilityTooltip.parentElement &&
+                    (this.refs.abilityTooltip && toElement !== tooltipElement) &&
+                    toElement.parentElement !== tooltipElement) {
+                    this.clearHoveredUnit();
+                }
+            },
+            handleMouseEnterUnit: function (unit) {
+                this.tempHoveredUnit = unit;
+                if (this.props.battle.ended || this.state.playingBattleEffect)
+                    return;
+                var facesLeft = unit.battleStats.side === "side2";
+                var parentElement = this.getUnitElement(unit);
+                this.setState({
+                    abilityTooltip: {
+                        parentElement: parentElement,
+                        facesLeft: facesLeft
+                    },
+                    hoveredUnit: unit,
+                    highlightedUnit: unit
+                });
+                this.setBattleSceneUnits(unit);
+            },
+            getUnitElement: function (unit) {
+                return document.getElementById("unit-id_" + unit.id);
+            },
+            setBattleSceneUnits: function (hoveredUnit) {
+                if (this.state.playingBattleEffect)
+                    return;
+                var activeUnit = this.props.battle.activeUnit;
+                if (!activeUnit) {
+                    this.setState({
+                        battleSceneUnit1: null,
+                        battleSceneUnit2: null
+                    });
+                    return;
+                }
+                var shouldDisplayHovered = (hoveredUnit &&
+                    hoveredUnit.battleStats.side !== activeUnit.battleStats.side);
+                var unit1, unit2;
+                if (activeUnit.battleStats.side === "side1") {
+                    unit1 = activeUnit;
+                    unit2 = shouldDisplayHovered ? hoveredUnit : null;
+                }
+                else {
+                    unit1 = shouldDisplayHovered ? hoveredUnit : null;
+                    unit2 = activeUnit;
+                }
+                this.setState({
+                    battleSceneUnit1: unit1,
+                    battleSceneUnit2: unit2
+                });
+            },
+            handleAbilityUse: function (ability, target, wasByPlayer) {
+                // TODO
+                /*
+                var abilityData = getAbilityUseData(this.props.battle,
+                  this.props.battle.activeUnit, ability, target);
+        
+                for (var i = 0; i < abilityData.beforeUse.length; i++)
+                {
+                  abilityData.beforeUse[i]();
+                }
+        
+                this.playBattleEffect(abilityData, 0);
+        
+        
+                if (wasByPlayer && this.MCTree)
+                {
+                  this.MCTree.advanceMove(
+                  {
+                    ability: ability,
+                    targetId: "" + abilityData.actualTarget.id
+                  });
+                }
+                */
+            },
+            // TODO battleSFX
+            // need to either force BattleScene to play animation as soon as it starts
+            // or have this wait for battle scene units to finish animating.
+            // battleSFX animation can trigger at the earliest after animationTiming.unitEnter, but
+            // actual effect always gets triggered after animationTiming.beforeUse
+            playBattleEffect: function (abilityData, i) {
+                // TODO
+                /*
+                var self = this;
+                var effectData = abilityData.effectsToCall;
+                if (!effectData[i])
+                {
+                  for (var i = 0; i < abilityData.afterUse.length; i++)
+                  {
+                    abilityData.afterUse[i]();
+                  }
+        
+                  this.clearBattleEffect(abilityData);
+        
+                  this.handleTurnEnd();
+        
+                  return;
+                };
+        
+                effectData[i].user.sfxDuration = null;
+                effectData[i].target.sfxDuration = null;
+        
+                if (effectData[i].trigger && !effectData[i].trigger(effectData[i].user, effectData[i].target))
+                {
+                  return this.playBattleEffect(abilityData, i + 1);
+                }
+        
+                var side1Unit: Unit = null;
+                var side2Unit: Unit = null;
+                [effectData[i].user, effectData[i].target].forEach(function(unit: Unit)
+                {
+                  if (unit.battleStats.side === "side1" && !side1Unit)
+                  {
+                    side1Unit = unit;
+                  }
+                  else if (unit.battleStats.side === "side2" && !side2Unit)
+                  {
+                    side2Unit = unit;
+                  }
+                });
+        
+                var previousUnit1Strength = side1Unit ? side1Unit.currentHealth : null;
+                var previousUnit2Strength = side2Unit ? side2Unit.currentHealth : null;
+        
+                var hasSFX = effectData[i].sfx;
+                var shouldDeferCallingEffects = false;
+                var effectDuration = 0;
+                if (hasSFX)
+                {
+                  effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming.effectDuration;
+                  shouldDeferCallingEffects = Boolean(effectData[i].sfx.SFXWillTriggerEffect);
+                }
+        
+                effectData[i].user.sfxDuration = effectDuration;
+                effectData[i].target.sfxDuration = effectDuration;
+        
+                var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
+        
+                var callEffectsFN = function(forceUpdate: boolean = true)
+                {
+                  for (var j = 0; j < effectData[i].effects.length; j++)
+                  {
+                    effectData[i].effects[j]();
+                  }
+                  if (forceUpdate)
+                  {
+                    self.forceUpdate();
+                  }
+                }
+        
+                if (!shouldDeferCallingEffects)
+                {
+                  callEffectsFN(false);
+                }
+        
+                this.setState(
+                {
+                  battleSceneUnit1StartingStrength: previousUnit1Strength,
+                  battleSceneUnit2StartingStrength: previousUnit2Strength,
+                  battleSceneUnit1: side1Unit,
+                  battleSceneUnit2: side2Unit,
+                  playingBattleEffect: true,
+        
+                  hoveredUnit: null,
+                  highlightedUnit: abilityData.originalTarget,
+                  userUnit: effectData[i].user,
+                  targetUnit: effectData[i].target,
+        
+                  battleEffectId: hasSFX ? this.idGenerator++ : null,
+                  battleEffectDuration: effectDuration,
+                  battleEffectSFX: effectData[i].sfx,
+        
+                  afterAbilityFinishedCallback: finishEffectFN,
+                  triggerEffectCallback: callEffectsFN,
+        
+                  abilityTooltip:
+                  {
+                    parentElement: null
+                  },
+                  hoveredAbility: null,
+                  potentialDelay: null,
+                  targetsInPotentialArea: []
+                });
+                */
+            },
+            clearBattleEffect: function () {
+                var newHoveredUnit = null;
+                if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle()) {
+                    newHoveredUnit = this.tempHoveredUnit;
+                    this.tempHoveredUnit = null;
+                }
+                var afterStateUpdateCallback = newHoveredUnit ?
+                    this.handleMouseEnterUnit.bind(this, newHoveredUnit) : this.clearHoveredUnit;
+                this.setState({
+                    playingBattleEffect: false,
+                    battleEffectId: undefined,
+                    battleEffectDuration: null,
+                    battleEffectSFX: null,
+                    afterAbilityFinishedCallback: null,
+                    triggerEffectCallback: null,
+                    hoveredUnit: null,
+                    highlightedUnit: null,
+                    targetUnit: null,
+                    userUnit: null
+                }, afterStateUpdateCallback);
+            },
+            handleTurnEnd: function () {
+                if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable()) {
+                    this.forceUpdate();
+                }
+                else {
+                    this.clearHoveredUnit();
+                }
+                this.props.battle.endTurn();
+                this.setBattleSceneUnits(this.state.hoveredUnit);
+                if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction) {
+                    this.usePreparedAbility();
+                }
+                else if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
+                    this.useAIAbility();
+                }
+            },
+            usePreparedAbility: function () {
+                var unit = this.props.battle.activeUnit;
+                var action = unit.battleStats.queuedAction;
+                var target = this.props.battle.unitsById[action.targetId];
+                var userIsHuman = this.props.battle.getActivePlayer() === this.props.humanPlayer;
+                this.handleAbilityUse(action.ability, target, userIsHuman);
+            },
+            usePlayerAbility: function (ability, target) {
+                this.handleAbilityUse(ability, target, true);
+            },
+            useAIAbility: function () {
+                if (!this.props.battle.activeUnit || this.props.battle.ended)
+                    return;
+                if (!this.MCTree)
+                    this.MCTree = new Rance.MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side, false);
+                var move = this.MCTree.getBestMoveAndAdvance(1000);
+                var target = this.props.battle.unitsById[move.targetId];
+                this.handleAbilityUse(move.ability, target, false);
+            },
+            finishBattle: function () {
+                if (Date.now() < this.battleEndStartTime + 1000)
+                    return;
+                var battle = this.props.battle;
+                if (!battle.ended)
+                    throw new Error();
+                battle.finishBattle();
+            },
+            handleMouseEnterAbility: function (ability) {
+                // TODO
+                /*
+                        var targetsInPotentialArea = getUnitsInAbilityArea(
+                          this.props.battle,
+                          this.props.battle.activeUnit,
+                          ability,
+                          this.state.hoveredUnit.battleStats.position
+                        )
+                
+                        var abilityUseDelay = ability.preparation ?
+                          ability.preparation.prepDelay * ability.preparation.turnsToPrep :
+                          ability.moveDelay;
+                
+                        this.setState(
+                        {
+                          hoveredAbility: ability,
+                          potentialDelay:
+                          {
+                            id: this.props.battle.activeUnit.id,
+                            delay: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay
+                          },
+                          targetsInPotentialArea: targetsInPotentialArea
+                        });
+                */
+            },
+            handleMouseLeaveAbility: function () {
+                this.setState({
+                    hoveredAbility: null,
+                    potentialDelay: null,
+                    targetsInPotentialArea: []
+                });
+            },
+            render: function () {
+                var battle = this.props.battle;
+                if (!battle.ended) {
+                    var activeTargets = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
+                }
+                var abilityTooltip = null;
+                if (!battle.ended &&
+                    !this.state.playingBattleEffect &&
+                    this.state.hoveredUnit &&
+                    activeTargets[this.state.hoveredUnit.id]) {
+                    abilityTooltip = UIComponents.AbilityTooltip({
+                        handleAbilityUse: this.usePlayerAbility,
+                        handleMouseLeave: this.handleMouseLeaveUnit,
+                        handleMouseEnterAbility: this.handleMouseEnterAbility,
+                        handleMouseLeaveAbility: this.handleMouseLeaveAbility,
+                        activeUnit: battle.activeUnit,
+                        targetUnit: this.state.hoveredUnit,
+                        parentElement: this.state.abilityTooltip.parentElement,
+                        facesLeft: this.state.abilityTooltip.facesLeft,
+                        activeTargets: activeTargets,
+                        ref: "abilityTooltip",
+                        key: this.state.hoveredUnit.id
+                    });
+                }
+                ;
+                var activeEffectUnits = [];
+                if (this.state.playingBattleEffect) {
+                    activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
+                }
+                var upperFooterElement;
+                if (this.state.battleIsStarting) {
+                    upperFooterElement = null;
+                }
+                else if (!this.state.playingBattleEffect) {
+                    upperFooterElement = UIComponents.TurnOrder({
+                        key: "turnOrder",
+                        turnOrder: battle.turnOrder,
+                        unitsBySide: battle.unitsBySide,
+                        potentialDelay: this.state.potentialDelay,
+                        hoveredUnit: this.state.highlightedUnit,
+                        onMouseEnterUnit: this.handleMouseEnterUnit,
+                        onMouseLeaveUnit: this.handleMouseLeaveUnit
+                    });
+                }
+                else {
+                    upperFooterElement = React.DOM.div({
+                        key: "battleDisplayStrength",
+                        className: "battle-display-strength-container"
+                    }, React.DOM.div({
+                        className: "battle-display-strength battle-display-strength-side1"
+                    }, this.state.battleSceneUnit1 ? UIComponents.BattleDisplayStrength({
+                        key: "" + this.state.battleSceneUnit1.id + Date.now(),
+                        delay: this.state.battleEffectDuration,
+                        from: this.state.battleSceneUnit1StartingStrength,
+                        to: this.state.battleSceneUnit1.currentHealth
+                    }) : null), React.DOM.div({
+                        className: "battle-display-strength battle-display-strength-side2"
+                    }, this.state.battleSceneUnit2 ? UIComponents.BattleDisplayStrength({
+                        key: "" + this.state.battleSceneUnit2.id + Date.now(),
+                        delay: this.state.battleEffectDuration,
+                        from: this.state.battleSceneUnit2StartingStrength,
+                        to: this.state.battleSceneUnit2.currentHealth
+                    }) : null));
+                }
+                // hack
+                // 
+                // transitiongroups dont work very well, especially in the older version
+                // of react we're using. seems to be mostly fine on webkit & ie though
+                // so just disable it on firefox for now
+                var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
+                    React.addons.CSSTransitionGroup({ transitionName: "battle-upper-footer" }, upperFooterElement) : upperFooterElement;
+                var overlayContainer = null;
+                var playerWonBattle = null;
+                if (this.state.battleIsStarting) {
+                    overlayContainer = React.DOM.div({
+                        className: "battle-start-overlay",
+                        onClick: this.endBattleStart
+                    });
+                }
+                else if (battle.ended) {
+                    if (!this.battleEndStartTime)
+                        this.battleEndStartTime = Date.now();
+                    overlayContainer = React.DOM.div({
+                        className: "battle-start-overlay",
+                        onClick: this.finishBattle
+                    });
+                    playerWonBattle = this.props.humanPlayer === battle.getVictor();
+                }
+                var battleState = null;
+                if (this.state.battleIsStarting) {
+                    battleState = "start";
+                }
+                else if (battle.ended) {
+                    battleState = "finish";
+                }
+                else {
+                    battleState = "active";
+                }
+                return (UIComponents.BattleBackground({
+                    renderer: this.props.renderer,
+                    backgroundSeed: this.props.battle.battleData.location.getSeed(),
+                    getBlurArea: this.getBlurArea
+                }, React.DOM.div({
+                    className: "battle-container",
+                    ref: "battleContainer"
+                }, overlayContainer, React.DOM.div({
+                    className: "battle-upper"
+                }, UIComponents.BattleScore({
+                    battle: battle
+                }), upperFooter, UIComponents.BattleScene({
+                    battleState: battleState,
+                    targetUnit: this.state.targetUnit,
+                    userUnit: this.state.userUnit,
+                    activeUnit: battle.activeUnit,
+                    hoveredUnit: this.state.hoveredUnit,
+                    activeSFX: this.state.battleEffectSFX,
+                    afterAbilityFinishedCallback: this.state.afterAbilityFinishedCallback,
+                    triggerEffectCallback: this.state.triggerEffectCallback,
+                    humanPlayerWonBattle: playerWonBattle,
+                    side1Player: battle.side1Player,
+                    side2Player: battle.side2Player
+                })), React.DOM.div({
+                    className: "formations-container",
+                    ref: "formationsContainer"
+                }, UIComponents.Formation({
+                    battle: battle,
+                    formation: battle.side1,
+                    facesLeft: false,
+                    activeUnit: battle.activeUnit,
+                    hoveredUnit: this.state.highlightedUnit,
+                    hoveredAbility: this.state.hoveredAbility,
+                    activeTargets: activeTargets,
+                    targetsInPotentialArea: this.state.targetsInPotentialArea,
+                    handleMouseEnterUnit: this.handleMouseEnterUnit,
+                    handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+                    activeEffectUnits: activeEffectUnits
+                }), UIComponents.TurnCounter({
+                    turnsLeft: battle.turnsLeft,
+                    maxTurns: battle.maxTurns
+                }), UIComponents.Formation({
+                    battle: battle,
+                    formation: battle.side2,
+                    facesLeft: true,
+                    activeUnit: battle.activeUnit,
+                    hoveredUnit: this.state.highlightedUnit,
+                    hoveredAbility: this.state.hoveredAbility,
+                    activeTargets: activeTargets,
+                    targetsInPotentialArea: this.state.targetsInPotentialArea,
+                    handleMouseEnterUnit: this.handleMouseEnterUnit,
+                    handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+                    activeEffectUnits: activeEffectUnits
+                }), abilityTooltip, this.state.playingBattleEffect ?
+                    React.DOM.div({ className: "battle-formations-darken" }, null) :
+                    null))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.SplitMultilineText = {
+            splitMultilineText: function (text) {
+                if (Array.isArray(text)) {
+                    var returnArr = [];
+                    for (var i = 0; i < text.length; i++) {
+                        returnArr.push(text[i]);
+                        returnArr.push(React.DOM.br({
+                            key: "" + i
+                        }));
+                    }
+                    return returnArr;
+                }
+                else {
+                    return text;
+                }
+            }
+        };
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../mixins/splitmultilinetext.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.List = React.createClass({
+            displayName: "List",
+            mixins: [UIComponents.SplitMultilineText],
+            sortedItems: [],
+            propTypes: {
+                initialColumns: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+                listItems: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+                initialSortOrder: React.PropTypes.arrayOf(React.PropTypes.object),
+                keyboardSelect: React.PropTypes.bool,
+                initialSelected: React.PropTypes.object,
+                tabIndex: React.PropTypes.number,
+                noHeader: React.PropTypes.bool,
+                addSpacer: React.PropTypes.bool,
+                onRowChange: React.PropTypes.func,
+                colStylingFN: React.PropTypes.func // (column: IListColumn, props: any) => any
+            },
+            getInitialState: function () {
+                var initialColumn = this.props.initialSortOrder ?
+                    this.props.initialSortOrder[0] :
+                    this.props.initialColumns[0];
+                return ({
+                    columns: this.props.initialColumns,
+                    selected: null,
+                    selectedColumn: initialColumn,
+                    sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
+                });
+            },
+            componentDidMount: function () {
+                var self = this;
+                window.addEventListener("resize", this.setDesiredHeight, false);
+                Rance.eventManager.addEventListener("popupResized", this.setDesiredHeight);
+                if (this.props.keyboardSelect) {
+                    this.getDOMNode().addEventListener("keydown", function (event) {
+                        switch (event.keyCode) {
+                            case 40:
+                                {
+                                    self.shiftSelection(1);
+                                    break;
+                                }
+                            case 38:
+                                {
+                                    self.shiftSelection(-1);
+                                    break;
+                                }
+                            default:
+                                {
+                                    return;
+                                }
+                        }
+                    });
+                }
+                if (this.props.initialSelected) {
+                    this.handleSelectRow(this.props.initialSelected);
+                }
+                else if (this.props.autoSelect) {
+                    this.handleSelectRow(this.sortedItems[0]);
+                    this.getDOMNode().focus();
+                }
+                else {
+                    this.setState({ selected: this.sortedItems[0] });
+                }
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.setDesiredHeight);
+                Rance.eventManager.removeEventListener("popupResized", this.setDesiredHeight);
+            },
+            componentDidUpdate: function () {
+                this.setDesiredHeight();
+            },
+            setDesiredHeight: function () {
+                var ownNode = this.getDOMNode();
+                var innerNode = this.refs.inner.getDOMNode();
+                ownNode.style.height = "auto";
+                innerNode.style.height = "auto";
+                var parentHeight = ownNode.parentNode.getBoundingClientRect().height;
+                var ownRect = ownNode.getBoundingClientRect();
+                var ownHeight = ownRect.height;
+                var strippedOwnHeight = parseInt(getComputedStyle(ownNode).height);
+                var extraHeight = ownHeight - strippedOwnHeight;
+                var desiredHeight = parentHeight - extraHeight;
+                var maxHeight = window.innerHeight - ownRect.top - extraHeight;
+                desiredHeight = Math.min(desiredHeight, maxHeight);
+                ownNode.style.height = "" + desiredHeight + "px";
+                innerNode.style.height = "" + desiredHeight + "px";
+            },
+            handleScroll: function (e) {
+                // scrolls header to match list contents
+                var target = e.target;
+                var header = this.refs.header.getDOMNode();
+                var titles = header.getElementsByClassName("fixed-table-th-inner");
+                var marginString = "-" + target.scrollLeft + "px";
+                for (var i = 0; i < titles.length; i++) {
+                    titles[i].style.marginLeft = marginString;
+                }
+            },
+            makeInitialSortingOrder: function (columns, initialColumn) {
+                var initialSortOrder = this.props.initialSortOrder;
+                if (!initialSortOrder || initialSortOrder.length < 1) {
+                    initialSortOrder = [initialColumn];
+                }
+                var order = initialSortOrder;
+                for (var i = 0; i < columns.length; i++) {
+                    if (!columns[i].order) {
+                        columns[i].order = columns[i].defaultOrder;
+                    }
+                    if (initialSortOrder.indexOf(columns[i]) < 0) {
+                        order.push(columns[i]);
+                    }
+                }
+                return order;
+            },
+            getNewSortingOrder: function (newColumn) {
+                var order = this.state.sortingOrder.slice(0);
+                var current = order.indexOf(newColumn);
+                if (current >= 0) {
+                    order.splice(current);
+                }
+                order.unshift(newColumn);
+                return order;
+            },
+            handleSelectColumn: function (column) {
+                if (column.notSortable)
+                    return;
+                function getReverseOrder(order) {
+                    return order === "desc" ? "asc" : "desc";
+                }
+                if (this.state.selectedColumn.key === column.key) {
+                    column.order = getReverseOrder(column.order);
+                    this.forceUpdate();
+                }
+                else {
+                    column.order = column.defaultOrder;
+                    this.setState({
+                        selectedColumn: column,
+                        sortingOrder: this.getNewSortingOrder(column)
+                    });
+                }
+            },
+            handleSelectRow: function (row) {
+                if (this.props.onRowChange && row)
+                    this.props.onRowChange.call(null, row);
+                this.setState({
+                    selected: row
+                });
+            },
+            sort: function () {
+                var itemsToSort = this.props.listItems;
+                var columnsToTry = this.state.columns;
+                var sortOrder = this.state.sortingOrder;
+                var sortFunctions = {};
+                function makeSortingFunction(column) {
+                    if (column.sortingFunction)
+                        return column.sortingFunction;
+                    var propToSortBy = column.propToSortBy || column.key;
+                    return (function (a, b) {
+                        var a1 = a.data[propToSortBy];
+                        var b1 = b.data[propToSortBy];
+                        if (a1 > b1)
+                            return 1;
+                        else if (a1 < b1)
+                            return -1;
+                        else
+                            return 0;
+                    });
+                }
+                itemsToSort.sort(function (a, b) {
+                    var result = 0;
+                    for (var i = 0; i < sortOrder.length; i++) {
+                        var columnToSortBy = sortOrder[i];
+                        if (!sortFunctions[columnToSortBy.key]) {
+                            sortFunctions[columnToSortBy.key] = makeSortingFunction(columnToSortBy);
+                        }
+                        var sortFunction = sortFunctions[columnToSortBy.key];
+                        result = sortFunction(a, b);
+                        if (columnToSortBy.order === "desc") {
+                            result *= -1;
+                        }
+                        if (result)
+                            return result;
+                    }
+                    return 0; // couldnt sort
+                });
+                this.sortedItems = itemsToSort;
+            },
+            shiftSelection: function (amountToShift) {
+                var reverseIndexes = {};
+                for (var i = 0; i < this.sortedItems.length; i++) {
+                    reverseIndexes[this.sortedItems[i].key] = i;
+                }
+                ;
+                var currSelectedIndex = reverseIndexes[this.state.selected.key];
+                var nextIndex = (currSelectedIndex + amountToShift) % this.sortedItems.length;
+                if (nextIndex < 0) {
+                    nextIndex += this.sortedItems.length;
+                }
+                this.handleSelectRow(this.sortedItems[nextIndex]);
+            },
+            render: function () {
+                var self = this;
+                var columns = [];
+                var headerLabels = [];
+                this.state.columns.forEach(function (column) {
+                    var colProps = {
+                        key: column.key
+                    };
+                    if (self.props.colStylingFN) {
+                        colProps = self.props.colStylingFN(column, colProps);
+                    }
+                    columns.push(React.DOM.col(colProps));
+                    var sortStatus = "";
+                    if (!column.notSortable)
+                        sortStatus = " sortable";
+                    if (self.state.selectedColumn.key === column.key) {
+                        sortStatus += " sorted-" + column.order;
+                    }
+                    else if (!column.notSortable)
+                        sortStatus += " unsorted";
+                    headerLabels.push(React.DOM.th({
+                        key: column.key
+                    }, React.DOM.div({
+                        className: "fixed-table-th-inner"
+                    }, React.DOM.div({
+                        className: "fixed-table-th-content" + sortStatus,
+                        title: column.title || colProps.title || null,
+                        onMouseDown: self.handleSelectColumn.bind(null, column),
+                        onTouchStart: self.handleSelectColumn.bind(null, column),
+                    }, column.label))));
+                });
+                this.sort();
+                var sortedItems = this.sortedItems;
+                var rows = [];
+                sortedItems.forEach(function (item, i) {
+                    item.data.key = item.key;
+                    item.data.activeColumns = self.state.columns;
+                    item.data.handleClick = self.handleSelectRow.bind(null, item);
+                    var row = item.data.rowConstructor(item.data);
+                    rows.push(row);
+                    if (self.props.addSpacer && i < sortedItems.length - 1) {
+                        rows.push(React.DOM.tr({
+                            className: "list-spacer",
+                            key: "spacer" + i
+                        }, React.DOM.td({
+                            colSpan: 20
+                        }, null)));
+                    }
+                });
+                return (React.DOM.div({
+                    className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
+                    tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
+                }, React.DOM.div({ className: "fixed-table-header-background" }), React.DOM.div({
+                    className: "fixed-table-container-inner",
+                    ref: "inner",
+                    onScroll: this.handleScroll
+                }, React.DOM.table({
+                    className: "react-list"
+                }, React.DOM.colgroup(null, columns), React.DOM.thead({ className: "fixed-table-actual-header", ref: "header" }, React.DOM.tr(null, headerLabels)), React.DOM.thead({ className: "fixed-table-hidden-header" }, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../mixins/draggable.ts" />
+/// <reference path="../unit/unitstrength.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitListItem = React.createClass({
+            displayName: "UnitListItem",
+            mixins: [UIComponents.Draggable],
+            componentDidMount: function () {
+                if (!this.props.isDraggable)
+                    return;
+                var container = document.getElementsByClassName("unit-wrapper")[0];
+                this.forcedDragOffset =
+                    {
+                        x: container.offsetWidth / 2,
+                        y: container.offsetHeight / 2
+                    };
+            },
+            componentDidUpdate: function () {
+                if (this.needsFirstTouchUpdate && this.refs.dragClone) {
+                    var node = this.refs.dragClone.getDOMNode();
+                    node.classList.add("draggable");
+                    node.classList.add("dragging");
+                    var container = document.getElementsByClassName("unit-wrapper")[0];
+                    node.style.width = "" + container.offsetWidth + "px";
+                    node.style.height = "" + container.offsetHeight + "px";
+                    this.needsFirstTouchUpdate = false;
+                }
+            },
+            onDragStart: function () {
+                this.props.onDragStart(this.props.unit);
+            },
+            onDragMove: function (x, y) {
+                if (!this.refs.dragClone)
+                    return;
+                var node = this.refs.dragClone.getDOMNode();
+                node.classList.add("draggable");
+                node.classList.add("dragging");
+                node.style.left = "" + x + "px";
+                node.style.top = "" + y + "px";
+                var container = document.getElementsByClassName("unit-wrapper")[0];
+                node.style.width = "" + container.offsetWidth + "px";
+                node.style.height = "" + container.offsetHeight + "px";
+                this.forcedDragOffset =
+                    {
+                        x: container.offsetWidth / 2,
+                        y: container.offsetHeight / 2
+                    };
+            },
+            onDragEnd: function () {
+                this.props.onDragEnd();
+            },
+            handleMouseEnter: function () {
+                this.props.onMouseEnter(this.props.unit);
+            },
+            handleMouseLeave: function () {
+                this.props.onMouseLeave();
+            },
+            makeCell: function (type) {
+                var unit = this.props.unit;
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
+                var cellContent;
+                switch (type) {
+                    case "strength":
+                        {
+                            cellContent = UIComponents.UnitStrength({
+                                maxHealth: this.props.maxHealth,
+                                currentHealth: this.props.currentHealth,
+                                isSquadron: true
+                            });
+                            break;
+                        }
+                    case "attack":
+                    case "defence":
+                    case "intelligence":
+                    case "speed":
+                        {
+                            cellContent = this.props[type];
+                            if (unit.attributes[type] < unit.baseAttributes[type]) {
+                                cellProps.className += " lowered-stat";
+                            }
+                            else if (unit.attributes[type] > unit.baseAttributes[type]) {
+                                cellProps.className += " raised-stat";
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            break;
+                        }
+                }
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var unit = this.props.unit;
+                var columns = this.props.activeColumns;
+                if (this.state.dragging) {
+                    return (UIComponents.Unit({
+                        ref: "dragClone",
+                        unit: unit
+                    }));
+                }
+                var cells = [];
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+                    cells.push(cell);
+                }
+                var rowProps = {
+                    className: "unit-list-item",
+                    onClick: this.props.handleClick
+                };
+                if (this.props.isDraggable && !this.props.noActionsLeft) {
+                    rowProps.className += " draggable";
+                    rowProps.onTouchStart = rowProps.onMouseDown =
+                        this.handleMouseDown;
+                }
+                if (this.props.isSelected) {
+                    rowProps.className += " selected-unit";
+                }
+                ;
+                if (this.props.isReserved) {
+                    rowProps.className += " reserved-unit";
+                }
+                if (this.props.isHovered) {
+                    rowProps.className += " unit-list-item-hovered";
+                }
+                if (this.props.noActionsLeft) {
+                    rowProps.className += " no-actions-left";
+                }
+                else if (this.props.onMouseEnter) {
+                    rowProps.onMouseEnter = this.handleMouseEnter;
+                    rowProps.onMouseLeave = this.handleMouseLeave;
+                }
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="list.ts" />
+/// <reference path="unitlistitem.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitList = React.createClass({
+            displayName: "UnitList",
+            render: function () {
+                var rows = [];
+                for (var id in this.props.units) {
+                    var unit = this.props.units[id];
+                    var data = {
+                        unit: unit,
+                        id: unit.id,
+                        name: unit.name,
+                        typeName: unit.template.displayName,
+                        strength: "" + unit.currentHealth + " / " + unit.maxHealth,
+                        currentHealth: unit.currentHealth,
+                        maxHealth: unit.maxHealth,
+                        maxActionPoints: unit.attributes.maxActionPoints,
+                        attack: unit.attributes.attack,
+                        defence: unit.attributes.defence,
+                        intelligence: unit.attributes.intelligence,
+                        speed: unit.attributes.speed,
+                        rowConstructor: UIComponents.UnitListItem,
+                        makeClone: true,
+                        isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
+                        noActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),
+                        isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
+                        isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
+                        onMouseEnter: this.props.onMouseEnter,
+                        onMouseLeave: this.props.onMouseLeave,
+                        isDraggable: this.props.isDraggable,
+                        onDragStart: this.props.onDragStart,
+                        onDragEnd: this.props.onDragEnd
+                    };
+                    rows.push({
+                        key: unit.id,
+                        data: data
+                    });
+                }
+                var columns = [
+                    {
+                        label: "Id",
+                        key: "id",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Type",
+                        key: "typeName",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Strength",
+                        key: "strength",
+                        defaultOrder: "desc",
+                        sortingFunction: function (a, b) {
+                            return a.data.currentHealth - b.data.currentHealth;
+                        }
+                    },
+                    {
+                        label: "Act",
+                        key: "maxActionPoints",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Atk",
+                        key: "attack",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Def",
+                        key: "defence",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Int",
+                        key: "intelligence",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Spd",
+                        key: "speed",
+                        defaultOrder: "desc"
+                    }
+                ];
+                return (React.DOM.div({ className: "unit-list fixed-table-parent" }, UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    onRowChange: this.props.onRowChange,
+                    autoSelect: this.props.autoSelect,
+                    keyboardSelect: true
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ItemListItem = React.createClass({
+            displayName: "ItemListItem",
+            mixins: [UIComponents.Draggable],
+            onDragStart: function () {
+                console.log("onDragStart", this.props.item.template.displayName);
+                this.props.onDragStart(this.props.item);
+            },
+            onDragEnd: function () {
+                this.props.onDragEnd();
+            },
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "item-list-item-cell" + " item-list-" + type;
+                var cellContent;
+                switch (type) {
+                    case "abilityName":
+                        {
+                            if (this.props.ability) {
+                                cellProps.title = this.props.ability.description;
+                                if (this.props.abilityIsPassive) {
+                                    cellProps.className += " passive-skill";
+                                }
+                            }
+                        }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            if (isFinite(cellContent)) {
+                                cellProps.className += " center-text";
+                            }
+                            break;
+                        }
+                }
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            makeDragClone: function () {
+                var clone = new Image();
+                clone.src = this.props.item.template.icon;
+                clone.className = "item-icon-base draggable dragging";
+                return clone;
+            },
+            render: function () {
+                var item = this.props.item;
+                var columns = this.props.activeColumns;
+                if (this.state.dragging && this.state.clone) {
+                    this.state.clone.style.left = "" + this.dragPos.left + "px";
+                    this.state.clone.style.top = "" + this.dragPos.top + "px";
+                }
+                var cells = [];
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+                    cells.push(cell);
+                }
+                var rowProps = {
+                    className: "item-list-item",
+                    onClick: this.props.handleClick,
+                    key: this.props.key
+                };
+                if (this.props.isDraggable) {
+                    rowProps.className += " draggable";
+                    rowProps.onTouchStart = rowProps.onMouseDown =
+                        this.handleMouseDown;
+                }
+                if (this.props.isSelected) {
+                    rowProps.className += " selected-item";
+                }
+                ;
+                if (this.props.isReserved) {
+                    rowProps.className += " reserved-item";
+                }
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="list.ts" />
+/// <reference path="itemlistitem.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ItemList = React.createClass({
+            displayName: "ItemList",
+            getSlotIndex: function (slot) {
+                if (slot === "high") {
+                    return 2;
+                }
+                else if (slot === "mid") {
+                    return 1;
+                }
+                else
+                    return 0;
+            },
+            render: function () {
+                var rows = [];
+                var items = this.props.items;
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    var ability = null;
+                    var abilityIsPassive = false;
+                    if (item.template.ability) {
+                        ability = item.template.ability;
+                    }
+                    else if (item.template.passiveSkill) {
+                        ability = item.template.passiveSkill;
+                        abilityIsPassive = true;
+                    }
+                    var data = {
+                        item: item,
+                        key: item.id,
+                        id: item.id,
+                        typeName: item.template.displayName,
+                        slot: item.template.slot,
+                        slotIndex: this.getSlotIndex(item.template.slot),
+                        unit: item.unit ? item.unit : null,
+                        unitName: item.unit ? item.unit.name : "",
+                        techLevel: item.template.techLevel,
+                        cost: item.template.buildCost,
+                        ability: ability,
+                        abilityName: ability ? ability.displayName : "",
+                        abilityIsPassive: abilityIsPassive,
+                        isReserved: Boolean(item.unit),
+                        makeClone: true,
+                        forcedDragOffset: { x: 32, y: 32 },
+                        rowConstructor: UIComponents.ItemListItem,
+                        isDraggable: this.props.isDraggable,
+                        onDragStart: this.props.onDragStart,
+                        onDragEnd: this.props.onDragEnd
+                    };
+                    ["maxActionPoints", "attack", "defence",
+                        "intelligence", "speed"].forEach(function (stat) {
+                        if (!item.template.attributes)
+                            data[stat] = null;
+                        else
+                            data[stat] = item.template.attributes[stat] || null;
+                    });
+                    rows.push({
+                        key: item.id,
+                        data: data
+                    });
+                }
+                var columns;
+                if (this.props.isItemPurchaseList) {
+                    columns =
+                        [
+                            {
+                                label: "Type",
+                                key: "typeName",
+                                defaultOrder: "asc"
+                            },
+                            {
+                                label: "Slot",
+                                key: "slot",
+                                propToSortBy: "slotIndex",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Tech",
+                                key: "techLevel",
+                                defaultOrder: "asc"
+                            },
+                            {
+                                label: "Cost",
+                                key: "cost",
+                                defaultOrder: "asc"
+                            }
+                        ];
+                }
+                else {
+                    columns =
+                        [
+                            {
+                                label: "Type",
+                                key: "typeName",
+                                defaultOrder: "asc"
+                            },
+                            {
+                                label: "Slot",
+                                key: "slot",
+                                propToSortBy: "slotIndex",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Unit",
+                                key: "unitName",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Act",
+                                key: "maxActionPoints",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Atk",
+                                key: "attack",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Def",
+                                key: "defence",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Int",
+                                key: "intelligence",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Spd",
+                                key: "speed",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Ability",
+                                key: "abilityName",
+                                defaultOrder: "desc"
+                            }
+                        ];
+                }
+                return (React.DOM.div({ className: "item-list fixed-table-parent" }, UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialSortOrder: [columns[1], columns[2]],
+                    onRowChange: this.props.onRowChange,
+                    tabIndex: 2,
+                    keyboardSelect: true
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.AbilityList = React.createClass({
+            displayName: "AbilityList",
+            render: function () {
+                var abilities = this.props.abilities;
+                var baseClassName = "unit-info-ability";
+                if (abilities.length < 1)
+                    return null;
+                var abilityElements = [];
+                var addedAbilityTypes = {};
+                abilities.sort(function (_a, _b) {
+                    if (_a.mainEffect && !_b.mainEffect)
+                        return -1;
+                    else if (_b.mainEffect && !_a.mainEffect)
+                        return 1;
+                    if (_a.type === "learnable")
+                        return 1;
+                    else if (_b.type === "learnable")
+                        return -1;
+                    var a = _a.displayName.toLowerCase();
+                    var b = _b.displayName.toLowerCase();
+                    if (a > b)
+                        return 1;
+                    else if (a < b)
+                        return -1;
+                    else
+                        return 0;
+                });
+                for (var i = 0; i < abilities.length; i++) {
+                    var ability = abilities[i];
+                    if (ability.isHidden) {
+                        continue;
+                    }
+                    if (!addedAbilityTypes[ability.type]) {
+                        addedAbilityTypes[ability.type] = 0;
+                    }
+                    var className = "unit-info-ability";
+                    var isPassiveSkill = !ability.mainEffect;
+                    if (isPassiveSkill) {
+                        className += " passive-skill";
+                    }
+                    else {
+                        className += " active-skill";
+                    }
+                    if (addedAbilityTypes[ability.type] >= 1) {
+                        className += " redundant-ability";
+                    }
+                    abilityElements.push(React.DOM.li({
+                        className: className,
+                        title: ability.description,
+                        key: ability.type + addedAbilityTypes[ability.type],
+                        onClick: (this.props.handleClick ? this.props.handleClick.bind(null, ability) : undefined)
+                    }, "[" + ability.displayName + "]"));
+                    addedAbilityTypes[ability.type]++;
+                }
+                return (React.DOM.ul({
+                    className: "ability-list"
+                }, abilityElements));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitItem = React.createClass({
+            displayName: "UnitItem",
+            mixins: [UIComponents.Draggable],
+            onDragStart: function () {
+                this.props.onDragStart(this.props.item);
+            },
+            onDragEnd: function () {
+                this.props.onDragEnd();
+            },
+            getTechIcon: function (techLevel) {
+                switch (techLevel) {
+                    case 2:
+                        {
+                            return "img\/icons\/t2icon.png";
+                        }
+                    case 3:
+                        {
+                            return "img\/icons\/t3icon.png";
+                        }
+                }
+            },
+            render: function () {
+                if (!this.props.item) {
+                    var emptyItemTitle = "Item slot: " + this.props.slot;
+                    return (React.DOM.div({ className: "empty-unit-item", title: emptyItemTitle }));
+                }
+                var item = this.props.item;
+                var divProps = {
+                    className: "unit-item",
+                    title: item.template.displayName
+                };
+                if (this.props.isDraggable) {
+                    divProps.className += " draggable";
+                    divProps.onMouseDown = divProps.onTouchStart =
+                        this.handleMouseDown;
+                }
+                if (this.state.dragging) {
+                    divProps.style = this.dragPos;
+                    divProps.className += " dragging";
+                }
+                return (React.DOM.div(divProps, React.DOM.div({
+                    className: "item-icon-container"
+                }, React.DOM.img({
+                    className: "item-icon-base",
+                    src: item.template.icon
+                }), item.template.techLevel > 1 ? React.DOM.img({
+                    className: "item-icon-tech-level",
+                    src: this.getTechIcon(item.template.techLevel)
+                }) : null)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../mixins/droptarget.ts"/>
+/// <reference path="unititem.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitItemWrapper = React.createClass({
+            displayName: "UnitItemWrapper",
+            mixins: [UIComponents.DropTarget],
+            handleMouseUp: function () {
+                this.props.onMouseUp(this.props.slot);
+            },
+            render: function () {
+                var item = this.props.item;
+                var wrapperProps = {
+                    className: "unit-item-wrapper"
+                };
+                // if this is declared inside the conditional block
+                // the component won't accept the first drop properly
+                if (this.props.onMouseUp) {
+                    wrapperProps.onMouseUp = this.handleMouseUp;
+                }
+                ;
+                if (this.props.currentDragItem) {
+                    var dragItem = this.props.currentDragItem;
+                    if (dragItem.template.slot === this.props.slot) {
+                        wrapperProps.className += " drop-target";
+                    }
+                    else {
+                        wrapperProps.onMouseUp = null;
+                        wrapperProps.className += " invalid-drop-target";
+                    }
+                }
+                return (React.DOM.div(wrapperProps, UIComponents.UnitItem({
+                    item: this.props.item,
+                    slot: this.props.slot,
+                    key: "item",
+                    isDraggable: this.props.isDraggable,
+                    onDragStart: this.props.onDragStart,
+                    onDragEnd: this.props.onDragEnd
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="abilitylist.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UpgradeAbilities = React.createClass({
+            displayName: "UpgradeAbilities",
+            render: function () {
+                if (this.props.abilities.length === 0) {
+                    return null;
+                }
+                var headerText;
+                if (this.props.learningNewability) {
+                    headerText = "Learn ability";
+                }
+                else {
+                    headerText = "Upgrade ability";
+                    if (this.props.sourceAbility) {
+                        headerText += " " + this.props.sourceAbility.displayName;
+                    }
+                }
+                return (React.DOM.div({
+                    className: "upgrade-abilities"
+                }, React.DOM.div({
+                    className: "upgrade-abilities-header"
+                }, headerText), UIComponents.AbilityList({
+                    abilities: this.props.abilities,
+                    handleClick: this.props.handleClick
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UpgradeAttributes = React.createClass({
+            displayName: "UpgradeAttributes",
+            upgradeAttribute: function (attribute, e) {
+                if (e.button)
+                    return;
+                this.props.handleClick(attribute);
+            },
+            render: function () {
+                var unit = this.props.unit;
+                var rows = [];
+                for (var attribute in unit.baseAttributes) {
+                    var maxAttribute = attribute === "maxActionPoints" ? 6 : 9;
+                    if (unit.baseAttributes[attribute] < maxAttribute) {
+                        rows.push(React.DOM.div({
+                            className: "upgrade-attributes-attribute",
+                            onClick: this.upgradeAttribute.bind(this, attribute),
+                            key: attribute
+                        }, attribute + ": " + unit.baseAttributes[attribute] + " -> " + (unit.baseAttributes[attribute] + 1)));
+                    }
+                }
+                if (rows.length === 0) {
+                    return null;
+                }
+                return (React.DOM.div({
+                    className: "upgrade-attributes"
+                }, React.DOM.div({
+                    className: "upgrade-attributes-header"
+                }, "Upgrade stats"), rows));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="upgradeabilities.ts" />
+/// <reference path="upgradeattributes.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UpgradeUnit = React.createClass({
+            displayName: "UpgradeUnit",
+            getInitialState: function () {
+                return ({
+                    upgradeData: this.props.unit.getAbilityUpgradeData(),
+                    popupId: undefined
+                });
+            },
+            upgradeAbility: function (source, newAbility) {
+                var unit = this.props.unit;
+                unit.upgradeAbility(source, newAbility);
+                unit.handleLevelUp();
+                this.setState({
+                    upgradeData: unit.getAbilityUpgradeData()
+                });
+                this.closePopup();
+                this.props.onUnitUpgrade();
+            },
+            upgradeAttribute: function (attribute) {
+                var unit = this.props.unit;
+                unit.baseAttributes[attribute] += 1;
+                unit.attributesAreDirty = true;
+                unit.handleLevelUp();
+                this.props.onUnitUpgrade();
+            },
+            makeAbilityLearnPopup: function (ability) {
+                var upgradeData = this.state.upgradeData[ability.type];
+                var popupId = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.TopMenuPopup,
+                    contentProps: {
+                        handleClose: this.closePopup,
+                        contentConstructor: UIComponents.UpgradeAbilities,
+                        contentProps: {
+                            abilities: upgradeData.possibleUpgrades,
+                            handleClick: this.upgradeAbility.bind(this, upgradeData.base),
+                            sourceAbility: upgradeData.base,
+                            learningNewability: !Boolean(upgradeData.base)
+                        }
+                    },
+                    popupProps: {
+                        preventAutoResize: true,
+                        containerDragOnly: true
+                    }
+                });
+                this.setState({
+                    popupId: popupId
+                });
+            },
+            closePopup: function () {
+                this.refs.popupManager.closePopup(this.state.popupId);
+                this.setState({
+                    popupId: undefined
+                });
+            },
+            render: function () {
+                var unit = this.props.unit;
+                var upgradableAbilities = [];
+                for (var source in this.state.upgradeData) {
+                    if (this.state.upgradeData[source].base) {
+                        upgradableAbilities.push(this.state.upgradeData[source].base);
+                    }
+                    else {
+                        upgradableAbilities.push({
+                            type: source,
+                            displayName: "** New ability **",
+                            description: ""
+                        });
+                    }
+                }
+                return (React.DOM.div({
+                    className: "upgrade-unit"
+                }, UIComponents.PopupManager({
+                    ref: "popupManager",
+                    onlyAllowOne: true
+                }), React.DOM.div({
+                    className: "upgrade-unit-header"
+                }, unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)), UIComponents.UpgradeAbilities({
+                    abilities: upgradableAbilities,
+                    handleClick: this.makeAbilityLearnPopup
+                }), UIComponents.UpgradeAttributes({
+                    unit: unit,
+                    handleClick: this.upgradeAttribute
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="upgradeunit.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.UnitExperience = React.createClass({
+            displayName: "UnitExperience",
+            getInitialState: function () {
+                return ({
+                    upgradePopupId: undefined
+                });
+            },
+            makePopup: function () {
+                var popupId = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.TopMenuPopup,
+                    contentProps: {
+                        handleClose: this.closePopup,
+                        contentConstructor: UIComponents.UpgradeUnit,
+                        contentProps: {
+                            unit: this.props.unit,
+                            onUnitUpgrade: this.handleUnitUpgrade
+                        }
+                    },
+                    popupProps: {
+                        preventAutoResize: true,
+                        containerDragOnly: true
+                    }
+                });
+                this.setState({
+                    upgradePopupId: popupId
+                });
+            },
+            closePopup: function () {
+                this.refs.popupManager.closePopup(this.state.upgradePopupId);
+                this.setState({
+                    upgradePopupId: undefined
+                });
+            },
+            handleUnitUpgrade: function () {
+                if (!this.props.unit.canLevelUp()) {
+                    this.closePopup();
+                }
+                else {
+                    this.refs.popupManager.forceUpdate();
+                }
+                this.props.onUnitUpgrade();
+            },
+            render: function () {
+                var rows = [];
+                var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
+                var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);
+                var lastBarWidth = (10 * (this.props.experienceForCurrentLevel % 10));
+                for (var i = 0; i < totalBars; i++) {
+                    var bgProps = {
+                        className: "unit-experience-bar-point-background"
+                    };
+                    if (i < filledBars) {
+                        bgProps.className += " filled";
+                        if (i === filledBars - 1 && lastBarWidth !== 0) {
+                            bgProps.style =
+                                {
+                                    width: "" + lastBarWidth + "%"
+                                };
+                        }
+                    }
+                    else {
+                        bgProps.className += " empty";
+                    }
+                    rows.push(React.DOM.div({
+                        className: "unit-experience-bar-point",
+                        key: "" + i
+                    }, React.DOM.div(bgProps, null)));
+                }
+                var isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
+                var containerProps = {
+                    className: "unit-experience-bar-container"
+                };
+                var barProps = {
+                    className: "unit-experience-bar",
+                    title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp"
+                };
+                if (isReadyToLevelUp) {
+                    containerProps.onClick = this.makePopup;
+                    barProps.className += " ready-to-level-up";
+                }
+                return (React.DOM.div({
+                    className: "unit-experience-wrapper"
+                }, UIComponents.PopupManager({
+                    ref: "popupManager",
+                    onlyAllowOne: true
+                }), React.DOM.div(containerProps, React.DOM.div(barProps, rows), !isReadyToLevelUp ? null : React.DOM.span({
+                    className: "ready-to-level-up-message"
+                }, "Click to level up"))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="abilitylist.ts" />
+/// <reference path="unititemwrapper.ts"/>
+/// <reference path="unitexperience.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.MenuUnitInfo = React.createClass({
+            displayName: "MenuUnitInfo",
+            handleUnitUpgrade: function () {
+                this.forceUpdate();
+            },
+            render: function () {
+                var unit = this.props.unit;
+                if (!unit)
+                    return (React.DOM.div({ className: "menu-unit-info" }));
+                var itemSlots = [];
+                for (var slot in unit.items) {
+                    itemSlots.push(UIComponents.UnitItemWrapper({
+                        key: slot,
+                        slot: slot,
+                        item: unit.items[slot],
+                        onMouseUp: this.props.onMouseUp,
+                        isDraggable: this.props.isDraggable,
+                        onDragStart: this.props.onDragStart,
+                        onDragEnd: this.props.onDragEnd,
+                        currentDragItem: this.props.currentDragItem
+                    }));
+                }
+                var unitAbilities = unit.getAllAbilities();
+                unitAbilities = unitAbilities.concat(unit.getAllPassiveSkills());
+                return (React.DOM.div({
+                    className: "menu-unit-info"
+                }, React.DOM.div({
+                    className: "menu-unit-info-name"
+                }, unit.name), React.DOM.div({
+                    className: "menu-unit-info-abilities"
+                }, UIComponents.AbilityList({
+                    abilities: unitAbilities
+                })), UIComponents.UnitExperience({
+                    experienceForCurrentLevel: unit.experienceForCurrentLevel,
+                    experienceToNextLevel: unit.getExperienceToNextLevel(),
+                    unit: unit,
+                    onUnitUpgrade: this.handleUnitUpgrade
+                }), React.DOM.div({
+                    className: "menu-unit-info-items-wrapper"
+                }, itemSlots)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="itemlist.ts" />
+/// <reference path="unitlist.ts" />
+/// <reference path="menuunitinfo.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.ItemEquip = React.createClass({
+            displayName: "ItemEquip",
+            getInitialState: function () {
+                return ({
+                    selectedUnit: null,
+                    currentDragItem: null
+                });
+            },
+            handleSelectRow: function (row) {
+                if (!row.data.unit)
+                    return;
+                this.setState({
+                    selectedUnit: row.data.unit
+                });
+            },
+            handleDragStart: function (item) {
+                this.setState({
+                    currentDragItem: item
+                });
+            },
+            handleDragEnd: function (dropSuccesful) {
+                if (dropSuccesful === void 0) { dropSuccesful = false; }
+                if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit) {
+                    var item = this.state.currentDragItem;
+                    if (this.state.selectedUnit.items[item.template.slot] === item) {
+                        this.state.selectedUnit.removeItem(item);
+                    }
+                }
+                this.setState({
+                    currentDragItem: null
+                });
+            },
+            handleDrop: function () {
+                var item = this.state.currentDragItem;
+                var unit = this.state.selectedUnit;
+                if (unit && item) {
+                    if (unit.items[item.template.slot]) {
+                        unit.removeItemAtSlot(item.template.slot);
+                    }
+                    unit.addItem(item);
+                }
+                this.handleDragEnd(true);
+            },
+            render: function () {
+                var player = this.props.player;
+                return (React.DOM.div({ className: "item-equip" }, React.DOM.div({ className: "item-equip-left" }, UIComponents.MenuUnitInfo({
+                    unit: this.state.selectedUnit,
+                    onMouseUp: this.handleDrop,
+                    isDraggable: true,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd,
+                    currentDragItem: this.state.currentDragItem
+                }), UIComponents.ItemList({
+                    items: player.items,
+                    // only used to trigger updates
+                    selectedUnit: this.state.selectedUnit,
+                    isDraggable: true,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd,
+                    onRowChange: this.handleSelectRow
+                })), UIComponents.UnitList({
+                    units: player.units,
+                    selectedUnit: this.state.selectedUnit,
+                    isDraggable: false,
+                    onRowChange: this.handleSelectRow,
+                    autoSelect: true
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../playerflag.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.DefenceBuilding = React.createClass({
+            displayName: "DefenceBuilding",
+            shouldComponentUpdate: function (newProps) {
+                return newProps.building !== this.props.building;
+            },
+            render: function () {
+                var building = this.props.building;
+                var image = app.images[building.template.iconSrc];
+                return (React.DOM.div({
+                    className: "defence-building"
+                }, React.DOM.img({
+                    className: "defence-building-icon",
+                    src: Rance.colorImageInPlayerColor(image, building.controller),
+                    title: building.template.displayName
+                }), UIComponents.PlayerFlag({
+                    props: {
+                        className: "defence-building-controller",
+                        title: building.controller.name
+                    },
+                    key: "flag",
+                    flag: building.controller.flag
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="defencebuilding.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.DefenceBuildingList = React.createClass({
+            displayName: "DefenceBuildingList",
+            shouldComponentUpdate: function (newProps) {
+                var newBuildings = newProps.buildings;
+                var oldBuildings = this.props.buildings;
+                if (newBuildings.length !== oldBuildings.length)
+                    return true;
+                else {
+                    for (var i = 0; i < newBuildings.length; i++) {
+                        if (oldBuildings.indexOf(newBuildings[i]) === -1)
+                            return true;
+                    }
+                }
+                return false;
+            },
+            render: function () {
+                if (!this.props.buildings)
+                    return null;
+                var buildings = [];
+                for (var i = 0; i < this.props.buildings.length; i++) {
+                    buildings.push(UIComponents.DefenceBuilding({
+                        key: this.props.buildings[i].id,
+                        building: this.props.buildings[i]
+                    }));
+                }
+                if (this.props.reverse) {
+                    buildings.reverse();
+                }
+                return (React.DOM.div({
+                    className: "defence-building-list"
+                }, buildings));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../galaxymap/defencebuildinglist.ts"/>
+/// <reference path="../playerflag.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.BattleInfo = React.createClass({
+            displayName: "BattleInfo",
+            render: function () {
+                var battlePrep = this.props.battlePrep;
+                var star = battlePrep.battleData.location;
+                var isAttacker = battlePrep.humanPlayer === battlePrep.attacker;
+                return (React.DOM.div({
+                    className: "battle-info"
+                }, React.DOM.div({
+                    className: "battle-info-opponent"
+                }, UIComponents.PlayerFlag({
+                    flag: battlePrep.enemyPlayer.flag,
+                    props: {
+                        className: "battle-info-opponent-icon",
+                    }
+                }), React.DOM.div({
+                    className: "battle-info-opponent-name"
+                }, battlePrep.enemyPlayer.name)), React.DOM.div({
+                    className: "battle-info-summary"
+                }, star.name + ": " + (isAttacker ? "Attacking" : "Defending")), UIComponents.DefenceBuildingList({
+                    buildings: star.buildings["defence"],
+                    reverse: isAttacker
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -19259,7 +20275,7 @@ var Rance;
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
-// /// <reference path="battle/battle.ts"/>
+/// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
 /// <reference path="unitlist/itemequip.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
@@ -19280,19 +20296,16 @@ var Rance;
             render: function () {
                 var elementsToRender = [];
                 switch (this.props.sceneToRender) {
-                    // case "battle":
-                    // {
-                    //   elementsToRender.push(
-                    //     UIComponents.Battle(
-                    //     {
-                    //       battle: this.props.battle,
-                    //       humanPlayer: this.props.player,
-                    //       renderer: this.props.renderer,
-                    //       key: "battle"
-                    //     })
-                    //   );
-                    //   break;
-                    // }
+                    case "battle":
+                        {
+                            elementsToRender.push(UIComponents.Battle({
+                                battle: this.props.battle,
+                                humanPlayer: this.props.player,
+                                renderer: this.props.renderer,
+                                key: "battle"
+                            }));
+                            break;
+                        }
                     case "battlePrep":
                         {
                             elementsToRender.push(UIComponents.BattlePrep({

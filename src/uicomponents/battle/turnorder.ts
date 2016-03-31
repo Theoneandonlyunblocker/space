@@ -60,7 +60,8 @@ module Rance
 
           turnOrder.push(fake);
 
-          turnOrder.sort(turnOrderSortFunction);
+          // TODO
+          // turnOrder.sort(turnOrderSortFunction);
         }
 
         var maxUnitsWithFake = maxUnits;
