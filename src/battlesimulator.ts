@@ -45,7 +45,7 @@ module Rance
 
     simulateAbility(ability: Templates.IAbilityTemplate, target: Unit)
     {
-      useAbility(this.battle, this.battle.activeUnit, ability, target);
+      useAbility(this.battle, ability, this.battle.activeUnit, target, false);
     }
 
     getBattleEndData()

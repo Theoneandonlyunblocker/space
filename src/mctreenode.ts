@@ -93,8 +93,8 @@ module Rance
       child.depth = this.depth + 1;
       this.children.push(child);
 
-      useAbility(battle, battle.activeUnit, move.ability,
-        battle.unitsById[move.targetId]);
+      useAbility(battle, move.ability, battle.activeUnit,
+        battle.unitsById[move.targetId], false);
 
       child.currentScore = battle.getEvaluation();
 
@@ -188,7 +188,7 @@ module Rance
       var ability = app.moduleData.Templates.Abilities[targetData.abilityType];
       var target = battle.unitsById[targetData.targetId];
 
-      useAbility(battle, battle.activeUnit, ability, target);
+      useAbility(battle, ability, battle.activeUnit, target, false);
       battle.endTurn();
     }
     simulateToEnd(): void

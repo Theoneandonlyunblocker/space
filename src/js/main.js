@@ -2824,8 +2824,6 @@ var Rance;
             this.averageScore = 0;
             this.uctIsDirty = true;
             this.battle = battle;
-            // TODO | reuse
-            this.battleAbilityUser = new Rance.BattleAbilityUser(battle);
             this.sideId = battle.activeUnit.battleStats.side;
             this.move = move;
             this.isBetweenAI = battle.side1Player.isAI && battle.side2Player.isAI;
@@ -2835,7 +2833,7 @@ var Rance;
             if (!this.battle.activeUnit) {
                 return [];
             }
-            var targets = this.battleAbilityUser.getTargetsForAllAbilities(this.battle.activeUnit);
+            var targets = Rance.getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
             var actions = [];
             for (var id in targets) {
                 var targetActions = targets[id];
@@ -2865,7 +2863,7 @@ var Rance;
             child.parent = this;
             child.depth = this.depth + 1;
             this.children.push(child);
-            this.battleAbilityUser.useAbility(move.ability, battle.activeUnit, battle.unitsById[move.targetId], false);
+            Rance.useAbility(battle, move.ability, battle.activeUnit, battle.unitsById[move.targetId], false);
             child.currentScore = battle.getEvaluation();
             battle.endTurn();
             return child;
@@ -2927,11 +2925,11 @@ var Rance;
             });
         };
         MCTreeNode.prototype.simulateOnce = function (battle) {
-            var actions = this.battleAbilityUser.getTargetsForAllAbilities(battle.activeUnit);
+            var actions = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
             var targetData = this.pickRandomAbilityAndTarget(actions);
             var ability = app.moduleData.Templates.Abilities[targetData.abilityType];
             var target = battle.unitsById[targetData.targetId];
-            this.battleAbilityUser.useAbility(ability, battle.activeUnit, target, false);
+            Rance.useAbility(battle, ability, battle.activeUnit, target, false);
             battle.endTurn();
         };
         MCTreeNode.prototype.simulateToEnd = function () {
@@ -3112,1101 +3110,8 @@ var Rance;
     }());
     Rance.MCTree = MCTree;
 })(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
-/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
-/// <reference path="unit.ts" />
-var Rance;
-(function (Rance) {
-    (function (BattleSceneUnitState) {
-        BattleSceneUnitState[BattleSceneUnitState["entering"] = 0] = "entering";
-        BattleSceneUnitState[BattleSceneUnitState["stationary"] = 1] = "stationary";
-        BattleSceneUnitState[BattleSceneUnitState["exiting"] = 2] = "exiting";
-        BattleSceneUnitState[BattleSceneUnitState["removed"] = 3] = "removed";
-    })(Rance.BattleSceneUnitState || (Rance.BattleSceneUnitState = {}));
-    var BattleSceneUnitState = Rance.BattleSceneUnitState;
-    var BattleSceneUnit = (function () {
-        function BattleSceneUnit(container, renderer) {
-            this.unitState = BattleSceneUnitState.removed;
-            this.hasSFXSprite = false;
-            this.container = container;
-            this.renderer = renderer;
-            this.initLayers();
-        }
-        BattleSceneUnit.prototype.destroy = function () {
-        };
-        BattleSceneUnit.prototype.initLayers = function () {
-            this.spriteContainer = new PIXI.Container;
-            this.container.addChild(this.spriteContainer);
-        };
-        BattleSceneUnit.prototype.changeActiveUnit = function (unit, afterChangedCallback) {
-            if (this.hasSFXSprite) {
-                if (unit) {
-                    this.enterUnitSpriteWithoutAnimation(unit);
-                }
-                else {
-                    this.exitUnitSpriteWithoutAnimation();
-                }
-                this.hasSFXSprite = false;
-            }
-            else if (!unit && this.activeUnit) {
-                this.onFinishExit = afterChangedCallback;
-                this.exitUnitSprite();
-            }
-            else if (unit && unit !== this.activeUnit) {
-                this.onFinishEnter = afterChangedCallback;
-                this.enterUnitSprite(unit);
-            }
-            else if (afterChangedCallback) {
-                afterChangedCallback();
-            }
-        };
-        BattleSceneUnit.prototype.setSFX = function (SFXTemplate, user, target) {
-            if (this.activeUnit) {
-                var duration = SFXTemplate.duration * Rance.Options.battleAnimationTiming.effectDuration;
-                if (this.activeUnit === user && SFXTemplate.userSprite) {
-                    this.setSFXSprite(SFXTemplate.userSprite, duration);
-                }
-                else if (this.activeUnit === target && SFXTemplate.enemySprite) {
-                    this.setSFXSprite(SFXTemplate.enemySprite, duration);
-                }
-                else {
-                }
-            }
-            else {
-            }
-        };
-        BattleSceneUnit.prototype.resize = function () {
-            if (this.spriteContainer.children.length > 0) {
-                this.setContainerPosition();
-            }
-        };
-        // enter without animation
-        BattleSceneUnit.prototype.enterUnitSpriteWithoutAnimation = function (unit) {
-            this.setUnit(unit);
-            this.setUnitSprite(unit);
-            this.finishUnitSpriteEnter();
-        };
-        // exit without animation
-        BattleSceneUnit.prototype.exitUnitSpriteWithoutAnimation = function () {
-            this.finishUnitSpriteExit();
-        };
-        // enter with animation
-        BattleSceneUnit.prototype.enterUnitSprite = function (unit) {
-            if (this.unitState === BattleSceneUnitState.stationary) {
-                // trigger exit
-                // on exit finish:
-                //    trigger enter
-                this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
-                this.exitUnitSprite();
-            }
-            else if (this.unitState === BattleSceneUnitState.exiting) {
-                // on exit finish:
-                //    trigger enter
-                this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
-            }
-            else {
-                // clear
-                // trigger enter
-                this.clearUnit();
-                this.clearUnitSprite();
-                this.startUnitSpriteEnter(unit);
-            }
-            // this.clearUnit();
-            // this.clearUnitSprite();
-            // this.startUnitSpriteEnter(unit);
-        };
-        // exit with animation
-        BattleSceneUnit.prototype.exitUnitSprite = function () {
-            if (this.unitState === BattleSceneUnitState.entering) {
-                this.finishUnitSpriteExit();
-            }
-            else if (this.unitState === BattleSceneUnitState.stationary) {
-                this.startUnitSpriteExit();
-            }
-            else if (this.unitState === BattleSceneUnitState.exiting) {
-                this.onFinishExit = null;
-            }
-            else {
-                console.warn("called exitUnitSprite with unintended animation state " +
-                    BattleSceneUnitState[this.unitState]);
-            }
-        };
-        BattleSceneUnit.prototype.startUnitSpriteEnter = function (unit) {
-            var enterAnimationDuration = Rance.Options.battleAnimationTiming.unitEnter;
-            if (enterAnimationDuration <= 0) {
-                this.enterUnitSpriteWithoutAnimation(unit);
-                return;
-            }
-            this.setUnit(unit);
-            this.setUnitSprite(unit);
-            this.unitState = BattleSceneUnitState.entering;
-            this.tween = this.makeEnterExitTween("enter", enterAnimationDuration, this.finishUnitSpriteEnter.bind(this));
-            this.tween.start();
-        };
-        BattleSceneUnit.prototype.finishUnitSpriteEnter = function () {
-            this.unitState = BattleSceneUnitState.stationary;
-            this.clearTween();
-            if (this.onFinishEnter) {
-                this.onFinishEnter();
-                this.onFinishEnter = null;
-            }
-        };
-        BattleSceneUnit.prototype.startUnitSpriteExit = function () {
-            var exitAnimationDuration = Rance.Options.battleAnimationTiming.unitExit;
-            if (exitAnimationDuration <= 0) {
-                this.exitUnitSpriteWithoutAnimation();
-                return;
-            }
-            this.unitState = BattleSceneUnitState.exiting;
-            this.tween = this.makeEnterExitTween("exit", exitAnimationDuration, this.finishUnitSpriteExit.bind(this));
-            this.tween.start();
-        };
-        BattleSceneUnit.prototype.finishUnitSpriteExit = function () {
-            this.clearUnit();
-            this.clearUnitSprite();
-            if (this.onFinishExit) {
-                this.onFinishExit();
-                this.onFinishExit = null;
-            }
-        };
-        BattleSceneUnit.prototype.getSFXParams = function (props) {
-            var bounds = this.getSceneBounds();
-            return ({
-                user: props.unit,
-                width: bounds.width,
-                height: bounds.height,
-                duration: props.duration,
-                facingRight: props.unit.battleStats.side === "side1",
-                renderer: this.renderer,
-                triggerStart: props.triggerStart,
-                triggerEnd: props.triggerEnd
-            });
-        };
-        BattleSceneUnit.prototype.setContainerPosition = function (positionOffScreen) {
-            if (positionOffScreen === void 0) { positionOffScreen = false; }
-            // TODO battle scene | This & unit drawing FN rely on overly fiddly positioning.
-            // This function might not work properly with other drawing functions.
-            var sceneBounds = this.getSceneBounds();
-            var shouldReverse = this.activeUnit.battleStats.side === "side1";
-            var container = this.spriteContainer;
-            var containerBounds = container.getLocalBounds();
-            var xPadding = 30;
-            var yPadding = 40;
-            container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
-            if (shouldReverse) {
-                container.scale.x = -1;
-                container.x = Math.round(containerBounds.width + containerBounds.x + xPadding);
-            }
-            else {
-                container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x - xPadding);
-            }
-        };
-        BattleSceneUnit.prototype.setUnit = function (unit) {
-            this.clearUnit();
-            this.activeUnit = unit;
-        };
-        BattleSceneUnit.prototype.clearUnit = function () {
-            this.unitState = BattleSceneUnitState.removed;
-            this.activeUnit = null;
-            this.clearTween();
-        };
-        BattleSceneUnit.prototype.makeUnitSprite = function (unit, SFXParams) {
-            return unit.drawBattleScene(SFXParams);
-        };
-        BattleSceneUnit.prototype.addUnitSprite = function (sprite) {
-            this.spriteContainer.addChild(sprite);
-            this.setContainerPosition();
-        };
-        BattleSceneUnit.prototype.clearUnitSprite = function () {
-            this.spriteContainer.removeChildren();
-        };
-        BattleSceneUnit.prototype.setUnitSprite = function (unit) {
-            this.clearUnitSprite();
-            var SFXParams = this.getSFXParams({
-                unit: unit,
-                triggerStart: this.addUnitSprite.bind(this)
-            });
-            this.makeUnitSprite(unit, SFXParams);
-        };
-        BattleSceneUnit.prototype.clearTween = function () {
-            if (this.tween) {
-                this.tween.stop();
-                TWEEN.remove(this.tween);
-                this.tween = null;
-            }
-        };
-        BattleSceneUnit.prototype.makeEnterExitTween = function (direction, duration, onComplete) {
-            var side = this.activeUnit.battleStats.side;
-            var container = this.spriteContainer;
-            var bounds = container.getBounds();
-            var distanceToMove = bounds.width * 1.25;
-            if (side === "side2") {
-                distanceToMove *= -1;
-            }
-            var offscreenLocation = container.x - distanceToMove;
-            var stationaryLocation = container.x;
-            var startX = direction === "enter" ? offscreenLocation : stationaryLocation;
-            var finishX = direction === "enter" ? stationaryLocation : offscreenLocation;
-            container.x = startX;
-            var tween = new TWEEN.Tween({
-                x: startX
-            }).to({
-                x: finishX
-            }, duration).onStart(function () {
-                container.x = startX;
-            }).onUpdate(function () {
-                container.x = this.x;
-            }).onComplete(onComplete);
-            tween.start();
-            return tween;
-        };
-        BattleSceneUnit.prototype.setSFXSprite = function (spriteDrawingFN, duration) {
-            this.clearUnitSprite();
-            var SFXParams = this.getSFXParams({
-                unit: this.activeUnit,
-                duration: duration,
-                triggerStart: this.addUnitSprite.bind(this)
-            });
-            this.hasSFXSprite = true;
-            spriteDrawingFN(SFXParams);
-        };
-        return BattleSceneUnit;
-    }());
-    Rance.BattleSceneUnit = BattleSceneUnit;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
-/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
-/// <reference path="unit.ts" />
-var Rance;
-(function (Rance) {
-    var BattleSceneUnitOverlay = (function () {
-        function BattleSceneUnitOverlay(container, renderer) {
-            this.animationIsActive = false;
-            this.container = container;
-            this.renderer = renderer;
-            this.initLayers();
-        }
-        BattleSceneUnitOverlay.prototype.destroy = function () {
-        };
-        BattleSceneUnitOverlay.prototype.initLayers = function () {
-            this.overlayContainer = new PIXI.Container;
-            this.container.addChild(this.overlayContainer);
-        };
-        BattleSceneUnitOverlay.prototype.setSFX = function (SFXTemplate, user, target) {
-            if (this.activeUnit) {
-                var duration = SFXTemplate.duration * Rance.Options.battleAnimationTiming.effectDuration;
-                if (this.activeUnit === user && SFXTemplate.userOverlay) {
-                    this.setOverlay(SFXTemplate.userOverlay, user, duration);
-                }
-                else if (this.activeUnit === target && SFXTemplate.enemyOverlay) {
-                    this.setOverlay(SFXTemplate.enemyOverlay, target, duration);
-                }
-                else {
-                }
-            }
-            else {
-            }
-        };
-        BattleSceneUnitOverlay.prototype.setOverlay = function (overlayFN, unit, duration) {
-            this.clearOverlay();
-            if (duration <= 0) {
-                return;
-            }
-            if (this.animationIsActive) {
-                console.warn("Triggered new unit overlay animation without clearing previous one");
-            }
-            this.activeUnit = unit;
-            var SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
-            overlayFN(SFXParams);
-        };
-        BattleSceneUnitOverlay.prototype.clearOverlay = function () {
-            this.animationIsActive = false;
-            this.onAnimationFinish = null;
-            this.activeUnit = null;
-            this.overlayContainer.removeChildren();
-        };
-        BattleSceneUnitOverlay.prototype.getSFXParams = function (duration, triggerStart, triggerEnd) {
-            var bounds = this.getSceneBounds();
-            return ({
-                user: this.activeUnit,
-                width: bounds.width,
-                height: bounds.height,
-                duration: duration,
-                facingRight: this.activeUnit.battleStats.side === "side1",
-                renderer: this.renderer,
-                triggerStart: triggerStart,
-                triggerEnd: triggerEnd
-            });
-        };
-        BattleSceneUnitOverlay.prototype.setContainerPosition = function () {
-            var sceneBounds = this.getSceneBounds();
-            var shouldLockToRight = this.activeUnit.battleStats.side === "side2";
-            var containerBounds = this.overlayContainer.getLocalBounds();
-            this.overlayContainer.y = sceneBounds.height - containerBounds.height;
-            if (shouldLockToRight) {
-                this.overlayContainer.x = sceneBounds.width - containerBounds.width;
-            }
-        };
-        BattleSceneUnitOverlay.prototype.addOverlay = function (overlay) {
-            this.animationIsActive = true;
-            this.overlayContainer.addChild(overlay);
-            this.setContainerPosition();
-        };
-        BattleSceneUnitOverlay.prototype.finishAnimation = function () {
-            if (this.onAnimationFinish) {
-                this.onAnimationFinish();
-            }
-            this.clearOverlay();
-        };
-        return BattleSceneUnitOverlay;
-    }());
-    Rance.BattleSceneUnitOverlay = BattleSceneUnitOverlay;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
-/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
-/// <reference path="unit.ts" />
-/// <reference path="battlesceneunit.ts" />
-/// <reference path="battlesceneunitoverlay.ts" />
-var Rance;
-(function (Rance) {
-    // TODO performance
-    // BattleScene.render() shouldn't be called unless there's something new to render
-    // 
-    var BattleScene = (function () {
-        function BattleScene(pixiContainer) {
-            this.side1UnitHasFinishedUpdating = false;
-            this.side2UnitHasFinishedUpdating = false;
-            this.isPaused = false;
-            this.forceFrame = false;
-            this.pixiContainer = pixiContainer;
-            this.container = new PIXI.Container();
-            var pixiContainerStyle = window.getComputedStyle(this.pixiContainer);
-            this.renderer = PIXI.autoDetectRenderer(parseInt(pixiContainerStyle.width), parseInt(pixiContainerStyle.height), {
-                autoResize: false,
-                antialias: true,
-                transparent: true
-            });
-            this.pixiContainer.appendChild(this.renderer.view);
-            this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
-            this.initLayers();
-            this.resizeListener = this.handleResize.bind(this);
-            window.addEventListener("resize", this.resizeListener, false);
-        }
-        BattleScene.prototype.destroy = function () {
-            this.container.renderable = false;
-            this.pause();
-            if (this.renderer) {
-                this.renderer.destroy(true);
-                this.renderer = null;
-            }
-            this.container.destroy(true);
-            this.container = null;
-            this.pixiContainer = null;
-            window.removeEventListener("resize", this.resizeListener);
-        };
-        BattleScene.prototype.initLayers = function () {
-            this.layers =
-                {
-                    battleOverlay: new PIXI.Container,
-                    side1Container: new PIXI.Container,
-                    side2Container: new PIXI.Container
-                };
-            this.side1Unit = new Rance.BattleSceneUnit(this.layers.side1Container, this.renderer);
-            this.side2Unit = new Rance.BattleSceneUnit(this.layers.side2Container, this.renderer);
-            this.side1Unit.getSceneBounds = this.side2Unit.getSceneBounds = this.getSceneBounds;
-            this.side1Overlay = new Rance.BattleSceneUnitOverlay(this.layers.side1Container, this.renderer);
-            this.side2Overlay = new Rance.BattleSceneUnitOverlay(this.layers.side2Container, this.renderer);
-            this.side1Overlay.getSceneBounds = this.side2Overlay.getSceneBounds = this.getSceneBounds;
-            this.container.addChild(this.layers.side1Container);
-            this.container.addChild(this.layers.side2Container);
-            this.container.addChild(this.layers.battleOverlay);
-        };
-        BattleScene.prototype.handleResize = function () {
-            var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
-            var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
-            this.renderer.resize(w, h);
-            this.side1Unit.resize();
-            this.side2Unit.resize();
-        };
-        BattleScene.prototype.getSceneBounds = function () {
-            return ({
-                width: this.renderer.width,
-                height: this.renderer.height
-            });
-        };
-        BattleScene.prototype.getSFXParams = function (props) {
-            var bounds = this.getSceneBounds();
-            var duration = this.activeSFX.duration * Rance.Options.battleAnimationTiming.effectDuration;
-            return ({
-                user: this.userUnit,
-                target: this.targetUnit,
-                width: bounds.width,
-                height: bounds.height,
-                duration: duration,
-                facingRight: this.userUnit.battleStats.side === "side1",
-                renderer: this.renderer,
-                triggerStart: props.triggerStart,
-                triggerEffect: this.executeTriggerEffectCallback.bind(this),
-                triggerEnd: props.triggerEnd
-            });
-        };
-        BattleScene.prototype.getHighestPriorityUnitForSide = function (side) {
-            var units = [
-                this.targetUnit,
-                this.userUnit,
-                this.activeUnit,
-                this.hoveredUnit
-            ];
-            for (var i = 0; i < units.length; i++) {
-                var unit = units[i];
-                if (unit && unit.battleStats.side === side) {
-                    return unit;
-                }
-            }
-            return null;
-        };
-        BattleScene.prototype.haveBothUnitsFinishedUpdating = function () {
-            return this.side1UnitHasFinishedUpdating && this.side2UnitHasFinishedUpdating;
-        };
-        BattleScene.prototype.executeIfBothUnitsHaveFinishedUpdating = function () {
-            if (this.afterUnitsHaveFinishedUpdatingCallback && this.haveBothUnitsFinishedUpdating()) {
-                var temp = this.afterUnitsHaveFinishedUpdatingCallback;
-                this.afterUnitsHaveFinishedUpdatingCallback = null;
-                temp();
-            }
-            else {
-                return;
-            }
-        };
-        BattleScene.prototype.finishUpdatingUnit = function (side) {
-            if (side === "side1") {
-                this.side1UnitHasFinishedUpdating = true;
-            }
-            else {
-                this.side2UnitHasFinishedUpdating = true;
-            }
-            this.executeIfBothUnitsHaveFinishedUpdating();
-        };
-        BattleScene.prototype.handleAbilityUse = function (props) {
-            this.clearActiveSFX();
-            this.userUnit = props.user;
-            this.targetUnit = props.target;
-            this.activeSFX = props.SFXTemplate;
-            this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
-            this.activeSFXHasFinishedCallback = this.cleanUpAfterSFX.bind(this);
-            this.triggerEffectCallback = props.triggerEffectCallback;
-            this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
-            this.prepareSFX();
-            // this.prepareSFX();
-            // this.playSFX();
-            // props.triggerEffectCallback();
-            // this.cleanUpAfterSFX();
-            // props.afterFinishedCallback();
-        };
-        BattleScene.prototype.executeBeforeUseDelayHasFinishedCallback = function () {
-            if (!this.beforeUseDelayHasFinishedCallback) {
-                throw new Error("No callback set for 'before ability use delay' finish.");
-            }
-            var temp = this.beforeUseDelayHasFinishedCallback;
-            this.beforeUseDelayHasFinishedCallback = null;
-            temp();
-        };
-        BattleScene.prototype.executeTriggerEffectCallback = function () {
-            if (!this.triggerEffectCallback) {
-                return;
-            }
-            var temp = this.triggerEffectCallback;
-            this.triggerEffectCallback = null;
-            temp();
-        };
-        BattleScene.prototype.executeActiveSFXHasFinishedCallback = function () {
-            if (!this.activeSFXHasFinishedCallback) {
-                throw new Error("No callback set for active SFX finish.");
-            }
-            var temp = this.activeSFXHasFinishedCallback;
-            this.activeSFXHasFinishedCallback = null;
-            temp();
-        };
-        BattleScene.prototype.executeAfterUseDelayHasFinishedCallback = function () {
-            if (!this.afterUseDelayHasFinishedCallback) {
-                throw new Error("No callback set for 'after ability use delay' finish.");
-            }
-            var temp = this.afterUseDelayHasFinishedCallback;
-            this.afterUseDelayHasFinishedCallback = null;
-            temp();
-        };
-        BattleScene.prototype.executeAbilityUseHasFinishedCallback = function () {
-            if (!this.abilityUseHasFinishedCallback) {
-                throw new Error("No callback set for ability use finish.");
-            }
-            var temp = this.abilityUseHasFinishedCallback;
-            this.abilityUseHasFinishedCallback = null;
-            temp();
-        };
-        BattleScene.prototype.prepareSFX = function () {
-            var beforeUseDelay = Rance.Options.battleAnimationTiming.before;
-            var afterUnitsHaveFinishedUpdatingCallback = function () {
-                if (beforeUseDelay >= 0) {
-                    window.setTimeout(this.executeBeforeUseDelayHasFinishedCallback.bind(this), beforeUseDelay);
-                }
-                else {
-                    this.executeBeforeUseDelayHasFinishedCallback();
-                }
-            }.bind(this);
-            this.updateUnits(afterUnitsHaveFinishedUpdatingCallback);
-        };
-        BattleScene.prototype.playSFX = function () {
-            var SFXDuration = Rance.Options.battleAnimationTiming.effectDuration *
-                this.activeSFX.duration;
-            if (SFXDuration <= 0) {
-                this.executeTriggerEffectCallback();
-                this.handleActiveSFXEnd();
-            }
-            else {
-                this.triggerSFXStart(this.activeSFX, this.userUnit, this.targetUnit, this.handleActiveSFXEnd.bind(this));
-            }
-        };
-        BattleScene.prototype.handleActiveSFXEnd = function () {
-            this.activeSFX = null;
-            this.clearBattleOverlay();
-            this.clearUnitOverlays();
-            this.executeActiveSFXHasFinishedCallback();
-        };
-        BattleScene.prototype.cleanUpAfterSFX = function () {
-            var afterUseDelay = Rance.Options.battleAnimationTiming.after;
-            this.afterUseDelayHasFinishedCallback = function () {
-                this.userUnit = null;
-                this.targetUnit = null;
-                this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
-            }.bind(this);
-            if (afterUseDelay >= 0) {
-                window.setTimeout(this.executeAfterUseDelayHasFinishedCallback.bind(this), afterUseDelay);
-            }
-            else {
-                this.executeAfterUseDelayHasFinishedCallback();
-            }
-        };
-        BattleScene.prototype.updateUnits = function (afterFinishedUpdatingCallback) {
-            var boundAfterFinishFN1 = null;
-            var boundAfterFinishFN2 = null;
-            if (afterFinishedUpdatingCallback) {
-                this.afterUnitsHaveFinishedUpdatingCallback = afterFinishedUpdatingCallback;
-                boundAfterFinishFN1 = this.finishUpdatingUnit.bind(this, "side1");
-                boundAfterFinishFN2 = this.finishUpdatingUnit.bind(this, "side2");
-                this.side1UnitHasFinishedUpdating = false;
-                this.side2UnitHasFinishedUpdating = false;
-            }
-            var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
-            var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
-            this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
-            this.side1Overlay.activeUnit = activeSide1Unit;
-            this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
-            this.side2Overlay.activeUnit = activeSide2Unit;
-        };
-        BattleScene.prototype.clearActiveSFX = function () {
-            this.activeSFX = null;
-            this.userUnit = null;
-            this.targetUnit = null;
-            this.clearBattleOverlay();
-            this.clearUnitOverlays();
-        };
-        BattleScene.prototype.triggerSFXStart = function (SFXTemplate, user, target, afterFinishedCallback) {
-            this.activeSFX = SFXTemplate;
-            this.side1Unit.setSFX(SFXTemplate, user, target);
-            this.side2Unit.setSFX(SFXTemplate, user, target);
-            this.side1Overlay.setSFX(SFXTemplate, user, target);
-            this.side2Overlay.setSFX(SFXTemplate, user, target);
-            this.makeBattleOverlay(afterFinishedCallback);
-        };
-        BattleScene.prototype.makeBattleOverlay = function (afterFinishedCallback) {
-            if (afterFinishedCallback === void 0) { afterFinishedCallback = this.clearActiveSFX.bind(this); }
-            if (!this.activeSFX.battleOverlay) {
-                afterFinishedCallback();
-            }
-            else {
-                var SFXParams = this.getSFXParams({
-                    triggerStart: this.addBattleOverlay.bind(this),
-                    triggerEnd: afterFinishedCallback
-                });
-                this.activeSFX.battleOverlay(SFXParams);
-            }
-        };
-        BattleScene.prototype.addBattleOverlay = function (overlay) {
-            this.layers.battleOverlay.addChild(overlay);
-        };
-        BattleScene.prototype.clearBattleOverlay = function () {
-            this.layers.battleOverlay.removeChildren();
-        };
-        BattleScene.prototype.clearUnitOverlays = function () {
-            this.side1Overlay.clearOverlay();
-            this.side2Overlay.clearOverlay();
-        };
-        BattleScene.prototype.getBattleSceneUnit = function (unit) {
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        return this.side1Unit;
-                    }
-                case "side2":
-                    {
-                        return this.side2Unit;
-                    }
-            }
-        };
-        BattleScene.prototype.getBattleSceneUnitOverlay = function (unit) {
-            switch (unit.battleStats.side) {
-                case "side1":
-                    {
-                        return this.side1Overlay;
-                    }
-                case "side2":
-                    {
-                        return this.side2Overlay;
-                    }
-            }
-        };
-        // RENDERING
-        BattleScene.prototype.renderOnce = function () {
-            this.forceFrame = true;
-            this.render();
-        };
-        BattleScene.prototype.pause = function () {
-            this.isPaused = true;
-            this.forceFrame = false;
-        };
-        BattleScene.prototype.resume = function () {
-            this.isPaused = false;
-            this.forceFrame = false;
-            this.render();
-        };
-        BattleScene.prototype.render = function (timeStamp) {
-            if (this.isPaused) {
-                if (this.forceFrame) {
-                    this.forceFrame = false;
-                }
-                else {
-                    return;
-                }
-            }
-            this.renderer.render(this.container);
-            TWEEN.update();
-            window.requestAnimationFrame(this.render.bind(this));
-        };
-        return BattleScene;
-    }());
-    Rance.BattleScene = BattleScene;
-})(Rance || (Rance = {}));
-/// <reference path="utility.ts"/>
-/// <reference path="unit.ts"/>
-var Rance;
-(function (Rance) {
-    (function (TargetFormation) {
-        TargetFormation[TargetFormation["ally"] = 0] = "ally";
-        TargetFormation[TargetFormation["enemy"] = 1] = "enemy";
-        TargetFormation[TargetFormation["either"] = 2] = "either";
-    })(Rance.TargetFormation || (Rance.TargetFormation = {}));
-    var TargetFormation = Rance.TargetFormation;
-    Rance.targetSelf = function (units, user) {
-        return [user];
-    };
-    Rance.targetNextRow = function (units, user) {
-        var ownPosition = user.battleStats.position;
-        var increment = user.battleStats.side === "side1" ? 1 : -1;
-        return units[ownPosition[0] + increment];
-    };
-    Rance.targetAll = function (units, user) {
-        return Rance.flatten2dArray(units);
-    };
-    //**
-    //**
-    //X*
-    //**
-    Rance.areaSingle = function (units, target) {
-        return Rance.getFrom2dArray(units, [target]);
-    };
-    //XX
-    //XX
-    //XX
-    //XX
-    Rance.areaAll = function (units, target) {
-        return Rance.flatten2dArray(units);
-    };
-    //**
-    //**
-    //XX
-    //**
-    Rance.areaColumn = function (units, target) {
-        var y = target[1];
-        var targetLocations = [];
-        for (var i = 0; i < units.length; i++) {
-            targetLocations.push([i, y]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    //X*
-    //X*
-    //X*
-    //X*
-    Rance.areaRow = function (units, target) {
-        var x = target[0];
-        var targetLocations = [];
-        for (var i = 0; i < units[x].length; i++) {
-            targetLocations.push([x, i]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    //**
-    //X*
-    //X*
-    //X*
-    Rance.areaRowNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    //**
-    //X*
-    //XX
-    //X*
-    Rance.areaNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x - 1, y]);
-        targetLocations.push([x + 1, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-})(Rance || (Rance = {}));
-/// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
-/// <reference path="templateinterfaces/iabilityeffecttemplate.d.ts" />
-/// <reference path="battle.ts"/>
-/// <reference path="battlescene.ts" />
-/// <reference path="targeting.ts"/>
-/// <reference path="unit.ts" />
-var Rance;
-(function (Rance) {
-    // IAbilityUseData ->
-    // IAbilityUseData with actualTarget ->
-    // IAbilityEffectData[] ->
-    //   execute IAbilityEffectData[] ->
-    // IAbilityUseEffect[]
-    /**
-     * Processes IAbilityUseData and returns IAbilityEffectDataByPhase
-     */
-    var BattleAbilityProcessor = (function () {
-        function BattleAbilityProcessor(battle) {
-            this.battle = battle;
-            this.nullFormation = this.createNullFormation();
-        }
-        BattleAbilityProcessor.prototype.createNullFormation = function () {
-            var nullFormation = [];
-            var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
-            var columns = app.moduleData.ruleSet.battle.cellsPerRow;
-            for (var i = 0; i < rows; i++) {
-                nullFormation.push([]);
-                for (var j = 0; j < columns; j++) {
-                    nullFormation[i].push(null);
-                }
-            }
-            return nullFormation;
-        };
-        BattleAbilityProcessor.prototype.destroy = function () {
-            this.battle = null;
-        };
-        BattleAbilityProcessor.prototype.getAbilityEffectDataByPhase = function (abilityUseData) {
-            abilityUseData.actualTarget = this.getTargetOrGuard(abilityUseData);
-            var beforeUse = this.getAbilityEffectDataFromEffectTemplates(abilityUseData, this.getBeforeAbilityUseEffectTemplates(abilityUseData));
-            var abilityEffects = this.getAbilityEffectDataFromEffectTemplates(abilityUseData, this.getAbilityUseEffectTemplates(abilityUseData));
-            var afterUse = this.getAbilityEffectDataFromEffectTemplates(abilityUseData, this.getAfterAbilityUseEffectTemplates(abilityUseData));
-            return ({
-                beforeUse: beforeUse,
-                abilityEffects: abilityEffects,
-                afterUse: afterUse
-            });
-        };
-        // TODO | move
-        BattleAbilityProcessor.prototype.getTargetsForAllAbilities = function (user) {
-            var battle = this.battle;
-            // TODO | does this ever matter?
-            if (!user || !battle.activeUnit) {
-                return null;
-            }
-            var allTargets = {};
-            var abilities = user.getAllAbilities();
-            for (var i = 0; i < abilities.length; i++) {
-                var ability = abilities[i];
-                var targets = this.getPotentialTargets(user, ability);
-                for (var j = 0; j < targets.length; j++) {
-                    var target = targets[j];
-                    if (!allTargets[target.id]) {
-                        allTargets[target.id] = [];
-                    }
-                    allTargets[target.id].push(ability);
-                }
-            }
-            return allTargets;
-        };
-        BattleAbilityProcessor.untargetableFilterFN = function (target) {
-            if (!Boolean(target)) {
-                return false;
-            }
-            else if (!target.isTargetable()) {
-                return false;
-            }
-            return true;
-        };
-        BattleAbilityProcessor.prototype.getPotentialTargets = function (user, ability) {
-            var targetFormations = this.getFormationsToTarget(user, ability.mainEffect.action);
-            var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
-            var targets = targetsInRange.filter(BattleAbilityProcessor.untargetableFilterFN);
-            return targets;
-        };
-        // END TODO
-        BattleAbilityProcessor.prototype.getTargetOrGuard = function (abilityUseData) {
-            if (abilityUseData.ability.bypassesGuard) {
-                return abilityUseData.intendedTarget;
-            }
-            var guarding = this.getGuarders(abilityUseData);
-            guarding = guarding.sort(function (a, b) {
-                return a.battleStats.guardAmount - b.battleStats.guardAmount;
-            });
-            for (var i = 0; i < guarding.length; i++) {
-                var guardRoll = Math.random() * 100;
-                if (guardRoll <= guarding[i].battleStats.guardAmount) {
-                    return guarding[i];
-                }
-            }
-            return abilityUseData.intendedTarget;
-        };
-        BattleAbilityProcessor.prototype.getGuarders = function (abilityUseData) {
-            var userSide = abilityUseData.user.battleStats.side;
-            var targetSide = abilityUseData.intendedTarget.battleStats.side;
-            if (userSide === targetSide)
-                return [];
-            var allEnemies = this.battle.unitsBySide[targetSide];
-            var guarders = allEnemies.filter(function (unit) {
-                if (!unit.isTargetable)
-                    return false;
-                if (unit.battleStats.guardCoverage === Rance.GuardCoverage.all) {
-                    return unit.battleStats.guardAmount > 0;
-                }
-                else if (unit.battleStats.guardCoverage === Rance.GuardCoverage.row) {
-                    // same row
-                    if (unit.battleStats.position[0] === abilityUseData.intendedTarget.battleStats.position[0]) {
-                        return unit.battleStats.guardAmount > 0;
-                    }
-                }
-            });
-            return guarders;
-        };
-        BattleAbilityProcessor.prototype.getFormationsToTarget = function (user, effect) {
-            if (effect.targetFormations === Rance.TargetFormation.either) {
-                return this.battle.side1.concat(this.battle.side2);
-            }
-            else {
-                var userSide = user.battleStats.side;
-                var insertNullBefore = (userSide === "side1") ? true : false;
-                var toConcat;
-            }
-            if (effect.targetFormations === Rance.TargetFormation.ally) {
-                toConcat = this.battle[userSide];
-            }
-            else if (effect.targetFormations === Rance.TargetFormation.enemy) {
-                toConcat = this.battle[Rance.reverseSide(userSide)];
-            }
-            else {
-                throw new Error("Invalid target formation for effect: " + effect.name);
-            }
-            if (insertNullBefore) {
-                return this.nullFormation.concat(toConcat);
-            }
-            else {
-                return toConcat.concat(this.nullFormation);
-            }
-        };
-        BattleAbilityProcessor.activeUnitsFilterFN = function (unit) {
-            return unit && unit.isActiveInBattle();
-        };
-        BattleAbilityProcessor.prototype.getUnitsInEffectArea = function (effect, user, target) {
-            var targetFormations = this.getFormationsToTarget(user, effect);
-            var inArea = effect.battleAreaFunction(targetFormations, target.battleStats.position);
-            return inArea.filter(BattleAbilityProcessor.activeUnitsFilterFN);
-        };
-        BattleAbilityProcessor.prototype.getAbilityEffectDataFromEffectTemplates = function (abilityUseData, effectTemplates) {
-            var effectData = [];
-            for (var i = 0; i < effectTemplates.length; i++) {
-                var templateEffect = effectTemplates[i];
-                var targetsForEffect = this.getUnitsInEffectArea(templateEffect.action, abilityUseData.user, abilityUseData.actualTarget);
-                for (var j = 0; j < targetsForEffect.length; j++) {
-                    effectData.push({
-                        templateEffect: templateEffect,
-                        user: abilityUseData.user,
-                        target: targetsForEffect[j],
-                        trigger: templateEffect.trigger
-                    });
-                }
-            }
-            return effectData;
-        };
-        BattleAbilityProcessor.prototype.getBeforeAbilityUseEffectTemplates = function (abilityUseData) {
-            var beforeUseEffects = [];
-            if (abilityUseData.ability.beforeUse) {
-                beforeUseEffects = beforeUseEffects.concat(abilityUseData.ability.beforeUse);
-            }
-            var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().beforeAbilityUse;
-            if (passiveSkills) {
-                for (var i = 0; i < passiveSkills.length; i++) {
-                    beforeUseEffects = beforeUseEffects.concat(passiveSkills[i].beforeAbilityUse);
-                }
-            }
-            return beforeUseEffects;
-            // TODO remove guard & action points
-        };
-        BattleAbilityProcessor.prototype.getAbilityUseEffectTemplates = function (abilityUseData) {
-            var primaryEffects = [];
-            primaryEffects.push(abilityUseData.ability.mainEffect);
-            if (abilityUseData.ability.secondaryEffects) {
-                primaryEffects = primaryEffects.concat(abilityUseData.ability.secondaryEffects);
-            }
-            var allEffects = [];
-            for (var i = 0; i < primaryEffects.length; i++) {
-                var effect = primaryEffects[i];
-                allEffects.push(effect);
-                if (effect.attachedEffects) {
-                    for (var j = 0; j < effect.attachedEffects.length; j++) {
-                        allEffects.push(effect.attachedEffects[j]);
-                    }
-                }
-            }
-            return allEffects;
-        };
-        BattleAbilityProcessor.prototype.getAfterAbilityUseEffectTemplates = function (abilityUseData) {
-            var afterUseEffects = [];
-            if (abilityUseData.ability.afterUse) {
-                afterUseEffects = afterUseEffects.concat(abilityUseData.ability.afterUse);
-            }
-            var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().afterAbilityUse;
-            if (passiveSkills) {
-                for (var i = 0; i < passiveSkills.length; i++) {
-                    afterUseEffects = afterUseEffects.concat(passiveSkills[i].afterAbilityUse);
-                }
-            }
-            return afterUseEffects;
-            // TODO add move delay & update status effects
-        };
-        return BattleAbilityProcessor;
-    }());
-    Rance.BattleAbilityProcessor = BattleAbilityProcessor;
-})(Rance || (Rance = {}));
-/// <reference path="battleabilityprocessor.ts" />
-var Rance;
-(function (Rance) {
-    /**
-     * takes IAbilityEffectDataByPhase, executes effect actions and produces IAbilityUseEffect[]
-     */
-    var BattleAbilityUser = (function () {
-        function BattleAbilityUser(battle) {
-            this.battle = battle;
-            this.battleAbilityProcessor = new Rance.BattleAbilityProcessor(battle);
-        }
-        BattleAbilityUser.prototype.destroy = function () {
-            this.battle = null;
-            this.battleAbilityProcessor.destroy();
-            this.battleAbilityProcessor = null;
-        };
-        BattleAbilityUser.prototype.useAbility = function (ability, user, target, getEffects) {
-            var effectDataByPhase = this.battleAbilityProcessor.getAbilityEffectDataByPhase({
-                ability: ability,
-                user: user,
-                intendedTarget: target
-            });
-            var useData = this.executeFullAbilityEffects(effectDataByPhase, getEffects);
-            return useData;
-        };
-        BattleAbilityUser.prototype.executeFullAbilityEffects = function (abilityEffectData, getUseEffects) {
-            var beforeUse = this.executeMultipleEffects(abilityEffectData.beforeUse, getUseEffects);
-            var abilityEffects = this.executeMultipleEffects(abilityEffectData.abilityEffects, getUseEffects);
-            var afterUse = this.executeMultipleEffects(abilityEffectData.afterUse, getUseEffects);
-            if (getUseEffects) {
-                return beforeUse.concat(abilityEffects, afterUse);
-            }
-            else {
-                return null;
-            }
-        };
-        BattleAbilityUser.prototype.getTargetsForAllAbilities = function (user) {
-            return this.battleAbilityProcessor.getTargetsForAllAbilities(user);
-        };
-        BattleAbilityUser.prototype.executeMultipleEffects = function (abilityEffectData, getUseEffects) {
-            if (getUseEffects) {
-                var useEffects = [];
-                for (var i = 0; i < abilityEffectData.length; i++) {
-                    var useEffect = this.executeAbilityEffectDataAndGetUseEffect(abilityEffectData[i]);
-                    if (useEffect) {
-                        useEffects.push(useEffect);
-                    }
-                }
-                return useEffects;
-            }
-            else {
-                for (var i = 0; i < abilityEffectData.length; i++) {
-                    this.executeAbilityEffectData(abilityEffectData[i]);
-                }
-            }
-        };
-        BattleAbilityUser.prototype.getUnitDisplayData = function (unit) {
-            return ({
-                health: unit.currentHealth,
-                guardAmount: unit.battleStats.guardAmount,
-                guardType: unit.battleStats.guardCoverage,
-                actionPoints: unit.battleStats.currentActionPoints,
-                isPreparing: Boolean(unit.battleStats.queuedAction),
-                isAnnihilated: unit.battleStats.isAnnihilated
-            });
-        };
-        BattleAbilityUser.prototype.shouldEffectActionTrigger = function (abilityEffectData) {
-            if (!abilityEffectData.trigger) {
-                return true;
-            }
-            return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
-        };
-        BattleAbilityUser.prototype.executeAbilityEffectData = function (abilityEffectData) {
-            if (!this.shouldEffectActionTrigger(abilityEffectData)) {
-                return false;
-            }
-            abilityEffectData.templateEffect.action.executeAction(abilityEffectData.user, abilityEffectData.target, this.battle, abilityEffectData.templateEffect.data);
-            return true;
-        };
-        BattleAbilityUser.prototype.executeAbilityEffectDataAndGetUseEffect = function (abilityEffectData) {
-            var didTriggerAction = this.executeAbilityEffectData(abilityEffectData);
-            if (!didTriggerAction) {
-                return null;
-            }
-            var unitDisplayData = {};
-            unitDisplayData[abilityEffectData.user.id] = this.getUnitDisplayData(abilityEffectData.user);
-            unitDisplayData[abilityEffectData.target.id] = this.getUnitDisplayData(abilityEffectData.target);
-            return ({
-                actionName: abilityEffectData.templateEffect.action.name,
-                unitDisplayDataAfterUsingById: unitDisplayData,
-                sfx: abilityEffectData.templateEffect.sfx,
-                sfxUser: abilityEffectData.user,
-                sfxTarget: abilityEffectData.target
-            });
-        };
-        return BattleAbilityUser;
-    }());
-    Rance.BattleAbilityUser = BattleAbilityUser;
-})(Rance || (Rance = {}));
 /// <reference path="battle.ts"/>
 /// <reference path="mctree.ts"/>
-/// <reference path="battleabilityuser.ts" />
 var Rance;
 (function (Rance) {
     var BattleSimulator = (function () {
@@ -4216,16 +3121,12 @@ var Rance;
             battle.isSimulated = true;
             if (!battle.ended) {
                 this.tree = new Rance.MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
-                this.battleAbilityUser = new Rance.BattleAbilityUser(this.battle);
             }
         }
         BattleSimulator.prototype.simulateBattle = function () {
             while (!this.battle.ended) {
                 this.simulateMove();
             }
-        };
-        BattleSimulator.prototype.finishBattle = function () {
-            this.battle.finishBattle();
         };
         BattleSimulator.prototype.simulateMove = function () {
             if (!this.battle.activeUnit || this.battle.ended) {
@@ -4237,7 +3138,7 @@ var Rance;
             this.battle.endTurn();
         };
         BattleSimulator.prototype.simulateAbility = function (ability, target) {
-            this.battleAbilityUser.useAbility(ability, this.battle.activeUnit, target, false);
+            Rance.useAbility(this.battle, ability, this.battle.activeUnit, target, false);
         };
         BattleSimulator.prototype.getBattleEndData = function () {
             if (!this.battle.ended) {
@@ -4246,6 +3147,9 @@ var Rance;
             var captured = this.battle.capturedUnits;
             var destroyed = this.battle.deadUnits;
             var victor = this.battle.getVictor();
+        };
+        BattleSimulator.prototype.finishBattle = function () {
+            this.battle.finishBattle();
         };
         return BattleSimulator;
     }());
@@ -11324,7 +10228,7 @@ var Rance;
             render: function () {
                 var battle = this.props.battle;
                 if (!battle.ended) {
-                    var activeTargets = getTargetsForAllAbilities(battle, battle.activeUnit);
+                    var activeTargets = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
                 }
                 var abilityTooltip = null;
                 if (!battle.ended &&
@@ -25401,6 +24305,94 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+/// <reference path="utility.ts"/>
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    (function (TargetFormation) {
+        TargetFormation[TargetFormation["ally"] = 0] = "ally";
+        TargetFormation[TargetFormation["enemy"] = 1] = "enemy";
+        TargetFormation[TargetFormation["either"] = 2] = "either";
+    })(Rance.TargetFormation || (Rance.TargetFormation = {}));
+    var TargetFormation = Rance.TargetFormation;
+    Rance.targetSelf = function (units, user) {
+        return [user];
+    };
+    Rance.targetNextRow = function (units, user) {
+        var ownPosition = user.battleStats.position;
+        var increment = user.battleStats.side === "side1" ? 1 : -1;
+        return units[ownPosition[0] + increment];
+    };
+    Rance.targetAll = function (units, user) {
+        return Rance.flatten2dArray(units);
+    };
+    //**
+    //**
+    //X*
+    //**
+    Rance.areaSingle = function (units, target) {
+        return Rance.getFrom2dArray(units, [target]);
+    };
+    //XX
+    //XX
+    //XX
+    //XX
+    Rance.areaAll = function (units, target) {
+        return Rance.flatten2dArray(units);
+    };
+    //**
+    //**
+    //XX
+    //**
+    Rance.areaColumn = function (units, target) {
+        var y = target[1];
+        var targetLocations = [];
+        for (var i = 0; i < units.length; i++) {
+            targetLocations.push([i, y]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    //X*
+    //X*
+    //X*
+    //X*
+    Rance.areaRow = function (units, target) {
+        var x = target[0];
+        var targetLocations = [];
+        for (var i = 0; i < units[x].length; i++) {
+            targetLocations.push([x, i]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    //**
+    //X*
+    //X*
+    //X*
+    Rance.areaRowNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    //**
+    //X*
+    //XX
+    //X*
+    Rance.areaNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x - 1, y]);
+        targetLocations.push([x + 1, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+})(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/ieffectactiontemplate.d.ts"/>
 /// <reference path="../../../src/targeting.ts" />
 /// <reference path="../../../src/unit.ts" />
@@ -30034,6 +29026,980 @@ var Rance;
         };
     })(defaultOptions = Rance.defaultOptions || (Rance.defaultOptions = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
+/// <reference path="unit.ts" />
+var Rance;
+(function (Rance) {
+    (function (BattleSceneUnitState) {
+        BattleSceneUnitState[BattleSceneUnitState["entering"] = 0] = "entering";
+        BattleSceneUnitState[BattleSceneUnitState["stationary"] = 1] = "stationary";
+        BattleSceneUnitState[BattleSceneUnitState["exiting"] = 2] = "exiting";
+        BattleSceneUnitState[BattleSceneUnitState["removed"] = 3] = "removed";
+    })(Rance.BattleSceneUnitState || (Rance.BattleSceneUnitState = {}));
+    var BattleSceneUnitState = Rance.BattleSceneUnitState;
+    var BattleSceneUnit = (function () {
+        function BattleSceneUnit(container, renderer) {
+            this.unitState = BattleSceneUnitState.removed;
+            this.hasSFXSprite = false;
+            this.container = container;
+            this.renderer = renderer;
+            this.initLayers();
+        }
+        BattleSceneUnit.prototype.destroy = function () {
+        };
+        BattleSceneUnit.prototype.initLayers = function () {
+            this.spriteContainer = new PIXI.Container;
+            this.container.addChild(this.spriteContainer);
+        };
+        BattleSceneUnit.prototype.changeActiveUnit = function (unit, afterChangedCallback) {
+            if (this.hasSFXSprite) {
+                if (unit) {
+                    this.enterUnitSpriteWithoutAnimation(unit);
+                }
+                else {
+                    this.exitUnitSpriteWithoutAnimation();
+                }
+                this.hasSFXSprite = false;
+            }
+            else if (!unit && this.activeUnit) {
+                this.onFinishExit = afterChangedCallback;
+                this.exitUnitSprite();
+            }
+            else if (unit && unit !== this.activeUnit) {
+                this.onFinishEnter = afterChangedCallback;
+                this.enterUnitSprite(unit);
+            }
+            else if (afterChangedCallback) {
+                afterChangedCallback();
+            }
+        };
+        BattleSceneUnit.prototype.setSFX = function (SFXTemplate, user, target) {
+            if (this.activeUnit) {
+                var duration = SFXTemplate.duration * Rance.Options.battleAnimationTiming.effectDuration;
+                if (this.activeUnit === user && SFXTemplate.userSprite) {
+                    this.setSFXSprite(SFXTemplate.userSprite, duration);
+                }
+                else if (this.activeUnit === target && SFXTemplate.enemySprite) {
+                    this.setSFXSprite(SFXTemplate.enemySprite, duration);
+                }
+                else {
+                }
+            }
+            else {
+            }
+        };
+        BattleSceneUnit.prototype.resize = function () {
+            if (this.spriteContainer.children.length > 0) {
+                this.setContainerPosition();
+            }
+        };
+        // enter without animation
+        BattleSceneUnit.prototype.enterUnitSpriteWithoutAnimation = function (unit) {
+            this.setUnit(unit);
+            this.setUnitSprite(unit);
+            this.finishUnitSpriteEnter();
+        };
+        // exit without animation
+        BattleSceneUnit.prototype.exitUnitSpriteWithoutAnimation = function () {
+            this.finishUnitSpriteExit();
+        };
+        // enter with animation
+        BattleSceneUnit.prototype.enterUnitSprite = function (unit) {
+            if (this.unitState === BattleSceneUnitState.stationary) {
+                // trigger exit
+                // on exit finish:
+                //    trigger enter
+                this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
+                this.exitUnitSprite();
+            }
+            else if (this.unitState === BattleSceneUnitState.exiting) {
+                // on exit finish:
+                //    trigger enter
+                this.onFinishExit = this.startUnitSpriteEnter.bind(this, unit);
+            }
+            else {
+                // clear
+                // trigger enter
+                this.clearUnit();
+                this.clearUnitSprite();
+                this.startUnitSpriteEnter(unit);
+            }
+            // this.clearUnit();
+            // this.clearUnitSprite();
+            // this.startUnitSpriteEnter(unit);
+        };
+        // exit with animation
+        BattleSceneUnit.prototype.exitUnitSprite = function () {
+            if (this.unitState === BattleSceneUnitState.entering) {
+                this.finishUnitSpriteExit();
+            }
+            else if (this.unitState === BattleSceneUnitState.stationary) {
+                this.startUnitSpriteExit();
+            }
+            else if (this.unitState === BattleSceneUnitState.exiting) {
+                this.onFinishExit = null;
+            }
+            else {
+                console.warn("called exitUnitSprite with unintended animation state " +
+                    BattleSceneUnitState[this.unitState]);
+            }
+        };
+        BattleSceneUnit.prototype.startUnitSpriteEnter = function (unit) {
+            var enterAnimationDuration = Rance.Options.battleAnimationTiming.unitEnter;
+            if (enterAnimationDuration <= 0) {
+                this.enterUnitSpriteWithoutAnimation(unit);
+                return;
+            }
+            this.setUnit(unit);
+            this.setUnitSprite(unit);
+            this.unitState = BattleSceneUnitState.entering;
+            this.tween = this.makeEnterExitTween("enter", enterAnimationDuration, this.finishUnitSpriteEnter.bind(this));
+            this.tween.start();
+        };
+        BattleSceneUnit.prototype.finishUnitSpriteEnter = function () {
+            this.unitState = BattleSceneUnitState.stationary;
+            this.clearTween();
+            if (this.onFinishEnter) {
+                this.onFinishEnter();
+                this.onFinishEnter = null;
+            }
+        };
+        BattleSceneUnit.prototype.startUnitSpriteExit = function () {
+            var exitAnimationDuration = Rance.Options.battleAnimationTiming.unitExit;
+            if (exitAnimationDuration <= 0) {
+                this.exitUnitSpriteWithoutAnimation();
+                return;
+            }
+            this.unitState = BattleSceneUnitState.exiting;
+            this.tween = this.makeEnterExitTween("exit", exitAnimationDuration, this.finishUnitSpriteExit.bind(this));
+            this.tween.start();
+        };
+        BattleSceneUnit.prototype.finishUnitSpriteExit = function () {
+            this.clearUnit();
+            this.clearUnitSprite();
+            if (this.onFinishExit) {
+                this.onFinishExit();
+                this.onFinishExit = null;
+            }
+        };
+        BattleSceneUnit.prototype.getSFXParams = function (props) {
+            var bounds = this.getSceneBounds();
+            return ({
+                user: props.unit,
+                width: bounds.width,
+                height: bounds.height,
+                duration: props.duration,
+                facingRight: props.unit.battleStats.side === "side1",
+                renderer: this.renderer,
+                triggerStart: props.triggerStart,
+                triggerEnd: props.triggerEnd
+            });
+        };
+        BattleSceneUnit.prototype.setContainerPosition = function (positionOffScreen) {
+            if (positionOffScreen === void 0) { positionOffScreen = false; }
+            // TODO battle scene | This & unit drawing FN rely on overly fiddly positioning.
+            // This function might not work properly with other drawing functions.
+            var sceneBounds = this.getSceneBounds();
+            var shouldReverse = this.activeUnit.battleStats.side === "side1";
+            var container = this.spriteContainer;
+            var containerBounds = container.getLocalBounds();
+            var xPadding = 30;
+            var yPadding = 40;
+            container.y = Math.round(sceneBounds.height - containerBounds.height - containerBounds.y - yPadding);
+            if (shouldReverse) {
+                container.scale.x = -1;
+                container.x = Math.round(containerBounds.width + containerBounds.x + xPadding);
+            }
+            else {
+                container.x = Math.round(sceneBounds.width - containerBounds.width - containerBounds.x - xPadding);
+            }
+        };
+        BattleSceneUnit.prototype.setUnit = function (unit) {
+            this.clearUnit();
+            this.activeUnit = unit;
+        };
+        BattleSceneUnit.prototype.clearUnit = function () {
+            this.unitState = BattleSceneUnitState.removed;
+            this.activeUnit = null;
+            this.clearTween();
+        };
+        BattleSceneUnit.prototype.makeUnitSprite = function (unit, SFXParams) {
+            return unit.drawBattleScene(SFXParams);
+        };
+        BattleSceneUnit.prototype.addUnitSprite = function (sprite) {
+            this.spriteContainer.addChild(sprite);
+            this.setContainerPosition();
+        };
+        BattleSceneUnit.prototype.clearUnitSprite = function () {
+            this.spriteContainer.removeChildren();
+        };
+        BattleSceneUnit.prototype.setUnitSprite = function (unit) {
+            this.clearUnitSprite();
+            var SFXParams = this.getSFXParams({
+                unit: unit,
+                triggerStart: this.addUnitSprite.bind(this)
+            });
+            this.makeUnitSprite(unit, SFXParams);
+        };
+        BattleSceneUnit.prototype.clearTween = function () {
+            if (this.tween) {
+                this.tween.stop();
+                TWEEN.remove(this.tween);
+                this.tween = null;
+            }
+        };
+        BattleSceneUnit.prototype.makeEnterExitTween = function (direction, duration, onComplete) {
+            var side = this.activeUnit.battleStats.side;
+            var container = this.spriteContainer;
+            var bounds = container.getBounds();
+            var distanceToMove = bounds.width * 1.25;
+            if (side === "side2") {
+                distanceToMove *= -1;
+            }
+            var offscreenLocation = container.x - distanceToMove;
+            var stationaryLocation = container.x;
+            var startX = direction === "enter" ? offscreenLocation : stationaryLocation;
+            var finishX = direction === "enter" ? stationaryLocation : offscreenLocation;
+            container.x = startX;
+            var tween = new TWEEN.Tween({
+                x: startX
+            }).to({
+                x: finishX
+            }, duration).onStart(function () {
+                container.x = startX;
+            }).onUpdate(function () {
+                container.x = this.x;
+            }).onComplete(onComplete);
+            tween.start();
+            return tween;
+        };
+        BattleSceneUnit.prototype.setSFXSprite = function (spriteDrawingFN, duration) {
+            this.clearUnitSprite();
+            var SFXParams = this.getSFXParams({
+                unit: this.activeUnit,
+                duration: duration,
+                triggerStart: this.addUnitSprite.bind(this)
+            });
+            this.hasSFXSprite = true;
+            spriteDrawingFN(SFXParams);
+        };
+        return BattleSceneUnit;
+    }());
+    Rance.BattleSceneUnit = BattleSceneUnit;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
+/// <reference path="unit.ts" />
+var Rance;
+(function (Rance) {
+    var BattleSceneUnitOverlay = (function () {
+        function BattleSceneUnitOverlay(container, renderer) {
+            this.animationIsActive = false;
+            this.container = container;
+            this.renderer = renderer;
+            this.initLayers();
+        }
+        BattleSceneUnitOverlay.prototype.destroy = function () {
+        };
+        BattleSceneUnitOverlay.prototype.initLayers = function () {
+            this.overlayContainer = new PIXI.Container;
+            this.container.addChild(this.overlayContainer);
+        };
+        BattleSceneUnitOverlay.prototype.setSFX = function (SFXTemplate, user, target) {
+            if (this.activeUnit) {
+                var duration = SFXTemplate.duration * Rance.Options.battleAnimationTiming.effectDuration;
+                if (this.activeUnit === user && SFXTemplate.userOverlay) {
+                    this.setOverlay(SFXTemplate.userOverlay, user, duration);
+                }
+                else if (this.activeUnit === target && SFXTemplate.enemyOverlay) {
+                    this.setOverlay(SFXTemplate.enemyOverlay, target, duration);
+                }
+                else {
+                }
+            }
+            else {
+            }
+        };
+        BattleSceneUnitOverlay.prototype.setOverlay = function (overlayFN, unit, duration) {
+            this.clearOverlay();
+            if (duration <= 0) {
+                return;
+            }
+            if (this.animationIsActive) {
+                console.warn("Triggered new unit overlay animation without clearing previous one");
+            }
+            this.activeUnit = unit;
+            var SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
+            overlayFN(SFXParams);
+        };
+        BattleSceneUnitOverlay.prototype.clearOverlay = function () {
+            this.animationIsActive = false;
+            this.onAnimationFinish = null;
+            this.activeUnit = null;
+            this.overlayContainer.removeChildren();
+        };
+        BattleSceneUnitOverlay.prototype.getSFXParams = function (duration, triggerStart, triggerEnd) {
+            var bounds = this.getSceneBounds();
+            return ({
+                user: this.activeUnit,
+                width: bounds.width,
+                height: bounds.height,
+                duration: duration,
+                facingRight: this.activeUnit.battleStats.side === "side1",
+                renderer: this.renderer,
+                triggerStart: triggerStart,
+                triggerEnd: triggerEnd
+            });
+        };
+        BattleSceneUnitOverlay.prototype.setContainerPosition = function () {
+            var sceneBounds = this.getSceneBounds();
+            var shouldLockToRight = this.activeUnit.battleStats.side === "side2";
+            var containerBounds = this.overlayContainer.getLocalBounds();
+            this.overlayContainer.y = sceneBounds.height - containerBounds.height;
+            if (shouldLockToRight) {
+                this.overlayContainer.x = sceneBounds.width - containerBounds.width;
+            }
+        };
+        BattleSceneUnitOverlay.prototype.addOverlay = function (overlay) {
+            this.animationIsActive = true;
+            this.overlayContainer.addChild(overlay);
+            this.setContainerPosition();
+        };
+        BattleSceneUnitOverlay.prototype.finishAnimation = function () {
+            if (this.onAnimationFinish) {
+                this.onAnimationFinish();
+            }
+            this.clearOverlay();
+        };
+        return BattleSceneUnitOverlay;
+    }());
+    Rance.BattleSceneUnitOverlay = BattleSceneUnitOverlay;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
+/// <reference path="unit.ts" />
+/// <reference path="battlesceneunit.ts" />
+/// <reference path="battlesceneunitoverlay.ts" />
+var Rance;
+(function (Rance) {
+    // TODO performance
+    // BattleScene.render() shouldn't be called unless there's something new to render
+    // 
+    var BattleScene = (function () {
+        function BattleScene(pixiContainer) {
+            this.side1UnitHasFinishedUpdating = false;
+            this.side2UnitHasFinishedUpdating = false;
+            this.isPaused = false;
+            this.forceFrame = false;
+            this.pixiContainer = pixiContainer;
+            this.container = new PIXI.Container();
+            var pixiContainerStyle = window.getComputedStyle(this.pixiContainer);
+            this.renderer = PIXI.autoDetectRenderer(parseInt(pixiContainerStyle.width), parseInt(pixiContainerStyle.height), {
+                autoResize: false,
+                antialias: true,
+                transparent: true
+            });
+            this.pixiContainer.appendChild(this.renderer.view);
+            this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
+            this.initLayers();
+            this.resizeListener = this.handleResize.bind(this);
+            window.addEventListener("resize", this.resizeListener, false);
+        }
+        BattleScene.prototype.destroy = function () {
+            this.container.renderable = false;
+            this.pause();
+            if (this.renderer) {
+                this.renderer.destroy(true);
+                this.renderer = null;
+            }
+            this.container.destroy(true);
+            this.container = null;
+            this.pixiContainer = null;
+            window.removeEventListener("resize", this.resizeListener);
+        };
+        BattleScene.prototype.initLayers = function () {
+            this.layers =
+                {
+                    battleOverlay: new PIXI.Container,
+                    side1Container: new PIXI.Container,
+                    side2Container: new PIXI.Container
+                };
+            this.side1Unit = new Rance.BattleSceneUnit(this.layers.side1Container, this.renderer);
+            this.side2Unit = new Rance.BattleSceneUnit(this.layers.side2Container, this.renderer);
+            this.side1Unit.getSceneBounds = this.side2Unit.getSceneBounds = this.getSceneBounds;
+            this.side1Overlay = new Rance.BattleSceneUnitOverlay(this.layers.side1Container, this.renderer);
+            this.side2Overlay = new Rance.BattleSceneUnitOverlay(this.layers.side2Container, this.renderer);
+            this.side1Overlay.getSceneBounds = this.side2Overlay.getSceneBounds = this.getSceneBounds;
+            this.container.addChild(this.layers.side1Container);
+            this.container.addChild(this.layers.side2Container);
+            this.container.addChild(this.layers.battleOverlay);
+        };
+        BattleScene.prototype.handleResize = function () {
+            var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
+            var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
+            this.renderer.resize(w, h);
+            this.side1Unit.resize();
+            this.side2Unit.resize();
+        };
+        BattleScene.prototype.getSceneBounds = function () {
+            return ({
+                width: this.renderer.width,
+                height: this.renderer.height
+            });
+        };
+        BattleScene.prototype.getSFXParams = function (props) {
+            var bounds = this.getSceneBounds();
+            var duration = this.activeSFX.duration * Rance.Options.battleAnimationTiming.effectDuration;
+            return ({
+                user: this.userUnit,
+                target: this.targetUnit,
+                width: bounds.width,
+                height: bounds.height,
+                duration: duration,
+                facingRight: this.userUnit.battleStats.side === "side1",
+                renderer: this.renderer,
+                triggerStart: props.triggerStart,
+                triggerEffect: this.executeTriggerEffectCallback.bind(this),
+                triggerEnd: props.triggerEnd
+            });
+        };
+        BattleScene.prototype.getHighestPriorityUnitForSide = function (side) {
+            var units = [
+                this.targetUnit,
+                this.userUnit,
+                this.activeUnit,
+                this.hoveredUnit
+            ];
+            for (var i = 0; i < units.length; i++) {
+                var unit = units[i];
+                if (unit && unit.battleStats.side === side) {
+                    return unit;
+                }
+            }
+            return null;
+        };
+        BattleScene.prototype.haveBothUnitsFinishedUpdating = function () {
+            return this.side1UnitHasFinishedUpdating && this.side2UnitHasFinishedUpdating;
+        };
+        BattleScene.prototype.executeIfBothUnitsHaveFinishedUpdating = function () {
+            if (this.afterUnitsHaveFinishedUpdatingCallback && this.haveBothUnitsFinishedUpdating()) {
+                var temp = this.afterUnitsHaveFinishedUpdatingCallback;
+                this.afterUnitsHaveFinishedUpdatingCallback = null;
+                temp();
+            }
+            else {
+                return;
+            }
+        };
+        BattleScene.prototype.finishUpdatingUnit = function (side) {
+            if (side === "side1") {
+                this.side1UnitHasFinishedUpdating = true;
+            }
+            else {
+                this.side2UnitHasFinishedUpdating = true;
+            }
+            this.executeIfBothUnitsHaveFinishedUpdating();
+        };
+        BattleScene.prototype.handleAbilityUse = function (props) {
+            this.clearActiveSFX();
+            this.userUnit = props.user;
+            this.targetUnit = props.target;
+            this.activeSFX = props.SFXTemplate;
+            this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
+            this.activeSFXHasFinishedCallback = this.cleanUpAfterSFX.bind(this);
+            this.triggerEffectCallback = props.triggerEffectCallback;
+            this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
+            this.prepareSFX();
+            // this.prepareSFX();
+            // this.playSFX();
+            // props.triggerEffectCallback();
+            // this.cleanUpAfterSFX();
+            // props.afterFinishedCallback();
+        };
+        BattleScene.prototype.executeBeforeUseDelayHasFinishedCallback = function () {
+            if (!this.beforeUseDelayHasFinishedCallback) {
+                throw new Error("No callback set for 'before ability use delay' finish.");
+            }
+            var temp = this.beforeUseDelayHasFinishedCallback;
+            this.beforeUseDelayHasFinishedCallback = null;
+            temp();
+        };
+        BattleScene.prototype.executeTriggerEffectCallback = function () {
+            if (!this.triggerEffectCallback) {
+                return;
+            }
+            var temp = this.triggerEffectCallback;
+            this.triggerEffectCallback = null;
+            temp();
+        };
+        BattleScene.prototype.executeActiveSFXHasFinishedCallback = function () {
+            if (!this.activeSFXHasFinishedCallback) {
+                throw new Error("No callback set for active SFX finish.");
+            }
+            var temp = this.activeSFXHasFinishedCallback;
+            this.activeSFXHasFinishedCallback = null;
+            temp();
+        };
+        BattleScene.prototype.executeAfterUseDelayHasFinishedCallback = function () {
+            if (!this.afterUseDelayHasFinishedCallback) {
+                throw new Error("No callback set for 'after ability use delay' finish.");
+            }
+            var temp = this.afterUseDelayHasFinishedCallback;
+            this.afterUseDelayHasFinishedCallback = null;
+            temp();
+        };
+        BattleScene.prototype.executeAbilityUseHasFinishedCallback = function () {
+            if (!this.abilityUseHasFinishedCallback) {
+                throw new Error("No callback set for ability use finish.");
+            }
+            var temp = this.abilityUseHasFinishedCallback;
+            this.abilityUseHasFinishedCallback = null;
+            temp();
+        };
+        BattleScene.prototype.prepareSFX = function () {
+            var beforeUseDelay = Rance.Options.battleAnimationTiming.before;
+            var afterUnitsHaveFinishedUpdatingCallback = function () {
+                if (beforeUseDelay >= 0) {
+                    window.setTimeout(this.executeBeforeUseDelayHasFinishedCallback.bind(this), beforeUseDelay);
+                }
+                else {
+                    this.executeBeforeUseDelayHasFinishedCallback();
+                }
+            }.bind(this);
+            this.updateUnits(afterUnitsHaveFinishedUpdatingCallback);
+        };
+        BattleScene.prototype.playSFX = function () {
+            var SFXDuration = Rance.Options.battleAnimationTiming.effectDuration *
+                this.activeSFX.duration;
+            if (SFXDuration <= 0) {
+                this.executeTriggerEffectCallback();
+                this.handleActiveSFXEnd();
+            }
+            else {
+                this.triggerSFXStart(this.activeSFX, this.userUnit, this.targetUnit, this.handleActiveSFXEnd.bind(this));
+            }
+        };
+        BattleScene.prototype.handleActiveSFXEnd = function () {
+            this.activeSFX = null;
+            this.clearBattleOverlay();
+            this.clearUnitOverlays();
+            this.executeActiveSFXHasFinishedCallback();
+        };
+        BattleScene.prototype.cleanUpAfterSFX = function () {
+            var afterUseDelay = Rance.Options.battleAnimationTiming.after;
+            this.afterUseDelayHasFinishedCallback = function () {
+                this.userUnit = null;
+                this.targetUnit = null;
+                this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
+            }.bind(this);
+            if (afterUseDelay >= 0) {
+                window.setTimeout(this.executeAfterUseDelayHasFinishedCallback.bind(this), afterUseDelay);
+            }
+            else {
+                this.executeAfterUseDelayHasFinishedCallback();
+            }
+        };
+        BattleScene.prototype.updateUnits = function (afterFinishedUpdatingCallback) {
+            var boundAfterFinishFN1 = null;
+            var boundAfterFinishFN2 = null;
+            if (afterFinishedUpdatingCallback) {
+                this.afterUnitsHaveFinishedUpdatingCallback = afterFinishedUpdatingCallback;
+                boundAfterFinishFN1 = this.finishUpdatingUnit.bind(this, "side1");
+                boundAfterFinishFN2 = this.finishUpdatingUnit.bind(this, "side2");
+                this.side1UnitHasFinishedUpdating = false;
+                this.side2UnitHasFinishedUpdating = false;
+            }
+            var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
+            var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
+            this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
+            this.side1Overlay.activeUnit = activeSide1Unit;
+            this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
+            this.side2Overlay.activeUnit = activeSide2Unit;
+        };
+        BattleScene.prototype.clearActiveSFX = function () {
+            this.activeSFX = null;
+            this.userUnit = null;
+            this.targetUnit = null;
+            this.clearBattleOverlay();
+            this.clearUnitOverlays();
+        };
+        BattleScene.prototype.triggerSFXStart = function (SFXTemplate, user, target, afterFinishedCallback) {
+            this.activeSFX = SFXTemplate;
+            this.side1Unit.setSFX(SFXTemplate, user, target);
+            this.side2Unit.setSFX(SFXTemplate, user, target);
+            this.side1Overlay.setSFX(SFXTemplate, user, target);
+            this.side2Overlay.setSFX(SFXTemplate, user, target);
+            this.makeBattleOverlay(afterFinishedCallback);
+        };
+        BattleScene.prototype.makeBattleOverlay = function (afterFinishedCallback) {
+            if (afterFinishedCallback === void 0) { afterFinishedCallback = this.clearActiveSFX.bind(this); }
+            if (!this.activeSFX.battleOverlay) {
+                afterFinishedCallback();
+            }
+            else {
+                var SFXParams = this.getSFXParams({
+                    triggerStart: this.addBattleOverlay.bind(this),
+                    triggerEnd: afterFinishedCallback
+                });
+                this.activeSFX.battleOverlay(SFXParams);
+            }
+        };
+        BattleScene.prototype.addBattleOverlay = function (overlay) {
+            this.layers.battleOverlay.addChild(overlay);
+        };
+        BattleScene.prototype.clearBattleOverlay = function () {
+            this.layers.battleOverlay.removeChildren();
+        };
+        BattleScene.prototype.clearUnitOverlays = function () {
+            this.side1Overlay.clearOverlay();
+            this.side2Overlay.clearOverlay();
+        };
+        BattleScene.prototype.getBattleSceneUnit = function (unit) {
+            switch (unit.battleStats.side) {
+                case "side1":
+                    {
+                        return this.side1Unit;
+                    }
+                case "side2":
+                    {
+                        return this.side2Unit;
+                    }
+            }
+        };
+        BattleScene.prototype.getBattleSceneUnitOverlay = function (unit) {
+            switch (unit.battleStats.side) {
+                case "side1":
+                    {
+                        return this.side1Overlay;
+                    }
+                case "side2":
+                    {
+                        return this.side2Overlay;
+                    }
+            }
+        };
+        // RENDERING
+        BattleScene.prototype.renderOnce = function () {
+            this.forceFrame = true;
+            this.render();
+        };
+        BattleScene.prototype.pause = function () {
+            this.isPaused = true;
+            this.forceFrame = false;
+        };
+        BattleScene.prototype.resume = function () {
+            this.isPaused = false;
+            this.forceFrame = false;
+            this.render();
+        };
+        BattleScene.prototype.render = function (timeStamp) {
+            if (this.isPaused) {
+                if (this.forceFrame) {
+                    this.forceFrame = false;
+                }
+                else {
+                    return;
+                }
+            }
+            this.renderer.render(this.container);
+            TWEEN.update();
+            window.requestAnimationFrame(this.render.bind(this));
+        };
+        return BattleScene;
+    }());
+    Rance.BattleScene = BattleScene;
+})(Rance || (Rance = {}));
+/// <reference path="battle.ts" />
+/// <reference path="unit.ts" />
+var Rance;
+(function (Rance) {
+    var _nullFormation;
+    function getNullFormation() {
+        if (!_nullFormation) {
+            _nullFormation = [];
+            var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
+            var columns = app.moduleData.ruleSet.battle.cellsPerRow;
+            for (var i = 0; i < rows; i++) {
+                _nullFormation.push([]);
+                for (var j = 0; j < columns; j++) {
+                    _nullFormation[i].push(null);
+                }
+            }
+        }
+        return _nullFormation;
+    }
+    Rance.getNullFormation = getNullFormation;
+    function getFormationsToTarget(battle, user, effect) {
+        if (effect.targetFormations === Rance.TargetFormation.either) {
+            return battle.side1.concat(battle.side2);
+        }
+        else {
+            var userSide = user.battleStats.side;
+            var insertNullBefore = (userSide === "side1") ? true : false;
+            var toConcat;
+        }
+        if (effect.targetFormations === Rance.TargetFormation.ally) {
+            toConcat = battle[userSide];
+        }
+        else if (effect.targetFormations === Rance.TargetFormation.enemy) {
+            toConcat = battle[Rance.reverseSide(userSide)];
+        }
+        else {
+            throw new Error("Invalid target formation for effect: " + effect.name);
+        }
+        if (insertNullBefore) {
+            return getNullFormation().concat(toConcat);
+        }
+        else {
+            return toConcat.concat(getNullFormation());
+        }
+    }
+    Rance.getFormationsToTarget = getFormationsToTarget;
+    function isTargetableFilterFN(unit) {
+        return unit && unit.isTargetable();
+    }
+    function getPotentialTargets(battle, user, ability) {
+        var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
+        var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
+        var targets = targetsInRange.filter(isTargetableFilterFN);
+        return targets;
+    }
+    function getTargetsForAllAbilities(battle, user) {
+        // TODO | does this ever matter?
+        if (!user || !battle.activeUnit) {
+            return null;
+        }
+        var allTargets = {};
+        var abilities = user.getAllAbilities();
+        for (var i = 0; i < abilities.length; i++) {
+            var ability = abilities[i];
+            var targets = getPotentialTargets(battle, user, ability);
+            for (var j = 0; j < targets.length; j++) {
+                var target = targets[j];
+                if (!allTargets[target.id]) {
+                    allTargets[target.id] = [];
+                }
+                allTargets[target.id].push(ability);
+            }
+        }
+        return allTargets;
+    }
+    Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
+})(Rance || (Rance = {}));
+/// <reference path="battle.ts" />
+/// <reference path="unit.ts" />
+/// <reference path="battleabilitytargeting.ts" />
+var Rance;
+(function (Rance) {
+    function getAbilityEffectDataByPhase(battle, abilityUseData) {
+        abilityUseData.actualTarget = getTargetOrGuard(battle, abilityUseData);
+        var beforeUse = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getBeforeAbilityUseEffectTemplates(abilityUseData));
+        var abilityEffects = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getAbilityUseEffectTemplates(abilityUseData));
+        var afterUse = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getAfterAbilityUseEffectTemplates(abilityUseData));
+        return ({
+            beforeUse: beforeUse,
+            abilityEffects: abilityEffects,
+            afterUse: afterUse
+        });
+    }
+    Rance.getAbilityEffectDataByPhase = getAbilityEffectDataByPhase;
+    function getTargetOrGuard(battle, abilityUseData) {
+        if (abilityUseData.ability.bypassesGuard) {
+            return abilityUseData.intendedTarget;
+        }
+        var guarding = getGuarders(battle, abilityUseData);
+        guarding = guarding.sort(function (a, b) {
+            return a.battleStats.guardAmount - b.battleStats.guardAmount;
+        });
+        for (var i = 0; i < guarding.length; i++) {
+            var guardRoll = Math.random() * 100;
+            if (guardRoll <= guarding[i].battleStats.guardAmount) {
+                return guarding[i];
+            }
+        }
+        return abilityUseData.intendedTarget;
+    }
+    function canGuardFN(intendedTarget, unit) {
+        if (!unit.isTargetable()) {
+            return false;
+        }
+        if (unit.battleStats.guardCoverage === Rance.GuardCoverage.all) {
+            return unit.battleStats.guardAmount > 0;
+        }
+        else if (unit.battleStats.guardCoverage === Rance.GuardCoverage.row) {
+            // same row
+            if (unit.battleStats.position[0] === intendedTarget.battleStats.position[0]) {
+                return unit.battleStats.guardAmount > 0;
+            }
+        }
+    }
+    function getGuarders(battle, abilityUseData) {
+        var userSide = abilityUseData.user.battleStats.side;
+        var targetSide = abilityUseData.intendedTarget.battleStats.side;
+        if (userSide === targetSide)
+            return [];
+        var allEnemies = battle.unitsBySide[targetSide];
+        var guarders = allEnemies.filter(canGuardFN.bind(null, abilityUseData.intendedTarget));
+        return guarders;
+    }
+    function activeUnitsFilterFN(unit) {
+        return unit && unit.isActiveInBattle();
+    }
+    function getUnitsInEffectArea(battle, effect, user, target) {
+        var targetFormations = Rance.getFormationsToTarget(battle, user, effect);
+        var inArea = effect.battleAreaFunction(targetFormations, target.battleStats.position);
+        return inArea.filter(activeUnitsFilterFN);
+    }
+    function getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, effectTemplates) {
+        var effectData = [];
+        for (var i = 0; i < effectTemplates.length; i++) {
+            var templateEffect = effectTemplates[i];
+            var targetsForEffect = getUnitsInEffectArea(battle, templateEffect.action, abilityUseData.user, abilityUseData.actualTarget);
+            for (var j = 0; j < targetsForEffect.length; j++) {
+                effectData.push({
+                    templateEffect: templateEffect,
+                    user: abilityUseData.user,
+                    target: targetsForEffect[j],
+                    trigger: templateEffect.trigger
+                });
+            }
+        }
+        return effectData;
+    }
+    function getEffectTemplatesWithAttachedEffects(templates) {
+        var withAttached = [];
+        for (var i = 0; i < templates.length; i++) {
+            var template = templates[i];
+            withAttached.push(template);
+            if (template.attachedEffects) {
+                for (var j = 0; j < template.attachedEffects.length; j++) {
+                    withAttached.push(template.attachedEffects[j]);
+                }
+            }
+        }
+        return withAttached;
+    }
+    function getBeforeAbilityUseEffectTemplates(abilityUseData) {
+        var beforeUseEffects = [];
+        if (abilityUseData.ability.beforeUse) {
+            beforeUseEffects = beforeUseEffects.concat(abilityUseData.ability.beforeUse);
+        }
+        var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().beforeAbilityUse;
+        if (passiveSkills) {
+            for (var i = 0; i < passiveSkills.length; i++) {
+                beforeUseEffects = beforeUseEffects.concat(passiveSkills[i].beforeAbilityUse);
+            }
+        }
+        return getEffectTemplatesWithAttachedEffects(beforeUseEffects);
+        // TODO remove guard & action points
+    }
+    function getAbilityUseEffectTemplates(abilityUseData) {
+        var abilityUseEffects = [];
+        abilityUseEffects.push(abilityUseData.ability.mainEffect);
+        if (abilityUseData.ability.secondaryEffects) {
+            abilityUseEffects = abilityUseEffects.concat(abilityUseData.ability.secondaryEffects);
+        }
+        return getEffectTemplatesWithAttachedEffects(abilityUseEffects);
+    }
+    function getAfterAbilityUseEffectTemplates(abilityUseData) {
+        var afterUseEffects = [];
+        if (abilityUseData.ability.afterUse) {
+            afterUseEffects = afterUseEffects.concat(abilityUseData.ability.afterUse);
+        }
+        var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().afterAbilityUse;
+        if (passiveSkills) {
+            for (var i = 0; i < passiveSkills.length; i++) {
+                afterUseEffects = afterUseEffects.concat(passiveSkills[i].afterAbilityUse);
+            }
+        }
+        return getEffectTemplatesWithAttachedEffects(afterUseEffects);
+        // TODO add move delay & update status effects
+    }
+})(Rance || (Rance = {}));
+/// <reference path="battleabilityprocessing.ts" />
+/// <reference path="battle.ts" />
+/// <reference path="unit.ts" />
+var Rance;
+(function (Rance) {
+    function useAbility(battle, ability, user, target, getEffects) {
+        var effectDataByPhase = Rance.getAbilityEffectDataByPhase(battle, {
+            ability: ability,
+            user: user,
+            intendedTarget: target
+        });
+        var useData = executeFullAbilityEffects(battle, effectDataByPhase, getEffects);
+        return useData;
+    }
+    Rance.useAbility = useAbility;
+    function executeFullAbilityEffects(battle, abilityEffectData, getUseEffects) {
+        var beforeUse = executeMultipleEffects(battle, abilityEffectData.beforeUse, getUseEffects);
+        var abilityEffects = executeMultipleEffects(battle, abilityEffectData.abilityEffects, getUseEffects);
+        var afterUse = executeMultipleEffects(battle, abilityEffectData.afterUse, getUseEffects);
+        if (getUseEffects) {
+            return beforeUse.concat(abilityEffects, afterUse);
+        }
+        else {
+            return null;
+        }
+    }
+    function executeMultipleEffects(battle, abilityEffectData, getUseEffects) {
+        if (getUseEffects) {
+            var useEffects = [];
+            for (var i = 0; i < abilityEffectData.length; i++) {
+                var useEffect = executeAbilityEffectDataAndGetUseEffect(battle, abilityEffectData[i]);
+                if (useEffect) {
+                    useEffects.push(useEffect);
+                }
+            }
+            return useEffects;
+        }
+        else {
+            for (var i = 0; i < abilityEffectData.length; i++) {
+                executeAbilityEffectData(battle, abilityEffectData[i]);
+            }
+        }
+    }
+    function getUnitDisplayData(unit) {
+        return ({
+            health: unit.currentHealth,
+            guardAmount: unit.battleStats.guardAmount,
+            guardType: unit.battleStats.guardCoverage,
+            actionPoints: unit.battleStats.currentActionPoints,
+            isPreparing: Boolean(unit.battleStats.queuedAction),
+            isAnnihilated: unit.battleStats.isAnnihilated
+        });
+    }
+    function shouldEffectActionTrigger(abilityEffectData) {
+        if (!abilityEffectData.trigger) {
+            return true;
+        }
+        return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
+    }
+    function executeAbilityEffectData(battle, abilityEffectData) {
+        if (!shouldEffectActionTrigger(abilityEffectData)) {
+            return false;
+        }
+        abilityEffectData.templateEffect.action.executeAction(abilityEffectData.user, abilityEffectData.target, battle, abilityEffectData.templateEffect.data);
+        return true;
+    }
+    function executeAbilityEffectDataAndGetUseEffect(battle, abilityEffectData) {
+        var didTriggerAction = executeAbilityEffectData(battle, abilityEffectData);
+        if (!didTriggerAction) {
+            return null;
+        }
+        var unitDisplayData = {};
+        unitDisplayData[abilityEffectData.user.id] = getUnitDisplayData(abilityEffectData.user);
+        unitDisplayData[abilityEffectData.target.id] = getUnitDisplayData(abilityEffectData.target);
+        return ({
+            actionName: abilityEffectData.templateEffect.action.name,
+            unitDisplayDataAfterUsingById: unitDisplayData,
+            sfx: abilityEffectData.templateEffect.sfx,
+            sfxUser: abilityEffectData.user,
+            sfxTarget: abilityEffectData.target
+        });
+    }
+})(Rance || (Rance = {}));
 /// <reference path="reactui.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="playercontrol.ts"/>
@@ -30052,6 +30018,7 @@ var Rance;
 /// <reference path="options.ts"/>
 /// <reference path="tutorials/tutorialstatus.ts" />
 /// <reference path="battlescene.ts" />
+/// <reference path="battleabilityusage.ts" />
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {
