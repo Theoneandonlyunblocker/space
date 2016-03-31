@@ -132,6 +132,7 @@ module Rance
             }
           }
 
+          this.props.key = "unit";
           var unit = UIComponents.Unit(this.props);
           allElements.push(unit);
         }

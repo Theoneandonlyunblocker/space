@@ -9252,6 +9252,7 @@ var Rance;
                             this.props.isCaptured = true;
                         }
                     }
+                    this.props.key = "unit";
                     var unit = UIComponents.Unit(this.props);
                     allElements.push(unit);
                 }
