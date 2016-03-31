@@ -10,9 +10,10 @@ declare module "react-0.11" {
 }
 
 declare module React {
+    export function createFactory<P>(specification: Factory<P>): Factory<P>;
     export function createClass<P, S>(specification: Specification<P, S>): Factory<P>;
 
-    export function renderComponent<P>(component: Descriptor<P>, container: Element, callback?: () => void): Descriptor<P>;
+    export function render<P>(component: Descriptor<P>, container: Element, callback?: () => void): Descriptor<P>;
 
     export function unmountComponentAtNode(container: Element): boolean;
 
