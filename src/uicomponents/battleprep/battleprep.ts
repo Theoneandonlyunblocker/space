@@ -1,6 +1,7 @@
 /// <reference path="battleinfo.ts"/>
 /// <reference path="../unitlist/menuunitinfo.ts"/>
 /// <reference path="../battle/formation.ts" />
+/// <reference path="../battle/battlebackground.ts" />
 
 module Rance
 {
