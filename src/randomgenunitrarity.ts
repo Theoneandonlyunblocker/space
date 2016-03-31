@@ -1,9 +1,8 @@
-namespace Rance
+const enum RandomGenUnitRarity
 {
-  export enum RandomGenUnitRarity
-  {
-    common = 0,
-    elite = 1,
-    commander = 2
-  }
+  common = 0,
+  elite = 1,
+  commander = 2
 }
+
+export default RandomGenUnitRarity;

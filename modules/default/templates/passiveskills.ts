@@ -1,6 +1,5 @@
 /// <reference path="../../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/iturnstarteffect.d.ts"/>
 /// <reference path="abilities.ts" />
 
 namespace Rance

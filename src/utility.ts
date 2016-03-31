@@ -1,731 +1,732 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-namespace Rance
+import Point from "./Point.ts";
+
+// TODO refactor | clean these up
+
+export function randInt(min: number, max: number)
 {
-  export function randInt(min: number, max: number)
-  {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-  export function randRange(min: number, max: number)
-  {
-    return Math.random() * (max - min) + min;
-  }
-  export function getRandomArrayKey(target: any[])
-  {
-    return Math.floor(Math.random() * (target.length));
-  }
-  export function getRandomArrayItem(target: any[])
-  {
-    var _rnd = Math.floor(Math.random() * (target.length));
-    return target[_rnd];
-  }
-  export function getSeededRandomArrayItem(array: any[], rng: any)
-  {
-    var _rnd = Math.floor(rng.uniform() * array.length);
-    return array[_rnd];
-  }
-  export function getRandomKey(target: {[props: string]: any;})
-  {
-    var _targetKeys = Object.keys(target);
-    var _rnd = Math.floor(Math.random() * (_targetKeys.length));
-    return _targetKeys[_rnd];
-  }
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+export function randRange(min: number, max: number)
+{
+  return Math.random() * (max - min) + min;
+}
+export function getRandomArrayKey(target: any[])
+{
+  return Math.floor(Math.random() * (target.length));
+}
+export function getRandomArrayItem(target: any[])
+{
+  var _rnd = Math.floor(Math.random() * (target.length));
+  return target[_rnd];
+}
+export function getSeededRandomArrayItem(array: any[], rng: any)
+{
+  var _rnd = Math.floor(rng.uniform() * array.length);
+  return array[_rnd];
+}
+export function getRandomKey(target: {[props: string]: any;})
+{
+  var _targetKeys = Object.keys(target);
+  var _rnd = Math.floor(Math.random() * (_targetKeys.length));
+  return _targetKeys[_rnd];
+}
 
-  export function getObjectKeysSortedByValue(obj:
+export function getObjectKeysSortedByValue(obj:
+{
+  [key: string]: number;
+}, order: string)
+{
+  return Object.keys(obj).sort(function(a, b)
   {
-    [key: string]: number;
-  }, order: string)
-  {
-    return Object.keys(obj).sort(function(a, b)
+    if (order === "asc")
     {
-      if (order === "asc")
-      {
-        return obj[a] - obj[b];
-      }
-      else return obj[b] - obj[a];
-    });
-  }
-  export function getObjectKeysSortedByValueOfProp(obj:
-  {
-    [key: string]: any;
-  }, prop: string, order: string)
-  {
-    return Object.keys(obj).sort(function(a, b)
-    {
-      if (order === "asc")
-      {
-        return obj[a][prop] - obj[b][prop];
-      }
-      else return obj[b][prop] - obj[a][prop];
-    });
-  }
-  export function sortObjectsByProperty(objects:
-  {
-    [key: string]: any;
-  }[], prop: string, order: string)
-  {
-    return objects.sort(function(a, b)
-    {
-      if (order === "asc")
-      {
-        return a[prop] - b[prop];
-      }
-      else return b[prop] - a[prop];
-    });
-  }
-
-  export function getRandomProperty(target: {[props: string]: any;})
-  {
-    var _rndProp = target[getRandomKey(target)];
-    return _rndProp;
-  }
-  export function getAllPropertiesWithKey(target: {[props: string]: any}, keyToFind: string)
-  {
-    var matchingProperties: any[] = [];
-    for (var key in target)
-    {
-      if (target[key][keyToFind])
-      {
-        matchingProperties.push(target[key]);
-      }
+      return obj[a] - obj[b];
     }
-
-    return matchingProperties;
-  }
-  export function getRandomPropertyWithKey(target: {[props: string]: any}, keyToFind: string)
+    else return obj[b] - obj[a];
+  });
+}
+export function getObjectKeysSortedByValueOfProp(obj:
+{
+  [key: string]: any;
+}, prop: string, order: string)
+{
+  return Object.keys(obj).sort(function(a, b)
   {
-    var keys = Object.keys(target);
-    while (keys.length > 0)
+    if (order === "asc")
     {
-      var key = getRandomArrayItem(keys);
-      var prop = target[key];
-      if (prop[keyToFind])
-      {
-        return prop;
-      }
-      else
-      {
-        keys.splice(keys.indexOf(key), 1);
-      }
+      return obj[a][prop] - obj[b][prop];
     }
-
-    return null;
-  }
-  export function getRandomKeyWithWeights(target: {[prop: string]: number})
+    else return obj[b][prop] - obj[a][prop];
+  });
+}
+export function sortObjectsByProperty(objects:
+{
+  [key: string]: any;
+}[], prop: string, order: string)
+{
+  return objects.sort(function(a, b)
   {
-    var totalWeight: number = 0;
-    for (var prop in target)
+    if (order === "asc")
     {
-      totalWeight += target[prop];
+      return a[prop] - b[prop];
     }
+    else return b[prop] - a[prop];
+  });
+}
 
-    var selection = randRange(0, totalWeight);
-    for (var prop in target)
+export function getRandomProperty(target: {[props: string]: any;})
+{
+  var _rndProp = target[getRandomKey(target)];
+  return _rndProp;
+}
+export function getAllPropertiesWithKey(target: {[props: string]: any}, keyToFind: string)
+{
+  var matchingProperties: any[] = [];
+  for (var key in target)
+  {
+    if (target[key][keyToFind])
     {
-      selection -= target[prop];
-      if (selection <= 0)
-      {
-        return prop;
-      }
+      matchingProperties.push(target[key]);
     }
   }
-  export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: T[]): T
+
+  return matchingProperties;
+}
+export function getRandomPropertyWithKey(target: {[props: string]: any}, keyToFind: string)
+{
+  var keys = Object.keys(target);
+  while (keys.length > 0)
   {
-    var totalWeight: number = 0;
-    for (var i = 0; i < arr.length; i++)
+    var key = getRandomArrayItem(keys);
+    var prop = target[key];
+    if (prop[keyToFind])
     {
-      totalWeight += arr[i].weight;
-    }
-
-    var selection = randRange(0, totalWeight);
-    for (var i = 0; i < arr.length; i++)
-    {
-      selection -= arr[i].weight;
-      if (selection <= 0)
-      {
-        return arr[i];
-      }
-    }
-  }
-  export function findItemWithKey<T>(source: {[key: string]: any},
-    keyToFind: string, parentKey?: string, hasParentKey: boolean = false): T
-  {
-    var hasParentKey = hasParentKey;
-    if (source[keyToFind])
-    {
-      if (!parentKey || hasParentKey)
-      {
-        return source[keyToFind];
-      }
-    };
-
-    for (var key in source)
-    {
-      if (key === parentKey)
-      {
-        hasParentKey = true;
-      }
-      if (source[key][keyToFind])
-      {
-        if (!parentKey || hasParentKey)
-        {
-          return source[key][keyToFind];
-        }
-      }
-      else if (typeof source[key] === "object")
-      {
-        return findItemWithKey<T>(source[key], keyToFind, parentKey, hasParentKey);
-      }
-    }
-
-    return null;
-  }
-  export function getFrom2dArray(target: any[][], arr: number[][]): any[]
-  {
-    var result: any[] = [];
-    for (var i = 0; i < arr.length; i++)
-    {
-      if 
-      ( 
-        (arr[i] !== undefined) &&
-        (arr[i][0] >= 0 && arr[i][0] < target.length) &&
-        (arr[i][1] >= 0 && arr[i][1] < target[0].length)
-      )
-      {
-        result.push( target[arr[i][0]][arr[i][1]] );
-      }
-      else
-      {
-        result.push(null);
-      }
-
-    };
-    return result;
-  }
-  export function flatten2dArray(toFlatten: any[][]): any[]
-  {
-    var flattened: any[] = [];
-    for (var i = 0; i < toFlatten.length; i++)
-    {
-      for (var j = 0; j < toFlatten[i].length; j++)
-      {
-        flattened.push(toFlatten[i][j]);
-      }
-    }
-
-    return flattened;
-  }
-  export function reverseSide(side: UnitBattleSide): UnitBattleSide
-  {
-    switch (side)
-    {
-      case "side1":
-      {
-        return "side2";
-      }
-      case "side2":
-      {
-        return "side1";
-      }
-      default:
-      {
-        throw new Error("Invalid side");
-      }
-    }
-  }
-  export function sortByManufactoryCapacityFN(a: Star, b: Star)
-  {
-    var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
-    var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
-
-    if (bLevel !== aLevel)
-    {
-      return bLevel - aLevel;
-    }
-
-    var _a: string = a.name.toLowerCase();
-    var _b: string = b.name.toLowerCase();
-    
-    if (_a > _b) return 1;
-    else if (_a < _b) return -1;
-    else return 0;
-  }
-  export function rectContains(rect:{x1: number, x2: number, y1: number, y2: number}, point: Point)
-  {
-    var x = point.x;
-    var y = point.y;
-
-    var x1 = Math.min(rect.x1, rect.x2);
-    var x2 = Math.max(rect.x1, rect.x2);
-    var y1 = Math.min(rect.y1, rect.y2);
-    var y2 = Math.max(rect.y1, rect.y2);
-
-    return(
-      (x >= x1 && x <= x2) &&
-      (y >= y1 && y <= y2)
-    );
-  }
-
-  export function hexToString(hex: number)
-  {
-    hex = Math.round(hex);
-    var converted = hex.toString(16);
-    return '000000'.substr(0, 6 - converted.length) + converted;
-  }
-  export function stringToHex(text: string)
-  {
-    if (text.charAt(0) === "#")
-    {
-      text = text.substring(1, 7);
-    }
-
-    return parseInt(text, 16);
-  }
-  export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
-  {
-    var canvas = document.createElement("canvas");
-
-    canvas.width = image.width;
-    canvas.height = image.height;
-
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(image, 0, 0, image.width, image.height);
-
-    ctx.globalCompositeOperation = "source-in";
-
-    ctx.fillStyle = "#" + hexToString(player.color);
-    ctx.fillRect(0, 0, image.width, image.height);
-
-    return canvas.toDataURL();
-  }
-
-  // http://stackoverflow.com/a/1042676
-  // extends 'from' object with members from 'to'. If 'to' is null, a deep clone of 'from' is returned
-  // 
-  // to[prop] = from[prop] seems to add a reference instead of actually copying value
-  // so calling the constructor with "new" is needed
-  export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: boolean = false)
-  {
-    if (from == null || typeof from != "object") return from;
-    if (from.constructor != Object && from.constructor != Array) return from;
-    if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
-      from.constructor == String || from.constructor == Number || from.constructor == Boolean)
-      return new from.constructor(from);
-
-    to = to || new from.constructor();
-    var toIterateOver = onlyExtendAlreadyPresent ? to : from;
-
-    for (var name in toIterateOver)
-    {
-      if (!onlyExtendAlreadyPresent || from.hasOwnProperty(name))
-      {
-        to[name] = extendObject(from[name], null);
-      }
-    }
-
-    return to;
-  }
-
-  // https://github.com/KyleAMathews/deepmerge
-  export function deepMerge(target: any, src: any, excludeKeysNotInTarget: boolean = false): any
-  {
-    if (excludeKeysNotInTarget)
-    {
-      var merged = deepMerge(target, src, false);
-      return deletePropertiesNotSharedWithTarget(merged, target);
-    }
-
-    var array = Array.isArray(src);
-    var dst: any = array && [] || {};
-
-    if (array)
-    {
-      target = target || [];
-      dst = dst.concat(target);
-      src.forEach(function(e: any, i: any)
-      {
-        if (typeof dst[i] === 'undefined')
-        {
-          dst[i] = e;
-        }
-        else if (typeof e === 'object')
-        {
-          dst[i] = deepMerge(target[i], e);
-        }
-        else
-        {
-          if (target.indexOf(e) === -1)
-          {
-            dst.push(e);
-          }
-        }
-      });
+      return prop;
     }
     else
     {
-      if (target && typeof target === 'object')
+      keys.splice(keys.indexOf(key), 1);
+    }
+  }
+
+  return null;
+}
+export function getRandomKeyWithWeights(target: {[prop: string]: number})
+{
+  var totalWeight: number = 0;
+  for (var prop in target)
+  {
+    totalWeight += target[prop];
+  }
+
+  var selection = randRange(0, totalWeight);
+  for (var prop in target)
+  {
+    selection -= target[prop];
+    if (selection <= 0)
+    {
+      return prop;
+    }
+  }
+}
+export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: T[]): T
+{
+  var totalWeight: number = 0;
+  for (var i = 0; i < arr.length; i++)
+  {
+    totalWeight += arr[i].weight;
+  }
+
+  var selection = randRange(0, totalWeight);
+  for (var i = 0; i < arr.length; i++)
+  {
+    selection -= arr[i].weight;
+    if (selection <= 0)
+    {
+      return arr[i];
+    }
+  }
+}
+export function findItemWithKey<T>(source: {[key: string]: any},
+  keyToFind: string, parentKey?: string, hasParentKey: boolean = false): T
+{
+  var hasParentKey = hasParentKey;
+  if (source[keyToFind])
+  {
+    if (!parentKey || hasParentKey)
+    {
+      return source[keyToFind];
+    }
+  };
+
+  for (var key in source)
+  {
+    if (key === parentKey)
+    {
+      hasParentKey = true;
+    }
+    if (source[key][keyToFind])
+    {
+      if (!parentKey || hasParentKey)
       {
-        Object.keys(target).forEach(function (key)
-        {
-          dst[key] = target[key];
-        })
+        return source[key][keyToFind];
       }
-      Object.keys(src).forEach(function (key)
+    }
+    else if (typeof source[key] === "object")
+    {
+      return findItemWithKey<T>(source[key], keyToFind, parentKey, hasParentKey);
+    }
+  }
+
+  return null;
+}
+export function getFrom2dArray(target: any[][], arr: number[][]): any[]
+{
+  var result: any[] = [];
+  for (var i = 0; i < arr.length; i++)
+  {
+    if 
+    ( 
+      (arr[i] !== undefined) &&
+      (arr[i][0] >= 0 && arr[i][0] < target.length) &&
+      (arr[i][1] >= 0 && arr[i][1] < target[0].length)
+    )
+    {
+      result.push( target[arr[i][0]][arr[i][1]] );
+    }
+    else
+    {
+      result.push(null);
+    }
+
+  };
+  return result;
+}
+export function flatten2dArray(toFlatten: any[][]): any[]
+{
+  var flattened: any[] = [];
+  for (var i = 0; i < toFlatten.length; i++)
+  {
+    for (var j = 0; j < toFlatten[i].length; j++)
+    {
+      flattened.push(toFlatten[i][j]);
+    }
+  }
+
+  return flattened;
+}
+export function reverseSide(side: UnitBattleSide): UnitBattleSide
+{
+  switch (side)
+  {
+    case "side1":
+    {
+      return "side2";
+    }
+    case "side2":
+    {
+      return "side1";
+    }
+    default:
+    {
+      throw new Error("Invalid side");
+    }
+  }
+}
+export function sortByManufactoryCapacityFN(a: Star, b: Star)
+{
+  var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
+  var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
+
+  if (bLevel !== aLevel)
+  {
+    return bLevel - aLevel;
+  }
+
+  var _a: string = a.name.toLowerCase();
+  var _b: string = b.name.toLowerCase();
+  
+  if (_a > _b) return 1;
+  else if (_a < _b) return -1;
+  else return 0;
+}
+export function rectContains(rect:{x1: number, x2: number, y1: number, y2: number}, point: Point)
+{
+  var x = point.x;
+  var y = point.y;
+
+  var x1 = Math.min(rect.x1, rect.x2);
+  var x2 = Math.max(rect.x1, rect.x2);
+  var y1 = Math.min(rect.y1, rect.y2);
+  var y2 = Math.max(rect.y1, rect.y2);
+
+  return(
+    (x >= x1 && x <= x2) &&
+    (y >= y1 && y <= y2)
+  );
+}
+
+export function hexToString(hex: number)
+{
+  hex = Math.round(hex);
+  var converted = hex.toString(16);
+  return '000000'.substr(0, 6 - converted.length) + converted;
+}
+export function stringToHex(text: string)
+{
+  if (text.charAt(0) === "#")
+  {
+    text = text.substring(1, 7);
+  }
+
+  return parseInt(text, 16);
+}
+export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
+{
+  var canvas = document.createElement("canvas");
+
+  canvas.width = image.width;
+  canvas.height = image.height;
+
+  var ctx = canvas.getContext("2d");
+  ctx.drawImage(image, 0, 0, image.width, image.height);
+
+  ctx.globalCompositeOperation = "source-in";
+
+  ctx.fillStyle = "#" + hexToString(player.color);
+  ctx.fillRect(0, 0, image.width, image.height);
+
+  return canvas.toDataURL();
+}
+
+// http://stackoverflow.com/a/1042676
+// extends 'from' object with members from 'to'. If 'to' is null, a deep clone of 'from' is returned
+// 
+// to[prop] = from[prop] seems to add a reference instead of actually copying value
+// so calling the constructor with "new" is needed
+export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: boolean = false)
+{
+  if (from == null || typeof from != "object") return from;
+  if (from.constructor != Object && from.constructor != Array) return from;
+  if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
+    from.constructor == String || from.constructor == Number || from.constructor == Boolean)
+    return new from.constructor(from);
+
+  to = to || new from.constructor();
+  var toIterateOver = onlyExtendAlreadyPresent ? to : from;
+
+  for (var name in toIterateOver)
+  {
+    if (!onlyExtendAlreadyPresent || from.hasOwnProperty(name))
+    {
+      to[name] = extendObject(from[name], null);
+    }
+  }
+
+  return to;
+}
+
+// https://github.com/KyleAMathews/deepmerge
+export function deepMerge(target: any, src: any, excludeKeysNotInTarget: boolean = false): any
+{
+  if (excludeKeysNotInTarget)
+  {
+    var merged = deepMerge(target, src, false);
+    return deletePropertiesNotSharedWithTarget(merged, target);
+  }
+
+  var array = Array.isArray(src);
+  var dst: any = array && [] || {};
+
+  if (array)
+  {
+    target = target || [];
+    dst = dst.concat(target);
+    src.forEach(function(e: any, i: any)
+    {
+      if (typeof dst[i] === 'undefined')
       {
-        if (typeof src[key] !== 'object' || !src[key])
+        dst[i] = e;
+      }
+      else if (typeof e === 'object')
+      {
+        dst[i] = deepMerge(target[i], e);
+      }
+      else
+      {
+        if (target.indexOf(e) === -1)
+        {
+          dst.push(e);
+        }
+      }
+    });
+  }
+  else
+  {
+    if (target && typeof target === 'object')
+    {
+      Object.keys(target).forEach(function (key)
+      {
+        dst[key] = target[key];
+      })
+    }
+    Object.keys(src).forEach(function (key)
+    {
+      if (typeof src[key] !== 'object' || !src[key])
+      {
+        dst[key] = src[key];
+      }
+      else
+      {
+        if (!target[key])
         {
           dst[key] = src[key];
         }
         else
         {
-          if (!target[key])
-          {
-            dst[key] = src[key];
-          }
-          else
-          {
-            dst[key] = deepMerge(target[key], src[key]);
-          }
-        }
-      });
-    }
-
-    return dst;
-  }
-
-
-  export function deletePropertiesNotSharedWithTarget(source: {[key: string]: any},
-    target: {[key: string]: any})
-  {
-    var dst: any = {};
-
-    for (var key in target)
-    {
-      if (typeof target[key] !== "object" || !target[key])
-      {
-        dst[key] = source[key];
-      }
-      else
-      {
-        dst[key] = deletePropertiesNotSharedWithTarget(source[key], target[key]);
-      }
-    }
-
-    return dst;
-  }
-
-  export function recursiveRemoveAttribute(parent: HTMLElement, attribute: string)
-  {
-    parent.removeAttribute(attribute);
-
-    for (var i = 0; i < parent.children.length; i++)
-    {
-      var child = <HTMLElement> parent.children[i];
-      recursiveRemoveAttribute(child, attribute);
-    }
-  }
-
-  export function clamp(value: number, min: number, max: number)
-  {
-    if (value < min) return min;
-    else if (value > max) return max;
-    else return value;
-  }
-  // http://stackoverflow.com/a/3254334
-  export function roundToNearestMultiple(value: number, multiple: number)
-  {
-    var resto = value % multiple;
-    if (resto <= (multiple / 2))
-    { 
-      return value - resto;
-    }
-    else
-    {
-      return value + multiple - resto;
-    }
-  }
-  export function getAngleBetweenDegrees(degA: number, degB: number)
-  {
-    var angle = Math.abs(degB - degA) % 360;
-    var distance = Math.min(360 - angle, angle);
-    //console.log(degA, degB, distance);
-    return distance;
-  }
-  export function prettifyDate(date: Date)
-  {
-    return(
-      [
-        [
-          date.getDate(),
-          date.getMonth() + 1,
-          date.getFullYear().toString().slice(2,4)
-        ].join("/"),
-        [
-          date.getHours(),
-          date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes().toString()
-        ].join(":")
-      ].join(" ")
-    );
-  }
-  export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
-  {
-    var allKeys = Object.keys(localStorage);
-    var matchingItems: any[] = [];
-
-
-    for (var i = 0; i < allKeys.length; i++)
-    {
-      if (allKeys[i].indexOf(stringToMatch) !== -1)
-      {
-        var item = localStorage.getItem(allKeys[i]);
-        var parsed = JSON.parse(item);
-        if (parsed.date)
-        {
-          matchingItems.push(parsed);
+          dst[key] = deepMerge(target[key], src[key]);
         }
       }
-    }
-
-    matchingItems.sort(function(a, b)
-    {
-      return Date.parse(b.date) - Date.parse(a.date);
     });
-
-    return matchingItems;
   }
-  export function shuffleArray(toShuffle: any[], seed?: any)
+
+  return dst;
+}
+
+
+export function deletePropertiesNotSharedWithTarget(source: {[key: string]: any},
+  target: {[key: string]: any})
+{
+  var dst: any = {};
+
+  for (var key in target)
   {
-    var rng = new RNG(seed);
-    var resultArray = toShuffle.slice(0);
-
-    var i = resultArray.length;
-
-    while (i > 0)
+    if (typeof target[key] !== "object" || !target[key])
     {
-      i--;
-      var n = rng.random(0, i);
-
-      var temp = resultArray[i];
-      resultArray[i] = resultArray[n];
-      resultArray[n] = temp;
-    }
-    return resultArray;
-  }
-  export function getRelativeValue(value: number, min: number, max: number, inverse: boolean = false)
-  {
-    if (inverse)
-    {
-      if (min === max) return 0;
-      else
-      {
-        return 1 - ((value - min) / (max - min));
-      }
+      dst[key] = source[key];
     }
     else
     {
-      if (min === max) return 1;
-      else
+      dst[key] = deletePropertiesNotSharedWithTarget(source[key], target[key]);
+    }
+  }
+
+  return dst;
+}
+
+export function recursiveRemoveAttribute(parent: HTMLElement, attribute: string)
+{
+  parent.removeAttribute(attribute);
+
+  for (var i = 0; i < parent.children.length; i++)
+  {
+    var child = <HTMLElement> parent.children[i];
+    recursiveRemoveAttribute(child, attribute);
+  }
+}
+
+export function clamp(value: number, min: number, max: number)
+{
+  if (value < min) return min;
+  else if (value > max) return max;
+  else return value;
+}
+// http://stackoverflow.com/a/3254334
+export function roundToNearestMultiple(value: number, multiple: number)
+{
+  var resto = value % multiple;
+  if (resto <= (multiple / 2))
+  { 
+    return value - resto;
+  }
+  else
+  {
+    return value + multiple - resto;
+  }
+}
+export function getAngleBetweenDegrees(degA: number, degB: number)
+{
+  var angle = Math.abs(degB - degA) % 360;
+  var distance = Math.min(360 - angle, angle);
+  //console.log(degA, degB, distance);
+  return distance;
+}
+export function prettifyDate(date: Date)
+{
+  return(
+    [
+      [
+        date.getDate(),
+        date.getMonth() + 1,
+        date.getFullYear().toString().slice(2,4)
+      ].join("/"),
+      [
+        date.getHours(),
+        date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes().toString()
+      ].join(":")
+    ].join(" ")
+  );
+}
+export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
+{
+  var allKeys = Object.keys(localStorage);
+  var matchingItems: any[] = [];
+
+
+  for (var i = 0; i < allKeys.length; i++)
+  {
+    if (allKeys[i].indexOf(stringToMatch) !== -1)
+    {
+      var item = localStorage.getItem(allKeys[i]);
+      var parsed = JSON.parse(item);
+      if (parsed.date)
       {
-        return (value - min) / (max - min);
+        matchingItems.push(parsed);
       }
     }
   }
-  export function getRelativeWeightsFromObject(byCount: {[prop: string]: number}, inverse?: boolean)
+
+  matchingItems.sort(function(a, b)
   {
-    var relativeWeights:
-    {
-      [prop: string]: number;
-    } = {};
+    return Date.parse(b.date) - Date.parse(a.date);
+  });
 
-    var min = 0;
-    var max: number;
-    for (var prop in byCount)
-    {
-      var count = byCount[prop];
-      max = isFinite(max) ? Math.max(max, count) : count;
-    }
+  return matchingItems;
+}
+export function shuffleArray(toShuffle: any[], seed?: any)
+{
+  var rng = new RNG(seed);
+  var resultArray = toShuffle.slice(0);
 
-    for (var prop in byCount)
-    {
-      var count = byCount[prop];
-      relativeWeights[prop] = getRelativeValue(count, min, max);
-    }
+  var i = resultArray.length;
 
-    return relativeWeights;
+  while (i > 0)
+  {
+    i--;
+    var n = rng.random(0, i);
+
+    var temp = resultArray[i];
+    resultArray[i] = resultArray[n];
+    resultArray[n] = temp;
   }
-  export function getDropTargetAtLocation(x: number, y: number)
+  return resultArray;
+}
+export function getRelativeValue(value: number, min: number, max: number, inverse: boolean = false)
+{
+  if (inverse)
   {
-    var dropTargets = document.getElementsByClassName("drop-target");
-    var point =
-    {
-      x: x,
-      y: y
-    }
-
-    for (var i = 0; i < dropTargets.length; i++)
-    {
-      var node = <HTMLElement> dropTargets[i];
-      var nodeBounds = node.getBoundingClientRect();
-
-      var rect =
-      {
-        x1: nodeBounds.left,
-        x2: nodeBounds.right,
-        y1: nodeBounds.top,
-        y2: nodeBounds.bottom
-      }
-      if (rectContains(rect, point))
-      {
-        return node;
-      }
-    }
-
-    return null;
-  }
-  export function onDOMLoaded(onLoaded: () => void)
-  {
-    if (document.readyState === "interactive" || document.readyState === "complete")
-    {
-      onLoaded();
-    }
+    if (min === max) return 0;
     else
     {
-      document.addEventListener('DOMContentLoaded', onLoaded);
+      return 1 - ((value - min) / (max - min));
     }
   }
-  export function meetAllPlayers()
+  else
   {
-    for (var i = 0; i < app.game.playerOrder.length; i++)
-    {
-      var player = app.game.playerOrder[i];
-      if (player !== app.humanPlayer)
-      {
-        app.humanPlayer.diplomacyStatus.meetPlayer(player);
-      }
-    }
-  }
-  export function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IWeightedProbability<T>[])
-  {
-    var allItems: T[] = [];
-
-    if (probabilities.length === 0)
-    {
-      return allItems;
-    }
-
-    // weighted
-    if (probabilities[0].weight)
-    {
-      var selected = getRandomArrayItemWithWeights<Templates.IWeightedProbability<T>>(probabilities);
-      var firstItem = <Templates.IWeightedProbability<T>> selected.probabilityItems[0];
-
-      if (firstItem.probabilityItems)
-      {
-        var probabilityItems = <Templates.IWeightedProbability<T>[]> selected.probabilityItems;
-        allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
-      }
-      else
-      {
-        var toAdd = <T[]> selected.probabilityItems;
-        allItems = allItems.concat(toAdd);
-      }
-    }
+    if (min === max) return 1;
     else
     {
-      // flat probability
-      for (var i = 0; i < probabilities.length; i++)
-      {
-        var selected: Templates.IWeightedProbability<T> = probabilities[i];
-        if (Math.random() < selected.flatProbability)
-        {
-          var firstItem = <Templates.IWeightedProbability<T>> selected.probabilityItems[0];
-          if (firstItem.probabilityItems)
-          {
-            var probabilityItems = <Templates.IWeightedProbability<T>[]> selected.probabilityItems;
-            allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
-          }
-          else
-          {
-            var toAdd = <T[]> selected.probabilityItems;
-            allItems = allItems.concat(toAdd);
-          }
-        }
-      }
+      return (value - min) / (max - min);
     }
+  }
+}
+export function getRelativeWeightsFromObject(byCount: {[prop: string]: number}, inverse?: boolean)
+{
+  var relativeWeights:
+  {
+    [prop: string]: number;
+  } = {};
+
+  var min = 0;
+  var max: number;
+  for (var prop in byCount)
+  {
+    var count = byCount[prop];
+    max = isFinite(max) ? Math.max(max, count) : count;
+  }
+
+  for (var prop in byCount)
+  {
+    var count = byCount[prop];
+    relativeWeights[prop] = getRelativeValue(count, min, max);
+  }
+
+  return relativeWeights;
+}
+export function getDropTargetAtLocation(x: number, y: number)
+{
+  var dropTargets = document.getElementsByClassName("drop-target");
+  var point =
+  {
+    x: x,
+    y: y
+  }
+
+  for (var i = 0; i < dropTargets.length; i++)
+  {
+    var node = <HTMLElement> dropTargets[i];
+    var nodeBounds = node.getBoundingClientRect();
+
+    var rect =
+    {
+      x1: nodeBounds.left,
+      x2: nodeBounds.right,
+      y1: nodeBounds.top,
+      y2: nodeBounds.bottom
+    }
+    if (rectContains(rect, point))
+    {
+      return node;
+    }
+  }
+
+  return null;
+}
+export function onDOMLoaded(onLoaded: () => void)
+{
+  if (document.readyState === "interactive" || document.readyState === "complete")
+  {
+    onLoaded();
+  }
+  else
+  {
+    document.addEventListener('DOMContentLoaded', onLoaded);
+  }
+}
+export function meetAllPlayers()
+{
+  for (var i = 0; i < app.game.playerOrder.length; i++)
+  {
+    var player = app.game.playerOrder[i];
+    if (player !== app.humanPlayer)
+    {
+      app.humanPlayer.diplomacyStatus.meetPlayer(player);
+    }
+  }
+}
+export function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IWeightedProbability<T>[])
+{
+  var allItems: T[] = [];
+
+  if (probabilities.length === 0)
+  {
     return allItems;
   }
-  export function defaultNameGenerator(unit: Unit)
-  {
-    return "" + unit.id + " " + unit.template.displayName;
-  }
-  export function transformMat3(a: Point, m: number[])
-  {
-    var x = m[0] * a.x + m[3] * a.y + m[6];
-    var y = m[1] * a.x + m[4] * a.y + m[7];
 
-    return {x: x, y: y};
-  }
-  // creating a dummy sprite for attaching a shader to
-  // works much better than using pixi filters
-  export function createDummySpriteForShader(x?: number, y?: number,
-    width?: number, height?: number)
+  // weighted
+  if (probabilities[0].weight)
   {
-    var texture = getDummyTextureForShader();
+    var selected = getRandomArrayItemWithWeights<Templates.IWeightedProbability<T>>(probabilities);
+    var firstItem = <Templates.IWeightedProbability<T>> selected.probabilityItems[0];
 
-    var sprite = new PIXI.Sprite(texture);
-    if (x || y)
+    if (firstItem.probabilityItems)
     {
-      sprite.position = new PIXI.Point(x || 0, y || 0);
+      var probabilityItems = <Templates.IWeightedProbability<T>[]> selected.probabilityItems;
+      allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
     }
-    if (width)
+    else
     {
-      sprite.width = width;
+      var toAdd = <T[]> selected.probabilityItems;
+      allItems = allItems.concat(toAdd);
     }
-    if (height)
-    {
-      sprite.height = height;
-    }
-
-    return sprite;
   }
-  export function getDummyTextureForShader()
+  else
   {
-    var canvas = <any> document.createElement("canvas");
-    canvas._pixiId = "dummyShaderTexture"; // pixi will reuse basetexture with this set
-    canvas.width = 1;
-    canvas.height = 1;
-    return PIXI.Texture.fromCanvas(canvas);
-  }
-  export function findEasingFunctionHighPoint(easingFunction: (x: number) => number,
-    resolution: number = 10, maxIterations: number = 4,
-    startIndex: number = 0, endIndex: number = 1, iteration: number = 0): number
-  {
-    if (iteration >= maxIterations)
+    // flat probability
+    for (var i = 0; i < probabilities.length; i++)
     {
-      return (startIndex + endIndex) / 2;
-    }
-
-    var highestValue: number;
-    var highestValueIndex: number
-
-    var step = (endIndex - startIndex) / resolution;
-    for (var i = 0; i < resolution; i++)
-    {
-      var currentIndex = startIndex + i * step;
-      var currentValue = easingFunction(currentIndex);
-
-      if (!isFinite(highestValue) || currentValue > highestValue)
+      var selected: Templates.IWeightedProbability<T> = probabilities[i];
+      if (Math.random() < selected.flatProbability)
       {
-        highestValue = currentValue;
-        highestValueIndex = currentIndex;
+        var firstItem = <Templates.IWeightedProbability<T>> selected.probabilityItems[0];
+        if (firstItem.probabilityItems)
+        {
+          var probabilityItems = <Templates.IWeightedProbability<T>[]> selected.probabilityItems;
+          allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
+        }
+        else
+        {
+          var toAdd = <T[]> selected.probabilityItems;
+          allItems = allItems.concat(toAdd);
+        }
       }
     }
-
-    return findEasingFunctionHighPoint(easingFunction,
-      resolution, maxIterations,
-      highestValueIndex - step / 2,
-      highestValueIndex + step / 2,
-      iteration + 1
-    );
   }
+  return allItems;
+}
+export function defaultNameGenerator(unit: Unit)
+{
+  return "" + unit.id + " " + unit.template.displayName;
+}
+export function transformMat3(a: Point, m: number[])
+{
+  var x = m[0] * a.x + m[3] * a.y + m[6];
+  var y = m[1] * a.x + m[4] * a.y + m[7];
+
+  return {x: x, y: y};
+}
+// creating a dummy sprite for attaching a shader to
+// works much better than using pixi filters
+export function createDummySpriteForShader(x?: number, y?: number,
+  width?: number, height?: number)
+{
+  var texture = getDummyTextureForShader();
+
+  var sprite = new PIXI.Sprite(texture);
+  if (x || y)
+  {
+    sprite.position = new PIXI.Point(x || 0, y || 0);
+  }
+  if (width)
+  {
+    sprite.width = width;
+  }
+  if (height)
+  {
+    sprite.height = height;
+  }
+
+  return sprite;
+}
+export function getDummyTextureForShader()
+{
+  var canvas = <any> document.createElement("canvas");
+  canvas._pixiId = "dummyShaderTexture"; // pixi will reuse basetexture with this set
+  canvas.width = 1;
+  canvas.height = 1;
+  return PIXI.Texture.fromCanvas(canvas);
+}
+export function findEasingFunctionHighPoint(easingFunction: (x: number) => number,
+  resolution: number = 10, maxIterations: number = 4,
+  startIndex: number = 0, endIndex: number = 1, iteration: number = 0): number
+{
+  if (iteration >= maxIterations)
+  {
+    return (startIndex + endIndex) / 2;
+  }
+
+  var highestValue: number;
+  var highestValueIndex: number
+
+  var step = (endIndex - startIndex) / resolution;
+  for (var i = 0; i < resolution; i++)
+  {
+    var currentIndex = startIndex + i * step;
+    var currentValue = easingFunction(currentIndex);
+
+    if (!isFinite(highestValue) || currentValue > highestValue)
+    {
+      highestValue = currentValue;
+      highestValueIndex = currentIndex;
+    }
+  }
+
+  return findEasingFunctionHighPoint(easingFunction,
+    resolution, maxIterations,
+    highestValueIndex - step / 2,
+    highestValueIndex + step / 2,
+    iteration + 1
+  );
 }

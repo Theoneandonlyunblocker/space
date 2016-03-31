@@ -1,10 +1,7 @@
-namespace Rance
+export interface Range
 {
-  export interface IRange
-  {
-    min?: number;
-    max?: number;
-    step?: number;
-    defaultValue?: number;
-  }
+  min?: number;
+  max?: number;
+  step?: number;
+  defaultValue?: number;
 }
