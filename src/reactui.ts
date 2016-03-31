@@ -47,7 +47,7 @@ module Rance
     }
     render()
     {
-      this.stage = React.renderComponent(
+      this.stage = React.render(
         UIComponents.Stage(
           {
             sceneToRender: this.currentScene,

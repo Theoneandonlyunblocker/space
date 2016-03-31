@@ -20382,7 +20382,7 @@ var Rance;
             this.container = null;
         };
         ReactUI.prototype.render = function () {
-            this.stage = React.renderComponent(Rance.UIComponents.Stage({
+            this.stage = React.render(Rance.UIComponents.Stage({
                 sceneToRender: this.currentScene,
                 changeSceneFunction: this.switchScene.bind(this),
                 battle: this.battle,
