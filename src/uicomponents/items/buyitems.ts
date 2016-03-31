@@ -1,3 +1,4 @@
+// TODO | remove this folder
 /// <reference path="itempurchaselist.ts" />
 
 module Rance

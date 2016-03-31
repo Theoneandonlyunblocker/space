@@ -34,6 +34,8 @@
 /// <reference path="../savedata/iunitsavedata.d.ts" />
 /// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../../lib/react-global-0.13.3.d.ts" />
+/// <reference path="../../lib/react-0.13.3.d.ts" />
+/// <reference path="../templateinterfaces/itechnologytemplate.d.ts" />
 /// <reference path="../templateinterfaces/imaprendererlayertemplate.d.ts" />
 /// <reference path="../templateinterfaces/imaprenderermapmodetemplate.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
@@ -41,7 +43,6 @@
 /// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
 /// <reference path="../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
-/// <reference path="../templateinterfaces/itechnologytemplate.d.ts" />
 /// <reference path="../templateinterfaces/ieffectactiontemplate.d.ts" />
 /// <reference path="../../lib/proton.d.ts" />
 /// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
@@ -2126,15 +2127,15 @@ declare module Rance {
         var OptionsList: React.ClassicFactory<{}>;
     }
 }
-declare module Rance {
-    module UIComponents {
-        var TechnologyPrioritySlider: React.ClassicFactory<{}>;
+declare module "src/uicomponents/technologies/technologyPrioritySlider" {
+    export const Factory: React.Factory<any>;
+    export interface PropTypes {
+        playerTechnology: Rance.PlayerTechnology;
+        technology: Rance.Templates.ITechnologyTemplate;
+        researchPoints: number;
     }
 }
-declare module Rance {
-    module UIComponents {
-        var Technology: React.ClassicFactory<{}>;
-    }
+declare module "src/uicomponents/technologies/technology" {
 }
 declare module Rance {
     module UIComponents {

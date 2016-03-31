@@ -1,6 +1,6 @@
 /// <reference path="../../playertechnology.ts" />
 
-/// <reference path="technologypriorityslider.ts" />
+import {Factory as TechnologyPrioritySlider} from "./technologyPrioritySlider.ts";
 
 module Rance
 {
@@ -88,7 +88,7 @@ module Rance
               },
                 "" + progressForLevel.toFixed(1) + " / " + Math.ceil(neededToProgressLevel)
               ),
-              UIComponents.TechnologyPrioritySlider(
+              TechnologyPrioritySlider(
               {
                 playerTechnology: this.props.playerTechnology,
                 technology: this.props.technology,
