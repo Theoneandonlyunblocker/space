@@ -27610,7 +27610,7 @@ var Rance;
         (function (DefaultModule) {
             var UIComponents;
             (function (UIComponents) {
-                UIComponents.BattleFinishNotification = React.createClass({
+                UIComponents.BattleFinishNotification = React.createFactory(React.createClass({
                     displayName: "BattleFinishNotification",
                     render: function () {
                         var notification = this.props.notification;
@@ -27629,7 +27629,7 @@ var Rance;
                         }, message + ".", React.DOM.br(null), React.DOM.br(null), "" + attacker.name + attackSuccessString + "attacked " + defender.name + " in " +
                             location.name + ". " + victor.name + controllerString + location.name + "."));
                     }
-                });
+                }));
             })(UIComponents = DefaultModule.UIComponents || (DefaultModule.UIComponents = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -27686,7 +27686,7 @@ var Rance;
         (function (DefaultModule) {
             var UIComponents;
             (function (UIComponents) {
-                UIComponents.WarDeclarationNotification = React.createClass({
+                UIComponents.WarDeclarationNotification = React.createFactory(React.createClass({
                     displayName: "WarDeclarationNotification",
                     render: function () {
                         var notification = this.props.notification;
@@ -27695,7 +27695,7 @@ var Rance;
                             className: "war-declaration-notification draggable-container"
                         }, null));
                     }
-                });
+                }));
             })(UIComponents = DefaultModule.UIComponents || (DefaultModule.UIComponents = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -27747,7 +27747,7 @@ var Rance;
         (function (DefaultModule) {
             var UIComponents;
             (function (UIComponents) {
-                UIComponents.PlayerDiedNotification = React.createClass({
+                UIComponents.PlayerDiedNotification = React.createFactory(React.createClass({
                     displayName: "PlayerDiedNotification",
                     render: function () {
                         var notification = this.props.notification;
@@ -27755,7 +27755,7 @@ var Rance;
                             className: "player-died-notification draggable-container"
                         }, "Here lies " + notification.props.deadPlayerName + ".", React.DOM.br(null), React.DOM.br(null), "He never scored."));
                     }
-                });
+                }));
             })(UIComponents = DefaultModule.UIComponents || (DefaultModule.UIComponents = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
