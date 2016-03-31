@@ -171,7 +171,7 @@ module Rance
               {
                 type: "number",
                 id: "battle-simulation-depth-input",
-                value: Options.debugOptions.battleSimulationDepth,
+                value: "" + Options.debugOptions.battleSimulationDepth,
                 min: 1,
                 max: 500,
                 step: 1,

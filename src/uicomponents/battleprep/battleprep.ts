@@ -22,6 +22,10 @@ module Rance
           leftLowerElement: "playerFormation" // "playerFormation" || "enemyFormation" || "itemEquip"
         });
       },
+      componentDidMount: function()
+      {
+        this.refs.background.handleResize();
+      },
       autoMakeFormation: function()
       {
         var battlePrep = this.props.battlePrep;
@@ -295,6 +299,7 @@ module Rance
               React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: "upper"},
                 UIComponents.BattleBackground(
                 {
+                  ref: "background",
                   renderer: this.props.renderer,
                   getBlurArea: this.getBackgroundBlurArea,
                   backgroundSeed: battlePrep.battleData.location.getSeed()

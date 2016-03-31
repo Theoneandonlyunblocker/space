@@ -559,15 +559,17 @@ module Rance
           )
         }
 
+        // TODO react
         // hack
         // 
         // transitiongroups dont work very well, especially in the older version
         // of react we're using. seems to be mostly fine on webkit & ie though
         // so just disable it on firefox for now
-        var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
-          React.addons.CSSTransitionGroup({transitionName: "battle-upper-footer"},
-            upperFooterElement
-          ) : upperFooterElement;
+        // var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
+        //   React.addons.CSSTransitionGroup({transitionName: "battle-upper-footer"},
+        //     upperFooterElement
+        //   ) : upperFooterElement;
+        var upperFooter = upperFooterElement;
 
         var overlayContainer: ReactDOMPlaceHolder = null;
         var playerWonBattle: boolean = null;

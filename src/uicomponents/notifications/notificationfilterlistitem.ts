@@ -9,7 +9,7 @@ module Rance
       {
         displayName: React.PropTypes.string.isRequired,
         filterState: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-        key: React.PropTypes.string.isRequired,
+        keyTODO: React.PropTypes.string.isRequired,
         filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
         isHighlighted: React.PropTypes.bool.isRequired
       },

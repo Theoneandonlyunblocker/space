@@ -8677,8 +8677,8 @@ var Rance;
         UIComponents.UnitPortrait = React.createFactory(React.createClass({
             displayName: "UnitPortrait",
             render: function () {
-                var props = this.props;
-                props.className = "unit-portrait " + (props.className || "");
+                var props = {};
+                props.className = "unit-portrait " + (this.props.className || "");
                 if (this.props.imageSrc) {
                     props.style =
                         {
@@ -8690,7 +8690,7 @@ var Rance;
         }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../../lib/react.d.ts" />
+/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -9934,7 +9934,6 @@ var Rance;
             },
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = true;
-                this.handleResize();
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
                 window.addEventListener("resize", this.handleResize, false);
             },
@@ -10395,13 +10394,17 @@ var Rance;
                         to: this.state.battleSceneUnit2.currentHealth
                     }) : null));
                 }
+                // TODO react
                 // hack
                 // 
                 // transitiongroups dont work very well, especially in the older version
                 // of react we're using. seems to be mostly fine on webkit & ie though
                 // so just disable it on firefox for now
-                var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
-                    React.addons.CSSTransitionGroup({ transitionName: "battle-upper-footer" }, upperFooterElement) : upperFooterElement;
+                // var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
+                //   React.addons.CSSTransitionGroup({transitionName: "battle-upper-footer"},
+                //     upperFooterElement
+                //   ) : upperFooterElement;
+                var upperFooter = upperFooterElement;
                 var overlayContainer = null;
                 var playerWonBattle = null;
                 if (this.state.battleIsStarting) {
@@ -11932,6 +11935,9 @@ var Rance;
                     leftLowerElement: "playerFormation" // "playerFormation" || "enemyFormation" || "itemEquip"
                 });
             },
+            componentDidMount: function () {
+                this.refs.background.handleResize();
+            },
             autoMakeFormation: function () {
                 var battlePrep = this.props.battlePrep;
                 battlePrep.clearPlayerFormation();
@@ -12121,6 +12127,7 @@ var Rance;
                 var humanFormationIsValid = battlePrep.humanFormationIsValid();
                 var canScout = player.starIsDetected(battlePrep.battleData.location);
                 return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: "upper" }, UIComponents.BattleBackground({
+                    ref: "background",
                     renderer: this.props.renderer,
                     getBlurArea: this.getBackgroundBlurArea,
                     backgroundSeed: battlePrep.battleData.location.getSeed()
@@ -14116,7 +14123,7 @@ var Rance;
             propTypes: {
                 displayName: React.PropTypes.string.isRequired,
                 filterState: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-                key: React.PropTypes.string.isRequired,
+                keyTODO: React.PropTypes.string.isRequired,
                 filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
                 isHighlighted: React.PropTypes.bool.isRequired
             },
@@ -14526,7 +14533,7 @@ var Rance;
                         content: React.DOM.div({}, React.DOM.input({
                             type: "number",
                             id: "battle-simulation-depth-input",
-                            value: Rance.Options.debugOptions.battleSimulationDepth,
+                            value: "" + Rance.Options.debugOptions.battleSimulationDepth,
                             min: 1,
                             max: 500,
                             step: 1,
@@ -15402,7 +15409,7 @@ var Rance;
         }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../../lib/react.d.ts" />
+/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -18680,7 +18687,7 @@ var Rance;
         }));
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../../lib/react.d.ts" />
+/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -18930,7 +18937,7 @@ var Rance;
                     className: "color-picker-input",
                     type: "number",
                     step: 1,
-                    value: Math.round(this.state[type]),
+                    value: "" + Math.round(this.state[type]),
                     onChange: updateFunctions[type]
                 })));
             },

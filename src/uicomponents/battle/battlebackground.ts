@@ -33,8 +33,6 @@ module Rance
       {
         this.props.renderer.isBattleBackground = true;
 
-        this.handleResize();
-
         this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
 
         window.addEventListener("resize", this.handleResize, false);

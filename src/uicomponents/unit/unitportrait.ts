@@ -7,8 +7,8 @@ module Rance
       displayName: "UnitPortrait",
       render: function()
       {
-        var props: any = this.props;
-        props.className = "unit-portrait " + (props.className || "");
+        var props: any = {};
+        props.className = "unit-portrait " + (this.props.className || "");
         if (this.props.imageSrc)
         {
           props.style = 

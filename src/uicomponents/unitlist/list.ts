@@ -138,7 +138,7 @@ module Rance
         innerNode.style.height = "" + desiredHeight + "px";
       },
 
-      handleScroll: function(e: React.UiEvent)
+      handleScroll: function(e: React.UIEvent)
       {
         // scrolls header to match list contents
         var target = <Element> e.target;
