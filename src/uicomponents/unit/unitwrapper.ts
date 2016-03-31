@@ -103,7 +103,7 @@ module Rance
         var empty = UIComponents.EmptyUnit(
         {
           facesLeft: this.props.facesLeft,
-          key: "empty_" + this.props.key,
+          key: "empty",
           position: this.props.position
         });
 

@@ -55,7 +55,7 @@ module Rance
                 displayName: notificationTemplate.displayName,
                 filter: filter,
                 filterState: filtersForCategory[i].filterState,
-                key: notificationTemplate.key,
+                keyTODO: notificationTemplate.key,
                 isHighlighted: isHighlighted
               })
             });

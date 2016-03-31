@@ -9,7 +9,7 @@ module Rance
 
       propTypes:
       {
-        key: React.PropTypes.string.isRequired,
+        keyTODO: React.PropTypes.string.isRequired,
         moneyAmount: React.PropTypes.number.isRequired,
         title: React.PropTypes.string.isRequired,
         maxMoneyAvailable: React.PropTypes.number,
@@ -21,7 +21,7 @@ module Rance
 
       onDragStart: function()
       {
-        this.props.onDragStart(this.props.key);
+        this.props.onDragStart(this.props.keyTODO/*TODO react*/);
       },
 
       onDragEnd: function()
@@ -31,7 +31,7 @@ module Rance
 
       handleClick: function()
       {
-        this.props.onClick(this.props.key);
+        this.props.onClick(this.props.keyTODO/*TODO react*/);
       },
 
       handleMoneyAmountChange: function(e: Event)
@@ -39,7 +39,7 @@ module Rance
         var target = <HTMLInputElement> e.target;
         var value = parseInt(target.value);
 
-        this.props.adjustItemAmount(this.props.key, value);
+        this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);
       },
 
       captureEvent: function(e: MouseEvent)

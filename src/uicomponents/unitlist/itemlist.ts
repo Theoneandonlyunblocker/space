@@ -47,6 +47,7 @@ module Rance
           {
             item: item,
             key: item.id,
+            keyTODO: item.id,
             id: item.id,
             typeName: item.template.displayName,
             slot: item.template.slot,

@@ -31,7 +31,7 @@ module Rance
               key: "money",
               data:
               {
-                key: "money",
+                keyTODO: "money",
                 rowConstructor: UIComponents.TradeMoney,
                 title: "Money",
                 moneyAmount: item.amount,

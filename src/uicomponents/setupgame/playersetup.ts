@@ -43,7 +43,7 @@ module Rance
       },
       handleSetHuman: function()
       {
-        this.props.setHuman(this.props.key);
+        this.props.setHuman(this.props.keyTODO/*TODO react*/);
       },
 
       handleNameChange: function(e: Event)
@@ -62,7 +62,7 @@ module Rance
       },
       handleRemove: function()
       {
-        this.props.removePlayers([this.props.key]);
+        this.props.removePlayers([this.props.keyTODO/*TODO react*/]);
       },
       handleSetCustomImage: function(image?: string)
       {

@@ -9233,7 +9233,7 @@ var Rance;
                 }
                 var empty = UIComponents.EmptyUnit({
                     facesLeft: this.props.facesLeft,
-                    key: "empty_" + this.props.key,
+                    key: "empty",
                     position: this.props.position
                 });
                 allElements.push(empty);
@@ -11077,7 +11077,7 @@ var Rance;
                 var rowProps = {
                     className: "item-list-item",
                     onClick: this.props.handleClick,
-                    key: this.props.key
+                    key: this.props.keyTODO /*TODO react*/
                 };
                 if (this.props.isDraggable) {
                     rowProps.className += " draggable";
@@ -11131,6 +11131,7 @@ var Rance;
                     var data = {
                         item: item,
                         key: item.id,
+                        keyTODO: item.id,
                         id: item.id,
                         typeName: item.template.displayName,
                         slot: item.template.slot,
@@ -13011,7 +13012,7 @@ var Rance;
             displayName: "TradeMoney",
             mixins: [UIComponents.Draggable],
             propTypes: {
-                key: React.PropTypes.string.isRequired,
+                keyTODO: React.PropTypes.string.isRequired,
                 moneyAmount: React.PropTypes.number.isRequired,
                 title: React.PropTypes.string.isRequired,
                 maxMoneyAvailable: React.PropTypes.number,
@@ -13021,18 +13022,18 @@ var Rance;
                 adjustItemAmount: React.PropTypes.func
             },
             onDragStart: function () {
-                this.props.onDragStart(this.props.key);
+                this.props.onDragStart(this.props.keyTODO /*TODO react*/);
             },
             onDragEnd: function () {
                 this.props.onDragEnd();
             },
             handleClick: function () {
-                this.props.onClick(this.props.key);
+                this.props.onClick(this.props.keyTODO /*TODO react*/);
             },
             handleMoneyAmountChange: function (e) {
                 var target = e.target;
                 var value = parseInt(target.value);
-                this.props.adjustItemAmount(this.props.key, value);
+                this.props.adjustItemAmount(this.props.keyTODO /*TODO react*/, value);
             },
             captureEvent: function (e) {
                 e.stopPropagation();
@@ -13104,7 +13105,7 @@ var Rance;
                             return ({
                                 key: "money",
                                 data: {
-                                    key: "money",
+                                    keyTODO: "money",
                                     rowConstructor: UIComponents.TradeMoney,
                                     title: "Money",
                                     moneyAmount: item.amount,
@@ -14130,10 +14131,10 @@ var Rance;
             },
             handleChangeState: function (state) {
                 var filter = this.props.filter;
-                filter.handleFilterStateChange(this.props.key, state);
+                filter.handleFilterStateChange(this.props.keyTODO /*TODO react*/, state);
                 filter.save();
                 this.setState({
-                    filterState: filter.filters[this.props.key]
+                    filterState: filter.filters[this.props.keyTODO /*TODO react*/]
                 });
                 Rance.eventManager.dispatchEvent("updateNotificationLog");
             },
@@ -14148,7 +14149,7 @@ var Rance;
                     inputElements.push(React.DOM.input({
                         className: "notification-filter-list-item-filter",
                         type: "checkbox",
-                        id: this.props.key,
+                        id: this.props.keyTODO /*TODO react*/,
                         key: state,
                         checked: stateIsActive,
                         onChange: this.handleChangeState.bind(this, numericState),
@@ -14159,7 +14160,7 @@ var Rance;
                     className: "notification-filter-list-item" + (this.props.isHighlighted ? " highlighted" : "")
                 }, React.DOM.label({
                     className: "notification-filter-list-item-label",
-                    htmlFor: this.props.key
+                    htmlFor: this.props.keyTODO /*TODO react*/
                 }, this.props.displayName), React.DOM.div({
                     className: "notification-filter-list-item-filters"
                 }, inputElements)));
@@ -14210,7 +14211,7 @@ var Rance;
                                 displayName: notificationTemplate.displayName,
                                 filter: filter,
                                 filterState: filtersForCategory[i].filterState,
-                                key: notificationTemplate.key,
+                                keyTODO: notificationTemplate.key,
                                 isHighlighted: isHighlighted
                             })
                         });
@@ -19412,7 +19413,7 @@ var Rance;
                 }
             },
             handleSetHuman: function () {
-                this.props.setHuman(this.props.key);
+                this.props.setHuman(this.props.keyTODO /*TODO react*/);
             },
             handleNameChange: function (e) {
                 var target = e.target;
@@ -19425,7 +19426,7 @@ var Rance;
                 this.setState({ subColor: isNull ? null : color });
             },
             handleRemove: function () {
-                this.props.removePlayers([this.props.key]);
+                this.props.removePlayers([this.props.keyTODO /*TODO react*/]);
             },
             handleSetCustomImage: function (image) {
                 this.setState({ flagHasCustomImage: Boolean(image) });
@@ -19582,6 +19583,7 @@ var Rance;
                 for (var i = 0; i < this.state.players.length; i++) {
                     playerSetups.push(UIComponents.PlayerSetup({
                         key: this.state.players[i],
+                        keyTODO: this.state.players[i],
                         ref: this.state.players[i],
                         removePlayers: this.removePlayers,
                         setActiveColorPicker: this.setActiveColorPicker,

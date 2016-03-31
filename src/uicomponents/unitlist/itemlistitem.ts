@@ -88,7 +88,7 @@ module Rance
         {
           className: "item-list-item",
           onClick : this.props.handleClick,
-          key: this.props.key
+          key: this.props.keyTODO/*TODO react*/
         };
         
         if (this.props.isDraggable)

@@ -124,6 +124,7 @@ module Rance
           playerSetups.push(UIComponents.PlayerSetup(
           {
             key: this.state.players[i],
+            keyTODO: this.state.players[i],
             ref: this.state.players[i],
             removePlayers: this.removePlayers,
             setActiveColorPicker: this.setActiveColorPicker,

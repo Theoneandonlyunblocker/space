@@ -33,11 +33,11 @@ module Rance
       handleChangeState: function(state: NotificationFilterState)
       {
         var filter: Rance.NotificationFilter = this.props.filter;
-        filter.handleFilterStateChange(this.props.key, state);
+        filter.handleFilterStateChange(this.props.keyTODO/*TODO react*/, state);
         filter.save();
         this.setState(
         {
-          filterState: filter.filters[this.props.key]
+          filterState: filter.filters[this.props.keyTODO/*TODO react*/]
         });
         eventManager.dispatchEvent("updateNotificationLog");
       },
@@ -57,7 +57,7 @@ module Rance
           {
             className: "notification-filter-list-item-filter",
             type: "checkbox",
-            id: this.props.key,
+            id: this.props.keyTODO/*TODO react*/,
             key: state,
             checked: stateIsActive,
             onChange: this.handleChangeState.bind(this, numericState),
@@ -73,7 +73,7 @@ module Rance
             React.DOM.label(
             {
               className: "notification-filter-list-item-label",
-              htmlFor: this.props.key
+              htmlFor: this.props.keyTODO/*TODO react*/
             },
               this.props.displayName
             ),
