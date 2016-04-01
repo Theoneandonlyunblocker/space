@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class AbilityTooltip extends React.Component<PropTypes, {}>
 {
-  displayName: "AbilityTooltip",
+  displayName: "AbilityTooltip";
 
   shouldComponentUpdate: function(newProps: any)
   {
@@ -20,7 +20,7 @@ export default class AbilityTooltip extends React.Component<PropTypes, {}>
       }
     }
     return false;
-  },
+  }
   render: function()
   {
     var abilities = this.props.activeTargets[this.props.targetUnit.id];

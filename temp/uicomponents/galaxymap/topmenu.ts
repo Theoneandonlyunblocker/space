@@ -11,12 +11,12 @@ export interface PropTypes
 
 export default class TopMenu extends React.Component<PropTypes, {}>
 {
-  displayName: "TopMenu",
-  mixins: [React.addons.PureRenderMixin],
+  displayName: "TopMenu";
+  mixins: [React.addons.PureRenderMixin];
 
-  cachedTopMenuWidth: undefined,
-  cachedButtonWidths: [],
-  cachedMenuButtonWidth: 37,
+  cachedTopMenuWidth: undefined;
+  cachedButtonWidths: [];
+  cachedMenuButtonWidth: 37;
 
 
   getInitialState: function()
@@ -27,7 +27,7 @@ export default class TopMenu extends React.Component<PropTypes, {}>
       buttonsToPlace: 999,
       condensedMenuOpened: Options.ui.noHamburger
     });
-  },
+  }
 
   componentDidMount: function()
   {
@@ -36,25 +36,25 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
 
     this.handleResize();
-  },
+  }
 
   componentWillUnmount: function()
   {
     window.removeEventListener("resize", this.handleResize);
     eventManager.removeEventListener("playerControlUpdated", this.delayedResize);
     eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
-  },
+  }
 
   handleToggleHamburger: function()
   {
     this.handleResize();
     this.forceUpdate();
-  },
+  }
 
   delayedResize: function()
   {
     window.setTimeout(this.handleResize, 0);
-  },
+  }
 
   handleResize: function()
   {
@@ -145,13 +145,13 @@ export default class TopMenu extends React.Component<PropTypes, {}>
       hasCondensedMenu: hasCondensedMenu,
       buttonsToPlace: amountOfButtonsToPlace
     });
-  },
+  }
 
   togglePopup: function(popupType: string)
   {
     this.refs.popups.togglePopup(popupType);
     this.forceUpdate();
-  },
+  }
 
   toggleCondensedMenu: function()
   {
@@ -159,7 +159,7 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     {
       condensedMenuOpened: !this.state.condensedMenuOpened
     });
-  },
+  }
 
   render: function()
   {

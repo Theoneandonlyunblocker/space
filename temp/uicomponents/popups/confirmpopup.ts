@@ -5,13 +5,13 @@ export interface PropTypes
 
 export default class ConfirmPopup extends React.Component<PropTypes, {}>
 {
-  displayName: "ConfirmPopup",
-  mixins: [SplitMultilineText],
+  displayName: "ConfirmPopup";
+  mixins: [SplitMultilineText];
 
   componentDidMount: function()
   {
     this.refs.okButton.getDOMNode().focus();
-  },
+  }
 
   handleOk: function()
   {
@@ -27,7 +27,7 @@ export default class ConfirmPopup extends React.Component<PropTypes, {}>
     {
       this.handleClose();
     }
-  },
+  }
   handleClose: function()
   {
     if (this.props.handleClose)
@@ -35,7 +35,7 @@ export default class ConfirmPopup extends React.Component<PropTypes, {}>
       this.props.handleClose();
     }
     this.props.closePopup();
-  },
+  }
 
   render: function()
   {

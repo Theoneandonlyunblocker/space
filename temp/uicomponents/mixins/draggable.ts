@@ -8,7 +8,7 @@ export var Draggable =
     {
       dragThreshhold: 5
     });
-  },
+  }
   getInitialState: function()
   {
     return(
@@ -16,7 +16,7 @@ export var Draggable =
       dragging: false,
       clone: <Node> null
     });
-  },
+  }
   componentWillMount: function()
   {
     this.dragPos = {};
@@ -36,7 +36,7 @@ export var Draggable =
       x: 0,
       y: 0
     };
-  },
+  }
   componentDidMount: function()
   {
     this.DOMNode = this.getDOMNode();
@@ -54,12 +54,12 @@ export var Draggable =
 
     this.setContainerRect();
     window.addEventListener("resize", this.setContainerRect, false);
-  },
+  }
   componentWillUnmount: function()
   {
     this.removeEventListeners();
     window.removeEventListener("resize", this.setContainerRect);
-  },
+  }
   handleMouseDown: function(e: MouseEvent)
   {
     if (e.button) return;
@@ -115,7 +115,7 @@ export var Draggable =
     {
       this.handleMouseMove(e);
     }
-  },
+  }
   handleMouseMove: function(e: MouseEvent)
   {
     if (e.preventDefault) e.preventDefault();
@@ -184,7 +184,7 @@ export var Draggable =
     {
       this.handleDrag(e);
     }
-  },
+  }
   handleDrag: function(e: MouseEvent)
   {
     var x = e.pageX - this.dragOffset.x;
@@ -240,7 +240,7 @@ export var Draggable =
       this.updateDOMNodeStyle();
     }
 
-  },
+  }
   handleMouseUp: function(e: MouseEvent)
   {
     // if (this.touchEventTarget)
@@ -270,7 +270,7 @@ export var Draggable =
     }
 
     this.removeEventListeners();
-  },
+  }
   handleDragEnd: function(e: MouseEvent)
   {
     if (this.state.clone)
@@ -301,7 +301,7 @@ export var Draggable =
       var endSuccesful = this.onDragEnd(e);
     }
 
-  },
+  }
   addEventListeners: function()
   {
     var self = this;
@@ -313,7 +313,7 @@ export var Draggable =
       this.touchEventTarget.addEventListener("touchmove", self.handleMouseMove);
       this.touchEventTarget.addEventListener("touchend", self.handleMouseUp);
     }
-  },
+  }
   removeEventListeners: function()
   {
     var self = this;
@@ -327,11 +327,11 @@ export var Draggable =
       this.touchEventTarget = null;
     }
 
-  },
+  }
   setContainerRect: function()
   {
     this.containerRect = this.containerElement.getBoundingClientRect();
-  },
+  }
   updateDOMNodeStyle: function()
   {
     if (this.state.clone)

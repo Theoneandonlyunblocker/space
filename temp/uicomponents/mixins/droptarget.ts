@@ -5,7 +5,7 @@ export var DropTarget =
   {
     if (!this.handleMouseUp) console.warn("No mouseUp handler on drop target", this);
     eventManager.addEventListener("drop" + this._rootNodeID, this.handleMouseUp);
-  },
+  }
   componentWillUnmount: function()
   {
     eventManager.removeEventListener("drop" + this._rootNodeID, this.handleMouseUp);

@@ -8,8 +8,8 @@ export interface PropTypes
 
 export default class BattleSceneFlag extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleSceneFlag",
-  flagCanvas: null,
+  displayName: "BattleSceneFlag";
+  flagCanvas: null;
 
 
   componentDidMount: function()
@@ -17,17 +17,17 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
     this.setFlag();
 
     window.addEventListener("resize", this.handleResize, false);
-  },
+  }
 
   componentWillUnmount: function()
   {
     window.removeEventListener("resize", this.handleResize);
-  },
+  }
 
   handleResize: function()
   {
     this.setFlag();
-  },
+  }
 
   setFlag: function()
   {
@@ -39,7 +39,7 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
 
     this.flagCanvas = this.drawFlag();
     this.getDOMNode().appendChild(this.flagCanvas);
-  },
+  }
 
   drawFlag: function()
   {
@@ -71,7 +71,7 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
     canvas.classList.add("battle-scene-start-player-flag");
 
     return canvas
-  },
+  }
 
   render: function()
   {

@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class DontShowAgain extends React.Component<PropTypes, {}>
 {
-  displayName: "DontShowAgain",
+  displayName: "DontShowAgain";
 
 
   getInitialState: function()
@@ -16,12 +16,12 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
     {
       isChecked: this.getTutorialState() === tutorialStatus.neverShow
     });
-  },
+  }
   
   getTutorialState: function()
   {
     return Rance.TutorialState[this.props.tutorialId];
-  },
+  }
 
   toggleState: function()
   {
@@ -40,7 +40,7 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
     {
       isChecked: !this.state.isChecked
     });
-  },
+  }
 
   render: function()
   {

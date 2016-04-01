@@ -7,13 +7,13 @@ export interface PropTypes
 
 export default class GalaxyMap extends React.Component<PropTypes, {}>
 {
-  displayName: "GalaxyMap",
+  displayName: "GalaxyMap";
   
   changeScene: function(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     app.reactUI.switchScene(target.value);
-  },
+  }
 
   render: function()
   {
@@ -98,7 +98,7 @@ export default class GalaxyMap extends React.Component<PropTypes, {}>
         )
       )
     );
-  },
+  }
 
   
   componentDidMount: function()
@@ -117,7 +117,7 @@ export default class GalaxyMap extends React.Component<PropTypes, {}>
       this.props.player.controlledLocations[0];
 
     this.props.renderer.camera.centerOnPosition(centerLocation);
-  },
+  }
   componentWillUnmount: function()
   {
     this.props.renderer.pause();

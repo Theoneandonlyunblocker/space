@@ -11,12 +11,12 @@ export interface PropTypes
 
 export default class MapGenOptions extends React.Component<PropTypes, {}>
 {
-  displayName: "MapGenOptions",
+  displayName: "MapGenOptions";
 
   getInitialState: function()
   {
     return this.getDefaultValues(this.props.mapGenTemplate);
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -24,7 +24,7 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     {
       this.setState(this.getDefaultValues(newProps.mapGenTemplate));
     }
-  },
+  }
 
   getDefaultValues: function(mapGenTemplate: Templates.IMapGenTemplate, unsetOnly: boolean = true)
   {
@@ -63,12 +63,12 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     }.bind(this));
 
     return defaultValues;
-  },
+  }
 
   resetValuesToDefault: function()
   {
     this.setState(this.getDefaultValues(this.props.mapGenTemplate, false));
-  },
+  }
 
   handleOptionChange: function(optionName: string, newValue: number)
   {
@@ -76,12 +76,12 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     changedState["optionValue_" + optionName] = newValue;
 
     this.setState(changedState);
-  },
+  }
 
   getOptionValue: function(optionName: string)
   {
     return this.state["optionValue_" + optionName];
-  },
+  }
 
   randomizeOptions: function()
   {
@@ -100,7 +100,7 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     }
 
     this.setState(newValues);
-  },
+  }
 
   getOptionValuesForTemplate: function(): Templates.IMapGenOptionValues
   {
@@ -124,7 +124,7 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     }
 
     return optionValues;
-  },
+  }
 
   render: function()
   {

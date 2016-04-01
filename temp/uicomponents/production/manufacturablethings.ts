@@ -14,7 +14,7 @@ export interface PropTypes
 
 export default class ManufacturableThings extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufacturableThings",
+  displayName: "ManufacturableThings";
 
 
   getInitialState: function()
@@ -23,7 +23,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
     {
       activeTab: "units"
     });
-  },
+  }
 
   selectTab: function(key: string)
   {
@@ -32,7 +32,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
     {
       activeTab: key
     });
-  },
+  }
   
   makeTabButton: function(key: string)
   {
@@ -62,7 +62,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
         displayString
       )
     );
-  },
+  }
 
   getManufacturableThings: function(key: string)
   {
@@ -101,7 +101,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
     }
 
     return manufacturableThings;
-  },
+  }
 
   makeTab: function(key: string)
   {
@@ -132,7 +132,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
         );
       }
     }
-  },
+  }
 
   render: function()
   {

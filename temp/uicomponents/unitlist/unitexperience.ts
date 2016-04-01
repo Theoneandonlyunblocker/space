@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class UnitExperience extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitExperience",
+  displayName: "UnitExperience";
 
   getInitialState: function()
   {
@@ -15,7 +15,7 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
     {
       upgradePopupId: undefined
     });
-  },
+  }
   makePopup: function()
   {
     var popupId = this.refs.popupManager.makePopup(
@@ -42,7 +42,7 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
     {
       upgradePopupId: popupId
     });
-  },
+  }
   closePopup: function()
   {
     this.refs.popupManager.closePopup(this.state.upgradePopupId);
@@ -50,7 +50,7 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
     {
       upgradePopupId: undefined
     });
-  },
+  }
   handleUnitUpgrade: function()
   {
     if (!this.props.unit.canLevelUp())
@@ -62,7 +62,7 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
       this.refs.popupManager.forceUpdate();
     }
     this.props.onUnitUpgrade();
-  },
+  }
   render: function()
   {
     var rows: ReactDOMPlaceHolder[] = [];

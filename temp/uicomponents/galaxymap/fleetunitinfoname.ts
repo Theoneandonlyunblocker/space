@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class FleetUnitInfoName extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetUnitInfoName",
+  displayName: "FleetUnitInfoName";
 
 
   getInitialState: function()
@@ -17,13 +17,13 @@ export default class FleetUnitInfoName extends React.Component<PropTypes, {}>
     {
       value: this.props.unit.name
     });
-  },
+  }
   onChange: function(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     this.setState({value: target.value});
     this.props.unit.name = target.value;
-  },
+  }
   render: function()
   {
     return(

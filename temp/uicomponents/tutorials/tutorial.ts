@@ -10,8 +10,8 @@ export interface PropTypes
 
 export default class Tutorial extends React.Component<PropTypes, {}>
 {
-  displayName: "Tutorial",
-  mixins: [SplitMultilineText],
+  displayName: "Tutorial";
+  mixins: [SplitMultilineText];
 
 
   getInitialState: function()
@@ -20,18 +20,18 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     {
       currentPage: 0
     });
-  },
+  }
 
   componentDidMount: function()
   {
     this.handleEnterPage(this.props.pages[this.state.currentPage]);
-  },
+  }
 
   componentWillUnmount: function()
   {
     this.handleLeavePage(this.props.pages[this.state.currentPage]);
     this.handleClose();
-  },
+  }
 
   handleEnterPage: function(page: ITutorialPage)
   {
@@ -44,7 +44,7 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     {
 
     }
-  },
+  }
 
   handleLeavePage: function(page: ITutorialPage)
   {
@@ -57,7 +57,7 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     {
       
     }
-  },
+  }
 
   flipPage: function(amount: number)
   {
@@ -71,7 +71,7 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     {
       currentPage: newPage
     }, this.handleEnterPage.bind(this, this.props.pages[newPage]));
-  },
+  }
 
   handleClose: function()
   {
@@ -79,7 +79,7 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     {
       Rance.TutorialState[this.props.tutorialId] = tutorialStatus.dontShowThisSession;
     }
-  },
+  }
 
   render: function()
   {

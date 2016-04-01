@@ -56,9 +56,9 @@ export default class List extends React.Component<PropTypes, {}>
 
     return(
     {
-      columns: this.props.initialColumns,
+      columns: this.props.initialColumns;
       selected: null, // set in componentDidMount
-      selectedColumn: initialColumn,
+      selectedColumn: initialColumn;
       sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
     });
   },
@@ -345,18 +345,18 @@ export default class List extends React.Component<PropTypes, {}>
         React.DOM.th(
           {
             key: column.key
-          },
+          }
           React.DOM.div(
             {
               className: "fixed-table-th-inner"
-            },
+            }
             React.DOM.div(
             {
               className: "fixed-table-th-content" + sortStatus,
               title: column.title || colProps.title || null,
               onMouseDown: self.handleSelectColumn.bind(null, column),
               onTouchStart: self.handleSelectColumn.bind(null, column),
-            },
+            }
               column.label
             )
           )
@@ -402,14 +402,14 @@ export default class List extends React.Component<PropTypes, {}>
     return(
       React.DOM.div(
         {
-          className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
+          className: "fixed-table-container" + (this.props.noHeader ? " no-header" : "");
           tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
         },
         React.DOM.div({className: "fixed-table-header-background"}),
         React.DOM.div(
         {
-          className: "fixed-table-container-inner",
-          ref: "inner",
+          className: "fixed-table-container-inner";
+          ref: "inner";
           onScroll: this.handleScroll
         },
           React.DOM.table(

@@ -5,8 +5,8 @@ export interface PropTypes
 
 export default class TurnCounter extends React.Component<PropTypes, {}>
 {
-  displayName: "TurnCounter",
-  mixins: [React.addons.PureRenderMixin],
+  displayName: "TurnCounter";
+  mixins: [React.addons.PureRenderMixin];
   render: function()
   {
     var turnsLeft = this.props.turnsLeft;

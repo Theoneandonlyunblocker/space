@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class OptionsGroup extends React.Component<PropTypes, {}>
 {
-  displayName: "OptionsGroup",
+  displayName: "OptionsGroup";
 
 
   getInitialState: function()
@@ -17,7 +17,7 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
     {
       isCollapsed: this.props.isCollapsedInitially || false
     });
-  },
+  }
   
   toggleCollapse: function()
   {
@@ -25,7 +25,7 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
     {
       isCollapsed: !this.state.isCollapsed
     });
-  },
+  }
 
   render: function()
   {

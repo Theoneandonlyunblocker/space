@@ -19,8 +19,8 @@ export interface PropTypes
 
 export default class Popup extends React.Component<PropTypes, {}>
 {
-  displayName: "Popup",
-  mixins: [Draggable],
+  displayName: "Popup";
+  mixins: [Draggable];
 
 
   getInitialState: function()
@@ -29,12 +29,12 @@ export default class Popup extends React.Component<PropTypes, {}>
     {
       zIndex: -1
     });
-  },
+  }
 
   componentDidMount: function()
   {
     this.setInitialPosition();
-  },
+  }
 
   onMouseDown: function(e: MouseEvent)
   {
@@ -47,7 +47,7 @@ export default class Popup extends React.Component<PropTypes, {}>
         zIndex: this.props.incrementZIndex(this.state.zIndex)
       });
     }
-  },
+  }
 
   setInitialPosition: function()
   {
@@ -102,7 +102,7 @@ export default class Popup extends React.Component<PropTypes, {}>
     {
       zIndex: this.props.incrementZIndex(this.state.zIndex)
     }, this.props.finishedMountingCallback);
-  },
+  }
 
   handleResizeMove: function(x: number, y: number)
   {
@@ -115,7 +115,7 @@ export default class Popup extends React.Component<PropTypes, {}>
     this.dragPos.height = clamp(y + 5 - this.dragPos.top, minHeight, maxHeight);
     this.updateDOMNodeStyle();
     eventManager.dispatchEvent("popupResized");
-  },
+  }
 
   render: function()
   {

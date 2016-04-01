@@ -5,10 +5,10 @@ export interface PropTypes
 
 export default class BattleSceneTester extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleSceneTester",
-  idGenerator: 0,
-  battle: null,
-  battleScene: null,
+  displayName: "BattleSceneTester";
+  idGenerator: 0;
+  battle: null;
+  battleScene: null;
 
   getInitialState: function()
   {
@@ -42,7 +42,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
 
       duration: null
     });
-  },
+  }
 
   componentDidMount: function()
   {
@@ -50,13 +50,13 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     battleScene.resume();
     battleScene.activeUnit = this.state.selectedSide1Unit;
     battleScene.updateUnits()
-  },
+  }
 
   makeUnit: function()
   {
     var template = getRandomProperty(app.moduleData.Templates.Units);
     return new Rance.Unit(template, this.idGenerator++);
-  },
+  }
 
   makePlayer: function()
   {
@@ -64,7 +64,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     player.name = "player " + player.id;
     player.makeColorScheme();
     player.makeRandomFlag();
-  },
+  }
 
   makeFormation: function(units: Unit[])
   {
@@ -83,7 +83,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     }
 
     return formation;
-  },
+  }
 
   makeBattle: function(props:
   {
@@ -118,19 +118,19 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
       side1Player: props.side1Player,
       side2Player: props.side2Player
     });
-  },
+  }
 
   handleUnitHover: function(unit: Unit)
   {
     this.battleScene.hoveredUnit = unit;
     this.battleScene.updateUnits();
-  },
+  }
 
   handleClearHover: function()
   {
     this.battleScene.hoveredUnit = null;
     this.battleScene.updateUnits();
-  },
+  }
 
   selectUnit: function(unit: Unit)
   {
@@ -148,7 +148,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     this.setState(newStateObj);
     this.battleScene.activeUnit = newActiveUnit;
     this.battleScene.updateUnits();
-  },
+  }
 
   handleSelectSFXTemplate: function(e: Event)
   {
@@ -157,7 +157,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     {
       selectedSFXTemplateKey: target.value
     });
-  },
+  }
 
   handleChangeDuration: function(e: Event)
   {
@@ -166,7 +166,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     {
       duration: target.value
     });
-  },
+  }
 
   handleTestAbility1: function()
   {
@@ -250,7 +250,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
       triggerEffectCallback: function(){console.log("triggerEffect")},
       afterFinishedCallback: function(){console.log("afterFinishedCallback")}
     });
-  },
+  }
 
   useSelectedAbility: function()
   {
@@ -273,7 +273,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
       triggerEffectCallback: function(){console.log("triggerEffect")},
       afterFinishedCallback: function(){console.log("afterFinishedCallback")}
     });
-  },
+  }
 
   makeUnitElements: function(units: Unit[])
   {
@@ -307,7 +307,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
 
 
     return unitElements;
-  },
+  }
 
   render: function()
   {

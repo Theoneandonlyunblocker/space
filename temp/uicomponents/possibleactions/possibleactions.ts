@@ -13,7 +13,7 @@ export interface PropTypes
 
 export default class PossibleActions extends React.Component<PropTypes, {}>
 {
-  displayName: "PossibleActions",
+  displayName: "PossibleActions";
 
 
   getInitialState: function()
@@ -24,7 +24,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
       expandedActionElement: null,
       canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar)
     });
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -44,25 +44,25 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
 
       this.setState(newState, afterStateSetCallback);
     }
-  },
+  }
 
   componentDidMount: function()
   {
     var self = this;
     eventManager.addEventListener("clearPossibleActions", this.clearExpandedAction);
     eventManager.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
-  },
+  }
 
   componentWillUnmount: function()
   {
     eventManager.removeAllListeners("clearPossibleActions");
     eventManager.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
-  },
+  }
 
   canUpgradeBuildings: function(star: Star)
   {
     return star && Object.keys(star.getBuildingUpgrades()).length > 0;
-  },
+  }
 
   handlePlayerBuiltBuilding: function()
   {
@@ -70,13 +70,13 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     {
       canUpgradeBuildings: this.canUpgradeBuildings(this.props.selectedStar)
     });
-  },
+  }
 
   updateActions: function()
   {
     this.props.setExpandedActionElementOnParent(this.state.expandedActionElement);
     eventManager.dispatchEvent("possibleActionsUpdated");
-  },
+  }
 
   clearExpandedAction: function()
   {
@@ -85,7 +85,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
       expandedAction: null,
       expandedActionElement: null
     }, this.updateActions);
-  },
+  }
 
   buildBuildings: function()
   {
@@ -114,7 +114,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
         expandedActionElement: element
       }, this.updateActions);
     }
-  },
+  }
 
   upgradeBuildings: function()
   {
@@ -143,7 +143,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
         expandedActionElement: element
       }, this.updateActions);
     }
-  },
+  }
 
   render: function()
   {

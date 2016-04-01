@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class DiplomaticStatusPlayer extends React.Component<PropTypes, {}>
 {
-  displayName: "DiplomaticStatusPlayer",
+  displayName: "DiplomaticStatusPlayer";
 
   getInitialState: function()
   {
@@ -16,7 +16,7 @@ export default class DiplomaticStatusPlayer extends React.Component<PropTypes, {
     {
       hasAttitudeModifierTootlip: false
     });
-  },
+  }
   makeCell: function(type: string)
   {
     var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
@@ -83,7 +83,7 @@ export default class DiplomaticStatusPlayer extends React.Component<PropTypes, {
         className: className
       }, this.props[type])
     );
-  },
+  }
   
   render: function()
   {

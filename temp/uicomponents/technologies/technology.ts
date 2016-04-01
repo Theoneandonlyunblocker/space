@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class Technology extends React.Component<PropTypes, {}>
 {
-  displayName: "Technology",
+  displayName: "Technology";
 
 
   togglePriorityLock: function()
@@ -22,7 +22,7 @@ export default class Technology extends React.Component<PropTypes, {}>
 
     pt.technologies[technology.key].priorityIsLocked = !pt.technologies[technology.key].priorityIsLocked;
     this.forceUpdate();
-  },
+  }
   render: function()
   {
     var technology: Templates.ITechnologyTemplate = this.props.technology;

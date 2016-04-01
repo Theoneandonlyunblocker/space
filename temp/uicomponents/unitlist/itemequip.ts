@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class ItemEquip extends React.Component<PropTypes, {}>
 {
-  displayName: "ItemEquip",
+  displayName: "ItemEquip";
   getInitialState: function()
   {
     return(
@@ -17,7 +17,7 @@ export default class ItemEquip extends React.Component<PropTypes, {}>
       selectedUnit: null,
       currentDragItem: null
     });
-  },
+  }
   handleSelectRow: function(row: IListItem)
   {
     if (!row.data.unit) return;
@@ -26,14 +26,14 @@ export default class ItemEquip extends React.Component<PropTypes, {}>
     {
       selectedUnit: row.data.unit
     });
-  },
+  }
   handleDragStart: function(item: Item)
   {
     this.setState(
     {
       currentDragItem: item
     });
-  },
+  }
   handleDragEnd: function(dropSuccesful: boolean = false)
   {
     if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit)
@@ -49,7 +49,7 @@ export default class ItemEquip extends React.Component<PropTypes, {}>
     {
       currentDragItem: null
     });
-  },
+  }
   handleDrop: function()
   {
     var item = this.state.currentDragItem;
@@ -64,7 +64,7 @@ export default class ItemEquip extends React.Component<PropTypes, {}>
     }
 
     this.handleDragEnd(true);
-  },
+  }
 
   render: function()
   {

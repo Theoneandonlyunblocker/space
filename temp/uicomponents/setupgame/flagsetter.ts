@@ -9,8 +9,8 @@ export interface PropTypes
 
 export default class FlagSetter extends React.Component<PropTypes, {}>
 {
-  displayName: "FlagSetter",
-  mixins: [FocusTimer],
+  displayName: "FlagSetter";
+  mixins: [FocusTimer];
   getInitialState: function()
   {
     var flag = new Flag(
@@ -27,13 +27,13 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       hasImageFailMessage: false,
       active: false
     });
-  },
+  }
   componentWillUnmount: function()
   {
     window.clearTimeout(this.imageLoadingFailTimeout);
     document.removeEventListener("click", this.handleClick);
     this.clearFocusTimerListener();
-  },
+  }
   displayImageLoadingFailMessage: function()
   {
     this.setState({hasImageFailMessage: true});
@@ -42,7 +42,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     {
       this.setState({hasImageFailMessage: false});
     }.bind(this), 10000);
-  },
+  }
   clearImageLoadingFailMessage: function()
   {
     if (this.imageLoadingFailTimeout)
@@ -50,7 +50,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       window.clearTimeout(this.imageLoadingFailTimeout);
     }
     this.setState({hasImageFailMessage: false});
-  },
+  }
   handleClick: function(e: MouseEvent)
   {
     var focusGraceTime = 500;
@@ -65,7 +65,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     {
       this.setAsInactive();
     }
-  },
+  }
 
   toggleActive: function()
   {
@@ -83,7 +83,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       document.addEventListener("click", this.handleClick, false);
       this.registerFocusTimerListener();
     }
-  },
+  }
   setAsInactive: function()
   {
     if (this.isMounted() && this.state.isActive)
@@ -92,7 +92,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       document.removeEventListener("click", this.handleClick);
       this.clearFocusTimerListener();
     }
-  },
+  }
 
   setForegroundEmblem: function(emblemTemplate: Templates.ISubEmblemTemplate)
   {
@@ -110,13 +110,13 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     {
       this.handleUpdate();
     }
-  },
+  }
 
   stopEvent: function(e: Event)
   {
     e.stopPropagation();
     e.preventDefault();
-  },
+  }
 
   handleDrop: function(e: DragEvent)
   {
@@ -182,7 +182,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
         this.setCustomImageFromFile(image);
       }
     }
-  },
+  }
 
   handleUpload: function(files: FileList)
   {
@@ -191,7 +191,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
 
     this.setCustomImageFromFile(image);
     return true;
-  },
+  }
 
   getFirstValidImageFromFiles: function(files: FileList)
   {
@@ -208,7 +208,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
 
     return image;
-  },
+  }
 
   setCustomImageFromFile: function(file: File)
   {
@@ -242,7 +242,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     {
       setImageFN();
     }
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -273,7 +273,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       this.handleUpdate(true);
       return;
     }
-  },
+  }
 
   handleUpdate: function(dontTriggerParentUpdates?: boolean)
   {
@@ -293,7 +293,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
 
     this.forceUpdate();
-  },
+  }
 
   render: function()
   {

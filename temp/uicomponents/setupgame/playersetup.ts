@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class PlayerSetup extends React.Component<PropTypes, {}>
 {
-  displayName: "PlayerSetup",
+  displayName: "PlayerSetup";
 
   getInitialState: function()
   {
@@ -19,7 +19,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
       subColor: null,
       flagHasCustomImage: false
     });
-  },
+  }
   generateMainColor: function(subColor = this.state.subColor)
   {
     if (subColor === null)
@@ -30,7 +30,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
     {
       return generateSecondaryColor(subColor);
     }
-  },
+  }
   generateSubColor: function(mainColor = this.state.mainColor)
   {
     if (mainColor === null)
@@ -41,34 +41,34 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
     {
       return generateSecondaryColor(mainColor);
     }
-  },
+  }
   handleSetHuman: function()
   {
     this.props.setHuman(this.props.keyTODO/*TODO react*/);
-  },
+  }
 
   handleNameChange: function(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     this.setState({name: target.value});
-  },
+  }
 
   setMainColor: function(color: number, isNull: boolean)
   {
     this.setState({mainColor: isNull ? null : color});
-  },
+  }
   setSubColor: function(color: number, isNull: boolean)
   {
     this.setState({subColor: isNull ? null : color});
-  },
+  }
   handleRemove: function()
   {
     this.props.removePlayers([this.props.keyTODO/*TODO react*/]);
-  },
+  }
   handleSetCustomImage: function(image?: string)
   {
     this.setState({flagHasCustomImage: Boolean(image)});
-  },
+  }
   randomize: function()
   {
     if (!this.state.flagHasCustomImage)
@@ -83,7 +83,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
       mainColor: mainColor,
       subColor: generateSecondaryColor(mainColor)
     });
-  },
+  }
   makePlayer: function()
   {
     var player = new Player(!this.props.isHuman);
@@ -118,7 +118,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
     });
 
     return player;
-  },
+  }
   render: function()
   {
     return(

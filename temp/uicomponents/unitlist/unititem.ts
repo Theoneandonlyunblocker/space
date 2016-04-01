@@ -5,17 +5,17 @@ export interface PropTypes
 
 export default class UnitItem extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitItem",
-  mixins: [Draggable],
+  displayName: "UnitItem";
+  mixins: [Draggable];
 
   onDragStart: function()
   {
     this.props.onDragStart(this.props.item);
-  },
+  }
   onDragEnd: function()
   {
     this.props.onDragEnd();
-  },
+  }
   getTechIcon: function(techLevel: number)
   {
     switch (techLevel)
@@ -29,7 +29,7 @@ export default class UnitItem extends React.Component<PropTypes, {}>
         return "img\/icons\/t3icon.png"
       }
     }
-  },
+  }
 
   render: function()
   {

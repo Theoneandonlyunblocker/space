@@ -7,11 +7,11 @@ export interface PropTypes
 
 export default class StarInfo extends React.Component<PropTypes, {}>
 {
-  displayName: "StarInfo",
+  displayName: "StarInfo";
   shouldComponentUpdate: function(newProps: any)
   {
     return this.props.selectedStar !== newProps.selectedStar;
-  },
+  }
   render: function()
   {
     var star: Star = this.props.selectedStar;

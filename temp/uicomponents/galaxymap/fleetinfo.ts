@@ -7,13 +7,13 @@ export interface PropTypes
 
 export default class FleetInfo extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetInfo",
+  displayName: "FleetInfo";
   setFleetName: function(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     this.props.fleet.name = target.value;
     this.forceUpdate();
-  },
+  }
 
   render: function()
   {

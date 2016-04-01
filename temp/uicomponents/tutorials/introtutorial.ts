@@ -12,8 +12,8 @@ export interface PropTypes
 
 export default class IntroTutorial extends React.Component<PropTypes, {}>
 {
-  displayName: "IntroTutorial",
-  popupId: null,
+  displayName: "IntroTutorial";
+  popupId: null;
 
   getInitialState: function()
   {
@@ -21,7 +21,7 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
     {
       show: Rance.TutorialState["introTutorial"] === tutorialStatus.show
     });
-  },
+  }
   
 
   componentDidMount: function()
@@ -57,7 +57,7 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
         minHeight: 250
       }
     });
-  },
+  }
 
   componentWillUnmount: function()
   {
@@ -65,13 +65,13 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
     {
       this.closePopup();
     }
-  },
+  }
 
   closePopup: function()
   {
     this.refs.popupManager.closePopup(this.popupId);
     this.popupId = null;
-  },
+  }
 
   render: function()
   {

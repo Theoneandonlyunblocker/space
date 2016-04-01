@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class ManufacturableThingsListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufacturableThingsListItem",
+  displayName: "ManufacturableThingsListItem";
 
 
   getInitialState: function()
@@ -19,7 +19,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
       canAfford: this.props.money >= this.props.template.buildCost,
       isDisabled: !this.props.onClick
     });
-  },
+  }
   
   componentWillReceiveProps: function(newProps: any)
   {
@@ -28,7 +28,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
       canAfford: newProps.money >= newProps.template.buildCost,
       isDisabled: !newProps.onClick
     });
-  },
+  }
   
 
   handleClick: function()
@@ -37,7 +37,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
     {
       this.props.onClick(this.props.template, this.props.parentIndex);
     }
-  },
+  }
 
   render: function()
   {

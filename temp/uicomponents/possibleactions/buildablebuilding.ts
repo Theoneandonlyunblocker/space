@@ -12,8 +12,8 @@ export interface PropTypes
 
 export default class BuildableBuilding extends React.Component<PropTypes, {}>
 {
-  displayName: "BuildableBuilding",
-  mixins: [UpdateWhenMoneyChanges],
+  displayName: "BuildableBuilding";
+  mixins: [UpdateWhenMoneyChanges];
 
 
   getInitialState: function()
@@ -22,7 +22,7 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
     {
       canAfford: this.props.player.money >= this.props.buildCost
     });
-  },
+  }
   
   overrideHandleMoneyChange: function()
   {
@@ -30,7 +30,7 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
     {
       canAfford: this.props.player.money >= this.props.buildCost
     });
-  },
+  }
 
   makeCell: function(type: string)
   {
@@ -60,7 +60,7 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
     return(
       React.DOM.td(cellProps, cellContent)
     );
-  },
+  }
 
   render: function()
   {

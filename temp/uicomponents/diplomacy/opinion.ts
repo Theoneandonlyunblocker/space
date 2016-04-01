@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class Opinion extends React.Component<PropTypes, {}>
 {
-  displayName: "Opinion",
+  displayName: "Opinion";
 
   getInitialState: function()
   {
@@ -15,22 +15,22 @@ export default class Opinion extends React.Component<PropTypes, {}>
     {
       hasAttitudeModifierTootlip: false
     });
-  },
+  }
 
   setTooltip: function()
   {
     this.setState({hasAttitudeModifierTootlip: true});
-  },
+  }
 
   clearTooltip: function()
   {
     this.setState({hasAttitudeModifierTootlip: false});
-  },
+  }
 
   getOpinionTextNode: function()
   {
     return this.getDOMNode().firstChild;
-  },
+  }
 
   getColor: function()
   {
@@ -50,7 +50,7 @@ export default class Opinion extends React.Component<PropTypes, {}>
         saturation + "%," +
         lightness + "%)"
     );
-  },
+  }
   
   render: function()
   {

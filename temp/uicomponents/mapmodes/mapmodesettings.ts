@@ -10,7 +10,7 @@ export interface PropTypes
 
 export default class MapModeSettings extends React.Component<PropTypes, {}>
 {
-  displayName: "MapModeSettings",
+  displayName: "MapModeSettings";
 
 
   handleReset: function()
@@ -20,7 +20,7 @@ export default class MapModeSettings extends React.Component<PropTypes, {}>
     mapRenderer.resetMapModeLayersPosition();
     mapRenderer.setAllLayersAsDirty();
     this.refs.layersList.forceUpdate();
-  },
+  }
 
   render: function()
   {

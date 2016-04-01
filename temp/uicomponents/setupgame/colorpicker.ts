@@ -7,8 +7,8 @@ export interface PropTypes
 
 export default class ColorPicker extends React.Component<PropTypes, {}>
 {
-  displayName: "ColorPicker",
-  onChangeTimeout: null,
+  displayName: "ColorPicker";
+  onChangeTimeout: null;
 
   getInitialState: function()
   {
@@ -26,18 +26,18 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
       val: hsvColor[2],
       isNull: true
     });
-  },
+  }
 
   componentDidMount: function()
   {
     window.addEventListener("resize", this.setPosition);
     this.setPosition();
-  },
+  }
 
   componentWillUnmount: function()
   {
     window.removeEventListener("resize", this.setPosition);
-  },
+  }
 
   setPosition: function()
   {
@@ -45,7 +45,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     var domNode = this.getDOMNode();
     domNode.style.top = "" + parentRect.bottom + "px";
     domNode.style.left = "" + parentRect.left + "px";
-  },
+  }
 
   triggerParentOnChange: function(color: number, isNull: boolean)
   {
@@ -56,7 +56,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     }
 
     this.onChangeTimeout = window.setTimeout(this.props.onChange.bind(null, color, isNull), 50);
-  },
+  }
 
   updateFromHsv: function(hue: number, sat: number, val: number, e?: Event)
   {
@@ -84,7 +84,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
         this.triggerParentOnChange(hexColor, false);
       }
     }
-  },
+  }
   updateFromHex: function(hexColor: number)
   {
     var hsvColor = colorFromScalars(hexToHsv(hexColor));
@@ -100,7 +100,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     {
       this.triggerParentOnChange(hexColor, false);
     }
-  },
+  }
   setHex: function(e: Event)
   {
     e.stopPropagation();
@@ -141,7 +141,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
       this.updateFromHex(hexColor);
     }
 
-  },
+  }
   setHue: function(e: Event)
   {
     var target = <HTMLInputElement> e.target;
@@ -149,7 +149,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     if (hue < 0) hue = 360;
     this.setState({hue: hue});
     this.updateFromHsv(hue, this.state.sat, this.state.val, e);
-  },
+  }
   setSat: function(e: Event)
   {
     var target = <HTMLInputElement> e.target;
@@ -157,7 +157,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     if (sat < 0) sat = 100;
     this.setState({sat: sat});
     this.updateFromHsv(this.state.hue, sat, this.state.val, e);
-  },
+  }
   setVal: function(e: Event)
   {
     var target = <HTMLInputElement> e.target;
@@ -165,7 +165,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     if (val < 0) val = 100;
     this.setState({val: val});
     this.updateFromHsv(this.state.hue, this.state.sat, val, e);
-  },
+  }
 
   autoGenerateColor: function()
   {
@@ -180,7 +180,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     });
 
     this.updateFromHex(hexColor);
-  },
+  }
 
   nullifyColor: function()
   {
@@ -190,7 +190,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     {
       this.triggerParentOnChange(this.state.hexColor, true);
     }
-  },
+  }
 
   getHueGradientString: function()
   {
@@ -221,7 +221,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
 
     this.hueGradientString = gradientString;
     return gradientString;
-  },
+  }
 
   makeGradientString: function(min: string, max: string)
   {
@@ -230,7 +230,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
       min + " 0%, " +
       max + " 100%)"
     );
-  },
+  }
 
   makeGradientStyle: function(type: string)
   {
@@ -270,7 +270,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
         return null;
       }
     }
-  },
+  }
 
   makeHsvInputs: function(type: string)
   {
@@ -318,7 +318,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
         })
       )
     );
-  },
+  }
   render: function()
   {
     var rootId = this._rootNodeID;

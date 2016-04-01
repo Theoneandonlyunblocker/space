@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class AttitudeModifierInfo extends React.Component<PropTypes, {}>
 {
-  displayName: "AttitudeModifierInfo",
+  displayName: "AttitudeModifierInfo";
 
   makeCell: function(type: string)
   {
@@ -62,7 +62,7 @@ export default class AttitudeModifierInfo extends React.Component<PropTypes, {}>
     return(
       React.DOM.td(cellProps, cellContent)
     );
-  },
+  }
 
   render: function()
   {

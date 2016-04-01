@@ -9,8 +9,8 @@ export interface PropTypes
 
 export default class UnitWrapper extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitWrapper",
-  mixins: [DropTarget],
+  displayName: "UnitWrapper";
+  mixins: [DropTarget];
   shouldComponentUpdate: function(newProps: any)
   {
     if (!this.props.unit && !newProps.unit) return false;
@@ -73,12 +73,12 @@ export default class UnitWrapper extends React.Component<PropTypes, {}>
     }
 
     return false;
-  },
+  }
   handleMouseUp: function()
   {
     console.log("unitMouseUp", this.props.position);
     this.props.onMouseUp(this.props.position);
-  },
+  }
 
   render: function()
   {

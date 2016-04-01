@@ -7,19 +7,19 @@ export interface PropTypes
 
 export default class PlayerMoney extends React.Component<PropTypes, {}>
 {
-  displayName: "PlayerMoney",
-  lastAmountRendered: undefined,
+  displayName: "PlayerMoney";
+  lastAmountRendered: undefined;
 
 
   componentDidMount: function()
   {
     eventManager.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
-  },
+  }
 
   componentWillUnmount: function()
   {
     eventManager.removeEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
-  },
+  }
 
   handlePlayerMoneyUpdated: function()
   {
@@ -27,7 +27,7 @@ export default class PlayerMoney extends React.Component<PropTypes, {}>
     {
       this.forceUpdate();
     }
-  },
+  }
 
   render: function()
   {

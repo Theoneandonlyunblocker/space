@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class ManufacturableItems extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufacturableItems",
+  displayName: "ManufacturableItems";
 
 
   shouldComponentUpdate: function(newProps: any)
@@ -39,19 +39,19 @@ export default class ManufacturableItems extends React.Component<PropTypes, {}>
     }
 
     return false;
-  },
+  }
 
   addItemToBuildQueue: function(template: Templates.IItemTemplate)
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.addThingToQueue(template, "item");
     this.props.triggerUpdate();
-  },
+  }
 
   upgradeItems: function()
   {
 
-  },
+  }
 
   render: function()
   {

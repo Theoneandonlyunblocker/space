@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class DiplomacyOverview extends React.Component<PropTypes, {}>
 {
-  displayName: "DiplomacyOverview",
+  displayName: "DiplomacyOverview";
 
   makeDiplomacyActionsPopup: function(rowItem: IListItem)
   {
@@ -30,7 +30,7 @@ export default class DiplomacyOverview extends React.Component<PropTypes, {}>
         containerDragOnly: true
       }
     });
-  },
+  }
 
   render: function()
   {

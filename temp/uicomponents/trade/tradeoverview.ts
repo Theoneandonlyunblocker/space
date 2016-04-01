@@ -12,16 +12,16 @@ export interface PropTypes
 
 export default class TradeOverview extends React.Component<PropTypes, {}>
 {
-  displayName: "TradeOverview",
-  selfPlayerTrade: undefined,
-  otherPlayerTrade: undefined,
+  displayName: "TradeOverview";
+  selfPlayerTrade: undefined;
+  otherPlayerTrade: undefined;
 
 
   componentWillMount: function()
   {
     this.selfPlayerTrade = new Trade(this.props.selfPlayer);
     this.otherPlayerTrade = new Trade(this.props.otherPlayer);
-  },
+  }
 
   getInitialState: function()
   {
@@ -31,13 +31,13 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
       currentStagingItemDragKey: undefined,
       currentDragItemPlayer: undefined
     });
-  },
+  }
   
 
   handleCancel: function()
   {
     this.props.handleClose();
-  },
+  }
 
   handleOk: function()
   {
@@ -46,7 +46,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     this.selfPlayerTrade.updateAfterExecutedTrade();
     this.otherPlayerTrade.updateAfterExecutedTrade();
     this.forceUpdate();
-  },
+  }
 
   getActiveTrade: function(player?: string)
   {
@@ -60,7 +60,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
       return this.otherPlayerTrade;
     }
     else return null;
-  },
+  }
 
   handleStageItem: function(player: string, key: string)
   {
@@ -83,7 +83,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     {
       this.forceUpdate();
     }
-  },
+  }
 
   handleAdjustStagedItemAmount: function(player: string, key: string, newAmount: number)
   {
@@ -93,7 +93,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     }
 
     this.forceUpdate();
-  },
+  }
 
   handleRemoveStagedItem: function(player: string, key: string)
   {
@@ -104,7 +104,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     {
       this.forceUpdate();
     }
-  },
+  }
 
   handleAvailableDragStart: function(player: string, key: string)
   {
@@ -113,7 +113,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
       currentAvailableItemDragKey: key,
       currentDragItemPlayer: player
     });
-  },
+  }
 
   handleStagingDragStart: function(player: string, key: string)
   {
@@ -122,7 +122,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
       currentStagingItemDragKey: key,
       currentDragItemPlayer: player
     });
-  },
+  }
 
   handleDragEnd: function()
   {
@@ -132,7 +132,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
       currentStagingItemDragKey: undefined,
       currentDragItemPlayer: undefined
     });
-  },
+  }
 
   handleAvailableMouseUp: function()
   {
@@ -140,7 +140,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     {
       this.handleRemoveStagedItem(null, this.state.currentStagingItemDragKey);
     }
-  },
+  }
 
   handleStagingAreaMouseUp: function()
   {
@@ -148,7 +148,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     {
       this.handleStageItem(null, this.state.currentAvailableItemDragKey);
     }
-  },
+  }
 
   render: function()
   {

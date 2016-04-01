@@ -5,18 +5,18 @@ export interface PropTypes
 
 export default class ItemListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "ItemListItem",
-  mixins: [Draggable],
+  displayName: "ItemListItem";
+  mixins: [Draggable];
 
   onDragStart: function()
   {
     console.log("onDragStart", this.props.item.template.displayName);
     this.props.onDragStart(this.props.item);
-  },
+  }
   onDragEnd: function()
   {
     this.props.onDragEnd();
-  },
+  }
 
   makeCell: function(type: string)
   {
@@ -54,7 +54,7 @@ export default class ItemListItem extends React.Component<PropTypes, {}>
     return(
       React.DOM.td(cellProps, cellContent)
     );
-  },
+  }
 
   makeDragClone: function()
   {
@@ -63,7 +63,7 @@ export default class ItemListItem extends React.Component<PropTypes, {}>
     clone.className = "item-icon-base draggable dragging";
 
     return clone;
-  },
+  }
 
   render: function()
   {

@@ -12,14 +12,14 @@ export interface PropTypes
 
 export default class BuildingUpgradeList extends React.Component<PropTypes, {}>
 {
-  displayName: "BuildingUpgradeList",
+  displayName: "BuildingUpgradeList";
 
 
   hasAvailableUpgrades: function()
   {
     var possibleUpgrades = this.props.star.getBuildingUpgrades();
     return Object.keys(possibleUpgrades).length > 0;
-  },
+  }
 
   upgradeBuilding: function(upgradeData: IBuildingUpgradeData)
   {
@@ -47,7 +47,7 @@ export default class BuildingUpgradeList extends React.Component<PropTypes, {}>
     {
       this.forceUpdate();
     }
-  },
+  }
 
   render: function()
   {

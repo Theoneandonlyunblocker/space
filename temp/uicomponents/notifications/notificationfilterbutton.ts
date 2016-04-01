@@ -10,7 +10,7 @@ export interface PropTypes
 
 export default class NotificationFilterButton extends React.Component<PropTypes, {}>
 {
-  displayName: "NotificationFilterButton",
+  displayName: "NotificationFilterButton";
 
   getInitialState: function()
   {
@@ -18,7 +18,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     {
       notificationFilterPopup: undefined
     });
-  },
+  }
   
   makePopup: function()
   {
@@ -57,7 +57,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     {
       notificationFilterPopup: popupId
     });
-  },
+  }
 
   closePopup: function()
   {
@@ -66,7 +66,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     {
       notificationFilterPopup: undefined
     });
-  },
+  }
 
   togglePopup: function()
   {
@@ -78,7 +78,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     {
       this.makePopup();
     }
-  },
+  }
 
   render: function()
   {

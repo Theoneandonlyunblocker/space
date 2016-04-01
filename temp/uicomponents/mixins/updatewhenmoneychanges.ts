@@ -15,15 +15,15 @@ export var UpdateWhenMoneyChanges =
         money: this.props.player.money
       });
     }
-  },
+  }
 
   componentDidMount: function()
   {
     eventManager.addEventListener("playerMoneyUpdated", this.handleMoneyChange);
-  },
+  }
 
   componentWillUnmount: function()
   {
     eventManager.removeEventListener("playerMoneyUpdated", this.handleMoneyChange);
-  },
+  }
 }

@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class MapModeSelector extends React.Component<PropTypes, {}>
 {
-  displayName: "MapModeSelector",
+  displayName: "MapModeSelector";
 
 
   handleChange: function(e: Event)
@@ -21,7 +21,7 @@ export default class MapModeSelector extends React.Component<PropTypes, {}>
     {
       this.props.onUpdate();
     }
-  },
+  }
 
   makeOptions: function()
   {
@@ -41,7 +41,7 @@ export default class MapModeSelector extends React.Component<PropTypes, {}>
     }
 
     return options;
-  },
+  }
   
 
   render: function()

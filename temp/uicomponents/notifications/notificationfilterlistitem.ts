@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class NotificationFilterListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "NotificationFilterListItem",
+  displayName: "NotificationFilterListItem";
 
   getInitialState: function()
   {
@@ -17,7 +17,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
     {
       filterState: this.props.filterState
     });
-  },
+  }
   
   componentWillReceiveProps: function(newProps: any)
   {
@@ -25,7 +25,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
     {
       filterState: newProps.filterState
     });
-  },
+  }
 
   handleChangeState: function(state: NotificationFilterState)
   {
@@ -37,7 +37,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
       filterState: filter.filters[this.props.keyTODO/*TODO react*/]
     });
     eventManager.dispatchEvent("updateNotificationLog");
-  },
+  }
   
   render: function()
   {

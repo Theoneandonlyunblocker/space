@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class SetupGamePlayers extends React.Component<PropTypes, {}>
 {
-  displayName: "SetupGamePlayers",
+  displayName: "SetupGamePlayers";
 
   getInitialState: function()
   {
@@ -24,7 +24,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
       players: players,
       activeColorPicker: null
     });
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -37,7 +37,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
       var overflowCount = this.state.players.length - newProps.maxPlayers;
       this.removePlayers(this.state.players.slice(-overflowCount));
     }
-  },
+  }
 
   makeNewPlayers: function(amountToMake: number = 1)
   {
@@ -57,7 +57,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     {
       players: this.state.players.concat(newIds)
     });
-  },
+  }
 
   setHumanPlayer: function(playerId: number)
   {
@@ -68,7 +68,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     newPlayerOrder.unshift(newPlayerOrder.splice(index, 1)[0]);
 
     this.setState({players: newPlayerOrder});
-  },
+  }
 
   removePlayers: function(toRemove: number[])
   {
@@ -84,7 +84,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
         return toRemove.indexOf(playerId) === -1;
       })
     });
-  },
+  }
 
   setActiveColorPicker: function(colorPicker: ReactComponentPlaceHolder)
   {
@@ -94,7 +94,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     }
 
     this.setState({activeColorPicker: colorPicker});
-  },
+  }
 
   randomizeAllPlayers: function()
   {
@@ -104,7 +104,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
 
       player.randomize();
     }
-  },
+  }
 
   makeAllPlayers: function()
   {
@@ -115,7 +115,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     }
 
     return players;
-  },
+  }
 
   render: function()
   {

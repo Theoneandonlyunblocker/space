@@ -6,14 +6,14 @@ export var AutoPosition =
     {
       this.setAutoPosition();
     }
-  },
+  }
   componentDidUpdate: function()
   {
     if (this.props.autoPosition)
     {
       this.setAutoPosition();
     }
-  },
+  }
   flipSide: function(side: string)
   {
     switch (side)
@@ -39,7 +39,7 @@ export var AutoPosition =
         throw new Error("Invalid side");
       }
     }
-  },
+  }
   elementFitsYSide: function(side: string, ownRect: ClientRect, parentRect: ClientRect)
   {
     switch (side)
@@ -57,7 +57,7 @@ export var AutoPosition =
         throw new Error("Invalid side");
       }
     }
-  },
+  }
   elementFitsXSide: function(side: string, ownRect: ClientRect, parentRect: ClientRect)
   {
     switch (side)
@@ -75,7 +75,7 @@ export var AutoPosition =
         throw new Error("Invalid side");
       }
     }
-  },
+  }
 
   setAutoPosition: function()
   {

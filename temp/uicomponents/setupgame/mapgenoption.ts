@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class MapGenOption extends React.Component<PropTypes, {}>
 {
-  displayName: "MapGenOption",
+  displayName: "MapGenOption";
 
   handleChange: function(e: Event)
   {
@@ -13,12 +13,12 @@ export default class MapGenOption extends React.Component<PropTypes, {}>
     var option = this.props.option;
     var newValue = clamp(parseFloat(target.value), option.min, option.max);
     this.props.onChange(this.props.id, newValue);
-  },
+  }
 
   shouldComponentUpdate: function(newProps: any)
   {
     return newProps.value !== this.props.value;
-  },
+  }
 
   render: function()
   {

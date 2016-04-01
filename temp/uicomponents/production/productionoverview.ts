@@ -15,8 +15,8 @@ export interface PropTypes
 
 export default class ProductionOverview extends React.Component<PropTypes, {}>
 {
-  displayName: "ProductionOverview",
-  mixins: [UpdateWhenMoneyChanges],
+  displayName: "ProductionOverview";
+  mixins: [UpdateWhenMoneyChanges];
 
 
   getInitialState: function()
@@ -43,22 +43,22 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
       highlightedStars: [initialSelected], // Star[]
       money: player.money
     });
-  },
+  }
 
   triggerUpdate: function()
   {
     this.forceUpdate();
-  },
+  }
 
   componentDidMount: function()
   {
     eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
-  },
+  }
 
   componentWillUnmount: function()
   {
     eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
-  },
+  }
 
   getStarsWithAndWithoutManufactories: function()
   {
@@ -85,7 +85,7 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
       withManufactories: starsWithManufactories,
       withoutManufactories: starsWithoutManufactories
     });
-  },
+  }
   
   handleStarSelect: function(star: Star)
   {
@@ -101,7 +101,7 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
         highlightedStars: [star]
       });
     }
-  },
+  }
 
   clearSelection: function()
   {
@@ -110,7 +110,7 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
       selectedStar: undefined,
       highlightedStars: []
     });
-  },
+  }
 
   render: function()
   {

@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class OptionsNumericField extends React.Component<PropTypes, {}>
 {
-  displayName: "OptionsNumericField",
+  displayName: "OptionsNumericField";
 
 
   getInitialState: function()
@@ -21,7 +21,7 @@ export default class OptionsNumericField extends React.Component<PropTypes, {}>
     {
       value: this.props.value
     });
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -29,13 +29,13 @@ export default class OptionsNumericField extends React.Component<PropTypes, {}>
     {
       this.setState({value: newProps.value});
     }
-  },
+  }
   
 
   triggerOnChangeFN: function()
   {
     this.props.onChangeFN(this.state.value);
-  },
+  }
 
   handleChange: function(e: Event)
   {
@@ -53,7 +53,7 @@ export default class OptionsNumericField extends React.Component<PropTypes, {}>
     {
       value: value
     }, this.triggerOnChangeFN);
-  },
+  }
 
   render: function()
   {

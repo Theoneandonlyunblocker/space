@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class ItemPurchaseListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "ItemPurchaseListItem",
+  displayName: "ItemPurchaseListItem";
   makeCell: function(type: string)
   {
     var cellProps: any = {};
@@ -39,7 +39,7 @@ export default class ItemPurchaseListItem extends React.Component<PropTypes, {}>
     return(
       React.DOM.td(cellProps, cellContent)
     );
-  },
+  }
 
   render: function()
   {

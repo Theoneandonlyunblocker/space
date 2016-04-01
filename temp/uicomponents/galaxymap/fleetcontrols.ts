@@ -9,23 +9,23 @@ export interface PropTypes
 
 export default class FleetControls extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetControls",
+  displayName: "FleetControls";
 
 
   deselectFleet: function()
   {
     eventManager.dispatchEvent("deselectFleet", this.props.fleet);
-  },
+  }
 
   selectFleet: function()
   {
     eventManager.dispatchEvent("selectFleets", [this.props.fleet]);
-  },
+  }
 
   splitFleet: function()
   {
     eventManager.dispatchEvent("splitFleet", this.props.fleet);
-  },
+  }
 
   render: function()
   {

@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class LightBox extends React.Component<PropTypes, {}>
 {
-  displayName: "LightBox",
+  displayName: "LightBox";
 
   // far from ideal as it always triggers reflow 4 times
   // cant figure out how to do resizing better since content size is dynamic
@@ -37,21 +37,21 @@ export default class LightBox extends React.Component<PropTypes, {}>
     {
       container.classList.add("light-box-fill-vertical");
     }
-  },
+  }
 
   componentDidMount: function()
   {
     window.addEventListener("resize", this.handleResize, false);
     this.handleResize();
-  },
+  }
   componentWillUnmount: function()
   {
     window.removeEventListener("resize", this.handleResize);
-  },
+  }
   componentDidUpdate: function()
   {
     this.handleResize();
-  },
+  }
 
   handleClose: function()
   {
@@ -64,7 +64,7 @@ export default class LightBox extends React.Component<PropTypes, {}>
     {
       this.props.handleClose();
     }
-  },
+  }
 
   render: function()
   {

@@ -10,8 +10,8 @@ export interface PropTypes
 
 export default class ConstructManufactory extends React.Component<PropTypes, {}>
 {
-  displayName: "ConstructManufactory",
-  mixins: [React.addons.PureRenderMixin],
+  displayName: "ConstructManufactory";
+  mixins: [React.addons.PureRenderMixin];
 
 
   getInitialState: function()
@@ -20,7 +20,7 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     {
       canAfford: this.props.money >= app.moduleData.ruleSet.manufactory.buildCost
     });
-  },
+  }
   
   componentWillReceiveProps: function(newProps: any)
   {
@@ -28,7 +28,7 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     {
       canAfford: newProps.money >= app.moduleData.ruleSet.manufactory.buildCost
     });
-  },
+  }
 
   handleConstruct: function()
   {
@@ -37,7 +37,7 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     star.buildManufactory();
     player.money -= app.moduleData.ruleSet.manufactory.buildCost;
     this.props.triggerUpdate();
-  },
+  }
 
   render: function()
   {

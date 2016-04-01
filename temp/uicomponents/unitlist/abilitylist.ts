@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class AbilityList extends React.Component<PropTypes, {}>
 {
-  displayName: "AbilityList",
+  displayName: "AbilityList";
   render: function()
   {
     var abilities: Templates.IAbilityBase[] = this.props.abilities;

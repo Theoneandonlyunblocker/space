@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class BuyItems extends React.Component<PropTypes, {}>
 {
-  displayName: "BuyItems",
+  displayName: "BuyItems";
 
   handleSelectRow: function(row: IListItem)
   {
@@ -19,7 +19,7 @@ export default class BuyItems extends React.Component<PropTypes, {}>
     this.props.player.money -= template.buildCost;
 
     eventManager.dispatchEvent("playerControlUpdated");
-  },
+  }
 
   render: function()
   {

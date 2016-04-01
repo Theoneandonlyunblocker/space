@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class UnitStrength extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitStrength",
+  displayName: "UnitStrength";
   getInitialState: function()
   {
     return(
@@ -15,7 +15,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       displayedStrength: this.props.currentHealth,
       activeTween: null
     });
-  },
+  }
   componentWillReceiveProps: function(newProps: any)
   {
     if (newProps.animateStrength &&
@@ -31,21 +31,21 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
     {
       this.updateDisplayStrength(newProps.currentHealth);
     }
-  },
+  }
   componentWillUnmount: function()
   {
     if (this.activeTween)
     {
       this.activeTween.stop();
     }
-  },
+  }
   updateDisplayStrength: function(newAmount: number)
   {
     this.setState(
     {
       displayedStrength: newAmount
     });
-  },
+  }
   animateDisplayedStrength: function(newAmount: number, time: number)
   {
     var self = this;
@@ -87,7 +87,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
 
     tween.start();
     animateTween();
-  },
+  }
   makeSquadronInfo: function()
   {
     return(
@@ -95,7 +95,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
         this.makeStrengthText()
       )
     );
-  },
+  }
   makeCapitalInfo: function()
   {
     var text = this.makeStrengthText();
@@ -122,7 +122,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
         bar
       )
     );
-  },
+  }
   makeStrengthText: function()
   {
     var critThreshhold = 0.3;
@@ -157,7 +157,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
         React.DOM.span({className: "unit-strength-max"}, "/" + max)
       )
     )
-  },
+  }
   render: function()
   {
     if (this.props.isSquadron)

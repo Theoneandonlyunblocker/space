@@ -15,7 +15,7 @@ export interface PropTypes
 
 export default class FleetContents extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetContents",
+  displayName: "FleetContents";
 
 
   handleMouseUp: function()
@@ -23,7 +23,7 @@ export default class FleetContents extends React.Component<PropTypes, {}>
     if (!this.props.onMouseUp) return;
 
     this.props.onMouseUp(this.props.fleet);
-  },
+  }
 
   render: function()
   {

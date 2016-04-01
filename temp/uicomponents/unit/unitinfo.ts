@@ -22,8 +22,8 @@ export interface PropTypes
 
 export default class UnitInfo extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitInfo",
-  mixins: [React.addons.PureRenderMixin],
+  displayName: "UnitInfo";
+  mixins: [React.addons.PureRenderMixin];
 
 
   render: function()

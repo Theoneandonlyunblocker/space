@@ -13,7 +13,7 @@ export interface PropTypes
 
 export default class OptionsList extends React.Component<PropTypes, {}>
 {
-  displayName: "OptionsList",
+  displayName: "OptionsList";
 
 
   handleResetAllOptions: function()
@@ -52,7 +52,7 @@ export default class OptionsList extends React.Component<PropTypes, {}>
         preventAutoResize: true
       }
     });
-  },
+  }
 
   render: function()
   {

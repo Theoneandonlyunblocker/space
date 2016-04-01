@@ -9,15 +9,15 @@ export interface PropTypes
 
 export default class FleetSelection extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetSelection",
+  displayName: "FleetSelection";
   mergeFleets: function()
   {
     eventManager.dispatchEvent("mergeFleets", null);
-  },
+  }
   reorganizeFleets: function()
   {
     eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
-  },
+  }
 
   setElementPosition: function()
   {
@@ -55,7 +55,7 @@ export default class FleetSelection extends React.Component<PropTypes, {}>
         first.classList.remove("fleet-selection-displaced");
       }
     }
-  },
+  }
 
   componentDidMount: function()
   {
@@ -63,18 +63,18 @@ export default class FleetSelection extends React.Component<PropTypes, {}>
 
     eventManager.addEventListener("possibleActionsUpdated", this.setElementPosition);
     window.addEventListener("resize", this.setElementPosition, false);
-  },
+  }
 
   componentDidUpdate: function()
   {
     this.setElementPosition()
-  },
+  }
 
   componentWillUnmount: function()
   {
     eventManager.removeEventListener("possibleActionsUpdated", this.setElementPosition);
     window.removeEventListener("resize", this.setElementPosition)
-  },
+  }
 
   render: function()
   {

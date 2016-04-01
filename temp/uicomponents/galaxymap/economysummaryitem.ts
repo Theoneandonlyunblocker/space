@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class EconomySummaryItem extends React.Component<PropTypes, {}>
 {
-  displayName: "EconomySummaryItem",
+  displayName: "EconomySummaryItem";
 
   makeCell: function(type: string)
   {
@@ -28,7 +28,7 @@ export default class EconomySummaryItem extends React.Component<PropTypes, {}>
     return(
       React.DOM.td(cellProps, cellContent)
     );
-  },
+  }
 
   render: function()
   {

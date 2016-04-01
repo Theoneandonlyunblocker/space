@@ -5,12 +5,12 @@ export interface PropTypes
 
 export default class UpgradeAttributes extends React.Component<PropTypes, {}>
 {
-  displayName: "UpgradeAttributes",
+  displayName: "UpgradeAttributes";
   upgradeAttribute: function(attribute: string, e: MouseEvent)
   {
     if (e.button) return;
     this.props.handleClick(attribute);
-  },
+  }
   render: function()
   {
     var unit: Unit = this.props.unit;

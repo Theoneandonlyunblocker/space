@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class EconomySummary extends React.Component<PropTypes, {}>
 {
-  displayName: "EconomySummary",
+  displayName: "EconomySummary";
 
   render: function()
   {

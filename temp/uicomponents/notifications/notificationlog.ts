@@ -10,9 +10,9 @@ export interface PropTypes
 
 export default class NotificationLog extends React.Component<PropTypes, {}>
 {
-  displayName: "NotificationLog",
-  mixins: [React.addons.PureRenderMixin],
-  updateListener: undefined,
+  displayName: "NotificationLog";
+  mixins: [React.addons.PureRenderMixin];
+  updateListener: undefined;
 
 
   getInitialState: function()
@@ -21,7 +21,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     {
       
     });
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -29,17 +29,17 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     {
       this.scrollTop = undefined;
     }
-  },
+  }
 
   componentDidMount: function()
   {
     this.updateListener = eventManager.addEventListener("updateNotificationLog", this.forceUpdate.bind(this));
-  },
+  }
 
   componentWillUnmount: function()
   {
     eventManager.removeEventListener("updateNotificationLog", this.updateListener);
-  },
+  }
 
   componentDidUpdate: function()
   {
@@ -50,12 +50,12 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     }
 
     domNode.scrollTop = domNode.scrollHeight;
-  },
+  }
 
   getNotificationKey: function(notification: Notification)
   {
     return "" + notification.turn + this.props.log.byTurn[notification.turn].indexOf(notification);
-  },
+  }
 
   handleMarkAsRead: function(notification: Notification)
   {
@@ -69,7 +69,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     {
       this.forceUpdate();
     }
-  },
+  }
 
   makePopup: function(notification: Notification, key: string)
   {
@@ -110,7 +110,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     var stateObj: any = {};
     stateObj[key] = popupId;
     this.setState(stateObj);
-  },
+  }
 
   closePopup: function(key: string)
   {
@@ -119,7 +119,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     var stateObj: any = {};
     stateObj[key] = undefined;
     this.setState(stateObj);
-  },
+  }
 
   togglePopup: function(notification: Notification)
   {
@@ -132,7 +132,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     {
       this.makePopup(notification, key);
     }
-  },
+  }
 
   render: function()
   {

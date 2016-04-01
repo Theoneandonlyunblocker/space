@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class BattleDisplayStrength extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleDisplayStrength",
+  displayName: "BattleDisplayStrength";
   getInitialState: function()
   {
     return(
@@ -13,12 +13,12 @@ export default class BattleDisplayStrength extends React.Component<PropTypes, {}
       displayedStrength: this.props.from,
       activeTween: null
     });
-  },
+  }
 
   componentDidMount: function()
   {
     this.animateDisplayedStrength(this.props.from, this.props.to, this.props.delay);
-  },
+  }
 
   componentWillUnmount: function()
   {
@@ -26,14 +26,14 @@ export default class BattleDisplayStrength extends React.Component<PropTypes, {}
     {
       this.activeTween.stop();
     }
-  },
+  }
   updateDisplayStrength: function(newAmount: number)
   {
     this.setState(
     {
       displayedStrength: newAmount
     });
-  },
+  }
   animateDisplayedStrength: function(from: number, newAmount: number, time: number)
   {
     var self = this;
@@ -82,7 +82,7 @@ export default class BattleDisplayStrength extends React.Component<PropTypes, {}
 
     tween.start();
     animateTween();
-  },
+  }
 
   render: function()
   {

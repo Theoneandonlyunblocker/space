@@ -11,7 +11,7 @@ export interface PropTypes
 
 export default class DiplomacyActions extends React.Component<PropTypes, {}>
 {
-  displayName: "DiplomacyActions",
+  displayName: "DiplomacyActions";
 
 
   getInitialState: function()
@@ -20,7 +20,7 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     {
       trade: undefined
     });
-  },
+  }
   
   closePopup: function(popupType: string)
   {
@@ -28,7 +28,7 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     var stateObj: any = {};
     stateObj[popupType] = undefined;
     this.setState(stateObj);
-  },
+  }
 
   makePopup: function(popupType: string)
   {
@@ -73,7 +73,7 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     var stateObj: any = {};
     stateObj[popupType] = id;
     this.setState(stateObj)
-  },
+  }
 
   togglePopup: function(popupType: string)
   {
@@ -85,18 +85,18 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     {
       this.makePopup(popupType);
     }
-  },
+  }
 
   handleDeclareWar: function()
   {
     this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
     this.props.onUpdate();
-  },
+  }
   handleMakePeace: function()
   {
     this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
     this.props.onUpdate();
-  },
+  }
 
   render: function()
   {

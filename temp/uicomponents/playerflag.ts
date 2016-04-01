@@ -5,14 +5,14 @@ export interface PropTypes
 
 export default class PlayerFlag extends React.Component<PropTypes, {}>
 {
-  displayName: "PlayerFlag",
-  mixins: [React.addons.PureRenderMixin],
+  displayName: "PlayerFlag";
+  mixins: [React.addons.PureRenderMixin];
   canUseDataURL: function()
   {
     var uaString = navigator.userAgent.toLowerCase();
     var isIE = uaString.indexOf("msie") !== -1 || uaString.indexOf("trident/") !== -1;
     return !isIE;
-  },
+  }
   componentDidMount: function()
   {
     if (this.refs.container && !this.props.isMutable)
@@ -22,7 +22,7 @@ export default class PlayerFlag extends React.Component<PropTypes, {}>
       canvas.style.maxHeight = "100%";
       this.refs.container.getDOMNode().appendChild(canvas);
     }
-  },
+  }
   componentDidUpdate: function()
   {
     if (this.refs.container && this.props.isMutable)
@@ -38,7 +38,7 @@ export default class PlayerFlag extends React.Component<PropTypes, {}>
       canvas.style.maxHeight = "100%";
       containerNode.appendChild(canvas);
     }
-  },
+  }
   render: function()
   {
     var props = this.props.props;

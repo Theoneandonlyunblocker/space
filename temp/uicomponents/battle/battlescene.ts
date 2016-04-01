@@ -24,7 +24,7 @@ export interface PropTypes
 
 export default class BattleScene extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleScene",
+  displayName: "BattleScene";
 
   battleScene: null, // Rance.BattleScene
 
@@ -45,7 +45,7 @@ export default class BattleScene extends React.Component<PropTypes, {}>
     }
 
     return false;
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -112,7 +112,7 @@ export default class BattleScene extends React.Component<PropTypes, {}>
         battleScene.updateUnits();
       }
     }
-  },
+  }
 
   render: function()
   {

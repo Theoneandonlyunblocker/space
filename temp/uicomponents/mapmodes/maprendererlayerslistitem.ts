@@ -5,9 +5,9 @@ export interface PropTypes
 
 export default class MapRendererLayersListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "MapRendererLayersListItem",
-  mixins: [Draggable, DropTarget, React.addons.PureRenderMixin],
-  cachedMidPoint: undefined,
+  displayName: "MapRendererLayersListItem";
+  mixins: [Draggable, DropTarget, React.addons.PureRenderMixin];
+  cachedMidPoint: undefined;
 
   getInitialState: function()
   {
@@ -15,7 +15,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     {
       hoverSide: null
     });
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -24,18 +24,18 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
       this.cachedMidPoint = undefined;
       this.clearHover();
     }
-  },
+  }
 
 
   onDragStart: function()
   {
     this.props.onDragStart(this.props.layer);
-  },
+  }
 
   onDragEnd: function()
   {
     this.props.onDragEnd();
-  },
+  }
 
   handleHover: function(e: MouseEvent)
   {
@@ -53,7 +53,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     });
 
     this.props.setHoverPosition(this.props.layer, isAbove);
-  },
+  }
 
   clearHover: function()
   {
@@ -61,7 +61,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     {
       hoverSide: null
     });
-  },
+  }
 
   setLayerAlpha: function(e: Event)
   {
@@ -73,7 +73,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
       this.props.layer.alpha = value;
     }
     this.forceUpdate();
-  },
+  }
 
   render: function()
   {

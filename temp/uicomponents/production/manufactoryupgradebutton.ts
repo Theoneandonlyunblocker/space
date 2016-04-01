@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class ManufactoryUpgradeButton extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufactoryUpgradeButton",
+  displayName: "ManufactoryUpgradeButton";
 
 
   getInitialState: function()
@@ -22,7 +22,7 @@ export default class ManufactoryUpgradeButton extends React.Component<PropTypes,
       canAffordUpgrade: this.props.money >= this.props.upgradeCost,
       isDisabled: this.props.currentLevel >= this.props.maxLevel
     });
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -31,7 +31,7 @@ export default class ManufactoryUpgradeButton extends React.Component<PropTypes,
       canAffordUpgrade: newProps.money >= newProps.upgradeCost,
       isDisabled: newProps.currentLevel >= newProps.maxLevel
     })
-  },
+  }
 
   render: function()
   {

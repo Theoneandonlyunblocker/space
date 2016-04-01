@@ -15,7 +15,7 @@ export interface PropTypes
 
 export default class TradeableItemsList extends React.Component<PropTypes, {}>
 {
-  displayName: "TradeableItemsList",
+  displayName: "TradeableItemsList";
 
 
   makeRowForTradeableItem: function(item: ITradeableItem): IListItem
@@ -58,7 +58,7 @@ export default class TradeableItemsList extends React.Component<PropTypes, {}>
         });
       }
     }
-  },
+  }
 
   render: function()
   {

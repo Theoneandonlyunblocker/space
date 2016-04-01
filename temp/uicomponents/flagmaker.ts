@@ -7,8 +7,8 @@ export interface PropTypes
 
 export default class FlagMaker extends React.Component<PropTypes, {}>
 {
-  setStateTimeout: undefined,
-  sizeValue: 46,
+  setStateTimeout: undefined;
+  sizeValue: 46;
   getInitialState: function()
   {
     return(
@@ -16,7 +16,7 @@ export default class FlagMaker extends React.Component<PropTypes, {}>
       sizeValue: 46,
       size: 46
     });
-  },
+  }
 
   handleSizeChange: function(e: Event)
   {
@@ -31,11 +31,11 @@ export default class FlagMaker extends React.Component<PropTypes, {}>
       this.sizeValue = value;
       this.setStateTimeout = window.setTimeout(this.setState.bind(this, {size: value}), 500);
     }
-  },
+  }
   makeFlags: function()
   {
     this.forceUpdate();
-  },
+  }
   render: function()
   {
     var flagElements: ReactComponentPlaceHolder[] = [];

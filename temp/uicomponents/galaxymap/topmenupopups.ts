@@ -16,8 +16,8 @@ export interface PropTypes
 
 export default class TopMenuPopups extends React.Component<PropTypes, {}>
 {
-  displayName: "TopMenuPopups",
-  cachedPopupRects: {},
+  displayName: "TopMenuPopups";
+  cachedPopupRects: {}
 
 
   getInitialState: function()
@@ -33,7 +33,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
       diplomacy: undefined,
       technologies: undefined
     });
-  },
+  }
   closePopup: function(popupType: string)
   {
     var popupNode = this.refs.popupManager.refs[this.state[popupType]].getDOMNode();
@@ -48,7 +48,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
     {
       saveOptions();
     }
-  },
+  }
 
   makePopup: function(popupType: string)
   {
@@ -171,7 +171,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
     var stateObj: any = {};
     stateObj[popupType] = id;
     this.setState(stateObj)
-  },
+  }
 
   togglePopup: function(popupType: string)
   {
@@ -183,7 +183,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
     {
       this.makePopup(popupType);
     }
-  },
+  }
 
   render: function()
   {

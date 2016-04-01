@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class ItemList extends React.Component<PropTypes, {}>
 {
-  displayName: "ItemList",
+  displayName: "ItemList";
 
   getSlotIndex: function(slot: string)
   {
@@ -21,7 +21,7 @@ export default class ItemList extends React.Component<PropTypes, {}>
       return 1;
     }
     else return 0;
-  },
+  }
 
   render: function()
   {

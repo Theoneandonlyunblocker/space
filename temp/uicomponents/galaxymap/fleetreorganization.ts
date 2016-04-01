@@ -10,7 +10,7 @@ export interface PropTypes
 
 export default class FleetReorganization extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetReorganization",
+  displayName: "FleetReorganization";
 
 
   getInitialState: function()
@@ -19,7 +19,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     {
       currentDragUnit: null
     });
-  },
+  }
 
   handleDragStart: function(unit: Unit)
   {
@@ -27,7 +27,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     {
       currentDragUnit: unit
     });
-  },
+  }
 
   handleDragEnd: function(dropSuccesful: boolean = false)
   {
@@ -35,7 +35,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     {
       currentDragUnit: null
     });
-  },
+  }
 
   handleDrop: function(fleet: Fleet)
   {
@@ -49,20 +49,20 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     }
 
     this.handleDragEnd(true);
-  },
+  }
 
   handleClose: function()
   {
     this.hasClosed = true;
     this.props.closeReorganization();
-  },
+  }
 
   componentWillUnmount: function()
   {
     if (this.hasClosed) return;
 
     eventManager.dispatchEvent("endReorganizingFleets");
-  },
+  }
 
   render: function()
   {

@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class SetupGame extends React.Component<PropTypes, {}>
 {
-  displayName: "SetupGame",
+  displayName: "SetupGame";
 
   getInitialState: function()
   {
@@ -17,7 +17,7 @@ export default class SetupGame extends React.Component<PropTypes, {}>
       minPlayers: 1,
       maxPlayers: 5
     });
-  },
+  }
 
   setPlayerLimits: function(props:
   {
@@ -30,7 +30,7 @@ export default class SetupGame extends React.Component<PropTypes, {}>
       minPlayers: props.min,
       maxPlayers: props.max
     });
-  },
+  }
 
   startGame: function()
   {
@@ -46,13 +46,13 @@ export default class SetupGame extends React.Component<PropTypes, {}>
     var map = mapGenResult.makeMap();
 
     app.makeGameFromSetup(map, players);
-  },
+  }
 
   randomize: function()
   {
     this.refs.players.randomizeAllPlayers();
     this.refs.mapSetup.refs.mapGenOptions.randomizeOptions();
-  },
+  }
 
   render: function()
   {

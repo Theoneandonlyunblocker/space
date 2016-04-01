@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class SaveGame extends React.Component<PropTypes, {}>
 {
-  displayName: "SaveGame",
+  displayName: "SaveGame";
 
   componentDidMount: function()
   {
@@ -20,17 +20,17 @@ export default class SaveGame extends React.Component<PropTypes, {}>
     {
       this.refs.saveName.getDOMNode().focus();
     }
-  },
+  }
 
   setInputText: function(newText: string)
   {
     this.refs.saveName.getDOMNode().value = newText;
-  },
+  }
 
   handleRowChange: function(row: IListItem)
   {
     this.setInputText(row.data.name)
-  },
+  }
 
   handleSave: function()
   {
@@ -44,16 +44,16 @@ export default class SaveGame extends React.Component<PropTypes, {}>
     {
       this.saveGame();
     }
-  },
+  }
   saveGame: function()
   {
     app.game.save(this.refs.saveName.getDOMNode().value);
     this.handleClose();
-  },
+  }
   handleClose: function()
   {
     this.props.handleClose();
-  },
+  }
   makeConfirmOverWritePopup: function(saveName: string)
   {
     var confirmProps =
@@ -68,7 +68,7 @@ export default class SaveGame extends React.Component<PropTypes, {}>
       contentConstructor: UIComponents.ConfirmPopup,
       contentProps: confirmProps
     });
-  },
+  }
 
   render: function()
   {

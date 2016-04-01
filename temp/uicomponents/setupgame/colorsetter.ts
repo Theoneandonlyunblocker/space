@@ -9,8 +9,8 @@ export interface PropTypes
 
 export default class ColorSetter extends React.Component<PropTypes, {}>
 {
-  displayName: "ColorSetter",
-  mixins: [FocusTimer],
+  displayName: "ColorSetter";
+  mixins: [FocusTimer];
   getInitialState: function()
   {
     return(
@@ -19,13 +19,13 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
       isNull: true,
       active: false
     });
-  },
+  }
 
   componentWillUnmount: function()
   {
     document.removeEventListener("click", this.handleClick);
     this.clearFocusTimerListener();
-  },
+  }
 
   componentWillReceiveProps: function(newProps: any)
   {
@@ -37,7 +37,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
         isNull: newProps.color === null
       });
     }
-  },
+  }
 
   handleClick: function(e: MouseEvent)
   {
@@ -53,7 +53,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     {
       this.setAsInactive();
     }
-  },
+  }
 
   toggleActive: function()
   {
@@ -71,7 +71,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
       document.addEventListener("click", this.handleClick, false);
       this.registerFocusTimerListener();
     }
-  },
+  }
   setAsInactive: function()
   {
     if (this.isMounted() && this.state.isActive)
@@ -80,7 +80,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
       document.removeEventListener("click", this.handleClick);
       this.clearFocusTimerListener();
     }
-  },
+  }
   updateColor: function(hexColor: number, isNull: boolean)
   {
     if (isNull)
@@ -96,12 +96,12 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     {
       this.props.onChange(hexColor, isNull);
     }
-  },
+  }
 
   getClientRect: function()
   {
     return this.getDOMNode().firstChild.getBoundingClientRect();
-  },
+  }
 
   render: function()
   {

@@ -11,14 +11,14 @@ export interface PropTypes
 
 export default class ManufactoryStarsListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufactoryStarsListItem",
+  displayName: "ManufactoryStarsListItem";
 
 
   handleClick: function()
   {
     var star: Star = this.props.star;
     this.props.onClick(star);
-  },
+  }
 
   render: function()
   {

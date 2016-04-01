@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class BattleBackground extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleBackground",
+  displayName: "BattleBackground";
 
   handleResize: function()
   {
@@ -28,7 +28,7 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
       blurArea.height,
       this.props.backgroundSeed
     ];
-  },
+  }
 
   componentDidMount: function()
   {
@@ -37,13 +37,13 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
     this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
 
     window.addEventListener("resize", this.handleResize, false);
-  },
+  }
 
   componentWillUnmount: function()
   {
     window.removeEventListener("resize", this.handleResize);
     this.props.renderer.removeRendererView();
-  },
+  }
 
   render: function()
   {

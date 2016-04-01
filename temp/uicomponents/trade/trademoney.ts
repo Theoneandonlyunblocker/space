@@ -12,24 +12,24 @@ export interface PropTypes
 
 export default class TradeMoney extends React.Component<PropTypes, {}>
 {
-  displayName: "TradeMoney",
-  mixins: [Draggable],
+  displayName: "TradeMoney";
+  mixins: [Draggable];
 
 
   onDragStart: function()
   {
     this.props.onDragStart(this.props.keyTODO/*TODO react*/);
-  },
+  }
 
   onDragEnd: function()
   {
     this.props.onDragEnd();
-  },
+  }
 
   handleClick: function()
   {
     this.props.onClick(this.props.keyTODO/*TODO react*/);
-  },
+  }
 
   handleMoneyAmountChange: function(e: Event)
   {
@@ -37,12 +37,12 @@ export default class TradeMoney extends React.Component<PropTypes, {}>
     var value = parseInt(target.value);
 
     this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);
-  },
+  }
 
   captureEvent: function(e: MouseEvent)
   {
     e.stopPropagation();
-  },
+  }
 
   render: function()
   {

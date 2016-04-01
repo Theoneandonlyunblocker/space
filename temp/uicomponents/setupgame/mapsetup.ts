@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class MapSetup extends React.Component<PropTypes, {}>
 {
-  displayName: "MapSetup",
+  displayName: "MapSetup";
 
   getInitialState: function()
   {
@@ -28,12 +28,12 @@ export default class MapSetup extends React.Component<PropTypes, {}>
       templates: mapGenTemplates,
       selectedTemplate: mapGenTemplates[0]
     });
-  },
+  }
 
   componentDidMount: function()
   {
     this.updatePlayerLimits();
-  },
+  }
 
   updatePlayerLimits: function()
   {
@@ -42,7 +42,7 @@ export default class MapSetup extends React.Component<PropTypes, {}>
       min: this.state.selectedTemplate.minPlayers,
       max: this.state.selectedTemplate.maxPlayers
     });
-  },
+  }
 
   setTemplate: function(e: Event)
   {
@@ -51,7 +51,7 @@ export default class MapSetup extends React.Component<PropTypes, {}>
     {
       selectedTemplate: app.moduleData.Templates.MapGen[target.value]
     }, this.updatePlayerLimits);
-  },
+  }
 
   getMapSetupInfo: function()
   {
@@ -60,7 +60,7 @@ export default class MapSetup extends React.Component<PropTypes, {}>
       template: this.state.selectedTemplate,
       optionValues: this.refs.mapGenOptions.getOptionValuesForTemplate()
     });
-  },
+  }
   
   render: function()
   {

@@ -11,8 +11,8 @@ export interface PropTypes
 
 export default class Unit extends React.Component<PropTypes, {}>
 {
-  displayName: "Unit",
-  mixins: [Draggable, React.addons.PureRenderMixin],
+  displayName: "Unit";
+  mixins: [Draggable, React.addons.PureRenderMixin];
   
   getInitialState: function()
   {
@@ -21,21 +21,21 @@ export default class Unit extends React.Component<PropTypes, {}>
       hasPopup: false,
       popupElement: null
     });
-  },
+  }
 
   onDragStart: function()
   {
     this.props.onDragStart(this.props.unit);
-  },
+  }
   onDragEnd: function()
   {
     this.props.onDragEnd();
-  },
+  }
 
   handleClick: function()
   {
     this.props.onUnitClick(this.props.unit);
-  },
+  }
 
   handleMouseEnter: function()
   {
@@ -43,13 +43,13 @@ export default class Unit extends React.Component<PropTypes, {}>
     if (this.props.unit.currentHealth <= 0) return;
 
     this.props.handleMouseEnterUnit(this.props.unit);
-  },
+  }
   handleMouseLeave: function(e: MouseEvent)
   {
     if (!this.props.handleMouseLeaveUnit) return;
 
     this.props.handleMouseLeaveUnit(e);
-  },
+  }
 
   render: function()
   {

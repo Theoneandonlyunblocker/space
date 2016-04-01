@@ -8,14 +8,14 @@ export interface PropTypes
 
 export default class BuildableBuildingList extends React.Component<PropTypes, {}>
 {
-  displayName: "BuildableBuildingList",
+  displayName: "BuildableBuildingList";
   getInitialState: function()
   {
     return(
     {
       buildingTemplates: this.props.star.getBuildableBuildings()
     });
-  },
+  }
 
   updateBuildings: function()
   {
@@ -29,7 +29,7 @@ export default class BuildableBuildingList extends React.Component<PropTypes, {}
     {
       this.props.clearExpandedAction();
     }
-  },
+  }
 
   buildBuilding: function(rowItem: IListItem)
   {
@@ -46,7 +46,7 @@ export default class BuildableBuildingList extends React.Component<PropTypes, {}
     this.props.star.addBuilding(building);
     building.controller.money -= template.buildCost;
     this.updateBuildings();
-  },
+  }
 
   render: function()
   {

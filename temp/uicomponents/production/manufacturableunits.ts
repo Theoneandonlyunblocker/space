@@ -13,7 +13,7 @@ export interface PropTypes
 
 export default class ManufacturableUnits extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufacturableUnits",
+  displayName: "ManufacturableUnits";
 
 
   shouldComponentUpdate: function(newProps: any)
@@ -40,28 +40,28 @@ export default class ManufacturableUnits extends React.Component<PropTypes, {}>
     }
 
     return false;
-  },
+  }
 
   addUnitToBuildQueue: function(template: Templates.IUnitTemplate)
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.addThingToQueue(template, "unit");
     this.props.triggerUpdate();
-  },
+  }
 
   upgradeHealth: function()
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.upgradeUnitHealthModifier(0.1);
     this.props.triggerUpdate();
-  },
+  }
 
   upgradeStats: function()
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.upgradeUnitStatsModifier(0.1);
     this.props.triggerUpdate();
-  },
+  }
 
   render: function()
   {

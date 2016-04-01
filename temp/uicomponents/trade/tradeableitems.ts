@@ -20,14 +20,14 @@ export interface PropTypes
 
 export default class TradeableItems extends React.Component<PropTypes, {}>
 {
-  displayName: "TradeableItems",
-  mixins: [DropTarget],
+  displayName: "TradeableItems";
+  mixins: [DropTarget];
 
 
   handleMouseUp: function()
   {
     this.props.onMouseUp();
-  },
+  }
 
   render: function()
   {

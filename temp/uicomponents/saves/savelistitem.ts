@@ -5,18 +5,18 @@ export interface PropTypes
 
 export default class SaveListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "SaveListItem",
+  displayName: "SaveListItem";
 
   handleDelete: function(e: React.MouseEvent)
   {
     e.stopPropagation();
     this.props.handleDelete();
-  },
+  }
   handleUndoDelete: function(e: React.MouseEvent)
   {
     e.stopPropagation();
     this.props.handleUndoDelete();
-  },
+  }
   makeCell: function(type: string)
   {
     var cellProps: any = {};
@@ -52,7 +52,7 @@ export default class SaveListItem extends React.Component<PropTypes, {}>
     return(
       React.DOM.td(cellProps, cellContent)
     );
-  },
+  }
 
   render: function()
   {

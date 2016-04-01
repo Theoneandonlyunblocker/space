@@ -9,20 +9,20 @@ export interface PropTypes
 
 export default class TechnologiesList extends React.Component<PropTypes, {}>
 {
-  displayName: "TechnologiesList",
-  updateListener: undefined,
+  displayName: "TechnologiesList";
+  updateListener: undefined;
 
 
   componentDidMount: function()
   {
     this.updateListener = eventManager.addEventListener(
       "builtBuildingWithEffect_research", this.forceUpdate.bind(this));
-  },
+  }
 
   componentWillUnmount: function()
   {
     eventManager.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
-  },
+  }
   render: function()
   {
     var playerTechnology: PlayerTechnology = this.props.playerTechnology;

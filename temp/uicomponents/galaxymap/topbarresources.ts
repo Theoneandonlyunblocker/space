@@ -7,19 +7,19 @@ export interface PropTypes
 
 export default class TopBarResources extends React.Component<PropTypes, {}>
 {
-  displayName: "TopBarResources",
-  updateListener: undefined,
+  displayName: "TopBarResources";
+  updateListener: undefined;
 
   componentDidMount: function()
   {
     this.updateListener = eventManager.addEventListener(
       "builtBuildingWithEffect_resourceIncome", this.forceUpdate.bind(this));
-  },
+  }
 
   componentWillUnmount: function()
   {
     eventManager.removeEventListener("builtBuildingWithEffect_resourceIncome", this.updateListener);
-  },
+  }
 
   render: function()
   {

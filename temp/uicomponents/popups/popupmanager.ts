@@ -8,8 +8,8 @@ export interface PropTypes
 
 export default class PopupManager extends React.Component<PropTypes, {}>
 {
-  displayName: "PopupManager",
-  popupId: 0,
+  displayName: "PopupManager";
+  popupId: 0;
 
 
   componentWillMount: function()
@@ -31,7 +31,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
       {
         self.setPopupContent(data.id, data.content);
       });
-  },
+  }
 
   componentWillUnmount: function()
   {
@@ -39,7 +39,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     {
       eventManager.removeEventListener(listenerId, this.listeners[listenerId]);
     }
-  },
+  }
 
   getInitialState: function()
   {
@@ -47,7 +47,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     {
       popups: []
     });
-  },
+  }
 
   getHighestZIndexPopup: function()
   {
@@ -61,7 +61,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     {
       return b.state.zIndex - a.state.zIndex;
     })[0];
-  },
+  }
 
   getInitialPosition: function(rect: ClientRect, container: HTMLElement)
   {
@@ -82,7 +82,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
         top: highestZPosition.top + 20
       });
     }
-  },
+  }
 
   incrementZIndex: function(childZIndex: number)
   {
@@ -96,12 +96,12 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     {
       return ++this.currentZIndex;
     }
-  },
+  }
 
   getPopupId: function()
   {
     return this.popupId++;
-  },
+  }
 
   getPopup: function(id: number)
   {
@@ -111,7 +111,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
 
     return null;
-  },
+  }
 
   hasPopup: function(id: number)
   {
@@ -121,7 +121,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
 
     return false;
-  },
+  }
 
   closePopup: function(id: number)
   {
@@ -143,7 +143,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
 
     this.setState({popups: newPopups});
-  },
+  }
 
   makePopup: function(props:
   {
@@ -183,7 +183,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
     
     return id;
-  },
+  }
 
   setPopupContent: function(popupId: number, newContent: any)
   {
@@ -193,7 +193,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     popup.contentProps = extendObject(newContent, popup.contentProps);
 
     this.forceUpdate();
-  },
+  }
 
   render: function()
   {

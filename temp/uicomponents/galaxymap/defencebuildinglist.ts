@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class DefenceBuildingList extends React.Component<PropTypes, {}>
 {
-  displayName: "DefenceBuildingList",
+  displayName: "DefenceBuildingList";
   shouldComponentUpdate: function(newProps: any)
   {
     var newBuildings = newProps.buildings;
@@ -22,7 +22,7 @@ export default class DefenceBuildingList extends React.Component<PropTypes, {}>
     }
 
     return false;
-  },
+  }
   render: function()
   {
     if (!this.props.buildings) return null;

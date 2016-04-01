@@ -7,11 +7,11 @@ export interface PropTypes
 
 export default class AttackTarget extends React.Component<PropTypes, {}>
 {
-  displayName: "AttackTarget",
+  displayName: "AttackTarget";
   handleAttack: function()
   {
     eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
-  },
+  }
 
   render: function()
   {

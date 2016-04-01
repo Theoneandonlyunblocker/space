@@ -10,8 +10,8 @@ export interface PropTypes
 
 export default class BuildingUpgradeListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "BuildingUpgradeListItem",
-  mixins: [UpdateWhenMoneyChanges],
+  displayName: "BuildingUpgradeListItem";
+  mixins: [UpdateWhenMoneyChanges];
 
   getInitialState: function()
   {
@@ -19,7 +19,7 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
     {
       canAfford: this.props.player.money >= this.props.upgradeData.cost
     });
-  },
+  }
   
   overrideHandleMoneyChange: function()
   {
@@ -27,12 +27,12 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
     {
       canAfford: this.props.player.money >= this.props.upgradeData.cost
     })
-  },
+  }
 
   handleClick: function()
   {
     this.props.handleUpgrade(this.props.upgradeData);
-  },
+  }
 
   render: function()
   {

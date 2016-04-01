@@ -8,8 +8,8 @@ export interface PropTypes
 
 export default class UnitListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitListItem",
-  mixins: [Draggable],
+  displayName: "UnitListItem";
+  mixins: [Draggable];
 
   componentDidMount: function()
   {
@@ -22,7 +22,7 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
       x: container.offsetWidth / 2,
       y: container.offsetHeight / 2
     }
-  },
+  }
 
   componentDidUpdate: function()
   {
@@ -39,12 +39,12 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
 
       this.needsFirstTouchUpdate = false;
     }
-  },
+  }
 
   onDragStart: function()
   {
     this.props.onDragStart(this.props.unit);
-  },
+  }
 
   onDragMove: function(x: number, y: number)
   {
@@ -67,22 +67,22 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
       x: container.offsetWidth / 2,
       y: container.offsetHeight / 2
     }
-  },
+  }
 
   onDragEnd: function()
   {
     this.props.onDragEnd();
-  },
+  }
 
 
   handleMouseEnter: function()
   {
     this.props.onMouseEnter(this.props.unit);
-  },
+  }
   handleMouseLeave: function()
   {
     this.props.onMouseLeave();
-  },
+  }
 
 
   makeCell: function(type: string)
@@ -136,7 +136,7 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
     return(
       React.DOM.td(cellProps, cellContent)
     );
-  },
+  }
 
   render: function(): any
   {

@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class BuildQueue extends React.Component<PropTypes, {}>
 {
-  displayName: "BuildQueue",
+  displayName: "BuildQueue";
 
 
   removeItem: function(template: IManufacturableThing, parentIndex: number)
@@ -20,14 +20,14 @@ export default class BuildQueue extends React.Component<PropTypes, {}>
     var manufactory: Manufactory = this.props.manufactory;
     manufactory.removeThingAtIndex(parentIndex);
     this.props.triggerUpdate();
-  },
+  }
 
   upgradeCapacity: function()
   {
     var manufactory: Manufactory = this.props.manufactory;
     manufactory.upgradeCapacity(1);
     this.props.triggerUpdate();
-  },
+  }
 
   render: function()
   {

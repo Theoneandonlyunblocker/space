@@ -5,22 +5,22 @@ export interface PropTypes
 
 export default class Notification extends React.Component<PropTypes, {}>
 {
-  displayName: "Notification",
+  displayName: "Notification";
 
   handleClose: function()
   {
     this.props.markAsRead(this.props.notification);
-  },
+  }
   handleClick: function()
   {
     this.props.togglePopup(this.props.notification);
-  },
+  }
   handleRightClick: function(e: MouseEvent)
   {
     e.preventDefault();
     e.stopPropagation();
     this.handleClose();
-  },
+  }
 
   render: function()
   {
