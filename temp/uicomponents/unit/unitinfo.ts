@@ -22,7 +22,7 @@ export interface PropTypes
 
 export default class UnitInfo extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "UnitInfo";
+  displayName: string = "UnitInfo";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 

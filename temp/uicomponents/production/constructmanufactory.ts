@@ -10,7 +10,7 @@ export interface PropTypes
 
 export default class ConstructManufactory extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "ConstructManufactory";
+  displayName: string = "ConstructManufactory";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 

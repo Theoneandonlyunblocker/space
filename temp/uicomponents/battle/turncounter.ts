@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class TurnCounter extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "TurnCounter";
+  displayName: string = "TurnCounter";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
   render: function()
   {

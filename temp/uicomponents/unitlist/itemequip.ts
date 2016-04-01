@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class ItemEquip extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "ItemEquip";
+  displayName: string = "ItemEquip";
   getInitialState: function()
   {
     return(

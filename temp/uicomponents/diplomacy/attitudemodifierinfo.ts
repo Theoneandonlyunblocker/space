@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class AttitudeModifierInfo extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "AttitudeModifierInfo";
+  displayName: string = "AttitudeModifierInfo";
 
   makeCell: function(type: string)
   {

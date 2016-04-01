@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class MapSetup extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "MapSetup";
+  displayName: string = "MapSetup";
 
   getInitialState: function()
   {

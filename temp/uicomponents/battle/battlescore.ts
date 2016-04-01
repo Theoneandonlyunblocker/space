@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class BattleScore extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "BattleScore";
+  displayName: string = "BattleScore";
   lastEvaluation: reactTypeTODO_any = undefined;
   shouldComponentUpdate: function(newProps: any)
   {

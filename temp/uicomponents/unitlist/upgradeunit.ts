@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class UpgradeUnit extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "UpgradeUnit";
+  displayName: string = "UpgradeUnit";
   getInitialState: function()
   {
     return(

@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class BattleInfo extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "BattleInfo";
+  displayName: string = "BattleInfo";
   render: function()
   {
     var battlePrep = this.props.battlePrep;

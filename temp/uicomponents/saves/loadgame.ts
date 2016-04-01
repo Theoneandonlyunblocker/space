@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class LoadGame extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "LoadGame";
+  displayName: string = "LoadGame";
   popupId: reactTypeTODO_any = undefined;
 
   getInitialState: function()

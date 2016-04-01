@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class UnitList extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "UnitList";
+  displayName: string = "UnitList";
   render: function()
   {
     var rows: IListItem[] = [];

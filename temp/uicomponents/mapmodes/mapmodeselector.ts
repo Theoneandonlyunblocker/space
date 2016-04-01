@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class MapModeSelector extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "MapModeSelector";
+  displayName: string = "MapModeSelector";
 
 
   handleChange: function(e: Event)

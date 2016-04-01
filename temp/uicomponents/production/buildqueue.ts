@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class BuildQueue extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "BuildQueue";
+  displayName: string = "BuildQueue";
 
 
   removeItem: function(template: IManufacturableThing, parentIndex: number)

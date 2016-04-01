@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class BuildableBuilding extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "BuildableBuilding";
+  displayName: string = "BuildableBuilding";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
 

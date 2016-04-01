@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class UnitWrapper extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "UnitWrapper";
+  displayName: string = "UnitWrapper";
   mixins: reactTypeTODO_any = [DropTarget];
   shouldComponentUpdate: function(newProps: any)
   {

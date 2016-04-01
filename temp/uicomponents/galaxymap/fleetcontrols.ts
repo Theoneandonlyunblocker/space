@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class FleetControls extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "FleetControls";
+  displayName: string = "FleetControls";
 
 
   deselectFleet: function()

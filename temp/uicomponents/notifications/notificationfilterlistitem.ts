@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class NotificationFilterListItem extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "NotificationFilterListItem";
+  displayName: string = "NotificationFilterListItem";
 
   getInitialState: function()
   {

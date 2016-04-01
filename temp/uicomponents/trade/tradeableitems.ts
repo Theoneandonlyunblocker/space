@@ -20,7 +20,7 @@ export interface PropTypes
 
 export default class TradeableItems extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "TradeableItems";
+  displayName: string = "TradeableItems";
   mixins: reactTypeTODO_any = [DropTarget];
 
 

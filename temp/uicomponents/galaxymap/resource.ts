@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class Resource extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "Resource";
+  displayName: string = "Resource";
   render: function()
   {
     var sign = this.props.income < 0 ? "-" : "+";

@@ -11,7 +11,7 @@ export interface PropTypes
 
 export default class ManufactoryStarsListItem extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "ManufactoryStarsListItem";
+  displayName: string = "ManufactoryStarsListItem";
 
 
   handleClick: function()

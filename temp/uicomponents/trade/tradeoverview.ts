@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class TradeOverview extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "TradeOverview";
+  displayName: string = "TradeOverview";
   selfPlayerTrade: reactTypeTODO_any = undefined;
   otherPlayerTrade: reactTypeTODO_any = undefined;
 

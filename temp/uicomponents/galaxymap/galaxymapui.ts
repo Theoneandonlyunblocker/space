@@ -15,7 +15,7 @@ export interface PropTypes
 
 export default class GalaxyMapUI extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "GalaxyMapUI";
+  displayName: string = "GalaxyMapUI";
 
   getInitialState: function()
   {

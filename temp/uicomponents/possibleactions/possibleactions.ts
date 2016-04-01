@@ -13,7 +13,7 @@ export interface PropTypes
 
 export default class PossibleActions extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "PossibleActions";
+  displayName: string = "PossibleActions";
 
 
   getInitialState: function()

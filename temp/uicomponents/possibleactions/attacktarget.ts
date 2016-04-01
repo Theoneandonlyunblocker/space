@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class AttackTarget extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "AttackTarget";
+  displayName: string = "AttackTarget";
   handleAttack: function()
   {
     eventManager.dispatchEvent("attackTarget", this.props.attackTarget);

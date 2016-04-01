@@ -15,7 +15,7 @@ export interface PropTypes
 
 export default class TradeableItemsList extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "TradeableItemsList";
+  displayName: string = "TradeableItemsList";
 
 
   makeRowForTradeableItem: function(item: ITradeableItem): IListItem

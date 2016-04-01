@@ -207,7 +207,7 @@ export default class List extends React.Component<PropTypes, {}>
     if (column.notSortable) return;
     function getReverseOrder(order: string)
     {
-      return order === "desc" ? "asc" : reactTypeTODO_any = "desc";
+      return order === "desc" ? "asc" : string = "desc";
     }
 
     if (this.state.selectedColumn.key === column.key)
@@ -408,8 +408,8 @@ export default class List extends React.Component<PropTypes, {}>
         React.DOM.div({className: "fixed-table-header-background"}),
         React.DOM.div(
         {
-          className: reactTypeTODO_any = "fixed-table-container-inner";
-          ref: reactTypeTODO_any = "inner";
+          className: string = "fixed-table-container-inner";
+          ref: string = "inner";
           onScroll: this.handleScroll
         },
           React.DOM.table(

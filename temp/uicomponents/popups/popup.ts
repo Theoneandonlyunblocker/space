@@ -19,7 +19,7 @@ export interface PropTypes
 
 export default class Popup extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "Popup";
+  displayName: string = "Popup";
   mixins: reactTypeTODO_any = [Draggable];
 
 

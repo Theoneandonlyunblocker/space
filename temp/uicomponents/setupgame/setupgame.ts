@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class SetupGame extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "SetupGame";
+  displayName: string = "SetupGame";
 
   getInitialState: function()
   {

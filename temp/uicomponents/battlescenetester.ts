@@ -5,8 +5,8 @@ export interface PropTypes
 
 export default class BattleSceneTester extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "BattleSceneTester";
-  idGenerator: reactTypeTODO_any = 0;
+  displayName: string = "BattleSceneTester";
+  idGenerator: number = 0;
   battle: reactTypeTODO_any = null;
   battleScene: reactTypeTODO_any = null;
 

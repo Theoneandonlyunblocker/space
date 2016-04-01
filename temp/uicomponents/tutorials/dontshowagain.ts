@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class DontShowAgain extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "DontShowAgain";
+  displayName: string = "DontShowAgain";
 
 
   getInitialState: function()

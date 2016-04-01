@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class Opinion extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "Opinion";
+  displayName: string = "Opinion";
 
   getInitialState: function()
   {

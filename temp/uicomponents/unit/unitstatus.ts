@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class UnitStatus extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "UnitStatus";
+  displayName: string = "UnitStatus";
 
 
   render: function()

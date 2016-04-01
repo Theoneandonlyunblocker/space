@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class UpgradeAbilities extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "UpgradeAbilities";
+  displayName: string = "UpgradeAbilities";
   render: function()
   {
     if (this.props.abilities.length === 0)

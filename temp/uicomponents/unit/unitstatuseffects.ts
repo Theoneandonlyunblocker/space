@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class UnitStatusEffects extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "UnitStatusEffects";
+  displayName: string = "UnitStatusEffects";
 
   render: function()
   {

@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class SaveListItem extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "SaveListItem";
+  displayName: string = "SaveListItem";
 
   handleDelete: function(e: React.MouseEvent)
   {

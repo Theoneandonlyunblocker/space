@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class ConfirmPopup extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "ConfirmPopup";
+  displayName: string = "ConfirmPopup";
   mixins: reactTypeTODO_any = [SplitMultilineText];
 
   componentDidMount: function()

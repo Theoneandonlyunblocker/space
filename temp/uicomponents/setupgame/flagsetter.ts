@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class FlagSetter extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "FlagSetter";
+  displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
   getInitialState: function()
   {

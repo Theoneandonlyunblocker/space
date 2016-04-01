@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class TradeMoney extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "TradeMoney";
+  displayName: string = "TradeMoney";
   mixins: reactTypeTODO_any = [Draggable];
 
 

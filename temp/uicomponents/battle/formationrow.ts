@@ -31,7 +31,7 @@ export interface PropTypes
 
 export default class FormationRow extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "FormationRow";
+  displayName: string = "FormationRow";
 
 
   render: function()

@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class PlayerMoney extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "PlayerMoney";
+  displayName: string = "PlayerMoney";
   lastAmountRendered: reactTypeTODO_any = undefined;
 
 

@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class ItemListItem extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "ItemListItem";
+  displayName: string = "ItemListItem";
   mixins: reactTypeTODO_any = [Draggable];
 
   onDragStart: function()

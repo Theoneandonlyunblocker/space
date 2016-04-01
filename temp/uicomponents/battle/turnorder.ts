@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class TurnOrder extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "TurnOrder";
+  displayName: string = "TurnOrder";
   getInitialState: function()
   {
     return(

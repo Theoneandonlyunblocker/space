@@ -11,7 +11,7 @@ export interface PropTypes
 
 export default class Unit extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "Unit";
+  displayName: string = "Unit";
   mixins: reactTypeTODO_any = [Draggable, React.addons.PureRenderMixin];
   
   getInitialState: function()

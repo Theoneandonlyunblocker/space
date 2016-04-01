@@ -16,13 +16,13 @@ export interface PropTypes
 
 export default class Battle extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "Battle";
+  displayName: string = "Battle";
 
   // set as a property of the class instead of its state
   // as its not used for trigger updates
   // and needs to be changed synchronously
   tempHoveredUnit: reactTypeTODO_any = null;
-  idGenerator: reactTypeTODO_any = 0;
+  idGenerator: number = 0;
   MCTree: reactTypeTODO_any = null;
   battleStartStartTime: reactTypeTODO_any = undefined;
   battleEndStartTime: reactTypeTODO_any = undefined;

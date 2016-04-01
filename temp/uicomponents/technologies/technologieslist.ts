@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class TechnologiesList extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "TechnologiesList";
+  displayName: string = "TechnologiesList";
   updateListener: reactTypeTODO_any = undefined;
 
 

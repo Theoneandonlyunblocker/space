@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class GalaxyMap extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "GalaxyMap";
+  displayName: string = "GalaxyMap";
   
   changeScene: function(e: Event)
   {

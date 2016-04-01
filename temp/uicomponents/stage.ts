@@ -25,7 +25,7 @@ export interface PropTypes
 
 export default class Stage extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "Stage";
+  displayName: string = "Stage";
   changeScene: function()
   {
     var newScene = this.refs.sceneSelector.getDOMNode().value;

@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class AbilityTooltip extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "AbilityTooltip";
+  displayName: string = "AbilityTooltip";
 
   shouldComponentUpdate: function(newProps: any)
   {

@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class ColorPicker extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "ColorPicker";
+  displayName: string = "ColorPicker";
   onChangeTimeout: reactTypeTODO_any = null;
 
   getInitialState: function()

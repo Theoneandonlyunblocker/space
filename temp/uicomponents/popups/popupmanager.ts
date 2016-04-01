@@ -8,8 +8,8 @@ export interface PropTypes
 
 export default class PopupManager extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "PopupManager";
-  popupId: reactTypeTODO_any = 0;
+  displayName: string = "PopupManager";
+  popupId: number = 0;
 
 
   componentWillMount: function()

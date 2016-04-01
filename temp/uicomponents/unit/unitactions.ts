@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class UnitActions extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "UnitActions";
+  displayName: string = "UnitActions";
   render: function()
   {
     var availableSrc = "img\/icons\/availableAction.png";

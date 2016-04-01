@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class EmptyUnit extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "EmptyUnit";
+  displayName: string = "EmptyUnit";
   shouldComponentUpdate: function(newProps: any)
   {
     return newProps.facesLeft === this.props.facesLeft;

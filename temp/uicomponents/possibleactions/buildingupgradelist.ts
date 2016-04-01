@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class BuildingUpgradeList extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "BuildingUpgradeList";
+  displayName: string = "BuildingUpgradeList";
 
 
   hasAvailableUpgrades: function()

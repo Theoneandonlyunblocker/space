@@ -15,7 +15,7 @@ export interface PropTypes
 
 export default class ProductionOverview extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "ProductionOverview";
+  displayName: string = "ProductionOverview";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
 

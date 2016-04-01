@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class IntroTutorial extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "IntroTutorial";
+  displayName: string = "IntroTutorial";
   popupId: reactTypeTODO_any = null;
 
   getInitialState: function()

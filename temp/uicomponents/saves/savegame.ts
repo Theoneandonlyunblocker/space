@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class SaveGame extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "SaveGame";
+  displayName: string = "SaveGame";
 
   componentDidMount: function()
   {

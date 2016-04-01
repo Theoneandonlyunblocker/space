@@ -27,7 +27,7 @@ export interface PropTypes
 
 export default class Formation extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "Formation";
+  displayName: string = "Formation";
 
 
   render: function()

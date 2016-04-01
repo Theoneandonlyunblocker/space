@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class DefenceBuilding extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = "DefenceBuilding";
+  displayName: string = "DefenceBuilding";
   shouldComponentUpdate: function(newProps: any)
   {
     return newProps.building !== this.props.building;
