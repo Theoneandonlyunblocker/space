@@ -14,64 +14,16 @@ export default class PlayerMoney extends React.Component<PropTypes, {}>
   lastAmountRendered: reactTypeTODO_any = undefined;
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     eventManager.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     eventManager.removeEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handlePlayerMoneyUpdated()
   {
     if (this.props.player.money !== this.lastAmountRendered)
@@ -80,22 +32,6 @@ export default class PlayerMoney extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     this.lastAmountRendered = this.props.player.money;

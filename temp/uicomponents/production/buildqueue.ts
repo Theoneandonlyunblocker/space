@@ -25,22 +25,6 @@ export default class BuildQueue extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   upgradeCapacity()
   {
     var manufactory: Manufactory = this.props.manufactory;
@@ -48,22 +32,6 @@ export default class BuildQueue extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var manufactory: Manufactory = this.props.manufactory;

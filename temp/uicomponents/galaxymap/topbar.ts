@@ -15,65 +15,17 @@ export default class TopBar extends React.Component<PropTypes, {}>
   displayName: string = "TopBar";
   updateListener: reactTypeTODO_any = undefined;
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     this.updateListener = eventManager.addEventListener(
       "builtBuildingWithEffect_income", this.forceUpdate.bind(this));
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     eventManager.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var player: Player = this.props.player;

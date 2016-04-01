@@ -11,42 +11,10 @@ export default class UnitItem extends React.Component<PropTypes, {}>
   displayName: string = "UnitItem";
   mixins: reactTypeTODO_any = [Draggable];
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   onDragStart()
   {
     this.props.onDragStart(this.props.item);
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   onDragEnd()
   {
     this.props.onDragEnd();
@@ -66,22 +34,6 @@ export default class UnitItem extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     if (!this.props.item)

@@ -26,22 +26,6 @@ export default class ItemList extends React.Component<PropTypes, {}>
     else return 0;
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var rows: IListItem[] = [];

@@ -21,22 +21,6 @@ export default class FleetUnitInfo extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [Draggable];
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   onDragStart()
   {
     this.props.onDragStart(this.props.unit);
@@ -46,22 +30,6 @@ export default class FleetUnitInfo extends React.Component<PropTypes, {}>
     this.props.onDragEnd(e)
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var unit: Unit = this.props.unit;

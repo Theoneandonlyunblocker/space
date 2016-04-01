@@ -15,44 +15,12 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
 {
   displayName: string = "NotificationFilterButton";
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
     {
       notificationFilterPopup: undefined
     });
-  }
-  
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
   }
   
   makePopup()
@@ -94,22 +62,6 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   closePopup()
   {
     this.refs.popupManager.closePopup(this.state.notificationFilterPopup);
@@ -119,22 +71,6 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   togglePopup()
   {
     if (isFinite(this.state.notificationFilterPopup))
@@ -147,22 +83,6 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     return(

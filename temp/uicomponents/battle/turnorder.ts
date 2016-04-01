@@ -9,22 +9,6 @@ export interface PropTypes
 export default class TurnOrder extends React.Component<PropTypes, {}>
 {
   displayName: string = "TurnOrder";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -32,65 +16,17 @@ export default class TurnOrder extends React.Component<PropTypes, {}>
       maxUnits: 7
     });
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     this.setMaxUnits();
 
     window.addEventListener("resize", this.setMaxUnits);
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     window.removeEventListener("resize", this.setMaxUnits);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   setMaxUnits()
   {
     var minUnits = 7;
@@ -109,22 +45,6 @@ export default class TurnOrder extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var maxUnits = this.state.maxUnits;

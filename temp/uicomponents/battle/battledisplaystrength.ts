@@ -9,22 +9,6 @@ export interface PropTypes
 export default class BattleDisplayStrength extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleDisplayStrength";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -34,43 +18,11 @@ export default class BattleDisplayStrength extends React.Component<PropTypes, {}
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     this.animateDisplayedStrength(this.props.from, this.props.to, this.props.delay);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     if (this.activeTween)
@@ -135,22 +87,6 @@ export default class BattleDisplayStrength extends React.Component<PropTypes, {}
     animateTween();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     return(

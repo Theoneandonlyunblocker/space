@@ -14,22 +14,6 @@ export interface PropTypes
 export default class BattlePrep extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattlePrep";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -42,42 +26,10 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
       leftLowerElement: "playerFormation" // "playerFormation" || "enemyFormation" || "itemEquip"
     });
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     this.refs.background.handleResize();
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   autoMakeFormation()
   {
     var battlePrep = this.props.battlePrep;
@@ -99,22 +51,6 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     this.setSelectedUnit(row.data.unit);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   clearSelectedUnit()
   {
     this.setState(
@@ -147,22 +83,6 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleMouseLeaveUnit()
   {
     this.setState(
@@ -251,22 +171,6 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
       currentDragItem: null
     });
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleItemDrop()
   {
     var item = this.state.currentDragItem;
@@ -283,43 +187,11 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     this.handleItemDragEnd(true);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getBackgroundBlurArea()
   {
     return this.refs.upper.getDOMNode().getBoundingClientRect();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var battlePrep: Rance.BattlePrep = this.props.battlePrep;

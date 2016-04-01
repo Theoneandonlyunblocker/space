@@ -37,22 +37,6 @@ export default class FormationRow extends React.Component<PropTypes, {}>
   displayName: string = "FormationRow";
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var row: Unit[] = this.props.row;

@@ -15,22 +15,6 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
   displayName: string = "ManufacturableThingsListItem";
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -50,22 +34,6 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
   }
   
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleClick()
   {
     if (this.props.onClick)
@@ -74,22 +42,6 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var template: IManufacturableThing = this.props.template;

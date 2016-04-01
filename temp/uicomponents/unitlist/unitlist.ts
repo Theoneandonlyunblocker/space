@@ -12,22 +12,6 @@ export interface PropTypes
 export default class UnitList extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitList";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var rows: IListItem[] = [];

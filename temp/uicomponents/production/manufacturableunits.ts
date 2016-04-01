@@ -52,22 +52,6 @@ export default class ManufacturableUnits extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   upgradeHealth()
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
@@ -75,22 +59,6 @@ export default class ManufacturableUnits extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   upgradeStats()
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
@@ -98,22 +66,6 @@ export default class ManufacturableUnits extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     if (this.props.selectedStar && this.props.selectedStar.manufactory)

@@ -117,22 +117,6 @@ export default class BattleScene extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var componentToRender: ReactDOMPlaceHolder;

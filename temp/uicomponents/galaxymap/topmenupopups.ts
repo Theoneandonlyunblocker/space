@@ -23,22 +23,6 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
   cachedPopupRects: {}
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -204,22 +188,6 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     return(

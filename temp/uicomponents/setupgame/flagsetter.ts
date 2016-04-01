@@ -14,22 +14,6 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
 {
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     var flag = new Flag(
@@ -47,44 +31,12 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       active: false
     });
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     window.clearTimeout(this.imageLoadingFailTimeout);
     document.removeEventListener("click", this.handleClick);
     this.clearFocusTimerListener();
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   displayImageLoadingFailMessage()
   {
     this.setState({hasImageFailMessage: true});
@@ -94,22 +46,6 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       this.setState({hasImageFailMessage: false});
     }.bind(this), 10000);
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   clearImageLoadingFailMessage()
   {
     if (this.imageLoadingFailTimeout)
@@ -134,22 +70,6 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   toggleActive()
   {
     if (this.state.isActive)
@@ -167,22 +87,6 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       this.registerFocusTimerListener();
     }
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   setAsInactive()
   {
     if (this.isMounted() && this.state.isActive)
@@ -394,22 +298,6 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     return(

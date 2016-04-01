@@ -14,22 +14,6 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
 {
   displayName: string = "ColorSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -40,22 +24,6 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     document.removeEventListener("click", this.handleClick);
@@ -90,22 +58,6 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   toggleActive()
   {
     if (this.state.isActive)
@@ -123,22 +75,6 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
       this.registerFocusTimerListener();
     }
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   setAsInactive()
   {
     if (this.isMounted() && this.state.isActive)
@@ -165,43 +101,11 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getClientRect()
   {
     return this.getDOMNode().firstChild.getBoundingClientRect();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var displayElement = this.state.isNull ?

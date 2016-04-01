@@ -17,22 +17,6 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -52,22 +36,6 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleDragEnd()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
@@ -114,22 +82,6 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
     mapRenderer.setLayerAsDirty(layer.template.key);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;

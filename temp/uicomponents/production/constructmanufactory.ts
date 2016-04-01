@@ -17,22 +17,6 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -49,22 +33,6 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleConstruct()
   {
     var star: Star = this.props.star;
@@ -74,22 +42,6 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     return(

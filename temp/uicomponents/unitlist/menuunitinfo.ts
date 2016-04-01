@@ -13,42 +13,10 @@ export interface PropTypes
 export default class MenuUnitInfo extends React.Component<PropTypes, {}>
 {
   displayName: string = "MenuUnitInfo";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleUnitUpgrade()
   {
     this.forceUpdate();
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var unit: Unit = this.props.unit;

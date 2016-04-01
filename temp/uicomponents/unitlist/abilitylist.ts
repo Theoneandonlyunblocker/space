@@ -9,22 +9,6 @@ export interface PropTypes
 export default class AbilityList extends React.Component<PropTypes, {}>
 {
   displayName: string = "AbilityList";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var abilities: Templates.IAbilityBase[] = this.props.abilities;

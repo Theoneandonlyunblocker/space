@@ -13,22 +13,6 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
   displayName: string = "ColorPicker";
   onChangeTimeout: reactTypeTODO_any = null;
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     var hexColor = this.props.hexColor || 0xFFFFFF;
@@ -47,65 +31,17 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     window.addEventListener("resize", this.setPosition);
     this.setPosition();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     window.removeEventListener("resize", this.setPosition);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   setPosition()
   {
     var parentRect = this.props.getParentPosition();
@@ -234,22 +170,6 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     this.updateFromHsv(this.state.hue, this.state.sat, val, e);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   autoGenerateColor()
   {
     var hexColor = this.props.generateColor();
@@ -265,22 +185,6 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     this.updateFromHex(hexColor);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   nullifyColor()
   {
     this.setState({isNull: true});
@@ -291,22 +195,6 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getHueGradientString()
   {
     if (this.hueGradientString) return this.hueGradientString;
@@ -434,22 +322,6 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
       )
     );
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var rootId = this._rootNodeID;

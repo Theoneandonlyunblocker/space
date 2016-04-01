@@ -11,22 +11,6 @@ export interface PropTypes
 export default class UpgradeAbilities extends React.Component<PropTypes, {}>
 {
   displayName: string = "UpgradeAbilities";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     if (this.props.abilities.length === 0)

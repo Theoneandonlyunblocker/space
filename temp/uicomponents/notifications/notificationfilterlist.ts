@@ -21,22 +21,6 @@ export default class NotificationFilterList extends React.Component<PropTypes, {
     this.forceUpdate();
     eventManager.dispatchEvent("updateNotificationLog");
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   scrollToHighlighted()
   {
     if (this.props.highlightedOptionKey)
@@ -46,22 +30,6 @@ export default class NotificationFilterList extends React.Component<PropTypes, {
       domNode.scrollTop = highlightedNode.offsetTop + domNode.scrollHeight / 3;
     }
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var filter: Rance.NotificationFilter = this.props.filter;

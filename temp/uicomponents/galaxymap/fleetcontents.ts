@@ -21,22 +21,6 @@ export default class FleetContents extends React.Component<PropTypes, {}>
   displayName: string = "FleetContents";
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleMouseUp()
   {
     if (!this.props.onMouseUp) return;
@@ -44,22 +28,6 @@ export default class FleetContents extends React.Component<PropTypes, {}>
     this.props.onMouseUp(this.props.fleet);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var fleetUnitInfos: ReactComponentPlaceHolder[] = [];

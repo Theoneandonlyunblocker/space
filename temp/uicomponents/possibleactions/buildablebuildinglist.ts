@@ -12,22 +12,6 @@ export interface PropTypes
 export default class BuildableBuildingList extends React.Component<PropTypes, {}>
 {
   displayName: string = "BuildableBuildingList";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -36,22 +20,6 @@ export default class BuildableBuildingList extends React.Component<PropTypes, {}
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   updateBuildings()
   {
     var buildingTemplates = this.props.star.getBuildableBuildings();
@@ -83,22 +51,6 @@ export default class BuildableBuildingList extends React.Component<PropTypes, {}
     this.updateBuildings();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     if (this.state.buildingTemplates.length < 1) return null;

@@ -10,22 +10,6 @@ export default class UnitStatusEffects extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitStatusEffects";
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var statusEffects: ReactDOMPlaceHolder[] = [];

@@ -15,22 +15,6 @@ export default class DefenceBuilding extends React.Component<PropTypes, {}>
   {
     return newProps.building !== this.props.building;
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var building: Building = this.props.building;

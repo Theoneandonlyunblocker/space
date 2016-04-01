@@ -12,22 +12,6 @@ export interface PropTypes
 export default class UpgradeUnit extends React.Component<PropTypes, {}>
 {
   displayName: string = "UpgradeUnit";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -88,22 +72,6 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
       popupId: popupId
     });
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   closePopup()
   {
     this.refs.popupManager.closePopup(this.state.popupId);
@@ -112,22 +80,6 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
       popupId: undefined
     });
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var unit: Unit = this.props.unit;

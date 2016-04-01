@@ -13,22 +13,6 @@ export default class SaveGame extends React.Component<PropTypes, {}>
 {
   displayName: string = "SaveGame";
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     if (app.game.gameStorageKey)
@@ -51,22 +35,6 @@ export default class SaveGame extends React.Component<PropTypes, {}>
     this.setInputText(row.data.name)
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleSave()
   {
     var saveName = this.refs.saveName.getDOMNode().value
@@ -80,43 +48,11 @@ export default class SaveGame extends React.Component<PropTypes, {}>
       this.saveGame();
     }
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   saveGame()
   {
     app.game.save(this.refs.saveName.getDOMNode().value);
     this.handleClose();
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleClose()
   {
     this.props.handleClose();
@@ -137,22 +73,6 @@ export default class SaveGame extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     return(

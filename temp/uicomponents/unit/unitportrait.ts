@@ -9,22 +9,6 @@ export interface PropTypes
 export default class UnitPortrait extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitPortrait";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var props: any = {};

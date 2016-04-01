@@ -16,22 +16,6 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapGenOptions";
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return this.getDefaultValues(this.props.mapGenTemplate);
@@ -84,22 +68,6 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     return defaultValues;
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   resetValuesToDefault()
   {
     this.setState(this.getDefaultValues(this.props.mapGenTemplate, false));
@@ -118,22 +86,6 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     return this.state["optionValue_" + optionName];
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   randomizeOptions()
   {
     var newValues: any = {};
@@ -177,22 +129,6 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     return optionValues;
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var optionGroups: ReactComponentPlaceHolder[] = [];

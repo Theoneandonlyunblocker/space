@@ -26,22 +26,6 @@ export default class Popup extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [Draggable];
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -50,22 +34,6 @@ export default class Popup extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     this.setInitialPosition();
@@ -84,22 +52,6 @@ export default class Popup extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   setInitialPosition()
   {
     var domRect = this.getDOMNode().getBoundingClientRect();
@@ -168,22 +120,6 @@ export default class Popup extends React.Component<PropTypes, {}>
     eventManager.dispatchEvent("popupResized");
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var divProps: any =

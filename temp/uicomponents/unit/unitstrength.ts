@@ -11,22 +11,6 @@ export interface PropTypes
 export default class UnitStrength extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitStrength";
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -51,22 +35,6 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       this.updateDisplayStrength(newProps.currentHealth);
     }
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     if (this.activeTween)
@@ -123,22 +91,6 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
     tween.start();
     animateTween();
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   makeSquadronInfo()
   {
     return(
@@ -147,22 +99,6 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       )
     );
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   makeCapitalInfo()
   {
     var text = this.makeStrengthText();
@@ -190,22 +126,6 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       )
     );
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   makeStrengthText()
   {
     var critThreshhold = 0.3;
@@ -241,22 +161,6 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       )
     )
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     if (this.props.isSquadron)

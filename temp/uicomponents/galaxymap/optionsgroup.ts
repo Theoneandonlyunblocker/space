@@ -14,44 +14,12 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
   displayName: string = "OptionsGroup";
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
     {
       isCollapsed: this.props.isCollapsedInitially || false
     });
-  }
-  
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
   }
   
   toggleCollapse()
@@ -62,22 +30,6 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var rows: ReactDOMPlaceHolder[] = [];

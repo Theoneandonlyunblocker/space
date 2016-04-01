@@ -12,22 +12,6 @@ export default class Opinion extends React.Component<PropTypes, {}>
 {
   displayName: string = "Opinion";
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -36,85 +20,21 @@ export default class Opinion extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   setTooltip()
   {
     this.setState({hasAttitudeModifierTootlip: true});
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   clearTooltip()
   {
     this.setState({hasAttitudeModifierTootlip: false});
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getOpinionTextNode()
   {
     return this.getDOMNode().firstChild;
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getColor()
   {
     var relativeValue = getRelativeValue(this.props.opinion, -30, 30);
@@ -133,22 +53,6 @@ export default class Opinion extends React.Component<PropTypes, {}>
         saturation + "%," +
         lightness + "%)"
     );
-  }
-  
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
   }
   
   render()

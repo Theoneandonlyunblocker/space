@@ -18,22 +18,6 @@ export default class FleetInfo extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var fleet: Fleet = this.props.fleet;

@@ -19,44 +19,12 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
     {
       canAfford: this.props.player.money >= this.props.buildCost
     });
-  }
-  
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
   }
   
   overrideHandleMoneyChange()
@@ -97,22 +65,6 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
     );
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var template: Templates.IBuildingTemplate = this.props.template;

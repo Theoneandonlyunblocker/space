@@ -13,22 +13,6 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
   displayName: string = "DontShowAgain";
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -37,43 +21,11 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
     });
   }
   
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getTutorialState()
   {
     return Rance.TutorialState[this.props.tutorialId];
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   toggleState()
   {
     if (this.state.isChecked)
@@ -93,22 +45,6 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     return(

@@ -14,22 +14,6 @@ export default class LoadGame extends React.Component<PropTypes, {}>
   displayName: string = "LoadGame";
   popupId: reactTypeTODO_any = undefined;
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -37,22 +21,6 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       saveKeysToDelete: [],
       saveKey: null
     });
-  }
-  
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
   }
   
   componentDidMount()
@@ -68,22 +36,6 @@ export default class LoadGame extends React.Component<PropTypes, {}>
     });
     this.handleUndoDelete(row.data.storageKey);
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleLoad()
   {
     var saveKey = this.state.saveKey;
@@ -110,22 +62,6 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       this.handleClose(true, afterConfirmFN);
     }
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   deleteSelectedKeys()
   {
     this.popupId = this.refs.popupManager.makePopup(
@@ -179,22 +115,6 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       contentText: confirmText
     });
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   updateClosePopup()
   {
     if (isFinite(this.popupId))
@@ -248,43 +168,11 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       }, afterDeleteFN);
     }
   }
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   overRideLightBoxClose()
   {
     this.handleClose();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     return(

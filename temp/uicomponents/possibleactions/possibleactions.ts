@@ -19,22 +19,6 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
   displayName: string = "PossibleActions";
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -65,22 +49,6 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     var self = this;
@@ -88,22 +56,6 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     eventManager.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     eventManager.removeAllListeners("clearPossibleActions");
@@ -115,22 +67,6 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     return star && Object.keys(star.getBuildingUpgrades()).length > 0;
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handlePlayerBuiltBuilding()
   {
     this.setState(
@@ -139,44 +75,12 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   updateActions()
   {
     this.props.setExpandedActionElementOnParent(this.state.expandedActionElement);
     eventManager.dispatchEvent("possibleActionsUpdated");
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   clearExpandedAction()
   {
     this.setState(
@@ -186,22 +90,6 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     }, this.updateActions);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   buildBuildings()
   {
     if (!this.props.selectedStar ||
@@ -231,22 +119,6 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   upgradeBuildings()
   {
     if (!this.props.selectedStar ||
@@ -276,22 +148,6 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var allActions: ReactDOMPlaceHolder[] = [];

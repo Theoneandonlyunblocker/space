@@ -13,22 +13,6 @@ export default class EconomySummary extends React.Component<PropTypes, {}>
 {
   displayName: string = "EconomySummary";
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var rows: IListItem[] = [];

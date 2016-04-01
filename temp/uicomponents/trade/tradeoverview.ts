@@ -20,44 +20,12 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
   otherPlayerTrade: reactTypeTODO_any = undefined;
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillMount()
   {
     this.selfPlayerTrade = new Trade(this.props.selfPlayer);
     this.otherPlayerTrade = new Trade(this.props.otherPlayer);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   getInitialState()
   {
     return(
@@ -69,43 +37,11 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
   }
   
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleCancel()
   {
     this.props.handleClose();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleOk()
   {
     this.selfPlayerTrade.executeAllStagedTrades(this.props.otherPlayer);
@@ -191,22 +127,6 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleDragEnd()
   {
     this.setState(
@@ -217,22 +137,6 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleAvailableMouseUp()
   {
     if (this.state.currentStagingItemDragKey)
@@ -241,22 +145,6 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleStagingAreaMouseUp()
   {
     if (this.state.currentAvailableItemDragKey)
@@ -265,22 +153,6 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     }
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var hasDragItem = Boolean(this.state.currentDragItemPlayer);

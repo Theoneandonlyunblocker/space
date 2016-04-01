@@ -19,22 +19,6 @@ export default class OptionsList extends React.Component<PropTypes, {}>
   displayName: string = "OptionsList";
 
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleResetAllOptions()
   {
     var resetFN = function()
@@ -73,22 +57,6 @@ export default class OptionsList extends React.Component<PropTypes, {}>
     });
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     var allOptions: ReactComponentPlaceHolder[] = [];

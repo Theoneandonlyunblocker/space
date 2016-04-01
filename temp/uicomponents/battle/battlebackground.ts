@@ -17,22 +17,6 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleBackground";
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   handleResize()
   {
     // TODO this seems to trigger before any breakpoints, leading to 1 px immediately after
@@ -49,22 +33,6 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
     ];
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentDidMount()
   {
     this.props.renderer.isBattleBackground = true;
@@ -74,44 +42,12 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
     window.addEventListener("resize", this.handleResize, false);
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
     this.props.renderer.removeRendererView();
   }
 
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
-  
   render()
   {
     return(
