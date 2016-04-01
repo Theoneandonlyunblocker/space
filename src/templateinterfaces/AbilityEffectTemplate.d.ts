@@ -1,5 +1,5 @@
-import EffectActionTemplate from "./EffectActionTemplate.ts";
-import BattleSFXTemplate from "./BattleSFXTemplate.ts";
+import EffectActionTemplate from "./EffectActionTemplate.d.ts";
+import BattleSFXTemplate from "./BattleSFXTemplate.d.ts";
 import Unit from "../Unit.ts";
 
 declare interface AbilityEffectTemplate

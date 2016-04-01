@@ -1,5 +1,5 @@
-import Distributable from "./Distributable.ts";
-import UnitTemplate from "./UnitTemplate.ts";
+import Distributable from "./Distributable.d.ts";
+import UnitTemplate from "./UnitTemplate.d.ts";
 
 declare interface UnitFamily extends Distributable
 {
