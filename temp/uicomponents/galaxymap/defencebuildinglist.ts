@@ -1,6 +1,6 @@
 /// <reference path="defencebuilding.ts"/>
 
-export var DefenceBuildingList= React.createFactory(React.createClass(
+export var DefenceBuildingList = React.createFactory(React.createClass(
 {
   displayName: "DefenceBuildingList",
   shouldComponentUpdate: function(newProps: any)
