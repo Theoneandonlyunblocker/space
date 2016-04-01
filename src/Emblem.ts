@@ -1,29 +1,24 @@
 /// <reference path="../lib/rng.d.ts" />
-/// <reference path="templateinterfaces/isubemblemtemplate.d.ts" />
-/// <reference path="savedata/iemblemsavedata.d.ts" />
 
-/// <reference path="color.ts"/>
+import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate.d.ts";
+import EmblemSaveData from "./savedata/EmblemSaveData.d.ts";
+import Color from "./Color.ts";
+import SubEmblemCoverage from "./SubEmblemCoverage.ts";
+import SubEmblemPosition from "./SubEmblemPosition.ts";
+import
+{
+  clamp,
+  getSeededRandomArrayItem
+} from "./utility.ts"
 
-export enum SubEmblemCoverage
-{
-  inner,
-  outer,
-  both
-}
-export enum SubEmblemPosition
-{
-  foreground, // can be in foreground with bg emblem
-  background, // can be in background with fg emblem
-  both // can be alone
-}
 export class Emblem
 {
   alpha: number;
-  color: number;
-  inner: Templates.ISubEmblemTemplate;
-  outer: Templates.ISubEmblemTemplate;
-  constructor(color: number, alpha?: number,
-    inner?: Templates.ISubEmblemTemplate, outer?: Templates.ISubEmblemTemplate)
+  color: Color;
+  inner: SubEmblemTemplate;
+  outer: SubEmblemTemplate;
+  constructor(color: Color, alpha?: number,
+    inner?: SubEmblemTemplate, outer?: SubEmblemTemplate)
   {
     this.color = color;
     this.alpha = isFinite(alpha) ? alpha : 1;
@@ -42,9 +37,9 @@ export class Emblem
   {
     return (this.inner && this.inner.coverage.indexOf(SubEmblemCoverage.inner) !== -1);
   }
-  getPossibleSubEmblemsToAdd(): Templates.ISubEmblemTemplate[]
+  getPossibleSubEmblemsToAdd(): SubEmblemTemplate[]
   {
-    var possibleTemplates: Templates.ISubEmblemTemplate[] = [];
+    var possibleTemplates: SubEmblemTemplate[] = [];
 
     if (this.inner && this.outer)
     {
@@ -98,7 +93,7 @@ export class Emblem
 
     return false;
   }
-  drawSubEmblem(toDraw: Templates.ISubEmblemTemplate,
+  drawSubEmblem(toDraw: SubEmblemTemplate,
     maxWidth: number, maxHeight: number, stretch: boolean)
   {
     var image = app.images[toDraw.src];
@@ -125,7 +120,7 @@ export class Emblem
 
     ctx.globalCompositeOperation = "source-in";
 
-    ctx.fillStyle = "#" + hexToString(this.color);
+    ctx.fillStyle = "#" + this.color.getHexString();
     ctx.fillRect(0, 0, width, height);
 
     return canvas;
@@ -150,48 +145,9 @@ export class Emblem
 
     return canvas;
   }
-  // drawSvgSubEmblem(toDraw: Templates.ISubEmblemTemplate, className: string)
-  // {
-  //   var htmlColor = "#" + hexToString(this.color);
-
-  //   var container = document.createElement("object");
-  //   container.addEventListener("load", function(e: Event)
-  //   {
-  //     var svg = container.contentDocument;
-  //     var elementsToColor = svg.getElementsByClassName("emblem-color");
-
-  //     for (var i = 0; i < elementsToColor.length; i++)
-  //     {
-  //       var svgElementToColor = <SVGSVGElement> elementsToColor[i];
-  //       svgElementToColor.style.fill = htmlColor;
-  //     }
-  //   }, false);
-
-  //   container.setAttribute("data", toDraw.src);
-  //   container.setAttribute("type", "image/svg+xml");
-  //   container.classList.add(className);
-
-  //   return container;
-  // }
-  // drawSvg()
-  // {
-  //   var container = document.createElement("object");
-  //   container.classList.add("emblem-container");
-
-  //   var inner = this.drawSvgSubEmblem(this.inner, "inner-sub-emblem");
-  //   container.appendChild(inner);
-
-  //   if (this.outer)
-  //   {
-  //     var outer = this.drawSvgSubEmblem(this.outer, "outer-sub-emblem");
-  //     container.appendChild(outer);
-  //   }
-
-  //   return container;
-  // }
-  serialize(): IEmblemSaveData
+  serialize(): EmblemSaveData
   {
-    var data: IEmblemSaveData =
+    var data: EmblemSaveData =
     {
       alpha: this.alpha,
       innerKey: this.inner.key
