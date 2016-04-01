@@ -1,273 +1,270 @@
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../star.ts" />
 
-export namespace MapGenCore
+export class Sector
 {
-  export class Sector
+  id: number;
+  stars: Star[] = [];
+  distributionFlags: string[];
+  resourceType: Templates.IResourceTemplate;
+  resourceLocation: Star;
+  addedDistributables: Templates.IDistributable[] = [];
+
+  constructor(id: number)
   {
-    id: number;
-    stars: Star[] = [];
-    distributionFlags: string[];
-    resourceType: Templates.IResourceTemplate;
-    resourceLocation: Star;
-    addedDistributables: Templates.IDistributable[] = [];
-
-    constructor(id: number)
+    this.id = id
+  }
+  addStar(star: Star)
+  {
+    if (star.mapGenData.sector)
     {
-      this.id = id
-    }
-    addStar(star: Star)
-    {
-      if (star.mapGenData.sector)
-      {
-        throw new Error("Star already part of a sector");
-      }
-
-      this.stars.push(star);
-      star.mapGenData.sector = this;
-    }
-    addResource(resource: Templates.IResourceTemplate)
-    {
-      var star = this.stars[0];
-
-      this.resourceType = resource;
-      this.resourceLocation = star;
-      star.setResource(resource);
+      throw new Error("Star already part of a sector");
     }
 
-    getNeighboringStars()
-    {
-      var neighbors: Star[] = [];
-      var alreadyAdded:
-      {
-        [starId: number]: boolean;
-      } = {};
+    this.stars.push(star);
+    star.mapGenData.sector = this;
+  }
+  addResource(resource: Templates.IResourceTemplate)
+  {
+    var star = this.stars[0];
 
-      for (var i = 0; i < this.stars.length; i++)
+    this.resourceType = resource;
+    this.resourceLocation = star;
+    star.setResource(resource);
+  }
+
+  getNeighboringStars()
+  {
+    var neighbors: Star[] = [];
+    var alreadyAdded:
+    {
+      [starId: number]: boolean;
+    } = {};
+
+    for (var i = 0; i < this.stars.length; i++)
+    {
+      var frontier = this.stars[i].getLinkedInRange(1).all;
+      for (var j = 0; j < frontier.length; j++)
       {
-        var frontier = this.stars[i].getLinkedInRange(1).all;
-        for (var j = 0; j < frontier.length; j++)
+        if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id])
         {
-          if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id])
-          {
-            neighbors.push(frontier[j]);
-            alreadyAdded[frontier[j].id] = true;
-          }
+          neighbors.push(frontier[j]);
+          alreadyAdded[frontier[j].id] = true;
         }
       }
-
-      return neighbors;
     }
 
-    getNeighboringSectors()
+    return neighbors;
+  }
+
+  getNeighboringSectors()
+  {
+    var sectors: Sector[] = [];
+    var alreadyAdded:
     {
-      var sectors: Sector[] = [];
-      var alreadyAdded:
-      {
-        [sectorId: number]: boolean;
-      } = {};
+      [sectorId: number]: boolean;
+    } = {};
 
-      var neighborStars = this.getNeighboringStars();
+    var neighborStars = this.getNeighboringStars();
 
-      for (var i = 0; i < neighborStars.length; i++)
+    for (var i = 0; i < neighborStars.length; i++)
+    {
+      var sector = neighborStars[i].mapGenData.sector;
+      if (!alreadyAdded[sector.id])
       {
-        var sector = neighborStars[i].mapGenData.sector;
-        if (!alreadyAdded[sector.id])
-        {
-          alreadyAdded[sector.id] = true;
-          sectors.push(sector);
-        }
+        alreadyAdded[sector.id] = true;
+        sectors.push(sector);
       }
-
-      return sectors;
     }
 
-    getMajorityRegions()
+    return sectors;
+  }
+
+  getMajorityRegions()
+  {
+    var regionsByStars:
     {
-      var regionsByStars:
+      [regionId: string]:
       {
-        [regionId: string]:
-        {
-          count: number;
-          region: Region;
-        };
-      } = {};
+        count: number;
+        region: Region;
+      };
+    } = {};
 
-      var biggestRegionStarCount = 0;
-      for (var i = 0; i < this.stars.length; i++)
+    var biggestRegionStarCount = 0;
+    for (var i = 0; i < this.stars.length; i++)
+    {
+      var star = this.stars[i];
+      var region = star.mapGenData.region;
+
+      if (!regionsByStars[region.id])
       {
-        var star = this.stars[i];
-        var region = star.mapGenData.region;
-
-        if (!regionsByStars[region.id])
+        regionsByStars[region.id] =
         {
-          regionsByStars[region.id] =
-          {
-            count: 0,
-            region: region
-          }
-        }
-
-        regionsByStars[region.id].count++;
-
-        if (regionsByStars[region.id].count > biggestRegionStarCount)
-        {
-          biggestRegionStarCount = regionsByStars[region.id].count;
+          count: 0,
+          region: region
         }
       }
 
-      var majorityRegions: Region[] = [];
-      for (var regionId in regionsByStars)
-      {
-        if (regionsByStars[regionId].count >= biggestRegionStarCount)
-        {
-          majorityRegions.push(regionsByStars[regionId].region);
-        }
-      }
+      regionsByStars[region.id].count++;
 
-      return majorityRegions;
+      if (regionsByStars[region.id].count > biggestRegionStarCount)
+      {
+        biggestRegionStarCount = regionsByStars[region.id].count;
+      }
     }
-    getPerimeterLengthWithStar(star: Star): number
+
+    var majorityRegions: Region[] = [];
+    for (var regionId in regionsByStars)
     {
-      var perimeterLength: number = 0;
-
-      for (var i = 0; i < this.stars.length; i++)
+      if (regionsByStars[regionId].count >= biggestRegionStarCount)
       {
-        var ownStar = this.stars[i];
-        var halfEdges = ownStar.voronoiCell.halfedges;
-        for (var j = 0; j < halfEdges.length; j++)
-        {
-          var edge = halfEdges[j].edge;
-          if (edge.lSite === star || edge.rSite === star)
-          {
-            var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
-            perimeterLength += edgeLength;
-          }
-        }
+        majorityRegions.push(regionsByStars[regionId].region);
       }
-
-      return perimeterLength;
     }
-    setupIndependents(player: Player, intensity: number = 1, variance: number = 0.33)
+
+    return majorityRegions;
+  }
+  getPerimeterLengthWithStar(star: Star): number
+  {
+    var perimeterLength: number = 0;
+
+    for (var i = 0; i < this.stars.length; i++)
     {
-      var independentStars = this.stars.filter(function(star: Star)
+      var ownStar = this.stars[i];
+      var halfEdges = ownStar.voronoiCell.halfedges;
+      for (var j = 0; j < halfEdges.length; j++)
       {
-        return !star.owner || star.owner.isIndependent;
-      });
+        var edge = halfEdges[j].edge;
+        if (edge.lSite === star || edge.rSite === star)
+        {
+          var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
+          perimeterLength += edgeLength;
+        }
+      }
+    }
 
-      var distanceFromPlayerOwnedLocationById:
-      {
-        [starId: number]: number;
-      } = {};
+    return perimeterLength;
+  }
+  setupIndependents(player: Player, intensity: number = 1, variance: number = 0.33)
+  {
+    var independentStars = this.stars.filter(function(star: Star)
+    {
+      return !star.owner || star.owner.isIndependent;
+    });
 
-      var starIsOwnedByPlayerQualifierFN = function(star: Star)
+    var distanceFromPlayerOwnedLocationById:
+    {
+      [starId: number]: number;
+    } = {};
+
+    var starIsOwnedByPlayerQualifierFN = function(star: Star)
+    {
+      return star.owner && !star.owner.isIndependent;
+    }
+
+    var makeUnitFN = function(template: Templates.IUnitTemplate, player: Player,
+      unitStatsModifier: number, unitHealthModifier: number)
+    {
+      var unit = new Unit(template);
+
+      unit.setAttributes(unitStatsModifier);
+      unit.setBaseHealth(unitHealthModifier);
+      player.addUnit(unit);
+
+      return unit;
+    }
+
+    var maxDistance: number = 0;
+
+    for (var i = 0; i < independentStars.length; i++)
+    {
+      var star = independentStars[i];
+
+      player.addStar(star);
+      star.addBuilding(new Building(
       {
-        return star.owner && !star.owner.isIndependent;
+        template: app.moduleData.Templates.Buildings["starBase"],
+        location: star
+      }));
+
+      var nearestPlayerStar = star.getNearestStarForQualifier(
+        starIsOwnedByPlayerQualifierFN);
+      var distance = star.getDistanceToStar(nearestPlayerStar);
+      distanceFromPlayerOwnedLocationById[star.id] = distance;
+      maxDistance = Math.max(maxDistance, distance);
+    }
+
+    var starsAtMaxDistance = independentStars.filter(function(star: Star)
+    {
+      return distanceFromPlayerOwnedLocationById[star.id] === maxDistance;
+    });
+
+    var commanderStar = starsAtMaxDistance.sort(function(a: Star, b: Star)
+    {
+      return b.mapGenData.connectedness - a.mapGenData.connectedness;
+    })[0];
+
+    var minUnits = 2;
+    var maxUnits = 5;
+
+    var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
+
+    for (var i = 0; i < independentStars.length; i++)
+    {
+      var star = independentStars[i];
+      var distance = distanceFromPlayerOwnedLocationById[star.id];
+      var inverseMapGenDistance = 1 - star.mapGenData.distance;
+
+      var localBuildableUnitTypes: Templates.IUnitTemplate[] = [];
+      for (var j = 0; j < star.buildableUnitTypes.length; j++)
+      {
+        var template = star.buildableUnitTypes[j];
+        if (!template.technologyRequirements ||
+          star.owner.meetsTechnologyRequirements(template.technologyRequirements))
+        {
+          localBuildableUnitTypes.push(template);
+        }
       }
 
-      var makeUnitFN = function(template: Templates.IUnitTemplate, player: Player,
-        unitStatsModifier: number, unitHealthModifier: number)
+      // TODO map gen | kinda weird
+      var unitsToAddCount = minUnits;
+      for (var j = minUnits; j < distance; j++)
       {
-        var unit = new Unit(template);
+        unitsToAddCount += (1 - variance + Math.random() * distance * variance) * intensity;
 
-        unit.setAttributes(unitStatsModifier);
-        unit.setBaseHealth(unitHealthModifier);
-        player.addUnit(unit);
-
-        return unit;
+        if (unitsToAddCount >= maxUnits)
+        {
+          unitsToAddCount = maxUnits;
+          break;
+        }
       }
 
-      var maxDistance: number = 0;
+      var elitesAmount = Math.floor(unitsToAddCount / 2);
 
-      for (var i = 0; i < independentStars.length; i++)
+      var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
+      var units: Unit[] = [];
+      if (star === commanderStar)
       {
-        var star = independentStars[i];
-
-        player.addStar(star);
-        star.addBuilding(new Building(
-        {
-          template: app.moduleData.Templates.Buildings["starBase"],
-          location: star
-        }));
-
-        var nearestPlayerStar = star.getNearestStarForQualifier(
-          starIsOwnedByPlayerQualifierFN);
-        var distance = star.getDistanceToStar(nearestPlayerStar);
-        distanceFromPlayerOwnedLocationById[star.id] = distance;
-        maxDistance = Math.max(maxDistance, distance);
+        var template: Templates.IUnitTemplate = getRandomArrayItem(localBuildableUnitTypes);
+        var commander = makeUnitFN(template, player, 1.4, 1.4 + inverseMapGenDistance);
+        commander.name = "Pirate commander";
+        units.push(commander);
       }
-
-      var starsAtMaxDistance = independentStars.filter(function(star: Star)
+      for (var j = 0; j < unitsToAddCount; j++)
       {
-        return distanceFromPlayerOwnedLocationById[star.id] === maxDistance;
-      });
+        var isElite = j < elitesAmount;
+        var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
+        var unitStatsModifier = (isElite ? 1.2 : 1);
+        var template: Templates.IUnitTemplate = getRandomArrayItem(templateCandidates);
 
-      var commanderStar = starsAtMaxDistance.sort(function(a: Star, b: Star)
-      {
-        return b.mapGenData.connectedness - a.mapGenData.connectedness;
-      })[0];
-
-      var minUnits = 2;
-      var maxUnits = 5;
-
-      var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
-
-      for (var i = 0; i < independentStars.length; i++)
-      {
-        var star = independentStars[i];
-        var distance = distanceFromPlayerOwnedLocationById[star.id];
-        var inverseMapGenDistance = 1 - star.mapGenData.distance;
-
-        var localBuildableUnitTypes: Templates.IUnitTemplate[] = [];
-        for (var j = 0; j < star.buildableUnitTypes.length; j++)
-        {
-          var template = star.buildableUnitTypes[j];
-          if (!template.technologyRequirements ||
-            star.owner.meetsTechnologyRequirements(template.technologyRequirements))
-          {
-            localBuildableUnitTypes.push(template);
-          }
-        }
-
-        // TODO map gen | kinda weird
-        var unitsToAddCount = minUnits;
-        for (var j = minUnits; j < distance; j++)
-        {
-          unitsToAddCount += (1 - variance + Math.random() * distance * variance) * intensity;
-
-          if (unitsToAddCount >= maxUnits)
-          {
-            unitsToAddCount = maxUnits;
-            break;
-          }
-        }
-
-        var elitesAmount = Math.floor(unitsToAddCount / 2);
-
-        var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
-        var units: Unit[] = [];
-        if (star === commanderStar)
-        {
-          var template: Templates.IUnitTemplate = getRandomArrayItem(localBuildableUnitTypes);
-          var commander = makeUnitFN(template, player, 1.4, 1.4 + inverseMapGenDistance);
-          commander.name = "Pirate commander";
-          units.push(commander);
-        }
-        for (var j = 0; j < unitsToAddCount; j++)
-        {
-          var isElite = j < elitesAmount;
-          var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
-          var unitStatsModifier = (isElite ? 1.2 : 1);
-          var template: Templates.IUnitTemplate = getRandomArrayItem(templateCandidates);
-
-          var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
-          unit.name = (isElite ? "Pirate elite" : "Pirate");
-          units.push(unit);
-        }
-        
-        var fleet = new Fleet(player, units, star, undefined, false);
-        fleet.name = "Pirates";
+        var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
+        unit.name = (isElite ? "Pirate elite" : "Pirate");
+        units.push(unit);
       }
+      
+      var fleet = new Fleet(player, units, star, undefined, false);
+      fleet.name = "Pirates";
     }
   }
 }
