@@ -1,13 +1,6 @@
 /// <reference path="../../../src/templateinterfaces/iattitudemodifiertemplate.d.ts"/>
 namespace Rance
 {
-  export interface IDiplomacyEvaluation
-  {
-    currentTurn: number;
-    currentStatus: DiplomaticState;
-    neighborStars: number;
-    opinion: number;
-  }
   export enum AttitudeModifierFamily
   {
     geographic,

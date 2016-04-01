@@ -1,9 +1,14 @@
-/// <reference path="templateinterfaces/iattitudemodifiertemplate.d.ts" />
-/// <reference path="savedata/iattitudemodifiersavedata.d.ts" />
-
-export class AttitudeModifier
+import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate.d.ts";
+import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData.d.ts";
+import DiplomacyEvaluation from "./DiplomacyEvaluation.d.ts";
+import
 {
-  template: Templates.IAttitudeModifierTemplate;
+  getRelativeValue
+} from "./utility.ts"
+
+export default class AttitudeModifier
+{
+  template: AttitudeModifierTemplate;
   startTurn: number;
   endTurn: number;
   currentTurn: number;
@@ -12,7 +17,7 @@ export class AttitudeModifier
 
   constructor(props:
   {
-    template: Templates.IAttitudeModifierTemplate;
+    template: AttitudeModifierTemplate;
     startTurn: number;
     endTurn?: number;
     strength?: number;
@@ -52,7 +57,7 @@ export class AttitudeModifier
     }
   }
 
-  setStrength(evaluation: IDiplomacyEvaluation)
+  setStrength(evaluation: DiplomacyEvaluation)
   {
     if (this.template.constantEffect)
     {
@@ -95,7 +100,7 @@ export class AttitudeModifier
   {
     return (this.endTurn >= 0 && currentTurn > this.endTurn);
   }
-  shouldEnd(evaluation: IDiplomacyEvaluation)
+  shouldEnd(evaluation: DiplomacyEvaluation)
   {
     if (this.hasExpired(evaluation.currentTurn))
     {
@@ -115,9 +120,9 @@ export class AttitudeModifier
     }
   }
 
-  serialize(): IAttitudeModifierSaveData
+  serialize(): AttitudeModifierSaveData
   {
-    var data: IAttitudeModifierSaveData =
+    var data: AttitudeModifierSaveData =
     {
       templateType: this.template.type,
       startTurn: this.startTurn,
