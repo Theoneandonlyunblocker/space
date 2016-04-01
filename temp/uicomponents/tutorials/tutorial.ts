@@ -1,6 +1,13 @@
 /// <reference path="../mixins/splitmultilinetext.ts" />
 /// <reference path="dontshowagain.ts" />
 
+export interface PropTypes
+{
+  pages: reactTypeTODO_node[]; // React.PropTypes.node
+
+  tutorialId: string;
+}
+
 export var Tutorial = React.createFactory(React.createClass(
 {
   displayName: "Tutorial",

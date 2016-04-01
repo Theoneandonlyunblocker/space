@@ -1,6 +1,11 @@
 // TODO | remove this folder
 /// <reference path="itempurchaselist.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var BuyItems = React.createFactory(React.createClass(
 {
   displayName: "BuyItems",

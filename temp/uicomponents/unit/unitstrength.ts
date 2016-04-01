@@ -1,5 +1,10 @@
 /// <reference path="../../../lib/tween.js.d.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var UnitStrength = React.createFactory(React.createClass(
 {
   displayName: "UnitStrength",

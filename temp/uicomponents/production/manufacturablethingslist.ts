@@ -1,5 +1,13 @@
 /// <reference path="manufacturablethingslistitem.ts" />
 
+export interface PropTypes
+{
+  manufacturableThings: reactTypeTODO_couldntConvert;
+  onClick?: reactTypeTODO_func;
+  showCost: boolean;
+  money?: number;
+}
+
 export var ManufacturableThingsList = React.createFactory(React.createClass(
 {
   displayName: "ManufacturableThingsList",

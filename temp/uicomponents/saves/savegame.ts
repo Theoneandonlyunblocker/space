@@ -1,6 +1,11 @@
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="savelist.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var SaveGame = React.createFactory(React.createClass(
 {
   displayName: "SaveGame",

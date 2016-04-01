@@ -1,6 +1,11 @@
 /// <reference path="list.ts" />
 /// <reference path="unitlistitem.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var UnitList = React.createFactory(React.createClass(
 {
   displayName: "UnitList",

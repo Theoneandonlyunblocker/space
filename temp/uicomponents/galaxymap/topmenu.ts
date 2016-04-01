@@ -3,6 +3,12 @@
 /// <reference path="../../player.ts" />
 /// <reference path="../../game.ts" />
 
+export interface PropTypes
+{
+  player: Player;
+  game: Game;
+}
+
 export var TopMenu = React.createFactory(React.createClass(
 {
   displayName: "TopMenu",

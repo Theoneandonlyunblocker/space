@@ -1,6 +1,11 @@
 /// <reference path="popup.ts"/>
 /// <reference path="confirmpopup.ts"/>
 
+export interface PropTypes
+{
+  onlyAllowOne?: boolean;
+}
+
 export var PopupManager = React.createFactory(React.createClass(
 {
   displayName: "PopupManager",

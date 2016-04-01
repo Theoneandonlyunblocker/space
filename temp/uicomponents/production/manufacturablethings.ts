@@ -4,6 +4,14 @@
 /// <reference path="../../star.ts" />
 /// <reference path="../../manufactory.ts" />
 
+export interface PropTypes
+{
+  selectedStar?: Star;
+  player: Player;
+  triggerUpdate: reactTypeTODO_func;
+  money: number;
+}
+
 export var ManufacturableThings = React.createFactory(React.createClass(
 {
   displayName: "ManufacturableThings",

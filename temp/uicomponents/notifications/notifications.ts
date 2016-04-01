@@ -1,6 +1,12 @@
 /// <reference path="../../notificationlog.ts" />
 /// <reference path="notificationlog.ts" />
 
+export interface PropTypes
+{
+  log: NotificationLog;
+  currentTurn: number;
+}
+
 export var Notifications = React.createFactory(React.createClass(
 {
   displayName: "Notifications",

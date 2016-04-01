@@ -9,6 +9,11 @@
 
 // TODO refactor
 // should have separate non-react class for battle logic
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var Battle = React.createFactory(React.createClass(
 {
   displayName: "Battle",

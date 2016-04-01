@@ -1,5 +1,10 @@
 /// <reference path="defencebuilding.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var DefenceBuildingList = React.createFactory(React.createClass(
 {
   displayName: "DefenceBuildingList",

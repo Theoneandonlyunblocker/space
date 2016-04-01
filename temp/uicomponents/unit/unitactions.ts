@@ -1,5 +1,10 @@
 /// <reference path="unitstrength.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var UnitActions = React.createFactory(React.createClass(
 {
   displayName: "UnitActions",

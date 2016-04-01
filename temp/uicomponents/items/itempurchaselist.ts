@@ -1,5 +1,10 @@
 /// <reference path="itempurchaselistitem.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var ItemPurchaseList = React.createFactory(React.createClass(
 {
   displayName: "ItemPurchaseList",

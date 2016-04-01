@@ -2,6 +2,11 @@
 
 /// <reference path="attitudemodifierinfo.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var AttitudeModifierList = React.createFactory(React.createClass(
 {
   displayName: "AttitudeModifierList",

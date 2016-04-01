@@ -1,3 +1,11 @@
+export interface PropTypes
+{
+  guardAmount?: number;
+  guardCoverage?: number; // GuardCoverage enum
+
+  isPreparing?: boolean;
+}
+
 export var UnitStatus = React.createFactory(React.createClass(
 {
   displayName: "UnitStatus",

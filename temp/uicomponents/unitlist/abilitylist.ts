@@ -1,3 +1,8 @@
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var AbilityList = React.createFactory(React.createClass(
 {
   displayName: "AbilityList",

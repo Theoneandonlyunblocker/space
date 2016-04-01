@@ -1,5 +1,13 @@
 /// <reference path="../../star.ts" />
 
+export interface PropTypes
+{
+  star: Star;
+  player: Player;
+  triggerUpdate: reactTypeTODO_func;
+  money: number;
+}
+
 export var ConstructManufactory = React.createFactory(React.createClass(
 {
   displayName: "ConstructManufactory",

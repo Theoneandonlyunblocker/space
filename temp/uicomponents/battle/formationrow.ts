@@ -6,6 +6,29 @@
 
 /// <reference path="../unit/unitwrapper.ts"/>
 
+export interface PropTypes
+{
+  row: Unit[];
+  rowIndexInOwnFormation: number;
+  battle?: Battle;
+  facesLeft: boolean;
+  activeUnit?: Unit;
+  activeTargets?: reactTypeTODO_object; // {[id: number]: Templates.IAbilityTemplate[];}
+
+  hoveredUnit?: Unit;
+  hoveredAbility?: reactTypeTODO_object; // Templates.IAbilityTemplate
+
+  handleMouseLeaveUnit?: reactTypeTODO_func;
+  handleMouseEnterUnit?: reactTypeTODO_func;
+  targetsInPotentialArea?: Unit[];
+  activeEffectUnits?: Unit[];
+  onMouseUp?: reactTypeTODO_func;
+  onUnitClick?: reactTypeTODO_func;
+  isDraggable?: boolean;
+  onDragStart?: reactTypeTODO_func;
+  onDragEnd?: reactTypeTODO_func;
+}
+
 export var FormationRow = React.createFactory(React.createClass(
 {
   displayName: "FormationRow",

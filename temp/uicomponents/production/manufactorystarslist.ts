@@ -2,6 +2,14 @@
 
 /// <reference path="../../star.ts" />
 
+export interface PropTypes
+{
+  starsWithManufactories: Star[];
+  starsWithoutManufactories: Star[];
+  highlightedStars: Star[];
+  handleStarSelect: reactTypeTODO_func;
+}
+
 export var ManufactoryStarsList = React.createFactory(React.createClass(
 {
   displayName: "ManufactoryStarsList",

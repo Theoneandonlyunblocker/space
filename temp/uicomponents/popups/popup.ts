@@ -1,6 +1,22 @@
 /// <reference path="../mixins/draggable.ts" />
 /// <reference path="resizehandle.ts" />
 
+export interface PropTypes
+{
+  initialPosition?: reactTypeTODO_object;
+  minWidth?: number;
+  maxWidth?: number;
+  minHeight?: number;
+  maxHeight?: number;
+  contentConstructor: reactTypeTODO_element; // React.PropTypes.element
+
+  contentProps: reactTypeTODO_object;
+  closePopup: reactTypeTODO_func;
+  incrementZIndex: reactTypeTODO_func;
+  getInitialPosition: reactTypeTODO_func;
+  finishedMountingCallback?: reactTypeTODO_func;
+}
+
 export var Popup = React.createFactory(React.createClass(
 {
   displayName: "Popup",

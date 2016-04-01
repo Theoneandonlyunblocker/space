@@ -2,6 +2,12 @@
 
 /// <reference path="../../fleet.ts" />
 
+export interface PropTypes
+{
+  closeReorganization?: reactTypeTODO_func;
+  fleets?: Fleet[];
+}
+
 export var FleetReorganization = React.createFactory(React.createClass(
 {
   displayName: "FleetReorganization",

@@ -5,6 +5,23 @@
 
 var bs: any;
 
+export interface PropTypes
+{
+  battleState: string; // "start", "active", "finish"
+
+  targetUnit?: Unit;
+  userUnit?: Unit;
+  activeUnit?: Unit;
+  hoveredUnit?: Unit;
+  activeSFX?: reactTypeTODO_object; // Templates.IBattleSFXTemplate
+
+  afterAbilityFinishedCallback?: reactTypeTODO_func;
+  triggerEffectCallback?: reactTypeTODO_func;
+  humanPlayerWonBattle?: boolean;
+  side1Player?: Player;
+  side2Player?: Player;
+}
+
 export var BattleScene = React.createFactory(React.createClass(
 {
   displayName: "BattleScene",

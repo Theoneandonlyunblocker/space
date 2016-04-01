@@ -3,6 +3,11 @@
 /// <reference path="../battle/formation.ts" />
 /// <reference path="../battle/battlebackground.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var BattlePrep = React.createFactory(React.createClass(
 {
   displayName: "BattlePrep",

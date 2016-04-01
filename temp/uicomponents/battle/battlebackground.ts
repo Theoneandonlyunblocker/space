@@ -5,6 +5,11 @@ props
   backgroundSeed
   getBlurAreaFN()
  */
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var BattleBackground = React.createFactory(React.createClass(
 {
   displayName: "BattleBackground",

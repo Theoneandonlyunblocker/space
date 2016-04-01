@@ -1,3 +1,11 @@
+export interface PropTypes
+{
+  isCollapsedInitially?: boolean;
+  resetFN?: reactTypeTODO_func;
+  header?: string;
+  options: reactTypeTODO_object[];
+}
+
 export var OptionsGroup = React.createFactory(React.createClass(
 {
   displayName: "OptionsGroup",

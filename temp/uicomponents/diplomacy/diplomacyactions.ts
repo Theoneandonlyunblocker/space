@@ -2,6 +2,13 @@
 
 /// <reference path="../trade/tradeoverview.ts" />
 
+export interface PropTypes
+{
+  player: Player;
+  targetPlayer: Player;
+  onUpdate: reactTypeTODO_func;
+}
+
 export var DiplomacyActions = React.createFactory(React.createClass(
 {
   displayName: "DiplomacyActions",

@@ -4,6 +4,11 @@
 /// <reference path="unitportrait.ts" />
 /// <reference path="../mixins/draggable.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var Unit = React.createFactory(React.createClass(
 {
   displayName: "Unit",

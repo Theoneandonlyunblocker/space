@@ -1,5 +1,10 @@
 /// <reference path="playersetup.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var SetupGamePlayers = React.createFactory(React.createClass(
 {
   displayName: "SetupGamePlayers",

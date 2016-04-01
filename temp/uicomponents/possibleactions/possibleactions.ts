@@ -3,6 +3,14 @@
 /// <reference path="buildablebuildinglist.ts"/>
 /// <reference path="buildingupgradelist.ts"/>
 
+export interface PropTypes
+{
+  player: Player;
+  setExpandedActionElementOnParent: reactTypeTODO_func;
+  selectedStar?: Star;
+  attackTargets?: reactTypeTODO_object[];
+}
+
 export var PossibleActions = React.createFactory(React.createClass(
 {
   displayName: "PossibleActions",

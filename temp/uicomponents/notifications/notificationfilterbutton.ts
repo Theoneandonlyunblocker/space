@@ -1,6 +1,13 @@
 /// <reference path="../../notificationfilter.ts" />
 /// <reference path="notificationfilterlist.ts" />
 
+export interface PropTypes
+{
+  filter: NotificationFilter;
+  text: string;
+  highlightedOptionKey?: string;
+}
+
 export var NotificationFilterButton = React.createFactory(React.createClass(
 {
   displayName: "NotificationFilterButton",

@@ -1,3 +1,15 @@
+export interface PropTypes
+{
+  money: number;
+  upgradeCost: number;
+  onClick: reactTypeTODO_func;
+  actionString: string;
+  currentLevel: number;
+  maxLevel: number;
+  levelDecimalPoints: number;
+  title?: string;
+}
+
 export var ManufactoryUpgradeButton = React.createFactory(React.createClass(
 {
   displayName: "ManufactoryUpgradeButton",

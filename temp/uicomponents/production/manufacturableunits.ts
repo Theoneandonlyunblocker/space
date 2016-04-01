@@ -1,6 +1,16 @@
 /// <reference path="manufacturablethingslist.ts" />
 /// <reference path="manufactoryupgradebutton.ts" />
 
+export interface PropTypes
+{
+  selectedStar?: Star;
+  consolidateLocations: boolean;
+  manufacturableThings: reactTypeTODO_couldntConvert;
+  triggerUpdate: reactTypeTODO_func;
+  canBuild: boolean;
+  money: number;
+}
+
 export var ManufacturableUnits = React.createFactory(React.createClass(
 {
   displayName: "ManufacturableUnits",

@@ -1,5 +1,10 @@
 /// <reference path="../mixins/draggable.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var PopupResizeHandle = React.createFactory(React.createClass(
 {
   displayName: "PopupResizeHandle",

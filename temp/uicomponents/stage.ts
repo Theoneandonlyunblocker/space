@@ -18,6 +18,11 @@ export interface ReactDOMPlaceHolder
 {
   
 }
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var Stage = React.createFactory(React.createClass(
 {
   displayName: "Stage",

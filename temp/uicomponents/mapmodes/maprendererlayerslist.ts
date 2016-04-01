@@ -2,6 +2,12 @@
 
 /// <reference path="../../maprenderer.ts" />
 
+export interface PropTypes
+{
+  mapRenderer: MapRenderer;
+  currentMapMode: MapRendererMapMode;
+}
+
 export var MapRendererLayersList = React.createFactory(React.createClass(
 {
   displayName: "MapRendererLayersList",

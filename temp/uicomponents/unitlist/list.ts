@@ -17,6 +17,30 @@ export interface IListItem
   key: string | number;
   data: any;
 }
+export interface PropTypes
+{
+  initialColumns: reactTypeTODO_object[]; // IListColumn[]
+
+  listItems: reactTypeTODO_object[]; // IListItem[]
+
+  initialSortOrder?: reactTypeTODO_object[]; // IListColumn[]
+
+  keyboardSelect?: boolean; // boolean = false
+
+  initialSelected?: reactTypeTODO_object; // IListItem
+
+  tabIndex?: number; // number = 1
+
+  noHeader?: boolean; // boolean = false
+
+  addSpacer?: boolean; // boolean = false
+
+  onRowChange?: reactTypeTODO_func; // (row: IListItem) => void
+
+  colStylingFN?: reactTypeTODO_func; // (column: IListColumn, props: any) => any
+
+}
+
 export var List = React.createFactory(React.createClass({
   displayName: "List",
   mixins: [SplitMultilineText],

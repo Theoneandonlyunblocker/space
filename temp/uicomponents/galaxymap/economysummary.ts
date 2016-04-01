@@ -1,6 +1,11 @@
 /// <reference path="../unitlist/list.ts"/>
 /// <reference path="economysummaryitem.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var EconomySummary = React.createFactory(React.createClass(
 {
   displayName: "EconomySummary",

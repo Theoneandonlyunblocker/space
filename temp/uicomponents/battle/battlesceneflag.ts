@@ -1,5 +1,11 @@
 /// <reference path="../../flag.ts" />
 
+export interface PropTypes
+{
+  flag: Flag;
+  facingRight: boolean;
+}
+
 export var BattleSceneFlag = React.createFactory(React.createClass(
 {
   displayName: "BattleSceneFlag",

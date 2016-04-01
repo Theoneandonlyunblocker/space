@@ -3,6 +3,13 @@
 
 /// <reference path="tradeableitems.ts" />
 
+export interface PropTypes
+{
+  selfPlayer: Player;
+  otherPlayer: Player;
+  handleClose: reactTypeTODO_func;
+}
+
 export var TradeOverview = React.createFactory(React.createClass(
 {
   displayName: "TradeOverview",

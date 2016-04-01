@@ -1,6 +1,11 @@
 /// <reference path="../galaxymap/defencebuildinglist.ts"/>
 /// <reference path="../playerflag.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var BattleInfo = React.createFactory(React.createClass(
 {
   displayName: "BattleInfo",

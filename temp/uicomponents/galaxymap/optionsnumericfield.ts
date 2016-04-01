@@ -1,3 +1,15 @@
+export interface PropTypes
+{
+  onChangeFN: reactTypeTODO_func; // (value: number) => void
+
+  label: string;
+  id: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+}
+
 export var OptionsNumericField = React.createFactory(React.createClass(
 {
   displayName: "OptionsNumericField",

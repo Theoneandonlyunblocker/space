@@ -2,6 +2,11 @@
 /// <reference path="unitlist.ts" />
 /// <reference path="menuunitinfo.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var ItemEquip = React.createFactory(React.createClass(
 {
   displayName: "ItemEquip",

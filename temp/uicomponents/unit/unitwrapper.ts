@@ -2,6 +2,11 @@
 
 /// <reference path="uniticon.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var UnitWrapper = React.createFactory(React.createClass(
 {
   displayName: "UnitWrapper",

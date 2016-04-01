@@ -1,6 +1,13 @@
 /// <reference path="../../player.ts" />
 /// <reference path="../mixins/updatewhenmoneychanges.ts" />
 
+export interface PropTypes
+{
+  player: Player;
+  handleUpgrade: reactTypeTODO_func;
+  upgradeData: reactTypeTODO_object;
+}
+
 export var BuildingUpgradeListItem = React.createFactory(React.createClass(
 {
   displayName: "BuildingUpgradeListItem",

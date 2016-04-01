@@ -2,6 +2,14 @@
 
 /// <reference path="../../player.ts" />
 
+export interface PropTypes
+{
+  template: reactTypeTODO_object;
+  player: Player;
+  buildCost: number;
+  handleClick: reactTypeTODO_func;
+}
+
 export var BuildableBuilding = React.createFactory(React.createClass(
 {
   displayName: "BuildableBuilding",

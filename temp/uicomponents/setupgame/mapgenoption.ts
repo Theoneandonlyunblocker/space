@@ -1,3 +1,8 @@
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var MapGenOption = React.createFactory(React.createClass(
 {
   displayName: "MapGenOption",

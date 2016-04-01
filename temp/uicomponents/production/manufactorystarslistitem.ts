@@ -1,5 +1,14 @@
 /// <reference path="../../star.ts" />
 
+export interface PropTypes
+{
+  star: Star;
+  isHighlighted: boolean;
+  usedCapacity: number;
+  totalCapacity: number;
+  onClick: reactTypeTODO_func;
+}
+
 export var ManufactoryStarsListItem = React.createFactory(React.createClass(
 {
   displayName: "ManufactoryStarsListItem",

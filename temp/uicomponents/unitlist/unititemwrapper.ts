@@ -2,6 +2,11 @@
 
 /// <reference path="unititem.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var UnitItemWrapper = React.createFactory(React.createClass(
 {
   displayName: "UnitItemWrapper",

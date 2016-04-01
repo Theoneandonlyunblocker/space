@@ -1,3 +1,15 @@
+export interface PropTypes
+{
+  keyTODO: string;
+  moneyAmount: number;
+  title: string;
+  maxMoneyAvailable?: number;
+  onDragStart?: reactTypeTODO_func;
+  onDragEnd?: reactTypeTODO_func;
+  onClick?: reactTypeTODO_func;
+  adjustItemAmount?: reactTypeTODO_func;
+}
+
 export var TradeMoney = React.createFactory(React.createClass(
 {
   displayName: "TradeMoney",

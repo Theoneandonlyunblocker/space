@@ -1,3 +1,12 @@
+export interface PropTypes
+{
+  template: reactTypeTODO_any;
+  parentIndex: number;
+  onClick?: reactTypeTODO_func;
+  showCost: boolean;
+  money?: number;
+}
+
 export var ManufacturableThingsListItem = React.createFactory(React.createClass(
 {
   displayName: "ManufacturableThingsListItem",

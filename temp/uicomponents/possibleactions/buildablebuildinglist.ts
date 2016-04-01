@@ -1,6 +1,11 @@
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="buildablebuilding.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var BuildableBuildingList = React.createFactory(React.createClass(
 {
   displayName: "BuildableBuildingList",

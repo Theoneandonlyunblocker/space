@@ -2,6 +2,11 @@
 /// <reference path="topbarresources.ts" />
 /// <reference path="../playerflag.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var TopBar = React.createFactory(React.createClass(
 {
   displayName: "TopBar",

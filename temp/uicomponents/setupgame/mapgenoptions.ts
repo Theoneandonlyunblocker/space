@@ -4,6 +4,11 @@
 
 /// <reference path="../../templateinterfaces/mapgenoptions.d.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var MapGenOptions = React.createFactory(React.createClass(
 {
   displayName: "MapGenOptions",

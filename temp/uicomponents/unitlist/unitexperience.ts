@@ -1,5 +1,10 @@
 /// <reference path="upgradeunit.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var UnitExperience = React.createFactory(React.createClass(
 {
   displayName: "UnitExperience",

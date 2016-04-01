@@ -3,6 +3,15 @@
 
 /// <reference path="../../unit.ts" />
 
+export interface PropTypes
+{
+  unit?: Unit;
+  isIdentified: boolean;
+  isDraggable: boolean;
+  onDragStart?: reactTypeTODO_func;
+  onDragEnd?: reactTypeTODO_func;
+}
+
 export var FleetUnitInfo = React.createFactory(React.createClass(
 {
   displayName: "FleetUnitInfo",

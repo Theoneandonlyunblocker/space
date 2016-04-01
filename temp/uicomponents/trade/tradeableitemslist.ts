@@ -1,6 +1,18 @@
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="trademoney.ts" />
 
+export interface PropTypes
+{
+  tradeableItems?: reactTypeTODO_object; // ITradeableItems
+
+  availableItems?: reactTypeTODO_object;
+  noListHeader?: boolean;
+  onDragStart?: reactTypeTODO_func;
+  onDragEnd?: reactTypeTODO_func;
+  onItemClick?: reactTypeTODO_func;
+  adjustItemAmount?: reactTypeTODO_func;
+}
+
 export var TradeableItemsList = React.createFactory(React.createClass(
 {
   displayName: "TradeableItemsList",

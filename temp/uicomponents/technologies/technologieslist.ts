@@ -2,6 +2,11 @@
 
 /// <reference path="technology.ts" />
 
+export interface PropTypes
+{
+  playerTechnology: PlayerTechnology;
+}
+
 export var TechnologiesList = React.createFactory(React.createClass(
 {
   displayName: "TechnologiesList",

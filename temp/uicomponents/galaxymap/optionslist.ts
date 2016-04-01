@@ -6,6 +6,11 @@
 
 /// <reference path="../../notificationlog.ts" />
 
+export interface PropTypes
+{
+  log: NotificationLog;
+}
+
 export var OptionsList = React.createFactory(React.createClass(
 {
   displayName: "OptionsList",

@@ -1,5 +1,10 @@
 /// <reference path="galaxymapui.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var GalaxyMap = React.createFactory(React.createClass(
 {
   displayName: "GalaxyMap",

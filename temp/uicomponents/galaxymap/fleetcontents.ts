@@ -3,6 +3,16 @@
 /// <reference path="../../fleet.ts" />
 /// <reference path="../../player.ts" />
 
+export interface PropTypes
+{
+  fleet: Fleet;
+  player: Player;
+  onMouseUp?: reactTypeTODO_func;
+  onDragStart?: reactTypeTODO_func;
+  onDragEnd?: reactTypeTODO_func;
+  onDragMove?: reactTypeTODO_func;
+}
+
 export var FleetContents = React.createFactory(React.createClass(
 {
   displayName: "FleetContents",

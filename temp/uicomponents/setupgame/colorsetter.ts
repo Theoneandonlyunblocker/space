@@ -2,6 +2,11 @@
 
 /// <reference path="colorpicker.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var ColorSetter = React.createFactory(React.createClass(
 {
   displayName: "ColorSetter",

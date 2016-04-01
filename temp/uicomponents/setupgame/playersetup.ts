@@ -1,6 +1,11 @@
 /// <reference path="colorsetter.ts" />
 /// <reference path="flagsetter.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var PlayerSetup = React.createFactory(React.createClass(
 {
   displayName: "PlayerSetup",

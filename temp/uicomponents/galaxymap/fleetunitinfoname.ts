@@ -1,5 +1,11 @@
 /// <reference path="../../unit.ts" />
 
+export interface PropTypes
+{
+  unit: Unit;
+  isNotDetected: boolean;
+}
+
 export var FleetUnitInfoName = React.createFactory(React.createClass(
 {
   displayName: "FleetUnitInfoName",

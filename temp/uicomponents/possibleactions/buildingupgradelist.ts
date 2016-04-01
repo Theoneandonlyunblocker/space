@@ -3,6 +3,13 @@
 
 /// <reference path="buildingupgradelistitem.ts" />
 
+export interface PropTypes
+{
+  star: Star;
+  player: Player;
+  clearExpandedAction: reactTypeTODO_func;
+}
+
 export var BuildingUpgradeList = React.createFactory(React.createClass(
 {
   displayName: "BuildingUpgradeList",

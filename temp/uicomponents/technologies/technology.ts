@@ -2,6 +2,14 @@
 
 import {Factory as TechnologyPrioritySlider} from "./technologyPrioritySlider.ts";
 
+export interface PropTypes
+{
+  playerTechnology: PlayerTechnology;
+  technology: reactTypeTODO_object; // Templates.ITechnologyTemplate
+
+  researchPoints: number;
+}
+
 export var Technology = React.createFactory(React.createClass(
 {
   displayName: "Technology",

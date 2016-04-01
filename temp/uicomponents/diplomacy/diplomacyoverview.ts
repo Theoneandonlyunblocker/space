@@ -1,6 +1,11 @@
 /// <reference path="diplomacyactions.ts" />
 /// <reference path="diplomaticstatusplayer.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var DiplomacyOverview = React.createFactory(React.createClass(
 {
   displayName: "DiplomacyOverview",

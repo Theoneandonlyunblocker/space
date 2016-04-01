@@ -1,5 +1,10 @@
 /// <reference path="../playerflag.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var DefenceBuilding = React.createFactory(React.createClass(
 {
   displayName: "DefenceBuilding",

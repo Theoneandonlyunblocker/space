@@ -1,5 +1,11 @@
 /// <reference path="../../maprenderer.ts" />
 
+export interface PropTypes
+{
+  mapRenderer: MapRenderer;
+  onUpdate?: reactTypeTODO_func;
+}
+
 export var MapModeSelector = React.createFactory(React.createClass(
 {
   displayName: "MapModeSelector",

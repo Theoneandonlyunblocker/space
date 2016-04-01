@@ -8,6 +8,12 @@
 /// <reference path="../production/productionoverview.ts" />
 
 /// <reference path="../popups/topmenupopup.ts" />
+export interface PropTypes
+{
+  player: Player;
+  game: Game;
+}
+
 export var TopMenuPopups = React.createFactory(React.createClass(
 {
   displayName: "TopMenuPopups",

@@ -5,6 +5,11 @@
 
 /// <reference path="tutorial.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var IntroTutorial = React.createFactory(React.createClass(
 {
   displayName: "IntroTutorial",

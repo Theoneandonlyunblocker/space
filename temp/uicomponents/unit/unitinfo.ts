@@ -2,6 +2,24 @@
 /// <reference path="unitactions.ts"/>
 /// <reference path="unitstatus.ts"/>
 
+export interface PropTypes
+{
+  name: string;
+  isSquadron: boolean;
+  maxHealth: number;
+  currentHealth: number;
+  maxActionPoints: number;
+  currentActionPoints: number;
+  hoveredActionPointExpenditure: number;
+  isDead?: boolean;
+  isCaptured?: boolean;
+  guardAmount: number;
+  guardCoverage?: number; // GuardCoverage enum
+
+  isPreparing?: boolean;
+  animateDuration?: number;
+}
+
 export var UnitInfo = React.createFactory(React.createClass(
 {
   displayName: "UnitInfo",

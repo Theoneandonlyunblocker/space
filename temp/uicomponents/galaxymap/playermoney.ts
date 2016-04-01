@@ -1,5 +1,10 @@
 /// <reference path="../../player.ts" />
 
+export interface PropTypes
+{
+  player?: Player;
+}
+
 export var PlayerMoney = React.createFactory(React.createClass(
 {
   displayName: "PlayerMoney",

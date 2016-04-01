@@ -1,5 +1,10 @@
 /// <reference path="defencebuildinglist.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var StarInfo = React.createFactory(React.createClass(
 {
   displayName: "StarInfo",

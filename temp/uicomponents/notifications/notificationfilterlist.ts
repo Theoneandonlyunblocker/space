@@ -1,6 +1,12 @@
 /// <reference path="../galaxymap/optionsgroup.ts" />
 /// <reference path="notificationfilterlistitem.ts" />
 
+export interface PropTypes
+{
+  filter: NotificationFilter;
+  highlightedOptionKey?: string;
+}
+
 export var NotificationFilterList = React.createFactory(React.createClass(
 {
   displayName: "NotificationFilterList",

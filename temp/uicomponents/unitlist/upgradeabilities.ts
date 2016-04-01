@@ -1,5 +1,10 @@
 /// <reference path="abilitylist.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var UpgradeAbilities = React.createFactory(React.createClass(
 {
   displayName: "UpgradeAbilities",

@@ -1,5 +1,10 @@
 /// <reference path="../../tutorials/tutorialstatus.ts" />
 
+export interface PropTypes
+{
+  tutorialId: string;
+}
+
 export var DontShowAgain = React.createFactory(React.createClass(
 {
   displayName: "DontShowAgain",

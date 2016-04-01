@@ -2,6 +2,11 @@
 /// <reference path="../playerflag.ts" />
 
 /// <reference path="flagpicker.ts" />
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var FlagSetter = React.createFactory(React.createClass(
 {
   displayName: "FlagSetter",

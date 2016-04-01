@@ -1,3 +1,12 @@
+export interface PropTypes
+{
+  displayName: string;
+  filterState: number[];
+  keyTODO: string;
+  filter: NotificationFilter;
+  isHighlighted: boolean;
+}
+
 export var NotificationFilterListItem = React.createFactory(React.createClass(
 {
   displayName: "NotificationFilterListItem",

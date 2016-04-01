@@ -8,6 +8,11 @@
 /// <reference path="../../player.ts" />
 /// <reference path="../../star.ts" />
 
+export interface PropTypes
+{
+  player: Player;
+}
+
 export var ProductionOverview = React.createFactory(React.createClass(
 {
   displayName: "ProductionOverview",

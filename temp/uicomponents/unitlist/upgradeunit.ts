@@ -1,6 +1,11 @@
 /// <reference path="upgradeabilities.ts" />
 /// <reference path="upgradeattributes.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var UpgradeUnit = React.createFactory(React.createClass(
 {
   displayName: "UpgradeUnit",

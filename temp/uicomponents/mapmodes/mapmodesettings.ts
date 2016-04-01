@@ -3,6 +3,11 @@
 
 /// <reference path="../../maprenderer.ts" />
 
+export interface PropTypes
+{
+  mapRenderer: MapRenderer;
+}
+
 export var MapModeSettings = React.createFactory(React.createClass(
 {
   displayName: "MapModeSettings",

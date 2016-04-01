@@ -3,6 +3,13 @@
 
 /// <reference path="../../manufactory.ts" />
 
+export interface PropTypes
+{
+  manufactory: Manufactory;
+  triggerUpdate: reactTypeTODO_func;
+  money: number;
+}
+
 export var BuildQueue = React.createFactory(React.createClass(
 {
   displayName: "BuildQueue",

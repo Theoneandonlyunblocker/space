@@ -1,6 +1,11 @@
 /// <reference path="../playerflag.ts" />
 /// <reference path="opinion.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var DiplomaticStatusPlayer = React.createFactory(React.createClass(
 {
   displayName: "DiplomaticStatusPlayer",

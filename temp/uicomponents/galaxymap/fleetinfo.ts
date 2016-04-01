@@ -1,5 +1,10 @@
 /// <reference path="fleetcontrols.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var FleetInfo = React.createFactory(React.createClass(
 {
   displayName: "FleetInfo",

@@ -1,6 +1,11 @@
 /// <reference path="../mixins/draggable.ts" />
 /// <reference path="../unit/unitstrength.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var UnitListItem = React.createFactory(React.createClass(
 {
   displayName: "UnitListItem",

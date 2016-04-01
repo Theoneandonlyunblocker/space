@@ -2,6 +2,22 @@
 
 /// <reference path="tradeableitemslist.ts" />
 
+export interface PropTypes
+{
+  tradeableItems: reactTypeTODO_object; // ITradeableItems
+
+  availableItems?: reactTypeTODO_object;
+  header?: string;
+  noListHeader?: boolean;
+  onMouseUp?: reactTypeTODO_func;
+  onDragStart?: reactTypeTODO_func;
+  onDragEnd?: reactTypeTODO_func;
+  hasDragItem?: boolean;
+  isInvalidDropTarget?: boolean;
+  onItemClick?: reactTypeTODO_func;
+  adjustItemAmount?: reactTypeTODO_func;
+}
+
 export var TradeableItems = React.createFactory(React.createClass(
 {
   displayName: "TradeableItems",

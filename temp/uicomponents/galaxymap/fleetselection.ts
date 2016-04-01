@@ -2,6 +2,11 @@
 /// <reference path="fleetcontents.ts"/>
 /// <reference path="fleetreorganization.ts"/>
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var FleetSelection = React.createFactory(React.createClass(
 {
   displayName: "FleetSelection",

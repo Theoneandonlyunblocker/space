@@ -1,3 +1,8 @@
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var AbilityTooltip = React.createFactory(React.createClass(
 {
   displayName: "AbilityTooltip",

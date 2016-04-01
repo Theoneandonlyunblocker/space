@@ -1,5 +1,12 @@
 /// <reference path="../../fleet.ts" />
 
+export interface PropTypes
+{
+  fleet: Fleet;
+  isInspecting?: boolean;
+  hasMultipleSelected?: boolean;
+}
+
 export var FleetControls = React.createFactory(React.createClass(
 {
   displayName: "FleetControls",

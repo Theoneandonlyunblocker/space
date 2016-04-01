@@ -1,5 +1,10 @@
 /// <reference path="resource.ts" />
 
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var TopBarResources = React.createFactory(React.createClass(
 {
   displayName: "TopBarResources",
