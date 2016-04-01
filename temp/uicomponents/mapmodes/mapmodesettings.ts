@@ -8,7 +8,7 @@ export interface PropTypes
   mapRenderer: MapRenderer;
 }
 
-export default class MapModeSettings extends React.Component<PropTypes, Empty>
+export default class MapModeSettings extends React.Component<PropTypes, {}>
 {
   displayName: "MapModeSettings",
 

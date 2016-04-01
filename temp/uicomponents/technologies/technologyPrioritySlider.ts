@@ -11,7 +11,7 @@ export interface PropTypes
   researchPoints: number;
 }
 
-export default class TechnologyPrioritySlider extends React.Component<PropTypes, Empty>
+export default class TechnologyPrioritySlider extends React.Component<PropTypes, {}>
 {
   displayName: string = "TechnologyPrioritySlider";
   state:

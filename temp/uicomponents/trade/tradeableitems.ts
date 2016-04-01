@@ -18,7 +18,7 @@ export interface PropTypes
   adjustItemAmount?: reactTypeTODO_func;
 }
 
-export default class TradeableItems extends React.Component<PropTypes, Empty>
+export default class TradeableItems extends React.Component<PropTypes, {}>
 {
   displayName: "TradeableItems",
   mixins: [DropTarget],

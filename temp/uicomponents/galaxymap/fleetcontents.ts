@@ -13,7 +13,7 @@ export interface PropTypes
   onDragMove?: reactTypeTODO_func;
 }
 
-export default class FleetContents extends React.Component<PropTypes, Empty>
+export default class FleetContents extends React.Component<PropTypes, {}>
 {
   displayName: "FleetContents",
 

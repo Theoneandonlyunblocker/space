@@ -6,7 +6,7 @@ export interface PropTypes
   isNotDetected: boolean;
 }
 
-export default class FleetUnitInfoName extends React.Component<PropTypes, Empty>
+export default class FleetUnitInfoName extends React.Component<PropTypes, {}>
 {
   displayName: "FleetUnitInfoName",
 

@@ -23,7 +23,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class Stage extends React.Component<PropTypes, Empty>
+export default class Stage extends React.Component<PropTypes, {}>
 {
   displayName: "Stage",
   changeScene: function()

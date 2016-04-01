@@ -7,7 +7,7 @@ export interface PropTypes
   hasMultipleSelected?: boolean;
 }
 
-export default class FleetControls extends React.Component<PropTypes, Empty>
+export default class FleetControls extends React.Component<PropTypes, {}>
 {
   displayName: "FleetControls",
 

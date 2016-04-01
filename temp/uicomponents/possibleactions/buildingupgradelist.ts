@@ -10,7 +10,7 @@ export interface PropTypes
   clearExpandedAction: reactTypeTODO_func;
 }
 
-export default class BuildingUpgradeList extends React.Component<PropTypes, Empty>
+export default class BuildingUpgradeList extends React.Component<PropTypes, {}>
 {
   displayName: "BuildingUpgradeList",
 

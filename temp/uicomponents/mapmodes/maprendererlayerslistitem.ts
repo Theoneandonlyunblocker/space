@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class MapRendererLayersListItem extends React.Component<PropTypes, Empty>
+export default class MapRendererLayersListItem extends React.Component<PropTypes, {}>
 {
   displayName: "MapRendererLayersListItem",
   mixins: [Draggable, DropTarget, React.addons.PureRenderMixin],

@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class DefenceBuilding extends React.Component<PropTypes, Empty>
+export default class DefenceBuilding extends React.Component<PropTypes, {}>
 {
   displayName: "DefenceBuilding",
   shouldComponentUpdate: function(newProps: any)

@@ -8,7 +8,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class BattlePrep extends React.Component<PropTypes, Empty>
+export default class BattlePrep extends React.Component<PropTypes, {}>
 {
   displayName: "BattlePrep",
   getInitialState: function()

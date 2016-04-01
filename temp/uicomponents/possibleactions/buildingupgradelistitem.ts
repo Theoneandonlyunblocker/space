@@ -8,7 +8,7 @@ export interface PropTypes
   upgradeData: reactTypeTODO_object;
 }
 
-export default class BuildingUpgradeListItem extends React.Component<PropTypes, Empty>
+export default class BuildingUpgradeListItem extends React.Component<PropTypes, {}>
 {
   displayName: "BuildingUpgradeListItem",
   mixins: [UpdateWhenMoneyChanges],

@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class BattleDisplayStrength extends React.Component<PropTypes, Empty>
+export default class BattleDisplayStrength extends React.Component<PropTypes, {}>
 {
   displayName: "BattleDisplayStrength",
   getInitialState: function()

@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class UnitIcon extends React.Component<PropTypes, Empty>
+export default class UnitIcon extends React.Component<PropTypes, {}>
 {
   displayName: "UnitIcon",
   mixins: [React.addons.PureRenderMixin],

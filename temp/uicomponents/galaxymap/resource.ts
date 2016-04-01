@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class Resource extends React.Component<PropTypes, Empty>
+export default class Resource extends React.Component<PropTypes, {}>
 {
   displayName: "Resource",
   render: function()

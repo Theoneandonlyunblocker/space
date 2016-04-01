@@ -10,7 +10,7 @@ export interface PropTypes
   money: number;
 }
 
-export default class BuildQueue extends React.Component<PropTypes, Empty>
+export default class BuildQueue extends React.Component<PropTypes, {}>
 {
   displayName: "BuildQueue",
 

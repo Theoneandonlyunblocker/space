@@ -8,7 +8,7 @@ export interface PropTypes
   tutorialId: string;
 }
 
-export default class Tutorial extends React.Component<PropTypes, Empty>
+export default class Tutorial extends React.Component<PropTypes, {}>
 {
   displayName: "Tutorial",
   mixins: [SplitMultilineText],

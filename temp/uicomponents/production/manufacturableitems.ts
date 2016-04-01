@@ -10,7 +10,7 @@ export interface PropTypes
   money: number;
 }
 
-export default class ManufacturableItems extends React.Component<PropTypes, Empty>
+export default class ManufacturableItems extends React.Component<PropTypes, {}>
 {
   displayName: "ManufacturableItems",
 

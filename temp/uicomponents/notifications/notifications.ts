@@ -7,7 +7,7 @@ export interface PropTypes
   currentTurn: number;
 }
 
-export default class Notifications extends React.Component<PropTypes, Empty>
+export default class Notifications extends React.Component<PropTypes, {}>
 {
   displayName: "Notifications",
 

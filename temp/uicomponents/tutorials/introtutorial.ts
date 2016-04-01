@@ -10,7 +10,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class IntroTutorial extends React.Component<PropTypes, Empty>
+export default class IntroTutorial extends React.Component<PropTypes, {}>
 {
   displayName: "IntroTutorial",
   popupId: null,

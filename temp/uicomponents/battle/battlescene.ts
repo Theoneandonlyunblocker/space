@@ -22,7 +22,7 @@ export interface PropTypes
   side2Player?: Player;
 }
 
-export default class BattleScene extends React.Component<PropTypes, Empty>
+export default class BattleScene extends React.Component<PropTypes, {}>
 {
   displayName: "BattleScene",
 

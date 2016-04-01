@@ -6,7 +6,7 @@ export interface PropTypes
   isPreparing?: boolean;
 }
 
-export default class UnitStatus extends React.Component<PropTypes, Empty>
+export default class UnitStatus extends React.Component<PropTypes, {}>
 {
   displayName: "UnitStatus",
 

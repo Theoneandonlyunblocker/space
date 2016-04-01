@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class AbilityList extends React.Component<PropTypes, Empty>
+export default class AbilityList extends React.Component<PropTypes, {}>
 {
   displayName: "AbilityList",
   render: function()

@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class FleetSelection extends React.Component<PropTypes, Empty>
+export default class FleetSelection extends React.Component<PropTypes, {}>
 {
   displayName: "FleetSelection",
   mergeFleets: function()

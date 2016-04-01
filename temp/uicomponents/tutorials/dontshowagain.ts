@@ -5,7 +5,7 @@ export interface PropTypes
   tutorialId: string;
 }
 
-export default class DontShowAgain extends React.Component<PropTypes, Empty>
+export default class DontShowAgain extends React.Component<PropTypes, {}>
 {
   displayName: "DontShowAgain",
 

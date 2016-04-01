@@ -17,7 +17,7 @@ export interface PropTypes
   finishedMountingCallback?: reactTypeTODO_func;
 }
 
-export default class Popup extends React.Component<PropTypes, Empty>
+export default class Popup extends React.Component<PropTypes, {}>
 {
   displayName: "Popup",
   mixins: [Draggable],

@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class ItemPurchaseList extends React.Component<PropTypes, Empty>
+export default class ItemPurchaseList extends React.Component<PropTypes, {}>
 {
   displayName: "ItemPurchaseList",
 

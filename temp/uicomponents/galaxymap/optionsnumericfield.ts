@@ -10,7 +10,7 @@ export interface PropTypes
   step: number;
 }
 
-export default class OptionsNumericField extends React.Component<PropTypes, Empty>
+export default class OptionsNumericField extends React.Component<PropTypes, {}>
 {
   displayName: "OptionsNumericField",
 

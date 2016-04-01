@@ -13,7 +13,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class GalaxyMapUI extends React.Component<PropTypes, Empty>
+export default class GalaxyMapUI extends React.Component<PropTypes, {}>
 {
   displayName: "GalaxyMapUI",
 

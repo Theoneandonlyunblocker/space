@@ -8,7 +8,7 @@ export interface PropTypes
   currentTurn: number;
 }
 
-export default class NotificationLog extends React.Component<PropTypes, Empty>
+export default class NotificationLog extends React.Component<PropTypes, {}>
 {
   displayName: "NotificationLog",
   mixins: [React.addons.PureRenderMixin],

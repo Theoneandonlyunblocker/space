@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class UpgradeAbilities extends React.Component<PropTypes, Empty>
+export default class UpgradeAbilities extends React.Component<PropTypes, {}>
 {
   displayName: "UpgradeAbilities",
   render: function()

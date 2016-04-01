@@ -9,7 +9,7 @@ export interface PropTypes
   onUpdate: reactTypeTODO_func;
 }
 
-export default class DiplomacyActions extends React.Component<PropTypes, Empty>
+export default class DiplomacyActions extends React.Component<PropTypes, {}>
 {
   displayName: "DiplomacyActions",
 

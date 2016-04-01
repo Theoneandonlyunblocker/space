@@ -6,7 +6,7 @@ export interface PropTypes
   onUpdate?: reactTypeTODO_func;
 }
 
-export default class MapModeSelector extends React.Component<PropTypes, Empty>
+export default class MapModeSelector extends React.Component<PropTypes, {}>
 {
   displayName: "MapModeSelector",
 

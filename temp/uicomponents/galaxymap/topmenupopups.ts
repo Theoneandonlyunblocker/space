@@ -14,7 +14,7 @@ export interface PropTypes
   game: Game;
 }
 
-export default class TopMenuPopups extends React.Component<PropTypes, Empty>
+export default class TopMenuPopups extends React.Component<PropTypes, {}>
 {
   displayName: "TopMenuPopups",
   cachedPopupRects: {},

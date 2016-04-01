@@ -12,7 +12,7 @@ export interface PropTypes
   onDragEnd?: reactTypeTODO_func;
 }
 
-export default class FleetUnitInfo extends React.Component<PropTypes, Empty>
+export default class FleetUnitInfo extends React.Component<PropTypes, {}>
 {
   displayName: "FleetUnitInfo",
   mixins: [Draggable],

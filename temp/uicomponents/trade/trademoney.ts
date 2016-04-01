@@ -10,7 +10,7 @@ export interface PropTypes
   adjustItemAmount?: reactTypeTODO_func;
 }
 
-export default class TradeMoney extends React.Component<PropTypes, Empty>
+export default class TradeMoney extends React.Component<PropTypes, {}>
 {
   displayName: "TradeMoney",
   mixins: [Draggable],

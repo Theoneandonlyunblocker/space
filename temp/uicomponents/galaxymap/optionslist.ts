@@ -11,7 +11,7 @@ export interface PropTypes
   log: NotificationLog;
 }
 
-export default class OptionsList extends React.Component<PropTypes, Empty>
+export default class OptionsList extends React.Component<PropTypes, {}>
 {
   displayName: "OptionsList",
 

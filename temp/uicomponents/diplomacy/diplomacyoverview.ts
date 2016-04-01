@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class DiplomacyOverview extends React.Component<PropTypes, Empty>
+export default class DiplomacyOverview extends React.Component<PropTypes, {}>
 {
   displayName: "DiplomacyOverview",
 

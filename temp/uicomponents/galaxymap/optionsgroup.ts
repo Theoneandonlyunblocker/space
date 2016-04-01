@@ -6,7 +6,7 @@ export interface PropTypes
   options: reactTypeTODO_object[];
 }
 
-export default class OptionsGroup extends React.Component<PropTypes, Empty>
+export default class OptionsGroup extends React.Component<PropTypes, {}>
 {
   displayName: "OptionsGroup",
 

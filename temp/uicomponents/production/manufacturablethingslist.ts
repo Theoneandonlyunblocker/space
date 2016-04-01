@@ -8,7 +8,7 @@ export interface PropTypes
   money?: number;
 }
 
-export default class ManufacturableThingsList extends React.Component<PropTypes, Empty>
+export default class ManufacturableThingsList extends React.Component<PropTypes, {}>
 {
   displayName: "ManufacturableThingsList",
   mixins: [React.addons.PureRenderMixin],

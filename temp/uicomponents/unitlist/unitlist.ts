@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class UnitList extends React.Component<PropTypes, Empty>
+export default class UnitList extends React.Component<PropTypes, {}>
 {
   displayName: "UnitList",
   render: function()

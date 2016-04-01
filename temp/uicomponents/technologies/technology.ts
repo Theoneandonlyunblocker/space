@@ -10,7 +10,7 @@ export interface PropTypes
   researchPoints: number;
 }
 
-export default class Technology extends React.Component<PropTypes, Empty>
+export default class Technology extends React.Component<PropTypes, {}>
 {
   displayName: "Technology",
 

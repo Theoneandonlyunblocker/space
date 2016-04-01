@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class FleetInfo extends React.Component<PropTypes, Empty>
+export default class FleetInfo extends React.Component<PropTypes, {}>
 {
   displayName: "FleetInfo",
   setFleetName: function(e: Event)

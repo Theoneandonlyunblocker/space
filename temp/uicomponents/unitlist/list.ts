@@ -41,7 +41,7 @@ export interface PropTypes
 
 }
 
-export default class List extends React.Component<PropTypes, Empty>
+export default class List extends React.Component<PropTypes, {}>
 }
   mixins: [SplitMultilineText],
 

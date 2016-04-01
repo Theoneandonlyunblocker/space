@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class TopMenuPopup extends React.Component<PropTypes, Empty>
+export default class TopMenuPopup extends React.Component<PropTypes, {}>
 {
   displayName: "TopMenuPopup",
 

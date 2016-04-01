@@ -7,7 +7,7 @@ export interface PropTypes
   highlightedOptionKey?: string;
 }
 
-export default class NotificationFilterList extends React.Component<PropTypes, Empty>
+export default class NotificationFilterList extends React.Component<PropTypes, {}>
 {
   displayName: "NotificationFilterList",
   handleResetCategory: function(category: string)

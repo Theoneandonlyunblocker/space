@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class MapSetup extends React.Component<PropTypes, Empty>
+export default class MapSetup extends React.Component<PropTypes, {}>
 {
   displayName: "MapSetup",
 

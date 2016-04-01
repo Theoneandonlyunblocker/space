@@ -10,7 +10,7 @@ export interface PropTypes
   handleClose: reactTypeTODO_func;
 }
 
-export default class TradeOverview extends React.Component<PropTypes, Empty>
+export default class TradeOverview extends React.Component<PropTypes, {}>
 {
   displayName: "TradeOverview",
   selfPlayerTrade: undefined,

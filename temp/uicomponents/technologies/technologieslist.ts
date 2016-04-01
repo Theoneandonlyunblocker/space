@@ -7,7 +7,7 @@ export interface PropTypes
   playerTechnology: PlayerTechnology;
 }
 
-export default class TechnologiesList extends React.Component<PropTypes, Empty>
+export default class TechnologiesList extends React.Component<PropTypes, {}>
 {
   displayName: "TechnologiesList",
   updateListener: undefined,

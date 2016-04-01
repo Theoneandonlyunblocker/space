@@ -10,7 +10,7 @@ export interface PropTypes
   title?: string;
 }
 
-export default class ManufactoryUpgradeButton extends React.Component<PropTypes, Empty>
+export default class ManufactoryUpgradeButton extends React.Component<PropTypes, {}>
 {
   displayName: "ManufactoryUpgradeButton",
 

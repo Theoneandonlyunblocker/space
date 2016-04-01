@@ -13,7 +13,7 @@ export interface PropTypes
   adjustItemAmount?: reactTypeTODO_func;
 }
 
-export default class TradeableItemsList extends React.Component<PropTypes, Empty>
+export default class TradeableItemsList extends React.Component<PropTypes, {}>
 {
   displayName: "TradeableItemsList",
 

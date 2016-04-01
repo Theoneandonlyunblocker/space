@@ -13,7 +13,7 @@ export interface PropTypes
   player: Player;
 }
 
-export default class ProductionOverview extends React.Component<PropTypes, Empty>
+export default class ProductionOverview extends React.Component<PropTypes, {}>
 {
   displayName: "ProductionOverview",
   mixins: [UpdateWhenMoneyChanges],

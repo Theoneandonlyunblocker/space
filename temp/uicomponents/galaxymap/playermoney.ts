@@ -5,7 +5,7 @@ export interface PropTypes
   player?: Player;
 }
 
-export default class PlayerMoney extends React.Component<PropTypes, Empty>
+export default class PlayerMoney extends React.Component<PropTypes, {}>
 {
   displayName: "PlayerMoney",
   lastAmountRendered: undefined,

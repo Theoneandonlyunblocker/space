@@ -6,7 +6,7 @@ export interface PropTypes
   onlyAllowOne?: boolean;
 }
 
-export default class PopupManager extends React.Component<PropTypes, Empty>
+export default class PopupManager extends React.Component<PropTypes, {}>
 {
   displayName: "PopupManager",
   popupId: 0,

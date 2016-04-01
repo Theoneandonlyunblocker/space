@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class UpgradeAttributes extends React.Component<PropTypes, Empty>
+export default class UpgradeAttributes extends React.Component<PropTypes, {}>
 {
   displayName: "UpgradeAttributes",
   upgradeAttribute: function(attribute: string, e: MouseEvent)

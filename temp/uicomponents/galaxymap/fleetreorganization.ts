@@ -8,7 +8,7 @@ export interface PropTypes
   fleets?: Fleet[];
 }
 
-export default class FleetReorganization extends React.Component<PropTypes, Empty>
+export default class FleetReorganization extends React.Component<PropTypes, {}>
 {
   displayName: "FleetReorganization",
 

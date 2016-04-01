@@ -6,7 +6,7 @@ export interface PropTypes
   facingRight: boolean;
 }
 
-export default class BattleSceneFlag extends React.Component<PropTypes, Empty>
+export default class BattleSceneFlag extends React.Component<PropTypes, {}>
 {
   displayName: "BattleSceneFlag",
   flagCanvas: null,

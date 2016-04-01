@@ -9,7 +9,7 @@ export interface PropTypes
   onClick: reactTypeTODO_func;
 }
 
-export default class ManufactoryStarsListItem extends React.Component<PropTypes, Empty>
+export default class ManufactoryStarsListItem extends React.Component<PropTypes, {}>
 {
   displayName: "ManufactoryStarsListItem",
 

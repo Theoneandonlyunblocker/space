@@ -11,7 +11,7 @@ export interface PropTypes
   attackTargets?: reactTypeTODO_object[];
 }
 
-export default class PossibleActions extends React.Component<PropTypes, Empty>
+export default class PossibleActions extends React.Component<PropTypes, {}>
 {
   displayName: "PossibleActions",
 

@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class FlagSetter extends React.Component<PropTypes, Empty>
+export default class FlagSetter extends React.Component<PropTypes, {}>
 {
   displayName: "FlagSetter",
   mixins: [FocusTimer],

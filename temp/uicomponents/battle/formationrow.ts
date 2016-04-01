@@ -29,7 +29,7 @@ export interface PropTypes
   onDragEnd?: reactTypeTODO_func;
 }
 
-export default class FormationRow extends React.Component<PropTypes, Empty>
+export default class FormationRow extends React.Component<PropTypes, {}>
 {
   displayName: "FormationRow",
 

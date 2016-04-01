@@ -7,7 +7,7 @@ export interface PropTypes
   isHighlighted: boolean;
 }
 
-export default class NotificationFilterListItem extends React.Component<PropTypes, Empty>
+export default class NotificationFilterListItem extends React.Component<PropTypes, {}>
 {
   displayName: "NotificationFilterListItem",
 

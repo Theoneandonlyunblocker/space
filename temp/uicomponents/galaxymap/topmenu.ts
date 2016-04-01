@@ -9,7 +9,7 @@ export interface PropTypes
   game: Game;
 }
 
-export default class TopMenu extends React.Component<PropTypes, Empty>
+export default class TopMenu extends React.Component<PropTypes, {}>
 {
   displayName: "TopMenu",
   mixins: [React.addons.PureRenderMixin],

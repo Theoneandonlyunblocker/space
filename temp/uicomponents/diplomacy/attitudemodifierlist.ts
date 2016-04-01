@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export default class AttitudeModifierList extends React.Component<PropTypes, Empty>
+export default class AttitudeModifierList extends React.Component<PropTypes, {}>
 {
   displayName: "AttitudeModifierList",
   mixins: [AutoPosition],

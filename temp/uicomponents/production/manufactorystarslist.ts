@@ -10,7 +10,7 @@ export interface PropTypes
   handleStarSelect: reactTypeTODO_func;
 }
 
-export default class ManufactoryStarsList extends React.Component<PropTypes, Empty>
+export default class ManufactoryStarsList extends React.Component<PropTypes, {}>
 {
   displayName: "ManufactoryStarsList",
 
