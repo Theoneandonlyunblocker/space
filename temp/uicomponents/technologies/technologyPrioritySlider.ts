@@ -7,7 +7,7 @@ import * as React from "react";
 export interface PropTypes
 {
   playerTechnology: Rance.PlayerTechnology;
-  technology: Rance.Templates.ITechnologyTemplate;
+  technology: Rance.TechnologyTemplate;
   researchPoints: number;
 }
 

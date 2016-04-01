@@ -8,7 +8,7 @@ namespace Rance
     {
       export namespace Culture
       {
-        export var paintingPortraitsCulture: Rance.Templates.ICultureTemplate =
+        export var paintingPortraitsCulture: Rance.CultureTemplate =
         {
           key: "paintingPortraitsCulture",
           portraits:

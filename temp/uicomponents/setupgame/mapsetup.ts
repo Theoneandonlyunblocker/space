@@ -36,7 +36,7 @@ export default class MapSetup extends React.Component<PropTypes, {}>
   
   getInitialState()
   {
-    var mapGenTemplates: Templates.IMapGenTemplate[] = [];
+    var mapGenTemplates: MapGenTemplate[] = [];
 
     for (var template in app.moduleData.Templates.MapGen)
     {

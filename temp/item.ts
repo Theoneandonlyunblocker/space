@@ -7,11 +7,11 @@
 export class Item
 {
   id: number;
-  template: Templates.IItemTemplate;
+  template: ItemTemplate;
   unit: Unit;
 
   constructor(
-    template: Templates.IItemTemplate,
+    template: ItemTemplate,
     id?: number)
   {
     this.id = isFinite(id) ? id : idGenerators.item++;

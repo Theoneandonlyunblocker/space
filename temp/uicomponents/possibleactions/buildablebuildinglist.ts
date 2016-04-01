@@ -79,7 +79,7 @@ export default class BuildableBuildingList extends React.Component<PropTypes, {}
 
     for (var i = 0; i < this.state.buildingTemplates.length; i++)
     {
-      var template: Templates.IBuildingTemplate = this.state.buildingTemplates[i];
+      var template: BuildingTemplate = this.state.buildingTemplates[i];
 
       var data: any =
       {

@@ -4,35 +4,35 @@ export interface ITemplates
 {
   Abilities:
   {
-    [type: string]: Templates.IAbilityTemplate;
+    [type: string]: AbilityTemplate;
   };
   AttitudeModifiers:
   {
-    [type: string]: Templates.IAttitudeModifierTemplate;
+    [type: string]: AttitudeModifierTemplate;
   };
   BattleSFX:
   {
-    [type: string]: Templates.IBattleSFXTemplate;
+    [type: string]: BattleSFXTemplate;
   };
   Buildings:
   {
-    [type: string]: Templates.IBuildingTemplate;
+    [type: string]: BuildingTemplate;
   };
   Cultures:
   {
-    [key: string]: Templates.ICultureTemplate;
+    [key: string]: CultureTemplate;
   };
   EffectActions:
   {
-    [type: string]: Templates.IEffectActionTemplate;
+    [type: string]: EffectActionTemplate;
   };
   Items:
   {
-    [type: string]: Templates.IItemTemplate;
+    [type: string]: ItemTemplate;
   };
   MapGen:
   {
-    [type: string]: Templates.IMapGenTemplate;
+    [type: string]: MapGenTemplate;
   };
   // recommend not touching these 2 too much as they are likely to change and stupid anyway
   MapRendererLayers:
@@ -46,16 +46,16 @@ export interface ITemplates
   // can touch again
   Notifications:
   {
-    [key: string]: Templates.INotificationTemplate;
+    [key: string]: NotificationTemplate;
   };
   // shouldnt probably touch this either
   Objectives:
   {
-    [key: string]: Templates.IObjectiveTemplate;
+    [key: string]: ObjectiveTemplate;
   }
   PassiveSkills:
   {
-    [type: string]: Templates.IPassiveSkillTemplate;
+    [type: string]: PassiveSkillTemplate;
   };
   Personalities:
   {
@@ -63,31 +63,31 @@ export interface ITemplates
   };
   Resources:
   {
-    [type: string]: Templates.IResourceTemplate;
+    [type: string]: ResourceTemplate;
   };
   StatusEffects:
   {
-    [type: string]: Templates.IStatusEffectTemplate;
+    [type: string]: StatusEffectTemplate;
   };
   SubEmblems:
   {
-    [type: string]: Templates.ISubEmblemTemplate;
+    [type: string]: SubEmblemTemplate;
   };
   Technologies:
   {
-    [key: string]: Templates.ITechnologyTemplate;
+    [key: string]: TechnologyTemplate;
   };
   UnitArchetypes:
   {
-    [type: string]: Templates.IUnitArchetype;
+    [type: string]: UnitArchetype;
   };
   UnitFamilies:
   {
-    [type: string]: Templates.IUnitFamily;
+    [type: string]: UnitFamily;
   };
   Units:
   {
-    [type: string]: Templates.IUnitTemplate;
+    [type: string]: UnitTemplate;
   };
 }
 export interface IModuleMetaData
@@ -149,7 +149,7 @@ export class ModuleData
     Units: {}
   };
 
-  defaultMap: Templates.IMapGenTemplate;
+  defaultMap: MapGenTemplate;
   ruleSet: IModuleRuleSet = extendObject(defaultRuleSet);
 
   constructor()
@@ -189,7 +189,7 @@ export class ModuleData
   {
     this.subModuleMetaData.push(moduleFile.metaData);
   }
-  getDefaultMap(): Templates.IMapGenTemplate
+  getDefaultMap(): MapGenTemplate
   {
     if (this.defaultMap) return this.defaultMap;
     else if (Object.keys(this.Templates.MapGen).length > 0)

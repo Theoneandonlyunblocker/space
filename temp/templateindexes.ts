@@ -9,8 +9,8 @@ function getDistributablesByDistributionGroup()
   {
     [groupName: string]:
     {
-      unitFamilies: Templates.IUnitFamily[];
-      resources: Templates.IResourceTemplate[];
+      unitFamilies: UnitFamily[];
+      resources: ResourceTemplate[];
     };
   } = {};
 
@@ -45,11 +45,11 @@ function getItemsByTechLevel()
 {
   var itemsByTechLevel:
   {
-    [techLevel: number]: Templates.IItemTemplate[];
+    [techLevel: number]: ItemTemplate[];
   } = {};
-  for (var itemName in app.moduleData.Templates.Items)
+  for (var itemName in app.moduleData.tems)
   {
-    var item = app.moduleData.Templates.Items[itemName];
+    var item = app.moduleData.tems[itemName];
 
     if (!itemsByTechLevel[item.techLevel])
     {
@@ -67,12 +67,12 @@ export namespace TemplateIndexes
   {
     [groupName: string]:
     {
-      unitFamilies: Templates.IUnitFamily[];
-      resources: Templates.IResourceTemplate[];
+      unitFamilies: UnitFamily[];
+      resources: ResourceTemplate[];
     };
   }
   export var itemsByTechLevel:
   {
-    [techLevel: number]: Templates.IItemTemplate[];
+    [techLevel: number]: ItemTemplate[];
   }
 }

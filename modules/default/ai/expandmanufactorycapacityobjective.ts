@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var expandManufactoryCapacity: Rance.Templates.IObjectiveTemplate =
+        export var expandManufactoryCapacity: Rance.ObjectiveTemplate =
         {
           key: "expandManufactoryCapacity",
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,

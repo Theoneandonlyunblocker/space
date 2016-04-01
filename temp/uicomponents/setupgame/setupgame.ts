@@ -64,7 +64,7 @@ export default class SetupGame extends React.Component<PropTypes, {}>
 
     var mapSetupInfo = this.refs.mapSetup.getMapSetupInfo();
 
-    var mapGenFunction: Templates.IMapGenFunction = mapSetupInfo.template.mapGenFunction;
+    var mapGenFunction: MapGenFunction = mapSetupInfo.template.mapGenFunction;
 
     var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
     var map = mapGenResult.makeMap();

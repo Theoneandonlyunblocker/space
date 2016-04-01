@@ -9,7 +9,7 @@ namespace Rance
     {
       export namespace Notifications
       {
-        export var battleFinishNotification: Rance.Templates.INotificationTemplate =
+        export var battleFinishNotification: Rance.NotificationTemplate =
         {
           key: "battleFinishNotification",
           displayName: "Battle finished",

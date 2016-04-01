@@ -63,7 +63,7 @@ export default class UnitStatusEffects extends React.Component<PropTypes, {}>
       }))
     }
 
-    var passiveSkills: Templates.IPassiveSkillTemplate[] = [];
+    var passiveSkills: PassiveSkillTemplate[] = [];
     var passiveSkillsByPhase = this.props.unit.getPassiveSkillsByPhase();
     var phasesToCheck = this.props.isBattlePrep ? ["atBattleStart"] : ["beforeAbilityUse", "afterAbilityUse"];
 

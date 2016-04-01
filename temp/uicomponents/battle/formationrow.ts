@@ -16,10 +16,10 @@ export interface PropTypes
   battle?: Battle;
   facesLeft: boolean;
   activeUnit?: Unit;
-  activeTargets?: reactTypeTODO_object; // {[id: number]: Templates.IAbilityTemplate[];}
+  activeTargets?: reactTypeTODO_object; // {[id: number]: AbilityTemplate[];}
 
   hoveredUnit?: Unit;
-  hoveredAbility?: reactTypeTODO_object; // Templates.IAbilityTemplate
+  hoveredAbility?: reactTypeTODO_object; // AbilityTemplate
 
   handleMouseLeaveUnit?: reactTypeTODO_func;
   handleMouseEnterUnit?: reactTypeTODO_func;

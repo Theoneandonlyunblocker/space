@@ -32,7 +32,7 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
   
   getInitialState()
   {
-    var initialEmblem: Templates.ISubEmblemTemplate = null;
+    var initialEmblem: SubEmblemTemplate = null;
     if (this.props.flag.foregroundEmblem)
     {
       initialEmblem = this.props.flag.foregroundEmblem.inner;
@@ -43,7 +43,7 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
     });
   }
 
-  handleSelectEmblem(emblemTemplate: Templates.ISubEmblemTemplate)
+  handleSelectEmblem(emblemTemplate: SubEmblemTemplate)
   {
     if (this.state.selectedEmblem === emblemTemplate && emblemTemplate !== null)
     {
@@ -68,7 +68,7 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
 
     this.props.uploadFiles(files);
   }
-  makeEmblemElement(template: Templates.ISubEmblemTemplate)
+  makeEmblemElement(template: SubEmblemTemplate)
   {
     var className = "emblem-picker-image";
     if (this.state.selectedEmblem &&

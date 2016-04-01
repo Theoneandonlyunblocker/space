@@ -20,7 +20,7 @@ export enum GuardCoverage
 
 export interface IQueuedActionData
 {
-  ability: Templates.IAbilityTemplate;
+  ability: AbilityTemplate;
   targetId: number;
   turnsPrepared: number;
   timesInterrupted: number;
@@ -50,12 +50,12 @@ export interface IUnitItems
 
 export class Unit
 {
-  template: Templates.IUnitTemplate;
+  template: UnitTemplate;
 
   id: number;
 
   name: string;
-  portrait: Templates.IPortraitTemplate;
+  portrait: PortraitTemplate;
 
   maxHealth: number;
   currentHealth: number;
@@ -81,8 +81,8 @@ export class Unit
 
   battleStats: IUnitBattleStats;
 
-  abilities: Templates.IAbilityTemplate[] = [];
-  passiveSkills: Templates.IPassiveSkillTemplate[] = [];
+  abilities: AbilityTemplate[] = [];
+  passiveSkills: PassiveSkillTemplate[] = [];
 
   experienceForCurrentLevel: number;
   level: number;
@@ -98,11 +98,11 @@ export class Unit
 
   passiveSkillsByPhase:
   {
-    atBattleStart?: Templates.IPassiveSkillTemplate[];
-    beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
-    afterAbilityUse?: Templates.IPassiveSkillTemplate[];
-    atTurnStart?: Templates.IPassiveSkillTemplate[];
-    inBattlePrep?: Templates.IPassiveSkillTemplate[];
+    atBattleStart?: PassiveSkillTemplate[];
+    beforeAbilityUse?: PassiveSkillTemplate[];
+    afterAbilityUse?: PassiveSkillTemplate[];
+    atTurnStart?: PassiveSkillTemplate[];
+    inBattlePrep?: PassiveSkillTemplate[];
   } = {};
   passiveSkillsByPhaseAreDirty: boolean = true;
 
@@ -122,7 +122,7 @@ export class Unit
   displayedHealth: number;
   
   // end new
-  constructor(template: Templates.IUnitTemplate, id?: number, data?: IUnitSaveData)
+  constructor(template: UnitTemplate, id?: number, data?: IUnitSaveData)
   {
     this.id = isFinite(id) ? id : idGenerators.unit++;
 
@@ -215,7 +215,7 @@ export class Unit
         var item = data.items[slot];
         if (!item) return;
 
-        items[slot] = new Item(app.moduleData.Templates.Items[item.templateType], item.id);
+        items[slot] = new Item(app.moduleData.tems[item.templateType], item.id);
       }
     });
 
@@ -233,7 +233,7 @@ export class Unit
 
     if (data.portraitKey)
     {
-      this.portrait = findItemWithKey<Templates.IPortraitTemplate>(
+      this.portrait = findItemWithKey<PortraitTemplate>(
         app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
     }
   }
@@ -294,8 +294,8 @@ export class Unit
     var templateCultures = this.template.cultures;
 
     var nameGeneratorFN: (unit: Unit) => string;
-    var nameGeneratorCandidateCultures: Templates.ICultureTemplate[] = templateCultures.filter(
-      function(cultureTemplate: Templates.ICultureTemplate)
+    var nameGeneratorCandidateCultures: CultureTemplate[] = templateCultures.filter(
+      function(cultureTemplate: CultureTemplate)
     {
       return Boolean(cultureTemplate.nameGenerator);
     });
@@ -312,8 +312,8 @@ export class Unit
     this.name = nameGeneratorFN(this);
 
 
-    var portraitCandidateCultures: Templates.ICultureTemplate[] = templateCultures.filter(
-      function(cultureTemplate: Templates.ICultureTemplate)
+    var portraitCandidateCultures: CultureTemplate[] = templateCultures.filter(
+      function(cultureTemplate: CultureTemplate)
     {
       return Boolean(cultureTemplate.portraits);
     });
@@ -330,7 +330,7 @@ export class Unit
 
 
     var portraitCandidateCulturesWithWeights: any =
-      portraitCandidateCultures.map(function(culture: Templates.ICultureTemplate)
+      portraitCandidateCultures.map(function(culture: CultureTemplate)
     {
       return(
       {
@@ -432,7 +432,7 @@ export class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  setQueuedAction(ability: Templates.IAbilityTemplate, target: Unit)
+  setQueuedAction(ability: AbilityTemplate, target: Unit)
   {
     this.battleStats.queuedAction =
     {
@@ -619,7 +619,7 @@ export class Unit
       return null;
     }
 
-    var adjustments: Templates.IStatusEffectAttributes = {};
+    var adjustments: StatusEffectAttributes = {};
     for (var i = 0; i < this.battleStats.statusEffects.length; i++)
     {
       var statusEffect = this.battleStats.statusEffects[i];
@@ -688,9 +688,9 @@ export class Unit
       this.passiveSkills = getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
     }
   }
-  getItemAbilities(): Templates.IAbilityTemplate[]
+  getItemAbilities(): AbilityTemplate[]
   {
-    var itemAbilities: Templates.IAbilityTemplate[] = [];
+    var itemAbilities: AbilityTemplate[] = [];
 
     for (var slot in this.items)
     {
@@ -700,13 +700,13 @@ export class Unit
 
     return itemAbilities;
   }
-  getAllAbilities(): Templates.IAbilityTemplate[]
+  getAllAbilities(): AbilityTemplate[]
   {
     return this.abilities.concat(this.getItemAbilities());
   }
-  getItemPassiveSkills(): Templates.IPassiveSkillTemplate[]
+  getItemPassiveSkills(): PassiveSkillTemplate[]
   {
-    var itemPassiveSkills: Templates.IPassiveSkillTemplate[] = [];
+    var itemPassiveSkills: PassiveSkillTemplate[] = [];
 
     for (var slot in this.items)
     {
@@ -716,9 +716,9 @@ export class Unit
 
     return itemPassiveSkills;
   }
-  getStatusEffectPassiveSkills(): Templates.IPassiveSkillTemplate[]
+  getStatusEffectPassiveSkills(): PassiveSkillTemplate[]
   {
-    var statusEffectPassiveSkills: Templates.IPassiveSkillTemplate[] = [];
+    var statusEffectPassiveSkills: PassiveSkillTemplate[] = [];
 
     if (!this.battleStats || !this.battleStats.statusEffects)
     {
@@ -736,9 +736,9 @@ export class Unit
 
     return statusEffectPassiveSkills;
   }
-  getAllPassiveSkills(): Templates.IPassiveSkillTemplate[]
+  getAllPassiveSkills(): PassiveSkillTemplate[]
   {
-    var allSkills: Templates.IPassiveSkillTemplate[] = [];
+    var allSkills: PassiveSkillTemplate[] = [];
     allSkills = allSkills.concat(this.passiveSkills);
 
     allSkills = allSkills.concat(this.getItemPassiveSkills());
@@ -1012,7 +1012,7 @@ export class Unit
     this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
     this.level++;
   }
-  hasAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[])
+  hasAbility(ability: AbilityBase, allAbilities: AbilityBase[])
   {
     for (var i = 0; i < allAbilities.length; i++)
     {
@@ -1024,9 +1024,9 @@ export class Unit
 
     return false;
   }
-  getLearnableAbilities(allAbilities: Templates.IAbilityBase[])
+  getLearnableAbilities(allAbilities: AbilityBase[])
   {
-    var abilities: Templates.IAbilityBase[] = [];
+    var abilities: AbilityBase[] = [];
 
     if (!this.template.learnableAbilities) return abilities;
 
@@ -1058,7 +1058,7 @@ export class Unit
 
     return abilities;
   }
-  canUpgradeIntoAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[])
+  canUpgradeIntoAbility(ability: AbilityBase, allAbilities: AbilityBase[])
   {
     if (ability.onlyAllowExplicitUpgrade)
     {
@@ -1080,12 +1080,12 @@ export class Unit
     {
       [source: string]:
       {
-        base: Templates.IAbilityBase;
-        possibleUpgrades: Templates.IAbilityBase[];
+        base: AbilityBase;
+        possibleUpgrades: AbilityBase[];
       }
     } = {};
 
-    var allAbilities: Templates.IAbilityBase[] = this.getAllAbilities();
+    var allAbilities: AbilityBase[] = this.getAllAbilities();
     allAbilities = allAbilities.concat(this.getAllPassiveSkills());
 
     var templates = app.moduleData.Templates;
@@ -1098,7 +1098,7 @@ export class Unit
       for (var j = 0; j < parentAbility.canUpgradeInto.length; j++)
       {
         var childAbilityType = parentAbility.canUpgradeInto[j];
-        var childAbility: Templates.IAbilityBase =
+        var childAbility: AbilityBase =
           templates.Abilities[childAbilityType] || templates.PassiveSkills[childAbilityType];
         if (!childAbility) throw new Error("Invalid ability upgrade " + childAbilityType);
         if (this.canUpgradeIntoAbility(childAbility, allAbilities))
@@ -1129,7 +1129,7 @@ export class Unit
 
     return upgradeData;
   }
-  upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase)
+  upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
   {
     var newAbilityIsPassiveSkill = !newAbility.mainEffect;
     if (source)
@@ -1141,7 +1141,7 @@ export class Unit
       }
       else
       {
-        var castedSource = <Templates.IAbilityTemplate> source;
+        var castedSource = <AbilityTemplate> source;
         this.abilities.splice(this.abilities.indexOf(castedSource), 1);
       }
     }
@@ -1152,7 +1152,7 @@ export class Unit
     }
     else
     {
-      var castedNewAbility = <Templates.IAbilityTemplate> newAbility;
+      var castedNewAbility = <AbilityTemplate> newAbility;
       this.abilities.push(castedNewAbility);
     }
   }
@@ -1212,12 +1212,12 @@ export class Unit
       timesActedThisTurn: this.timesActedThisTurn,
 
       baseAttributes: extendObject(this.baseAttributes),
-      abilityTemplateTypes: this.abilities.map(function(ability: Templates.IAbilityTemplate)
+      abilityTemplateTypes: this.abilities.map(function(ability: AbilityTemplate)
       {
         return ability.type;
       }),
       passiveSkillTemplateTypes: this.passiveSkills.map(function(
-        passiveSkill: Templates.IPassiveSkillTemplate)
+        passiveSkill: PassiveSkillTemplate)
       {
         return passiveSkill.type;
       }),

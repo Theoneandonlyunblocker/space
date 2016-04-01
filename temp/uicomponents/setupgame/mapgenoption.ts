@@ -46,7 +46,7 @@ export default class MapGenOption extends React.Component<PropTypes, {}>
   
   render()
   {
-    var option: Templates.IMapGenOption = this.props.option;
+    var option: MapGenOption = this.props.option;
     var range = option.range;
     var id = "mapGenOption_" + this.props.id;
 

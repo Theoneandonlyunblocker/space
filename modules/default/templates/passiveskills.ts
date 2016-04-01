@@ -12,7 +12,7 @@ namespace Rance
       {
         export namespace PassiveSkills
         {
-          export var autoHeal: Rance.Templates.IPassiveSkillTemplate =
+          export var autoHeal: Rance.PassiveSkillTemplate =
           {
             type: "autoHeal",
             displayName: "Auto heal",
@@ -42,7 +42,7 @@ namespace Rance
               }
             ]
           }
-          export var poisoned: Rance.Templates.IPassiveSkillTemplate =
+          export var poisoned: Rance.PassiveSkillTemplate =
           {
             type: "poisoned",
             displayName: "Poisoned",
@@ -74,7 +74,7 @@ namespace Rance
             ]
 
           }
-          export var overdrive: Rance.Templates.IPassiveSkillTemplate =
+          export var overdrive: Rance.PassiveSkillTemplate =
           {
             type: "overdrive",
             displayName: "Overdrive",
@@ -87,7 +87,7 @@ namespace Rance
               }
             ]
           }
-          export var initialGuard: Rance.Templates.IPassiveSkillTemplate =
+          export var initialGuard: Rance.PassiveSkillTemplate =
           {
             type: "initialGuard",
             displayName: "Initial Guard",
@@ -109,7 +109,7 @@ namespace Rance
               }
             ]
           }
-          export var warpJammer: Rance.Templates.IPassiveSkillTemplate =
+          export var warpJammer: Rance.PassiveSkillTemplate =
           {
             type: "warpJammer",
             displayName: "Warp Jammer",
@@ -127,7 +127,7 @@ namespace Rance
             ],
             canUpgradeInto: ["medic"]
           }
-          export var medic: Rance.Templates.IPassiveSkillTemplate =
+          export var medic: Rance.PassiveSkillTemplate =
           {
             type: "medic",
             displayName: "Medic",

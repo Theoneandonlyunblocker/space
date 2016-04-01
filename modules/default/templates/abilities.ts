@@ -16,7 +16,7 @@ namespace Rance
       {
         export namespace Abilities
         {
-          export var rangedAttack: Rance.Templates.IAbilityTemplate =
+          export var rangedAttack: Rance.AbilityTemplate =
           {
             type: "rangedAttack",
             displayName: "Ranged Attack",
@@ -45,7 +45,7 @@ namespace Rance
             },
             canUpgradeInto: ["bombAttack", "boardingHook", "ranceAttack"]
           }
-          export var closeAttack: Rance.Templates.IAbilityTemplate =
+          export var closeAttack: Rance.AbilityTemplate =
           {
             type: "closeAttack",
             displayName: "Close Attack",
@@ -58,7 +58,7 @@ namespace Rance
               sfx: BattleSFX.rocketAttack
             }
           }
-          export var wholeRowAttack: Rance.Templates.IAbilityTemplate =
+          export var wholeRowAttack: Rance.AbilityTemplate =
           {
             type: "wholeRowAttack",
             displayName: "Row Attack",
@@ -73,7 +73,7 @@ namespace Rance
             }
           }
 
-          export var bombAttack: Rance.Templates.IAbilityTemplate =
+          export var bombAttack: Rance.AbilityTemplate =
           {
             type: "bombAttack",
             displayName: "Bomb Attack",
@@ -86,7 +86,7 @@ namespace Rance
               sfx: BattleSFX.rocketAttack
             }
           }
-          export var guardRow: Rance.Templates.IAbilityTemplate =
+          export var guardRow: Rance.AbilityTemplate =
           {
             type: "guardRow",
             displayName: "Guard Row",
@@ -104,7 +104,7 @@ namespace Rance
             }
           }
           export var guardColumn = guardRow; // legacy alias 10.3.2016
-          export var boardingHook: Rance.Templates.IAbilityTemplate =
+          export var boardingHook: Rance.AbilityTemplate =
           {
             type: "boardingHook",
             displayName: "Boarding Hook",
@@ -140,7 +140,7 @@ namespace Rance
             }
           }
 
-          export var debugAbility: Rance.Templates.IAbilityTemplate =
+          export var debugAbility: Rance.AbilityTemplate =
           {
             type: "debugAbility",
             displayName: "Debug Ability",
@@ -155,7 +155,7 @@ namespace Rance
             }
           }
 
-          export var ranceAttack: Rance.Templates.IAbilityTemplate =
+          export var ranceAttack: Rance.AbilityTemplate =
           {
             type: "ranceAttack",
             displayName: "Rance attack",
@@ -223,7 +223,7 @@ namespace Rance
             onlyAllowExplicitUpgrade: true
           }
 
-          export var standBy: Rance.Templates.IAbilityTemplate =
+          export var standBy: Rance.AbilityTemplate =
           {
             type: "standBy",
             displayName: "Standby",

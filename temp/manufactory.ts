@@ -94,7 +94,7 @@ export class Manufactory
       {
         case "unit":
         {
-          var unitTemplate = <Templates.IUnitTemplate> thingData.template;
+          var unitTemplate = <UnitTemplate> thingData.template;
           var unit = new Unit(unitTemplate);
           unit.setAttributes(this.unitStatsModifier);
           unit.setBaseHealth(this.unitHealthModifier);
@@ -104,7 +104,7 @@ export class Manufactory
         }
         case "item":
         {
-          var itemTemplate = <Templates.IItemTemplate> thingData.template;
+          var itemTemplate = <ItemTemplate> thingData.template;
           var item = new Item(itemTemplate);
           this.player.addItem(item);
           break;
@@ -124,8 +124,8 @@ export class Manufactory
   }
   getLocalUnitTypes()
   {
-    var manufacturable: Templates.IUnitTemplate[] = [];
-    var potential: Templates.IUnitTemplate[] = [];
+    var manufacturable: UnitTemplate[] = [];
+    var potential: UnitTemplate[] = [];
 
     for (var i = 0; i < this.star.buildableUnitTypes.length; i++)
     {
@@ -148,8 +148,8 @@ export class Manufactory
   }
   getLocalItemTypes()
   {
-    var manufacturable: Templates.IItemTemplate[] = [];
-    var potential: Templates.IItemTemplate[] = [];
+    var manufacturable: ItemTemplate[] = [];
+    var potential: ItemTemplate[] = [];
 
     // TODO manufactory
 

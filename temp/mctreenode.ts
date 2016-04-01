@@ -4,7 +4,7 @@
 
 export interface IMove
 {
-  ability: Templates.IAbilityTemplate;
+  ability: AbilityTemplate;
   targetId: number;
 }
 export class MCTreeNode
@@ -152,7 +152,7 @@ export class MCTreeNode
 
     if (this.parent) this.parent.updateResult(result);
   }
-  pickRandomAbilityAndTarget(actions: {[targetId: number]: Templates.IAbilityTemplate[]})
+  pickRandomAbilityAndTarget(actions: {[targetId: number]: AbilityTemplate[]})
   {
     var prioritiesByAbilityAndTarget:
     {

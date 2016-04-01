@@ -31,7 +31,7 @@ export class BattleSceneUnitOverlay
     this.overlayContainer = new PIXI.Container;
     this.container.addChild(this.overlayContainer);
   }
-  setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
+  setSFX(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit)
   {
     if (this.activeUnit)
     {

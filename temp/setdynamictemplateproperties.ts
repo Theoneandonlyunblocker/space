@@ -9,7 +9,7 @@ export function setAllDynamicTemplateProperties()
 }
 function setAbilityGuardAddition()
 {
-  function checkIfAbilityAddsGuard(ability: Templates.IAbilityTemplate)
+  function checkIfAbilityAddsGuard(ability: AbilityTemplate)
   {
     var effects = [ability.mainEffect];
     if (ability.secondaryEffects)
@@ -34,7 +34,7 @@ function setAbilityGuardAddition()
 
   for (var abilityName in app.moduleData.Templates.Abilities)
   {
-    var ability = <Templates.IAbilityTemplate> app.moduleData.Templates.Abilities[abilityName];
+    var ability = <AbilityTemplate> app.moduleData.Templates.Abilities[abilityName];
     ability.addsGuard = checkIfAbilityAddsGuard(ability);
   }
 }

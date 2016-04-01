@@ -5,5 +5,5 @@ declare interface IManufacturableThing
   description: string;
   buildCost: number;
 
-  technologyRequirements?: Templates.ITechnologyRequirement[];
+  technologyRequirements?: TechnologyRequirement[];
 }

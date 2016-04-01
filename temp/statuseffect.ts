@@ -2,10 +2,10 @@
 
 export class StatusEffect
 {
-  template: Templates.IStatusEffectTemplate;
+  template: StatusEffectTemplate;
   duration: number; // -1 === infinite
 
-  constructor(template: Templates.IStatusEffectTemplate, duration: number)
+  constructor(template: StatusEffectTemplate, duration: number)
   {
     this.template = template;
     this.duration = duration;

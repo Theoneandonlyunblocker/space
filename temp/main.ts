@@ -209,7 +209,7 @@ namespace Rance
     }
     makeMap(playerData: {players: Player[]})
     {
-      var optionValues: Templates.IMapGenOptionValues =
+      var optionValues: MapGenOptionValues =
       {
         defaultOptions:
         {

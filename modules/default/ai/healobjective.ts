@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var heal: Rance.Templates.IObjectiveTemplate =
+        export var heal: Rance.ObjectiveTemplate =
         {
           key: "heal",
           movePriority: -1,

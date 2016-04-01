@@ -89,7 +89,7 @@ export class ObjectivesAI
       }
     }
   }
-  getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate)
+  getNewObjectivesOfType(objectiveTemplate: ObjectiveTemplate)
   {
     var objectiveType = objectiveTemplate.key;
     var byTarget = this.getObjectivesByTarget(objectiveType, true);
@@ -118,7 +118,7 @@ export class ObjectivesAI
 
     return finalObjectives;
   }
-  setObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate)
+  setObjectivesOfType(objectiveTemplate: ObjectiveTemplate)
   {
     var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
     this.objectivesByType[objectiveTemplate.key] = newObjectives;

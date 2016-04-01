@@ -402,7 +402,7 @@ export class GameLoader
   }
   deserializeItem(data: IItemSaveData, player: Player): void
   {
-    var template = app.moduleData.Templates.Items[data.templateType];
+    var template = app.moduleData.tems[data.templateType];
 
     var item = new Item(template, data.id);
 

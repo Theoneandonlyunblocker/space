@@ -21,12 +21,12 @@ export interface IAbilityUseEffect
 {
   actionName: string;
   unitDisplayDataAfterUsingById: IUnitDisplayDataById;
-  sfx: Templates.IBattleSFXTemplate;
+  sfx: BattleSFXTemplate;
   sfxUser: Unit;
   sfxTarget: Unit;
 }
 
-export function useAbility(battle: Battle, ability: Templates.IAbilityTemplate,
+export function useAbility(battle: Battle, ability: AbilityTemplate,
   user: Unit, target: Unit, getEffects: boolean)
 {
   var effectDataByPhase = getAbilityEffectDataByPhase(battle,

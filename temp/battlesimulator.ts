@@ -41,7 +41,7 @@ export class BattleSimulator
     this.battle.endTurn();
   }
 
-  simulateAbility(ability: Templates.IAbilityTemplate, target: Unit)
+  simulateAbility(ability: AbilityTemplate, target: Unit)
   {
     useAbility(this.battle, ability, this.battle.activeUnit, target, false);
   }

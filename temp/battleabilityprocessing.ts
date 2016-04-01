@@ -5,14 +5,14 @@
 
 export interface IAbilityUseData
 {
-  ability: Templates.IAbilityTemplate;
+  ability: AbilityTemplate;
   user: Unit;
   intendedTarget: Unit;
   actualTarget?: Unit;
 }
 export interface IAbilityEffectData
 {
-  templateEffect: Templates.IAbilityEffectTemplate;
+  templateEffect: AbilityEffectTemplate;
   user: Unit;
   target: Unit;
   trigger: (user: Unit, target: Unit) => boolean;
@@ -116,7 +116,7 @@ function activeUnitsFilterFN(unit: Unit)
 {
   return unit && unit.isActiveInBattle();
 }
-function getUnitsInEffectArea(battle: Battle,effect: Templates.IEffectActionTemplate,
+function getUnitsInEffectArea(battle: Battle,effect: EffectActionTemplate,
   user: Unit, target: Unit): Unit[]
 {
   var targetFormations = getFormationsToTarget(battle, user, effect);
@@ -127,7 +127,7 @@ function getUnitsInEffectArea(battle: Battle,effect: Templates.IEffectActionTemp
 }
 
 function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData: IAbilityUseData,
-  effectTemplates: Templates.IAbilityEffectTemplate[]): IAbilityEffectData[]
+  effectTemplates: AbilityEffectTemplate[]): IAbilityEffectData[]
 {
   var effectData: IAbilityEffectData[] = [];
 
@@ -151,10 +151,10 @@ function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData:
 
   return effectData;
 }
-function getEffectTemplatesWithAttachedEffects(templates: Templates.IAbilityEffectTemplate[]):
-  Templates.IAbilityEffectTemplate[]
+function getEffectTemplatesWithAttachedEffects(templates: AbilityEffectTemplate[]):
+  AbilityEffectTemplate[]
 {
-  var withAttached: Templates.IAbilityEffectTemplate[] = [];
+  var withAttached: AbilityEffectTemplate[] = [];
 
   for (var i = 0; i < templates.length; i++)
   {
@@ -171,9 +171,9 @@ function getEffectTemplatesWithAttachedEffects(templates: Templates.IAbilityEffe
 
   return withAttached;
 }
-function getBeforeAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): Templates.IAbilityEffectTemplate[]
+function getBeforeAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): AbilityEffectTemplate[]
 {
-  var beforeUseEffects: Templates.IAbilityEffectTemplate[] = [];
+  var beforeUseEffects: AbilityEffectTemplate[] = [];
   if (abilityUseData.ability.beforeUse)
   {
     beforeUseEffects = beforeUseEffects.concat(abilityUseData.ability.beforeUse);
@@ -191,9 +191,9 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): Te
   return getEffectTemplatesWithAttachedEffects(beforeUseEffects);
   // TODO remove guard & action points
 }
-function getAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): Templates.IAbilityEffectTemplate[]
+function getAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): AbilityEffectTemplate[]
 {
-  var abilityUseEffects: Templates.IAbilityEffectTemplate[] = [];
+  var abilityUseEffects: AbilityEffectTemplate[] = [];
   abilityUseEffects.push(abilityUseData.ability.mainEffect);
 
   if (abilityUseData.ability.secondaryEffects)
@@ -203,9 +203,9 @@ function getAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): Template
 
   return getEffectTemplatesWithAttachedEffects(abilityUseEffects);
 }
-function getAfterAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): Templates.IAbilityEffectTemplate[]
+function getAfterAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): AbilityEffectTemplate[]
 {
-  var afterUseEffects: Templates.IAbilityEffectTemplate[] = [];
+  var afterUseEffects: AbilityEffectTemplate[] = [];
   if (abilityUseData.ability.afterUse)
   {
     afterUseEffects = afterUseEffects.concat(abilityUseData.ability.afterUse);

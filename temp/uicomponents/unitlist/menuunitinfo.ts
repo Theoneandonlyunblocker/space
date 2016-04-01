@@ -63,7 +63,7 @@ export default class MenuUnitInfo extends React.Component<PropTypes, {}>
       }));
     }
 
-    var unitAbilities: Templates.IAbilityBase[] = unit.getAllAbilities();
+    var unitAbilities: AbilityBase[] = unit.getAllAbilities();
     unitAbilities = unitAbilities.concat(unit.getAllPassiveSkills());
 
     return(

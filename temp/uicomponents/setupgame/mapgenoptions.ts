@@ -50,13 +50,13 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     }
   }
 
-  getDefaultValues(mapGenTemplate: Templates.IMapGenTemplate, unsetOnly: boolean = true)
+  getDefaultValues(mapGenTemplate: MapGenTemplate, unsetOnly: boolean = true)
   {
     var defaultValues = {};
 
     ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function(optionGroup: string)
     {
-      var options: Templates.IMapGenOptions = mapGenTemplate.options[optionGroup];
+      var options: MapGenOptions = mapGenTemplate.options[optionGroup];
       if (!options) return;
 
       for (var optionName in options)
@@ -111,7 +111,7 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
   {
     var newValues: any = {};
 
-    var optionGroups: Templates.IMapGenOptions = this.props.mapGenTemplate.options;
+    var optionGroups: MapGenOptions = this.props.mapGenTemplate.options;
     for (var optionGroupName in optionGroups)
     {
       var optionGroup = optionGroups[optionGroupName];
@@ -126,9 +126,9 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     this.setState(newValues);
   }
 
-  getOptionValuesForTemplate(): Templates.IMapGenOptionValues
+  getOptionValuesForTemplate(): MapGenOptionValues
   {
-    var optionValues: Templates.IMapGenOptionValues =
+    var optionValues: MapGenOptionValues =
       extendObject(this.props.mapGenTemplate.options);
 
     for (var groupName in optionValues)

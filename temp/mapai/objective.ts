@@ -15,7 +15,7 @@ objectives:
 export class Objective
 {
   id: number;
-  template: Templates.IObjectiveTemplate;
+  template: ObjectiveTemplate;
   type: string;
   private _basePriority: number;
   get priority(): number
@@ -31,7 +31,7 @@ export class Objective
   target: Star;
   targetPlayer: Player;
 
-  constructor(template: Templates.IObjectiveTemplate,priority: number, target: Star,
+  constructor(template: ObjectiveTemplate,priority: number, target: Star,
     targetPlayer?: Player)
   {
     this.id = idGenerators.objective++;

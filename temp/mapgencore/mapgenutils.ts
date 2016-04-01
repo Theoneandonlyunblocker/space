@@ -296,7 +296,7 @@ export function setSectorDistributionFlags(sectors: Sector[])
 export function distributeDistributablesPerSector(sectors: Sector[],
   distributableType: string,
   allDistributables: any,
-  placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void)
+  placerFunction: (sector: Sector, distributable: Distributable) => void)
 {
   if (!sectors[0].distributionFlags)
   {
@@ -316,7 +316,7 @@ export function distributeDistributablesPerSector(sectors: Sector[],
   {
     var sector = sectors[i];
     var alreadyAddedByWeight = getRelativeWeightsFromObject(probabilityWeights);
-    var candidates: Templates.IDistributable[] = [];
+    var candidates: Distributable[] = [];
 
     for (var j = 0; j < sector.distributionFlags.length; j++)
     {
@@ -328,7 +328,7 @@ export function distributeDistributablesPerSector(sectors: Sector[],
     if (candidates.length === 0) continue;
 
     var neighborSectors = sector.getNeighboringSectors();
-    var candidatesNotInNeighboringSectors = candidates.filter(function(candidate: Templates.IDistributable)
+    var candidatesNotInNeighboringSectors = candidates.filter(function(candidate: Distributable)
     {
       for (var k = 0; k < neighborSectors.length; k++)
       {

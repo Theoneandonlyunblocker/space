@@ -73,7 +73,7 @@ export class BattleSceneUnit
       afterChangedCallback();
     }
   }
-  setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
+  setSFX(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit)
   {
     if (this.activeUnit)
     {

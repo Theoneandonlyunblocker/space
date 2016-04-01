@@ -6,7 +6,7 @@ export class PlayerTechnology
   {
     [technologyKey: string]:
     {
-      technology: Templates.ITechnologyTemplate;
+      technology: TechnologyTemplate;
       totalResearch: number;
       level: number;
       priority: number;
@@ -49,7 +49,7 @@ export class PlayerTechnology
   initPriorities()
   {
     var priorityToAllocate: number = 1;
-    var techsToInit: Templates.ITechnologyTemplate[] = [];
+    var techsToInit: TechnologyTemplate[] = [];
 
     for (var key in this.technologies)
     {
@@ -64,7 +64,7 @@ export class PlayerTechnology
       }
     }
 
-    techsToInit.sort(function(a: Templates.ITechnologyTemplate, b: Templates.ITechnologyTemplate)
+    techsToInit.sort(function(a: TechnologyTemplate, b: TechnologyTemplate)
     {
       return b.maxLevel - a.maxLevel;
     });
@@ -144,7 +144,7 @@ export class PlayerTechnology
 
     return total;
   }
-  addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void
+  addResearchTowardsTechnology(technology: TechnologyTemplate, amount: number): void
   {
     var tech = this.technologies[technology.key]
     var overflow: number = 0;
@@ -173,7 +173,7 @@ export class PlayerTechnology
 
     this.tempOverflowedResearchAmount += overflow;
   }
-  getMaxNeededPriority(technology: Templates.ITechnologyTemplate)
+  getMaxNeededPriority(technology: TechnologyTemplate)
   {
     var researchUntilMaxed = this.getResearchNeededForTechnologyLevel(technology.maxLevel) -
       this.technologies[technology.key].totalResearch;
@@ -195,7 +195,7 @@ export class PlayerTechnology
 
     return openPriority;
   }
-  getRelativeOpenTechnologyPriority(technology: Templates.ITechnologyTemplate)
+  getRelativeOpenTechnologyPriority(technology: TechnologyTemplate)
   {
     var totalOpenPriority = this.getOpenTechnologiesPriority();
     if (this.technologies[technology.key].priorityIsLocked || !totalOpenPriority)
@@ -205,7 +205,7 @@ export class PlayerTechnology
     
     return this.technologies[technology.key].priority / totalOpenPriority;
   }
-  setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number, force: boolean = false)
+  setTechnologyPriority(technology: TechnologyTemplate, priority: number, force: boolean = false)
   {
     var remainingPriority = 1;
 

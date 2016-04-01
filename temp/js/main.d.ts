@@ -158,7 +158,7 @@ declare namespace Rance {
     function getDropTargetAtLocation(x: number, y: number): HTMLElement;
     function onDOMLoaded(onLoaded: () => void): void;
     function meetAllPlayers(): void;
-    function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IWeightedProbability<T>[]): T[];
+    function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProbability<T>[]): T[];
     function defaultNameGenerator(unit: Unit): string;
     function transformMat3(a: Point, m: number[]): {
         x: number;
@@ -173,11 +173,11 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Resources {
-                    var testResource1: Rance.Templates.IResourceTemplate;
-                    var testResource2: Rance.Templates.IResourceTemplate;
-                    var testResource3: Rance.Templates.IResourceTemplate;
-                    var testResource4: Rance.Templates.IResourceTemplate;
-                    var testResource5: Rance.Templates.IResourceTemplate;
+                    var testResource1: Rance.ResourceTemplate;
+                    var testResource2: Rance.ResourceTemplate;
+                    var testResource3: Rance.ResourceTemplate;
+                    var testResource4: Rance.ResourceTemplate;
+                    var testResource5: Rance.ResourceTemplate;
                 }
             }
         }
@@ -191,27 +191,27 @@ declare namespace Rance {
 }
 declare namespace Rance {
     interface IBuildingUpgradeData {
-        template: Templates.IBuildingTemplate;
+        template: BuildingTemplate;
         level: number;
         cost: number;
         parentBuilding: Building;
     }
     class Building {
-        template: Templates.IBuildingTemplate;
+        template: BuildingTemplate;
         id: number;
         location: Star;
         controller: Player;
         upgradeLevel: number;
         totalCost: number;
         constructor(props: {
-            template: Templates.IBuildingTemplate;
+            template: BuildingTemplate;
             location: Star;
             controller?: Player;
             upgradeLevel?: number;
             totalCost?: number;
             id?: number;
         });
-        getEffect(effect?: Templates.IBuildingEffect): {};
+        getEffect(effect?: BuildingEffect): {};
         getPossibleUpgrades(): IBuildingUpgradeData[];
         upgrade(): void;
         setController(newController: Player): void;
@@ -238,12 +238,12 @@ declare namespace Rance {
         removeThingAtIndex(index: number): void;
         buildAllThings(): void;
         getLocalUnitTypes(): {
-            manufacturable: Templates.IUnitTemplate[];
-            potential: Templates.IUnitTemplate[];
+            manufacturable: UnitTemplate[];
+            potential: UnitTemplate[];
         };
         getLocalItemTypes(): {
-            manufacturable: Templates.IItemTemplate[];
-            potential: Templates.IItemTemplate[];
+            manufacturable: ItemTemplate[];
+            potential: ItemTemplate[];
         };
         getManufacturableThingsForType(type: string): IManufacturableThing[];
         canManufactureThing(template: IManufacturableThing, type: string): boolean;
@@ -271,14 +271,14 @@ declare namespace Rance {
         name: string;
         owner: Player;
         baseIncome: number;
-        resource: Templates.IResourceTemplate;
+        resource: ResourceTemplate;
         fleets: {
             [playerId: string]: Fleet[];
         };
         buildings: {
             [category: string]: Building[];
         };
-        buildingsEffect: Templates.IBuildingEffect;
+        buildingsEffect: BuildingEffect;
         buildingsEffectIsDirty: boolean;
         voronoiCell: any;
         indexedNeighborsInRange: {
@@ -292,7 +292,7 @@ declare namespace Rance {
         indexedDistanceToStar: {
             [id: number]: number;
         };
-        buildableUnitTypes: Templates.IUnitTemplate[];
+        buildableUnitTypes: UnitTemplate[];
         manufactory: Manufactory;
         constructor(x: number, y: number, id?: number);
         addBuilding(building: Building): void;
@@ -301,21 +301,21 @@ declare namespace Rance {
         getSecondaryController(): Player;
         updateController(): void;
         updateBuildingsEffect(): void;
-        getBuildingsEffect(): Templates.IBuildingEffect;
+        getBuildingsEffect(): BuildingEffect;
         getEffectWithBuildingsEffect(base: number, effectType: string): any;
         getIncome(): any;
         getResourceIncome(): {
-            resource: Templates.IResourceTemplate;
+            resource: ResourceTemplate;
             amount: any;
         };
         getResearchPoints(): any;
         getAllBuildings(): Building[];
         getBuildingsForPlayer(player: Player): Building[];
-        getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];
-        getBuildableBuildings(): Templates.IBuildingTemplate[];
+        getBuildingsByFamily(buildingTemplate: BuildingTemplate): Building[];
+        getBuildableBuildings(): BuildingTemplate[];
         getBuildingUpgrades(): {
             [buildingId: number]: {
-                template: Templates.IBuildingTemplate;
+                template: BuildingTemplate;
                 level: number;
                 cost: number;
                 parentBuilding: Building;
@@ -335,7 +335,7 @@ declare namespace Rance {
         getFirstEnemyDefenceBuilding(player: Player): Building;
         getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[];
         setPosition(x: number, y: number): void;
-        setResource(resource: Templates.IResourceTemplate): void;
+        setResource(resource: ResourceTemplate): void;
         hasLink(linkTo: Star): boolean;
         addLink(linkTo: Star): void;
         removeLink(linkTo: Star, removeOpposite?: boolean): void;
@@ -398,9 +398,9 @@ declare namespace Rance {
 }
 declare namespace Rance {
     class StatusEffect {
-        template: Templates.IStatusEffectTemplate;
+        template: StatusEffectTemplate;
         duration: number;
-        constructor(template: Templates.IStatusEffectTemplate, duration: number);
+        constructor(template: StatusEffectTemplate, duration: number);
         processTurnEnd(): void;
         clone(): StatusEffect;
     }
@@ -524,15 +524,15 @@ declare namespace Rance {
     class Emblem {
         alpha: number;
         color: number;
-        inner: Templates.ISubEmblemTemplate;
-        outer: Templates.ISubEmblemTemplate;
-        constructor(color: number, alpha?: number, inner?: Templates.ISubEmblemTemplate, outer?: Templates.ISubEmblemTemplate);
+        inner: SubEmblemTemplate;
+        outer: SubEmblemTemplate;
+        constructor(color: number, alpha?: number, inner?: SubEmblemTemplate, outer?: SubEmblemTemplate);
         generateRandom(minAlpha: number, rng?: any): void;
         canAddOuterTemplate(): boolean;
-        getPossibleSubEmblemsToAdd(): Templates.ISubEmblemTemplate[];
+        getPossibleSubEmblemsToAdd(): SubEmblemTemplate[];
         generateSubEmblems(rng: any): void;
         canAddBackground(): boolean;
-        drawSubEmblem(toDraw: Templates.ISubEmblemTemplate, maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
+        drawSubEmblem(toDraw: SubEmblemTemplate, maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
         draw(maxWidth: number, maxHeight: number, stretch: boolean): HTMLCanvasElement;
         serialize(): IEmblemSaveData;
     }
@@ -574,15 +574,15 @@ declare namespace Rance {
 declare namespace Rance {
     class Item {
         id: number;
-        template: Templates.IItemTemplate;
+        template: ItemTemplate;
         unit: Unit;
-        constructor(template: Templates.IItemTemplate, id?: number);
+        constructor(template: ItemTemplate, id?: number);
         serialize(): IItemSaveData;
     }
 }
 declare namespace Rance {
     interface IMove {
-        ability: Templates.IAbilityTemplate;
+        ability: AbilityTemplate;
         targetId: number;
     }
     class MCTreeNode {
@@ -608,7 +608,7 @@ declare namespace Rance {
         getChildForMove(move: IMove): MCTreeNode;
         updateResult(result: number): void;
         pickRandomAbilityAndTarget(actions: {
-            [targetId: number]: Templates.IAbilityTemplate[];
+            [targetId: number]: AbilityTemplate[];
         }): {
             targetId: number;
             abilityType: string;
@@ -648,7 +648,7 @@ declare namespace Rance {
         constructor(battle: Battle);
         simulateBattle(): void;
         simulateMove(): void;
-        simulateAbility(ability: Templates.IAbilityTemplate, target: Unit): void;
+        simulateAbility(ability: AbilityTemplate, target: Unit): void;
         getBattleEndData(): void;
         finishBattle(): void;
     }
@@ -694,14 +694,14 @@ declare namespace Rance {
 }
 declare namespace Rance {
     class AttitudeModifier {
-        template: Templates.IAttitudeModifierTemplate;
+        template: AttitudeModifierTemplate;
         startTurn: number;
         endTurn: number;
         currentTurn: number;
         strength: number;
         isOverRidden: boolean;
         constructor(props: {
-            template: Templates.IAttitudeModifierTemplate;
+            template: AttitudeModifierTemplate;
             startTurn: number;
             endTurn?: number;
             strength?: number;
@@ -754,7 +754,7 @@ declare namespace Rance {
         canAttackBuildingOfPlayer(player: Player): boolean;
         getModifierOfSameType(player: Player, modifier: AttitudeModifier): AttitudeModifier;
         addAttitudeModifier(player: Player, modifier: AttitudeModifier): void;
-        triggerAttitudeModifier(template: Templates.IAttitudeModifierTemplate, player: Player, source: Player): void;
+        triggerAttitudeModifier(template: AttitudeModifierTemplate, player: Player, source: Player): void;
         processAttitudeModifiersForPlayer(player: Player, evaluation: IDiplomacyEvaluation): void;
         serialize(): IDiplomacyStatusSaveData;
     }
@@ -763,7 +763,7 @@ declare namespace Rance {
     class PlayerTechnology {
         technologies: {
             [technologyKey: string]: {
-                technology: Templates.ITechnologyTemplate;
+                technology: TechnologyTemplate;
                 totalResearch: number;
                 level: number;
                 priority: number;
@@ -783,11 +783,11 @@ declare namespace Rance {
         allocateResearchPoints(amount: number, iteration?: number): void;
         allocateOverflowedResearchPoints(iteration?: number): void;
         getResearchNeededForTechnologyLevel(level: number): number;
-        addResearchTowardsTechnology(technology: Templates.ITechnologyTemplate, amount: number): void;
-        getMaxNeededPriority(technology: Templates.ITechnologyTemplate): number;
+        addResearchTowardsTechnology(technology: TechnologyTemplate, amount: number): void;
+        getMaxNeededPriority(technology: TechnologyTemplate): number;
         getOpenTechnologiesPriority(): number;
-        getRelativeOpenTechnologyPriority(technology: Templates.ITechnologyTemplate): number;
-        setTechnologyPriority(technology: Templates.ITechnologyTemplate, priority: number, force?: boolean): void;
+        getRelativeOpenTechnologyPriority(technology: TechnologyTemplate): number;
+        setTechnologyPriority(technology: TechnologyTemplate, priority: number, force?: boolean): void;
         capTechnologyPrioritiesToMaxNeeded(): void;
         serialize(): IPlayerTechnologySaveData;
     }
@@ -908,11 +908,11 @@ declare namespace Rance {
 }
 declare namespace Rance {
     class Notification {
-        template: Templates.INotificationTemplate;
+        template: NotificationTemplate;
         props: any;
         turn: number;
         hasBeenRead: boolean;
-        constructor(template: Templates.INotificationTemplate, props: any, turn: number);
+        constructor(template: NotificationTemplate, props: any, turn: number);
         makeMessage(): string;
         serialize(): INotificationSaveData;
     }
@@ -930,7 +930,7 @@ declare namespace Rance {
         handleFilterStateChange(filterKey: string, state: NotificationFilterState): void;
         getFiltersByCategory(): {
             [category: string]: {
-                notificationTemplate: Templates.INotificationTemplate;
+                notificationTemplate: NotificationTemplate;
                 filterState: NotificationFilterState[];
             }[];
         };
@@ -955,7 +955,7 @@ declare namespace Rance {
         addEventListeners(): void;
         destroy(): void;
         setTurn(turn: number, isHumanTurn: boolean): void;
-        makeNotification(template: Templates.INotificationTemplate, props: any): void;
+        makeNotification(template: NotificationTemplate, props: any): void;
         addNotification(notification: Notification): void;
         markAsRead(notification: Notification): void;
         getUnreadNotificationsForTurn(turn: number): Notification[];
@@ -1179,14 +1179,14 @@ declare namespace Rance {
     namespace MapAI {
         class Objective {
             id: number;
-            template: Templates.IObjectiveTemplate;
+            template: ObjectiveTemplate;
             type: string;
             private _basePriority;
             priority: number;
             isOngoing: boolean;
             target: Star;
             targetPlayer: Player;
-            constructor(template: Templates.IObjectiveTemplate, priority: number, target: Star, targetPlayer?: Player);
+            constructor(template: ObjectiveTemplate, priority: number, target: Star, targetPlayer?: Player);
             getUnitsDesired(mapEvaluator: MapEvaluator): {
                 min: number;
                 ideal: number;
@@ -1212,8 +1212,8 @@ declare namespace Rance {
             setAllEconomicObjectives(): void;
             setAllMoveObjectives(): void;
             setAllObjectivesWithTemplateProperty(propKey: string): void;
-            getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate): Objective[];
-            setObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate): void;
+            getNewObjectivesOfType(objectiveTemplate: ObjectiveTemplate): Objective[];
+            setObjectivesOfType(objectiveTemplate: ObjectiveTemplate): void;
             getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean): {
                 [targetString: string]: Objective;
             };
@@ -1410,10 +1410,10 @@ declare namespace Rance {
         addStar(star: Star): boolean;
         removeStar(star: Star): boolean;
         getIncome(): number;
-        addResource(resource: Templates.IResourceTemplate, amount: number): void;
+        addResource(resource: ResourceTemplate, amount: number): void;
         getResourceIncome(): {
             [resourceType: string]: {
-                resource: Templates.IResourceTemplate;
+                resource: ResourceTemplate;
                 amount: number;
             };
         };
@@ -1442,9 +1442,9 @@ declare namespace Rance {
         attackTarget(location: Star, target: IFleetAttackTarget, battleFinishCallback?: () => void): void;
         getResearchSpeed(): number;
         getAllManufactories(): Manufactory[];
-        meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[]): boolean;
-        getGloballyBuildableUnits(): Templates.IUnitTemplate[];
-        getGloballyBuildableItems(): Templates.IItemTemplate[];
+        meetsTechnologyRequirements(requirements: TechnologyRequirement[]): boolean;
+        getGloballyBuildableUnits(): UnitTemplate[];
+        getGloballyBuildableItems(): ItemTemplate[];
         getManufacturingCapacityFor(template: IManufacturableThing, type: string): number;
         serialize(): IPlayerSaveData;
     }
@@ -1554,7 +1554,7 @@ declare namespace Rance {
         all = 1,
     }
     interface IQueuedActionData {
-        ability: Templates.IAbilityTemplate;
+        ability: AbilityTemplate;
         targetId: number;
         turnsPrepared: number;
         timesInterrupted: number;
@@ -1578,10 +1578,10 @@ declare namespace Rance {
         high: Item;
     }
     class Unit {
-        template: Templates.IUnitTemplate;
+        template: UnitTemplate;
         id: number;
         name: string;
-        portrait: Templates.IPortraitTemplate;
+        portrait: PortraitTemplate;
         maxHealth: number;
         currentHealth: number;
         isSquadron: boolean;
@@ -1593,18 +1593,18 @@ declare namespace Rance {
         cachedAttributes: IUnitAttributes;
         attributes: IUnitAttributes;
         battleStats: IUnitBattleStats;
-        abilities: Templates.IAbilityTemplate[];
-        passiveSkills: Templates.IPassiveSkillTemplate[];
+        abilities: AbilityTemplate[];
+        passiveSkills: PassiveSkillTemplate[];
         experienceForCurrentLevel: number;
         level: number;
         fleet: Fleet;
         items: IUnitItems;
         passiveSkillsByPhase: {
-            atBattleStart?: Templates.IPassiveSkillTemplate[];
-            beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
-            afterAbilityUse?: Templates.IPassiveSkillTemplate[];
-            atTurnStart?: Templates.IPassiveSkillTemplate[];
-            inBattlePrep?: Templates.IPassiveSkillTemplate[];
+            atBattleStart?: PassiveSkillTemplate[];
+            beforeAbilityUse?: PassiveSkillTemplate[];
+            afterAbilityUse?: PassiveSkillTemplate[];
+            atTurnStart?: PassiveSkillTemplate[];
+            inBattlePrep?: PassiveSkillTemplate[];
         };
         passiveSkillsByPhaseAreDirty: boolean;
         front: MapAI.Front;
@@ -1615,7 +1615,7 @@ declare namespace Rance {
         sfxDuration: number;
         lastHealthDrawnAt: number;
         displayedHealth: number;
-        constructor(template: Templates.IUnitTemplate, id?: number, data?: IUnitSaveData);
+        constructor(template: UnitTemplate, id?: number, data?: IUnitSaveData);
         makeFromData(data: IUnitSaveData): void;
         setInitialValues(): void;
         setBaseHealth(multiplier?: number): void;
@@ -1630,7 +1630,7 @@ declare namespace Rance {
         removeActionPoints(amount: number): void;
         addMoveDelay(amount: number): void;
         updateStatusEffects(): void;
-        setQueuedAction(ability: Templates.IAbilityTemplate, target: Unit): void;
+        setQueuedAction(ability: AbilityTemplate, target: Unit): void;
         interruptQueuedAction(interruptStrength: number): void;
         updateQueuedAction(): void;
         isReadyToUseQueuedAction(): boolean;
@@ -1643,24 +1643,24 @@ declare namespace Rance {
         getAttributesWithItems(): any;
         addStatusEffect(statusEffect: StatusEffect): void;
         removeStatusEffect(statusEffect: StatusEffect): void;
-        getTotalStatusEffectAttributeAdjustments(): Templates.IStatusEffectAttributes;
+        getTotalStatusEffectAttributeAdjustments(): StatusEffectAttributes;
         getAttributesWithEffects(): any;
         updateCachedAttributes(): void;
         removeItemAtSlot(slot: string): boolean;
         setInitialAbilities(): void;
         setInitialPassiveSkills(): void;
-        getItemAbilities(): Templates.IAbilityTemplate[];
-        getAllAbilities(): Templates.IAbilityTemplate[];
-        getItemPassiveSkills(): Templates.IPassiveSkillTemplate[];
-        getStatusEffectPassiveSkills(): Templates.IPassiveSkillTemplate[];
-        getAllPassiveSkills(): Templates.IPassiveSkillTemplate[];
+        getItemAbilities(): AbilityTemplate[];
+        getAllAbilities(): AbilityTemplate[];
+        getItemPassiveSkills(): PassiveSkillTemplate[];
+        getStatusEffectPassiveSkills(): PassiveSkillTemplate[];
+        getAllPassiveSkills(): PassiveSkillTemplate[];
         updatePassiveSkillsByPhase(): void;
         getPassiveSkillsByPhase(): {
-            atBattleStart?: Templates.IPassiveSkillTemplate[];
-            beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
-            afterAbilityUse?: Templates.IPassiveSkillTemplate[];
-            atTurnStart?: Templates.IPassiveSkillTemplate[];
-            inBattlePrep?: Templates.IPassiveSkillTemplate[];
+            atBattleStart?: PassiveSkillTemplate[];
+            beforeAbilityUse?: PassiveSkillTemplate[];
+            afterAbilityUse?: PassiveSkillTemplate[];
+            atTurnStart?: PassiveSkillTemplate[];
+            inBattlePrep?: PassiveSkillTemplate[];
         };
         receiveDamage(amount: number, damageType: DamageType): void;
         getAdjustedTroopSize(): number;
@@ -1686,16 +1686,16 @@ declare namespace Rance {
         addExperience(amount: number): void;
         canLevelUp(): boolean;
         handleLevelUp(): void;
-        hasAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
-        getLearnableAbilities(allAbilities: Templates.IAbilityBase[]): Templates.IAbilityBase[];
-        canUpgradeIntoAbility(ability: Templates.IAbilityBase, allAbilities: Templates.IAbilityBase[]): boolean;
+        hasAbility(ability: AbilityBase, allAbilities: AbilityBase[]): boolean;
+        getLearnableAbilities(allAbilities: AbilityBase[]): AbilityBase[];
+        canUpgradeIntoAbility(ability: AbilityBase, allAbilities: AbilityBase[]): boolean;
         getAbilityUpgradeData(): {
             [source: string]: {
-                base: Templates.IAbilityBase;
-                possibleUpgrades: Templates.IAbilityBase[];
+                base: AbilityBase;
+                possibleUpgrades: AbilityBase[];
             };
         };
-        upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase): void;
+        upgradeAbility(source: AbilityBase, newAbility: AbilityBase): void;
         drawBattleScene(SFXParams: Templates.SFXParams): void;
         serialize(includeItems?: boolean, includeFluff?: boolean): IUnitSaveData;
         makeVirtualClone(): Unit;
@@ -2131,7 +2131,7 @@ declare module "src/uicomponents/technologies/technologyPrioritySlider" {
     export const Factory: React.Factory<any>;
     export interface PropTypes {
         playerTechnology: Rance.PlayerTechnology;
-        technology: Rance.Templates.ITechnologyTemplate;
+        technology: Rance.TechnologyTemplate;
         researchPoints: number;
     }
 }
@@ -2976,28 +2976,28 @@ declare namespace Rance {
 declare namespace Rance {
     interface ITemplates {
         Abilities: {
-            [type: string]: Templates.IAbilityTemplate;
+            [type: string]: AbilityTemplate;
         };
         AttitudeModifiers: {
-            [type: string]: Templates.IAttitudeModifierTemplate;
+            [type: string]: AttitudeModifierTemplate;
         };
         BattleSFX: {
-            [type: string]: Templates.IBattleSFXTemplate;
+            [type: string]: BattleSFXTemplate;
         };
         Buildings: {
-            [type: string]: Templates.IBuildingTemplate;
+            [type: string]: BuildingTemplate;
         };
         Cultures: {
-            [key: string]: Templates.ICultureTemplate;
+            [key: string]: CultureTemplate;
         };
         EffectActions: {
-            [type: string]: Templates.IEffectActionTemplate;
+            [type: string]: EffectActionTemplate;
         };
         Items: {
-            [type: string]: Templates.IItemTemplate;
+            [type: string]: ItemTemplate;
         };
         MapGen: {
-            [type: string]: Templates.IMapGenTemplate;
+            [type: string]: MapGenTemplate;
         };
         MapRendererLayers: {
             [layerKey: string]: IMapRendererLayerTemplate;
@@ -3006,37 +3006,37 @@ declare namespace Rance {
             [mapModeKey: string]: IMapRendererMapModeTemplate;
         };
         Notifications: {
-            [key: string]: Templates.INotificationTemplate;
+            [key: string]: NotificationTemplate;
         };
         Objectives: {
-            [key: string]: Templates.IObjectiveTemplate;
+            [key: string]: ObjectiveTemplate;
         };
         PassiveSkills: {
-            [type: string]: Templates.IPassiveSkillTemplate;
+            [type: string]: PassiveSkillTemplate;
         };
         Personalities: {
             [type: string]: IPersonality;
         };
         Resources: {
-            [type: string]: Templates.IResourceTemplate;
+            [type: string]: ResourceTemplate;
         };
         StatusEffects: {
-            [type: string]: Templates.IStatusEffectTemplate;
+            [type: string]: StatusEffectTemplate;
         };
         SubEmblems: {
-            [type: string]: Templates.ISubEmblemTemplate;
+            [type: string]: SubEmblemTemplate;
         };
         Technologies: {
-            [key: string]: Templates.ITechnologyTemplate;
+            [key: string]: TechnologyTemplate;
         };
         UnitArchetypes: {
-            [type: string]: Templates.IUnitArchetype;
+            [type: string]: UnitArchetype;
         };
         UnitFamilies: {
-            [type: string]: Templates.IUnitFamily;
+            [type: string]: UnitFamily;
         };
         Units: {
-            [type: string]: Templates.IUnitTemplate;
+            [type: string]: UnitTemplate;
         };
     }
     interface IModuleMetaData {
@@ -3063,13 +3063,13 @@ declare namespace Rance {
             [mapModeKey: string]: IMapRendererMapModeTemplate;
         };
         Templates: ITemplates;
-        defaultMap: Templates.IMapGenTemplate;
+        defaultMap: MapGenTemplate;
         ruleSet: IModuleRuleSet;
         constructor();
         copyTemplates(source: any, category: string): void;
         copyAllTemplates(source: any): void;
         addSubModule(moduleFile: IModuleFile): void;
-        getDefaultMap(): Templates.IMapGenTemplate;
+        getDefaultMap(): MapGenTemplate;
     }
 }
 declare namespace Rance {
@@ -3171,12 +3171,12 @@ declare namespace Rance {
             id: number;
             stars: Star[];
             distributionFlags: string[];
-            resourceType: Templates.IResourceTemplate;
+            resourceType: ResourceTemplate;
             resourceLocation: Star;
-            addedDistributables: Templates.IDistributable[];
+            addedDistributables: Distributable[];
             constructor(id: number);
             addStar(star: Star): void;
-            addResource(resource: Templates.IResourceTemplate): void;
+            addResource(resource: ResourceTemplate): void;
             getNeighboringStars(): Star[];
             getNeighboringSectors(): Sector[];
             getMajorityRegions(): Region[];
@@ -3194,7 +3194,7 @@ declare namespace Rance {
             [sectorId: number]: Sector;
         };
         function setSectorDistributionFlags(sectors: Sector[]): void;
-        function distributeDistributablesPerSector(sectors: Sector[], distributableType: string, allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void): void;
+        function distributeDistributablesPerSector(sectors: Sector[], distributableType: string, allDistributables: any, placerFunction: (sector: Sector, distributable: Distributable) => void): void;
         function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
         function setupPirates(player: Player): void;
         function severLinksToNonAdjacentStars(star: Star): void;
@@ -3204,7 +3204,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace MapGenFunctions {
-                function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues, players: Player[]): MapGenCore.MapGenResult;
+                function spiralGalaxyGeneration(options: Rance.MapGenOptionValues, players: Player[]): MapGenCore.MapGenResult;
             }
         }
     }
@@ -3214,7 +3214,7 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace MapGen {
-                    var spiralGalaxy: Rance.Templates.IMapGenTemplate;
+                    var spiralGalaxy: Rance.MapGenTemplate;
                 }
             }
         }
@@ -3225,7 +3225,7 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace MapGen {
-                    var tinierSpiralGalaxy: Rance.Templates.IMapGenTemplate;
+                    var tinierSpiralGalaxy: Rance.MapGenTemplate;
                 }
             }
         }
@@ -3236,11 +3236,11 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Technologies {
-                    var stealth: Rance.Templates.ITechnologyTemplate;
-                    var lasers: Rance.Templates.ITechnologyTemplate;
-                    var missiles: Rance.Templates.ITechnologyTemplate;
-                    var test1: Rance.Templates.ITechnologyTemplate;
-                    var test2: Rance.Templates.ITechnologyTemplate;
+                    var stealth: Rance.TechnologyTemplate;
+                    var lasers: Rance.TechnologyTemplate;
+                    var missiles: Rance.TechnologyTemplate;
+                    var test1: Rance.TechnologyTemplate;
+                    var test2: Rance.TechnologyTemplate;
                 }
             }
         }
@@ -3282,17 +3282,17 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace EffectActions {
-                    var singleTargetDamage: Rance.Templates.IEffectActionTemplate;
-                    var closeAttack: Rance.Templates.IEffectActionTemplate;
-                    var wholeRowAttack: Rance.Templates.IEffectActionTemplate;
-                    var bombAttack: Rance.Templates.IEffectActionTemplate;
-                    var guardRow: Rance.Templates.IEffectActionTemplate;
-                    var receiveCounterAttack: Rance.Templates.IEffectActionTemplate;
-                    var increaseCaptureChance: Rance.Templates.IEffectActionTemplate;
-                    var buffTest: Rance.Templates.IEffectActionTemplate;
-                    var healTarget: Rance.Templates.IEffectActionTemplate;
-                    var healSelf: Rance.Templates.IEffectActionTemplate;
-                    var standBy: Rance.Templates.IEffectActionTemplate;
+                    var singleTargetDamage: Rance.EffectActionTemplate;
+                    var closeAttack: Rance.EffectActionTemplate;
+                    var wholeRowAttack: Rance.EffectActionTemplate;
+                    var bombAttack: Rance.EffectActionTemplate;
+                    var guardRow: Rance.EffectActionTemplate;
+                    var receiveCounterAttack: Rance.EffectActionTemplate;
+                    var increaseCaptureChance: Rance.EffectActionTemplate;
+                    var buffTest: Rance.EffectActionTemplate;
+                    var healTarget: Rance.EffectActionTemplate;
+                    var healSelf: Rance.EffectActionTemplate;
+                    var standBy: Rance.EffectActionTemplate;
                 }
             }
         }
@@ -3430,10 +3430,10 @@ declare namespace Rance {
             }
             namespace Templates {
                 namespace BattleSFX {
-                    var rocketAttack: Rance.Templates.IBattleSFXTemplate;
-                    var guard: Rance.Templates.IBattleSFXTemplate;
-                    var particleTest: Rance.Templates.IBattleSFXTemplate;
-                    var videoTest: Rance.Templates.IBattleSFXTemplate;
+                    var rocketAttack: Rance.BattleSFXTemplate;
+                    var guard: Rance.BattleSFXTemplate;
+                    var particleTest: Rance.BattleSFXTemplate;
+                    var videoTest: Rance.BattleSFXTemplate;
                 }
             }
         }
@@ -3444,16 +3444,16 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Abilities {
-                    var rangedAttack: Rance.Templates.IAbilityTemplate;
-                    var closeAttack: Rance.Templates.IAbilityTemplate;
-                    var wholeRowAttack: Rance.Templates.IAbilityTemplate;
-                    var bombAttack: Rance.Templates.IAbilityTemplate;
-                    var guardRow: Rance.Templates.IAbilityTemplate;
-                    var guardColumn: Rance.Templates.IAbilityTemplate;
-                    var boardingHook: Rance.Templates.IAbilityTemplate;
-                    var debugAbility: Rance.Templates.IAbilityTemplate;
-                    var ranceAttack: Rance.Templates.IAbilityTemplate;
-                    var standBy: Rance.Templates.IAbilityTemplate;
+                    var rangedAttack: Rance.AbilityTemplate;
+                    var closeAttack: Rance.AbilityTemplate;
+                    var wholeRowAttack: Rance.AbilityTemplate;
+                    var bombAttack: Rance.AbilityTemplate;
+                    var guardRow: Rance.AbilityTemplate;
+                    var guardColumn: Rance.AbilityTemplate;
+                    var boardingHook: Rance.AbilityTemplate;
+                    var debugAbility: Rance.AbilityTemplate;
+                    var ranceAttack: Rance.AbilityTemplate;
+                    var standBy: Rance.AbilityTemplate;
                 }
             }
         }
@@ -3475,9 +3475,9 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace AttitudeModifiers {
-                    var neighborStars: Rance.Templates.IAttitudeModifierTemplate;
-                    var atWar: Rance.Templates.IAttitudeModifierTemplate;
-                    var declaredWar: Rance.Templates.IAttitudeModifierTemplate;
+                    var neighborStars: Rance.AttitudeModifierTemplate;
+                    var atWar: Rance.AttitudeModifierTemplate;
+                    var declaredWar: Rance.AttitudeModifierTemplate;
                 }
             }
         }
@@ -3488,14 +3488,14 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Buildings {
-                    var sectorCommand: Rance.Templates.IDefenceBuildingTemplate;
-                    var sectorCommand1: Rance.Templates.IDefenceBuildingTemplate;
-                    var sectorCommand2: Rance.Templates.IDefenceBuildingTemplate;
-                    var starBase: Rance.Templates.IDefenceBuildingTemplate;
-                    var commercialPort: Rance.Templates.IBuildingTemplate;
-                    var deepSpaceRadar: Rance.Templates.IBuildingTemplate;
-                    var resourceMine: Rance.Templates.IBuildingTemplate;
-                    var reserachLab: Rance.Templates.IBuildingTemplate;
+                    var sectorCommand: Rance.DefenceBuildingTemplate;
+                    var sectorCommand1: Rance.DefenceBuildingTemplate;
+                    var sectorCommand2: Rance.DefenceBuildingTemplate;
+                    var starBase: Rance.DefenceBuildingTemplate;
+                    var commercialPort: Rance.BuildingTemplate;
+                    var deepSpaceRadar: Rance.BuildingTemplate;
+                    var resourceMine: Rance.BuildingTemplate;
+                    var reserachLab: Rance.BuildingTemplate;
                 }
             }
         }
@@ -3506,7 +3506,7 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Cultures {
-                    var badassCulture: Rance.Templates.ICultureTemplate;
+                    var badassCulture: Rance.CultureTemplate;
                 }
             }
         }
@@ -3517,12 +3517,12 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace PassiveSkills {
-                    var autoHeal: Rance.Templates.IPassiveSkillTemplate;
-                    var poisoned: Rance.Templates.IPassiveSkillTemplate;
-                    var overdrive: Rance.Templates.IPassiveSkillTemplate;
-                    var initialGuard: Rance.Templates.IPassiveSkillTemplate;
-                    var warpJammer: Rance.Templates.IPassiveSkillTemplate;
-                    var medic: Rance.Templates.IPassiveSkillTemplate;
+                    var autoHeal: Rance.PassiveSkillTemplate;
+                    var poisoned: Rance.PassiveSkillTemplate;
+                    var overdrive: Rance.PassiveSkillTemplate;
+                    var initialGuard: Rance.PassiveSkillTemplate;
+                    var warpJammer: Rance.PassiveSkillTemplate;
+                    var medic: Rance.PassiveSkillTemplate;
                 }
             }
         }
@@ -3533,15 +3533,15 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Items {
-                    var bombLauncher1: Rance.Templates.IItemTemplate;
-                    var bombLauncher2: Rance.Templates.IItemTemplate;
-                    var bombLauncher3: Rance.Templates.IItemTemplate;
-                    var afterBurner1: Rance.Templates.IItemTemplate;
-                    var afterBurner2: Rance.Templates.IItemTemplate;
-                    var afterBurner3: Rance.Templates.IItemTemplate;
-                    var shieldPlating1: Rance.Templates.IItemTemplate;
-                    var shieldPlating2: Rance.Templates.IItemTemplate;
-                    var shieldPlating3: Rance.Templates.IItemTemplate;
+                    var bombLauncher1: Rance.ItemTemplate;
+                    var bombLauncher2: Rance.ItemTemplate;
+                    var bombLauncher3: Rance.ItemTemplate;
+                    var afterBurner1: Rance.ItemTemplate;
+                    var afterBurner2: Rance.ItemTemplate;
+                    var afterBurner3: Rance.ItemTemplate;
+                    var shieldPlating1: Rance.ItemTemplate;
+                    var shieldPlating2: Rance.ItemTemplate;
+                    var shieldPlating3: Rance.ItemTemplate;
                 }
             }
         }
@@ -3552,7 +3552,7 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace StatusEffects {
-                    var test: Rance.Templates.IStatusEffectTemplate;
+                    var test: Rance.StatusEffectTemplate;
                 }
             }
         }
@@ -3563,27 +3563,27 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace SubEmblems {
-                    var Aguila_explayada_2: Rance.Templates.ISubEmblemTemplate;
-                    var Berliner_Baer: Rance.Templates.ISubEmblemTemplate;
-                    var Cles_en_sautoir: Rance.Templates.ISubEmblemTemplate;
-                    var Coa_Illustration_Cross_Bowen_3: Rance.Templates.ISubEmblemTemplate;
-                    var Coa_Illustration_Cross_Malte_1: Rance.Templates.ISubEmblemTemplate;
-                    var Coa_Illustration_Elements_Planet_Moon: Rance.Templates.ISubEmblemTemplate;
-                    var Couronne_heraldique_svg: Rance.Templates.ISubEmblemTemplate;
-                    var Gomaisasa: Rance.Templates.ISubEmblemTemplate;
-                    var Gryphon_Segreant: Rance.Templates.ISubEmblemTemplate;
-                    var Heraldic_pentacle: Rance.Templates.ISubEmblemTemplate;
-                    var Japanese_Crest_Futatsudomoe_1: Rance.Templates.ISubEmblemTemplate;
-                    var Japanese_Crest_Hana_Hisi: Rance.Templates.ISubEmblemTemplate;
-                    var Japanese_Crest_Mitsumori_Janome: Rance.Templates.ISubEmblemTemplate;
-                    var Japanese_Crest_Oda_ka: Rance.Templates.ISubEmblemTemplate;
-                    var Japanese_crest_Tsuki_ni_Hoshi: Rance.Templates.ISubEmblemTemplate;
-                    var Japanese_Crest_Ume: Rance.Templates.ISubEmblemTemplate;
-                    var Mitsuuroko: Rance.Templates.ISubEmblemTemplate;
-                    var Musubikashiwa: Rance.Templates.ISubEmblemTemplate;
-                    var Takeda_mon: Rance.Templates.ISubEmblemTemplate;
-                    var threeHorns: Rance.Templates.ISubEmblemTemplate;
-                    var Flag_of_Edward_England: Rance.Templates.ISubEmblemTemplate;
+                    var Aguila_explayada_2: Rance.SubEmblemTemplate;
+                    var Berliner_Baer: Rance.SubEmblemTemplate;
+                    var Cles_en_sautoir: Rance.SubEmblemTemplate;
+                    var Coa_Illustration_Cross_Bowen_3: Rance.SubEmblemTemplate;
+                    var Coa_Illustration_Cross_Malte_1: Rance.SubEmblemTemplate;
+                    var Coa_Illustration_Elements_Planet_Moon: Rance.SubEmblemTemplate;
+                    var Couronne_heraldique_svg: Rance.SubEmblemTemplate;
+                    var Gomaisasa: Rance.SubEmblemTemplate;
+                    var Gryphon_Segreant: Rance.SubEmblemTemplate;
+                    var Heraldic_pentacle: Rance.SubEmblemTemplate;
+                    var Japanese_Crest_Futatsudomoe_1: Rance.SubEmblemTemplate;
+                    var Japanese_Crest_Hana_Hisi: Rance.SubEmblemTemplate;
+                    var Japanese_Crest_Mitsumori_Janome: Rance.SubEmblemTemplate;
+                    var Japanese_Crest_Oda_ka: Rance.SubEmblemTemplate;
+                    var Japanese_crest_Tsuki_ni_Hoshi: Rance.SubEmblemTemplate;
+                    var Japanese_Crest_Ume: Rance.SubEmblemTemplate;
+                    var Mitsuuroko: Rance.SubEmblemTemplate;
+                    var Musubikashiwa: Rance.SubEmblemTemplate;
+                    var Takeda_mon: Rance.SubEmblemTemplate;
+                    var threeHorns: Rance.SubEmblemTemplate;
+                    var Flag_of_Edward_England: Rance.SubEmblemTemplate;
                 }
             }
         }
@@ -3594,10 +3594,10 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace UnitArchetypes {
-                    var combat: Rance.Templates.IUnitArchetype;
-                    var utility: Rance.Templates.IUnitArchetype;
-                    var scouting: Rance.Templates.IUnitArchetype;
-                    var defence: Rance.Templates.IUnitArchetype;
+                    var combat: Rance.UnitArchetype;
+                    var utility: Rance.UnitArchetype;
+                    var scouting: Rance.UnitArchetype;
+                    var defence: Rance.UnitArchetype;
                 }
             }
         }
@@ -3608,10 +3608,10 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace UnitFamilies {
-                    var debug: Rance.Templates.IUnitFamily;
-                    var basic: Rance.Templates.IUnitFamily;
-                    var red: Rance.Templates.IUnitFamily;
-                    var blue: Rance.Templates.IUnitFamily;
+                    var debug: Rance.UnitFamily;
+                    var basic: Rance.UnitFamily;
+                    var red: Rance.UnitFamily;
+                    var blue: Rance.UnitFamily;
                 }
             }
         }
@@ -3620,7 +3620,7 @@ declare namespace Rance {
 declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
-            var defaultUnitScene: Rance.Templates.IUnitDrawingFunction;
+            var defaultUnitScene: Rance.UnitDrawingFunction;
         }
     }
 }
@@ -3629,16 +3629,16 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Units {
-                    var cheatShip: Rance.Templates.IUnitTemplate;
-                    var fighterSquadron: Rance.Templates.IUnitTemplate;
-                    var bomberSquadron: Rance.Templates.IUnitTemplate;
-                    var battleCruiser: Rance.Templates.IUnitTemplate;
-                    var scout: Rance.Templates.IUnitTemplate;
-                    var stealthShip: Rance.Templates.IUnitTemplate;
-                    var shieldBoat: Rance.Templates.IUnitTemplate;
-                    var commandShip: Rance.Templates.IUnitTemplate;
-                    var redShip: Rance.Templates.IUnitTemplate;
-                    var blueShip: Rance.Templates.IUnitTemplate;
+                    var cheatShip: Rance.UnitTemplate;
+                    var fighterSquadron: Rance.UnitTemplate;
+                    var bomberSquadron: Rance.UnitTemplate;
+                    var battleCruiser: Rance.UnitTemplate;
+                    var scout: Rance.UnitTemplate;
+                    var stealthShip: Rance.UnitTemplate;
+                    var shieldBoat: Rance.UnitTemplate;
+                    var commandShip: Rance.UnitTemplate;
+                    var redShip: Rance.UnitTemplate;
+                    var blueShip: Rance.UnitTemplate;
                 }
             }
         }
@@ -3666,7 +3666,7 @@ declare namespace Rance {
                     star: Star;
                     score: number;
                 }[]): IScoresByStar;
-                function makeObjectivesFromScores(template: Rance.Templates.IObjectiveTemplate, evaluationScores: {
+                function makeObjectivesFromScores(template: Rance.ObjectiveTemplate, evaluationScores: {
                     star?: Star;
                     player?: Player;
                     score: number;
@@ -3684,7 +3684,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var discovery: Rance.Templates.IObjectiveTemplate;
+                var discovery: Rance.ObjectiveTemplate;
             }
         }
     }
@@ -3693,7 +3693,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var heal: Rance.Templates.IObjectiveTemplate;
+                var heal: Rance.ObjectiveTemplate;
             }
         }
     }
@@ -3702,7 +3702,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var expansion: Rance.Templates.IObjectiveTemplate;
+                var expansion: Rance.ObjectiveTemplate;
             }
         }
     }
@@ -3711,7 +3711,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var cleanUpPirates: Rance.Templates.IObjectiveTemplate;
+                var cleanUpPirates: Rance.ObjectiveTemplate;
             }
         }
     }
@@ -3720,7 +3720,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var scoutingPerimeter: Rance.Templates.IObjectiveTemplate;
+                var scoutingPerimeter: Rance.ObjectiveTemplate;
             }
         }
     }
@@ -3729,7 +3729,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var conquer: Rance.Templates.IObjectiveTemplate;
+                var conquer: Rance.ObjectiveTemplate;
             }
         }
     }
@@ -3738,7 +3738,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var declareWar: Rance.Templates.IObjectiveTemplate;
+                var declareWar: Rance.ObjectiveTemplate;
             }
         }
     }
@@ -3747,7 +3747,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var expandManufactoryCapacity: Rance.Templates.IObjectiveTemplate;
+                var expandManufactoryCapacity: Rance.ObjectiveTemplate;
             }
         }
     }
@@ -3765,7 +3765,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Notifications {
-                var battleFinishNotification: Rance.Templates.INotificationTemplate;
+                var battleFinishNotification: Rance.NotificationTemplate;
             }
         }
     }
@@ -3783,7 +3783,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Notifications {
-                var WarDeclarationNotification: Rance.Templates.INotificationTemplate;
+                var WarDeclarationNotification: Rance.NotificationTemplate;
             }
         }
     }
@@ -3801,7 +3801,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Notifications {
-                var playerDiedNotification: Rance.Templates.INotificationTemplate;
+                var playerDiedNotification: Rance.NotificationTemplate;
             }
         }
     }
@@ -3817,7 +3817,7 @@ declare namespace Rance {
     namespace Modules {
         namespace PaintingPortraits {
             namespace Culture {
-                var paintingPortraitsCulture: Rance.Templates.ICultureTemplate;
+                var paintingPortraitsCulture: Rance.CultureTemplate;
             }
         }
     }
@@ -3872,12 +3872,12 @@ declare namespace Rance {
     namespace TemplateIndexes {
         var distributablesByDistributionGroup: {
             [groupName: string]: {
-                unitFamilies: Templates.IUnitFamily[];
-                resources: Templates.IResourceTemplate[];
+                unitFamilies: UnitFamily[];
+                resources: ResourceTemplate[];
             };
         };
         var itemsByTechLevel: {
-            [techLevel: number]: Templates.IItemTemplate[];
+            [techLevel: number]: ItemTemplate[];
         };
     }
 }
@@ -3949,7 +3949,7 @@ declare namespace Rance {
         destroy(): void;
         private initLayers();
         changeActiveUnit(unit: Unit, afterChangedCallback?: () => void): void;
-        setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
+        setSFX(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit): void;
         resize(): void;
         private enterUnitSpriteWithoutAnimation(unit);
         private exitUnitSpriteWithoutAnimation();
@@ -3987,7 +3987,7 @@ declare namespace Rance {
         constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer);
         destroy(): void;
         private initLayers();
-        setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit): void;
+        setSFX(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit): void;
         setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number): void;
         clearOverlay(): void;
         private getSFXParams(duration, triggerStart, triggerEnd?);
@@ -4010,7 +4010,7 @@ declare namespace Rance {
         side2Unit: BattleSceneUnit;
         side1Overlay: BattleSceneUnitOverlay;
         side2Overlay: BattleSceneUnitOverlay;
-        activeSFX: Templates.IBattleSFXTemplate;
+        activeSFX: BattleSFXTemplate;
         targetUnit: Unit;
         userUnit: Unit;
         activeUnit: Unit;
@@ -4037,7 +4037,7 @@ declare namespace Rance {
         private executeIfBothUnitsHaveFinishedUpdating();
         private finishUpdatingUnit(side);
         handleAbilityUse(props: {
-            SFXTemplate: Templates.IBattleSFXTemplate;
+            SFXTemplate: BattleSFXTemplate;
             triggerEffectCallback: () => void;
             user: Unit;
             target: Unit;
@@ -4069,20 +4069,20 @@ declare namespace Rance {
 }
 declare namespace Rance {
     function getNullFormation(): Unit[][];
-    function getFormationsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectActionTemplate): Unit[][];
+    function getFormationsToTarget(battle: Battle, user: Unit, effect: EffectActionTemplate): Unit[][];
     function getTargetsForAllAbilities(battle: Battle, user: Unit): {
-        [id: number]: Templates.IAbilityTemplate[];
+        [id: number]: AbilityTemplate[];
     };
 }
 declare namespace Rance {
     interface IAbilityUseData {
-        ability: Templates.IAbilityTemplate;
+        ability: AbilityTemplate;
         user: Unit;
         intendedTarget: Unit;
         actualTarget?: Unit;
     }
     interface IAbilityEffectData {
-        templateEffect: Templates.IAbilityEffectTemplate;
+        templateEffect: AbilityEffectTemplate;
         user: Unit;
         target: Unit;
         trigger: (user: Unit, target: Unit) => boolean;
@@ -4109,11 +4109,11 @@ declare namespace Rance {
     interface IAbilityUseEffect {
         actionName: string;
         unitDisplayDataAfterUsingById: IUnitDisplayDataById;
-        sfx: Templates.IBattleSFXTemplate;
+        sfx: BattleSFXTemplate;
         sfxUser: Unit;
         sfxTarget: Unit;
     }
-    function useAbility(battle: Battle, ability: Templates.IAbilityTemplate, user: Unit, target: Unit, getEffects: boolean): IAbilityUseEffect[];
+    function useAbility(battle: Battle, ability: AbilityTemplate, user: Unit, target: Unit, getEffects: boolean): IAbilityUseEffect[];
 }
 declare namespace Rance {
     var idGenerators: {

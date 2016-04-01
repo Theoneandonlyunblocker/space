@@ -237,7 +237,7 @@ namespace Rance
 
           return merged;
         }
-        export function makeObjectivesFromScores(template: Rance.Templates.IObjectiveTemplate,
+        export function makeObjectivesFromScores(template: Rance.ObjectiveTemplate,
           evaluationScores: {star?: Star; player?: Player; score: number;}[], basePriority: number)
         {
           var allObjectives: MapAI.Objective[] = [];

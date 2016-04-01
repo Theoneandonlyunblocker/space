@@ -41,7 +41,7 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
       popupId: undefined
     });
   }
-  upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase)
+  upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
   {
     var unit: Unit = this.props.unit;
     unit.upgradeAbility(source, newAbility);
@@ -63,7 +63,7 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
     unit.handleLevelUp();
     this.props.onUnitUpgrade();
   }
-  makeAbilityLearnPopup(ability: Templates.IAbilityBase)
+  makeAbilityLearnPopup(ability: AbilityBase)
   {
     var upgradeData = this.state.upgradeData[ability.type];
     var popupId = this.refs.popupManager.makePopup(
@@ -104,7 +104,7 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
   render()
   {
     var unit: Unit = this.props.unit;
-    var upgradableAbilities: Templates.IAbilityBase[] = [];
+    var upgradableAbilities: AbilityBase[] = [];
 
     for (var source in this.state.upgradeData)
     {

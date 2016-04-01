@@ -88,7 +88,7 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
 
   render()
   {
-    var template: Templates.IBuildingTemplate = this.props.template;
+    var template: BuildingTemplate = this.props.template;
     var cells: ReactDOMPlaceHolder[] = [];
     var columns = this.props.activeColumns;
 

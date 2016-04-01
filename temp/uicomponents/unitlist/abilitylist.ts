@@ -32,7 +32,7 @@ export default class AbilityList extends React.Component<PropTypes, {}>
   
   render()
   {
-    var abilities: Templates.IAbilityBase[] = this.props.abilities;
+    var abilities: AbilityBase[] = this.props.abilities;
     var baseClassName = "unit-info-ability";
 
     if (abilities.length < 1) return null;

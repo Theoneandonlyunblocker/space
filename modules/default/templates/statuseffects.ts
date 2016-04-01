@@ -11,7 +11,7 @@ namespace Rance
       {
         export namespace StatusEffects
         {
-          export var test: Rance.Templates.IStatusEffectTemplate =
+          export var test: Rance.StatusEffectTemplate =
           {
             type: "test",
             displayName: "test",

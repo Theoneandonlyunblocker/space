@@ -90,7 +90,7 @@ export class EconomyAI
 
     var buildableUnitTypesByArchetype:
     {
-      [archetypeType: string]: Templates.IUnitTemplate[];
+      [archetypeType: string]: UnitTemplate[];
     } = {};
 
     var buildableUnitTypes = player.getGloballyBuildableUnits().concat(
@@ -113,7 +113,7 @@ export class EconomyAI
     }
 
     var sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
-    var unitType: Templates.IUnitTemplate;
+    var unitType: UnitTemplate;
 
     for (var i = 0; i < sortedScores.length; i++)
     {

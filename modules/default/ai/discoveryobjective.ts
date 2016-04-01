@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var discovery: Rance.Templates.IObjectiveTemplate =
+        export var discovery: Rance.ObjectiveTemplate =
         {
           key: "discovery",
           movePriority: 999,

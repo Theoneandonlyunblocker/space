@@ -60,7 +60,7 @@ export class NotificationLog
     this.currentTurn = turn;
     this.isHumanTurn = isHumanTurn;
   }
-  makeNotification(template: Templates.INotificationTemplate, props: any)
+  makeNotification(template: NotificationTemplate, props: any)
   {
     var notification = new Notification(template, props, this.currentTurn);
 

@@ -11,7 +11,7 @@ namespace Rance
       {
         export namespace MapGen
         {
-          export var tinierSpiralGalaxy: Rance.Templates.IMapGenTemplate =
+          export var tinierSpiralGalaxy: Rance.MapGenTemplate =
           {
             key: "tinierSpiralGalaxy",
             displayName: "Tinier Spiral galaxy",

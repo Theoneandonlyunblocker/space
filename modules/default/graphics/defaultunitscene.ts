@@ -8,7 +8,7 @@ namespace Rance
   {
     export namespace DefaultModule
     {
-      export var defaultUnitScene: Rance.Templates.IUnitDrawingFunction = function(
+      export var defaultUnitScene: Rance.UnitDrawingFunction = function(
         unit: Unit,
         SFXParams: Rance.Templates.SFXParams
       )

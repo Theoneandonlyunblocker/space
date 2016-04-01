@@ -6,9 +6,9 @@ export class Sector
   id: number;
   stars: Star[] = [];
   distributionFlags: string[];
-  resourceType: Templates.IResourceTemplate;
+  resourceType: ResourceTemplate;
   resourceLocation: Star;
-  addedDistributables: Templates.IDistributable[] = [];
+  addedDistributables: Distributable[] = [];
 
   constructor(id: number)
   {
@@ -24,7 +24,7 @@ export class Sector
     this.stars.push(star);
     star.mapGenData.sector = this;
   }
-  addResource(resource: Templates.IResourceTemplate)
+  addResource(resource: ResourceTemplate)
   {
     var star = this.stars[0];
 
@@ -163,7 +163,7 @@ export class Sector
       return star.owner && !star.owner.isIndependent;
     }
 
-    var makeUnitFN = function(template: Templates.IUnitTemplate, player: Player,
+    var makeUnitFN = function(template: UnitTemplate, player: Player,
       unitStatsModifier: number, unitHealthModifier: number)
     {
       var unit = new Unit(template);
@@ -216,7 +216,7 @@ export class Sector
       var distance = distanceFromPlayerOwnedLocationById[star.id];
       var inverseMapGenDistance = 1 - star.mapGenData.distance;
 
-      var localBuildableUnitTypes: Templates.IUnitTemplate[] = [];
+      var localBuildableUnitTypes: UnitTemplate[] = [];
       for (var j = 0; j < star.buildableUnitTypes.length; j++)
       {
         var template = star.buildableUnitTypes[j];
@@ -246,7 +246,7 @@ export class Sector
       var units: Unit[] = [];
       if (star === commanderStar)
       {
-        var template: Templates.IUnitTemplate = getRandomArrayItem(localBuildableUnitTypes);
+        var template: UnitTemplate = getRandomArrayItem(localBuildableUnitTypes);
         var commander = makeUnitFN(template, player, 1.4, 1.4 + inverseMapGenDistance);
         commander.name = "Pirate commander";
         units.push(commander);
@@ -256,7 +256,7 @@ export class Sector
         var isElite = j < elitesAmount;
         var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
         var unitStatsModifier = (isElite ? 1.2 : 1);
-        var template: Templates.IUnitTemplate = getRandomArrayItem(templateCandidates);
+        var template: UnitTemplate = getRandomArrayItem(templateCandidates);
 
         var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
         unit.name = (isElite ? "Pirate elite" : "Pirate");

@@ -45,7 +45,7 @@ export default class ManufacturableUnits extends React.Component<PropTypes, {}>
     return false;
   }
 
-  addUnitToBuildQueue(template: Templates.IUnitTemplate)
+  addUnitToBuildQueue(template: UnitTemplate)
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.addThingToQueue(template, "unit");

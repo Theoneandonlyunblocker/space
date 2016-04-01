@@ -16,7 +16,7 @@ export interface PropTypes
   userUnit?: Unit;
   activeUnit?: Unit;
   hoveredUnit?: Unit;
-  activeSFX?: reactTypeTODO_object; // Templates.IBattleSFXTemplate
+  activeSFX?: reactTypeTODO_object; // BattleSFXTemplate
 
   afterAbilityFinishedCallback?: reactTypeTODO_func;
   triggerEffectCallback?: reactTypeTODO_func;

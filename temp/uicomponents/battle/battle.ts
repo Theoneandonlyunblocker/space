@@ -231,7 +231,7 @@ export default class Battle extends React.Component<PropTypes, {}>
 
   }
 
-  handleAbilityUse(ability: Templates.IAbilityTemplate, target: Unit, wasByPlayer: boolean)
+  handleAbilityUse(ability: AbilityTemplate, target: Unit, wasByPlayer: boolean)
   {
     // TODO
     /* 
@@ -426,7 +426,7 @@ export default class Battle extends React.Component<PropTypes, {}>
 
     this.handleAbilityUse(action.ability, target, userIsHuman);
   }
-  usePlayerAbility(ability: Templates.IAbilityTemplate, target: Unit)
+  usePlayerAbility(ability: AbilityTemplate, target: Unit)
   {
     this.handleAbilityUse(ability, target, true);
   }
@@ -453,7 +453,7 @@ export default class Battle extends React.Component<PropTypes, {}>
     battle.finishBattle();
   }
 
-  handleMouseEnterAbility(ability: Templates.IAbilityTemplate)
+  handleMouseEnterAbility(ability: AbilityTemplate)
   {
 // TODO
 /* 

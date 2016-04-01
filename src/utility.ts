@@ -606,7 +606,7 @@ export function meetAllPlayers()
     }
   }
 }
-export function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IWeightedProbability<T>[])
+export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProbability<T>[])
 {
   var allItems: T[] = [];
 
@@ -618,12 +618,12 @@ export function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IW
   // weighted
   if (probabilities[0].weight)
   {
-    var selected = getRandomArrayItemWithWeights<Templates.IWeightedProbability<T>>(probabilities);
-    var firstItem = <Templates.IWeightedProbability<T>> selected.probabilityItems[0];
+    var selected = getRandomArrayItemWithWeights<WeightedProbability<T>>(probabilities);
+    var firstItem = <WeightedProbability<T>> selected.probabilityItems[0];
 
     if (firstItem.probabilityItems)
     {
-      var probabilityItems = <Templates.IWeightedProbability<T>[]> selected.probabilityItems;
+      var probabilityItems = <WeightedProbability<T>[]> selected.probabilityItems;
       allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
     }
     else
@@ -637,13 +637,13 @@ export function getItemsFromWeightedProbabilities<T>(probabilities: Templates.IW
     // flat probability
     for (var i = 0; i < probabilities.length; i++)
     {
-      var selected: Templates.IWeightedProbability<T> = probabilities[i];
+      var selected: WeightedProbability<T> = probabilities[i];
       if (Math.random() < selected.flatProbability)
       {
-        var firstItem = <Templates.IWeightedProbability<T>> selected.probabilityItems[0];
+        var firstItem = <WeightedProbability<T>> selected.probabilityItems[0];
         if (firstItem.probabilityItems)
         {
-          var probabilityItems = <Templates.IWeightedProbability<T>[]> selected.probabilityItems;
+          var probabilityItems = <WeightedProbability<T>[]> selected.probabilityItems;
           allItems = allItems.concat(getItemsFromWeightedProbabilities<T>(probabilityItems));
         }
         else

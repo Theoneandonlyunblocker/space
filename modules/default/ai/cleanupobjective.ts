@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var cleanUpPirates: Rance.Templates.IObjectiveTemplate =
+        export var cleanUpPirates: Rance.ObjectiveTemplate =
         {
           key: "cleanUpPirates",
           movePriority: 3,

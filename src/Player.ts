@@ -726,7 +726,7 @@ export class Player
 
     return manufactories;
   }
-  meetsTechnologyRequirements(requirements: Templates.ITechnologyRequirement[])
+  meetsTechnologyRequirements(requirements: TechnologyRequirement[])
   {
     for (var i = 0; i < requirements.length; i++)
     {
@@ -776,9 +776,9 @@ export class Player
     // TODO manufactory
     var itemTypes: ItemTemplate[] = [];
 
-    for (var key in app.moduleData.Templates.Items)
+    for (var key in app.moduleData.tems)
     {
-      itemTypes.push(app.moduleData.Templates.Items[key]);
+      itemTypes.push(app.moduleData.tems[key]);
     }
 
     return itemTypes;

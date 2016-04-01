@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var declareWar: Rance.Templates.IObjectiveTemplate =
+        export var declareWar: Rance.ObjectiveTemplate =
         {
           key: "declareWar",
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,

@@ -15,7 +15,7 @@ export default class BuyItems extends React.Component<PropTypes, {}>
 
   handleSelectRow(row: IListItem)
   {
-    var template: Templates.IItemTemplate = row.data.item.template;
+    var template: ItemTemplate = row.data.item.template;
     var item = new Item(template);
     
     this.props.player.addItem(item);

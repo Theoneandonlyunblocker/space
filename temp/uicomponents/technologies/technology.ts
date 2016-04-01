@@ -8,7 +8,7 @@ import {Factory as TechnologyPrioritySlider} from "./technologyPrioritySlider.ts
 export interface PropTypes
 {
   playerTechnology: PlayerTechnology;
-  technology: reactTypeTODO_object; // Templates.ITechnologyTemplate
+  technology: reactTypeTODO_object; // TechnologyTemplate
 
   researchPoints: number;
 }
@@ -42,14 +42,14 @@ export default class Technology extends React.Component<PropTypes, {}>
   togglePriorityLock()
   {
     var pt: Rance.PlayerTechnology = this.props.playerTechnology;
-    var technology: Rance.Templates.ITechnologyTemplate = this.props.technology;
+    var technology: Rance.TechnologyTemplate = this.props.technology;
 
     pt.technologies[technology.key].priorityIsLocked = !pt.technologies[technology.key].priorityIsLocked;
     this.forceUpdate();
   }
   render()
   {
-    var technology: Templates.ITechnologyTemplate = this.props.technology;
+    var technology: TechnologyTemplate = this.props.technology;
     var isAtMaxLevel: boolean = false;
     var playerTechnology: PlayerTechnology = this.props.playerTechnology;
     var techData = playerTechnology.technologies[technology.key];

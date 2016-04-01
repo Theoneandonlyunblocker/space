@@ -251,7 +251,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
       params.triggerStart(container);
     }
 
-    var testSFX: Templates.IBattleSFXTemplate =
+    var testSFX: BattleSFXTemplate =
     {
       duration: 1000,
       battleOverlay: app.moduleData.Templates.BattleSFX["guard"].battleOverlay,

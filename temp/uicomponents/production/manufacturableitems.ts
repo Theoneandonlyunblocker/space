@@ -44,7 +44,7 @@ export default class ManufacturableItems extends React.Component<PropTypes, {}>
     return false;
   }
 
-  addItemToBuildQueue(template: Templates.IItemTemplate)
+  addItemToBuildQueue(template: ItemTemplate)
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.addThingToQueue(template, "item");

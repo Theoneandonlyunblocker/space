@@ -118,7 +118,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  setForegroundEmblem(emblemTemplate: Templates.ISubEmblemTemplate)
+  setForegroundEmblem(emblemTemplate: SubEmblemTemplate)
   {
     var shouldUpdate = emblemTemplate || this.state.flag.foregroundEmblem;
 

@@ -109,7 +109,7 @@ export class NotificationFilter
     {
       [category: string]:
       {
-        notificationTemplate: Templates.INotificationTemplate;
+        notificationTemplate: NotificationTemplate;
         filterState: NotificationFilterState[];
       }[]
     } = {};

@@ -440,7 +440,7 @@ export class Battle
       var defenderMultiplier = 1;
       if (self.battleData.building)
       {
-        var template = <Templates.IDefenceBuildingTemplate> self.battleData.building.template;
+        var template = <DefenceBuildingTemplate> self.battleData.building.template;
         var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
         if (isDefender)
         {

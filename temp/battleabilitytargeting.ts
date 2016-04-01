@@ -23,7 +23,7 @@ export function getNullFormation()
   return _nullFormation;
 }
 
-export function getFormationsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectActionTemplate): Unit[][]
+export function getFormationsToTarget(battle: Battle, user: Unit, effect: EffectActionTemplate): Unit[][]
 {
   if (effect.targetFormations === TargetFormation.either)
   {
@@ -63,7 +63,7 @@ function isTargetableFilterFN(unit: Unit)
 {
   return unit && unit.isTargetable();
 }
-function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): Unit[]
+function getPotentialTargets(battle: Battle, user: Unit, ability: AbilityTemplate): Unit[]
 {
   var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
 
@@ -83,7 +83,7 @@ export function getTargetsForAllAbilities(battle: Battle, user: Unit)
 
   var allTargets:
   {
-    [id: number]: Templates.IAbilityTemplate[];
+    [id: number]: AbilityTemplate[];
   } = {};
 
   var abilities = user.getAllAbilities();

@@ -10,7 +10,7 @@ namespace Rance
       {
         export namespace Buildings
         {
-          export var sectorCommand: Rance.Templates.IDefenceBuildingTemplate =
+          export var sectorCommand: Rance.DefenceBuildingTemplate =
           {
             type: "sectorCommand",
             category: "defence",
@@ -39,7 +39,7 @@ namespace Rance
             ],
             defenderAdvantage: 0.2
           }
-          export var sectorCommand1: Rance.Templates.IDefenceBuildingTemplate =
+          export var sectorCommand1: Rance.DefenceBuildingTemplate =
           {
             type: "sectorCommand1",
             category: "defence",
@@ -56,7 +56,7 @@ namespace Rance
             upgradeOnly: true,
             defenderAdvantage: 0.3
           }
-          export var sectorCommand2: Rance.Templates.IDefenceBuildingTemplate =
+          export var sectorCommand2: Rance.DefenceBuildingTemplate =
           {
             type: "sectorCommand2",
             category: "defence",
@@ -73,7 +73,7 @@ namespace Rance
             upgradeOnly: true,
             defenderAdvantage: 0.3
           }
-          export var starBase: Rance.Templates.IDefenceBuildingTemplate =
+          export var starBase: Rance.DefenceBuildingTemplate =
           {
             type: "starBase",
             category: "defence",
@@ -96,7 +96,7 @@ namespace Rance
               }
             ]
           }
-          export var commercialPort: Rance.Templates.IBuildingTemplate =
+          export var commercialPort: Rance.BuildingTemplate =
           {
             type: "commercialPort",
             category: "economy",
@@ -117,7 +117,7 @@ namespace Rance
 
             maxUpgradeLevel: 4
           }
-          export var deepSpaceRadar: Rance.Templates.IBuildingTemplate =
+          export var deepSpaceRadar: Rance.BuildingTemplate =
           {
             type: "deepSpaceRadar",
             category: "vision",
@@ -136,7 +136,7 @@ namespace Rance
 
             maxUpgradeLevel: 2
           }
-          export var resourceMine: Rance.Templates.IBuildingTemplate =
+          export var resourceMine: Rance.BuildingTemplate =
           {
             type: "resourceMine",
             category: "mine",
@@ -157,7 +157,7 @@ namespace Rance
 
             maxUpgradeLevel: 3
           }
-          export var reserachLab: Rance.Templates.IBuildingTemplate =
+          export var reserachLab: Rance.BuildingTemplate =
           {
             type: "reserachLab",
             category: "research",

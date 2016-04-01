@@ -28,7 +28,7 @@ export class BattleScene
   side1Overlay: BattleSceneUnitOverlay;
   side2Overlay: BattleSceneUnitOverlay;
 
-  activeSFX: Templates.IBattleSFXTemplate;
+  activeSFX: BattleSFXTemplate;
 
   targetUnit: Unit;  // being targeted by ability      | priority
   userUnit: Unit;    // using an ability               |
@@ -207,7 +207,7 @@ export class BattleScene
   }
   public handleAbilityUse(props:
   {
-    SFXTemplate: Templates.IBattleSFXTemplate;
+    SFXTemplate: BattleSFXTemplate;
     triggerEffectCallback: () => void;
     user: Unit;
     target: Unit;
@@ -388,7 +388,7 @@ export class BattleScene
     this.clearBattleOverlay();
     this.clearUnitOverlays();
   }
-  private triggerSFXStart(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit,
+  private triggerSFXStart(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit,
     afterFinishedCallback?: () => void)
   {
     this.activeSFX = SFXTemplate;

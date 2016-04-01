@@ -244,7 +244,7 @@ export class DiplomacyStatus
     this.attitudeModifiersByPlayer[player.id].push(modifier);
     this.updateAttitudes();
   }
-  triggerAttitudeModifier(template: Templates.IAttitudeModifierTemplate, player: Player, source: Player)
+  triggerAttitudeModifier(template: AttitudeModifierTemplate, player: Player, source: Player)
   {
     if (player !== this.player) return;
 
