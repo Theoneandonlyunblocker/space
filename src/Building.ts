@@ -1,19 +1,14 @@
-/// <reference path="templateinterfaces/ibuildingtemplate.d.ts" />
-/// <reference path="savedata/ibuildingsavedata.d.ts" />
+import BuildingTemplate from "./templateinterfaces/BuildingTemplate.d.ts";
+import BuildingEffect from "./templateinterfaces/BuildingEffect.d.ts";
+import BuildingSaveData from "./savedata/BuildingSaveData.d.ts"
+import BuildingUpgradeData from "./BuildingUpgradeData.d.ts";
 
-/// <reference path="star.ts" />
-/// <reference path="player.ts" />
+import Star from "./Star.ts";
+import Player from "./Player.ts";
 
-export interface IBuildingUpgradeData
+export default class Building
 {
-  template: Templates.IBuildingTemplate;
-  level: number;
-  cost: number;
-  parentBuilding: Building;
-}
-export class Building
-{
-  template: Templates.IBuildingTemplate;
+  template: BuildingTemplate;
   id: number;
 
   location: Star;
@@ -24,7 +19,7 @@ export class Building
 
   constructor(props:
   {
-    template: Templates.IBuildingTemplate;
+    template: BuildingTemplate;
 
     location: Star;
     controller?: Player;
@@ -43,7 +38,7 @@ export class Building
     this.upgradeLevel = props.upgradeLevel || 1;
     this.totalCost = props.totalCost || this.template.buildCost || 0;
   }
-  getEffect(effect: Templates.IBuildingEffect = {})
+  getEffect(effect: BuildingEffect = {})
   {
     if (!this.template.effect) return {};
 
@@ -84,7 +79,7 @@ export class Building
   getPossibleUpgrades()
   {
     var self = this;
-    var upgrades: IBuildingUpgradeData[] = [];
+    var upgrades: BuildingUpgradeData[] = [];
 
     if (this.upgradeLevel < this.template.maxUpgradeLevel)
     {
@@ -130,7 +125,7 @@ export class Building
   }
   serialize()
   {
-    var data: IBuildingSaveData =
+    var data: BuildingSaveData =
     {
       templateType: this.template.type,
       id: this.id,
