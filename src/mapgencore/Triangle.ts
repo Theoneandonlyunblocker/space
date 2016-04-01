@@ -1,34 +1,37 @@
-/// <reference path="../point.ts"/>
+import Point from "../Point.ts";
 
-export class Triangle
+export default class Triangle
 {
-  circumCenterX: number;
-  circumCenterY: number;
-  circumRadius: number;
+  public a: Point;
+  public b: Point;
+  public c: Point;
 
-  constructor(
-    public a: Point,
-    public b: Point,
-    public c: Point
-  )
+  private circumCenterX: number;
+  private circumCenterY: number;
+  private circumRadius: number;
+
+  constructor(a: Point, b: Point, c: Point)
   {
-    
+    this.a = a;
+    this.b = b;
+    this.c = c;
   }
 
-  getPoints()
+  private getPoints()
   {
     return [this.a, this.b, this.c];
   }
-  getCircumCenter()
-  {
-    if (!this.circumRadius)
-    {
-      this.calculateCircumCircle();
-    }
+  // TODO refactor 3.4.2016 | remove unused
+  // getCircumCenter()
+  // {
+  //   if (!this.circumRadius)
+  //   {
+  //     this.calculateCircumCircle();
+  //   }
     
-    return [this.circumCenterX, this.circumCenterY];
-  }
-  calculateCircumCircle(tolerance: number = 0.00001)
+  //   return [this.circumCenterX, this.circumCenterY];
+  // }
+  private calculateCircumCircle(tolerance: number = 0.00001)
   {
     var pA = this.a;
     var pB = this.b;
@@ -79,7 +82,7 @@ export class Triangle
     my1 = pB.y - cY;
     this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
   }
-  circumCircleContainsPoint(point: Point)
+  public circumCircleContainsPoint(point: Point)
   {
     this.calculateCircumCircle();
     var x = point.x - this.circumCenterX;
@@ -89,7 +92,7 @@ export class Triangle
 
     return(contains);
   }
-  getEdges()
+  public getEdges()
   {
     var edges =
     [
@@ -100,7 +103,7 @@ export class Triangle
 
     return edges;
   }
-  getAmountOfSharedVerticesWith(toCheckAgainst: Triangle)
+  public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle)
   {
     var ownPoints = this.getPoints();
     var otherPoints = toCheckAgainst.getPoints();

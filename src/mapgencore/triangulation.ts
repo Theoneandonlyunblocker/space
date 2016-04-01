@@ -1,7 +1,7 @@
-/// <reference path="triangle.ts" />
-/// <reference path="../point.ts" />
+import Triangle from "./Triangle.ts";
+import Point from "../Point.ts";
 
-export function triangulate(vertices: Point[])
+export function triangulate(vertices: Point[]): Triangle[]
 {
   var triangles: Triangle[] = [];
 
@@ -63,52 +63,14 @@ export function triangulate(vertices: Point[])
   return triangles;
 }
 
-export function getCentroid(vertices: Point[]): Point
+
+// TODO refactor | move
+export function pointsEqual(p1: Point, p2: Point)
 {
-  var signedArea: number = 0;
-  var x: number = 0;
-  var y: number = 0;
-  var x0: number; // Current vertex X
-  var y0: number; // Current vertex Y
-  var x1: number; // Next vertex X
-  var y1: number; // Next vertex Y
-  var a: number;  // Partial signed area
-
-  var i: number = 0;
-
-  for (i = 0; i < vertices.length - 1; i++)
-  {
-    x0 = vertices[i].x;
-    y0 = vertices[i].y;
-    x1 = vertices[i+1].x;
-    y1 = vertices[i+1].y;
-    a = x0*y1 - x1*y0;
-    signedArea += a;
-    x += (x0 + x1)*a;
-    y += (y0 + y1)*a;
-  }
-
-  x0 = vertices[i].x;
-  y0 = vertices[i].y;
-  x1 = vertices[0].x;
-  y1 = vertices[0].y;
-  a = x0*y1 - x1*y0;
-  signedArea += a;
-  x += (x0 + x1)*a;
-  y += (y0 + y1)*a;
-
-  signedArea *= 0.5;
-  x /= (6.0*signedArea);
-  y /= (6.0*signedArea);
-
-  return(
-  {
-    x: x,
-    y: y
-  });
+  return (p1.x === p2.x && p1.y === p2.y);
 }
 
-function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number)
+function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle
 {
   var max: number;
 
@@ -148,12 +110,7 @@ function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number)
     }
   );
 
-  return(triangle);
-}
-
-export function pointsEqual(p1: Point, p2: Point)
-{
-  return (p1.x === p2.x && p1.y === p2.y);
+  return triangle;
 }
 
 function edgesEqual(e1: Point[], e2: Point[])
