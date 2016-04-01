@@ -1,8 +1,9 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
 /// <reference path="sfxparams.d.ts" />
+import SFXParams from "./SFXParams.d.ts";
 
-declare interface IBattleSFXTemplate
+declare interface BattleSFXTemplate
 {
   duration: number;
   SFXWillTriggerEffect?: boolean; // true if one of the sfx functions calls SFXParams.triggerEffect()
@@ -13,3 +14,5 @@ declare interface IBattleSFXTemplate
   //emptySpaceOverlay?: (props: SFXParams) => void;
   battleOverlay?: (props: SFXParams) => void;
 }
+
+export default BattleSFXTemplate;
