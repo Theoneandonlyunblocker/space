@@ -1,29 +1,47 @@
-/// <reference path="unit.ts"/>
-/// <reference path="fleet.ts"/>
-/// <reference path="utility.ts"/>
-/// <reference path="building.ts" />
-/// <reference path="star.ts" />
-/// <reference path="flag.ts" />
-/// <reference path="item.ts" />
-/// <reference path="battlesimulator.ts" />
-/// <reference path="battleprep.ts" />
-/// <reference path="diplomacystatus.ts" />
-/// <reference path="manufactory.ts" />
-/// <reference path="playertechnology.ts" />
-/// <reference path="ifleetattacktarget.d.ts" />
+import Unit from "./Unit.ts";
+import Fleet from "./Fleet.ts";
+// import utility from "./utility.ts";
+import
+{
+  extendObject
+} from "./utility.ts"
+import Building from "./Building.ts";
+import Star from "./Star.ts";
+import Flag from "./Flag.ts";
+import Item from "./Item.ts";
+import Battlesimulator from "./Battlesimulator.ts";
+import Battleprep from "./Battleprep.ts";
+import Diplomacystatus from "./Diplomacystatus.ts";
+import Manufactory from "./Manufactory.ts";
+import Playertechnology from "./Playertechnology.ts";
+import FleetAttackTarget from "./FleetAttackTarget.d.ts";
+import eventManager from "./eventManager.ts";
+import Color from "./Color.ts";
+import Game from "./Game.ts";
+import Point from "./Point.ts";
+import
+{
+  generateColorScheme
+} from "./colorGeneration.ts"
+import Options from "./options.ts";
+import BattleSimulator from "./BattleSimulator.ts";
+
+import ResourceTemplate from "./templateinterfaces/ResourceTemplate.d.ts";
+import UnitTemplate from "./templateinterfaces/UnitTemplate.d.ts";
 
 /// <reference path="mapai/aicontroller.ts"/>
 
 /// <reference path="savedata/iplayersavedata.d.ts" />
+import PlayerSaveData from "./savedata/PlayerSaveData.d.ts";
 
 
 export class Player
 {
   id: number;
   name: string;
-  color: number;
+  color: Color;
   colorAlpha: number;
-  secondaryColor: number;
+  secondaryColor: Color;
   flag: Flag;
   units:
   {
@@ -258,7 +276,7 @@ export class Player
 
     return income;
   }
-  addResource(resource: Templates.IResourceTemplate, amount: number)
+  addResource(resource: ResourceTemplate, amount: number)
   {
     if (!this.resources[resource.type])
     {
@@ -273,7 +291,7 @@ export class Player
     {
       [resourceType: string]:
       {
-        resource: Templates.IResourceTemplate;
+        resource: ResourceTemplate;
         amount: number;
       };
     } = {};
@@ -723,13 +741,13 @@ export class Player
   }
   getGloballyBuildableUnits()
   {
-    var templates: Templates.IUnitTemplate[] = [];
+    var templates: UnitTemplate[] = [];
     var typesAlreadyAddedChecked:
     {
       [unitType: string]: boolean;
     } = {};
 
-    var unitsToAdd: Templates.IUnitTemplate[] = app.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
+    var unitsToAdd: UnitTemplate[] = app.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
     if (!this.isAI && Options.debugMode)
     {
       unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
@@ -756,7 +774,7 @@ export class Player
   getGloballyBuildableItems()
   {
     // TODO manufactory
-    var itemTypes: Templates.IItemTemplate[] = [];
+    var itemTypes: ItemTemplate[] = [];
 
     for (var key in app.moduleData.Templates.Items)
     {
@@ -808,7 +826,7 @@ export class Player
 
     return totalCapacity;
   }
-  serialize(): IPlayerSaveData
+  serialize(): PlayerSaveData
   {
     var unitIds: number[] = [];
     for (var id in this.units)
@@ -828,7 +846,7 @@ export class Player
       identifiedUnitIds.push(this.identifiedUnits[id].id);
     }
 
-    var data: IPlayerSaveData =
+    var data: PlayerSaveData =
     {
       id: this.id,
       name: this.name,
