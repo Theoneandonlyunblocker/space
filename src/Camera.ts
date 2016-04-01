@@ -1,10 +1,10 @@
 /// <reference path="../lib/pixi.d.ts" />
 
+import Point from "./Point.ts";
+import eventManager from "./eventManager.ts";
+
 var tempCameraId = 0;
-/**
- * @class Camera
- * @constructor
- */
+
 export class Camera
 {
   tempCameraId: number;
@@ -64,10 +64,6 @@ export class Camera
     window.removeEventListener("resize", this.resizeListener);
   }
 
-  /**
-   * @method addEventListeners
-   * @private
-   */
   private addEventListeners()
   {
     var self = this;
@@ -95,10 +91,6 @@ export class Camera
     eventManager.dispatchEvent("registerOnZoomCallback", self.onZoomCallbacks);
   }
 
-  /**
-   * @method setBound
-   * @private
-   */
   private setBounds()
   {
     var rect = this.container.getLocalBounds();
@@ -114,37 +106,23 @@ export class Camera
       max: this.bounds.max
     }
   }
-  /**
-   * @method startScroll
-   * @param {number[]} mousePos [description]
-   */
+
   startScroll( mousePos: number[] )
   {
     this.setBounds();
     this.startClick = mousePos;
     this.startPos = [this.container.position.x, this.container.position.y];
   }
-  /**
-   * @method end
-   */
   end()
   {
     this.startPos = undefined;
   }
-  /**
-   * @method getDelta
-   * @param {number[]} currPos [description]
-   */
   private getDelta( currPos: number[] )
   {
     var x = this.startClick[0] - currPos[0];
     var y = this.startClick[1] - currPos[1];
     return [-x, -y];
   }
-  /**
-   * @method move
-   * @param {number[]} currPos [description]
-   */
   move( currPos: number[] ) // used for mouse scrolling
   {
     var delta = this.getDelta(currPos);
@@ -206,10 +184,6 @@ export class Camera
     this.onMove();
   }
 
-  /**
-   * @method zoom
-   * @param {number} zoomAmount [description]
-   */
   zoom( zoomAmount: number)
   {
     if (zoomAmount > 1)
@@ -245,11 +219,6 @@ export class Camera
       this.onZoomCallbacks[i](this.currZoom);
     }
   }
-  /**
-   * @method deltaZoom
-   * @param {number} delta [description]
-   * @param {number} scale [description]
-   */
   deltaZoom( delta: number, scale: number )
   {
     if (delta === 0)
@@ -268,10 +237,7 @@ export class Camera
       this.zoom(this.currZoom * adjDelta);
     }
   }
-  /**
-   * @method clampEdges
-   * @private
-   */
+
   private clampEdges()
   {
     var x = this.container.position.x;
