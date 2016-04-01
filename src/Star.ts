@@ -1,16 +1,22 @@
 /// <reference path="../modules/default/templates/resources.ts" />
-/// <reference path="templateinterfaces/iresourcetemplate.d.ts" />
+import BuildingEffect from "./templateinterfaces/BuildingEffect.d.ts";
+import BuildingTemplate from "./templateinterfaces/BuildingTemplate.d.ts";
+import ResourceTemplate from "./templateinterfaces/ResourceTemplate.d.ts";
+import UnitTemplate from "./templateinterfaces/UnitTemplate.d.ts";
 
-/// <reference path="point.ts" />
-/// <reference path="player.ts" />
-/// <reference path="fleet.ts" />
-/// <reference path="building.ts" />
-/// <reference path="manufactory.ts" />
-/// <reference path="ifleetattacktarget.d.ts" />
+import eventManager from "./eventManager.ts";
+import Point from "./Point.ts";
+import Player from "./Player.ts";
+import Fleet from "./Fleet.ts";
+import Building from "./Building.ts";
+import Manufactory from "./Manufactory.ts";
+import Unit from "./Unit.ts";
+import FleetAttackTarget from "./FleetAttackTarget.d.ts";
 
-/// <reference path="savedata/istarsavedata.d.ts" />
+import StarSaveData from "./savedata/StarSaveData.d.ts";
+import StarBuildingsSaveData from "./savedata/StarBuildingsSaveData.d.ts";
 
-export class Star implements Point
+export default class Star implements Point
 {
   id: number;
   x: number;
@@ -38,7 +44,7 @@ export class Star implements Point
   owner: Player;
 
   baseIncome: number;
-  resource: Templates.IResourceTemplate;
+  resource: ResourceTemplate;
   
   fleets:
   {
@@ -49,7 +55,7 @@ export class Star implements Point
   {
     [category: string] : Building[];
   } = {};
-  buildingsEffect: Templates.IBuildingEffect;
+  buildingsEffect: BuildingEffect;
   buildingsEffectIsDirty: boolean = true;
 
   voronoiCell: any;
@@ -70,7 +76,7 @@ export class Star implements Point
     [id: number]: number;
   } = {};
 
-  buildableUnitTypes: Templates.IUnitTemplate[] = [];
+  buildableUnitTypes: UnitTemplate[] = [];
   manufactory: Manufactory;
 
   constructor(x: number, y: number, id?: number)
@@ -198,7 +204,7 @@ export class Star implements Point
   }
   updateBuildingsEffect()
   {
-    var effect: Templates.IBuildingEffect = {};
+    var effect: BuildingEffect = {};
 
     for (var category in this.buildings)
     {
@@ -276,7 +282,7 @@ export class Star implements Point
       return building.controller.id === player.id;
     });
   }
-  getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[]
+  getBuildingsByFamily(buildingTemplate: BuildingTemplate): Building[]
   {
     var propToCheck = buildingTemplate.family ? "family" : "type";
 
@@ -298,10 +304,10 @@ export class Star implements Point
   }
   getBuildableBuildings()
   {
-    var canBuild: Templates.IBuildingTemplate[] = [];
+    var canBuild: BuildingTemplate[] = [];
     for (var buildingType in app.moduleData.Templates.Buildings)
     {
-      var template: Templates.IBuildingTemplate = app.moduleData.Templates.Buildings[buildingType];
+      var template: BuildingTemplate = app.moduleData.Templates.Buildings[buildingType];
       var alreadyBuilt: Building[];
       
       if (template.category === "mine" && !this.resource)
@@ -325,7 +331,7 @@ export class Star implements Point
     {
       [buildingId: number]:
       {
-        template: Templates.IBuildingTemplate;
+        template: BuildingTemplate;
         level: number;
         cost: number;
         parentBuilding: Building;
@@ -471,7 +477,7 @@ export class Star implements Point
 
     return units;
   }
-  getTargetsForPlayer(player: Player): IFleetAttackTarget[]
+  getTargetsForPlayer(player: Player): FleetAttackTarget[]
   {
     var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
     var buildingController = buildingTarget ? buildingTarget.controller : null;
@@ -479,7 +485,7 @@ export class Star implements Point
 
     var diplomacyStatus = player.diplomacyStatus;
 
-    var targets: IFleetAttackTarget[] = [];
+    var targets: FleetAttackTarget[] = [];
 
     if (buildingTarget &&
       (
@@ -552,7 +558,7 @@ export class Star implements Point
     this.x = x;
     this.y = y;
   }
-  setResource(resource: Templates.IResourceTemplate)
+  setResource(resource: ResourceTemplate)
   {
     this.resource = resource;
   }
@@ -939,9 +945,9 @@ export class Star implements Point
   {
     this.manufactory = new Manufactory(this);
   }
-  serialize(): IStarSaveData
+  serialize(): StarSaveData
   {
-    var buildings: IStarBuildingsSaveData = {};
+    var buildings: StarBuildingsSaveData = {};
 
     for (var category in this.buildings)
     {
@@ -953,7 +959,7 @@ export class Star implements Point
     }
 
 
-    var data: IStarSaveData =
+    var data: StarSaveData =
     {
       id: this.id,
       x: this.basisX,
