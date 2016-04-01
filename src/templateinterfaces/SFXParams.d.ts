@@ -1,5 +1,7 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
+import Unit from "../Unit.ts";
+
 declare interface SFXParams
 {
   user: Unit;
