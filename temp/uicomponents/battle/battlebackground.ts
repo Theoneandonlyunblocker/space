@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class BattleBackground extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleBackground";
+  displayName: reactTypeTODO_any = "BattleBackground";
 
   handleResize: function()
   {

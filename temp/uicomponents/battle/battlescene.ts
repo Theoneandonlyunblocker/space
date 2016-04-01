@@ -24,7 +24,7 @@ export interface PropTypes
 
 export default class BattleScene extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleScene";
+  displayName: reactTypeTODO_any = "BattleScene";
 
   battleScene: null, // Rance.BattleScene
 

@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class FleetInfo extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetInfo";
+  displayName: reactTypeTODO_any = "FleetInfo";
   setFleetName: function(e: Event)
   {
     var target = <HTMLInputElement> e.target;

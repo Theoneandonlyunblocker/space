@@ -10,8 +10,8 @@ export interface PropTypes
 
 export default class ManufacturableThingsList extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufacturableThingsList";
-  mixins: [React.addons.PureRenderMixin];
+  displayName: reactTypeTODO_any = "ManufacturableThingsList";
+  mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
   render: function()

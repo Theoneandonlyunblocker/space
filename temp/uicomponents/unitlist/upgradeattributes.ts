@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class UpgradeAttributes extends React.Component<PropTypes, {}>
 {
-  displayName: "UpgradeAttributes";
+  displayName: reactTypeTODO_any = "UpgradeAttributes";
   upgradeAttribute: function(attribute: string, e: MouseEvent)
   {
     if (e.button) return;

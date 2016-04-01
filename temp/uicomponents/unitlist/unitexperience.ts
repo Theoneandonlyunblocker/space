@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class UnitExperience extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitExperience";
+  displayName: reactTypeTODO_any = "UnitExperience";
 
   getInitialState: function()
   {

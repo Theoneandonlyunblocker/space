@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class DiplomacyOverview extends React.Component<PropTypes, {}>
 {
-  displayName: "DiplomacyOverview";
+  displayName: reactTypeTODO_any = "DiplomacyOverview";
 
   makeDiplomacyActionsPopup: function(rowItem: IListItem)
   {

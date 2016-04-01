@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class LightBox extends React.Component<PropTypes, {}>
 {
-  displayName: "LightBox";
+  displayName: reactTypeTODO_any = "LightBox";
 
   // far from ideal as it always triggers reflow 4 times
   // cant figure out how to do resizing better since content size is dynamic

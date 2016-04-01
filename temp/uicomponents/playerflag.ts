@@ -5,8 +5,8 @@ export interface PropTypes
 
 export default class PlayerFlag extends React.Component<PropTypes, {}>
 {
-  displayName: "PlayerFlag";
-  mixins: [React.addons.PureRenderMixin];
+  displayName: reactTypeTODO_any = "PlayerFlag";
+  mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
   canUseDataURL: function()
   {
     var uaString = navigator.userAgent.toLowerCase();

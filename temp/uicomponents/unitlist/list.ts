@@ -56,9 +56,9 @@ export default class List extends React.Component<PropTypes, {}>
 
     return(
     {
-      columns: this.props.initialColumns;
+      columns: reactTypeTODO_any = this.props.initialColumns;
       selected: null, // set in componentDidMount
-      selectedColumn: initialColumn;
+      selectedColumn: reactTypeTODO_any = initialColumn;
       sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
     });
   },
@@ -104,7 +104,7 @@ export default class List extends React.Component<PropTypes, {}>
     }
     else
     {
-      this.setState({selected: this.sortedItems[0]});
+      this.setState({selected: reactTypeTODO_any = this.sortedItems[0]});
     }
   },
 
@@ -207,7 +207,7 @@ export default class List extends React.Component<PropTypes, {}>
     if (column.notSortable) return;
     function getReverseOrder(order: string)
     {
-      return order === "desc" ? "asc" : "desc";
+      return order === "desc" ? "asc" : reactTypeTODO_any = "desc";
     }
 
     if (this.state.selectedColumn.key === column.key)
@@ -243,7 +243,7 @@ export default class List extends React.Component<PropTypes, {}>
     var sortOrder = this.state.sortingOrder;
     var sortFunctions:
     {
-      [key: string]: any;
+      [key: reactTypeTODO_any = string]: reactTypeTODO_any = any;
     } = {};
 
 
@@ -331,7 +331,7 @@ export default class List extends React.Component<PropTypes, {}>
         React.DOM.col(colProps)
       );
 
-      var sortStatus: string = "";
+      var sortStatus: reactTypeTODO_any = string = "";
 
       if (!column.notSortable) sortStatus = " sortable";
 
@@ -402,14 +402,14 @@ export default class List extends React.Component<PropTypes, {}>
     return(
       React.DOM.div(
         {
-          className: "fixed-table-container" + (this.props.noHeader ? " no-header" : "");
+          className: reactTypeTODO_any = "fixed-table-container" + (this.props.noHeader ? " no-header" : reactTypeTODO_any = "");
           tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
         },
         React.DOM.div({className: "fixed-table-header-background"}),
         React.DOM.div(
         {
-          className: "fixed-table-container-inner";
-          ref: "inner";
+          className: reactTypeTODO_any = "fixed-table-container-inner";
+          ref: reactTypeTODO_any = "inner";
           onScroll: this.handleScroll
         },
           React.DOM.table(

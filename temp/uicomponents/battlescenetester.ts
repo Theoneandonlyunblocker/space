@@ -5,10 +5,10 @@ export interface PropTypes
 
 export default class BattleSceneTester extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleSceneTester";
-  idGenerator: 0;
-  battle: null;
-  battleScene: null;
+  displayName: reactTypeTODO_any = "BattleSceneTester";
+  idGenerator: reactTypeTODO_any = 0;
+  battle: reactTypeTODO_any = null;
+  battleScene: reactTypeTODO_any = null;
 
   getInitialState: function()
   {

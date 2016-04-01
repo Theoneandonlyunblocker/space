@@ -5,9 +5,9 @@ export interface PropTypes
 
 export default class MapRendererLayersListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "MapRendererLayersListItem";
-  mixins: [Draggable, DropTarget, React.addons.PureRenderMixin];
-  cachedMidPoint: undefined;
+  displayName: reactTypeTODO_any = "MapRendererLayersListItem";
+  mixins: reactTypeTODO_any = [Draggable, DropTarget, React.addons.PureRenderMixin];
+  cachedMidPoint: reactTypeTODO_any = undefined;
 
   getInitialState: function()
   {

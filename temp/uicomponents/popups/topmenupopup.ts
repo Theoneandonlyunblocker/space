@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class TopMenuPopup extends React.Component<PropTypes, {}>
 {
-  displayName: "TopMenuPopup";
+  displayName: reactTypeTODO_any = "TopMenuPopup";
 
   render: function()
   {

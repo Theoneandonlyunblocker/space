@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class ManufactoryStarsList extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufactoryStarsList";
+  displayName: reactTypeTODO_any = "ManufactoryStarsList";
 
   render: function()
   {

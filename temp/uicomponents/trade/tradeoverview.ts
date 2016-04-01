@@ -12,9 +12,9 @@ export interface PropTypes
 
 export default class TradeOverview extends React.Component<PropTypes, {}>
 {
-  displayName: "TradeOverview";
-  selfPlayerTrade: undefined;
-  otherPlayerTrade: undefined;
+  displayName: reactTypeTODO_any = "TradeOverview";
+  selfPlayerTrade: reactTypeTODO_any = undefined;
+  otherPlayerTrade: reactTypeTODO_any = undefined;
 
 
   componentWillMount: function()

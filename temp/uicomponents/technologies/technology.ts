@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class Technology extends React.Component<PropTypes, {}>
 {
-  displayName: "Technology";
+  displayName: reactTypeTODO_any = "Technology";
 
 
   togglePriorityLock: function()

@@ -7,8 +7,8 @@ export interface PropTypes
 
 export default class FlagMaker extends React.Component<PropTypes, {}>
 {
-  setStateTimeout: undefined;
-  sizeValue: 46;
+  setStateTimeout: reactTypeTODO_any = undefined;
+  sizeValue: reactTypeTODO_any = 46;
   getInitialState: function()
   {
     return(

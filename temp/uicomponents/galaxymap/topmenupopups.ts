@@ -16,7 +16,7 @@ export interface PropTypes
 
 export default class TopMenuPopups extends React.Component<PropTypes, {}>
 {
-  displayName: "TopMenuPopups";
+  displayName: reactTypeTODO_any = "TopMenuPopups";
   cachedPopupRects: {}
 
 

@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class DiplomaticStatusPlayer extends React.Component<PropTypes, {}>
 {
-  displayName: "DiplomaticStatusPlayer";
+  displayName: reactTypeTODO_any = "DiplomaticStatusPlayer";
 
   getInitialState: function()
   {

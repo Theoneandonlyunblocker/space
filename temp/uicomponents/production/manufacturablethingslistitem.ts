@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class ManufacturableThingsListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufacturableThingsListItem";
+  displayName: reactTypeTODO_any = "ManufacturableThingsListItem";
 
 
   getInitialState: function()

@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class ManufactoryUpgradeButton extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufactoryUpgradeButton";
+  displayName: reactTypeTODO_any = "ManufactoryUpgradeButton";
 
 
   getInitialState: function()

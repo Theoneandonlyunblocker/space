@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class Notification extends React.Component<PropTypes, {}>
 {
-  displayName: "Notification";
+  displayName: reactTypeTODO_any = "Notification";
 
   handleClose: function()
   {

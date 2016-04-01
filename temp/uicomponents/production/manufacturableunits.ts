@@ -13,7 +13,7 @@ export interface PropTypes
 
 export default class ManufacturableUnits extends React.Component<PropTypes, {}>
 {
-  displayName: "ManufacturableUnits";
+  displayName: reactTypeTODO_any = "ManufacturableUnits";
 
 
   shouldComponentUpdate: function(newProps: any)

@@ -9,8 +9,8 @@ export interface PropTypes
 
 export default class TopBar extends React.Component<PropTypes, {}>
 {
-  displayName: "TopBar";
-  updateListener: undefined;
+  displayName: reactTypeTODO_any = "TopBar";
+  updateListener: reactTypeTODO_any = undefined;
 
   componentDidMount: function()
   {

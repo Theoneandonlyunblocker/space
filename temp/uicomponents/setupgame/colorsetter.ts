@@ -9,8 +9,8 @@ export interface PropTypes
 
 export default class ColorSetter extends React.Component<PropTypes, {}>
 {
-  displayName: "ColorSetter";
-  mixins: [FocusTimer];
+  displayName: reactTypeTODO_any = "ColorSetter";
+  mixins: reactTypeTODO_any = [FocusTimer];
   getInitialState: function()
   {
     return(

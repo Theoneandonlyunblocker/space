@@ -10,8 +10,8 @@ export interface PropTypes
 
 export default class BuildingUpgradeListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "BuildingUpgradeListItem";
-  mixins: [UpdateWhenMoneyChanges];
+  displayName: reactTypeTODO_any = "BuildingUpgradeListItem";
+  mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
   getInitialState: function()
   {

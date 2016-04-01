@@ -11,7 +11,7 @@ export interface PropTypes
 
 export default class MapGenOptions extends React.Component<PropTypes, {}>
 {
-  displayName: "MapGenOptions";
+  displayName: reactTypeTODO_any = "MapGenOptions";
 
   getInitialState: function()
   {

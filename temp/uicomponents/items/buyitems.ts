@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class BuyItems extends React.Component<PropTypes, {}>
 {
-  displayName: "BuyItems";
+  displayName: reactTypeTODO_any = "BuyItems";
 
   handleSelectRow: function(row: IListItem)
   {

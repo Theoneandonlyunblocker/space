@@ -11,7 +11,7 @@ export interface PropTypes
 
 export default class DiplomacyActions extends React.Component<PropTypes, {}>
 {
-  displayName: "DiplomacyActions";
+  displayName: reactTypeTODO_any = "DiplomacyActions";
 
 
   getInitialState: function()

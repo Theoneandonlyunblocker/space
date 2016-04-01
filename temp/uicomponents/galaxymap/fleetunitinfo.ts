@@ -14,8 +14,8 @@ export interface PropTypes
 
 export default class FleetUnitInfo extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetUnitInfo";
-  mixins: [Draggable];
+  displayName: reactTypeTODO_any = "FleetUnitInfo";
+  mixins: reactTypeTODO_any = [Draggable];
 
 
   onDragStart: function()

@@ -10,7 +10,7 @@ export interface PropTypes
 
 export default class MapModeSettings extends React.Component<PropTypes, {}>
 {
-  displayName: "MapModeSettings";
+  displayName: reactTypeTODO_any = "MapModeSettings";
 
 
   handleReset: function()

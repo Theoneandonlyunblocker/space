@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class BattleDisplayStrength extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleDisplayStrength";
+  displayName: reactTypeTODO_any = "BattleDisplayStrength";
   getInitialState: function()
   {
     return(

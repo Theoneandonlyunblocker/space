@@ -12,8 +12,8 @@ export interface PropTypes
 
 export default class BuildableBuilding extends React.Component<PropTypes, {}>
 {
-  displayName: "BuildableBuilding";
-  mixins: [UpdateWhenMoneyChanges];
+  displayName: reactTypeTODO_any = "BuildableBuilding";
+  mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
 
   getInitialState: function()

@@ -7,7 +7,7 @@ export interface PropTypes
 
 export default class UnitStrength extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitStrength";
+  displayName: reactTypeTODO_any = "UnitStrength";
   getInitialState: function()
   {
     return(

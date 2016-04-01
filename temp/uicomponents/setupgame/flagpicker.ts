@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class FlagPicker extends React.Component<PropTypes, {}>
 {
-  displayName: "FlagPicker";
+  displayName: reactTypeTODO_any = "FlagPicker";
   getInitialState: function()
   {
     var initialEmblem: Templates.ISubEmblemTemplate = null;

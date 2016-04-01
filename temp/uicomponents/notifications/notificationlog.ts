@@ -10,9 +10,9 @@ export interface PropTypes
 
 export default class NotificationLog extends React.Component<PropTypes, {}>
 {
-  displayName: "NotificationLog";
-  mixins: [React.addons.PureRenderMixin];
-  updateListener: undefined;
+  displayName: reactTypeTODO_any = "NotificationLog";
+  mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
+  updateListener: reactTypeTODO_any = undefined;
 
 
   getInitialState: function()

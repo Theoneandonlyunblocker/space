@@ -11,12 +11,12 @@ export interface PropTypes
 
 export default class TopMenu extends React.Component<PropTypes, {}>
 {
-  displayName: "TopMenu";
-  mixins: [React.addons.PureRenderMixin];
+  displayName: reactTypeTODO_any = "TopMenu";
+  mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
-  cachedTopMenuWidth: undefined;
-  cachedButtonWidths: [];
-  cachedMenuButtonWidth: 37;
+  cachedTopMenuWidth: reactTypeTODO_any = undefined;
+  cachedButtonWidths: reactTypeTODO_any = [];
+  cachedMenuButtonWidth: reactTypeTODO_any = 37;
 
 
   getInitialState: function()

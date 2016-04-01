@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class FleetUnitInfoName extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetUnitInfoName";
+  displayName: reactTypeTODO_any = "FleetUnitInfoName";
 
 
   getInitialState: function()

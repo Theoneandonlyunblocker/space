@@ -8,8 +8,8 @@ export interface PropTypes
 
 export default class BattleSceneFlag extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleSceneFlag";
-  flagCanvas: null;
+  displayName: reactTypeTODO_any = "BattleSceneFlag";
+  flagCanvas: reactTypeTODO_any = null;
 
 
   componentDidMount: function()

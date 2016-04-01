@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class FleetSelection extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetSelection";
+  displayName: reactTypeTODO_any = "FleetSelection";
   mergeFleets: function()
   {
     eventManager.dispatchEvent("mergeFleets", null);

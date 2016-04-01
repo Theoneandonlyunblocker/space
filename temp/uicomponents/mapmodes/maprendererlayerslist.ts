@@ -10,8 +10,8 @@ export interface PropTypes
 
 export default class MapRendererLayersList extends React.Component<PropTypes, {}>
 {
-  displayName: "MapRendererLayersList";
-  mixins: [React.addons.PureRenderMixin];
+  displayName: reactTypeTODO_any = "MapRendererLayersList";
+  mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
   getInitialState: function()

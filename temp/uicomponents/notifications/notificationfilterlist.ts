@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class NotificationFilterList extends React.Component<PropTypes, {}>
 {
-  displayName: "NotificationFilterList";
+  displayName: reactTypeTODO_any = "NotificationFilterList";
   handleResetCategory: function(category: string)
   {
     var filter: NotificationFilter = this.props.filter;

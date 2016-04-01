@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class MenuUnitInfo extends React.Component<PropTypes, {}>
 {
-  displayName: "MenuUnitInfo";
+  displayName: reactTypeTODO_any = "MenuUnitInfo";
   handleUnitUpgrade: function()
   {
     this.forceUpdate();

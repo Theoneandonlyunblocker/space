@@ -7,11 +7,11 @@ export interface PropTypes
 
 export default class PopupResizeHandle extends React.Component<PropTypes, {}>
 {
-  displayName: "PopupResizeHandle";
-  mixins: [Draggable];
+  displayName: reactTypeTODO_any = "PopupResizeHandle";
+  mixins: reactTypeTODO_any = [Draggable];
 
-  // originBottom: undefined;
-  // originRight: undefined;
+  // originBottom: reactTypeTODO_any = undefined;
+  // originRight: reactTypeTODO_any = undefined;
 
   // onDragStart: function()
   // {

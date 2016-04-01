@@ -9,8 +9,8 @@ export interface PropTypes
 
 export default class UnitItemWrapper extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitItemWrapper";
-  mixins: [DropTarget];
+  displayName: reactTypeTODO_any = "UnitItemWrapper";
+  mixins: reactTypeTODO_any = [DropTarget];
 
   handleMouseUp: function()
   {

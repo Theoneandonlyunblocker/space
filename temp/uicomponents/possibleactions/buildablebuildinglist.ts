@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class BuildableBuildingList extends React.Component<PropTypes, {}>
 {
-  displayName: "BuildableBuildingList";
+  displayName: reactTypeTODO_any = "BuildableBuildingList";
   getInitialState: function()
   {
     return(

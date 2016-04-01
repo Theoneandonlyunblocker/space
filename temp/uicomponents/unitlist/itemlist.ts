@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class ItemList extends React.Component<PropTypes, {}>
 {
-  displayName: "ItemList";
+  displayName: reactTypeTODO_any = "ItemList";
 
   getSlotIndex: function(slot: string)
   {

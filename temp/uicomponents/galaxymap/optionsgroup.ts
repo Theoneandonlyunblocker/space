@@ -8,7 +8,7 @@ export interface PropTypes
 
 export default class OptionsGroup extends React.Component<PropTypes, {}>
 {
-  displayName: "OptionsGroup";
+  displayName: reactTypeTODO_any = "OptionsGroup";
 
 
   getInitialState: function()

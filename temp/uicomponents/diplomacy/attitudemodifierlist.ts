@@ -9,8 +9,8 @@ export interface PropTypes
 
 export default class AttitudeModifierList extends React.Component<PropTypes, {}>
 {
-  displayName: "AttitudeModifierList";
-  mixins: [AutoPosition];
+  displayName: reactTypeTODO_any = "AttitudeModifierList";
+  mixins: reactTypeTODO_any = [AutoPosition];
 
   render: function()
   {

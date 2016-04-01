@@ -10,8 +10,8 @@ export interface PropTypes
 
 export default class Tutorial extends React.Component<PropTypes, {}>
 {
-  displayName: "Tutorial";
-  mixins: [SplitMultilineText];
+  displayName: reactTypeTODO_any = "Tutorial";
+  mixins: reactTypeTODO_any = [SplitMultilineText];
 
 
   getInitialState: function()

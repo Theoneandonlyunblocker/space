@@ -10,7 +10,7 @@ export interface PropTypes
 
 export default class NotificationFilterButton extends React.Component<PropTypes, {}>
 {
-  displayName: "NotificationFilterButton";
+  displayName: reactTypeTODO_any = "NotificationFilterButton";
 
   getInitialState: function()
   {

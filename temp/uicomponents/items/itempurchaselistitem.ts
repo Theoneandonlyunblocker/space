@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class ItemPurchaseListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "ItemPurchaseListItem";
+  displayName: reactTypeTODO_any = "ItemPurchaseListItem";
   makeCell: function(type: string)
   {
     var cellProps: any = {};

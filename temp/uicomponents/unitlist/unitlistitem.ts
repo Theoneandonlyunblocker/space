@@ -8,8 +8,8 @@ export interface PropTypes
 
 export default class UnitListItem extends React.Component<PropTypes, {}>
 {
-  displayName: "UnitListItem";
-  mixins: [Draggable];
+  displayName: reactTypeTODO_any = "UnitListItem";
+  mixins: reactTypeTODO_any = [Draggable];
 
   componentDidMount: function()
   {

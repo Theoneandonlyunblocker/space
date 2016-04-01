@@ -10,7 +10,7 @@ export interface PropTypes
 
 export default class FleetReorganization extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetReorganization";
+  displayName: reactTypeTODO_any = "FleetReorganization";
 
 
   getInitialState: function()

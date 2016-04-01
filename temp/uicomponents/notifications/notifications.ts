@@ -9,7 +9,7 @@ export interface PropTypes
 
 export default class Notifications extends React.Component<PropTypes, {}>
 {
-  displayName: "Notifications";
+  displayName: reactTypeTODO_any = "Notifications";
 
 
   render: function()

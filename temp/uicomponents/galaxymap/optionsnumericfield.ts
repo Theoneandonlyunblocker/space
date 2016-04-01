@@ -12,7 +12,7 @@ export interface PropTypes
 
 export default class OptionsNumericField extends React.Component<PropTypes, {}>
 {
-  displayName: "OptionsNumericField";
+  displayName: reactTypeTODO_any = "OptionsNumericField";
 
 
   getInitialState: function()

@@ -13,7 +13,7 @@ export interface PropTypes
 
 export default class OptionsList extends React.Component<PropTypes, {}>
 {
-  displayName: "OptionsList";
+  displayName: reactTypeTODO_any = "OptionsList";
 
 
   handleResetAllOptions: function()

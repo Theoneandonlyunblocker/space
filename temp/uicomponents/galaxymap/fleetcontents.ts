@@ -15,7 +15,7 @@ export interface PropTypes
 
 export default class FleetContents extends React.Component<PropTypes, {}>
 {
-  displayName: "FleetContents";
+  displayName: reactTypeTODO_any = "FleetContents";
 
 
   handleMouseUp: function()

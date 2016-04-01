@@ -5,7 +5,7 @@ export interface PropTypes
 
 export default class EconomySummaryItem extends React.Component<PropTypes, {}>
 {
-  displayName: "EconomySummaryItem";
+  displayName: reactTypeTODO_any = "EconomySummaryItem";
 
   makeCell: function(type: string)
   {
