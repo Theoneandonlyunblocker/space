@@ -1,3 +1,6 @@
+/// <reference path="../../../lib/react-0.13.3.d.ts" />
+import * as React from "react";
+
 /// <reference path="manufactorystarslist.ts" />
 /// <reference path="buildqueue.ts" />
 /// <reference path="manufacturablethings.ts" />

@@ -1,3 +1,6 @@
+/// <reference path="../../../lib/react-0.13.3.d.ts" />
+import * as React from "react";
+
 /// <reference path="unitinfo.ts"/>
 /// <reference path="uniticon.ts"/>
 /// <reference path="unitstatuseffects.ts" />

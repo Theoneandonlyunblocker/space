@@ -1,3 +1,6 @@
+/// <reference path="../../../lib/react-0.13.3.d.ts" />
+import * as React from "react";
+
 /// <reference path="itempurchaselistitem.ts" />
 
 export interface PropTypes
