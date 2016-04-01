@@ -1,52 +1,49 @@
 /// <reference path="abilitylist.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var UpgradeAbilities = React.createFactory(React.createClass(
   {
-    export var UpgradeAbilities = React.createFactory(React.createClass(
+    displayName: "UpgradeAbilities",
+    render: function()
     {
-      displayName: "UpgradeAbilities",
-      render: function()
+      if (this.props.abilities.length === 0)
       {
-        if (this.props.abilities.length === 0)
+        return null;
+      }
+      
+      var headerText: string;
+      if (this.props.learningNewability)
+      {
+        headerText = "Learn ability";
+      }
+      else
+      {
+        headerText = "Upgrade ability";
+        if (this.props.sourceAbility)
         {
-          return null;
+          headerText += " " + this.props.sourceAbility.displayName;
         }
-        
-        var headerText: string;
-        if (this.props.learningNewability)
-        {
-          headerText = "Learn ability";
-        }
-        else
-        {
-          headerText = "Upgrade ability";
-          if (this.props.sourceAbility)
-          {
-            headerText += " " + this.props.sourceAbility.displayName;
-          }
-        }
+      }
 
-        return(
+      return(
+        React.DOM.div(
+        {
+          className: "upgrade-abilities"
+        },
           React.DOM.div(
           {
-            className: "upgrade-abilities"
+            className: "upgrade-abilities-header"
           },
-            React.DOM.div(
-            {
-              className: "upgrade-abilities-header"
-            },
-              headerText
-            ),
-            UIComponents.AbilityList(
-            {
-              abilities: this.props.abilities,
-              handleClick: this.props.handleClick
-            })
-          )
-        );
-      }
-    }));
-  }
+            headerText
+          ),
+          UIComponents.AbilityList(
+          {
+            abilities: this.props.abilities,
+            handleClick: this.props.handleClick
+          })
+        )
+      );
+    }
+  }));
 }

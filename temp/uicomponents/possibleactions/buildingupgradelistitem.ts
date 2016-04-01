@@ -1,80 +1,77 @@
 /// <reference path="../../player.ts" />
 /// <reference path="../mixins/updatewhenmoneychanges.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var BuildingUpgradeListItem = React.createFactory(React.createClass(
   {
-    export var BuildingUpgradeListItem = React.createFactory(React.createClass(
+    displayName: "BuildingUpgradeListItem",
+    mixins: [UpdateWhenMoneyChanges],
+    propTypes:
     {
-      displayName: "BuildingUpgradeListItem",
-      mixins: [UpdateWhenMoneyChanges],
-      propTypes:
+      player: React.PropTypes.instanceOf(Player).isRequired,
+      handleUpgrade: React.PropTypes.func.isRequired,
+      upgradeData: React.PropTypes.object.isRequired
+    },
+
+    getInitialState: function()
+    {
+      return(
       {
-        player: React.PropTypes.instanceOf(Player).isRequired,
-        handleUpgrade: React.PropTypes.func.isRequired,
-        upgradeData: React.PropTypes.object.isRequired
-      },
-
-      getInitialState: function()
+        canAfford: this.props.player.money >= this.props.upgradeData.cost
+      });
+    },
+    
+    overrideHandleMoneyChange: function()
+    {
+      this.setState(
       {
-        return(
-        {
-          canAfford: this.props.player.money >= this.props.upgradeData.cost
-        });
-      },
-      
-      overrideHandleMoneyChange: function()
+        canAfford: this.props.player.money >= this.props.upgradeData.cost
+      })
+    },
+
+    handleClick: function()
+    {
+      this.props.handleUpgrade(this.props.upgradeData);
+    },
+
+    render: function()
+    {
+      var upgradeData: IBuildingUpgradeData = this.props.upgradeData;
+
+      var rowProps: any =
       {
-        this.setState(
-        {
-          canAfford: this.props.player.money >= this.props.upgradeData.cost
-        })
-      },
+        key: upgradeData.template.type,
+        className: "building-upgrade-list-item",
+        onClick: this.handleClick,
+        title: upgradeData.template.description
+      };
 
-      handleClick: function()
+      var costProps: any = 
       {
-        this.props.handleUpgrade(this.props.upgradeData);
-      },
+        key: "cost",
+        className: "building-upgrade-list-item-cost"
+      };
 
-      render: function()
+      if (!this.state.canAfford)
       {
-        var upgradeData: IBuildingUpgradeData = this.props.upgradeData;
+        rowProps.onClick = null;
+        rowProps.disabled = true;
+        rowProps.className += " disabled";
 
-        var rowProps: any =
-        {
-          key: upgradeData.template.type,
-          className: "building-upgrade-list-item",
-          onClick: this.handleClick,
-          title: upgradeData.template.description
-        };
-
-        var costProps: any = 
-        {
-          key: "cost",
-          className: "building-upgrade-list-item-cost"
-        };
-
-        if (!this.state.canAfford)
-        {
-          rowProps.onClick = null;
-          rowProps.disabled = true;
-          rowProps.className += " disabled";
-
-          costProps.className += " negative";
-        }
-
-        return(
-          React.DOM.tr(rowProps,
-            React.DOM.td(
-            {
-              key: "name",
-              className: "building-upgrade-list-item-name"
-            }, upgradeData.template.displayName + " " + (upgradeData.level > 1 ? upgradeData.level : "")),
-            React.DOM.td(costProps, upgradeData.cost)
-          )
-        );
+        costProps.className += " negative";
       }
-    }));
-  }
+
+      return(
+        React.DOM.tr(rowProps,
+          React.DOM.td(
+          {
+            key: "name",
+            className: "building-upgrade-list-item-name"
+          }, upgradeData.template.displayName + " " + (upgradeData.level > 1 ? upgradeData.level : "")),
+          React.DOM.td(costProps, upgradeData.cost)
+        )
+      );
+    }
+  }));
 }

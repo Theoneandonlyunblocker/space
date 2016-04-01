@@ -2,14 +2,11 @@
 /// <reference path="iplayersavedata.d.ts" />
 /// <reference path="inotificationlogsavedata.d.ts" />
 
-declare namespace Rance
+interface IGameSaveData
 {
-  interface IGameSaveData
-  {
-    turnNumber: number;
-    galaxyMap: IGalaxyMapSaveData;
-    players: IPlayerSaveData[];
-    humanPlayerId: number;
-    notificationLog: INotificationLogSaveData;
-  }
+  turnNumber: number;
+  galaxyMap: IGalaxyMapSaveData;
+  players: IPlayerSaveData[];
+  humanPlayerId: number;
+  notificationLog: INotificationLogSaveData;
 }

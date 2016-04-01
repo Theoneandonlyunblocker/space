@@ -1,92 +1,89 @@
 /// <reference path="../playerflag.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var BattleScore = React.createFactory(React.createClass(
   {
-    export var BattleScore = React.createFactory(React.createClass(
+    displayName: "BattleScore",
+    lastEvaluation: undefined,
+    shouldComponentUpdate: function(newProps: any)
     {
-      displayName: "BattleScore",
-      lastEvaluation: undefined,
-      shouldComponentUpdate: function(newProps: any)
-      {
-        var oldEvaluation = this.lastEvaluation;
-        this.lastEvaluation = newProps.battle.getEvaluation();
+      var oldEvaluation = this.lastEvaluation;
+      this.lastEvaluation = newProps.battle.getEvaluation();
 
-        return this.lastEvaluation !== oldEvaluation;
-      },
-      componentWillMount: function()
-      {
-        this.lastEvaluation = this.props.battle.getEvaluation();
-      },
-      render: function()
-      {
-        var battle: Battle = this.props.battle;
-        var evaluation = this.lastEvaluation;
+      return this.lastEvaluation !== oldEvaluation;
+    },
+    componentWillMount: function()
+    {
+      this.lastEvaluation = this.props.battle.getEvaluation();
+    },
+    render: function()
+    {
+      var battle: Battle = this.props.battle;
+      var evaluation = this.lastEvaluation;
 
-        var evaluationPercentage = 50 + evaluation * 50;
+      var evaluationPercentage = 50 + evaluation * 50;
 
-        return(
+      return(
+        React.DOM.div(
+        {
+          className: "battle-score-wrapper"
+        },
           React.DOM.div(
           {
-            className: "battle-score-wrapper"
+            className: "battle-score-container"
           },
+            React.DOM.img(
+            {
+              className: "battle-score-mid-point",
+              src: "img\/icons\/battleScoreMidPoint.png"
+            },
+              null
+            ),
+            UIComponents.PlayerFlag(
+            {
+              props:
+              {
+                className: "battle-score-flag"
+              },
+              flag: battle.side1Player.flag
+            }),
             React.DOM.div(
             {
-              className: "battle-score-container"
+              className: "battle-score-bar-container"
             },
-              React.DOM.img(
+              React.DOM.div(
               {
-                className: "battle-score-mid-point",
-                src: "img\/icons\/battleScoreMidPoint.png"
-              },
-                null
-              ),
-              UIComponents.PlayerFlag(
-              {
-                props:
+                className: "battle-score-bar-value battle-score-bar-side1",
+                style:
                 {
-                  className: "battle-score-flag"
-                },
-                flag: battle.side1Player.flag
+                  width: "" + evaluationPercentage + "%",
+                  backgroundColor: "#" + hexToString(battle.side1Player.color),
+                  borderColor: "#" + hexToString(battle.side1Player.secondaryColor)
+                }
               }),
               React.DOM.div(
               {
-                className: "battle-score-bar-container"
-              },
-                React.DOM.div(
+                className: "battle-score-bar-value battle-score-bar-side2",
+                style:
                 {
-                  className: "battle-score-bar-value battle-score-bar-side1",
-                  style:
-                  {
-                    width: "" + evaluationPercentage + "%",
-                    backgroundColor: "#" + hexToString(battle.side1Player.color),
-                    borderColor: "#" + hexToString(battle.side1Player.secondaryColor)
-                  }
-                }),
-                React.DOM.div(
-                {
-                  className: "battle-score-bar-value battle-score-bar-side2",
-                  style:
-                  {
-                    width: "" + (100 - evaluationPercentage) + "%",
-                    backgroundColor: "#" + hexToString(battle.side2Player.color),
-                    borderColor: "#" + hexToString(battle.side2Player.secondaryColor)
-                  }
-                })
-              ),
-              UIComponents.PlayerFlag(
-              {
-                props:
-                {
-                  className: "battle-score-flag"
-                },
-                flag: battle.side2Player.flag
+                  width: "" + (100 - evaluationPercentage) + "%",
+                  backgroundColor: "#" + hexToString(battle.side2Player.color),
+                  borderColor: "#" + hexToString(battle.side2Player.secondaryColor)
+                }
               })
-            )
+            ),
+            UIComponents.PlayerFlag(
+            {
+              props:
+              {
+                className: "battle-score-flag"
+              },
+              flag: battle.side2Player.flag
+            })
           )
-        );
-      }
-    }));
-  }
+        )
+      );
+    }
+  }));
 }

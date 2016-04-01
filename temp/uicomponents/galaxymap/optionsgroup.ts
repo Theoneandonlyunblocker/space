@@ -1,88 +1,85 @@
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var OptionsGroup = React.createFactory(React.createClass(
   {
-    export var OptionsGroup = React.createFactory(React.createClass(
+    displayName: "OptionsGroup",
+
+    propTypes:
     {
-      displayName: "OptionsGroup",
+      isCollapsedInitially: React.PropTypes.bool,
+      resetFN: React.PropTypes.func,
+      header: React.PropTypes.string,
+      options: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
+    },
 
-      propTypes:
+    getInitialState: function()
+    {
+      return(
       {
-        isCollapsedInitially: React.PropTypes.bool,
-        resetFN: React.PropTypes.func,
-        header: React.PropTypes.string,
-        options: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
-      },
+        isCollapsed: this.props.isCollapsedInitially || false
+      });
+    },
+    
+    toggleCollapse: function()
+    {
+      this.setState(
+      {
+        isCollapsed: !this.state.isCollapsed
+      });
+    },
 
-      getInitialState: function()
+    render: function()
+    {
+      var rows: ReactDOMPlaceHolder[] = [];
+
+      if (!this.state.isCollapsed)
       {
-        return(
+        for (var i = 0; i < this.props.options.length; i++)
         {
-          isCollapsed: this.props.isCollapsedInitially || false
-        });
-      },
-      
-      toggleCollapse: function()
-      {
-        this.setState(
-        {
-          isCollapsed: !this.state.isCollapsed
-        });
-      },
+          var option = this.props.options[i];
 
-      render: function()
-      {
-        var rows: ReactDOMPlaceHolder[] = [];
-
-        if (!this.state.isCollapsed)
-        {
-          for (var i = 0; i < this.props.options.length; i++)
+          rows.push(React.DOM.div(
           {
-            var option = this.props.options[i];
-
-            rows.push(React.DOM.div(
-            {
-              className: "option-container",
-              key: option.key
-            },
-              option.content
-            ));
-          }
+            className: "option-container",
+            key: option.key
+          },
+            option.content
+          ));
         }
+      }
 
-        var resetButton: ReactDOMPlaceHolder = null;
-        if (this.props.resetFN)
+      var resetButton: ReactDOMPlaceHolder = null;
+      if (this.props.resetFN)
+      {
+        resetButton = React.DOM.button(
         {
-          resetButton = React.DOM.button(
-          {
-            className: "reset-options-button",
-            onClick: this.props.resetFN
-          }, "reset")
-        }
+          className: "reset-options-button",
+          onClick: this.props.resetFN
+        }, "reset")
+      }
 
-        var header = this.props.header || resetButton ?
+      var header = this.props.header || resetButton ?
+        React.DOM.div(
+        {
+          className: "option-group-header"
+        },
           React.DOM.div(
           {
-            className: "option-group-header"
+            className: "option-group-header-title collapsible" + (this.state.isCollapsed ? " collapsed" : ""),
+            onClick: this.toggleCollapse
           },
-            React.DOM.div(
-            {
-              className: "option-group-header-title collapsible" + (this.state.isCollapsed ? " collapsed" : ""),
-              onClick: this.toggleCollapse
-            },
-              this.props.header
-            ),
-            resetButton
-          ) :
-          null
+            this.props.header
+          ),
+          resetButton
+        ) :
+        null
 
-        return(
-          React.DOM.div({className: "option-group"},
-            header,
-            rows
-          )
-        );
-      }
-    }));
-  }
+      return(
+        React.DOM.div({className: "option-group"},
+          header,
+          rows
+        )
+      );
+    }
+  }));
 }

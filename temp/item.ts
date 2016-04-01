@@ -3,37 +3,34 @@
 
 /// <reference path="savedata/iitemsavedata.d.ts" />
 
-namespace Rance
+
+export class Item
 {
+  id: number;
+  template: Templates.IItemTemplate;
+  unit: Unit;
 
-  export class Item
+  constructor(
+    template: Templates.IItemTemplate,
+    id?: number)
   {
-    id: number;
-    template: Templates.IItemTemplate;
-    unit: Unit;
+    this.id = isFinite(id) ? id : idGenerators.item++;
+    this.template = template;
+  }
 
-    constructor(
-      template: Templates.IItemTemplate,
-      id?: number)
+  serialize(): IItemSaveData
+  {
+    var data: IItemSaveData =
     {
-      this.id = isFinite(id) ? id : idGenerators.item++;
-      this.template = template;
+      id: this.id,
+      templateType: this.template.type
+    };
+
+    if (this.unit)
+    {
+      data.unitId = this.unit.id;
     }
 
-    serialize(): IItemSaveData
-    {
-      var data: IItemSaveData =
-      {
-        id: this.id,
-        templateType: this.template.type
-      };
-
-      if (this.unit)
-      {
-        data.unitId = this.unit.id;
-      }
-
-      return data;
-    }
+    return data;
   }
 }

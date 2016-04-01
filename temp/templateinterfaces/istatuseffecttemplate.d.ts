@@ -1,14 +1,11 @@
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface IStatusEffectTemplate
   {
-    interface IStatusEffectTemplate
-    {
-      type: string;
-      displayName: string;
-      
-      attributes?: IStatusEffectAttributes;
-      passiveSkills?: IPassiveSkillTemplate[];
-    }
+    type: string;
+    displayName: string;
+    
+    attributes?: IStatusEffectAttributes;
+    passiveSkills?: IPassiveSkillTemplate[];
   }
 }

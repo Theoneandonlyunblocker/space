@@ -1,13 +1,10 @@
 /// <reference path="itechnologytemplate.d.ts" />
 
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface ITechnologyRequirement
   {
-    interface ITechnologyRequirement
-    {
-      technology: ITechnologyTemplate;
-      level: number;
-    }
+    technology: ITechnologyTemplate;
+    level: number;
   }
 }

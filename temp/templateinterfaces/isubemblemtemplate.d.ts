@@ -1,15 +1,12 @@
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface ISubEmblemTemplate
   {
-    interface ISubEmblemTemplate
-    {
-      key: string;
-      src: string;
-      coverage: SubEmblemCoverage[];
-      position: SubEmblemPosition[];
-      onlyCombineWith?: string[];
-      disallowRandomGeneration?: boolean;
-    }
+    key: string;
+    src: string;
+    coverage: SubEmblemCoverage[];
+    position: SubEmblemPosition[];
+    onlyCombineWith?: string[];
+    disallowRandomGeneration?: boolean;
   }
 }

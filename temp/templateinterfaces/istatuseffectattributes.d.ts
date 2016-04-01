@@ -1,13 +1,10 @@
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface IStatusEffectAttributes
   {
-    interface IStatusEffectAttributes
-    {
-      attack?: IStatusEffectAttributeAdjustment;
-      defence?: IStatusEffectAttributeAdjustment;
-      intelligence?: IStatusEffectAttributeAdjustment;
-      speed?: IStatusEffectAttributeAdjustment;
-    }
+    attack?: IStatusEffectAttributeAdjustment;
+    defence?: IStatusEffectAttributeAdjustment;
+    intelligence?: IStatusEffectAttributeAdjustment;
+    speed?: IStatusEffectAttributeAdjustment;
   }
 }

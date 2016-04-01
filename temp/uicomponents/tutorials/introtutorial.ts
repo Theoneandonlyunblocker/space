@@ -5,88 +5,85 @@
 
 /// <reference path="tutorial.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var IntroTutorial = React.createFactory(React.createClass(
   {
-    export var IntroTutorial = React.createFactory(React.createClass(
+    displayName: "IntroTutorial",
+    popupId: null,
+
+    getInitialState: function()
     {
-      displayName: "IntroTutorial",
-      popupId: null,
-
-      getInitialState: function()
+      return(
       {
-        return(
-        {
-          show: Rance.TutorialState["introTutorial"] === tutorialStatus.show
-        });
-      },
-      
+        show: Rance.TutorialState["introTutorial"] === tutorialStatus.show
+      });
+    },
+    
 
-      componentDidMount: function()
+    componentDidMount: function()
+    {
+      if (!this.state.show)
       {
-        if (!this.state.show)
-        {
-          return;
-        }
+        return;
+      }
 
-        this.popupId = this.refs.popupManager.makePopup(
+      this.popupId = this.refs.popupManager.makePopup(
+      {
+        contentConstructor: UIComponents.TopMenuPopup,
+        contentProps:
         {
-          contentConstructor: UIComponents.TopMenuPopup,
+          handleClose: this.closePopup,
+          contentConstructor: UIComponents.Tutorial,
           contentProps:
           {
-            handleClose: this.closePopup,
-            contentConstructor: UIComponents.Tutorial,
-            contentProps:
-            {
-              pages: Rance.Tutorials.introTutorial.pages,
-              tutorialId: "introTutorial"
-            }
-          },
-          popupProps:
-          {
-            resizable: true,
-            containerDragOnly: true,
-            initialPosition:
-            {
-              width: 600,
-              height: 350
-            },
-            minWidth: 300,
-            minHeight: 250
+            pages: Rance.Tutorials.introTutorial.pages,
+            tutorialId: "introTutorial"
           }
-        });
-      },
-
-      componentWillUnmount: function()
-      {
-        if (this.popupId)
+        },
+        popupProps:
         {
-          this.closePopup();
-        }
-      },
-
-      closePopup: function()
-      {
-        this.refs.popupManager.closePopup(this.popupId);
-        this.popupId = null;
-      },
-
-      render: function()
-      {
-        if (!this.state.show)
-        {
-          return null;
-        }
-        
-        return(
-          UIComponents.PopupManager(
+          resizable: true,
+          containerDragOnly: true,
+          initialPosition:
           {
-            ref: "popupManager",
-            onlyAllowOne: true
-          })
-        );
+            width: 600,
+            height: 350
+          },
+          minWidth: 300,
+          minHeight: 250
+        }
+      });
+    },
+
+    componentWillUnmount: function()
+    {
+      if (this.popupId)
+      {
+        this.closePopup();
       }
-    }));
-  }
+    },
+
+    closePopup: function()
+    {
+      this.refs.popupManager.closePopup(this.popupId);
+      this.popupId = null;
+    },
+
+    render: function()
+    {
+      if (!this.state.show)
+      {
+        return null;
+      }
+      
+      return(
+        UIComponents.PopupManager(
+        {
+          ref: "popupManager",
+          onlyAllowOne: true
+        })
+      );
+    }
+  }));
 }

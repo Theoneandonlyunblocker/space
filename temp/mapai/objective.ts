@@ -12,44 +12,41 @@ objectives:
   ~~building
  */
 
-namespace Rance
+export namespace MapAI
 {
-  export namespace MapAI
+  export class Objective
   {
-    export class Objective
+    id: number;
+    template: Templates.IObjectiveTemplate;
+    type: string;
+    private _basePriority: number;
+    get priority(): number
     {
-      id: number;
-      template: Templates.IObjectiveTemplate;
-      type: string;
-      private _basePriority: number;
-      get priority(): number
-      {
-        return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
-      }
-      set priority(priority: number)
-      {
-        this._basePriority = priority;
-      }
-      isOngoing: boolean = false; // used to slightly prioritize old objectives
+      return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
+    }
+    set priority(priority: number)
+    {
+      this._basePriority = priority;
+    }
+    isOngoing: boolean = false; // used to slightly prioritize old objectives
 
-      target: Star;
-      targetPlayer: Player;
+    target: Star;
+    targetPlayer: Player;
 
-      constructor(template: Templates.IObjectiveTemplate,priority: number, target: Star,
-        targetPlayer?: Player)
-      {
-        this.id = idGenerators.objective++;
+    constructor(template: Templates.IObjectiveTemplate,priority: number, target: Star,
+      targetPlayer?: Player)
+    {
+      this.id = idGenerators.objective++;
 
-        this.template = template;
-        this.type = this.template.key;
-        this.priority = priority;
-        this.target = target;
-        this.targetPlayer = targetPlayer;
-      }
-      getUnitsDesired(mapEvaluator: MapEvaluator)
-      {
-        return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
-      }
+      this.template = template;
+      this.type = this.template.key;
+      this.priority = priority;
+      this.target = target;
+      this.targetPlayer = targetPlayer;
+    }
+    getUnitsDesired(mapEvaluator: MapEvaluator)
+    {
+      return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
     }
   }
 }

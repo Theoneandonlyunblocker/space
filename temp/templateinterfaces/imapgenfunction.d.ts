@@ -2,13 +2,10 @@
 /// <reference path="../player.ts" />
 /// <reference path="mapgenoptions.d.ts" />
 
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface IMapGenFunction
   {
-    interface IMapGenFunction
-    {
-      (options: IMapGenOptionValues, players: Player[]): MapGenCore.MapGenResult;
-    }
+    (options: IMapGenOptionValues, players: Player[]): MapGenCore.MapGenResult;
   }
 }

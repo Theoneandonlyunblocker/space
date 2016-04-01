@@ -3,72 +3,69 @@
 
 /// <reference path="formationrow.ts"/>
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var Formation = React.createFactory(React.createClass(
   {
-    export var Formation = React.createFactory(React.createClass(
+    displayName: "Formation",
+
+    propTypes:
     {
-      displayName: "Formation",
+      formation: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
+      battle: React.PropTypes.instanceOf(Rance.Battle),
+      facesLeft: React.PropTypes.bool.isRequired,
+      activeUnit: React.PropTypes.instanceOf(Rance.Unit),
+      activeTargets: React.PropTypes.object, // {[id: number]: Templates.IAbilityTemplate[];}
+      hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
+      hoveredAbility: React.PropTypes.object, // Templates.IAbilityTemplate
+      handleMouseLeaveUnit: React.PropTypes.func,
+      handleMouseEnterUnit: React.PropTypes.func,
+      targetsInPotentialArea: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+      activeEffectUnits: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
+      onMouseUp: React.PropTypes.func,
+      onUnitClick: React.PropTypes.func,
+      isDraggable: React.PropTypes.bool,
+      onDragStart: React.PropTypes.func,
+      onDragEnd: React.PropTypes.func
+    },
 
-      propTypes:
+    render: function()
+    {
+      var formation = this.props.formation;
+
+      var formationRows: ReactComponentPlaceHolder[] = [];
+
+      for (var i = 0; i < formation.length; i++)
       {
-        formation: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
-        battle: React.PropTypes.instanceOf(Rance.Battle),
-        facesLeft: React.PropTypes.bool.isRequired,
-        activeUnit: React.PropTypes.instanceOf(Rance.Unit),
-        activeTargets: React.PropTypes.object, // {[id: number]: Templates.IAbilityTemplate[];}
-        hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
-        hoveredAbility: React.PropTypes.object, // Templates.IAbilityTemplate
-        handleMouseLeaveUnit: React.PropTypes.func,
-        handleMouseEnterUnit: React.PropTypes.func,
-        targetsInPotentialArea: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
-        activeEffectUnits: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
-        onMouseUp: React.PropTypes.func,
-        onUnitClick: React.PropTypes.func,
-        isDraggable: React.PropTypes.bool,
-        onDragStart: React.PropTypes.func,
-        onDragEnd: React.PropTypes.func
-      },
-
-      render: function()
-      {
-        var formation = this.props.formation;
-
-        var formationRows: ReactComponentPlaceHolder[] = [];
-
-        for (var i = 0; i < formation.length; i++)
+        formationRows.push(UIComponents.FormationRow(
         {
-          formationRows.push(UIComponents.FormationRow(
-          {
-            key: i,
-            row: formation[i],
-            rowIndexInOwnFormation: i,
-            battle: this.props.battle,
-            facesLeft: this.props.facesLeft,
-            activeUnit: this.props.activeUnit,
-            hoveredUnit: this.props.hoveredUnit,
-            hoveredAbility: this.props.hoveredAbility,
-            handleMouseEnterUnit: this.props.handleMouseEnterUnit,
-            handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
-            targetsInPotentialArea: this.props.targetsInPotentialArea,
-            activeEffectUnits: this.props.activeEffectUnits,
+          key: i,
+          row: formation[i],
+          rowIndexInOwnFormation: i,
+          battle: this.props.battle,
+          facesLeft: this.props.facesLeft,
+          activeUnit: this.props.activeUnit,
+          hoveredUnit: this.props.hoveredUnit,
+          hoveredAbility: this.props.hoveredAbility,
+          handleMouseEnterUnit: this.props.handleMouseEnterUnit,
+          handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
+          targetsInPotentialArea: this.props.targetsInPotentialArea,
+          activeEffectUnits: this.props.activeEffectUnits,
 
-            onMouseUp: this.props.onMouseUp,
-            onUnitClick: this.props.onUnitClick,
+          onMouseUp: this.props.onMouseUp,
+          onUnitClick: this.props.onUnitClick,
 
-            isDraggable: this.props.isDraggable,
-            onDragStart: this.props.onDragStart,
-            onDragEnd: this.props.onDragEnd
-          }));
-        }
-
-        return(
-          React.DOM.div({className: "battle-formation"},
-            formationRows
-          )
-        );
+          isDraggable: this.props.isDraggable,
+          onDragStart: this.props.onDragStart,
+          onDragEnd: this.props.onDragEnd
+        }));
       }
-    }));
-  }
+
+      return(
+        React.DOM.div({className: "battle-formation"},
+          formationRows
+        )
+      );
+    }
+  }));
 }

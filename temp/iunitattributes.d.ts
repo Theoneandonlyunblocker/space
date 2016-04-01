@@ -1,11 +1,8 @@
-declare namespace Rance
+interface IUnitAttributes
 {
-  interface IUnitAttributes
-  {
-    maxActionPoints: number;
-    attack: number;
-    defence: number;
-    intelligence: number;
-    speed: number;
-  }
+  maxActionPoints: number;
+  attack: number;
+  defence: number;
+  intelligence: number;
+  speed: number;
 }

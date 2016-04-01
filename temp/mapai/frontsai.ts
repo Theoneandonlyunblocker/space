@@ -6,254 +6,251 @@
 /// <reference path="front.ts"/>
 /// <reference path="mapevaluator.ts"/>
 
-namespace Rance
+export namespace MapAI
 {
-  export namespace MapAI
+  interface IFrontUnitScore
   {
-    interface IFrontUnitScore
+    unit: Unit;
+    front: Front;
+    score: number;
+  }
+  export class FrontsAI
+  {
+    player: Player;
+    map: GalaxyMap;
+    mapEvaluator: MapEvaluator;
+    objectivesAI: ObjectivesAI;
+    personality: IPersonality;
+
+    fronts: Front[] = [];
+    frontsRequestingUnits: Front[] = [];
+    frontsToMove: Front[] = [];
+
+    constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI,
+      personality: IPersonality)
     {
-      unit: Unit;
-      front: Front;
-      score: number;
+      this.mapEvaluator = mapEvaluator;
+      this.map = mapEvaluator.map;
+      this.player = mapEvaluator.player;
+      this.objectivesAI = objectivesAI;
+      this.personality = personality;
     }
-    export class FrontsAI
+
+    private getUnitScoresForFront(units: Unit[], front: Front)
     {
-      player: Player;
-      map: GalaxyMap;
-      mapEvaluator: MapEvaluator;
-      objectivesAI: ObjectivesAI;
-      personality: IPersonality;
+      var scores: IFrontUnitScore[] = [];
 
-      fronts: Front[] = [];
-      frontsRequestingUnits: Front[] = [];
-      frontsToMove: Front[] = [];
-
-      constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI,
-        personality: IPersonality)
+      for (var i = 0; i < units.length; i++)
       {
-        this.mapEvaluator = mapEvaluator;
-        this.map = mapEvaluator.map;
-        this.player = mapEvaluator.player;
-        this.objectivesAI = objectivesAI;
-        this.personality = personality;
+        scores.push(
+        {
+          unit: units[i],
+          score: front.scoreUnitFit(units[i]),
+          front: front
+        });
       }
 
-      private getUnitScoresForFront(units: Unit[], front: Front)
-      {
-        var scores: IFrontUnitScore[] = [];
+      return scores;
+    }
 
-        for (var i = 0; i < units.length; i++)
+    assignUnits()
+    {
+      var units = this.player.getAllUnits();
+
+      var allUnitScores: IFrontUnitScore[] = [];
+      var unitScoresByFront:
+      {
+        [frontId: number]: any[];
+      } = {};
+
+      var recalculateScoresForFront = function(front: Front)
+      {
+        var frontScores = unitScoresByFront[front.id];
+
+        for (var i = 0; i < frontScores.length; i++)
         {
-          scores.push(
+          frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
+        }
+      }
+
+      var removeUnit = function(unit: Unit)
+      {
+        for (var frontId in unitScoresByFront)
+        {
+          unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function(score)
           {
-            unit: units[i],
-            score: front.scoreUnitFit(units[i]),
-            front: front
+            return score.unit !== unit;
           });
         }
-
-        return scores;
       }
 
-      assignUnits()
+      // ascending
+      var sortByScoreFN = function(a: IFrontUnitScore, b: IFrontUnitScore)
       {
-        var units = this.player.getAllUnits();
+        return a.score - b.score;
+      }
 
-        var allUnitScores: IFrontUnitScore[] = [];
-        var unitScoresByFront:
+      for (var i = 0; i < this.fronts.length; i++)
+      {
+        var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
+        unitScoresByFront[this.fronts[i].id] = frontScores;
+        allUnitScores = allUnitScores.concat(frontScores);
+      }
+
+      var alreadyAdded:
+      {
+        [unitId: number]: boolean;
+      } = {};
+
+
+      while (allUnitScores.length > 0)
+      {
+        // sorted in loop as scores get recalculated every iteration
+        allUnitScores.sort(sortByScoreFN);
+
+        var bestScore = allUnitScores.pop();
+        if (alreadyAdded[bestScore.unit.id])
         {
-          [frontId: number]: any[];
-        } = {};
-
-        var recalculateScoresForFront = function(front: Front)
-        {
-          var frontScores = unitScoresByFront[front.id];
-
-          for (var i = 0; i < frontScores.length; i++)
-          {
-            frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
-          }
+          continue;
         }
 
-        var removeUnit = function(unit: Unit)
+        bestScore.front.addUnit(bestScore.unit);
+
+        removeUnit(bestScore.unit);
+        alreadyAdded[bestScore.unit.id] = true;
+        recalculateScoresForFront(bestScore.front);
+      }
+    }
+
+    getFrontWithId(id: number)
+    {
+      for (var i = 0; i < this.fronts.length; i++)
+      {
+        if (this.fronts[i].id === id)
         {
-          for (var frontId in unitScoresByFront)
-          {
-            unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function(score)
-            {
-              return score.unit !== unit;
-            });
-          }
-        }
-
-        // ascending
-        var sortByScoreFN = function(a: IFrontUnitScore, b: IFrontUnitScore)
-        {
-          return a.score - b.score;
-        }
-
-        for (var i = 0; i < this.fronts.length; i++)
-        {
-          var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
-          unitScoresByFront[this.fronts[i].id] = frontScores;
-          allUnitScores = allUnitScores.concat(frontScores);
-        }
-
-        var alreadyAdded:
-        {
-          [unitId: number]: boolean;
-        } = {};
-
-
-        while (allUnitScores.length > 0)
-        {
-          // sorted in loop as scores get recalculated every iteration
-          allUnitScores.sort(sortByScoreFN);
-
-          var bestScore = allUnitScores.pop();
-          if (alreadyAdded[bestScore.unit.id])
-          {
-            continue;
-          }
-
-          bestScore.front.addUnit(bestScore.unit);
-
-          removeUnit(bestScore.unit);
-          alreadyAdded[bestScore.unit.id] = true;
-          recalculateScoresForFront(bestScore.front);
+          return this.fronts[i];
         }
       }
 
-      getFrontWithId(id: number)
+      return null;
+    }
+
+    createFront(objective: Objective)
+    {
+      var musterLocation = objective.target ?
+        this.player.getNearestOwnedStarTo(objective.target) :
+        null;
+      var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
+
+      var front = new Front(
       {
-        for (var i = 0; i < this.fronts.length; i++)
+        id: objective.id,
+        objective: objective,
+
+        minUnitsDesired: unitsDesired.min,
+        idealUnitsDesired: unitsDesired.ideal,
+
+        targetLocation: objective.target,
+        musterLocation: musterLocation
+      });
+
+      return front;
+    }
+
+    removeInactiveFronts()
+    {
+      // loop backwards because splicing
+      for (var i = this.fronts.length - 1; i >= 0; i--)
+      {
+        var front = this.fronts[i];
+        var hasActiveObjective = false;
+
+        for (var j = 0; j < this.objectivesAI.objectives.length; j++)
         {
-          if (this.fronts[i].id === id)
+          var objective = this.objectivesAI.objectives[j];
+          if (objective.id === front.id)
           {
-            return this.fronts[i];
+            hasActiveObjective = true;
+            break;
           }
         }
 
-        return null;
-      }
-
-      createFront(objective: Objective)
-      {
-        var musterLocation = objective.target ?
-          this.player.getNearestOwnedStarTo(objective.target) :
-          null;
-        var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
-
-        var front = new Front(
+        if (!hasActiveObjective)
         {
-          id: objective.id,
-          objective: objective,
-
-          minUnitsDesired: unitsDesired.min,
-          idealUnitsDesired: unitsDesired.ideal,
-
-          targetLocation: objective.target,
-          musterLocation: musterLocation
-        });
-
-        return front;
-      }
-
-      removeInactiveFronts()
-      {
-        // loop backwards because splicing
-        for (var i = this.fronts.length - 1; i >= 0; i--)
-        {
-          var front = this.fronts[i];
-          var hasActiveObjective = false;
-
-          for (var j = 0; j < this.objectivesAI.objectives.length; j++)
-          {
-            var objective = this.objectivesAI.objectives[j];
-            if (objective.id === front.id)
-            {
-              hasActiveObjective = true;
-              break;
-            }
-          }
-
-          if (!hasActiveObjective)
-          {
-            this.fronts.splice(i, 1);
-          }
+          this.fronts.splice(i, 1);
         }
       }
+    }
 
-      formFronts()
+    formFronts()
+    {
+      /*
+      dissolve old fronts without an active objective
+      create new fronts for every objective not already assoicated with one
+       */
+      this.removeInactiveFronts();
+
+      for (var i = 0; i < this.objectivesAI.objectives.length; i++)
       {
-        /*
-        dissolve old fronts without an active objective
-        create new fronts for every objective not already assoicated with one
-         */
-        this.removeInactiveFronts();
-
-        for (var i = 0; i < this.objectivesAI.objectives.length; i++)
+        var objective = this.objectivesAI.objectives[i];
+        if (!objective.template.moveRoutineFN)
         {
-          var objective = this.objectivesAI.objectives[i];
-          if (!objective.template.moveRoutineFN)
-          {
-            continue;
-          }
-
-          if (!this.getFrontWithId(objective.id))
-          {
-            var front = this.createFront(objective);
-            this.fronts.push(front);
-          }
-        }
-      }
-
-      organizeFleets()
-      {
-        for (var i = 0; i < this.fronts.length; i++)
-        {
-          this.fronts[i].organizeFleets();
-        }
-      }
-
-      setFrontsToMove()
-      {
-        this.frontsToMove = this.fronts.slice(0);
-
-        this.frontsToMove.sort(function(a: Front, b: Front)
-        {
-          return a.objective.template.movePriority - b.objective.template.movePriority;
-        });
-      }
-
-      moveFleets(afterMovingAllCallback: Function)
-      {
-        var front = this.frontsToMove.pop();
-
-        if (!front)
-        {
-          afterMovingAllCallback();
-          return;
+          continue;
         }
 
-        front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
+        if (!this.getFrontWithId(objective.id))
+        {
+          var front = this.createFront(objective);
+          this.fronts.push(front);
+        }
+      }
+    }
+
+    organizeFleets()
+    {
+      for (var i = 0; i < this.fronts.length; i++)
+      {
+        this.fronts[i].organizeFleets();
+      }
+    }
+
+    setFrontsToMove()
+    {
+      this.frontsToMove = this.fronts.slice(0);
+
+      this.frontsToMove.sort(function(a: Front, b: Front)
+      {
+        return a.objective.template.movePriority - b.objective.template.movePriority;
+      });
+    }
+
+    moveFleets(afterMovingAllCallback: Function)
+    {
+      var front = this.frontsToMove.pop();
+
+      if (!front)
+      {
+        afterMovingAllCallback();
+        return;
       }
 
-      setUnitRequests()
-      {
-        /*for each front that doesnt fulfill minimum unit requirement
-          make request with same priority of front
-        */
-       
-        this.frontsRequestingUnits = [];
+      front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
+    }
 
-        for (var i = 0; i < this.fronts.length; i++)
+    setUnitRequests()
+    {
+      /*for each front that doesnt fulfill minimum unit requirement
+        make request with same priority of front
+      */
+     
+      this.frontsRequestingUnits = [];
+
+      for (var i = 0; i < this.fronts.length; i++)
+      {
+        var front = this.fronts[i];
+        if (front.units.length < front.idealUnitsDesired)
         {
-          var front = this.fronts[i];
-          if (front.units.length < front.idealUnitsDesired)
-          {
-            this.frontsRequestingUnits.push(front);
-          }
+          this.frontsRequestingUnits.push(front);
         }
       }
     }

@@ -1,119 +1,116 @@
 /// <reference path="../../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="mapgenoptions.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var MapSetup = React.createFactory(React.createClass(
   {
-    export var MapSetup = React.createFactory(React.createClass(
+    displayName: "MapSetup",
+
+    getInitialState: function()
     {
-      displayName: "MapSetup",
+      var mapGenTemplates: Templates.IMapGenTemplate[] = [];
 
-      getInitialState: function()
+      for (var template in app.moduleData.Templates.MapGen)
       {
-        var mapGenTemplates: Templates.IMapGenTemplate[] = [];
-
-        for (var template in app.moduleData.Templates.MapGen)
+        if (app.moduleData.Templates.MapGen[template].key)
         {
-          if (app.moduleData.Templates.MapGen[template].key)
-          {
-            mapGenTemplates.push(app.moduleData.Templates.MapGen[template]);
-          }
+          mapGenTemplates.push(app.moduleData.Templates.MapGen[template]);
         }
+      }
 
 
-        return(
-        {
-          templates: mapGenTemplates,
-          selectedTemplate: mapGenTemplates[0]
-        });
-      },
-
-      componentDidMount: function()
+      return(
       {
-        this.updatePlayerLimits();
-      },
+        templates: mapGenTemplates,
+        selectedTemplate: mapGenTemplates[0]
+      });
+    },
 
-      updatePlayerLimits: function()
+    componentDidMount: function()
+    {
+      this.updatePlayerLimits();
+    },
+
+    updatePlayerLimits: function()
+    {
+      this.props.setPlayerLimits(
       {
-        this.props.setPlayerLimits(
-        {
-          min: this.state.selectedTemplate.minPlayers,
-          max: this.state.selectedTemplate.maxPlayers
-        });
-      },
+        min: this.state.selectedTemplate.minPlayers,
+        max: this.state.selectedTemplate.maxPlayers
+      });
+    },
 
-      setTemplate: function(e: Event)
+    setTemplate: function(e: Event)
+    {
+      var target = <HTMLInputElement> e.target;
+      this.setState(
       {
-        var target = <HTMLInputElement> e.target;
-        this.setState(
-        {
-          selectedTemplate: app.moduleData.Templates.MapGen[target.value]
-        }, this.updatePlayerLimits);
-      },
+        selectedTemplate: app.moduleData.Templates.MapGen[target.value]
+      }, this.updatePlayerLimits);
+    },
 
-      getMapSetupInfo: function()
+    getMapSetupInfo: function()
+    {
+      return(
       {
-        return(
-        {
-          template: this.state.selectedTemplate,
-          optionValues: this.refs.mapGenOptions.getOptionValuesForTemplate()
-        });
-      },
-      
-      render: function()
+        template: this.state.selectedTemplate,
+        optionValues: this.refs.mapGenOptions.getOptionValuesForTemplate()
+      });
+    },
+    
+    render: function()
+    {
+      var mapGenTemplateOptions: ReactDOMPlaceHolder[] = [];
+      for (var i = 0; i < this.state.templates.length; i++)
       {
-        var mapGenTemplateOptions: ReactDOMPlaceHolder[] = [];
-        for (var i = 0; i < this.state.templates.length; i++)
-        {
-          var template = this.state.templates[i];
+        var template = this.state.templates[i];
 
-          mapGenTemplateOptions.push(
-            React.DOM.option(
-              {
-                value: template.key,
-                key: template.key,
-                title: template.description
-              },
-              template.displayName
-            )
-          );
-        }
-
-        return(
-          React.DOM.div(
-          {
-            className: "map-setup"
-          },
-            React.DOM.select(
+        mapGenTemplateOptions.push(
+          React.DOM.option(
             {
-              className: "map-setup-template-selector",
-              value: this.state.selectedTemplate.key,
-              onChange: this.setTemplate
+              value: template.key,
+              key: template.key,
+              title: template.description
             },
-              mapGenTemplateOptions
-            ),
-            React.DOM.div(
-            {
-              className: "map-setup-player-limit"
-            },
-              "Players: " + this.state.selectedTemplate.minPlayers + "-" +
-                this.state.selectedTemplate.maxPlayers
-            ),
-            React.DOM.div(
-            {
-              className: "map-setup-description"
-            },
-              this.state.selectedTemplate.description
-            ),
-            UIComponents.MapGenOptions(
-            {
-              mapGenTemplate: this.state.selectedTemplate,
-              ref: "mapGenOptions"
-            })
+            template.displayName
           )
         );
       }
-    }));
-  }
+
+      return(
+        React.DOM.div(
+        {
+          className: "map-setup"
+        },
+          React.DOM.select(
+          {
+            className: "map-setup-template-selector",
+            value: this.state.selectedTemplate.key,
+            onChange: this.setTemplate
+          },
+            mapGenTemplateOptions
+          ),
+          React.DOM.div(
+          {
+            className: "map-setup-player-limit"
+          },
+            "Players: " + this.state.selectedTemplate.minPlayers + "-" +
+              this.state.selectedTemplate.maxPlayers
+          ),
+          React.DOM.div(
+          {
+            className: "map-setup-description"
+          },
+            this.state.selectedTemplate.description
+          ),
+          UIComponents.MapGenOptions(
+          {
+            mapGenTemplate: this.state.selectedTemplate,
+            ref: "mapGenOptions"
+          })
+        )
+      );
+    }
+  }));
 }

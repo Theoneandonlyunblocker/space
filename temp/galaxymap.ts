@@ -7,75 +7,72 @@
 /// <reference path="mapvoronoiinfo.ts" />
 /// <reference path="savedata/igalaxymapsavedata.d.ts" />
 
-namespace Rance
+export class GalaxyMap
 {
-  export class GalaxyMap
+  stars: Star[];
+  fillerPoints: FillerPoint[];
+  width: number;
+  height: number;
+  seed: string;
+
+  independents: Player[];
+  voronoi: MapVoronoiInfo;
+
+  constructor(mapGen: MapGenCore.MapGenResult)
   {
-    stars: Star[];
-    fillerPoints: FillerPoint[];
-    width: number;
-    height: number;
-    seed: string;
+    this.width = mapGen.width;
+    this.height = mapGen.height;
 
-    independents: Player[];
-    voronoi: MapVoronoiInfo;
+    this.seed = mapGen.seed;
 
-    constructor(mapGen: MapGenCore.MapGenResult)
+    this.stars = mapGen.stars;
+    this.fillerPoints = mapGen.fillerPoints;
+
+    this.independents = mapGen.independents;
+    this.voronoi = mapGen.voronoiInfo;
+  }
+  getIncomeBounds()
+  {
+    var min: number, max: number;
+
+    for (var i = 0; i < this.stars.length; i++)
     {
-      this.width = mapGen.width;
-      this.height = mapGen.height;
-
-      this.seed = mapGen.seed;
-
-      this.stars = mapGen.stars;
-      this.fillerPoints = mapGen.fillerPoints;
-
-      this.independents = mapGen.independents;
-      this.voronoi = mapGen.voronoiInfo;
-    }
-    getIncomeBounds()
-    {
-      var min: number, max: number;
-
-      for (var i = 0; i < this.stars.length; i++)
+      var star = this.stars[i];
+      var income = star.getIncome();
+      if (!min) min = max = income;
+      else
       {
-        var star = this.stars[i];
-        var income = star.getIncome();
-        if (!min) min = max = income;
-        else
-        {
-          if (income < min) min = income;
-          else if (income > max) max = income;
-        }
+        if (income < min) min = income;
+        else if (income > max) max = income;
       }
-
-      return(
-      {
-        min: min,
-        max: max
-      });
     }
-    serialize(): IGalaxyMapSaveData
+
+    return(
     {
-      var data: IGalaxyMapSaveData =
+      min: min,
+      max: max
+    });
+  }
+  serialize(): IGalaxyMapSaveData
+  {
+    var data: IGalaxyMapSaveData =
+    {
+      stars: this.stars.map(function(star)
       {
-        stars: this.stars.map(function(star)
-        {
-          return star.serialize();
-        }),
+        return star.serialize();
+      }),
 
-        fillerPoints: this.fillerPoints.map(function(fillerPoint)
-        {
-          return fillerPoint.serialize();
-        }),
+      fillerPoints: this.fillerPoints.map(function(fillerPoint)
+      {
+        return fillerPoint.serialize();
+      }),
 
-        width: this.width,
-        height: this.height,
-        seed: this.seed
-      };
+      width: this.width,
+      height: this.height,
+      seed: this.seed
+    };
 
 
-      return data;
-    }
+    return data;
   }
 }

@@ -1,16 +1,13 @@
-declare namespace Rance
+interface IDiplomacyStatusSaveData
 {
-  interface IDiplomacyStatusSaveData
+  metPlayerIds: number[];
+  statusByPlayer:
   {
-    metPlayerIds: number[];
-    statusByPlayer:
-    {
-      [playerId: number]: DiplomaticState
-    };
+    [playerId: number]: DiplomaticState
+  };
 
-    attitudeModifiersByPlayer:
-    {
-      [playerId: number]: IAttitudeModifierSaveData[];
-    };
-  }
+  attitudeModifiersByPlayer:
+  {
+    [playerId: number]: IAttitudeModifierSaveData[];
+  };
 }

@@ -5,67 +5,64 @@
 /// <reference path="mapevaluator.ts"/>
 /// <reference path="objectivesai.ts"/>
 
-namespace Rance
+export namespace MapAI
 {
-  export namespace MapAI
+  export class DiplomacyAI
   {
-    export class DiplomacyAI
+    game: Game;
+
+    player: Player;
+    diplomacyStatus: DiplomacyStatus;
+
+    personality: IPersonality;
+    mapEvaluator: MapEvaluator;
+    objectivesAI: ObjectivesAI;
+
+    constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, game: Game,
+      personality: IPersonality)
     {
-      game: Game;
+      this.game = game;
+      
+      this.player = mapEvaluator.player;
+      this.diplomacyStatus = this.player.diplomacyStatus;
 
-      player: Player;
-      diplomacyStatus: DiplomacyStatus;
+      this.mapEvaluator = mapEvaluator;
+      this.objectivesAI = objectivesAI;
+      
+      this.personality = personality;
+    }
+    setAttitudes()
+    {
+      var diplomacyEvaluations =
+        this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
 
-      personality: IPersonality;
-      mapEvaluator: MapEvaluator;
-      objectivesAI: ObjectivesAI;
-
-      constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, game: Game,
-        personality: IPersonality)
+      for (var playerId in diplomacyEvaluations)
       {
-        this.game = game;
-        
-        this.player = mapEvaluator.player;
-        this.diplomacyStatus = this.player.diplomacyStatus;
-
-        this.mapEvaluator = mapEvaluator;
-        this.objectivesAI = objectivesAI;
-        
-        this.personality = personality;
+        this.diplomacyStatus.processAttitudeModifiersForPlayer(
+          this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]
+        );
       }
-      setAttitudes()
+    }
+    resolveDiplomaticObjectives(afterAllDoneCallback: () => void)
+    {
+      var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
+      var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
+
+      this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback)
+    }
+    resolveNextObjective(objectives: Objective[], adjustments: IRoutineAdjustmentByTargetId,
+      afterAllDoneCallback: () => void)
+    {
+      var objective = objectives.pop();
+
+      if (!objective)
       {
-        var diplomacyEvaluations =
-          this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
-
-        for (var playerId in diplomacyEvaluations)
-        {
-          this.diplomacyStatus.processAttitudeModifiersForPlayer(
-            this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]
-          );
-        }
+        afterAllDoneCallback();
+        return;
       }
-      resolveDiplomaticObjectives(afterAllDoneCallback: () => void)
-      {
-        var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
-        var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
 
-        this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback)
-      }
-      resolveNextObjective(objectives: Objective[], adjustments: IRoutineAdjustmentByTargetId,
-        afterAllDoneCallback: () => void)
-      {
-        var objective = objectives.pop();
-
-        if (!objective)
-        {
-          afterAllDoneCallback();
-          return;
-        }
-
-        var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
-        objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN)
-      }
+      var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
+      objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN)
     }
   }
 }

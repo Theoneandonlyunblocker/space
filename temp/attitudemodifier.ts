@@ -1,133 +1,130 @@
 /// <reference path="templateinterfaces/iattitudemodifiertemplate.d.ts" />
 /// <reference path="savedata/iattitudemodifiersavedata.d.ts" />
 
-namespace Rance
+export class AttitudeModifier
 {
-  export class AttitudeModifier
+  template: Templates.IAttitudeModifierTemplate;
+  startTurn: number;
+  endTurn: number;
+  currentTurn: number;
+  strength: number;
+  isOverRidden: boolean = false;
+
+  constructor(props:
   {
     template: Templates.IAttitudeModifierTemplate;
     startTurn: number;
-    endTurn: number;
-    currentTurn: number;
-    strength: number;
-    isOverRidden: boolean = false;
+    endTurn?: number;
+    strength?: number;
+  })
+  {
+    this.template = props.template;
+    this.startTurn = props.startTurn;
+    this.currentTurn = this.startTurn;
 
-    constructor(props:
+    if (isFinite(props.endTurn))
     {
-      template: Templates.IAttitudeModifierTemplate;
-      startTurn: number;
-      endTurn?: number;
-      strength?: number;
-    })
+      this.endTurn = props.endTurn;
+    }
+    else if (isFinite(this.template.duration))
     {
-      this.template = props.template;
-      this.startTurn = props.startTurn;
-      this.currentTurn = this.startTurn;
-
-      if (isFinite(props.endTurn))
+      if (this.template.duration < 0)
       {
-        this.endTurn = props.endTurn;
-      }
-      else if (isFinite(this.template.duration))
-      {
-        if (this.template.duration < 0)
-        {
-          this.endTurn = -1;
-        }
-        else
-        {
-          this.endTurn = this.startTurn + this.template.duration;
-        }
+        this.endTurn = -1;
       }
       else
       {
-        throw new Error("Attitude modifier has no duration or end turn set");
+        this.endTurn = this.startTurn + this.template.duration;
       }
-
-      if (isFinite(this.template.constantEffect))
-      {
-        this.strength = this.template.constantEffect;
-      }
-      else
-      {
-        this.strength = props.strength;
-      }
+    }
+    else
+    {
+      throw new Error("Attitude modifier has no duration or end turn set");
     }
 
-    setStrength(evaluation: IDiplomacyEvaluation)
+    if (isFinite(this.template.constantEffect))
     {
-      if (this.template.constantEffect)
-      {
-        this.strength = this.template.constantEffect;
-      }
-      else if (this.template.getEffectFromEvaluation)
-      {
-        this.strength = this.template.getEffectFromEvaluation(evaluation);
-      }
-      else
-      {
-        throw new Error("Attitude modifier has no constant effect " +
-          "or effect from evaluation defined");
-      }
+      this.strength = this.template.constantEffect;
+    }
+    else
+    {
+      this.strength = props.strength;
+    }
+  }
 
-      return this.strength;
-    }
-
-    getFreshness(currentTurn: number = this.currentTurn)
+  setStrength(evaluation: IDiplomacyEvaluation)
+  {
+    if (this.template.constantEffect)
     {
-      if (this.endTurn < 0) return 1;
-      else
-      {
-        return 1 - getRelativeValue(currentTurn, this.startTurn, this.endTurn);
-      }
+      this.strength = this.template.constantEffect;
     }
-    refresh(newModifier: AttitudeModifier)
+    else if (this.template.getEffectFromEvaluation)
     {
-      this.startTurn = newModifier.startTurn;
-      this.endTurn = newModifier.endTurn;
-      this.strength = newModifier.strength;
+      this.strength = this.template.getEffectFromEvaluation(evaluation);
     }
-    getAdjustedStrength(currentTurn: number = this.currentTurn)
+    else
     {
-      var freshenss = this.getFreshness(currentTurn);
-
-      return Math.round(this.strength * freshenss);
-    }
-    hasExpired(currentTurn: number = this.currentTurn)
-    {
-      return (this.endTurn >= 0 && currentTurn > this.endTurn);
-    }
-    shouldEnd(evaluation: IDiplomacyEvaluation)
-    {
-      if (this.hasExpired(evaluation.currentTurn))
-      {
-        return true;
-      }
-      else if (this.template.endCondition)
-      {
-        return this.template.endCondition(evaluation);
-      }
-      else if (this.template.duration < 0 && this.template.startCondition)
-      {
-        return !this.template.startCondition(evaluation);
-      }
-      else
-      {
-        return false
-      }
+      throw new Error("Attitude modifier has no constant effect " +
+        "or effect from evaluation defined");
     }
 
-    serialize(): IAttitudeModifierSaveData
-    {
-      var data: IAttitudeModifierSaveData =
-      {
-        templateType: this.template.type,
-        startTurn: this.startTurn,
-        endTurn: this.endTurn,
-        strength: this.strength
-      };
+    return this.strength;
+  }
 
-      return data;
+  getFreshness(currentTurn: number = this.currentTurn)
+  {
+    if (this.endTurn < 0) return 1;
+    else
+    {
+      return 1 - getRelativeValue(currentTurn, this.startTurn, this.endTurn);
     }
+  }
+  refresh(newModifier: AttitudeModifier)
+  {
+    this.startTurn = newModifier.startTurn;
+    this.endTurn = newModifier.endTurn;
+    this.strength = newModifier.strength;
+  }
+  getAdjustedStrength(currentTurn: number = this.currentTurn)
+  {
+    var freshenss = this.getFreshness(currentTurn);
+
+    return Math.round(this.strength * freshenss);
+  }
+  hasExpired(currentTurn: number = this.currentTurn)
+  {
+    return (this.endTurn >= 0 && currentTurn > this.endTurn);
+  }
+  shouldEnd(evaluation: IDiplomacyEvaluation)
+  {
+    if (this.hasExpired(evaluation.currentTurn))
+    {
+      return true;
+    }
+    else if (this.template.endCondition)
+    {
+      return this.template.endCondition(evaluation);
+    }
+    else if (this.template.duration < 0 && this.template.startCondition)
+    {
+      return !this.template.startCondition(evaluation);
+    }
+    else
+    {
+      return false
+    }
+  }
+
+  serialize(): IAttitudeModifierSaveData
+  {
+    var data: IAttitudeModifierSaveData =
+    {
+      templateType: this.template.type,
+      startTurn: this.startTurn,
+      endTurn: this.endTurn,
+      strength: this.strength
+    };
+
+    return data;
   }
 }

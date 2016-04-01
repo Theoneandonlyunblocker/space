@@ -35,153 +35,150 @@ scouting objectives
     create perimeter of vision around own locations
  */
 
-namespace Rance
+export namespace MapAI
 {
-  export namespace MapAI
+  export class ObjectivesAI
   {
-    export class ObjectivesAI
+    mapEvaluator: MapEvaluator;
+    map: GalaxyMap;
+    player: Player;
+    grandStrategyAI: GrandStrategyAI;
+
+    objectivesByType:
     {
-      mapEvaluator: MapEvaluator;
-      map: GalaxyMap;
-      player: Player;
-      grandStrategyAI: GrandStrategyAI;
+      [objectiveType: string]: Objective[];
+    } = {};
+    objectives: Objective[] = [];
 
-      objectivesByType:
+    requests: any[] = [];
+
+    constructor(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI)
+    {
+      this.mapEvaluator = mapEvaluator;
+      this.map = mapEvaluator.map;
+      this.player = mapEvaluator.player;
+      this.grandStrategyAI = grandStrategyAI;
+    }
+    clearObjectives()
+    {
+      this.objectives = [];
+    }
+    setAllDiplomaticObjectives()
+    {
+      this.clearObjectives();
+      this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
+    }
+    setAllEconomicObjectives()
+    {
+      this.clearObjectives();
+      this.setAllObjectivesWithTemplateProperty("economyRoutineFN");
+    }
+    setAllMoveObjectives()
+    {
+      this.clearObjectives();
+      this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
+    }
+    setAllObjectivesWithTemplateProperty(propKey: string)
+    {
+      var objectiveTemplates = app.moduleData.Templates.Objectives;
+
+      for (var key in objectiveTemplates)
       {
-        [objectiveType: string]: Objective[];
+        var template = objectiveTemplates[key];
+        if (template[propKey])
+        {
+          this.setObjectivesOfType(objectiveTemplates[key]);
+        }
+      }
+    }
+    getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate)
+    {
+      var objectiveType = objectiveTemplate.key;
+      var byTarget = this.getObjectivesByTarget(objectiveType, true);
+      var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
+      var finalObjectives: Objective[] = [];
+
+      for (var i = 0; i < newObjectives.length; i++)
+      {
+        var newObjective = newObjectives[i];
+        if (newObjective.priority < 0.04)
+        {
+          continue;
+        }
+        var keyString = newObjective.target ? newObjective.target.id : "noTarget";
+        var oldObjective = byTarget[keyString];
+        if (oldObjective)
+        {
+          oldObjective.priority = newObjective.priority;
+          finalObjectives.push(oldObjective);
+        }
+        else
+        {
+          finalObjectives.push(newObjective);
+        }
+      }
+
+      return finalObjectives;
+    }
+    setObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate)
+    {
+      var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
+      this.objectivesByType[objectiveTemplate.key] = newObjectives;
+      this.objectives = this.objectives.concat(newObjectives);
+    }
+    getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean)
+    {
+      var objectivesByTarget:
+      {
+        [targetString: string]: Objective;
       } = {};
-      objectives: Objective[] = [];
 
-      requests: any[] = [];
-
-      constructor(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI)
+      if (!this.objectivesByType[objectiveType])
       {
-        this.mapEvaluator = mapEvaluator;
-        this.map = mapEvaluator.map;
-        this.player = mapEvaluator.player;
-        this.grandStrategyAI = grandStrategyAI;
-      }
-      clearObjectives()
-      {
-        this.objectives = [];
-      }
-      setAllDiplomaticObjectives()
-      {
-        this.clearObjectives();
-        this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
-      }
-      setAllEconomicObjectives()
-      {
-        this.clearObjectives();
-        this.setAllObjectivesWithTemplateProperty("economyRoutineFN");
-      }
-      setAllMoveObjectives()
-      {
-        this.clearObjectives();
-        this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
-      }
-      setAllObjectivesWithTemplateProperty(propKey: string)
-      {
-        var objectiveTemplates = app.moduleData.Templates.Objectives;
-
-        for (var key in objectiveTemplates)
-        {
-          var template = objectiveTemplates[key];
-          if (template[propKey])
-          {
-            this.setObjectivesOfType(objectiveTemplates[key]);
-          }
-        }
-      }
-      getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate)
-      {
-        var objectiveType = objectiveTemplate.key;
-        var byTarget = this.getObjectivesByTarget(objectiveType, true);
-        var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
-        var finalObjectives: Objective[] = [];
-
-        for (var i = 0; i < newObjectives.length; i++)
-        {
-          var newObjective = newObjectives[i];
-          if (newObjective.priority < 0.04)
-          {
-            continue;
-          }
-          var keyString = newObjective.target ? newObjective.target.id : "noTarget";
-          var oldObjective = byTarget[keyString];
-          if (oldObjective)
-          {
-            oldObjective.priority = newObjective.priority;
-            finalObjectives.push(oldObjective);
-          }
-          else
-          {
-            finalObjectives.push(newObjective);
-          }
-        }
-
-        return finalObjectives;
-      }
-      setObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate)
-      {
-        var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
-        this.objectivesByType[objectiveTemplate.key] = newObjectives;
-        this.objectives = this.objectives.concat(newObjectives);
-      }
-      getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean)
-      {
-        var objectivesByTarget:
-        {
-          [targetString: string]: Objective;
-        } = {};
-
-        if (!this.objectivesByType[objectiveType])
-        {
-          return objectivesByTarget;
-        }
-
-        for (var i = 0; i < this.objectivesByType[objectiveType].length; i++)
-        {
-          var objective = this.objectivesByType[objectiveType][i];
-          if (markAsOngoing) objective.isOngoing = true;
-
-          var keyString = objective.target ? objective.target.id : "noTarget";
-          objectivesByTarget[keyString] = objective;
-        }
-
         return objectivesByTarget;
       }
-      getObjectivesWithTemplateProperty(propKey: string)
-      {
-        return this.objectives.filter(function(objective: Objective)
-        {
-          return Boolean(objective.template[propKey]);
-        });
-      }
-      getAdjustmentsForTemplateProperty(propKey: string)
-      {
-        var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
-        var adjustments: IRoutineAdjustmentByTargetId;
 
-        for (var i = 0; i < withAdjustment.length; i++)
+      for (var i = 0; i < this.objectivesByType[objectiveType].length; i++)
+      {
+        var objective = this.objectivesByType[objectiveType][i];
+        if (markAsOngoing) objective.isOngoing = true;
+
+        var keyString = objective.target ? objective.target.id : "noTarget";
+        objectivesByTarget[keyString] = objective;
+      }
+
+      return objectivesByTarget;
+    }
+    getObjectivesWithTemplateProperty(propKey: string)
+    {
+      return this.objectives.filter(function(objective: Objective)
+      {
+        return Boolean(objective.template[propKey]);
+      });
+    }
+    getAdjustmentsForTemplateProperty(propKey: string)
+    {
+      var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
+      var adjustments: IRoutineAdjustmentByTargetId;
+
+      for (var i = 0; i < withAdjustment.length; i++)
+      {
+        for (var j = 0; j < withAdjustment[i].template[propKey].length; j++)
         {
-          for (var j = 0; j < withAdjustment[i].template[propKey].length; j++)
+          var adjustment = withAdjustment[i].template[propKey][j];
+          if (!adjustments[adjustment.target.id])
           {
-            var adjustment = withAdjustment[i].template[propKey][j];
-            if (!adjustments[adjustment.target.id])
+            adjustments[adjustment.target.id] =
             {
-              adjustments[adjustment.target.id] =
-              {
-                target: adjustment.target,
-                multiplier: 1
-              }
+              target: adjustment.target,
+              multiplier: 1
             }
-            adjustments[adjustment.target.id].multiplier += adjustment.multiplier;
           }
+          adjustments[adjustment.target.id].multiplier += adjustment.multiplier;
         }
-
-        return adjustments;
       }
+
+      return adjustments;
     }
   }
 }

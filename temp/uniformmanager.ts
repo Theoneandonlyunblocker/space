@@ -1,38 +1,35 @@
-namespace Rance
+export class UniformManager
 {
-  export class UniformManager
+  registeredObjects:
   {
-    registeredObjects:
-    {
-      [uniformType: string]: any[];
-    } = {};
+    [uniformType: string]: any[];
+  } = {};
 
-    timeCount: number = 0;
+  timeCount: number = 0;
 
-    constructor()
+  constructor()
+  {
+  }
+
+  registerObject(uniformType: string, shader: any)
+  {
+    if (!this.registeredObjects[uniformType])
     {
+      this.registeredObjects[uniformType] = [];
     }
 
-    registerObject(uniformType: string, shader: any)
+    this.registeredObjects[uniformType].push(shader);
+  }
+
+  updateTime()
+  {
+    this.timeCount += 0.01;
+
+    if (!this.registeredObjects["time"]) return;
+
+    for (var i = 0; i < this.registeredObjects["time"].length; i++)
     {
-      if (!this.registeredObjects[uniformType])
-      {
-        this.registeredObjects[uniformType] = [];
-      }
-
-      this.registeredObjects[uniformType].push(shader);
-    }
-
-    updateTime()
-    {
-      this.timeCount += 0.01;
-
-      if (!this.registeredObjects["time"]) return;
-
-      for (var i = 0; i < this.registeredObjects["time"].length; i++)
-      {
-        this.registeredObjects["time"][i].uniforms.time.value = this.timeCount;
-      }
+      this.registeredObjects["time"][i].uniforms.time.value = this.timeCount;
     }
   }
 }

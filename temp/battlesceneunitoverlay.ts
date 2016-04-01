@@ -2,130 +2,127 @@
 /// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
 /// <reference path="unit.ts" />
 
-namespace Rance
+export class BattleSceneUnitOverlay
 {
-  export class BattleSceneUnitOverlay
+  container: PIXI.Container;
+  renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+
+  overlayContainer: PIXI.Container;
+
+  activeUnit: Unit;
+  getSceneBounds: () => {width: number; height: number};
+
+  animationIsActive: boolean = false;
+  onAnimationFinish: () => void;
+
+
+  constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
   {
-    container: PIXI.Container;
-    renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+    this.container = container;
+    this.renderer = renderer;
+    this.initLayers();
+  }
+  destroy()
+  {
 
-    overlayContainer: PIXI.Container;
-
-    activeUnit: Unit;
-    getSceneBounds: () => {width: number; height: number};
-
-    animationIsActive: boolean = false;
-    onAnimationFinish: () => void;
-
-
-    constructor(container: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
+  }
+  private initLayers()
+  {
+    this.overlayContainer = new PIXI.Container;
+    this.container.addChild(this.overlayContainer);
+  }
+  setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
+  {
+    if (this.activeUnit)
     {
-      this.container = container;
-      this.renderer = renderer;
-      this.initLayers();
-    }
-    destroy()
-    {
-
-    }
-    private initLayers()
-    {
-      this.overlayContainer = new PIXI.Container;
-      this.container.addChild(this.overlayContainer);
-    }
-    setSFX(SFXTemplate: Templates.IBattleSFXTemplate, user: Unit, target: Unit)
-    {
-      if (this.activeUnit)
+      var duration = SFXTemplate.duration * Options.battleAnimationTiming.effectDuration;
+      if (this.activeUnit === user && SFXTemplate.userOverlay)
       {
-        var duration = SFXTemplate.duration * Options.battleAnimationTiming.effectDuration;
-        if (this.activeUnit === user && SFXTemplate.userOverlay)
-        {
-          this.setOverlay(SFXTemplate.userOverlay, user, duration);
-        }
-        else if (this.activeUnit === target && SFXTemplate.enemyOverlay)
-        {
-          this.setOverlay(SFXTemplate.enemyOverlay, target, duration);
-        }
-        else
-        {
-
-        }
+        this.setOverlay(SFXTemplate.userOverlay, user, duration);
+      }
+      else if (this.activeUnit === target && SFXTemplate.enemyOverlay)
+      {
+        this.setOverlay(SFXTemplate.enemyOverlay, target, duration);
       }
       else
       {
 
       }
     }
-    setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number)
+    else
     {
-      this.clearOverlay();
-      if (duration <= 0)
-      {
-        return;
-      }
-      if (this.animationIsActive)
-      {
-        console.warn("Triggered new unit overlay animation without clearing previous one");
-      }
 
-      this.activeUnit = unit;
-      var SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
-
-      overlayFN(SFXParams);
     }
-    clearOverlay()
+  }
+  setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number)
+  {
+    this.clearOverlay();
+    if (duration <= 0)
     {
-      this.animationIsActive = false;
-      this.onAnimationFinish = null;
-
-      this.activeUnit = null;
-      this.overlayContainer.removeChildren();
+      return;
     }
-    private getSFXParams(duration: number,
-      triggerStart: (container: PIXI.DisplayObject) => void,
-      triggerEnd?: () => void): Templates.SFXParams
+    if (this.animationIsActive)
     {
-      var bounds = this.getSceneBounds();
-
-      return(
-      {
-        user: this.activeUnit,
-        width: bounds.width,
-        height: bounds.height,
-        duration: duration,
-        facingRight: this.activeUnit.battleStats.side === "side1",
-        renderer: this.renderer,
-        triggerStart: triggerStart,
-        triggerEnd: triggerEnd
-      });
+      console.warn("Triggered new unit overlay animation without clearing previous one");
     }
-    private setContainerPosition()
+
+    this.activeUnit = unit;
+    var SFXParams = this.getSFXParams(duration, this.addOverlay.bind(this), this.finishAnimation.bind(this));
+
+    overlayFN(SFXParams);
+  }
+  clearOverlay()
+  {
+    this.animationIsActive = false;
+    this.onAnimationFinish = null;
+
+    this.activeUnit = null;
+    this.overlayContainer.removeChildren();
+  }
+  private getSFXParams(duration: number,
+    triggerStart: (container: PIXI.DisplayObject) => void,
+    triggerEnd?: () => void): Templates.SFXParams
+  {
+    var bounds = this.getSceneBounds();
+
+    return(
     {
-      var sceneBounds = this.getSceneBounds();
-      var shouldLockToRight = this.activeUnit.battleStats.side === "side2";
+      user: this.activeUnit,
+      width: bounds.width,
+      height: bounds.height,
+      duration: duration,
+      facingRight: this.activeUnit.battleStats.side === "side1",
+      renderer: this.renderer,
+      triggerStart: triggerStart,
+      triggerEnd: triggerEnd
+    });
+  }
+  private setContainerPosition()
+  {
+    var sceneBounds = this.getSceneBounds();
+    var shouldLockToRight = this.activeUnit.battleStats.side === "side2";
 
-      var containerBounds = this.overlayContainer.getLocalBounds();
+    var containerBounds = this.overlayContainer.getLocalBounds();
 
-      this.overlayContainer.y = sceneBounds.height - containerBounds.height;
-      if (shouldLockToRight)
-      {
-        this.overlayContainer.x = sceneBounds.width - containerBounds.width;
-      }
-    }
-    private addOverlay(overlay: PIXI.DisplayObject)
+    this.overlayContainer.y = sceneBounds.height - containerBounds.height;
+    if (shouldLockToRight)
     {
-      this.animationIsActive = true;
-      this.overlayContainer.addChild(overlay);
-      this.setContainerPosition();
+      this.overlayContainer.x = sceneBounds.width - containerBounds.width;
     }
-    private finishAnimation()
+  }
+  private addOverlay(overlay: PIXI.DisplayObject)
+  {
+    this.animationIsActive = true;
+    this.overlayContainer.addChild(overlay);
+    this.setContainerPosition();
+  }
+  private finishAnimation()
+  {
+    if (this.onAnimationFinish)
     {
-      if (this.onAnimationFinish)
-      {
-        this.onAnimationFinish();
-      }
-
-      this.clearOverlay();
+      this.onAnimationFinish();
     }
+
+    this.clearOverlay();
   }
 }

@@ -1,11 +1,8 @@
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface IStatusEffectAttributeAdjustment
   {
-    interface IStatusEffectAttributeAdjustment
-    {
-      flat?: number;
-      multiplier?: number;
-    }
+    flat?: number;
+    multiplier?: number;
   }
 }

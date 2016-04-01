@@ -1,20 +1,17 @@
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface ITechnologyTemplate
   {
-    interface ITechnologyTemplate
+    key: string;
+    displayName: string;
+    description: string;
+
+    maxLevel: number;
+
+    // set dynamically
+    unlocksPerLevel?:
     {
-      key: string;
-      displayName: string;
-      description: string;
-
-      maxLevel: number;
-
-      // set dynamically
-      unlocksPerLevel?:
-      {
-        [level: number]: Array<IUnitTemplate | IItemTemplate>;
-      }
+      [level: number]: Array<IUnitTemplate | IItemTemplate>;
     }
   }
 }

@@ -1,150 +1,147 @@
 /// <reference path="upgradeunit.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var UnitExperience = React.createFactory(React.createClass(
   {
-    export var UnitExperience = React.createFactory(React.createClass(
-    {
-      displayName: "UnitExperience",
+    displayName: "UnitExperience",
 
-      getInitialState: function()
+    getInitialState: function()
+    {
+      return(
       {
-        return(
-        {
-          upgradePopupId: undefined
-        });
-      },
-      makePopup: function()
+        upgradePopupId: undefined
+      });
+    },
+    makePopup: function()
+    {
+      var popupId = this.refs.popupManager.makePopup(
       {
-        var popupId = this.refs.popupManager.makePopup(
+        contentConstructor: UIComponents.TopMenuPopup,
+        contentProps:
         {
-          contentConstructor: UIComponents.TopMenuPopup,
+          handleClose: this.closePopup,
+          contentConstructor: UIComponents.UpgradeUnit,
           contentProps:
           {
-            handleClose: this.closePopup,
-            contentConstructor: UIComponents.UpgradeUnit,
-            contentProps:
-            {
-              unit: this.props.unit,
-              onUnitUpgrade: this.handleUnitUpgrade
-            }
-          },
-          popupProps:
-          {
-            preventAutoResize: true,
-            containerDragOnly: true
+            unit: this.props.unit,
+            onUnitUpgrade: this.handleUnitUpgrade
           }
-        });
+        },
+        popupProps:
+        {
+          preventAutoResize: true,
+          containerDragOnly: true
+        }
+      });
 
-        this.setState(
-        {
-          upgradePopupId: popupId
-        });
-      },
-      closePopup: function()
+      this.setState(
       {
-        this.refs.popupManager.closePopup(this.state.upgradePopupId);
-        this.setState(
-        {
-          upgradePopupId: undefined
-        });
-      },
-      handleUnitUpgrade: function()
+        upgradePopupId: popupId
+      });
+    },
+    closePopup: function()
+    {
+      this.refs.popupManager.closePopup(this.state.upgradePopupId);
+      this.setState(
       {
-        if (!this.props.unit.canLevelUp())
+        upgradePopupId: undefined
+      });
+    },
+    handleUnitUpgrade: function()
+    {
+      if (!this.props.unit.canLevelUp())
+      {
+        this.closePopup();
+      }
+      else
+      {
+        this.refs.popupManager.forceUpdate();
+      }
+      this.props.onUnitUpgrade();
+    },
+    render: function()
+    {
+      var rows: ReactDOMPlaceHolder[] = [];
+
+      var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
+      var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);
+      var lastBarWidth = (10 * (this.props.experienceForCurrentLevel % 10));
+
+      for (var i = 0; i < totalBars; i++)
+      {
+        var bgProps: any =
         {
-          this.closePopup();
+          className: "unit-experience-bar-point-background"
+        };
+        if (i < filledBars)
+        {
+          bgProps.className += " filled";
+
+          if (i === filledBars - 1 && lastBarWidth !== 0)
+          {
+            bgProps.style =
+            {
+              width: "" +  lastBarWidth + "%"
+            }
+          }
         }
         else
         {
-          this.refs.popupManager.forceUpdate();
+          bgProps.className += " empty";
         }
-        this.props.onUnitUpgrade();
-      },
-      render: function()
+
+        rows.push(React.DOM.div(
+        {
+          className: "unit-experience-bar-point",
+          key: "" + i
+        },
+          React.DOM.div(bgProps,
+            null
+          )
+        ))
+      }
+
+      var isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
+
+      var containerProps: any =
       {
-        var rows: ReactDOMPlaceHolder[] = [];
+        className: "unit-experience-bar-container"
+      }
+      var barProps: any =
+      {
+        className: "unit-experience-bar",
+        title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp"
+      }
+      if (isReadyToLevelUp)
+      {
+        containerProps.onClick = this.makePopup;
+        barProps.className += " ready-to-level-up"
+      }
 
-        var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
-        var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);
-        var lastBarWidth = (10 * (this.props.experienceForCurrentLevel % 10));
-
-        for (var i = 0; i < totalBars; i++)
+      return(
+        React.DOM.div(
         {
-          var bgProps: any =
+          className: "unit-experience-wrapper"
+        },
+          UIComponents.PopupManager(
           {
-            className: "unit-experience-bar-point-background"
-          };
-          if (i < filledBars)
-          {
-            bgProps.className += " filled";
-
-            if (i === filledBars - 1 && lastBarWidth !== 0)
+            ref: "popupManager",
+            onlyAllowOne: true
+          }),
+          React.DOM.div(containerProps,
+            React.DOM.div(barProps,
+              rows
+            ),
+            !isReadyToLevelUp ? null : React.DOM.span(
             {
-              bgProps.style =
-              {
-                width: "" +  lastBarWidth + "%"
-              }
-            }
-          }
-          else
-          {
-            bgProps.className += " empty";
-          }
-
-          rows.push(React.DOM.div(
-          {
-            className: "unit-experience-bar-point",
-            key: "" + i
-          },
-            React.DOM.div(bgProps,
-              null
-            )
-          ))
-        }
-
-        var isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
-
-        var containerProps: any =
-        {
-          className: "unit-experience-bar-container"
-        }
-        var barProps: any =
-        {
-          className: "unit-experience-bar",
-          title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp"
-        }
-        if (isReadyToLevelUp)
-        {
-          containerProps.onClick = this.makePopup;
-          barProps.className += " ready-to-level-up"
-        }
-
-        return(
-          React.DOM.div(
-          {
-            className: "unit-experience-wrapper"
-          },
-            UIComponents.PopupManager(
-            {
-              ref: "popupManager",
-              onlyAllowOne: true
-            }),
-            React.DOM.div(containerProps,
-              React.DOM.div(barProps,
-                rows
-              ),
-              !isReadyToLevelUp ? null : React.DOM.span(
-              {
-                className: "ready-to-level-up-message"
-              },
-                "Click to level up"
-              )
+              className: "ready-to-level-up-message"
+            },
+              "Click to level up"
             )
           )
-        );
-      }
-    }));
-  }
+        )
+      );
+    }
+  }));
 }

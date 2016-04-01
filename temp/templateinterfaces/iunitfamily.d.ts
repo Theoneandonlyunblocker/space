@@ -1,14 +1,11 @@
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface IUnitFamily extends IDistributable
   {
-    interface IUnitFamily extends IDistributable
-    {
-      type: string;
-      debugOnly: boolean;
-      alwaysAvailable: boolean;
-      
-      associatedTemplates?: IUnitTemplate[]; //set dynamically
-    }
+    type: string;
+    debugOnly: boolean;
+    alwaysAvailable: boolean;
+    
+    associatedTemplates?: IUnitTemplate[]; //set dynamically
   }
 }

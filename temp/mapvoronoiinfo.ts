@@ -1,108 +1,105 @@
-namespace Rance
+export class MapVoronoiInfo
 {
-  export class MapVoronoiInfo
+  treeMap: any;
+  diagram: any;
+  nonFillerLines:
   {
-    treeMap: any;
-    diagram: any;
-    nonFillerLines:
-    {
-      [visibility: string]: any[];
-    } = {};
-    bounds:
-    {
-      x1: number;
-      x2: number;
-      y1: number;
-      y2: number;
-    };
+    [visibility: string]: any[];
+  } = {};
+  bounds:
+  {
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+  };
 
-    constructor()
+  constructor()
+  {
+    
+  }
+  getNonFillerVoronoiLines(visibleStars?: Star[])
+  {
+    if (!this.diagram) return [];
+
+    var indexString = "";
+    if (!visibleStars) indexString = "all";
+    else
     {
-      
+      var ids: number[] = visibleStars.map(function(star){return star.id});
+      ids = ids.sort();
+
+      indexString = ids.join();
     }
-    getNonFillerVoronoiLines(visibleStars?: Star[])
+
+    if (!this.nonFillerLines[indexString] ||
+      this.nonFillerLines[indexString].length <= 0)
     {
-      if (!this.diagram) return [];
-
-      var indexString = "";
-      if (!visibleStars) indexString = "all";
-      else
+      this.nonFillerLines[indexString] =
+        this.diagram.edges.filter(function(edge: any)
       {
-        var ids: number[] = visibleStars.map(function(star){return star.id});
-        ids = ids.sort();
+        var adjacentSites = [edge.lSite, edge.rSite];
+        var adjacentFillerSites = 0;
+        var maxAllowedFillerSites = 2;
 
-        indexString = ids.join();
-      }
-
-      if (!this.nonFillerLines[indexString] ||
-        this.nonFillerLines[indexString].length <= 0)
-      {
-        this.nonFillerLines[indexString] =
-          this.diagram.edges.filter(function(edge: any)
+        for (var i = 0; i < adjacentSites.length; i++)
         {
-          var adjacentSites = [edge.lSite, edge.rSite];
-          var adjacentFillerSites = 0;
-          var maxAllowedFillerSites = 2;
+          var site = adjacentSites[i];
 
-          for (var i = 0; i < adjacentSites.length; i++)
+          if (!site)
           {
-            var site = adjacentSites[i];
+            // draw all border edges
+            //return true;
 
-            if (!site)
+            // draw all non filler border edges
+            maxAllowedFillerSites--;
+            if (adjacentFillerSites >= maxAllowedFillerSites)
             {
-              // draw all border edges
-              //return true;
-
-              // draw all non filler border edges
-              maxAllowedFillerSites--;
-              if (adjacentFillerSites >= maxAllowedFillerSites)
-              {
-                return false;
-              }
-              continue;
-            };
+              return false;
+            }
+            continue;
+          };
 
 
-            if (visibleStars && visibleStars.indexOf(site) < 0)
+          if (visibleStars && visibleStars.indexOf(site) < 0)
+          {
+            maxAllowedFillerSites--;
+            if (adjacentFillerSites >= maxAllowedFillerSites)
             {
-              maxAllowedFillerSites--;
-              if (adjacentFillerSites >= maxAllowedFillerSites)
-              {
-                return false;
-              }
-              continue;
-            };
+              return false;
+            }
+            continue;
+          };
 
 
-            if (!isFinite(site.id)) // is filler
+          if (!isFinite(site.id)) // is filler
+          {
+            adjacentFillerSites++;
+            if (adjacentFillerSites >= maxAllowedFillerSites)
             {
-              adjacentFillerSites++;
-              if (adjacentFillerSites >= maxAllowedFillerSites)
-              {
-                return false;
-              }
-            };
-          }
-
-          return true;
-        });
-      }
-
-      return this.nonFillerLines[indexString];
-    }
-    getStarAtPoint(point: Point)
-    {
-      var items = this.treeMap.retrieve(point);
-      for (var i = 0; i < items.length; i++)
-      {
-        var cell = items[i].cell;
-        if (cell.pointIntersection(point.x, point.y) > -1)
-        {
-          return cell.site;
+              return false;
+            }
+          };
         }
-      }
 
-      return null;
+        return true;
+      });
     }
+
+    return this.nonFillerLines[indexString];
+  }
+  getStarAtPoint(point: Point)
+  {
+    var items = this.treeMap.retrieve(point);
+    for (var i = 0; i < items.length; i++)
+    {
+      var cell = items[i].cell;
+      if (cell.pointIntersection(point.x, point.y) > -1)
+      {
+        return cell.site;
+      }
+    }
+
+    return null;
   }
 }

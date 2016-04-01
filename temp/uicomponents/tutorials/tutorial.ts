@@ -1,151 +1,148 @@
 /// <reference path="../mixins/splitmultilinetext.ts" />
 /// <reference path="dontshowagain.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var Tutorial = React.createFactory(React.createClass(
   {
-    export var Tutorial = React.createFactory(React.createClass(
+    displayName: "Tutorial",
+    mixins: [SplitMultilineText],
+
+    propTypes:
     {
-      displayName: "Tutorial",
-      mixins: [SplitMultilineText],
+      pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired, // React.PropTypes.node
+      tutorialId: React.PropTypes.string.isRequired
+    },
 
-      propTypes:
+    getInitialState: function()
+    {
+      return(
       {
-        pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired, // React.PropTypes.node
-        tutorialId: React.PropTypes.string.isRequired
-      },
+        currentPage: 0
+      });
+    },
 
-      getInitialState: function()
+    componentDidMount: function()
+    {
+      this.handleEnterPage(this.props.pages[this.state.currentPage]);
+    },
+
+    componentWillUnmount: function()
+    {
+      this.handleLeavePage(this.props.pages[this.state.currentPage]);
+      this.handleClose();
+    },
+
+    handleEnterPage: function(page: ITutorialPage)
+    {
+      if (page.onOpen)
       {
-        return(
-        {
-          currentPage: 0
-        });
-      },
+        page.onOpen();
+      }
 
-      componentDidMount: function()
+      if (page.desiredSize)
       {
-        this.handleEnterPage(this.props.pages[this.state.currentPage]);
-      },
 
-      componentWillUnmount: function()
+      }
+    },
+
+    handleLeavePage: function(page: ITutorialPage)
+    {
+      if (page.onClose)
       {
-        this.handleLeavePage(this.props.pages[this.state.currentPage]);
-        this.handleClose();
-      },
+        page.onClose();
+      }
 
-      handleEnterPage: function(page: ITutorialPage)
+      if (page.desiredSize)
       {
-        if (page.onOpen)
-        {
-          page.onOpen();
-        }
+        
+      }
+    },
 
-        if (page.desiredSize)
-        {
+    flipPage: function(amount: number)
+    {
+      var lastPage = this.props.pages.length - 1;
+      var newPage = this.state.currentPage + amount;
+      newPage = clamp(newPage, 0, lastPage);
 
-        }
-      },
+      this.handleLeavePage(this.props.pages[this.state.currentPage]);
 
-      handleLeavePage: function(page: ITutorialPage)
+      this.setState(
       {
-        if (page.onClose)
-        {
-          page.onClose();
-        }
+        currentPage: newPage
+      }, this.handleEnterPage.bind(this, this.props.pages[newPage]));
+    },
 
-        if (page.desiredSize)
-        {
-          
-        }
-      },
-
-      flipPage: function(amount: number)
+    handleClose: function()
+    {
+      if (Rance.TutorialState[this.props.tutorialId] === tutorialStatus.show)
       {
-        var lastPage = this.props.pages.length - 1;
-        var newPage = this.state.currentPage + amount;
-        newPage = clamp(newPage, 0, lastPage);
+        Rance.TutorialState[this.props.tutorialId] = tutorialStatus.dontShowThisSession;
+      }
+    },
 
-        this.handleLeavePage(this.props.pages[this.state.currentPage]);
-
-        this.setState(
-        {
-          currentPage: newPage
-        }, this.handleEnterPage.bind(this, this.props.pages[newPage]));
-      },
-
-      handleClose: function()
+    render: function()
+    {
+      var hasBackArrow = this.state.currentPage > 0;
+      var backElement: ReactDOMPlaceHolder;
+      if (hasBackArrow)
       {
-        if (Rance.TutorialState[this.props.tutorialId] === tutorialStatus.show)
+        backElement = React.DOM.div(
         {
-          Rance.TutorialState[this.props.tutorialId] = tutorialStatus.dontShowThisSession;
-        }
-      },
-
-      render: function()
+          className: "tutorial-flip-page tutorial-flip-page-back",
+          onClick: this.flipPage.bind(this, -1)
+        }, "<")
+      }
+      else
       {
-        var hasBackArrow = this.state.currentPage > 0;
-        var backElement: ReactDOMPlaceHolder;
-        if (hasBackArrow)
+        backElement = React.DOM.div(
         {
-          backElement = React.DOM.div(
-          {
-            className: "tutorial-flip-page tutorial-flip-page-back",
-            onClick: this.flipPage.bind(this, -1)
-          }, "<")
-        }
-        else
-        {
-          backElement = React.DOM.div(
-          {
-            className: "tutorial-flip-page disabled"
-          })
-        }
+          className: "tutorial-flip-page disabled"
+        })
+      }
 
-        var hasForwardArrow = this.state.currentPage < this.props.pages.length - 1;
-        var forwardElement: ReactDOMPlaceHolder;
-        if (hasForwardArrow)
+      var hasForwardArrow = this.state.currentPage < this.props.pages.length - 1;
+      var forwardElement: ReactDOMPlaceHolder;
+      if (hasForwardArrow)
+      {
+        forwardElement = React.DOM.div(
         {
-          forwardElement = React.DOM.div(
-          {
-            className: "tutorial-flip-page tutorial-flip-page-forward",
-            onClick: this.flipPage.bind(this, 1)
-          }, ">")
-        }
-        else
+          className: "tutorial-flip-page tutorial-flip-page-forward",
+          onClick: this.flipPage.bind(this, 1)
+        }, ">")
+      }
+      else
+      {
+        forwardElement = React.DOM.div(
         {
-          forwardElement = React.DOM.div(
-          {
-            className: "tutorial-flip-page disabled"
-          })
-        }
+          className: "tutorial-flip-page disabled"
+        })
+      }
 
-        return(
+      return(
+        React.DOM.div(
+        {
+          className: "tutorial"
+        },
           React.DOM.div(
           {
-            className: "tutorial"
+            className: "tutorial-inner"
           },
+            backElement,
+
             React.DOM.div(
             {
-              className: "tutorial-inner"
-            },
-              backElement,
+              className: "tutorial-content"
+            }, this.splitMultilineText(this.props.pages[this.state.currentPage].content)),
 
-              React.DOM.div(
-              {
-                className: "tutorial-content"
-              }, this.splitMultilineText(this.props.pages[this.state.currentPage].content)),
-
-              forwardElement
-            ),
-            UIComponents.DontShowAgain(
-            {
-              tutorialId: this.props.tutorialId
-            })
-          )
-        );
-      }
-    }));
-  }
+            forwardElement
+          ),
+          UIComponents.DontShowAgain(
+          {
+            tutorialId: this.props.tutorialId
+          })
+        )
+      );
+    }
+  }));
 }

@@ -2,79 +2,76 @@
 /// <reference path="unititemwrapper.ts"/>
 /// <reference path="unitexperience.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var MenuUnitInfo = React.createFactory(React.createClass(
   {
-    export var MenuUnitInfo = React.createFactory(React.createClass(
+    displayName: "MenuUnitInfo",
+    handleUnitUpgrade: function()
     {
-      displayName: "MenuUnitInfo",
-      handleUnitUpgrade: function()
-      {
-        this.forceUpdate();
-      },
-      render: function()
-      {
-        var unit: Unit = this.props.unit;
-        if (!unit) return(
-          React.DOM.div({className: "menu-unit-info"})
-        )
+      this.forceUpdate();
+    },
+    render: function()
+    {
+      var unit: Unit = this.props.unit;
+      if (!unit) return(
+        React.DOM.div({className: "menu-unit-info"})
+      )
 
-        var itemSlots: ReactComponentPlaceHolder[] = [];
+      var itemSlots: ReactComponentPlaceHolder[] = [];
 
-        for (var slot in unit.items)
+      for (var slot in unit.items)
+      {
+        itemSlots.push(UIComponents.UnitItemWrapper(
         {
-          itemSlots.push(UIComponents.UnitItemWrapper(
-          {
-            key: slot,
-            slot: slot,
-            item: unit.items[slot],
-            onMouseUp: this.props.onMouseUp,
+          key: slot,
+          slot: slot,
+          item: unit.items[slot],
+          onMouseUp: this.props.onMouseUp,
 
-            isDraggable: this.props.isDraggable,
-            onDragStart: this.props.onDragStart,
-            onDragEnd: this.props.onDragEnd,
-            currentDragItem: this.props.currentDragItem
-          }));
-        }
+          isDraggable: this.props.isDraggable,
+          onDragStart: this.props.onDragStart,
+          onDragEnd: this.props.onDragEnd,
+          currentDragItem: this.props.currentDragItem
+        }));
+      }
 
-        var unitAbilities: Templates.IAbilityBase[] = unit.getAllAbilities();
-        unitAbilities = unitAbilities.concat(unit.getAllPassiveSkills());
+      var unitAbilities: Templates.IAbilityBase[] = unit.getAllAbilities();
+      unitAbilities = unitAbilities.concat(unit.getAllPassiveSkills());
 
-        return(
+      return(
+        React.DOM.div(
+        {
+          className: "menu-unit-info"
+        },
           React.DOM.div(
           {
-            className: "menu-unit-info"
+            className: "menu-unit-info-name"
+          }, unit.name),
+          React.DOM.div(
+          {
+            className: "menu-unit-info-abilities"
           },
-            React.DOM.div(
+            UIComponents.AbilityList(
             {
-              className: "menu-unit-info-name"
-            }, unit.name),
-            React.DOM.div(
-            {
-              className: "menu-unit-info-abilities"
-            },
-              UIComponents.AbilityList(
-              {
-                abilities: unitAbilities
-              })
-            ),
-            UIComponents.UnitExperience(
-            {
-              experienceForCurrentLevel: unit.experienceForCurrentLevel,
-              experienceToNextLevel: unit.getExperienceToNextLevel(),
-              unit: unit,
-              onUnitUpgrade: this.handleUnitUpgrade
-            }),
-            React.DOM.div(
-            {
-              className: "menu-unit-info-items-wrapper"
-            },
-              itemSlots
-            )
+              abilities: unitAbilities
+            })
+          ),
+          UIComponents.UnitExperience(
+          {
+            experienceForCurrentLevel: unit.experienceForCurrentLevel,
+            experienceToNextLevel: unit.getExperienceToNextLevel(),
+            unit: unit,
+            onUnitUpgrade: this.handleUnitUpgrade
+          }),
+          React.DOM.div(
+          {
+            className: "menu-unit-info-items-wrapper"
+          },
+            itemSlots
           )
-        );
-      }
-    }));
-  }
+        )
+      );
+    }
+  }));
 }

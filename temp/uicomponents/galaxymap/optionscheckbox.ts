@@ -1,35 +1,32 @@
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var OptionsCheckbox = React.createFactory(React.createClass(
   {
-    export var OptionsCheckbox = React.createFactory(React.createClass(
+    displayName: "OptionsCheckbox",
+    render: function()
     {
-      displayName: "OptionsCheckbox",
-      render: function()
-      {
-        var key = "options-checkbox-" + this.props.label
-        
-        return(
-          React.DOM.div(
+      var key = "options-checkbox-" + this.props.label
+      
+      return(
+        React.DOM.div(
+        {
+          className: "options-checkbox-container"
+        },
+          React.DOM.input(
           {
-            className: "options-checkbox-container"
+            type: "checkbox",
+            id: key,
+            checked: this.props.isChecked,
+            onChange: this.props.onChangeFN
+          }),
+          React.DOM.label(
+          {
+            htmlFor: key
           },
-            React.DOM.input(
-            {
-              type: "checkbox",
-              id: key,
-              checked: this.props.isChecked,
-              onChange: this.props.onChangeFN
-            }),
-            React.DOM.label(
-            {
-              htmlFor: key
-            },
-              this.props.label
-            )
+            this.props.label
           )
-        );
-      }
-    }));
-  }
+        )
+      );
+    }
+  }));
 }

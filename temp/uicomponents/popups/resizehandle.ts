@@ -1,42 +1,39 @@
 /// <reference path="../mixins/draggable.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var PopupResizeHandle = React.createFactory(React.createClass(
   {
-    export var PopupResizeHandle = React.createFactory(React.createClass(
+    displayName: "PopupResizeHandle",
+    mixins: [Draggable],
+
+    // originBottom: undefined,
+    // originRight: undefined,
+
+    // onDragStart: function()
+    // {
+    //   var rect = this.getDOMNode().getBoundingClientRect();
+    //   this.originBottom = rect.bottom;
+    //   this.originRight = rect.right;
+    // },
+
+    onDragMove: function(x: number, y: number)
     {
-      displayName: "PopupResizeHandle",
-      mixins: [Draggable],
+      var rect = this.getDOMNode().getBoundingClientRect();
+      this.props.handleResize(x + rect.width, y + rect.height);
+    },
 
-      // originBottom: undefined,
-      // originRight: undefined,
-
-      // onDragStart: function()
-      // {
-      //   var rect = this.getDOMNode().getBoundingClientRect();
-      //   this.originBottom = rect.bottom;
-      //   this.originRight = rect.right;
-      // },
-
-      onDragMove: function(x: number, y: number)
-      {
-        var rect = this.getDOMNode().getBoundingClientRect();
-        this.props.handleResize(x + rect.width, y + rect.height);
-      },
-
-      render: function()
-      {
-        return(
-          React.DOM.img(
-          {
-            className: "popup-resize-handle",
-            src: "img\/icons\/resizeHandle.png",
-            onTouchStart: this.handleMouseDown,
-            onMouseDown: this.handleMouseDown
-          })
-        );
-      }
-    }));
-  }
+    render: function()
+    {
+      return(
+        React.DOM.img(
+        {
+          className: "popup-resize-handle",
+          src: "img\/icons\/resizeHandle.png",
+          onTouchStart: this.handleMouseDown,
+          onMouseDown: this.handleMouseDown
+        })
+      );
+    }
+  }));
 }

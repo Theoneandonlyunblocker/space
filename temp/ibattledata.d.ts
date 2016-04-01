@@ -4,21 +4,18 @@
 /// <reference path="building.ts"/>
 
 
-declare namespace Rance
+interface IBattleData
 {
-  interface IBattleData
+  location: Star;
+  building: Building;
+  attacker:
   {
-    location: Star;
-    building: Building;
-    attacker:
-    {
-      player: Player;
-      units: Unit[];
-    };
-    defender:
-    {
-      player: Player;
-      units: Unit[];
-    };
-  }
+    player: Player;
+    units: Unit[];
+  };
+  defender:
+  {
+    player: Player;
+    units: Unit[];
+  };
 }

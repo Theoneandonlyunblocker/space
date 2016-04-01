@@ -1,11 +1,8 @@
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface ISpriteTemplate
   {
-    interface ISpriteTemplate
-    {
-      imageSrc: string;
-      anchor: Point;
-    }
+    imageSrc: string;
+    anchor: Point;
   }
 }

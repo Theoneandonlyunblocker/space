@@ -2,13 +2,10 @@
 /// <reference path="building.ts" />
 /// <reference path="unit.ts" />
 
-declare namespace Rance
+interface IFleetAttackTarget
 {
-  interface IFleetAttackTarget
-  {
-    type: string;
-    enemy: Player;
-    building?: Building;
-    units: Unit[]
-  }
+  type: string;
+  enemy: Player;
+  building?: Building;
+  units: Unit[]
 }

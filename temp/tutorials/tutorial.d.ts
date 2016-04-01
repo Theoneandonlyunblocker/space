@@ -1,9 +1,6 @@
 /// <reference path="tutorialpage.d.ts" />
 
-declare namespace Rance
+interface ITutorial
 {
-  interface ITutorial
-  {
-    pages: ITutorialPage[];
-  }
+  pages: ITutorialPage[];
 }

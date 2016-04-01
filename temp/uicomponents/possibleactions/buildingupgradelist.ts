@@ -3,141 +3,138 @@
 
 /// <reference path="buildingupgradelistitem.ts" />
 
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var BuildingUpgradeList = React.createFactory(React.createClass(
   {
-    export var BuildingUpgradeList = React.createFactory(React.createClass(
+    displayName: "BuildingUpgradeList",
+
+    propTypes:
     {
-      displayName: "BuildingUpgradeList",
+      star: React.PropTypes.instanceOf(Star).isRequired,
+      player: React.PropTypes.instanceOf(Player).isRequired,
+      clearExpandedAction: React.PropTypes.func.isRequired
+    },
 
-      propTypes:
+    hasAvailableUpgrades: function()
+    {
+      var possibleUpgrades = this.props.star.getBuildingUpgrades();
+      return Object.keys(possibleUpgrades).length > 0;
+    },
+
+    upgradeBuilding: function(upgradeData: IBuildingUpgradeData)
+    {
+      var star = upgradeData.parentBuilding.location
+
+      var newBuilding = new Building(
       {
-        star: React.PropTypes.instanceOf(Star).isRequired,
-        player: React.PropTypes.instanceOf(Player).isRequired,
-        clearExpandedAction: React.PropTypes.func.isRequired
-      },
+        template: upgradeData.template,
+        location: star,
+        controller: upgradeData.parentBuilding.controller,
+        upgradeLevel: upgradeData.level,
+        totalCost: upgradeData.parentBuilding.totalCost + upgradeData.cost
+      });
 
-      hasAvailableUpgrades: function()
+      star.removeBuilding(upgradeData.parentBuilding);
+      star.addBuilding(newBuilding);
+
+      upgradeData.parentBuilding.controller.money -= upgradeData.cost;
+
+      if (!this.hasAvailableUpgrades())
       {
-        var possibleUpgrades = this.props.star.getBuildingUpgrades();
-        return Object.keys(possibleUpgrades).length > 0;
-      },
-
-      upgradeBuilding: function(upgradeData: IBuildingUpgradeData)
+        this.props.clearExpandedAction();
+      }
+      else
       {
-        var star = upgradeData.parentBuilding.location
+        this.forceUpdate();
+      }
+    },
 
-        var newBuilding = new Building(
-        {
-          template: upgradeData.template,
-          location: star,
-          controller: upgradeData.parentBuilding.controller,
-          upgradeLevel: upgradeData.level,
-          totalCost: upgradeData.parentBuilding.totalCost + upgradeData.cost
-        });
+    render: function()
+    {
+      if (!this.hasAvailableUpgrades()) return null;
 
-        star.removeBuilding(upgradeData.parentBuilding);
-        star.addBuilding(newBuilding);
+      var upgradeGroups: ReactDOMPlaceHolder[] = [];
 
-        upgradeData.parentBuilding.controller.money -= upgradeData.cost;
-
-        if (!this.hasAvailableUpgrades())
-        {
-          this.props.clearExpandedAction();
-        }
-        else
-        {
-          this.forceUpdate();
-        }
-      },
-
-      render: function()
+      var possibleUpgrades = this.props.star.getBuildingUpgrades();
+      var sortedParentBuildings = Object.keys(possibleUpgrades).sort(function(aId: string, bId: string)
       {
-        if (!this.hasAvailableUpgrades()) return null;
+        var a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
+        var b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
+        
+        if (a < b) return -1;
+        else if (a > b) return 1;
+        else return 0;
+      });
 
-        var upgradeGroups: ReactDOMPlaceHolder[] = [];
+      for (var i = 0; i < sortedParentBuildings.length; i++)
+      {
+        var parentBuildingId = sortedParentBuildings[i];
+        var upgrades = possibleUpgrades[parentBuildingId];
+        var parentBuilding: Building = upgrades[0].parentBuilding;
 
-        var possibleUpgrades = this.props.star.getBuildingUpgrades();
-        var sortedParentBuildings = Object.keys(possibleUpgrades).sort(function(aId: string, bId: string)
+        var upgradeElements: ReactComponentPlaceHolder[] = [];
+
+        for (var j = 0; j < upgrades.length; j++)
         {
-          var a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
-          var b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
-          
-          if (a < b) return -1;
-          else if (a > b) return 1;
-          else return 0;
-        });
-
-        for (var i = 0; i < sortedParentBuildings.length; i++)
-        {
-          var parentBuildingId = sortedParentBuildings[i];
-          var upgrades = possibleUpgrades[parentBuildingId];
-          var parentBuilding: Building = upgrades[0].parentBuilding;
-
-          var upgradeElements: ReactComponentPlaceHolder[] = [];
-
-          for (var j = 0; j < upgrades.length; j++)
+          if (j > 0)
           {
-            if (j > 0)
+            upgradeElements.push(React.DOM.tr(
             {
-              upgradeElements.push(React.DOM.tr(
-              {
-                className: "list-spacer",
-                key: "spacer" + i + j
-              },
-                React.DOM.td(
-                {
-                  colSpan: 20
-                },
-                  null
-                )
-              ))
-            };
-
-            upgradeElements.push(UIComponents.BuildingUpgradeListItem(
-            {
-              key: upgrades[j].template.type,
-              player: this.props.player,
-              handleUpgrade: this.upgradeBuilding,
-              upgradeData: upgrades[j]
-            }));
-          }
-
-          var parentElement = React.DOM.div(
-          {
-            key: "" + parentBuilding.id,
-            className: "building-upgrade-group"
-          },
-            React.DOM.div(
-            {
-              className: "building-upgrade-group-header"
-            }, parentBuilding.template.displayName),
-            React.DOM.table(
-            {
-              className: "buildable-item-list"
+              className: "list-spacer",
+              key: "spacer" + i + j
             },
-              React.DOM.tbody(
+              React.DOM.td(
               {
-
+                colSpan: 20
               },
-                upgradeElements
+                null
               )
-            )
-          );
+            ))
+          };
 
-          upgradeGroups.push(parentElement);
+          upgradeElements.push(UIComponents.BuildingUpgradeListItem(
+          {
+            key: upgrades[j].template.type,
+            player: this.props.player,
+            handleUpgrade: this.upgradeBuilding,
+            upgradeData: upgrades[j]
+          }));
         }
 
-        return(
-          React.DOM.ul(
+        var parentElement = React.DOM.div(
+        {
+          key: "" + parentBuilding.id,
+          className: "building-upgrade-group"
+        },
+          React.DOM.div(
           {
-            className: "building-upgrade-list"
+            className: "building-upgrade-group-header"
+          }, parentBuilding.template.displayName),
+          React.DOM.table(
+          {
+            className: "buildable-item-list"
           },
-            upgradeGroups
+            React.DOM.tbody(
+            {
+
+            },
+              upgradeElements
+            )
           )
         );
+
+        upgradeGroups.push(parentElement);
       }
-    }));
-  }
+
+      return(
+        React.DOM.ul(
+        {
+          className: "building-upgrade-list"
+        },
+          upgradeGroups
+        )
+      );
+    }
+  }));
 }

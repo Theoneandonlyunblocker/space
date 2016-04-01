@@ -1,75 +1,72 @@
-namespace Rance
+export namespace UIComponents
 {
-  export namespace UIComponents
+  export var ItemPurchaseListItem = React.createFactory(React.createClass(
   {
-    export var ItemPurchaseListItem = React.createFactory(React.createClass(
+    displayName: "ItemPurchaseListItem",
+    makeCell: function(type: string)
     {
-      displayName: "ItemPurchaseListItem",
-      makeCell: function(type: string)
+      var cellProps: any = {};
+      cellProps.key = type;
+      cellProps.className = "item-purchase-list-item-cell " +
+        "item-purchase-list-" + type;
+
+      var cellContent: any;
+
+      switch (type)
       {
-        var cellProps: any = {};
-        cellProps.key = type;
-        cellProps.className = "item-purchase-list-item-cell " +
-          "item-purchase-list-" + type;
-
-        var cellContent: any;
-
-        switch (type)
+        case ("buildCost"):
         {
-          case ("buildCost"):
+          if (this.props.playerMoney < this.props.buildCost)
           {
-            if (this.props.playerMoney < this.props.buildCost)
-            {
-              cellProps.className += " negative";
-            }
-          }
-          default:
-          {
-            cellContent = this.props[type];
-            if (isFinite(cellContent))
-            {
-              cellProps.className += " center-text"
-            }
-
-            break;
+            cellProps.className += " negative";
           }
         }
+        default:
+        {
+          cellContent = this.props[type];
+          if (isFinite(cellContent))
+          {
+            cellProps.className += " center-text"
+          }
 
-        return(
-          React.DOM.td(cellProps, cellContent)
-        );
-      },
+          break;
+        }
+      }
 
-      render: function()
+      return(
+        React.DOM.td(cellProps, cellContent)
+      );
+    },
+
+    render: function()
+    {
+      var cells: ReactDOMPlaceHolder[] = [];
+      var columns = this.props.activeColumns;
+
+      for (var i = 0; i < columns.length; i++)
       {
-        var cells: ReactDOMPlaceHolder[] = [];
-        var columns = this.props.activeColumns;
-
-        for (var i = 0; i < columns.length; i++)
-        {
-          cells.push(
-            this.makeCell(columns[i].key)
-          );
-        }
-
-        var props: any =
-        {
-          className: "item-purchase-list-item",
-          onClick: this.props.handleClick
-        }
-        if (this.props.playerMoney < this.props.buildCost)
-        {
-          props.onClick = null;
-          props.disabled = true;
-          props.className += " disabled";
-        }
-
-        return(
-          React.DOM.tr(props,
-            cells
-          )
+        cells.push(
+          this.makeCell(columns[i].key)
         );
       }
-    }));
-  }
+
+      var props: any =
+      {
+        className: "item-purchase-list-item",
+        onClick: this.props.handleClick
+      }
+      if (this.props.playerMoney < this.props.buildCost)
+      {
+        props.onClick = null;
+        props.disabled = true;
+        props.className += " disabled";
+      }
+
+      return(
+        React.DOM.tr(props,
+          cells
+        )
+      );
+    }
+  }));
 }

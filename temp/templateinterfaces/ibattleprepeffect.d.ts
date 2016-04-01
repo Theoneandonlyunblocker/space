@@ -1,10 +1,7 @@
-declare namespace Rance
+namespace Templates
 {
-  namespace Templates
+  interface IBattlePrepEffect
   {
-    interface IBattlePrepEffect
-    {
-      (unit: Unit, battlePrep: BattlePrep): void;
-    }
+    (unit: Unit, battlePrep: BattlePrep): void;
   }
 }

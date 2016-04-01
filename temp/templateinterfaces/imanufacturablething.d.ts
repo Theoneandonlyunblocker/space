@@ -1,12 +1,9 @@
-declare namespace Rance
+interface IManufacturableThing
 {
-  interface IManufacturableThing
-  {
-    type: string;
-    displayName: string;
-    description: string;
-    buildCost: number;
+  type: string;
+  displayName: string;
+  description: string;
+  buildCost: number;
 
-    technologyRequirements?: Templates.ITechnologyRequirement[];
-  }
+  technologyRequirements?: Templates.ITechnologyRequirement[];
 }

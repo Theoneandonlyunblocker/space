@@ -2,180 +2,177 @@
 /// <reference path="notification.ts" />
 /// <reference path="player.ts" />
 
-namespace Rance
+export class NotificationFilter
 {
-  export class NotificationFilter
+  filters:
   {
-    filters:
+    [notificationKey: string]: NotificationFilterState[];
+  } = {};
+
+  player: Player;
+
+  constructor(player: Player)
+  {
+    this.player = player;
+
+    this.setDefaultFilterStates();
+    this.load();
+  }
+  setDefaultFilterStates()
+  {
+    var notifications = app.moduleData.Templates.Notifications;
+
+    for (var key in notifications)
     {
-      [notificationKey: string]: NotificationFilterState[];
-    } = {};
-
-    player: Player;
-
-    constructor(player: Player)
-    {
-      this.player = player;
-
-      this.setDefaultFilterStates();
-      this.load();
+      var notificationTemplate = notifications[key];
+      this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
     }
-    setDefaultFilterStates()
+  }
+  shouldDisplayNotification(notification: Notification)
+  {
+    var filterStates = this.filters[notification.template.key];
+    if (filterStates.indexOf(NotificationFilterState.alwaysShow) !== -1)
     {
-      var notifications = app.moduleData.Templates.Notifications;
-
-      for (var key in notifications)
-      {
-        var notificationTemplate = notifications[key];
-        this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
-      }
+      return true;
     }
-    shouldDisplayNotification(notification: Notification)
+    else if (filterStates.indexOf(NotificationFilterState.neverShow) !== -1)
     {
-      var filterStates = this.filters[notification.template.key];
-      if (filterStates.indexOf(NotificationFilterState.alwaysShow) !== -1)
-      {
-        return true;
-      }
-      else if (filterStates.indexOf(NotificationFilterState.neverShow) !== -1)
-      {
-        return false;
-      }
-
-      var playerIsInvolved: boolean = false;
-      for (var key in notification.props)
-      {
-        if (notification.props[key] === this.player)
-        {
-          playerIsInvolved = true;
-          break;
-        }
-      }
-
-      if (playerIsInvolved)
-      {
-        return filterStates.indexOf(NotificationFilterState.showIfInvolved) !== -1
-      }
-
       return false;
     }
-    getCompatibleFilterStates(filterState: NotificationFilterState): NotificationFilterState[]
+
+    var playerIsInvolved: boolean = false;
+    for (var key in notification.props)
     {
-      switch (filterState)
+      if (notification.props[key] === this.player)
       {
-        case NotificationFilterState.alwaysShow:
-        {
-          return [];
-        }
-        case NotificationFilterState.showIfInvolved:
-        {
-          return [];
-        }
-        case NotificationFilterState.neverShow:
-        {
-          return [];
-        }
+        playerIsInvolved = true;
+        break;
       }
     }
-    handleFilterStateChange(filterKey: string, state: NotificationFilterState)
+
+    if (playerIsInvolved)
     {
-      var stateIndex = this.filters[filterKey].indexOf(state);
-      if (stateIndex !== -1)
+      return filterStates.indexOf(NotificationFilterState.showIfInvolved) !== -1
+    }
+
+    return false;
+  }
+  getCompatibleFilterStates(filterState: NotificationFilterState): NotificationFilterState[]
+  {
+    switch (filterState)
+    {
+      case NotificationFilterState.alwaysShow:
       {
-        if (this.filters[filterKey].length === 1)
-        {
-          this.filters[filterKey] = [NotificationFilterState.neverShow];
-        }
-        else
-        {
-          this.filters[filterKey].splice(stateIndex, 1);
-        }
+        return [];
+      }
+      case NotificationFilterState.showIfInvolved:
+      {
+        return [];
+      }
+      case NotificationFilterState.neverShow:
+      {
+        return [];
+      }
+    }
+  }
+  handleFilterStateChange(filterKey: string, state: NotificationFilterState)
+  {
+    var stateIndex = this.filters[filterKey].indexOf(state);
+    if (stateIndex !== -1)
+    {
+      if (this.filters[filterKey].length === 1)
+      {
+        this.filters[filterKey] = [NotificationFilterState.neverShow];
       }
       else
       {
-        var newState: NotificationFilterState[] = [state];
-        var compatibleStates = this.getCompatibleFilterStates(state);
-        for (var i = 0; i < this.filters[filterKey].length; i++)
-        {
-          if (compatibleStates.indexOf(this.filters[filterKey][i]) !== -1)
-          {
-            newState.push(this.filters[filterKey][i]);
-          }
-        }
-        this.filters[filterKey] = newState;
+        this.filters[filterKey].splice(stateIndex, 1);
       }
     }
-    getFiltersByCategory()
+    else
     {
-      var filtersByCategory:
+      var newState: NotificationFilterState[] = [state];
+      var compatibleStates = this.getCompatibleFilterStates(state);
+      for (var i = 0; i < this.filters[filterKey].length; i++)
       {
-        [category: string]:
+        if (compatibleStates.indexOf(this.filters[filterKey][i]) !== -1)
         {
-          notificationTemplate: Templates.INotificationTemplate;
-          filterState: NotificationFilterState[];
-        }[]
-      } = {};
-      var notifications = app.moduleData.Templates.Notifications;
-
-      for (var key in this.filters)
-      {
-        var notificationTemplate = notifications[key];
-        if (notificationTemplate)
-        {
-          if (!filtersByCategory[notificationTemplate.category])
-          {
-            filtersByCategory[notificationTemplate.category] = [];
-          }
-
-          filtersByCategory[notificationTemplate.category].push(
-          {
-            notificationTemplate: notificationTemplate,
-            filterState: this.filters[key]
-          });
+          newState.push(this.filters[filterKey][i]);
         }
       }
-
-      return filtersByCategory;
+      this.filters[filterKey] = newState;
     }
-    setDefaultFilterStatesForCategory(category: string)
+  }
+  getFiltersByCategory()
+  {
+    var filtersByCategory:
     {
-      var byCategory = this.getFiltersByCategory();
-      var forSelectedCategory = byCategory[category];
-
-      for (var i = 0; i < forSelectedCategory.length; i++)
+      [category: string]:
       {
-        var template = forSelectedCategory[i].notificationTemplate;
-        this.filters[template.key] = template.defaultFilterState.slice(0);
-      }
-    }
-    load(slot?: number)
+        notificationTemplate: Templates.INotificationTemplate;
+        filterState: NotificationFilterState[];
+      }[]
+    } = {};
+    var notifications = app.moduleData.Templates.Notifications;
+
+    for (var key in this.filters)
     {
-      var baseString = "Rance.NotificationFilter.";
+      var notificationTemplate = notifications[key];
+      if (notificationTemplate)
+      {
+        if (!filtersByCategory[notificationTemplate.category])
+        {
+          filtersByCategory[notificationTemplate.category] = [];
+        }
 
-      var parsedData: any;
-      if (slot && localStorage[baseString + slot])
-      {
-        parsedData = JSON.parse(localStorage.getItem(baseString + slot));
-      }
-      else
-      {
-        parsedData = getMatchingLocalstorageItemsByDate(baseString)[0];
-      }
-      
-      if (parsedData)
-      {
-        this.filters = extendObject(parsedData.filters, this.filters, false);
+        filtersByCategory[notificationTemplate.category].push(
+        {
+          notificationTemplate: notificationTemplate,
+          filterState: this.filters[key]
+        });
       }
     }
-    save(slot: number = 0)
+
+    return filtersByCategory;
+  }
+  setDefaultFilterStatesForCategory(category: string)
+  {
+    var byCategory = this.getFiltersByCategory();
+    var forSelectedCategory = byCategory[category];
+
+    for (var i = 0; i < forSelectedCategory.length; i++)
     {
-      var data = JSON.stringify(
-      {
-        filters: this.filters,
-        date: new Date()
-      });
-
-      localStorage.setItem("Rance.NotificationFilter." + slot, data);
+      var template = forSelectedCategory[i].notificationTemplate;
+      this.filters[template.key] = template.defaultFilterState.slice(0);
     }
+  }
+  load(slot?: number)
+  {
+    var baseString = "Rance.NotificationFilter.";
+
+    var parsedData: any;
+    if (slot && localStorage[baseString + slot])
+    {
+      parsedData = JSON.parse(localStorage.getItem(baseString + slot));
+    }
+    else
+    {
+      parsedData = getMatchingLocalstorageItemsByDate(baseString)[0];
+    }
+    
+    if (parsedData)
+    {
+      this.filters = extendObject(parsedData.filters, this.filters, false);
+    }
+  }
+  save(slot: number = 0)
+  {
+    var data = JSON.stringify(
+    {
+      filters: this.filters,
+      date: new Date()
+    });
+
+    localStorage.setItem("Rance.NotificationFilter." + slot, data);
   }
 }
