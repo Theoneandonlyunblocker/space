@@ -14,6 +14,22 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
   displayName: string = "UnitListItem";
   mixins: reactTypeTODO_any = [Draggable];
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     if (!this.props.isDraggable) return;
@@ -27,6 +43,22 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidUpdate()
   {
     if (this.needsFirstTouchUpdate && this.refs.dragClone)
@@ -44,6 +76,22 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   onDragStart()
   {
     this.props.onDragStart(this.props.unit);
@@ -72,16 +120,64 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   onDragEnd()
   {
     this.props.onDragEnd();
   }
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleMouseEnter()
   {
     this.props.onMouseEnter(this.props.unit);
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleMouseLeave()
   {
     this.props.onMouseLeave();

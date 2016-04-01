@@ -17,6 +17,22 @@ export default class Tutorial extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [SplitMultilineText];
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -25,11 +41,43 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     this.handleEnterPage(this.props.pages[this.state.currentPage]);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillUnmount()
   {
     this.handleLeavePage(this.props.pages[this.state.currentPage]);
@@ -76,6 +124,22 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     }, this.handleEnterPage.bind(this, this.props.pages[newPage]));
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClose()
   {
     if (Rance.TutorialState[this.props.tutorialId] === tutorialStatus.show)
@@ -84,6 +148,22 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var hasBackArrow = this.state.currentPage > 0;

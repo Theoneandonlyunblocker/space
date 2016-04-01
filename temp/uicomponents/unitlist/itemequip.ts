@@ -13,6 +13,22 @@ export interface PropTypes
 export default class ItemEquip extends React.Component<PropTypes, {}>
 {
   displayName: string = "ItemEquip";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -53,6 +69,22 @@ export default class ItemEquip extends React.Component<PropTypes, {}>
       currentDragItem: null
     });
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleDrop()
   {
     var item = this.state.currentDragItem;
@@ -69,6 +101,22 @@ export default class ItemEquip extends React.Component<PropTypes, {}>
     this.handleDragEnd(true);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var player = this.props.player;

@@ -26,6 +26,22 @@ export default class DefenceBuildingList extends React.Component<PropTypes, {}>
 
     return false;
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     if (!this.props.buildings) return null;

@@ -13,6 +13,22 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
   battle: reactTypeTODO_any = null;
   battleScene: reactTypeTODO_any = null;
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     var side1Units: Unit[] = [];
@@ -47,6 +63,22 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
@@ -55,12 +87,44 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     battleScene.updateUnits()
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   makeUnit()
   {
     var template = getRandomProperty(app.moduleData.Templates.Units);
     return new Rance.Unit(template, this.idGenerator++);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   makePlayer()
   {
     var player = new Player(false, this.idGenerator++);
@@ -129,6 +193,22 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     this.battleScene.updateUnits();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClearHover()
   {
     this.battleScene.hoveredUnit = null;
@@ -171,6 +251,22 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleTestAbility1()
   {
     var overlayTestFN = function(color: number, params: Templates.SFXParams)
@@ -255,6 +351,22 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   useSelectedAbility()
   {
     var user = this.state.activeUnit;
@@ -312,6 +424,22 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     return unitElements;
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var battle: Battle = this.battle;

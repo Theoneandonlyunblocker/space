@@ -12,6 +12,22 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitExperience";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -19,6 +35,22 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
       upgradePopupId: undefined
     });
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   makePopup()
   {
     var popupId = this.refs.popupManager.makePopup(
@@ -46,6 +78,22 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
       upgradePopupId: popupId
     });
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   closePopup()
   {
     this.refs.popupManager.closePopup(this.state.upgradePopupId);
@@ -54,6 +102,22 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
       upgradePopupId: undefined
     });
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleUnitUpgrade()
   {
     if (!this.props.unit.canLevelUp())
@@ -66,6 +130,22 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
     }
     this.props.onUnitUpgrade();
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var rows: ReactDOMPlaceHolder[] = [];

@@ -16,12 +16,44 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
   displayName: string = "BuildingUpgradeListItem";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
     {
       canAfford: this.props.player.money >= this.props.upgradeData.cost
     });
+  }
+  
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
   }
   
   overrideHandleMoneyChange()
@@ -32,11 +64,43 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
     })
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClick()
   {
     this.props.handleUpgrade(this.props.upgradeData);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var upgradeData: IBuildingUpgradeData = this.props.upgradeData;

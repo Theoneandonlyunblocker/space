@@ -23,6 +23,22 @@ export default class MapGenOption extends React.Component<PropTypes, {}>
     return newProps.value !== this.props.value;
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var option: Templates.IMapGenOption = this.props.option;

@@ -13,6 +13,22 @@ export default class DiplomaticStatusPlayer extends React.Component<PropTypes, {
 {
   displayName: string = "DiplomaticStatusPlayer";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -86,6 +102,22 @@ export default class DiplomaticStatusPlayer extends React.Component<PropTypes, {
         className: className
       }, this.props[type])
     );
+  }
+  
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
   }
   
   render()

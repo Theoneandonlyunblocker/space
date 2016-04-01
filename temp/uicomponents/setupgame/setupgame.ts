@@ -13,6 +13,22 @@ export default class SetupGame extends React.Component<PropTypes, {}>
 {
   displayName: string = "SetupGame";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -35,6 +51,22 @@ export default class SetupGame extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   startGame()
   {
     var playerData: any = {};
@@ -51,12 +83,44 @@ export default class SetupGame extends React.Component<PropTypes, {}>
     app.makeGameFromSetup(map, players);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   randomize()
   {
     this.refs.players.randomizeAllPlayers();
     this.refs.mapSetup.refs.mapGenOptions.randomizeOptions();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     return(

@@ -12,6 +12,22 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
   mixins: reactTypeTODO_any = [Draggable, DropTarget, React.addons.PureRenderMixin];
   cachedMidPoint: reactTypeTODO_any = undefined;
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -30,11 +46,43 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
   }
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   onDragStart()
   {
     this.props.onDragStart(this.props.layer);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   onDragEnd()
   {
     this.props.onDragEnd();
@@ -58,6 +106,22 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     this.props.setHoverPosition(this.props.layer, isAbove);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   clearHover()
   {
     this.setState(
@@ -78,6 +142,22 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     this.forceUpdate();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var divProps: any =

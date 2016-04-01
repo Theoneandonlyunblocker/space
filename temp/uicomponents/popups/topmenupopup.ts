@@ -10,6 +10,22 @@ export default class TopMenuPopup extends React.Component<PropTypes, {}>
 {
   displayName: string = "TopMenuPopup";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var contentProps = this.props.contentProps;

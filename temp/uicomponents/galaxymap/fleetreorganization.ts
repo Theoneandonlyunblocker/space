@@ -16,6 +16,22 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
   displayName: string = "FleetReorganization";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -54,12 +70,44 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     this.handleDragEnd(true);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClose()
   {
     this.hasClosed = true;
     this.props.closeReorganization();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillUnmount()
   {
     if (this.hasClosed) return;
@@ -67,6 +115,22 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     eventManager.dispatchEvent("endReorganizingFleets");
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var selectedFleets: Rance.Fleet[] = this.props.fleets;

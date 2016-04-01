@@ -14,6 +14,22 @@ export default class UnitStatus extends React.Component<PropTypes, {}>
   displayName: string = "UnitStatus";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var statusElement: ReactDOMPlaceHolder = null;

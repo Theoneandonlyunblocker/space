@@ -12,6 +12,22 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
 {
   displayName: string = "SetupGamePlayers";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     this.newPlayerId = 0;
@@ -99,6 +115,22 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     this.setState({activeColorPicker: colorPicker});
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   randomizeAllPlayers()
   {
     for (var id in this.refs)
@@ -109,6 +141,22 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   makeAllPlayers()
   {
     var players: Player[] = [];
@@ -120,6 +168,22 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     return players;
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var playerSetups: any[] = [];

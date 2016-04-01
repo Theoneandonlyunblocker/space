@@ -26,6 +26,22 @@ export default class MapModeSelector extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   makeOptions()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
@@ -47,6 +63,22 @@ export default class MapModeSelector extends React.Component<PropTypes, {}>
   }
   
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;

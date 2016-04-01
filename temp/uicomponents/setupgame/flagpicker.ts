@@ -9,6 +9,22 @@ export interface PropTypes
 export default class FlagPicker extends React.Component<PropTypes, {}>
 {
   displayName: string = "FlagPicker";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     var initialEmblem: Templates.ISubEmblemTemplate = null;
@@ -34,11 +50,43 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
     this.setState({selectedEmblem: emblemTemplate});
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   clearSelectedEmblem()
   {
     this.handleSelectEmblem(null);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleUpload()
   {
     if (!this.props.uploadFiles) throw new Error();
@@ -72,6 +120,22 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
     );
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var emblems: any[] = [];

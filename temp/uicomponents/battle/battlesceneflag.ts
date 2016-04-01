@@ -15,6 +15,22 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
   flagCanvas: reactTypeTODO_any = null;
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     this.setFlag();
@@ -22,16 +38,64 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
     window.addEventListener("resize", this.handleResize, false);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleResize()
   {
     this.setFlag();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   setFlag()
   {
     var DOMNode = this.getDOMNode();
@@ -44,6 +108,22 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
     this.getDOMNode().appendChild(this.flagCanvas);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   drawFlag()
   {
     var bounds = this.getDOMNode().getBoundingClientRect();
@@ -76,6 +156,22 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
     return canvas
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     return(

@@ -18,6 +18,22 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
   displayName: string = "IntroTutorial";
   popupId: reactTypeTODO_any = null;
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -27,6 +43,22 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
   }
   
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     if (!this.state.show)
@@ -62,6 +94,22 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillUnmount()
   {
     if (this.popupId)
@@ -70,12 +118,44 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   closePopup()
   {
     this.refs.popupManager.closePopup(this.popupId);
     this.popupId = null;
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     if (!this.state.show)

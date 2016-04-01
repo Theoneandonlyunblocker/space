@@ -15,6 +15,22 @@ export default class PopupManager extends React.Component<PropTypes, {}>
   popupId: number = 0;
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillMount()
   {
     this.listeners = {};
@@ -36,6 +52,22 @@ export default class PopupManager extends React.Component<PropTypes, {}>
       });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillUnmount()
   {
     for (var listenerId in this.listeners)
@@ -44,6 +76,22 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -52,6 +100,22 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getHighestZIndexPopup()
   {
     if (this.state.popups.length === 0) return null;
@@ -101,6 +165,22 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getPopupId()
   {
     return this.popupId++;
@@ -198,6 +278,22 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var popups = this.state.popups;

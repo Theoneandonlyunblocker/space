@@ -30,16 +30,64 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
 
     this.bindMethods();
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   private bindMethods()
   {
     this.getPlayerPriority = this.getPlayerPriority.bind(this);
     this.updatePriority = this.updatePriority.bind(this);
     this.handlePriorityChange = this.handlePriorityChange.bind(this);
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   private componentDidMount()
   {
     Rance.eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   private componentWillUnmount()
   {
     Rance.eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
@@ -48,10 +96,42 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
   {
     return this.props.playerTechnology.technologies[this.props.technology.key].priorityIsLocked;
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   private getPlayerPriority()
   {
     return this.props.playerTechnology.technologies[this.props.technology.key].priority;
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   private updatePriority()
   {
     this.setState(
@@ -69,6 +149,22 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
     var target = <HTMLInputElement> e.target;
     this.props.playerTechnology.setTechnologyPriority(this.props.technology, parseFloat(target.value));
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   public render()
   {
     return(

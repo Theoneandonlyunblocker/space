@@ -19,16 +19,64 @@ export default class TradeMoney extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [Draggable];
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   onDragStart()
   {
     this.props.onDragStart(this.props.keyTODO/*TODO react*/);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   onDragEnd()
   {
     this.props.onDragEnd();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClick()
   {
     this.props.onClick(this.props.keyTODO/*TODO react*/);
@@ -47,6 +95,22 @@ export default class TradeMoney extends React.Component<PropTypes, {}>
     e.stopPropagation();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var rowProps: any =

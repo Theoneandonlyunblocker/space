@@ -10,10 +10,42 @@ export default class Notification extends React.Component<PropTypes, {}>
 {
   displayName: string = "Notification";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClose()
   {
     this.props.markAsRead(this.props.notification);
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClick()
   {
     this.props.togglePopup(this.props.notification);
@@ -25,6 +57,22 @@ export default class Notification extends React.Component<PropTypes, {}>
     this.handleClose();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var notification: Notification = this.props.notification;

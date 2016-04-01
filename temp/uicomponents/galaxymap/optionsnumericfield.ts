@@ -18,6 +18,22 @@ export default class OptionsNumericField extends React.Component<PropTypes, {}>
   displayName: string = "OptionsNumericField";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -35,6 +51,22 @@ export default class OptionsNumericField extends React.Component<PropTypes, {}>
   }
   
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   triggerOnChangeFN()
   {
     this.props.onChangeFN(this.state.value);
@@ -58,6 +90,22 @@ export default class OptionsNumericField extends React.Component<PropTypes, {}>
     }, this.triggerOnChangeFN);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var inputId = "" + this.props.id + "-input";

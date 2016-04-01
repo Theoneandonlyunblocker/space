@@ -11,6 +11,22 @@ export interface PropTypes
 export default class UnitActions extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitActions";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var availableSrc = "img\/icons\/availableAction.png";

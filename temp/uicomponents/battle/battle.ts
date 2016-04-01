@@ -30,6 +30,22 @@ export default class Battle extends React.Component<PropTypes, {}>
   battleStartStartTime: reactTypeTODO_any = undefined;
   battleEndStartTime: reactTypeTODO_any = undefined;
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -64,11 +80,43 @@ export default class Battle extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     this.battleStartStartTime = Date.now();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   endBattleStart()
   {
     if (Date.now() < this.battleStartStartTime + 1000) return;
@@ -83,11 +131,43 @@ export default class Battle extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getBlurArea()
   {
     return this.refs.formationsContainer.getDOMNode().getBoundingClientRect();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   clearHoveredUnit()
   {
     this.tempHoveredUnit = null;
@@ -346,6 +426,22 @@ export default class Battle extends React.Component<PropTypes, {}>
     });
     */
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   clearBattleEffect()
   {
     var newHoveredUnit: Unit = null;
@@ -372,6 +468,22 @@ export default class Battle extends React.Component<PropTypes, {}>
     }, afterStateUpdateCallback);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleTurnEnd()
   {
     if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable())
@@ -395,6 +507,22 @@ export default class Battle extends React.Component<PropTypes, {}>
       this.useAIAbility();
     }
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   usePreparedAbility()
   {
     var unit: Unit = this.props.battle.activeUnit;
@@ -409,6 +537,22 @@ export default class Battle extends React.Component<PropTypes, {}>
   {
     this.handleAbilityUse(ability, target, true);
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   useAIAbility()
   {
     if (!this.props.battle.activeUnit || this.props.battle.ended) return;
@@ -423,6 +567,22 @@ export default class Battle extends React.Component<PropTypes, {}>
     this.handleAbilityUse(move.ability, target, false);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   finishBattle()
   {
     if (Date.now() < this.battleEndStartTime + 1000) return;
@@ -459,6 +619,22 @@ export default class Battle extends React.Component<PropTypes, {}>
     });
 */
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleMouseLeaveAbility()
   {
     this.setState(
@@ -470,6 +646,22 @@ export default class Battle extends React.Component<PropTypes, {}>
   }
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var battle = this.props.battle;

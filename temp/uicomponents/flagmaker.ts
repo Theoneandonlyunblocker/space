@@ -12,6 +12,22 @@ export default class FlagMaker extends React.Component<PropTypes, {}>
 {
   setStateTimeout: reactTypeTODO_any = undefined;
   sizeValue: number = 46;
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -35,10 +51,42 @@ export default class FlagMaker extends React.Component<PropTypes, {}>
       this.setStateTimeout = window.setTimeout(this.setState.bind(this, {size: value}), 500);
     }
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   makeFlags()
   {
     this.forceUpdate();
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var flagElements: ReactComponentPlaceHolder[] = [];

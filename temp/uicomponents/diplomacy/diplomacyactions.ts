@@ -17,6 +17,22 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
   displayName: string = "DiplomacyActions";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -90,17 +106,65 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleDeclareWar()
   {
     this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
     this.props.onUpdate();
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleMakePeace()
   {
     this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
     this.props.onUpdate();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var player = this.props.player;

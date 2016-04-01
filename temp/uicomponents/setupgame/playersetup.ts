@@ -13,6 +13,22 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
 {
   displayName: string = "PlayerSetup";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -45,6 +61,22 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
       return generateSecondaryColor(mainColor);
     }
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleSetHuman()
   {
     this.props.setHuman(this.props.keyTODO/*TODO react*/);
@@ -64,6 +96,22 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
   {
     this.setState({subColor: isNull ? null : color});
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleRemove()
   {
     this.props.removePlayers([this.props.keyTODO/*TODO react*/]);
@@ -72,6 +120,22 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
   {
     this.setState({flagHasCustomImage: Boolean(image)});
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   randomize()
   {
     if (!this.state.flagHasCustomImage)
@@ -87,6 +151,22 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
       subColor: generateSecondaryColor(mainColor)
     });
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   makePlayer()
   {
     var player = new Player(!this.props.isHuman);
@@ -122,6 +202,22 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
 
     return player;
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     return(

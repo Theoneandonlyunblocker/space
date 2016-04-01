@@ -24,6 +24,22 @@ export default class AbilityTooltip extends React.Component<PropTypes, {}>
     }
     return false;
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var abilities = this.props.activeTargets[this.props.targetUnit.id];

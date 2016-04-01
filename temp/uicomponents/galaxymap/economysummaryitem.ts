@@ -33,6 +33,22 @@ export default class EconomySummaryItem extends React.Component<PropTypes, {}>
     );
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var columns = this.props.activeColumns;

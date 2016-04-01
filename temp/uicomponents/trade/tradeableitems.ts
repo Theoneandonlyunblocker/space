@@ -27,11 +27,43 @@ export default class TradeableItems extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [DropTarget];
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleMouseUp()
   {
     this.props.onMouseUp();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var divProps: any =

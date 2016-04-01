@@ -22,6 +22,22 @@ export default class TopMenu extends React.Component<PropTypes, {}>
   cachedMenuButtonWidth: number = 37;
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(
@@ -32,6 +48,22 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     window.addEventListener("resize", this.handleResize, false);
@@ -41,6 +73,22 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     this.handleResize();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
@@ -48,17 +96,65 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleToggleHamburger()
   {
     this.handleResize();
     this.forceUpdate();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   delayedResize()
   {
     window.setTimeout(this.handleResize, 0);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleResize()
   {
     if (!this.cachedTopMenuWidth)
@@ -156,6 +252,22 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   toggleCondensedMenu()
   {
     this.setState(
@@ -164,6 +276,22 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var menuItemTabIndex = this.state.opened ? -1 : 0;

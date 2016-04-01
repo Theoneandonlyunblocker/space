@@ -20,6 +20,22 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
 {
   displayName: string = "GalaxyMapUI";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     var pc = this.props.playerControl;
@@ -37,6 +53,22 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillMount()
   {
     eventManager.addEventListener("playerControlUpdated",
@@ -45,6 +77,22 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     eventManager.addEventListener("endTurn",
       this.setPlayerTurn);
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillUnmount()
   {
     eventManager.removeEventListener("playerControlUpdated",
@@ -54,11 +102,43 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
       this.setPlayerTurn);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidUpdate()
   {
     this.clampExpandedActionElement();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   clampExpandedActionElement()
   {
     if (!this.state.expandedActionElement) return;
@@ -68,11 +148,43 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   endTurn()
   {
     this.props.game.endTurn();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   setPlayerTurn()
   {
     this.setState(
@@ -89,11 +201,43 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   toggleMapModeSettingsExpanded()
   {
     this.setState({hasMapModeSettingsExpanded: !this.state.hasMapModeSettingsExpanded});
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   updateSelection()
   {
     var pc = this.props.playerControl;
@@ -115,12 +259,44 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   closeReorganization()
   {
     eventManager.dispatchEvent("endReorganizingFleets");
     this.updateSelection();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var endTurnButtonProps: any =

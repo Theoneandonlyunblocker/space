@@ -13,15 +13,63 @@ export interface PropTypes
 export default class FleetSelection extends React.Component<PropTypes, {}>
 {
   displayName: string = "FleetSelection";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   mergeFleets()
   {
     eventManager.dispatchEvent("mergeFleets", null);
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   reorganizeFleets()
   {
     eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   setElementPosition()
   {
     if (!this.refs.selected) return;
@@ -60,6 +108,22 @@ export default class FleetSelection extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     this.setElementPosition();
@@ -68,17 +132,65 @@ export default class FleetSelection extends React.Component<PropTypes, {}>
     window.addEventListener("resize", this.setElementPosition, false);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidUpdate()
   {
     this.setElementPosition()
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillUnmount()
   {
     eventManager.removeEventListener("possibleActionsUpdated", this.setElementPosition);
     window.removeEventListener("resize", this.setElementPosition)
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var selectedFleets: Fleet[] = this.props.selectedFleets;

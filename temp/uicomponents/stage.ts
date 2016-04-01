@@ -29,6 +29,22 @@ export interface PropTypes
 export default class Stage extends React.Component<PropTypes, {}>
 {
   displayName: string = "Stage";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   changeScene()
   {
     var newScene = this.refs.sceneSelector.getDOMNode().value;
@@ -36,6 +52,22 @@ export default class Stage extends React.Component<PropTypes, {}>
     this.props.changeSceneFunction(newScene);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var elementsToRender: ReactComponentPlaceHolder[] = [];

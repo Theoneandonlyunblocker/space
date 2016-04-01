@@ -11,11 +11,43 @@ export default class ConfirmPopup extends React.Component<PropTypes, {}>
   displayName: string = "ConfirmPopup";
   mixins: reactTypeTODO_any = [SplitMultilineText];
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     this.refs.okButton.getDOMNode().focus();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleOk()
   {
     if (!this.props.handleOk)
@@ -31,6 +63,22 @@ export default class ConfirmPopup extends React.Component<PropTypes, {}>
       this.handleClose();
     }
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClose()
   {
     if (this.props.handleClose)
@@ -40,6 +88,22 @@ export default class ConfirmPopup extends React.Component<PropTypes, {}>
     this.props.closePopup();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var content: ReactComponentPlaceHolder;

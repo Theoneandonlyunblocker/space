@@ -13,6 +13,22 @@ export default class MapSetup extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapSetup";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     var mapGenTemplates: Templates.IMapGenTemplate[] = [];
@@ -33,11 +49,43 @@ export default class MapSetup extends React.Component<PropTypes, {}>
     });
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     this.updatePlayerLimits();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   updatePlayerLimits()
   {
     this.props.setPlayerLimits(
@@ -56,6 +104,22 @@ export default class MapSetup extends React.Component<PropTypes, {}>
     }, this.updatePlayerLimits);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getMapSetupInfo()
   {
     return(
@@ -63,6 +127,22 @@ export default class MapSetup extends React.Component<PropTypes, {}>
       template: this.state.selectedTemplate,
       optionValues: this.refs.mapGenOptions.getOptionValuesForTemplate()
     });
+  }
+  
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
   }
   
   render()

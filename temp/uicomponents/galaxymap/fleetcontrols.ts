@@ -15,21 +15,85 @@ export default class FleetControls extends React.Component<PropTypes, {}>
   displayName: string = "FleetControls";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   deselectFleet()
   {
     eventManager.dispatchEvent("deselectFleet", this.props.fleet);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   selectFleet()
   {
     eventManager.dispatchEvent("selectFleets", [this.props.fleet]);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   splitFleet()
   {
     eventManager.dispatchEvent("splitFleet", this.props.fleet);
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var fleet: Rance.Fleet = this.props.fleet;
