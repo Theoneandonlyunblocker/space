@@ -7,7 +7,7 @@ export default class AttitudeModifierInfo extends React.Component<PropTypes, {}>
 {
   displayName: string = "AttitudeModifierInfo";
 
-  makeCell: function(type: string)
+  makeCell(type: string)
   {
     var cellProps: any = {};
     cellProps.key = type;
@@ -64,7 +64,7 @@ export default class AttitudeModifierInfo extends React.Component<PropTypes, {}>
     );
   }
 
-  render: function()
+  render()
   {
     var columns = this.props.activeColumns;
 

@@ -20,7 +20,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
   cachedPopupRects: {}
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -34,7 +34,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
       technologies: undefined
     });
   }
-  closePopup: function(popupType: string)
+  closePopup(popupType: string)
   {
     var popupNode = this.refs.popupManager.refs[this.state[popupType]].getDOMNode();
     this.cachedPopupRects[popupType] = popupNode.getBoundingClientRect();
@@ -50,7 +50,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
     }
   }
 
-  makePopup: function(popupType: string)
+  makePopup(popupType: string)
   {
     if (!this.cachedPopupRects[popupType])
     {
@@ -173,7 +173,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
     this.setState(stateObj)
   }
 
-  togglePopup: function(popupType: string)
+  togglePopup(popupType: string)
   {
     if (isFinite(this.state[popupType]))
     {
@@ -185,7 +185,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     return(
       UIComponents.PopupManager(

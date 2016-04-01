@@ -13,12 +13,12 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapGenOptions";
 
-  getInitialState: function()
+  getInitialState()
   {
     return this.getDefaultValues(this.props.mapGenTemplate);
   }
 
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     if (newProps.mapGenTemplate.key !== this.props.mapGenTemplate.key)
     {
@@ -26,7 +26,7 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     }
   }
 
-  getDefaultValues: function(mapGenTemplate: Templates.IMapGenTemplate, unsetOnly: boolean = true)
+  getDefaultValues(mapGenTemplate: Templates.IMapGenTemplate, unsetOnly: boolean = true)
   {
     var defaultValues = {};
 
@@ -65,12 +65,12 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     return defaultValues;
   }
 
-  resetValuesToDefault: function()
+  resetValuesToDefault()
   {
     this.setState(this.getDefaultValues(this.props.mapGenTemplate, false));
   }
 
-  handleOptionChange: function(optionName: string, newValue: number)
+  handleOptionChange(optionName: string, newValue: number)
   {
     var changedState: any = {};
     changedState["optionValue_" + optionName] = newValue;
@@ -78,12 +78,12 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     this.setState(changedState);
   }
 
-  getOptionValue: function(optionName: string)
+  getOptionValue(optionName: string)
   {
     return this.state["optionValue_" + optionName];
   }
 
-  randomizeOptions: function()
+  randomizeOptions()
   {
     var newValues: any = {};
 
@@ -102,7 +102,7 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     this.setState(newValues);
   }
 
-  getOptionValuesForTemplate: function(): Templates.IMapGenOptionValues
+  getOptionValuesForTemplate(): Templates.IMapGenOptionValues
   {
     var optionValues: Templates.IMapGenOptionValues =
       extendObject(this.props.mapGenTemplate.options);
@@ -126,7 +126,7 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     return optionValues;
   }
 
-  render: function()
+  render()
   {
     var optionGroups: ReactComponentPlaceHolder[] = [];
 

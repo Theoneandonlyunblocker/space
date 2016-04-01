@@ -13,17 +13,17 @@ export default class TechnologiesList extends React.Component<PropTypes, {}>
   updateListener: reactTypeTODO_any = undefined;
 
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.updateListener = eventManager.addEventListener(
       "builtBuildingWithEffect_research", this.forceUpdate.bind(this));
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     eventManager.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
   }
-  render: function()
+  render()
   {
     var playerTechnology: PlayerTechnology = this.props.playerTechnology;
     

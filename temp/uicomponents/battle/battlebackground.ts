@@ -14,7 +14,7 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleBackground";
 
-  handleResize: function()
+  handleResize()
   {
     // TODO this seems to trigger before any breakpoints, leading to 1 px immediately after
     // breakpoint where blurArea isnt correctly determined
@@ -30,7 +30,7 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
     ];
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.props.renderer.isBattleBackground = true;
 
@@ -39,13 +39,13 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
     window.addEventListener("resize", this.handleResize, false);
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
     this.props.renderer.removeRendererView();
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

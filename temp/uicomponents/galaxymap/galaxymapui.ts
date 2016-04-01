@@ -17,7 +17,7 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
 {
   displayName: string = "GalaxyMapUI";
 
-  getInitialState: function()
+  getInitialState()
   {
     var pc = this.props.playerControl;
 
@@ -34,7 +34,7 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     });
   }
 
-  componentWillMount: function()
+  componentWillMount()
   {
     eventManager.addEventListener("playerControlUpdated",
       this.updateSelection);
@@ -42,7 +42,7 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     eventManager.addEventListener("endTurn",
       this.setPlayerTurn);
   }
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     eventManager.removeEventListener("playerControlUpdated",
       this.updateSelection);
@@ -51,12 +51,12 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
       this.setPlayerTurn);
   }
 
-  componentDidUpdate: function()
+  componentDidUpdate()
   {
     this.clampExpandedActionElement();
   }
 
-  clampExpandedActionElement: function()
+  clampExpandedActionElement()
   {
     if (!this.state.expandedActionElement) return;
 
@@ -65,12 +65,12 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
   }
 
-  endTurn: function()
+  endTurn()
   {
     this.props.game.endTurn();
   }
 
-  setPlayerTurn: function()
+  setPlayerTurn()
   {
     this.setState(
     {
@@ -78,7 +78,7 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     });
   }
 
-  setExpandedActionElement: function(element: ReactComponentPlaceHolder)
+  setExpandedActionElement(element: ReactComponentPlaceHolder)
   {
     this.setState(
     {
@@ -86,12 +86,12 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     });
   }
 
-  toggleMapModeSettingsExpanded: function()
+  toggleMapModeSettingsExpanded()
   {
     this.setState({hasMapModeSettingsExpanded: !this.state.hasMapModeSettingsExpanded});
   }
 
-  updateSelection: function()
+  updateSelection()
   {
     var pc = this.props.playerControl;
 
@@ -112,13 +112,13 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     });
   }
 
-  closeReorganization: function()
+  closeReorganization()
   {
     eventManager.dispatchEvent("endReorganizingFleets");
     this.updateSelection();
   }
 
-  render: function()
+  render()
   {
     var endTurnButtonProps: any =
     {

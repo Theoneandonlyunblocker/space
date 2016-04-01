@@ -26,14 +26,14 @@ export interface PropTypes
 export default class Stage extends React.Component<PropTypes, {}>
 {
   displayName: string = "Stage";
-  changeScene: function()
+  changeScene()
   {
     var newScene = this.refs.sceneSelector.getDOMNode().value;
 
     this.props.changeSceneFunction(newScene);
   }
 
-  render: function()
+  render()
   {
     var elementsToRender: ReactComponentPlaceHolder[] = [];
 

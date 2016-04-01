@@ -10,7 +10,7 @@ export default class MapSetup extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapSetup";
 
-  getInitialState: function()
+  getInitialState()
   {
     var mapGenTemplates: Templates.IMapGenTemplate[] = [];
 
@@ -30,12 +30,12 @@ export default class MapSetup extends React.Component<PropTypes, {}>
     });
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.updatePlayerLimits();
   }
 
-  updatePlayerLimits: function()
+  updatePlayerLimits()
   {
     this.props.setPlayerLimits(
     {
@@ -44,7 +44,7 @@ export default class MapSetup extends React.Component<PropTypes, {}>
     });
   }
 
-  setTemplate: function(e: Event)
+  setTemplate(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     this.setState(
@@ -53,7 +53,7 @@ export default class MapSetup extends React.Component<PropTypes, {}>
     }, this.updatePlayerLimits);
   }
 
-  getMapSetupInfo: function()
+  getMapSetupInfo()
   {
     return(
     {
@@ -62,7 +62,7 @@ export default class MapSetup extends React.Component<PropTypes, {}>
     });
   }
   
-  render: function()
+  render()
   {
     var mapGenTemplateOptions: ReactDOMPlaceHolder[] = [];
     for (var i = 0; i < this.state.templates.length; i++)

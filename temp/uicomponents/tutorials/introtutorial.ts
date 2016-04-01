@@ -15,7 +15,7 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
   displayName: string = "IntroTutorial";
   popupId: reactTypeTODO_any = null;
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -24,7 +24,7 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
   }
   
 
-  componentDidMount: function()
+  componentDidMount()
   {
     if (!this.state.show)
     {
@@ -59,7 +59,7 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
     });
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     if (this.popupId)
     {
@@ -67,13 +67,13 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
     }
   }
 
-  closePopup: function()
+  closePopup()
   {
     this.refs.popupManager.closePopup(this.popupId);
     this.popupId = null;
   }
 
-  render: function()
+  render()
   {
     if (!this.state.show)
     {

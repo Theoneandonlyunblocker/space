@@ -8,12 +8,12 @@ export default class ConfirmPopup extends React.Component<PropTypes, {}>
   displayName: string = "ConfirmPopup";
   mixins: reactTypeTODO_any = [SplitMultilineText];
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.refs.okButton.getDOMNode().focus();
   }
 
-  handleOk: function()
+  handleOk()
   {
     if (!this.props.handleOk)
     {
@@ -28,7 +28,7 @@ export default class ConfirmPopup extends React.Component<PropTypes, {}>
       this.handleClose();
     }
   }
-  handleClose: function()
+  handleClose()
   {
     if (this.props.handleClose)
     {
@@ -37,7 +37,7 @@ export default class ConfirmPopup extends React.Component<PropTypes, {}>
     this.props.closePopup();
   }
 
-  render: function()
+  render()
   {
     var content: ReactComponentPlaceHolder;
     if (this.props.contentText)

@@ -12,18 +12,18 @@ export default class TopBar extends React.Component<PropTypes, {}>
   displayName: string = "TopBar";
   updateListener: reactTypeTODO_any = undefined;
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.updateListener = eventManager.addEventListener(
       "builtBuildingWithEffect_income", this.forceUpdate.bind(this));
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     eventManager.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
   }
 
-  render: function()
+  render()
   {
     var player: Player = this.props.player;
 

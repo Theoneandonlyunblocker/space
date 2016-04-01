@@ -6,7 +6,7 @@ export interface PropTypes
 export default class BattleDisplayStrength extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleDisplayStrength";
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -15,26 +15,26 @@ export default class BattleDisplayStrength extends React.Component<PropTypes, {}
     });
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.animateDisplayedStrength(this.props.from, this.props.to, this.props.delay);
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     if (this.activeTween)
     {
       this.activeTween.stop();
     }
   }
-  updateDisplayStrength: function(newAmount: number)
+  updateDisplayStrength(newAmount: number)
   {
     this.setState(
     {
       displayedStrength: newAmount
     });
   }
-  animateDisplayedStrength: function(from: number, newAmount: number, time: number)
+  animateDisplayedStrength(from: number, newAmount: number, time: number)
   {
     var self = this;
     var stopped = false;
@@ -84,7 +84,7 @@ export default class BattleDisplayStrength extends React.Component<PropTypes, {}
     animateTween();
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div({className: "unit-strength-battle-display"},

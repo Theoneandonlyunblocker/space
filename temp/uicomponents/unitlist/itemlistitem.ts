@@ -8,17 +8,17 @@ export default class ItemListItem extends React.Component<PropTypes, {}>
   displayName: string = "ItemListItem";
   mixins: reactTypeTODO_any = [Draggable];
 
-  onDragStart: function()
+  onDragStart()
   {
     console.log("onDragStart", this.props.item.template.displayName);
     this.props.onDragStart(this.props.item);
   }
-  onDragEnd: function()
+  onDragEnd()
   {
     this.props.onDragEnd();
   }
 
-  makeCell: function(type: string)
+  makeCell(type: string)
   {
     var cellProps: any = {};
     cellProps.key = type;
@@ -56,7 +56,7 @@ export default class ItemListItem extends React.Component<PropTypes, {}>
     );
   }
 
-  makeDragClone: function()
+  makeDragClone()
   {
     var clone = new Image();
     clone.src = this.props.item.template.icon;
@@ -65,7 +65,7 @@ export default class ItemListItem extends React.Component<PropTypes, {}>
     return clone;
   }
 
-  render: function()
+  render()
   {
     var item = this.props.item;
     var columns = this.props.activeColumns;

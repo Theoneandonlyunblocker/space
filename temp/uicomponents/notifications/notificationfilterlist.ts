@@ -10,7 +10,7 @@ export interface PropTypes
 export default class NotificationFilterList extends React.Component<PropTypes, {}>
 {
   displayName: string = "NotificationFilterList";
-  handleResetCategory: function(category: string)
+  handleResetCategory(category: string)
   {
     var filter: NotificationFilter = this.props.filter;
     filter.setDefaultFilterStatesForCategory(category);
@@ -18,7 +18,7 @@ export default class NotificationFilterList extends React.Component<PropTypes, {
     this.forceUpdate();
     eventManager.dispatchEvent("updateNotificationLog");
   }
-  scrollToHighlighted: function()
+  scrollToHighlighted()
   {
     if (this.props.highlightedOptionKey)
     {
@@ -27,7 +27,7 @@ export default class NotificationFilterList extends React.Component<PropTypes, {
       domNode.scrollTop = highlightedNode.offsetTop + domNode.scrollHeight / 3;
     }
   }
-  render: function()
+  render()
   {
     var filter: Rance.NotificationFilter = this.props.filter;
 

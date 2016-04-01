@@ -7,7 +7,7 @@ export default class UnitStatusEffects extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitStatusEffects";
 
-  render: function()
+  render()
   {
     var statusEffects: ReactDOMPlaceHolder[] = [];
 

@@ -10,14 +10,14 @@ export default class DiplomaticStatusPlayer extends React.Component<PropTypes, {
 {
   displayName: string = "DiplomaticStatusPlayer";
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
       hasAttitudeModifierTootlip: false
     });
   }
-  makeCell: function(type: string)
+  makeCell(type: string)
   {
     var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
 
@@ -85,7 +85,7 @@ export default class DiplomaticStatusPlayer extends React.Component<PropTypes, {
     );
   }
   
-  render: function()
+  render()
   {
     var columns = this.props.activeColumns;
 

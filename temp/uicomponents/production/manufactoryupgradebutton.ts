@@ -15,7 +15,7 @@ export default class ManufactoryUpgradeButton extends React.Component<PropTypes,
   displayName: string = "ManufactoryUpgradeButton";
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -24,7 +24,7 @@ export default class ManufactoryUpgradeButton extends React.Component<PropTypes,
     });
   }
 
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     this.setState(
     {
@@ -33,7 +33,7 @@ export default class ManufactoryUpgradeButton extends React.Component<PropTypes,
     })
   }
 
-  render: function()
+  render()
   {
     var unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
     var unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";

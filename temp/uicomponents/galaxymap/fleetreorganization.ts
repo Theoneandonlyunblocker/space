@@ -13,7 +13,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
   displayName: string = "FleetReorganization";
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -21,7 +21,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     });
   }
 
-  handleDragStart: function(unit: Unit)
+  handleDragStart(unit: Unit)
   {
     this.setState(
     {
@@ -29,7 +29,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     });
   }
 
-  handleDragEnd: function(dropSuccesful: boolean = false)
+  handleDragEnd(dropSuccesful: boolean = false)
   {
     this.setState(
     {
@@ -37,7 +37,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     });
   }
 
-  handleDrop: function(fleet: Fleet)
+  handleDrop(fleet: Fleet)
   {
     var draggingUnit = this.state.currentDragUnit;
     if (draggingUnit)
@@ -51,20 +51,20 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     this.handleDragEnd(true);
   }
 
-  handleClose: function()
+  handleClose()
   {
     this.hasClosed = true;
     this.props.closeReorganization();
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     if (this.hasClosed) return;
 
     eventManager.dispatchEvent("endReorganizingFleets");
   }
 
-  render: function()
+  render()
   {
     var selectedFleets: Rance.Fleet[] = this.props.fleets;
     if (!selectedFleets || selectedFleets.length < 1)

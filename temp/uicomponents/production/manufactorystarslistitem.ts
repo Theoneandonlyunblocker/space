@@ -14,13 +14,13 @@ export default class ManufactoryStarsListItem extends React.Component<PropTypes,
   displayName: string = "ManufactoryStarsListItem";
 
 
-  handleClick: function()
+  handleClick()
   {
     var star: Star = this.props.star;
     this.props.onClick(star);
   }
 
-  render: function()
+  render()
   {
     var star: Star = this.props.star;
     var isHighlighted: boolean = this.props.isHighlighted;

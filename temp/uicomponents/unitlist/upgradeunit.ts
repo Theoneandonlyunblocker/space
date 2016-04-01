@@ -9,7 +9,7 @@ export interface PropTypes
 export default class UpgradeUnit extends React.Component<PropTypes, {}>
 {
   displayName: string = "UpgradeUnit";
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -17,7 +17,7 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
       popupId: undefined
     });
   }
-  upgradeAbility: function(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase)
+  upgradeAbility(source: Templates.IAbilityBase, newAbility: Templates.IAbilityBase)
   {
     var unit: Unit = this.props.unit;
     unit.upgradeAbility(source, newAbility);
@@ -29,7 +29,7 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
     this.closePopup();
     this.props.onUnitUpgrade();
   }
-  upgradeAttribute: function(attribute: string)
+  upgradeAttribute(attribute: string)
   {
     var unit: Unit = this.props.unit;
 
@@ -39,7 +39,7 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
     unit.handleLevelUp();
     this.props.onUnitUpgrade();
   }
-  makeAbilityLearnPopup: function(ability: Templates.IAbilityBase)
+  makeAbilityLearnPopup(ability: Templates.IAbilityBase)
   {
     var upgradeData = this.state.upgradeData[ability.type];
     var popupId = this.refs.popupManager.makePopup(
@@ -69,7 +69,7 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
       popupId: popupId
     });
   }
-  closePopup: function()
+  closePopup()
   {
     this.refs.popupManager.closePopup(this.state.popupId);
     this.setState(
@@ -77,7 +77,7 @@ export default class UpgradeUnit extends React.Component<PropTypes, {}>
       popupId: undefined
     });
   }
-  render: function()
+  render()
   {
     var unit: Unit = this.props.unit;
     var upgradableAbilities: Templates.IAbilityBase[] = [];

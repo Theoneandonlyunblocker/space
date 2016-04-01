@@ -14,7 +14,7 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -22,7 +22,7 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     });
   }
   
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     this.setState(
     {
@@ -30,7 +30,7 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     });
   }
 
-  handleConstruct: function()
+  handleConstruct()
   {
     var star: Star = this.props.star;
     var player: Player = this.props.player;
@@ -39,7 +39,7 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

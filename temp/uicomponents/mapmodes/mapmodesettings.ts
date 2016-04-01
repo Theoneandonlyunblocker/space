@@ -13,7 +13,7 @@ export default class MapModeSettings extends React.Component<PropTypes, {}>
   displayName: string = "MapModeSettings";
 
 
-  handleReset: function()
+  handleReset()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
     mapRenderer.currentMapMode.resetLayers();
@@ -22,7 +22,7 @@ export default class MapModeSettings extends React.Component<PropTypes, {}>
     this.refs.layersList.forceUpdate();
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

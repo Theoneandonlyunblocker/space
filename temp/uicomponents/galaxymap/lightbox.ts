@@ -9,7 +9,7 @@ export default class LightBox extends React.Component<PropTypes, {}>
 
   // far from ideal as it always triggers reflow 4 times
   // cant figure out how to do resizing better since content size is dynamic
-  handleResize: function()
+  handleResize()
   {
     var container = this.refs.container.getDOMNode();
     var wrapperRect = this.refs.wrapper.getDOMNode().getBoundingClientRect();
@@ -39,21 +39,21 @@ export default class LightBox extends React.Component<PropTypes, {}>
     }
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     window.addEventListener("resize", this.handleResize, false);
     this.handleResize();
   }
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
   }
-  componentDidUpdate: function()
+  componentDidUpdate()
   {
     this.handleResize();
   }
 
-  handleClose: function()
+  handleClose()
   {
 
     if (this.refs.content.overRideLightBoxClose)
@@ -66,7 +66,7 @@ export default class LightBox extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     var contentProps = extendObject(this.props.contentProps);
     contentProps.ref = "content";

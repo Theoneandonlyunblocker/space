@@ -11,17 +11,17 @@ export default class PlayerMoney extends React.Component<PropTypes, {}>
   lastAmountRendered: reactTypeTODO_any = undefined;
 
 
-  componentDidMount: function()
+  componentDidMount()
   {
     eventManager.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     eventManager.removeEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);
   }
 
-  handlePlayerMoneyUpdated: function()
+  handlePlayerMoneyUpdated()
   {
     if (this.props.player.money !== this.lastAmountRendered)
     {
@@ -29,7 +29,7 @@ export default class PlayerMoney extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     this.lastAmountRendered = this.props.player.money;
 

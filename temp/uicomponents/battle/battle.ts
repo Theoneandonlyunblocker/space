@@ -27,7 +27,7 @@ export default class Battle extends React.Component<PropTypes, {}>
   battleStartStartTime: reactTypeTODO_any = undefined;
   battleEndStartTime: reactTypeTODO_any = undefined;
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -61,12 +61,12 @@ export default class Battle extends React.Component<PropTypes, {}>
     });
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.battleStartStartTime = Date.now();
   }
 
-  endBattleStart: function()
+  endBattleStart()
   {
     if (Date.now() < this.battleStartStartTime + 1000) return;
     this.setState(
@@ -80,12 +80,12 @@ export default class Battle extends React.Component<PropTypes, {}>
     }
   }
 
-  getBlurArea: function()
+  getBlurArea()
   {
     return this.refs.formationsContainer.getDOMNode().getBoundingClientRect();
   }
 
-  clearHoveredUnit: function()
+  clearHoveredUnit()
   {
     this.tempHoveredUnit = null;
     this.setState(
@@ -103,7 +103,7 @@ export default class Battle extends React.Component<PropTypes, {}>
 
     this.setBattleSceneUnits(null);
   }
-  handleMouseLeaveUnit: function(e: React.MouseEvent)
+  handleMouseLeaveUnit(e: React.MouseEvent)
   {
     if (!this.state.hoveredUnit || this.state.playingBattleEffect)
     {
@@ -139,7 +139,7 @@ export default class Battle extends React.Component<PropTypes, {}>
       this.clearHoveredUnit();
     }
   }
-  handleMouseEnterUnit: function(unit: Unit)
+  handleMouseEnterUnit(unit: Unit)
   {
     this.tempHoveredUnit = unit;
 
@@ -163,12 +163,12 @@ export default class Battle extends React.Component<PropTypes, {}>
     this.setBattleSceneUnits(unit);
   }
 
-  getUnitElement: function(unit: Unit)
+  getUnitElement(unit: Unit)
   {
     return document.getElementById("unit-id_" + unit.id);
   }
 
-  setBattleSceneUnits: function(hoveredUnit: Unit)
+  setBattleSceneUnits(hoveredUnit: Unit)
   {
     if (this.state.playingBattleEffect) return;
 
@@ -207,7 +207,7 @@ export default class Battle extends React.Component<PropTypes, {}>
 
   }
 
-  handleAbilityUse: function(ability: Templates.IAbilityTemplate, target: Unit, wasByPlayer: boolean)
+  handleAbilityUse(ability: Templates.IAbilityTemplate, target: Unit, wasByPlayer: boolean)
   {
     // TODO
     /* 
@@ -237,7 +237,7 @@ export default class Battle extends React.Component<PropTypes, {}>
   // or have this wait for battle scene units to finish animating.
   // battleSFX animation can trigger at the earliest after animationTiming.unitEnter, but
   // actual effect always gets triggered after animationTiming.beforeUse
-  playBattleEffect: function(abilityData: IAbilityUseData, i: number)
+  playBattleEffect(abilityData: IAbilityUseData, i: number)
   {
     // TODO
     /* 
@@ -343,7 +343,7 @@ export default class Battle extends React.Component<PropTypes, {}>
     });
     */
   }
-  clearBattleEffect: function()
+  clearBattleEffect()
   {
     var newHoveredUnit: Unit = null;
     if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle())
@@ -369,7 +369,7 @@ export default class Battle extends React.Component<PropTypes, {}>
     }, afterStateUpdateCallback);
   }
 
-  handleTurnEnd: function()
+  handleTurnEnd()
   {
     if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable())
     {
@@ -392,7 +392,7 @@ export default class Battle extends React.Component<PropTypes, {}>
       this.useAIAbility();
     }
   }
-  usePreparedAbility: function()
+  usePreparedAbility()
   {
     var unit: Unit = this.props.battle.activeUnit;
     var action = unit.battleStats.queuedAction;
@@ -402,11 +402,11 @@ export default class Battle extends React.Component<PropTypes, {}>
 
     this.handleAbilityUse(action.ability, target, userIsHuman);
   }
-  usePlayerAbility: function(ability: Templates.IAbilityTemplate, target: Unit)
+  usePlayerAbility(ability: Templates.IAbilityTemplate, target: Unit)
   {
     this.handleAbilityUse(ability, target, true);
   }
-  useAIAbility: function()
+  useAIAbility()
   {
     if (!this.props.battle.activeUnit || this.props.battle.ended) return;
     
@@ -420,7 +420,7 @@ export default class Battle extends React.Component<PropTypes, {}>
     this.handleAbilityUse(move.ability, target, false);
   }
 
-  finishBattle: function()
+  finishBattle()
   {
     if (Date.now() < this.battleEndStartTime + 1000) return;
     var battle = this.props.battle;
@@ -429,7 +429,7 @@ export default class Battle extends React.Component<PropTypes, {}>
     battle.finishBattle();
   }
 
-  handleMouseEnterAbility: function(ability: Templates.IAbilityTemplate)
+  handleMouseEnterAbility(ability: Templates.IAbilityTemplate)
   {
 // TODO
 /* 
@@ -456,7 +456,7 @@ export default class Battle extends React.Component<PropTypes, {}>
     });
 */
   }
-  handleMouseLeaveAbility: function()
+  handleMouseLeaveAbility()
   {
     this.setState(
     {
@@ -467,7 +467,7 @@ export default class Battle extends React.Component<PropTypes, {}>
   }
 
 
-  render: function()
+  render()
   {
     var battle = this.props.battle;
 

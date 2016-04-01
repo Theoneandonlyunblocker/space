@@ -10,18 +10,18 @@ export default class TopBarResources extends React.Component<PropTypes, {}>
   displayName: string = "TopBarResources";
   updateListener: reactTypeTODO_any = undefined;
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.updateListener = eventManager.addEventListener(
       "builtBuildingWithEffect_resourceIncome", this.forceUpdate.bind(this));
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     eventManager.removeEventListener("builtBuildingWithEffect_resourceIncome", this.updateListener);
   }
 
-  render: function()
+  render()
   {
     var player: Player = this.props.player;
     var resources: ReactComponentPlaceHolder[] = [];

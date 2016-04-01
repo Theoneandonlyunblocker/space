@@ -14,7 +14,7 @@ export default class ManufactoryStarsList extends React.Component<PropTypes, {}>
 {
   displayName: string = "ManufactoryStarsList";
 
-  render: function()
+  render()
   {
     var starsWithManufactories: Star[] = this.props.starsWithManufactories;
     var starsWithoutManufactories: Star[] = this.props.starsWithoutManufactories;

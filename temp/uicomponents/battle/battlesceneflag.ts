@@ -12,24 +12,24 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
   flagCanvas: reactTypeTODO_any = null;
 
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.setFlag();
 
     window.addEventListener("resize", this.handleResize, false);
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
   }
 
-  handleResize: function()
+  handleResize()
   {
     this.setFlag();
   }
 
-  setFlag: function()
+  setFlag()
   {
     var DOMNode = this.getDOMNode();
     if (this.flagCanvas)
@@ -41,7 +41,7 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
     this.getDOMNode().appendChild(this.flagCanvas);
   }
 
-  drawFlag: function()
+  drawFlag()
   {
     var bounds = this.getDOMNode().getBoundingClientRect();
     var width = bounds.width;
@@ -73,7 +73,7 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
     return canvas
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

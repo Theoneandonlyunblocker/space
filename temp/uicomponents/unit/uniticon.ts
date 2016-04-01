@@ -7,7 +7,7 @@ export default class UnitIcon extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitIcon";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
-  render: function()
+  render()
   {
     var unit = this.props.unit;
 

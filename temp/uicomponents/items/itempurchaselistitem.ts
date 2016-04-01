@@ -6,7 +6,7 @@ export interface PropTypes
 export default class ItemPurchaseListItem extends React.Component<PropTypes, {}>
 {
   displayName: string = "ItemPurchaseListItem";
-  makeCell: function(type: string)
+  makeCell(type: string)
   {
     var cellProps: any = {};
     cellProps.key = type;
@@ -41,7 +41,7 @@ export default class ItemPurchaseListItem extends React.Component<PropTypes, {}>
     );
   }
 
-  render: function()
+  render()
   {
     var cells: ReactDOMPlaceHolder[] = [];
     var columns = this.props.activeColumns;

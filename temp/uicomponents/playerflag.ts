@@ -7,13 +7,13 @@ export default class PlayerFlag extends React.Component<PropTypes, {}>
 {
   displayName: string = "PlayerFlag";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
-  canUseDataURL: function()
+  canUseDataURL()
   {
     var uaString = navigator.userAgent.toLowerCase();
     var isIE = uaString.indexOf("msie") !== -1 || uaString.indexOf("trident/") !== -1;
     return !isIE;
   }
-  componentDidMount: function()
+  componentDidMount()
   {
     if (this.refs.container && !this.props.isMutable)
     {
@@ -23,7 +23,7 @@ export default class PlayerFlag extends React.Component<PropTypes, {}>
       this.refs.container.getDOMNode().appendChild(canvas);
     }
   }
-  componentDidUpdate: function()
+  componentDidUpdate()
   {
     if (this.refs.container && this.props.isMutable)
     {
@@ -39,7 +39,7 @@ export default class PlayerFlag extends React.Component<PropTypes, {}>
       containerNode.appendChild(canvas);
     }
   }
-  render: function()
+  render()
   {
     var props = this.props.props;
     if (this.canUseDataURL())

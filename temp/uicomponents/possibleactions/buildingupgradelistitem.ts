@@ -13,7 +13,7 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
   displayName: string = "BuildingUpgradeListItem";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -21,7 +21,7 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
     });
   }
   
-  overrideHandleMoneyChange: function()
+  overrideHandleMoneyChange()
   {
     this.setState(
     {
@@ -29,12 +29,12 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
     })
   }
 
-  handleClick: function()
+  handleClick()
   {
     this.props.handleUpgrade(this.props.upgradeData);
   }
 
-  render: function()
+  render()
   {
     var upgradeData: IBuildingUpgradeData = this.props.upgradeData;
 

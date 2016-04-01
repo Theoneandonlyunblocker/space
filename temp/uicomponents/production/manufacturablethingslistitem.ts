@@ -12,7 +12,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
   displayName: string = "ManufacturableThingsListItem";
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -21,7 +21,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
     });
   }
   
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     this.setState(
     {
@@ -31,7 +31,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
   }
   
 
-  handleClick: function()
+  handleClick()
   {
     if (this.props.onClick)
     {
@@ -39,7 +39,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
     }
   }
 
-  render: function()
+  render()
   {
     var template: IManufacturableThing = this.props.template;
     var isDisabled: boolean = this.state.isDisabled;

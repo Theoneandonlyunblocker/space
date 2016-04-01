@@ -16,7 +16,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
   displayName: string = "PossibleActions";
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -26,7 +26,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     });
   }
 
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     if (this.props.selectedStar !== newProps.selectedStar)
     {
@@ -46,25 +46,25 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     }
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     var self = this;
     eventManager.addEventListener("clearPossibleActions", this.clearExpandedAction);
     eventManager.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     eventManager.removeAllListeners("clearPossibleActions");
     eventManager.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
   }
 
-  canUpgradeBuildings: function(star: Star)
+  canUpgradeBuildings(star: Star)
   {
     return star && Object.keys(star.getBuildingUpgrades()).length > 0;
   }
 
-  handlePlayerBuiltBuilding: function()
+  handlePlayerBuiltBuilding()
   {
     this.setState(
     {
@@ -72,13 +72,13 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     });
   }
 
-  updateActions: function()
+  updateActions()
   {
     this.props.setExpandedActionElementOnParent(this.state.expandedActionElement);
     eventManager.dispatchEvent("possibleActionsUpdated");
   }
 
-  clearExpandedAction: function()
+  clearExpandedAction()
   {
     this.setState(
     {
@@ -87,7 +87,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     }, this.updateActions);
   }
 
-  buildBuildings: function()
+  buildBuildings()
   {
     if (!this.props.selectedStar ||
       this.state.expandedAction === "buildBuildings")
@@ -116,7 +116,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     }
   }
 
-  upgradeBuildings: function()
+  upgradeBuildings()
   {
     if (!this.props.selectedStar ||
       this.state.expandedAction === "upgradeBuildings")
@@ -145,7 +145,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     var allActions: ReactDOMPlaceHolder[] = [];
 

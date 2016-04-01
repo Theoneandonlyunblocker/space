@@ -26,7 +26,7 @@ export default class UnitInfo extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
-  render: function()
+  render()
   {
     var battleEndStatus: ReactDOMPlaceHolder = null;
     if (this.props.isDead)

@@ -7,7 +7,7 @@ export default class AbilityTooltip extends React.Component<PropTypes, {}>
 {
   displayName: string = "AbilityTooltip";
 
-  shouldComponentUpdate: function(newProps: any)
+  shouldComponentUpdate(newProps: any)
   {
     for (var prop in newProps)
     {
@@ -21,7 +21,7 @@ export default class AbilityTooltip extends React.Component<PropTypes, {}>
     }
     return false;
   }
-  render: function()
+  render()
   {
     var abilities = this.props.activeTargets[this.props.targetUnit.id];
 

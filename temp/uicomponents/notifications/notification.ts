@@ -7,22 +7,22 @@ export default class Notification extends React.Component<PropTypes, {}>
 {
   displayName: string = "Notification";
 
-  handleClose: function()
+  handleClose()
   {
     this.props.markAsRead(this.props.notification);
   }
-  handleClick: function()
+  handleClick()
   {
     this.props.togglePopup(this.props.notification);
   }
-  handleRightClick: function(e: MouseEvent)
+  handleRightClick(e: MouseEvent)
   {
     e.preventDefault();
     e.stopPropagation();
     this.handleClose();
   }
 
-  render: function()
+  render()
   {
     var notification: Notification = this.props.notification;
     return(

@@ -12,7 +12,7 @@ export default class Notifications extends React.Component<PropTypes, {}>
   displayName: string = "Notifications";
 
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

@@ -12,7 +12,7 @@ export default class AttitudeModifierList extends React.Component<PropTypes, {}>
   displayName: string = "AttitudeModifierList";
   mixins: reactTypeTODO_any = [AutoPosition];
 
-  render: function()
+  render()
   {
     var modifiers = this.props.attitudeModifiers;
     var rows: IListItem[] = [];

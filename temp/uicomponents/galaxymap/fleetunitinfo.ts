@@ -18,16 +18,16 @@ export default class FleetUnitInfo extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [Draggable];
 
 
-  onDragStart: function()
+  onDragStart()
   {
     this.props.onDragStart(this.props.unit);
   }
-  onDragEnd: function(e: DragEvent)
+  onDragEnd(e: DragEvent)
   {
     this.props.onDragEnd(e)
   }
 
-  render: function()
+  render()
   {
     var unit: Unit = this.props.unit;
     var isNotDetected = !this.props.isIdentified;

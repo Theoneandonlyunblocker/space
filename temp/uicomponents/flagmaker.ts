@@ -9,7 +9,7 @@ export default class FlagMaker extends React.Component<PropTypes, {}>
 {
   setStateTimeout: reactTypeTODO_any = undefined;
   sizeValue: number = 46;
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -18,7 +18,7 @@ export default class FlagMaker extends React.Component<PropTypes, {}>
     });
   }
 
-  handleSizeChange: function(e: Event)
+  handleSizeChange(e: Event)
   {
     if (this.setStateTimeout)
     {
@@ -32,11 +32,11 @@ export default class FlagMaker extends React.Component<PropTypes, {}>
       this.setStateTimeout = window.setTimeout(this.setState.bind(this, {size: value}), 500);
     }
   }
-  makeFlags: function()
+  makeFlags()
   {
     this.forceUpdate();
   }
-  render: function()
+  render()
   {
     var flagElements: ReactComponentPlaceHolder[] = [];
     for (var i = 0; i < 100; i++)

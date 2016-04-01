@@ -10,7 +10,7 @@ export default class DiplomacyOverview extends React.Component<PropTypes, {}>
 {
   displayName: string = "DiplomacyOverview";
 
-  makeDiplomacyActionsPopup: function(rowItem: IListItem)
+  makeDiplomacyActionsPopup(rowItem: IListItem)
   {
     var player = rowItem.data.player;
     if (!player) return;
@@ -32,7 +32,7 @@ export default class DiplomacyOverview extends React.Component<PropTypes, {}>
     });
   }
 
-  render: function()
+  render()
   {
     var unmetPlayerCount = this.props.totalPlayerCount -
       Object.keys(this.props.metPlayers).length - 1;

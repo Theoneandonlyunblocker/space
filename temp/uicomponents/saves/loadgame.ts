@@ -11,7 +11,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
   displayName: string = "LoadGame";
   popupId: reactTypeTODO_any = undefined;
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -20,12 +20,12 @@ export default class LoadGame extends React.Component<PropTypes, {}>
     });
   }
   
-  componentDidMount: function()
+  componentDidMount()
   {
     this.refs.okButton.getDOMNode().focus();
   }
 
-  handleRowChange: function(row: IListItem)
+  handleRowChange(row: IListItem)
   {
     this.setState(
     {
@@ -33,7 +33,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
     });
     this.handleUndoDelete(row.data.storageKey);
   }
-  handleLoad: function()
+  handleLoad()
   {
     var saveKey = this.state.saveKey;
 
@@ -59,7 +59,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       this.handleClose(true, afterConfirmFN);
     }
   }
-  deleteSelectedKeys: function()
+  deleteSelectedKeys()
   {
     this.popupId = this.refs.popupManager.makePopup(
     {
@@ -67,7 +67,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       contentProps: this.getClosePopupContent(null, false, false)
     });
   }
-  getClosePopupContent: function(afterCloseCallback?: Function, shouldCloseParent: boolean = true;
+  getClosePopupContent(afterCloseCallback?: Function, shouldCloseParent: boolean = true;
     shouldUndoAll: boolean = false)
   {
     var deleteFN = function()
@@ -112,7 +112,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       contentText: confirmText
     });
   }
-  updateClosePopup: function()
+  updateClosePopup()
   {
     if (isFinite(this.popupId))
     {
@@ -125,7 +125,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       this.popupId = undefined;
     }
   }
-  handleClose: function(deleteSaves: boolean = true, afterCloseCallback?: Function)
+  handleClose(deleteSaves: boolean = true, afterCloseCallback?: Function)
   {
     if (!deleteSaves || this.state.saveKeysToDelete.length < 1)
     {
@@ -140,14 +140,14 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       contentProps: this.getClosePopupContent(afterCloseCallback, true, true)
     });
   }
-  handleDelete: function(saveKey: string)
+  handleDelete(saveKey: string)
   {
     this.setState(
     {
       saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey)
     }, this.updateClosePopup);
   }
-  handleUndoDelete: function(saveKey: string, callback?: Function)
+  handleUndoDelete(saveKey: string, callback?: Function)
   {
     var afterDeleteFN = function()
     {
@@ -165,12 +165,12 @@ export default class LoadGame extends React.Component<PropTypes, {}>
       }, afterDeleteFN);
     }
   }
-  overRideLightBoxClose: function()
+  overRideLightBoxClose()
   {
     this.handleClose();
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

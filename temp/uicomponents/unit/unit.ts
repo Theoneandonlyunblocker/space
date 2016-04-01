@@ -14,7 +14,7 @@ export default class Unit extends React.Component<PropTypes, {}>
   displayName: string = "Unit";
   mixins: reactTypeTODO_any = [Draggable, React.addons.PureRenderMixin];
   
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -23,35 +23,35 @@ export default class Unit extends React.Component<PropTypes, {}>
     });
   }
 
-  onDragStart: function()
+  onDragStart()
   {
     this.props.onDragStart(this.props.unit);
   }
-  onDragEnd: function()
+  onDragEnd()
   {
     this.props.onDragEnd();
   }
 
-  handleClick: function()
+  handleClick()
   {
     this.props.onUnitClick(this.props.unit);
   }
 
-  handleMouseEnter: function()
+  handleMouseEnter()
   {
     if (!this.props.handleMouseEnterUnit) return;
     if (this.props.unit.currentHealth <= 0) return;
 
     this.props.handleMouseEnterUnit(this.props.unit);
   }
-  handleMouseLeave: function(e: MouseEvent)
+  handleMouseLeave(e: MouseEvent)
   {
     if (!this.props.handleMouseLeaveUnit) return;
 
     this.props.handleMouseLeaveUnit(e);
   }
 
-  render: function()
+  render()
   {
     var unit: Unit = this.props.unit;
     unit.uiDisplayIsDirty = false;

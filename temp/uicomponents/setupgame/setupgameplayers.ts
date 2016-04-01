@@ -9,7 +9,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
 {
   displayName: string = "SetupGamePlayers";
 
-  getInitialState: function()
+  getInitialState()
   {
     this.newPlayerId = 0;
 
@@ -26,7 +26,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     });
   }
 
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     if (newProps.minPlayers > this.state.players.length)
     {
@@ -39,7 +39,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     }
   }
 
-  makeNewPlayers: function(amountToMake: number = 1)
+  makeNewPlayers(amountToMake: number = 1)
   {
     if (this.state.players.length >= this.props.maxPlayers)
     {
@@ -59,7 +59,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     });
   }
 
-  setHumanPlayer: function(playerId: number)
+  setHumanPlayer(playerId: number)
   {
     var index = this.state.players.indexOf(playerId);
 
@@ -70,7 +70,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     this.setState({players: newPlayerOrder});
   }
 
-  removePlayers: function(toRemove: number[])
+  removePlayers(toRemove: number[])
   {
     if (this.state.players.length <= this.props.minPlayers)
     {
@@ -86,7 +86,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     });
   }
 
-  setActiveColorPicker: function(colorPicker: ReactComponentPlaceHolder)
+  setActiveColorPicker(colorPicker: ReactComponentPlaceHolder)
   {
     if (this.state.activeColorPicker)
     {
@@ -96,7 +96,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     this.setState({activeColorPicker: colorPicker});
   }
 
-  randomizeAllPlayers: function()
+  randomizeAllPlayers()
   {
     for (var id in this.refs)
     {
@@ -106,7 +106,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     }
   }
 
-  makeAllPlayers: function()
+  makeAllPlayers()
   {
     var players: Player[] = [];
     for (var id in this.refs)
@@ -117,7 +117,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     return players;
   }
 
-  render: function()
+  render()
   {
     var playerSetups: any[] = [];
     for (var i = 0; i < this.state.players.length; i++)

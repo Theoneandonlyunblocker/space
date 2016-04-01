@@ -12,22 +12,22 @@ export default class FleetControls extends React.Component<PropTypes, {}>
   displayName: string = "FleetControls";
 
 
-  deselectFleet: function()
+  deselectFleet()
   {
     eventManager.dispatchEvent("deselectFleet", this.props.fleet);
   }
 
-  selectFleet: function()
+  selectFleet()
   {
     eventManager.dispatchEvent("selectFleets", [this.props.fleet]);
   }
 
-  splitFleet: function()
+  splitFleet()
   {
     eventManager.dispatchEvent("splitFleet", this.props.fleet);
   }
 
-  render: function()
+  render()
   {
     var fleet: Rance.Fleet = this.props.fleet;
 

@@ -9,7 +9,7 @@ export interface PropTypes
 export default class BuildableBuildingList extends React.Component<PropTypes, {}>
 {
   displayName: string = "BuildableBuildingList";
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -17,7 +17,7 @@ export default class BuildableBuildingList extends React.Component<PropTypes, {}
     });
   }
 
-  updateBuildings: function()
+  updateBuildings()
   {
     var buildingTemplates = this.props.star.getBuildableBuildings();
     this.setState(
@@ -31,7 +31,7 @@ export default class BuildableBuildingList extends React.Component<PropTypes, {}
     }
   }
 
-  buildBuilding: function(rowItem: IListItem)
+  buildBuilding(rowItem: IListItem)
   {
     var template = rowItem.data.template;
 
@@ -48,7 +48,7 @@ export default class BuildableBuildingList extends React.Component<PropTypes, {}
     this.updateBuildings();
   }
 
-  render: function()
+  render()
   {
     if (this.state.buildingTemplates.length < 1) return null;
     var rows: IListItem[] = [];

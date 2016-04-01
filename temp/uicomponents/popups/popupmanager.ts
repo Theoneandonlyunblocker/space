@@ -12,7 +12,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
   popupId: number = 0;
 
 
-  componentWillMount: function()
+  componentWillMount()
   {
     this.listeners = {};
     var self = this;
@@ -33,7 +33,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
       });
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     for (var listenerId in this.listeners)
     {
@@ -41,7 +41,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
   }
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -49,7 +49,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     });
   }
 
-  getHighestZIndexPopup: function()
+  getHighestZIndexPopup()
   {
     if (this.state.popups.length === 0) return null;
     var popups: any = [];
@@ -63,7 +63,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     })[0];
   }
 
-  getInitialPosition: function(rect: ClientRect, container: HTMLElement)
+  getInitialPosition(rect: ClientRect, container: HTMLElement)
   {
     if (this.state.popups.length === 1)
     {
@@ -84,7 +84,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
   }
 
-  incrementZIndex: function(childZIndex: number)
+  incrementZIndex(childZIndex: number)
   {
     if (!this.currentZIndex) this.currentZIndex = 0;
 
@@ -98,12 +98,12 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
   }
 
-  getPopupId: function()
+  getPopupId()
   {
     return this.popupId++;
   }
 
-  getPopup: function(id: number)
+  getPopup(id: number)
   {
     for (var i = 0; i < this.state.popups.length; i++)
     {
@@ -113,7 +113,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     return null;
   }
 
-  hasPopup: function(id: number)
+  hasPopup(id: number)
   {
     for (var i = 0; i < this.state.popups.length; i++)
     {
@@ -123,7 +123,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     return false;
   }
 
-  closePopup: function(id: number)
+  closePopup(id: number)
   {
     if (!this.hasPopup(id)) throw new Error("No such popup");
 
@@ -145,7 +145,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     this.setState({popups: newPopups});
   }
 
-  makePopup: function(props:
+  makePopup(props:
   {
     contentConstructor: any;
     contentProps: any;
@@ -185,7 +185,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     return id;
   }
 
-  setPopupContent: function(popupId: number, newContent: any)
+  setPopupContent(popupId: number, newContent: any)
   {
     var popup = this.getPopup(popupId);
     if (!popup) throw new Error();
@@ -195,7 +195,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
-  render: function()
+  render()
   {
     var popups = this.state.popups;
 

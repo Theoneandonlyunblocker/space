@@ -19,7 +19,7 @@ export default class TopMenu extends React.Component<PropTypes, {}>
   cachedMenuButtonWidth: number = 37;
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -29,7 +29,7 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     });
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     window.addEventListener("resize", this.handleResize, false);
     eventManager.addEventListener("playerControlUpdated", this.delayedResize);
@@ -38,25 +38,25 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     this.handleResize();
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
     eventManager.removeEventListener("playerControlUpdated", this.delayedResize);
     eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
   }
 
-  handleToggleHamburger: function()
+  handleToggleHamburger()
   {
     this.handleResize();
     this.forceUpdate();
   }
 
-  delayedResize: function()
+  delayedResize()
   {
     window.setTimeout(this.handleResize, 0);
   }
 
-  handleResize: function()
+  handleResize()
   {
     if (!this.cachedTopMenuWidth)
     {
@@ -147,13 +147,13 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     });
   }
 
-  togglePopup: function(popupType: string)
+  togglePopup(popupType: string)
   {
     this.refs.popups.togglePopup(popupType);
     this.forceUpdate();
   }
 
-  toggleCondensedMenu: function()
+  toggleCondensedMenu()
   {
     this.setState(
     {
@@ -161,7 +161,7 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     });
   }
 
-  render: function()
+  render()
   {
     var menuItemTabIndex = this.state.opened ? -1 : 0;
 

@@ -14,7 +14,7 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -25,7 +25,7 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
     });
   }
 
-  handleDragStart: function(layer: MapRendererLayer)
+  handleDragStart(layer: MapRendererLayer)
   {
     this.setState(
     {
@@ -33,7 +33,7 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
     });
   }
 
-  handleDragEnd: function()
+  handleDragEnd()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
     var toInsert = this.state.currentDraggingLayer;
@@ -55,7 +55,7 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
     });
   }
 
-  handleToggleActive: function(layer: MapRendererLayer)
+  handleToggleActive(layer: MapRendererLayer)
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
 
@@ -64,7 +64,7 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
     this.forceUpdate();
   }
 
-  handleSetHoverPosition: function(layer: MapRendererLayer, position: string)
+  handleSetHoverPosition(layer: MapRendererLayer, position: string)
   {
     this.setState(
     {
@@ -73,13 +73,13 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
     });
   }
 
-  updateLayer: function(layer: MapRendererLayer)
+  updateLayer(layer: MapRendererLayer)
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
     mapRenderer.setLayerAsDirty(layer.template.key);
   }
 
-  render: function()
+  render()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
     var mapMode: MapRendererMapMode = this.props.currentMapMode;

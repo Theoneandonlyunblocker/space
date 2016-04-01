@@ -10,7 +10,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
 {
   displayName: string = "PlayerSetup";
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -20,7 +20,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
       flagHasCustomImage: false
     });
   }
-  generateMainColor: function(subColor = this.state.subColor)
+  generateMainColor(subColor = this.state.subColor)
   {
     if (subColor === null)
     {
@@ -31,7 +31,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
       return generateSecondaryColor(subColor);
     }
   }
-  generateSubColor: function(mainColor = this.state.mainColor)
+  generateSubColor(mainColor = this.state.mainColor)
   {
     if (mainColor === null)
     {
@@ -42,34 +42,34 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
       return generateSecondaryColor(mainColor);
     }
   }
-  handleSetHuman: function()
+  handleSetHuman()
   {
     this.props.setHuman(this.props.keyTODO/*TODO react*/);
   }
 
-  handleNameChange: function(e: Event)
+  handleNameChange(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     this.setState({name: target.value});
   }
 
-  setMainColor: function(color: number, isNull: boolean)
+  setMainColor(color: number, isNull: boolean)
   {
     this.setState({mainColor: isNull ? null : color});
   }
-  setSubColor: function(color: number, isNull: boolean)
+  setSubColor(color: number, isNull: boolean)
   {
     this.setState({subColor: isNull ? null : color});
   }
-  handleRemove: function()
+  handleRemove()
   {
     this.props.removePlayers([this.props.keyTODO/*TODO react*/]);
   }
-  handleSetCustomImage: function(image?: string)
+  handleSetCustomImage(image?: string)
   {
     this.setState({flagHasCustomImage: Boolean(image)});
   }
-  randomize: function()
+  randomize()
   {
     if (!this.state.flagHasCustomImage)
     {
@@ -84,7 +84,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
       subColor: generateSecondaryColor(mainColor)
     });
   }
-  makePlayer: function()
+  makePlayer()
   {
     var player = new Player(!this.props.isHuman);
     player.initTechnologies();
@@ -119,7 +119,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
 
     return player;
   }
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

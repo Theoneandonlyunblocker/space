@@ -12,12 +12,12 @@ export default class UnitItemWrapper extends React.Component<PropTypes, {}>
   displayName: string = "UnitItemWrapper";
   mixins: reactTypeTODO_any = [DropTarget];
 
-  handleMouseUp: function()
+  handleMouseUp()
   {
     this.props.onMouseUp(this.props.slot);
   }
 
-  render: function()
+  render()
   {
     var item = this.props.item;
 

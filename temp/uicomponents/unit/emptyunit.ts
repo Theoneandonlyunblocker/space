@@ -6,11 +6,11 @@ export interface PropTypes
 export default class EmptyUnit extends React.Component<PropTypes, {}>
 {
   displayName: string = "EmptyUnit";
-  shouldComponentUpdate: function(newProps: any)
+  shouldComponentUpdate(newProps: any)
   {
     return newProps.facesLeft === this.props.facesLeft;
   }
-  render: function()
+  render()
   {
     var wrapperProps: any =
     {

@@ -7,7 +7,7 @@ export default class MapGenOption extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapGenOption";
 
-  handleChange: function(e: Event)
+  handleChange(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     var option = this.props.option;
@@ -15,12 +15,12 @@ export default class MapGenOption extends React.Component<PropTypes, {}>
     this.props.onChange(this.props.id, newValue);
   }
 
-  shouldComponentUpdate: function(newProps: any)
+  shouldComponentUpdate(newProps: any)
   {
     return newProps.value !== this.props.value;
   }
 
-  render: function()
+  render()
   {
     var option: Templates.IMapGenOption = this.props.option;
     var range = option.range;

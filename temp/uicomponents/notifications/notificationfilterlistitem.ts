@@ -11,7 +11,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
 {
   displayName: string = "NotificationFilterListItem";
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -19,7 +19,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
     });
   }
   
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     this.setState(
     {
@@ -27,7 +27,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
     });
   }
 
-  handleChangeState: function(state: NotificationFilterState)
+  handleChangeState(state: NotificationFilterState)
   {
     var filter: Rance.NotificationFilter = this.props.filter;
     filter.handleFilterStateChange(this.props.keyTODO/*TODO react*/, state);
@@ -39,7 +39,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
     eventManager.dispatchEvent("updateNotificationLog");
   }
   
-  render: function()
+  render()
   {
     var inputElements: ReactDOMPlaceHolder[] = [];
     var filterState: NotificationFilterState[] = this.state.filterState;

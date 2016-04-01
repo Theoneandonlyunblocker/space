@@ -15,13 +15,13 @@ export default class BuildingUpgradeList extends React.Component<PropTypes, {}>
   displayName: string = "BuildingUpgradeList";
 
 
-  hasAvailableUpgrades: function()
+  hasAvailableUpgrades()
   {
     var possibleUpgrades = this.props.star.getBuildingUpgrades();
     return Object.keys(possibleUpgrades).length > 0;
   }
 
-  upgradeBuilding: function(upgradeData: IBuildingUpgradeData)
+  upgradeBuilding(upgradeData: IBuildingUpgradeData)
   {
     var star = upgradeData.parentBuilding.location
 
@@ -49,7 +49,7 @@ export default class BuildingUpgradeList extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     if (!this.hasAvailableUpgrades()) return null;
 

@@ -8,7 +8,7 @@ export interface PropTypes
 export default class UnitActions extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitActions";
-  render: function()
+  render()
   {
     var availableSrc = "img\/icons\/availableAction.png";
     var hoveredSrc = "img\/icons\/spentAction.png";

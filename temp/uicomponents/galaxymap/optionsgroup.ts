@@ -11,7 +11,7 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
   displayName: string = "OptionsGroup";
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -19,7 +19,7 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
     });
   }
   
-  toggleCollapse: function()
+  toggleCollapse()
   {
     this.setState(
     {
@@ -27,7 +27,7 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
     });
   }
 
-  render: function()
+  render()
   {
     var rows: ReactDOMPlaceHolder[] = [];
 

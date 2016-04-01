@@ -18,14 +18,14 @@ export default class FleetContents extends React.Component<PropTypes, {}>
   displayName: string = "FleetContents";
 
 
-  handleMouseUp: function()
+  handleMouseUp()
   {
     if (!this.props.onMouseUp) return;
 
     this.props.onMouseUp(this.props.fleet);
   }
 
-  render: function()
+  render()
   {
     var fleetUnitInfos: ReactComponentPlaceHolder[] = [];
     var fleet: Rance.Fleet = this.props.fleet;

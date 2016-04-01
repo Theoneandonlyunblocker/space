@@ -19,7 +19,7 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
 
-  getInitialState: function()
+  getInitialState()
   {
     var initialSelected: Star = null;
     var player: Player = this.props.player;
@@ -45,22 +45,22 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
     });
   }
 
-  triggerUpdate: function()
+  triggerUpdate()
   {
     this.forceUpdate();
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
   }
 
-  getStarsWithAndWithoutManufactories: function()
+  getStarsWithAndWithoutManufactories()
   {
     var player: Player = this.props.player;
 
@@ -87,7 +87,7 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
     });
   }
   
-  handleStarSelect: function(star: Star)
+  handleStarSelect(star: Star)
   {
     if (this.state.selectedStar === star)
     {
@@ -103,7 +103,7 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
     }
   }
 
-  clearSelection: function()
+  clearSelection()
   {
     this.setState(
     {
@@ -112,7 +112,7 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
     });
   }
 
-  render: function()
+  render()
   {
     var player: Player = this.props.player;
     var selectedStar: Star = this.state.selectedStar;

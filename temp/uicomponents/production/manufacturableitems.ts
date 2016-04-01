@@ -15,7 +15,7 @@ export default class ManufacturableItems extends React.Component<PropTypes, {}>
   displayName: string = "ManufacturableItems";
 
 
-  shouldComponentUpdate: function(newProps: any)
+  shouldComponentUpdate(newProps: any)
   {
     if (this.props.selectedStar !== newProps.selectedStar)
     {
@@ -41,19 +41,19 @@ export default class ManufacturableItems extends React.Component<PropTypes, {}>
     return false;
   }
 
-  addItemToBuildQueue: function(template: Templates.IItemTemplate)
+  addItemToBuildQueue(template: Templates.IItemTemplate)
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.addThingToQueue(template, "item");
     this.props.triggerUpdate();
   }
 
-  upgradeItems: function()
+  upgradeItems()
   {
 
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

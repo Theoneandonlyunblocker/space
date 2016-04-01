@@ -9,7 +9,7 @@ export default class Opinion extends React.Component<PropTypes, {}>
 {
   displayName: string = "Opinion";
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -17,22 +17,22 @@ export default class Opinion extends React.Component<PropTypes, {}>
     });
   }
 
-  setTooltip: function()
+  setTooltip()
   {
     this.setState({hasAttitudeModifierTootlip: true});
   }
 
-  clearTooltip: function()
+  clearTooltip()
   {
     this.setState({hasAttitudeModifierTootlip: false});
   }
 
-  getOpinionTextNode: function()
+  getOpinionTextNode()
   {
     return this.getDOMNode().firstChild;
   }
 
-  getColor: function()
+  getColor()
   {
     var relativeValue = getRelativeValue(this.props.opinion, -30, 30);
     relativeValue = clamp(relativeValue, 0, 1);
@@ -52,7 +52,7 @@ export default class Opinion extends React.Component<PropTypes, {}>
     );
   }
   
-  render: function()
+  render()
   {
     var tooltip: ReactComponentPlaceHolder = null;
     if (this.state.hasAttitudeModifierTootlip)

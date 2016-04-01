@@ -16,7 +16,7 @@ export default class OptionsList extends React.Component<PropTypes, {}>
   displayName: string = "OptionsList";
 
 
-  handleResetAllOptions: function()
+  handleResetAllOptions()
   {
     var resetFN = function()
     {
@@ -54,7 +54,7 @@ export default class OptionsList extends React.Component<PropTypes, {}>
     });
   }
 
-  render: function()
+  render()
   {
     var allOptions: ReactComponentPlaceHolder[] = [];
 

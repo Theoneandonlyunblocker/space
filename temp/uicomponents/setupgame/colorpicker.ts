@@ -10,7 +10,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
   displayName: string = "ColorPicker";
   onChangeTimeout: reactTypeTODO_any = null;
 
-  getInitialState: function()
+  getInitialState()
   {
     var hexColor = this.props.hexColor || 0xFFFFFF;
     var hexString = "#" + hexToString(hexColor);
@@ -28,18 +28,18 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     });
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     window.addEventListener("resize", this.setPosition);
     this.setPosition();
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     window.removeEventListener("resize", this.setPosition);
   }
 
-  setPosition: function()
+  setPosition()
   {
     var parentRect = this.props.getParentPosition();
     var domNode = this.getDOMNode();
@@ -47,7 +47,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     domNode.style.left = "" + parentRect.left + "px";
   }
 
-  triggerParentOnChange: function(color: number, isNull: boolean)
+  triggerParentOnChange(color: number, isNull: boolean)
   {
     if (this.onChangeTimeout)
     {
@@ -58,7 +58,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     this.onChangeTimeout = window.setTimeout(this.props.onChange.bind(null, color, isNull), 50);
   }
 
-  updateFromHsv: function(hue: number, sat: number, val: number, e?: Event)
+  updateFromHsv(hue: number, sat: number, val: number, e?: Event)
   {
     var hsvColor = [hue, sat, val];
     var hexColor = Math.round(hsvToHex.apply(null, scalarsFromColor(hsvColor)));
@@ -85,7 +85,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
       }
     }
   }
-  updateFromHex: function(hexColor: number)
+  updateFromHex(hexColor: number)
   {
     var hsvColor = colorFromScalars(hexToHsv(hexColor));
 
@@ -101,7 +101,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
       this.triggerParentOnChange(hexColor, false);
     }
   }
-  setHex: function(e: Event)
+  setHex(e: Event)
   {
     e.stopPropagation();
     e.preventDefault();
@@ -142,7 +142,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     }
 
   }
-  setHue: function(e: Event)
+  setHue(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     var hue = Math.round(parseInt(target.value) % 361);
@@ -150,7 +150,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     this.setState({hue: hue});
     this.updateFromHsv(hue, this.state.sat, this.state.val, e);
   }
-  setSat: function(e: Event)
+  setSat(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     var sat = Math.round(parseInt(target.value) % 101);
@@ -158,7 +158,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     this.setState({sat: sat});
     this.updateFromHsv(this.state.hue, sat, this.state.val, e);
   }
-  setVal: function(e: Event)
+  setVal(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     var val = Math.round(parseInt(target.value) % 101);
@@ -167,7 +167,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     this.updateFromHsv(this.state.hue, this.state.sat, val, e);
   }
 
-  autoGenerateColor: function()
+  autoGenerateColor()
   {
     var hexColor = this.props.generateColor();
     var hexString = "#" + hexToString(hexColor);
@@ -182,7 +182,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     this.updateFromHex(hexColor);
   }
 
-  nullifyColor: function()
+  nullifyColor()
   {
     this.setState({isNull: true});
 
@@ -192,7 +192,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     }
   }
 
-  getHueGradientString: function()
+  getHueGradientString()
   {
     if (this.hueGradientString) return this.hueGradientString;
 
@@ -223,7 +223,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     return gradientString;
   }
 
-  makeGradientString: function(min: string, max: string)
+  makeGradientString(min: string, max: string)
   {
     return(
       "linear-gradient(to right, " +
@@ -232,7 +232,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     );
   }
 
-  makeGradientStyle: function(type: string)
+  makeGradientStyle(type: string)
   {
     var hue = this.state.hue;
     var sat = this.state.sat;
@@ -272,7 +272,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     }
   }
 
-  makeHsvInputs: function(type: string)
+  makeHsvInputs(type: string)
   {
     var rootId = this._rootNodeID;
     var label = "" + type[0].toUpperCase() + ":";
@@ -319,7 +319,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
       )
     );
   }
-  render: function()
+  render()
   {
     var rootId = this._rootNodeID;
 

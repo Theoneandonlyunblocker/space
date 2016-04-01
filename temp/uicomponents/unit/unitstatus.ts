@@ -11,7 +11,7 @@ export default class UnitStatus extends React.Component<PropTypes, {}>
   displayName: string = "UnitStatus";
 
 
-  render: function()
+  render()
   {
     var statusElement: ReactDOMPlaceHolder = null;
 

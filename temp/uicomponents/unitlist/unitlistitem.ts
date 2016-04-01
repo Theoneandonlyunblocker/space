@@ -11,7 +11,7 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
   displayName: string = "UnitListItem";
   mixins: reactTypeTODO_any = [Draggable];
 
-  componentDidMount: function()
+  componentDidMount()
   {
     if (!this.props.isDraggable) return;
 
@@ -24,7 +24,7 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
     }
   }
 
-  componentDidUpdate: function()
+  componentDidUpdate()
   {
     if (this.needsFirstTouchUpdate && this.refs.dragClone)
     {
@@ -41,12 +41,12 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
     }
   }
 
-  onDragStart: function()
+  onDragStart()
   {
     this.props.onDragStart(this.props.unit);
   }
 
-  onDragMove: function(x: number, y: number)
+  onDragMove(x: number, y: number)
   {
     if (!this.refs.dragClone) return;
 
@@ -69,23 +69,23 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
     }
   }
 
-  onDragEnd: function()
+  onDragEnd()
   {
     this.props.onDragEnd();
   }
 
 
-  handleMouseEnter: function()
+  handleMouseEnter()
   {
     this.props.onMouseEnter(this.props.unit);
   }
-  handleMouseLeave: function()
+  handleMouseLeave()
   {
     this.props.onMouseLeave();
   }
 
 
-  makeCell: function(type: string)
+  makeCell(type: string)
   {
     var unit = this.props.unit;
     var cellProps: any = {};
@@ -138,7 +138,7 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
     );
   }
 
-  render: function(): any
+  render(): any
   {
     var unit = this.props.unit;
     var columns = this.props.activeColumns;

@@ -9,13 +9,13 @@ export default class GalaxyMap extends React.Component<PropTypes, {}>
 {
   displayName: string = "GalaxyMap";
   
-  changeScene: function(e: Event)
+  changeScene(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     app.reactUI.switchScene(target.value);
   }
 
-  render: function()
+  render()
   {
     var mapModeOptions: ReactDOMPlaceHolder[] = [];
 
@@ -101,7 +101,7 @@ export default class GalaxyMap extends React.Component<PropTypes, {}>
   }
 
   
-  componentDidMount: function()
+  componentDidMount()
   {
     this.props.renderer.isBattleBackground = false;
     this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
@@ -118,7 +118,7 @@ export default class GalaxyMap extends React.Component<PropTypes, {}>
 
     this.props.renderer.camera.centerOnPosition(centerLocation);
   }
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     this.props.renderer.pause();
     this.props.renderer.removeRendererView();

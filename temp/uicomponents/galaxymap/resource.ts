@@ -6,7 +6,7 @@ export interface PropTypes
 export default class Resource extends React.Component<PropTypes, {}>
 {
   displayName: string = "Resource";
-  render: function()
+  render()
   {
     var sign = this.props.income < 0 ? "-" : "+";
     return(

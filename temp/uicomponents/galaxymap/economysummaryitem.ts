@@ -7,7 +7,7 @@ export default class EconomySummaryItem extends React.Component<PropTypes, {}>
 {
   displayName: string = "EconomySummaryItem";
 
-  makeCell: function(type: string)
+  makeCell(type: string)
   {
     var cellProps: any = {};
     cellProps.key = type;
@@ -30,7 +30,7 @@ export default class EconomySummaryItem extends React.Component<PropTypes, {}>
     );
   }
 
-  render: function()
+  render()
   {
     var columns = this.props.activeColumns;
 

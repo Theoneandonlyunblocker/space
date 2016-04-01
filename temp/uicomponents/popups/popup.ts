@@ -23,7 +23,7 @@ export default class Popup extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [Draggable];
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -31,12 +31,12 @@ export default class Popup extends React.Component<PropTypes, {}>
     });
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.setInitialPosition();
   }
 
-  onMouseDown: function(e: MouseEvent)
+  onMouseDown(e: MouseEvent)
   {
     this.handleMouseDown(e);
     var newZIndex = this.props.incrementZIndex(this.state.zIndex);
@@ -49,7 +49,7 @@ export default class Popup extends React.Component<PropTypes, {}>
     }
   }
 
-  setInitialPosition: function()
+  setInitialPosition()
   {
     var domRect = this.getDOMNode().getBoundingClientRect();
     var rect =
@@ -104,7 +104,7 @@ export default class Popup extends React.Component<PropTypes, {}>
     }, this.props.finishedMountingCallback);
   }
 
-  handleResizeMove: function(x: number, y: number)
+  handleResizeMove(x: number, y: number)
   {
     var minWidth = this.props.minWidth || 0;
     var maxWidth = this.props.maxWidth || window.innerWidth;
@@ -117,7 +117,7 @@ export default class Popup extends React.Component<PropTypes, {}>
     eventManager.dispatchEvent("popupResized");
   }
 
-  render: function()
+  render()
   {
     var divProps: any =
     {

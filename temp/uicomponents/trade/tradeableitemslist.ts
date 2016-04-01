@@ -18,7 +18,7 @@ export default class TradeableItemsList extends React.Component<PropTypes, {}>
   displayName: string = "TradeableItemsList";
 
 
-  makeRowForTradeableItem: function(item: ITradeableItem): IListItem
+  makeRowForTradeableItem(item: ITradeableItem): IListItem
   {
     switch (item.key)
     {
@@ -60,7 +60,7 @@ export default class TradeableItemsList extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     var tradeableItems: ITradeableItems = this.props.tradeableItems;
     var rows: IListItem[] = [];

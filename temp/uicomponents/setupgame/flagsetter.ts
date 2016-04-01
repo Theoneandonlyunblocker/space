@@ -11,7 +11,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
 {
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
-  getInitialState: function()
+  getInitialState()
   {
     var flag = new Flag(
     {
@@ -28,13 +28,13 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       active: false
     });
   }
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     window.clearTimeout(this.imageLoadingFailTimeout);
     document.removeEventListener("click", this.handleClick);
     this.clearFocusTimerListener();
   }
-  displayImageLoadingFailMessage: function()
+  displayImageLoadingFailMessage()
   {
     this.setState({hasImageFailMessage: true});
 
@@ -43,7 +43,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       this.setState({hasImageFailMessage: false});
     }.bind(this), 10000);
   }
-  clearImageLoadingFailMessage: function()
+  clearImageLoadingFailMessage()
   {
     if (this.imageLoadingFailTimeout)
     {
@@ -51,7 +51,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
     this.setState({hasImageFailMessage: false});
   }
-  handleClick: function(e: MouseEvent)
+  handleClick(e: MouseEvent)
   {
     var focusGraceTime = 500;
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
@@ -67,7 +67,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  toggleActive: function()
+  toggleActive()
   {
     if (this.state.isActive)
     {
@@ -84,7 +84,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
       this.registerFocusTimerListener();
     }
   }
-  setAsInactive: function()
+  setAsInactive()
   {
     if (this.isMounted() && this.state.isActive)
     {
@@ -94,7 +94,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  setForegroundEmblem: function(emblemTemplate: Templates.ISubEmblemTemplate)
+  setForegroundEmblem(emblemTemplate: Templates.ISubEmblemTemplate)
   {
     var shouldUpdate = emblemTemplate || this.state.flag.foregroundEmblem;
 
@@ -112,13 +112,13 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  stopEvent: function(e: Event)
+  stopEvent(e: Event)
   {
     e.stopPropagation();
     e.preventDefault();
   }
 
-  handleDrop: function(e: DragEvent)
+  handleDrop(e: DragEvent)
   {
     if (e.dataTransfer)
     {
@@ -184,7 +184,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  handleUpload: function(files: FileList)
+  handleUpload(files: FileList)
   {
     var image = this.getFirstValidImageFromFiles(files);
     if (!image) return false;
@@ -193,7 +193,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     return true;
   }
 
-  getFirstValidImageFromFiles: function(files: FileList)
+  getFirstValidImageFromFiles(files: FileList)
   {
     var image: File;
 
@@ -210,7 +210,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     return image;
   }
 
-  setCustomImageFromFile: function(file: File)
+  setCustomImageFromFile(file: File)
   {
     var setImageFN = function(file: File)
     {
@@ -244,7 +244,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     var oldProps = this.props;
 
@@ -275,7 +275,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  handleUpdate: function(dontTriggerParentUpdates?: boolean)
+  handleUpdate(dontTriggerParentUpdates?: boolean)
   {
     this.clearImageLoadingFailMessage();
 
@@ -295,7 +295,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

@@ -15,7 +15,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
   updateListener: reactTypeTODO_any = undefined;
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -23,7 +23,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     });
   }
 
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     if (newProps.currentTurn !== this.props.currentTurn)
     {
@@ -31,17 +31,17 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     }
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.updateListener = eventManager.addEventListener("updateNotificationLog", this.forceUpdate.bind(this));
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     eventManager.removeEventListener("updateNotificationLog", this.updateListener);
   }
 
-  componentDidUpdate: function()
+  componentDidUpdate()
   {
     var domNode = this.getDOMNode();
     if (!isFinite(this.scrollTop))
@@ -52,12 +52,12 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     domNode.scrollTop = domNode.scrollHeight;
   }
 
-  getNotificationKey: function(notification: Notification)
+  getNotificationKey(notification: Notification)
   {
     return "" + notification.turn + this.props.log.byTurn[notification.turn].indexOf(notification);
   }
 
-  handleMarkAsRead: function(notification: Notification)
+  handleMarkAsRead(notification: Notification)
   {
     this.props.log.markAsRead(notification);
     var notificationKey = this.getNotificationKey(notification);
@@ -71,7 +71,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     }
   }
 
-  makePopup: function(notification: Notification, key: string)
+  makePopup(notification: Notification, key: string)
   {
     var log: Rance.NotificationLog = this.props.log;
 
@@ -112,7 +112,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     this.setState(stateObj);
   }
 
-  closePopup: function(key: string)
+  closePopup(key: string)
   {
     this.refs.popupManager.closePopup(this.state[key]);
 
@@ -121,7 +121,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     this.setState(stateObj);
   }
 
-  togglePopup: function(notification: Notification)
+  togglePopup(notification: Notification)
   {
     var key = this.getNotificationKey(notification);
     if (isFinite(this.state[key]))
@@ -134,7 +134,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     var log: Rance.NotificationLog = this.props.log;
     var notifications: Notification[] = log.filterNotifications(log.unread);

@@ -14,7 +14,7 @@ export default class Tutorial extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [SplitMultilineText];
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -22,18 +22,18 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     });
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     this.handleEnterPage(this.props.pages[this.state.currentPage]);
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     this.handleLeavePage(this.props.pages[this.state.currentPage]);
     this.handleClose();
   }
 
-  handleEnterPage: function(page: ITutorialPage)
+  handleEnterPage(page: ITutorialPage)
   {
     if (page.onOpen)
     {
@@ -46,7 +46,7 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     }
   }
 
-  handleLeavePage: function(page: ITutorialPage)
+  handleLeavePage(page: ITutorialPage)
   {
     if (page.onClose)
     {
@@ -59,7 +59,7 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     }
   }
 
-  flipPage: function(amount: number)
+  flipPage(amount: number)
   {
     var lastPage = this.props.pages.length - 1;
     var newPage = this.state.currentPage + amount;
@@ -73,7 +73,7 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     }, this.handleEnterPage.bind(this, this.props.pages[newPage]));
   }
 
-  handleClose: function()
+  handleClose()
   {
     if (Rance.TutorialState[this.props.tutorialId] === tutorialStatus.show)
     {
@@ -81,7 +81,7 @@ export default class Tutorial extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     var hasBackArrow = this.state.currentPage > 0;
     var backElement: ReactDOMPlaceHolder;

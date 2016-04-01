@@ -8,15 +8,15 @@ export default class UnitItem extends React.Component<PropTypes, {}>
   displayName: string = "UnitItem";
   mixins: reactTypeTODO_any = [Draggable];
 
-  onDragStart: function()
+  onDragStart()
   {
     this.props.onDragStart(this.props.item);
   }
-  onDragEnd: function()
+  onDragEnd()
   {
     this.props.onDragEnd();
   }
-  getTechIcon: function(techLevel: number)
+  getTechIcon(techLevel: number)
   {
     switch (techLevel)
     {
@@ -31,7 +31,7 @@ export default class UnitItem extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     if (!this.props.item)
     {

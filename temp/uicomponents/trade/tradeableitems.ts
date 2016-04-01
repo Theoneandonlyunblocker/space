@@ -24,12 +24,12 @@ export default class TradeableItems extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [DropTarget];
 
 
-  handleMouseUp: function()
+  handleMouseUp()
   {
     this.props.onMouseUp();
   }
 
-  render: function()
+  render()
   {
     var divProps: any =
     {

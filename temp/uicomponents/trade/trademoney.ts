@@ -16,22 +16,22 @@ export default class TradeMoney extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [Draggable];
 
 
-  onDragStart: function()
+  onDragStart()
   {
     this.props.onDragStart(this.props.keyTODO/*TODO react*/);
   }
 
-  onDragEnd: function()
+  onDragEnd()
   {
     this.props.onDragEnd();
   }
 
-  handleClick: function()
+  handleClick()
   {
     this.props.onClick(this.props.keyTODO/*TODO react*/);
   }
 
-  handleMoneyAmountChange: function(e: Event)
+  handleMoneyAmountChange(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     var value = parseInt(target.value);
@@ -39,12 +39,12 @@ export default class TradeMoney extends React.Component<PropTypes, {}>
     this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);
   }
 
-  captureEvent: function(e: MouseEvent)
+  captureEvent(e: MouseEvent)
   {
     e.stopPropagation();
   }
 
-  render: function()
+  render()
   {
     var rowProps: any =
     {

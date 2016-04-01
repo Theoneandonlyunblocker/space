@@ -6,7 +6,7 @@ export interface PropTypes
 export default class FlagPicker extends React.Component<PropTypes, {}>
 {
   displayName: string = "FlagPicker";
-  getInitialState: function()
+  getInitialState()
   {
     var initialEmblem: Templates.ISubEmblemTemplate = null;
     if (this.props.flag.foregroundEmblem)
@@ -19,7 +19,7 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
     });
   }
 
-  handleSelectEmblem: function(emblemTemplate: Templates.ISubEmblemTemplate)
+  handleSelectEmblem(emblemTemplate: Templates.ISubEmblemTemplate)
   {
     if (this.state.selectedEmblem === emblemTemplate && emblemTemplate !== null)
     {
@@ -31,12 +31,12 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
     this.setState({selectedEmblem: emblemTemplate});
   }
 
-  clearSelectedEmblem: function()
+  clearSelectedEmblem()
   {
     this.handleSelectEmblem(null);
   }
 
-  handleUpload: function()
+  handleUpload()
   {
     if (!this.props.uploadFiles) throw new Error();
 
@@ -44,7 +44,7 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
 
     this.props.uploadFiles(files);
   }
-  makeEmblemElement: function(template: Templates.ISubEmblemTemplate)
+  makeEmblemElement(template: Templates.ISubEmblemTemplate)
   {
     var className = "emblem-picker-image";
     if (this.state.selectedEmblem &&
@@ -69,7 +69,7 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
     );
   }
 
-  render: function()
+  render()
   {
     var emblems: any[] = [];
 

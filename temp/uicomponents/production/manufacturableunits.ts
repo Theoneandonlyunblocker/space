@@ -16,7 +16,7 @@ export default class ManufacturableUnits extends React.Component<PropTypes, {}>
   displayName: string = "ManufacturableUnits";
 
 
-  shouldComponentUpdate: function(newProps: any)
+  shouldComponentUpdate(newProps: any)
   {
     if (this.props.selectedStar !== newProps.selectedStar)
     {
@@ -42,28 +42,28 @@ export default class ManufacturableUnits extends React.Component<PropTypes, {}>
     return false;
   }
 
-  addUnitToBuildQueue: function(template: Templates.IUnitTemplate)
+  addUnitToBuildQueue(template: Templates.IUnitTemplate)
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.addThingToQueue(template, "unit");
     this.props.triggerUpdate();
   }
 
-  upgradeHealth: function()
+  upgradeHealth()
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.upgradeUnitHealthModifier(0.1);
     this.props.triggerUpdate();
   }
 
-  upgradeStats: function()
+  upgradeStats()
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;
     manufactory.upgradeUnitStatsModifier(0.1);
     this.props.triggerUpdate();
   }
 
-  render: function()
+  render()
   {
     if (this.props.selectedStar && this.props.selectedStar.manufactory)
     {

@@ -11,7 +11,7 @@ export default class MapModeSelector extends React.Component<PropTypes, {}>
   displayName: string = "MapModeSelector";
 
 
-  handleChange: function(e: Event)
+  handleChange(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     var value = target.value;
@@ -23,7 +23,7 @@ export default class MapModeSelector extends React.Component<PropTypes, {}>
     }
   }
 
-  makeOptions: function()
+  makeOptions()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
     var options: ReactDOMPlaceHolder[] = [];
@@ -44,7 +44,7 @@ export default class MapModeSelector extends React.Component<PropTypes, {}>
   }
   
 
-  render: function()
+  render()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
 

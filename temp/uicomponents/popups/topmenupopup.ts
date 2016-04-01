@@ -7,7 +7,7 @@ export default class TopMenuPopup extends React.Component<PropTypes, {}>
 {
   displayName: string = "TopMenuPopup";
 
-  render: function()
+  render()
   {
     var contentProps = this.props.contentProps;
     contentProps.ref = "content";

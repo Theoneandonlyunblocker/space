@@ -29,7 +29,7 @@ export default class BattleScene extends React.Component<PropTypes, {}>
   battleScene: null, // Rance.BattleScene
 
 
-  shouldComponentUpdate: function(newProps: any)
+  shouldComponentUpdate(newProps: any)
   {
     var shouldTriggerUpdate =
     {
@@ -47,7 +47,7 @@ export default class BattleScene extends React.Component<PropTypes, {}>
     return false;
   }
 
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     bs = this;
     var self = this;
@@ -114,7 +114,7 @@ export default class BattleScene extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     var componentToRender: ReactDOMPlaceHolder;
 

@@ -11,7 +11,7 @@ export interface PropTypes
 export default class BattlePrep extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattlePrep";
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -23,11 +23,11 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
       leftLowerElement: "playerFormation" // "playerFormation" || "enemyFormation" || "itemEquip"
     });
   }
-  componentDidMount: function()
+  componentDidMount()
   {
     this.refs.background.handleResize();
   }
-  autoMakeFormation: function()
+  autoMakeFormation()
   {
     var battlePrep = this.props.battlePrep;
 
@@ -41,14 +41,14 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
-  handleSelectRow: function(row: IListItem)
+  handleSelectRow(row: IListItem)
   {
     if (!row.data.unit) return;
 
     this.setSelectedUnit(row.data.unit);
   }
 
-  clearSelectedUnit: function()
+  clearSelectedUnit()
   {
     this.setState(
     {
@@ -56,7 +56,7 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     });
   }
 
-  setSelectedUnit: function(unit: Unit)
+  setSelectedUnit(unit: Unit)
   {
     if (unit === this.state.selectedUnit)
     {
@@ -72,7 +72,7 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
   }
 
 
-  handleMouseEnterUnit: function(unit: Unit)
+  handleMouseEnterUnit(unit: Unit)
   {
     this.setState(
     {
@@ -80,7 +80,7 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     });
   }
 
-  handleMouseLeaveUnit: function()
+  handleMouseLeaveUnit()
   {
     this.setState(
     {
@@ -88,14 +88,14 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     });
   }
 
-  handleDragStart: function(unit: Unit)
+  handleDragStart(unit: Unit)
   {
     this.setState(
     {
       currentDragUnit: unit
     });
   }
-  handleDragEnd: function(dropSuccesful: boolean = false)
+  handleDragEnd(dropSuccesful: boolean = false)
   {
     if (!dropSuccesful && this.state.currentDragUnit)
     {
@@ -110,7 +110,7 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
 
     return dropSuccesful;
   }
-  handleDrop: function(position: number[])
+  handleDrop(position: number[])
   {
     var battlePrep = this.props.battlePrep;
     if (this.state.currentDragUnit)
@@ -130,14 +130,14 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     this.handleDragEnd(true);
   }
 
-  handleItemDragStart: function(item: Item)
+  handleItemDragStart(item: Item)
   {
     this.setState(
     {
       currentDragItem: item
     });
   }
-  setLeftLowerElement: function(newElement: string)
+  setLeftLowerElement(newElement: string)
   {
     var oldElement = this.state.leftLowerElement;
     var newState: any =
@@ -152,7 +152,7 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
 
     this.setState(newState);
   }
-  handleItemDragEnd: function(dropSuccesful: boolean = false)
+  handleItemDragEnd(dropSuccesful: boolean = false)
   {
     if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit)
     {
@@ -168,7 +168,7 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
       currentDragItem: null
     });
   }
-  handleItemDrop: function()
+  handleItemDrop()
   {
     var item = this.state.currentDragItem;
     var unit = this.state.selectedUnit;
@@ -184,12 +184,12 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     this.handleItemDragEnd(true);
   }
 
-  getBackgroundBlurArea: function()
+  getBackgroundBlurArea()
   {
     return this.refs.upper.getDOMNode().getBoundingClientRect();
   }
 
-  render: function()
+  render()
   {
     var battlePrep: Rance.BattlePrep = this.props.battlePrep;
     var player = battlePrep.humanPlayer;

@@ -9,7 +9,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
   mixins: reactTypeTODO_any = [Draggable, DropTarget, React.addons.PureRenderMixin];
   cachedMidPoint: reactTypeTODO_any = undefined;
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -17,7 +17,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     });
   }
 
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     if (newProps.listItemIsDragging !== this.props.listItemIsDragging)
     {
@@ -27,17 +27,17 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
   }
 
 
-  onDragStart: function()
+  onDragStart()
   {
     this.props.onDragStart(this.props.layer);
   }
 
-  onDragEnd: function()
+  onDragEnd()
   {
     this.props.onDragEnd();
   }
 
-  handleHover: function(e: MouseEvent)
+  handleHover(e: MouseEvent)
   {
     if (!this.cachedMidPoint)
     {
@@ -55,7 +55,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     this.props.setHoverPosition(this.props.layer, isAbove);
   }
 
-  clearHover: function()
+  clearHover()
   {
     this.setState(
     {
@@ -63,7 +63,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     });
   }
 
-  setLayerAlpha: function(e: Event)
+  setLayerAlpha(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     var value = parseFloat(target.value)
@@ -75,7 +75,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     this.forceUpdate();
   }
 
-  render: function()
+  render()
   {
     var divProps: any =
     {

@@ -11,7 +11,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
 {
   displayName: string = "ColorSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -21,13 +21,13 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     });
   }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     document.removeEventListener("click", this.handleClick);
     this.clearFocusTimerListener();
   }
 
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     if (newProps.color !== this.state.hexColor)
     {
@@ -39,7 +39,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  handleClick: function(e: MouseEvent)
+  handleClick(e: MouseEvent)
   {
     var focusGraceTime = 500;
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
@@ -55,7 +55,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  toggleActive: function()
+  toggleActive()
   {
     if (this.state.isActive)
     {
@@ -72,7 +72,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
       this.registerFocusTimerListener();
     }
   }
-  setAsInactive: function()
+  setAsInactive()
   {
     if (this.isMounted() && this.state.isActive)
     {
@@ -81,7 +81,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
       this.clearFocusTimerListener();
     }
   }
-  updateColor: function(hexColor: number, isNull: boolean)
+  updateColor(hexColor: number, isNull: boolean)
   {
     if (isNull)
     {
@@ -98,12 +98,12 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     }
   }
 
-  getClientRect: function()
+  getClientRect()
   {
     return this.getDOMNode().firstChild.getBoundingClientRect();
   }
 
-  render: function()
+  render()
   {
     var displayElement = this.state.isNull ?
       React.DOM.img(

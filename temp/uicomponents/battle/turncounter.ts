@@ -7,7 +7,7 @@ export default class TurnCounter extends React.Component<PropTypes, {}>
 {
   displayName: string = "TurnCounter";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
-  render: function()
+  render()
   {
     var turnsLeft = this.props.turnsLeft;
 

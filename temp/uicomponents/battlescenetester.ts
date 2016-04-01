@@ -10,7 +10,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
   battle: reactTypeTODO_any = null;
   battleScene: reactTypeTODO_any = null;
 
-  getInitialState: function()
+  getInitialState()
   {
     var side1Units: Unit[] = [];
     var side2Units: Unit[] = [];
@@ -44,7 +44,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     });
   }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
     battleScene.resume();
@@ -52,13 +52,13 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     battleScene.updateUnits()
   }
 
-  makeUnit: function()
+  makeUnit()
   {
     var template = getRandomProperty(app.moduleData.Templates.Units);
     return new Rance.Unit(template, this.idGenerator++);
   }
 
-  makePlayer: function()
+  makePlayer()
   {
     var player = new Player(false, this.idGenerator++);
     player.name = "player " + player.id;
@@ -66,7 +66,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     player.makeRandomFlag();
   }
 
-  makeFormation: function(units: Unit[])
+  makeFormation(units: Unit[])
   {
     var formation: Unit[][] = [];
     var unitsIndex: number = 0;
@@ -85,7 +85,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     return formation;
   }
 
-  makeBattle: function(props:
+  makeBattle(props:
   {
     side1Units: Unit[];
     side2Units: Unit[];
@@ -120,19 +120,19 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     });
   }
 
-  handleUnitHover: function(unit: Unit)
+  handleUnitHover(unit: Unit)
   {
     this.battleScene.hoveredUnit = unit;
     this.battleScene.updateUnits();
   }
 
-  handleClearHover: function()
+  handleClearHover()
   {
     this.battleScene.hoveredUnit = null;
     this.battleScene.updateUnits();
   }
 
-  selectUnit: function(unit: Unit)
+  selectUnit(unit: Unit)
   {
     var statePropForSide = unit.battleStats.side === "side1" ? "selectedSide1Unit" : "selectedSide2Unit";
     var statePropForOtherSide = unit.battleStats.side === "side1" ? "selectedSide2Unit" : "selectedSide1Unit";
@@ -150,7 +150,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     this.battleScene.updateUnits();
   }
 
-  handleSelectSFXTemplate: function(e: Event)
+  handleSelectSFXTemplate(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     this.setState(
@@ -159,7 +159,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     });
   }
 
-  handleChangeDuration: function(e: Event)
+  handleChangeDuration(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     this.setState(
@@ -168,7 +168,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     });
   }
 
-  handleTestAbility1: function()
+  handleTestAbility1()
   {
     var overlayTestFN = function(color: number, params: Templates.SFXParams)
     {
@@ -252,7 +252,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     });
   }
 
-  useSelectedAbility: function()
+  useSelectedAbility()
   {
     var user = this.state.activeUnit;
     var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
@@ -275,7 +275,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     });
   }
 
-  makeUnitElements: function(units: Unit[])
+  makeUnitElements(units: Unit[])
   {
     var unitElements: ReactDOMPlaceHolder[] = [];
 
@@ -309,7 +309,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     return unitElements;
   }
 
-  render: function()
+  render()
   {
     var battle: Battle = this.battle;
 

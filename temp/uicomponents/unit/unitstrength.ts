@@ -8,7 +8,7 @@ export interface PropTypes
 export default class UnitStrength extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitStrength";
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -16,7 +16,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       activeTween: null
     });
   }
-  componentWillReceiveProps: function(newProps: any)
+  componentWillReceiveProps(newProps: any)
   {
     if (newProps.animateStrength &&
       newProps.currentHealth !== this.props.currentHealth &&
@@ -32,21 +32,21 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       this.updateDisplayStrength(newProps.currentHealth);
     }
   }
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     if (this.activeTween)
     {
       this.activeTween.stop();
     }
   }
-  updateDisplayStrength: function(newAmount: number)
+  updateDisplayStrength(newAmount: number)
   {
     this.setState(
     {
       displayedStrength: newAmount
     });
   }
-  animateDisplayedStrength: function(newAmount: number, time: number)
+  animateDisplayedStrength(newAmount: number, time: number)
   {
     var self = this;
     var stopped = false;
@@ -88,7 +88,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
     tween.start();
     animateTween();
   }
-  makeSquadronInfo: function()
+  makeSquadronInfo()
   {
     return(
       React.DOM.div({className: "unit-strength-container"},
@@ -96,7 +96,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       )
     );
   }
-  makeCapitalInfo: function()
+  makeCapitalInfo()
   {
     var text = this.makeStrengthText();
 
@@ -123,7 +123,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       )
     );
   }
-  makeStrengthText: function()
+  makeStrengthText()
   {
     var critThreshhold = 0.3;
     var currentStyle =
@@ -158,7 +158,7 @@ export default class UnitStrength extends React.Component<PropTypes, {}>
       )
     )
   }
-  render: function()
+  render()
   {
     if (this.props.isSquadron)
     {

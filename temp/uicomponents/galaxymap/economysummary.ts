@@ -10,7 +10,7 @@ export default class EconomySummary extends React.Component<PropTypes, {}>
 {
   displayName: string = "EconomySummary";
 
-  render: function()
+  render()
   {
     var rows: IListItem[] = [];
     var player = this.props.player;

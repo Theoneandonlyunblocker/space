@@ -10,7 +10,7 @@ export default class SaveGame extends React.Component<PropTypes, {}>
 {
   displayName: string = "SaveGame";
 
-  componentDidMount: function()
+  componentDidMount()
   {
     if (app.game.gameStorageKey)
     {
@@ -22,17 +22,17 @@ export default class SaveGame extends React.Component<PropTypes, {}>
     }
   }
 
-  setInputText: function(newText: string)
+  setInputText(newText: string)
   {
     this.refs.saveName.getDOMNode().value = newText;
   }
 
-  handleRowChange: function(row: IListItem)
+  handleRowChange(row: IListItem)
   {
     this.setInputText(row.data.name)
   }
 
-  handleSave: function()
+  handleSave()
   {
     var saveName = this.refs.saveName.getDOMNode().value
     var saveKey = "Rance.Save." + saveName;
@@ -45,16 +45,16 @@ export default class SaveGame extends React.Component<PropTypes, {}>
       this.saveGame();
     }
   }
-  saveGame: function()
+  saveGame()
   {
     app.game.save(this.refs.saveName.getDOMNode().value);
     this.handleClose();
   }
-  handleClose: function()
+  handleClose()
   {
     this.props.handleClose();
   }
-  makeConfirmOverWritePopup: function(saveName: string)
+  makeConfirmOverWritePopup(saveName: string)
   {
     var confirmProps =
     {
@@ -70,7 +70,7 @@ export default class SaveGame extends React.Component<PropTypes, {}>
     });
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

@@ -8,7 +8,7 @@ export interface PropTypes
 export default class SaveList extends React.Component<PropTypes, {}>
 {
   displayName: string = "SaveList";
-  render: function()
+  render()
   {
     var rows: IListItem[] = [];
     var selected: IListItem;

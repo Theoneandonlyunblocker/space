@@ -7,17 +7,17 @@ export default class SaveListItem extends React.Component<PropTypes, {}>
 {
   displayName: string = "SaveListItem";
 
-  handleDelete: function(e: React.MouseEvent)
+  handleDelete(e: React.MouseEvent)
   {
     e.stopPropagation();
     this.props.handleDelete();
   }
-  handleUndoDelete: function(e: React.MouseEvent)
+  handleUndoDelete(e: React.MouseEvent)
   {
     e.stopPropagation();
     this.props.handleUndoDelete();
   }
-  makeCell: function(type: string)
+  makeCell(type: string)
   {
     var cellProps: any = {};
     cellProps.key = type;
@@ -54,7 +54,7 @@ export default class SaveListItem extends React.Component<PropTypes, {}>
     );
   }
 
-  render: function()
+  render()
   {
     var columns = this.props.activeColumns;
 

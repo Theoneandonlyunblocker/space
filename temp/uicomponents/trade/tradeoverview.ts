@@ -17,13 +17,13 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
   otherPlayerTrade: reactTypeTODO_any = undefined;
 
 
-  componentWillMount: function()
+  componentWillMount()
   {
     this.selfPlayerTrade = new Trade(this.props.selfPlayer);
     this.otherPlayerTrade = new Trade(this.props.otherPlayer);
   }
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -34,12 +34,12 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
   }
   
 
-  handleCancel: function()
+  handleCancel()
   {
     this.props.handleClose();
   }
 
-  handleOk: function()
+  handleOk()
   {
     this.selfPlayerTrade.executeAllStagedTrades(this.props.otherPlayer);
     this.otherPlayerTrade.executeAllStagedTrades(this.props.selfPlayer);
@@ -48,7 +48,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
-  getActiveTrade: function(player?: string)
+  getActiveTrade(player?: string)
   {
     var playerStringToUse = player || this.state.currentDragItemPlayer;
     if (playerStringToUse === "self")
@@ -62,7 +62,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     else return null;
   }
 
-  handleStageItem: function(player: string, key: string)
+  handleStageItem(player: string, key: string)
   {
     var activeTrade = this.getActiveTrade(player);
 
@@ -85,7 +85,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     }
   }
 
-  handleAdjustStagedItemAmount: function(player: string, key: string, newAmount: number)
+  handleAdjustStagedItemAmount(player: string, key: string, newAmount: number)
   {
     var activeTrade = this.getActiveTrade(player);
     {
@@ -95,7 +95,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
-  handleRemoveStagedItem: function(player: string, key: string)
+  handleRemoveStagedItem(player: string, key: string)
   {
     var activeTrade = this.getActiveTrade(player);
     activeTrade.removeStagedItem(key);
@@ -106,7 +106,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     }
   }
 
-  handleAvailableDragStart: function(player: string, key: string)
+  handleAvailableDragStart(player: string, key: string)
   {
     this.setState(
     {
@@ -115,7 +115,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     });
   }
 
-  handleStagingDragStart: function(player: string, key: string)
+  handleStagingDragStart(player: string, key: string)
   {
     this.setState(
     {
@@ -124,7 +124,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     });
   }
 
-  handleDragEnd: function()
+  handleDragEnd()
   {
     this.setState(
     {
@@ -134,7 +134,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     });
   }
 
-  handleAvailableMouseUp: function()
+  handleAvailableMouseUp()
   {
     if (this.state.currentStagingItemDragKey)
     {
@@ -142,7 +142,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     }
   }
 
-  handleStagingAreaMouseUp: function()
+  handleStagingAreaMouseUp()
   {
     if (this.state.currentAvailableItemDragKey)
     {
@@ -150,7 +150,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     var hasDragItem = Boolean(this.state.currentDragItemPlayer);
     var selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";

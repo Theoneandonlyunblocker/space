@@ -30,7 +30,7 @@ export default class Formation extends React.Component<PropTypes, {}>
   displayName: string = "Formation";
 
 
-  render: function()
+  render()
   {
     var formation = this.props.formation;
 

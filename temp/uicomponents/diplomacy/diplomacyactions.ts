@@ -14,7 +14,7 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
   displayName: string = "DiplomacyActions";
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -22,7 +22,7 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     });
   }
   
-  closePopup: function(popupType: string)
+  closePopup(popupType: string)
   {
     this.refs.popupManager.closePopup(this.state[popupType]);
     var stateObj: any = {};
@@ -30,7 +30,7 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     this.setState(stateObj);
   }
 
-  makePopup: function(popupType: string)
+  makePopup(popupType: string)
   {
     var contentConstructor: ReactComponentPlaceHolder;
     var contentProps: any;
@@ -75,7 +75,7 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     this.setState(stateObj)
   }
 
-  togglePopup: function(popupType: string)
+  togglePopup(popupType: string)
   {
     if (isFinite(this.state[popupType]))
     {
@@ -87,18 +87,18 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     }
   }
 
-  handleDeclareWar: function()
+  handleDeclareWar()
   {
     this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
     this.props.onUpdate();
   }
-  handleMakePeace: function()
+  handleMakePeace()
   {
     this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
     this.props.onUpdate();
   }
 
-  render: function()
+  render()
   {
     var player = this.props.player;
     var targetPlayer = this.props.targetPlayer;

@@ -10,7 +10,7 @@ export default class BuyItems extends React.Component<PropTypes, {}>
 {
   displayName: string = "BuyItems";
 
-  handleSelectRow: function(row: IListItem)
+  handleSelectRow(row: IListItem)
   {
     var template: Templates.IItemTemplate = row.data.item.template;
     var item = new Item(template);
@@ -21,7 +21,7 @@ export default class BuyItems extends React.Component<PropTypes, {}>
     eventManager.dispatchEvent("playerControlUpdated");
   }
 
-  render: function()
+  render()
   {
     var player = this.props.player;
     var items = player.getGloballyBuildableItems();

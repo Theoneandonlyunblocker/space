@@ -9,7 +9,7 @@ export default class ItemPurchaseList extends React.Component<PropTypes, {}>
 {
   displayName: string = "ItemPurchaseList";
 
-  getSlotIndex: function(slot: string)
+  getSlotIndex(slot: string)
   {
     if (slot === "high")
     {
@@ -22,7 +22,7 @@ export default class ItemPurchaseList extends React.Component<PropTypes, {}>
     else return 0;
   }
 
-  render: function()
+  render()
   {
     var rows: IListItem[] = [];
     var items: Item[] = this.props.items;

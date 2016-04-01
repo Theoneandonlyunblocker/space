@@ -9,14 +9,14 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitExperience";
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
       upgradePopupId: undefined
     });
   }
-  makePopup: function()
+  makePopup()
   {
     var popupId = this.refs.popupManager.makePopup(
     {
@@ -43,7 +43,7 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
       upgradePopupId: popupId
     });
   }
-  closePopup: function()
+  closePopup()
   {
     this.refs.popupManager.closePopup(this.state.upgradePopupId);
     this.setState(
@@ -51,7 +51,7 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
       upgradePopupId: undefined
     });
   }
-  handleUnitUpgrade: function()
+  handleUnitUpgrade()
   {
     if (!this.props.unit.canLevelUp())
     {
@@ -63,7 +63,7 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
     }
     this.props.onUnitUpgrade();
   }
-  render: function()
+  render()
   {
     var rows: ReactDOMPlaceHolder[] = [];
 

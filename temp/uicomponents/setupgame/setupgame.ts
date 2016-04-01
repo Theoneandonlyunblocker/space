@@ -10,7 +10,7 @@ export default class SetupGame extends React.Component<PropTypes, {}>
 {
   displayName: string = "SetupGame";
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -19,7 +19,7 @@ export default class SetupGame extends React.Component<PropTypes, {}>
     });
   }
 
-  setPlayerLimits: function(props:
+  setPlayerLimits(props:
   {
     min: number;
     max: number;
@@ -32,7 +32,7 @@ export default class SetupGame extends React.Component<PropTypes, {}>
     });
   }
 
-  startGame: function()
+  startGame()
   {
     var playerData: any = {};
 
@@ -48,13 +48,13 @@ export default class SetupGame extends React.Component<PropTypes, {}>
     app.makeGameFromSetup(map, players);
   }
 
-  randomize: function()
+  randomize()
   {
     this.refs.players.randomizeAllPlayers();
     this.refs.mapSetup.refs.mapGenOptions.randomizeOptions();
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

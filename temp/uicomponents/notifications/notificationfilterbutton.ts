@@ -12,7 +12,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
 {
   displayName: string = "NotificationFilterButton";
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -20,7 +20,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     });
   }
   
-  makePopup: function()
+  makePopup()
   {
     var scrollToHighlightedFN = function()
     {
@@ -59,7 +59,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     });
   }
 
-  closePopup: function()
+  closePopup()
   {
     this.refs.popupManager.closePopup(this.state.notificationFilterPopup);
     this.setState(
@@ -68,7 +68,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     });
   }
 
-  togglePopup: function()
+  togglePopup()
   {
     if (isFinite(this.state.notificationFilterPopup))
     {
@@ -80,7 +80,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     }
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

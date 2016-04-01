@@ -10,7 +10,7 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
   displayName: string = "DontShowAgain";
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -18,12 +18,12 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
     });
   }
   
-  getTutorialState: function()
+  getTutorialState()
   {
     return Rance.TutorialState[this.props.tutorialId];
   }
 
-  toggleState: function()
+  toggleState()
   {
     if (this.state.isChecked)
     {
@@ -42,7 +42,7 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
     });
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

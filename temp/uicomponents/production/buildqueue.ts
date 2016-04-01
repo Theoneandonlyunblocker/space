@@ -15,21 +15,21 @@ export default class BuildQueue extends React.Component<PropTypes, {}>
   displayName: string = "BuildQueue";
 
 
-  removeItem: function(template: IManufacturableThing, parentIndex: number)
+  removeItem(template: IManufacturableThing, parentIndex: number)
   {
     var manufactory: Manufactory = this.props.manufactory;
     manufactory.removeThingAtIndex(parentIndex);
     this.props.triggerUpdate();
   }
 
-  upgradeCapacity: function()
+  upgradeCapacity()
   {
     var manufactory: Manufactory = this.props.manufactory;
     manufactory.upgradeCapacity(1);
     this.props.triggerUpdate();
   }
 
-  render: function()
+  render()
   {
     var manufactory: Manufactory = this.props.manufactory;
 

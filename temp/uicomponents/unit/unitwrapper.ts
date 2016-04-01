@@ -11,7 +11,7 @@ export default class UnitWrapper extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitWrapper";
   mixins: reactTypeTODO_any = [DropTarget];
-  shouldComponentUpdate: function(newProps: any)
+  shouldComponentUpdate(newProps: any)
   {
     if (!this.props.unit && !newProps.unit) return false;
 
@@ -74,13 +74,13 @@ export default class UnitWrapper extends React.Component<PropTypes, {}>
 
     return false;
   }
-  handleMouseUp: function()
+  handleMouseUp()
   {
     console.log("unitMouseUp", this.props.position);
     this.props.onMouseUp(this.props.position);
   }
 
-  render: function()
+  render()
   {
     var allElements: ReactComponentPlaceHolder[] = [];
 

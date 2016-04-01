@@ -16,7 +16,7 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -24,7 +24,7 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
     });
   }
   
-  overrideHandleMoneyChange: function()
+  overrideHandleMoneyChange()
   {
     this.setState(
     {
@@ -32,7 +32,7 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
     });
   }
 
-  makeCell: function(type: string)
+  makeCell(type: string)
   {
     var cellProps: any = {};
     cellProps.key = type;
@@ -62,7 +62,7 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
     );
   }
 
-  render: function()
+  render()
   {
     var template: Templates.IBuildingTemplate = this.props.template;
     var cells: ReactDOMPlaceHolder[] = [];

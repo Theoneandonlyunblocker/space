@@ -13,20 +13,20 @@ export default class PopupResizeHandle extends React.Component<PropTypes, {}>
   // originBottom: reactTypeTODO_any = undefined;
   // originRight: reactTypeTODO_any = undefined;
 
-  // onDragStart: function()
+  // onDragStart()
   // {
   //   var rect = this.getDOMNode().getBoundingClientRect();
   //   this.originBottom = rect.bottom;
   //   this.originRight = rect.right;
   // }
 
-  onDragMove: function(x: number, y: number)
+  onDragMove(x: number, y: number)
   {
     var rect = this.getDOMNode().getBoundingClientRect();
     this.props.handleResize(x + rect.width, y + rect.height);
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.img(

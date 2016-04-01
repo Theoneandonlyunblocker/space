@@ -9,18 +9,18 @@ export default class BattleScore extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleScore";
   lastEvaluation: reactTypeTODO_any = undefined;
-  shouldComponentUpdate: function(newProps: any)
+  shouldComponentUpdate(newProps: any)
   {
     var oldEvaluation = this.lastEvaluation;
     this.lastEvaluation = newProps.battle.getEvaluation();
 
     return this.lastEvaluation !== oldEvaluation;
   }
-  componentWillMount: function()
+  componentWillMount()
   {
     this.lastEvaluation = this.props.battle.getEvaluation();
   }
-  render: function()
+  render()
   {
     var battle: Battle = this.props.battle;
     var evaluation = this.lastEvaluation;

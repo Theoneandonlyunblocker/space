@@ -17,7 +17,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
   displayName: string = "ManufacturableThings";
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
@@ -25,7 +25,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
     });
   }
 
-  selectTab: function(key: string)
+  selectTab(key: string)
   {
     if (this.state.activeTab === key) return;
     this.setState(
@@ -34,7 +34,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
     });
   }
   
-  makeTabButton: function(key: string)
+  makeTabButton(key: string)
   {
     var displayString: string;
     switch (key)
@@ -64,7 +64,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
     );
   }
 
-  getManufacturableThings: function(key: string)
+  getManufacturableThings(key: string)
   {
     var manufacturableThings: IManufacturableThing[] = [];
     var selectedStar: Star = this.props.selectedStar;
@@ -103,7 +103,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
     return manufacturableThings;
   }
 
-  makeTab: function(key: string)
+  makeTab(key: string)
   {
     var props =
     {
@@ -134,7 +134,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
     }
   }
 
-  render: function()
+  render()
   {
     return(
       React.DOM.div(

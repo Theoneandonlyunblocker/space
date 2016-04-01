@@ -11,20 +11,20 @@ export default class FleetUnitInfoName extends React.Component<PropTypes, {}>
   displayName: string = "FleetUnitInfoName";
 
 
-  getInitialState: function()
+  getInitialState()
   {
     return(
     {
       value: this.props.unit.name
     });
   }
-  onChange: function(e: Event)
+  onChange(e: Event)
   {
     var target = <HTMLInputElement> e.target;
     this.setState({value: target.value});
     this.props.unit.name = target.value;
   }
-  render: function()
+  render()
   {
     return(
       React.DOM.input(
