@@ -11,7 +11,7 @@ import
   getSeededRandomArrayItem
 } from "./utility.ts"
 
-export class Emblem
+export default class Emblem
 {
   alpha: number;
   color: Color;

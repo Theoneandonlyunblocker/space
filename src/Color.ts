@@ -1,5 +1,7 @@
 /// <reference path="../lib/husl.d.ts" />
 
+import ColorSaveData from "./savedata/ColorSaveData.d.ts";
+
 export default class Color
 {
   // scalars
@@ -103,5 +105,10 @@ export default class Color
     const hex = Math.round(this.getHex());
     const converted = hex.toString(16);
     return '000000'.substr(0, 6 - converted.length) + converted;
+  }
+  
+  public serialize(): ColorSaveData
+  {
+    return this.getRGB();
   }
 }

@@ -1,17 +1,18 @@
 /// <reference path="../lib/rng.d.ts" />
-/// <reference path="emblem.ts" />
-/// <reference path="color.ts"/>
 
-/// <reference path="savedata/iflagsavedata.d.ts" />
+import Color from "./Color.ts";
+import Emblem from "./Emblem.ts";
+
+import FlagSaveData from "./savedata/FlagSaveData.d.ts";
 
 export class Flag
 {
   seed: any;
   width: number;
   height: number;
-  mainColor: number;
-  secondaryColor: number;
-  tetriaryColor: number;
+  mainColor: Color;
+  secondaryColor: Color;
+  tetriaryColor: Color;
   backgroundEmblem: Emblem;
   foregroundEmblem: Emblem;
   private _renderedSvg: HTMLElement;
@@ -28,9 +29,9 @@ export class Flag
   {
     width: number;
     height?: number;
-    mainColor?: number;
-    secondaryColor?: number;
-    tetriaryColor?: number;
+    mainColor?: Color;
+    secondaryColor?: Color;
+    tetriaryColor?: Color;
   })
   {
     this.width = props.width;
@@ -40,20 +41,20 @@ export class Flag
     this.secondaryColor = props.secondaryColor;
     this.tetriaryColor = props.tetriaryColor; // TODO flag | currently never set
   }
-  setColorScheme(main: number, secondary?: number, tetriary?: number)
+  setColorScheme(main: Color, secondary?: Color, tetriary?: Color)
   {
     this.mainColor = main;
 
     
     this.secondaryColor = secondary;
-    if (this.foregroundEmblem && isFinite(secondary))
+    if (this.foregroundEmblem && secondary)
     {
       this.foregroundEmblem.color = this.secondaryColor;
     }
 
     
     this.tetriaryColor = tetriary;
-    if (this.backgroundEmblem && isFinite(tetriary))
+    if (this.backgroundEmblem && tetriary)
     {
       this.backgroundEmblem.color = this.tetriaryColor;
     }
@@ -93,7 +94,7 @@ export class Flag
     this.clearContent();
     this.foregroundEmblem = emblem;
 
-    if (isFinite(emblem.color) && emblem.color !== null)
+    if (emblem.color)
     {
       this.secondaryColor = emblem.color;
     }
@@ -113,7 +114,7 @@ export class Flag
     this.clearContent();
     this.backgroundEmblem = emblem;
 
-    if (isFinite(emblem.color) && emblem.color !== null)
+    if (emblem.color)
     {
       this.tetriaryColor = emblem.color;
     }
@@ -228,13 +229,17 @@ export class Flag
     canvas.width = width;
     canvas.height = height;
 
-    if (!isFinite(this.mainColor)) return canvas;
+    if (!this.mainColor)
+    {
+      return canvas;
+    }
+    
 
     var ctx = canvas.getContext("2d");
 
     ctx.globalCompositeOperation = "source-over";
 
-    ctx.fillStyle = "#" + hexToString(this.mainColor);
+    ctx.fillStyle = "#" + this.mainColor.getHexString();
     ctx.fillRect(0, 0, width, height);
 
     if (this._customImageToRender)
@@ -243,7 +248,7 @@ export class Flag
     }
     else
     {
-      if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null)
+      if (this.backgroundEmblem && this.tetriaryColor)
       {
         var background = this.backgroundEmblem.draw(width, height, stretch);
         var x = (width - background.width) / 2;
@@ -251,7 +256,7 @@ export class Flag
         ctx.drawImage(background, x, y);
       }
 
-      if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null)
+      if (this.foregroundEmblem && this.secondaryColor)
       {
         var foreground = this.foregroundEmblem.draw(width, height, stretch);
         var x = (width - foreground.width) / 2;
@@ -262,15 +267,21 @@ export class Flag
     
     return canvas;
   }
-  serialize(): IFlagSaveData
+  serialize(): FlagSaveData
   {
-    var data: IFlagSaveData =
+    var data: FlagSaveData =
     {
-      mainColor: this.mainColor
+      mainColor: this.mainColor.serialize()
     };
 
-    if (isFinite(this.secondaryColor)) data.secondaryColor = this.secondaryColor;
-    if (isFinite(this.tetriaryColor)) data.tetriaryColor = this.tetriaryColor;
+    if (this.secondaryColor)
+    {
+      data.secondaryColor = this.secondaryColor.serialize();
+    }
+    if (this.tetriaryColor)
+    {
+      data.tetriaryColor = this.tetriaryColor.serialize();
+    }
 
 
 

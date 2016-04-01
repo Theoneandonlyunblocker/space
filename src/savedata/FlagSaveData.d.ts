@@ -1,10 +1,11 @@
+import ColorSaveData from "./ColorSaveData.d.ts";
 import EmblemSaveData from "./EmblemSaveData.d.ts";
 
 declare interface FlagSaveData
 {
-  mainColor: number;
-  secondaryColor?: number;
-  tetriaryColor?: number;
+  mainColor: ColorSaveData;
+  secondaryColor?: ColorSaveData;
+  tetriaryColor?: ColorSaveData;
 
   customImage?: string;
 

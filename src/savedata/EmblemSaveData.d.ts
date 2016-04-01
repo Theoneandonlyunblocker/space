@@ -5,4 +5,4 @@ declare interface EmblemSaveData
   outerKey?: string;
 }
 
-export default EmblemSaveData
+export default EmblemSaveData;
