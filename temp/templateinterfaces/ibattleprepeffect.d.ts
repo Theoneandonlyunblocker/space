@@ -1,7 +1,4 @@
-namespace Templates
+declare interface IBattlePrepEffect
 {
-  declare interface IBattlePrepEffect
-  {
-    (unit: Unit, battlePrep: BattlePrep): void;
-  }
+  (unit: Unit, battlePrep: BattlePrep): void;
 }

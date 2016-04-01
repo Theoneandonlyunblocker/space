@@ -1,12 +1,9 @@
-namespace Templates
+declare interface ISubEmblemTemplate
 {
-  declare interface ISubEmblemTemplate
-  {
-    key: string;
-    src: string;
-    coverage: SubEmblemCoverage[];
-    position: SubEmblemPosition[];
-    onlyCombineWith?: string[];
-    disallowRandomGeneration?: boolean;
-  }
+  key: string;
+  src: string;
+  coverage: SubEmblemCoverage[];
+  position: SubEmblemPosition[];
+  onlyCombineWith?: string[];
+  disallowRandomGeneration?: boolean;
 }

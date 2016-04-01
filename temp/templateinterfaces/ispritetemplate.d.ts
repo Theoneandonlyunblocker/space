@@ -1,8 +1,5 @@
-namespace Templates
+declare interface ISpriteTemplate
 {
-  declare interface ISpriteTemplate
-  {
-    imageSrc: string;
-    anchor: Point;
-  }
+  imageSrc: string;
+  anchor: Point;
 }

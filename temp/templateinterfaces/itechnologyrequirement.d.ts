@@ -1,10 +1,7 @@
 /// <reference path="itechnologytemplate.d.ts" />
 
-namespace Templates
+declare interface ITechnologyRequirement
 {
-  declare interface ITechnologyRequirement
-  {
-    technology: ITechnologyTemplate;
-    level: number;
-  }
+  technology: ITechnologyTemplate;
+  level: number;
 }
