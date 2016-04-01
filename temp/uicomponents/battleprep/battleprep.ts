@@ -14,6 +14,11 @@ export interface PropTypes
 export default class BattlePrep extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattlePrep";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

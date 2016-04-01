@@ -12,6 +12,11 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitExperience";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

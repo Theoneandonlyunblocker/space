@@ -15,6 +15,11 @@ export default class DefenceBuilding extends React.Component<PropTypes, {}>
   {
     return newProps.building !== this.props.building;
   }
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

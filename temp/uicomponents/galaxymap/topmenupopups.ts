@@ -23,6 +23,11 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
   cachedPopupRects: {}
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

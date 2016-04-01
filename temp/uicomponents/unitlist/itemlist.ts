@@ -26,6 +26,11 @@ export default class ItemList extends React.Component<PropTypes, {}>
     else return 0;
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

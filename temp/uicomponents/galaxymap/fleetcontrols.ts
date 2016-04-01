@@ -15,6 +15,11 @@ export default class FleetControls extends React.Component<PropTypes, {}>
   displayName: string = "FleetControls";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

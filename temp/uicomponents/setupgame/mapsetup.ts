@@ -13,6 +13,11 @@ export default class MapSetup extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapSetup";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

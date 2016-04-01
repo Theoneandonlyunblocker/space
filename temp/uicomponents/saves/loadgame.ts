@@ -14,6 +14,11 @@ export default class LoadGame extends React.Component<PropTypes, {}>
   displayName: string = "LoadGame";
   popupId: reactTypeTODO_any = undefined;
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

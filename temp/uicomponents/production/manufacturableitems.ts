@@ -51,6 +51,11 @@ export default class ManufacturableItems extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

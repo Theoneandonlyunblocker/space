@@ -13,6 +13,11 @@ export interface PropTypes
 export default class MenuUnitInfo extends React.Component<PropTypes, {}>
 {
   displayName: string = "MenuUnitInfo";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -17,6 +17,11 @@ export default class ManufacturableThingsList extends React.Component<PropTypes,
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -10,6 +10,11 @@ export default class UnitStatusEffects extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitStatusEffects";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

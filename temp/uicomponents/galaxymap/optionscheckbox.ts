@@ -9,6 +9,11 @@ export interface PropTypes
 export default class OptionsCheckbox extends React.Component<PropTypes, {}>
 {
   displayName: string = "OptionsCheckbox";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

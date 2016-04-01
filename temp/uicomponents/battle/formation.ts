@@ -33,6 +33,11 @@ export default class Formation extends React.Component<PropTypes, {}>
   displayName: string = "Formation";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

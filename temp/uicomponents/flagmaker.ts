@@ -12,6 +12,11 @@ export default class FlagMaker extends React.Component<PropTypes, {}>
 {
   setStateTimeout: reactTypeTODO_any = undefined;
   sizeValue: number = 46;
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

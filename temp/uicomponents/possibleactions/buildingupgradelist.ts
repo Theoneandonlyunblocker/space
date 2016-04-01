@@ -18,6 +18,11 @@ export default class BuildingUpgradeList extends React.Component<PropTypes, {}>
   displayName: string = "BuildingUpgradeList";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

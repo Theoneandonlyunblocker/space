@@ -26,6 +26,11 @@ export default class MapModeSelector extends React.Component<PropTypes, {}>
     }
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

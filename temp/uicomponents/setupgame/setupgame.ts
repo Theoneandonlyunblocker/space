@@ -13,6 +13,11 @@ export default class SetupGame extends React.Component<PropTypes, {}>
 {
   displayName: string = "SetupGame";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

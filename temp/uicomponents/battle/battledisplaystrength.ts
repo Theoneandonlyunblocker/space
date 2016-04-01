@@ -9,6 +9,11 @@ export interface PropTypes
 export default class BattleDisplayStrength extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleDisplayStrength";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

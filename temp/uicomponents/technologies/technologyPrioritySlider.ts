@@ -19,6 +19,11 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
     priority: number;
   };
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -30,6 +35,11 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
 
     this.bindMethods();
   }
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

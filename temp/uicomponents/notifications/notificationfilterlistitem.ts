@@ -14,6 +14,11 @@ export default class NotificationFilterListItem extends React.Component<PropType
 {
   displayName: string = "NotificationFilterListItem";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

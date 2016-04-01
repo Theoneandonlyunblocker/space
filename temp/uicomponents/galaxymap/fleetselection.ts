@@ -13,6 +13,11 @@ export interface PropTypes
 export default class FleetSelection extends React.Component<PropTypes, {}>
 {
   displayName: string = "FleetSelection";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

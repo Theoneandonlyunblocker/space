@@ -14,6 +14,11 @@ export default class UpgradeAttributes extends React.Component<PropTypes, {}>
     if (e.button) return;
     this.props.handleClick(attribute);
   }
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

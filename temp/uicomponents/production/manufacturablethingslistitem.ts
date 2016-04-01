@@ -15,6 +15,11 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
   displayName: string = "ManufacturableThingsListItem";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

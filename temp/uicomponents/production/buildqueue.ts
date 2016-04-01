@@ -25,6 +25,11 @@ export default class BuildQueue extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

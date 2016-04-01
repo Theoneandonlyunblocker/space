@@ -15,6 +15,11 @@ export default class BattleSceneFlag extends React.Component<PropTypes, {}>
   flagCanvas: reactTypeTODO_any = null;
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

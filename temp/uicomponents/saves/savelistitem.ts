@@ -57,6 +57,11 @@ export default class SaveListItem extends React.Component<PropTypes, {}>
     );
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -29,6 +29,11 @@ export interface PropTypes
 export default class Stage extends React.Component<PropTypes, {}>
 {
   displayName: string = "Stage";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

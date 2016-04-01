@@ -9,6 +9,11 @@ export interface PropTypes
 export default class Resource extends React.Component<PropTypes, {}>
 {
   displayName: string = "Resource";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

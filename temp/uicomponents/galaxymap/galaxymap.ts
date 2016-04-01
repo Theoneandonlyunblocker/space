@@ -18,6 +18,11 @@ export default class GalaxyMap extends React.Component<PropTypes, {}>
     app.reactUI.switchScene(target.value);
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

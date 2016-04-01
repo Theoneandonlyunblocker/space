@@ -9,6 +9,11 @@ export interface PropTypes
 export default class TurnOrder extends React.Component<PropTypes, {}>
 {
   displayName: string = "TurnOrder";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

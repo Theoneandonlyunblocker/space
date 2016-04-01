@@ -13,6 +13,11 @@ export default class EconomySummary extends React.Component<PropTypes, {}>
 {
   displayName: string = "EconomySummary";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

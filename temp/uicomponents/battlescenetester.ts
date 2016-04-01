@@ -13,6 +13,11 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
   battle: reactTypeTODO_any = null;
   battleScene: reactTypeTODO_any = null;
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

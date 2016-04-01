@@ -35,6 +35,11 @@ export default class DiplomacyOverview extends React.Component<PropTypes, {}>
     });
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

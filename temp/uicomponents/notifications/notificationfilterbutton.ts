@@ -15,6 +15,11 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
 {
   displayName: string = "NotificationFilterButton";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

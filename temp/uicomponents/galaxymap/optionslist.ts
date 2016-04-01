@@ -19,6 +19,11 @@ export default class OptionsList extends React.Component<PropTypes, {}>
   displayName: string = "OptionsList";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

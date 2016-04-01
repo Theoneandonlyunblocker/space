@@ -16,6 +16,11 @@ export default class PopupResizeHandle extends React.Component<PropTypes, {}>
   // originBottom: reactTypeTODO_any = undefined;
   // originRight: reactTypeTODO_any = undefined;
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

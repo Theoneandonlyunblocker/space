@@ -44,6 +44,11 @@ export default class ItemPurchaseListItem extends React.Component<PropTypes, {}>
     );
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

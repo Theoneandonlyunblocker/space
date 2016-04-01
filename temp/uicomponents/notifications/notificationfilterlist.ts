@@ -21,6 +21,11 @@ export default class NotificationFilterList extends React.Component<PropTypes, {
     this.forceUpdate();
     eventManager.dispatchEvent("updateNotificationLog");
   }
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

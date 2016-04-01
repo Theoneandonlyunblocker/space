@@ -22,6 +22,11 @@ export default class TopMenu extends React.Component<PropTypes, {}>
   cachedMenuButtonWidth: number = 37;
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

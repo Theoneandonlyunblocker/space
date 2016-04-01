@@ -33,6 +33,11 @@ export default class EconomySummaryItem extends React.Component<PropTypes, {}>
     );
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -17,6 +17,11 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
   displayName: string = "DiplomacyActions";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

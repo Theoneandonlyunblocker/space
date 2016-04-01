@@ -29,6 +29,11 @@ export default class UnitInfo extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -15,6 +15,11 @@ export default class PopupManager extends React.Component<PropTypes, {}>
   popupId: number = 0;
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

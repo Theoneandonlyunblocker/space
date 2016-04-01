@@ -18,6 +18,11 @@ export default class FleetInfo extends React.Component<PropTypes, {}>
     this.forceUpdate();
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

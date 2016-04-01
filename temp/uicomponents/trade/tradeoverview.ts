@@ -20,6 +20,11 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
   otherPlayerTrade: reactTypeTODO_any = undefined;
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

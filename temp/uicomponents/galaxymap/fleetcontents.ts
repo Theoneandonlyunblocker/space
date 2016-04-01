@@ -21,6 +21,11 @@ export default class FleetContents extends React.Component<PropTypes, {}>
   displayName: string = "FleetContents";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

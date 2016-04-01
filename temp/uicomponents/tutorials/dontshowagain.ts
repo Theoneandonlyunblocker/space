@@ -13,6 +13,11 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
   displayName: string = "DontShowAgain";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

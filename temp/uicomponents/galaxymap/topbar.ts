@@ -15,6 +15,11 @@ export default class TopBar extends React.Component<PropTypes, {}>
   displayName: string = "TopBar";
   updateListener: reactTypeTODO_any = undefined;
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

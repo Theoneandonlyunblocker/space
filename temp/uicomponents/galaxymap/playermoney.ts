@@ -14,6 +14,11 @@ export default class PlayerMoney extends React.Component<PropTypes, {}>
   lastAmountRendered: reactTypeTODO_any = undefined;
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

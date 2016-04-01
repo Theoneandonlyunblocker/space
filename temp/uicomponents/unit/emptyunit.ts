@@ -13,6 +13,11 @@ export default class EmptyUnit extends React.Component<PropTypes, {}>
   {
     return newProps.facesLeft === this.props.facesLeft;
   }
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

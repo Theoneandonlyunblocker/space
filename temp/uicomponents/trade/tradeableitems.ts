@@ -27,6 +27,11 @@ export default class TradeableItems extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [DropTarget];
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

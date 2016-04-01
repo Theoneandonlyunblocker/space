@@ -15,6 +15,11 @@ export default class StarInfo extends React.Component<PropTypes, {}>
   {
     return this.props.selectedStar !== newProps.selectedStar;
   }
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

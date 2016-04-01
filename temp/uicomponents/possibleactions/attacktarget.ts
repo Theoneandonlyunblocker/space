@@ -11,6 +11,11 @@ export interface PropTypes
 export default class AttackTarget extends React.Component<PropTypes, {}>
 {
   displayName: string = "AttackTarget";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

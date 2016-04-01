@@ -63,6 +63,11 @@ export default class TradeableItemsList extends React.Component<PropTypes, {}>
     }
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

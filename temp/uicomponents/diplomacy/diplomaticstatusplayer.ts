@@ -13,6 +13,11 @@ export default class DiplomaticStatusPlayer extends React.Component<PropTypes, {
 {
   displayName: string = "DiplomaticStatusPlayer";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

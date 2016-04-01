@@ -9,6 +9,11 @@ export interface PropTypes
 export default class AbilityList extends React.Component<PropTypes, {}>
 {
   displayName: string = "AbilityList";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

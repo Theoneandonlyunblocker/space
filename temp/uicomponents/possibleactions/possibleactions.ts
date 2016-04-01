@@ -19,6 +19,11 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
   displayName: string = "PossibleActions";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

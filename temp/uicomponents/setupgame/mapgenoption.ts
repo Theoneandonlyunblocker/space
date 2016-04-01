@@ -23,6 +23,11 @@ export default class MapGenOption extends React.Component<PropTypes, {}>
     return newProps.value !== this.props.value;
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -24,6 +24,11 @@ export default class AbilityTooltip extends React.Component<PropTypes, {}>
     }
     return false;
   }
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

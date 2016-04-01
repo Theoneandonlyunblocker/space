@@ -18,6 +18,11 @@ export default class ManufactoryUpgradeButton extends React.Component<PropTypes,
   displayName: string = "ManufactoryUpgradeButton";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

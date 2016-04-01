@@ -20,6 +20,11 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
 {
   displayName: string = "GalaxyMapUI";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

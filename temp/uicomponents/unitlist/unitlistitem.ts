@@ -14,6 +14,11 @@ export default class UnitListItem extends React.Component<PropTypes, {}>
   displayName: string = "UnitListItem";
   mixins: reactTypeTODO_any = [Draggable];
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

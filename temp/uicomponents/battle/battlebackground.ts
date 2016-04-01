@@ -17,6 +17,11 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleBackground";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

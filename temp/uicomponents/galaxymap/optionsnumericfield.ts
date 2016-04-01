@@ -18,6 +18,11 @@ export default class OptionsNumericField extends React.Component<PropTypes, {}>
   displayName: string = "OptionsNumericField";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -18,6 +18,11 @@ export default class Technology extends React.Component<PropTypes, {}>
   displayName: string = "Technology";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

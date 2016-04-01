@@ -12,6 +12,11 @@ export interface PropTypes
 export default class UpgradeUnit extends React.Component<PropTypes, {}>
 {
   displayName: string = "UpgradeUnit";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

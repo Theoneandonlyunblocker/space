@@ -10,6 +10,11 @@ export default class UnitIcon extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitIcon";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

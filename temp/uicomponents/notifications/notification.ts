@@ -10,6 +10,11 @@ export default class Notification extends React.Component<PropTypes, {}>
 {
   displayName: string = "Notification";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -13,6 +13,11 @@ export default class SaveGame extends React.Component<PropTypes, {}>
 {
   displayName: string = "SaveGame";
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

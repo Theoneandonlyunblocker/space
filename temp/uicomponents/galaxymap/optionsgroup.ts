@@ -14,6 +14,11 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
   displayName: string = "OptionsGroup";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

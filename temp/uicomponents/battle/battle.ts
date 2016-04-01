@@ -30,6 +30,11 @@ export default class Battle extends React.Component<PropTypes, {}>
   battleStartStartTime: reactTypeTODO_any = undefined;
   battleEndStartTime: reactTypeTODO_any = undefined;
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

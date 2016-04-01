@@ -11,6 +11,11 @@ export interface PropTypes
 export default class SaveList extends React.Component<PropTypes, {}>
 {
   displayName: string = "SaveList";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -9,6 +9,11 @@ export interface PropTypes
 export default class FlagPicker extends React.Component<PropTypes, {}>
 {
   displayName: string = "FlagPicker";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

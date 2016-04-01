@@ -15,6 +15,11 @@ export default class UnitItemWrapper extends React.Component<PropTypes, {}>
   displayName: string = "UnitItemWrapper";
   mixins: reactTypeTODO_any = [DropTarget];
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

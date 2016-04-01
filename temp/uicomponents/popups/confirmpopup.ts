@@ -11,6 +11,11 @@ export default class ConfirmPopup extends React.Component<PropTypes, {}>
   displayName: string = "ConfirmPopup";
   mixins: reactTypeTODO_any = [SplitMultilineText];
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

@@ -24,6 +24,11 @@ export default class BuyItems extends React.Component<PropTypes, {}>
     eventManager.dispatchEvent("playerControlUpdated");
   }
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

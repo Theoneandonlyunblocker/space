@@ -12,6 +12,11 @@ export interface PropTypes
 export default class BuildableBuildingList extends React.Component<PropTypes, {}>
 {
   displayName: string = "BuildableBuildingList";
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

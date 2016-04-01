@@ -20,6 +20,11 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
   displayName: string = "ManufacturableThings";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);

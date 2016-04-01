@@ -16,6 +16,11 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
   displayName: string = "FleetReorganization";
 
 
+  state:
+  {
+    
+  }
+
   constructor(props: PropTypes)
   {
     super(props);
