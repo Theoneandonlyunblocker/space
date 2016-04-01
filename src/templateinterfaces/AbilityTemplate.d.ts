@@ -1,6 +1,7 @@
-/// <reference path="iabilitybase.d.ts" />
+import AbilityBase from "./AbilityBase.d.ts";
+import AbilityEffectTemplate from "./AbilityEffectTemplate.d.ts";
 
-declare interface IAbilityTemplate extends IAbilityBase
+declare interface AbilityTemplate extends AbilityBase
 {
   type: string;
   displayName: string;
@@ -18,12 +19,12 @@ declare interface IAbilityTemplate extends IAbilityBase
   bypassesGuard?: boolean;
   
   // determines targeting range of function, called first
-  mainEffect: IAbilityEffectTemplate;
+  mainEffect: AbilityEffectTemplate;
   // uses same user and target as mainEffect, called after mainEffect
-  secondaryEffects?: IAbilityEffectTemplate[];
+  secondaryEffects?: AbilityEffectTemplate[];
   
-  beforeUse?: IAbilityEffectTemplate[];
-  afterUse?: IAbilityEffectTemplate[];
+  beforeUse?: AbilityEffectTemplate[];
+  afterUse?: AbilityEffectTemplate[];
   
   // how likely the AI will consider using this ability relative to other available ones
   // doesn't affect AI's final decision on which ability to use, but can guide it
@@ -38,3 +39,5 @@ declare interface IAbilityTemplate extends IAbilityBase
   
   addsGuard?: boolean; // set dynamically
 }
+
+export default AbilityTemplate;
