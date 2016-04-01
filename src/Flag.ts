@@ -5,7 +5,7 @@ import Emblem from "./Emblem.ts";
 
 import FlagSaveData from "./savedata/FlagSaveData.d.ts";
 
-export class Flag
+export default class Flag
 {
   seed: any;
   width: number;

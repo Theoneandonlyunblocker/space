@@ -1,10 +1,9 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-/// <reference path="eventmanager.ts"/>
+import eventManager from "./eventManager.ts";
+import Point from "./Point.ts";
 
-/// <reference path="point.ts" />
-
-export class RectangleSelect
+export default class RectangleSelect
 {
   parentContainer: PIXI.Container;
   graphics: PIXI.Graphics;
