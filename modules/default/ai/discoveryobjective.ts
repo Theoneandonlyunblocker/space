@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var discovery: Rance.ObjectiveTemplate =
+        export var discovery: ObjectiveTemplate =
         {
           key: "discovery",
           movePriority: 999,
@@ -88,7 +88,7 @@ namespace Rance
               });
             }
 
-            var template = Rance.Modules.DefaultModule.Objectives.discovery;
+            var template = Modules.DefaultModule.Objectives.discovery;
 
             return AIUtils.makeObjectivesFromScores(template, scores, 0.5);
           },

@@ -52,7 +52,7 @@ export default class FleetContents extends React.Component<PropTypes, {}>
   render()
   {
     var fleetUnitInfos: ReactComponentPlaceHolder[] = [];
-    var fleet: Rance.Fleet = this.props.fleet;
+    var fleet: Fleet = this.props.fleet;
 
     var hasDraggableContent = Boolean(
       this.props.onDragStart ||

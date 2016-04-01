@@ -11,7 +11,7 @@ namespace Rance
       {
         export namespace Resources
         {
-          export var testResource1: Rance.ResourceTemplate =
+          export var testResource1: ResourceTemplate =
           {
             type: "testResource1",
             displayName: "Test Resource 1",
@@ -19,7 +19,7 @@ namespace Rance
             rarity: 1,
             distributionGroups: ["common"]
           }
-          export var testResource2: Rance.ResourceTemplate =
+          export var testResource2: ResourceTemplate =
           {
             type: "testResource2",
             displayName: "Test Resource 2",
@@ -27,7 +27,7 @@ namespace Rance
             rarity: 1,
             distributionGroups: ["common"]
           }
-          export var testResource3: Rance.ResourceTemplate =
+          export var testResource3: ResourceTemplate =
           {
             type: "testResource3",
             displayName: "Test Resource 3",
@@ -35,7 +35,7 @@ namespace Rance
             rarity: 1,
             distributionGroups: ["common"]
           }
-          export var testResource4: Rance.ResourceTemplate =
+          export var testResource4: ResourceTemplate =
           {
             type: "testResource4",
             displayName: "Test Resource 4",
@@ -43,7 +43,7 @@ namespace Rance
             rarity: 1,
             distributionGroups: ["rare"]
           }
-          export var testResource5: Rance.ResourceTemplate =
+          export var testResource5: ResourceTemplate =
           {
             type: "testResource5",
             displayName: "Test Resource 5",

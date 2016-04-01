@@ -15,7 +15,7 @@ namespace Rance
       {
         export namespace AttitudeModifiers
         {
-          export var neighborStars: Rance.AttitudeModifierTemplate =
+          export var neighborStars: AttitudeModifierTemplate =
           {
             type: "neighborStars",
             displayName: "neighborStars",
@@ -33,7 +33,7 @@ namespace Rance
             }
           }
 
-          export var atWar: Rance.AttitudeModifierTemplate =
+          export var atWar: AttitudeModifierTemplate =
           {
             type: "atWar",
             displayName: "At war",
@@ -48,7 +48,7 @@ namespace Rance
             constantEffect: -30
           }
 
-          export var declaredWar: Rance.AttitudeModifierTemplate =
+          export var declaredWar: AttitudeModifierTemplate =
           {
             type: "declaredWar",
             displayName: "Declared war",

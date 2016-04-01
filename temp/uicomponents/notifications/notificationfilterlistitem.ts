@@ -53,7 +53,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
 
   handleChangeState(state: NotificationFilterState)
   {
-    var filter: Rance.NotificationFilter = this.props.filter;
+    var filter: NotificationFilter = this.props.filter;
     filter.handleFilterStateChange(this.props.keyTODO/*TODO react*/, state);
     filter.save();
     this.setState(

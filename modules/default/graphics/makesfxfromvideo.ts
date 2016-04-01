@@ -7,7 +7,7 @@ namespace Rance
       export namespace BattleSFXFunctions
       {
         export function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void,
-          props: Rance.Templates.SFXParams)
+          props: Templates.SFXParams)
         {
           function clearBaseTextureListeners()
           {

@@ -53,7 +53,7 @@ export default class NotificationFilterList extends React.Component<PropTypes, {
   }
   render()
   {
-    var filter: Rance.NotificationFilter = this.props.filter;
+    var filter: NotificationFilter = this.props.filter;
 
     var filtersByCategory = filter.getFiltersByCategory();
     var filterGroupElements: ReactComponentPlaceHolder[] = [];

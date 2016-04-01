@@ -43,7 +43,7 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
   {
     return(
     {
-      show: Rance.TutorialState["introTutorial"] === tutorialStatus.show
+      show: TutorialState["introTutorial"] === tutorialStatus.show
     });
   }
   
@@ -64,7 +64,7 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
         contentConstructor: UIComponents.Tutorial,
         contentProps:
         {
-          pages: Rance.Tutorials.introTutorial.pages,
+          pages: Tutorials.introTutorial.pages,
           tutorialId: "introTutorial"
         }
       },

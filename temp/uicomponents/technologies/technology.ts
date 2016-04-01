@@ -41,8 +41,8 @@ export default class Technology extends React.Component<PropTypes, {}>
   
   togglePriorityLock()
   {
-    var pt: Rance.PlayerTechnology = this.props.playerTechnology;
-    var technology: Rance.TechnologyTemplate = this.props.technology;
+    var pt: PlayerTechnology = this.props.playerTechnology;
+    var technology: TechnologyTemplate = this.props.technology;
 
     pt.technologies[technology.key].priorityIsLocked = !pt.technologies[technology.key].priorityIsLocked;
     this.forceUpdate();

@@ -70,7 +70,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
 
   componentDidMount()
   {
-    var battleScene = this.battleScene = new Rance.BattleScene(this.refs["main"].getDOMNode());
+    var battleScene = this.battleScene = new BattleScene(this.refs["main"].getDOMNode());
     battleScene.resume();
     battleScene.activeUnit = this.state.selectedSide1Unit;
     battleScene.updateUnits()
@@ -79,7 +79,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
   makeUnit()
   {
     var template = getRandomProperty(app.moduleData.Templates.Units);
-    return new Rance.Unit(template, this.idGenerator++);
+    return new Unit(template, this.idGenerator++);
   }
 
   makePlayer()
@@ -118,7 +118,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     side2Player: Player;
   })
   {
-    return new Rance.Battle(
+    return new Battle(
     {
       battleData:
       {
@@ -263,7 +263,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     var user = this.state.activeUnit;
     var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
-    var bs: Rance.BattleScene = this.battleScene;
+    var bs: BattleScene = this.battleScene;
     var SFXTemplate = testSFX;
 
     bs.handleAbilityUse(
@@ -281,7 +281,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     var user = this.state.activeUnit;
     var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
-    var bs: Rance.BattleScene = this.battleScene;
+    var bs: BattleScene = this.battleScene;
     var SFXTemplate = extendObject(app.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
 
     if (this.state.duration)

@@ -172,7 +172,7 @@ export class Game
   }
   save(name: string)
   {
-    var saveString = "Rance.Save." + name;
+    var saveString = "Save." + name;
     this.gameStorageKey = saveString;
 
     var date = new Date();

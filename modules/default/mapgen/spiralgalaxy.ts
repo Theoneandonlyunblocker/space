@@ -11,7 +11,7 @@ namespace Rance
       {
         export namespace MapGen
         {
-          export var spiralGalaxy: Rance.MapGenTemplate =
+          export var spiralGalaxy: MapGenTemplate =
           {
             key: "spiralGalaxy",
             displayName: "Spiral galaxy",

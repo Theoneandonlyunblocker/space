@@ -9,7 +9,7 @@ namespace Rance
       {
         export namespace Cultures
         {
-          export var badassCulture: Rance.CultureTemplate =
+          export var badassCulture: CultureTemplate =
           {
             key: "badassCulture",
             nameGenerator: function(unit: Unit)

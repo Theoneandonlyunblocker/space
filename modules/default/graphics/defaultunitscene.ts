@@ -8,9 +8,9 @@ namespace Rance
   {
     export namespace DefaultModule
     {
-      export var defaultUnitScene: Rance.UnitDrawingFunction = function(
+      export var defaultUnitScene: UnitDrawingFunction = function(
         unit: Unit,
-        SFXParams: Rance.Templates.SFXParams
+        SFXParams: Templates.SFXParams
       )
       {
         var spriteTemplate = unit.template.sprite;

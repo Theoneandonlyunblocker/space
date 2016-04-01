@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var scoutingPerimeter: Rance.ObjectiveTemplate =
+        export var scoutingPerimeter: ObjectiveTemplate =
         {
           key: "scoutingPerimeter",
           movePriority: 7,

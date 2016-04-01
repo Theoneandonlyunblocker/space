@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var heal: Rance.ObjectiveTemplate =
+        export var heal: ObjectiveTemplate =
         {
           key: "heal",
           movePriority: -1,
@@ -34,7 +34,7 @@ namespace Rance
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
             mapEvaluator: MapAI.MapEvaluator)
           {
-            var template = Rance.Modules.DefaultModule.Objectives.heal;
+            var template = Modules.DefaultModule.Objectives.heal;
             return [new MapAI.Objective(template, 1, null)];
           },
           unitsToFillObjectiveFN: function(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective)

@@ -12,7 +12,7 @@ namespace Rance
       {
         export namespace PassiveSkills
         {
-          export var autoHeal: Rance.PassiveSkillTemplate =
+          export var autoHeal: PassiveSkillTemplate =
           {
             type: "autoHeal",
             displayName: "Auto heal",
@@ -29,7 +29,7 @@ namespace Rance
                 sfx:
                 {
                   duration: 1200
-                  // battleOverlay: function(props: Rance.Templates.SFXParams)
+                  // battleOverlay: function(props: Templates.SFXParams)
                   // {
                   //   // cg40400.bmp - cg40429.bmp converted to webm
                   //   return BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
@@ -42,7 +42,7 @@ namespace Rance
               }
             ]
           }
-          export var poisoned: Rance.PassiveSkillTemplate =
+          export var poisoned: PassiveSkillTemplate =
           {
             type: "poisoned",
             displayName: "Poisoned",
@@ -58,7 +58,7 @@ namespace Rance
                 sfx:
                 {
                   duration: 1200,
-                  userOverlay: function(props: Rance.Templates.SFXParams)
+                  userOverlay: function(props: Templates.SFXParams)
                   {
                     var canvas = <HTMLCanvasElement> document.createElement("canvas");
                     canvas.width = props.width;
@@ -74,7 +74,7 @@ namespace Rance
             ]
 
           }
-          export var overdrive: Rance.PassiveSkillTemplate =
+          export var overdrive: PassiveSkillTemplate =
           {
             type: "overdrive",
             displayName: "Overdrive",
@@ -87,7 +87,7 @@ namespace Rance
               }
             ]
           }
-          export var initialGuard: Rance.PassiveSkillTemplate =
+          export var initialGuard: PassiveSkillTemplate =
           {
             type: "initialGuard",
             displayName: "Initial Guard",
@@ -109,7 +109,7 @@ namespace Rance
               }
             ]
           }
-          export var warpJammer: Rance.PassiveSkillTemplate =
+          export var warpJammer: PassiveSkillTemplate =
           {
             type: "warpJammer",
             displayName: "Warp Jammer",
@@ -127,7 +127,7 @@ namespace Rance
             ],
             canUpgradeInto: ["medic"]
           }
-          export var medic: Rance.PassiveSkillTemplate =
+          export var medic: PassiveSkillTemplate =
           {
             type: "medic",
             displayName: "Medic",

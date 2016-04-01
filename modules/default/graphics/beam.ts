@@ -8,7 +8,7 @@ namespace Rance
     {
       export namespace BattleSFXFunctions
       {
-        export function beam(props: Rance.Templates.SFXParams)
+        export function beam(props: Templates.SFXParams)
         {
           // shiny particles
           // small particles

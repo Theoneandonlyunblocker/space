@@ -6,8 +6,8 @@ import * as React from "react";
 
 export interface PropTypes
 {
-  playerTechnology: Rance.PlayerTechnology;
-  technology: Rance.TechnologyTemplate;
+  playerTechnology: PlayerTechnology;
+  technology: TechnologyTemplate;
   researchPoints: number;
 }
 
@@ -64,11 +64,11 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
   }
   private componentDidMount()
   {
-    Rance.eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
+    eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
   }
   private componentWillUnmount()
   {
-    Rance.eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
+    eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
   }
   private isTechnologyLocked(): boolean
   {

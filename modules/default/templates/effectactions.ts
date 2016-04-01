@@ -13,7 +13,7 @@ namespace Rance
       {
         export namespace EffectActions
         {
-          export var singleTargetDamage: Rance.EffectActionTemplate =
+          export var singleTargetDamage: EffectActionTemplate =
           {
             name: "singleTargetDamage",
             targetFormations: TargetFormation.enemy,
@@ -31,7 +31,7 @@ namespace Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var closeAttack: Rance.EffectActionTemplate =
+          export var closeAttack: EffectActionTemplate =
           {
             name: "closeAttack",
             targetFormations: TargetFormation.enemy,
@@ -48,7 +48,7 @@ namespace Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var wholeRowAttack: Rance.EffectActionTemplate =
+          export var wholeRowAttack: EffectActionTemplate =
           {
             name: "wholeRowAttack",
             targetFormations: TargetFormation.either,
@@ -66,7 +66,7 @@ namespace Rance
             }
           }
 
-          export var bombAttack: Rance.EffectActionTemplate =
+          export var bombAttack: EffectActionTemplate =
           {
             name: "bombAttack",
             targetFormations: TargetFormation.enemy,
@@ -83,7 +83,7 @@ namespace Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var guardRow: Rance.EffectActionTemplate =
+          export var guardRow: EffectActionTemplate =
           {
             name: "guardRow",
             targetFormations: TargetFormation.either,
@@ -99,7 +99,7 @@ namespace Rance
               user.addGuard(guardAmount, GuardCoverage.row);
             }
           }
-          export var receiveCounterAttack: Rance.EffectActionTemplate =
+          export var receiveCounterAttack: EffectActionTemplate =
           {
             name: "receiveCounterAttack",
             targetFormations: TargetFormation.either,
@@ -119,7 +119,7 @@ namespace Rance
               }
             }
           }
-          export var increaseCaptureChance: Rance.EffectActionTemplate =
+          export var increaseCaptureChance: EffectActionTemplate =
           {
             name: "increaseCaptureChance",
             targetFormations: TargetFormation.enemy,
@@ -140,7 +140,7 @@ namespace Rance
 
             }
           }
-          export var buffTest: Rance.EffectActionTemplate =
+          export var buffTest: EffectActionTemplate =
           {
             name: "buffTest",
             targetFormations: TargetFormation.either,
@@ -151,7 +151,7 @@ namespace Rance
               target.addStatusEffect(new StatusEffect(StatusEffects.test, 2));
             }
           }
-          export var healTarget: Rance.EffectActionTemplate =
+          export var healTarget: EffectActionTemplate =
           {
             name: "healTarget",
             targetFormations: TargetFormation.ally,
@@ -178,7 +178,7 @@ namespace Rance
             }
           }
 
-          export var healSelf: Rance.EffectActionTemplate =
+          export var healSelf: EffectActionTemplate =
           {
             name: "healSelf",
             targetFormations: TargetFormation.ally,
@@ -191,7 +191,7 @@ namespace Rance
             }
           }
 
-          export var standBy: Rance.EffectActionTemplate =
+          export var standBy: EffectActionTemplate =
           {
             name: "standBy",
             targetFormations: TargetFormation.either,

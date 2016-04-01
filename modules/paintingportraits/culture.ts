@@ -8,7 +8,7 @@ namespace Rance
     {
       export namespace Culture
       {
-        export var paintingPortraitsCulture: Rance.CultureTemplate =
+        export var paintingPortraitsCulture: CultureTemplate =
         {
           key: "paintingPortraitsCulture",
           portraits:
@@ -19,9 +19,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/adelaide_hanscom1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             alessandro_allori1:
@@ -30,9 +30,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/alessandro_allori1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             alessandro_allori2:
@@ -41,9 +41,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/alessandro_allori2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             alexandre_cabanel1:
@@ -52,9 +52,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/alexandre_cabanel1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             alexei_harlamov1:
@@ -63,9 +63,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/alexei_harlamov1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             alexey_petrovich_antropov1:
@@ -74,9 +74,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/alexey_petrovich_antropov1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             alice_pike_barney1:
@@ -85,9 +85,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/alice_pike_barney1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             aman_theodor1:
@@ -96,9 +96,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/aman_theodor1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             antonello_messina1:
@@ -107,9 +107,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/antonello_messina1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             antonio_herrera_toro1:
@@ -118,9 +118,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/antonio_herrera_toro1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             benjaminconstant1:
@@ -129,9 +129,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/benjamin-constant1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             benoist_marieguillemine1:
@@ -140,9 +140,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/benoist_marie-guillemine1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             bouguereau_williamadolphe1:
@@ -151,9 +151,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/bouguereau_william-adolphe1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             byron1:
@@ -162,9 +162,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/byron1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             carl_fredric_breda1:
@@ -173,9 +173,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/carl_fredric_breda1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             carl_fredric_breda2:
@@ -184,9 +184,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/carl_fredric_breda2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             cramacj_lucas1:
@@ -195,9 +195,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/cramacj_lucas1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             cranach_lucas2:
@@ -206,9 +206,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/cranach_lucas2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             cristobal_rojas1:
@@ -217,9 +217,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/cristobal_rojas1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             delacroix_eugene_ferdinand_victor1:
@@ -228,9 +228,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/delacroix_eugene_ferdinand_victor1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             domenikos_theotokopoulos1:
@@ -239,9 +239,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/domenikos_theotokopoulos1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             edmund_blair_leighton1:
@@ -250,9 +250,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/edmund_blair_leighton1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             edmund_blair_leighton2:
@@ -261,9 +261,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/edmund_blair_leighton2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             edwin_longsden_long1:
@@ -272,9 +272,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/edwin_longsden_long1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             falero_luis_ricardo1:
@@ -283,9 +283,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/falero_luis_ricardo1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             felix_bonfils1:
@@ -294,9 +294,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/felix_bonfils1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             francesco_hayez1:
@@ -305,9 +305,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/francesco_hayez1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             francisco_goya_lucientes1:
@@ -316,9 +316,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/francisco_goya_lucientes1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             francisco_goya_lucientes2:
@@ -327,9 +327,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/francisco_goya_lucientes2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             francisco_zurbaran1:
@@ -338,9 +338,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/francisco_zurbaran1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             franz_von_defregger1:
@@ -349,9 +349,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/franz_von_defregger1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             franz_von_defregger2:
@@ -360,9 +360,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/franz_von_defregger2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             franz_von_defregger3:
@@ -371,9 +371,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/franz_von_defregger3.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             frederick_leighton1:
@@ -382,9 +382,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/frederick_leighton1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             frederic_westin1:
@@ -393,9 +393,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/frederic_westin1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             frederic_yates1:
@@ -404,9 +404,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/frederic_yates1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             gaston_bussiere1:
@@ -415,9 +415,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/gaston_bussiere1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             george_henry_hall1:
@@ -426,9 +426,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/george_henry_hall1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             giovanni_battista_tiepolo1:
@@ -437,9 +437,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/giovanni_battista_tiepolo1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             giovanni_bellini1:
@@ -448,9 +448,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/giovanni_bellini1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             hans_holbein1:
@@ -459,9 +459,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/hans_holbein1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             hayez_francesco1:
@@ -470,9 +470,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/hayez_francesco1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             henryk_siemiradzki1:
@@ -481,9 +481,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/henryk_siemiradzki1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             ilja_jefimowitsch_repin1:
@@ -492,9 +492,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/ilja_jefimowitsch_repin1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             james_carrol_beckwith1:
@@ -503,9 +503,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/james_carrol_beckwith1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             jeanbaptistecamille_corot1:
@@ -514,9 +514,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/jean-baptiste-camille_corot1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             jeanbaptistecamille_corot2:
@@ -525,9 +525,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/jean-baptiste-camille_corot2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             jeanleon_gerome1:
@@ -536,9 +536,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             jeanleon_gerome2:
@@ -547,9 +547,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             jeanleon_gerome3:
@@ -558,9 +558,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome3.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             jeanleon_gerome4:
@@ -569,9 +569,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome4.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             john_william_godward1:
@@ -580,9 +580,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/john_william_godward1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             john_william_godward2:
@@ -591,9 +591,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/john_william_godward2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             john_william_godward3:
@@ -602,9 +602,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/john_william_godward3.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             julije_klovic1:
@@ -613,9 +613,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/julije_klovic1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             juriaen_streek1:
@@ -624,9 +624,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/juriaen_streek1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             kiprenskij_orest_adamovic1:
@@ -635,9 +635,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/kiprenskij_orest_adamovic1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             konstantin_makovsky1:
@@ -646,9 +646,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/konstantin_makovsky1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             lefebvre_jules_joseph1:
@@ -657,9 +657,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/lefebvre_jules_joseph1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             leonfrancois_comerre1:
@@ -668,9 +668,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/leon-francois_comerre1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             leopold_loffler1:
@@ -679,9 +679,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/leopold_loffler1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             lewis_john_frederick1:
@@ -690,9 +690,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/lewis_john_frederick1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             madrazo_garreta_raimundo1:
@@ -701,9 +701,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/madrazo_garreta_raimundo1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             marie_bashkirtseff1:
@@ -712,9 +712,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/marie_bashkirtseff1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             moritz_kellerhoven1:
@@ -723,9 +723,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/moritz_kellerhoven1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             nathaniel_jocelyn1:
@@ -734,9 +734,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/nathaniel_jocelyn1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             nikolai_alexandrowitsch_jaroschenko1:
@@ -745,9 +745,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/nikolai_alexandrowitsch_jaroschenko1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             nils_johan_olsson_blommer1:
@@ -756,9 +756,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/nils_johan_olsson_blommer1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             paolo_veronese1:
@@ -767,9 +767,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/paolo_veronese1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             parmigianino1:
@@ -778,9 +778,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/parmigianino1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             paul_cesar_helleu1:
@@ -789,9 +789,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/paul_cesar_helleu1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             regnault_henri1:
@@ -800,9 +800,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/regnault_henri1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             richard_bergh1:
@@ -811,9 +811,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/richard_bergh1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             richard_bergh2:
@@ -822,9 +822,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/richard_bergh2.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             robert_dampier1:
@@ -833,9 +833,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/robert_dampier1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             robert_lefevre1:
@@ -844,9 +844,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/robert_lefevre1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             robert_leopold1:
@@ -855,9 +855,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/robert_leopold1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             sichel_nathanael1:
@@ -866,9 +866,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/sichel_nathanael1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             svetoslav_roerich1:
@@ -877,9 +877,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/svetoslav_roerich1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             velazquez_diego1:
@@ -888,9 +888,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/velazquez_diego1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             viktor_vasnetsov1:
@@ -899,9 +899,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/viktor_vasnetsov1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             },
             williamadolphe_bouguereau1:
@@ -910,9 +910,9 @@ namespace Rance
               imageSrc: "modules\/paintingportraits\/img\/william-adolphe_bouguereau1.png",
               generatedFor:
               [
-                Rance.RandomGenUnitRarity.common,
-                Rance.RandomGenUnitRarity.elite,
-                Rance.RandomGenUnitRarity.commander
+                RandomGenUnitRarity.common,
+                RandomGenUnitRarity.elite,
+                RandomGenUnitRarity.commander
               ]
             }
           }

@@ -10,7 +10,7 @@ namespace Rance
       {
         export namespace UnitArchetypes
         {
-          export var combat: Rance.UnitArchetype =
+          export var combat: UnitArchetype =
           {
             type: "combat",
             idealWeightInBattle: 1,
@@ -21,7 +21,7 @@ namespace Rance
               ROW_BACK: 0.6
             }
           }
-          export var utility: Rance.UnitArchetype =
+          export var utility: UnitArchetype =
           {
             type: "utility",
             idealWeightInBattle: 0.33,
@@ -32,7 +32,7 @@ namespace Rance
               ROW_BACK: 0.6
             }
           }
-          export var scouting: Rance.UnitArchetype =
+          export var scouting: UnitArchetype =
           {
             type: "scouting",
             idealWeightInBattle: 0.01,
@@ -43,7 +43,7 @@ namespace Rance
               ROW_BACK: 0.02
             }
           }
-          export var defence: Rance.UnitArchetype =
+          export var defence: UnitArchetype =
           {
             type: "defence",
             idealWeightInBattle: 0.5,

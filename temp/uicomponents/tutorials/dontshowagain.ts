@@ -44,18 +44,18 @@ export default class DontShowAgain extends React.Component<PropTypes, {}>
   
   getTutorialState()
   {
-    return Rance.TutorialState[this.props.tutorialId];
+    return TutorialState[this.props.tutorialId];
   }
 
   toggleState()
   {
     if (this.state.isChecked)
     {
-      Rance.TutorialState[this.props.tutorialId] = tutorialStatus.show;
+      TutorialState[this.props.tutorialId] = tutorialStatus.show;
     }
     else
     {
-      Rance.TutorialState[this.props.tutorialId] = tutorialStatus.neverShow;
+      TutorialState[this.props.tutorialId] = tutorialStatus.neverShow;
     }
 
     saveTutorialState();

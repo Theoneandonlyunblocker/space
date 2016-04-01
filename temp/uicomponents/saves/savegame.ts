@@ -59,7 +59,7 @@ export default class SaveGame extends React.Component<PropTypes, {}>
   handleSave()
   {
     var saveName = this.refs.saveName.getDOMNode().value
-    var saveKey = "Rance.Save." + saveName;
+    var saveKey = "Save." + saveName;
     if (localStorage[saveKey])
     {
       this.makeConfirmOverWritePopup(saveName)
@@ -84,7 +84,7 @@ export default class SaveGame extends React.Component<PropTypes, {}>
     {
       handleOk: this.saveGame,
       contentText: "Are you sure you want to overwrite " +
-        saveName.replace("Rance.Save.", "") + "?"
+        saveName.replace("Save.", "") + "?"
     }
 
     this.refs.popupManager.makePopup(

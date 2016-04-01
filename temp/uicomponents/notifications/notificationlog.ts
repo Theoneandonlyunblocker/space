@@ -97,7 +97,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
 
   makePopup(notification: Notification, key: string)
   {
-    var log: Rance.NotificationLog = this.props.log;
+    var log: NotificationLog = this.props.log;
 
     var popupId = this.refs.popupManager.makePopup(
     {
@@ -160,7 +160,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
 
   render()
   {
-    var log: Rance.NotificationLog = this.props.log;
+    var log: NotificationLog = this.props.log;
     var notifications: Notification[] = log.filterNotifications(log.unread);
 
     var items: ReactComponentPlaceHolder[] = [];

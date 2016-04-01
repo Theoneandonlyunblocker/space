@@ -16,7 +16,7 @@ namespace Rance
       {
         export namespace Abilities
         {
-          export var rangedAttack: Rance.AbilityTemplate =
+          export var rangedAttack: AbilityTemplate =
           {
             type: "rangedAttack",
             displayName: "Ranged Attack",
@@ -45,7 +45,7 @@ namespace Rance
             },
             canUpgradeInto: ["bombAttack", "boardingHook", "ranceAttack"]
           }
-          export var closeAttack: Rance.AbilityTemplate =
+          export var closeAttack: AbilityTemplate =
           {
             type: "closeAttack",
             displayName: "Close Attack",
@@ -58,7 +58,7 @@ namespace Rance
               sfx: BattleSFX.rocketAttack
             }
           }
-          export var wholeRowAttack: Rance.AbilityTemplate =
+          export var wholeRowAttack: AbilityTemplate =
           {
             type: "wholeRowAttack",
             displayName: "Row Attack",
@@ -73,7 +73,7 @@ namespace Rance
             }
           }
 
-          export var bombAttack: Rance.AbilityTemplate =
+          export var bombAttack: AbilityTemplate =
           {
             type: "bombAttack",
             displayName: "Bomb Attack",
@@ -86,7 +86,7 @@ namespace Rance
               sfx: BattleSFX.rocketAttack
             }
           }
-          export var guardRow: Rance.AbilityTemplate =
+          export var guardRow: AbilityTemplate =
           {
             type: "guardRow",
             displayName: "Guard Row",
@@ -104,7 +104,7 @@ namespace Rance
             }
           }
           export var guardColumn = guardRow; // legacy alias 10.3.2016
-          export var boardingHook: Rance.AbilityTemplate =
+          export var boardingHook: AbilityTemplate =
           {
             type: "boardingHook",
             displayName: "Boarding Hook",
@@ -140,7 +140,7 @@ namespace Rance
             }
           }
 
-          export var debugAbility: Rance.AbilityTemplate =
+          export var debugAbility: AbilityTemplate =
           {
             type: "debugAbility",
             displayName: "Debug Ability",
@@ -155,7 +155,7 @@ namespace Rance
             }
           }
 
-          export var ranceAttack: Rance.AbilityTemplate =
+          export var ranceAttack: AbilityTemplate =
           {
             type: "ranceAttack",
             displayName: "Rance attack",
@@ -168,12 +168,12 @@ namespace Rance
               sfx:
               {
                 duration: 1200,
-                userSprite: function(props: Rance.Templates.SFXParams)
+                userSprite: function(props: Templates.SFXParams)
                 {
                   // cg13600.bmp
                   return PIXI.Sprite.fromImage("img\/battleEffects\/ranceAttack2.png");
                 }
-                // battleOverlay: function(props: Rance.Templates.SFXParams)
+                // battleOverlay: function(props: Templates.SFXParams)
                 // {
                 //   // cg40500.bmp - cg40529.bmp converted to webm
                 //   return BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
@@ -207,12 +207,12 @@ namespace Rance
                 sfx:
                 {
                   duration: 1500,
-                  userSprite: function(props: Rance.Templates.SFXParams)
+                  userSprite: function(props: Templates.SFXParams)
                   {
                     // cg13300.bmp
                     return PIXI.Sprite.fromImage("img\/battleEffects\/ranceAttack.png");
                   }
-                  // battleOverlay: function(props: Rance.Templates.SFXParams)
+                  // battleOverlay: function(props: Templates.SFXParams)
                   // {
                   //   // cg40000.bmp - cg40029.bmp converted to webm
                   //   return BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
@@ -223,7 +223,7 @@ namespace Rance
             onlyAllowExplicitUpgrade: true
           }
 
-          export var standBy: Rance.AbilityTemplate =
+          export var standBy: AbilityTemplate =
           {
             type: "standBy",
             displayName: "Standby",

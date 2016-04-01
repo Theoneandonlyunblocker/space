@@ -173,11 +173,11 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Resources {
-                    var testResource1: Rance.ResourceTemplate;
-                    var testResource2: Rance.ResourceTemplate;
-                    var testResource3: Rance.ResourceTemplate;
-                    var testResource4: Rance.ResourceTemplate;
-                    var testResource5: Rance.ResourceTemplate;
+                    var testResource1: ResourceTemplate;
+                    var testResource2: ResourceTemplate;
+                    var testResource3: ResourceTemplate;
+                    var testResource4: ResourceTemplate;
+                    var testResource5: ResourceTemplate;
                 }
             }
         }
@@ -2130,8 +2130,8 @@ declare namespace Rance {
 declare module "src/uicomponents/technologies/technologyPrioritySlider" {
     export const Factory: React.Factory<any>;
     export interface PropTypes {
-        playerTechnology: Rance.PlayerTechnology;
-        technology: Rance.TechnologyTemplate;
+        playerTechnology: PlayerTechnology;
+        technology: TechnologyTemplate;
         researchPoints: number;
     }
 }
@@ -3204,7 +3204,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace MapGenFunctions {
-                function spiralGalaxyGeneration(options: Rance.MapGenOptionValues, players: Player[]): MapGenCore.MapGenResult;
+                function spiralGalaxyGeneration(options: MapGenOptionValues, players: Player[]): MapGenCore.MapGenResult;
             }
         }
     }
@@ -3214,7 +3214,7 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace MapGen {
-                    var spiralGalaxy: Rance.MapGenTemplate;
+                    var spiralGalaxy: MapGenTemplate;
                 }
             }
         }
@@ -3225,7 +3225,7 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace MapGen {
-                    var tinierSpiralGalaxy: Rance.MapGenTemplate;
+                    var tinierSpiralGalaxy: MapGenTemplate;
                 }
             }
         }
@@ -3236,11 +3236,11 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Technologies {
-                    var stealth: Rance.TechnologyTemplate;
-                    var lasers: Rance.TechnologyTemplate;
-                    var missiles: Rance.TechnologyTemplate;
-                    var test1: Rance.TechnologyTemplate;
-                    var test2: Rance.TechnologyTemplate;
+                    var stealth: TechnologyTemplate;
+                    var lasers: TechnologyTemplate;
+                    var missiles: TechnologyTemplate;
+                    var test1: TechnologyTemplate;
+                    var test2: TechnologyTemplate;
                 }
             }
         }
@@ -3250,7 +3250,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace BattleSFXFunctions {
-                function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void, props: Rance.Templates.SFXParams): void;
+                function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void, props: Templates.SFXParams): void;
             }
         }
     }
@@ -3282,17 +3282,17 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace EffectActions {
-                    var singleTargetDamage: Rance.EffectActionTemplate;
-                    var closeAttack: Rance.EffectActionTemplate;
-                    var wholeRowAttack: Rance.EffectActionTemplate;
-                    var bombAttack: Rance.EffectActionTemplate;
-                    var guardRow: Rance.EffectActionTemplate;
-                    var receiveCounterAttack: Rance.EffectActionTemplate;
-                    var increaseCaptureChance: Rance.EffectActionTemplate;
-                    var buffTest: Rance.EffectActionTemplate;
-                    var healTarget: Rance.EffectActionTemplate;
-                    var healSelf: Rance.EffectActionTemplate;
-                    var standBy: Rance.EffectActionTemplate;
+                    var singleTargetDamage: EffectActionTemplate;
+                    var closeAttack: EffectActionTemplate;
+                    var wholeRowAttack: EffectActionTemplate;
+                    var bombAttack: EffectActionTemplate;
+                    var guardRow: EffectActionTemplate;
+                    var receiveCounterAttack: EffectActionTemplate;
+                    var increaseCaptureChance: EffectActionTemplate;
+                    var buffTest: EffectActionTemplate;
+                    var healTarget: EffectActionTemplate;
+                    var healSelf: EffectActionTemplate;
+                    var standBy: EffectActionTemplate;
                 }
             }
         }
@@ -3312,7 +3312,7 @@ declare namespace Rance {
                         max: number;
                     };
                     impactRate?: number;
-                }, params: Rance.Templates.SFXParams): void;
+                }, params: Templates.SFXParams): void;
             }
         }
     }
@@ -3321,7 +3321,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace BattleSFXFunctions {
-                function rocketAttack(params: Rance.Templates.SFXParams): void;
+                function rocketAttack(params: Templates.SFXParams): void;
             }
         }
     }
@@ -3330,7 +3330,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace BattleSFXFunctions {
-                function guard(props: Rance.Templates.SFXParams): void;
+                function guard(props: Templates.SFXParams): void;
             }
         }
     }
@@ -3417,7 +3417,7 @@ declare namespace Rance {
                     constructor(uniforms?: any);
                     static getUniformTypes(): IUniformTypesObject;
                 }
-                function particleTest(props: Rance.Templates.SFXParams): void;
+                function particleTest(props: Templates.SFXParams): void;
             }
         }
     }
@@ -3430,10 +3430,10 @@ declare namespace Rance {
             }
             namespace Templates {
                 namespace BattleSFX {
-                    var rocketAttack: Rance.BattleSFXTemplate;
-                    var guard: Rance.BattleSFXTemplate;
-                    var particleTest: Rance.BattleSFXTemplate;
-                    var videoTest: Rance.BattleSFXTemplate;
+                    var rocketAttack: BattleSFXTemplate;
+                    var guard: BattleSFXTemplate;
+                    var particleTest: BattleSFXTemplate;
+                    var videoTest: BattleSFXTemplate;
                 }
             }
         }
@@ -3444,16 +3444,16 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Abilities {
-                    var rangedAttack: Rance.AbilityTemplate;
-                    var closeAttack: Rance.AbilityTemplate;
-                    var wholeRowAttack: Rance.AbilityTemplate;
-                    var bombAttack: Rance.AbilityTemplate;
-                    var guardRow: Rance.AbilityTemplate;
-                    var guardColumn: Rance.AbilityTemplate;
-                    var boardingHook: Rance.AbilityTemplate;
-                    var debugAbility: Rance.AbilityTemplate;
-                    var ranceAttack: Rance.AbilityTemplate;
-                    var standBy: Rance.AbilityTemplate;
+                    var rangedAttack: AbilityTemplate;
+                    var closeAttack: AbilityTemplate;
+                    var wholeRowAttack: AbilityTemplate;
+                    var bombAttack: AbilityTemplate;
+                    var guardRow: AbilityTemplate;
+                    var guardColumn: AbilityTemplate;
+                    var boardingHook: AbilityTemplate;
+                    var debugAbility: AbilityTemplate;
+                    var ranceAttack: AbilityTemplate;
+                    var standBy: AbilityTemplate;
                 }
             }
         }
@@ -3475,9 +3475,9 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace AttitudeModifiers {
-                    var neighborStars: Rance.AttitudeModifierTemplate;
-                    var atWar: Rance.AttitudeModifierTemplate;
-                    var declaredWar: Rance.AttitudeModifierTemplate;
+                    var neighborStars: AttitudeModifierTemplate;
+                    var atWar: AttitudeModifierTemplate;
+                    var declaredWar: AttitudeModifierTemplate;
                 }
             }
         }
@@ -3488,14 +3488,14 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Buildings {
-                    var sectorCommand: Rance.DefenceBuildingTemplate;
-                    var sectorCommand1: Rance.DefenceBuildingTemplate;
-                    var sectorCommand2: Rance.DefenceBuildingTemplate;
-                    var starBase: Rance.DefenceBuildingTemplate;
-                    var commercialPort: Rance.BuildingTemplate;
-                    var deepSpaceRadar: Rance.BuildingTemplate;
-                    var resourceMine: Rance.BuildingTemplate;
-                    var reserachLab: Rance.BuildingTemplate;
+                    var sectorCommand: DefenceBuildingTemplate;
+                    var sectorCommand1: DefenceBuildingTemplate;
+                    var sectorCommand2: DefenceBuildingTemplate;
+                    var starBase: DefenceBuildingTemplate;
+                    var commercialPort: BuildingTemplate;
+                    var deepSpaceRadar: BuildingTemplate;
+                    var resourceMine: BuildingTemplate;
+                    var reserachLab: BuildingTemplate;
                 }
             }
         }
@@ -3506,7 +3506,7 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Cultures {
-                    var badassCulture: Rance.CultureTemplate;
+                    var badassCulture: CultureTemplate;
                 }
             }
         }
@@ -3517,12 +3517,12 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace PassiveSkills {
-                    var autoHeal: Rance.PassiveSkillTemplate;
-                    var poisoned: Rance.PassiveSkillTemplate;
-                    var overdrive: Rance.PassiveSkillTemplate;
-                    var initialGuard: Rance.PassiveSkillTemplate;
-                    var warpJammer: Rance.PassiveSkillTemplate;
-                    var medic: Rance.PassiveSkillTemplate;
+                    var autoHeal: PassiveSkillTemplate;
+                    var poisoned: PassiveSkillTemplate;
+                    var overdrive: PassiveSkillTemplate;
+                    var initialGuard: PassiveSkillTemplate;
+                    var warpJammer: PassiveSkillTemplate;
+                    var medic: PassiveSkillTemplate;
                 }
             }
         }
@@ -3533,15 +3533,15 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Items {
-                    var bombLauncher1: Rance.ItemTemplate;
-                    var bombLauncher2: Rance.ItemTemplate;
-                    var bombLauncher3: Rance.ItemTemplate;
-                    var afterBurner1: Rance.ItemTemplate;
-                    var afterBurner2: Rance.ItemTemplate;
-                    var afterBurner3: Rance.ItemTemplate;
-                    var shieldPlating1: Rance.ItemTemplate;
-                    var shieldPlating2: Rance.ItemTemplate;
-                    var shieldPlating3: Rance.ItemTemplate;
+                    var bombLauncher1: ItemTemplate;
+                    var bombLauncher2: ItemTemplate;
+                    var bombLauncher3: ItemTemplate;
+                    var afterBurner1: ItemTemplate;
+                    var afterBurner2: ItemTemplate;
+                    var afterBurner3: ItemTemplate;
+                    var shieldPlating1: ItemTemplate;
+                    var shieldPlating2: ItemTemplate;
+                    var shieldPlating3: ItemTemplate;
                 }
             }
         }
@@ -3552,7 +3552,7 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace StatusEffects {
-                    var test: Rance.StatusEffectTemplate;
+                    var test: StatusEffectTemplate;
                 }
             }
         }
@@ -3563,27 +3563,27 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace SubEmblems {
-                    var Aguila_explayada_2: Rance.SubEmblemTemplate;
-                    var Berliner_Baer: Rance.SubEmblemTemplate;
-                    var Cles_en_sautoir: Rance.SubEmblemTemplate;
-                    var Coa_Illustration_Cross_Bowen_3: Rance.SubEmblemTemplate;
-                    var Coa_Illustration_Cross_Malte_1: Rance.SubEmblemTemplate;
-                    var Coa_Illustration_Elements_Planet_Moon: Rance.SubEmblemTemplate;
-                    var Couronne_heraldique_svg: Rance.SubEmblemTemplate;
-                    var Gomaisasa: Rance.SubEmblemTemplate;
-                    var Gryphon_Segreant: Rance.SubEmblemTemplate;
-                    var Heraldic_pentacle: Rance.SubEmblemTemplate;
-                    var Japanese_Crest_Futatsudomoe_1: Rance.SubEmblemTemplate;
-                    var Japanese_Crest_Hana_Hisi: Rance.SubEmblemTemplate;
-                    var Japanese_Crest_Mitsumori_Janome: Rance.SubEmblemTemplate;
-                    var Japanese_Crest_Oda_ka: Rance.SubEmblemTemplate;
-                    var Japanese_crest_Tsuki_ni_Hoshi: Rance.SubEmblemTemplate;
-                    var Japanese_Crest_Ume: Rance.SubEmblemTemplate;
-                    var Mitsuuroko: Rance.SubEmblemTemplate;
-                    var Musubikashiwa: Rance.SubEmblemTemplate;
-                    var Takeda_mon: Rance.SubEmblemTemplate;
-                    var threeHorns: Rance.SubEmblemTemplate;
-                    var Flag_of_Edward_England: Rance.SubEmblemTemplate;
+                    var Aguila_explayada_2: SubEmblemTemplate;
+                    var Berliner_Baer: SubEmblemTemplate;
+                    var Cles_en_sautoir: SubEmblemTemplate;
+                    var Coa_Illustration_Cross_Bowen_3: SubEmblemTemplate;
+                    var Coa_Illustration_Cross_Malte_1: SubEmblemTemplate;
+                    var Coa_Illustration_Elements_Planet_Moon: SubEmblemTemplate;
+                    var Couronne_heraldique_svg: SubEmblemTemplate;
+                    var Gomaisasa: SubEmblemTemplate;
+                    var Gryphon_Segreant: SubEmblemTemplate;
+                    var Heraldic_pentacle: SubEmblemTemplate;
+                    var Japanese_Crest_Futatsudomoe_1: SubEmblemTemplate;
+                    var Japanese_Crest_Hana_Hisi: SubEmblemTemplate;
+                    var Japanese_Crest_Mitsumori_Janome: SubEmblemTemplate;
+                    var Japanese_Crest_Oda_ka: SubEmblemTemplate;
+                    var Japanese_crest_Tsuki_ni_Hoshi: SubEmblemTemplate;
+                    var Japanese_Crest_Ume: SubEmblemTemplate;
+                    var Mitsuuroko: SubEmblemTemplate;
+                    var Musubikashiwa: SubEmblemTemplate;
+                    var Takeda_mon: SubEmblemTemplate;
+                    var threeHorns: SubEmblemTemplate;
+                    var Flag_of_Edward_England: SubEmblemTemplate;
                 }
             }
         }
@@ -3594,10 +3594,10 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace UnitArchetypes {
-                    var combat: Rance.UnitArchetype;
-                    var utility: Rance.UnitArchetype;
-                    var scouting: Rance.UnitArchetype;
-                    var defence: Rance.UnitArchetype;
+                    var combat: UnitArchetype;
+                    var utility: UnitArchetype;
+                    var scouting: UnitArchetype;
+                    var defence: UnitArchetype;
                 }
             }
         }
@@ -3608,10 +3608,10 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace UnitFamilies {
-                    var debug: Rance.UnitFamily;
-                    var basic: Rance.UnitFamily;
-                    var red: Rance.UnitFamily;
-                    var blue: Rance.UnitFamily;
+                    var debug: UnitFamily;
+                    var basic: UnitFamily;
+                    var red: UnitFamily;
+                    var blue: UnitFamily;
                 }
             }
         }
@@ -3620,7 +3620,7 @@ declare namespace Rance {
 declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
-            var defaultUnitScene: Rance.UnitDrawingFunction;
+            var defaultUnitScene: UnitDrawingFunction;
         }
     }
 }
@@ -3629,16 +3629,16 @@ declare namespace Rance {
         namespace DefaultModule {
             namespace Templates {
                 namespace Units {
-                    var cheatShip: Rance.UnitTemplate;
-                    var fighterSquadron: Rance.UnitTemplate;
-                    var bomberSquadron: Rance.UnitTemplate;
-                    var battleCruiser: Rance.UnitTemplate;
-                    var scout: Rance.UnitTemplate;
-                    var stealthShip: Rance.UnitTemplate;
-                    var shieldBoat: Rance.UnitTemplate;
-                    var commandShip: Rance.UnitTemplate;
-                    var redShip: Rance.UnitTemplate;
-                    var blueShip: Rance.UnitTemplate;
+                    var cheatShip: UnitTemplate;
+                    var fighterSquadron: UnitTemplate;
+                    var bomberSquadron: UnitTemplate;
+                    var battleCruiser: UnitTemplate;
+                    var scout: UnitTemplate;
+                    var stealthShip: UnitTemplate;
+                    var shieldBoat: UnitTemplate;
+                    var commandShip: UnitTemplate;
+                    var redShip: UnitTemplate;
+                    var blueShip: UnitTemplate;
                 }
             }
         }
@@ -3666,7 +3666,7 @@ declare namespace Rance {
                     star: Star;
                     score: number;
                 }[]): IScoresByStar;
-                function makeObjectivesFromScores(template: Rance.ObjectiveTemplate, evaluationScores: {
+                function makeObjectivesFromScores(template: ObjectiveTemplate, evaluationScores: {
                     star?: Star;
                     player?: Player;
                     score: number;
@@ -3684,7 +3684,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var discovery: Rance.ObjectiveTemplate;
+                var discovery: ObjectiveTemplate;
             }
         }
     }
@@ -3693,7 +3693,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var heal: Rance.ObjectiveTemplate;
+                var heal: ObjectiveTemplate;
             }
         }
     }
@@ -3702,7 +3702,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var expansion: Rance.ObjectiveTemplate;
+                var expansion: ObjectiveTemplate;
             }
         }
     }
@@ -3711,7 +3711,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var cleanUpPirates: Rance.ObjectiveTemplate;
+                var cleanUpPirates: ObjectiveTemplate;
             }
         }
     }
@@ -3720,7 +3720,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var scoutingPerimeter: Rance.ObjectiveTemplate;
+                var scoutingPerimeter: ObjectiveTemplate;
             }
         }
     }
@@ -3729,7 +3729,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var conquer: Rance.ObjectiveTemplate;
+                var conquer: ObjectiveTemplate;
             }
         }
     }
@@ -3738,7 +3738,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var declareWar: Rance.ObjectiveTemplate;
+                var declareWar: ObjectiveTemplate;
             }
         }
     }
@@ -3747,7 +3747,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Objectives {
-                var expandManufactoryCapacity: Rance.ObjectiveTemplate;
+                var expandManufactoryCapacity: ObjectiveTemplate;
             }
         }
     }
@@ -3765,7 +3765,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Notifications {
-                var battleFinishNotification: Rance.NotificationTemplate;
+                var battleFinishNotification: NotificationTemplate;
             }
         }
     }
@@ -3783,7 +3783,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Notifications {
-                var WarDeclarationNotification: Rance.NotificationTemplate;
+                var WarDeclarationNotification: NotificationTemplate;
             }
         }
     }
@@ -3801,7 +3801,7 @@ declare namespace Rance {
     namespace Modules {
         namespace DefaultModule {
             namespace Notifications {
-                var playerDiedNotification: Rance.NotificationTemplate;
+                var playerDiedNotification: NotificationTemplate;
             }
         }
     }
@@ -3817,7 +3817,7 @@ declare namespace Rance {
     namespace Modules {
         namespace PaintingPortraits {
             namespace Culture {
-                var paintingPortraitsCulture: Rance.CultureTemplate;
+                var paintingPortraitsCulture: CultureTemplate;
             }
         }
     }
@@ -4157,4 +4157,4 @@ declare namespace Rance {
         setInitialScene(): void;
     }
 }
-declare var app: Rance.App;
+declare var app: App;

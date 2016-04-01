@@ -215,7 +215,7 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
 
   render()
   {
-    var battlePrep: Rance.BattlePrep = this.props.battlePrep;
+    var battlePrep: BattlePrep = this.props.battlePrep;
     var player = battlePrep.humanPlayer;
     var location = battlePrep.battleData.location;
 

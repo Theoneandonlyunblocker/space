@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var expandManufactoryCapacity: Rance.ObjectiveTemplate =
+        export var expandManufactoryCapacity: ObjectiveTemplate =
         {
           key: "expandManufactoryCapacity",
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
@@ -19,7 +19,7 @@ namespace Rance
             // TODO economy ai
             // base priority = manufacturing demand / manufacturing capacity
 
-            var template = Rance.Modules.DefaultModule.Objectives.expandManufactoryCapacity;
+            var template = Modules.DefaultModule.Objectives.expandManufactoryCapacity;
             return [new MapAI.Objective(template, 0.5, null)];
           },
           economyRoutineFN: function(objective: MapAI.Objective, economyAI: MapAI.EconomyAI)

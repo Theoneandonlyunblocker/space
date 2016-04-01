@@ -66,7 +66,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     var draggingUnit = this.state.currentDragUnit;
     if (draggingUnit)
     {
-      var oldFleet: Rance.Fleet = draggingUnit.fleet;
+      var oldFleet: Fleet = draggingUnit.fleet;
       
       oldFleet.transferUnit(fleet, draggingUnit);
       eventManager.dispatchEvent("playerControlUpdated", null);
@@ -90,7 +90,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
 
   render()
   {
-    var selectedFleets: Rance.Fleet[] = this.props.fleets;
+    var selectedFleets: Fleet[] = this.props.fleets;
     if (!selectedFleets || selectedFleets.length < 1)
     {
       return null;

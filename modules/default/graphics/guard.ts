@@ -6,7 +6,7 @@ namespace Rance
     {
       export namespace BattleSFXFunctions
       {
-        export function guard(props: Rance.Templates.SFXParams)
+        export function guard(props: Templates.SFXParams)
         {
           var userCanvasWidth = props.width * 0.4; // TODO BattleSFX
           var maxFrontier = userCanvasWidth;

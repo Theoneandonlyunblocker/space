@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var cleanUpPirates: Rance.ObjectiveTemplate =
+        export var cleanUpPirates: ObjectiveTemplate =
         {
           key: "cleanUpPirates",
           movePriority: 3,
@@ -36,7 +36,7 @@ namespace Rance
             var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
             var scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
-            var template = Rance.Modules.DefaultModule.Objectives.cleanUpPirates;
+            var template = Modules.DefaultModule.Objectives.cleanUpPirates;
 
             return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
           },

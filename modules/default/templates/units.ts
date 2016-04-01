@@ -20,7 +20,7 @@ namespace Rance
       {
         export namespace Units
         {
-          export var cheatShip: Rance.UnitTemplate =
+          export var cheatShip: UnitTemplate =
           {
             type: "cheatShip",
             displayName: "Debug Ship",
@@ -110,7 +110,7 @@ namespace Rance
             ],
             unitDrawingFN: defaultUnitScene
           }
-          export var fighterSquadron: Rance.UnitTemplate =
+          export var fighterSquadron: UnitTemplate =
           {
             type: "fighterSquadron",
             displayName: "Fighter Squadron",
@@ -151,7 +151,7 @@ namespace Rance
             ],
             unitDrawingFN: defaultUnitScene
           }
-          export var bomberSquadron: Rance.UnitTemplate =
+          export var bomberSquadron: UnitTemplate =
           {
             type: "bomberSquadron",
             displayName: "Bomber Squadron",
@@ -192,7 +192,7 @@ namespace Rance
             ],
             unitDrawingFN: defaultUnitScene
           }
-          export var battleCruiser: Rance.UnitTemplate =
+          export var battleCruiser: UnitTemplate =
           {
             type: "battleCruiser",
             displayName: "Battlecruiser",
@@ -233,7 +233,7 @@ namespace Rance
             ],
             unitDrawingFN: defaultUnitScene
           }
-          export var scout: Rance.UnitTemplate =
+          export var scout: UnitTemplate =
           {
             type: "scout",
             displayName: "Scout",
@@ -273,7 +273,7 @@ namespace Rance
             ],
             unitDrawingFN: defaultUnitScene
           }
-          export var stealthShip: Rance.UnitTemplate =
+          export var stealthShip: UnitTemplate =
           {
             type: "stealthShip",
             displayName: "Stealth Ship",
@@ -315,7 +315,7 @@ namespace Rance
             technologyRequirements: [{technology: Technologies.stealth, level: 1}],
             unitDrawingFN: defaultUnitScene
           }
-          export var shieldBoat: Rance.UnitTemplate =
+          export var shieldBoat: UnitTemplate =
           {
             type: "shieldBoat",
             displayName: "Shield Boat",
@@ -366,7 +366,7 @@ namespace Rance
             ],
             unitDrawingFN: defaultUnitScene
           }
-          export var commandShip: Rance.UnitTemplate =
+          export var commandShip: UnitTemplate =
           {
             type: "commandShip",
             displayName: "Command Ship",
@@ -417,7 +417,7 @@ namespace Rance
             unitDrawingFN: defaultUnitScene
           }
 
-          export var redShip: Rance.UnitTemplate =
+          export var redShip: UnitTemplate =
           {
             type: "redShip",
             displayName: "Red ship",
@@ -457,7 +457,7 @@ namespace Rance
             ],
             unitDrawingFN: defaultUnitScene
           }
-          export var blueShip: Rance.UnitTemplate =
+          export var blueShip: UnitTemplate =
           {
             type: "blueShip",
             displayName: "Blue ship",

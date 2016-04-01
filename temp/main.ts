@@ -303,4 +303,4 @@ namespace Rance
   }
 }
 
-var app = new Rance.App();
+var app = new App();

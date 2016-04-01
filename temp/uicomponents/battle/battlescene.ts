@@ -29,7 +29,7 @@ export default class BattleScene extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleScene";
 
-  battleScene: null, // Rance.BattleScene
+  battleScene: null, // BattleScene
 
 
   shouldComponentUpdate(newProps: any)
@@ -57,7 +57,7 @@ export default class BattleScene extends React.Component<PropTypes, {}>
 
     if (this.props.battleState === "start" && newProps.battleState === "active")
     {
-      this.battleScene = new Rance.BattleScene(this.getDOMNode());
+      this.battleScene = new BattleScene(this.getDOMNode());
       this.battleScene.resume();
     }
     else if (this.props.battleState === "active" && newProps.battleState === "finish")
@@ -66,7 +66,7 @@ export default class BattleScene extends React.Component<PropTypes, {}>
       this.battleScene = null;
     }
 
-    var battleScene: Rance.BattleScene = this.battleScene;
+    var battleScene: BattleScene = this.battleScene;
 
     if (battleScene)
     {

@@ -148,7 +148,7 @@ export class NotificationFilter
   }
   load(slot?: number)
   {
-    var baseString = "Rance.NotificationFilter.";
+    var baseString = "NotificationFilter.";
 
     var parsedData: any;
     if (slot && localStorage[baseString + slot])
@@ -173,6 +173,6 @@ export class NotificationFilter
       date: new Date()
     });
 
-    localStorage.setItem("Rance.NotificationFilter." + slot, data);
+    localStorage.setItem("NotificationFilter." + slot, data);
   }
 }

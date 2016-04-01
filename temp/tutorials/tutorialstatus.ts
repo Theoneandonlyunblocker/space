@@ -7,20 +7,20 @@ export enum tutorialStatus
 
 export function saveTutorialState()
 {
-  localStorage.setItem("Rance.TutorialState", JSON.stringify(Rance.TutorialState));
+  localStorage.setItem("TutorialState", JSON.stringify(TutorialState));
 }
 
 export function loadTutorialState()
 {
-  if (localStorage["Rance.TutorialState"])
+  if (localStorage["TutorialState"])
   {
-    var parsedData = JSON.parse(localStorage.getItem("Rance.TutorialState"));
-    Rance.TutorialState = extendObject(parsedData, Rance.TutorialState, true);
-    for (var tutorialId in Rance.TutorialState)
+    var parsedData = JSON.parse(localStorage.getItem("TutorialState"));
+    TutorialState = extendObject(parsedData, TutorialState, true);
+    for (var tutorialId in TutorialState)
     {
-      if (Rance.TutorialState[tutorialId] === tutorialStatus.dontShowThisSession)
+      if (TutorialState[tutorialId] === tutorialStatus.dontShowThisSession)
       {
-        Rance.TutorialState[tutorialId] = Rance.tutorialStatus.show;
+        TutorialState[tutorialId] = tutorialStatus.show;
       }
     }
   }
@@ -28,8 +28,8 @@ export function loadTutorialState()
 
 export function resetTutorialState()
 {
-  localStorage.removeItem("Rance.TutorialState");
-  Rance.TutorialState = extendObject(defaultTutorialState);
+  localStorage.removeItem("TutorialState");
+  TutorialState = extendObject(defaultTutorialState);
 }
 
 export var defaultTutorialState =

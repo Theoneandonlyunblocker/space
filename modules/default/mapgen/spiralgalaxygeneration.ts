@@ -19,13 +19,13 @@ namespace Rance
     {
       export namespace MapGenFunctions
       {
-        export function spiralGalaxyGeneration(options: Rance.MapGenOptionValues,
+        export function spiralGalaxyGeneration(options: MapGenOptionValues,
           players: Player[]): MapGenCore.MapGenResult
         {
           // generate points
           
           // in closure because tons of temporary variables we dont really care about
-          var sg = (function setStarGenerationProps(options: Rance.MapGenOptionValues)
+          var sg = (function setStarGenerationProps(options: MapGenOptionValues)
           {
             var totalSize = options.defaultOptions.width * options.defaultOptions.height;
             var totalStars = options.defaultOptions.starCount;
@@ -234,14 +234,14 @@ namespace Rance
             allSectors.push(sectorsById[sectorId]);
           }
 
-          var resourcePlacerFN = function(sector: MapGenCore.Sector, resource: Rance.ResourceTemplate)
+          var resourcePlacerFN = function(sector: MapGenCore.Sector, resource: ResourceTemplate)
           {
             sector.addResource(resource);
           }
           MapGenCore.distributeDistributablesPerSector(
             allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
 
-          var localUnitPlacerFN = function(sector: MapGenCore.Sector, unitFamily: Rance.UnitFamily)
+          var localUnitPlacerFN = function(sector: MapGenCore.Sector, unitFamily: UnitFamily)
           {
             for (var i = 0; i < sector.stars.length; i++)
             {

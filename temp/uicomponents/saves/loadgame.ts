@@ -126,7 +126,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
     var confirmText = ["Are you sure you want to delete the following saves?"];
     confirmText  = confirmText.concat(this.state.saveKeysToDelete.map(function(saveKey: string)
     {
-      return saveKey.replace("Rance.Save.", "");
+      return saveKey.replace("Save.", "");
     }));
 
     return(
@@ -220,7 +220,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
         {
           className: "save-game-name",
           type: "text",
-          value: this.state.saveKey ? this.state.saveKey.replace("Rance.Save.", "") : "",
+          value: this.state.saveKey ? this.state.saveKey.replace("Save.", "") : "",
           readOnly: true
         }),
         React.DOM.div(

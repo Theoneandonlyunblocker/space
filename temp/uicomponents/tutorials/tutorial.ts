@@ -99,9 +99,9 @@ export default class Tutorial extends React.Component<PropTypes, {}>
 
   handleClose()
   {
-    if (Rance.TutorialState[this.props.tutorialId] === tutorialStatus.show)
+    if (TutorialState[this.props.tutorialId] === tutorialStatus.show)
     {
-      Rance.TutorialState[this.props.tutorialId] = tutorialStatus.dontShowThisSession;
+      TutorialState[this.props.tutorialId] = tutorialStatus.dontShowThisSession;
     }
   }
 

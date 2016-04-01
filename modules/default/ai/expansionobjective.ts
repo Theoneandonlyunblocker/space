@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var expansion: Rance.ObjectiveTemplate =
+        export var expansion: ObjectiveTemplate =
         {
           key: "expansion",
           movePriority: 4,
@@ -32,7 +32,7 @@ namespace Rance
             var evaluations = mapEvaluator.evaluateIndependentTargets(independentNeighborStars);
             var scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
-            var template = Rance.Modules.DefaultModule.Objectives.expansion;
+            var template = Modules.DefaultModule.Objectives.expansion;
 
             return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
           },

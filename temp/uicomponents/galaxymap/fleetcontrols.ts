@@ -53,7 +53,7 @@ export default class FleetControls extends React.Component<PropTypes, {}>
 
   render()
   {
-    var fleet: Rance.Fleet = this.props.fleet;
+    var fleet: Fleet = this.props.fleet;
 
     var splitButtonProps: any =
     {

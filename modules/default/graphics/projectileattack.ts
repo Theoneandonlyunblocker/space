@@ -21,7 +21,7 @@ namespace Rance
           }
           impactRate?: number;
         },
-        params: Rance.Templates.SFXParams)
+        params: Templates.SFXParams)
         {
           // TODO battleSFX | would be nice to draw SFX based on unit scenes
           // eg. height here = unit scene height

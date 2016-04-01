@@ -41,7 +41,7 @@ export default class SaveList extends React.Component<PropTypes, {}>
 
     var saveKeys = allKeys.filter(function(key)
     {
-      return (key.indexOf("Rance.Save") > -1);
+      return (key.indexOf("Save") > -1);
     });
 
     for (var i = 0; i < saveKeys.length; i++)

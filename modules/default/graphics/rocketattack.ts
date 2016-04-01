@@ -8,7 +8,7 @@ namespace Rance
     {
       export namespace BattleSFXFunctions
       {
-        export function rocketAttack(params: Rance.Templates.SFXParams)
+        export function rocketAttack(params: Templates.SFXParams)
         {
           var explosionTextures: PIXI.Texture[] = [];
 

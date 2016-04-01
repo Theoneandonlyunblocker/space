@@ -272,7 +272,7 @@ export default class OptionsList extends React.Component<PropTypes, {}>
       content: React.DOM.button(
       {
         className: "reset-tutorials-button",
-        onClick: Rance.resetTutorialState
+        onClick: resetTutorialState
       },
         "Reset tutorials"
       )

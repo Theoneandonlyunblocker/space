@@ -66,13 +66,13 @@ export function saveOptions(slot: number = 0)
     date: new Date()
   });
 
-  var saveName = "Rance.Options." + slot;
+  var saveName = "Options." + slot;
 
   localStorage.setItem(saveName, data);
 }
 export function loadOptions(slot?: number)
 {
-  var baseString = "Rance.Options.";
+  var baseString = "Options.";
 
   var parsedData: any;
   if (slot && localStorage[baseString + slot])

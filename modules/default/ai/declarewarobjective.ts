@@ -10,13 +10,13 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var declareWar: Rance.ObjectiveTemplate =
+        export var declareWar: ObjectiveTemplate =
         {
           key: "declareWar",
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
             mapEvaluator: MapAI.MapEvaluator)
           {
-            var template = Rance.Modules.DefaultModule.Objectives.declareWar;
+            var template = Modules.DefaultModule.Objectives.declareWar;
             var basePriority = grandStrategyAI.desireForWar;
 
             var scores:

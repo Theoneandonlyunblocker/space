@@ -11,7 +11,7 @@ namespace Rance
       {
         export namespace UnitFamilies
         {
-          export var debug: Rance.UnitFamily =
+          export var debug: UnitFamily =
           {
             type: "debug",
             debugOnly: true,
@@ -19,7 +19,7 @@ namespace Rance
             rarity: 0,
             distributionGroups: []
           }
-          export var basic: Rance.UnitFamily =
+          export var basic: UnitFamily =
           {
             type: "basic",
             debugOnly: false,
@@ -27,7 +27,7 @@ namespace Rance
             rarity: 0,
             distributionGroups: []
           }
-          export var red: Rance.UnitFamily =
+          export var red: UnitFamily =
           {
             type: "red",
             debugOnly: false,
@@ -35,7 +35,7 @@ namespace Rance
             rarity: 1,
             distributionGroups: ["common", "rare"]
           }
-          export var blue: Rance.UnitFamily =
+          export var blue: UnitFamily =
           {
             type: "blue",
             debugOnly: false,

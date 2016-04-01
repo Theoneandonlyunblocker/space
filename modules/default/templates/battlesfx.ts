@@ -22,25 +22,25 @@ namespace Rance
       {
         export namespace BattleSFX
         {
-          export var rocketAttack: Rance.BattleSFXTemplate =
+          export var rocketAttack: BattleSFXTemplate =
           {
             duration: 1500,
             battleOverlay: BattleSFXFunctions.rocketAttack,
             SFXWillTriggerEffect: true
           }
-          export var guard: Rance.BattleSFXTemplate =
+          export var guard: BattleSFXTemplate =
           {
             duration: 1000,
             battleOverlay: BattleSFXFunctions.guard,
             SFXWillTriggerEffect: true
           }
-          export var particleTest: Rance.BattleSFXTemplate =
+          export var particleTest: BattleSFXTemplate =
           {
             duration: 3500,
             battleOverlay: BattleSFXFunctions.particleTest,
             SFXWillTriggerEffect: true
           }
-          export var videoTest: Rance.BattleSFXTemplate =
+          export var videoTest: BattleSFXTemplate =
           {
             duration: 1000,
             battleOverlay: BattleSFXFunctions.makeSFXFromVideo.bind(null, "img/bushiAttack.webm",

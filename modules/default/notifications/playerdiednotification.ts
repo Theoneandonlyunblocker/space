@@ -9,7 +9,7 @@ namespace Rance
     {
       export namespace Notifications
       {
-        export var playerDiedNotification: Rance.NotificationTemplate =
+        export var playerDiedNotification: NotificationTemplate =
         {
           key: "playerDiedNotification",
           displayName: "Player died",

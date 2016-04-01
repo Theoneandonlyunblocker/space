@@ -135,7 +135,7 @@ namespace Rance
             });
           }
         }
-        export function particleTest(props: Rance.Templates.SFXParams)
+        export function particleTest(props: Templates.SFXParams)
         {
           //----------INIT GENERAL
           var width2 = props.width / 2;

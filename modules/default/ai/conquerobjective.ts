@@ -10,7 +10,7 @@ namespace Rance
     {
       export namespace Objectives
       {
-        export var conquer: Rance.ObjectiveTemplate =
+        export var conquer: ObjectiveTemplate =
         {
           key: "conquer",
           movePriority: 6,
@@ -50,7 +50,7 @@ namespace Rance
               possibleTargets.push(desirabilityByStar[sortedIds[0]].star);
             }
 
-            var template = Rance.Modules.DefaultModule.Objectives.conquer;
+            var template = Modules.DefaultModule.Objectives.conquer;
             var objectives: MapAI.Objective[] = [];
             for (var i = 0; i < possibleTargets.length; i++)
             {
