@@ -12,6 +12,22 @@ export default class Opinion extends React.Component<PropTypes, {}>
 {
   displayName: string = "Opinion";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

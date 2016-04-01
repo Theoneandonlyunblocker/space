@@ -16,6 +16,22 @@ export default class TechnologiesList extends React.Component<PropTypes, {}>
   updateListener: reactTypeTODO_any = undefined;
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     this.updateListener = eventManager.addEventListener(

@@ -14,6 +14,22 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
 {
   displayName: string = "ColorSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

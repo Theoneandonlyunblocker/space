@@ -52,6 +52,22 @@ export default class ManufacturableUnits extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   upgradeHealth()
   {
     var manufactory: Manufactory = this.props.selectedStar.manufactory;

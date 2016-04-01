@@ -17,6 +17,22 @@ export default class ManufactoryStarsListItem extends React.Component<PropTypes,
   displayName: string = "ManufactoryStarsListItem";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClick()
   {
     var star: Star = this.props.star;

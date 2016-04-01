@@ -17,6 +17,22 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
   displayName: string = "DiplomacyActions";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

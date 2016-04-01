@@ -16,6 +16,22 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
   displayName: string = "BuildingUpgradeListItem";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

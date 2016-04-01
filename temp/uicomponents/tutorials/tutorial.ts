@@ -17,6 +17,22 @@ export default class Tutorial extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [SplitMultilineText];
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

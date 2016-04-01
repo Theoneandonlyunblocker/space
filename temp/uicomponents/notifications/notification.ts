@@ -10,6 +10,22 @@ export default class Notification extends React.Component<PropTypes, {}>
 {
   displayName: string = "Notification";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleClose()
   {
     this.props.markAsRead(this.props.notification);

@@ -16,6 +16,22 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapGenOptions";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return this.getDefaultValues(this.props.mapGenTemplate);

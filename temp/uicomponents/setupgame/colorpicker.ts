@@ -13,6 +13,22 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
   displayName: string = "ColorPicker";
   onChangeTimeout: reactTypeTODO_any = null;
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     var hexColor = this.props.hexColor || 0xFFFFFF;

@@ -21,6 +21,22 @@ export default class FleetContents extends React.Component<PropTypes, {}>
   displayName: string = "FleetContents";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleMouseUp()
   {
     if (!this.props.onMouseUp) return;

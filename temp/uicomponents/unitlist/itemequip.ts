@@ -13,6 +13,22 @@ export interface PropTypes
 export default class ItemEquip extends React.Component<PropTypes, {}>
 {
   displayName: string = "ItemEquip";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

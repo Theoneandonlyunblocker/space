@@ -13,6 +13,22 @@ export default class SaveGame extends React.Component<PropTypes, {}>
 {
   displayName: string = "SaveGame";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     if (app.game.gameStorageKey)

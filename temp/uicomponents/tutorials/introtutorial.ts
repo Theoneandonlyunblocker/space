@@ -18,6 +18,22 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
   displayName: string = "IntroTutorial";
   popupId: reactTypeTODO_any = null;
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

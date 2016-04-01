@@ -14,6 +14,22 @@ export interface PropTypes
 export default class BattlePrep extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattlePrep";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

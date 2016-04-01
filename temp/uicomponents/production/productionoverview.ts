@@ -22,6 +22,22 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     var initialSelected: Star = null;

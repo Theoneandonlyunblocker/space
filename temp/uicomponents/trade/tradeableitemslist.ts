@@ -63,6 +63,22 @@ export default class TradeableItemsList extends React.Component<PropTypes, {}>
     }
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var tradeableItems: ITradeableItems = this.props.tradeableItems;

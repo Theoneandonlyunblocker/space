@@ -12,6 +12,22 @@ export interface PropTypes
 export default class BattleInfo extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleInfo";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var battlePrep = this.props.battlePrep;

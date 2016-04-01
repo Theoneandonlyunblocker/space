@@ -30,6 +30,22 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
 
     this.bindMethods();
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   private bindMethods()
   {
     this.getPlayerPriority = this.getPlayerPriority.bind(this);

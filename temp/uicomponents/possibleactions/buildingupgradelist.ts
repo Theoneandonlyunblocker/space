@@ -18,6 +18,22 @@ export default class BuildingUpgradeList extends React.Component<PropTypes, {}>
   displayName: string = "BuildingUpgradeList";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   hasAvailableUpgrades()
   {
     var possibleUpgrades = this.props.star.getBuildingUpgrades();

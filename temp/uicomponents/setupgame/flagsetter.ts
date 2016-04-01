@@ -14,6 +14,22 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
 {
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     var flag = new Flag(

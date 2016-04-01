@@ -18,6 +18,22 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
   updateListener: reactTypeTODO_any = undefined;
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

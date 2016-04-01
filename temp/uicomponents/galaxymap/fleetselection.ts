@@ -13,6 +13,22 @@ export interface PropTypes
 export default class FleetSelection extends React.Component<PropTypes, {}>
 {
   displayName: string = "FleetSelection";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   mergeFleets()
   {
     eventManager.dispatchEvent("mergeFleets", null);

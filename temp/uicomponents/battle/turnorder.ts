@@ -9,6 +9,22 @@ export interface PropTypes
 export default class TurnOrder extends React.Component<PropTypes, {}>
 {
   displayName: string = "TurnOrder";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

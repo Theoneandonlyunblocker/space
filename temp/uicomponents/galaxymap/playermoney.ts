@@ -14,6 +14,22 @@ export default class PlayerMoney extends React.Component<PropTypes, {}>
   lastAmountRendered: reactTypeTODO_any = undefined;
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentDidMount()
   {
     eventManager.addEventListener("playerMoneyUpdated", this.handlePlayerMoneyUpdated);

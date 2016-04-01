@@ -18,6 +18,22 @@ export default class Technology extends React.Component<PropTypes, {}>
   displayName: string = "Technology";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   togglePriorityLock()
   {
     var pt: Rance.PlayerTechnology = this.props.playerTechnology;

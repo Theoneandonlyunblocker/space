@@ -12,6 +12,22 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
 {
   displayName: string = "SetupGamePlayers";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     this.newPlayerId = 0;

@@ -19,6 +19,22 @@ export default class BuildableBuilding extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

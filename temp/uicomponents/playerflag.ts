@@ -10,6 +10,22 @@ export default class PlayerFlag extends React.Component<PropTypes, {}>
 {
   displayName: string = "PlayerFlag";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   canUseDataURL()
   {
     var uaString = navigator.userAgent.toLowerCase();

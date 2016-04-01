@@ -17,6 +17,22 @@ export default class Unit extends React.Component<PropTypes, {}>
   displayName: string = "Unit";
   mixins: reactTypeTODO_any = [Draggable, React.addons.PureRenderMixin];
   
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

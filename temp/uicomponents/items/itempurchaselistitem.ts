@@ -44,6 +44,22 @@ export default class ItemPurchaseListItem extends React.Component<PropTypes, {}>
     );
   }
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   render()
   {
     var cells: ReactDOMPlaceHolder[] = [];

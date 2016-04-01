@@ -11,6 +11,22 @@ export interface PropTypes
 export default class UnitStrength extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitStrength";
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

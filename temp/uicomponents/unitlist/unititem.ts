@@ -11,6 +11,22 @@ export default class UnitItem extends React.Component<PropTypes, {}>
   displayName: string = "UnitItem";
   mixins: reactTypeTODO_any = [Draggable];
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   onDragStart()
   {
     this.props.onDragStart(this.props.item);

@@ -12,6 +12,22 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
   mixins: reactTypeTODO_any = [Draggable, DropTarget, React.addons.PureRenderMixin];
   cachedMidPoint: reactTypeTODO_any = undefined;
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

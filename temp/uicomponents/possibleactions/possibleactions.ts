@@ -19,6 +19,22 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
   displayName: string = "PossibleActions";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

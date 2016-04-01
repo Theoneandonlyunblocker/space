@@ -19,6 +19,22 @@ export default class OptionsList extends React.Component<PropTypes, {}>
   displayName: string = "OptionsList";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleResetAllOptions()
   {
     var resetFN = function()

@@ -13,6 +13,22 @@ export default class MapSetup extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapSetup";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     var mapGenTemplates: Templates.IMapGenTemplate[] = [];

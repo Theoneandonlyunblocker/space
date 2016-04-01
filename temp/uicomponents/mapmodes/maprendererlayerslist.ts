@@ -17,6 +17,22 @@ export default class MapRendererLayersList extends React.Component<PropTypes, {}
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

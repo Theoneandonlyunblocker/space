@@ -14,6 +14,22 @@ export default class FleetUnitInfoName extends React.Component<PropTypes, {}>
   displayName: string = "FleetUnitInfoName";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   getInitialState()
   {
     return(

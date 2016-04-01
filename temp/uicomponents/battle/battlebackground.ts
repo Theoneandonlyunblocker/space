@@ -17,6 +17,22 @@ export default class BattleBackground extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleBackground";
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleResize()
   {
     // TODO this seems to trigger before any breakpoints, leading to 1 px immediately after

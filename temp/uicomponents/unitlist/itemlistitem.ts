@@ -11,6 +11,22 @@ export default class ItemListItem extends React.Component<PropTypes, {}>
   displayName: string = "ItemListItem";
   mixins: reactTypeTODO_any = [Draggable];
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   onDragStart()
   {
     console.log("onDragStart", this.props.item.template.displayName);

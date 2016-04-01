@@ -77,6 +77,22 @@ export default class UnitWrapper extends React.Component<PropTypes, {}>
 
     return false;
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleMouseUp()
   {
     console.log("unitMouseUp", this.props.position);

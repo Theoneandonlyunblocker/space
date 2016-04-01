@@ -19,6 +19,22 @@ export default class BattleScore extends React.Component<PropTypes, {}>
 
     return this.lastEvaluation !== oldEvaluation;
   }
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   componentWillMount()
   {
     this.lastEvaluation = this.props.battle.getEvaluation();

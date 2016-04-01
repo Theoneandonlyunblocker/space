@@ -16,6 +16,22 @@ export default class MapModeSettings extends React.Component<PropTypes, {}>
   displayName: string = "MapModeSettings";
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleReset()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;

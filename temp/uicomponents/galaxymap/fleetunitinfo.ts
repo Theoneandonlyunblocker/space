@@ -21,6 +21,22 @@ export default class FleetUnitInfo extends React.Component<PropTypes, {}>
   mixins: reactTypeTODO_any = [Draggable];
 
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   onDragStart()
   {
     this.props.onDragStart(this.props.unit);

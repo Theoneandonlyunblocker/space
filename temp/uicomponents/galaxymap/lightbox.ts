@@ -12,6 +12,22 @@ export default class LightBox extends React.Component<PropTypes, {}>
 
   // far from ideal as it always triggers reflow 4 times
   // cant figure out how to do resizing better since content size is dynamic
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.state = 
+    {
+    
+    };
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+  
   handleResize()
   {
     var container = this.refs.container.getDOMNode();
