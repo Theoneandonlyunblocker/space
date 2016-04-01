@@ -29,25 +29,6 @@ export var Formation = React.createFactory(React.createClass(
 {
   displayName: "Formation",
 
-  propTypes:
-  {
-    formation: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit))).isRequired,
-    battle: React.PropTypes.instanceOf(Rance.Battle),
-    facesLeft: React.PropTypes.bool.isRequired,
-    activeUnit: React.PropTypes.instanceOf(Rance.Unit),
-    activeTargets: React.PropTypes.object, // {[id: number]: Templates.IAbilityTemplate[];}
-    hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
-    hoveredAbility: React.PropTypes.object, // Templates.IAbilityTemplate
-    handleMouseLeaveUnit: React.PropTypes.func,
-    handleMouseEnterUnit: React.PropTypes.func,
-    targetsInPotentialArea: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
-    activeEffectUnits: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Unit)),
-    onMouseUp: React.PropTypes.func,
-    onUnitClick: React.PropTypes.func,
-    isDraggable: React.PropTypes.bool,
-    onDragStart: React.PropTypes.func,
-    onDragEnd: React.PropTypes.func
-  },
 
   render: function()
   {

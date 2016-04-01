@@ -11,10 +11,6 @@ export var PopupManager = React.createFactory(React.createClass(
   displayName: "PopupManager",
   popupId: 0,
 
-  propTypes:
-  {
-    onlyAllowOne: React.PropTypes.bool
-  },
 
   componentWillMount: function()
   {

@@ -16,12 +16,6 @@ export var TradeOverview = React.createFactory(React.createClass(
   selfPlayerTrade: undefined,
   otherPlayerTrade: undefined,
 
-  propTypes:
-  {
-    selfPlayer: React.PropTypes.instanceOf(Player).isRequired,
-    otherPlayer: React.PropTypes.instanceOf(Player).isRequired,
-    handleClose: React.PropTypes.func.isRequired
-  },
 
   componentWillMount: function()
   {

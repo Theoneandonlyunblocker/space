@@ -12,10 +12,6 @@ export var MapModeSettings = React.createFactory(React.createClass(
 {
   displayName: "MapModeSettings",
 
-  propTypes:
-  {
-    mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired
-  },
 
   handleReset: function()
   {

@@ -10,10 +10,6 @@ export var PlayerMoney = React.createFactory(React.createClass(
   displayName: "PlayerMoney",
   lastAmountRendered: undefined,
 
-  propTypes:
-  {
-    player: React.PropTypes.instanceOf(Player)
-  },
 
   componentDidMount: function()
   {

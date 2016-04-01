@@ -23,20 +23,6 @@ export var TradeableItems = React.createFactory(React.createClass(
   displayName: "TradeableItems",
   mixins: [DropTarget],
 
-  propTypes:
-  {
-    tradeableItems: React.PropTypes.object.isRequired, // ITradeableItems
-    availableItems: React.PropTypes.object,
-    header: React.PropTypes.string,
-    noListHeader: React.PropTypes.bool,
-    onMouseUp: React.PropTypes.func,
-    onDragStart: React.PropTypes.func,
-    onDragEnd: React.PropTypes.func,
-    hasDragItem: React.PropTypes.bool,
-    isInvalidDropTarget: React.PropTypes.bool,
-    onItemClick: React.PropTypes.func,
-    adjustItemAmount: React.PropTypes.func
-  },
 
   handleMouseUp: function()
   {

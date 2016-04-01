@@ -11,12 +11,6 @@ export interface PropTypes
 export var NotificationFilterButton = React.createFactory(React.createClass(
 {
   displayName: "NotificationFilterButton",
-  propTypes:
-  {
-    filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
-    text: React.PropTypes.string.isRequired,
-    highlightedOptionKey: React.PropTypes.string
-  },
 
   getInitialState: function()
   {

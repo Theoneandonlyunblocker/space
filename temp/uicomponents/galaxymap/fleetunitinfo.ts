@@ -17,15 +17,6 @@ export var FleetUnitInfo = React.createFactory(React.createClass(
   displayName: "FleetUnitInfo",
   mixins: [Draggable],
 
-  propTypes:
-  {
-    unit: React.PropTypes.instanceOf(Rance.Unit),
-    isIdentified: React.PropTypes.bool.isRequired,
-
-    isDraggable: React.PropTypes.bool.isRequired,
-    onDragStart: React.PropTypes.func,
-    onDragEnd: React.PropTypes.func
-  },
 
   onDragStart: function()
   {

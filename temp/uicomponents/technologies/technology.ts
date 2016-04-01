@@ -14,12 +14,6 @@ export var Technology = React.createFactory(React.createClass(
 {
   displayName: "Technology",
 
-  propTypes:
-  {
-    playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired,
-    technology: React.PropTypes.object.isRequired, // Templates.ITechnologyTemplate
-    researchPoints: React.PropTypes.number.isRequired
-  },
 
   togglePriorityLock: function()
   {

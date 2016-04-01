@@ -11,11 +11,6 @@ export var Notifications = React.createFactory(React.createClass(
 {
   displayName: "Notifications",
 
-  propTypes:
-  {
-    log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
-    currentTurn: React.PropTypes.number.isRequired
-  },
 
   render: function()
   {

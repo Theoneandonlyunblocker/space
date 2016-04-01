@@ -12,11 +12,6 @@ export var FleetReorganization = React.createFactory(React.createClass(
 {
   displayName: "FleetReorganization",
 
-  propTypes:
-  {
-    closeReorganization: React.PropTypes.func,
-    fleets: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Rance.Fleet))
-  },
 
   getInitialState: function()
   {

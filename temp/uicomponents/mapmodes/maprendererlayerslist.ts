@@ -13,11 +13,6 @@ export var MapRendererLayersList = React.createFactory(React.createClass(
   displayName: "MapRendererLayersList",
   mixins: [React.addons.PureRenderMixin],
 
-  propTypes:
-  {
-    mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired,
-    currentMapMode: React.PropTypes.instanceOf(Rance.MapRendererMapMode).isRequired
-  },
 
   getInitialState: function()
   {

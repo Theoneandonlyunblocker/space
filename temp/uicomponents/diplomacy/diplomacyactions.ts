@@ -13,12 +13,6 @@ export var DiplomacyActions = React.createFactory(React.createClass(
 {
   displayName: "DiplomacyActions",
 
-  propTypes:
-  {
-    player: React.PropTypes.instanceOf(Player).isRequired,
-    targetPlayer: React.PropTypes.instanceOf(Player).isRequired,
-    onUpdate: React.PropTypes.func.isRequired
-  },
 
   getInitialState: function()
   {

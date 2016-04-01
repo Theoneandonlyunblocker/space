@@ -14,16 +14,6 @@ export var OptionsNumericField = React.createFactory(React.createClass(
 {
   displayName: "OptionsNumericField",
 
-  propTypes:
-  {
-    onChangeFN: React.PropTypes.func.isRequired, // (value: number) => void
-    label: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string.isRequired,
-    value: React.PropTypes.number.isRequired,
-    min: React.PropTypes.number.isRequired,
-    max: React.PropTypes.number.isRequired,
-    step: React.PropTypes.number.isRequired,
-  },
 
   getInitialState: function()
   {

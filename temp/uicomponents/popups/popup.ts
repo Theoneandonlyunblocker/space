@@ -22,22 +22,6 @@ export var Popup = React.createFactory(React.createClass(
   displayName: "Popup",
   mixins: [Draggable],
 
-  propTypes:
-  {
-    initialPosition: React.PropTypes.object,
-    minWidth: React.PropTypes.number,
-    maxWidth: React.PropTypes.number,
-    minHeight: React.PropTypes.number,
-    maxHeight: React.PropTypes.number,
-
-    contentConstructor: React.PropTypes.any.isRequired, // React.PropTypes.element
-    contentProps: React.PropTypes.object.isRequired,
-
-    closePopup: React.PropTypes.func.isRequired,
-    incrementZIndex: React.PropTypes.func.isRequired,
-    getInitialPosition: React.PropTypes.func.isRequired,
-    finishedMountingCallback: React.PropTypes.func
-  },
 
   getInitialState: function()
   {

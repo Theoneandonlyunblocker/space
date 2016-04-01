@@ -14,11 +14,6 @@ export var NotificationLog = React.createFactory(React.createClass(
   mixins: [React.addons.PureRenderMixin],
   updateListener: undefined,
 
-  propTypes:
-  {
-    log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
-    currentTurn: React.PropTypes.number.isRequired
-  },
 
   getInitialState: function()
   {

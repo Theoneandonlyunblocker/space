@@ -28,25 +28,6 @@ export var BattleScene = React.createFactory(React.createClass(
 
   battleScene: null, // Rance.BattleScene
 
-  propTypes:
-  {
-    battleState: React.PropTypes.string.isRequired, // "start", "active", "finish"
-
-    targetUnit: React.PropTypes.instanceOf(Rance.Unit),
-    userUnit: React.PropTypes.instanceOf(Rance.Unit),
-    activeUnit: React.PropTypes.instanceOf(Rance.Unit),
-    hoveredUnit: React.PropTypes.instanceOf(Rance.Unit),
-
-    activeSFX: React.PropTypes.object, // Templates.IBattleSFXTemplate
-
-    afterAbilityFinishedCallback: React.PropTypes.func,
-    triggerEffectCallback: React.PropTypes.func,
-
-    humanPlayerWonBattle: React.PropTypes.bool,
-
-    side1Player: React.PropTypes.instanceOf(Rance.Player),
-    side2Player: React.PropTypes.instanceOf(Rance.Player)
-  },
 
   shouldComponentUpdate: function(newProps: any)
   {

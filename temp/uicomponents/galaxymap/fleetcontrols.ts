@@ -11,12 +11,6 @@ export var FleetControls = React.createFactory(React.createClass(
 {
   displayName: "FleetControls",
 
-  propTypes:
-  {
-    fleet: React.PropTypes.instanceOf(Rance.Fleet).isRequired,
-    isInspecting: React.PropTypes.bool,
-    hasMultipleSelected: React.PropTypes.bool
-  },
 
   deselectFleet: function()
   {

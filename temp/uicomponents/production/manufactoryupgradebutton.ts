@@ -14,17 +14,6 @@ export var ManufactoryUpgradeButton = React.createFactory(React.createClass(
 {
   displayName: "ManufactoryUpgradeButton",
 
-  propTypes:
-  {
-    money: React.PropTypes.number.isRequired,
-    upgradeCost: React.PropTypes.number.isRequired,
-    onClick: React.PropTypes.func.isRequired,
-    actionString: React.PropTypes.string.isRequired,
-    currentLevel: React.PropTypes.number.isRequired,
-    maxLevel: React.PropTypes.number.isRequired,
-    levelDecimalPoints: React.PropTypes.number.isRequired,
-    title: React.PropTypes.string
-  },
 
   getInitialState: function()
   {

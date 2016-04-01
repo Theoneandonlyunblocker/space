@@ -15,13 +15,6 @@ export var BuildableBuilding = React.createFactory(React.createClass(
   displayName: "BuildableBuilding",
   mixins: [UpdateWhenMoneyChanges],
 
-  propTypes:
-  {
-    template: React.PropTypes.object.isRequired,
-    player: React.PropTypes.instanceOf(Player).isRequired,
-    buildCost: React.PropTypes.number.isRequired,
-    handleClick: React.PropTypes.func.isRequired
-  },
 
   getInitialState: function()
   {

@@ -15,15 +15,6 @@ export var ManufacturableUnits = React.createFactory(React.createClass(
 {
   displayName: "ManufacturableUnits",
 
-  propTypes:
-  {
-    selectedStar: React.PropTypes.instanceOf(Star),
-    consolidateLocations: React.PropTypes.bool.isRequired,
-    manufacturableThings: React.PropTypes.array.isRequired,
-    triggerUpdate: React.PropTypes.func.isRequired,
-    canBuild: React.PropTypes.bool.isRequired,
-    money: React.PropTypes.number.isRequired
-  },
 
   shouldComponentUpdate: function(newProps: any)
   {

@@ -10,11 +10,6 @@ export var FleetUnitInfoName = React.createFactory(React.createClass(
 {
   displayName: "FleetUnitInfoName",
 
-  propTypes:
-  {
-    unit: React.PropTypes.instanceOf(Rance.Unit).isRequired,
-    isNotDetected: React.PropTypes.bool.isRequired
-  },
 
   getInitialState: function()
   {

@@ -17,16 +17,6 @@ export var FleetContents = React.createFactory(React.createClass(
 {
   displayName: "FleetContents",
 
-  propTypes:
-  {
-    fleet: React.PropTypes.instanceOf(Rance.Fleet).isRequired,
-    player: React.PropTypes.instanceOf(Rance.Player).isRequired,
-
-    onMouseUp: React.PropTypes.func,
-    onDragStart: React.PropTypes.func,
-    onDragEnd: React.PropTypes.func,
-    onDragMove: React.PropTypes.func,
-  },
 
   handleMouseUp: function()
   {

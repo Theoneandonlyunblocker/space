@@ -13,13 +13,6 @@ export var ManufacturableThingsList = React.createFactory(React.createClass(
   displayName: "ManufacturableThingsList",
   mixins: [React.addons.PureRenderMixin],
 
-  propTypes:
-  {
-    manufacturableThings: React.PropTypes.array.isRequired,
-    onClick: React.PropTypes.func,
-    showCost: React.PropTypes.bool.isRequired,
-    money: React.PropTypes.number
-  },
 
   render: function()
   {

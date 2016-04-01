@@ -15,17 +15,6 @@ export var TradeMoney = React.createFactory(React.createClass(
   displayName: "TradeMoney",
   mixins: [Draggable],
 
-  propTypes:
-  {
-    keyTODO: React.PropTypes.string.isRequired,
-    moneyAmount: React.PropTypes.number.isRequired,
-    title: React.PropTypes.string.isRequired,
-    maxMoneyAvailable: React.PropTypes.number,
-    onDragStart: React.PropTypes.func,
-    onDragEnd: React.PropTypes.func,
-    onClick: React.PropTypes.func,
-    adjustItemAmount: React.PropTypes.func
-  },
 
   onDragStart: function()
   {

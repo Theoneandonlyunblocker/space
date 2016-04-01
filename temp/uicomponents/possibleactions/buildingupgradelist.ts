@@ -14,12 +14,6 @@ export var BuildingUpgradeList = React.createFactory(React.createClass(
 {
   displayName: "BuildingUpgradeList",
 
-  propTypes:
-  {
-    star: React.PropTypes.instanceOf(Star).isRequired,
-    player: React.PropTypes.instanceOf(Player).isRequired,
-    clearExpandedAction: React.PropTypes.func.isRequired
-  },
 
   hasAvailableUpgrades: function()
   {

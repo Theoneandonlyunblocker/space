@@ -13,13 +13,6 @@ export var ConstructManufactory = React.createFactory(React.createClass(
   displayName: "ConstructManufactory",
   mixins: [React.addons.PureRenderMixin],
 
-  propTypes:
-  {
-    star: React.PropTypes.instanceOf(Star).isRequired,
-    player: React.PropTypes.instanceOf(Player).isRequired,
-    triggerUpdate: React.PropTypes.func.isRequired,
-    money: React.PropTypes.number.isRequired
-  },
 
   getInitialState: function()
   {

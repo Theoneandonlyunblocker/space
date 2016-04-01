@@ -15,13 +15,6 @@ export var PossibleActions = React.createFactory(React.createClass(
 {
   displayName: "PossibleActions",
 
-  propTypes:
-  {
-    player: React.PropTypes.instanceOf(Player).isRequired,
-    setExpandedActionElementOnParent: React.PropTypes.func.isRequired,
-    selectedStar: React.PropTypes.instanceOf(Star),
-    attackTargets: React.PropTypes.arrayOf(React.PropTypes.object)
-  },
 
   getInitialState: function()
   {

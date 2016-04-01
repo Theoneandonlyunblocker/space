@@ -10,13 +10,6 @@ export var OptionsGroup = React.createFactory(React.createClass(
 {
   displayName: "OptionsGroup",
 
-  propTypes:
-  {
-    isCollapsedInitially: React.PropTypes.bool,
-    resetFN: React.PropTypes.func,
-    header: React.PropTypes.string,
-    options: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
-  },
 
   getInitialState: function()
   {

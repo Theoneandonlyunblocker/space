@@ -12,12 +12,6 @@ export var BuildingUpgradeListItem = React.createFactory(React.createClass(
 {
   displayName: "BuildingUpgradeListItem",
   mixins: [UpdateWhenMoneyChanges],
-  propTypes:
-  {
-    player: React.PropTypes.instanceOf(Player).isRequired,
-    handleUpgrade: React.PropTypes.func.isRequired,
-    upgradeData: React.PropTypes.object.isRequired
-  },
 
   getInitialState: function()
   {

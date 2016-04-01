@@ -16,13 +16,6 @@ export var ManufacturableThings = React.createFactory(React.createClass(
 {
   displayName: "ManufacturableThings",
 
-  propTypes:
-  {
-    selectedStar: React.PropTypes.instanceOf(Star),
-    player: React.PropTypes.instanceOf(Player).isRequired,
-    triggerUpdate: React.PropTypes.func.isRequired,
-    money: React.PropTypes.number.isRequired
-  },
 
   getInitialState: function()
   {

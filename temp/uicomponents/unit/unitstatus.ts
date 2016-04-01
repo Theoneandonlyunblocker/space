@@ -10,12 +10,6 @@ export var UnitStatus = React.createFactory(React.createClass(
 {
   displayName: "UnitStatus",
 
-  propTypes:
-  {
-    guardAmount: React.PropTypes.number,
-    guardCoverage: React.PropTypes.number, // GuardCoverage enum
-    isPreparing: React.PropTypes.bool
-  },
 
   render: function()
   {

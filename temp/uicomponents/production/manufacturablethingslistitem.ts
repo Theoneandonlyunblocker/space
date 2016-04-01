@@ -11,14 +11,6 @@ export var ManufacturableThingsListItem = React.createFactory(React.createClass(
 {
   displayName: "ManufacturableThingsListItem",
 
-  propTypes:
-  {
-    template: React.PropTypes.any.isRequired,
-    parentIndex: React.PropTypes.number.isRequired,
-    onClick: React.PropTypes.func,
-    showCost: React.PropTypes.bool.isRequired,
-    money: React.PropTypes.number
-  },
 
   getInitialState: function()
   {

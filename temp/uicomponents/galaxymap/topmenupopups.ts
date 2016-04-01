@@ -19,11 +19,6 @@ export var TopMenuPopups = React.createFactory(React.createClass(
   displayName: "TopMenuPopups",
   cachedPopupRects: {},
 
-  propTypes:
-  {
-    player: React.PropTypes.instanceOf(Rance.Player).isRequired,
-    game: React.PropTypes.instanceOf(Rance.Game).isRequired
-  },
 
   getInitialState: function()
   {

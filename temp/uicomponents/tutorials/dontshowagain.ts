@@ -9,10 +9,6 @@ export var DontShowAgain = React.createFactory(React.createClass(
 {
   displayName: "DontShowAgain",
 
-  propTypes:
-  {
-    tutorialId: React.PropTypes.string.isRequired
-  },
 
   getInitialState: function()
   {

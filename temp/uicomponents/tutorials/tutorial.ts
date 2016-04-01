@@ -13,11 +13,6 @@ export var Tutorial = React.createFactory(React.createClass(
   displayName: "Tutorial",
   mixins: [SplitMultilineText],
 
-  propTypes:
-  {
-    pages: React.PropTypes.arrayOf(React.PropTypes.any).isRequired, // React.PropTypes.node
-    tutorialId: React.PropTypes.string.isRequired
-  },
 
   getInitialState: function()
   {

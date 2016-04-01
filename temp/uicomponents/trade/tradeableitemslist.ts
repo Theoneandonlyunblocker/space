@@ -17,16 +17,6 @@ export var TradeableItemsList = React.createFactory(React.createClass(
 {
   displayName: "TradeableItemsList",
 
-  propTypes:
-  {
-    tradeableItems: React.PropTypes.object, // ITradeableItems
-    availableItems: React.PropTypes.object,
-    noListHeader: React.PropTypes.bool,
-    onDragStart: React.PropTypes.func,
-    onDragEnd: React.PropTypes.func,
-    onItemClick: React.PropTypes.func,
-    adjustItemAmount: React.PropTypes.func
-  },
 
   makeRowForTradeableItem: function(item: ITradeableItem): IListItem
   {

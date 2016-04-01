@@ -14,13 +14,6 @@ export var ManufactoryStarsList = React.createFactory(React.createClass(
 {
   displayName: "ManufactoryStarsList",
 
-  propTypes:
-  {
-    starsWithManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
-    starsWithoutManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
-    highlightedStars: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
-    handleStarSelect: React.PropTypes.func.isRequired
-  },
   render: function()
   {
     var starsWithManufactories: Star[] = this.props.starsWithManufactories;

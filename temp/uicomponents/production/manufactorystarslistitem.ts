@@ -13,15 +13,6 @@ export var ManufactoryStarsListItem = React.createFactory(React.createClass(
 {
   displayName: "ManufactoryStarsListItem",
 
-  propTypes:
-  {
-    star: React.PropTypes.instanceOf(Star).isRequired,
-    isHighlighted: React.PropTypes.bool.isRequired,
-    usedCapacity: React.PropTypes.number.isRequired,
-    totalCapacity: React.PropTypes.number.isRequired,
-
-    onClick: React.PropTypes.func.isRequired
-  },
 
   handleClick: function()
   {

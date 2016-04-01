@@ -15,10 +15,6 @@ export var OptionsList = React.createFactory(React.createClass(
 {
   displayName: "OptionsList",
 
-  propTypes:
-  {
-    log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
-  },
 
   handleResetAllOptions: function()
   {

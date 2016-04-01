@@ -11,11 +11,6 @@ export var BattleSceneFlag = React.createFactory(React.createClass(
   displayName: "BattleSceneFlag",
   flagCanvas: null,
 
-  propTypes:
-  {
-    flag: React.PropTypes.instanceOf(Flag).isRequired,
-    facingRight: React.PropTypes.bool.isRequired
-  },
 
   componentDidMount: function()
   {

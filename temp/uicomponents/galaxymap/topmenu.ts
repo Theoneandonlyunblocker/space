@@ -18,11 +18,6 @@ export var TopMenu = React.createFactory(React.createClass(
   cachedButtonWidths: [],
   cachedMenuButtonWidth: 37,
 
-  propTypes:
-  {
-    player: React.PropTypes.instanceOf(Rance.Player).isRequired,
-    game: React.PropTypes.instanceOf(Rance.Game).isRequired
-  },
 
   getInitialState: function()
   {

@@ -18,10 +18,6 @@ export var ProductionOverview = React.createFactory(React.createClass(
   displayName: "ProductionOverview",
   mixins: [UpdateWhenMoneyChanges],
 
-  propTypes:
-  {
-    player: React.PropTypes.instanceOf(Player).isRequired
-  },
 
   getInitialState: function()
   {

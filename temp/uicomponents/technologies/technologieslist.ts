@@ -12,10 +12,6 @@ export var TechnologiesList = React.createFactory(React.createClass(
   displayName: "TechnologiesList",
   updateListener: undefined,
 
-  propTypes:
-  {
-    playerTechnology: React.PropTypes.instanceOf(Rance.PlayerTechnology).isRequired
-  },
 
   componentDidMount: function()
   {

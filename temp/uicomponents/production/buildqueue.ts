@@ -14,12 +14,6 @@ export var BuildQueue = React.createFactory(React.createClass(
 {
   displayName: "BuildQueue",
 
-  propTypes:
-  {
-    manufactory: React.PropTypes.instanceOf(Manufactory).isRequired,
-    triggerUpdate: React.PropTypes.func.isRequired,
-    money: React.PropTypes.number.isRequired
-  },
 
   removeItem: function(template: IManufacturableThing, parentIndex: number)
   {

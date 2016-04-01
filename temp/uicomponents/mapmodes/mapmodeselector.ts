@@ -10,11 +10,6 @@ export var MapModeSelector = React.createFactory(React.createClass(
 {
   displayName: "MapModeSelector",
 
-  propTypes:
-  {
-    mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired,
-    onUpdate: React.PropTypes.func
-  },
 
   handleChange: function(e: Event)
   {

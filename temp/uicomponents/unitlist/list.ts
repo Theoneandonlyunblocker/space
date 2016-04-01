@@ -47,19 +47,6 @@ export var List = React.createFactory(React.createClass({
 
   sortedItems: [], // IListItem[]
 
-  propTypes:
-  {
-    initialColumns: React.PropTypes.arrayOf(React.PropTypes.object).isRequired, // IListColumn[]
-    listItems: React.PropTypes.arrayOf(React.PropTypes.object).isRequired, // IListItem[]
-    initialSortOrder: React.PropTypes.arrayOf(React.PropTypes.object), // IListColumn[]
-    keyboardSelect: React.PropTypes.bool, // boolean = false
-    initialSelected: React.PropTypes.object, // IListItem
-    tabIndex: React.PropTypes.number, // number = 1
-    noHeader: React.PropTypes.bool, // boolean = false
-    addSpacer: React.PropTypes.bool, // boolean = false
-    onRowChange: React.PropTypes.func, // (row: IListItem) => void
-    colStylingFN: React.PropTypes.func // (column: IListColumn, props: any) => any
-  },
 
   getInitialState: function()
   {
