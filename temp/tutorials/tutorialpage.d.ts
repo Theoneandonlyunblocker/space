@@ -1,4 +1,4 @@
-interface ITutorialPage
+declare interface ITutorialPage
 {
   content: any; // React elements or strings or arrays of these
   onOpen?: () => void;

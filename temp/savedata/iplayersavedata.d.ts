@@ -1,7 +1,7 @@
 /// <reference path="idiplomacystatussavedata.d.ts" />
 /// <reference path="iplayertechnologysavedata.d.ts" />
 
-interface IPlayerSaveData
+declare interface IPlayerSaveData
 {
   id: number;
   name: string;

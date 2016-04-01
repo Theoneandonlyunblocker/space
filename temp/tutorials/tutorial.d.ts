@@ -1,6 +1,6 @@
 /// <reference path="tutorialpage.d.ts" />
 
-interface ITutorial
+declare interface ITutorial
 {
   pages: ITutorialPage[];
 }

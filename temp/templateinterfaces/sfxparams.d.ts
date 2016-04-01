@@ -2,7 +2,7 @@
 
 namespace Templates
 {
-  interface SFXParams
+  declare interface SFXParams
   {
     user: Unit;
     target?: Unit;

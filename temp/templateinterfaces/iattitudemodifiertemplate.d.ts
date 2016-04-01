@@ -1,6 +1,6 @@
 namespace Templates
 {
-  interface IAttitudeModifierTemplate
+  declare interface IAttitudeModifierTemplate
   {
     type: string;
     displayName: string;

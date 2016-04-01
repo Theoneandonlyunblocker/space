@@ -1,4 +1,4 @@
-interface IMapRendererLayerTemplate
+declare interface IMapRendererLayerTemplate
   {
     key: string;
     displayName: string;

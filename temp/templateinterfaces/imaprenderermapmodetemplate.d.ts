@@ -1,6 +1,6 @@
 /// <reference path="imaprendererlayertemplate.d.ts" />
 
-export interface IMapRendererMapModeTemplate
+export declare interface IMapRendererMapModeTemplate
 {
   key: string;
   displayName: string;

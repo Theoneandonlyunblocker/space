@@ -2,7 +2,7 @@
 
 namespace Templates
 {
-  interface IAbilityTemplate extends IAbilityBase
+  declare interface IAbilityTemplate extends IAbilityBase
   {
     type: string;
     displayName: string;

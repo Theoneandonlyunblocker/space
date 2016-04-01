@@ -1,6 +1,6 @@
 namespace Templates
 {
-  interface IStatusEffectTemplate
+  declare interface IStatusEffectTemplate
   {
     type: string;
     displayName: string;

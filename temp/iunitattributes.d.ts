@@ -1,4 +1,4 @@
-interface IUnitAttributes
+declare interface IUnitAttributes
 {
   maxActionPoints: number;
   attack: number;

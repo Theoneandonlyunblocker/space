@@ -1,6 +1,6 @@
 namespace Templates
 {
-  interface ISubEmblemTemplate
+  declare interface ISubEmblemTemplate
   {
     key: string;
     src: string;

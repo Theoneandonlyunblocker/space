@@ -1,6 +1,6 @@
 namespace Templates
 {
-  interface IUnitFamily extends IDistributable
+  declare interface IUnitFamily extends IDistributable
   {
     type: string;
     debugOnly: boolean;

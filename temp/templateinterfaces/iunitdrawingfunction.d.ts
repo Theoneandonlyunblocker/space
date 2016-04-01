@@ -3,7 +3,7 @@
 
 namespace Templates
 {
-  interface IUnitDrawingFunction
+  declare interface IUnitDrawingFunction
   {
     (unit: Unit, props: SFXParams): PIXI.DisplayObject;
   }

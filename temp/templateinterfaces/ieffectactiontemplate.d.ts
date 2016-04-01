@@ -4,7 +4,7 @@
 
 namespace Templates
 {
-  interface IEffectActionTemplate
+  declare interface IEffectActionTemplate
   {
     name: string;
     

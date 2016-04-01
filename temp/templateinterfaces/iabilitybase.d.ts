@@ -1,7 +1,7 @@
 namespace Templates
 {
   // base interface for abilities and passive skills
-  interface IAbilityBase
+  declare interface IAbilityBase
   {
     type: string;
     displayName: string;

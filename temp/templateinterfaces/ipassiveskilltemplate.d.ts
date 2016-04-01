@@ -2,7 +2,7 @@
 
 namespace Templates
 {
-  interface IPassiveSkillTemplate extends IAbilityBase
+  declare interface IPassiveSkillTemplate extends IAbilityBase
   {
     type: string;
     displayName: string;

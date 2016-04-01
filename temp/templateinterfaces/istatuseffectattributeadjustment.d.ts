@@ -1,6 +1,6 @@
 namespace Templates
 {
-  interface IStatusEffectAttributeAdjustment
+  declare interface IStatusEffectAttributeAdjustment
   {
     flat?: number;
     multiplier?: number;

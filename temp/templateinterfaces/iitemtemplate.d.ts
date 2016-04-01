@@ -2,7 +2,7 @@
 
 namespace Templates
 {
-  interface IItemTemplate extends IManufacturableThing
+  declare interface IItemTemplate extends IManufacturableThing
   {
     type: string;
     displayName: string;

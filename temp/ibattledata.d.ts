@@ -4,7 +4,7 @@
 /// <reference path="building.ts"/>
 
 
-interface IBattleData
+declare interface IBattleData
 {
   location: Star;
   building: Building;

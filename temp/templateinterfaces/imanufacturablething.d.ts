@@ -1,4 +1,4 @@
-interface IManufacturableThing
+declare interface IManufacturableThing
 {
   type: string;
   displayName: string;

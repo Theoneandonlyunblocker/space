@@ -3,7 +3,7 @@
 
 namespace Templates
 {
-  interface IMapGenTemplate
+  declare interface IMapGenTemplate
   {
     key: string;
     displayName: string;

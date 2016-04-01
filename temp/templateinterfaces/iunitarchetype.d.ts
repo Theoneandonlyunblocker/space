@@ -1,6 +1,6 @@
 namespace Templates
 {
-  interface IUnitArchetype
+  declare interface IUnitArchetype
   {
     type: string;
     idealWeightInFleet: number; // relative to others

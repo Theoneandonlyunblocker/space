@@ -2,7 +2,7 @@
 
 namespace Templates
 {
-  interface ITechnologyRequirement
+  declare interface ITechnologyRequirement
   {
     technology: ITechnologyTemplate;
     level: number;

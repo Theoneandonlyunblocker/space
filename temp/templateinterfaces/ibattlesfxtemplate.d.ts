@@ -4,7 +4,7 @@
 
 namespace Templates
 {
-  interface IBattleSFXTemplate
+  declare interface IBattleSFXTemplate
   {
     duration: number;
     SFXWillTriggerEffect?: boolean; // true if one of the sfx functions calls SFXParams.triggerEffect()

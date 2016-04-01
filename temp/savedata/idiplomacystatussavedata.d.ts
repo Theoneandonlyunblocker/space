@@ -1,4 +1,4 @@
-interface IDiplomacyStatusSaveData
+declare interface IDiplomacyStatusSaveData
 {
   metPlayerIds: number[];
   statusByPlayer:

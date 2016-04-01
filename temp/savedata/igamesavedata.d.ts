@@ -2,7 +2,7 @@
 /// <reference path="iplayersavedata.d.ts" />
 /// <reference path="inotificationlogsavedata.d.ts" />
 
-interface IGameSaveData
+declare interface IGameSaveData
 {
   turnNumber: number;
   galaxyMap: IGalaxyMapSaveData;

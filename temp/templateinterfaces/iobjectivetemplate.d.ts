@@ -1,15 +1,15 @@
-interface IRoutineAdjustment
+declare interface IRoutineAdjustment
 {
   target: Star | Player;
   multiplier: number;
 }
-interface IRoutineAdjustmentByTargetId
+declare interface IRoutineAdjustmentByTargetId
 {
   [targetId: number]: IRoutineAdjustment;
 }
 namespace Templates
 {
-  interface IObjectiveTemplate
+  declare interface IObjectiveTemplate
   {
     key: string;
     creatorFunction: (grandStrategyAI: MapAI.GrandStrategyAI,

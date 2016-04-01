@@ -2,29 +2,29 @@
 
 namespace Templates
 {
-  interface IMapGenOption
+  declare interface IMapGenOption
   {
     displayName: string;
     range: IRange;
   }
-  interface IMapGenOptions
+  declare interface IMapGenOptions
   {
     defaultOptions: IMapDefaultOptions;
     basicOptions?: IMapSpecificOptions;
     advancedOptions?: IMapSpecificOptions;
   }
-  interface IMapDefaultOptions
+  declare interface IMapDefaultOptions
   {
     height: IMapGenOption; // pixels
     width: IMapGenOption; // pixels
     starCount: IMapGenOption;
   }
-  interface IMapSpecificOptions
+  declare interface IMapSpecificOptions
   {
     [optionName: string]: IMapGenOption;
   }
 
-  interface IMapGenOptionValues
+  declare interface IMapGenOptionValues
   {
     defaultOptions:
     {

@@ -1,6 +1,6 @@
 namespace Templates
 {
-  interface ITechnologyTemplate
+  declare interface ITechnologyTemplate
   {
     key: string;
     displayName: string;

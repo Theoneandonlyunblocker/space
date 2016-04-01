@@ -1,6 +1,6 @@
 /// <reference path="iunitsavedata.d.ts" />
 
-interface IFleetSaveData
+declare interface IFleetSaveData
 {
   id: number;
   name: string;

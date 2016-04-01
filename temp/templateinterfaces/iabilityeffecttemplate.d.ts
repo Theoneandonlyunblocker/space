@@ -1,6 +1,6 @@
 namespace Templates
 {
-  interface IAbilityEffectTemplate
+  declare interface IAbilityEffectTemplate
   {
     action: IEffectActionTemplate;
     // TODO | pass battle parameter?

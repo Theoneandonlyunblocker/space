@@ -2,7 +2,7 @@
 /// <reference path="building.ts" />
 /// <reference path="unit.ts" />
 
-interface IFleetAttackTarget
+declare interface IFleetAttackTarget
 {
   type: string;
   enemy: Player;

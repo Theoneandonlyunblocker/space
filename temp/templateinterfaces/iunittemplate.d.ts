@@ -11,7 +11,7 @@
 
 namespace Templates
 {
-  interface IUnitTemplate extends IManufacturableThing
+  declare interface IUnitTemplate extends IManufacturableThing
   {
     type: string;
     displayName: string;

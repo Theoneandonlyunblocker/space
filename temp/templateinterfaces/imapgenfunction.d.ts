@@ -4,7 +4,7 @@
 
 namespace Templates
 {
-  interface IMapGenFunction
+  declare interface IMapGenFunction
   {
     (options: IMapGenOptionValues, players: Player[]): MapGenCore.MapGenResult;
   }

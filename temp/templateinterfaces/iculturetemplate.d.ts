@@ -3,7 +3,7 @@
 
 namespace Templates
 {
-  interface ICultureTemplate
+  declare interface ICultureTemplate
   {
     key: string;
     nameGenerator?: (unit: Unit) => string;

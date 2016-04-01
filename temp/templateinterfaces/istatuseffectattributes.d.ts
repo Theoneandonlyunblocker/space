@@ -1,6 +1,6 @@
 namespace Templates
 {
-  interface IStatusEffectAttributes
+  declare interface IStatusEffectAttributes
   {
     attack?: IStatusEffectAttributeAdjustment;
     defence?: IStatusEffectAttributeAdjustment;

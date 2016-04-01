@@ -1,18 +1,18 @@
 /// <reference path="../unit.ts" />
 /// <reference path="../statuseffect.ts" />
 
-interface IUnitItemsSaveData
+declare interface IUnitItemsSaveData
 {
   [slot: string]: IItemSaveData;
 }
-interface IQueuedActionSaveData
+declare interface IQueuedActionSaveData
 {
   abilityTemplateKey: string;
   targetId: number;
   turnsPrepared: number;
   timesInterrupted: number;
 }
-interface IUnitBattleStatsSaveData
+declare interface IUnitBattleStatsSaveData
 {
   moveDelay: number;
   side: UnitBattleSide;
@@ -25,7 +25,7 @@ interface IUnitBattleStatsSaveData
   queuedAction: IQueuedActionSaveData;
   isAnnihilated: boolean;
 }
-interface IUnitSaveData
+declare interface IUnitSaveData
 {
   templateType: string;
   id: number;
