@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var ColorPicker = React.createFactory(React.createClass(
+export default class ColorPicker extends React.Component<PropTypes, Empty>
 {
   displayName: "ColorPicker",
   onChangeTimeout: null,
@@ -367,4 +367,4 @@ export var ColorPicker = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

@@ -8,7 +8,7 @@ export interface PropTypes
   upgradeData: reactTypeTODO_object;
 }
 
-export var BuildingUpgradeListItem = React.createFactory(React.createClass(
+export default class BuildingUpgradeListItem extends React.Component<PropTypes, Empty>
 {
   displayName: "BuildingUpgradeListItem",
   mixins: [UpdateWhenMoneyChanges],
@@ -72,4 +72,4 @@ export var BuildingUpgradeListItem = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

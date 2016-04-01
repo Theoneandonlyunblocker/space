@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var ColorSetter = React.createFactory(React.createClass(
+export default class ColorSetter extends React.Component<PropTypes, Empty>
 {
   displayName: "ColorSetter",
   mixins: [FocusTimer],
@@ -138,4 +138,4 @@ export var ColorSetter = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

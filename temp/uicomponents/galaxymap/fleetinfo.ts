@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var FleetInfo = React.createFactory(React.createClass(
+export default class FleetInfo extends React.Component<PropTypes, Empty>
 {
   displayName: "FleetInfo",
   setFleetName: function(e: Event)
@@ -87,4 +87,4 @@ export var FleetInfo = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

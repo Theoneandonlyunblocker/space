@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var BattleSceneTester = React.createFactory(React.createClass(
+export default class BattleSceneTester extends React.Component<PropTypes, Empty>
 {
   displayName: "BattleSceneTester",
   idGenerator: 0,
@@ -403,4 +403,4 @@ export var BattleSceneTester = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

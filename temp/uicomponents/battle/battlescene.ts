@@ -22,7 +22,7 @@ export interface PropTypes
   side2Player?: Player;
 }
 
-export var BattleScene = React.createFactory(React.createClass(
+export default class BattleScene extends React.Component<PropTypes, Empty>
 {
   displayName: "BattleScene",
 
@@ -176,4 +176,4 @@ export var BattleScene = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

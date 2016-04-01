@@ -7,7 +7,7 @@ export interface PropTypes
   currentTurn: number;
 }
 
-export var Notifications = React.createFactory(React.createClass(
+export default class Notifications extends React.Component<PropTypes, Empty>
 {
   displayName: "Notifications",
 
@@ -28,4 +28,4 @@ export var Notifications = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

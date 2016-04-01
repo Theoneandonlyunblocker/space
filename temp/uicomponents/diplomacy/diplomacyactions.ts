@@ -9,7 +9,7 @@ export interface PropTypes
   onUpdate: reactTypeTODO_func;
 }
 
-export var DiplomacyActions = React.createFactory(React.createClass(
+export default class DiplomacyActions extends React.Component<PropTypes, Empty>
 {
   displayName: "DiplomacyActions",
 
@@ -176,4 +176,4 @@ export var DiplomacyActions = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

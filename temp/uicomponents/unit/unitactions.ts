@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UnitActions = React.createFactory(React.createClass(
+export default class UnitActions extends React.Component<PropTypes, Empty>
 {
   displayName: "UnitActions",
   render: function()
@@ -59,4 +59,4 @@ export var UnitActions = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

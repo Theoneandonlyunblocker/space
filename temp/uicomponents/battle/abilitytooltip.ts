@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var AbilityTooltip = React.createFactory(React.createClass(
+export default class AbilityTooltip extends React.Component<PropTypes, Empty>
 {
   displayName: "AbilityTooltip",
 
@@ -84,4 +84,4 @@ export var AbilityTooltip = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

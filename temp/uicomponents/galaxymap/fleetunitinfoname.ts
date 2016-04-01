@@ -6,7 +6,7 @@ export interface PropTypes
   isNotDetected: boolean;
 }
 
-export var FleetUnitInfoName = React.createFactory(React.createClass(
+export default class FleetUnitInfoName extends React.Component<PropTypes, Empty>
 {
   displayName: "FleetUnitInfoName",
 
@@ -36,4 +36,4 @@ export var FleetUnitInfoName = React.createFactory(React.createClass(
       })
     );
   }
-}));
+}

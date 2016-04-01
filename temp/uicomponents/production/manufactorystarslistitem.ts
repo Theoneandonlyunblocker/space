@@ -9,7 +9,7 @@ export interface PropTypes
   onClick: reactTypeTODO_func;
 }
 
-export var ManufactoryStarsListItem = React.createFactory(React.createClass(
+export default class ManufactoryStarsListItem extends React.Component<PropTypes, Empty>
 {
   displayName: "ManufactoryStarsListItem",
 
@@ -53,4 +53,4 @@ export var ManufactoryStarsListItem = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

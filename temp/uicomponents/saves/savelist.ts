@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var SaveList = React.createFactory(React.createClass(
+export default class SaveList extends React.Component<PropTypes, Empty>
 {
   displayName: "SaveList",
   render: function()
@@ -101,4 +101,4 @@ export var SaveList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var PopupResizeHandle = React.createFactory(React.createClass(
+export default class PopupResizeHandle extends React.Component<PropTypes, Empty>
 {
   displayName: "PopupResizeHandle",
   mixins: [Draggable],
@@ -38,4 +38,4 @@ export var PopupResizeHandle = React.createFactory(React.createClass(
       })
     );
   }
-}));
+}

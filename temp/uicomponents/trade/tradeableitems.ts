@@ -18,7 +18,7 @@ export interface PropTypes
   adjustItemAmount?: reactTypeTODO_func;
 }
 
-export var TradeableItems = React.createFactory(React.createClass(
+export default class TradeableItems extends React.Component<PropTypes, Empty>
 {
   displayName: "TradeableItems",
   mixins: [DropTarget],
@@ -66,4 +66,4 @@ export var TradeableItems = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

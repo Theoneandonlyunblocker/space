@@ -29,7 +29,7 @@ export interface PropTypes
   onDragEnd?: reactTypeTODO_func;
 }
 
-export var FormationRow = React.createFactory(React.createClass(
+export default class FormationRow extends React.Component<PropTypes, Empty>
 {
   displayName: "FormationRow",
 
@@ -79,4 +79,4 @@ export var FormationRow = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

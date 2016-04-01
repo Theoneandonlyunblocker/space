@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UpgradeAbilities = React.createFactory(React.createClass(
+export default class UpgradeAbilities extends React.Component<PropTypes, Empty>
 {
   displayName: "UpgradeAbilities",
   render: function()
@@ -48,4 +48,4 @@ export var UpgradeAbilities = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

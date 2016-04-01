@@ -17,7 +17,7 @@ export interface PropTypes
   finishedMountingCallback?: reactTypeTODO_func;
 }
 
-export var Popup = React.createFactory(React.createClass(
+export default class Popup extends React.Component<PropTypes, Empty>
 {
   displayName: "Popup",
   mixins: [Draggable],
@@ -158,4 +158,4 @@ export var Popup = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

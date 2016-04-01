@@ -10,7 +10,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var IntroTutorial = React.createFactory(React.createClass(
+export default class IntroTutorial extends React.Component<PropTypes, Empty>
 {
   displayName: "IntroTutorial",
   popupId: null,
@@ -88,4 +88,4 @@ export var IntroTutorial = React.createFactory(React.createClass(
       })
     );
   }
-}));
+}

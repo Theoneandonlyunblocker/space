@@ -10,7 +10,7 @@ export interface PropTypes
   step: number;
 }
 
-export var OptionsNumericField = React.createFactory(React.createClass(
+export default class OptionsNumericField extends React.Component<PropTypes, Empty>
 {
   displayName: "OptionsNumericField",
 
@@ -88,4 +88,4 @@ export var OptionsNumericField = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

@@ -6,7 +6,7 @@ export interface PropTypes
   onlyAllowOne?: boolean;
 }
 
-export var PopupManager = React.createFactory(React.createClass(
+export default class PopupManager extends React.Component<PropTypes, Empty>
 {
   displayName: "PopupManager",
   popupId: 0,
@@ -228,4 +228,4 @@ export var PopupManager = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

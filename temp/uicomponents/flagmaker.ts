@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var FlagMaker = React.createFactory(React.createClass(
+export default class FlagMaker extends React.Component<PropTypes, Empty>
 {
   setStateTimeout: undefined,
   sizeValue: 46,
@@ -91,4 +91,4 @@ export var FlagMaker = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

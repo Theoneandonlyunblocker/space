@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var TopMenuPopup = React.createFactory(React.createClass(
+export default class TopMenuPopup extends React.Component<PropTypes, Empty>
 {
   displayName: "TopMenuPopup",
 
@@ -31,4 +31,4 @@ export var TopMenuPopup = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

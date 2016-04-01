@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var ConfirmPopup = React.createFactory(React.createClass(
+export default class ConfirmPopup extends React.Component<PropTypes, Empty>
 {
   displayName: "ConfirmPopup",
   mixins: [SplitMultilineText],
@@ -84,4 +84,4 @@ export var ConfirmPopup = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

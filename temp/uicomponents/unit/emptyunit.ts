@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var EmptyUnit = React.createFactory(React.createClass(
+export default class EmptyUnit extends React.Component<PropTypes, Empty>
 {
   displayName: "EmptyUnit",
   shouldComponentUpdate: function(newProps: any)
@@ -56,4 +56,4 @@ export var EmptyUnit = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

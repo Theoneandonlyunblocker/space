@@ -5,7 +5,7 @@ export interface PropTypes
   tutorialId: string;
 }
 
-export var DontShowAgain = React.createFactory(React.createClass(
+export default class DontShowAgain extends React.Component<PropTypes, Empty>
 {
   displayName: "DontShowAgain",
 
@@ -63,4 +63,4 @@ export var DontShowAgain = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

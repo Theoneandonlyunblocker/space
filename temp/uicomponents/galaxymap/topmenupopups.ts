@@ -14,7 +14,7 @@ export interface PropTypes
   game: Game;
 }
 
-export var TopMenuPopups = React.createFactory(React.createClass(
+export default class TopMenuPopups extends React.Component<PropTypes, Empty>
 {
   displayName: "TopMenuPopups",
   cachedPopupRects: {},
@@ -194,4 +194,4 @@ export var TopMenuPopups = React.createFactory(React.createClass(
       })
     );
   }
-}));
+}

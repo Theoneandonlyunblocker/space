@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var Resource = React.createFactory(React.createClass(
+export default class Resource extends React.Component<PropTypes, Empty>
 {
   displayName: "Resource",
   render: function()
@@ -31,4 +31,4 @@ export var Resource = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

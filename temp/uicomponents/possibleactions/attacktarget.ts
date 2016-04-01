@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var AttackTarget = React.createFactory(React.createClass(
+export default class AttackTarget extends React.Component<PropTypes, Empty>
 {
   displayName: "AttackTarget",
   handleAttack: function()
@@ -38,4 +38,4 @@ export var AttackTarget = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

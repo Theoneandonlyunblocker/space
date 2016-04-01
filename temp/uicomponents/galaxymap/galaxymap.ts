@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var GalaxyMap = React.createFactory(React.createClass(
+export default class GalaxyMap extends React.Component<PropTypes, Empty>
 {
   displayName: "GalaxyMap",
   
@@ -123,4 +123,4 @@ export var GalaxyMap = React.createFactory(React.createClass(
     this.props.renderer.pause();
     this.props.renderer.removeRendererView();
   }
-}));
+}

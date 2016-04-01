@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var MapSetup = React.createFactory(React.createClass(
+export default class MapSetup extends React.Component<PropTypes, Empty>
 {
   displayName: "MapSetup",
 
@@ -115,4 +115,4 @@ export var MapSetup = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

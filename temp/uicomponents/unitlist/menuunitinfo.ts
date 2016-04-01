@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var MenuUnitInfo = React.createFactory(React.createClass(
+export default class MenuUnitInfo extends React.Component<PropTypes, Empty>
 {
   displayName: "MenuUnitInfo",
   handleUnitUpgrade: function()
@@ -76,4 +76,4 @@ export var MenuUnitInfo = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

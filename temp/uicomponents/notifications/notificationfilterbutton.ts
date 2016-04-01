@@ -8,7 +8,7 @@ export interface PropTypes
   highlightedOptionKey?: string;
 }
 
-export var NotificationFilterButton = React.createFactory(React.createClass(
+export default class NotificationFilterButton extends React.Component<PropTypes, Empty>
 {
   displayName: "NotificationFilterButton",
 
@@ -102,4 +102,4 @@ export var NotificationFilterButton = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

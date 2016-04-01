@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var BuildableBuildingList = React.createFactory(React.createClass(
+export default class BuildableBuildingList extends React.Component<PropTypes, Empty>
 {
   displayName: "BuildableBuildingList",
   getInitialState: function()
@@ -102,4 +102,4 @@ export var BuildableBuildingList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

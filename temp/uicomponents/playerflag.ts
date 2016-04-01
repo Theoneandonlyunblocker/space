@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var PlayerFlag = React.createFactory(React.createClass(
+export default class PlayerFlag extends React.Component<PropTypes, Empty>
 {
   displayName: "PlayerFlag",
   mixins: [React.addons.PureRenderMixin],
@@ -63,4 +63,4 @@ export var PlayerFlag = React.createFactory(React.createClass(
       );
     }
   }
-}));
+}

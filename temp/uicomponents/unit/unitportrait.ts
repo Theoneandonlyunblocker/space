@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UnitPortrait = React.createFactory(React.createClass(
+export default class UnitPortrait extends React.Component<PropTypes, Empty>
 {
   displayName: "UnitPortrait",
   render: function()
@@ -24,4 +24,4 @@ export var UnitPortrait = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

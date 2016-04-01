@@ -6,7 +6,7 @@ export interface PropTypes
   options: reactTypeTODO_object[];
 }
 
-export var OptionsGroup = React.createFactory(React.createClass(
+export default class OptionsGroup extends React.Component<PropTypes, Empty>
 {
   displayName: "OptionsGroup",
 
@@ -80,4 +80,4 @@ export var OptionsGroup = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

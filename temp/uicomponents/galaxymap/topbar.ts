@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var TopBar = React.createFactory(React.createClass(
+export default class TopBar extends React.Component<PropTypes, Empty>
 {
   displayName: "TopBar",
   updateListener: undefined,
@@ -81,4 +81,4 @@ export var TopBar = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

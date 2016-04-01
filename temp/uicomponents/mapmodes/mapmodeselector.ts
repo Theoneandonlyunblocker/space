@@ -6,7 +6,7 @@ export interface PropTypes
   onUpdate?: reactTypeTODO_func;
 }
 
-export var MapModeSelector = React.createFactory(React.createClass(
+export default class MapModeSelector extends React.Component<PropTypes, Empty>
 {
   displayName: "MapModeSelector",
 
@@ -59,4 +59,4 @@ export var MapModeSelector = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var TurnOrder = React.createFactory(React.createClass(
+export default class TurnOrder extends React.Component<PropTypes, Empty>
 {
   displayName: "TurnOrder",
   getInitialState: function()
@@ -135,4 +135,4 @@ export var TurnOrder = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

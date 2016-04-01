@@ -13,7 +13,7 @@ export interface PropTypes
   onDragMove?: reactTypeTODO_func;
 }
 
-export var FleetContents = React.createFactory(React.createClass(
+export default class FleetContents extends React.Component<PropTypes, Empty>
 {
   displayName: "FleetContents",
 
@@ -70,4 +70,4 @@ export var FleetContents = React.createFactory(React.createClass(
     );
   }
 
-}));
+}

@@ -10,7 +10,7 @@ export interface PropTypes
   money: number;
 }
 
-export var BuildQueue = React.createFactory(React.createClass(
+export default class BuildQueue extends React.Component<PropTypes, Empty>
 {
   displayName: "BuildQueue",
 
@@ -72,4 +72,4 @@ export var BuildQueue = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

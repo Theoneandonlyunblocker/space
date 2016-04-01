@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var LoadGame = React.createFactory(React.createClass(
+export default class LoadGame extends React.Component<PropTypes, Empty>
 {
   displayName: "LoadGame",
   popupId: undefined,
@@ -226,4 +226,4 @@ export var LoadGame = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

@@ -7,7 +7,7 @@ export interface PropTypes
   playerTechnology: PlayerTechnology;
 }
 
-export var TechnologiesList = React.createFactory(React.createClass(
+export default class TechnologiesList extends React.Component<PropTypes, Empty>
 {
   displayName: "TechnologiesList",
   updateListener: undefined,
@@ -61,4 +61,4 @@ export var TechnologiesList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

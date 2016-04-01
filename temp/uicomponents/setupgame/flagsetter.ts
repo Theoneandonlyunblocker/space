@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var FlagSetter = React.createFactory(React.createClass(
+export default class FlagSetter extends React.Component<PropTypes, Empty>
 {
   displayName: "FlagSetter",
   mixins: [FocusTimer],
@@ -329,4 +329,4 @@ export var FlagSetter = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

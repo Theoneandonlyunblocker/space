@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var AbilityList = React.createFactory(React.createClass(
+export default class AbilityList extends React.Component<PropTypes, Empty>
 {
   displayName: "AbilityList",
   render: function()
@@ -88,4 +88,4 @@ export var AbilityList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

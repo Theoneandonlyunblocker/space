@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var Notification = React.createFactory(React.createClass(
+export default class Notification extends React.Component<PropTypes, Empty>
 {
   displayName: "Notification",
 
@@ -46,4 +46,4 @@ export var Notification = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

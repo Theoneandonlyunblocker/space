@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var SaveGame = React.createFactory(React.createClass(
+export default class SaveGame extends React.Component<PropTypes, Empty>
 {
   displayName: "SaveGame",
 
@@ -114,4 +114,4 @@ export var SaveGame = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

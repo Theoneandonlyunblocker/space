@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var ItemList = React.createFactory(React.createClass(
+export default class ItemList extends React.Component<PropTypes, Empty>
 {
   displayName: "ItemList",
 
@@ -184,4 +184,4 @@ export var ItemList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

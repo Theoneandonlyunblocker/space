@@ -10,7 +10,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var BattleBackground = React.createFactory(React.createClass(
+export default class BattleBackground extends React.Component<PropTypes, Empty>
 {
   displayName: "BattleBackground",
 
@@ -57,4 +57,4 @@ export var BattleBackground = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

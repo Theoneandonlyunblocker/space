@@ -9,7 +9,7 @@ export interface PropTypes
   game: Game;
 }
 
-export var TopMenu = React.createFactory(React.createClass(
+export default class TopMenu extends React.Component<PropTypes, Empty>
 {
   displayName: "TopMenu",
   mixins: [React.addons.PureRenderMixin],
@@ -280,4 +280,4 @@ export var TopMenu = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

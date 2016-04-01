@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UnitList = React.createFactory(React.createClass(
+export default class UnitList extends React.Component<PropTypes, Empty>
 {
   displayName: "UnitList",
   render: function()
@@ -119,4 +119,4 @@ export var UnitList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

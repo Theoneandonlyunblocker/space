@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var AttitudeModifierList = React.createFactory(React.createClass(
+export default class AttitudeModifierList extends React.Component<PropTypes, Empty>
 {
   displayName: "AttitudeModifierList",
   mixins: [AutoPosition],
@@ -83,4 +83,4 @@ export var AttitudeModifierList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

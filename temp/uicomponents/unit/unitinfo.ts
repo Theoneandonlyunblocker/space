@@ -20,7 +20,7 @@ export interface PropTypes
   animateDuration?: number;
 }
 
-export var UnitInfo = React.createFactory(React.createClass(
+export default class UnitInfo extends React.Component<PropTypes, Empty>
 {
   displayName: "UnitInfo",
   mixins: [React.addons.PureRenderMixin],
@@ -89,4 +89,4 @@ export var UnitInfo = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

@@ -7,7 +7,7 @@ export interface PropTypes
   hasMultipleSelected?: boolean;
 }
 
-export var FleetControls = React.createFactory(React.createClass(
+export default class FleetControls extends React.Component<PropTypes, Empty>
 {
   displayName: "FleetControls",
 
@@ -69,4 +69,4 @@ export var FleetControls = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

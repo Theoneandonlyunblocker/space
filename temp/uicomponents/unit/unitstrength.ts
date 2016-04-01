@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UnitStrength = React.createFactory(React.createClass(
+export default class UnitStrength extends React.Component<PropTypes, Empty>
 {
   displayName: "UnitStrength",
   getInitialState: function()
@@ -169,4 +169,4 @@ export var UnitStrength = React.createFactory(React.createClass(
       return this.makeCapitalInfo()
     }
   }
-}));
+}

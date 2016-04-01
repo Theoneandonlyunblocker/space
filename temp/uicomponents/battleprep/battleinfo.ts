@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var BattleInfo = React.createFactory(React.createClass(
+export default class BattleInfo extends React.Component<PropTypes, Empty>
 {
   displayName: "BattleInfo",
   render: function()
@@ -53,4 +53,4 @@ export var BattleInfo = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

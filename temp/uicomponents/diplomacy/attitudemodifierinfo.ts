@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var AttitudeModifierInfo = React.createFactory(React.createClass(
+export default class AttitudeModifierInfo extends React.Component<PropTypes, Empty>
 {
   displayName: "AttitudeModifierInfo",
 
@@ -89,4 +89,4 @@ export var AttitudeModifierInfo = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

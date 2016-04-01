@@ -6,7 +6,7 @@ export interface PropTypes
   facingRight: boolean;
 }
 
-export var BattleSceneFlag = React.createFactory(React.createClass(
+export default class BattleSceneFlag extends React.Component<PropTypes, Empty>
 {
   displayName: "BattleSceneFlag",
   flagCanvas: null,
@@ -84,4 +84,4 @@ export var BattleSceneFlag = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

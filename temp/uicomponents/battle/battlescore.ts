@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var BattleScore = React.createFactory(React.createClass(
+export default class BattleScore extends React.Component<PropTypes, Empty>
 {
   displayName: "BattleScore",
   lastEvaluation: undefined,
@@ -88,4 +88,4 @@ export var BattleScore = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

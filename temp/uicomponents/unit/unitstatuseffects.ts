@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UnitStatusEffects = React.createFactory(React.createClass(
+export default class UnitStatusEffects extends React.Component<PropTypes, Empty>
 {
   displayName: "UnitStatusEffects",
 
@@ -91,4 +91,4 @@ export var UnitStatusEffects = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

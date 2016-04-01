@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UnitItemWrapper = React.createFactory(React.createClass(
+export default class UnitItemWrapper extends React.Component<PropTypes, Empty>
 {
   displayName: "UnitItemWrapper",
   mixins: [DropTarget],
@@ -62,4 +62,4 @@ export var UnitItemWrapper = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

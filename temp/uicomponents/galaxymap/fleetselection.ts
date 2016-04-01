@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var FleetSelection = React.createFactory(React.createClass(
+export default class FleetSelection extends React.Component<PropTypes, Empty>
 {
   displayName: "FleetSelection",
   mergeFleets: function()
@@ -209,4 +209,4 @@ export var FleetSelection = React.createFactory(React.createClass(
     );
   }
 
-}));
+}

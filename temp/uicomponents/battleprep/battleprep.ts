@@ -8,7 +8,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var BattlePrep = React.createFactory(React.createClass(
+export default class BattlePrep extends React.Component<PropTypes, Empty>
 {
   displayName: "BattlePrep",
   getInitialState: function()
@@ -391,4 +391,4 @@ export var BattlePrep = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

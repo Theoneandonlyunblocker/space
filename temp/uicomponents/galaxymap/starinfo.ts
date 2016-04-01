@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var StarInfo = React.createFactory(React.createClass(
+export default class StarInfo extends React.Component<PropTypes, Empty>
 {
   displayName: "StarInfo",
   shouldComponentUpdate: function(newProps: any)
@@ -73,4 +73,4 @@ export var StarInfo = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

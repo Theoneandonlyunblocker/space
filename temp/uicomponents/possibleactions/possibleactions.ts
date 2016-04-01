@@ -11,7 +11,7 @@ export interface PropTypes
   attackTargets?: reactTypeTODO_object[];
 }
 
-export var PossibleActions = React.createFactory(React.createClass(
+export default class PossibleActions extends React.Component<PropTypes, Empty>
 {
   displayName: "PossibleActions",
 
@@ -239,4 +239,4 @@ export var PossibleActions = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

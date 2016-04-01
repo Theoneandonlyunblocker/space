@@ -9,7 +9,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var Unit = React.createFactory(React.createClass(
+export default class Unit extends React.Component<PropTypes, Empty>
 {
   displayName: "Unit",
   mixins: [Draggable, React.addons.PureRenderMixin],
@@ -203,4 +203,4 @@ export var Unit = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

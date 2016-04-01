@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UpgradeUnit = React.createFactory(React.createClass(
+export default class UpgradeUnit extends React.Component<PropTypes, Empty>
 {
   displayName: "UpgradeUnit",
   getInitialState: function()
@@ -128,4 +128,4 @@ export var UpgradeUnit = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

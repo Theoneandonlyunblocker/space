@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var EconomySummary = React.createFactory(React.createClass(
+export default class EconomySummary extends React.Component<PropTypes, Empty>
 {
   displayName: "EconomySummary",
 
@@ -67,4 +67,4 @@ export var EconomySummary = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

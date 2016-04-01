@@ -7,7 +7,7 @@ export interface PropTypes
   money?: number;
 }
 
-export var ManufacturableThingsListItem = React.createFactory(React.createClass(
+export default class ManufacturableThingsListItem extends React.Component<PropTypes, Empty>
 {
   displayName: "ManufacturableThingsListItem",
 
@@ -72,4 +72,4 @@ export var ManufacturableThingsListItem = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

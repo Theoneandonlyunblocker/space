@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var BattleDisplayStrength = React.createFactory(React.createClass(
+export default class BattleDisplayStrength extends React.Component<PropTypes, Empty>
 {
   displayName: "BattleDisplayStrength",
   getInitialState: function()
@@ -92,4 +92,4 @@ export var BattleDisplayStrength = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

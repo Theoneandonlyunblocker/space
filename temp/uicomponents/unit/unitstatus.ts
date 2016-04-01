@@ -6,7 +6,7 @@ export interface PropTypes
   isPreparing?: boolean;
 }
 
-export var UnitStatus = React.createFactory(React.createClass(
+export default class UnitStatus extends React.Component<PropTypes, Empty>
 {
   displayName: "UnitStatus",
 
@@ -82,4 +82,4 @@ export var UnitStatus = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

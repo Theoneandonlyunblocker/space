@@ -7,7 +7,7 @@ export interface PropTypes
   isHighlighted: boolean;
 }
 
-export var NotificationFilterListItem = React.createFactory(React.createClass(
+export default class NotificationFilterListItem extends React.Component<PropTypes, Empty>
 {
   displayName: "NotificationFilterListItem",
 
@@ -83,4 +83,4 @@ export var NotificationFilterListItem = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

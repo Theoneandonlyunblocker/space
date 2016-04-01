@@ -5,7 +5,7 @@ export interface PropTypes
   player?: Player;
 }
 
-export var PlayerMoney = React.createFactory(React.createClass(
+export default class PlayerMoney extends React.Component<PropTypes, Empty>
 {
   displayName: "PlayerMoney",
   lastAmountRendered: undefined,
@@ -42,4 +42,4 @@ export var PlayerMoney = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

@@ -8,7 +8,7 @@ export interface PropTypes
   fleets?: Fleet[];
 }
 
-export var FleetReorganization = React.createFactory(React.createClass(
+export default class FleetReorganization extends React.Component<PropTypes, Empty>
 {
   displayName: "FleetReorganization",
 
@@ -141,4 +141,4 @@ export var FleetReorganization = React.createFactory(React.createClass(
     );
   }
 
-}));
+}

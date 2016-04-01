@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var DiplomaticStatusPlayer = React.createFactory(React.createClass(
+export default class DiplomaticStatusPlayer extends React.Component<PropTypes, Empty>
 {
   displayName: "DiplomaticStatusPlayer",
 
@@ -110,4 +110,4 @@ export var DiplomaticStatusPlayer = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

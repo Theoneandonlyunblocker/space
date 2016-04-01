@@ -13,7 +13,7 @@ export interface PropTypes
   player: Player;
 }
 
-export var ProductionOverview = React.createFactory(React.createClass(
+export default class ProductionOverview extends React.Component<PropTypes, Empty>
 {
   displayName: "ProductionOverview",
   mixins: [UpdateWhenMoneyChanges],
@@ -171,4 +171,4 @@ export var ProductionOverview = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

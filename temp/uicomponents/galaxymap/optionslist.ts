@@ -11,7 +11,7 @@ export interface PropTypes
   log: NotificationLog;
 }
 
-export var OptionsList = React.createFactory(React.createClass(
+export default class OptionsList extends React.Component<PropTypes, Empty>
 {
   displayName: "OptionsList",
 
@@ -323,4 +323,4 @@ export var OptionsList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

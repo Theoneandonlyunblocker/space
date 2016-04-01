@@ -10,7 +10,7 @@ export interface PropTypes
   title?: string;
 }
 
-export var ManufactoryUpgradeButton = React.createFactory(React.createClass(
+export default class ManufactoryUpgradeButton extends React.Component<PropTypes, Empty>
 {
   displayName: "ManufactoryUpgradeButton",
 
@@ -80,4 +80,4 @@ export var ManufactoryUpgradeButton = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

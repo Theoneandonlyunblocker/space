@@ -10,7 +10,7 @@ export interface PropTypes
   technology: Rance.Templates.ITechnologyTemplate;
   researchPoints: number;
 }
-type Empty = {};
+
 export default class TechnologyPrioritySlider extends React.Component<PropTypes, Empty>
 {
   displayName: string = "TechnologyPrioritySlider";

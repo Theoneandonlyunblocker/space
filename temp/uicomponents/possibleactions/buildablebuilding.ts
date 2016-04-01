@@ -10,7 +10,7 @@ export interface PropTypes
   handleClick: reactTypeTODO_func;
 }
 
-export var BuildableBuilding = React.createFactory(React.createClass(
+export default class BuildableBuilding extends React.Component<PropTypes, Empty>
 {
   displayName: "BuildableBuilding",
   mixins: [UpdateWhenMoneyChanges],
@@ -94,4 +94,4 @@ export var BuildableBuilding = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

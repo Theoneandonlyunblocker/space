@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var FlagPicker = React.createFactory(React.createClass(
+export default class FlagPicker extends React.Component<PropTypes, Empty>
 {
   displayName: "FlagPicker",
   getInitialState: function()
@@ -137,4 +137,4 @@ export var FlagPicker = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

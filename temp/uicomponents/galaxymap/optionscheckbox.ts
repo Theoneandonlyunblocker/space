@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var OptionsCheckbox = React.createFactory(React.createClass(
+export default class OptionsCheckbox extends React.Component<PropTypes, Empty>
 {
   displayName: "OptionsCheckbox",
   render: function()
@@ -31,4 +31,4 @@ export var OptionsCheckbox = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

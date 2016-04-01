@@ -8,7 +8,7 @@ export interface PropTypes
   money: number;
 }
 
-export var ConstructManufactory = React.createFactory(React.createClass(
+export default class ConstructManufactory extends React.Component<PropTypes, Empty>
 {
   displayName: "ConstructManufactory",
   mixins: [React.addons.PureRenderMixin],
@@ -69,4 +69,4 @@ export var ConstructManufactory = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

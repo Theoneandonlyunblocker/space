@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var Opinion = React.createFactory(React.createClass(
+export default class Opinion extends React.Component<PropTypes, Empty>
 {
   displayName: "Opinion",
 
@@ -90,4 +90,4 @@ export var Opinion = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

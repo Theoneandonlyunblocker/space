@@ -25,7 +25,7 @@ export interface PropTypes
   onDragEnd?: reactTypeTODO_func;
 }
 
-export var Formation = React.createFactory(React.createClass(
+export default class Formation extends React.Component<PropTypes, Empty>
 {
   displayName: "Formation",
 
@@ -68,4 +68,4 @@ export var Formation = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

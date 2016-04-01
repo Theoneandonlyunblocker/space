@@ -10,7 +10,7 @@ export interface PropTypes
   adjustItemAmount?: reactTypeTODO_func;
 }
 
-export var TradeMoney = React.createFactory(React.createClass(
+export default class TradeMoney extends React.Component<PropTypes, Empty>
 {
   displayName: "TradeMoney",
   mixins: [Draggable],
@@ -112,4 +112,4 @@ export var TradeMoney = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

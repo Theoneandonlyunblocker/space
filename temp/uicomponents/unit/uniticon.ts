@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UnitIcon = React.createFactory(React.createClass(
+export default class UnitIcon extends React.Component<PropTypes, Empty>
 {
   displayName: "UnitIcon",
   mixins: [React.addons.PureRenderMixin],
@@ -61,4 +61,4 @@ export var UnitIcon = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

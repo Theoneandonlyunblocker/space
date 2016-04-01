@@ -12,7 +12,7 @@ export interface PropTypes
   money: number;
 }
 
-export var ManufacturableThings = React.createFactory(React.createClass(
+export default class ManufacturableThings extends React.Component<PropTypes, Empty>
 {
   displayName: "ManufacturableThings",
 
@@ -157,4 +157,4 @@ export var ManufacturableThings = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

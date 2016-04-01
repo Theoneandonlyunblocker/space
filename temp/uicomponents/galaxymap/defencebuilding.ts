@@ -5,7 +5,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var DefenceBuilding = React.createFactory(React.createClass(
+export default class DefenceBuilding extends React.Component<PropTypes, Empty>
 {
   displayName: "DefenceBuilding",
   shouldComponentUpdate: function(newProps: any)
@@ -42,4 +42,4 @@ export var DefenceBuilding = React.createFactory(React.createClass(
     );
   }
 
-}));
+}

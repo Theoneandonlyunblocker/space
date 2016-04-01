@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var LightBox = React.createFactory(React.createClass(
+export default class LightBox extends React.Component<PropTypes, Empty>
 {
   displayName: "LightBox",
 
@@ -97,4 +97,4 @@ export var LightBox = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

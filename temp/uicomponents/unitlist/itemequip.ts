@@ -7,7 +7,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var ItemEquip = React.createFactory(React.createClass(
+export default class ItemEquip extends React.Component<PropTypes, Empty>
 {
   displayName: "ItemEquip",
   getInitialState: function()
@@ -107,4 +107,4 @@ export var ItemEquip = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

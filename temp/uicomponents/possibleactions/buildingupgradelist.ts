@@ -10,7 +10,7 @@ export interface PropTypes
   clearExpandedAction: reactTypeTODO_func;
 }
 
-export var BuildingUpgradeList = React.createFactory(React.createClass(
+export default class BuildingUpgradeList extends React.Component<PropTypes, Empty>
 {
   displayName: "BuildingUpgradeList",
 
@@ -135,4 +135,4 @@ export var BuildingUpgradeList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

@@ -6,7 +6,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var DiplomacyOverview = React.createFactory(React.createClass(
+export default class DiplomacyOverview extends React.Component<PropTypes, Empty>
 {
   displayName: "DiplomacyOverview",
 
@@ -124,4 +124,4 @@ export var DiplomacyOverview = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

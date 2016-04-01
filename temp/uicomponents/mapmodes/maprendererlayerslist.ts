@@ -8,7 +8,7 @@ export interface PropTypes
   currentMapMode: MapRendererMapMode;
 }
 
-export var MapRendererLayersList = React.createFactory(React.createClass(
+export default class MapRendererLayersList extends React.Component<PropTypes, {}>
 {
   displayName: "MapRendererLayersList",
   mixins: [React.addons.PureRenderMixin],
@@ -120,4 +120,4 @@ export var MapRendererLayersList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

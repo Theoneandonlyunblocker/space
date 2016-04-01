@@ -10,7 +10,7 @@ export interface PropTypes
   researchPoints: number;
 }
 
-export var Technology = React.createFactory(React.createClass(
+export default class Technology extends React.Component<PropTypes, Empty>
 {
   displayName: "Technology",
 
@@ -104,4 +104,4 @@ export var Technology = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

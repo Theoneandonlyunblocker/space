@@ -10,7 +10,7 @@ export interface PropTypes
   handleClose: reactTypeTODO_func;
 }
 
-export var TradeOverview = React.createFactory(React.createClass(
+export default class TradeOverview extends React.Component<PropTypes, Empty>
 {
   displayName: "TradeOverview",
   selfPlayerTrade: undefined,
@@ -241,4 +241,4 @@ export var TradeOverview = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

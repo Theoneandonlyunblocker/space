@@ -8,7 +8,7 @@ export interface PropTypes
   tutorialId: string;
 }
 
-export var Tutorial = React.createFactory(React.createClass(
+export default class Tutorial extends React.Component<PropTypes, Empty>
 {
   displayName: "Tutorial",
   mixins: [SplitMultilineText],
@@ -144,4 +144,4 @@ export var Tutorial = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

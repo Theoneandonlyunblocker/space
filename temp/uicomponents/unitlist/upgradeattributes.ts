@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var UpgradeAttributes = React.createFactory(React.createClass(
+export default class UpgradeAttributes extends React.Component<PropTypes, Empty>
 {
   displayName: "UpgradeAttributes",
   upgradeAttribute: function(attribute: string, e: MouseEvent)
@@ -52,4 +52,4 @@ export var UpgradeAttributes = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

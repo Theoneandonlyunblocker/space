@@ -23,7 +23,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var Stage = React.createFactory(React.createClass(
+export default class Stage extends React.Component<PropTypes, Empty>
 {
   displayName: "Stage",
   changeScene: function()
@@ -116,4 +116,4 @@ export var Stage = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

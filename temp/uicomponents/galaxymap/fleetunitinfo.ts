@@ -12,7 +12,7 @@ export interface PropTypes
   onDragEnd?: reactTypeTODO_func;
 }
 
-export var FleetUnitInfo = React.createFactory(React.createClass(
+export default class FleetUnitInfo extends React.Component<PropTypes, Empty>
 {
   displayName: "FleetUnitInfo",
   mixins: [Draggable],
@@ -89,4 +89,4 @@ export var FleetUnitInfo = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

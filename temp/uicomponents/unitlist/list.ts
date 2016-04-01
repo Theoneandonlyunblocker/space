@@ -41,8 +41,8 @@ export interface PropTypes
 
 }
 
-export var List = React.createFactory(React.createClass({
-  displayName: "List",
+export default class List extends React.Component<PropTypes, Empty>
+}
   mixins: [SplitMultilineText],
 
   sortedItems: [], // IListItem[]

@@ -13,7 +13,7 @@ export interface PropTypes
   adjustItemAmount?: reactTypeTODO_func;
 }
 
-export var TradeableItemsList = React.createFactory(React.createClass(
+export default class TradeableItemsList extends React.Component<PropTypes, Empty>
 {
   displayName: "TradeableItemsList",
 
@@ -95,4 +95,4 @@ export var TradeableItemsList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

@@ -7,7 +7,7 @@ export interface PropTypes
   highlightedOptionKey?: string;
 }
 
-export var NotificationFilterList = React.createFactory(React.createClass(
+export default class NotificationFilterList extends React.Component<PropTypes, Empty>
 {
   displayName: "NotificationFilterList",
   handleResetCategory: function(category: string)
@@ -100,4 +100,4 @@ export var NotificationFilterList = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

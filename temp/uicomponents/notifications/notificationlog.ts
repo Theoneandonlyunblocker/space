@@ -8,7 +8,7 @@ export interface PropTypes
   currentTurn: number;
 }
 
-export var NotificationLog = React.createFactory(React.createClass(
+export default class NotificationLog extends React.Component<PropTypes, Empty>
 {
   displayName: "NotificationLog",
   mixins: [React.addons.PureRenderMixin],
@@ -170,4 +170,4 @@ export var NotificationLog = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

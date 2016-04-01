@@ -8,7 +8,7 @@ export interface PropTypes
   mapRenderer: MapRenderer;
 }
 
-export var MapModeSettings = React.createFactory(React.createClass(
+export default class MapModeSettings extends React.Component<PropTypes, Empty>
 {
   displayName: "MapModeSettings",
 
@@ -51,4 +51,4 @@ export var MapModeSettings = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

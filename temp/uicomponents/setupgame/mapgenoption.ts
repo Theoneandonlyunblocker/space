@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var MapGenOption = React.createFactory(React.createClass(
+export default class MapGenOption extends React.Component<PropTypes, Empty>
 {
   displayName: "MapGenOption",
 
@@ -74,4 +74,4 @@ export var MapGenOption = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

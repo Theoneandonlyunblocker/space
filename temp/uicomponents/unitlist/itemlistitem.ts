@@ -3,7 +3,7 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
-export var ItemListItem = React.createFactory(React.createClass(
+export default class ItemListItem extends React.Component<PropTypes, Empty>
 {
   displayName: "ItemListItem",
   mixins: [Draggable],
@@ -117,4 +117,4 @@ export var ItemListItem = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}
