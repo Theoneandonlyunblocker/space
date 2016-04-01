@@ -1,68 +1,65 @@
 /// <reference path="../unitlist/list.ts"/>
 /// <reference path="economysummaryitem.ts"/>
 
-export namespace UIComponents
+export var EconomySummary = React.createFactory(React.createClass(
 {
-  export var EconomySummary = React.createFactory(React.createClass(
+  displayName: "EconomySummary",
+
+  render: function()
   {
-    displayName: "EconomySummary",
+    var rows: IListItem[] = [];
+    var player = this.props.player;
 
-    render: function()
+    for (var i = 0; i < player.controlledLocations.length; i++)
     {
-      var rows: IListItem[] = [];
-      var player = this.props.player;
+      var star = player.controlledLocations[i];
 
-      for (var i = 0; i < player.controlledLocations.length; i++)
+      var data: any =
       {
-        var star = player.controlledLocations[i];
+        star: star,
 
-        var data: any =
-        {
-          star: star,
+        id: star.id,
+        name: star.name,
+        income: star.getIncome(),
 
-          id: star.id,
-          name: star.name,
-          income: star.getIncome(),
+        rowConstructor: UIComponents.EconomySummaryItem
+      };
 
-          rowConstructor: UIComponents.EconomySummaryItem
-        };
-
-        rows.push(
-        {
-          key: star.id,
-          data: data
-        });
-      }
-
-      var columns: IListColumn[] =
-      [
-        {
-          label: "Id",
-          key: "id",
-          defaultOrder: "asc"
-        },
-        {
-          label: "Name",
-          key: "name",
-          defaultOrder: "asc"
-        },
-        {
-          label: "Income",
-          key: "income",
-          defaultOrder: "desc"
-        }
-      ];
-
-      return(
-        React.DOM.div({className: "economy-summary-list fixed-table-parent"},
-          UIComponents.List(
-          {
-            listItems: rows,
-            initialColumns: columns,
-            initialSortOrder: [columns[2]]
-          })
-        )
-      );
+      rows.push(
+      {
+        key: star.id,
+        data: data
+      });
     }
-  }));
-}
+
+    var columns: IListColumn[] =
+    [
+      {
+        label: "Id",
+        key: "id",
+        defaultOrder: "asc"
+      },
+      {
+        label: "Name",
+        key: "name",
+        defaultOrder: "asc"
+      },
+      {
+        label: "Income",
+        key: "income",
+        defaultOrder: "desc"
+      }
+    ];
+
+    return(
+      React.DOM.div({className: "economy-summary-list fixed-table-parent"},
+        UIComponents.List(
+        {
+          listItems: rows,
+          initialColumns: columns,
+          initialSortOrder: [columns[2]]
+        })
+      )
+    );
+  }
+}));

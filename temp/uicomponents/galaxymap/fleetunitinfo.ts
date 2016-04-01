@@ -3,93 +3,90 @@
 
 /// <reference path="../../unit.ts" />
 
-export namespace UIComponents
+export var FleetUnitInfo = React.createFactory(React.createClass(
 {
-  export var FleetUnitInfo = React.createFactory(React.createClass(
+  displayName: "FleetUnitInfo",
+  mixins: [Draggable],
+
+  propTypes:
   {
-    displayName: "FleetUnitInfo",
-    mixins: [Draggable],
+    unit: React.PropTypes.instanceOf(Rance.Unit),
+    isIdentified: React.PropTypes.bool.isRequired,
 
-    propTypes:
+    isDraggable: React.PropTypes.bool.isRequired,
+    onDragStart: React.PropTypes.func,
+    onDragEnd: React.PropTypes.func
+  },
+
+  onDragStart: function()
+  {
+    this.props.onDragStart(this.props.unit);
+  },
+  onDragEnd: function(e: DragEvent)
+  {
+    this.props.onDragEnd(e)
+  },
+
+  render: function()
+  {
+    var unit: Unit = this.props.unit;
+    var isNotDetected = !this.props.isIdentified;
+
+    var divProps: any =
     {
-      unit: React.PropTypes.instanceOf(Rance.Unit),
-      isIdentified: React.PropTypes.bool.isRequired,
+      className: "fleet-unit-info"
+    };
 
-      isDraggable: React.PropTypes.bool.isRequired,
-      onDragStart: React.PropTypes.func,
-      onDragEnd: React.PropTypes.func
-    },
-
-    onDragStart: function()
+    if (this.props.isDraggable)
     {
-      this.props.onDragStart(this.props.unit);
-    },
-    onDragEnd: function(e: DragEvent)
-    {
-      this.props.onDragEnd(e)
-    },
+      divProps.className += " draggable";
+      divProps.onTouchStart = this.handleMouseDown;
+      divProps.onMouseDown = this.handleMouseDown;
 
-    render: function()
-    {
-      var unit: Unit = this.props.unit;
-      var isNotDetected = !this.props.isIdentified;
-
-      var divProps: any =
+      if (this.state.dragging)
       {
-        className: "fleet-unit-info"
-      };
-
-      if (this.props.isDraggable)
-      {
-        divProps.className += " draggable";
-        divProps.onTouchStart = this.handleMouseDown;
-        divProps.onMouseDown = this.handleMouseDown;
-
-        if (this.state.dragging)
-        {
-          divProps.style = this.dragPos;
-          divProps.className += " dragging";
-        }
+        divProps.style = this.dragPos;
+        divProps.className += " dragging";
       }
- 
-      return(
-        React.DOM.div(divProps,
-          React.DOM.div(
-          {
-            className: "fleet-unit-info-icon-container"
-          },
-            React.DOM.img(
-            {
-              className: "fleet-unit-info-icon",
-              src: isNotDetected ? "img\/icons\/unDetected.png" : unit.template.icon
-            })
-          ),
-          React.DOM.div(
-          {
-            className: "fleet-unit-info-info"
-          },
-            UIComponents.FleetUnitInfoName(
-            {
-              unit: unit,
-              isNotDetected: isNotDetected
-            }),
-            React.DOM.div(
-            {
-              className: "fleet-unit-info-type"
-            },
-              isNotDetected ? "???" : unit.template.displayName
-            )
-          ),
-          UIComponents.UnitStrength(
-          {
-            maxHealth: unit.maxHealth,
-            currentHealth: unit.currentHealth,
-            isSquadron: true,
-            isNotDetected: isNotDetected
-          })
-          
-        )
-      );
     }
-  }));
-}
+ 
+    return(
+      React.DOM.div(divProps,
+        React.DOM.div(
+        {
+          className: "fleet-unit-info-icon-container"
+        },
+          React.DOM.img(
+          {
+            className: "fleet-unit-info-icon",
+            src: isNotDetected ? "img\/icons\/unDetected.png" : unit.template.icon
+          })
+        ),
+        React.DOM.div(
+        {
+          className: "fleet-unit-info-info"
+        },
+          UIComponents.FleetUnitInfoName(
+          {
+            unit: unit,
+            isNotDetected: isNotDetected
+          }),
+          React.DOM.div(
+          {
+            className: "fleet-unit-info-type"
+          },
+            isNotDetected ? "???" : unit.template.displayName
+          )
+        ),
+        UIComponents.UnitStrength(
+        {
+          maxHealth: unit.maxHealth,
+          currentHealth: unit.currentHealth,
+          isSquadron: true,
+          isNotDetected: isNotDetected
+        })
+        
+      )
+    );
+  }
+}));

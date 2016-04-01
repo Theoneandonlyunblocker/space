@@ -1,85 +1,82 @@
-export namespace UIComponents
+export var SaveListItem = React.createFactory(React.createClass(
 {
-  export var SaveListItem = React.createFactory(React.createClass(
+  displayName: "SaveListItem",
+
+  handleDelete: function(e: React.MouseEvent)
   {
-    displayName: "SaveListItem",
+    e.stopPropagation();
+    this.props.handleDelete();
+  },
+  handleUndoDelete: function(e: React.MouseEvent)
+  {
+    e.stopPropagation();
+    this.props.handleUndoDelete();
+  },
+  makeCell: function(type: string)
+  {
+    var cellProps: any = {};
+    cellProps.key = type;
+    cellProps.className = "save-list-item-cell" + " save-list-" + type;
 
-    handleDelete: function(e: React.MouseEvent)
-    {
-      e.stopPropagation();
-      this.props.handleDelete();
-    },
-    handleUndoDelete: function(e: React.MouseEvent)
-    {
-      e.stopPropagation();
-      this.props.handleUndoDelete();
-    },
-    makeCell: function(type: string)
-    {
-      var cellProps: any = {};
-      cellProps.key = type;
-      cellProps.className = "save-list-item-cell" + " save-list-" + type;
+    var cellContent: any;
 
-      var cellContent: any;
-
-      switch (type)
+    switch (type)
+    {
+      case "delete":
       {
-        case "delete":
+        if (this.props.isMarkedForDeletion)
         {
-          if (this.props.isMarkedForDeletion)
-          {
-            cellContent = "";
-            cellProps.className += " undo-delete-button";
-            cellProps.onClick = this.handleUndoDelete;
-          }
-          else
-          {
-            cellContent = "X";
-            cellProps.onClick = this.handleDelete;
-          }
-          break;
+          cellContent = "";
+          cellProps.className += " undo-delete-button";
+          cellProps.onClick = this.handleUndoDelete;
         }
-        default:
+        else
         {
-          cellContent = this.props[type];
-          break;
+          cellContent = "X";
+          cellProps.onClick = this.handleDelete;
         }
+        break;
       }
-
-      return(
-        React.DOM.td(cellProps, cellContent)
-      );
-    },
-
-    render: function()
-    {
-      var columns = this.props.activeColumns;
-
-      var cells: any = [];
-
-      for (var i = 0; i < columns.length; i++)
+      default:
       {
-        var cell = this.makeCell(columns[i].key);
-
-        cells.push(cell);
+        cellContent = this.props[type];
+        break;
       }
-
-      var rowProps: any =
-      {
-        className: "save-list-item",
-        onClick : this.props.handleClick
-      };
-
-      if (this.props.isMarkedForDeletion)
-      {
-        rowProps.className += " marked-for-deletion";
-      }
-
-      return(
-        React.DOM.tr(rowProps,
-          cells
-        )
-      );
     }
-  }));
-}
+
+    return(
+      React.DOM.td(cellProps, cellContent)
+    );
+  },
+
+  render: function()
+  {
+    var columns = this.props.activeColumns;
+
+    var cells: any = [];
+
+    for (var i = 0; i < columns.length; i++)
+    {
+      var cell = this.makeCell(columns[i].key);
+
+      cells.push(cell);
+    }
+
+    var rowProps: any =
+    {
+      className: "save-list-item",
+      onClick : this.props.handleClick
+    };
+
+    if (this.props.isMarkedForDeletion)
+    {
+      rowProps.className += " marked-for-deletion";
+    }
+
+    return(
+      React.DOM.tr(rowProps,
+        cells
+      )
+    );
+  }
+}));

@@ -2,81 +2,78 @@
 /// <reference path="topbarresources.ts" />
 /// <reference path="../playerflag.ts" />
 
-export namespace UIComponents
+export var TopBar = React.createFactory(React.createClass(
 {
-  export var TopBar = React.createFactory(React.createClass(
+  displayName: "TopBar",
+  updateListener: undefined,
+
+  componentDidMount: function()
   {
-    displayName: "TopBar",
-    updateListener: undefined,
+    this.updateListener = eventManager.addEventListener(
+      "builtBuildingWithEffect_income", this.forceUpdate.bind(this));
+  },
 
-    componentDidMount: function()
-    {
-      this.updateListener = eventManager.addEventListener(
-        "builtBuildingWithEffect_income", this.forceUpdate.bind(this));
-    },
+  componentWillUnmount: function()
+  {
+    eventManager.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
+  },
 
-    componentWillUnmount: function()
-    {
-      eventManager.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
-    },
+  render: function()
+  {
+    var player: Player = this.props.player;
 
-    render: function()
-    {
-      var player: Player = this.props.player;
+    var income = player.getIncome();
 
-      var income = player.getIncome();
-
-      var incomeClass = "top-bar-money-income";
-      if (income < 0) incomeClass += " negative";
-      
-      return(
+    var incomeClass = "top-bar-money-income";
+    if (income < 0) incomeClass += " negative";
+    
+    return(
+      React.DOM.div(
+      {
+        className: "top-bar"
+      },
         React.DOM.div(
         {
-          className: "top-bar"
+          className: "top-bar-info"
         },
           React.DOM.div(
           {
-            className: "top-bar-info"
+            className: "top-bar-player"
           },
-            React.DOM.div(
+            UIComponents.PlayerFlag(
             {
-              className: "top-bar-player"
-            },
-              UIComponents.PlayerFlag(
+              props:
               {
-                props:
-                {
-                  className: "top-bar-player-icon"
-                },
-                flag: player.flag
-              }),
-              React.DOM.div(
-              {
-                className: "top-bar-turn-number"
-              }, "Turn " + this.props.game.turnNumber)
-            ),
-            React.DOM.div(
-            {
-              className: "top-bar-money"
-            },
-              UIComponents.PlayerMoney(
-              {
-                player: player
-              }),
-              React.DOM.div(
-              {
-                className: incomeClass
+                className: "top-bar-player-icon"
               },
-                "(+" + player.getIncome() + ")"
-              )
-            ),
-            UIComponents.TopBarResources(
+              flag: player.flag
+            }),
+            React.DOM.div(
             {
-              player: player  
-            })
-          )
+              className: "top-bar-turn-number"
+            }, "Turn " + this.props.game.turnNumber)
+          ),
+          React.DOM.div(
+          {
+            className: "top-bar-money"
+          },
+            UIComponents.PlayerMoney(
+            {
+              player: player
+            }),
+            React.DOM.div(
+            {
+              className: incomeClass
+            },
+              "(+" + player.getIncome() + ")"
+            )
+          ),
+          UIComponents.TopBarResources(
+          {
+            player: player  
+          })
         )
-      );
-    }
-  }));
-}
+      )
+    );
+  }
+}));

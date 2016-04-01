@@ -1,90 +1,87 @@
-export namespace UIComponents
+export var AttitudeModifierInfo = React.createFactory(React.createClass(
 {
-  export var AttitudeModifierInfo = React.createFactory(React.createClass(
+  displayName: "AttitudeModifierInfo",
+
+  makeCell: function(type: string)
   {
-    displayName: "AttitudeModifierInfo",
+    var cellProps: any = {};
+    cellProps.key = type;
+    cellProps.className = "attitude-modifier-info-cell" +
+      " attitude-modifier-info-" + type;
 
-    makeCell: function(type: string)
+    var cellContent: any;
+
+    switch (type)
     {
-      var cellProps: any = {};
-      cellProps.key = type;
-      cellProps.className = "attitude-modifier-info-cell" +
-        " attitude-modifier-info-" + type;
-
-      var cellContent: any;
-
-      switch (type)
+      case "endTurn":
       {
-        case "endTurn":
+        if (this.props.endTurn < 0)
         {
-          if (this.props.endTurn < 0)
-          {
-            cellContent = null;
-            return;
-          }
-        }
-        case "strength":
-        {
-          var relativeValue = getRelativeValue(this.props.strength, -20, 20);
-          relativeValue = clamp(relativeValue, 0, 1);
-
-          var deviation = Math.abs(0.5 - relativeValue) * 2;
-
-          var hue = 110 * relativeValue;
-          var saturation = 0 + 50 * deviation;
-          if (deviation > 0.3) saturation += 40;
-          var lightness = 70 - 20 * deviation;
-
-          cellProps.style =
-          {
-            color: "hsl(" +
-              hue + "," +
-              saturation + "%," +
-              lightness + "%)"
-          }
-        }
-        default:
-        {
-          cellContent = this.props[type];
-
-          if (isFinite(cellContent))
-          {
-            cellProps.className += " center-text"
-          }
-
-          break;
+          cellContent = null;
+          return;
         }
       }
-
-      return(
-        React.DOM.td(cellProps, cellContent)
-      );
-    },
-
-    render: function()
-    {
-      var columns = this.props.activeColumns;
-
-      var cells: any = [];
-
-      for (var i = 0; i < columns.length; i++)
+      case "strength":
       {
-        var cell = this.makeCell(columns[i].key);
+        var relativeValue = getRelativeValue(this.props.strength, -20, 20);
+        relativeValue = clamp(relativeValue, 0, 1);
 
-        cells.push(cell);
+        var deviation = Math.abs(0.5 - relativeValue) * 2;
+
+        var hue = 110 * relativeValue;
+        var saturation = 0 + 50 * deviation;
+        if (deviation > 0.3) saturation += 40;
+        var lightness = 70 - 20 * deviation;
+
+        cellProps.style =
+        {
+          color: "hsl(" +
+            hue + "," +
+            saturation + "%," +
+            lightness + "%)"
+        }
       }
-
-      var rowProps: any =
+      default:
       {
-        className: "diplomatic-status-player",
-        onClick : this.props.handleClick
-      };
+        cellContent = this.props[type];
 
-      return(
-        React.DOM.tr(rowProps,
-          cells
-        )
-      );
+        if (isFinite(cellContent))
+        {
+          cellProps.className += " center-text"
+        }
+
+        break;
+      }
     }
-  }));
-}
+
+    return(
+      React.DOM.td(cellProps, cellContent)
+    );
+  },
+
+  render: function()
+  {
+    var columns = this.props.activeColumns;
+
+    var cells: any = [];
+
+    for (var i = 0; i < columns.length; i++)
+    {
+      var cell = this.makeCell(columns[i].key);
+
+      cells.push(cell);
+    }
+
+    var rowProps: any =
+    {
+      className: "diplomatic-status-player",
+      onClick : this.props.handleClick
+    };
+
+    return(
+      React.DOM.tr(rowProps,
+        cells
+      )
+    );
+  }
+}));

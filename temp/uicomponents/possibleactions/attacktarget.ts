@@ -1,39 +1,36 @@
 /// <reference path="../playerflag.ts" />
 
-export namespace UIComponents
+export var AttackTarget = React.createFactory(React.createClass(
 {
-  export var AttackTarget = React.createFactory(React.createClass(
+  displayName: "AttackTarget",
+  handleAttack: function()
   {
-    displayName: "AttackTarget",
-    handleAttack: function()
-    {
-      eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
-    },
+    eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
+  },
 
-    render: function()
-    {
-      var target = this.props.attackTarget;
+  render: function()
+  {
+    var target = this.props.attackTarget;
 
-      return(
+    return(
+      React.DOM.div(
+      {
+        className: "attack-target",
+        onClick: this.handleAttack
+      },
         React.DOM.div(
         {
-          className: "attack-target",
-          onClick: this.handleAttack
-        },
-          React.DOM.div(
+          className: "attack-target-type"
+        }, target.type),
+        UIComponents.PlayerFlag(
+        {
+          flag: target.enemy.flag,
+          props:
           {
-            className: "attack-target-type"
-          }, target.type),
-          UIComponents.PlayerFlag(
-          {
-            flag: target.enemy.flag,
-            props:
-            {
-              className: "attack-target-player-icon"
-            }
-          })
-        )
-      );
-    }
-  }));
-}
+            className: "attack-target-player-icon"
+          }
+        })
+      )
+    );
+  }
+}));

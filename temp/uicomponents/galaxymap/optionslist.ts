@@ -6,323 +6,320 @@
 
 /// <reference path="../../notificationlog.ts" />
 
-export namespace UIComponents
+export var OptionsList = React.createFactory(React.createClass(
 {
-  export var OptionsList = React.createFactory(React.createClass(
+  displayName: "OptionsList",
+
+  propTypes:
   {
-    displayName: "OptionsList",
+    log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
+  },
 
-    propTypes:
+  handleResetAllOptions: function()
+  {
+    var resetFN = function()
     {
-      log: React.PropTypes.instanceOf(Rance.NotificationLog).isRequired,
-    },
+      var shouldToggleDebug = (Options.debugMode !== defaultOptions.debugMode);
+      var shouldRenderMap = Options.display.borderWidth !== defaultOptions.display.borderWidth;
 
-    handleResetAllOptions: function()
-    {
-      var resetFN = function()
+      Options = extendObject(defaultOptions);
+      this.forceUpdate();
+
+      if (shouldToggleDebug)
       {
-        var shouldToggleDebug = (Options.debugMode !== defaultOptions.debugMode);
-        var shouldRenderMap = Options.display.borderWidth !== defaultOptions.display.borderWidth;
-
-        Options = extendObject(defaultOptions);
-        this.forceUpdate();
-
-        if (shouldToggleDebug)
-        {
-          app.reactUI.render();
-        }
-        if (shouldRenderMap)
-        {
-          eventManager.dispatchEvent("renderMap");
-        }
-      }.bind(this);
-
-      var confirmProps =
-      {
-        handleOk: resetFN,
-        contentText: "Are you sure you want to reset all options?"
+        app.reactUI.render();
       }
-
-      this.refs.popupManager.makePopup(
+      if (shouldRenderMap)
       {
-        contentConstructor: UIComponents.ConfirmPopup,
-        contentProps: confirmProps,
-        popupProps:
-        {
-          containerDragOnly: true,
-          preventAutoResize: true
-        }
-      });
-    },
-
-    render: function()
-    {
-      var allOptions: ReactComponentPlaceHolder[] = [];
-
-      // battle animation timing
-      var battleAnimationOptions: any[] = [];
-
-      var battleAnimationStages =
-      [
-        {
-          stage: "before",
-          displayName: "Before ability (ms)",
-          min: 0,
-          max: 5000,
-          step: 50
-        },
-        {
-          stage: "effectDuration",
-          displayName: "Ability effect duration (*)",
-          min: 0,
-          max: 10,
-          step: 0.1
-        },
-        {
-          stage: "after",
-          displayName: "After ability (ms)",
-          min: 0,
-          max: 5000,
-          step: 50
-        },
-        {
-          stage: "unitEnter",
-          displayName: "Unit enter (ms)",
-          min: 0,
-          max: 1000,
-          step: 10
-        },
-        {
-          stage: "unitExit",
-          displayName: "Unit exit (ms)",
-          min: 0,
-          max: 1000,
-          step: 10
-        }
-      ];
-      for (var i = 0; i < battleAnimationStages.length; i++)
-      {
-        var props = battleAnimationStages[i];
-        var stage = props.stage;
-
-        battleAnimationOptions.push(
-          {
-            key: stage,
-            content: UIComponents.OptionsNumericField(
-            {
-              label: props.displayName,
-              id: "options-battle-animation-" + stage,
-              value: Options.battleAnimationTiming[stage],
-              min: props.min,
-              max: props.max,
-              step: props.step,
-              onChangeFN: function(stage: string, value: number)
-              {
-                Options.battleAnimationTiming[stage] = value;
-              }.bind(null, stage)
-            })
-          }
-        );
+        eventManager.dispatchEvent("renderMap");
       }
+    }.bind(this);
 
+    var confirmProps =
+    {
+      handleOk: resetFN,
+      contentText: "Are you sure you want to reset all options?"
+    }
 
-      allOptions.push(UIComponents.OptionsGroup(
+    this.refs.popupManager.makePopup(
+    {
+      contentConstructor: UIComponents.ConfirmPopup,
+      contentProps: confirmProps,
+      popupProps:
       {
-        key: "battleAnimationOptions",
-        header: "Battle animation timing",
-        options: battleAnimationOptions,
-        resetFN: function()
+        containerDragOnly: true,
+        preventAutoResize: true
+      }
+    });
+  },
+
+  render: function()
+  {
+    var allOptions: ReactComponentPlaceHolder[] = [];
+
+    // battle animation timing
+    var battleAnimationOptions: any[] = [];
+
+    var battleAnimationStages =
+    [
+      {
+        stage: "before",
+        displayName: "Before ability (ms)",
+        min: 0,
+        max: 5000,
+        step: 50
+      },
+      {
+        stage: "effectDuration",
+        displayName: "Ability effect duration (*)",
+        min: 0,
+        max: 10,
+        step: 0.1
+      },
+      {
+        stage: "after",
+        displayName: "After ability (ms)",
+        min: 0,
+        max: 5000,
+        step: 50
+      },
+      {
+        stage: "unitEnter",
+        displayName: "Unit enter (ms)",
+        min: 0,
+        max: 1000,
+        step: 10
+      },
+      {
+        stage: "unitExit",
+        displayName: "Unit exit (ms)",
+        min: 0,
+        max: 1000,
+        step: 10
+      }
+    ];
+    for (var i = 0; i < battleAnimationStages.length; i++)
+    {
+      var props = battleAnimationStages[i];
+      var stage = props.stage;
+
+      battleAnimationOptions.push(
         {
-          extendObject(defaultOptions.battleAnimationTiming, Options.battleAnimationTiming);
-          this.forceUpdate();
-        }.bind(this)
-      }));
-
-      var debugOptions: any[] = [];
-      debugOptions.push(
-      {
-        key: "debugMode",
-        content:
-          UIComponents.OptionsCheckbox(
+          key: stage,
+          content: UIComponents.OptionsNumericField(
           {
-            isChecked: Options.debugMode,
-            label: "Debug mode",
-            onChangeFN: function()
+            label: props.displayName,
+            id: "options-battle-animation-" + stage,
+            value: Options.battleAnimationTiming[stage],
+            min: props.min,
+            max: props.max,
+            step: props.step,
+            onChangeFN: function(stage: string, value: number)
             {
-              Options.debugMode = !Options.debugMode;
-              this.forceUpdate();
-              app.reactUI.render();
-            }.bind(this)
+              Options.battleAnimationTiming[stage] = value;
+            }.bind(null, stage)
           })
-      });
+        }
+      );
+    }
 
-      if (Options.debugMode)
+
+    allOptions.push(UIComponents.OptionsGroup(
+    {
+      key: "battleAnimationOptions",
+      header: "Battle animation timing",
+      options: battleAnimationOptions,
+      resetFN: function()
       {
-        debugOptions.push(
+        extendObject(defaultOptions.battleAnimationTiming, Options.battleAnimationTiming);
+        this.forceUpdate();
+      }.bind(this)
+    }));
+
+    var debugOptions: any[] = [];
+    debugOptions.push(
+    {
+      key: "debugMode",
+      content:
+        UIComponents.OptionsCheckbox(
         {
-          key: "battleSimulationDepth",
-          content: React.DOM.div(
-          {
-
-          },
-            React.DOM.input(
-            {
-              type: "number",
-              id: "battle-simulation-depth-input",
-              value: "" + Options.debugOptions.battleSimulationDepth,
-              min: 1,
-              max: 500,
-              step: 1,
-              onChange: function(e: Event)
-              {
-                var target = <HTMLInputElement> e.target;
-                var value = parseInt(target.value);
-                if (!isFinite(value))
-                {
-                  return;
-                }
-                value = clamp(value, parseFloat(target.min), parseFloat(target.max));
-                Options.debugOptions.battleSimulationDepth = value;
-                this.forceUpdate();
-              }.bind(this)
-            }),
-            React.DOM.label(
-            {
-              htmlFor: "battle-simulation-depth-input"
-            },
-              "AI vs. AI Battle simulation depth"
-            )
-          )
-        });
-      }
-
-
-      allOptions.push(UIComponents.OptionsGroup(
-      {
-        key: "debug",
-        header: "Debug",
-        options: debugOptions,
-        resetFN: function()
-        {
-          extendObject(defaultOptions.debugOptions, Options.debugOptions);
-          if (Options.debugMode !== defaultOptions.debugMode)
+          isChecked: Options.debugMode,
+          label: "Debug mode",
+          onChangeFN: function()
           {
             Options.debugMode = !Options.debugMode;
             this.forceUpdate();
             app.reactUI.render();
-          }
-        }.bind(this)
-      }));
+          }.bind(this)
+        })
+    });
 
-      var uiOptions: any[] = [];
-      uiOptions.push(
+    if (Options.debugMode)
+    {
+      debugOptions.push(
       {
-        key: "noHamburger",
-        content:
-          UIComponents.OptionsCheckbox(
+        key: "battleSimulationDepth",
+        content: React.DOM.div(
+        {
+
+        },
+          React.DOM.input(
           {
-            isChecked: Options.ui.noHamburger,
-            label: "Always expand top right menu on low resolution",
-            onChangeFN: function()
+            type: "number",
+            id: "battle-simulation-depth-input",
+            value: "" + Options.debugOptions.battleSimulationDepth,
+            min: 1,
+            max: 500,
+            step: 1,
+            onChange: function(e: Event)
             {
-              Options.ui.noHamburger = !Options.ui.noHamburger;
-              eventManager.dispatchEvent("updateHamburgerMenu");
+              var target = <HTMLInputElement> e.target;
+              var value = parseInt(target.value);
+              if (!isFinite(value))
+              {
+                return;
+              }
+              value = clamp(value, parseFloat(target.min), parseFloat(target.max));
+              Options.debugOptions.battleSimulationDepth = value;
               this.forceUpdate();
             }.bind(this)
-          })
-      });
-
-      uiOptions.push(
-      {
-        key: "notificationLogFilter",
-        content: UIComponents.NotificationFilterButton(
-        {
-          filter: this.props.log.notificationFilter,
-          text: "Message settings",
-          highlightedOptionKey: null
-        })
-      });
-
-      uiOptions.push(
-      {
-        key: "resetTutorials",
-        content: React.DOM.button(
-        {
-          className: "reset-tutorials-button",
-          onClick: Rance.resetTutorialState
-        },
-          "Reset tutorials"
-        )
-      });
-
-      allOptions.push(UIComponents.OptionsGroup(
-      {
-        key: "ui",
-        header: "UI",
-        options: uiOptions,
-        resetFN: function()
-        {
-          extendObject(defaultOptions.ui, Options.ui);
-          this.forceUpdate();
-        }.bind(this)
-      }));
-
-
-      var displayOptions: any[] = [];
-      displayOptions.push(
-      {
-        key: "borderWidth",
-        content: UIComponents.OptionsNumericField(
-        {
-          label: "Border width",
-          id: "options-border-width",
-          min: 0,
-          max: 50,
-          step: 1,
-          value: Options.display.borderWidth,
-          onChangeFN: function(value: number)
-          {
-            Options.display.borderWidth = value;
-            eventManager.dispatchEvent("renderMap");
-          }
-        })
-      });
-
-      allOptions.push(UIComponents.OptionsGroup(
-      {
-        key: "display",
-        header: "Display",
-        options: displayOptions,
-        resetFN: function()
-        {
-          extendObject(defaultOptions.display, Options.display);
-          eventManager.dispatchEvent("renderMap");
-          this.forceUpdate();
-        }.bind(this)
-      }));
-
-      return(
-        React.DOM.div({className: "options"},
-
-          UIComponents.PopupManager(
-          {
-            ref: "popupManager",
-            onlyAllowOne: true
           }),
-
-          React.DOM.div({className: "options-header"},
-            "Options",
-            React.DOM.button(
-            {
-              className: "reset-options-button reset-all-options-button",
-              onClick: this.handleResetAllOptions
-            },
-              "Reset all options"
-            )
-          ),
-          allOptions
+          React.DOM.label(
+          {
+            htmlFor: "battle-simulation-depth-input"
+          },
+            "AI vs. AI Battle simulation depth"
+          )
         )
-      );
+      });
     }
-  }));
-}
+
+
+    allOptions.push(UIComponents.OptionsGroup(
+    {
+      key: "debug",
+      header: "Debug",
+      options: debugOptions,
+      resetFN: function()
+      {
+        extendObject(defaultOptions.debugOptions, Options.debugOptions);
+        if (Options.debugMode !== defaultOptions.debugMode)
+        {
+          Options.debugMode = !Options.debugMode;
+          this.forceUpdate();
+          app.reactUI.render();
+        }
+      }.bind(this)
+    }));
+
+    var uiOptions: any[] = [];
+    uiOptions.push(
+    {
+      key: "noHamburger",
+      content:
+        UIComponents.OptionsCheckbox(
+        {
+          isChecked: Options.ui.noHamburger,
+          label: "Always expand top right menu on low resolution",
+          onChangeFN: function()
+          {
+            Options.ui.noHamburger = !Options.ui.noHamburger;
+            eventManager.dispatchEvent("updateHamburgerMenu");
+            this.forceUpdate();
+          }.bind(this)
+        })
+    });
+
+    uiOptions.push(
+    {
+      key: "notificationLogFilter",
+      content: UIComponents.NotificationFilterButton(
+      {
+        filter: this.props.log.notificationFilter,
+        text: "Message settings",
+        highlightedOptionKey: null
+      })
+    });
+
+    uiOptions.push(
+    {
+      key: "resetTutorials",
+      content: React.DOM.button(
+      {
+        className: "reset-tutorials-button",
+        onClick: Rance.resetTutorialState
+      },
+        "Reset tutorials"
+      )
+    });
+
+    allOptions.push(UIComponents.OptionsGroup(
+    {
+      key: "ui",
+      header: "UI",
+      options: uiOptions,
+      resetFN: function()
+      {
+        extendObject(defaultOptions.ui, Options.ui);
+        this.forceUpdate();
+      }.bind(this)
+    }));
+
+
+    var displayOptions: any[] = [];
+    displayOptions.push(
+    {
+      key: "borderWidth",
+      content: UIComponents.OptionsNumericField(
+      {
+        label: "Border width",
+        id: "options-border-width",
+        min: 0,
+        max: 50,
+        step: 1,
+        value: Options.display.borderWidth,
+        onChangeFN: function(value: number)
+        {
+          Options.display.borderWidth = value;
+          eventManager.dispatchEvent("renderMap");
+        }
+      })
+    });
+
+    allOptions.push(UIComponents.OptionsGroup(
+    {
+      key: "display",
+      header: "Display",
+      options: displayOptions,
+      resetFN: function()
+      {
+        extendObject(defaultOptions.display, Options.display);
+        eventManager.dispatchEvent("renderMap");
+        this.forceUpdate();
+      }.bind(this)
+    }));
+
+    return(
+      React.DOM.div({className: "options"},
+
+        UIComponents.PopupManager(
+        {
+          ref: "popupManager",
+          onlyAllowOne: true
+        }),
+
+        React.DOM.div({className: "options-header"},
+          "Options",
+          React.DOM.button(
+          {
+            className: "reset-options-button reset-all-options-button",
+            onClick: this.handleResetAllOptions
+          },
+            "Reset all options"
+          )
+        ),
+        allOptions
+      )
+    );
+  }
+}));

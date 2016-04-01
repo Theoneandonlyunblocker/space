@@ -2,62 +2,59 @@
 
 /// <reference path="unititem.ts"/>
 
-export namespace UIComponents
+export var UnitItemWrapper = React.createFactory(React.createClass(
 {
-  export var UnitItemWrapper = React.createFactory(React.createClass(
+  displayName: "UnitItemWrapper",
+  mixins: [DropTarget],
+
+  handleMouseUp: function()
   {
-    displayName: "UnitItemWrapper",
-    mixins: [DropTarget],
+    this.props.onMouseUp(this.props.slot);
+  },
 
-    handleMouseUp: function()
+  render: function()
+  {
+    var item = this.props.item;
+
+    var wrapperProps: any =
     {
-      this.props.onMouseUp(this.props.slot);
-    },
+      className: "unit-item-wrapper"
+    };
 
-    render: function()
+    // if this is declared inside the conditional block
+    // the component won't accept the first drop properly
+    if (this.props.onMouseUp)
     {
-      var item = this.props.item;
+      wrapperProps.onMouseUp = this.handleMouseUp
+    };
 
-      var wrapperProps: any =
+    if (this.props.currentDragItem)
+    {
+      var dragItem = this.props.currentDragItem;
+      if (dragItem.template.slot === this.props.slot)
       {
-        className: "unit-item-wrapper"
-      };
-
-      // if this is declared inside the conditional block
-      // the component won't accept the first drop properly
-      if (this.props.onMouseUp)
-      {
-        wrapperProps.onMouseUp = this.handleMouseUp
-      };
-
-      if (this.props.currentDragItem)
-      {
-        var dragItem = this.props.currentDragItem;
-        if (dragItem.template.slot === this.props.slot)
-        {
-          wrapperProps.className += " drop-target";
-        }
-        else
-        {
-          wrapperProps.onMouseUp = null;
-          wrapperProps.className += " invalid-drop-target";
-        }
+        wrapperProps.className += " drop-target";
       }
-      
-      return(
-        React.DOM.div(wrapperProps,
-          UIComponents.UnitItem(
-          {
-            item: this.props.item,
-            slot: this.props.slot,
-            key: "item",
-
-            isDraggable: this.props.isDraggable,
-            onDragStart: this.props.onDragStart,
-            onDragEnd: this.props.onDragEnd
-          })
-        )
-      );
+      else
+      {
+        wrapperProps.onMouseUp = null;
+        wrapperProps.className += " invalid-drop-target";
+      }
     }
-  }));
-}
+    
+    return(
+      React.DOM.div(wrapperProps,
+        UIComponents.UnitItem(
+        {
+          item: this.props.item,
+          slot: this.props.slot,
+          key: "item",
+
+          isDraggable: this.props.isDraggable,
+          onDragStart: this.props.onDragStart,
+          onDragEnd: this.props.onDragEnd
+        })
+      )
+    );
+  }
+}));

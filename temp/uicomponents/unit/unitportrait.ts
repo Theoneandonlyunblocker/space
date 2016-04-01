@@ -1,25 +1,22 @@
-export namespace UIComponents
+export var UnitPortrait = React.createFactory(React.createClass(
 {
-  export var UnitPortrait = React.createFactory(React.createClass(
+  displayName: "UnitPortrait",
+  render: function()
   {
-    displayName: "UnitPortrait",
-    render: function()
+    var props: any = {};
+    props.className = "unit-portrait " + (this.props.className || "");
+    if (this.props.imageSrc)
     {
-      var props: any = {};
-      props.className = "unit-portrait " + (this.props.className || "");
-      if (this.props.imageSrc)
+      props.style = 
       {
-        props.style = 
-        {
-          backgroundImage: 'url("' + this.props.imageSrc + '")'
-        }
+        backgroundImage: 'url("' + this.props.imageSrc + '")'
       }
-
-      return(
-        React.DOM.div(props,
-          null
-        )
-      );
     }
-  }));
-}
+
+    return(
+      React.DOM.div(props,
+        null
+      )
+    );
+  }
+}));

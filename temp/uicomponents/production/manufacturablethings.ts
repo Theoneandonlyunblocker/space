@@ -4,159 +4,156 @@
 /// <reference path="../../star.ts" />
 /// <reference path="../../manufactory.ts" />
 
-export namespace UIComponents
+export var ManufacturableThings = React.createFactory(React.createClass(
 {
-  export var ManufacturableThings = React.createFactory(React.createClass(
+  displayName: "ManufacturableThings",
+
+  propTypes:
   {
-    displayName: "ManufacturableThings",
+    selectedStar: React.PropTypes.instanceOf(Star),
+    player: React.PropTypes.instanceOf(Player).isRequired,
+    triggerUpdate: React.PropTypes.func.isRequired,
+    money: React.PropTypes.number.isRequired
+  },
 
-    propTypes:
+  getInitialState: function()
+  {
+    return(
     {
-      selectedStar: React.PropTypes.instanceOf(Star),
-      player: React.PropTypes.instanceOf(Player).isRequired,
-      triggerUpdate: React.PropTypes.func.isRequired,
-      money: React.PropTypes.number.isRequired
-    },
+      activeTab: "units"
+    });
+  },
 
-    getInitialState: function()
+  selectTab: function(key: string)
+  {
+    if (this.state.activeTab === key) return;
+    this.setState(
     {
-      return(
-      {
-        activeTab: "units"
-      });
-    },
-
-    selectTab: function(key: string)
+      activeTab: key
+    });
+  },
+  
+  makeTabButton: function(key: string)
+  {
+    var displayString: string;
+    switch (key)
     {
-      if (this.state.activeTab === key) return;
-      this.setState(
+      case "units":
       {
-        activeTab: key
-      });
-    },
-    
-    makeTabButton: function(key: string)
-    {
-      var displayString: string;
-      switch (key)
-      {
-        case "units":
-        {
-          displayString = "Units";
-          break;
-        }
-        case "items":
-        {
-          displayString = "Items";
-          break;
-        }
+        displayString = "Units";
+        break;
       }
-
-      return(
-        React.DOM.button(
-        {
-          key: key,
-          className: "manufacturable-things-tab-button" +
-            (this.state.activeTab === key ? " active-tab" : ""),
-          onClick: this.selectTab.bind(this, key)
-        },
-          displayString
-        )
-      );
-    },
-
-    getManufacturableThings: function(key: string)
-    {
-      var manufacturableThings: IManufacturableThing[] = [];
-      var selectedStar: Star = this.props.selectedStar;
-      var player: Player = this.props.player;
-
-      switch (key)
+      case "items":
       {
-        case "units":
-        {
-          manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableUnits());
-          if (selectedStar)
-          {
-            if (selectedStar.manufactory)
-            {
-              manufacturableThings = manufacturableThings.concat(
-                selectedStar.manufactory.getLocalUnitTypes().manufacturable);
-            }
-          }
-          break;
-        }
-        case "items":
-        {
-          manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableItems());
-          if (selectedStar)
-          {
-            if (selectedStar.manufactory)
-            {
-              manufacturableThings = manufacturableThings.concat(
-                selectedStar.manufactory.getLocalItemTypes().manufacturable);
-            }
-          }
-          break;
-        }
+        displayString = "Items";
+        break;
       }
+    }
 
-      return manufacturableThings;
-    },
-
-    makeTab: function(key: string)
-    {
-      var props =
+    return(
+      React.DOM.button(
       {
         key: key,
-        selectedStar: this.props.selectedStar,
-        manufacturableThings: this.getManufacturableThings(key),
-        consolidateLocations: false,
-        triggerUpdate: this.props.triggerUpdate,
-        canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
-        money: this.props.money
-      }
-      switch (key)
-      {
-        case "units":
-        {
-          return(
-            UIComponents.ManufacturableUnits(props)
-          );
-        }
-        case "items":
-        {
-          props.consolidateLocations = true;
+        className: "manufacturable-things-tab-button" +
+          (this.state.activeTab === key ? " active-tab" : ""),
+        onClick: this.selectTab.bind(this, key)
+      },
+        displayString
+      )
+    );
+  },
 
-          return(
-            UIComponents.ManufacturableItems(props)
-          );
-        }
-      }
-    },
+  getManufacturableThings: function(key: string)
+  {
+    var manufacturableThings: IManufacturableThing[] = [];
+    var selectedStar: Star = this.props.selectedStar;
+    var player: Player = this.props.player;
 
-    render: function()
+    switch (key)
     {
-      return(
+      case "units":
+      {
+        manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableUnits());
+        if (selectedStar)
+        {
+          if (selectedStar.manufactory)
+          {
+            manufacturableThings = manufacturableThings.concat(
+              selectedStar.manufactory.getLocalUnitTypes().manufacturable);
+          }
+        }
+        break;
+      }
+      case "items":
+      {
+        manufacturableThings = manufacturableThings.concat(player.getGloballyBuildableItems());
+        if (selectedStar)
+        {
+          if (selectedStar.manufactory)
+          {
+            manufacturableThings = manufacturableThings.concat(
+              selectedStar.manufactory.getLocalItemTypes().manufacturable);
+          }
+        }
+        break;
+      }
+    }
+
+    return manufacturableThings;
+  },
+
+  makeTab: function(key: string)
+  {
+    var props =
+    {
+      key: key,
+      selectedStar: this.props.selectedStar,
+      manufacturableThings: this.getManufacturableThings(key),
+      consolidateLocations: false,
+      triggerUpdate: this.props.triggerUpdate,
+      canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
+      money: this.props.money
+    }
+    switch (key)
+    {
+      case "units":
+      {
+        return(
+          UIComponents.ManufacturableUnits(props)
+        );
+      }
+      case "items":
+      {
+        props.consolidateLocations = true;
+
+        return(
+          UIComponents.ManufacturableItems(props)
+        );
+      }
+    }
+  },
+
+  render: function()
+  {
+    return(
+      React.DOM.div(
+      {
+        className: "manufacturable-things"
+      },
         React.DOM.div(
         {
-          className: "manufacturable-things"
+          className: "manufacturable-things-tab-buttons"
         },
-          React.DOM.div(
-          {
-            className: "manufacturable-things-tab-buttons"
-          },
-            this.makeTabButton("units"),
-            this.makeTabButton("items")
-          ),
-          React.DOM.div(
-          {
-            className: "manufacturable-things-active-tab"
-          },
-            this.makeTab(this.state.activeTab)
-          )
+          this.makeTabButton("units"),
+          this.makeTabButton("items")
+        ),
+        React.DOM.div(
+        {
+          className: "manufacturable-things-active-tab"
+        },
+          this.makeTab(this.state.activeTab)
         )
-      );
-    }
-  }));
-}
+      )
+    );
+  }
+}));

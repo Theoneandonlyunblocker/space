@@ -1,74 +1,71 @@
 /// <reference path="../../star.ts" />
 
-export namespace UIComponents
+export var ConstructManufactory = React.createFactory(React.createClass(
 {
-  export var ConstructManufactory = React.createFactory(React.createClass(
+  displayName: "ConstructManufactory",
+  mixins: [React.addons.PureRenderMixin],
+
+  propTypes:
   {
-    displayName: "ConstructManufactory",
-    mixins: [React.addons.PureRenderMixin],
+    star: React.PropTypes.instanceOf(Star).isRequired,
+    player: React.PropTypes.instanceOf(Player).isRequired,
+    triggerUpdate: React.PropTypes.func.isRequired,
+    money: React.PropTypes.number.isRequired
+  },
 
-    propTypes:
+  getInitialState: function()
+  {
+    return(
     {
-      star: React.PropTypes.instanceOf(Star).isRequired,
-      player: React.PropTypes.instanceOf(Player).isRequired,
-      triggerUpdate: React.PropTypes.func.isRequired,
-      money: React.PropTypes.number.isRequired
-    },
+      canAfford: this.props.money >= app.moduleData.ruleSet.manufactory.buildCost
+    });
+  },
+  
+  componentWillReceiveProps: function(newProps: any)
+  {
+    this.setState(
+    {
+      canAfford: newProps.money >= app.moduleData.ruleSet.manufactory.buildCost
+    });
+  },
 
-    getInitialState: function()
-    {
-      return(
+  handleConstruct: function()
+  {
+    var star: Star = this.props.star;
+    var player: Player = this.props.player;
+    star.buildManufactory();
+    player.money -= app.moduleData.ruleSet.manufactory.buildCost;
+    this.props.triggerUpdate();
+  },
+
+  render: function()
+  {
+    return(
+      React.DOM.div(
       {
-        canAfford: this.props.money >= app.moduleData.ruleSet.manufactory.buildCost
-      });
-    },
-    
-    componentWillReceiveProps: function(newProps: any)
-    {
-      this.setState(
-      {
-        canAfford: newProps.money >= app.moduleData.ruleSet.manufactory.buildCost
-      });
-    },
-
-    handleConstruct: function()
-    {
-      var star: Star = this.props.star;
-      var player: Player = this.props.player;
-      star.buildManufactory();
-      player.money -= app.moduleData.ruleSet.manufactory.buildCost;
-      this.props.triggerUpdate();
-    },
-
-    render: function()
-    {
-      return(
-        React.DOM.div(
+        className: "construct-manufactory-container"
+      },
+        React.DOM.button(
         {
-          className: "construct-manufactory-container"
+          className: "construct-manufactory-button" + (this.state.canAfford ? "" : " disabled"),
+          onClick: this.state.canAfford ? this.handleConstruct : null,
+          disabled: !this.state.canAfford
         },
-          React.DOM.button(
+          React.DOM.span(
           {
-            className: "construct-manufactory-button" + (this.state.canAfford ? "" : " disabled"),
-            onClick: this.state.canAfford ? this.handleConstruct : null,
-            disabled: !this.state.canAfford
+            className: "construct-manufactory-action"
           },
-            React.DOM.span(
-            {
-              className: "construct-manufactory-action"
-            },
-              "Construct manufactory"
-            ),
-            React.DOM.span(
-            {
-              className: "construct-manufactory-cost money-style" +
-                (this.state.canAfford ? "" : " negative")
-            },
-              app.moduleData.ruleSet.manufactory.buildCost
-            )
+            "Construct manufactory"
+          ),
+          React.DOM.span(
+          {
+            className: "construct-manufactory-cost money-style" +
+              (this.state.canAfford ? "" : " negative")
+          },
+            app.moduleData.ruleSet.manufactory.buildCost
           )
         )
-      );
-    }
-  }));
-}
+      )
+    );
+  }
+}));

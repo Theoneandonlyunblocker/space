@@ -1,99 +1,96 @@
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="trademoney.ts" />
 
-export namespace UIComponents
+export var TradeableItemsList = React.createFactory(React.createClass(
 {
-  export var TradeableItemsList = React.createFactory(React.createClass(
+  displayName: "TradeableItemsList",
+
+  propTypes:
   {
-    displayName: "TradeableItemsList",
+    tradeableItems: React.PropTypes.object, // ITradeableItems
+    availableItems: React.PropTypes.object,
+    noListHeader: React.PropTypes.bool,
+    onDragStart: React.PropTypes.func,
+    onDragEnd: React.PropTypes.func,
+    onItemClick: React.PropTypes.func,
+    adjustItemAmount: React.PropTypes.func
+  },
 
-    propTypes:
+  makeRowForTradeableItem: function(item: ITradeableItem): IListItem
+  {
+    switch (item.key)
     {
-      tradeableItems: React.PropTypes.object, // ITradeableItems
-      availableItems: React.PropTypes.object,
-      noListHeader: React.PropTypes.bool,
-      onDragStart: React.PropTypes.func,
-      onDragEnd: React.PropTypes.func,
-      onItemClick: React.PropTypes.func,
-      adjustItemAmount: React.PropTypes.func
-    },
-
-    makeRowForTradeableItem: function(item: ITradeableItem): IListItem
-    {
-      switch (item.key)
+      case "money":
       {
-        case "money":
+        return(
         {
-          return(
+          key: "money",
+          data:
           {
-            key: "money",
-            data:
-            {
-              keyTODO: "money",
-              rowConstructor: UIComponents.TradeMoney,
-              title: "Money",
-              moneyAmount: item.amount,
-              sortOrder: 0,
-              onDragStart: this.props.onDragStart,
-              onDragEnd: this.props.onDragEnd,
-              onClick: this.props.onItemClick,
-              adjustItemAmount: this.props.adjustItemAmount,
-              maxMoneyAvailable: (this.props.availableItems && this.props.availableItems["money"]) ?
-                this.props.availableItems["money"].amount : undefined
-            }
-          });
-        }
-        default:
-        {
-          return(
-          {
-            key: item.key,
-            data:
-            {
-              rowConstructor: UIComponents.TradeMoney,
-              title: item.key,
-              moneyAmount: item.amount,
-              sortOrder: 1
-            }
-          });
-        }
+            keyTODO: "money",
+            rowConstructor: UIComponents.TradeMoney,
+            title: "Money",
+            moneyAmount: item.amount,
+            sortOrder: 0,
+            onDragStart: this.props.onDragStart,
+            onDragEnd: this.props.onDragEnd,
+            onClick: this.props.onItemClick,
+            adjustItemAmount: this.props.adjustItemAmount,
+            maxMoneyAvailable: (this.props.availableItems && this.props.availableItems["money"]) ?
+              this.props.availableItems["money"].amount : undefined
+          }
+        });
       }
-    },
-
-    render: function()
-    {
-      var tradeableItems: ITradeableItems = this.props.tradeableItems;
-      var rows: IListItem[] = [];
-
-      for (var key in tradeableItems)
+      default:
       {
-        rows.push(this.makeRowForTradeableItem(tradeableItems[key]));
-      }
-
-      var columns: IListColumn[] =
-      [
+        return(
         {
-          label: "Item",
-          key: "item",
-          defaultOrder: "asc",
-          propToSortBy: "sortOrder"
-        }
-      ];
-
-      return(
-        React.DOM.div(
-        {
-          className: "tradeable-items-list fixed-table-parent"
-        },
-          UIComponents.List(
+          key: item.key,
+          data:
           {
-            listItems: rows,
-            initialColumns: columns,
-            initialSortOrder: [columns[0]], // item
-            noHeader: this.props.noListHeader
-          })
-        )
-      );
+            rowConstructor: UIComponents.TradeMoney,
+            title: item.key,
+            moneyAmount: item.amount,
+            sortOrder: 1
+          }
+        });
+      }
     }
-  }));
-}
+  },
+
+  render: function()
+  {
+    var tradeableItems: ITradeableItems = this.props.tradeableItems;
+    var rows: IListItem[] = [];
+
+    for (var key in tradeableItems)
+    {
+      rows.push(this.makeRowForTradeableItem(tradeableItems[key]));
+    }
+
+    var columns: IListColumn[] =
+    [
+      {
+        label: "Item",
+        key: "item",
+        defaultOrder: "asc",
+        propToSortBy: "sortOrder"
+      }
+    ];
+
+    return(
+      React.DOM.div(
+      {
+        className: "tradeable-items-list fixed-table-parent"
+      },
+        UIComponents.List(
+        {
+          listItems: rows,
+          initialColumns: columns,
+          initialSortOrder: [columns[0]], // item
+          noHeader: this.props.noListHeader
+        })
+      )
+    );
+  }
+}));

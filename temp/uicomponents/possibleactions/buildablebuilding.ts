@@ -2,98 +2,95 @@
 
 /// <reference path="../../player.ts" />
 
-export namespace UIComponents
+export var BuildableBuilding = React.createFactory(React.createClass(
 {
-  export var BuildableBuilding = React.createFactory(React.createClass(
+  displayName: "BuildableBuilding",
+  mixins: [UpdateWhenMoneyChanges],
+
+  propTypes:
   {
-    displayName: "BuildableBuilding",
-    mixins: [UpdateWhenMoneyChanges],
+    template: React.PropTypes.object.isRequired,
+    player: React.PropTypes.instanceOf(Player).isRequired,
+    buildCost: React.PropTypes.number.isRequired,
+    handleClick: React.PropTypes.func.isRequired
+  },
 
-    propTypes:
+  getInitialState: function()
+  {
+    return(
     {
-      template: React.PropTypes.object.isRequired,
-      player: React.PropTypes.instanceOf(Player).isRequired,
-      buildCost: React.PropTypes.number.isRequired,
-      handleClick: React.PropTypes.func.isRequired
-    },
+      canAfford: this.props.player.money >= this.props.buildCost
+    });
+  },
+  
+  overrideHandleMoneyChange: function()
+  {
+    this.setState(
+    {
+      canAfford: this.props.player.money >= this.props.buildCost
+    });
+  },
 
-    getInitialState: function()
+  makeCell: function(type: string)
+  {
+    var cellProps: any = {};
+    cellProps.key = type;
+    cellProps.className = "buildable-building-list-item-cell " + type;
+
+    var cellContent: any;
+
+    switch (type)
     {
-      return(
+      case ("buildCost"):
       {
-        canAfford: this.props.player.money >= this.props.buildCost
-      });
-    },
-    
-    overrideHandleMoneyChange: function()
-    {
-      this.setState(
-      {
-        canAfford: this.props.player.money >= this.props.buildCost
-      });
-    },
-
-    makeCell: function(type: string)
-    {
-      var cellProps: any = {};
-      cellProps.key = type;
-      cellProps.className = "buildable-building-list-item-cell " + type;
-
-      var cellContent: any;
-
-      switch (type)
-      {
-        case ("buildCost"):
+        if (!this.state.canAfford)
         {
-          if (!this.state.canAfford)
-          {
-            cellProps.className += " negative";
-          }
-        }
-        default:
-        {
-          cellContent = this.props[type];
-
-          break;
+          cellProps.className += " negative";
         }
       }
+      default:
+      {
+        cellContent = this.props[type];
 
-      return(
-        React.DOM.td(cellProps, cellContent)
-      );
-    },
+        break;
+      }
+    }
 
-    render: function()
+    return(
+      React.DOM.td(cellProps, cellContent)
+    );
+  },
+
+  render: function()
+  {
+    var template: Templates.IBuildingTemplate = this.props.template;
+    var cells: ReactDOMPlaceHolder[] = [];
+    var columns = this.props.activeColumns;
+
+    for (var i = 0; i < columns.length; i++)
     {
-      var template: Templates.IBuildingTemplate = this.props.template;
-      var cells: ReactDOMPlaceHolder[] = [];
-      var columns = this.props.activeColumns;
-
-      for (var i = 0; i < columns.length; i++)
-      {
-        cells.push(
-          this.makeCell(columns[i].key)
-        );
-      }
-
-      var props: any =
-      {
-        className: "buildable-item buildable-building",
-        onClick: this.props.handleClick,
-        title: template.description
-      }
-      if (!this.state.canAfford)
-      {
-        props.onClick = null;
-        props.disabled = true;
-        props.className += " disabled";
-      }
-
-      return(
-        React.DOM.tr(props,
-        cells
-        )
+      cells.push(
+        this.makeCell(columns[i].key)
       );
     }
-  }));
-}
+
+    var props: any =
+    {
+      className: "buildable-item buildable-building",
+      onClick: this.props.handleClick,
+      title: template.description
+    }
+    if (!this.state.canAfford)
+    {
+      props.onClick = null;
+      props.disabled = true;
+      props.className += " disabled";
+    }
+
+    return(
+      React.DOM.tr(props,
+      cells
+      )
+    );
+  }
+}));

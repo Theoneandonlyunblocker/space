@@ -3,54 +3,51 @@
 
 /// <reference path="../../maprenderer.ts" />
 
-export namespace UIComponents
+export var MapModeSettings = React.createFactory(React.createClass(
 {
-  export var MapModeSettings = React.createFactory(React.createClass(
+  displayName: "MapModeSettings",
+
+  propTypes:
   {
-    displayName: "MapModeSettings",
+    mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired
+  },
 
-    propTypes:
-    {
-      mapRenderer: React.PropTypes.instanceOf(Rance.MapRenderer).isRequired
-    },
+  handleReset: function()
+  {
+    var mapRenderer: MapRenderer = this.props.mapRenderer;
+    mapRenderer.currentMapMode.resetLayers();
+    mapRenderer.resetMapModeLayersPosition();
+    mapRenderer.setAllLayersAsDirty();
+    this.refs.layersList.forceUpdate();
+  },
 
-    handleReset: function()
-    {
-      var mapRenderer: MapRenderer = this.props.mapRenderer;
-      mapRenderer.currentMapMode.resetLayers();
-      mapRenderer.resetMapModeLayersPosition();
-      mapRenderer.setAllLayersAsDirty();
-      this.refs.layersList.forceUpdate();
-    },
-
-    render: function()
-    {
-      return(
-        React.DOM.div(
+  render: function()
+  {
+    return(
+      React.DOM.div(
+      {
+        className: "map-mode-settings"
+      },
+        UIComponents.MapModeSelector(
         {
-          className: "map-mode-settings"
+          mapRenderer: this.props.mapRenderer,
+          onUpdate: this.forceUpdate.bind(this),
+          ref: "selector"
+        }),
+        React.DOM.button(
+        {
+          className: "reset-map-mode-button",
+          onClick: this.handleReset
         },
-          UIComponents.MapModeSelector(
-          {
-            mapRenderer: this.props.mapRenderer,
-            onUpdate: this.forceUpdate.bind(this),
-            ref: "selector"
-          }),
-          React.DOM.button(
-          {
-            className: "reset-map-mode-button",
-            onClick: this.handleReset
-          },
-            "Reset"
-          ),
-          UIComponents.MapRendererLayersList(
-          {
-            mapRenderer: this.props.mapRenderer,
-            currentMapMode: this.props.mapRenderer.currentMapMode,
-            ref: "layersList"
-          })
-        )
-      );
-    }
-  }));
-}
+          "Reset"
+        ),
+        UIComponents.MapRendererLayersList(
+        {
+          mapRenderer: this.props.mapRenderer,
+          currentMapMode: this.props.mapRenderer.currentMapMode,
+          ref: "layersList"
+        })
+      )
+    );
+  }
+}));

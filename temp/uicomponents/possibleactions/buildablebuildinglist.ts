@@ -1,103 +1,100 @@
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="buildablebuilding.ts" />
 
-export namespace UIComponents
+export var BuildableBuildingList = React.createFactory(React.createClass(
 {
-  export var BuildableBuildingList = React.createFactory(React.createClass(
+  displayName: "BuildableBuildingList",
+  getInitialState: function()
   {
-    displayName: "BuildableBuildingList",
-    getInitialState: function()
+    return(
     {
-      return(
-      {
-        buildingTemplates: this.props.star.getBuildableBuildings()
-      });
-    },
+      buildingTemplates: this.props.star.getBuildableBuildings()
+    });
+  },
 
-    updateBuildings: function()
+  updateBuildings: function()
+  {
+    var buildingTemplates = this.props.star.getBuildableBuildings();
+    this.setState(
     {
-      var buildingTemplates = this.props.star.getBuildableBuildings();
-      this.setState(
-      {
-        buildingTemplates: buildingTemplates
-      });
+      buildingTemplates: buildingTemplates
+    });
 
-      if (buildingTemplates.length < 1)
-      {
-        this.props.clearExpandedAction();
-      }
-    },
-
-    buildBuilding: function(rowItem: IListItem)
+    if (buildingTemplates.length < 1)
     {
-      var template = rowItem.data.template;
+      this.props.clearExpandedAction();
+    }
+  },
 
-      var building = new Building(
+  buildBuilding: function(rowItem: IListItem)
+  {
+    var template = rowItem.data.template;
+
+    var building = new Building(
+    {
+      template: template,
+      location: this.props.star
+    });
+
+    if (!building.controller) building.controller = this.props.humanPlayer;
+
+    this.props.star.addBuilding(building);
+    building.controller.money -= template.buildCost;
+    this.updateBuildings();
+  },
+
+  render: function()
+  {
+    if (this.state.buildingTemplates.length < 1) return null;
+    var rows: IListItem[] = [];
+
+    for (var i = 0; i < this.state.buildingTemplates.length; i++)
+    {
+      var template: Templates.IBuildingTemplate = this.state.buildingTemplates[i];
+
+      var data: any =
       {
         template: template,
-        location: this.props.star
-      });
 
-      if (!building.controller) building.controller = this.props.humanPlayer;
+        typeName: template.displayName,
+        buildCost: template.buildCost,
+        player: this.props.player,
 
-      this.props.star.addBuilding(building);
-      building.controller.money -= template.buildCost;
-      this.updateBuildings();
-    },
+        rowConstructor: UIComponents.BuildableBuilding
+      };
 
-    render: function()
-    {
-      if (this.state.buildingTemplates.length < 1) return null;
-      var rows: IListItem[] = [];
-
-      for (var i = 0; i < this.state.buildingTemplates.length; i++)
+      rows.push(
       {
-        var template: Templates.IBuildingTemplate = this.state.buildingTemplates[i];
+        key: i,
+        data: data
+      });
+    }
 
-        var data: any =
-        {
-          template: template,
-
-          typeName: template.displayName,
-          buildCost: template.buildCost,
-          player: this.props.player,
-
-          rowConstructor: UIComponents.BuildableBuilding
-        };
-
-        rows.push(
-        {
-          key: i,
-          data: data
-        });
+    var columns: IListColumn[] =
+    [
+      {
+        label: "Name",
+        key: "typeName",
+        defaultOrder: "asc"
+      },
+      {
+        label: "Cost",
+        key: "buildCost",
+        defaultOrder: "desc"
       }
 
-      var columns: IListColumn[] =
-      [
-        {
-          label: "Name",
-          key: "typeName",
-          defaultOrder: "asc"
-        },
-        {
-          label: "Cost",
-          key: "buildCost",
-          defaultOrder: "desc"
-        }
+    ];
 
-      ];
-
-      return(
-        React.DOM.div({className: "buildable-item-list buildable-building-list fixed-table-parent"},
-          UIComponents.List(
-          {
-            listItems: rows,
-            initialColumns: columns,
-            onRowChange: this.buildBuilding,
-            addSpacer: true
-          })
-        )
-      );
-    }
-  }));
-}
+    return(
+      React.DOM.div({className: "buildable-item-list buildable-building-list fixed-table-parent"},
+        UIComponents.List(
+        {
+          listItems: rows,
+          initialColumns: columns,
+          onRowChange: this.buildBuilding,
+          addSpacer: true
+        })
+      )
+    );
+  }
+}));

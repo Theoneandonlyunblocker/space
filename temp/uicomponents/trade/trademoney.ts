@@ -2,120 +2,117 @@
 import * as React from "react";
 
 export const Factory
-export namespace UIComponents
+export var TradeMoney = React.createFactory(React.createClass(
 {
-  export var TradeMoney = React.createFactory(React.createClass(
+  displayName: "TradeMoney",
+  mixins: [Draggable],
+
+  propTypes:
   {
-    displayName: "TradeMoney",
-    mixins: [Draggable],
+    keyTODO: React.PropTypes.string.isRequired,
+    moneyAmount: React.PropTypes.number.isRequired,
+    title: React.PropTypes.string.isRequired,
+    maxMoneyAvailable: React.PropTypes.number,
+    onDragStart: React.PropTypes.func,
+    onDragEnd: React.PropTypes.func,
+    onClick: React.PropTypes.func,
+    adjustItemAmount: React.PropTypes.func
+  },
 
-    propTypes:
+  onDragStart: function()
+  {
+    this.props.onDragStart(this.props.keyTODO/*TODO react*/);
+  },
+
+  onDragEnd: function()
+  {
+    this.props.onDragEnd();
+  },
+
+  handleClick: function()
+  {
+    this.props.onClick(this.props.keyTODO/*TODO react*/);
+  },
+
+  handleMoneyAmountChange: function(e: Event)
+  {
+    var target = <HTMLInputElement> e.target;
+    var value = parseInt(target.value);
+
+    this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);
+  },
+
+  captureEvent: function(e: MouseEvent)
+  {
+    e.stopPropagation();
+  },
+
+  render: function()
+  {
+    var rowProps: any =
     {
-      keyTODO: React.PropTypes.string.isRequired,
-      moneyAmount: React.PropTypes.number.isRequired,
-      title: React.PropTypes.string.isRequired,
-      maxMoneyAvailable: React.PropTypes.number,
-      onDragStart: React.PropTypes.func,
-      onDragEnd: React.PropTypes.func,
-      onClick: React.PropTypes.func,
-      adjustItemAmount: React.PropTypes.func
-    },
+      className: "tradeable-items-list-item"
+    };
 
-    onDragStart: function()
+    if (this.props.onDragStart)
     {
-      this.props.onDragStart(this.props.keyTODO/*TODO react*/);
-    },
+      rowProps.className += " draggable";
+      rowProps.onMouseDown = rowProps.onTouchStart = this.handleMouseDown;
+    }
 
-    onDragEnd: function()
+    if (this.state.dragging)
     {
-      this.props.onDragEnd();
-    },
-
-    handleClick: function()
+      rowProps.style = this.dragPos;
+      rowProps.className += " dragging";
+    }
+    else if (this.props.onClick)
     {
-      this.props.onClick(this.props.keyTODO/*TODO react*/);
-    },
+      rowProps.onClick = this.handleClick;
+    }
+    
+    var moneyElement: ReactDOMPlaceHolder;
 
-    handleMoneyAmountChange: function(e: Event)
+    if (this.props.adjustItemAmount)
     {
-      var target = <HTMLInputElement> e.target;
-      var value = parseInt(target.value);
-
-      this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);
-    },
-
-    captureEvent: function(e: MouseEvent)
-    {
-      e.stopPropagation();
-    },
-
-    render: function()
-    {
-      var rowProps: any =
+      var moneyProps: any =
       {
-        className: "tradeable-items-list-item"
+        className: "trade-money-money-available trade-item-adjust",
+        type: "number",
+        min: 0,
+        max: this.props.maxMoneyAvailable,
+        step: 1,
+        value: this.props.moneyAmount,
+        onChange: this.handleMoneyAmountChange,
+        onClick: this.captureEvent,
+        onMouseDown: this.captureEvent,
+        onTouchStart: this.captureEvent
       };
 
-      if (this.props.onDragStart)
+      moneyElement = React.DOM.input(moneyProps);
+    }
+    else
+    {
+      moneyElement = React.DOM.span(
       {
-        rowProps.className += " draggable";
-        rowProps.onMouseDown = rowProps.onTouchStart = this.handleMouseDown;
-      }
-
-      if (this.state.dragging)
-      {
-        rowProps.style = this.dragPos;
-        rowProps.className += " dragging";
-      }
-      else if (this.props.onClick)
-      {
-        rowProps.onClick = this.handleClick;
-      }
-      
-      var moneyElement: ReactDOMPlaceHolder;
-
-      if (this.props.adjustItemAmount)
-      {
-        var moneyProps: any =
-        {
-          className: "trade-money-money-available trade-item-adjust",
-          type: "number",
-          min: 0,
-          max: this.props.maxMoneyAvailable,
-          step: 1,
-          value: this.props.moneyAmount,
-          onChange: this.handleMoneyAmountChange,
-          onClick: this.captureEvent,
-          onMouseDown: this.captureEvent,
-          onTouchStart: this.captureEvent
-        };
-
-        moneyElement = React.DOM.input(moneyProps);
-      }
-      else
-      {
-        moneyElement = React.DOM.span(
-        {
-          className: "trade-money-money-available"
-        },
-          this.props.moneyAmount
-        );
-      }
-
-
-      return(
-        React.DOM.tr(rowProps,
-          React.DOM.td(null,
-            React.DOM.span(
-            {
-              className: "trade-money-title"
-            },
-              this.props.title
-            ),
-            moneyElement
-          )
-        )
+        className: "trade-money-money-available"
+      },
+        this.props.moneyAmount
       );
     }
-  }));
-}
+
+
+    return(
+      React.DOM.tr(rowProps,
+        React.DOM.td(null,
+          React.DOM.span(
+          {
+            className: "trade-money-title"
+          },
+            this.props.title
+          ),
+          moneyElement
+        )
+      )
+    );
+  }
+}));

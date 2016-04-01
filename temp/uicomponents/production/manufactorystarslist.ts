@@ -2,74 +2,71 @@
 
 /// <reference path="../../star.ts" />
 
-export namespace UIComponents
+export var ManufactoryStarsList = React.createFactory(React.createClass(
 {
-  export var ManufactoryStarsList = React.createFactory(React.createClass(
+  displayName: "ManufactoryStarsList",
+
+  propTypes:
   {
-    displayName: "ManufactoryStarsList",
+    starsWithManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
+    starsWithoutManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
+    highlightedStars: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
+    handleStarSelect: React.PropTypes.func.isRequired
+  },
+  render: function()
+  {
+    var starsWithManufactories: Star[] = this.props.starsWithManufactories;
+    var starsWithoutManufactories: Star[] = this.props.starsWithoutManufactories;
+    var highlightedStars: Star[] = this.props.highlightedStars;
+    var handleStarSelect: Function = this.props.handleStarSelect;
 
-    propTypes:
+
+    var rows: ReactComponentPlaceHolder[] = [];
+
+    starsWithManufactories.sort(sortByManufactoryCapacityFN);
+    starsWithoutManufactories.sort(sortByManufactoryCapacityFN);
+
+    for (var i = 0; i < starsWithManufactories.length; i++)
     {
-      starsWithManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
-      starsWithoutManufactories: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
-      highlightedStars: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Star)).isRequired,
-      handleStarSelect: React.PropTypes.func.isRequired
-    },
-    render: function()
-    {
-      var starsWithManufactories: Star[] = this.props.starsWithManufactories;
-      var starsWithoutManufactories: Star[] = this.props.starsWithoutManufactories;
-      var highlightedStars: Star[] = this.props.highlightedStars;
-      var handleStarSelect: Function = this.props.handleStarSelect;
+      var star = starsWithManufactories[i];
+      var manufactory = star.manufactory;
+      var isHighlighted = highlightedStars.indexOf(star) !== -1;
 
-
-      var rows: ReactComponentPlaceHolder[] = [];
-
-      starsWithManufactories.sort(sortByManufactoryCapacityFN);
-      starsWithoutManufactories.sort(sortByManufactoryCapacityFN);
-
-      for (var i = 0; i < starsWithManufactories.length; i++)
+      rows.push(UIComponents.ManufactoryStarsListItem(
       {
-        var star = starsWithManufactories[i];
-        var manufactory = star.manufactory;
-        var isHighlighted = highlightedStars.indexOf(star) !== -1;
+        key: star.id,
+        star: star,
+        isHighlighted: isHighlighted,
+        usedCapacity: manufactory.buildQueue.length,
+        totalCapacity: manufactory.capacity,
 
-        rows.push(UIComponents.ManufactoryStarsListItem(
-        {
-          key: star.id,
-          star: star,
-          isHighlighted: isHighlighted,
-          usedCapacity: manufactory.buildQueue.length,
-          totalCapacity: manufactory.capacity,
-
-          onClick: handleStarSelect
-        }));
-      }
-      for (var i = 0; i < starsWithoutManufactories.length; i++)
-      {
-        var star = starsWithoutManufactories[i];
-        var isHighlighted = highlightedStars.indexOf(star) !== -1;
-
-        rows.push(UIComponents.ManufactoryStarsListItem(
-        {
-          key: star.id,
-          star: star,
-          isHighlighted: isHighlighted,
-          usedCapacity: 0,
-          totalCapacity: 0,
-
-          onClick: handleStarSelect
-        }));
-      }
-
-      return(
-        React.DOM.div(
-        {
-          className: "manufactory-stars-list"
-        },
-          rows
-        )
-      );
+        onClick: handleStarSelect
+      }));
     }
-  }));
-}
+    for (var i = 0; i < starsWithoutManufactories.length; i++)
+    {
+      var star = starsWithoutManufactories[i];
+      var isHighlighted = highlightedStars.indexOf(star) !== -1;
+
+      rows.push(UIComponents.ManufactoryStarsListItem(
+      {
+        key: star.id,
+        star: star,
+        isHighlighted: isHighlighted,
+        usedCapacity: 0,
+        totalCapacity: 0,
+
+        onClick: handleStarSelect
+      }));
+    }
+
+    return(
+      React.DOM.div(
+      {
+        className: "manufactory-stars-list"
+      },
+        rows
+      )
+    );
+  }
+}));

@@ -1,107 +1,104 @@
 /// <reference path="../../notificationfilter.ts" />
 /// <reference path="notificationfilterlist.ts" />
 
-export namespace UIComponents
+export var NotificationFilterButton = React.createFactory(React.createClass(
 {
-  export var NotificationFilterButton = React.createFactory(React.createClass(
+  displayName: "NotificationFilterButton",
+  propTypes:
   {
-    displayName: "NotificationFilterButton",
-    propTypes:
-    {
-      filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
-      text: React.PropTypes.string.isRequired,
-      highlightedOptionKey: React.PropTypes.string
-    },
+    filter: React.PropTypes.instanceOf(Rance.NotificationFilter).isRequired,
+    text: React.PropTypes.string.isRequired,
+    highlightedOptionKey: React.PropTypes.string
+  },
 
-    getInitialState: function()
+  getInitialState: function()
+  {
+    return(
     {
-      return(
-      {
-        notificationFilterPopup: undefined
-      });
-    },
-    
-    makePopup: function()
+      notificationFilterPopup: undefined
+    });
+  },
+  
+  makePopup: function()
+  {
+    var scrollToHighlightedFN = function()
     {
-      var scrollToHighlightedFN = function()
-      {
-        var popup = this.refs[this.popupId - 1];
-        var content = popup.refs["content"].refs["content"];
-        content.scrollToHighlighted();
-      }.bind(this.refs.popupManager);
+      var popup = this.refs[this.popupId - 1];
+      var content = popup.refs["content"].refs["content"];
+      content.scrollToHighlighted();
+    }.bind(this.refs.popupManager);
 
-      var popupId = this.refs.popupManager.makePopup(
+    var popupId = this.refs.popupManager.makePopup(
+    {
+      contentConstructor: UIComponents.TopMenuPopup,
+      contentProps:
       {
-        contentConstructor: UIComponents.TopMenuPopup,
+        contentConstructor: UIComponents.NotificationFilterList,
         contentProps:
         {
-          contentConstructor: UIComponents.NotificationFilterList,
-          contentProps:
-          {
-            filter: this.props.filter,
-            highlightedOptionKey: this.props.highlightedOptionKey
-          },
-          handleClose: this.closePopup
+          filter: this.props.filter,
+          highlightedOptionKey: this.props.highlightedOptionKey
         },
-        popupProps:
-        {
-          containerDragOnly: true,
-          preventAutoResize: true,
-          resizable: true,
-          minWidth: 440,
-          minHeight: 150,
-          finishedMountingCallback: scrollToHighlightedFN
-        }
-      });
-
-      this.setState(
+        handleClose: this.closePopup
+      },
+      popupProps:
       {
-        notificationFilterPopup: popupId
-      });
-    },
-
-    closePopup: function()
-    {
-      this.refs.popupManager.closePopup(this.state.notificationFilterPopup);
-      this.setState(
-      {
-        notificationFilterPopup: undefined
-      });
-    },
-
-    togglePopup: function()
-    {
-      if (isFinite(this.state.notificationFilterPopup))
-      {
-        this.closePopup();
+        containerDragOnly: true,
+        preventAutoResize: true,
+        resizable: true,
+        minWidth: 440,
+        minHeight: 150,
+        finishedMountingCallback: scrollToHighlightedFN
       }
-      else
-      {
-        this.makePopup();
-      }
-    },
+    });
 
-    render: function()
+    this.setState(
     {
-      return(
-        React.DOM.div(
-        {
-          className: "notification-filter-button-container"
-        },
-          React.DOM.button(
-          {
-            className: "notification-filter-button",
-            onClick: this.togglePopup
-          },
-            this.props.text
-          ),
-          UIComponents.PopupManager(
-          {
-            ref: "popupManager",
-            onlyAllowOne: true
-          })
-        )
-      );
+      notificationFilterPopup: popupId
+    });
+  },
+
+  closePopup: function()
+  {
+    this.refs.popupManager.closePopup(this.state.notificationFilterPopup);
+    this.setState(
+    {
+      notificationFilterPopup: undefined
+    });
+  },
+
+  togglePopup: function()
+  {
+    if (isFinite(this.state.notificationFilterPopup))
+    {
+      this.closePopup();
     }
-  }));
-}
+    else
+    {
+      this.makePopup();
+    }
+  },
+
+  render: function()
+  {
+    return(
+      React.DOM.div(
+      {
+        className: "notification-filter-button-container"
+      },
+        React.DOM.button(
+        {
+          className: "notification-filter-button",
+          onClick: this.togglePopup
+        },
+          this.props.text
+        ),
+        UIComponents.PopupManager(
+        {
+          ref: "popupManager",
+          onlyAllowOne: true
+        })
+      )
+    );
+  }
+}));

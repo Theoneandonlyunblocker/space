@@ -1,88 +1,85 @@
 /// <reference path="fleetcontrols.ts"/>
 
-export namespace UIComponents
+export var FleetInfo = React.createFactory(React.createClass(
 {
-  export var FleetInfo = React.createFactory(React.createClass(
+  displayName: "FleetInfo",
+  setFleetName: function(e: Event)
   {
-    displayName: "FleetInfo",
-    setFleetName: function(e: Event)
+    var target = <HTMLInputElement> e.target;
+    this.props.fleet.name = target.value;
+    this.forceUpdate();
+  },
+
+  render: function()
+  {
+    var fleet: Fleet = this.props.fleet;
+    if (!fleet) return null;
+    var totalHealth = fleet.getTotalHealth();
+    var isNotDetected: boolean = this.props.isNotDetected;
+
+    var healthRatio = totalHealth.current / totalHealth.max;
+    var critThreshhold = 0.3;
+
+    var healthStatus = "";
+
+    if (!isNotDetected && healthRatio <= critThreshhold)
     {
-      var target = <HTMLInputElement> e.target;
-      this.props.fleet.name = target.value;
-      this.forceUpdate();
-    },
-
-    render: function()
+      healthStatus += " critical";
+    }
+    else if (!isNotDetected && totalHealth.current < totalHealth.max)
     {
-      var fleet: Fleet = this.props.fleet;
-      if (!fleet) return null;
-      var totalHealth = fleet.getTotalHealth();
-      var isNotDetected: boolean = this.props.isNotDetected;
+      healthStatus += " wounded";
+    }
 
-      var healthRatio = totalHealth.current / totalHealth.max;
-      var critThreshhold = 0.3;
-
-      var healthStatus = "";
-
-      if (!isNotDetected && healthRatio <= critThreshhold)
+    return(
+      React.DOM.div(
       {
-        healthStatus += " critical";
-      }
-      else if (!isNotDetected && totalHealth.current < totalHealth.max)
-      {
-        healthStatus += " wounded";
-      }
-
-      return(
+        className: "fleet-info" + (fleet.isStealthy ? " stealthy" : "")
+      },
         React.DOM.div(
         {
-          className: "fleet-info" + (fleet.isStealthy ? " stealthy" : "")
+          className: "fleet-info-header"
         },
+          React.DOM.input(
+          {
+            className: "fleet-info-name",
+            value: isNotDetected ? "Unidentified fleet" : fleet.name,
+            onChange: isNotDetected ? null : this.setFleetName,
+            readOnly: isNotDetected
+          }),
           React.DOM.div(
           {
-            className: "fleet-info-header"
-          },
-            React.DOM.input(
+            className: "fleet-info-strength"
+          }, 
+            React.DOM.span(
             {
-              className: "fleet-info-name",
-              value: isNotDetected ? "Unidentified fleet" : fleet.name,
-              onChange: isNotDetected ? null : this.setFleetName,
-              readOnly: isNotDetected
-            }),
-            React.DOM.div(
-            {
-              className: "fleet-info-strength"
-            }, 
-              React.DOM.span(
-              {
-                className: "fleet-info-strength-current" + healthStatus
-              },
-                isNotDetected ? "???" : totalHealth.current
-              ),
-              React.DOM.span(
-              {
-                className: "fleet-info-strength-max"
-              },
-                isNotDetected ? "/???" : "/" + totalHealth.max
-              )
+              className: "fleet-info-strength-current" + healthStatus
+            },
+              isNotDetected ? "???" : totalHealth.current
             ),
-            UIComponents.FleetControls(
+            React.DOM.span(
             {
-              fleet: fleet,
-              hasMultipleSelected: this.props.hasMultipleSelected,
-              isInspecting: this.props.isInspecting
-            })
+              className: "fleet-info-strength-max"
+            },
+              isNotDetected ? "/???" : "/" + totalHealth.max
+            )
           ),
-          React.DOM.div(
+          UIComponents.FleetControls(
           {
-            className: "fleet-info-move-points"
-          },
-            isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
-              fleet.getMinMaxMovePoints()
-          )
-          
+            fleet: fleet,
+            hasMultipleSelected: this.props.hasMultipleSelected,
+            isInspecting: this.props.isInspecting
+          })
+        ),
+        React.DOM.div(
+        {
+          className: "fleet-info-move-points"
+        },
+          isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
+            fleet.getMinMaxMovePoints()
         )
-      );
-    }
-  }));
-}
+        
+      )
+    );
+  }
+}));

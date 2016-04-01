@@ -1,59 +1,56 @@
 /// <reference path="../../star.ts" />
 
-export namespace UIComponents
+export var ManufactoryStarsListItem = React.createFactory(React.createClass(
 {
-  export var ManufactoryStarsListItem = React.createFactory(React.createClass(
+  displayName: "ManufactoryStarsListItem",
+
+  propTypes:
   {
-    displayName: "ManufactoryStarsListItem",
+    star: React.PropTypes.instanceOf(Star).isRequired,
+    isHighlighted: React.PropTypes.bool.isRequired,
+    usedCapacity: React.PropTypes.number.isRequired,
+    totalCapacity: React.PropTypes.number.isRequired,
 
-    propTypes:
-    {
-      star: React.PropTypes.instanceOf(Star).isRequired,
-      isHighlighted: React.PropTypes.bool.isRequired,
-      usedCapacity: React.PropTypes.number.isRequired,
-      totalCapacity: React.PropTypes.number.isRequired,
+    onClick: React.PropTypes.func.isRequired
+  },
 
-      onClick: React.PropTypes.func.isRequired
-    },
+  handleClick: function()
+  {
+    var star: Star = this.props.star;
+    this.props.onClick(star);
+  },
 
-    handleClick: function()
-    {
-      var star: Star = this.props.star;
-      this.props.onClick(star);
-    },
+  render: function()
+  {
+    var star: Star = this.props.star;
+    var isHighlighted: boolean = this.props.isHighlighted;
+    var usedCapacity: number = this.props.usedCapacity;
+    var totalCapacity: number = this.props.totalCapacity;
 
-    render: function()
-    {
-      var star: Star = this.props.star;
-      var isHighlighted: boolean = this.props.isHighlighted;
-      var usedCapacity: number = this.props.usedCapacity;
-      var totalCapacity: number = this.props.totalCapacity;
+    var hasManufcatory = Boolean(totalCapacity);
+    var hasCapacity = hasManufcatory && usedCapacity < totalCapacity;
 
-      var hasManufcatory = Boolean(totalCapacity);
-      var hasCapacity = hasManufcatory && usedCapacity < totalCapacity;
-
-      return(
+    return(
+      React.DOM.div(
+      {
+        className: "manufactory-stars-list-item" +
+          (!hasManufcatory ? " no-manufactory" : "") +
+          (isHighlighted ? " highlighted" : ""),
+        onClick: this.handleClick
+      },
         React.DOM.div(
         {
-          className: "manufactory-stars-list-item" +
-            (!hasManufcatory ? " no-manufactory" : "") +
-            (isHighlighted ? " highlighted" : ""),
-          onClick: this.handleClick
+          className: "manufactory-stars-list-item-star-name"
         },
-          React.DOM.div(
-          {
-            className: "manufactory-stars-list-item-star-name"
-          },
-            star.name
-          ),
-          !hasManufcatory ? null : React.DOM.div(
-          {
-            className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : "")
-          },
-            "" + usedCapacity + "/" + totalCapacity
-          )
+          star.name
+        ),
+        !hasManufcatory ? null : React.DOM.div(
+        {
+          className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : "")
+        },
+          "" + usedCapacity + "/" + totalCapacity
         )
-      );
-    }
-  }));
-}
+      )
+    );
+  }
+}));
