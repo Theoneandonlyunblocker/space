@@ -1,8 +1,13 @@
-/// <reference path="../targeting.ts" />
-/// <reference path="../unit.ts" />
-/// <reference path="../battle.ts" />
+import Unit from "../Unit.ts";
+import Battle from "../Battle.ts";
+import
+{
+  TargetFormation,
+  BattleAreaFunction,
+  TargetRangeFunction
+} from "../targeting.ts"
 
-declare interface IEffectActionTemplate
+declare interface EffectActionTemplate
 {
   name: string;
   
@@ -13,3 +18,5 @@ declare interface IEffectActionTemplate
   // shouldn't modify any other units than the provided user and target
   executeAction: (user: Unit, target: Unit, battle: Battle, data?: any) => void;
 }
+
+export default EffectActionTemplate;
