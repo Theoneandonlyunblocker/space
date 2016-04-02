@@ -1,12 +1,16 @@
-/// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
-/// <reference path="notification.ts" />
-/// <reference path="notificationfilter.ts" />
-/// <reference path="eventmanager.ts" />
-/// <reference path="star.ts" />
+import NotificationTemplate from "./templateinterfaces/NotificationTemplate.d.ts";
 
-/// <reference path="savedata/inotificationsavedata.d.ts" />
+import NotificationSaveData from "./savedata/NotificationSaveData.d.ts";
+import NotificationLogSaveData from "./savedata/NotificationLogSaveData.d.ts";
 
-export class NotificationLog
+import Notification from "./Notification.ts";
+import NotificationFilter from "./NotificationFilter.ts";
+import eventManager from "./eventManager.ts";
+import Star from "./Star.ts";
+import Player from "./Player.ts";
+
+
+export default class NotificationLog
 {
   byTurn:
   {
@@ -112,9 +116,9 @@ export class NotificationLog
 
     return filtered;
   }
-  serialize(): INotificationLogSaveData
+  serialize(): NotificationLogSaveData
   {
-    var notificationsSaveData: INotificationSaveData[] = []
+    var notificationsSaveData: NotificationSaveData[] = []
 
     for (var turnNumber in this.byTurn)
     {
@@ -125,7 +129,7 @@ export class NotificationLog
       }
     }
 
-    var data: INotificationLogSaveData =
+    var data: NotificationLogSaveData =
     {
       notifications: notificationsSaveData
     };

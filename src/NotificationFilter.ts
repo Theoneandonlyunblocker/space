@@ -10,7 +10,7 @@ import
   extendObject
 } from "./utility.ts";
 
-export class NotificationFilter
+export default class NotificationFilter
 {
   filters:
   {
