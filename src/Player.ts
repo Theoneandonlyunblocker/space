@@ -35,7 +35,7 @@ import UnitTemplate from "./templateinterfaces/UnitTemplate.d.ts";
 import PlayerSaveData from "./savedata/PlayerSaveData.d.ts";
 
 
-export class Player
+export default class Player
 {
   id: number;
   name: string;
