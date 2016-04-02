@@ -1,5 +1,12 @@
-/// <reference path="battle.ts" />
-/// <reference path="unit.ts" />
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
+import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate.d.ts";
+
+import Unit from "./Unit.ts";
+import Battle from "./Battle.ts";
+import
+{
+  reverseSide
+} from "./utility.ts"
 
 var _nullFormation: Unit[][];
 export function getNullFormation()
