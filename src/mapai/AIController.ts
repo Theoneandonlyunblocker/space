@@ -1,22 +1,20 @@
-/// <reference path="../../modules/default/templates/personalities.ts" />
+import MapEvaluator from "./MapEvaluator.ts";
+import GrandStrategyAI from "./GrandStrategyAI.ts";
+import EconomyAI from "./EconomyAI.ts";
+import FrontsAI from "./FrontsAI.ts";
+import ObjectivesAI from "./ObjectivesAI.ts";
+import DiplomacyAI from "./DiplomacyAI.ts";
 
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="../game.ts"/>
-/// <reference path="../player.ts"/>
+import Game from "../Game.ts";
+import Player from "../Player.ts";
+import GalaxyMap from "../GalaxyMap.ts";
 
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
-/// <reference path="economyai.ts"/>
-/// <reference path="frontsai.ts"/>
-/// <reference path="diplomacyai.ts"/>
-/// <reference path="grandstrategyai.ts"/>
-
-export class AIController
+export default class AIController
 {
   player: Player;
   game: Game;
 
-  personality: IPersonality;
+  personality: Personality;
   map: GalaxyMap;
 
   mapEvaluator: MapEvaluator;
@@ -27,7 +25,7 @@ export class AIController
   frontsAI: FrontsAI;
   diplomacyAI: DiplomacyAI;
 
-  constructor(player: Player, game: Game, personality?: IPersonality)
+  constructor(player: Player, game: Game, personality?: Personality)
   {
     this.personality = personality || makeRandomPersonality();
 
