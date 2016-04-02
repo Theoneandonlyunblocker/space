@@ -5,7 +5,7 @@ import eventManager from "./eventManager.ts";
 
 var tempCameraId = 0;
 
-export class Camera
+export default class Camera
 {
   tempCameraId: number;
 

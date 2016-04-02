@@ -1,11 +1,13 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-/// <reference path="camera.ts"/>
-/// <reference path="mouseeventhandler.ts"/>
-/// <reference path="shadermanager.ts"/>
-/// <reference path="pathfindingarrow.ts"/>
+import Camera from "./Camera.ts";
+import MouseEventHandler from "./MouseEventHandler.ts";
+import PathfindingArrow from "./PathfindingArrow.ts";
+import Point from "./Point.ts";
+import GalaxyMap from "./GalaxyMap.ts";
+import ShaderManager from "./ShaderManager.ts";
 
-export class Renderer
+export default class Renderer
 {
   stage: PIXI.Container;
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
