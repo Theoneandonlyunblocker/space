@@ -1,6 +1,8 @@
-/// <reference path="savedata/iplayertechnologysavedata.d.ts" />
+import PlayerTechnologySaveData from "./savedata/PlayerTechnologySaveData.d.ts";
+import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate.d.ts";
+import eventManager from "./eventManager.ts";
 
-export class PlayerTechnology
+export default class PlayerTechnology
 {
   technologies:
   {
@@ -309,9 +311,9 @@ export class PlayerTechnology
       }
     }
   }
-  serialize(): IPlayerTechnologySaveData
+  serialize(): PlayerTechnologySaveData
   {
-    var data: IPlayerTechnologySaveData = {};
+    var data: PlayerTechnologySaveData = {};
 
     for (var key in this.technologies)
     {
