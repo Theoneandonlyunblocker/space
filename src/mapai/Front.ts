@@ -1,7 +1,10 @@
-/// <reference path="../unit.ts"/>
-/// <reference path="../star.ts"/>
+import Objective from "./Objective.ts";
 
-export class Front
+import Unit from "../Unit.ts";
+import Star from "../Star.ts";
+import Fleet from "../Fleet.ts";
+
+export default class Front
 {
   id: number;
   objective: Objective;
