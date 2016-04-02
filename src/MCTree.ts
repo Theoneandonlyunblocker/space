@@ -1,5 +1,9 @@
-/// <reference path="mctreenode.ts"/>
-/// <reference path="battle.ts"/>
+import
+{
+  default as MCTreeNode,
+  Move
+} from "./MCTreeNode.ts";
+import Battle from "./Battle.ts";
 
 export class MCTree
 {
@@ -64,7 +68,7 @@ export class MCTree
 
     return best;
   }
-  getChildForMove(move: IMove): MCTreeNode
+  getChildForMove(move: Move): MCTreeNode
   {
     return this.rootNode.getChildForMove(move);
   }
@@ -101,7 +105,7 @@ export class MCTree
     this.rootNode = new MCTreeNode(this.actualBattle.makeVirtualClone());
     return this.rootNode;
   }
-  advanceMove(move: IMove)
+  advanceMove(move: Move)
   {
     this.rootNode = this.getChildForMove(move);
     if (!this.rootNode)
@@ -109,7 +113,7 @@ export class MCTree
       this.remakeSimulation();
     }
   }
-  getBestMoveAndAdvance(iterations: number): IMove
+  getBestMoveAndAdvance(iterations: number): Move
   {
     var best = this.evaluate(iterations);
     this.rootNode = best;

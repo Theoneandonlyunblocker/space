@@ -15,7 +15,7 @@ import
   getTargetsForAllAbilities
 } from "./battleAbilityTargeting.ts"
 
-export interface IMove
+export interface Move
 {
   ability: AbilityTemplate;
   targetId: number;
@@ -26,7 +26,7 @@ export default class MCTreeNode
   sideId: string;
   isBetweenAI: boolean;
 
-  move: IMove;
+  move: Move;
   depth: number = 0;
   parent: MCTreeNode;
   children: MCTreeNode[] = [];
@@ -38,12 +38,12 @@ export default class MCTreeNode
   averageScore: number = 0;
   currentScore: number;
 
-  possibleMoves: IMove[];
+  possibleMoves: Move[];
 
   uctEvaluation: number;
   uctIsDirty: boolean = true;
 
-  constructor(battle: Battle, move?: IMove)
+  constructor(battle: Battle, move?: Move)
   {
     this.battle = battle;
     this.sideId = battle.activeUnit.battleStats.side;
@@ -53,7 +53,7 @@ export default class MCTreeNode
     this.currentScore = battle.getEvaluation();
   }
 
-  getPossibleMoves(): IMove[]
+  getPossibleMoves(): Move[]
   {
     if (!this.battle.activeUnit)
     {
@@ -61,7 +61,7 @@ export default class MCTreeNode
     }
     var targets = getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
 
-    var actions: IMove[] = [];
+    var actions: Move[] = [];
 
     for (var id in targets)
     {
@@ -113,7 +113,7 @@ export default class MCTreeNode
 
     return child;
   }
-  getChildForMove(move: IMove): MCTreeNode
+  getChildForMove(move: Move): MCTreeNode
   {
     for (var i = 0; i < this.children.length; i++)
     {
