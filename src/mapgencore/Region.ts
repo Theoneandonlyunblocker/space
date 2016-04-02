@@ -1,7 +1,7 @@
-/// <reference path="../fillerpoint.ts" />
-/// <reference path="../star.ts" />
+import Star from "../Star.ts";
+import FillerPoint from "../FillerPoint.ts";
 
-export class Region
+export default class Region
 {
   id: string;
   isFiller: boolean;
