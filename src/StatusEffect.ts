@@ -1,6 +1,6 @@
-/// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
+import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate.d.ts";
 
-export class StatusEffect
+export default class StatusEffect
 {
   template: StatusEffectTemplate;
   duration: number; // -1 === infinite
