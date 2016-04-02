@@ -1,6 +1,11 @@
 import Triangle from "./Triangle.ts";
 import Point from "../Point.ts";
 
+import
+{
+  pointsEqual
+} from "../utility.ts";
+
 export function triangulate(vertices: Point[]): Triangle[]
 {
   var triangles: Triangle[] = [];
@@ -61,13 +66,6 @@ export function triangulate(vertices: Point[]): Triangle[]
   }
 
   return triangles;
-}
-
-
-// TODO refactor | move
-export function pointsEqual(p1: Point, p2: Point)
-{
-  return (p1.x === p2.x && p1.y === p2.y);
 }
 
 function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle

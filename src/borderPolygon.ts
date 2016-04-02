@@ -1,6 +1,17 @@
 /// <reference path="../lib/offset.d.ts" />
 
-// some problems with this as well as pixi polyogn rendering can lead to silly behavior sometimes.
+import Star from "./Star.ts";
+import Point from "./Point.ts";
+import MapVoronoiInfo from "./MapVoronoiInfo.ts";
+import Options from "./Options.ts";
+
+import
+{
+  clamp,
+  pointsEqual
+} from "./utility.ts";
+
+// some problems with this as well as pixi polygon rendering can lead to silly behavior sometimes.
 // overlapping lines, acute angles etc etc.
 // probably have to make a shader based version later but this could still be useful for canvas fallback.
 
@@ -314,7 +325,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
   for (var i = 0; i < polyLines.length; i++)
   {
     var polyLine = polyLines[i];
-    var isClosed = MapGenCore.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+    var isClosed = pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
     if (isClosed) polyLine.pop();
     for (var j = 0; j < polyLine.length; j++)
     {
