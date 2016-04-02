@@ -1,6 +1,11 @@
 /// <reference path="../lib/pixi.d.ts" />
 
+import WeightedProbability from "./templateinterfaces/WeightedProbability.d.ts";
+
 import Point from "./Point.ts";
+import Unit from "./Unit.ts";
+import Player from "./Player.ts";
+import Star from "./Star.ts";
 
 // TODO refactor | clean these up
 
@@ -295,7 +300,7 @@ export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
 
   ctx.globalCompositeOperation = "source-in";
 
-  ctx.fillStyle = "#" + hexToString(player.color);
+  ctx.fillStyle = "#" + player.color.getHexString();
   ctx.fillRect(0, 0, image.width, image.height);
 
   return canvas.toDataURL();
