@@ -1,15 +1,16 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-/// <reference path="eventmanager.ts"/>
+import Star from "./Star.ts";
+import Fleet from "./Fleet.ts";
+import Color from "./Color.ts";
+import eventManager from "./eventManager.ts";
+import Point from "./Point.ts";
 
-/// <reference path="fleet.ts" />
-/// <reference path="star.ts" />
-
-interface IPathFindingArrowCurveStyle
+interface PathFindingArrowCurveStyle
 {
-  color: number;
+  color: Color;
 }
-export class PathfindingArrow
+export default class PathfindingArrow
 {
   parentContainer: PIXI.Container;
   container: PIXI.Container;
@@ -34,13 +35,13 @@ export class PathfindingArrow
 
   private curveStyles =
   {
-    reachable: <IPathFindingArrowCurveStyle>
+    reachable: <PathFindingArrowCurveStyle>
     {
-      color: 0xFFFFF0
+      color: Color.fromHex(0xFFFFF0)
     },
-    unreachable: <IPathFindingArrowCurveStyle>
+    unreachable: <PathFindingArrowCurveStyle>
     {
-      color: 0xFF0000
+      color: Color.fromHex(0xFF0000)
     }
   };
 
@@ -374,11 +375,11 @@ export class PathfindingArrow
     return path;
   }
 
-  private drawCurve(points: number[][], style: IPathFindingArrowCurveStyle)
+  private drawCurve(points: number[][], style: PathFindingArrowCurveStyle)
   {
     var gfx = new PIXI.Graphics();
 
-    gfx.lineStyle(12, style.color, 0.7);
+    gfx.lineStyle(12, style.color.getHex(), 0.7);
     gfx.moveTo(points[0][0], points[0][1]);
 
     for (var i = 0; i < points.length; i++)
@@ -389,7 +390,7 @@ export class PathfindingArrow
     var curveShape = <PIXI.Polygon> gfx.currentPath.shape;
     curveShape.closed = false; // PIXI 3.0.7 bug
 
-    this.drawArrowHead(gfx, style.color);
+    this.drawArrowHead(gfx, style.color.getHex());
 
     return gfx;
   }
