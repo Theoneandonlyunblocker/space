@@ -205,7 +205,7 @@ export default class Front
   }
   getUnitCountByArchetype()
   {
-    var unitCountByArchetype: IArchetypeValues = {};
+    var unitCountByArchetype: ArchetypeValues = {};
 
     for (var i = 0; i < this.units.length; i++)
     {
@@ -282,7 +282,7 @@ export default class Front
     var countByArchetype = this.getUnitCountByArchetype();
     var totalUnits = this.units.length;
     var idealWeights = this.objective.template.preferredUnitComposition;
-    var scores: IArchetypeValues = {};
+    var scores: ArchetypeValues = {};
 
     for (var unitType in idealWeights)
     {

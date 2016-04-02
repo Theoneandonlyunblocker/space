@@ -1,6 +1,6 @@
 namespace Rance
 {
-  export interface IArchetypeValues
+  export interface ArchetypeValues
   {
     [archetypeType: string]: number;
   }
@@ -10,11 +10,11 @@ namespace Rance
     aggressiveness: number;
     friendliness: number;
 
-    unitCompositionPreference: IArchetypeValues;
+    unitCompositionPreference: ArchetypeValues;
   }
   export function makeRandomPersonality(): IPersonality
   {
-    var unitCompositionPreference: IArchetypeValues = {};
+    var unitCompositionPreference: ArchetypeValues = {};
 
     for (var archetype in app.moduleData.Templates.UnitArchetypes)
     {

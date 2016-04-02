@@ -147,7 +147,7 @@ export default class BattlePrep
     var placedInFront = 0;
     var placedInBack = 0;
     var totalPlaced = 0;
-    var unitsPlacedByArchetype: IArchetypeValues = {};
+    var unitsPlacedByArchetype: ArchetypeValues = {};
 
     var getUnitScoreFN = function(unit: Unit, row: string)
     {
