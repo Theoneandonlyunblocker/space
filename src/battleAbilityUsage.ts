@@ -1,9 +1,17 @@
-/// <reference path="battleabilityprocessing.ts" />
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
+import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate.d.ts";
 
-/// <reference path="battle.ts" />
-/// <reference path="unit.ts" />
+import Unit from "./Unit.ts";
+import Battle from "./Battle.ts";
+import GuardCoverage from "./GuardCoverage.ts";
+import
+{
+  AbilityEffectData,
+  AbilityEffectDataByPhase,
+  getAbilityEffectDataByPhase
+} from "./battleAbilityProcessing.ts";
 
-export interface IUnitDisplayData
+export interface UnitDisplayData
 {
   health: number;
   guardAmount: number;
@@ -13,14 +21,14 @@ export interface IUnitDisplayData
   isPreparing: boolean;
   isAnnihilated: boolean;
 }
-export interface IUnitDisplayDataById
+export interface UnitDisplayDataById
 {
-  [unitId: number]: IUnitDisplayData;
+  [unitId: number]: UnitDisplayData;
 }
-export interface IAbilityUseEffect
+export interface AbilityUseEffect
 {
   actionName: string;
-  unitDisplayDataAfterUsingById: IUnitDisplayDataById;
+  unitDisplayDataAfterUsingById: UnitDisplayDataById;
   sfx: BattleSFXTemplate;
   sfxUser: Unit;
   sfxTarget: Unit;
@@ -40,8 +48,8 @@ export function useAbility(battle: Battle, ability: AbilityTemplate,
 
   return useData;
 }
-function executeFullAbilityEffects(battle: Battle, abilityEffectData: IAbilityEffectDataByPhase,
-  getUseEffects: boolean): IAbilityUseEffect[]
+function executeFullAbilityEffects(battle: Battle, abilityEffectData: AbilityEffectDataByPhase,
+  getUseEffects: boolean): AbilityUseEffect[]
 {
   var beforeUse = executeMultipleEffects(battle, abilityEffectData.beforeUse, getUseEffects);
   var abilityEffects = executeMultipleEffects(battle, abilityEffectData.abilityEffects, getUseEffects);
@@ -57,12 +65,12 @@ function executeFullAbilityEffects(battle: Battle, abilityEffectData: IAbilityEf
   }
 }
 
-function executeMultipleEffects(battle: Battle, abilityEffectData: IAbilityEffectData[],
-  getUseEffects: boolean): IAbilityUseEffect[]
+function executeMultipleEffects(battle: Battle, abilityEffectData: AbilityEffectData[],
+  getUseEffects: boolean): AbilityUseEffect[]
 {
   if (getUseEffects)
   {
-    var useEffects: IAbilityUseEffect[] = [];
+    var useEffects: AbilityUseEffect[] = [];
 
     for (var i = 0; i < abilityEffectData.length; i++)
     {
@@ -84,7 +92,7 @@ function executeMultipleEffects(battle: Battle, abilityEffectData: IAbilityEffec
   }
 }
 
-function getUnitDisplayData(unit: Unit): IUnitDisplayData
+function getUnitDisplayData(unit: Unit): UnitDisplayData
 {
   return(
   {
@@ -98,7 +106,7 @@ function getUnitDisplayData(unit: Unit): IUnitDisplayData
   });
 }
 
-function shouldEffectActionTrigger(abilityEffectData: IAbilityEffectData)
+function shouldEffectActionTrigger(abilityEffectData: AbilityEffectData)
 {
   if (!abilityEffectData.trigger)
   {
@@ -107,7 +115,7 @@ function shouldEffectActionTrigger(abilityEffectData: IAbilityEffectData)
 
   return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
 }
-function executeAbilityEffectData(battle: Battle, abilityEffectData: IAbilityEffectData): boolean
+function executeAbilityEffectData(battle: Battle, abilityEffectData: AbilityEffectData): boolean
 {
   if (!shouldEffectActionTrigger(abilityEffectData))
   {
@@ -124,7 +132,7 @@ function executeAbilityEffectData(battle: Battle, abilityEffectData: IAbilityEff
   return true;
 }
 function executeAbilityEffectDataAndGetUseEffect(battle: Battle,
-  abilityEffectData: IAbilityEffectData): IAbilityUseEffect
+  abilityEffectData: AbilityEffectData): AbilityUseEffect
 {
   var didTriggerAction = executeAbilityEffectData(battle, abilityEffectData);
   if (!didTriggerAction)
@@ -132,7 +140,7 @@ function executeAbilityEffectDataAndGetUseEffect(battle: Battle,
     return null;
   }
 
-  var unitDisplayData: IUnitDisplayDataById = {}
+  var unitDisplayData: UnitDisplayDataById = {}
   unitDisplayData[abilityEffectData.user.id] = getUnitDisplayData(abilityEffectData.user);
   unitDisplayData[abilityEffectData.target.id] = getUnitDisplayData(abilityEffectData.target);
 
