@@ -1,4 +1,4 @@
-import ItemSaveData from "./ItemSaveData.ts";
+import ItemSaveData from "./ItemSaveData.d.ts";
 
 import GuardCoverage from "../GuardCoverage.ts";
 import StatusEffect from "../StatusEffect.ts";

@@ -1,5 +1,5 @@
-// not very efficient. probably doesn't matter though
-export class PriorityQueue
+// TODO performance | not very efficient. probably doesn't matter though
+export default class PriorityQueue
 {
   items:
   {
