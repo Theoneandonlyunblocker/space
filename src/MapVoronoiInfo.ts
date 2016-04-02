@@ -1,4 +1,7 @@
-export class MapVoronoiInfo
+import Star from "./Star.ts";
+import Point from "./Point.ts";
+
+export default class MapVoronoiInfo
 {
   treeMap: any;
   diagram: any;
