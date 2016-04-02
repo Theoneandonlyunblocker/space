@@ -1,9 +1,18 @@
-/// <reference path="ibattledata.d.ts"/>
-/// <reference path="unit.ts"/>
-/// <reference path="eventmanager.ts"/>
-/// <reference path="battleturnorder.ts" />
+import DefenceBuildingTemplate from "./templateinterfaces/DefenceBuildingTemplate.d.ts";
 
-export class Battle
+import BattleData from "./BattleData.d.ts";
+import Unit from "./Unit.ts";
+import eventManager from "./eventManager.ts";
+import BattleTurnOrder from "./BattleTurnOrder.ts";
+import Player from "./Player.ts";
+import
+{
+  clamp,
+  randInt,
+  reverseSide
+} from "./utility.ts"
+
+export default class Battle
 {
   unitsById:
   {
@@ -23,7 +32,7 @@ export class Battle
   side2: Unit[][];
   side2Player: Player;
 
-  battleData: IBattleData;
+  battleData: BattleData;
 
 
   turnOrder: BattleTurnOrder;
@@ -56,7 +65,7 @@ export class Battle
 
   constructor(props:
   {
-    battleData: IBattleData;
+    battleData: BattleData;
     side1: Unit[][];
     side2: Unit[][];
     side1Player: Player;
