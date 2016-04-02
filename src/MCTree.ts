@@ -5,7 +5,7 @@ import
 } from "./MCTreeNode.ts";
 import Battle from "./Battle.ts";
 
-export class MCTree
+export default class MCTree
 {
   rootNode: MCTreeNode;
   actualBattle: Battle;

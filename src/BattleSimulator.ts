@@ -1,7 +1,15 @@
-/// <reference path="battle.ts"/>
-/// <reference path="mctree.ts"/>
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
 
-export class BattleSimulator
+import Battle from "./Battle.ts";
+import MCTree from "./MCTree.ts";
+import Options from "./options.ts";
+import Unit from "./Unit.ts";
+import
+{
+  useAbility
+} from "./battleAbilityUsage.ts";
+
+export default class BattleSimulator
 {
   battle: Battle;
   tree: MCTree;
