@@ -9,11 +9,11 @@ import Building from "./Building.ts";
 import Star from "./Star.ts";
 import Flag from "./Flag.ts";
 import Item from "./Item.ts";
-import Battlesimulator from "./Battlesimulator.ts";
-import Battleprep from "./Battleprep.ts";
-import Diplomacystatus from "./Diplomacystatus.ts";
+import BattleSimulator from "./BattleSimulator.ts";
+import BattlePrep from "./BattlePrep.ts";
+import DiplomacyStatus from "./DiplomacyStatus.ts";
 import Manufactory from "./Manufactory.ts";
-import Playertechnology from "./Playertechnology.ts";
+import PlayerTechnology from "./PlayerTechnology.ts";
 import FleetAttackTarget from "./FleetAttackTarget.d.ts";
 import eventManager from "./eventManager.ts";
 import Color from "./Color.ts";
@@ -24,10 +24,12 @@ import
   generateColorScheme
 } from "./colorGeneration.ts"
 import Options from "./options.ts";
-import BattleSimulator from "./BattleSimulator.ts";
 
 import ResourceTemplate from "./templateinterfaces/ResourceTemplate.d.ts";
 import UnitTemplate from "./templateinterfaces/UnitTemplate.d.ts";
+import TechnologyRequirement from "./templateinterfaces/TechnologyRequirement.d.ts";
+import ItemTemplate from "./templateinterfaces/ItemTemplate.d.ts";
+import ManufacturableThing from "./templateinterfaces/ManufacturableThing.d.ts";
 
 /// <reference path="mapai/aicontroller.ts"/>
 
@@ -56,7 +58,7 @@ export default class Player
 
   isAI: boolean = false;
   personality: IPersonality;
-  AIController: MapAI.AIController;
+  AIController: AIController;
   isIndependent: boolean = false;
 
   diplomacyStatus: DiplomacyStatus;
@@ -154,7 +156,7 @@ export default class Player
   }
   setupAI(game: Game)
   {
-    this.AIController = new MapAI.AIController(this, game, this.personality);
+    this.AIController = new AIController(this, game, this.personality);
   }
   makeRandomFlag(seed?: any)
   {
@@ -783,7 +785,7 @@ export default class Player
 
     return itemTypes;
   }
-  getManufacturingCapacityFor(template: IManufacturableThing, type: string)
+  getManufacturingCapacityFor(template: ManufacturableThing, type: string)
   {
     var totalCapacity = 0;
     var capacityByStar:
@@ -796,12 +798,12 @@ export default class Player
     {
       case "item":
       {
-        var globallyBuildableItems = <IManufacturableThing[]> this.getGloballyBuildableItems();
+        var globallyBuildableItems = <ManufacturableThing[]> this.getGloballyBuildableItems();
         isGloballyBuildable = globallyBuildableItems.indexOf(template) !== -1;
       }
       case "unit":
       {
-        var globallyBuildableUnits = <IManufacturableThing[]> this.getGloballyBuildableUnits();
+        var globallyBuildableUnits = <ManufacturableThing[]> this.getGloballyBuildableUnits();
         isGloballyBuildable = globallyBuildableUnits.indexOf(template) !== -1;
       }
     }

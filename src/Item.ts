@@ -5,7 +5,7 @@ import ItemSaveData from "./savedata/ItemSaveData.d.ts";
 /// <reference path="savedata/iitemsavedata.d.ts" />
 
 
-export class Item
+export default class Item
 {
   id: number;
   template: ItemTemplate;
