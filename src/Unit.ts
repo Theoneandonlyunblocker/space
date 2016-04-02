@@ -8,7 +8,7 @@ import AbilityBase from "./templateinterfaces/AbilityBase.d.ts";
 import SFXParams from "./templateinterfaces/SFXParams.d.ts";
 
 import DamageType from "./DamageType.ts";
-import UnitAttributes from "./UnitAttributes.ts";
+import UnitAttributes from "./UnitAttributes.d.ts";
 import
 {
   extendObject,

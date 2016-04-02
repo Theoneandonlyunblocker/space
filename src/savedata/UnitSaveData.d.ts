@@ -1,6 +1,3 @@
-/// <reference path="../unit.ts" />
-/// <reference path="../statuseffect.ts" />
-
 import ItemSaveData from "./ItemSaveData.ts";
 
 import GuardCoverage from "../GuardCoverage.ts";
