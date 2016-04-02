@@ -1,8 +1,13 @@
 /// <reference path="../lib/pixi.d.ts" />
-/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
-/// <reference path="unit.ts" />
+/// <reference path="../lib/tween.js.d.ts" />
 
-export enum BattleSceneUnitState
+import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate.d.ts";
+import SFXParams from "./templateinterfaces/SFXParams.d.ts";
+
+import Unit from "./Unit.ts";
+import Options from "./options.ts";
+
+const enum BattleSceneUnitState
 {
   entering,
   stationary,
@@ -10,7 +15,7 @@ export enum BattleSceneUnitState
   removed
 }
 
-export class BattleSceneUnit
+export default class BattleSceneUnit
 {
   container: PIXI.Container;
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
@@ -165,8 +170,7 @@ export class BattleSceneUnit
     }
     else
     {
-      console.warn("called exitUnitSprite with unintended animation state " +
-        BattleSceneUnitState[this.unitState]);
+      console.warn("called exitUnitSprite with unintended animation state " + this.unitState);
     }
   }
 
@@ -231,7 +235,7 @@ export class BattleSceneUnit
     duration?: number;
     triggerStart: (container: PIXI.DisplayObject) => void;
     triggerEnd?: () => void;
-  }): Templates.SFXParams
+  }): SFXParams
   {
     var bounds = this.getSceneBounds();
 
@@ -283,7 +287,7 @@ export class BattleSceneUnit
     this.clearTween();
   }
 
-  private makeUnitSprite(unit: Unit, SFXParams: Templates.SFXParams)
+  private makeUnitSprite(unit: Unit, SFXParams: SFXParams)
   {
     return unit.drawBattleScene(SFXParams);
   }
@@ -353,7 +357,7 @@ export class BattleSceneUnit
     tween.start();
     return tween;
   }
-  private setSFXSprite(spriteDrawingFN: (props: Templates.SFXParams) => void, duration: number)
+  private setSFXSprite(spriteDrawingFN: (props: SFXParams) => void, duration: number)
   {
     this.clearUnitSprite();
     var SFXParams = this.getSFXParams(
