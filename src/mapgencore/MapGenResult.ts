@@ -1,14 +1,20 @@
 /// <reference path="../../lib/quadtree.d.ts" />
 
-/// <reference path="../mapvoronoiinfo.ts" />
-/// <reference path="../galaxymap.ts" />
-/// <reference path="../star.ts" />
-/// <reference path="../fillerpoint.ts" />
-/// <reference path="../player.ts" />
+import MapVoronoiInfo from "../MapVoronoiInfo.ts";
+import Star from "../Star.ts";
+import FillerPoint from "../FillerPoint.ts";
+import Player from "../Player.ts";
+import Point from "../Point.ts";
+import GalaxyMap from "../GalaxyMap.ts";
+import Options from "../options.ts";
 
-/// <reference path="voronoi.ts" />
+import
+{
+  relaxVoronoi,
+  makeVoronoi
+} from "./mapGenUtils.ts";
 
-export class MapGenResult
+export default class MapGenResult
 {
   stars: Star[];
   fillerPoints: FillerPoint[];
@@ -60,7 +66,7 @@ export class MapGenResult
   makeVoronoiInfo(): MapVoronoiInfo
   {
     var voronoiInfo = new MapVoronoiInfo();
-    voronoiInfo.diagram = MapGenCore.makeVoronoi(this.getAllPoints(), this.width, this.height);
+    voronoiInfo.diagram = makeVoronoi(this.getAllPoints(), this.width, this.height);
     voronoiInfo.treeMap = this.makeVoronoiTreeMap();
     voronoiInfo.bounds =
     {
@@ -78,7 +84,7 @@ export class MapGenResult
       star.basisY = star.y;
     }
 
-    MapGenCore.relaxVoronoi(voronoiInfo.diagram, function(point)
+    relaxVoronoi(voronoiInfo.diagram, function(point)
     {
       // dont move filler points
       return isFinite(point.id) ? 1 : 0;
