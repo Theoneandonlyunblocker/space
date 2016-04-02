@@ -1,15 +1,17 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
+import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate.d.ts";
+import SFXParams from "./templateinterfaces/SFXParams.d.ts";
 
-/// <reference path="unit.ts" />
-/// <reference path="battlesceneunit.ts" />
-/// <reference path="battlesceneunitoverlay.ts" />
+import Unit from "./Unit.ts";
+import BattleSceneUnit from "./BattleSceneUnit.ts";
+import BattleSceneUnitOverlay from "./BattleSceneUnitOverlay.ts";
+import Options from "./options.ts";
 
 // TODO performance
 // BattleScene.render() shouldn't be called unless there's something new to render
 // 
-export class BattleScene
+export default class BattleScene
 {
   container: PIXI.Container;
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
@@ -134,7 +136,7 @@ export class BattleScene
   {
     triggerStart: (container: PIXI.DisplayObject) => void;
     triggerEnd?: () => void;
-  }): Templates.SFXParams
+  }): SFXParams
   {
     var bounds = this.getSceneBounds();
     var duration = this.activeSFX.duration * Options.battleAnimationTiming.effectDuration;
