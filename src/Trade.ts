@@ -1,19 +1,19 @@
-/// <reference path="player.ts" />
+import Player from "./Player.ts";
 
-export interface ITradeableItem
+export interface TradeableItem
 {
   key: string;
   amount: number;
 }
-export interface ITradeableItems
+export interface TradeableItems
 {
-  [key: string]: ITradeableItem;
+  [key: string]: TradeableItem;
 }
 
-export class Trade
+export default class Trade
 {
-  allItems: ITradeableItems;
-  stagedItems: ITradeableItems = {};
+  allItems: TradeableItems;
+  stagedItems: TradeableItems = {};
   player: Player;
 
   constructor(player: Player)
@@ -34,7 +34,7 @@ export class Trade
   }
   getItemsAvailableForTrade()
   {
-    var available: ITradeableItems = {};
+    var available: TradeableItems = {};
 
     for (var key in this.allItems)
     {
