@@ -57,7 +57,7 @@ export default class Player
   items: Item[] = [];
 
   isAI: boolean = false;
-  personality: IPersonality;
+  personality: Personality;
   AIController: AIController;
   isIndependent: boolean = false;
 

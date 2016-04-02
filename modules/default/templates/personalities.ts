@@ -1,6 +1,6 @@
 namespace Rance
 {
-  export function makeRandomPersonality(): IPersonality
+  export function makeRandomPersonality(): Personality
   {
     var unitCompositionPreference: ArchetypeValues = {};
 

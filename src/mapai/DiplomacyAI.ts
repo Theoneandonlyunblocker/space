@@ -13,12 +13,12 @@ export default class DiplomacyAI
   player: Player;
   diplomacyStatus: DiplomacyStatus;
 
-  personality: IPersonality;
+  personality: Personality;
   mapEvaluator: MapEvaluator;
   objectivesAI: ObjectivesAI;
 
   constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, game: Game,
-    personality: IPersonality)
+    personality: Personality)
   {
     this.game = game;
     

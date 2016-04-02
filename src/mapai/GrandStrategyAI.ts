@@ -7,7 +7,7 @@ import
 
 export default class GrandStrategyAI
 {
-  personality: IPersonality;
+  personality: Personality;
   mapEvaluator: MapEvaluator;
 
   desireForWar: number;
@@ -20,7 +20,7 @@ export default class GrandStrategyAI
     max: number;
   };
 
-  constructor(personality: IPersonality, mapEvaluator: MapEvaluator)
+  constructor(personality: Personality, mapEvaluator: MapEvaluator)
   {
     this.personality = personality;
     this.mapEvaluator = mapEvaluator;

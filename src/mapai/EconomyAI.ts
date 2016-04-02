@@ -21,7 +21,7 @@ export default class EconomyAI
   mapEvaluator: MapEvaluator;
   player: Player;
 
-  personality: IPersonality;
+  personality: Personality;
 
   constructor(props:
   {
@@ -29,7 +29,7 @@ export default class EconomyAI
     frontsAI: FrontsAI;
 
     mapEvaluator: MapEvaluator;
-    personality: IPersonality;
+    personality: Personality;
   })
   {
     this.objectivesAI = props.objectivesAI;

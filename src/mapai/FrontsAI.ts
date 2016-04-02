@@ -19,14 +19,14 @@ export default class FrontsAI
   map: GalaxyMap;
   mapEvaluator: MapEvaluator;
   objectivesAI: ObjectivesAI;
-  personality: IPersonality;
+  personality: Personality;
 
   fronts: Front[] = [];
   frontsRequestingUnits: Front[] = [];
   frontsToMove: Front[] = [];
 
   constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI,
-    personality: IPersonality)
+    personality: Personality)
   {
     this.mapEvaluator = mapEvaluator;
     this.map = mapEvaluator.map;

@@ -59,7 +59,7 @@ export interface ITemplates
   };
   Personalities:
   {
-    [type: string]: IPersonality;
+    [type: string]: Personality;
   };
   Resources:
   {

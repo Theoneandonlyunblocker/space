@@ -219,7 +219,7 @@ export class GameLoader
   }
   deserializePlayer(data: IPlayerSaveData): Player
   {
-    var personality: IPersonality;
+    var personality: Personality;
 
     if (data.personality)
     {
