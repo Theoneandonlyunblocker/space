@@ -1,29 +1,37 @@
-/// <reference path="battle.ts" />
-/// <reference path="unit.ts" />
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
+import AbilityEffectTemplate from "./templateinterfaces/AbilityEffectTemplate.d.ts";
+import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate.d.ts";
 
-/// <reference path="battleabilitytargeting.ts" />
+import Unit from "./Unit.ts";
+import GuardCoverage from "./GuardCoverage.ts";
+import Battle from "./Battle.ts";
 
-export interface IAbilityUseData
+import
+{
+  getFormationsToTarget
+} from "./battleAbilityTargeting.ts";
+
+export interface AbilityUseData
 {
   ability: AbilityTemplate;
   user: Unit;
   intendedTarget: Unit;
   actualTarget?: Unit;
 }
-export interface IAbilityEffectData
+export interface AbilityEffectData
 {
   templateEffect: AbilityEffectTemplate;
   user: Unit;
   target: Unit;
   trigger: (user: Unit, target: Unit) => boolean;
 }
-export interface IAbilityEffectDataByPhase
+export interface AbilityEffectDataByPhase
 {
-  beforeUse: IAbilityEffectData[];
-  abilityEffects: IAbilityEffectData[];
-  afterUse: IAbilityEffectData[];
+  beforeUse: AbilityEffectData[];
+  abilityEffects: AbilityEffectData[];
+  afterUse: AbilityEffectData[];
 }
-export function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: IAbilityUseData): IAbilityEffectDataByPhase
+export function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: AbilityUseData): AbilityEffectDataByPhase
 {
   abilityUseData.actualTarget = getTargetOrGuard(battle, abilityUseData);
 
@@ -53,7 +61,7 @@ export function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: IAbi
   });
 }
 
-function getTargetOrGuard(battle: Battle, abilityUseData: IAbilityUseData): Unit
+function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
 {
   if (abilityUseData.ability.bypassesGuard)
   {
@@ -98,7 +106,7 @@ function canGuardFN(intendedTarget: Unit, unit: Unit)
     }
   }
 }
-function getGuarders(battle: Battle, abilityUseData: IAbilityUseData): Unit[]
+function getGuarders(battle: Battle, abilityUseData: AbilityUseData): Unit[]
 {
   var userSide = abilityUseData.user.battleStats.side;
   var targetSide = abilityUseData.intendedTarget.battleStats.side;
@@ -126,10 +134,10 @@ function getUnitsInEffectArea(battle: Battle,effect: EffectActionTemplate,
   return inArea.filter(activeUnitsFilterFN);
 }
 
-function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData: IAbilityUseData,
-  effectTemplates: AbilityEffectTemplate[]): IAbilityEffectData[]
+function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData: AbilityUseData,
+  effectTemplates: AbilityEffectTemplate[]): AbilityEffectData[]
 {
-  var effectData: IAbilityEffectData[] = [];
+  var effectData: AbilityEffectData[] = [];
 
   for (var i = 0; i < effectTemplates.length; i++)
   {
@@ -171,7 +179,7 @@ function getEffectTemplatesWithAttachedEffects(templates: AbilityEffectTemplate[
 
   return withAttached;
 }
-function getBeforeAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): AbilityEffectTemplate[]
+function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
 {
   var beforeUseEffects: AbilityEffectTemplate[] = [];
   if (abilityUseData.ability.beforeUse)
@@ -191,7 +199,7 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): Ab
   return getEffectTemplatesWithAttachedEffects(beforeUseEffects);
   // TODO remove guard & action points
 }
-function getAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): AbilityEffectTemplate[]
+function getAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
 {
   var abilityUseEffects: AbilityEffectTemplate[] = [];
   abilityUseEffects.push(abilityUseData.ability.mainEffect);
@@ -203,7 +211,7 @@ function getAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): AbilityE
 
   return getEffectTemplatesWithAttachedEffects(abilityUseEffects);
 }
-function getAfterAbilityUseEffectTemplates(abilityUseData: IAbilityUseData): AbilityEffectTemplate[]
+function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
 {
   var afterUseEffects: AbilityEffectTemplate[] = [];
   if (abilityUseData.ability.afterUse)
