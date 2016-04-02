@@ -1,10 +1,11 @@
-/// <reference path="../../modules/default/templates/personalities.ts" />
+import Front from "./Front.ts";
+import MapEvaluator from "./MapEvaluator.ts";
+import ObjectivesAI from "./ObjectivesAI.ts";
+import Objective from "./Objective.ts";
 
-/// <reference path="../player.ts"/>
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="objectivesai.ts"/>
-/// <reference path="front.ts"/>
-/// <reference path="mapevaluator.ts"/>
+import Unit from "../Unit.ts";
+import Player from "../Player.ts";
+import GalaxyMap from "../GalaxyMap.ts";
 
 interface IFrontUnitScore
 {
@@ -12,7 +13,7 @@ interface IFrontUnitScore
   front: Front;
   score: number;
 }
-export class FrontsAI
+export default class FrontsAI
 {
   player: Player;
   map: GalaxyMap;
