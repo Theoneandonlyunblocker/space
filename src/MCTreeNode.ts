@@ -1,13 +1,26 @@
-/// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
-/// <reference path="battle.ts" />
-/// <reference path="unit.ts"/>
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
+
+import Battle from "./Battle.ts";
+import Unit from "./Unit.ts";
+import
+{
+  getRandomKeyWithWeights
+} from "./utility.ts";
+import
+{
+  useAbility
+} from "./battleAbilityUsage.ts";
+import
+{
+  getTargetsForAllAbilities
+} from "./battleAbilityTargeting.ts"
 
 export interface IMove
 {
   ability: AbilityTemplate;
   targetId: number;
 }
-export class MCTreeNode
+export default class MCTreeNode
 {
   battle: Battle;
   sideId: string;
