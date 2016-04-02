@@ -1,4 +1,3 @@
-/// <reference path="imanufacturablething.d.ts" />
 import ManufacturableThing from "./ManufacturableThing.d.ts";
 import TechnologyRequirement from "./TechnologyRequirement.d.ts";
 import AbilityTemplate from "./AbilityTemplate.d.ts";

@@ -1,6 +1,7 @@
-/// <reference path="templateinterfaces/iitemtemplate.d.ts" />
-/// <reference path="unit.ts" />
+import ItemTemplate from "./templateinterfaces/ItemTemplate.d.ts";
+import Unit from "./Unit.ts";
 
+import ItemSaveData from "./savedata/ItemSaveData.d.ts";
 /// <reference path="savedata/iitemsavedata.d.ts" />
 
 
@@ -18,9 +19,9 @@ export class Item
     this.template = template;
   }
 
-  serialize(): IItemSaveData
+  serialize(): ItemSaveData
   {
-    var data: IItemSaveData =
+    var data: ItemSaveData =
     {
       id: this.id,
       templateType: this.template.type
