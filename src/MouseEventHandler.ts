@@ -1,7 +1,8 @@
-/// <reference path="fleet.ts"/>
-/// <reference path="camera.ts"/>
-/// <reference path="renderer.ts"/>
-/// <reference path="rectangleselect.ts"/>
+import Renderer from "./Renderer.ts";
+import Camera from "./Camera.ts";
+import Star from "./Star.ts";
+import RectangleSelect from "./RectangleSelect.ts";
+import eventManager from "./eventManager.ts";
 
 export class MouseEventHandler
 {
