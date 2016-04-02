@@ -1,7 +1,11 @@
-/// <reference path="../../modules/default/templates/personalities.ts" />
-/// <reference path="mapevaluator.ts"/>
+import MapEvaluator from "./MapEvaluator.ts";
+import
+{
+  clamp,
+  getRelativeValue
+} from "..//utility.ts";
 
-export class GrandStrategyAI
+export default class GrandStrategyAI
 {
   personality: IPersonality;
   mapEvaluator: MapEvaluator;
