@@ -1,8 +1,12 @@
 /// <reference path="../lib/pixi.d.ts" />
-/// <reference path="templateinterfaces/IBattleSFXTemplate.d.ts" />
-/// <reference path="unit.ts" />
 
-export class BattleSceneUnitOverlay
+import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate.d.ts";
+import SFXParams from "./templateinterfaces/SFXParams.d.ts";
+
+import Unit from "./Unit.ts";
+import Options from "./options.ts";
+
+export default class BattleSceneUnitOverlay
 {
   container: PIXI.Container;
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
@@ -54,7 +58,7 @@ export class BattleSceneUnitOverlay
 
     }
   }
-  setOverlay(overlayFN: (props: Templates.SFXParams) => void, unit: Unit, duration: number)
+  setOverlay(overlayFN: (props: SFXParams) => void, unit: Unit, duration: number)
   {
     this.clearOverlay();
     if (duration <= 0)
@@ -81,7 +85,7 @@ export class BattleSceneUnitOverlay
   }
   private getSFXParams(duration: number,
     triggerStart: (container: PIXI.DisplayObject) => void,
-    triggerEnd?: () => void): Templates.SFXParams
+    triggerEnd?: () => void): SFXParams
   {
     var bounds = this.getSceneBounds();
 
