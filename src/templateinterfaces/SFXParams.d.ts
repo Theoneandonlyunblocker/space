@@ -15,3 +15,5 @@ declare interface SFXParams
   triggerEffect?: () => void;
   triggerEnd?: () => void;
 }
+
+export default SFXParams;

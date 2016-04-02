@@ -1,18 +1,24 @@
 /// <reference path="../unit.ts" />
 /// <reference path="../statuseffect.ts" />
 
-declare interface IUnitItemsSaveData
+import ItemSaveData from "./ItemSaveData.ts";
+
+import GuardCoverage from "../GuardCoverage.ts";
+import StatusEffect from "../StatusEffect.ts";
+import UnitAttributes from "../UnitAttributes.d.ts";
+
+declare interface UnitItemsSaveData
 {
-  [slot: string]: IItemSaveData;
+  [slot: string]: ItemSaveData;
 }
-declare interface IQueuedActionSaveData
+declare interface QueuedActionSaveData
 {
   abilityTemplateKey: string;
   targetId: number;
   turnsPrepared: number;
   timesInterrupted: number;
 }
-declare interface IUnitBattleStatsSaveData
+declare interface UnitBattleStatsSaveData
 {
   moveDelay: number;
   side: UnitBattleSide;
@@ -22,10 +28,10 @@ declare interface IUnitBattleStatsSaveData
   guardCoverage: GuardCoverage;
   captureChance: number;
   statusEffects: StatusEffect[];
-  queuedAction: IQueuedActionSaveData;
+  queuedAction: QueuedActionSaveData;
   isAnnihilated: boolean;
 }
-declare interface IUnitSaveData
+declare interface UnitSaveData
 {
   templateType: string;
   id: number;
@@ -35,14 +41,16 @@ declare interface IUnitSaveData
   currentMovePoints: number;
   maxMovePoints: number;
   timesActedThisTurn: number;
-  baseAttributes: IUnitAttributes;
+  baseAttributes: UnitAttributes;
   abilityTemplateTypes: string[];
   passiveSkillTemplateTypes: string[];
   experienceForCurrentLevel: number;
   level: number;
-  items: IUnitItemsSaveData;
-  battleStats: IUnitBattleStatsSaveData;
+  items: UnitItemsSaveData;
+  battleStats: UnitBattleStatsSaveData;
 
   fleetId?: number;
   portraitKey?: string;
 }
+
+export default UnitSaveData;

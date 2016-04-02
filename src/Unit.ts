@@ -1,32 +1,45 @@
-/// <reference path="templateinterfaces/iunittemplate.d.ts" />
+import UnitTemplate from "./templateinterfaces/UnitTemplate.d.ts";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
+import PortraitTemplate from "./templateinterfaces/PortraitTemplate.d.ts";
+import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate.d.ts";
+import CultureTemplate from "./templateinterfaces/CultureTemplate.d.ts";
+import StatusEffectAttributes from "./templateinterfaces/StatusEffectAttributes.d.ts";
+import AbilityBase from "./templateinterfaces/AbilityBase.d.ts";
+import SFXParams from "./templateinterfaces/SFXParams.d.ts";
 
-/// <reference path="damagetype.ts" />
-/// <reference path="iunitattributes.d.ts"/>
-/// <reference path="utility.ts"/>
-/// <reference path="battle.ts"/>
-/// <reference path="item.ts"/>
-/// <reference path="statuseffect.ts" />
+import DamageType from "./DamageType.ts";
+import UnitAttributes from "./UnitAttributes.ts";
+import
+{
+  extendObject,
+  findItemWithKey,
+  randInt,
+  getRandomArrayItem,
+  getAllPropertiesWithKey,
+  getRandomArrayItemWithWeights,
+  getRandomProperty,
+  clamp,
+  getItemsFromWeightedProbabilities
+} from "./utility.ts"
+import Battle from "./Battle.ts";
+import Item from "./Item.ts";
+import StatusEffect from "./StatusEffect.ts";
+import Fleet from "./Fleet.ts";
+import Player from "./Player.ts";
+import Star from "./Star.ts";
 
-/// <reference path="savedata/iunitsavedata.d.ts" />
+import UnitSaveData from "./savedata/UnitSaveData.d.ts";
+
+import Front from "./mapai/Front.ts";
 
 export type UnitBattleSide = "side1" | "side2";
 export var UnitBattleSidesArray: UnitBattleSide[] = ["side1", "side2"];
 
-export enum GuardCoverage
-{
-  row,
-  all
-}
 
-export interface IQueuedActionData
-{
-  ability: AbilityTemplate;
-  targetId: number;
-  turnsPrepared: number;
-  timesInterrupted: number;
-}
+import GuardCoverage from "./GuardCoverage.ts";
+import QueuedActionData from "./QueuedActionData.d.ts";
 
-export interface IUnitBattleStats
+export interface UnitBattleStats
 {
   moveDelay: number;
   side: UnitBattleSide;
@@ -37,18 +50,18 @@ export interface IUnitBattleStats
   captureChance: number;
   statusEffects: StatusEffect[];
   lastHealthBeforeReceivingDamage: number;
-  queuedAction: IQueuedActionData;
+  queuedAction: QueuedActionData;
   isAnnihilated: boolean;
 }
 
-export interface IUnitItems
+export interface UnitItems
 {
   low: Item;
   mid: Item;
   high: Item;
 }
 
-export class Unit
+export default class Unit
 {
   template: UnitTemplate;
 
@@ -66,10 +79,10 @@ export class Unit
 
   timesActedThisTurn: number;
 
-  baseAttributes: IUnitAttributes;
+  baseAttributes: UnitAttributes;
   attributesAreDirty: boolean;
-  cachedAttributes: IUnitAttributes;
-  get attributes(): IUnitAttributes
+  cachedAttributes: UnitAttributes;
+  get attributes(): UnitAttributes
   {
     if (this.attributesAreDirty || !this.cachedAttributes)
     {
@@ -79,7 +92,7 @@ export class Unit
     return this.cachedAttributes;
   }
 
-  battleStats: IUnitBattleStats;
+  battleStats: UnitBattleStats;
 
   abilities: AbilityTemplate[] = [];
   passiveSkills: PassiveSkillTemplate[] = [];
@@ -89,7 +102,7 @@ export class Unit
 
   fleet: Fleet;
 
-  items: IUnitItems =
+  items: UnitItems =
   {
     low: null,
     mid: null,
@@ -107,7 +120,7 @@ export class Unit
   passiveSkillsByPhaseAreDirty: boolean = true;
 
   
-  front: MapAI.Front;
+  front: Front;
 
   uiDisplayIsDirty: boolean = true;
   // todo old
@@ -122,7 +135,7 @@ export class Unit
   displayedHealth: number;
   
   // end new
-  constructor(template: UnitTemplate, id?: number, data?: IUnitSaveData)
+  constructor(template: UnitTemplate, id?: number, data?: UnitSaveData)
   {
     this.id = isFinite(id) ? id : idGenerators.unit++;
 
@@ -143,7 +156,7 @@ export class Unit
       isAnnihilated: false
     };
   }
-  makeFromData(data: IUnitSaveData)
+  makeFromData(data: UnitSaveData)
   {
     this.name = data.name;
 
@@ -679,13 +692,13 @@ export class Unit
   }
   setInitialAbilities()
   {
-    this.abilities = getItemsFromWeightedProbabilities(this.template.possibleAbilities);
+    this.abilities = getItemsFromWeightedProbabilities<AbilityTemplate>(this.template.possibleAbilities);
   }
   setInitialPassiveSkills()
   {
     if (this.template.possiblePassiveSkills)
     {
-      this.passiveSkills = getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
+      this.passiveSkills = getItemsFromWeightedProbabilities<PassiveSkillTemplate>(this.template.possiblePassiveSkills);
     }
   }
   getItemAbilities(): AbilityTemplate[]
@@ -1156,13 +1169,13 @@ export class Unit
       this.abilities.push(castedNewAbility);
     }
   }
-  drawBattleScene(SFXParams: Templates.SFXParams)
+  drawBattleScene(params: SFXParams)
   {
-    this.template.unitDrawingFN(this, SFXParams);
+    this.template.unitDrawingFN(this, params);
   }
-  serialize(includeItems: boolean = true, includeFluff: boolean = true): IUnitSaveData
+  serialize(includeItems: boolean = true, includeFluff: boolean = true): UnitSaveData
   {
-    var itemsSaveData: IUnitItemsSaveData = {};
+    var itemsSaveData: UnitItemsSaveData = {};
 
     if (includeItems)
     {
@@ -1174,7 +1187,7 @@ export class Unit
         }
       }
     }
-    var battleStatsSavedData: IUnitBattleStatsSaveData =
+    var battleStatsSavedData: UnitBattleStatsSaveData =
     {
       moveDelay: this.battleStats.moveDelay,
       side: this.battleStats.side,
@@ -1197,7 +1210,7 @@ export class Unit
       isAnnihilated: this.battleStats.isAnnihilated
     };
 
-    var data: IUnitSaveData =
+    var data: UnitSaveData =
     {
       templateType: this.template.type,
       id: this.id,
