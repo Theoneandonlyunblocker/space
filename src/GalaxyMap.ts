@@ -1,11 +1,12 @@
-/// <reference path="../lib/voronoi.d.ts" />
+import GalaxyMapSaveData from "./savedata/GalaxyMapSaveData.d.ts";
 
-/// <reference path="mapgencore/mapgenresult.ts" />
-/// <reference path="game.ts" />
-/// <reference path="fillerpoint.ts" />
-/// <reference path="star.ts" />
-/// <reference path="mapvoronoiinfo.ts" />
-/// <reference path="savedata/igalaxymapsavedata.d.ts" />
+import MapGenResult from "./mapgencore/MapGenResult.ts";
+
+import Star from "./Star.ts";
+import FillerPoint from "./FillerPoint.ts";
+import Player from "./Player.ts";
+import MapVoronoiInfo from "./MapVoronoiInfo.ts";
+
 
 export class GalaxyMap
 {
@@ -18,7 +19,7 @@ export class GalaxyMap
   independents: Player[];
   voronoi: MapVoronoiInfo;
 
-  constructor(mapGen: MapGenCore.MapGenResult)
+  constructor(mapGen: MapGenResult)
   {
     this.width = mapGen.width;
     this.height = mapGen.height;
@@ -53,9 +54,9 @@ export class GalaxyMap
       max: max
     });
   }
-  serialize(): IGalaxyMapSaveData
+  serialize(): GalaxyMapSaveData
   {
-    var data: IGalaxyMapSaveData =
+    var data: GalaxyMapSaveData =
     {
       stars: this.stars.map(function(star)
       {
