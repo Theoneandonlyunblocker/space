@@ -1,12 +1,7 @@
-export interface ITurnOrderDisplayData
-{
-  moveDelay: number;
+import Unit from "./Unit.ts";
+import TurnOrderDisplayData from "./TurnOrderDisplayData.d.ts";
 
-  isGhost: boolean;
-  unit: Unit;
-  displayName: string;
-}
-export class BattleTurnOrder
+export default class BattleTurnOrder
 {
   private allUnits: Unit[] = [];
   private orderedUnits: Unit[] = [];
@@ -70,7 +65,7 @@ export class BattleTurnOrder
   {
     return this.orderedUnits[0];
   }
-  private static getDisplayDataFromUnit(unit: Unit): ITurnOrderDisplayData
+  private static getDisplayDataFromUnit(unit: Unit): TurnOrderDisplayData
   {
     return(
     {
@@ -81,7 +76,7 @@ export class BattleTurnOrder
       displayName: unit.name
     });
   }
-  private static makeGhostDisplayData(ghostMoveDelay: number): ITurnOrderDisplayData
+  private static makeGhostDisplayData(ghostMoveDelay: number): TurnOrderDisplayData
   {
     return(
     {
@@ -111,7 +106,7 @@ export class BattleTurnOrder
 
     return i;
   }
-  public getDisplayData(ghostMoveDelay?: number, ghostId?: number): ITurnOrderDisplayData[]
+  public getDisplayData(ghostMoveDelay?: number, ghostId?: number): TurnOrderDisplayData[]
   {
     var displayData = this.orderedUnits.map(BattleTurnOrder.getDisplayDataFromUnit);
 
