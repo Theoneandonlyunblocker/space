@@ -1,13 +1,19 @@
-/// <reference path="../../modules/default/templates/personalities.ts" />
+import MapEvaluator from "./MapEvaluator.ts";
+import ObjectivesAI from "./ObjectivesAI.ts";
+import FrontsAI from "./FrontsAI.ts";
+import Front from "./Front.ts";
 
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="../game.ts"/>
+import Star from "../Star.ts";
+import Player from "../Player.ts";
+import
+{
+  getObjectKeysSortedByValue,
+  getRandomArrayItem
+} from "../utility.ts";
 
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
-/// <reference path="frontsai.ts"/>
+import UnitTemplate from "../templateinterfaces/UnitTemplate.d.ts";
 
-export class EconomyAI
+export default class EconomyAI
 {
   objectivesAI: ObjectivesAI;
   frontsAI: FrontsAI;
