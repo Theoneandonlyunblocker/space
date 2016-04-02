@@ -1,15 +1,24 @@
-/// <reference path="templateinterfaces/imanufacturablething.d.ts" />
+import ManufacturableThing from "./templateinterfaces/ManufacturableThing.d.ts";
+import UnitTemplate from "./templateinterfaces/UnitTemplate.d.ts";
+import ItemTemplate from "./templateinterfaces/ItemTemplate.d.ts";
 
-/// <reference path="savedata/imanufactorysavedata.d.ts" />
+import ManufactorySaveData from "./savedata/ManufactorySaveData.d.ts";
 
-export interface IManufacturableThingWithType
+import Star from "./Star.ts";
+import Player from "./Player.ts";
+import Unit from "./Unit.ts";
+import Item from "./Item.ts";
+import Fleet from "./Fleet.ts";
+import eventManager from "./eventManager.ts";
+
+interface ManufacturableThingWithType
 {
   type: string;
-  template: IManufacturableThing;
+  template: ManufacturableThing;
 }
-export class Manufactory
+export default class Manufactory
 {
-  buildQueue: IManufacturableThingWithType[] = [];
+  buildQueue: ManufacturableThingWithType[] = [];
 
   player: Player;
   star: Star;
@@ -69,7 +78,7 @@ export class Manufactory
   {
     return this.buildQueue.length >= this.capacity;
   }
-  addThingToQueue(template: IManufacturableThing, type: string)
+  addThingToQueue(template: ManufacturableThing, type: string)
   {
     this.buildQueue.push({type: type, template: template});
     this.player.money -= template.buildCost;
@@ -159,7 +168,7 @@ export class Manufactory
       potential: potential
     })
   }
-  getManufacturableThingsForType(type: string): IManufacturableThing[]
+  getManufacturableThingsForType(type: string): ManufacturableThing[]
   {
     switch (type)
     {
@@ -173,7 +182,7 @@ export class Manufactory
       }
     }
   }
-  canManufactureThing(template: IManufacturableThing, type: string)
+  canManufactureThing(template: ManufacturableThing, type: string)
   {
     var manufacturableThings = this.getManufacturableThingsForType(type);
     return manufacturableThings.indexOf(template) !== -1;
@@ -211,9 +220,9 @@ export class Manufactory
     this.player.money -= this.getUnitUpgradeCost();
     this.unitHealthModifier += amount;
   }
-  serialize(): IManufactorySaveData
+  serialize(): ManufactorySaveData
   {
-    var buildQueue = this.buildQueue.map(function(thingData: IManufacturableThingWithType)
+    var buildQueue = this.buildQueue.map(function(thingData: ManufacturableThingWithType)
     {
       return(
       {
