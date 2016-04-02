@@ -1,16 +1,17 @@
-/// <reference path="templateinterfaces/imaprenderermapmodetemplate.d.ts" />
-/// <reference path="maprendererlayer.ts" />
+import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate.d.ts";
 
-export class MapRendererMapMode
+import MapRendererLayer from "./MapRendererLayer.ts";
+
+export default class MapRendererMapMode
 {
-  template: IMapRendererMapModeTemplate;
+  template: MapRendererMapModeTemplate;
   displayName: string;
   layers: MapRendererLayer[] = [];
   activeLayers:
   {
     [layerName: string]: boolean;
   } = {};
-  constructor(template: IMapRendererMapModeTemplate)
+  constructor(template: MapRendererMapModeTemplate)
   {
     this.template = template;
     this.displayName = template.displayName;
