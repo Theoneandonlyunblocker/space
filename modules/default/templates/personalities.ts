@@ -1,17 +1,5 @@
 namespace Rance
 {
-  export interface ArchetypeValues
-  {
-    [archetypeType: string]: number;
-  }
-  export interface IPersonality
-  {
-    expansiveness: number;
-    aggressiveness: number;
-    friendliness: number;
-
-    unitCompositionPreference: ArchetypeValues;
-  }
   export function makeRandomPersonality(): IPersonality
   {
     var unitCompositionPreference: ArchetypeValues = {};
