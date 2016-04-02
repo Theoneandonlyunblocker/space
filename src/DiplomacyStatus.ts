@@ -1,17 +1,16 @@
-/// <reference path="eventmanager.ts" />
+import eventManager from "./eventManager.ts";
 
-/// <reference path="player.ts" />
-/// <reference path="attitudemodifier.ts" />
+import Player from "./Player.ts";
+import AttitudeModifier from "./AttitudeModifier.ts";
+import DiplomacyState from "./DiplomacyState.ts";
+import DiplomacyEvaluation from "./DiplomacyEvaluation.d.ts";
 
-/// <reference path="savedata/idiplomacystatussavedata.d.ts" />
+import DiplomacyStatusSaveData from "./savedata/DiplomacyStatusSaveData.d.ts";
+import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData.d.ts";
+import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate.d.ts";
 
-export enum DiplomaticState
-{
-  peace, // no fighting
-  coldWar, // fighting on neutral ground only
-  war // any fighting
-}
-export class DiplomacyStatus
+
+export default class DiplomacyStatus
 {
   player: Player;
   baseOpinion: number;
@@ -23,7 +22,7 @@ export class DiplomacyStatus
 
   statusByPlayer:
   {
-    [playerId: number]: DiplomaticState
+    [playerId: number]: DiplomacyState
   } = {};
 
   attitudeModifiersByPlayer:
@@ -130,29 +129,29 @@ export class DiplomacyStatus
     else
     {
       this.metPlayers[player.id] = player;
-      this.statusByPlayer[player.id] = DiplomaticState.coldWar;
+      this.statusByPlayer[player.id] = DiplomacyState.coldWar;
       this.attitudeModifiersByPlayer[player.id] = [];
       player.diplomacyStatus.meetPlayer(this.player);
     }
   }
   canDeclareWarOn(player: Player)
   {
-    return (this.statusByPlayer[player.id] < DiplomaticState.war);
+    return (this.statusByPlayer[player.id] < DiplomacyState.war);
   }
   canMakePeaceWith(player: Player)
   {
-    return (this.statusByPlayer[player.id] > DiplomaticState.peace);
+    return (this.statusByPlayer[player.id] > DiplomacyState.peace);
   }
   declareWarOn(player: Player)
   {
-    if (this.statusByPlayer[player.id] >= DiplomaticState.war)
+    if (this.statusByPlayer[player.id] >= DiplomacyState.war)
     {
       // TODO crash
       console.error("Players " + this.player.id + " and " + player.id + " are already at war");
       return;
     }
-    this.statusByPlayer[player.id] = DiplomaticState.war;
-    player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
+    this.statusByPlayer[player.id] = DiplomacyState.war;
+    player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState.war;
 
     eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
 
@@ -178,13 +177,13 @@ export class DiplomacyStatus
 
   makePeaceWith(player: Player)
   {
-    if (this.statusByPlayer[player.id] <= DiplomaticState.peace)
+    if (this.statusByPlayer[player.id] <= DiplomacyState.peace)
     {
       throw new Error("Players " + this.player.id + " and " + player.id + " are already at peace");
     }
 
-    this.statusByPlayer[player.id] = DiplomaticState.peace;
-    player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.peace;
+    this.statusByPlayer[player.id] = DiplomacyState.peace;
+    player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState.peace;
 
     player.diplomacyStatus.updateAttitudes();
   }
@@ -193,7 +192,7 @@ export class DiplomacyStatus
   {
     if (player.isIndependent) return true;
 
-    if (this.statusByPlayer[player.id] >= DiplomaticState.coldWar)
+    if (this.statusByPlayer[player.id] >= DiplomacyState.coldWar)
     {
       return true;
     }
@@ -204,7 +203,7 @@ export class DiplomacyStatus
   {
     if (player.isIndependent) return true;
 
-    if (this.statusByPlayer[player.id] >= DiplomaticState.war)
+    if (this.statusByPlayer[player.id] >= DiplomacyState.war)
     {
       return true;
     }
@@ -256,7 +255,7 @@ export class DiplomacyStatus
     this.addAttitudeModifier(source, modifier);
   }
 
-  processAttitudeModifiersForPlayer(player: Player, evaluation: IDiplomacyEvaluation)
+  processAttitudeModifiersForPlayer(player: Player, evaluation: DiplomacyEvaluation)
   {
     /*
     remove modifiers that should be removed
@@ -346,7 +345,7 @@ export class DiplomacyStatus
     }
   }
 
-  serialize(): IDiplomacyStatusSaveData
+  serialize(): DiplomacyStatusSaveData
   {
     var metPlayerIds: number[] = [];
     for (var playerId in this.metPlayers)
@@ -356,7 +355,7 @@ export class DiplomacyStatus
 
     var attitudeModifiersByPlayer:
     {
-      [playerId: number]: IAttitudeModifierSaveData[];
+      [playerId: number]: AttitudeModifierSaveData[];
     } = {};
     for (var playerId in this.attitudeModifiersByPlayer)
     {
@@ -369,7 +368,7 @@ export class DiplomacyStatus
     }
 
 
-    var data: IDiplomacyStatusSaveData =
+    var data: DiplomacyStatusSaveData =
     {
       metPlayerIds: metPlayerIds,
       statusByPlayer: this.statusByPlayer,
