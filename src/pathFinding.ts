@@ -1,6 +1,8 @@
 /// <reference path="star.ts" />
 /// <reference path="priorityqueue.ts" />
 
+import PriorityQueue from "./PriorityQueue.ts";
+import Star from "./Star.ts";
 
 export function backTrace(graph: any, target: Star)
 {
