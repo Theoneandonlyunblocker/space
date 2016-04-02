@@ -1,11 +1,11 @@
-/// <reference path="eventmanager.ts"/>
-/// <reference path="player.ts"/>
-/// <reference path="fleet.ts"/>
-/// <reference path="star.ts"/>
-/// <reference path="ibattledata.d.ts"/>
-/// <reference path="ifleetattacktarget.d.ts" />
+import Player from "./Player.ts";
+import Fleet from "./Fleet.ts";
+import eventManager from "./eventManager.ts";
+import Star from "./Star.ts";
+import FleetAttackTarget from "./FleetAttackTarget.d.ts";
+import RectangleSelect from "./RectangleSelect.ts";
 
-export class PlayerControl
+export default class PlayerControl
 {
   player: Player;
 
@@ -17,7 +17,7 @@ export class PlayerControl
     [fleetId: number]: boolean;
   } = {};
 
-  currentAttackTargets: IFleetAttackTarget[];
+  currentAttackTargets: FleetAttackTarget[];
 
   selectedStar: Star;
 
@@ -109,7 +109,7 @@ export class PlayerControl
         self.player.getFleetsWithPositions.bind(self.player);
     });
 
-    this.addEventListener("attackTarget", function(target: IFleetAttackTarget)
+    this.addEventListener("attackTarget", function(target: FleetAttackTarget)
     {
       self.attackTarget(target);
     });
@@ -329,7 +329,7 @@ export class PlayerControl
     }
     this.currentlyReorganizing = [];
   }
-  getCurrentAttackTargets(): IFleetAttackTarget[]
+  getCurrentAttackTargets(): FleetAttackTarget[]
   {
     if (this.selectedFleets.length < 1) return [];
     if (!this.areAllFleetsInSameLocation()) return [];
@@ -340,7 +340,7 @@ export class PlayerControl
     return possibleTargets;
   }
 
-  attackTarget(target: IFleetAttackTarget): void
+  attackTarget(target: FleetAttackTarget): void
   {
     if (this.currentAttackTargets.indexOf(target) < 0)
     {
