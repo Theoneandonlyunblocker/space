@@ -1,13 +1,13 @@
-/// <reference path="unit.ts"/>
-/// <reference path="player.ts"/>
-/// <reference path="battle.ts"/>
-/// <reference path="ibattledata.d.ts"/>
+import Unit from "./Unit.ts";
+import Player from "./Player.ts";
+import Battle from "./Battle.ts";
+import BattleData from "./BattleData.d.ts";
 
-export class BattlePrep
+export default class BattlePrep
 {
   attacker: Player;
   defender: Player;
-  battleData: IBattleData;
+  battleData: BattleData;
 
   attackerFormation: Unit[][];
   defenderFormation: Unit[][];
@@ -30,7 +30,7 @@ export class BattlePrep
 
   afterBattleFinishCallbacks: Function[] = [];
 
-  constructor(battleData: IBattleData)
+  constructor(battleData: BattleData)
   {
     this.attacker = battleData.attacker.player;
     this.attackerUnits = battleData.attacker.units;
