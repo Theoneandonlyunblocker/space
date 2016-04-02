@@ -1,29 +1,18 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-/// <reference path="maprenderermapmode.ts" />
-/// <reference path="maprendererlayer.ts" />
-/// <reference path="eventmanager.ts"/>
-/// <reference path="utility.ts"/>
-/// <reference path="color.ts"/>
+import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate.d.ts";
 
-/// <reference path="borderpolygon.ts"/>
-
-/// <reference path="galaxymap.ts" />
-/// <reference path="star.ts" />
-/// <reference path="fleet.ts" />
-/// <reference path="player.ts" />
+import GalaxyMap from "./GalaxyMap.ts";
+import Star from "./Star.ts";
+import Player from "./Player.ts";
+import MapRendererLayer from "./MapRendererLayer.ts";
+import MapRendererMapMode from "./MapRendererMapMode.ts";
+import eventManager from "./eventManager.ts";
+import Options from "./options.ts";
+import Fleet from "./Fleet.ts";
 
 
-export interface IMapRendererMapMode
-{
-  name: string;
-  displayName: string;
-  layers:
-  {
-    layer: MapRendererLayer;
-  }[];
-}
-export class MapRenderer
+export default class MapRenderer
 {
   container: PIXI.Container;
   parent: PIXI.Container;
@@ -240,10 +229,8 @@ export class MapRenderer
 
     if (!this.occupationShaders[owner.id][occupier.id])
     {
-      var baseColor = PIXI.utils.hex2rgb(owner.color);
-      baseColor.push(1.0);
-      var occupierColor = PIXI.utils.hex2rgb(occupier.color);
-      occupierColor.push(1.0);
+      var baseColor = owner.color.getRGB().push(1.0);
+      var occupierColor = occupier.color.getRGB().push(1.0);
 
       var uniforms =
       {
@@ -295,7 +282,7 @@ export class MapRenderer
   }
   initMapModes()
   {
-    var buildMapMode = function(template: IMapRendererMapModeTemplate)
+    var buildMapMode = function(template: MapRendererMapModeTemplate)
     {
       var alreadyAdded :
       {
@@ -326,7 +313,7 @@ export class MapRenderer
       buildMapMode(template);
     }
 
-    // var customMapModeTemplate: IMapRendererMapModeTemplate =
+    // var customMapModeTemplate: MapRendererMapModeTemplate =
     // {
     //   key: "custom",
     //   displayName: "Custom",
