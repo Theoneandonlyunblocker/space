@@ -1,8 +1,14 @@
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="../player.ts"/>
-/// <reference path="../star.ts" />
-/// <reference path="../game.ts" />
-/// <reference path="../fleet.ts" />
+import Star from "../Star.ts";
+import Player from "../Player.ts";
+import Game from "../Game.ts";
+import GalaxyMap from "../GalaxyMap.ts";
+import Fleet from "../Fleet.ts";
+import Unit from "../Unit.ts";
+import DiplomacyEvaluation from "../DiplomacyEvaluation.d.ts";
+import
+{
+  getRelativeValue
+} from "../utility.ts";
 
 export var defaultEvaluationParameters =
 {
@@ -19,7 +25,7 @@ export var defaultEvaluationParameters =
     productionWeight: 1,
   }
 }
-export interface IIndependentTargetEvaluations
+interface IndependentTargetEvaluations
 {
   [starId: number]:
   {
@@ -29,8 +35,8 @@ export interface IIndependentTargetEvaluations
     ownInfluence: number;
   }
 }
-// TODO ai | split into multiple classes eg vision, influence maps etc.
-export class MapEvaluator
+// TODO refactor | split into multiple classes eg vision, influence maps etc.
+export default class MapEvaluator
 {
   map: GalaxyMap;
   player: Player;
@@ -241,9 +247,9 @@ export class MapEvaluator
     return evaluation;
   }
 
-  evaluateIndependentTargets(targetStars: Star[]): IIndependentTargetEvaluations
+  evaluateIndependentTargets(targetStars: Star[]): IndependentTargetEvaluations
   {
-    var evaluationByStar: IIndependentTargetEvaluations = {};
+    var evaluationByStar: IndependentTargetEvaluations = {};
 
     for (var i = 0; i < targetStars.length; i++)
     {
@@ -267,7 +273,7 @@ export class MapEvaluator
     return evaluationByStar;
   }
 
-  scoreIndependentTargets(evaluations: IIndependentTargetEvaluations)
+  scoreIndependentTargets(evaluations: IndependentTargetEvaluations)
   {
     var scores:
     {
@@ -968,7 +974,7 @@ export class MapEvaluator
   {
     var evaluationByPlayer:
     {
-      [playerId: number]: IDiplomacyEvaluation;
+      [playerId: number]: DiplomacyEvaluation;
     } = {};
 
     var neighborStarsCountByPlayer:
