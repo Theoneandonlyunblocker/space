@@ -1,4 +1,4 @@
-declare interface IUnitAttributes
+declare interface UnitAttributes
 {
   maxActionPoints: number;
   attack: number;
@@ -6,3 +6,5 @@ declare interface IUnitAttributes
   intelligence: number;
   speed: number;
 }
+
+export default UnitAttributes;
