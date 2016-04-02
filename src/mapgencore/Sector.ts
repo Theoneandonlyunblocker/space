@@ -15,7 +15,7 @@ import ResourceTemplate from "../templateinterfaces/ResourceTemplate.d.ts";
 import Distributable from "../templateinterfaces/Distributable.d.ts";
 import UnitTemplate from "../templateinterfaces/UnitTemplate.d.ts";
 
-export class Sector
+export default class Sector
 {
   id: number;
   stars: Star[] = [];
