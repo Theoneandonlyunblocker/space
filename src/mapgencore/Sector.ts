@@ -1,5 +1,19 @@
-/// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
-/// <reference path="../star.ts" />
+import Region from "./Region.ts";
+
+import Star from "../Star.ts";
+import Player from "../Player.ts";
+import Unit from "../Unit.ts";
+import Building from "../Building.ts";
+import Fleet from "../Fleet.ts";
+
+import
+{
+  getRandomArrayItem
+} from "../utility.ts";
+
+import ResourceTemplate from "../templateinterfaces/ResourceTemplate.d.ts";
+import Distributable from "../templateinterfaces/Distributable.d.ts";
+import UnitTemplate from "../templateinterfaces/UnitTemplate.d.ts";
 
 export class Sector
 {
