@@ -1,11 +1,12 @@
-/// <reference path="../game.ts"/>
-/// <reference path="../player.ts"/>
-/// <reference path="../diplomacystatus.ts"/>
+import Game from "../Game.ts";
+import Player from "../Player.ts";
+import DiplomacyStatus from "../DiplomacyStatus.ts";
 
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
+import MapEvaluator from "./MapEvaluator.ts";
+import ObjectivesAI from "./ObjectivesAI.ts";
+import Objective from "./Objective.ts";
 
-export class DiplomacyAI
+export default class DiplomacyAI
 {
   game: Game;
 
