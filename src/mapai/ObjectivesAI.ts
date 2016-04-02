@@ -1,8 +1,12 @@
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="../game.ts"/>
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="grandstrategyai.ts" />
-/// <reference path="objective.ts"/>
+
+import MapEvaluator from "./MapEvaluator.ts";
+import GrandStrategyAI from "./GrandStrategyAI.ts";
+import Objective from "./Objective.ts";
+
+import GalaxyMap from "../GalaxyMap.ts";
+import Player from "../Player.ts";
+
+import ObjectiveTemplate from "../templateinterfaces/ObjectiveTemplate.d.ts";
 
 /*
 -- objectives ai
@@ -35,7 +39,7 @@ scouting objectives
     create perimeter of vision around own locations
  */
 
-export class ObjectivesAI
+export default class ObjectivesAI
 {
   mapEvaluator: MapEvaluator;
   map: GalaxyMap;
