@@ -27,17 +27,17 @@ import StatusEffect from "./StatusEffect.ts";
 import Fleet from "./Fleet.ts";
 import Player from "./Player.ts";
 import Star from "./Star.ts";
+import GuardCoverage from "./GuardCoverage.ts";
+import QueuedActionData from "./QueuedActionData.d.ts";
 
 import UnitSaveData from "./savedata/UnitSaveData.d.ts";
 
 import Front from "./mapai/Front.ts";
 
+
+
 export type UnitBattleSide = "side1" | "side2";
 export var UnitBattleSidesArray: UnitBattleSide[] = ["side1", "side2"];
-
-
-import GuardCoverage from "./GuardCoverage.ts";
-import QueuedActionData from "./QueuedActionData.d.ts";
 
 export interface UnitBattleStats
 {

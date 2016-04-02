@@ -1,12 +1,19 @@
-/// <reference path="player.ts"/>
-/// <reference path="galaxymap.ts"/>
-/// <reference path="eventmanager.ts"/>
-/// <reference path="notificationlog.ts" />
-/// <reference path="manufactory.ts" />
+import Player from "./Player.ts";
+import GalaxyMap from "./GalaxyMap.ts";
+import eventManager from "./eventManager.ts";
+import NotificationLog from "./NotificationLog.ts";
+import Manufactory from "./Manufactory.ts";
+import Unit from "./Unit.ts";
 
-/// <reference path="savedata/igamesavedata.d.ts" />
+import GameSaveData from "./savedata/GameSaveData.d.ts";
+import PlayerSaveData from "./savedata/PlayerSaveData.d.ts";
 
-export class Game
+import
+{
+  extendObject
+} from "./utility.ts";
+
+export default class Game
 {
   turnNumber: number;
   independents: Player[] = [];
@@ -147,19 +154,19 @@ export class Game
 
     this.playerOrder.splice(playerOrderIndex, 1);
   }
-  serialize(): IGameSaveData
+  serialize(): GameSaveData
   {
-    var playersSaveData: IPlayerSaveData[] = this.playerOrder.map(function(player: Player)
+    var playersSaveData: PlayerSaveData[] = this.playerOrder.map(function(player: Player)
     {
       return player.serialize()
     });
 
-    var independentsSaveData: IPlayerSaveData[] = this.independents.map(function(player: Player)
+    var independentsSaveData: PlayerSaveData[] = this.independents.map(function(player: Player)
     {
       return player.serialize()
     });
 
-    var data: IGameSaveData =
+    var data: GameSaveData =
     {
       turnNumber: this.turnNumber,
       galaxyMap: this.galaxyMap.serialize(),
