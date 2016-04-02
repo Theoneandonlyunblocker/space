@@ -7,6 +7,10 @@ import
 {
   reverseSide
 } from "./utility.ts"
+import
+{
+  TargetFormation
+} from "./targeting.ts"
 
 var _nullFormation: Unit[][];
 export function getNullFormation()

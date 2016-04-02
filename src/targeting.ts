@@ -1,6 +1,9 @@
-/// <reference path="utility.ts"/>
-/// <reference path="unit.ts"/>
-
+import Unit from "./Unit.ts";
+import
+{
+  flatten2dArray,
+  getFrom2dArray
+} from "./utility.ts"
 
 export enum TargetFormation
 {
