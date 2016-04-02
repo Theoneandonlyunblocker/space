@@ -1,10 +1,13 @@
 /// <reference path="../lib/pixi.d.ts" />
-/// <reference path="galaxymap.ts" />
-/// <reference path="templateinterfaces/imaprendererlayertemplate.d.ts" />
 
-export class MapRendererLayer
+import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate.d.ts";
+
+import GalaxyMap from "./GalaxyMap.ts";
+import MapRenderer from "./MapRenderer.ts";
+
+export default class MapRendererLayer
 {
-  template: IMapRendererLayerTemplate;
+  template: MapRendererLayerTemplate;
   container: PIXI.Container;
   isDirty: boolean = true;
   private _alpha: number;
@@ -17,7 +20,7 @@ export class MapRendererLayer
     this._alpha = newAlpha;
     this.container.alpha = newAlpha;
   }
-  constructor(template: IMapRendererLayerTemplate)
+  constructor(template: MapRendererLayerTemplate)
   {
     this.template = template;
     this.container = new PIXI.Container();

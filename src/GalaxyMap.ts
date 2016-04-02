@@ -8,7 +8,7 @@ import Player from "./Player.ts";
 import MapVoronoiInfo from "./MapVoronoiInfo.ts";
 
 
-export class GalaxyMap
+export default class GalaxyMap
 {
   stars: Star[];
   fillerPoints: FillerPoint[];
