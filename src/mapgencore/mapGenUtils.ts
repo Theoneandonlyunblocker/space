@@ -1,7 +1,26 @@
-/// <reference path="../star.ts" />
+import Sector from "./Sector.ts";
+import
+{
+  triangulate
+} from "./triangulation.ts";
 
-/// <reference path="sector.ts" />
-/// <reference path="triangulation.ts" />
+import Star from "../Star.ts";
+import Building from "../Building.ts";
+import Player from "../Player.ts";
+import Color from "../Color.ts";
+import Emblem from "../Emblem.ts";
+import Flag from "../Flag.ts";
+import
+{
+  aStar
+} from "../pathfinding.ts";
+import
+{
+  getRelativeWeightsFromObject,
+  getRandomKeyWithWeights
+} from "../utility.ts";
+
+import Distributable from "../templateinterfaces/Distributable.d.ts";
 
 export function linkAllStars(stars: Star[])
 {
@@ -352,8 +371,8 @@ export function distributeDistributablesPerSector(sectors: Sector[],
     } = {};
     for (var j = 0; j < candidates.length; j++)
     {
-      candidatesByWeight[candidates[j].type] =
-        alreadyAddedByWeight[candidates[j].type];
+      candidatesByWeight[candidates[j].ranceKey] =
+        alreadyAddedByWeight[candidates[j].ranceKey];
     }
 
 
@@ -400,9 +419,9 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
 export function setupPirates(player: Player)
 {
   player.name = "Pirates"
-  player.color = 0x000000;
+  player.color = Color.fromHex(0x000000);
   player.colorAlpha = 0;
-  player.secondaryColor = 0xFFFFFF;
+  player.secondaryColor = Color.fromHex(0xFFFFFF);
 
   player.isIndependent = true;
 
