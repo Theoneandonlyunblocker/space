@@ -1,6 +1,14 @@
-/// <reference path="notificationfilterstate.ts" />
-/// <reference path="notification.ts" />
-/// <reference path="player.ts" />
+import NotificationTemplate from "./templateinterfaces/NotificationTemplate.d.ts";
+
+import NotificationFilterState from "./NotificationFilterState.ts";
+import Notification from "./Notification.ts";
+import Player from "./Player.ts";
+
+import
+{
+  getMatchingLocalstorageItemsByDate,
+  extendObject
+} from "./utility.ts";
 
 export class NotificationFilter
 {
