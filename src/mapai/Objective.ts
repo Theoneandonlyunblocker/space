@@ -1,4 +1,9 @@
-/// <reference path="../star.ts"/>
+import ObjectiveTemplate from "../templateinterfaces/ObjectiveTemplate.d.ts";
+
+import MapEvaluator from "./MapEvaluator.ts";
+
+import Star from "../Star.ts";
+import Player from "../Player.ts";
 
 /*
 objectives:
@@ -12,7 +17,7 @@ objectives:
   ~~building
  */
 
-export class Objective
+export default class Objective
 {
   id: number;
   template: ObjectiveTemplate;
