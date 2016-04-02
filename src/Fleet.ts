@@ -1,12 +1,18 @@
-/// <reference path="player.ts" />
-/// <reference path="unit.ts" />
-/// <reference path="star.ts" />
 /// <reference path="pathfinding.ts"/>
 
-/// <reference path="savedata/ifleetsavedata.d.ts" />
+import Star from "./Star.ts";
+import Unit from "./Unit.ts";
+import Player from "./Player.ts";
+import FleetSaveData from "./savedata/FleetSaveData.d.ts";
+import eventManager from "./eventManager.ts";
+import
+{
+  aStar,
+  backTrace
+} from "./pathFinding.ts"
 
 
-export class Fleet
+export default class Fleet
 {
   player: Player;
   units: Unit[] = [];
@@ -331,9 +337,9 @@ export class Fleet
 
     return this.detectedStars;
   }
-  serialize(): IFleetSaveData
+  serialize(): FleetSaveData
   {
-    var data: IFleetSaveData =
+    var data: FleetSaveData =
     {
       id: this.id,
       name: this.name,
