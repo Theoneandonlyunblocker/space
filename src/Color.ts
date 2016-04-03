@@ -111,4 +111,13 @@ export default class Color
   {
     return this.getRGB();
   }
+  public static deSerialize(saveData?: ColorSaveData): Color
+  {
+    if (!saveData)
+    {
+      return undefined;
+    }
+    
+    return new Color(saveData[0], saveData[1], saveData[2]);
+  }
 }

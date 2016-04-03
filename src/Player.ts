@@ -853,9 +853,9 @@ export default class Player
     {
       id: this.id,
       name: this.name,
-      color: this.color,
+      color: this.color.serialize(),
       colorAlpha: this.colorAlpha,
-      secondaryColor: this.secondaryColor,
+      secondaryColor: this.secondaryColor.serialize(),
       isIndependent: this.isIndependent,
       isAI: this.isAI,
       resources: extendObject(this.resources),

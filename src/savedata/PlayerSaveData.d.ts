@@ -4,14 +4,15 @@ import FlagSaveData from "./FlagSaveData.d.ts";
 import FleetSaveData from "./FleetSaveData.d.ts";
 import ItemSaveData from "./ItemSaveData.d.ts";
 import PlayerTechnologySaveData from "./PlayerTechnologySaveData.d.ts";
+import ColorSaveData from "./ColorSaveData.d.ts";
 
 declare interface PlayerSaveData
 {
   id: number;
   name: string;
-  color: number;
+  color: ColorSaveData;
   colorAlpha: number;
-  secondaryColor: number;
+  secondaryColor: ColorSaveData;
   isIndependent: boolean;
   isAI: boolean;
   resources:
