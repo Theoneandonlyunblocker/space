@@ -1,4 +1,8 @@
-export function buildTemplateIndexes()
+import UnitFamily from "./templateinterfaces/UnitFamily.d.ts";
+import ResourceTemplate from "./templateinterfaces/ResourceTemplate.d.ts";
+import ItemTemplate from "./templateinterfaces/ItemTemplate.d.ts";
+
+export default function buildTemplateIndexes()
 {
   TemplateIndexes.distributablesByDistributionGroup = getDistributablesByDistributionGroup();
   TemplateIndexes.itemsByTechLevel = getItemsByTechLevel();

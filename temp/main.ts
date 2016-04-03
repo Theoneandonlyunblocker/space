@@ -15,7 +15,7 @@
 /// <reference path="notificationlog.ts" />
 
 /// <reference path="setdynamictemplateproperties.ts"/>
-/// <reference path="templateindexes.ts"/>
+/// <reference path="buildTemplateIndexes.ts"/>
 /// <reference path="options.ts"/>
 /// <reference path="tutorials/tutorialstatus.ts" />
 
