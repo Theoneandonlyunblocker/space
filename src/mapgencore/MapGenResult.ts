@@ -12,7 +12,7 @@ import
 {
   relaxVoronoi,
   makeVoronoi
-} from "./mapGenUtils.ts";
+} from "./voronoi.ts";
 
 export default class MapGenResult
 {
@@ -84,10 +84,11 @@ export default class MapGenResult
       star.basisY = star.y;
     }
 
-    relaxVoronoi(voronoiInfo.diagram, function(point)
+    relaxVoronoi(voronoiInfo.diagram, function(point: Point)
     {
       // dont move filler points
-      return isFinite(point.id) ? 1 : 0;
+      const castedPoint = <Star> point;
+      return isFinite(castedPoint.id) ? 1 : 0;
     });
 
     return voronoiInfo;
