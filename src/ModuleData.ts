@@ -1,11 +1,11 @@
-/// <reference path="ruleset.ts" />
+/// <reference path="RuleSet.ts" />
 import ModuleFile from "./ModuleFile.d.ts";
 import Personality from "../src/Personality.d.ts";
 import
 {
-  RuleSet,
+  default as RuleSet,
   defaultRuleSet
-} from "./ruleSet.ts";
+} from "./RuleSet.ts";
 
 import
 {

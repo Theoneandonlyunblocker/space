@@ -29,6 +29,8 @@ export interface RuleSet
   }
 }
 
+export default RuleSet;
+
 export const defaultRuleSet: RuleSet =
 {
   manufactory:

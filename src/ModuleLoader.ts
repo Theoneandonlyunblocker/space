@@ -1,9 +1,6 @@
 import ModuleData from "./ModuleData.ts";
 import ModuleFile from "./ModuleFile.d.ts";
-import
-{
-  RuleSet
-} from "./ruleSet.ts";
+import RuleSet from "./RuleSet.ts";
 import
 {
   deepMerge
