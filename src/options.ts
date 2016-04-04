@@ -5,7 +5,7 @@ import
   extendObject
 } from "./utility.ts";
 
-export interface IOptions
+interface Options
 {
   battleAnimationTiming:
   {
@@ -30,7 +30,7 @@ export interface IOptions
   };
 }
 
-export const defaultOptions: IOptions =
+export const defaultOptions: Options =
 {
   battleAnimationTiming:
   {
@@ -55,8 +55,7 @@ export const defaultOptions: IOptions =
   }
 }
 
-let Options: IOptions = extendObject(defaultOptions);
-export default Options;
+export let Options: Options = extendObject(defaultOptions);
 
 export function saveOptions(slot: number = 0)
 {

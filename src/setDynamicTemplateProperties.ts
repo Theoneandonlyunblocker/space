@@ -12,6 +12,7 @@ export default function setDynamicTemplateProperties()
   setAttitudeModifierOverride();
   setUnitFamilyAssociatedTemplates();
 }
+// TODO | use proper ability usage system
 function setAbilityGuardAddition()
 {
   function checkIfAbilityAddsGuard(ability: AbilityTemplate)
