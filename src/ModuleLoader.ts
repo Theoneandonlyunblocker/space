@@ -1,11 +1,20 @@
-/// <reference path="moduledata.ts" />
+import ModuleData from "./ModuleData.ts";
+import ModuleFile from "./ModuleFile.d.ts";
+import
+{
+  RuleSet
+} from "./ruleSet.ts";
+import
+{
+  deepMerge
+} from "./utility.ts";
 
-export class ModuleLoader
+export default class ModuleLoader
 {
   moduleData: ModuleData;
   moduleFiles:
   {
-    [index: string]: IModuleFile;
+    [index: string]: ModuleFile;
   } = {};
   hasLoaded:
   {
@@ -21,7 +30,7 @@ export class ModuleLoader
     this.moduleData = new ModuleData();
   }
 
-  addModuleFile(moduleFile: IModuleFile)
+  addModuleFile(moduleFile: ModuleFile)
   {
     if (this.moduleFiles[moduleFile.key])
     {
@@ -31,7 +40,7 @@ export class ModuleLoader
     this.moduleFiles[moduleFile.key] = moduleFile;
     this.hasLoaded[moduleFile.key] = false;
   }
-  loadModuleFile(moduleFile: IModuleFile, afterLoaded: () => void)
+  loadModuleFile(moduleFile: ModuleFile, afterLoaded: () => void)
   {
     if (!this.moduleFiles[moduleFile.key])
     {
@@ -73,7 +82,7 @@ export class ModuleLoader
 
     return true;
   }
-  finishLoadingModuleFile(moduleFile: IModuleFile, afterLoaded: () => void)
+  finishLoadingModuleFile(moduleFile: ModuleFile, afterLoaded: () => void)
   {
     this.hasLoaded[moduleFile.key] = true;
     this.constructModuleFile(moduleFile);
@@ -81,12 +90,12 @@ export class ModuleLoader
     console.log("Module '" + moduleFile.key + "' finished loading in " + loadTime + "ms");
     afterLoaded();
   }
-  constructModuleFile(moduleFile: IModuleFile)
+  constructModuleFile(moduleFile: ModuleFile)
   {
     moduleFile.constructModule(this.moduleData);
     this.moduleData.addSubModule(moduleFile);
   }
-  copyRuleSet(toCopy: IModuleRuleSet)
+  copyRuleSet(toCopy: RuleSet)
   {
     this.moduleData.ruleSet = deepMerge(this.moduleData.ruleSet, toCopy);
   }
