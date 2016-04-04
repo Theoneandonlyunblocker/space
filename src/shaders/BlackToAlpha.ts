@@ -8,6 +8,8 @@ interface Uniforms
 
 export default class BlackToAlpha extends PIXI.AbstractFilter
 {
+  uniforms: Uniforms
+
   constructor(uniforms?: Uniforms)
   {
     super(null, sourceLines.join("\n"), uniforms);

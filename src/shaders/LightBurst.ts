@@ -4,17 +4,19 @@
 
 interface Uniforms
 {
-  centerBloomStrength: number;
-  centerSize: number;
-  rayColor: number[];
-  raySharpness: number;
-  rayStrength: number;
-  rotation: number;
-  seed: number[];
+  centerBloomStrength: {type: "1f"; value: number;};
+  centerSize: {type: "1f"; value: number;};
+  rayColor: {type: "4fv"; value: number[];};
+  raySharpness: {type: "1f"; value: number;};
+  rayStrength: {type: "1f"; value: number;};
+  rotation: {type: "1f"; value: number;};
+  seed: {type: "2fv"; value: number[];};
 }
 
 export default class LightBurst extends PIXI.AbstractFilter
 {
+  uniforms: Uniforms
+
   constructor(uniforms?: Uniforms)
   {
     super(null, sourceLines.join("\n"), uniforms);

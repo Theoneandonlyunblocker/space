@@ -4,15 +4,17 @@
 
 interface Uniforms
 {
-  baseColor: number[];
-  gapSize: number;
-  lineColor: number[];
-  offset: number[];
-  zoom: number;
+  baseColor: {type: "4fv"; value: number[];};
+  gapSize: {type: "1f"; value: number;};
+  lineColor: {type: "4fv"; value: number[];};
+  offset: {type: "2fv"; value: number[];};
+  zoom: {type: "1f"; value: number;};
 }
 
 export default class Occupation extends PIXI.AbstractFilter
 {
+  uniforms: Uniforms
+
   constructor(uniforms?: Uniforms)
   {
     super(null, sourceLines.join("\n"), uniforms);

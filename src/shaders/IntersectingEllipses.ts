@@ -4,17 +4,19 @@
 
 interface Uniforms
 {
-  intersectingEllipseCenter: number[];
-  intersectingEllipseSharpness: number;
-  intersectingEllipseSize: number[];
-  mainAlpha: number;
-  mainColor: number[];
-  mainEllipseSharpness: number;
-  mainEllipseSize: number[];
+  intersectingEllipseCenter: {type: "2fv"; value: number[];};
+  intersectingEllipseSharpness: {type: "1f"; value: number;};
+  intersectingEllipseSize: {type: "2fv"; value: number[];};
+  mainAlpha: {type: "1f"; value: number;};
+  mainColor: {type: "4fv"; value: number[];};
+  mainEllipseSharpness: {type: "1f"; value: number;};
+  mainEllipseSize: {type: "2fv"; value: number[];};
 }
 
 export default class IntersectingEllipses extends PIXI.AbstractFilter
 {
+  uniforms: Uniforms
+
   constructor(uniforms?: Uniforms)
   {
     super(null, sourceLines.join("\n"), uniforms);

@@ -18,15 +18,28 @@ typeScriptTypes = {
   "vec2": "number[]",
   "vec3": "number[]",
   "vec4": "number[]",
-  "bvec2": "boolean[]",
-  "bvec3": "boolean[]",
-  "bvec4": "boolean[]",
   "ivec2": "number[]",
   "ivec3": "number[]",
   "ivec4": "number[]",
   "mat2": "number[][]",
   "mat3": "number[][]",
-  "mat4": "number[][]"
+  "mat4": "number[][]",
+  "sampler2D": "PIXI.Texture"
+}
+pixiTypes = {
+  "bool": "bool",
+  "int": "1i",
+  "float": "1f",
+  "vec2": "2fv",
+  "vec3": "3fv",
+  "vec4": "4fv",
+  "ivec2": "2iv",
+  "ivec3": "3iv",
+  "ivec4": "4iv",
+  "mat2": "mat2",
+  "mat3": "mat3",
+  "mat4": "mat4",
+  "sampler2D": "sampler2D"
 }
 
 pixiUniforms = [
@@ -78,8 +91,10 @@ def getUniformsLines(uniformTypes):
   ]
 
   for uniformName in sorted(uniformTypes):
-    typeScriptType = typeScriptTypes[uniformTypes[uniformName]]
-    lines.append('  {0}: {1};\n'.format(uniformName, typeScriptType))
+    glslType = uniformTypes[uniformName]
+    pixiType = pixiTypes[glslType]
+    typeScriptType = typeScriptTypes[glslType]
+    lines.append('  {0}: {{type: "{1}"; value: {2};}};\n'.format(uniformName, pixiType, typeScriptType))
 
   lines.append('}\n\n')
 
@@ -118,6 +133,7 @@ def writeConvertedShader(outFile, sourceLines, shaderName, fileName):
   outFile.writelines([
     'export default class {0} extends PIXI.AbstractFilter\n'.format(shaderName),
     '{\n',
+    '  uniforms: Uniforms\n\n',
     '  constructor(uniforms?: Uniforms)\n',
     '  {\n',
     '    super(null, sourceLines.join("\\n"), uniforms);\n',

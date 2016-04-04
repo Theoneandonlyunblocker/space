@@ -4,24 +4,26 @@
 
 interface Uniforms
 {
-  aspectRatio: number;
-  beamColor: number[];
-  bulgeIntensity: number;
-  bulgeSharpness: number;
-  bulgeSize: number[];
-  bulgeXPosition: number;
-  lineIntensity: number;
-  lineXSharpness: number;
-  lineXSize: number[];
-  lineYSharpness: number;
-  lineYSize: number;
-  noiseAmplitude: number;
-  seed: number;
-  time: number;
+  aspectRatio: {type: "1f"; value: number;};
+  beamColor: {type: "4fv"; value: number[];};
+  bulgeIntensity: {type: "1f"; value: number;};
+  bulgeSharpness: {type: "1f"; value: number;};
+  bulgeSize: {type: "2fv"; value: number[];};
+  bulgeXPosition: {type: "1f"; value: number;};
+  lineIntensity: {type: "1f"; value: number;};
+  lineXSharpness: {type: "1f"; value: number;};
+  lineXSize: {type: "2fv"; value: number[];};
+  lineYSharpness: {type: "1f"; value: number;};
+  lineYSize: {type: "1f"; value: number;};
+  noiseAmplitude: {type: "1f"; value: number;};
+  seed: {type: "1f"; value: number;};
+  time: {type: "1f"; value: number;};
 }
 
 export default class Beam extends PIXI.AbstractFilter
 {
+  uniforms: Uniforms
+
   constructor(uniforms?: Uniforms)
   {
     super(null, sourceLines.join("\n"), uniforms);

@@ -4,17 +4,19 @@
 
 interface Uniforms
 {
-  blockAlpha: number;
-  blockSize: number;
-  blockWidth: number;
-  frontier: number;
-  lineAlpha: number;
-  seed: number;
-  trailDistance: number;
+  blockAlpha: {type: "1f"; value: number;};
+  blockSize: {type: "1f"; value: number;};
+  blockWidth: {type: "1f"; value: number;};
+  frontier: {type: "1f"; value: number;};
+  lineAlpha: {type: "1f"; value: number;};
+  seed: {type: "1f"; value: number;};
+  trailDistance: {type: "1f"; value: number;};
 }
 
 export default class Guard extends PIXI.AbstractFilter
 {
+  uniforms: Uniforms
+
   constructor(uniforms?: Uniforms)
   {
     super(null, sourceLines.join("\n"), uniforms);

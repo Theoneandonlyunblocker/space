@@ -4,22 +4,24 @@
 
 interface Uniforms
 {
-  baseColor: number[];
-  cloudLightness: number;
-  coverage: number;
-  diffusion: number;
-  highlightA: number;
-  highlightB: number;
-  highlightColor: number[];
-  overlayColor: number[];
-  scale: number;
-  seed: number[];
-  streakLightness: number;
-  streakiness: number;
+  baseColor: {type: "3fv"; value: number[];};
+  cloudLightness: {type: "1f"; value: number;};
+  coverage: {type: "1f"; value: number;};
+  diffusion: {type: "1f"; value: number;};
+  highlightA: {type: "1f"; value: number;};
+  highlightB: {type: "1f"; value: number;};
+  highlightColor: {type: "3fv"; value: number[];};
+  overlayColor: {type: "3fv"; value: number[];};
+  scale: {type: "1f"; value: number;};
+  seed: {type: "2fv"; value: number[];};
+  streakLightness: {type: "1f"; value: number;};
+  streakiness: {type: "1f"; value: number;};
 }
 
 export default class Nebula extends PIXI.AbstractFilter
 {
+  uniforms: Uniforms
+
   constructor(uniforms?: Uniforms)
   {
     super(null, sourceLines.join("\n"), uniforms);

@@ -4,13 +4,15 @@
 
 interface Uniforms
 {
-  highlightIntensity: number;
-  spikeColor: number[];
-  spikeIntensity: number;
+  highlightIntensity: {type: "1f"; value: number;};
+  spikeColor: {type: "4fv"; value: number[];};
+  spikeIntensity: {type: "1f"; value: number;};
 }
 
 export default class ShinyParticle extends PIXI.AbstractFilter
 {
+  uniforms: Uniforms
+
   constructor(uniforms?: Uniforms)
   {
     super(null, sourceLines.join("\n"), uniforms);
