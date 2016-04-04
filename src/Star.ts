@@ -13,9 +13,14 @@ import Point from "./Point.ts";
 import Player from "./Player.ts";
 import Fleet from "./Fleet.ts";
 import Building from "./Building.ts";
+import BuildingUpgradeData from "./BuildingUpgradeData.d.ts";
 import Manufactory from "./Manufactory.ts";
 import Unit from "./Unit.ts";
 import FleetAttackTarget from "./FleetAttackTarget.d.ts";
+import
+{
+  aStar
+} from "./pathFinding.ts";
 
 import StarSaveData from "./savedata/StarSaveData.d.ts";
 import StarBuildingsSaveData from "./savedata/StarBuildingsSaveData.d.ts";
@@ -351,7 +356,7 @@ export default class Star implements Point
       var building = ownerBuildings[i];
       var upgrades = building.getPossibleUpgrades();
 
-      upgrades = upgrades.filter(function(upgradeData: IBuildingUpgradeData)
+      upgrades = upgrades.filter(function(upgradeData: BuildingUpgradeData)
       {
         var parent = upgradeData.parentBuilding.template;
         var template = upgradeData.template;
