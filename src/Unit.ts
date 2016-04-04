@@ -215,7 +215,7 @@ export default class Unit
         var item = data.items[slot];
         if (!item) return;
 
-        items[slot] = new Item(app.moduleData.tems[item.templateType], item.id);
+        items[slot] = new Item(app.moduleData.Templates.Items[item.templateType], item.id);
       }
     });
 

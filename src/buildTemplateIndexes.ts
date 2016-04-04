@@ -53,9 +53,9 @@ function getItemsByTechLevel()
   {
     [techLevel: number]: ItemTemplate[];
   } = {};
-  for (var itemName in app.moduleData.tems)
+  for (var itemName in app.moduleData.Templates.Items)
   {
-    var item = app.moduleData.tems[itemName];
+    var item = app.moduleData.Templates.Items[itemName];
 
     if (!itemsByTechLevel[item.techLevel])
     {

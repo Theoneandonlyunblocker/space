@@ -779,9 +779,9 @@ export default class Player
     // TODO manufactory
     var itemTypes: ItemTemplate[] = [];
 
-    for (var key in app.moduleData.tems)
+    for (var key in app.moduleData.Templates.Items)
     {
-      itemTypes.push(app.moduleData.tems[key]);
+      itemTypes.push(app.moduleData.Templates.Items[key]);
     }
 
     return itemTypes;
