@@ -320,8 +320,6 @@ export default class Renderer
       this.renderBackground();
     }
 
-    this.shaderManager.uniformManager.updateTime();
-
     this.renderer.render(this.stage);
 
     if (this.activeRenderLoopId === renderLoopId)

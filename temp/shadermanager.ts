@@ -1,4 +1,3 @@
-/// <reference path="uniformmanager.ts"/>
 /// <reference path="shaders/converted/shadersources.ts"/>
 
 export class NebulaFilter extends PIXI.AbstractFilter
@@ -28,10 +27,8 @@ export class ShaderManager
   {
     [name: string]: PIXI.AbstractFilter;
   } = {};
-  uniformManager: UniformManager;
   constructor()
   {
-    this.uniformManager = new UniformManager();
     this.initNebula();
   }
   initNebula()
