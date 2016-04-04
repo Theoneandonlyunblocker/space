@@ -1,33 +1,42 @@
-export interface ISpriteSheetFrame
+import app from "./App.ts";
+
+interface SpriteSheetFrame
 {
   x: number;
   y: number;
   w: number;
   h: number;
 }
-export interface ISpriteSheetData
+interface SpriteSheetData
 {
   frames:
   {
     [id: string]:
     {
-      frame: ISpriteSheetFrame;
+      frame: SpriteSheetFrame;
     }
   };
   meta: any;
 };
 
-function processSpriteSheet(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement,
-  processFrameFN: (sheetImg: HTMLImageElement, frame: ISpriteSheetFrame, spriteName?: string) => void)
+function processSpriteSheet(sheetData: SpriteSheetData, sheetImg: HTMLImageElement,
+  processFrameFN: (sheetImg: HTMLImageElement, frame: SpriteSheetFrame, spriteName?: string) => void)
 {
   for (var spriteName in sheetData.frames)
   {
     processFrameFN(sheetImg, sheetData.frames[spriteName].frame, spriteName);
   }
 }
-export function cacheSpriteSheetAsImages(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement)
+
+function addImageToApp(name: string, image: HTMLImageElement)
 {
-  var spriteToImageFN = function(sheetImg: HTMLImageElement, frame: ISpriteSheetFrame, spriteName: string)
+  app.images[name] = image;
+}
+
+export default function cacheSpriteSheetAsImages(sheetData: SpriteSheetData, sheetImg: HTMLImageElement,
+  onImageCreated: (name: string, image: HTMLImageElement) => void = addImageToApp)
+{
+  var spriteToImageFN = function(sheetImg: HTMLImageElement, frame: SpriteSheetFrame, spriteName: string)
   {
     var canvas = <HTMLCanvasElement> document.createElement("canvas");
     canvas.width = frame.w;
@@ -45,7 +54,7 @@ export function cacheSpriteSheetAsImages(sheetData: ISpriteSheetData, sheetImg: 
     //   throw new Error("Duplicate image name " + spriteName);
     //   return;
     // }
-    app.images[spriteName] = image;
+    onImageCreated(spriteName, image);
   }
 
   processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
