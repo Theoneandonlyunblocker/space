@@ -19,7 +19,8 @@ import
   getRandomArrayItemWithWeights,
   getRandomProperty,
   clamp,
-  getItemsFromWeightedProbabilities
+  getItemsFromWeightedProbabilities,
+  defaultNameGenerator
 } from "./utility.ts"
 import Battle from "./Battle.ts";
 import Item from "./Item.ts";
@@ -29,37 +30,16 @@ import Player from "./Player.ts";
 import Star from "./Star.ts";
 import GuardCoverage from "./GuardCoverage.ts";
 import QueuedActionData from "./QueuedActionData.d.ts";
+import UnitBattleStats from "./UnitBattleStats.d.ts";
+import UnitBattleSide from "./UnitBattleSide.ts";
 
 import UnitSaveData from "./savedata/UnitSaveData.d.ts";
+import UnitItemsSaveData from "./savedata/UnitItemsSaveData.d.ts";
+import UnitBattleStatsSaveData from "./savedata/UnitBattleStatsSaveData.d.ts";
+
 
 import Front from "./mapai/Front.ts";
 
-
-
-export type UnitBattleSide = "side1" | "side2";
-export var UnitBattleSidesArray: UnitBattleSide[] = ["side1", "side2"];
-
-export interface UnitBattleStats
-{
-  moveDelay: number;
-  side: UnitBattleSide;
-  position: number[];
-  currentActionPoints: number;
-  guardAmount: number;
-  guardCoverage: GuardCoverage;
-  captureChance: number;
-  statusEffects: StatusEffect[];
-  lastHealthBeforeReceivingDamage: number;
-  queuedAction: QueuedActionData;
-  isAnnihilated: boolean;
-}
-
-export interface UnitItems
-{
-  low: Item;
-  mid: Item;
-  high: Item;
-}
 
 export default class Unit
 {
@@ -102,7 +82,12 @@ export default class Unit
 
   fleet: Fleet;
 
-  items: UnitItems =
+  items:
+  {
+    low: Item;
+    mid: Item;
+    high: Item;
+  } =
   {
     low: null,
     mid: null,
