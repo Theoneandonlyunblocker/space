@@ -1,7 +1,12 @@
-/// <reference path="../src/utility.ts" />
-/// <reference path="../src/unit.ts" />
+import Unit from "./Unit.ts";
+import
+{
+  getRandomProperty
+} from "./utility.ts";
 
-export function setAllDynamicTemplateProperties()
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
+
+export default function setDynamicTemplateProperties()
 {
   setAbilityGuardAddition();
   setAttitudeModifierOverride();
