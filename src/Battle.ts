@@ -9,6 +9,11 @@ import BattleTurnOrder from "./BattleTurnOrder.ts";
 import Player from "./Player.ts";
 import
 {
+  default as UnitBattleSide,
+  UnitBattleSides
+} from "./UnitBattleSide.ts";
+import
+{
   clamp,
   randInt,
   reverseSide
@@ -85,7 +90,7 @@ export default class Battle
     var self = this;
 
 
-    UnitBattleSidesArray.forEach(function(sideId: UnitBattleSide)
+    UnitBattleSides.forEach(function(sideId: UnitBattleSide)
     {
       var side = self[sideId];
       for (var i = 0; i < side.length; i++)
@@ -245,7 +250,7 @@ export default class Battle
   }
   getUnitDeathChance(unit: Unit, victor: Player)
   {
-    var ruleSet: IModuleRuleSet = app.moduleData.ruleSet;
+    var ruleSet: RuleSet = app.moduleData.ruleSet;
     var player: Player = unit.fleet.player;
 
     var deathChance: number;
@@ -428,7 +433,7 @@ export default class Battle
     var self = this;
     var evaluation = 0;
 
-    UnitBattleSidesArray.forEach(function(side: UnitBattleSide)
+    UnitBattleSides.forEach(function(side: UnitBattleSide)
     {
       // positive * sign === good, negative * sign === bad
       var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
