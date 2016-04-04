@@ -1,12 +1,22 @@
-/// <reference path="../lib/react-global-0.13.3.d.ts" />
+/// <reference path="../lib/react-0.13.3.d.ts" />
+import * as React from "react";
 
-/// <reference path="eventmanager.ts"/>
+import Battle from "./Battle.ts";
+import BattlePrep from "./BattlePrep.ts";
+import Renderer from "./Renderer.ts";
+import MapRenderer from "./MapRenderer.ts";
+import PlayerControl from "./PlayerControl.ts";
+import Player from "./Player.ts";
+import Game from "./Game.ts";
+import eventManager from "./eventManager.ts";
+
 /// <reference path="uicomponents/stage.ts"/>
+import Stage from "./uicomponents/Stage.ts";
 
-export class ReactUI
+export default class ReactUI
 {
   currentScene: string;
-  stage: any;
+  stage: Stage;
   battle: Battle;
   battlePrep: BattlePrep;
   renderer: Renderer;
@@ -16,7 +26,7 @@ export class ReactUI
   game: Game;
 
   switchSceneFN: any;
-  
+
   constructor(public container: HTMLElement)
   {
     React.initializeTouchEvents(true);
@@ -46,7 +56,7 @@ export class ReactUI
   render()
   {
     this.stage = React.render(
-      UIComponents.Stage(
+      Stage(
         {
           sceneToRender: this.currentScene,
           changeSceneFunction: this.switchScene.bind(this),
