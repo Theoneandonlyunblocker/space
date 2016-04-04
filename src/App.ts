@@ -23,7 +23,12 @@ import
   onDOMLoaded
 } from "./utility.ts";
 
-export default class App
+import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues.d.ts";
+
+const app = new App();
+export default app;
+
+class App
 {
   seed: string;
   renderer: Renderer;
@@ -208,7 +213,7 @@ export default class App
       }
     }
 
-    var mapGenResult = app.moduleData.getDefaultMap().mapGenFunction(
+    var mapGenResult = this.moduleData.getDefaultMap().mapGenFunction(
       optionValues,
       playerData.players
     );
@@ -285,4 +290,3 @@ export default class App
   }
 }
 
-var app = new App();
