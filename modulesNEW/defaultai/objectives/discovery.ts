@@ -20,7 +20,7 @@ import
 } from "./aiutils.ts";
 
 
-export var discovery: ObjectiveTemplate =
+const discovery: ObjectiveTemplate =
 {
   key: "discovery",
   movePriority: 999,
@@ -107,3 +107,5 @@ export var discovery: ObjectiveTemplate =
     return {min: 1, ideal: 1};
   }
 }
+
+export default discovery;
