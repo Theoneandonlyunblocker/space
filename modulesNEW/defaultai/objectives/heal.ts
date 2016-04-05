@@ -12,7 +12,7 @@ import Unit from "../../../src/Unit.ts";
 import
 {
   moveToRoutine
-} from "./aiutils.ts";
+} from "../aiUtils.ts";
 
 const heal: ObjectiveTemplate =
 {

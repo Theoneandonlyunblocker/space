@@ -16,7 +16,7 @@ import
   defaultUnitFitFN,
   makeObjectivesFromScores,
   getUnitsToBeatImmediateTarget
-} from "./aiutils.ts";
+} from "../aiUtils.ts";
 
 const cleanUpPirates: ObjectiveTemplate =
 {

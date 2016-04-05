@@ -17,7 +17,7 @@ import
   scoutingUnitDesireFN,
   scoutingUnitFitFN,
   makeObjectivesFromScores
-} from "./aiutils.ts";
+} from "../aiUtils.ts";
 
 
 const discovery: ObjectiveTemplate =

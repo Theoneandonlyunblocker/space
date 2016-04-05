@@ -21,7 +21,7 @@ import
   defaultUnitDesireFN,
   defaultUnitFitFN,
   getUnitsToBeatImmediateTarget
-} from "./aiutils.ts";
+} from "../aiUtils.ts";
 
 const conquer: ObjectiveTemplate =
 {

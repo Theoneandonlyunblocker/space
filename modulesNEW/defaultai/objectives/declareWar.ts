@@ -10,7 +10,7 @@ import Player from "../../../src/Player.ts";
 import
 {
   makeObjectivesFromScores
-} from "./aiutils.ts";
+} from "../aiUtils.ts";
 
 const declareWar: ObjectiveTemplate =
 {

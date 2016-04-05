@@ -11,7 +11,7 @@ import
   scoutingUnitDesireFN,
   scoutingUnitFitFN,
   perimeterObjectiveCreation
-} from "./aiutils.ts";
+} from "../aiUtils.ts";
 
 const scoutingPerimeter: ObjectiveTemplate =
 {
