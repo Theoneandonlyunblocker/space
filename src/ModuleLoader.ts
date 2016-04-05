@@ -44,12 +44,19 @@ export default class ModuleLoader
       this.addModuleFile(moduleFile);
     }
 
-    this.moduleLoadStart[moduleFile.key] = Date.now();
-    moduleFile.loadAssets(this.finishLoadingModuleFile.bind(this, moduleFile, afterLoaded));
-
     if (moduleFile.ruleSet)
     {
       this.copyRuleSet(moduleFile.ruleSet);
+    }
+    
+    this.moduleLoadStart[moduleFile.key] = Date.now();
+    if (moduleFile.loadAssets)
+    {
+      moduleFile.loadAssets(this.finishLoadingModuleFile.bind(this, moduleFile, afterLoaded));
+    }
+    else
+    {
+      this.finishLoadingModuleFile(moduleFile, afterLoaded);
     }
   }
   loadAll(afterLoaded: () => void)
@@ -89,7 +96,11 @@ export default class ModuleLoader
   }
   constructModuleFile(moduleFile: ModuleFile)
   {
-    moduleFile.constructModule(this.moduleData);
+    if (moduleFile.constructModule)
+    {
+      moduleFile.constructModule(this.moduleData);
+    }
+    
     this.moduleData.addSubModule(moduleFile);
   }
   copyRuleSet(toCopy: RuleSet)

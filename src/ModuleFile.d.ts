@@ -13,8 +13,8 @@ declare interface ModuleFile
 {
   key: string;
   metaData: ModuleMetaData;
-  loadAssets: (callback: Function) => void;
-  constructModule: (ModuleData: ModuleData) => ModuleData;
+  loadAssets?: (callback: Function) => void;
+  constructModule?: (ModuleData: ModuleData) => ModuleData;
   ruleSet?: RuleSet;
 }
 
