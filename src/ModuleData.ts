@@ -1,6 +1,7 @@
 /// <reference path="RuleSet.ts" />
 import ModuleFile from "./ModuleFile.d.ts";
 import Personality from "../src/Personality.d.ts";
+import TemplateCollection from "../src/templateinterfaces/TemplateCollection.d.ts";
 import
 {
   default as RuleSet,
@@ -176,7 +177,7 @@ export default class ModuleData
   {
     
   }
-  copyTemplates(source: any, category: string): void
+  public copyTemplates<T>(source: TemplateCollection<T>, category: string): void
   {
     if (!this.Templates[category])
     {
@@ -195,7 +196,7 @@ export default class ModuleData
       this.Templates[category][templateType] = source[templateType];
     }
   }
-  copyAllTemplates(source: any): void
+  public copyAllTemplates(source: Templates): void
   {
     for (var category in this.Templates)
     {
@@ -205,11 +206,11 @@ export default class ModuleData
       }
     }
   }
-  addSubModule(moduleFile: ModuleFile): void
+  public addSubModule(moduleFile: ModuleFile): void
   {
     this.subModuleFiles.push(moduleFile);
   }
-  getDefaultMap(): MapGenTemplate
+  public getDefaultMap(): MapGenTemplate
   {
     if (this.defaultMap) return this.defaultMap;
     else if (Object.keys(this.Templates.MapGen).length > 0)
