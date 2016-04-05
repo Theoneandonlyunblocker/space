@@ -2,41 +2,38 @@
 
 /// <reference path="aiutils.ts" />
 
-export namespace DefaultModule
+export namespace Objectives
 {
-  export namespace Objectives
+  export var cleanUpPirates: ObjectiveTemplate =
   {
-    export var cleanUpPirates: ObjectiveTemplate =
+    key: "cleanUpPirates",
+    movePriority: 3,
+    preferredUnitComposition:
     {
-      key: "cleanUpPirates",
-      movePriority: 3,
-      preferredUnitComposition:
+      combat: 0.65,
+      defence: 0.25,
+      utility: 0.1
+    },
+    moveRoutineFN: AIUtils.musterAndAttackRoutine.bind(null, AIUtils.independentTargetFilter),
+    unitDesireFN: AIUtils.defaultUnitDesireFN,
+    unitFitFN: AIUtils.defaultUnitFitFN,
+    creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
+      mapEvaluator: MapAI.MapEvaluator, objectivesAI: MapAI.ObjectivesAI)
+    {
+      var basePriority = grandStrategyAI.desireForExpansion;
+
+      var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function(star: Star)
       {
-        combat: 0.65,
-        defence: 0.25,
-        utility: 0.1
-      },
-      moveRoutineFN: AIUtils.musterAndAttackRoutine.bind(null, AIUtils.independentTargetFilter),
-      unitDesireFN: AIUtils.defaultUnitDesireFN,
-      unitFitFN: AIUtils.defaultUnitFitFN,
-      creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-        mapEvaluator: MapAI.MapEvaluator, objectivesAI: MapAI.ObjectivesAI)
-      {
-        var basePriority = grandStrategyAI.desireForExpansion;
+        return star.getIndependentUnits().length > 0 && !star.getSecondaryController();
+      });
 
-        var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function(star: Star)
-        {
-          return star.getIndependentUnits().length > 0 && !star.getSecondaryController();
-        });
+      var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
+      var scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
-        var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
-        var scores = mapEvaluator.scoreIndependentTargets(evaluations);
+      var template = Modules.DefaultModule.Objectives.cleanUpPirates;
 
-        var template = Modules.DefaultModule.Objectives.cleanUpPirates;
-
-        return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
-      },
-      unitsToFillObjectiveFN: AIUtils.getUnitsToBeatImmediateTarget
-    }
+      return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
+    },
+    unitsToFillObjectiveFN: AIUtils.getUnitsToBeatImmediateTarget
   }
 }
