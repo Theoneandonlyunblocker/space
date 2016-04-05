@@ -1,4 +1,4 @@
-export interface RuleSet
+interface RuleSet
 {
   manufactory?:
   {
@@ -12,11 +12,11 @@ export interface RuleSet
   }
   battle?:
   {
-    rowsPerFormation?: number;
+    rowsPerFormation?: number; // probably breaks some stuff if not 2
     cellsPerRow?: number;
 
-    maxUnitsPerSide?: number;
-    maxUnitsPerRow?: number;
+    maxUnitsPerSide?: number; // TODO | not handled properly for humans
+    maxUnitsPerRow?: number; // TODO | not handled properly for humans
 
     baseMaxCapturedUnits?: number;
     absoluteMaxCapturedUnits?: number;
@@ -45,11 +45,11 @@ export const defaultRuleSet: RuleSet =
   },
   battle:
   {
-    rowsPerFormation: 2, // breaks some stuff if not 2
+    rowsPerFormation: 2,
     cellsPerRow: 3,
 
-    maxUnitsPerSide: 6, // not handled properly for humans
-    maxUnitsPerRow: 3, // not handled properly for humans
+    maxUnitsPerSide: 6,
+    maxUnitsPerRow: 3,
 
     baseMaxCapturedUnits: 1,
     absoluteMaxCapturedUnits: 3,
