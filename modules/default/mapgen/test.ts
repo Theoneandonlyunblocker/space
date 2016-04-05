@@ -1,97 +1,94 @@
 /// <reference path="spiralgalaxygeneration.ts" />
 /// <reference path="../../../src/templateinterfaces/imapgentemplate.d.ts" />
 
-namespace Rance
+export namespace Modules
 {
-  export namespace Modules
+  export namespace DefaultModule
   {
-    export namespace DefaultModule
+    export namespace Templates
     {
-      export namespace Templates
+      export namespace MapGen
       {
-        export namespace MapGen
+        export var tinierSpiralGalaxy: MapGenTemplate =
         {
-          export var tinierSpiralGalaxy: MapGenTemplate =
+          key: "tinierSpiralGalaxy",
+          displayName: "Tinier Spiral galaxy",
+          description: "Create a spiral galaxy with arms but tinier (just for testing)",
+
+          minPlayers: 2,
+          maxPlayers: 4,
+
+          mapGenFunction: DefaultModule.MapGenFunctions.spiralGalaxyGeneration,
+
+          options:
           {
-            key: "tinierSpiralGalaxy",
-            displayName: "Tinier Spiral galaxy",
-            description: "Create a spiral galaxy with arms but tinier (just for testing)",
-
-            minPlayers: 2,
-            maxPlayers: 4,
-
-            mapGenFunction: DefaultModule.MapGenFunctions.spiralGalaxyGeneration,
-
-            options:
+            defaultOptions:
             {
-              defaultOptions:
+              height:
               {
-                height:
+                displayName: "height",
+                range:
                 {
-                  displayName: "height",
-                  range:
-                  {
-                    min: 500,
-                    max: 1000,
-                    step: 1
-                  }
-                },
-                width:
-                {
-                  displayName: "width",
-                  range:
-                  {
-                    min: 500,
-                    max: 1000,
-                    step: 1
-                  }
-                },
-                starCount:
-                {
-                  displayName: "starCount",
-                  range:
-                  {
-                    min: 15,
-                    max: 30,
-                    step: 1,
-                    defaultValue: 20
-                  }
+                  min: 500,
+                  max: 1000,
+                  step: 1
                 }
               },
-              basicOptions:
+              width:
               {
-                arms:
+                displayName: "width",
+                range:
                 {
-                  displayName: "arms",
-                  range:
-                  {
-                    min: 2,
-                    max: 5,
-                    step: 1,
-                    defaultValue: 4
-                  }
-                },
-                starSizeRegularity:
+                  min: 500,
+                  max: 1000,
+                  step: 1
+                }
+              },
+              starCount:
+              {
+                displayName: "starCount",
+                range:
                 {
-                  displayName: "starSizeRegularity",
-                  range:
-                  {
-                    min: 1,
-                    max: 100,
-                    step: 1,
-                    defaultValue: 100
-                  }
-                },
-                centerDensity:
+                  min: 15,
+                  max: 30,
+                  step: 1,
+                  defaultValue: 20
+                }
+              }
+            },
+            basicOptions:
+            {
+              arms:
+              {
+                displayName: "arms",
+                range:
                 {
-                  displayName: "centerDensity",
-                  range:
-                  {
-                    min: 1,
-                    max: 90,
-                    step: 1,
-                    defaultValue: 50
-                  }
+                  min: 2,
+                  max: 5,
+                  step: 1,
+                  defaultValue: 4
+                }
+              },
+              starSizeRegularity:
+              {
+                displayName: "starSizeRegularity",
+                range:
+                {
+                  min: 1,
+                  max: 100,
+                  step: 1,
+                  defaultValue: 100
+                }
+              },
+              centerDensity:
+              {
+                displayName: "centerDensity",
+                range:
+                {
+                  min: 1,
+                  max: 90,
+                  step: 1,
+                  defaultValue: 50
                 }
               }
             }

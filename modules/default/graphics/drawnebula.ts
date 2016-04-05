@@ -1,59 +1,56 @@
-namespace Rance
+export namespace Modules
 {
-  export namespace Modules
+  export namespace DefaultModule
   {
-    export namespace DefaultModule
+    export function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
     {
-      export function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
+      var oldRng = Math.random;
+      Math.random = RNG.prototype.uniform.bind(new RNG(seed));
+
+      var nebulaColorScheme = generateColorScheme();
+
+      var lightness = randRange(1, 1.2);
+
+      var uniforms =
       {
-        var oldRng = Math.random;
-        Math.random = RNG.prototype.uniform.bind(new RNG(seed));
+        baseColor: {type: "3fv", value: hex2rgb(nebulaColorScheme.main)},
+        overlayColor: {type: "3fv", value: hex2rgb(nebulaColorScheme.secondary)},
+        highlightColor: {type: "3fv", value: [1.0, 1.0, 1.0]},
 
-        var nebulaColorScheme = generateColorScheme();
+        coverage: {type: "1f", value: randRange(0.28, 0.32)},
 
-        var lightness = randRange(1, 1.2);
+        scale: {type: "1f", value: randRange(4, 8)},
 
-        var uniforms =
-        {
-          baseColor: {type: "3fv", value: hex2rgb(nebulaColorScheme.main)},
-          overlayColor: {type: "3fv", value: hex2rgb(nebulaColorScheme.secondary)},
-          highlightColor: {type: "3fv", value: [1.0, 1.0, 1.0]},
+        diffusion: {type: "1f", value: randRange(1.5, 3.0)},
+        streakiness: {type: "1f", value: randRange(1.5, 2.5)},
 
-          coverage: {type: "1f", value: randRange(0.28, 0.32)},
+        streakLightness: {type: "1f", value: lightness},
+        cloudLightness: {type: "1f", value: lightness},
 
-          scale: {type: "1f", value: randRange(4, 8)},
+        highlightA: {type: "1f", value: 0.9},
+        highlightB: {type: "1f", value: 2.2},
 
-          diffusion: {type: "1f", value: randRange(1.5, 3.0)},
-          streakiness: {type: "1f", value: randRange(1.5, 2.5)},
+        seed: {type: "2fv", value: [Math.random() * 100, Math.random() * 100]}
+      };
 
-          streakLightness: {type: "1f", value: lightness},
-          cloudLightness: {type: "1f", value: lightness},
+      var filter = new NebulaFilter(uniforms);
 
-          highlightA: {type: "1f", value: 0.9},
-          highlightB: {type: "1f", value: 2.2},
+      var filterContainer = new PIXI.Container();
+      filterContainer.filterArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
+      filterContainer.filters = [filter];
 
-          seed: {type: "2fv", value: [Math.random() * 100, Math.random() * 100]}
-        };
+      // TODO performance | need to destroy or reuse texture from filterContainer.generateTexture()
+      // creates a new PIXI.FilterManager() every time that doesn't get cleaned up anywhere
+      // balloons up gpu memory
+      var texture = filterContainer.generateTexture(
+        renderer, PIXI.SCALE_MODES.DEFAULT, 1, filterContainer.filterArea);
 
-        var filter = new NebulaFilter(uniforms);
+      var sprite = new PIXI.Sprite(texture);
 
-        var filterContainer = new PIXI.Container();
-        filterContainer.filterArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
-        filterContainer.filters = [filter];
+      filterContainer.filters = null;
+      filterContainer = null;
 
-        // TODO performance | need to destroy or reuse texture from filterContainer.generateTexture()
-        // creates a new PIXI.FilterManager() every time that doesn't get cleaned up anywhere
-        // balloons up gpu memory
-        var texture = filterContainer.generateTexture(
-          renderer, PIXI.SCALE_MODES.DEFAULT, 1, filterContainer.filterArea);
-
-        var sprite = new PIXI.Sprite(texture);
-
-        filterContainer.filters = null;
-        filterContainer = null;
-
-        return sprite;
-      }
+      return sprite;
     }
   }
 }
