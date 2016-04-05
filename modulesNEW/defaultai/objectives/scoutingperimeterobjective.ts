@@ -14,7 +14,7 @@ export var scoutingPerimeter: ObjectiveTemplate =
   unitDesireFN: AIUtils.scoutingUnitDesireFN,
   unitFitFN: AIUtils.scoutingUnitFitFN,
   creatorFunction: AIUtils.perimeterObjectiveCreation.bind(null, "scoutingPerimeter", true, 0.3),
-  unitsToFillObjectiveFN: function(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective)
+  unitsToFillObjectiveFN: function(mapEvaluator: MapEvaluator, objective: Objective)
   {
     return {min: 1, ideal: 1};
   }

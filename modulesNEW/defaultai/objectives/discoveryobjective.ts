@@ -13,8 +13,8 @@ export var discovery: ObjectiveTemplate =
   moveRoutineFN: AIUtils.moveToRoutine,
   unitDesireFN: AIUtils.scoutingUnitDesireFN,
   unitFitFN: AIUtils.scoutingUnitFitFN,
-  creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-    mapEvaluator: MapAI.MapEvaluator)
+  creatorFunction: function(grandStrategyAI: GrandStrategyAI,
+    mapEvaluator: MapEvaluator)
   {
     var scores:
     {
@@ -84,7 +84,7 @@ export var discovery: ObjectiveTemplate =
 
     return AIUtils.makeObjectivesFromScores(template, scores, 0.5);
   },
-  unitsToFillObjectiveFN: function(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective)
+  unitsToFillObjectiveFN: function(mapEvaluator: MapEvaluator, objective: Objective)
   {
     return {min: 1, ideal: 1};
   }

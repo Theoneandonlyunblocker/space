@@ -5,8 +5,8 @@
 export var declareWar: ObjectiveTemplate =
 {
   key: "declareWar",
-  creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-    mapEvaluator: MapAI.MapEvaluator)
+  creatorFunction: function(grandStrategyAI: GrandStrategyAI,
+    mapEvaluator: MapEvaluator)
   {
     var template = Modules.DefaultModule.Objectives.declareWar;
     var basePriority = grandStrategyAI.desireForWar;
@@ -37,7 +37,7 @@ export var declareWar: ObjectiveTemplate =
 
     return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
   },
-  diplomacyRoutineFN: function(objective: MapAI.Objective, diplomacyAI: MapAI.DiplomacyAI,
+  diplomacyRoutineFN: function(objective: Objective, diplomacyAI: DiplomacyAI,
     adjustments: IRoutineAdjustmentByTargetId, afterDoneCallback: () => void)
   {
     diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);

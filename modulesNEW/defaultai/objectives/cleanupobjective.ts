@@ -15,8 +15,8 @@ export var cleanUpPirates: ObjectiveTemplate =
   moveRoutineFN: AIUtils.musterAndAttackRoutine.bind(null, AIUtils.independentTargetFilter),
   unitDesireFN: AIUtils.defaultUnitDesireFN,
   unitFitFN: AIUtils.defaultUnitFitFN,
-  creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-    mapEvaluator: MapAI.MapEvaluator, objectivesAI: MapAI.ObjectivesAI)
+  creatorFunction: function(grandStrategyAI: GrandStrategyAI,
+    mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI)
   {
     var basePriority = grandStrategyAI.desireForExpansion;
 

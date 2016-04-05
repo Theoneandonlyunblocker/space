@@ -10,26 +10,26 @@ export var heal: ObjectiveTemplate =
   {
 
   },
-  moveRoutineFN: function(front: MapAI.Front, afterMoveCallback: Function)
+  moveRoutineFN: function(front: Front, afterMoveCallback: Function)
   {
     AIUtils.moveToRoutine(front, afterMoveCallback, function(fleet: Fleet)
     {
       return fleet.player.getNearestOwnedStarTo(fleet.location);
     });
   },
-  unitDesireFN: function(front: MapAI.Front){return 1;},
-  unitFitFN: function(unit: Unit, front: MapAI.Front)
+  unitDesireFN: function(front: Front){return 1;},
+  unitFitFN: function(unit: Unit, front: Front)
   {
     var healthPercentage = unit.currentHealth / unit.maxHealth;
     return 1 - healthPercentage;
   },
-  creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-    mapEvaluator: MapAI.MapEvaluator)
+  creatorFunction: function(grandStrategyAI: GrandStrategyAI,
+    mapEvaluator: MapEvaluator)
   {
     var template = Modules.DefaultModule.Objectives.heal;
-    return [new MapAI.Objective(template, 1, null)];
+    return [new Objective(template, 1, null)];
   },
-  unitsToFillObjectiveFN: function(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective)
+  unitsToFillObjectiveFN: function(mapEvaluator: MapEvaluator, objective: Objective)
   {
     return {min: 0, ideal: 0};
   }

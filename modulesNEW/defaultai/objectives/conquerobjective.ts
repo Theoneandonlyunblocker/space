@@ -15,8 +15,8 @@ export var conquer: ObjectiveTemplate =
   moveRoutineFN: AIUtils.musterAndAttackRoutine.bind(null, AIUtils.buildingControllerFilter),
   unitDesireFN: AIUtils.defaultUnitDesireFN,
   unitFitFN: AIUtils.defaultUnitFitFN,
-  creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-    mapEvaluator: MapAI.MapEvaluator, objectivesAI: MapAI.ObjectivesAI)
+  creatorFunction: function(grandStrategyAI: GrandStrategyAI,
+    mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI)
   {
     var hostilePlayers: Player[] = [];
     var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
@@ -43,13 +43,13 @@ export var conquer: ObjectiveTemplate =
     }
 
     var template = Modules.DefaultModule.Objectives.conquer;
-    var objectives: MapAI.Objective[] = [];
+    var objectives: Objective[] = [];
     for (var i = 0; i < possibleTargets.length; i++)
     {
       var star = possibleTargets[i];
       var player = star.owner;
       var threat = relativeThreatOfPlayers[player.id];
-      objectives.push(new MapAI.Objective(template, threat, star));
+      objectives.push(new Objective(template, threat, star));
     }
 
     return objectives;

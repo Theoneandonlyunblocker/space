@@ -15,8 +15,8 @@ export var expansion: ObjectiveTemplate =
   moveRoutineFN: AIUtils.musterAndAttackRoutine.bind(null, AIUtils.independentTargetFilter),
   unitDesireFN: AIUtils.defaultUnitDesireFN,
   unitFitFN: AIUtils.defaultUnitFitFN,
-  creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-    mapEvaluator: MapAI.MapEvaluator)
+  creatorFunction: function(grandStrategyAI: GrandStrategyAI,
+    mapEvaluator: MapEvaluator)
   {
     var basePriority = grandStrategyAI.desireForExpansion;
 

@@ -6,7 +6,7 @@ export interface IScoresByStar
     score: number;
   }
 }
-export function moveToRoutine(front: MapAI.Front,
+export function moveToRoutine(front: Front,
   afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star)
 {
   var fleets = front.getAssociatedFleets();
@@ -42,7 +42,7 @@ export function buildingControllerFilter(target: any)
   return target.building && target.enemy === target.building.controller;
 }
 export function musterAndAttackRoutine(targetFilter: (target: any) => boolean,
-  front: MapAI.Front, afterMoveCallback: () => void)
+  front: Front, afterMoveCallback: () => void)
 {
   var shouldMoveToTarget: boolean;
 
@@ -125,7 +125,7 @@ export function musterAndAttackRoutine(targetFilter: (target: any) => boolean,
     fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
   }
 }
-export function defaultUnitDesireFN(front: MapAI.Front)
+export function defaultUnitDesireFN(front: Front)
 {
   var desire = 1;
 
@@ -155,7 +155,7 @@ export function defaultUnitDesireFN(front: MapAI.Front)
 
   return desire;
 }
-export function defaultUnitFitFN(unit: Unit, front: MapAI.Front, lowHealthThreshhold: number = 0.75,
+export function defaultUnitFitFN(unit: Unit, front: Front, lowHealthThreshhold: number = 0.75,
   healthAdjust: number = 1, distanceAdjust: number = 1)
 {
   var score = 1;
@@ -179,12 +179,12 @@ export function defaultUnitFitFN(unit: Unit, front: MapAI.Front, lowHealthThresh
 
   return score;
 }
-export function scoutingUnitDesireFN(front: MapAI.Front)
+export function scoutingUnitDesireFN(front: Front)
 {
   if (front.units.length < 1) return 1;
   else return 0;
 }
-export function scoutingUnitFitFN(unit: Unit, front: MapAI.Front)
+export function scoutingUnitFitFN(unit: Unit, front: Front)
 {
   var baseScore = 0;
   // ++ stealth
@@ -232,7 +232,7 @@ export function mergeScoresByStar(merged: IScoresByStar, scores: {star: Star; sc
 export function makeObjectivesFromScores(template: ObjectiveTemplate,
   evaluationScores: {star?: Star; player?: Player; score: number;}[], basePriority: number)
 {
-  var allObjectives: MapAI.Objective[] = [];
+  var allObjectives: Objective[] = [];
 
   var minScore: number = 0;
   var maxScore: number;
@@ -251,14 +251,14 @@ export function makeObjectivesFromScores(template: ObjectiveTemplate,
     var relativeScore = getRelativeValue(evaluationScores[i].score, minScore, maxScore);
     var priority = relativeScore * basePriority;
 
-    allObjectives.push(new MapAI.Objective(template, priority, star, player));
+    allObjectives.push(new Objective(template, priority, star, player));
   }
 
   return allObjectives;
 }
 export function perimeterObjectiveCreation(templateKey: string, isForScouting: boolean,
-  basePriority: number, grandStrategyAI: MapAI.GrandStrategyAI, mapEvaluator: MapAI.MapEvaluator,
-  objectivesAI: MapAI.ObjectivesAI)
+  basePriority: number, grandStrategyAI: GrandStrategyAI, mapEvaluator: MapEvaluator,
+  objectivesAI: ObjectivesAI)
 {
   var playersToEstablishPerimeterAgainst: Player[] = [];
   var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
@@ -294,13 +294,13 @@ export function perimeterObjectiveCreation(templateKey: string, isForScouting: b
   }
 
   var template = Modules.DefaultModule.Objectives[templateKey];
-  var objectives: MapAI.Objective[] = AIUtils.makeObjectivesFromScores(template, allScores, basePriority);
+  var objectives: Objective[] = AIUtils.makeObjectivesFromScores(template, allScores, basePriority);
 
 
   return objectives;
 }
-export function getUnitsToBeatImmediateTarget(mapEvaluator: MapAI.MapEvaluator,
-  objective: MapAI.Objective)
+export function getUnitsToBeatImmediateTarget(mapEvaluator: MapEvaluator,
+  objective: Objective)
 {
   var min: number;
   var ideal: number;
