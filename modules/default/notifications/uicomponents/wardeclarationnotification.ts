@@ -1,20 +1,17 @@
-export namespace UIComponents
+export var WarDeclarationNotification = React.createFactory(React.createClass(
 {
-  export var WarDeclarationNotification = React.createFactory(React.createClass(
+  displayName: "WarDeclarationNotification",
+  render: function()
   {
-    displayName: "WarDeclarationNotification",
-    render: function()
-    {
-      var notification: Notification = this.props.notification;
-      var p = notification.props;
-      return(
-        React.DOM.div(
-        {
-          className: "war-declaration-notification draggable-container"
-        },
-          null
-        )
-      );
-    }
-  }));
-}
+    var notification: Notification = this.props.notification;
+    var p = notification.props;
+    return(
+      React.DOM.div(
+      {
+        className: "war-declaration-notification draggable-container"
+      },
+        null
+      )
+    );
+  }
+}));

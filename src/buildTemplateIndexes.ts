@@ -67,18 +67,15 @@ function getItemsByTechLevel()
 
   return itemsByTechLevel;
 }
-export namespace TemplateIndexes
+export var distributablesByDistributionGroup:
 {
-  export var distributablesByDistributionGroup:
+  [groupName: string]:
   {
-    [groupName: string]:
-    {
-      unitFamilies: UnitFamily[];
-      resources: ResourceTemplate[];
-    };
-  }
-  export var itemsByTechLevel:
-  {
-    [techLevel: number]: ItemTemplate[];
-  }
+    unitFamilies: UnitFamily[];
+    resources: ResourceTemplate[];
+  };
+}
+export var itemsByTechLevel:
+{
+  [techLevel: number]: ItemTemplate[];
 }

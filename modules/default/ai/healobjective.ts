@@ -2,38 +2,35 @@
 
 /// <reference path="aiutils.ts" />
 
-export namespace Objectives
+export var heal: ObjectiveTemplate =
 {
-  export var heal: ObjectiveTemplate =
+  key: "heal",
+  movePriority: -1,
+  preferredUnitComposition:
   {
-    key: "heal",
-    movePriority: -1,
-    preferredUnitComposition:
-    {
 
-    },
-    moveRoutineFN: function(front: MapAI.Front, afterMoveCallback: Function)
+  },
+  moveRoutineFN: function(front: MapAI.Front, afterMoveCallback: Function)
+  {
+    AIUtils.moveToRoutine(front, afterMoveCallback, function(fleet: Fleet)
     {
-      AIUtils.moveToRoutine(front, afterMoveCallback, function(fleet: Fleet)
-      {
-        return fleet.player.getNearestOwnedStarTo(fleet.location);
-      });
-    },
-    unitDesireFN: function(front: MapAI.Front){return 1;},
-    unitFitFN: function(unit: Unit, front: MapAI.Front)
-    {
-      var healthPercentage = unit.currentHealth / unit.maxHealth;
-      return 1 - healthPercentage;
-    },
-    creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-      mapEvaluator: MapAI.MapEvaluator)
-    {
-      var template = Modules.DefaultModule.Objectives.heal;
-      return [new MapAI.Objective(template, 1, null)];
-    },
-    unitsToFillObjectiveFN: function(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective)
-    {
-      return {min: 0, ideal: 0};
-    }
+      return fleet.player.getNearestOwnedStarTo(fleet.location);
+    });
+  },
+  unitDesireFN: function(front: MapAI.Front){return 1;},
+  unitFitFN: function(unit: Unit, front: MapAI.Front)
+  {
+    var healthPercentage = unit.currentHealth / unit.maxHealth;
+    return 1 - healthPercentage;
+  },
+  creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
+    mapEvaluator: MapAI.MapEvaluator)
+  {
+    var template = Modules.DefaultModule.Objectives.heal;
+    return [new MapAI.Objective(template, 1, null)];
+  },
+  unitsToFillObjectiveFN: function(mapEvaluator: MapAI.MapEvaluator, objective: MapAI.Objective)
+  {
+    return {min: 0, ideal: 0};
   }
 }
