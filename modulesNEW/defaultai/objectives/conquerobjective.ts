@@ -38,7 +38,7 @@ export var conquer: ObjectiveTemplate =
     var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
     for (var playerId in diplomacyStatus.metPlayers)
     {
-      if (diplomacyStatus.statusByPlayer[playerId] >= DiplomaticState.war)
+      if (diplomacyStatus.statusByPlayer[playerId] >= DiplomacyState.war)
       {
         hostilePlayers.push(diplomacyStatus.metPlayers[playerId]);
       }
