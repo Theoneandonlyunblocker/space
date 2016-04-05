@@ -2,53 +2,50 @@
 
 /// <reference path="aiutils.ts" />
 
-export namespace Modules
+export namespace DefaultModule
 {
-  export namespace DefaultModule
+  export namespace Objectives
   {
-    export namespace Objectives
+    export var declareWar: ObjectiveTemplate =
     {
-      export var declareWar: ObjectiveTemplate =
+      key: "declareWar",
+      creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
+        mapEvaluator: MapAI.MapEvaluator)
       {
-        key: "declareWar",
-        creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
-          mapEvaluator: MapAI.MapEvaluator)
+        var template = Modules.DefaultModule.Objectives.declareWar;
+        var basePriority = grandStrategyAI.desireForWar;
+
+        var scores:
         {
-          var template = Modules.DefaultModule.Objectives.declareWar;
-          var basePriority = grandStrategyAI.desireForWar;
+          player: Player;
+          score: number;
+        }[] = [];
 
-          var scores:
+        for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers)
+        {
+          var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
+          if (!mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player))
           {
-            player: Player;
-            score: number;
-          }[] = [];
-
-          for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers)
-          {
-            var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
-            if (!mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player))
-            {
-              continue;
-            }
-
-            var score = mapEvaluator.getDesireToGoToWarWith(player) *
-              mapEvaluator.getAbilityToGoToWarWith(player);
-
-            scores.push(
-            {
-              player: player,
-              score: score
-            });
+            continue;
           }
 
-          return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
-        },
-        diplomacyRoutineFN: function(objective: MapAI.Objective, diplomacyAI: MapAI.DiplomacyAI,
-          adjustments: IRoutineAdjustmentByTargetId, afterDoneCallback: () => void)
-        {
-          diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
-          afterDoneCallback();
+          var score = mapEvaluator.getDesireToGoToWarWith(player) *
+            mapEvaluator.getAbilityToGoToWarWith(player);
+
+          scores.push(
+          {
+            player: player,
+            score: score
+          });
         }
+
+        return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
+      },
+      diplomacyRoutineFN: function(objective: MapAI.Objective, diplomacyAI: MapAI.DiplomacyAI,
+        adjustments: IRoutineAdjustmentByTargetId, afterDoneCallback: () => void)
+      {
+        diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
+        afterDoneCallback();
       }
     }
   }
