@@ -1,6 +1,8 @@
-/// <reference path="../../../src/templateinterfaces/idefencebuildingtemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/ibuildingtemplate.d.ts"/>
-export var sectorCommand: DefenceBuildingTemplate =
+import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate.d.ts";
+import DefenceBuildingTemplate from "../../src/templateinterfaces/DefenceBuildingTemplate.d.ts";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+
+const sectorCommand: DefenceBuildingTemplate =
 {
   type: "sectorCommand",
   category: "defence",
@@ -29,7 +31,7 @@ export var sectorCommand: DefenceBuildingTemplate =
   ],
   defenderAdvantage: 0.2
 }
-export var sectorCommand1: DefenceBuildingTemplate =
+const sectorCommand1: DefenceBuildingTemplate =
 {
   type: "sectorCommand1",
   category: "defence",
@@ -46,7 +48,7 @@ export var sectorCommand1: DefenceBuildingTemplate =
   upgradeOnly: true,
   defenderAdvantage: 0.3
 }
-export var sectorCommand2: DefenceBuildingTemplate =
+const sectorCommand2: DefenceBuildingTemplate =
 {
   type: "sectorCommand2",
   category: "defence",
@@ -63,7 +65,7 @@ export var sectorCommand2: DefenceBuildingTemplate =
   upgradeOnly: true,
   defenderAdvantage: 0.3
 }
-export var starBase: DefenceBuildingTemplate =
+const starBase: DefenceBuildingTemplate =
 {
   type: "starBase",
   category: "defence",
@@ -86,7 +88,7 @@ export var starBase: DefenceBuildingTemplate =
     }
   ]
 }
-export var commercialPort: BuildingTemplate =
+const commercialPort: BuildingTemplate =
 {
   type: "commercialPort",
   category: "economy",
@@ -107,7 +109,7 @@ export var commercialPort: BuildingTemplate =
 
   maxUpgradeLevel: 4
 }
-export var deepSpaceRadar: BuildingTemplate =
+const deepSpaceRadar: BuildingTemplate =
 {
   type: "deepSpaceRadar",
   category: "vision",
@@ -126,7 +128,7 @@ export var deepSpaceRadar: BuildingTemplate =
 
   maxUpgradeLevel: 2
 }
-export var resourceMine: BuildingTemplate =
+const resourceMine: BuildingTemplate =
 {
   type: "resourceMine",
   category: "mine",
@@ -147,7 +149,7 @@ export var resourceMine: BuildingTemplate =
 
   maxUpgradeLevel: 3
 }
-export var reserachLab: BuildingTemplate =
+const reserachLab: BuildingTemplate =
 {
   type: "reserachLab",
   category: "research",
@@ -168,3 +170,17 @@ export var reserachLab: BuildingTemplate =
 
   maxUpgradeLevel: 3
 }
+
+const BuildingTemplates: TemplateCollection<BuildingTemplate> =
+{
+  [sectorCommand.type]: sectorCommand,
+  [sectorCommand1.type]: sectorCommand1,
+  [sectorCommand2.type]: sectorCommand2,
+  [starBase.type]: starBase,
+  [commercialPort.type]: commercialPort,
+  [deepSpaceRadar.type]: deepSpaceRadar,
+  [resourceMine.type]: resourceMine,
+  [reserachLab.type]: reserachLab
+}
+
+export default BuildingTemplates;
