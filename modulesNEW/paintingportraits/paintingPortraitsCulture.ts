@@ -1,6 +1,7 @@
-/// <reference path="../../src/templateinterfaces/iculturetemplate.d.ts" />
+import CultureTemplate from "../../src/templateinterfaces/CultureTemplate.d.ts";
+import RandomGenUnitRarity from "../../src/RandomGenUnitRarity.ts";
 
-export var paintingPortraitsCulture: CultureTemplate =
+const paintingPortraitsCulture: CultureTemplate =
 {
   key: "paintingPortraitsCulture",
   portraits:
@@ -909,3 +910,5 @@ export var paintingPortraitsCulture: CultureTemplate =
     }
   }
 }
+
+export default paintingPortraitsCulture;
