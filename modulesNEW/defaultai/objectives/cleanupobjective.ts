@@ -1,6 +1,6 @@
 /// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
 
-/// <reference path="aiutils.ts" />
+/// <reference path="ts" />
 
 export var cleanUpPirates: ObjectiveTemplate =
 {
@@ -12,9 +12,9 @@ export var cleanUpPirates: ObjectiveTemplate =
     defence: 0.25,
     utility: 0.1
   },
-  moveRoutineFN: AIUtils.musterAndAttackRoutine.bind(null, AIUtils.independentTargetFilter),
-  unitDesireFN: AIUtils.defaultUnitDesireFN,
-  unitFitFN: AIUtils.defaultUnitFitFN,
+  moveRoutineFN: musterAndAttackRoutine.bind(null, independentTargetFilter),
+  unitDesireFN: defaultUnitDesireFN,
+  unitFitFN: defaultUnitFitFN,
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
     mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI)
   {
@@ -30,7 +30,7 @@ export var cleanUpPirates: ObjectiveTemplate =
 
     var template = Modules.DefaultModule.Objectives.cleanUpPirates;
 
-    return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
+    return makeObjectivesFromScores(template, scores, basePriority);
   },
-  unitsToFillObjectiveFN: AIUtils.getUnitsToBeatImmediateTarget
+  unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget
 }

@@ -1,6 +1,6 @@
 /// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
 
-/// <reference path="aiutils.ts" />
+/// <reference path="ts" />
 
 export var declareWar: ObjectiveTemplate =
 {
@@ -35,7 +35,7 @@ export var declareWar: ObjectiveTemplate =
       });
     }
 
-    return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
+    return makeObjectivesFromScores(template, scores, basePriority);
   },
   diplomacyRoutineFN: function(objective: Objective, diplomacyAI: DiplomacyAI,
     adjustments: IRoutineAdjustmentByTargetId, afterDoneCallback: () => void)

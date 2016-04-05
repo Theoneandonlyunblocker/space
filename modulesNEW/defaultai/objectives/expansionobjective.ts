@@ -1,6 +1,6 @@
 /// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
 
-/// <reference path="aiutils.ts" />
+/// <reference path="ts" />
 
 export var expansion: ObjectiveTemplate =
 {
@@ -12,9 +12,9 @@ export var expansion: ObjectiveTemplate =
     defence: 0.25,
     utility: 0.1
   },
-  moveRoutineFN: AIUtils.musterAndAttackRoutine.bind(null, AIUtils.independentTargetFilter),
-  unitDesireFN: AIUtils.defaultUnitDesireFN,
-  unitFitFN: AIUtils.defaultUnitFitFN,
+  moveRoutineFN: musterAndAttackRoutine.bind(null, independentTargetFilter),
+  unitDesireFN: defaultUnitDesireFN,
+  unitFitFN: defaultUnitFitFN,
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
     mapEvaluator: MapEvaluator)
   {
@@ -26,7 +26,7 @@ export var expansion: ObjectiveTemplate =
 
     var template = Modules.DefaultModule.Objectives.expansion;
 
-    return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
+    return makeObjectivesFromScores(template, scores, basePriority);
   },
-  unitsToFillObjectiveFN: AIUtils.getUnitsToBeatImmediateTarget
+  unitsToFillObjectiveFN: getUnitsToBeatImmediateTarget
 }

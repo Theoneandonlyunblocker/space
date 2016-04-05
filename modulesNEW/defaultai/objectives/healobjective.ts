@@ -1,6 +1,6 @@
 /// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
 
-/// <reference path="aiutils.ts" />
+/// <reference path="ts" />
 
 export var heal: ObjectiveTemplate =
 {
@@ -12,7 +12,7 @@ export var heal: ObjectiveTemplate =
   },
   moveRoutineFN: function(front: Front, afterMoveCallback: Function)
   {
-    AIUtils.moveToRoutine(front, afterMoveCallback, function(fleet: Fleet)
+    moveToRoutine(front, afterMoveCallback, function(fleet: Fleet)
     {
       return fleet.player.getNearestOwnedStarTo(fleet.location);
     });

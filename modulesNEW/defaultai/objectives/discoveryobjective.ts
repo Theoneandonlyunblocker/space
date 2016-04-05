@@ -1,6 +1,6 @@
 /// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
 
-/// <reference path="aiutils.ts" />
+/// <reference path="ts" />
 
 export var discovery: ObjectiveTemplate =
 {
@@ -10,9 +10,9 @@ export var discovery: ObjectiveTemplate =
   {
     scouting: 1
   },
-  moveRoutineFN: AIUtils.moveToRoutine,
-  unitDesireFN: AIUtils.scoutingUnitDesireFN,
-  unitFitFN: AIUtils.scoutingUnitFitFN,
+  moveRoutineFN: moveToRoutine,
+  unitDesireFN: scoutingUnitDesireFN,
+  unitFitFN: scoutingUnitFitFN,
   creatorFunction: function(grandStrategyAI: GrandStrategyAI,
     mapEvaluator: MapEvaluator)
   {
@@ -82,7 +82,7 @@ export var discovery: ObjectiveTemplate =
 
     var template = Modules.DefaultModule.Objectives.discovery;
 
-    return AIUtils.makeObjectivesFromScores(template, scores, 0.5);
+    return makeObjectivesFromScores(template, scores, 0.5);
   },
   unitsToFillObjectiveFN: function(mapEvaluator: MapEvaluator, objective: Objective)
   {

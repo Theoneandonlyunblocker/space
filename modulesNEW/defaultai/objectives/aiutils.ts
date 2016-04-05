@@ -271,13 +271,13 @@ export function perimeterObjectiveCreation(templateKey: string, isForScouting: b
     }
   }
 
-  var allScoresByStar: AIUtils.IScoresByStar = {};
+  var allScoresByStar: IScoresByStar = {};
   for (var i = 0; i < playersToEstablishPerimeterAgainst.length; i++)
   {
     var player = playersToEstablishPerimeterAgainst[i];
     var scores = mapEvaluator.getScoredPerimeterLocationsAgainstPlayer(player, 1, isForScouting);
 
-    AIUtils.mergeScoresByStar(allScoresByStar, scores);
+    mergeScoresByStar(allScoresByStar, scores);
   }
 
   var allScores:
@@ -294,7 +294,7 @@ export function perimeterObjectiveCreation(templateKey: string, isForScouting: b
   }
 
   var template = Modules.DefaultModule.Objectives[templateKey];
-  var objectives: Objective[] = AIUtils.makeObjectivesFromScores(template, allScores, basePriority);
+  var objectives: Objective[] = makeObjectivesFromScores(template, allScores, basePriority);
 
 
   return objectives;
