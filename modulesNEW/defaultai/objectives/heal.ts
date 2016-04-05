@@ -1,9 +1,11 @@
+import Front from "../../../src/mapai/Front.ts";
 import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI.ts";
 import MapEvaluator from "../../../src/mapai/MapEvaluator.ts";
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
 import Objective from "../../../src/mapai/Objective.ts";
+
+import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
+
 import Fleet from "../../../src/Fleet.ts";
-import Front from "../../../src/mapai/Front.ts";
 import Star from "../../../src/Star.ts";
 import Unit from "../../../src/Unit.ts";
 

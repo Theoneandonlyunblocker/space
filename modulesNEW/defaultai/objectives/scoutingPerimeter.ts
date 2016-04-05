@@ -1,6 +1,8 @@
 import MapEvaluator from "../../../src/mapai/MapEvaluator.ts";
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
 import Objective from "../../../src/mapai/Objective.ts";
+
+import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
+
 import Unit from "../../../src/Unit.ts";
 
 import
