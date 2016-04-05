@@ -4,7 +4,7 @@ import ColorSaveData from "./savedata/ColorSaveData.d.ts";
 
 export default class Color
 {
-  // scalars
+  // 0.0-1.0
   r: number;
   g: number;
   b: number;
