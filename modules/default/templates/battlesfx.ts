@@ -5,42 +5,32 @@
 /// <reference path="../graphics/particletest.ts" />
 
 // TODO refactor | move shaders
-export class BlackToAlphaFilter extends PIXI.AbstractFilter
+export var rocketAttack: BattleSFXTemplate =
 {
-  constructor()
-  {
-    super(null, ShaderSources.blacktoalpha.join("\n"), null);
-  }
+  duration: 1500,
+  battleOverlay: BattleSFXFunctions.rocketAttack,
+  SFXWillTriggerEffect: true
 }
-export namespace BattleSFX
+export var guard: BattleSFXTemplate =
 {
-  export var rocketAttack: BattleSFXTemplate =
-  {
-    duration: 1500,
-    battleOverlay: BattleSFXFunctions.rocketAttack,
-    SFXWillTriggerEffect: true
-  }
-  export var guard: BattleSFXTemplate =
-  {
-    duration: 1000,
-    battleOverlay: BattleSFXFunctions.guard,
-    SFXWillTriggerEffect: true
-  }
-  export var particleTest: BattleSFXTemplate =
-  {
-    duration: 3500,
-    battleOverlay: BattleSFXFunctions.particleTest,
-    SFXWillTriggerEffect: true
-  }
-  export var videoTest: BattleSFXTemplate =
-  {
-    duration: 1000,
-    battleOverlay: BattleSFXFunctions.makeSFXFromVideo.bind(null, "img/bushiAttack.webm",
-      function(sprite: PIXI.Sprite)
-      {
-        sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-        sprite.shader = new BlackToAlphaFilter();
-      }),
-    SFXWillTriggerEffect: true
-  }
+  duration: 1000,
+  battleOverlay: BattleSFXFunctions.guard,
+  SFXWillTriggerEffect: true
+}
+export var particleTest: BattleSFXTemplate =
+{
+  duration: 3500,
+  battleOverlay: BattleSFXFunctions.particleTest,
+  SFXWillTriggerEffect: true
+}
+export var videoTest: BattleSFXTemplate =
+{
+  duration: 1000,
+  battleOverlay: BattleSFXFunctions.makeSFXFromVideo.bind(null, "img/bushiAttack.webm",
+    function(sprite: PIXI.Sprite)
+    {
+      sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+      sprite.shader = new BlackToAlphaFilter();
+    }),
+  SFXWillTriggerEffect: true
 }
