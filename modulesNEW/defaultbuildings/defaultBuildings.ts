@@ -1,8 +1,9 @@
-import RuleSet from "../../src/RuleSet.ts";
+import BuildingTemplates from "./BuildingTemplates.ts";
+
 import ModuleFile from "../../src/ModuleFile.d.ts";
 import ModuleData from "../../src/ModuleData.ts";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages.ts";
-import BuildingTemplates from "./BuildingTemplates.ts";
+
 import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate.d.ts";
 
 const defaultBuildings: ModuleFile =
@@ -25,6 +26,8 @@ const defaultBuildings: ModuleFile =
       const json = loader.resources[spriteSheetKey].data;
       const image = loader.resources[spriteSheetKey + "_image"].data;
       cacheSpriteSheetAsImages(json, image);
+      
+      onLoaded();
     });
   },
   constructModule: function(moduleData: ModuleData)
