@@ -1,5 +1,5 @@
-import RuleSet from "../src/RuleSet.ts";
-import ModuleFile from "../src/ModuleFile.d.ts";
+import RuleSet from "../../src/RuleSet.ts";
+import ModuleFile from "../../src/ModuleFile.d.ts";
 
 const defaultRuleSet: ModuleFile =
 {
