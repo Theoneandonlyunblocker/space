@@ -1,15 +1,15 @@
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate.d.ts";
 import NotificationSaveData from "./savedata/NotificationSaveData.d.ts";
 
-export default class Notification
+export default class Notification<P>
 {
   template: NotificationTemplate;
-  props: any;
+  props: P;
   turn: number;
 
   hasBeenRead: boolean = false;
 
-  constructor(template: NotificationTemplate, props: any, turn: number)
+  constructor(template: NotificationTemplate, props: P, turn: number)
   {
     this.template = template;
     this.props = props;
