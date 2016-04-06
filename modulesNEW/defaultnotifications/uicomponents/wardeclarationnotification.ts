@@ -11,9 +11,9 @@ interface PropTypes
   notification: Notification<NotificationProps>;
 }
 
-export default class WarDeclarationNotification extends React.Component<PropTypes, {}>
+class WarDeclarationNotification extends React.Component<PropTypes, {}>
 {
-  private displayName: "WarDeclarationNotification";
+  private displayName: string = "WarDeclarationNotification";
   
   constructor(props: PropTypes)
   {
@@ -35,3 +35,6 @@ export default class WarDeclarationNotification extends React.Component<PropType
     );
   }
 }
+
+const Factory = React.createFactory(WarDeclarationNotification);
+export default Factory;

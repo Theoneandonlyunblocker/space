@@ -13,16 +13,11 @@ export interface PropTypes
 
 export default class TechnologyPrioritySlider extends React.Component<PropTypes, {}>
 {
-  displayName: reactTypeTODO_any = string = "TechnologyPrioritySlider";
+  displayName: string = "TechnologyPrioritySlider";
   state:
   {
     priority: number;
   };
-
-  state:
-  {
-    
-  }
 
   constructor(props: PropTypes)
   {
@@ -34,26 +29,6 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
     };
 
     this.bindMethods();
-  }
-  state:
-  {
-    
-  }
-
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.state = 
-    {
-    
-    };
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
   }
   
   private bindMethods()

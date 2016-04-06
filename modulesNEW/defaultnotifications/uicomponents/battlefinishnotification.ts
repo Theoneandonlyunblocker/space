@@ -11,10 +11,10 @@ interface PropTypes
   notification: Notification<NotificationProps>;
 }
 
-export default class BattleFinishNotification extends React.Component<PropTypes, {}>
+class BattleFinishNotification extends React.Component<PropTypes, {}>
 {
-  private displayName: "BattleFinishNotification";
-  
+  private displayName: string = "BattleFinishNotification";
+
   constructor(props: PropTypes)
   {
     super(props);
@@ -50,3 +50,6 @@ export default class BattleFinishNotification extends React.Component<PropTypes,
     );
   }
 }
+
+const Factory = React.createFactory(BattleFinishNotification);
+export default Factory;

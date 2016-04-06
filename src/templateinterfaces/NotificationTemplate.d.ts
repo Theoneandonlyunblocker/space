@@ -12,7 +12,7 @@ declare interface NotificationTemplate
   defaultFilterState: NotificationFilterState[];
   iconSrc: string;
   eventListeners: string[];
-  contentConstructor: React.Component<any, any>;
+  contentConstructor: React.Factory<any>;
   messageConstructor: (props: any) => string;
 
   serializeProps: (props: any) => any;

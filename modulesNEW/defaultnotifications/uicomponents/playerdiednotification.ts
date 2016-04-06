@@ -11,9 +11,9 @@ interface PropTypes
   notification: Notification<NotificationProps>;
 }
 
-export default class PlayerDiedNotification extends React.Component<PropTypes, {}>
+class PlayerDiedNotification extends React.Component<PropTypes, {}>
 {
-  private displayName: "PlayerDiedNotification";
+  private displayName: string = "PlayerDiedNotification";
   
   constructor(props: PropTypes)
   {
@@ -37,3 +37,6 @@ export default class PlayerDiedNotification extends React.Component<PropTypes, {
     );
   }
 }
+
+const Factory = React.createFactory(PlayerDiedNotification);
+export default Factory;
