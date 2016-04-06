@@ -1,3 +1,8 @@
+export interface PropTypes
+{
+  // TODO refactor | add prop types
+}
+
 export var WarDeclarationNotification = React.createFactory(React.createClass(
 {
   displayName: "WarDeclarationNotification",
