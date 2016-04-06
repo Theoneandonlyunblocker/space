@@ -1,15 +1,30 @@
-export interface PropTypes
+/// <reference path="../../../lib/react-0.13.3.d.ts" />
+import * as React from "react";
+
+import Notification from "../../../src/Notification.ts";
+
+import {PropTypes as NotificationProps} from "../warDeclarationNotification.ts";
+
+
+interface PropTypes
 {
-  // TODO refactor | add prop types
+  notification: Notification<NotificationProps>;
 }
 
-export var WarDeclarationNotification = React.createFactory(React.createClass(
+export default class WarDeclarationNotification extends React.Component<PropTypes, {}>
 {
-  displayName: "WarDeclarationNotification",
-  render: function()
+  private displayName: "WarDeclarationNotification";
+  
+  constructor(props: PropTypes)
   {
-    var notification: Notification = this.props.notification;
+    super(props);
+  }
+  
+  public render()
+  {
+    var notification = this.props.notification;
     var p = notification.props;
+    // TODO
     return(
       React.DOM.div(
       {
@@ -19,4 +34,4 @@ export var WarDeclarationNotification = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

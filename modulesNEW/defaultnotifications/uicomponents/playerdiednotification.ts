@@ -1,14 +1,28 @@
-export interface PropTypes
+/// <reference path="../../../lib/react-0.13.3.d.ts" />
+import * as React from "react";
+
+import Notification from "../../../src/Notification.ts";
+
+import {PropTypes as NotificationProps} from "../playerDiedNotification.ts";
+
+
+interface PropTypes
 {
-  // TODO refactor | add prop types
+  notification: Notification<NotificationProps>;
 }
 
-export var PlayerDiedNotification = React.createFactory(React.createClass(
+export default class PlayerDiedNotification extends React.Component<PropTypes, {}>
 {
-  displayName: "PlayerDiedNotification",
-  render: function()
+  private displayName: "PlayerDiedNotification";
+  
+  constructor(props: PropTypes)
   {
-    var notification: Notification = this.props.notification;
+    super(props);
+  }
+  
+  public render()
+  {
+    var notification = this.props.notification;
 
     return(
       React.DOM.div(
@@ -22,4 +36,4 @@ export var PlayerDiedNotification = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}

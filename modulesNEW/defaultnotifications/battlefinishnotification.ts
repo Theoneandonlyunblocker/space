@@ -7,7 +7,7 @@ import NotificationFilterState from "../../src/NotificationFilterState.ts";
 import Player from "../../src/Player.ts";
 import Star from "../../src/Star.ts";
 
-interface PropTypes
+export interface PropTypes
 {
   location: Star;
   attacker: Player;

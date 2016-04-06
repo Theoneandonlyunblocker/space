@@ -1,7 +1,21 @@
-/// <reference path="../../../src/templateinterfaces/inotificationtemplate.d.ts"/>
-/// <reference path="uicomponents/playerdiednotification.ts" />
+import UIComponent from "./uicomponents/PlayerDiedNotification.ts";
 
-export var playerDiedNotification: NotificationTemplate =
+import NotificationTemplate from "../../src/templateinterfaces/NotificationTemplate.d.ts";
+
+import GameLoader from "../../src/GameLoader.ts";
+import NotificationFilterState from "../../src/NotificationFilterState.ts";
+
+export interface PropTypes
+{
+  deadPlayerName: string;
+}
+
+interface SerializedPropTypes
+{
+  deadPlayerName: string;
+}
+
+const playerDiedNotification: NotificationTemplate =
 {
   key: "playerDiedNotification",
   displayName: "Player died",
@@ -9,21 +23,21 @@ export var playerDiedNotification: NotificationTemplate =
   defaultFilterState: [NotificationFilterState.alwaysShow],
   iconSrc: "modules\/default\/img\/resources\/test1.png",
   eventListeners: ["makePlayerDiedNotification"],
-  contentConstructor: DefaultModule.UIComponents.PlayerDiedNotification,
-  messageConstructor: function(props: any)
+  contentConstructor: UIComponent,
+  messageConstructor: function(props: PropTypes)
   {
     var message = "Player " + props.deadPlayerName + " died";
 
     return message;
   },
-  serializeProps: function(props: any)
+  serializeProps: function(props: PropTypes): SerializedPropTypes
   {
     return(
     {
       deadPlayerName: props.deadPlayerName
     });
   },
-  deserializeProps: function(props: any, gameLoader: GameLoader)
+  deserializeProps: function(props: SerializedPropTypes, gameLoader: GameLoader): PropTypes
   {
     return(
     {
@@ -31,3 +45,5 @@ export var playerDiedNotification: NotificationTemplate =
     });
   }
 }
+
+export default playerDiedNotification;

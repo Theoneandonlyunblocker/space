@@ -1,19 +1,33 @@
-export interface PropTypes
+/// <reference path="../../../lib/react-0.13.3.d.ts" />
+import * as React from "react";
+
+import Notification from "../../../src/Notification.ts";
+
+import {PropTypes as NotificationProps} from "../battleFinishNotification.ts";
+
+
+interface PropTypes
 {
-  // TODO refactor | add prop types
+  notification: Notification<NotificationProps>;
 }
 
-export var BattleFinishNotification = React.createFactory(React.createClass(
+export default class BattleFinishNotification extends React.Component<PropTypes, {}>
 {
-  displayName: "BattleFinishNotification",
-  render: function()
+  private displayName: "BattleFinishNotification";
+  
+  constructor(props: PropTypes)
   {
-    var notification: Notification = this.props.notification;
+    super(props);
+  }
+  
+  public render()
+  {
+    var notification = this.props.notification;
     var p = notification.props;
-    var attacker: Player = p.attacker;
-    var defender: Player = p.defender;
-    var victor: Player = p.victor;
-    var location: Star = p.location;
+    var attacker = p.attacker;
+    var defender = p.defender;
+    var victor = p.victor;
+    var location = p.location;
 
     var message = notification.makeMessage();
 
@@ -35,4 +49,4 @@ export var BattleFinishNotification = React.createFactory(React.createClass(
       )
     );
   }
-}));
+}
