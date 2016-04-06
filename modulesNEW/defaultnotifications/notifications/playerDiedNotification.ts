@@ -1,9 +1,9 @@
 import UIComponent from "./uicomponents/PlayerDiedNotification.ts";
 
-import NotificationTemplate from "../../src/templateinterfaces/NotificationTemplate.d.ts";
+import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate.d.ts";
 
-import GameLoader from "../../src/GameLoader.ts";
-import NotificationFilterState from "../../src/NotificationFilterState.ts";
+import GameLoader from "../../../src/GameLoader.ts";
+import NotificationFilterState from "../../../src/NotificationFilterState.ts";
 
 export interface PropTypes
 {

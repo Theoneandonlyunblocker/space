@@ -1,11 +1,11 @@
 import UIComponent from "./uicomponents/BattleFinishNotification.ts";
 
-import NotificationTemplate from "../../src/templateinterfaces/NotificationTemplate.d.ts";
+import NotificationTemplate from "../../../src/templateinterfaces/NotificationTemplate.d.ts";
 
-import GameLoader from "../../src/GameLoader.ts";
-import NotificationFilterState from "../../src/NotificationFilterState.ts";
-import Player from "../../src/Player.ts";
-import Star from "../../src/Star.ts";
+import GameLoader from "../../../src/GameLoader.ts";
+import NotificationFilterState from "../../../src/NotificationFilterState.ts";
+import Player from "../../../src/Player.ts";
+import Star from "../../../src/Star.ts";
 
 export interface PropTypes
 {
