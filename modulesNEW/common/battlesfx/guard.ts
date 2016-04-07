@@ -1,12 +1,16 @@
 import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
-import GuardFilter from "../../../src/shaders/Guard.ts";
+import
+{
+  default as GuardFilter,
+  Uniforms as GuardUniforms
+} from "../../../src/shaders/Guard.ts";
 
 import
 {
   getRelativeValue
 } from "../../../src/utility.ts";
 
-export function guard(props: SFXParams)
+export default function guard(props: SFXParams)
 {
   var userCanvasWidth = props.width * 0.4; // TODO BattleSFX
   var maxFrontier = userCanvasWidth;
@@ -15,43 +19,15 @@ export function guard(props: SFXParams)
   var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
   var maxBlockWidth = maxFrontier * 2;
 
-  var uniforms =
+  var uniforms: GuardUniforms =
   {
-    frontier:
-    {
-      type: "1f",
-      value: 0
-    },
-    trailDistance:
-    {
-      type: "1f",
-      value: baseTrailDistance
-    },
-    seed:
-    {
-      type: "1f",
-      value: Math.random() * 420
-    },
-    blockSize:
-    {
-      type: "1f",
-      value: 90
-    },
-    blockWidth:
-    {
-      type: "1f",
-      value: 0
-    },
-    lineAlpha:
-    {
-      type: "1f",
-      value: 1.5
-    },
-    blockAlpha:
-    {
-      type: "1f",
-      value: 0
-    }
+    frontier: {type: "1f", value: 0},
+    trailDistance: {type: "1f", value: baseTrailDistance},
+    seed: {type: "1f", value: Math.random() * 420},
+    blockSize: {type: "1f", value: 90},
+    blockWidth: {type: "1f", value: 0},
+    lineAlpha: {type: "1f", value: 1.5},
+    blockAlpha: {type: "1f", value: 0}
   }
 
   var travelTime = 0.2;

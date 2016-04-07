@@ -1,6 +1,10 @@
 /// <reference path="projectileattack.ts" />
 
-export function rocketAttack(params: Templates.SFXParams)
+import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+
+import projectileAttack from "./projectileAttack.ts";
+
+export function rocketAttack(params: SFXParams)
 {
   var explosionTextures: PIXI.Texture[] = [];
 

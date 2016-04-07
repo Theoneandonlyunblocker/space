@@ -1,4 +1,14 @@
-export function projectileAttack(props:
+/// <reference path="../../../lib/pixi.d.ts" />
+
+import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+
+import
+{
+  randInt,
+  getRandomArrayItem
+} from "../../../src/utility.ts";
+
+export default function projectileAttack(props:
 {
   projectileTextures: PIXI.Texture[];
   impactTextures?: PIXI.Texture[][];
@@ -13,7 +23,7 @@ export function projectileAttack(props:
   }
   impactRate?: number;
 },
-params: Templates.SFXParams)
+params: SFXParams)
 {
   // TODO battleSFX | would be nice to draw SFX based on unit scenes
   // eg. height here = unit scene height
