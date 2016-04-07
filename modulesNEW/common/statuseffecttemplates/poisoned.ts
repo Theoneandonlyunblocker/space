@@ -2,10 +2,10 @@ import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
 import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate.d.ts";
 import {healSelf} from "../effectactiontemplates/effectActions.ts";
 
-const test: StatusEffectTemplate =
+const poisoned: StatusEffectTemplate =
 {
-  type: "test",
-  displayName: "test",
+  type: "poisoned",
+  displayName: "Poisoned",
   attributes:
   {
     attack:
@@ -48,4 +48,4 @@ const test: StatusEffectTemplate =
   ]
 }
 
-export default test;
+export default poisoned;

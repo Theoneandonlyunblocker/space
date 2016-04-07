@@ -1,6 +1,10 @@
-/// <reference path="../../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
-/// <reference path="abilities.ts" />
+import PassiveSkillTemplate from "../../../src/templateinterfaces/PassiveSkillTemplate.d.ts";
+import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+
+import Unit from "../../../src/Unit.ts";
+import BattlePrep from "../../../src/BattlePrep.ts";
+
+import * as EffectActions from "../effectactiontemplates/effectActions.ts";
 
 export var autoHeal: PassiveSkillTemplate =
 {
@@ -8,7 +12,8 @@ export var autoHeal: PassiveSkillTemplate =
   displayName: "Auto heal",
   description: "Heal 50 health after every turn",
 
-  afterAbilityUse:
+  // TODO passive skills TODO status effects
+  atBattleStart:
   [
     {
       action: EffectActions.healSelf,
@@ -37,7 +42,9 @@ export var poisoned: PassiveSkillTemplate =
   type: "poisoned",
   displayName: "Poisoned",
   description: "-10% max health per turn",
-  afterAbilityUse:
+  
+  // TODO passive skills TODO status effects
+  atBattleStart:
   [
     {
       action: EffectActions.healSelf,
@@ -48,7 +55,7 @@ export var poisoned: PassiveSkillTemplate =
       sfx:
       {
         duration: 1200,
-        userOverlay: function(props: Templates.SFXParams)
+        userOverlay: function(props: SFXParams)
         {
           var canvas = <HTMLCanvasElement> document.createElement("canvas");
           canvas.width = props.width;

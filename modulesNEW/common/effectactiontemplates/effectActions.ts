@@ -1,4 +1,4 @@
-import testStatusEffect from "../statuseffecttemplates/test.ts";
+import poisonedStatusEffect from "../statuseffecttemplates/poisoned.ts";
 
 import EffectActionTemplate from "../../../src/templateinterfaces/EffectActionTemplate.d.ts";
 
@@ -153,7 +153,7 @@ export const buffTest: EffectActionTemplate =
   targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
-    target.addStatusEffect(new StatusEffect(testStatusEffect, 2));
+    target.addStatusEffect(new StatusEffect(poisonedStatusEffect, 2));
   }
 }
 export const healTarget: EffectActionTemplate =
