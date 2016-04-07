@@ -1,9 +1,9 @@
-/// <reference path="../graphics/makesfxfromvideo.ts"/>
-/// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/iabilityeffecttemplate.d.ts"/>
-/// <reference path="effectactions.ts" />
-/// <reference path="battlesfx.ts" />
+import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
+
+import DamageType from "../../../src/DamageType.ts";
+
+import * as BattleSFX from "../battlesfxtemplates/battleSFX.ts";
+import * as EffectActions from "../effectactiontemplates/effectActions.ts";
 
 
 export var rangedAttack: AbilityTemplate =
@@ -143,74 +143,6 @@ export var debugAbility: AbilityTemplate =
     sfx: BattleSFX.guard,
     data: {}
   }
-}
-
-export var ranceAttack: AbilityTemplate =
-{
-  type: "ranceAttack",
-  displayName: "Rance attack",
-  description: "dont sue",
-  moveDelay: 0,
-  actionsUse: 0,
-  mainEffect:
-  {
-    action: EffectActions.singleTargetDamage,
-    sfx:
-    {
-      duration: 1200,
-      userSprite: function(props: Templates.SFXParams)
-      {
-        // cg13600.bmp
-        return PIXI.Sprite.fromImage("img\/battleEffects\/ranceAttack2.png");
-      }
-      // battleOverlay: function(props: Templates.SFXParams)
-      // {
-      //   // cg40500.bmp - cg40529.bmp converted to webm
-      //   return BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
-      // }
-    },
-    data:
-    {
-      baseDamage: 0.1,
-      damageType: DamageType.physical
-    }
-  },
-  secondaryEffects:
-  [
-    {
-      action: EffectActions.singleTargetDamage,
-      data:
-      {
-        baseDamage: 0.1,
-        damageType: DamageType.physical
-      },
-      attachedEffects:
-      [
-        {
-          action: EffectActions.receiveCounterAttack,
-          data:
-          {
-            baseDamage: 0.5
-          }
-        }
-      ],
-      sfx:
-      {
-        duration: 1500,
-        userSprite: function(props: Templates.SFXParams)
-        {
-          // cg13300.bmp
-          return PIXI.Sprite.fromImage("img\/battleEffects\/ranceAttack.png");
-        }
-        // battleOverlay: function(props: Templates.SFXParams)
-        // {
-        //   // cg40000.bmp - cg40029.bmp converted to webm
-        //   return BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
-        // }
-      }
-    }
-  ],
-  onlyAllowExplicitUpgrade: true
 }
 
 export var standBy: AbilityTemplate =
