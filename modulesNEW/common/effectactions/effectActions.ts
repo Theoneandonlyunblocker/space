@@ -1,9 +1,25 @@
-/// <reference path="../../../src/templateinterfaces/ieffectactiontemplate.d.ts"/>
-/// <reference path="../../../src/targeting.ts" />
-/// <reference path="../../../src/unit.ts" />
-/// <reference path="../../../src/damagetype.ts" />
+import testStatusEffect from "../statuseffects/test.ts";
 
-export var singleTargetDamage: EffectActionTemplate =
+import EffectActionTemplate from "../../../src/templateinterfaces/EffectActionTemplate.d.ts";
+
+import Battle from "../../../src/Battle.ts";
+import DamageType from "../../../src/DamageType.ts";
+import GuardCoverage from "../../../src/GuardCoverage.ts";
+import StatusEffect from "../../../src/StatusEffect.ts";
+import Unit from "../../../src/Unit.ts";
+import
+{
+  TargetFormation,
+  areaColumn,
+  areaNeighbors,
+  areaRowNeighbors,
+  areaSingle,
+  targetAll,
+  targetNextRow,
+  targetSelf
+} from "../../../src/targeting.ts";
+
+export const singleTargetDamage: EffectActionTemplate =
 {
   name: "singleTargetDamage",
   targetFormations: TargetFormation.enemy,
@@ -12,16 +28,16 @@ export var singleTargetDamage: EffectActionTemplate =
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {baseDamage: number; damageType: number;})
   {
-    var baseDamage = data.baseDamage;
-    var damageType = data.damageType;
+    const baseDamage = data.baseDamage;
+    const damageType = data.damageType;
 
-    var damageIncrease = user.getAttackDamageIncrease(damageType);
-    var damage = baseDamage * damageIncrease;
+    const damageIncrease = user.getAttackDamageIncrease(damageType);
+    const damage = baseDamage * damageIncrease;
 
     target.receiveDamage(damage, damageType);
   }
 }
-export var closeAttack: EffectActionTemplate =
+export const closeAttack: EffectActionTemplate =
 {
   name: "closeAttack",
   targetFormations: TargetFormation.enemy,
@@ -29,16 +45,16 @@ export var closeAttack: EffectActionTemplate =
   targetRangeFunction: targetNextRow,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
-    var baseDamage = 0.66;
-    var damageType = DamageType.physical;
+    const baseDamage = 0.66;
+    const damageType = DamageType.physical;
 
-    var damageIncrease = user.getAttackDamageIncrease(damageType);
-    var damage = baseDamage * damageIncrease;
+    const damageIncrease = user.getAttackDamageIncrease(damageType);
+    const damage = baseDamage * damageIncrease;
 
     target.receiveDamage(damage, damageType);
   }
 }
-export var wholeRowAttack: EffectActionTemplate =
+export const wholeRowAttack: EffectActionTemplate =
 {
   name: "wholeRowAttack",
   targetFormations: TargetFormation.either,
@@ -46,17 +62,17 @@ export var wholeRowAttack: EffectActionTemplate =
   targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
-    var baseDamage = 0.75;
-    var damageType = DamageType.magical;
+    const baseDamage = 0.75;
+    const damageType = DamageType.magical;
 
-    var damageIncrease = user.getAttackDamageIncrease(damageType);
-    var damage = baseDamage * damageIncrease;
+    const damageIncrease = user.getAttackDamageIncrease(damageType);
+    const damage = baseDamage * damageIncrease;
 
     target.receiveDamage(damage, damageType);
   }
 }
 
-export var bombAttack: EffectActionTemplate =
+export const bombAttack: EffectActionTemplate =
 {
   name: "bombAttack",
   targetFormations: TargetFormation.enemy,
@@ -64,32 +80,31 @@ export var bombAttack: EffectActionTemplate =
   targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
-    var baseDamage = 0.5;
-    var damageType = DamageType.physical;
+    const baseDamage = 0.5;
+    const damageType = DamageType.physical;
 
-    var damageIncrease = user.getAttackDamageIncrease(damageType);
-    var damage = baseDamage * damageIncrease;
+    const damageIncrease = user.getAttackDamageIncrease(damageType);
+    const damage = baseDamage * damageIncrease;
 
     target.receiveDamage(damage, damageType);
   }
 }
-export var guardRow: EffectActionTemplate =
+export const guardRow: EffectActionTemplate =
 {
   name: "guardRow",
   targetFormations: TargetFormation.either,
   battleAreaFunction: areaSingle,
   targetRangeFunction: targetSelf,
-  executeAction: function(user: Unit, target: Unit, battle: Battle, data?: any)
+  executeAction: function(user: Unit, target: Unit, battle: Battle, data: {perInt?: number, flat?: number})
   {
-    var data = data || {};
-    var guardPerInt = data.perInt || 0;
-    var flat = data.flat || 0;
+    const guardPerInt = data.perInt || 0;
+    const flat = data.flat || 0;
 
-    var guardAmount = guardPerInt * user.attributes.intelligence + flat;
+    const guardAmount = guardPerInt * user.attributes.intelligence + flat;
     user.addGuard(guardAmount, GuardCoverage.row);
   }
 }
-export var receiveCounterAttack: EffectActionTemplate =
+export const receiveCounterAttack: EffectActionTemplate =
 {
   name: "receiveCounterAttack",
   targetFormations: TargetFormation.either,
@@ -98,10 +113,10 @@ export var receiveCounterAttack: EffectActionTemplate =
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {baseDamage: number; damageType: number;})
   {
-    var counterStrength = target.getCounterAttackStrength();
+    const counterStrength = target.getCounterAttackStrength();
     if (counterStrength)
     {
-      Templates.EffectActions.singleTargetDamage.executeAction(target, user, battle,
+      singleTargetDamage.executeAction(target, user, battle,
       {
         baseDamage: data.baseDamage * counterStrength,
         damageType: DamageType.physical
@@ -109,7 +124,7 @@ export var receiveCounterAttack: EffectActionTemplate =
     }
   }
 }
-export var increaseCaptureChance: EffectActionTemplate =
+export const increaseCaptureChance: EffectActionTemplate =
 {
   name: "increaseCaptureChance",
   targetFormations: TargetFormation.enemy,
@@ -130,7 +145,7 @@ export var increaseCaptureChance: EffectActionTemplate =
 
   }
 }
-export var buffTest: EffectActionTemplate =
+export const buffTest: EffectActionTemplate =
 {
   name: "buffTest",
   targetFormations: TargetFormation.either,
@@ -138,10 +153,10 @@ export var buffTest: EffectActionTemplate =
   targetRangeFunction: targetAll,
   executeAction: function(user: Unit, target: Unit, battle: Battle)
   {
-    target.addStatusEffect(new StatusEffect(StatusEffects.test, 2));
+    target.addStatusEffect(new StatusEffect(testStatusEffect, 2));
   }
 }
-export var healTarget: EffectActionTemplate =
+export const healTarget: EffectActionTemplate =
 {
   name: "healTarget",
   targetFormations: TargetFormation.ally,
@@ -150,7 +165,7 @@ export var healTarget: EffectActionTemplate =
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
   {
-    var healAmount = 0;
+    let healAmount = 0;
     if (data.flat)
     {
       healAmount += data.flat;
@@ -168,7 +183,7 @@ export var healTarget: EffectActionTemplate =
   }
 }
 
-export var healSelf: EffectActionTemplate =
+export const healSelf: EffectActionTemplate =
 {
   name: "healSelf",
   targetFormations: TargetFormation.ally,
@@ -177,11 +192,11 @@ export var healSelf: EffectActionTemplate =
   executeAction: function(user: Unit, target: Unit, battle: Battle,
     data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
   {
-    Templates.EffectActions.healTarget.executeAction(user, user, battle, data);
+    healTarget.executeAction(user, user, battle, data);
   }
 }
 
-export var standBy: EffectActionTemplate =
+export const standBy: EffectActionTemplate =
 {
   name: "standBy",
   targetFormations: TargetFormation.either,
