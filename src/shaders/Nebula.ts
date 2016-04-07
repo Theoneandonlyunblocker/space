@@ -30,18 +30,18 @@ export default class Nebula extends PIXI.AbstractFilter
   {
     return(
     {
-      baseColor: "vec3",
-      cloudLightness: "float",
-      coverage: "float",
-      diffusion: "float",
-      highlightA: "float",
-      highlightB: "float",
-      highlightColor: "vec3",
-      overlayColor: "vec3",
-      scale: "float",
-      seed: "vec2",
-      streakLightness: "float",
-      streakiness: "float",
+      baseColor: "3fv",
+      cloudLightness: "1f",
+      coverage: "1f",
+      diffusion: "1f",
+      highlightA: "1f",
+      highlightB: "1f",
+      highlightColor: "3fv",
+      overlayColor: "3fv",
+      scale: "1f",
+      seed: "2fv",
+      streakLightness: "1f",
+      streakiness: "1f",
     });
    }
 }

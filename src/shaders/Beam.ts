@@ -32,20 +32,20 @@ export default class Beam extends PIXI.AbstractFilter
   {
     return(
     {
-      aspectRatio: "float",
-      beamColor: "vec4",
-      bulgeIntensity: "float",
-      bulgeSharpness: "float",
-      bulgeSize: "vec2",
-      bulgeXPosition: "float",
-      lineIntensity: "float",
-      lineXSharpness: "float",
-      lineXSize: "vec2",
-      lineYSharpness: "float",
-      lineYSize: "float",
-      noiseAmplitude: "float",
-      seed: "float",
-      time: "float",
+      aspectRatio: "1f",
+      beamColor: "4fv",
+      bulgeIntensity: "1f",
+      bulgeSharpness: "1f",
+      bulgeSize: "2fv",
+      bulgeXPosition: "1f",
+      lineIntensity: "1f",
+      lineXSharpness: "1f",
+      lineXSize: "2fv",
+      lineYSharpness: "1f",
+      lineYSize: "1f",
+      noiseAmplitude: "1f",
+      seed: "1f",
+      time: "1f",
     });
    }
 }

@@ -25,13 +25,13 @@ export default class LightBurst extends PIXI.AbstractFilter
   {
     return(
     {
-      centerBloomStrength: "float",
-      centerSize: "float",
-      rayColor: "vec4",
-      raySharpness: "float",
-      rayStrength: "float",
-      rotation: "float",
-      seed: "vec2",
+      centerBloomStrength: "1f",
+      centerSize: "1f",
+      rayColor: "4fv",
+      raySharpness: "1f",
+      rayStrength: "1f",
+      rotation: "1f",
+      seed: "2fv",
     });
    }
 }

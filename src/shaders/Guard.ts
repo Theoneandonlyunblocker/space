@@ -25,13 +25,13 @@ export default class Guard extends PIXI.AbstractFilter
   {
     return(
     {
-      blockAlpha: "float",
-      blockSize: "float",
-      blockWidth: "float",
-      frontier: "float",
-      lineAlpha: "float",
-      seed: "float",
-      trailDistance: "float",
+      blockAlpha: "1f",
+      blockSize: "1f",
+      blockWidth: "1f",
+      frontier: "1f",
+      lineAlpha: "1f",
+      seed: "1f",
+      trailDistance: "1f",
     });
    }
 }

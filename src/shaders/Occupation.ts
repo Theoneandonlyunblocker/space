@@ -23,11 +23,11 @@ export default class Occupation extends PIXI.AbstractFilter
   {
     return(
     {
-      baseColor: "vec4",
-      gapSize: "float",
-      lineColor: "vec4",
-      offset: "vec2",
-      zoom: "float",
+      baseColor: "4fv",
+      gapSize: "1f",
+      lineColor: "4fv",
+      offset: "2fv",
+      zoom: "1f",
     });
    }
 }

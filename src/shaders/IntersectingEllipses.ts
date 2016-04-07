@@ -25,13 +25,13 @@ export default class IntersectingEllipses extends PIXI.AbstractFilter
   {
     return(
     {
-      intersectingEllipseCenter: "vec2",
-      intersectingEllipseSharpness: "float",
-      intersectingEllipseSize: "vec2",
-      mainAlpha: "float",
-      mainColor: "vec4",
-      mainEllipseSharpness: "float",
-      mainEllipseSize: "vec2",
+      intersectingEllipseCenter: "2fv",
+      intersectingEllipseSharpness: "1f",
+      intersectingEllipseSize: "2fv",
+      mainAlpha: "1f",
+      mainColor: "4fv",
+      mainEllipseSharpness: "1f",
+      mainEllipseSize: "2fv",
     });
    }
 }

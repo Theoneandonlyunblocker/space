@@ -110,7 +110,9 @@ def getGetUniformTypesLines(uniformTypes, indentationLevel):
   ]
 
   for uniformName in sorted(uniformTypes):
-    lines.append('    {0}: "{1}",\n'.format(uniformName, uniformTypes[uniformName]))
+    glslType = uniformTypes[uniformName]
+    pixiType = pixiTypes[glslType]
+    lines.append('    {0}: "{1}",\n'.format(uniformName, pixiType))
 
   lines.extend([
     '  });\n',

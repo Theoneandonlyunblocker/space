@@ -21,9 +21,9 @@ export default class ShinyParticle extends PIXI.AbstractFilter
   {
     return(
     {
-      highlightIntensity: "float",
-      spikeColor: "vec4",
-      spikeIntensity: "float",
+      highlightIntensity: "1f",
+      spikeColor: "4fv",
+      spikeIntensity: "1f",
     });
    }
 }
