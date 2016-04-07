@@ -10,7 +10,7 @@
 		"spriteSourceSize": {"x":0,"y":0,"w":45,"h":24},
 		"sourceSize": {"w":45,"h":24}
 	},
-	"cheatShip.png": {
+	"debugShip.png": {
 		"frame": {"x":0, "y":0, "w":132, "h":86},
 		"spriteSourceSize": {"x":0,"y":0,"w":132,"h":86},
 		"sourceSize": {"w":132,"h":86}

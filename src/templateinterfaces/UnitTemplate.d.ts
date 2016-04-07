@@ -53,8 +53,6 @@ declare interface UnitTemplate extends ManufacturableThing
   // [canAlwaysLearn, canAlwaysLearn, [#1cantLearnIfHas#2, #2cantLearnIfHas#1]]
   learnableAbilities?: Array<AbilityBase | AbilityBase[]>;
 
-  technologyRequirements?: TechnologyRequirement[];
-
   unitDrawingFN: UnitDrawingFunction;
 }
 

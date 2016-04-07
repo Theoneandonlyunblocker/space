@@ -1,5 +1,4 @@
 import ManufacturableThing from "./ManufacturableThing.d.ts";
-import TechnologyRequirement from "./TechnologyRequirement.d.ts";
 import AbilityTemplate from "./AbilityTemplate.d.ts";
 import PassiveSkillTemplate from "./PassiveSkillTemplate.d.ts";
 
@@ -26,8 +25,6 @@ declare interface ItemTemplate extends ManufacturableThing
     intelligence?: number;
     speed?: number;
   };
-
-  technologyRequirements?: TechnologyRequirement[];
 }
 
 export default ItemTemplate;
