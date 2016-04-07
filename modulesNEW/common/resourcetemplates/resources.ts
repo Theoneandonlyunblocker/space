@@ -1,7 +1,6 @@
-/// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
+import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate.d.ts";
 
-export var testResource1: ResourceTemplate =
+export const testResource1: ResourceTemplate =
 {
   type: "testResource1",
   displayName: "Test Resource 1",
@@ -9,7 +8,7 @@ export var testResource1: ResourceTemplate =
   rarity: 1,
   distributionGroups: ["common"]
 }
-export var testResource2: ResourceTemplate =
+export const testResource2: ResourceTemplate =
 {
   type: "testResource2",
   displayName: "Test Resource 2",
@@ -17,7 +16,7 @@ export var testResource2: ResourceTemplate =
   rarity: 1,
   distributionGroups: ["common"]
 }
-export var testResource3: ResourceTemplate =
+export const testResource3: ResourceTemplate =
 {
   type: "testResource3",
   displayName: "Test Resource 3",
@@ -25,7 +24,7 @@ export var testResource3: ResourceTemplate =
   rarity: 1,
   distributionGroups: ["common"]
 }
-export var testResource4: ResourceTemplate =
+export const testResource4: ResourceTemplate =
 {
   type: "testResource4",
   displayName: "Test Resource 4",
@@ -33,7 +32,7 @@ export var testResource4: ResourceTemplate =
   rarity: 1,
   distributionGroups: ["rare"]
 }
-export var testResource5: ResourceTemplate =
+export const testResource5: ResourceTemplate =
 {
   type: "testResource5",
   displayName: "Test Resource 5",
