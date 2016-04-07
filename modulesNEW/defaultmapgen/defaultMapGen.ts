@@ -27,6 +27,11 @@ const defaultMapGen: ModuleFile =
   {
     moduleData.copyTemplates<MapGenTemplate>(Templates, "MapGen");
     
+    if (!moduleData.defaultMap)
+    {
+      moduleData.defaultMap = spiralGalaxy;
+    }
+    
     return moduleData;
   }
 }
