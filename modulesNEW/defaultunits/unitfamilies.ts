@@ -1,7 +1,6 @@
-/// <reference path="../../../src/templateinterfaces/iunitfamily.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
+import UnitFamily from "../../src/templateinterfaces/UnitFamily.d.ts";
 
-export var debug: UnitFamily =
+export const debug: UnitFamily =
 {
   type: "debug",
   debugOnly: true,
@@ -9,7 +8,7 @@ export var debug: UnitFamily =
   rarity: 0,
   distributionGroups: []
 }
-export var basic: UnitFamily =
+export const basic: UnitFamily =
 {
   type: "basic",
   debugOnly: false,
@@ -17,7 +16,7 @@ export var basic: UnitFamily =
   rarity: 0,
   distributionGroups: []
 }
-export var red: UnitFamily =
+export const red: UnitFamily =
 {
   type: "red",
   debugOnly: false,
@@ -25,7 +24,7 @@ export var red: UnitFamily =
   rarity: 1,
   distributionGroups: ["common", "rare"]
 }
-export var blue: UnitFamily =
+export const blue: UnitFamily =
 {
   type: "blue",
   debugOnly: false,

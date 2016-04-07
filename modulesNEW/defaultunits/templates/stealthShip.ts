@@ -10,7 +10,7 @@ import
   standBy
 } from "../../common/abilitytemplates/abilities.ts";
 
-export var stealthShip: UnitTemplate =
+const stealthShip: UnitTemplate =
 {
   type: "stealthShip",
   displayName: "Stealth Ship",
@@ -52,3 +52,5 @@ export var stealthShip: UnitTemplate =
   
   unitDrawingFN: defaultUnitDrawingFunction
 }
+
+export default stealthShip;

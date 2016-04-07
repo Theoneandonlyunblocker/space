@@ -1,6 +1,8 @@
-/// <reference path="../../../src/templateinterfaces/iunitarchetype.d.ts"/>
+import UnitArchetype from "../../src/templateinterfaces/UnitArchetype.d.ts";
 
-export var combat: UnitArchetype =
+import Unit from "../../src/Unit.ts";
+
+export const combat: UnitArchetype =
 {
   type: "combat",
   idealWeightInBattle: 1,
@@ -11,7 +13,7 @@ export var combat: UnitArchetype =
     ROW_BACK: 0.6
   }
 }
-export var utility: UnitArchetype =
+export const utility: UnitArchetype =
 {
   type: "utility",
   idealWeightInBattle: 0.33,
@@ -22,7 +24,7 @@ export var utility: UnitArchetype =
     ROW_BACK: 0.6
   }
 }
-export var scouting: UnitArchetype =
+export const scouting: UnitArchetype =
 {
   type: "scouting",
   idealWeightInBattle: 0.01,
@@ -33,7 +35,7 @@ export var scouting: UnitArchetype =
     ROW_BACK: 0.02
   }
 }
-export var defence: UnitArchetype =
+export const defence: UnitArchetype =
 {
   type: "defence",
   idealWeightInBattle: 0.5,

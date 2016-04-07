@@ -10,7 +10,7 @@ import
   standBy
 } from "../../common/abilitytemplates/abilities.ts";
 
-export var redShip: UnitTemplate =
+const redShip: UnitTemplate =
 {
   type: "redShip",
   displayName: "Red ship",
@@ -50,3 +50,5 @@ export var redShip: UnitTemplate =
   ],
   unitDrawingFN: defaultUnitDrawingFunction
 }
+
+export default redShip;

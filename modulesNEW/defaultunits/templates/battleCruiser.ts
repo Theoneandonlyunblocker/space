@@ -11,7 +11,7 @@ import
   standBy
 } from "../../common/abilitytemplates/abilities.ts";
 
-export var battleCruiser: UnitTemplate =
+const battleCruiser: UnitTemplate =
 {
   type: "battleCruiser",
   displayName: "Battlecruiser",
@@ -52,3 +52,5 @@ export var battleCruiser: UnitTemplate =
   ],
   unitDrawingFN: defaultUnitDrawingFunction
 }
+
+export default battleCruiser;

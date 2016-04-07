@@ -10,7 +10,7 @@ import
   standBy
 } from "../../common/abilitytemplates/abilities.ts";
 
-export var scout: UnitTemplate =
+const scout: UnitTemplate =
 {
   type: "scout",
   displayName: "Scout",
@@ -50,3 +50,5 @@ export var scout: UnitTemplate =
   ],
   unitDrawingFN: defaultUnitDrawingFunction
 }
+
+export default scout;

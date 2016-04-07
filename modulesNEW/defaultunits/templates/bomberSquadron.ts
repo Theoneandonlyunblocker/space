@@ -11,7 +11,7 @@ import
   bombAttack
 } from "../../common/abilitytemplates/abilities.ts";
 
-export var bomberSquadron: UnitTemplate =
+const bomberSquadron: UnitTemplate =
 {
   type: "bomberSquadron",
   displayName: "Bomber Squadron",
@@ -52,3 +52,5 @@ export var bomberSquadron: UnitTemplate =
   ],
   unitDrawingFN: defaultUnitDrawingFunction
 }
+
+export default bomberSquadron;

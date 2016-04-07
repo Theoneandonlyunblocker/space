@@ -15,7 +15,7 @@ import
   initialGuard
 } from "../../common/passiveskilltemplates/passiveSkills.ts";
 
-export var commandShip: UnitTemplate =
+const commandShip: UnitTemplate =
 {
   type: "commandShip",
   displayName: "Command Ship",
@@ -65,3 +65,5 @@ export var commandShip: UnitTemplate =
   ],
   unitDrawingFN: defaultUnitDrawingFunction
 }
+
+export default commandShip;

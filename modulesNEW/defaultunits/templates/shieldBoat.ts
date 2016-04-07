@@ -16,7 +16,7 @@ import
   initialGuard
 } from "../../common/passiveskilltemplates/passiveSkills.ts";
 
-export var shieldBoat: UnitTemplate =
+const shieldBoat: UnitTemplate =
 {
   type: "shieldBoat",
   displayName: "Shield Boat",
@@ -67,3 +67,5 @@ export var shieldBoat: UnitTemplate =
   ],
   unitDrawingFN: defaultUnitDrawingFunction
 }
+
+export default shieldBoat;

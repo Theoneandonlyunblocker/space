@@ -32,7 +32,7 @@ const defaultUnits: ModuleFile =
   },
   constructModule: function(moduleData: ModuleData)
   {
-    moduleData.copyTemplates<UnitTemplate>(UnitTemplates, "Unit");
+    moduleData.copyTemplates<UnitTemplate>(UnitTemplates, "Units");
     
     return moduleData;
   }
