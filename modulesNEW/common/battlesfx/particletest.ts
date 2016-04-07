@@ -1,133 +1,23 @@
-/// <reference path="protonwrapper.ts" />
-/// <reference path="uniformsyncer.ts" />
+/// <reference path="../../../lib/tween.js.d.ts" />
 
-// TODO temporary
-export function drawEasingFunctionGraph(easingFunction: (x: number) => number)
+import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+
+import BeamFilter from "../../../src/shaders/Beam.ts";
+import ShinyParticleFilter from "../../../src/shaders/ShinyParticle.ts";
+import IntersectingEllipsesFilter from "../../../src/shaders/IntersectingEllipses.ts";
+import LightBurstFilter from "../../../src/shaders/LightBurst.ts";
+
+import
 {
-  var canvas = document.createElement("canvas");
-  canvas.width = 180;
-  canvas.height = 100;
+  createDummySpriteForShader,
+  getDummyTextureForShader,
+  getRelativeValue
+} from "../../../src/utility.ts";
 
-  var context = canvas.getContext("2d");
-  context.fillStyle = "rgb(250,250,250)";
-  context.fillRect( 0, 0, 180, 100 );
+import ProtonWrapper from "./ProtonWrapper.ts";
 
-  context.lineWidth = 0.5;
-  context.strokeStyle = "rgb(230,230,230)";
 
-  context.beginPath();
-  context.moveTo( 0, 20 );
-  context.lineTo( 180, 20 );
-  context.moveTo( 0, 80 );
-  context.lineTo( 180, 80 );
-  context.closePath();
-  context.stroke();
-
-  context.lineWidth = 2;
-  context.strokeStyle = "rgb(255,127,127)";
-
-  context.beginPath();
-  context.moveTo(5, 80);
-
-  var resolution = 100;
-  for (var i = 0; i < resolution; i++)
-  {
-    var x = i / resolution;
-    var y = easingFunction(x);
-    var canvasX = 5 + x * (canvas.width - 10);
-    var canvasY = 80 - y * (canvas.height - 40);
-    context.lineTo(canvasX, canvasY);
-  }
-
-  context.stroke();
-
-  document.body.appendChild(canvas);
-}
-// TODO refactor | move shaders
-export class ShinyParticleFilter extends PIXI.AbstractFilter
-{
-  constructor(uniforms?: any)
-  {
-    super(null, ShaderSources.shinyparticle.join("\n"), uniforms);
-  }
-  static getUniformTypes(): IUniformTypesObject
-  {
-    return(
-    {
-      spikeColor: "4fv",
-      spikeIntensity: "1f",
-      highlightIntensity: "1f"
-    });
-  }
-}
-export class LightBurstFilter extends PIXI.AbstractFilter
-{
-  constructor(uniforms?: any)
-  {
-    super(null, ShaderSources.lightburst.join("\n"), uniforms);
-  }
-  static getUniformTypes(): IUniformTypesObject
-  {
-    return(
-    {
-      seed: "2fv",
-      rotation: "1f",
-      rayStrength: "1f",
-      raySharpness: "1f",
-      rayColor: "4fv",
-      centerSize: "1f",
-      centerBloomStrength: "1f"
-    });
-  }
-}
-export class IntersectingEllipsesFilter extends PIXI.AbstractFilter
-{
-  constructor(uniforms?: any)
-  {
-    super(null, ShaderSources.intersectingellipses.join("\n"), uniforms);
-  }
-  static getUniformTypes(): IUniformTypesObject
-  {
-    return(
-    {
-      mainColor: "4fv",
-      mainAlpha: "1f",
-      intersectingEllipseCenter: "2fv",
-      intersectingEllipseSize: "2fv",
-      intersectingEllipseSharpness: "1f",
-      mainEllipseSize: "2fv",
-      mainEllipseSharpness: "1f"
-    });
-  }
-}
-export class BeamFilter extends PIXI.AbstractFilter
-{
-  constructor(uniforms?: any)
-  {
-    super(null, ShaderSources.beam.join("\n"), uniforms);
-  }
-  static getUniformTypes(): IUniformTypesObject
-  {
-    return(
-    {
-      time: "1f",
-      seed: "1f",
-      aspectRatio: "1f",
-      noiseAmplitude: "1f",
-      beamColor: "4fv",
-      lineIntensity: "1f",
-      bulgeIntensity: "1f",
-      bulgeXPosition: "1f",
-      bulgeSize: "2fv",
-      bulgeSharpness: "1f",
-      lineXSize: "2fv",
-      lineXSharpness: "1f",
-      lineYSize: "1f",
-      lineYSharpness: "1f"
-    });
-  }
-}
-export function particleTest(props: Templates.SFXParams)
+export default function particleTest(props: SFXParams)
 {
   //----------INIT GENERAL
   var width2 = props.width / 2;
@@ -208,8 +98,15 @@ export function particleTest(props: Templates.SFXParams)
     x: props.width,
     y: props.height
   }
-
-  var beamUniforms = new UniformSyncer(BeamFilter.getUniformTypes(), function(time: number)
+  
+  const beamFilter = new BeamFilter(
+  {
+    seed: Math.random() * 100,
+    beamColor: finalColor,
+    aspectRatio: beamSpriteSize.x / beamSpriteSize.y,
+    bulgeXPosition: relativeBeamOrigin.x + 0.1
+  });
+  const syncBeamUniforms = function(time: number)
   {
     var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
     rampUpValue = Math.pow(rampUpValue, 7.0);
@@ -220,7 +117,7 @@ export function particleTest(props: Templates.SFXParams)
     var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
     var beamIntensity = rampUpValue - rampDownValue;
 
-    return(
+    beamFilter.setUniformValues(
     {
       time: time * 100,
       noiseAmplitude: 0.4 * beamIntensity,
@@ -244,14 +141,7 @@ export function particleTest(props: Templates.SFXParams)
       lineYSize: 0.001 + beamIntensity * 0.03,
       lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
     });
-  });
-
-  beamUniforms.set("seed", Math.random() * 100);
-  beamUniforms.set("beamColor", finalColor);
-  beamUniforms.set("aspectRatio", beamSpriteSize.x / beamSpriteSize.y);
-  beamUniforms.set("bulgeXPosition", relativeBeamOrigin.x + 0.1);
-
-  var beamFilter = new BeamFilter(beamUniforms.getUniformsObject());
+  };
 
   var beamSprite = createDummySpriteForShader(
     0,
@@ -310,19 +200,18 @@ export function particleTest(props: Templates.SFXParams)
 
   protonWrapper.addEmitter(smallEmitter, "smallParticles");
 
-  var smallParticleUniforms = new UniformSyncer(ShinyParticleFilter.getUniformTypes(),
-    function(time: number)
+  var smallParticleFilter = new ShinyParticleFilter();
+  const syncSmallParticleUniforms = function(time: number)
   {
     var lifeLeft = 1.0 - time;
 
-    return(
+    smallParticleFilter.setUniformValues(
     {
       spikeColor: particleShaderColorArray,
       spikeIntensity: Math.pow(lifeLeft, 1.5) * 0.4,
       highlightIntensity: Math.pow(lifeLeft, 1.5)
     });
-  });
-  var smallParticleFilter = new ShinyParticleFilter(smallParticleUniforms.getUniformsObject());
+  }
 
   protonWrapper.onSpriteCreated["smallParticles"] = function(sprite: PIXI.Sprite)
   {
@@ -356,19 +245,18 @@ export function particleTest(props: Templates.SFXParams)
 
   protonWrapper.addEmitter(shinyEmitter, "shinyParticles");
 
-  var shinyParticleUniforms = new UniformSyncer(ShinyParticleFilter.getUniformTypes(),
-    function(time: number)
+  var shinyParticleFilter = new ShinyParticleFilter();
+  const syncShinyParticleUniforms = function(time: number)
   {
     var lifeLeft = 1.0 - time;
 
-    return(
+    shinyParticleFilter.setUniformValues(
     {
       spikeColor: particleShaderColorArray,
       spikeIntensity: 1 - time * 0.1,
       highlightIntensity: Math.pow(lifeLeft, 2.0)
     });
-  });
-  var shinyParticleFilter = new ShinyParticleFilter(shinyParticleUniforms.getUniformsObject());
+  }
 
   protonWrapper.onSpriteCreated["shinyParticles"] = function(sprite: PIXI.Sprite)
   {
@@ -395,8 +283,11 @@ export function particleTest(props: Templates.SFXParams)
     y: 1.0
   }
 
-  var shockWaveUniforms = new UniformSyncer(IntersectingEllipsesFilter.getUniformTypes(),
-    function(time: number)
+  var shockWaveFilter = new IntersectingEllipsesFilter(
+  {
+    mainColor: [1, 1, 1, 1]
+  });
+  const syncShockWaveUniforms = function(time: number)
   {
     var burstX: number;
 
@@ -411,7 +302,7 @@ export function particleTest(props: Templates.SFXParams)
 
     var shockWaveSize = TWEEN.Easing.Quintic.Out(burstX);
 
-    return(
+    shockWaveFilter.setUniformValues(
     {
       mainEllipseSize:
       [
@@ -432,10 +323,8 @@ export function particleTest(props: Templates.SFXParams)
       intersectingEllipseSharpness: 0.4 + 0.4 * (1.0 - shockWaveSize),
       mainAlpha: 1.0 - shockWaveSize
     });
-  });
-  shockWaveUniforms.set("mainColor", [1, 1, 1, 1]);
+  }
 
-  var shockWaveFilter = new IntersectingEllipsesFilter(shockWaveUniforms.getUniformsObject());
 
   var shockWaveSpriteSize =
   {
@@ -455,8 +344,14 @@ export function particleTest(props: Templates.SFXParams)
 
 
   //----------INIT LIGHTBURST
-  var lightBurstUniforms = new UniformSyncer(LightBurstFilter.getUniformTypes(),
-    function(time: number)
+  var lightBurstFilter = new LightBurstFilter(
+  {
+    seed: [Math.random() * 69, Math.random() * 420],
+    rotation: 0.0,
+    raySharpness: 2.0,
+    rayColor: [0.75, 0.75, 0.62, 1.0]
+  });
+  const syncLightBurstUniforms = function(time: number)
   {
     var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
     rampUpValue = Math.pow(rampUpValue, 7.0);
@@ -466,20 +361,16 @@ export function particleTest(props: Templates.SFXParams)
 
     var lightBurstIntensity = Math.max(rampUpValue - rampDownValue, 0.0);
 
-    return(
+    lightBurstFilter.setUniformValues(
     {
       centerSize: Math.pow(lightBurstIntensity, 2.0),
       centerBloomStrength: Math.pow(lightBurstIntensity, 2.0) * 5.0,
       rayStrength: Math.pow(lightBurstIntensity, 3.0)
     });
-  });
+  }
 
-  lightBurstUniforms.set("seed", [Math.random() * 69, Math.random() * 420]);
-  lightBurstUniforms.set("rotation", 0.0);
-  lightBurstUniforms.set("raySharpness", 2.0);
-  lightBurstUniforms.set("rayColor", [0.75, 0.75, 0.62, 1.0]);
 
-  var lightBurstFilter = new LightBurstFilter(lightBurstUniforms.getUniformsObject());
+
 
   var lightBurstSize =
   {
@@ -544,13 +435,13 @@ export function particleTest(props: Templates.SFXParams)
         props.triggerEffect();
       }
 
-      smallParticleUniforms.sync(timePassed);
+      syncSmallParticleUniforms(timePassed);
     }
 
-    beamUniforms.sync(timePassed);
-    shinyParticleUniforms.sync(timePassed);
-    lightBurstUniforms.sync(timePassed);
-    shockWaveUniforms.sync(timePassed);
+    syncBeamUniforms(timePassed);
+    syncShinyParticleUniforms(timePassed);
+    syncShockWaveUniforms(timePassed);
+    syncLightBurstUniforms(timePassed);
 
     renderTexture.clear();
     renderTexture.render(mainContainer);
