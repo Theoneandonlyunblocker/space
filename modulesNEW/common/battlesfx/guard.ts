@@ -1,9 +1,5 @@
 import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
-import
-{
-  default as GuardFilter,
-  Uniforms as GuardUniforms
-} from "../../../src/shaders/Guard.ts";
+import GuardFilter from "../../../src/shaders/Guard.ts";
 
 import
 {
@@ -19,16 +15,16 @@ export default function guard(props: SFXParams)
   var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
   var maxBlockWidth = maxFrontier * 2;
 
-  var uniforms: GuardUniforms =
+  var guardFilter = new GuardFilter(
   {
-    frontier: {type: "1f", value: 0},
-    trailDistance: {type: "1f", value: baseTrailDistance},
-    seed: {type: "1f", value: Math.random() * 420},
-    blockSize: {type: "1f", value: 90},
-    blockWidth: {type: "1f", value: 0},
-    lineAlpha: {type: "1f", value: 1.5},
-    blockAlpha: {type: "1f", value: 0}
-  }
+    frontier: 0,
+    trailDistance: baseTrailDistance,
+    seed: Math.random() * 420,
+    blockSize: 90,
+    blockWidth: 0,
+    lineAlpha: 1.5,
+    blockAlpha: 0
+  });
 
   var travelTime = 0.2;
   var hasTriggeredEffect = false;
@@ -38,7 +34,10 @@ export default function guard(props: SFXParams)
     if (time < travelTime)
     {
       var adjustedtime = time / travelTime;
-      uniforms.frontier.value = maxFrontier * adjustedtime;
+      guardFilter.setUniformValues(
+      {
+        frontier: maxFrontier * adjustedtime
+      });
     }
     else
     {
@@ -49,16 +48,18 @@ export default function guard(props: SFXParams)
       }
       var adjustedtime = getRelativeValue(time, travelTime - 0.02, 1);
       adjustedtime = Math.pow(adjustedtime, 4);
-
-      uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * adjustedtime;
-      uniforms.blockWidth.value = adjustedtime * maxBlockWidth;
-      uniforms.lineAlpha.value = (1 - adjustedtime) * 1.5;
       var relativeDistance = getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
-      uniforms.blockAlpha.value = 1 - relativeDistance;
+
+      guardFilter.setUniformValues(
+      {
+        trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
+        blockWidth: adjustedtime * maxBlockWidth,
+        lineAlpha: (1 - adjustedtime) * 1.5,
+        blockAlpha: 1 - relativeDistance
+      });
     }
   }
 
-  var guardFilter = new GuardFilter(uniforms);
   var container = new PIXI.Container();
 
   container.filters = [guardFilter];
