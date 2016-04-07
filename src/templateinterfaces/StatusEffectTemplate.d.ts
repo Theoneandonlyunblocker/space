@@ -1,5 +1,5 @@
+import AbilityEffectTemplate from "./AbilityEffectTemplate.d.ts";
 import StatusEffectAttributes from "./StatusEffectAttributes.d.ts";
-import PassiveSkillTemplate from "./PassiveSkillTemplate.d.ts";
 
 declare interface StatusEffectTemplate
 {
@@ -7,7 +7,8 @@ declare interface StatusEffectTemplate
   displayName: string;
   
   attributes?: StatusEffectAttributes;
-  passiveSkills?: PassiveSkillTemplate[];
+  beforeAbilityUse?: AbilityEffectTemplate[];
+  afterAbilityUse?: AbilityEffectTemplate[];
 }
 
 export default StatusEffectTemplate;
