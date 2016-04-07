@@ -1,8 +1,17 @@
-/// <reference path="../../../src/templateinterfaces/iitemtemplate.d.ts"/>
-/// <reference path="abilities.ts" />
-/// <reference path="passiveskills.ts" />
+import ItemTemplate from "../../src/templateinterfaces/ItemTemplate.d.ts";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
 
-export var bombLauncher1: ItemTemplate =
+import
+{
+  bombAttack,
+  guardRow
+} from "../common/abilitytemplates/abilities.ts";
+import
+{
+  overdrive
+} from "../common/passiveskilltemplates/passiveSkills.ts";
+
+const bombLauncher1: ItemTemplate =
 {
   type: "bombLauncher1",
   displayName: "Bomb Launcher 1",
@@ -13,9 +22,9 @@ export var bombLauncher1: ItemTemplate =
   buildCost: 100,
 
   slot: "high",
-  ability: Abilities.bombAttack
+  ability: bombAttack
 }
-export var bombLauncher2: ItemTemplate =
+const bombLauncher2: ItemTemplate =
 {
   type: "bombLauncher2",
   displayName: "Bomb Launcher 2",
@@ -31,9 +40,9 @@ export var bombLauncher2: ItemTemplate =
   },
 
   slot: "high",
-  ability: Abilities.bombAttack
+  ability: bombAttack
 }
-export var bombLauncher3: ItemTemplate =
+const bombLauncher3: ItemTemplate =
 {
   type: "bombLauncher3",
   displayName: "Bomb Launcher 3",
@@ -49,10 +58,10 @@ export var bombLauncher3: ItemTemplate =
   },
 
   slot: "high",
-  ability: Abilities.bombAttack
+  ability: bombAttack
 }
 
-export var afterBurner1: ItemTemplate =
+const afterBurner1: ItemTemplate =
 {
   type: "afterBurner1",
   displayName: "Afterburner 1",
@@ -68,9 +77,9 @@ export var afterBurner1: ItemTemplate =
   },
 
   slot: "mid",
-  passiveSkill: PassiveSkills.overdrive
+  passiveSkill: overdrive
 }
-export var afterBurner2: ItemTemplate =
+const afterBurner2: ItemTemplate =
 {
   type: "afterBurner2",
   displayName: "Afterburner 2",
@@ -87,7 +96,7 @@ export var afterBurner2: ItemTemplate =
 
   slot: "mid"
 }
-export var afterBurner3: ItemTemplate =
+const afterBurner3: ItemTemplate =
 {
   type: "afterBurner3",
   displayName: "Afterburner 3",
@@ -105,7 +114,7 @@ export var afterBurner3: ItemTemplate =
 
   slot: "mid"
 }
-export var shieldPlating1: ItemTemplate =
+const shieldPlating1: ItemTemplate =
 {
   type: "shieldPlating1",
   displayName: "Shield Plating 1",
@@ -122,7 +131,7 @@ export var shieldPlating1: ItemTemplate =
 
   slot: "low"
 }
-export var shieldPlating2: ItemTemplate =
+const shieldPlating2: ItemTemplate =
 {
   type: "shieldPlating2",
   displayName: "Shield Plating 2",
@@ -139,7 +148,7 @@ export var shieldPlating2: ItemTemplate =
 
   slot: "low"
 }
-export var shieldPlating3: ItemTemplate =
+const shieldPlating3: ItemTemplate =
 {
   type: "shieldPlating3",
   displayName: "Shield Plating 3",
@@ -156,5 +165,21 @@ export var shieldPlating3: ItemTemplate =
   },
 
   slot: "low",
-  ability: Abilities.guardRow
+  ability: guardRow
 }
+
+const ItemTemplates: TemplateCollection<ItemTemplate> =
+{
+  
+  [bombLauncher1.type]: bombLauncher1,
+  [bombLauncher2.type]: bombLauncher2,
+  [bombLauncher3.type]: bombLauncher3,
+  [afterBurner1.type]: afterBurner1,
+  [afterBurner2.type]: afterBurner2,
+  [afterBurner3.type]: afterBurner3,
+  [shieldPlating1.type]: shieldPlating1,
+  [shieldPlating2.type]: shieldPlating2,
+  [shieldPlating3.type]: shieldPlating3
+}
+
+export default ItemTemplates;
