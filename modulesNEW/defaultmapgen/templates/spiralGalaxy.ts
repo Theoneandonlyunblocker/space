@@ -1,7 +1,8 @@
-/// <reference path="spiralgalaxygeneration.ts" />
-/// <reference path="../../../src/templateinterfaces/imapgentemplate.d.ts" />
+import MapGenTemplate from "../../../src/templateinterfaces/mapgentemplate.d.ts";
 
-export var spiralGalaxy: MapGenTemplate =
+import spiralGalaxyGeneration from "../mapgenfunctions/spiralGalaxyGeneration.ts";
+
+const spiralGalaxy: MapGenTemplate =
 {
   key: "spiralGalaxy",
   displayName: "Spiral galaxy",
@@ -10,7 +11,7 @@ export var spiralGalaxy: MapGenTemplate =
   minPlayers: 2,
   maxPlayers: 5,
 
-  mapGenFunction: DefaultModule.MapGenFunctions.spiralGalaxyGeneration,
+  mapGenFunction: spiralGalaxyGeneration,
 
   options:
   {
@@ -85,3 +86,5 @@ export var spiralGalaxy: MapGenTemplate =
     }
   }
 }
+
+export default spiralGalaxy;
