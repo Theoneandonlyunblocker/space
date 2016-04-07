@@ -10,6 +10,11 @@ import
   standBy
 } from "../../common/abilitytemplates/abilities.ts";
 
+import
+{
+  initialGuard
+} from "../../common/passiveskilltemplates/passiveSkills.ts";
+
 export var commandShip: UnitTemplate =
 {
   type: "commandShip",
@@ -54,7 +59,7 @@ export var commandShip: UnitTemplate =
       flatProbability: 1,
       probabilityItems:
       [
-        PassiveSkills.initialGuard
+        initialGuard
       ]
     }
   ],

@@ -11,6 +11,11 @@ import
   guardRow
 } from "../../common/abilitytemplates/abilities.ts";
 
+import
+{
+  initialGuard
+} from "../../common/passiveskilltemplates/passiveSkills.ts";
+
 export var shieldBoat: UnitTemplate =
 {
   type: "shieldBoat",
@@ -56,7 +61,7 @@ export var shieldBoat: UnitTemplate =
       flatProbability: 1,
       probabilityItems:
       [
-        PassiveSkills.initialGuard
+        initialGuard
       ]
     }
   ],

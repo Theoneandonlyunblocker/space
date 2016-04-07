@@ -15,6 +15,13 @@ import
   closeAttack
 } from "../../common/abilitytemplates/abilities.ts";
 
+import
+{
+  autoHeal,
+  warpJammer,
+  medic
+} from "../../common/passiveskilltemplates/passiveSkills.ts";
+
 const debugShip: UnitTemplate =
 {
   type: "debugShip",
@@ -80,28 +87,23 @@ const debugShip: UnitTemplate =
       [
         {
           weight: 0.33,
-          probabilityItems: [PassiveSkills.autoHeal]
+          probabilityItems: [autoHeal]
         },
         {
           weight: 0.33,
-          probabilityItems: [PassiveSkills.warpJammer]
+          probabilityItems: [warpJammer]
         },
         {
           weight: 0.33,
-          probabilityItems: [PassiveSkills.medic]
+          probabilityItems: [medic]
         }
       ]
     }
   ],
-  specialAbilityUpgrades:
-  [
-    ranceAttack
-  ],
   learnableAbilities:
   [
     guardRow,
-    closeAttack,
-    [debugAbility, ranceAttack]
+    closeAttack
   ],
   unitDrawingFN: defaultUnitDrawingFunction
 }
