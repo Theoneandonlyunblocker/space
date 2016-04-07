@@ -86,7 +86,7 @@ def getGLSLUniformTypes(sourceLines):
 
 def getUniformsLines(uniformTypes):
   lines = [
-    'export interface Uniforms\n',
+    'interface Uniforms\n',
     '{\n'
   ]
 
@@ -98,12 +98,23 @@ def getUniformsLines(uniformTypes):
 
   lines.append('}\n\n')
 
+  lines.extend([
+    'interface PartialUniformValues\n',
+    '{\n'
+  ])
+
+  for uniformName in sorted(uniformTypes):
+    glslType = uniformTypes[uniformName]
+    typeScriptType = typeScriptTypes[glslType]
+    lines.append('  {0}?: {1};\n'.format(uniformName, typeScriptType))
+
+  lines.append('}\n\n')
   return lines
 
-def getGetUniformTypesLines(uniformTypes, indentationLevel):
+def getGetUniformsObjectLines(uniformTypes, indentationLevel):
 
   lines = [
-    'public static getUniformTypes()\n',
+    'private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms\n',
     '{\n',
     '  return(\n',
     '  {\n'
@@ -112,12 +123,25 @@ def getGetUniformTypesLines(uniformTypes, indentationLevel):
   for uniformName in sorted(uniformTypes):
     glslType = uniformTypes[uniformName]
     pixiType = pixiTypes[glslType]
-    lines.append('    {0}: "{1}",\n'.format(uniformName, pixiType))
+    lines.append('    {0}: {{type: "{1}", value: initialValues.{0}}},\n'.format(uniformName, pixiType))
 
   lines.extend([
     '  });\n',
-    ' }\n'
+    '}\n'
   ])
+
+  return ["  " * indentationLevel + line for line in lines]
+
+def getSetUniformValuesLines(indentationLevel):
+  lines = [
+    'public setUniformValues(values: PartialUniformValues)\n',
+    '{\n',
+    '  for (let key in values)\n',
+    '  {\n',
+    '    this.uniforms[key].value = values[key];\n',
+    '  }\n',
+    '}\n'
+  ]
 
   return ["  " * indentationLevel + line for line in lines]
 
@@ -135,15 +159,20 @@ def writeConvertedShader(outFile, sourceLines, shaderName, fileName):
   outFile.writelines([
     'export default class {0} extends PIXI.AbstractFilter\n'.format(shaderName),
     '{\n',
-    '  uniforms: Uniforms\n\n',
-    '  constructor(uniforms?: Uniforms)\n',
+    '  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed\n\n',
+    '  constructor(initialUniformValues?: PartialUniformValues)\n',
     '  {\n',
+    '    const uniforms = {0}.makeUniformsObject(initialUniformValues);\n'.format(shaderName),
     '    super(null, sourceLines.join("\\n"), uniforms);\n',
     '  }\n'
   ])
 
-  getUniformTypesLines = getGetUniformTypesLines(glslUniformTypes, 1)
+  getUniformTypesLines = getGetUniformsObjectLines(glslUniformTypes, 1)
   for line in getUniformTypesLines:
+    outFile.write(line)
+
+  setUniformValuesLines = getSetUniformValuesLines(1)
+  for line in setUniformValuesLines:
     outFile.write(line)
 
   outFile.writelines([

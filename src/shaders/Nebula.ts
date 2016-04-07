@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-export interface Uniforms
+interface Uniforms
 {
   baseColor: {type: "3fv"; value: number[];};
   cloudLightness: {type: "1f"; value: number;};
@@ -18,32 +18,56 @@ export interface Uniforms
   streakiness: {type: "1f"; value: number;};
 }
 
+interface PartialUniformValues
+{
+  baseColor?: number[];
+  cloudLightness?: number;
+  coverage?: number;
+  diffusion?: number;
+  highlightA?: number;
+  highlightB?: number;
+  highlightColor?: number[];
+  overlayColor?: number[];
+  scale?: number;
+  seed?: number[];
+  streakLightness?: number;
+  streakiness?: number;
+}
+
 export default class Nebula extends PIXI.AbstractFilter
 {
-  uniforms: Uniforms
+  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 
-  constructor(uniforms?: Uniforms)
+  constructor(initialUniformValues?: PartialUniformValues)
   {
+    const uniforms = Nebula.makeUniformsObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniforms);
   }
-  public static getUniformTypes()
+  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
   {
     return(
     {
-      baseColor: "3fv",
-      cloudLightness: "1f",
-      coverage: "1f",
-      diffusion: "1f",
-      highlightA: "1f",
-      highlightB: "1f",
-      highlightColor: "3fv",
-      overlayColor: "3fv",
-      scale: "1f",
-      seed: "2fv",
-      streakLightness: "1f",
-      streakiness: "1f",
+      baseColor: {type: "3fv", value: initialValues.baseColor},
+      cloudLightness: {type: "1f", value: initialValues.cloudLightness},
+      coverage: {type: "1f", value: initialValues.coverage},
+      diffusion: {type: "1f", value: initialValues.diffusion},
+      highlightA: {type: "1f", value: initialValues.highlightA},
+      highlightB: {type: "1f", value: initialValues.highlightB},
+      highlightColor: {type: "3fv", value: initialValues.highlightColor},
+      overlayColor: {type: "3fv", value: initialValues.overlayColor},
+      scale: {type: "1f", value: initialValues.scale},
+      seed: {type: "2fv", value: initialValues.seed},
+      streakLightness: {type: "1f", value: initialValues.streakLightness},
+      streakiness: {type: "1f", value: initialValues.streakiness},
     });
-   }
+  }
+  public setUniformValues(values: PartialUniformValues)
+  {
+    for (let key in values)
+    {
+      this.uniforms[key].value = values[key];
+    }
+  }
 }
 
 const sourceLines =

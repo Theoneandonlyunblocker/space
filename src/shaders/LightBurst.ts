@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-export interface Uniforms
+interface Uniforms
 {
   centerBloomStrength: {type: "1f"; value: number;};
   centerSize: {type: "1f"; value: number;};
@@ -13,27 +13,46 @@ export interface Uniforms
   seed: {type: "2fv"; value: number[];};
 }
 
+interface PartialUniformValues
+{
+  centerBloomStrength?: number;
+  centerSize?: number;
+  rayColor?: number[];
+  raySharpness?: number;
+  rayStrength?: number;
+  rotation?: number;
+  seed?: number[];
+}
+
 export default class LightBurst extends PIXI.AbstractFilter
 {
-  uniforms: Uniforms
+  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 
-  constructor(uniforms?: Uniforms)
+  constructor(initialUniformValues?: PartialUniformValues)
   {
+    const uniforms = LightBurst.makeUniformsObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniforms);
   }
-  public static getUniformTypes()
+  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
   {
     return(
     {
-      centerBloomStrength: "1f",
-      centerSize: "1f",
-      rayColor: "4fv",
-      raySharpness: "1f",
-      rayStrength: "1f",
-      rotation: "1f",
-      seed: "2fv",
+      centerBloomStrength: {type: "1f", value: initialValues.centerBloomStrength},
+      centerSize: {type: "1f", value: initialValues.centerSize},
+      rayColor: {type: "4fv", value: initialValues.rayColor},
+      raySharpness: {type: "1f", value: initialValues.raySharpness},
+      rayStrength: {type: "1f", value: initialValues.rayStrength},
+      rotation: {type: "1f", value: initialValues.rotation},
+      seed: {type: "2fv", value: initialValues.seed},
     });
-   }
+  }
+  public setUniformValues(values: PartialUniformValues)
+  {
+    for (let key in values)
+    {
+      this.uniforms[key].value = values[key];
+    }
+  }
 }
 
 const sourceLines =

@@ -2,24 +2,36 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-export interface Uniforms
+interface Uniforms
+{
+}
+
+interface PartialUniformValues
 {
 }
 
 export default class BlackToAlpha extends PIXI.AbstractFilter
 {
-  uniforms: Uniforms
+  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 
-  constructor(uniforms?: Uniforms)
+  constructor(initialUniformValues?: PartialUniformValues)
   {
+    const uniforms = BlackToAlpha.makeUniformsObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniforms);
   }
-  public static getUniformTypes()
+  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
   {
     return(
     {
     });
-   }
+  }
+  public setUniformValues(values: PartialUniformValues)
+  {
+    for (let key in values)
+    {
+      this.uniforms[key].value = values[key];
+    }
+  }
 }
 
 const sourceLines =

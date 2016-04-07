@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-export interface Uniforms
+interface Uniforms
 {
   aspectRatio: {type: "1f"; value: number;};
   beamColor: {type: "4fv"; value: number[];};
@@ -20,34 +20,60 @@ export interface Uniforms
   time: {type: "1f"; value: number;};
 }
 
+interface PartialUniformValues
+{
+  aspectRatio?: number;
+  beamColor?: number[];
+  bulgeIntensity?: number;
+  bulgeSharpness?: number;
+  bulgeSize?: number[];
+  bulgeXPosition?: number;
+  lineIntensity?: number;
+  lineXSharpness?: number;
+  lineXSize?: number[];
+  lineYSharpness?: number;
+  lineYSize?: number;
+  noiseAmplitude?: number;
+  seed?: number;
+  time?: number;
+}
+
 export default class Beam extends PIXI.AbstractFilter
 {
-  uniforms: Uniforms
+  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 
-  constructor(uniforms?: Uniforms)
+  constructor(initialUniformValues?: PartialUniformValues)
   {
+    const uniforms = Beam.makeUniformsObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniforms);
   }
-  public static getUniformTypes()
+  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
   {
     return(
     {
-      aspectRatio: "1f",
-      beamColor: "4fv",
-      bulgeIntensity: "1f",
-      bulgeSharpness: "1f",
-      bulgeSize: "2fv",
-      bulgeXPosition: "1f",
-      lineIntensity: "1f",
-      lineXSharpness: "1f",
-      lineXSize: "2fv",
-      lineYSharpness: "1f",
-      lineYSize: "1f",
-      noiseAmplitude: "1f",
-      seed: "1f",
-      time: "1f",
+      aspectRatio: {type: "1f", value: initialValues.aspectRatio},
+      beamColor: {type: "4fv", value: initialValues.beamColor},
+      bulgeIntensity: {type: "1f", value: initialValues.bulgeIntensity},
+      bulgeSharpness: {type: "1f", value: initialValues.bulgeSharpness},
+      bulgeSize: {type: "2fv", value: initialValues.bulgeSize},
+      bulgeXPosition: {type: "1f", value: initialValues.bulgeXPosition},
+      lineIntensity: {type: "1f", value: initialValues.lineIntensity},
+      lineXSharpness: {type: "1f", value: initialValues.lineXSharpness},
+      lineXSize: {type: "2fv", value: initialValues.lineXSize},
+      lineYSharpness: {type: "1f", value: initialValues.lineYSharpness},
+      lineYSize: {type: "1f", value: initialValues.lineYSize},
+      noiseAmplitude: {type: "1f", value: initialValues.noiseAmplitude},
+      seed: {type: "1f", value: initialValues.seed},
+      time: {type: "1f", value: initialValues.time},
     });
-   }
+  }
+  public setUniformValues(values: PartialUniformValues)
+  {
+    for (let key in values)
+    {
+      this.uniforms[key].value = values[key];
+    }
+  }
 }
 
 const sourceLines =

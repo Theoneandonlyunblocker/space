@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-export interface Uniforms
+interface Uniforms
 {
   intersectingEllipseCenter: {type: "2fv"; value: number[];};
   intersectingEllipseSharpness: {type: "1f"; value: number;};
@@ -13,27 +13,46 @@ export interface Uniforms
   mainEllipseSize: {type: "2fv"; value: number[];};
 }
 
+interface PartialUniformValues
+{
+  intersectingEllipseCenter?: number[];
+  intersectingEllipseSharpness?: number;
+  intersectingEllipseSize?: number[];
+  mainAlpha?: number;
+  mainColor?: number[];
+  mainEllipseSharpness?: number;
+  mainEllipseSize?: number[];
+}
+
 export default class IntersectingEllipses extends PIXI.AbstractFilter
 {
-  uniforms: Uniforms
+  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 
-  constructor(uniforms?: Uniforms)
+  constructor(initialUniformValues?: PartialUniformValues)
   {
+    const uniforms = IntersectingEllipses.makeUniformsObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniforms);
   }
-  public static getUniformTypes()
+  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
   {
     return(
     {
-      intersectingEllipseCenter: "2fv",
-      intersectingEllipseSharpness: "1f",
-      intersectingEllipseSize: "2fv",
-      mainAlpha: "1f",
-      mainColor: "4fv",
-      mainEllipseSharpness: "1f",
-      mainEllipseSize: "2fv",
+      intersectingEllipseCenter: {type: "2fv", value: initialValues.intersectingEllipseCenter},
+      intersectingEllipseSharpness: {type: "1f", value: initialValues.intersectingEllipseSharpness},
+      intersectingEllipseSize: {type: "2fv", value: initialValues.intersectingEllipseSize},
+      mainAlpha: {type: "1f", value: initialValues.mainAlpha},
+      mainColor: {type: "4fv", value: initialValues.mainColor},
+      mainEllipseSharpness: {type: "1f", value: initialValues.mainEllipseSharpness},
+      mainEllipseSize: {type: "2fv", value: initialValues.mainEllipseSize},
     });
-   }
+  }
+  public setUniformValues(values: PartialUniformValues)
+  {
+    for (let key in values)
+    {
+      this.uniforms[key].value = values[key];
+    }
+  }
 }
 
 const sourceLines =

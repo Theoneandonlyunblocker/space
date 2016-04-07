@@ -2,30 +2,45 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-export interface Uniforms
+interface Uniforms
 {
   highlightIntensity: {type: "1f"; value: number;};
   spikeColor: {type: "4fv"; value: number[];};
   spikeIntensity: {type: "1f"; value: number;};
 }
 
+interface PartialUniformValues
+{
+  highlightIntensity?: number;
+  spikeColor?: number[];
+  spikeIntensity?: number;
+}
+
 export default class ShinyParticle extends PIXI.AbstractFilter
 {
-  uniforms: Uniforms
+  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 
-  constructor(uniforms?: Uniforms)
+  constructor(initialUniformValues?: PartialUniformValues)
   {
+    const uniforms = ShinyParticle.makeUniformsObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniforms);
   }
-  public static getUniformTypes()
+  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
   {
     return(
     {
-      highlightIntensity: "1f",
-      spikeColor: "4fv",
-      spikeIntensity: "1f",
+      highlightIntensity: {type: "1f", value: initialValues.highlightIntensity},
+      spikeColor: {type: "4fv", value: initialValues.spikeColor},
+      spikeIntensity: {type: "1f", value: initialValues.spikeIntensity},
     });
-   }
+  }
+  public setUniformValues(values: PartialUniformValues)
+  {
+    for (let key in values)
+    {
+      this.uniforms[key].value = values[key];
+    }
+  }
 }
 
 const sourceLines =

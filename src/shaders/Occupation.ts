@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-export interface Uniforms
+interface Uniforms
 {
   baseColor: {type: "4fv"; value: number[];};
   gapSize: {type: "1f"; value: number;};
@@ -11,25 +11,42 @@ export interface Uniforms
   zoom: {type: "1f"; value: number;};
 }
 
+interface PartialUniformValues
+{
+  baseColor?: number[];
+  gapSize?: number;
+  lineColor?: number[];
+  offset?: number[];
+  zoom?: number;
+}
+
 export default class Occupation extends PIXI.AbstractFilter
 {
-  uniforms: Uniforms
+  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 
-  constructor(uniforms?: Uniforms)
+  constructor(initialUniformValues?: PartialUniformValues)
   {
+    const uniforms = Occupation.makeUniformsObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniforms);
   }
-  public static getUniformTypes()
+  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
   {
     return(
     {
-      baseColor: "4fv",
-      gapSize: "1f",
-      lineColor: "4fv",
-      offset: "2fv",
-      zoom: "1f",
+      baseColor: {type: "4fv", value: initialValues.baseColor},
+      gapSize: {type: "1f", value: initialValues.gapSize},
+      lineColor: {type: "4fv", value: initialValues.lineColor},
+      offset: {type: "2fv", value: initialValues.offset},
+      zoom: {type: "1f", value: initialValues.zoom},
     });
-   }
+  }
+  public setUniformValues(values: PartialUniformValues)
+  {
+    for (let key in values)
+    {
+      this.uniforms[key].value = values[key];
+    }
+  }
 }
 
 const sourceLines =

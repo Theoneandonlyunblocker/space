@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-export interface Uniforms
+interface Uniforms
 {
   blockAlpha: {type: "1f"; value: number;};
   blockSize: {type: "1f"; value: number;};
@@ -13,27 +13,46 @@ export interface Uniforms
   trailDistance: {type: "1f"; value: number;};
 }
 
+interface PartialUniformValues
+{
+  blockAlpha?: number;
+  blockSize?: number;
+  blockWidth?: number;
+  frontier?: number;
+  lineAlpha?: number;
+  seed?: number;
+  trailDistance?: number;
+}
+
 export default class Guard extends PIXI.AbstractFilter
 {
-  uniforms: Uniforms
+  public uniforms: Uniforms // needs to be public for PIXI, but shouldnt be accessed
 
-  constructor(uniforms?: Uniforms)
+  constructor(initialUniformValues?: PartialUniformValues)
   {
+    const uniforms = Guard.makeUniformsObject(initialUniformValues);
     super(null, sourceLines.join("\n"), uniforms);
   }
-  public static getUniformTypes()
+  private static makeUniformsObject(initialValues: PartialUniformValues = {}): Uniforms
   {
     return(
     {
-      blockAlpha: "1f",
-      blockSize: "1f",
-      blockWidth: "1f",
-      frontier: "1f",
-      lineAlpha: "1f",
-      seed: "1f",
-      trailDistance: "1f",
+      blockAlpha: {type: "1f", value: initialValues.blockAlpha},
+      blockSize: {type: "1f", value: initialValues.blockSize},
+      blockWidth: {type: "1f", value: initialValues.blockWidth},
+      frontier: {type: "1f", value: initialValues.frontier},
+      lineAlpha: {type: "1f", value: initialValues.lineAlpha},
+      seed: {type: "1f", value: initialValues.seed},
+      trailDistance: {type: "1f", value: initialValues.trailDistance},
     });
-   }
+  }
+  public setUniformValues(values: PartialUniformValues)
+  {
+    for (let key in values)
+    {
+      this.uniforms[key].value = values[key];
+    }
+  }
 }
 
 const sourceLines =
