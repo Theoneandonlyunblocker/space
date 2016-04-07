@@ -4,7 +4,7 @@ declare interface AttitudeModifierTemplate
 {
   type: string;
   displayName: string;
-  // family: AttitudeModifierFamily;
+  family: string;
   duration: number; // -1 === infinite;
   
   // if these modifiers are present and one of them has either
