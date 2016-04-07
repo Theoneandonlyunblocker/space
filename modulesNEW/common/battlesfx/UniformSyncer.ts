@@ -1,11 +1,11 @@
-export type UniformValue = number | number[];
-export type UniformsUpdaterFunction = (time: number) => {[key: string]: UniformValue};
+type UniformValue = number | number[];
+type UniformsUpdaterFunction = (time: number) => {[key: string]: UniformValue};
 
-export interface IUniformTypesObject
+interface UniformTypesObject
 {
   [key: string]: string;
 }
-export interface IUniformsObject
+interface UniformsObject
 {
   [uniformKey: string]:
   {
@@ -13,20 +13,20 @@ export interface IUniformsObject
     value: UniformValue;
   }
 }
-export class UniformSyncer
+export default class UniformSyncer
 {
-  private uniformTypes: IUniformTypesObject;
-  private uniforms: IUniformsObject;
+  private uniformTypes: UniformTypesObject;
+  private uniforms: UniformsObject;
   private updaterFunction: UniformsUpdaterFunction;
 
-  constructor(uniformTypes: IUniformTypesObject,
+  constructor(uniformTypes: UniformTypesObject,
     updaterFunction: UniformsUpdaterFunction)
   {
     this.uniformTypes = uniformTypes;
     this.updaterFunction = updaterFunction;
     this.initUniforms(uniformTypes);
   }
-  private initUniforms(uniformTypes: IUniformTypesObject)
+  private initUniforms(uniformTypes: UniformTypesObject)
   {
     this.uniforms = {};
 

@@ -1,4 +1,12 @@
-export function guard(props: Templates.SFXParams)
+import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+import GuardFilter from "../../../src/shaders/Guard.ts";
+
+import
+{
+  getRelativeValue
+} from "../../../src/utility.ts";
+
+export function guard(props: SFXParams)
 {
   var userCanvasWidth = props.width * 0.4; // TODO BattleSFX
   var maxFrontier = userCanvasWidth;
