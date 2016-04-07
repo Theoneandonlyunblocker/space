@@ -30,7 +30,7 @@ const commandShip: UnitTemplate =
   },
   isSquadron: false,
   buildCost: 300,
-  icon: "modules\/default\/img\/unitIcons\/sh.png",
+  icon: "modules\/defaultunits\/img\/icons\/sh.png",
   maxHealth: 0.7,
   maxMovePoints: 1,
   visionRange: 1,

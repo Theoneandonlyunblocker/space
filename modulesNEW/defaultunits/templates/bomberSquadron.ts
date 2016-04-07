@@ -26,7 +26,7 @@ const bomberSquadron: UnitTemplate =
   },
   isSquadron: true,
   buildCost: 200,
-  icon: "modules\/default\/img\/unitIcons\/fb.png",
+  icon: "modules\/defaultunits\/img\/icons\/fb.png",
   maxHealth: 0.5,
   maxMovePoints: 1,
   visionRange: 1,

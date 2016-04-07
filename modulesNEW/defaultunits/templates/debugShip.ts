@@ -37,7 +37,7 @@ const debugShip: UnitTemplate =
   },
   isSquadron: false,
   buildCost: 0,
-  icon: "modules\/default\/img\/unitIcons\/f.png",
+  icon: "modules\/defaultunits\/img\/icons\/f.png",
   maxHealth: 1,
   maxMovePoints: 999,
   visionRange: 1,
