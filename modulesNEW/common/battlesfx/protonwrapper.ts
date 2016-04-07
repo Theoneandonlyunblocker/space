@@ -1,28 +1,24 @@
 /// <reference path="../../../lib/proton.d.ts" />
 /// <reference path="../../../lib/pixi.d.ts" />
 
-// Proton.Rate(amountOfParticlesPerEmit, timeBetweenEmits)
-
-export class ProtonWrapper
+export default class ProtonWrapper
 {
-  pixiRenderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-  container: PIXI.Container;
+  private pixiRenderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
+  private container: PIXI.Container;
 
-  proton: Proton;
-  protonRenderer: Proton.Renderer;
+  private proton: Proton;
+  private protonRenderer: Proton.Renderer;
 
-  // emitters: Proton.Emitter[];
-  emitters:
+  private emitters:
   {
     [key: string]: Proton.Emitter;
   } = {};
-
-  emitterKeysByID:
+  private emitterKeysByID:
   {
     [emitterId: string]: string;
   } = {};
 
-  onSpriteCreated:
+  public onSpriteCreated:
   {
     [key: string]: (sprite: PIXI.Sprite) => void;
   } = {};
