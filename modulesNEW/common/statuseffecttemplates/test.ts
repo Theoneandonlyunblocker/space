@@ -1,6 +1,6 @@
 import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
 import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate.d.ts";
-import {healSelf} from "../effectactions/effectActions.ts";
+import {healSelf} from "../effectactiontemplates/effectActions.ts";
 
 const test: StatusEffectTemplate =
 {

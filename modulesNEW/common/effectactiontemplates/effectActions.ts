@@ -1,4 +1,4 @@
-import testStatusEffect from "../statuseffects/test.ts";
+import testStatusEffect from "../statuseffecttemplates/test.ts";
 
 import EffectActionTemplate from "../../../src/templateinterfaces/EffectActionTemplate.d.ts";
 
