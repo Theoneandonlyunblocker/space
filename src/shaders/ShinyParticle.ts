@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-interface Uniforms
+export interface Uniforms
 {
   highlightIntensity: {type: "1f"; value: number;};
   spikeColor: {type: "4fv"; value: number[];};

@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-interface Uniforms
+export interface Uniforms
 {
   baseColor: {type: "4fv"; value: number[];};
   gapSize: {type: "1f"; value: number;};

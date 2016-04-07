@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-interface Uniforms
+export interface Uniforms
 {
   blockAlpha: {type: "1f"; value: number;};
   blockSize: {type: "1f"; value: number;};

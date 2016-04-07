@@ -86,7 +86,7 @@ def getGLSLUniformTypes(sourceLines):
 
 def getUniformsLines(uniformTypes):
   lines = [
-    'interface Uniforms\n',
+    'export interface Uniforms\n',
     '{\n'
   ]
 

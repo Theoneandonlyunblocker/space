@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-interface Uniforms
+export interface Uniforms
 {
   centerBloomStrength: {type: "1f"; value: number;};
   centerSize: {type: "1f"; value: number;};

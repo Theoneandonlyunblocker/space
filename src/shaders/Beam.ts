@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-interface Uniforms
+export interface Uniforms
 {
   aspectRatio: {type: "1f"; value: number;};
   beamColor: {type: "4fv"; value: number[];};

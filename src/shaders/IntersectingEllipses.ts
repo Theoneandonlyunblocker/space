@@ -2,7 +2,7 @@
 
 /// <reference path="../../lib/pixi.d.ts"/>
 
-interface Uniforms
+export interface Uniforms
 {
   intersectingEllipseCenter: {type: "2fv"; value: number[];};
   intersectingEllipseSharpness: {type: "1f"; value: number;};
