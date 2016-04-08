@@ -55,7 +55,8 @@ export const defaultOptions: Options =
   }
 }
 
-export let Options: Options = extendObject(defaultOptions);
+let Options: Options = extendObject(defaultOptions);
+export default Options;
 
 export function saveOptions(slot: number = 0)
 {

@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import {Options} from "../../../src/options.ts";
+import Options from "../../../src/options.ts";
 import eventManager from "../../../src/eventManager.ts";
 import Fleet from "../../../src/Fleet.ts";
 import Star from "../../../src/Star.ts";
