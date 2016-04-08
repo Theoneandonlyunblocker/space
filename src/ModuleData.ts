@@ -136,14 +136,15 @@ export default class ModuleData
   starBackgroundDrawingFunction: (seed: string,
     renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
 
-  mapRendererLayers:
-  {
-    [layerKey: string]: MapRendererLayerTemplate;
-  } = {};
-  mapRendererMapModes:
-  {
-    [mapModeKey: string]: MapRendererMapModeTemplate;
-  } = {};
+  // TODO refactor | unused?
+  // mapRendererLayers:
+  // {
+  //   [layerKey: string]: MapRendererLayerTemplate;
+  // } = {};
+  // mapRendererMapModes:
+  // {
+  //   [mapModeKey: string]: MapRendererMapModeTemplate;
+  // } = {};
 
   Templates: Templates =
   {

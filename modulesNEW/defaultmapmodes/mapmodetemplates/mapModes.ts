@@ -1,7 +1,7 @@
-/// <reference path="../../../src/templateinterfaces/imaprenderermapmodetemplate.d.ts" />
-/// <reference path="maprendererlayers.ts" />
+import MapRendererMapModeTemplate from "../../../src/templateinterfaces/maprenderermapmodetemplate.d.ts";
+import * as MapRendererLayers from "../MapLayerTemplates.ts";
 
-export var defaultMapMode: IMapRendererMapModeTemplate =
+export const defaultMapMode: MapRendererMapModeTemplate =
 {
   key: "defaultMapMode",
   displayName: "Default",
@@ -16,7 +16,7 @@ export var defaultMapMode: IMapRendererMapModeTemplate =
     MapRendererLayers.fleets
   ]
 }
-export var noStatic: IMapRendererMapModeTemplate =
+export const noStatic: MapRendererMapModeTemplate =
 {
   key: "noStatic",
   displayName: "No Static Layers",
@@ -29,7 +29,7 @@ export var noStatic: IMapRendererMapModeTemplate =
     MapRendererLayers.fleets
   ]
 }
-export var income: IMapRendererMapModeTemplate =
+export const income: MapRendererMapModeTemplate =
 {
   key: "income",
   displayName: "Income",
@@ -42,7 +42,7 @@ export var income: IMapRendererMapModeTemplate =
     MapRendererLayers.fleets
   ]
 }
-export var influence: IMapRendererMapModeTemplate =
+export const influence: MapRendererMapModeTemplate =
 {
   key: "influence",
   displayName: "Player Influence",
@@ -55,7 +55,7 @@ export var influence: IMapRendererMapModeTemplate =
     MapRendererLayers.fleets
   ]
 }
-export var resources: IMapRendererMapModeTemplate =
+export const resources: MapRendererMapModeTemplate =
 {
   key: "resources",
   displayName: "Resources",
