@@ -116,3 +116,6 @@ const nonFillerStars: MapRendererLayerTemplate =
 }
 
 export default nonFillerStars;
+
+
+export default nonFillerStars;

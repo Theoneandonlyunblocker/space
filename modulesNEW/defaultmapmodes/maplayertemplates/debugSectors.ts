@@ -63,3 +63,5 @@ const debugSectors: MapRendererLayerTemplate =
     return doc;
   }
 }
+
+export default debugSectors;

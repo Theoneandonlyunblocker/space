@@ -48,3 +48,5 @@ const resources: MapRendererLayerTemplate =
     return doc;
   }
 }
+
+export default resources;
