@@ -1,3 +1,6 @@
+/// <reference path="../../../lib/pixi.d.ts" />
+
+
 const fleets: MapRendererLayerTemplate =
 {
   key: "fleets",
