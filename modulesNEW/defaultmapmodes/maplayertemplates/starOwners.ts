@@ -62,5 +62,3 @@ const starOwners: MapRendererLayerTemplate =
     return doc;
   }
 }
-
-export default MapRendererLayerTemplate;

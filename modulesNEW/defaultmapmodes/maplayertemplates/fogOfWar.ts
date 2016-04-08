@@ -30,5 +30,3 @@ const fogOfWar: MapRendererLayerTemplate =
     return doc;
   }
 }
-
-export default MapRendererLayerTemplate;

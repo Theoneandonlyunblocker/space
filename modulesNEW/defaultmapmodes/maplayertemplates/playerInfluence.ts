@@ -96,5 +96,3 @@ const playerInfluence: MapRendererLayerTemplate =
     return doc;
   }
 }
-
-export default MapRendererLayerTemplate;

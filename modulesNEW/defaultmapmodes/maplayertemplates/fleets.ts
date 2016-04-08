@@ -146,5 +146,3 @@ const fleets: MapRendererLayerTemplate =
     return doc;
   }
 }
-
-export default MapRendererLayerTemplate;

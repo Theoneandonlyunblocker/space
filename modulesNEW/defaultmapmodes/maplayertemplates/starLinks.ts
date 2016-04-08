@@ -54,5 +54,3 @@ const starLinks: MapRendererLayerTemplate =
     return doc;
   }
 }
-
-export default MapRendererLayerTemplate;

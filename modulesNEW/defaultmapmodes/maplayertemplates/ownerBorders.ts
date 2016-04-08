@@ -40,5 +40,3 @@ const ownerBorders: MapRendererLayerTemplate =
     return doc;
   }
 }
-
-export default MapRendererLayerTemplate;
