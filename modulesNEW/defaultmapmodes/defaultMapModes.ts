@@ -1,3 +1,5 @@
+/// <reference path="../../lib/pixi.d.ts" />
+
 import MapLayerTemplates from "./MapLayerTemplates.ts";
 import MapModeTemplates from "./MapModeTemplates.ts";
 
@@ -16,6 +18,16 @@ const defaultMapModes: ModuleFile =
     version: "0.1.0",
     author: "giraluna",
     description: ""
+  },
+  loadAssets: function(onLoaded: () => void)
+  {
+    var loader = new PIXI.loaders.Loader();
+
+    loader.add("modules\/common\/defaultmapmodes\/img\/fowTexture.png");
+    loader.load(function(loader: PIXI.loaders.Loader)
+    {
+      onLoaded();
+    });
   },
   constructModule: function(moduleData: ModuleData)
   {

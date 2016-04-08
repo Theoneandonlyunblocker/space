@@ -1,3 +1,5 @@
+/// <reference path="../../lib/pixi.d.ts" />
+
 import BuildingTemplates from "./BuildingTemplates.ts";
 
 import ModuleFile from "../../src/ModuleFile.d.ts";

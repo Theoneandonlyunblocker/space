@@ -62,11 +62,6 @@ export var moduleFile: IModuleFile =
   {
     var loader = new PIXI.loaders.Loader();
 
-    loader.add("img\/fowTexture.png"); // TODO module
-
-
-    loader.add("units", "modules\/default\/img\/units\/units.json");
-    loader.add("buildings", "modules\/default\/img\/buildings\/buildings.json");
     loader.add("explosion", "modules\/default\/img\/battleEffects\/explosion.json");
 
     loader.add("modules\/default\/img\/battleEffects\/rocket.png");
