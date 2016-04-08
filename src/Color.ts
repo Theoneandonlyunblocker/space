@@ -15,6 +15,7 @@ export default class Color
     this.g = g; 
     this.b = b; 
   }
+  // 0x000000-0xFFFFFF
   public static fromHex(hex: number): Color
   {
     return new Color(
@@ -23,6 +24,7 @@ export default class Color
       (hex & 0xFF) / 255
     );
   }
+  // 0-1
   public static fromHSV(h: number, s: number, v: number): Color
   {
     var r: number, g: number, b: number, i: number, f: number, p: number, q: number, t: number;
@@ -43,6 +45,7 @@ export default class Color
     }
     return new Color(r, g, b);
   }
+  // 0-1
   public static fromHSL(h: number, s: number, l: number): Color
   {
     let r: number, g: number, b: number;
@@ -72,39 +75,42 @@ export default class Color
     
     return new Color(r, g, b);
   }
+  // 0-1
   public static fromHUSL(h: number, s: number, l: number): Color
   {
-    const RGB8Bit = HUSL.toRGB(h, s, l);
-    const RGB = Color.getRGBFrom8Bit.apply(null, RGB8Bit);
+    const RGB = HUSL.toRGB(h * 360, s * 100, l * 100);
     return new Color(RGB[0], RGB[1], RGB[2]);
   }
-  private static get8BitFromRGB(r: number, g: number, b: number): number[]
-  {
-     return [r, g, b].map((x: number) => x * 255);
-  }
-  private static getRGBFrom8Bit(r: number, g: number, b: number): number[]
-  {
-    return [r, g, b].map((x: number) => x / 255);
-  }
   
+  // 0-1
   public getRGB(): number[]
   {
     return [this.r, this.g, this.b];
   }
+  // 0-255
   public get8BitRGB(): number[]
   {
-    return Color.get8BitFromRGB(this.r, this.g, this.b);
+    return this.getRGB().map((x: number) => x * 255);
   }
   
+  // 0x000000-0xFFFFFF
   public getHex(): number
   {
     return (this.r * 255 << 16) + (this.g * 255 << 8) + this.b * 255;
   }
+  // "000000"-"FFFFFF"
   public getHexString(): string
   {
     const hex = Math.round(this.getHex());
     const converted = hex.toString(16);
     return '000000'.substr(0, 6 - converted.length) + converted;
+  }
+  
+  // 0-1
+  public getHUSL(): number[]
+  {
+    const husl = HUSL.fromRGB(this.r, this.g, this.b);
+    return [husl[0] / 360, husl[1] / 100, husl[2] / 100];
   }
   
   public serialize(): ColorSaveData
