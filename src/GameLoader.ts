@@ -19,7 +19,8 @@ import Fleet from "./Fleet.ts";
 import Item from "./Item.ts";
 import
 {
-  extendObject
+  extendObject,
+  makeRandomPersonality
 } from "./utility.ts";
 
 import MapGenResult from "./mapgencore/MapGenResult.ts";

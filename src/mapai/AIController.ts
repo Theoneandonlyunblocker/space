@@ -9,7 +9,10 @@ import DiplomacyAI from "./DiplomacyAI.ts";
 import Game from "../Game.ts";
 import Player from "../Player.ts";
 import GalaxyMap from "../GalaxyMap.ts";
-import Personality from "../Personality.ts";
+import
+{
+  makeRandomPersonality
+} from "../utility.ts";
 
 export default class AIController
 {

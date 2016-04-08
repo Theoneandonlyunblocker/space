@@ -8,6 +8,9 @@ import Point from "./Point.ts";
 import Unit from "./Unit.ts";
 import Player from "./Player.ts";
 import Star from "./Star.ts";
+import UnitBattleSide from "./UnitBattleSide.ts";
+import Personality from "./Personality.d.ts";
+import ArchetypeValues from "./ArchetypeValues.d.ts";
 
 // TODO refactor | clean these up
 
@@ -741,4 +744,23 @@ export function findEasingFunctionHighPoint(easingFunction: (x: number) => numbe
 export function pointsEqual(p1: Point, p2: Point)
 {
   return (p1.x === p2.x && p1.y === p2.y);
+}
+
+export function makeRandomPersonality(): Personality
+{
+  var unitCompositionPreference: ArchetypeValues = {};
+
+  for (var archetype in app.moduleData.Templates.UnitArchetypes)
+  {
+    unitCompositionPreference[archetype] = Math.random();
+  }
+
+  return(
+  {
+    expansiveness: Math.random(),
+    aggressiveness: Math.random(),
+    friendliness: Math.random(),
+
+    unitCompositionPreference: unitCompositionPreference
+  });
 }
