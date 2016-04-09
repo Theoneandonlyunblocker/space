@@ -183,5 +183,5 @@ class Popup extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(Popup);
+const Factory: React.Factory<PropTypes> = React.createFactory(Popup);
 export default Factory;

@@ -418,5 +418,5 @@ class BattlePrep extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(BattlePrep);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattlePrep);
 export default Factory;

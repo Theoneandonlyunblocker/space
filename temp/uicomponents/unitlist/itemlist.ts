@@ -207,5 +207,5 @@ class ItemList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(ItemList);
+const Factory: React.Factory<PropTypes> = React.createFactory(ItemList);
 export default Factory;

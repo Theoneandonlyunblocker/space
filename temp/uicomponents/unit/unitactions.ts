@@ -82,5 +82,5 @@ class UnitActions extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(UnitActions);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitActions);
 export default Factory;

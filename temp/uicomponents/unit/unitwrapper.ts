@@ -167,5 +167,5 @@ class UnitWrapper extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(UnitWrapper);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitWrapper);
 export default Factory;

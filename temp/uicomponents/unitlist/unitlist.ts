@@ -142,5 +142,5 @@ class UnitList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(UnitList);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitList);
 export default Factory;

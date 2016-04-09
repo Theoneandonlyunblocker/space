@@ -65,5 +65,5 @@ class PlayerMoney extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(PlayerMoney);
+const Factory: React.Factory<PropTypes> = React.createFactory(PlayerMoney);
 export default Factory;

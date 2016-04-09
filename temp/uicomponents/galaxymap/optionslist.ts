@@ -348,5 +348,5 @@ class OptionsList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(OptionsList);
+const Factory: React.Factory<PropTypes> = React.createFactory(OptionsList);
 export default Factory;

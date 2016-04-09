@@ -139,5 +139,5 @@ class Stage extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(Stage);
+const Factory: React.Factory<PropTypes> = React.createFactory(Stage);
 export default Factory;

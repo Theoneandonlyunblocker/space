@@ -116,5 +116,5 @@ class FlagMaker extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(FlagMaker);
+const Factory: React.Factory<PropTypes> = React.createFactory(FlagMaker);
 export default Factory;

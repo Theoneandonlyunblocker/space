@@ -71,5 +71,5 @@ class UpgradeAbilities extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(UpgradeAbilities);
+const Factory: React.Factory<PropTypes> = React.createFactory(UpgradeAbilities);
 export default Factory;

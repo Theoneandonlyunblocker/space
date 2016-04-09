@@ -142,5 +142,5 @@ class MapSetup extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(MapSetup);
+const Factory: React.Factory<PropTypes> = React.createFactory(MapSetup);
 export default Factory;

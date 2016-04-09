@@ -163,5 +163,5 @@ class ColorSetter extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(ColorSetter);
+const Factory: React.Factory<PropTypes> = React.createFactory(ColorSetter);
 export default Factory;

@@ -127,5 +127,5 @@ class SetupGame extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(SetupGame);
+const Factory: React.Factory<PropTypes> = React.createFactory(SetupGame);
 export default Factory;

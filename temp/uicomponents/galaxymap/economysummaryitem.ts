@@ -83,5 +83,5 @@ class EconomySummaryItem extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(EconomySummaryItem);
+const Factory: React.Factory<PropTypes> = React.createFactory(EconomySummaryItem);
 export default Factory;

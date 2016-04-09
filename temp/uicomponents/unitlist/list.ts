@@ -451,5 +451,5 @@ class List extends React.Component<PropTypes, StateType>
   
 }));
 
-const Factory = React.createFactory(List);
+const Factory: React.Factory<PropTypes> = React.createFactory(List);
 export default Factory;

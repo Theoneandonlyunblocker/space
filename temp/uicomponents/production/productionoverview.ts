@@ -196,5 +196,5 @@ class ProductionOverview extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(ProductionOverview);
+const Factory: React.Factory<PropTypes> = React.createFactory(ProductionOverview);
 export default Factory;

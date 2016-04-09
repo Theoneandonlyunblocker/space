@@ -169,5 +169,5 @@ class Tutorial extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(Tutorial);
+const Factory: React.Factory<PropTypes> = React.createFactory(Tutorial);
 export default Factory;

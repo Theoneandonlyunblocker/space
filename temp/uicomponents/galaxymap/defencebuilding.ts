@@ -67,5 +67,5 @@ class DefenceBuilding extends React.Component<PropTypes, StateType>
 
 }
 
-const Factory = React.createFactory(DefenceBuilding);
+const Factory: React.Factory<PropTypes> = React.createFactory(DefenceBuilding);
 export default Factory;

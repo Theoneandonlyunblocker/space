@@ -264,5 +264,5 @@ class PossibleActions extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(PossibleActions);
+const Factory: React.Factory<PropTypes> = React.createFactory(PossibleActions);
 export default Factory;

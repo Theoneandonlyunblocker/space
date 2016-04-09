@@ -146,5 +146,5 @@ class ManufacturableUnits extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(ManufacturableUnits);
+const Factory: React.Factory<PropTypes> = React.createFactory(ManufacturableUnits);
 export default Factory;

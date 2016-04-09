@@ -111,5 +111,5 @@ class BattleScore extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(BattleScore);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleScore);
 export default Factory;

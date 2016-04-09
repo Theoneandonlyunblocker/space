@@ -70,5 +70,5 @@ class TurnCounter extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(TurnCounter);
+const Factory: React.Factory<PropTypes> = React.createFactory(TurnCounter);
 export default Factory;

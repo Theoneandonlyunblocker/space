@@ -107,5 +107,5 @@ class SaveListItem extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(SaveListItem);
+const Factory: React.Factory<PropTypes> = React.createFactory(SaveListItem);
 export default Factory;

@@ -101,5 +101,5 @@ class TechnologyPrioritySlider extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(TechnologyPrioritySlider);
+const Factory: React.Factory<PropTypes> = React.createFactory(TechnologyPrioritySlider);
 export default Factory;

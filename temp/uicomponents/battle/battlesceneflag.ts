@@ -107,5 +107,5 @@ class BattleSceneFlag extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(BattleSceneFlag);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleSceneFlag);
 export default Factory;

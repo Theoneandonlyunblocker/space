@@ -158,5 +158,5 @@ class BuildingUpgradeList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(BuildingUpgradeList);
+const Factory: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeList);
 export default Factory;

@@ -95,5 +95,5 @@ class BuildQueue extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(BuildQueue);
+const Factory: React.Factory<PropTypes> = React.createFactory(BuildQueue);
 export default Factory;

@@ -253,5 +253,5 @@ class PopupManager extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(PopupManager);
+const Factory: React.Factory<PropTypes> = React.createFactory(PopupManager);
 export default Factory;

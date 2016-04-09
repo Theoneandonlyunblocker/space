@@ -76,5 +76,5 @@ class ManufactoryStarsListItem extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(ManufactoryStarsListItem);
+const Factory: React.Factory<PropTypes> = React.createFactory(ManufactoryStarsListItem);
 export default Factory;

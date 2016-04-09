@@ -201,5 +201,5 @@ class DiplomacyActions extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(DiplomacyActions);
+const Factory: React.Factory<PropTypes> = React.createFactory(DiplomacyActions);
 export default Factory;

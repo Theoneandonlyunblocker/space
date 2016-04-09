@@ -199,5 +199,5 @@ class BattleScene extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(BattleScene);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleScene);
 export default Factory;

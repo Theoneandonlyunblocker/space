@@ -105,5 +105,5 @@ class OptionsGroup extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(OptionsGroup);
+const Factory: React.Factory<PropTypes> = React.createFactory(OptionsGroup);
 export default Factory;

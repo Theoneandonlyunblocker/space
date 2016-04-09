@@ -127,5 +127,5 @@ class NotificationFilterButton extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(NotificationFilterButton);
+const Factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterButton);
 export default Factory;

@@ -104,5 +104,5 @@ class TopBar extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(TopBar);
+const Factory: React.Factory<PropTypes> = React.createFactory(TopBar);
 export default Factory;

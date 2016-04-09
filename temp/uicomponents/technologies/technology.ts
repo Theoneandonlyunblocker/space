@@ -126,5 +126,5 @@ class Technology extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(Technology);
+const Factory: React.Factory<PropTypes> = React.createFactory(Technology);
 export default Factory;

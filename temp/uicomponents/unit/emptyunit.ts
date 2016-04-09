@@ -79,5 +79,5 @@ class EmptyUnit extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory = React.createFactory(EmptyUnit);
+const Factory: React.Factory<PropTypes> = React.createFactory(EmptyUnit);
 export default Factory;
