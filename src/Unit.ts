@@ -583,10 +583,6 @@ export default class Unit
     {
       this.attributesAreDirty = true;
     }
-    if (statusEffect.template.passiveSkills)
-    {
-      this.passiveSkillsByPhaseAreDirty = true;
-    }
 
     this.uiDisplayIsDirty = true;
   }
@@ -602,10 +598,6 @@ export default class Unit
     if (statusEffect.template.attributes)
     {
       this.attributesAreDirty = true;
-    }
-    if (statusEffect.template.passiveSkills)
-    {
-      this.passiveSkillsByPhaseAreDirty = true;
     }
 
     this.uiDisplayIsDirty = true;
@@ -718,33 +710,12 @@ export default class Unit
 
     return itemPassiveSkills;
   }
-  getStatusEffectPassiveSkills(): PassiveSkillTemplate[]
-  {
-    var statusEffectPassiveSkills: PassiveSkillTemplate[] = [];
-
-    if (!this.battleStats || !this.battleStats.statusEffects)
-    {
-      return statusEffectPassiveSkills;
-    }
-
-    for (var i = 0; i < this.battleStats.statusEffects.length; i++)
-    {
-      var templateSkills = this.battleStats.statusEffects[i].template.passiveSkills;
-      if (templateSkills)
-      {
-        statusEffectPassiveSkills = statusEffectPassiveSkills.concat(templateSkills);
-      }
-    }
-
-    return statusEffectPassiveSkills;
-  }
   getAllPassiveSkills(): PassiveSkillTemplate[]
   {
     var allSkills: PassiveSkillTemplate[] = [];
+    
     allSkills = allSkills.concat(this.passiveSkills);
-
     allSkills = allSkills.concat(this.getItemPassiveSkills());
-    allSkills = allSkills.concat(this.getStatusEffectPassiveSkills());
 
     return allSkills;
   }
@@ -757,7 +728,7 @@ export default class Unit
     for (var i = 0; i < allSkills.length; i++)
     {
       var skill = allSkills[i];
-      ["atBattleStart", "beforeAbilityUse", "afterAbilityUse", "atTurnStart", "inBattlePrep"].forEach(function(phase)
+      ["atBattleStart", "atTurnStart", "inBattlePrep"].forEach(function(phase)
       {
         if (skill[phase])
         {
