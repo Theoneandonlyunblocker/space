@@ -24,10 +24,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
   {
     super(props);
     
-    this.state = 
-    {
-    
-    };
+    this.state = this.getInitialState();
     
     this.bindMethods();
   }

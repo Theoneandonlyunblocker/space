@@ -35,10 +35,7 @@ export default class Popup extends React.Component<PropTypes, {}>
   {
     super(props);
     
-    this.state = 
-    {
-    
-    };
+    this.state = this.getInitialState();
     
     this.bindMethods();
   }

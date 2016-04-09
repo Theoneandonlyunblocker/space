@@ -23,10 +23,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
   {
     super(props);
     
-    this.state = 
-    {
-    
-    };
+    this.state = this.getInitialState();
     
     this.bindMethods();
   }
