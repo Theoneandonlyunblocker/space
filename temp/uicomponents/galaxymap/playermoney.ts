@@ -8,6 +8,11 @@ export interface PropTypes
   player?: Player;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class PlayerMoney extends React.Component<PropTypes, {}>
 {
   displayName: string = "PlayerMoney";

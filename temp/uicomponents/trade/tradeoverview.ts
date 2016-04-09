@@ -13,6 +13,11 @@ export interface PropTypes
   handleClose: reactTypeTODO_func;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class TradeOverview extends React.Component<PropTypes, {}>
 {
   displayName: string = "TradeOverview";

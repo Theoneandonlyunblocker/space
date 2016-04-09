@@ -11,6 +11,11 @@ export interface PropTypes
   tutorialId: string;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class Tutorial extends React.Component<PropTypes, {}>
 {
   displayName: string = "Tutorial";

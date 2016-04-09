@@ -14,6 +14,11 @@ export interface PropTypes
   attackTargets?: reactTypeTODO_object[];
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class PossibleActions extends React.Component<PropTypes, {}>
 {
   displayName: string = "PossibleActions";

@@ -12,6 +12,11 @@ export interface PropTypes
   onClick: reactTypeTODO_func;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class ManufactoryStarsListItem extends React.Component<PropTypes, {}>
 {
   displayName: string = "ManufactoryStarsListItem";

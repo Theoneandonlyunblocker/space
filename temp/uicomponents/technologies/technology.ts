@@ -12,6 +12,11 @@ export interface PropTypes
   researchPoints: number;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class Technology extends React.Component<PropTypes, {}>
 {
   displayName: string = "Technology";

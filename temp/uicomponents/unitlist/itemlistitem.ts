@@ -6,6 +6,11 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class ItemListItem extends React.Component<PropTypes, {}>
 {
   displayName: string = "ItemListItem";

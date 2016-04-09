@@ -13,6 +13,11 @@ export interface PropTypes
   handleClick: reactTypeTODO_func;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class BuildableBuilding extends React.Component<PropTypes, {}>
 {
   displayName: string = "BuildableBuilding";

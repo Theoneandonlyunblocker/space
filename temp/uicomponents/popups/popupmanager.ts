@@ -9,6 +9,11 @@ export interface PropTypes
   onlyAllowOne?: boolean;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class PopupManager extends React.Component<PropTypes, {}>
 {
   displayName: string = "PopupManager";

@@ -13,6 +13,11 @@ export interface PropTypes
   title?: string;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class ManufactoryUpgradeButton extends React.Component<PropTypes, {}>
 {
   displayName: string = "ManufactoryUpgradeButton";

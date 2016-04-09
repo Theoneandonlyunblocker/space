@@ -9,6 +9,11 @@ export interface PropTypes
   onUpdate?: reactTypeTODO_func;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class MapModeSelector extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapModeSelector";

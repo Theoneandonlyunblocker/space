@@ -9,6 +9,11 @@ export interface PropTypes
   options: reactTypeTODO_object[];
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class OptionsGroup extends React.Component<PropTypes, {}>
 {
   displayName: string = "OptionsGroup";

@@ -9,6 +9,11 @@ export interface PropTypes
   isPreparing?: boolean;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class UnitStatus extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitStatus";

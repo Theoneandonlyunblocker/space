@@ -10,6 +10,11 @@ export interface PropTypes
   currentTurn: number;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class Notifications extends React.Component<PropTypes, {}>
 {
   displayName: string = "Notifications";

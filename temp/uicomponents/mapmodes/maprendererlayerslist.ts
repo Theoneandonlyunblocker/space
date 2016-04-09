@@ -11,6 +11,11 @@ export interface PropTypes
   currentMapMode: MapRendererMapMode;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class MapRendererLayersList extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapRendererLayersList";

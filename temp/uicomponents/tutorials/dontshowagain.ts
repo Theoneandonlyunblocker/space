@@ -8,6 +8,11 @@ export interface PropTypes
   tutorialId: string;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class DontShowAgain extends React.Component<PropTypes, {}>
 {
   displayName: string = "DontShowAgain";

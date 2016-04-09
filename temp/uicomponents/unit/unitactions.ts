@@ -8,6 +8,11 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class UnitActions extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitActions";

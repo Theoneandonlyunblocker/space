@@ -9,6 +9,11 @@ export interface PropTypes
   facingRight: boolean;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class BattleSceneFlag extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleSceneFlag";

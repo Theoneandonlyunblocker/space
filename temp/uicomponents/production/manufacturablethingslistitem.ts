@@ -10,6 +10,11 @@ export interface PropTypes
   money?: number;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class ManufacturableThingsListItem extends React.Component<PropTypes, {}>
 {
   displayName: string = "ManufacturableThingsListItem";

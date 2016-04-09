@@ -11,6 +11,11 @@ export interface PropTypes
   highlightedOptionKey?: string;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class NotificationFilterButton extends React.Component<PropTypes, {}>
 {
   displayName: string = "NotificationFilterButton";

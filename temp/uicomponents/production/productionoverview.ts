@@ -16,6 +16,11 @@ export interface PropTypes
   player: Player;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class ProductionOverview extends React.Component<PropTypes, {}>
 {
   displayName: string = "ProductionOverview";

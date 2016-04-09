@@ -13,6 +13,11 @@ export interface PropTypes
   adjustItemAmount?: reactTypeTODO_func;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class TradeMoney extends React.Component<PropTypes, {}>
 {
   displayName: string = "TradeMoney";

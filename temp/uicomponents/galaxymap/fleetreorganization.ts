@@ -11,6 +11,11 @@ export interface PropTypes
   fleets?: Fleet[];
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class FleetReorganization extends React.Component<PropTypes, {}>
 {
   displayName: string = "FleetReorganization";

@@ -12,6 +12,11 @@ export interface PropTypes
   game: Game;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class TopMenu extends React.Component<PropTypes, {}>
 {
   displayName: string = "TopMenu";

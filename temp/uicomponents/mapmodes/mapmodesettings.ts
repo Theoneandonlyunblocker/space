@@ -11,6 +11,11 @@ export interface PropTypes
   mapRenderer: MapRenderer;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class MapModeSettings extends React.Component<PropTypes, {}>
 {
   displayName: string = "MapModeSettings";

@@ -23,6 +23,11 @@ export interface PropTypes
   animateDuration?: number;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class UnitInfo extends React.Component<PropTypes, {}>
 {
   displayName: string = "UnitInfo";

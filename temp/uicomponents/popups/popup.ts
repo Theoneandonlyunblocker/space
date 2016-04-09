@@ -20,6 +20,11 @@ export interface PropTypes
   finishedMountingCallback?: reactTypeTODO_func;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class Popup extends React.Component<PropTypes, {}>
 {
   displayName: string = "Popup";

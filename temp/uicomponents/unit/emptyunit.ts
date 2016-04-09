@@ -6,6 +6,11 @@ export interface PropTypes
   // TODO refactor | add prop types
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class EmptyUnit extends React.Component<PropTypes, {}>
 {
   displayName: string = "EmptyUnit";

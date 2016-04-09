@@ -16,6 +16,11 @@ export interface PropTypes
   onDragMove?: reactTypeTODO_func;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class FleetContents extends React.Component<PropTypes, {}>
 {
   displayName: string = "FleetContents";

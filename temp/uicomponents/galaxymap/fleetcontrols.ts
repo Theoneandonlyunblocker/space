@@ -10,6 +10,11 @@ export interface PropTypes
   hasMultipleSelected?: boolean;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class FleetControls extends React.Component<PropTypes, {}>
 {
   displayName: string = "FleetControls";

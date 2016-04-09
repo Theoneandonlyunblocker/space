@@ -25,6 +25,11 @@ export interface PropTypes
   side2Player?: Player;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class BattleScene extends React.Component<PropTypes, {}>
 {
   displayName: string = "BattleScene";

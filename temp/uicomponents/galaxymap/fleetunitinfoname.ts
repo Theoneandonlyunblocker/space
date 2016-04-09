@@ -9,6 +9,11 @@ export interface PropTypes
   isNotDetected: boolean;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class FleetUnitInfoName extends React.Component<PropTypes, {}>
 {
   displayName: string = "FleetUnitInfoName";

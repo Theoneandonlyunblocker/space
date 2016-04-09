@@ -13,6 +13,11 @@ export interface PropTypes
   step: number;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class OptionsNumericField extends React.Component<PropTypes, {}>
 {
   displayName: string = "OptionsNumericField";

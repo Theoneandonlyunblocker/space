@@ -11,6 +11,11 @@ export interface PropTypes
   upgradeData: reactTypeTODO_object;
 }
 
+interface StateType
+{
+  // TODO refactor | add state type
+}
+
 export default class BuildingUpgradeListItem extends React.Component<PropTypes, {}>
 {
   displayName: string = "BuildingUpgradeListItem";
