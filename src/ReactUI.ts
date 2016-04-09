@@ -10,7 +10,6 @@ import Player from "./Player.ts";
 import Game from "./Game.ts";
 import eventManager from "./eventManager.ts";
 
-/// <reference path="uicomponents/stage.ts"/>
 import Stage from "./uicomponents/Stage.ts";
 
 export default class ReactUI

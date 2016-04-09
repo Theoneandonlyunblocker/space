@@ -1,6 +1,4 @@
-import Point from "../src/Point.ts";
-
-declare interface OffsetPoint extends Point
+declare interface OffsetPoint
 {
   x: number;
   y: number;
