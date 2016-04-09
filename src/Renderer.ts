@@ -7,7 +7,6 @@ import MouseEventHandler from "./MouseEventHandler.ts";
 import PathfindingArrow from "./PathfindingArrow.ts";
 import Point from "./Point.ts";
 import GalaxyMap from "./GalaxyMap.ts";
-import ShaderManager from "./ShaderManager.ts";
 
 export default class Renderer
 {
@@ -20,7 +19,6 @@ export default class Renderer
   } = {};
   camera: Camera;
   mouseEventHandler: MouseEventHandler;
-  shaderManager: ShaderManager;
   pathfindingArrow: PathfindingArrow;
   
   private activeRenderLoopId: number = 0;
@@ -42,18 +40,18 @@ export default class Renderer
     this.stage = new PIXI.Container();
     this.galaxyMap = galaxyMap;
 
-    this.resizeListener = this.resize.bind(this);
-    window.addEventListener("resize", this.resizeListener, false);
   }
   init()
   {
-    this.shaderManager = new ShaderManager();
     this.initLayers();
 
     this.addEventListeners();
     this.activeRenderLoopId++;
 
     this.stage.renderable = true;
+    
+    this.resizeListener = this.resize.bind(this);
+    window.addEventListener("resize", this.resizeListener, false);
   }
   destroy()
   {
@@ -78,7 +76,6 @@ export default class Renderer
       this.camera = null;
     }
 
-    this.shaderManager = null;
     this.galaxyMap = null;
 
     if (this.renderer)
