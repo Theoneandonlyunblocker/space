@@ -8,6 +8,7 @@ import Objective from "./Objective.ts";
 import GalaxyMap from "../GalaxyMap.ts";
 import Player from "../Player.ts";
 
+import RoutineAdjustmentByID from "../templateinterfaces/RoutineAdjustmentByID.d.ts";
 import ObjectiveTemplate from "../templateinterfaces/ObjectiveTemplate.d.ts";
 
 /*
@@ -163,7 +164,7 @@ export default class ObjectivesAI
   getAdjustmentsForTemplateProperty(propKey: string)
   {
     var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
-    var adjustments: IRoutineAdjustmentByTargetId;
+    var adjustments: RoutineAdjustmentByID;
 
     for (var i = 0; i < withAdjustment.length; i++)
     {

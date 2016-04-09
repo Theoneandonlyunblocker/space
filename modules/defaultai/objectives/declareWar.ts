@@ -4,6 +4,7 @@ import MapEvaluator from "../../../src/mapai/MapEvaluator.ts";
 import Objective from "../../../src/mapai/Objective.ts";
 
 import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
+import RoutineAdjustmentByID from "../../../src/templateinterfaces/RoutineAdjustmentByID.d.ts";
 
 import Player from "../../../src/Player.ts";
 
@@ -48,7 +49,7 @@ const declareWar: ObjectiveTemplate =
     return makeObjectivesFromScores(template, scores, basePriority);
   },
   diplomacyRoutineFN: function(objective: Objective, diplomacyAI: DiplomacyAI,
-    adjustments: IRoutineAdjustmentByTargetId, afterDoneCallback: () => void)
+    adjustments: RoutineAdjustmentByID, afterDoneCallback: () => void)
   {
     diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
     afterDoneCallback();
