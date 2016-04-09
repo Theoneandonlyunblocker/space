@@ -1,6 +1,7 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
 import SFXParams from "./SFXParams.d.ts";
+import Unit from "../Unit.ts";
 
 declare interface UnitDrawingFunction
 {
