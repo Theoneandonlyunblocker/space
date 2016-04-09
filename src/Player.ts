@@ -15,6 +15,7 @@ import Flag from "./Flag.ts";
 import Item from "./Item.ts";
 import BattleSimulator from "./BattleSimulator.ts";
 import BattlePrep from "./BattlePrep.ts";
+import BattleData from "./BattleData.d.ts";
 import DiplomacyStatus from "./DiplomacyStatus.ts";
 import Manufactory from "./Manufactory.ts";
 import PlayerTechnology from "./PlayerTechnology.ts";
@@ -666,9 +667,9 @@ export default class Player
 
     return star.getNearestStarForQualifier(isOwnedByThisFN);
   }
-  attackTarget(location: Star, target: IFleetAttackTarget, battleFinishCallback?: () => void)
+  attackTarget(location: Star, target: FleetAttackTarget, battleFinishCallback?: () => void)
   {
-    var battleData: IBattleData =
+    var battleData: BattleData =
     {
       location: location,
       building: target.building,
