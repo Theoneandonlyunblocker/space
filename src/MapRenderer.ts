@@ -13,6 +13,8 @@ import eventManager from "./eventManager.ts";
 import Options from "./options.ts";
 import Fleet from "./Fleet.ts";
 
+import OccupationFilter from "./shaders/Occupation.ts";
+
 
 export default class MapRenderer
 {
@@ -222,6 +224,7 @@ export default class MapRenderer
 
     return this.fowSpriteCache[star.id];
   }
+  // TODO refactor | should be in map layers module
   getOccupationShader(owner: Player, occupier: Player)
   {
     if (!this.occupationShaders[owner.id])
@@ -231,19 +234,14 @@ export default class MapRenderer
 
     if (!this.occupationShaders[owner.id][occupier.id])
     {
-      var baseColor = owner.color.getRGB().push(1.0);
-      var occupierColor = occupier.color.getRGB().push(1.0);
-
-      var uniforms =
+      this.occupationShaders[owner.id][occupier.id] = new OccupationFilter(
       {
-        baseColor: {type: "4fv", value: baseColor},
-        lineColor: {type: "4fv", value: occupierColor},
-        gapSize: {type: "1f", value: 3.0},
-        offset: {type: "2f", value: [0.0, 0.0]},
-        zoom: {type: "1f", value: 1.0}
-      };
-
-      this.occupationShaders[owner.id][occupier.id] = new OccupationFilter(uniforms);
+        stripeColor: occupier.color.getRGBA(1.0),
+        stripeSize: 0.5,
+        offset: [0.0, 0.0],
+        angle: 0.25 * Math.PI,
+        scale: 8.0
+      });
     }
 
     return this.occupationShaders[owner.id][occupier.id]

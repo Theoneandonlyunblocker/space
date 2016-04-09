@@ -87,6 +87,11 @@ export default class Color
   {
     return [this.r, this.g, this.b];
   }
+  // 0-1
+  public getRGBA(alpha: number): number[]
+  {
+    return [this.r, this.g, this.b, alpha];
+  }
   // 0-255
   public get8BitRGB(): number[]
   {
