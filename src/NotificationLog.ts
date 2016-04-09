@@ -16,9 +16,9 @@ export default class NotificationLog
 {
   byTurn:
   {
-    [turnNumber: number]: Notification[];
+    [turnNumber: number]: Notification<any>[];
   } = {};
-  unread: Notification[] = [];
+  unread: Notification<any>[] = [];
   currentTurn: number;
   isHumanTurn: boolean = true;
   listeners:
@@ -76,7 +76,7 @@ export default class NotificationLog
       eventManager.dispatchEvent("updateNotificationLog");
     }
   }
-  addNotification(notification: Notification)
+  addNotification(notification: Notification<any>)
   {
     if (!this.byTurn[notification.turn])
     {
@@ -89,7 +89,7 @@ export default class NotificationLog
       this.unread.unshift(notification);
     }
   }
-  markAsRead(notification: Notification)
+  markAsRead(notification: Notification<any>)
   {
     var index = this.unread.indexOf(notification);
     if (index === -1) throw new Error("Notification is already unread");
@@ -99,14 +99,14 @@ export default class NotificationLog
   }
   getUnreadNotificationsForTurn(turn: number)
   {
-    return this.byTurn[turn].filter(function(notification: Notification)
+    return this.byTurn[turn].filter(function(notification: Notification<any>)
     {
       return !notification.hasBeenRead;
     });
   }
-  filterNotifications(notifications: Notification[])
+  filterNotifications(notifications: Notification<any>[])
   {
-    var filtered: Notification[] = [];
+    var filtered: Notification<any>[] = [];
 
     for (var i = 0; i < notifications.length; i++)
     {

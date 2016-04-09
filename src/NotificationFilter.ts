@@ -38,7 +38,7 @@ export default class NotificationFilter
       this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
     }
   }
-  shouldDisplayNotification(notification: Notification)
+  shouldDisplayNotification(notification: Notification<any>)
   {
     var filterStates = this.filters[notification.template.key];
     if (filterStates.indexOf(NotificationFilterState.alwaysShow) !== -1)
