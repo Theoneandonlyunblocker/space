@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class OptionsGroup extends React.Component<PropTypes, StateType>
+class OptionsGroup extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsGroup";
 

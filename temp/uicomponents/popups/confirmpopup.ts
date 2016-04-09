@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ConfirmPopup extends React.Component<PropTypes, StateType>
+class ConfirmPopup extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConfirmPopup";
   mixins: reactTypeTODO_any = [SplitMultilineText];

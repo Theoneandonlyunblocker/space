@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TradeOverview extends React.Component<PropTypes, StateType>
+class TradeOverview extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeOverview";
   selfPlayerTrade: reactTypeTODO_any = undefined;

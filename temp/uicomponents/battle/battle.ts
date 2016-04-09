@@ -22,7 +22,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Battle extends React.Component<PropTypes, StateType>
+class Battle extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Battle";
 

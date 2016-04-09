@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitStrength extends React.Component<PropTypes, StateType>
+class UnitStrength extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStrength";
   state: StateType;

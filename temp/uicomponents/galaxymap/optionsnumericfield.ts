@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class OptionsNumericField extends React.Component<PropTypes, StateType>
+class OptionsNumericField extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsNumericField";
 

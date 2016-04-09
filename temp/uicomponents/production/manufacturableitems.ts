@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ManufacturableItems extends React.Component<PropTypes, StateType>
+class ManufacturableItems extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableItems";
 

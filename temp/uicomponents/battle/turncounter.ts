@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TurnCounter extends React.Component<PropTypes, StateType>
+class TurnCounter extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TurnCounter";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

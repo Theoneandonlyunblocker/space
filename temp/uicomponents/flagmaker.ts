@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class FlagMaker extends React.Component<PropTypes, StateType>
+class FlagMaker extends React.Component<PropTypes, StateType>
 {
   setStateTimeout: reactTypeTODO_any = undefined;
   sizeValue: number = 46;

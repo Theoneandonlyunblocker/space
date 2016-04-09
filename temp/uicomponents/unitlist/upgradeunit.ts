@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UpgradeUnit extends React.Component<PropTypes, StateType>
+class UpgradeUnit extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeUnit";
   state: StateType;

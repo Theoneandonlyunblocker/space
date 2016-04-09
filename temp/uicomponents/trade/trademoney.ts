@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TradeMoney extends React.Component<PropTypes, StateType>
+class TradeMoney extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeMoney";
   mixins: reactTypeTODO_any = [Draggable];

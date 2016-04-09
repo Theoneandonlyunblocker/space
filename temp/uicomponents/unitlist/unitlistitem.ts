@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitListItem extends React.Component<PropTypes, StateType>
+class UnitListItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitListItem";
   mixins: reactTypeTODO_any = [Draggable];

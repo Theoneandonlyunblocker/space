@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ConstructManufactory extends React.Component<PropTypes, StateType>
+class ConstructManufactory extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConstructManufactory";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

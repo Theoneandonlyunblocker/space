@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BattleInfo extends React.Component<PropTypes, StateType>
+class BattleInfo extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleInfo";
   state: StateType;

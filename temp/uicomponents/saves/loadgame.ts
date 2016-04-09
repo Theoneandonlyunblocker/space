@@ -16,7 +16,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class LoadGame extends React.Component<PropTypes, StateType>
+class LoadGame extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LoadGame";
   popupId: reactTypeTODO_any = undefined;

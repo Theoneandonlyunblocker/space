@@ -28,7 +28,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitInfo extends React.Component<PropTypes, StateType>
+class UnitInfo extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitInfo";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

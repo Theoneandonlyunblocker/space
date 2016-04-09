@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Resource extends React.Component<PropTypes, StateType>
+class Resource extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Resource";
   state: StateType;

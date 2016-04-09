@@ -16,7 +16,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BuildingUpgradeListItem extends React.Component<PropTypes, StateType>
+class BuildingUpgradeListItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildingUpgradeListItem";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];

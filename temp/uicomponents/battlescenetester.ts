@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BattleSceneTester extends React.Component<PropTypes, StateType>
+class BattleSceneTester extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleSceneTester";
   idGenerator: number = 0;

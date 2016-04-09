@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ItemList extends React.Component<PropTypes, StateType>
+class ItemList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemList";
 

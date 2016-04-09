@@ -17,7 +17,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Unit extends React.Component<PropTypes, StateType>
+class Unit extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Unit";
   mixins: reactTypeTODO_any = [Draggable, React.addons.PureRenderMixin];

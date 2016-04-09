@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class DontShowAgain extends React.Component<PropTypes, StateType>
+class DontShowAgain extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DontShowAgain";
 

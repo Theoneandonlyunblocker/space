@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class EconomySummaryItem extends React.Component<PropTypes, StateType>
+class EconomySummaryItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "EconomySummaryItem";
 

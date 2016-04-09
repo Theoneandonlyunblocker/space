@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BuildingUpgradeList extends React.Component<PropTypes, StateType>
+class BuildingUpgradeList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildingUpgradeList";
 

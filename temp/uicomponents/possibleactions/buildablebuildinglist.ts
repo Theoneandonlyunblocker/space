@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BuildableBuildingList extends React.Component<PropTypes, StateType>
+class BuildableBuildingList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildableBuildingList";
   state: StateType;

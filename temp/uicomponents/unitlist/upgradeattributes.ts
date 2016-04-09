@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UpgradeAttributes extends React.Component<PropTypes, StateType>
+class UpgradeAttributes extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeAttributes";
   upgradeAttribute(attribute: string, e: MouseEvent)

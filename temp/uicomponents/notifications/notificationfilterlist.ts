@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class NotificationFilterList extends React.Component<PropTypes, StateType>
+class NotificationFilterList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationFilterList";
   handleResetCategory(category: string)

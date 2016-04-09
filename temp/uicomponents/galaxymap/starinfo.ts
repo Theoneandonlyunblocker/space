@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class StarInfo extends React.Component<PropTypes, StateType>
+class StarInfo extends React.Component<PropTypes, StateType>
 {
   displayName: string = "StarInfo";
   shouldComponentUpdate(newProps: any)

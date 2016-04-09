@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TurnOrder extends React.Component<PropTypes, StateType>
+class TurnOrder extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TurnOrder";
   state: StateType;

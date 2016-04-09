@@ -31,7 +31,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Stage extends React.Component<PropTypes, StateType>
+class Stage extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Stage";
   state: StateType;

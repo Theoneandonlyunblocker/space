@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BuildableBuilding extends React.Component<PropTypes, StateType>
+class BuildableBuilding extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildableBuilding";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];

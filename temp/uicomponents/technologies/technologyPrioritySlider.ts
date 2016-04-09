@@ -16,7 +16,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TechnologyPrioritySlider extends React.Component<PropTypes, StateType>
+class TechnologyPrioritySlider extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TechnologyPrioritySlider";
   state: StateType;;

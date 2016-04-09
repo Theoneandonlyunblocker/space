@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class MapModeSelector extends React.Component<PropTypes, StateType>
+class MapModeSelector extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapModeSelector";
 

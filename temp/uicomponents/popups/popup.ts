@@ -25,7 +25,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Popup extends React.Component<PropTypes, StateType>
+class Popup extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Popup";
   mixins: reactTypeTODO_any = [Draggable];

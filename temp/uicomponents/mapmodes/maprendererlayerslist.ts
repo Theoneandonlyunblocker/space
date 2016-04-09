@@ -16,7 +16,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class MapRendererLayersList extends React.Component<PropTypes, StateType>
+class MapRendererLayersList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersList";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

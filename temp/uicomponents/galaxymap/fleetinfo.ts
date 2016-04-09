@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class FleetInfo extends React.Component<PropTypes, StateType>
+class FleetInfo extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetInfo";
   setFleetName(e: Event)

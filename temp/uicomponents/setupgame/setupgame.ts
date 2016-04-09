@@ -16,7 +16,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class SetupGame extends React.Component<PropTypes, StateType>
+class SetupGame extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SetupGame";
 

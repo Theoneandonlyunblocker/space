@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ColorSetter extends React.Component<PropTypes, StateType>
+class ColorSetter extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorSetter";
   mixins: reactTypeTODO_any = [FocusTimer];

@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BuyItems extends React.Component<PropTypes, StateType>
+class BuyItems extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuyItems";
 

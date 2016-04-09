@@ -17,7 +17,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Technology extends React.Component<PropTypes, StateType>
+class Technology extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Technology";
 

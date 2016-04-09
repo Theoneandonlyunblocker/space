@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Notification extends React.Component<PropTypes, StateType>
+class Notification extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Notification";
 

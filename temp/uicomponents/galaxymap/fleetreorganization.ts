@@ -16,7 +16,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class FleetReorganization extends React.Component<PropTypes, StateType>
+class FleetReorganization extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetReorganization";
 

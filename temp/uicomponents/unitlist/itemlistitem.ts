@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ItemListItem extends React.Component<PropTypes, StateType>
+class ItemListItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemListItem";
   mixins: reactTypeTODO_any = [Draggable];

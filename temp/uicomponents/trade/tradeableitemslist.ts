@@ -21,7 +21,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TradeableItemsList extends React.Component<PropTypes, StateType>
+class TradeableItemsList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeableItemsList";
 

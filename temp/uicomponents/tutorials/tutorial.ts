@@ -16,7 +16,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Tutorial extends React.Component<PropTypes, StateType>
+class Tutorial extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Tutorial";
   mixins: reactTypeTODO_any = [SplitMultilineText];

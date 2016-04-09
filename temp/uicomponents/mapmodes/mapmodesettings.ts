@@ -16,7 +16,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class MapModeSettings extends React.Component<PropTypes, StateType>
+class MapModeSettings extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapModeSettings";
 

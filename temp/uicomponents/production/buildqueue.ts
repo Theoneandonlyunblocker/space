@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BuildQueue extends React.Component<PropTypes, StateType>
+class BuildQueue extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildQueue";
 

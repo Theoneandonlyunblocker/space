@@ -33,7 +33,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Formation extends React.Component<PropTypes, StateType>
+class Formation extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Formation";
 

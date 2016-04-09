@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class DefenceBuilding extends React.Component<PropTypes, StateType>
+class DefenceBuilding extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DefenceBuilding";
   shouldComponentUpdate(newProps: any)

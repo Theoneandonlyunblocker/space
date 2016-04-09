@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class PopupResizeHandle extends React.Component<PropTypes, StateType>
+class PopupResizeHandle extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupResizeHandle";
   mixins: reactTypeTODO_any = [Draggable];

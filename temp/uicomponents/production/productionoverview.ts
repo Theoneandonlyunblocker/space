@@ -21,7 +21,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ProductionOverview extends React.Component<PropTypes, StateType>
+class ProductionOverview extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ProductionOverview";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];

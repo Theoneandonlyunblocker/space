@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitExperience extends React.Component<PropTypes, StateType>
+class UnitExperience extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitExperience";
 

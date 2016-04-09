@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Opinion extends React.Component<PropTypes, StateType>
+class Opinion extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Opinion";
 

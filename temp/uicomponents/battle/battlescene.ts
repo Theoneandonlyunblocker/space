@@ -30,7 +30,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BattleScene extends React.Component<PropTypes, StateType>
+class BattleScene extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScene";
 

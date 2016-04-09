@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class AttitudeModifierInfo extends React.Component<PropTypes, StateType>
+class AttitudeModifierInfo extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierInfo";
 

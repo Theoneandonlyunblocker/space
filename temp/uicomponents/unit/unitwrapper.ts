@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitWrapper extends React.Component<PropTypes, StateType>
+class UnitWrapper extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitWrapper";
   mixins: reactTypeTODO_any = [DropTarget];

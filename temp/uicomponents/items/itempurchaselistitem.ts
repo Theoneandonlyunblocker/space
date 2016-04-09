@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ItemPurchaseListItem extends React.Component<PropTypes, StateType>
+class ItemPurchaseListItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemPurchaseListItem";
   makeCell(type: string)

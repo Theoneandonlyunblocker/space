@@ -17,7 +17,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TopMenu extends React.Component<PropTypes, StateType>
+class TopMenu extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenu";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

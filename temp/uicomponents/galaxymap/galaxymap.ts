@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class GalaxyMap extends React.Component<PropTypes, StateType>
+class GalaxyMap extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMap";
   

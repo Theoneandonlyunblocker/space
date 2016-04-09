@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitPortrait extends React.Component<PropTypes, StateType>
+class UnitPortrait extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitPortrait";
   state: StateType;

@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class FlagSetter extends React.Component<PropTypes, StateType>
+class FlagSetter extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];

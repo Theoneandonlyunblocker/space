@@ -16,7 +16,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class NotificationLog extends React.Component<PropTypes, StateType>
+class NotificationLog extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationLog";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
