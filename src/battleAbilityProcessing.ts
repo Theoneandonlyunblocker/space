@@ -186,15 +186,15 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abi
   {
     beforeUseEffects = beforeUseEffects.concat(abilityUseData.ability.beforeUse);
   }
-
-  var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().beforeAbilityUse;
-  if (passiveSkills)
-  {
-    for (var i = 0; i < passiveSkills.length; i++)
-    {
-      beforeUseEffects = beforeUseEffects.concat(passiveSkills[i].beforeAbilityUse);
-    }
-  }
+  // TODO get these from status effects
+  // var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().beforeAbilityUse;
+  // if (passiveSkills)
+  // {
+  //   for (var i = 0; i < passiveSkills.length; i++)
+  //   {
+  //     beforeUseEffects = beforeUseEffects.concat(passiveSkills[i].beforeAbilityUse);
+  //   }
+  // }
 
   return getEffectTemplatesWithAttachedEffects(beforeUseEffects);
   // TODO remove guard & action points
@@ -219,14 +219,15 @@ function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abil
     afterUseEffects = afterUseEffects.concat(abilityUseData.ability.afterUse);
   }
 
-  var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().afterAbilityUse;
-  if (passiveSkills)
-  {
-    for (var i = 0; i < passiveSkills.length; i++)
-    {
-      afterUseEffects = afterUseEffects.concat(passiveSkills[i].afterAbilityUse);
-    }
-  }
+  // TODO get these from status effects
+  // var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().afterAbilityUse;
+  // if (passiveSkills)
+  // {
+  //   for (var i = 0; i < passiveSkills.length; i++)
+  //   {
+  //     afterUseEffects = afterUseEffects.concat(passiveSkills[i].afterAbilityUse);
+  //   }
+  // }
 
   return getEffectTemplatesWithAttachedEffects(afterUseEffects);
   // TODO add move delay & update status effects

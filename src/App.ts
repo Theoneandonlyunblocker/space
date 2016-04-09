@@ -22,6 +22,20 @@ import
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues.d.ts";
 
+import defaultEmblems from "../modules/defaultemblems/defaultEmblems.ts";
+import defaultRuleset from "../modules/defaultruleset/defaultRuleset.ts";
+import defaultAI from "../modules/defaultai/defaultAI.ts";
+import defaultItems from "../modules/defaultitems/defaultItems.ts";
+import defaultTechnologies from "../modules/defaulttechnologies/defaultTechnologies.ts";
+import defaultAttitudemodifiers from "../modules/defaultattitudemodifiers/defaultAttitudemodifiers.ts";
+import defaultMapgen from "../modules/defaultmapgen/defaultMapgen.ts";
+import defaultUnits from "../modules/defaultunits/defaultUnits.ts";
+import defaultBackgrounds from "../modules/defaultbackgrounds/defaultBackgrounds.ts";
+import defaultMapmodes from "../modules/defaultmapmodes/defaultMapmodes.ts";
+import paintingPortraits from "../modules/paintingportraits/paintingPortraits.ts";
+import defaultBuildings from "../modules/defaultbuildings/defaultBuildings.ts";
+import defaultNotifications from "../modules/defaultnotifications/defaultNotifications.ts";
+
 const app = new App();
 export default app;
 

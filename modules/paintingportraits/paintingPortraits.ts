@@ -3,13 +3,13 @@ import ModuleData from "../../src/ModuleData.ts";
 import paintingPortraitsCulture from "./paintingPortraitsCulture.ts";
 import CultureTemplate from "../../src/templateinterfaces/CultureTemplate.d.ts";
 
-export var moduleFile: ModuleFile =
+const paintingPortraits: ModuleFile =
 {
   key: "paintingPortraits",
   metaData:
   {
-    name: "paintingPortraits",
-    version: "0.0.420",
+    name: "Painting portraits",
+    version: "0.1.0",
     author: "various artists",
     description: "old ppl"
   },
@@ -24,3 +24,5 @@ export var moduleFile: ModuleFile =
     return moduleData;
   }
 }
+
+export default paintingPortraits;

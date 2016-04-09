@@ -373,8 +373,8 @@ export function distributeDistributablesPerSector(sectors: Sector[],
     } = {};
     for (var j = 0; j < candidates.length; j++)
     {
-      candidatesByWeight[candidates[j].ranceKey] =
-        alreadyAddedByWeight[candidates[j].ranceKey];
+      candidatesByWeight[candidates[j].type] =
+        alreadyAddedByWeight[candidates[j].type];
     }
 
 

@@ -1,4 +1,6 @@
-declare interface OffsetPoint extends Rance.Point
+import Point from "../src/Point.ts";
+
+declare interface OffsetPoint extends Point
 {
   x: number;
   y: number;
