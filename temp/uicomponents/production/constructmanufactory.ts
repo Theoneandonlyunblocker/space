@@ -95,3 +95,6 @@ class ConstructManufactory extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(ConstructManufactory);
+export default Factory;

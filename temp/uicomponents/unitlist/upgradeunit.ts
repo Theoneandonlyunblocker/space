@@ -152,3 +152,6 @@ class UpgradeUnit extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(UpgradeUnit);
+export default Factory;

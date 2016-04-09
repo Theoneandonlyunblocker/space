@@ -109,3 +109,6 @@ class FleetInfo extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(FleetInfo);
+export default Factory;

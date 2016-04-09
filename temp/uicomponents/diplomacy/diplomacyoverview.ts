@@ -146,3 +146,6 @@ class DiplomacyOverview extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(DiplomacyOverview);
+export default Factory;

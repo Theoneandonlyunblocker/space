@@ -103,3 +103,6 @@ class FormationRow extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(FormationRow);
+export default Factory;

@@ -83,3 +83,6 @@ class UnitIcon extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(UnitIcon);
+export default Factory;

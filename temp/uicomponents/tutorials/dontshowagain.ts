@@ -87,3 +87,6 @@ class DontShowAgain extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(DontShowAgain);
+export default Factory;

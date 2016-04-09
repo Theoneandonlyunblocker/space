@@ -304,3 +304,6 @@ class TopMenu extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(TopMenu);
+export default Factory;

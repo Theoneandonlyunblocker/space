@@ -126,3 +126,6 @@ class BuildableBuildingList extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(BuildableBuildingList);
+export default Factory;

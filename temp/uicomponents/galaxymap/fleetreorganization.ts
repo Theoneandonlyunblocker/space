@@ -165,3 +165,6 @@ class FleetReorganization extends React.Component<PropTypes, StateType>
   }
 
 }
+
+const Factory = React.createFactory(FleetReorganization);
+export default Factory;

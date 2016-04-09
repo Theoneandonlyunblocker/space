@@ -134,3 +134,6 @@ class DiplomaticStatusPlayer extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(DiplomaticStatusPlayer);
+export default Factory;

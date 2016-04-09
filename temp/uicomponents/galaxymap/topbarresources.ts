@@ -86,3 +86,6 @@ class TopBarResources extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(TopBarResources);
+export default Factory;

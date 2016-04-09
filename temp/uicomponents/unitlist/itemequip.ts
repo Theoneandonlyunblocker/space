@@ -131,3 +131,6 @@ class ItemEquip extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(ItemEquip);
+export default Factory;

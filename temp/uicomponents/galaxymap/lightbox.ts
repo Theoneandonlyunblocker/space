@@ -119,3 +119,6 @@ class LightBox extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(LightBox);
+export default Factory;

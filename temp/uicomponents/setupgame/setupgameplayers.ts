@@ -222,3 +222,6 @@ class SetupGamePlayers extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(SetupGamePlayers);
+export default Factory;

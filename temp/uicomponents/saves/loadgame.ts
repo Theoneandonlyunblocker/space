@@ -252,3 +252,6 @@ class LoadGame extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(LoadGame);
+export default Factory;

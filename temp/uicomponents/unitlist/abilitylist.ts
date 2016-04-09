@@ -110,3 +110,6 @@ class AbilityList extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(AbilityList);
+export default Factory;

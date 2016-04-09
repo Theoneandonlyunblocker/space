@@ -200,3 +200,6 @@ class DiplomacyActions extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(DiplomacyActions);
+export default Factory;

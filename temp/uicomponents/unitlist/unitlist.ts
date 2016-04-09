@@ -141,3 +141,6 @@ class UnitList extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(UnitList);
+export default Factory;

@@ -98,3 +98,6 @@ class MenuUnitInfo extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(MenuUnitInfo);
+export default Factory;

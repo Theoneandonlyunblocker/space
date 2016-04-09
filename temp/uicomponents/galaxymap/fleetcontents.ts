@@ -92,3 +92,6 @@ class FleetContents extends React.Component<PropTypes, StateType>
   }
 
 }
+
+const Factory = React.createFactory(FleetContents);
+export default Factory;

@@ -85,3 +85,6 @@ class PlayerFlag extends React.Component<PropTypes, StateType>
     }
   }
 }
+
+const Factory = React.createFactory(PlayerFlag);
+export default Factory;

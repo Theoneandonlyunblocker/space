@@ -74,3 +74,6 @@ class ManufacturableThingsList extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(ManufacturableThingsList);
+export default Factory;

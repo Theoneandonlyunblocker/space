@@ -277,3 +277,6 @@ class GalaxyMapUI extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(GalaxyMapUI);
+export default Factory;

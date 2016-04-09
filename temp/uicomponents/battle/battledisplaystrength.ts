@@ -116,3 +116,6 @@ class BattleDisplayStrength extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(BattleDisplayStrength);
+export default Factory;

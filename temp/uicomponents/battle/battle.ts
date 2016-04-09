@@ -720,3 +720,6 @@ class Battle extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(Battle);
+export default Factory;

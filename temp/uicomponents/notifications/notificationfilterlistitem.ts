@@ -107,3 +107,6 @@ class NotificationFilterListItem extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(NotificationFilterListItem);
+export default Factory;

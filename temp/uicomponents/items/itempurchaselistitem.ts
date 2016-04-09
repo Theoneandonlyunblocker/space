@@ -93,3 +93,6 @@ class ItemPurchaseListItem extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(ItemPurchaseListItem);
+export default Factory;

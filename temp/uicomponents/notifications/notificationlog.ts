@@ -194,3 +194,6 @@ class NotificationLog extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(NotificationLog);
+export default Factory;

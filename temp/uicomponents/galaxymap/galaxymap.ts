@@ -147,3 +147,6 @@ class GalaxyMap extends React.Component<PropTypes, StateType>
     this.props.renderer.removeRendererView();
   }
 }
+
+const Factory = React.createFactory(GalaxyMap);
+export default Factory;

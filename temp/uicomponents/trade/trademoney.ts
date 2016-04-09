@@ -134,3 +134,6 @@ class TradeMoney extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(TradeMoney);
+export default Factory;

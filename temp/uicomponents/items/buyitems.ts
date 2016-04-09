@@ -68,3 +68,6 @@ class BuyItems extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(BuyItems);
+export default Factory;

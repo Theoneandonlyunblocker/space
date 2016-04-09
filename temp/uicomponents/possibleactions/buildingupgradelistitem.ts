@@ -96,3 +96,6 @@ class BuildingUpgradeListItem extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(BuildingUpgradeListItem);
+export default Factory;

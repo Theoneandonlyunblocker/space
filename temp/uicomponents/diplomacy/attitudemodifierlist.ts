@@ -106,3 +106,6 @@ class AttitudeModifierList extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(AttitudeModifierList);
+export default Factory;

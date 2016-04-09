@@ -90,3 +90,6 @@ class Formation extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(Formation);
+export default Factory;

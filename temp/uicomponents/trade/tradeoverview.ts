@@ -265,3 +265,6 @@ class TradeOverview extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(TradeOverview);
+export default Factory;

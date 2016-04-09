@@ -60,3 +60,6 @@ class PopupResizeHandle extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(PopupResizeHandle);
+export default Factory;

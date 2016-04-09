@@ -53,3 +53,6 @@ class Resource extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(Resource);
+export default Factory;

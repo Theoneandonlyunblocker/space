@@ -104,3 +104,6 @@ class ManufactoryUpgradeButton extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(ManufactoryUpgradeButton);
+export default Factory;

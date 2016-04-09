@@ -240,3 +240,6 @@ class MapGenOptions extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(MapGenOptions);
+export default Factory;

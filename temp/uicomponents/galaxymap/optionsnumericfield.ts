@@ -112,3 +112,6 @@ class OptionsNumericField extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(OptionsNumericField);
+export default Factory;

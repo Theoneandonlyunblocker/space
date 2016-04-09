@@ -163,3 +163,6 @@ class FlagPicker extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(FlagPicker);
+export default Factory;

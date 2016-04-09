@@ -168,3 +168,6 @@ class Tutorial extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(Tutorial);
+export default Factory;

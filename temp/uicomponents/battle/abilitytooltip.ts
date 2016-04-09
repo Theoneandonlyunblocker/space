@@ -106,3 +106,6 @@ class AbilityTooltip extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(AbilityTooltip);
+export default Factory;

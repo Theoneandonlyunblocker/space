@@ -91,3 +91,6 @@ class FleetControls extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(FleetControls);
+export default Factory;

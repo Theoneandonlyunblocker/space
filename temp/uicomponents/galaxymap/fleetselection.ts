@@ -231,3 +231,6 @@ class FleetSelection extends React.Component<PropTypes, StateType>
   }
 
 }
+
+const Factory = React.createFactory(FleetSelection);
+export default Factory;

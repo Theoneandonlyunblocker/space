@@ -74,3 +74,6 @@ class UpgradeAttributes extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(UpgradeAttributes);
+export default Factory;

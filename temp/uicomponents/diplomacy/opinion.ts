@@ -114,3 +114,6 @@ class Opinion extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(Opinion);
+export default Factory;

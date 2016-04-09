@@ -104,3 +104,6 @@ class UnitStatus extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(UnitStatus);
+export default Factory;

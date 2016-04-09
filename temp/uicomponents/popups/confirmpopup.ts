@@ -106,3 +106,6 @@ class ConfirmPopup extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(ConfirmPopup);
+export default Factory;

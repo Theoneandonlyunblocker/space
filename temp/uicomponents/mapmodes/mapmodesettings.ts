@@ -73,3 +73,6 @@ class MapModeSettings extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(MapModeSettings);
+export default Factory;

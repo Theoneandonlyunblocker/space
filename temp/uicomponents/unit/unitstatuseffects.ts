@@ -113,3 +113,6 @@ class UnitStatusEffects extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(UnitStatusEffects);
+export default Factory;

@@ -107,3 +107,6 @@ class ManufacturableItems extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(ManufacturableItems);
+export default Factory;

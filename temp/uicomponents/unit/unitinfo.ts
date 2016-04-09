@@ -111,3 +111,6 @@ class UnitInfo extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(UnitInfo);
+export default Factory;

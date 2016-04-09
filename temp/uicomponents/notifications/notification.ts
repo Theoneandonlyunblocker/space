@@ -68,3 +68,6 @@ class Notification extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(Notification);
+export default Factory;

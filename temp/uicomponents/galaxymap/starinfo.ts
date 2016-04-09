@@ -95,3 +95,6 @@ class StarInfo extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(StarInfo);
+export default Factory;

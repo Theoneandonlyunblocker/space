@@ -353,3 +353,6 @@ class FlagSetter extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(FlagSetter);
+export default Factory;

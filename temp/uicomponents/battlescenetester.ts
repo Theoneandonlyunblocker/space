@@ -429,3 +429,6 @@ class BattleSceneTester extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(BattleSceneTester);
+export default Factory;

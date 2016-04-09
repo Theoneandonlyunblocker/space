@@ -84,3 +84,6 @@ class UnitItemWrapper extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(UnitItemWrapper);
+export default Factory;

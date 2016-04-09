@@ -112,3 +112,6 @@ class IntroTutorial extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(IntroTutorial);
+export default Factory;

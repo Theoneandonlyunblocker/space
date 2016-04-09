@@ -75,3 +75,6 @@ class BattleInfo extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(BattleInfo);
+export default Factory;

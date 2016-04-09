@@ -60,3 +60,6 @@ class AttackTarget extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(AttackTarget);
+export default Factory;

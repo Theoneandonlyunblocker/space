@@ -218,3 +218,6 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
     );
   }
 }
+
+const Factory = React.createFactory(TopMenuPopups);
+export default Factory;
