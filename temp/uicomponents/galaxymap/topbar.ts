@@ -24,8 +24,6 @@ export default class TopBar extends React.Component<PropTypes, {}>
   {
     super(props);
     
-    this.state = this.getInitialState();
-    
     this.bindMethods();
   }
   private bindMethods()
