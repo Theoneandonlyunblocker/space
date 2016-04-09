@@ -17,15 +17,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Unit extends React.Component<PropTypes, {}>
+export default class Unit extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Unit";
   mixins: reactTypeTODO_any = [Draggable, React.addons.PureRenderMixin];
   
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -40,7 +37,7 @@ export default class Unit extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

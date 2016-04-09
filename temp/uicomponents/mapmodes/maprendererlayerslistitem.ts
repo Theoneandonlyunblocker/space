@@ -11,16 +11,13 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class MapRendererLayersListItem extends React.Component<PropTypes, {}>
+export default class MapRendererLayersListItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersListItem";
   mixins: reactTypeTODO_any = [Draggable, DropTarget, React.addons.PureRenderMixin];
   cachedMidPoint: reactTypeTODO_any = undefined;
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -35,7 +32,7 @@ export default class MapRendererLayersListItem extends React.Component<PropTypes
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

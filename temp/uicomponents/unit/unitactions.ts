@@ -13,13 +13,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitActions extends React.Component<PropTypes, {}>
+export default class UnitActions extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitActions";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

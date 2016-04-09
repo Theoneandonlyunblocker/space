@@ -11,14 +11,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitIcon extends React.Component<PropTypes, {}>
+export default class UnitIcon extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitIcon";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

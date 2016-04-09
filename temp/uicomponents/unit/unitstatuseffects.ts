@@ -11,14 +11,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitStatusEffects extends React.Component<PropTypes, {}>
+export default class UnitStatusEffects extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStatusEffects";
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

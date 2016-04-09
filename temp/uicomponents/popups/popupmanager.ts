@@ -14,16 +14,13 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class PopupManager extends React.Component<PropTypes, {}>
+export default class PopupManager extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupManager";
   popupId: number = 0;
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -67,7 +64,7 @@ export default class PopupManager extends React.Component<PropTypes, {}>
     }
   }
 
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

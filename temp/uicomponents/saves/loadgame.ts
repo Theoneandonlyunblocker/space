@@ -16,15 +16,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class LoadGame extends React.Component<PropTypes, {}>
+export default class LoadGame extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LoadGame";
   popupId: reactTypeTODO_any = undefined;
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -39,7 +36,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

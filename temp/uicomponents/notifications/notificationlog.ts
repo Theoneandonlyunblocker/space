@@ -16,17 +16,14 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class NotificationLog extends React.Component<PropTypes, {}>
+export default class NotificationLog extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationLog";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
   updateListener: reactTypeTODO_any = undefined;
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -41,7 +38,7 @@ export default class NotificationLog extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

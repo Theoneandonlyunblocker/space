@@ -21,15 +21,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class OptionsList extends React.Component<PropTypes, {}>
+export default class OptionsList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsList";
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

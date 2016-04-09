@@ -17,15 +17,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class DiplomacyActions extends React.Component<PropTypes, {}>
+export default class DiplomacyActions extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DiplomacyActions";
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -40,7 +37,7 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

@@ -13,13 +13,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class SaveList extends React.Component<PropTypes, {}>
+export default class SaveList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SaveList";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

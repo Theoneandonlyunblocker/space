@@ -11,13 +11,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitPortrait extends React.Component<PropTypes, {}>
+export default class UnitPortrait extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitPortrait";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -15,15 +15,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class FleetControls extends React.Component<PropTypes, {}>
+export default class FleetControls extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetControls";
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

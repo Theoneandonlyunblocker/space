@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BuildQueue extends React.Component<PropTypes, {}>
+export default class BuildQueue extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildQueue";
 
@@ -30,10 +30,7 @@ export default class BuildQueue extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

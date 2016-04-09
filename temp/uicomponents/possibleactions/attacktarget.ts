@@ -13,13 +13,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class AttackTarget extends React.Component<PropTypes, {}>
+export default class AttackTarget extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttackTarget";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

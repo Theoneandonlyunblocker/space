@@ -11,16 +11,13 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class LightBox extends React.Component<PropTypes, {}>
+export default class LightBox extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LightBox";
 
   // far from ideal as it always triggers reflow 4 times
   // cant figure out how to do resizing better since content size is dynamic
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

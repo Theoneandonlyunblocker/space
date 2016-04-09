@@ -16,15 +16,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BuildingUpgradeListItem extends React.Component<PropTypes, {}>
+export default class BuildingUpgradeListItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildingUpgradeListItem";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -39,7 +36,7 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

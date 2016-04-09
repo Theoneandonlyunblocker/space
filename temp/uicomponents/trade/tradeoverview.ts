@@ -18,17 +18,14 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TradeOverview extends React.Component<PropTypes, {}>
+export default class TradeOverview extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeOverview";
   selfPlayerTrade: reactTypeTODO_any = undefined;
   otherPlayerTrade: reactTypeTODO_any = undefined;
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -49,7 +46,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     this.otherPlayerTrade = new Trade(this.props.otherPlayer);
   }
 
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

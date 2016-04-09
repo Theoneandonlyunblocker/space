@@ -18,15 +18,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class IntroTutorial extends React.Component<PropTypes, {}>
+export default class IntroTutorial extends React.Component<PropTypes, StateType>
 {
   displayName: string = "IntroTutorial";
   popupId: reactTypeTODO_any = null;
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -41,7 +38,7 @@ export default class IntroTutorial extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

@@ -18,14 +18,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BattleBackground extends React.Component<PropTypes, {}>
+export default class BattleBackground extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleBackground";
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

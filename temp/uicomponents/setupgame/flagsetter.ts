@@ -15,14 +15,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class FlagSetter extends React.Component<PropTypes, {}>
+export default class FlagSetter extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -37,7 +34,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     var flag = new Flag(
     {

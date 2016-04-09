@@ -18,16 +18,13 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ConstructManufactory extends React.Component<PropTypes, {}>
+export default class ConstructManufactory extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConstructManufactory";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -42,7 +39,7 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

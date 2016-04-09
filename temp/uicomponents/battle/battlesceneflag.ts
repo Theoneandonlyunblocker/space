@@ -14,16 +14,13 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BattleSceneFlag extends React.Component<PropTypes, {}>
+export default class BattleSceneFlag extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleSceneFlag";
   flagCanvas: reactTypeTODO_any = null;
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

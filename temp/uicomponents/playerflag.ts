@@ -11,14 +11,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class PlayerFlag extends React.Component<PropTypes, {}>
+export default class PlayerFlag extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerFlag";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

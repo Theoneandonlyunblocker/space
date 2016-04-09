@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class AttitudeModifierInfo extends React.Component<PropTypes, {}>
+export default class AttitudeModifierInfo extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierInfo";
 
@@ -72,10 +72,7 @@ export default class AttitudeModifierInfo extends React.Component<PropTypes, {}>
     );
   }
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

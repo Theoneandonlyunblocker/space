@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BuyItems extends React.Component<PropTypes, {}>
+export default class BuyItems extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuyItems";
 
@@ -29,10 +29,7 @@ export default class BuyItems extends React.Component<PropTypes, {}>
     eventManager.dispatchEvent("playerControlUpdated");
   }
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

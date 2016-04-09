@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ItemList extends React.Component<PropTypes, {}>
+export default class ItemList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemList";
 
@@ -31,10 +31,7 @@ export default class ItemList extends React.Component<PropTypes, {}>
     else return 0;
   }
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

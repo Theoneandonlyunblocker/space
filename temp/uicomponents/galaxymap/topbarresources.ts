@@ -15,15 +15,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TopBarResources extends React.Component<PropTypes, {}>
+export default class TopBarResources extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopBarResources";
   updateListener: reactTypeTODO_any = undefined;
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -21,14 +21,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class GalaxyMapUI extends React.Component<PropTypes, {}>
+export default class GalaxyMapUI extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMapUI";
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -43,7 +40,7 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     var pc = this.props.playerControl;
 

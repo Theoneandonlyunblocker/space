@@ -21,16 +21,13 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ProductionOverview extends React.Component<PropTypes, {}>
+export default class ProductionOverview extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ProductionOverview";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -45,7 +42,7 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     var initialSelected: Star = null;
     var player: Player = this.props.player;

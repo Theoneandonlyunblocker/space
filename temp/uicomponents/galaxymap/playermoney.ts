@@ -13,16 +13,13 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class PlayerMoney extends React.Component<PropTypes, {}>
+export default class PlayerMoney extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerMoney";
   lastAmountRendered: reactTypeTODO_any = undefined;
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

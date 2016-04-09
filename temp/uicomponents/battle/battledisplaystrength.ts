@@ -11,13 +11,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BattleDisplayStrength extends React.Component<PropTypes, {}>
+export default class BattleDisplayStrength extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleDisplayStrength";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -32,7 +29,7 @@ export default class BattleDisplayStrength extends React.Component<PropTypes, {}
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

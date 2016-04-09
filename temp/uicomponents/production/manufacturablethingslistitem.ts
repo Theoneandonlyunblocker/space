@@ -15,15 +15,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ManufacturableThingsListItem extends React.Component<PropTypes, {}>
+export default class ManufacturableThingsListItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableThingsListItem";
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -38,7 +35,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

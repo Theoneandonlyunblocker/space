@@ -13,13 +13,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UpgradeAbilities extends React.Component<PropTypes, {}>
+export default class UpgradeAbilities extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeAbilities";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

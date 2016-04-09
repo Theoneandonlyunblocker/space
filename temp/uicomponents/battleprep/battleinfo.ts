@@ -14,13 +14,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BattleInfo extends React.Component<PropTypes, {}>
+export default class BattleInfo extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleInfo";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

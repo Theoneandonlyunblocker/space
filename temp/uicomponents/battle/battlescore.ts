@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BattleScore extends React.Component<PropTypes, {}>
+export default class BattleScore extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScore";
   lastEvaluation: reactTypeTODO_any = undefined;
@@ -24,10 +24,7 @@ export default class BattleScore extends React.Component<PropTypes, {}>
 
     return this.lastEvaluation !== oldEvaluation;
   }
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

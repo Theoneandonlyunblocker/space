@@ -11,13 +11,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class AbilityList extends React.Component<PropTypes, {}>
+export default class AbilityList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AbilityList";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

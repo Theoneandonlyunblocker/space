@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class AbilityTooltip extends React.Component<PropTypes, {}>
+export default class AbilityTooltip extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AbilityTooltip";
 
@@ -29,10 +29,7 @@ export default class AbilityTooltip extends React.Component<PropTypes, {}>
     }
     return false;
   }
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

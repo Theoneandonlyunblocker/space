@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class MapGenOption extends React.Component<PropTypes, {}>
+export default class MapGenOption extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapGenOption";
 
@@ -28,10 +28,7 @@ export default class MapGenOption extends React.Component<PropTypes, {}>
     return newProps.value !== this.props.value;
   }
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

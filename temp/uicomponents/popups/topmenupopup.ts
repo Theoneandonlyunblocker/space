@@ -11,14 +11,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TopMenuPopup extends React.Component<PropTypes, {}>
+export default class TopMenuPopup extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenuPopup";
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

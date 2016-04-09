@@ -15,13 +15,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class MenuUnitInfo extends React.Component<PropTypes, {}>
+export default class MenuUnitInfo extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MenuUnitInfo";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -16,16 +16,13 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ManufacturableThingsList extends React.Component<PropTypes, {}>
+export default class ManufacturableThingsList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableThingsList";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

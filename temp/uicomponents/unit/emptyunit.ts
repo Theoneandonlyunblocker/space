@@ -11,17 +11,14 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class EmptyUnit extends React.Component<PropTypes, {}>
+export default class EmptyUnit extends React.Component<PropTypes, StateType>
 {
   displayName: string = "EmptyUnit";
   shouldComponentUpdate(newProps: any)
   {
     return newProps.facesLeft === this.props.facesLeft;
   }
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

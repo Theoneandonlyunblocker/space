@@ -39,15 +39,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class FormationRow extends React.Component<PropTypes, {}>
+export default class FormationRow extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FormationRow";
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

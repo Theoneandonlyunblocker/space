@@ -15,14 +15,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class NotificationFilterListItem extends React.Component<PropTypes, {}>
+export default class NotificationFilterListItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationFilterListItem";
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -37,7 +34,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

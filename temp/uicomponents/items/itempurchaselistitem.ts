@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ItemPurchaseListItem extends React.Component<PropTypes, {}>
+export default class ItemPurchaseListItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemPurchaseListItem";
   makeCell(type: string)
@@ -49,10 +49,7 @@ export default class ItemPurchaseListItem extends React.Component<PropTypes, {}>
     );
   }
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -11,15 +11,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitItem extends React.Component<PropTypes, {}>
+export default class UnitItem extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitItem";
   mixins: reactTypeTODO_any = [Draggable];
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

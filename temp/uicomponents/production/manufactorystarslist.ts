@@ -18,14 +18,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ManufactoryStarsList extends React.Component<PropTypes, {}>
+export default class ManufactoryStarsList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufactoryStarsList";
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

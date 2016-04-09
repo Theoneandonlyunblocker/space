@@ -14,15 +14,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class OptionsGroup extends React.Component<PropTypes, {}>
+export default class OptionsGroup extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsGroup";
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -37,7 +34,7 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

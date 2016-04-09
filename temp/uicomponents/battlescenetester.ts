@@ -13,17 +13,14 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class BattleSceneTester extends React.Component<PropTypes, {}>
+export default class BattleSceneTester extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleSceneTester";
   idGenerator: number = 0;
   battle: reactTypeTODO_any = null;
   battleScene: reactTypeTODO_any = null;
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -38,7 +35,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     var side1Units: Unit[] = [];
     var side2Units: Unit[] = [];

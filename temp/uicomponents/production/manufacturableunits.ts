@@ -19,7 +19,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ManufacturableUnits extends React.Component<PropTypes, {}>
+export default class ManufacturableUnits extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableUnits";
 
@@ -57,10 +57,7 @@ export default class ManufacturableUnits extends React.Component<PropTypes, {}>
     this.props.triggerUpdate();
   }
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

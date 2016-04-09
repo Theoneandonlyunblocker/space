@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UpgradeAttributes extends React.Component<PropTypes, {}>
+export default class UpgradeAttributes extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeAttributes";
   upgradeAttribute(attribute: string, e: MouseEvent)
@@ -19,10 +19,7 @@ export default class UpgradeAttributes extends React.Component<PropTypes, {}>
     if (e.button) return;
     this.props.handleClick(attribute);
   }
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -49,7 +49,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class List extends React.Component<PropTypes, {}>
+export default class List extends React.Component<PropTypes, StateType>
 }
   mixins: [SplitMultilineText],
 

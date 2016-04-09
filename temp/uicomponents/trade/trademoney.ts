@@ -18,16 +18,13 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TradeMoney extends React.Component<PropTypes, {}>
+export default class TradeMoney extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeMoney";
   mixins: reactTypeTODO_any = [Draggable];
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

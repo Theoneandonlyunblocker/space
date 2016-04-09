@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitWrapper extends React.Component<PropTypes, {}>
+export default class UnitWrapper extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitWrapper";
   mixins: reactTypeTODO_any = [DropTarget];
@@ -82,10 +82,7 @@ export default class UnitWrapper extends React.Component<PropTypes, {}>
 
     return false;
   }
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

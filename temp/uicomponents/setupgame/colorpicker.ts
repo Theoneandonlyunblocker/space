@@ -13,15 +13,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class ColorPicker extends React.Component<PropTypes, {}>
+export default class ColorPicker extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorPicker";
   onChangeTimeout: reactTypeTODO_any = null;
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -36,7 +33,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     var hexColor = this.props.hexColor || 0xFFFFFF;
     var hexString = "#" + hexToString(hexColor);

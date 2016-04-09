@@ -16,15 +16,12 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class AttitudeModifierList extends React.Component<PropTypes, {}>
+export default class AttitudeModifierList extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierList";
   mixins: reactTypeTODO_any = [AutoPosition];
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

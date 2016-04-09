@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class GalaxyMap extends React.Component<PropTypes, {}>
+export default class GalaxyMap extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMap";
   
@@ -25,10 +25,7 @@ export default class GalaxyMap extends React.Component<PropTypes, {}>
     app.reactUI.switchScene(target.value);
   }
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

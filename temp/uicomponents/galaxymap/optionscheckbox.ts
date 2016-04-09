@@ -11,13 +11,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class OptionsCheckbox extends React.Component<PropTypes, {}>
+export default class OptionsCheckbox extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsCheckbox";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

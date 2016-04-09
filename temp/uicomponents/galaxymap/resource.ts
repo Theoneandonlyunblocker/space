@@ -11,13 +11,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class Resource extends React.Component<PropTypes, {}>
+export default class Resource extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Resource";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

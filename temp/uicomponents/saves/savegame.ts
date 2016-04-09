@@ -16,14 +16,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class SaveGame extends React.Component<PropTypes, {}>
+export default class SaveGame extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SaveGame";
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {

@@ -13,14 +13,11 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class UnitExperience extends React.Component<PropTypes, {}>
+export default class UnitExperience extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitExperience";
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -35,7 +32,7 @@ export default class UnitExperience extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

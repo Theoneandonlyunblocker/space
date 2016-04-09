@@ -17,7 +17,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class TopMenu extends React.Component<PropTypes, {}>
+export default class TopMenu extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenu";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -27,10 +27,7 @@ export default class TopMenu extends React.Component<PropTypes, {}>
   cachedMenuButtonWidth: number = 37;
 
 
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -45,7 +42,7 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     return(
     {

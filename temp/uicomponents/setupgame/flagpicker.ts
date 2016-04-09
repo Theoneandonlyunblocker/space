@@ -13,13 +13,10 @@ interface StateType
   // TODO refactor | add state type
 }
 
-export default class FlagPicker extends React.Component<PropTypes, {}>
+export default class FlagPicker extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagPicker";
-  state:
-  {
-    
-  }
+  state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -34,7 +31,7 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
     
   }
   
-  private getInitialState()
+  private getInitialState(): StateType
   {
     var initialEmblem: SubEmblemTemplate = null;
     if (this.props.flag.foregroundEmblem)
