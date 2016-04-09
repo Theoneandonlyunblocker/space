@@ -6,7 +6,7 @@ import Star from "./Star.ts";
 import RectangleSelect from "./RectangleSelect.ts";
 import eventManager from "./eventManager.ts";
 
-export class MouseEventHandler
+export default class MouseEventHandler
 {
   renderer: Renderer;
   camera: Camera;
