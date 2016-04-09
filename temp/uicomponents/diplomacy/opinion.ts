@@ -80,7 +80,7 @@ class Opinion extends React.Component<PropTypes, StateType>
     var tooltip: ReactComponentPlaceHolder = null;
     if (this.state.hasAttitudeModifierTootlip)
     {
-      tooltip = UIComponents.AttitudeModifierList(
+      tooltip = AttitudeModifierList(
       {
         attitudeModifiers: this.props.attitudeModifiers,
         baseOpinion: this.props.baseOpinion,

@@ -119,7 +119,7 @@ class UnitListItem extends React.Component<PropTypes, StateType>
     {
       case "strength":
       {
-        cellContent = UIComponents.UnitStrength(
+        cellContent = UnitStrength(
         {
           maxHealth: this.props.maxHealth,
           currentHealth: this.props.currentHealth,
@@ -167,7 +167,7 @@ class UnitListItem extends React.Component<PropTypes, StateType>
     if (this.state.dragging)
     {
       return(
-        UIComponents.Unit(
+        Unit(
         {
           ref: "dragClone",
           unit: unit

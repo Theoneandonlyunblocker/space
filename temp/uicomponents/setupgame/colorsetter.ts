@@ -149,7 +149,7 @@ class ColorSetter extends React.Component<PropTypes, StateType>
       React.DOM.div({className: "color-setter", ref: "main"},
         displayElement,
         this.props.isActive || this.state.isActive ?
-          UIComponents.ColorPicker(
+          ColorPicker(
           {
             hexColor: this.state.hexColor,
             generateColor: this.props.generateColor,

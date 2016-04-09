@@ -70,7 +70,7 @@ class DiplomacyActions extends React.Component<PropTypes, StateType>
     {
       case "trade":
       {
-        contentConstructor = UIComponents.TradeOverview;
+        contentConstructor = TradeOverview;
         contentProps =
         {
           selfPlayer: this.props.player,
@@ -83,7 +83,7 @@ class DiplomacyActions extends React.Component<PropTypes, StateType>
 
     var id = this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.TopMenuPopup,
+      contentConstructor: TopMenuPopup,
       contentProps:
       {
         contentConstructor: contentConstructor,
@@ -162,7 +162,7 @@ class DiplomacyActions extends React.Component<PropTypes, StateType>
       {
         className: "diplomacy-actions-container draggable-container"
       },
-        UIComponents.PopupManager(
+        PopupManager(
         {
           ref: "popupManager",
           onlyAllowOne: true

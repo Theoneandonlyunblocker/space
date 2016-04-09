@@ -54,10 +54,10 @@ class NotificationFilterButton extends React.Component<PropTypes, StateType>
 
     var popupId = this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.TopMenuPopup,
+      contentConstructor: TopMenuPopup,
       contentProps:
       {
-        contentConstructor: UIComponents.NotificationFilterList,
+        contentConstructor: NotificationFilterList,
         contentProps:
         {
           filter: this.props.filter,
@@ -117,7 +117,7 @@ class NotificationFilterButton extends React.Component<PropTypes, StateType>
         },
           this.props.text
         ),
-        UIComponents.PopupManager(
+        PopupManager(
         {
           ref: "popupManager",
           onlyAllowOne: true

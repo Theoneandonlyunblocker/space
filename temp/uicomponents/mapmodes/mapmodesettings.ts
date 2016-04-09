@@ -50,7 +50,7 @@ class MapModeSettings extends React.Component<PropTypes, StateType>
       {
         className: "map-mode-settings"
       },
-        UIComponents.MapModeSelector(
+        MapModeSelector(
         {
           mapRenderer: this.props.mapRenderer,
           onUpdate: this.forceUpdate.bind(this),
@@ -63,7 +63,7 @@ class MapModeSettings extends React.Component<PropTypes, StateType>
         },
           "Reset"
         ),
-        UIComponents.MapRendererLayersList(
+        MapRendererLayersList(
         {
           mapRenderer: this.props.mapRenderer,
           currentMapMode: this.props.mapRenderer.currentMapMode,

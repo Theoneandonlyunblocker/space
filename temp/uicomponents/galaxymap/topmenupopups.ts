@@ -96,7 +96,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
     {
       case "production":
       {
-        contentConstructor = UIComponents.ProductionOverview;
+        contentConstructor = ProductionOverview;
         contentProps =
         {
           player: this.props.player
@@ -111,7 +111,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
       }
       case "equipItems":
       {
-        contentConstructor = UIComponents.ItemEquip;
+        contentConstructor = ItemEquip;
         contentProps =
         {
           player: this.props.player
@@ -121,7 +121,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
       }
       case "economySummary":
       {
-        contentConstructor = UIComponents.EconomySummary;
+        contentConstructor = EconomySummary;
         contentProps =
         {
           player: this.props.player
@@ -130,7 +130,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
       }
       case "saveGame":
       {
-        contentConstructor = UIComponents.SaveGame;
+        contentConstructor = SaveGame;
         contentProps =
         {
           handleClose: this.closePopup.bind(this, "saveGame")
@@ -139,7 +139,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
       }
       case "loadGame":
       {
-        contentConstructor = UIComponents.LoadGame;
+        contentConstructor = LoadGame;
         contentProps =
         {
           handleClose: this.closePopup.bind(this, "loadGame")
@@ -148,7 +148,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
       }
       case "options":
       {
-        contentConstructor = UIComponents.OptionsList;
+        contentConstructor = OptionsList;
         contentProps =
         {
           log: this.props.game.notificationLog
@@ -157,7 +157,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
       }
       case "diplomacy":
       {
-        contentConstructor = UIComponents.DiplomacyOverview;
+        contentConstructor = DiplomacyOverview;
         contentProps =
         {
           player: this.props.player,
@@ -169,7 +169,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
       }
       case "technologies":
       {
-        contentConstructor = UIComponents.TechnologiesList;
+        contentConstructor = TechnologiesList;
         contentProps =
         {
           playerTechnology: this.props.player.playerTechnology
@@ -181,7 +181,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
 
     var id = this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.TopMenuPopup,
+      contentConstructor: TopMenuPopup,
       contentProps:
       {
         contentConstructor: contentConstructor,
@@ -211,7 +211,7 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
   render()
   {
     return(
-      UIComponents.PopupManager(
+      PopupManager(
       {
         ref: "popupManager"
       })

@@ -226,7 +226,7 @@ class BattlePrep extends React.Component<PropTypes, StateType>
     var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
     if (hoveredUnit)
     {
-      leftUpperElement = UIComponents.MenuUnitInfo(
+      leftUpperElement = MenuUnitInfo(
       {
         unit: hoveredUnit
       });
@@ -237,7 +237,7 @@ class BattlePrep extends React.Component<PropTypes, StateType>
         battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
 
 
-      leftUpperElement = UIComponents.MenuUnitInfo(
+      leftUpperElement = MenuUnitInfo(
       {
         unit: this.state.selectedUnit,
         onMouseUp: this.handleItemDrop,
@@ -250,7 +250,7 @@ class BattlePrep extends React.Component<PropTypes, StateType>
     }
     else
     {
-      leftUpperElement = UIComponents.BattleInfo(
+      leftUpperElement = BattleInfo(
       {
         battlePrep: battlePrep
       });
@@ -262,7 +262,7 @@ class BattlePrep extends React.Component<PropTypes, StateType>
     {
       case "playerFormation":
       {
-        leftLowerElement = UIComponents.Formation(
+        leftLowerElement = Formation(
         {
           key: "playerFormation",
           formation: battlePrep.playerFormation.slice(0),
@@ -284,7 +284,7 @@ class BattlePrep extends React.Component<PropTypes, StateType>
       }
       case "enemyFormation":
       {
-        leftLowerElement = UIComponents.Formation(
+        leftLowerElement = Formation(
         {
           key: "enemyFormation",
           formation: battlePrep.enemyFormation,
@@ -302,7 +302,7 @@ class BattlePrep extends React.Component<PropTypes, StateType>
       }
       case "itemEquip":
       {
-        leftLowerElement = UIComponents.ItemList(
+        leftLowerElement = ItemList(
         {
           key: "itemEquip",
           items: player.items,
@@ -323,7 +323,7 @@ class BattlePrep extends React.Component<PropTypes, StateType>
       React.DOM.div({className: "battle-prep"},
         React.DOM.div({className: "battle-prep-left"},
           React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: "upper"},
-            UIComponents.BattleBackground(
+            BattleBackground(
             {
               ref: "background",
               renderer: this.props.renderer,
@@ -395,7 +395,7 @@ class BattlePrep extends React.Component<PropTypes, StateType>
           ),
           React.DOM.div({className: "battle-prep-left-lower"}, leftLowerElement)
         ),
-        UIComponents.UnitList(
+        UnitList(
         {
           units: battlePrep.availableUnits,
           selectedUnit: this.state.selectedUnit,

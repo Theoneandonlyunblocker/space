@@ -117,7 +117,7 @@ class MapRendererLayersList extends React.Component<PropTypes, StateType>
       var layer = layersData[i];
       var layerKey = layer.template.key;
 
-      listItems.push(UIComponents.MapRendererLayersListItem(
+      listItems.push(MapRendererLayersListItem(
       {
         layer: layer,
         layerName: layer.template.displayName,

@@ -143,7 +143,7 @@ class ManufacturableThings extends React.Component<PropTypes, StateType>
       case "units":
       {
         return(
-          UIComponents.ManufacturableUnits(props)
+          ManufacturableUnits(props)
         );
       }
       case "items":
@@ -151,7 +151,7 @@ class ManufacturableThings extends React.Component<PropTypes, StateType>
         props.consolidateLocations = true;
 
         return(
-          UIComponents.ManufacturableItems(props)
+          ManufacturableItems(props)
         );
       }
     }

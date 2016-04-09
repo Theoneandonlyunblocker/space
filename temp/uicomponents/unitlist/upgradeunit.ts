@@ -67,11 +67,11 @@ class UpgradeUnit extends React.Component<PropTypes, StateType>
     var upgradeData = this.state.upgradeData[ability.type];
     var popupId = this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.TopMenuPopup,
+      contentConstructor: TopMenuPopup,
       contentProps:
       {
         handleClose: this.closePopup,
-        contentConstructor: UIComponents.UpgradeAbilities,
+        contentConstructor: UpgradeAbilities,
         contentProps:
         {
           abilities: upgradeData.possibleUpgrades,
@@ -127,7 +127,7 @@ class UpgradeUnit extends React.Component<PropTypes, StateType>
       {
         className: "upgrade-unit"
       },
-        UIComponents.PopupManager(
+        PopupManager(
         {
           ref: "popupManager",
           onlyAllowOne: true
@@ -138,12 +138,12 @@ class UpgradeUnit extends React.Component<PropTypes, StateType>
         },
           unit.name + "  " + "Level " + unit.level + " -> " + (unit.level + 1)
         ),
-        UIComponents.UpgradeAbilities(
+        UpgradeAbilities(
         {
           abilities: upgradableAbilities,
           handleClick: this.makeAbilityLearnPopup
         }),
-        UIComponents.UpgradeAttributes(
+        UpgradeAttributes(
         {
           unit: unit,
           handleClick: this.upgradeAttribute

@@ -45,7 +45,7 @@ class BattleInfo extends React.Component<PropTypes, StateType>
         {
           className: "battle-info-opponent"
         },
-          UIComponents.PlayerFlag(
+          PlayerFlag(
           {
             flag: battlePrep.enemyPlayer.flag,
             props:
@@ -66,7 +66,7 @@ class BattleInfo extends React.Component<PropTypes, StateType>
         },
           star.name + ": " + (isAttacker ? "Attacking" : "Defending")
         ),
-        UIComponents.DefenceBuildingList(
+        DefenceBuildingList(
         {
           buildings: star.buildings["defence"],
           reverse: isAttacker

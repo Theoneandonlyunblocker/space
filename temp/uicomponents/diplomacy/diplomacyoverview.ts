@@ -25,7 +25,7 @@ class DiplomacyOverview extends React.Component<PropTypes, StateType>
 
     this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.DiplomacyActions,
+      contentConstructor: DiplomacyActions,
       contentProps:
       {
         player: this.props.player,
@@ -78,7 +78,7 @@ class DiplomacyOverview extends React.Component<PropTypes, StateType>
           opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
           attitudeModifiers:
             player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
-          rowConstructor: UIComponents.DiplomaticStatusPlayer
+          rowConstructor: DiplomaticStatusPlayer
         }
       });
     }
@@ -95,7 +95,7 @@ class DiplomacyOverview extends React.Component<PropTypes, StateType>
           statusEnum: 99999 + i,
           opinion: null,
 
-          rowConstructor: UIComponents.DiplomaticStatusPlayer
+          rowConstructor: DiplomaticStatusPlayer
         }
       });
     }
@@ -128,13 +128,13 @@ class DiplomacyOverview extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "diplomacy-overview"},
-        UIComponents.PopupManager(
+        PopupManager(
         {
           ref: "popupManager",
           onlyAllowOne: true
         }),
         React.DOM.div({className: "diplomacy-status-list fixed-table-parent"},
-          UIComponents.List(
+          List(
           {
             listItems: rows,
             initialColumns: columns,

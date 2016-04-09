@@ -85,7 +85,7 @@ class ManufacturableItems extends React.Component<PropTypes, StateType>
         {
           className: "manufactory-upgrade-buttons-container"
         },
-          UIComponents.ManufactoryUpgradeButton(
+          ManufactoryUpgradeButton(
           {
             money: this.props.money,
             upgradeCost: 0,
@@ -96,7 +96,7 @@ class ManufacturableItems extends React.Component<PropTypes, StateType>
             onClick: this.upgradeItems
           })
         ),
-        UIComponents.ManufacturableThingsList(
+        ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,
           onClick: (this.props.canBuild ? this.addItemToBuildQueue : null),

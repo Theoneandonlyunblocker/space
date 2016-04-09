@@ -87,7 +87,7 @@ class ItemList extends React.Component<PropTypes, StateType>
 
         makeClone: true,
         forcedDragOffset: {x: 32, y: 32},
-        rowConstructor: UIComponents.ItemListItem,
+        rowConstructor: ItemListItem,
         isDraggable: this.props.isDraggable,
         onDragStart: this.props.onDragStart,
         onDragEnd: this.props.onDragEnd
@@ -193,7 +193,7 @@ class ItemList extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "item-list fixed-table-parent"},
-        UIComponents.List(
+        List(
         {
           listItems: rows,
           initialColumns: columns,

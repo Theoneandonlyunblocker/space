@@ -190,7 +190,7 @@ class TradeOverview extends React.Component<PropTypes, StateType>
         {
           className: "tradeable-items-container available-items-container"
         },
-          UIComponents.TradeableItems(
+          TradeableItems(
           {
             header: "tradeable items " + this.props.selfPlayer.name,
             tradeableItems: selfAvailableItems,
@@ -201,7 +201,7 @@ class TradeOverview extends React.Component<PropTypes, StateType>
             onMouseUp: this.handleAvailableMouseUp,
             onItemClick: this.handleStageItem.bind(this, "self")
           }),
-          UIComponents.TradeableItems(
+          TradeableItems(
           {
             header: "tradeable items " + this.props.otherPlayer.name,
             tradeableItems: otherAvailableItems,
@@ -217,7 +217,7 @@ class TradeOverview extends React.Component<PropTypes, StateType>
         {
           className: "tradeable-items-container trade-staging-areas-container"
         },
-          UIComponents.TradeableItems(
+          TradeableItems(
           {
             tradeableItems: this.selfPlayerTrade.stagedItems,
             availableItems: this.selfPlayerTrade.allItems,
@@ -229,7 +229,7 @@ class TradeOverview extends React.Component<PropTypes, StateType>
             onItemClick: this.handleRemoveStagedItem.bind(this, "self"),
             adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "self")
           }),
-          UIComponents.TradeableItems(
+          TradeableItems(
           {
             tradeableItems: this.otherPlayerTrade.stagedItems,
             availableItems: this.otherPlayerTrade.allItems,

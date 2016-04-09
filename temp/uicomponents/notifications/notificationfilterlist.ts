@@ -68,7 +68,7 @@ class NotificationFilterList extends React.Component<PropTypes, StateType>
         filterElementsForCategory.push(
         {
           key: notificationTemplate.key,
-          content: UIComponents.NotificationFilterListItem(
+          content: NotificationFilterListItem(
           {
             displayName: notificationTemplate.displayName,
             filter: filter,
@@ -78,7 +78,7 @@ class NotificationFilterList extends React.Component<PropTypes, StateType>
           })
         });
       }
-      filterGroupElements.push(UIComponents.OptionsGroup(
+      filterGroupElements.push(OptionsGroup(
       {
         header: category,
         options: filterElementsForCategory,

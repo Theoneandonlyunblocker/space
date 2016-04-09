@@ -67,7 +67,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
 
     this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.ConfirmPopup,
+      contentConstructor: ConfirmPopup,
       contentProps: confirmProps,
       popupProps:
       {
@@ -130,7 +130,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
       battleAnimationOptions.push(
         {
           key: stage,
-          content: UIComponents.OptionsNumericField(
+          content: OptionsNumericField(
           {
             label: props.displayName,
             id: "options-battle-animation-" + stage,
@@ -148,7 +148,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
     }
 
 
-    allOptions.push(UIComponents.OptionsGroup(
+    allOptions.push(OptionsGroup(
     {
       key: "battleAnimationOptions",
       header: "Battle animation timing",
@@ -165,7 +165,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
     {
       key: "debugMode",
       content:
-        UIComponents.OptionsCheckbox(
+        OptionsCheckbox(
         {
           isChecked: Options.debugMode,
           label: "Debug mode",
@@ -219,7 +219,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
     }
 
 
-    allOptions.push(UIComponents.OptionsGroup(
+    allOptions.push(OptionsGroup(
     {
       key: "debug",
       header: "Debug",
@@ -241,7 +241,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
     {
       key: "noHamburger",
       content:
-        UIComponents.OptionsCheckbox(
+        OptionsCheckbox(
         {
           isChecked: Options.ui.noHamburger,
           label: "Always expand top right menu on low resolution",
@@ -257,7 +257,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
     uiOptions.push(
     {
       key: "notificationLogFilter",
-      content: UIComponents.NotificationFilterButton(
+      content: NotificationFilterButton(
       {
         filter: this.props.log.notificationFilter,
         text: "Message settings",
@@ -277,7 +277,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
       )
     });
 
-    allOptions.push(UIComponents.OptionsGroup(
+    allOptions.push(OptionsGroup(
     {
       key: "ui",
       header: "UI",
@@ -294,7 +294,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
     displayOptions.push(
     {
       key: "borderWidth",
-      content: UIComponents.OptionsNumericField(
+      content: OptionsNumericField(
       {
         label: "Border width",
         id: "options-border-width",
@@ -310,7 +310,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
       })
     });
 
-    allOptions.push(UIComponents.OptionsGroup(
+    allOptions.push(OptionsGroup(
     {
       key: "display",
       header: "Display",
@@ -326,7 +326,7 @@ class OptionsList extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div({className: "options"},
 
-        UIComponents.PopupManager(
+        PopupManager(
         {
           ref: "popupManager",
           onlyAllowOne: true

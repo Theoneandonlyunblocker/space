@@ -48,7 +48,7 @@ class AttackTarget extends React.Component<PropTypes, StateType>
         {
           className: "attack-target-type"
         }, target.type),
-        UIComponents.PlayerFlag(
+        PlayerFlag(
         {
           flag: target.enemy.flag,
           props:

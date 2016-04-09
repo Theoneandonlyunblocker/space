@@ -180,17 +180,17 @@ class GalaxyMapUI extends React.Component<PropTypes, StateType>
       {
         className: "galaxy-map-ui"
       },
-        UIComponents.IntroTutorial(),
+        IntroTutorial(),
         React.DOM.div(
         {
           className: "galaxy-map-ui-top"
         },
-          UIComponents.TopBar(
+          TopBar(
           {
             player: this.props.player,
             game: this.props.game
           }),
-          UIComponents.TopMenu(
+          TopMenu(
           {
             player: this.props.player,
             game: this.props.game,
@@ -201,7 +201,7 @@ class GalaxyMapUI extends React.Component<PropTypes, StateType>
           {
             className: selectionContainerClassName
           },
-            UIComponents.FleetSelection(
+            FleetSelection(
             {
               selectedFleets: (isInspecting ?
                 this.state.inspectedFleets : this.state.selectedFleets),
@@ -230,7 +230,7 @@ class GalaxyMapUI extends React.Component<PropTypes, StateType>
               ref: "leftColumnContent",
               key: "leftColumnContent"
             },
-              UIComponents.PossibleActions(
+              PossibleActions(
               {
                 attackTargets: this.state.attackTargets,
                 selectedStar: this.state.selectedStar,
@@ -238,7 +238,7 @@ class GalaxyMapUI extends React.Component<PropTypes, StateType>
                 setExpandedActionElementOnParent: this.setExpandedActionElement,
                 key: "possibleActions"
               }),
-              UIComponents.StarInfo(
+              StarInfo(
               {
                 selectedStar: this.state.selectedStar,
                 key: "starInfo"
@@ -252,7 +252,7 @@ class GalaxyMapUI extends React.Component<PropTypes, StateType>
           className: "galaxy-map-ui-bottom-right",
           key: "bottomRight"
         },
-          !this.state.hasMapModeSettingsExpanded ? null : UIComponents.MapModeSettings(
+          !this.state.hasMapModeSettingsExpanded ? null : MapModeSettings(
           {
             mapRenderer: this.props.mapRenderer,
             key: "mapRendererLayersList"
@@ -265,7 +265,7 @@ class GalaxyMapUI extends React.Component<PropTypes, StateType>
           },
             "Map mode"
           ),
-          UIComponents.Notifications(
+          Notifications(
           {
             log: this.props.game.notificationLog,
             currentTurn: this.props.game.turnNumber,

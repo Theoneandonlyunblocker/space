@@ -48,7 +48,7 @@ class EconomySummary extends React.Component<PropTypes, StateType>
         name: star.name,
         income: star.getIncome(),
 
-        rowConstructor: UIComponents.EconomySummaryItem
+        rowConstructor: EconomySummaryItem
       };
 
       rows.push(
@@ -79,7 +79,7 @@ class EconomySummary extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "economy-summary-list fixed-table-parent"},
-        UIComponents.List(
+        List(
         {
           listItems: rows,
           initialColumns: columns,

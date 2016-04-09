@@ -38,7 +38,7 @@ class TradeableItemsList extends React.Component<PropTypes, StateType>
           data:
           {
             keyTODO: "money",
-            rowConstructor: UIComponents.TradeMoney,
+            rowConstructor: TradeMoney,
             title: "Money",
             moneyAmount: item.amount,
             sortOrder: 0,
@@ -58,7 +58,7 @@ class TradeableItemsList extends React.Component<PropTypes, StateType>
           key: item.key,
           data:
           {
-            rowConstructor: UIComponents.TradeMoney,
+            rowConstructor: TradeMoney,
             title: item.key,
             moneyAmount: item.amount,
             sortOrder: 1
@@ -106,7 +106,7 @@ class TradeableItemsList extends React.Component<PropTypes, StateType>
       {
         className: "tradeable-items-list fixed-table-parent"
       },
-        UIComponents.List(
+        List(
         {
           listItems: rows,
           initialColumns: columns,

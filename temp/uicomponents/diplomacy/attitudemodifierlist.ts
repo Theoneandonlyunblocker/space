@@ -49,7 +49,7 @@ class AttitudeModifierList extends React.Component<PropTypes, StateType>
         endTurn: -1,
         sortOrder: -1,
 
-        rowConstructor: UIComponents.AttitudeModifierInfo
+        rowConstructor: AttitudeModifierInfo
       }
     });
 
@@ -68,7 +68,7 @@ class AttitudeModifierList extends React.Component<PropTypes, StateType>
           endTurn: modifier.endTurn,
           sortOrder: 0,
 
-          rowConstructor: UIComponents.AttitudeModifierInfo
+          rowConstructor: AttitudeModifierInfo
         }
       });
     }
@@ -96,7 +96,7 @@ class AttitudeModifierList extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "attitude-modifier-list auto-position fixed-table-parent"},
-        UIComponents.List(
+        List(
         {
           listItems: rows,
           initialColumns: columns,

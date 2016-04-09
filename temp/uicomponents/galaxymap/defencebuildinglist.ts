@@ -52,7 +52,7 @@ class DefenceBuildingList extends React.Component<PropTypes, StateType>
 
     for (var i = 0; i < this.props.buildings.length; i++)
     {
-      buildings.push(UIComponents.DefenceBuilding(
+      buildings.push(DefenceBuilding(
       {
         key: this.props.buildings[i].id,
         building: this.props.buildings[i]

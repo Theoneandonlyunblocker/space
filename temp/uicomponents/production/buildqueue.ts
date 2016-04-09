@@ -72,7 +72,7 @@ class BuildQueue extends React.Component<PropTypes, StateType>
         {
           className: "manufactory-upgrade-buttons-container"
         },
-          UIComponents.ManufactoryUpgradeButton(
+          ManufactoryUpgradeButton(
           {
             money: this.props.money,
             upgradeCost: manufactory.getCapacityUpgradeCost(),
@@ -84,7 +84,7 @@ class BuildQueue extends React.Component<PropTypes, StateType>
             title: "Increase amount of things this manufactory can build per turn"
           })
         ),
-        UIComponents.ManufacturableThingsList(
+        ManufacturableThingsList(
         {
           manufacturableThings: convertedBuildQueue,
           onClick: this.removeItem,

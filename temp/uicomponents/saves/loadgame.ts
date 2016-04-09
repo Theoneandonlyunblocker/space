@@ -88,7 +88,7 @@ class LoadGame extends React.Component<PropTypes, StateType>
   {
     this.popupId = this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.ConfirmPopup,
+      contentConstructor: ConfirmPopup,
       contentProps: this.getClosePopupContent(null, false, false)
     });
   }
@@ -161,7 +161,7 @@ class LoadGame extends React.Component<PropTypes, StateType>
 
     this.popupId = this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.ConfirmPopup,
+      contentConstructor: ConfirmPopup,
       contentProps: this.getClosePopupContent(afterCloseCallback, true, true)
     });
   }
@@ -202,12 +202,12 @@ class LoadGame extends React.Component<PropTypes, StateType>
       {
         className: "save-game"
       },
-        UIComponents.PopupManager(
+        PopupManager(
         {
           ref: "popupManager",
           onlyAllowOne: true
         }),
-        UIComponents.SaveList(
+        SaveList(
         {
           onRowChange: this.handleRowChange,
           autoSelect: !Boolean(app.game.gameStorageKey),

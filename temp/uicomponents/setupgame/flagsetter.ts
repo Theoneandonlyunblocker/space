@@ -329,7 +329,7 @@ class FlagSetter extends React.Component<PropTypes, StateType>
         onDragOver: this.stopEvent,
         onDrop: this.handleDrop
       },
-        UIComponents.PlayerFlag(
+        PlayerFlag(
         {
           flag: this.state.flag,
           isMutable: true,
@@ -340,7 +340,7 @@ class FlagSetter extends React.Component<PropTypes, StateType>
           }
         }),
         this.props.isActive || this.state.isActive ?
-          UIComponents.FlagPicker(
+          FlagPicker(
           {
             ref: "flagPicker",
             flag: this.state.flag,

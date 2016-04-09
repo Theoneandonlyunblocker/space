@@ -54,7 +54,7 @@ class ManufactoryStarsList extends React.Component<PropTypes, StateType>
       var manufactory = star.manufactory;
       var isHighlighted = highlightedStars.indexOf(star) !== -1;
 
-      rows.push(UIComponents.ManufactoryStarsListItem(
+      rows.push(ManufactoryStarsListItem(
       {
         key: star.id,
         star: star,
@@ -70,7 +70,7 @@ class ManufactoryStarsList extends React.Component<PropTypes, StateType>
       var star = starsWithoutManufactories[i];
       var isHighlighted = highlightedStars.indexOf(star) !== -1;
 
-      rows.push(UIComponents.ManufactoryStarsListItem(
+      rows.push(ManufactoryStarsListItem(
       {
         key: star.id,
         star: star,

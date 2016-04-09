@@ -147,12 +147,12 @@ class BattleScene extends React.Component<PropTypes, StateType>
         {
           className: "battle-scene-flags-container"
         },
-          UIComponents.BattleSceneFlag(
+          BattleSceneFlag(
           {
             flag: this.props.side1Player.flag,
             facingRight: true
           }),
-          UIComponents.BattleSceneFlag(
+          BattleSceneFlag(
           {
             flag: this.props.side2Player.flag,
             facingRight: false

@@ -43,11 +43,11 @@ class UnitExperience extends React.Component<PropTypes, StateType>
   {
     var popupId = this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.TopMenuPopup,
+      contentConstructor: TopMenuPopup,
       contentProps:
       {
         handleClose: this.closePopup,
-        contentConstructor: UIComponents.UpgradeUnit,
+        contentConstructor: UpgradeUnit,
         contentProps:
         {
           unit: this.props.unit,
@@ -150,7 +150,7 @@ class UnitExperience extends React.Component<PropTypes, StateType>
       {
         className: "unit-experience-wrapper"
       },
-        UIComponents.PopupManager(
+        PopupManager(
         {
           ref: "popupManager",
           onlyAllowOne: true

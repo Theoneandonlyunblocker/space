@@ -55,7 +55,7 @@ class UnitList extends React.Component<PropTypes, StateType>
         intelligence: unit.attributes.intelligence,
         speed: unit.attributes.speed,
 
-        rowConstructor: UIComponents.UnitListItem,
+        rowConstructor: UnitListItem,
         makeClone: true,
 
         isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
@@ -129,7 +129,7 @@ class UnitList extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "unit-list fixed-table-parent"},
-        UIComponents.List(
+        List(
         {
           listItems: rows,
           initialColumns: columns,

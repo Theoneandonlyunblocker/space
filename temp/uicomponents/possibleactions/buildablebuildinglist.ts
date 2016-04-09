@@ -88,7 +88,7 @@ class BuildableBuildingList extends React.Component<PropTypes, StateType>
         buildCost: template.buildCost,
         player: this.props.player,
 
-        rowConstructor: UIComponents.BuildableBuilding
+        rowConstructor: BuildableBuilding
       };
 
       rows.push(
@@ -115,7 +115,7 @@ class BuildableBuildingList extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "buildable-item-list buildable-building-list fixed-table-parent"},
-        UIComponents.List(
+        List(
         {
           listItems: rows,
           initialColumns: columns,

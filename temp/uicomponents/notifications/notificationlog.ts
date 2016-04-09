@@ -100,7 +100,7 @@ class NotificationLog extends React.Component<PropTypes, StateType>
 
     var popupId = this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.ConfirmPopup,
+      contentConstructor: ConfirmPopup,
       contentProps:
       {
         contentConstructor: notification.template.contentConstructor,
@@ -114,7 +114,7 @@ class NotificationLog extends React.Component<PropTypes, StateType>
         cancelText: "Close",
         extraButtons:
         [
-          UIComponents.NotificationFilterButton(
+          NotificationFilterButton(
           {
             key: "notificationFilter",
             filter: log.notificationFilter,
@@ -166,7 +166,7 @@ class NotificationLog extends React.Component<PropTypes, StateType>
 
     for (var i = 0; i < notifications.length; i++)
     {
-      items.push(UIComponents.Notification(
+      items.push(Notification(
       {
         notification: notifications[i],
         key: this.getNotificationKey(notifications[i]),
@@ -186,7 +186,7 @@ class NotificationLog extends React.Component<PropTypes, StateType>
         },
           items.reverse()
         ),
-        UIComponents.PopupManager(
+        PopupManager(
         {
           ref: "popupManager"
         })

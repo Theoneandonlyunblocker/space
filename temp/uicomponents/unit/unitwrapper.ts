@@ -122,7 +122,7 @@ class UnitWrapper extends React.Component<PropTypes, StateType>
       }
     }
 
-    var empty = UIComponents.EmptyUnit(
+    var empty = EmptyUnit(
     {
       facesLeft: this.props.facesLeft,
       key: "empty",
@@ -155,7 +155,7 @@ class UnitWrapper extends React.Component<PropTypes, StateType>
       }
 
       this.props.key = "unit";
-      var unit = UIComponents.Unit(this.props);
+      var unit = Unit(this.props);
       allElements.push(unit);
     }
     

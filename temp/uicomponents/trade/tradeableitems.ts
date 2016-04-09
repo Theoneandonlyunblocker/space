@@ -74,7 +74,7 @@ class TradeableItems extends React.Component<PropTypes, StateType>
         },
           this.props.header
         ),
-        UIComponents.TradeableItemsList(
+        TradeableItemsList(
         {
           tradeableItems: this.props.tradeableItems,
           availableItems: this.props.availableItems,

@@ -58,7 +58,7 @@ class EmptyUnit extends React.Component<PropTypes, StateType>
       React.DOM.div(containerProps,
         null
       ),
-      UIComponents.UnitIcon(
+      UnitIcon(
         {
           icon: null,
           facesLeft: this.props.facesLeft,

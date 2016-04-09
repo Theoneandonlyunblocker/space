@@ -63,7 +63,7 @@ class Stage extends React.Component<PropTypes, StateType>
       case "battle":
       {
         elementsToRender.push(
-          UIComponents.Battle(
+          Battle(
           {
             battle: this.props.battle,
             humanPlayer: this.props.player,
@@ -76,7 +76,7 @@ class Stage extends React.Component<PropTypes, StateType>
       case "battlePrep":
       {
         elementsToRender.push(
-          UIComponents.BattlePrep(
+          BattlePrep(
           {
             battlePrep: this.props.battlePrep,
             renderer: this.props.renderer,
@@ -88,7 +88,7 @@ class Stage extends React.Component<PropTypes, StateType>
       case "galaxyMap":
       {
         elementsToRender.push(
-          UIComponents.GalaxyMap(
+          GalaxyMap(
           {
             renderer: this.props.renderer,
             mapRenderer: this.props.mapRenderer,
@@ -103,7 +103,7 @@ class Stage extends React.Component<PropTypes, StateType>
       case "flagMaker":
       {
         elementsToRender.push(
-          UIComponents.FlagMaker(
+          FlagMaker(
           {
             key: "flagMaker"
           })
@@ -113,7 +113,7 @@ class Stage extends React.Component<PropTypes, StateType>
       case "setupGame":
       {
         elementsToRender.push(
-          UIComponents.SetupGame(
+          SetupGame(
           {
             key: "setupGame"
           })
@@ -123,7 +123,7 @@ class Stage extends React.Component<PropTypes, StateType>
       case "battleSceneTester":
       {
         elementsToRender.push(
-          UIComponents.BattleSceneTester(
+          BattleSceneTester(
           {
             key: "battleSceneTester"
           })

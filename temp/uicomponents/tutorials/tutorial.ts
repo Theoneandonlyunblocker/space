@@ -160,7 +160,7 @@ class Tutorial extends React.Component<PropTypes, StateType>
 
           forwardElement
         ),
-        UIComponents.DontShowAgain(
+        DontShowAgain(
         {
           tutorialId: this.props.tutorialId
         })

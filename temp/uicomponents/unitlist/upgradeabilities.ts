@@ -61,7 +61,7 @@ class UpgradeAbilities extends React.Component<PropTypes, StateType>
         },
           headerText
         ),
-        UIComponents.AbilityList(
+        AbilityList(
         {
           abilities: this.props.abilities,
           handleClick: this.props.handleClick

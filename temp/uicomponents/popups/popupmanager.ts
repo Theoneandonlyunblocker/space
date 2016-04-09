@@ -233,7 +233,7 @@ class PopupManager extends React.Component<PropTypes, StateType>
 
 
       toRender.push(
-        UIComponents.Popup(popupProps)
+        Popup(popupProps)
       );
     }
 

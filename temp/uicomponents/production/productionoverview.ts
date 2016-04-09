@@ -147,7 +147,7 @@ class ProductionOverview extends React.Component<PropTypes, StateType>
     {
       if (selectedStar.manufactory)
       {
-        queueElement = UIComponents.BuildQueue(
+        queueElement = BuildQueue(
         {
           manufactory: selectedStar.manufactory,
           triggerUpdate: this.triggerUpdate,
@@ -156,7 +156,7 @@ class ProductionOverview extends React.Component<PropTypes, StateType>
       }
       else
       {
-        queueElement = UIComponents.ConstructManufactory(
+        queueElement = ConstructManufactory(
         {
           star: selectedStar,
           player: player,
@@ -171,7 +171,7 @@ class ProductionOverview extends React.Component<PropTypes, StateType>
       {
         className: "production-overview"
       },
-        UIComponents.ManufactoryStarsList(
+        ManufactoryStarsList(
         {
           starsWithManufactories: starsByManufactoryPresence.withManufactories,
           starsWithoutManufactories: starsByManufactoryPresence.withoutManufactories,
@@ -183,7 +183,7 @@ class ProductionOverview extends React.Component<PropTypes, StateType>
           className: "production-overview-contents"
         },
           queueElement,
-          UIComponents.ManufacturableThings(
+          ManufacturableThings(
           {
             selectedStar: selectedStar,
             player: player,

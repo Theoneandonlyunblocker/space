@@ -75,7 +75,7 @@ class FlagMaker extends React.Component<PropTypes, StateType>
 
       flag.generateRandom();
 
-      flagElements.push(UIComponents.PlayerFlag(
+      flagElements.push(PlayerFlag(
       {
         key: i,
         props:

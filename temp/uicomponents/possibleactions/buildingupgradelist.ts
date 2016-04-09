@@ -113,7 +113,7 @@ class BuildingUpgradeList extends React.Component<PropTypes, StateType>
           ))
         };
 
-        upgradeElements.push(UIComponents.BuildingUpgradeListItem(
+        upgradeElements.push(BuildingUpgradeListItem(
         {
           key: upgrades[j].template.type,
           player: this.props.player,

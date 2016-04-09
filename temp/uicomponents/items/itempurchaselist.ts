@@ -62,7 +62,7 @@ class ItemPurchaseList extends React.Component<PropTypes, StateType>
         buildCost: item.template.buildCost,
         playerMoney: this.props.playerMoney,
 
-        rowConstructor: UIComponents.ItemPurchaseListItem
+        rowConstructor: ItemPurchaseListItem
       };
 
       rows.push(
@@ -100,7 +100,7 @@ class ItemPurchaseList extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "item-purchase-list fixed-table-parent"},
-        UIComponents.List(
+        List(
         {
           listItems: rows,
           initialColumns: columns,

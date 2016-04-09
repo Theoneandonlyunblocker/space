@@ -90,7 +90,7 @@ class FleetInfo extends React.Component<PropTypes, StateType>
               isNotDetected ? "/???" : "/" + totalHealth.max
             )
           ),
-          UIComponents.FleetControls(
+          FleetControls(
           {
             fleet: fleet,
             hasMultipleSelected: this.props.hasMultipleSelected,

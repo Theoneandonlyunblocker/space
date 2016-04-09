@@ -169,7 +169,7 @@ class Popup extends React.Component<PropTypes, StateType>
     contentProps.closePopup = this.props.closePopup
     contentProps.ref = "content";
 
-    var resizeHandle = !this.props.resizable ? null : UIComponents.PopupResizeHandle(
+    var resizeHandle = !this.props.resizable ? null : PopupResizeHandle(
     {
       handleResize: this.handleResizeMove
     });

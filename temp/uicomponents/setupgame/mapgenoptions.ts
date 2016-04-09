@@ -186,7 +186,7 @@ class MapGenOptions extends React.Component<PropTypes, StateType>
         options.push(
         {
           key: optionName,
-          content: UIComponents.MapGenOption(
+          content: MapGenOption(
           {
             key: optionName,
             id: optionName,
@@ -197,7 +197,7 @@ class MapGenOptions extends React.Component<PropTypes, StateType>
         });
       }
       
-      optionGroups.push(UIComponents.OptionsGroup(
+      optionGroups.push(OptionsGroup(
       {
         key: groupName,
         header: optionGroupsInfo[groupName].title,

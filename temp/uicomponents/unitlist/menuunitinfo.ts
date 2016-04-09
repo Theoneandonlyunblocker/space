@@ -46,7 +46,7 @@ class MenuUnitInfo extends React.Component<PropTypes, StateType>
 
     for (var slot in unit.items)
     {
-      itemSlots.push(UIComponents.UnitItemWrapper(
+      itemSlots.push(UnitItemWrapper(
       {
         key: slot,
         slot: slot,
@@ -76,12 +76,12 @@ class MenuUnitInfo extends React.Component<PropTypes, StateType>
         {
           className: "menu-unit-info-abilities"
         },
-          UIComponents.AbilityList(
+          AbilityList(
           {
             abilities: unitAbilities
           })
         ),
-        UIComponents.UnitExperience(
+        UnitExperience(
         {
           experienceForCurrentLevel: unit.experienceForCurrentLevel,
           experienceToNextLevel: unit.getExperienceToNextLevel(),

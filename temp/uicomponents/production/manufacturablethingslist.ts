@@ -53,7 +53,7 @@ class ManufacturableThingsList extends React.Component<PropTypes, StateType>
         keyByTemplateType[templateType] = 0;
       }
 
-      items.push(UIComponents.ManufacturableThingsListItem(
+      items.push(ManufacturableThingsListItem(
       {
         template: manufacturableThings[i],
         key: templateType + keyByTemplateType[templateType]++,

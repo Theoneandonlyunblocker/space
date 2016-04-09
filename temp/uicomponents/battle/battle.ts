@@ -508,7 +508,7 @@ class Battle extends React.Component<PropTypes, StateType>
       activeTargets[this.state.hoveredUnit.id]
     )
     {
-      abilityTooltip = UIComponents.AbilityTooltip(
+      abilityTooltip = AbilityTooltip(
       {
         handleAbilityUse: this.usePlayerAbility,
         handleMouseLeave: this.handleMouseLeaveUnit,
@@ -537,7 +537,7 @@ class Battle extends React.Component<PropTypes, StateType>
     }
     else if (!this.state.playingBattleEffect)
     {
-      upperFooterElement = UIComponents.TurnOrder(
+      upperFooterElement = TurnOrder(
       {
         key: "turnOrder",
         turnOrder: battle.turnOrder,
@@ -560,7 +560,7 @@ class Battle extends React.Component<PropTypes, StateType>
           className: "battle-display-strength battle-display-strength-side1"
         },
 
-          this.state.battleSceneUnit1 ? UIComponents.BattleDisplayStrength(
+          this.state.battleSceneUnit1 ? BattleDisplayStrength(
           {
             key: "" + this.state.battleSceneUnit1.id + Date.now(),
             delay: this.state.battleEffectDuration,
@@ -572,7 +572,7 @@ class Battle extends React.Component<PropTypes, StateType>
         {
           className: "battle-display-strength battle-display-strength-side2"
         },
-          this.state.battleSceneUnit2 ? UIComponents.BattleDisplayStrength(
+          this.state.battleSceneUnit2 ? BattleDisplayStrength(
           {
             key: "" + this.state.battleSceneUnit2.id + Date.now(),
             delay: this.state.battleEffectDuration,
@@ -631,7 +631,7 @@ class Battle extends React.Component<PropTypes, StateType>
     }
 
     return(
-      UIComponents.BattleBackground(
+      BattleBackground(
       {
         renderer: this.props.renderer,
         backgroundSeed: this.props.battle.battleData.location.getSeed(),
@@ -647,12 +647,12 @@ class Battle extends React.Component<PropTypes, StateType>
           {
             className: "battle-upper"
           },
-            UIComponents.BattleScore(
+            BattleScore(
             {
               battle: battle
             }),
             upperFooter,
-            UIComponents.BattleScene(
+            BattleScene(
             {
               battleState: battleState,
 
@@ -677,7 +677,7 @@ class Battle extends React.Component<PropTypes, StateType>
             className: "formations-container",
             ref: "formationsContainer"
           },
-            UIComponents.Formation(
+            Formation(
             {
               battle: battle,
               formation: battle.side1,
@@ -691,12 +691,12 @@ class Battle extends React.Component<PropTypes, StateType>
               handleMouseLeaveUnit: this.handleMouseLeaveUnit,
               activeEffectUnits: activeEffectUnits
             }),
-            UIComponents.TurnCounter(
+            TurnCounter(
             {
               turnsLeft: battle.turnsLeft,
               maxTurns: battle.maxTurns
             }),
-            UIComponents.Formation(
+            Formation(
             {
               battle: battle,
               formation: battle.side2,

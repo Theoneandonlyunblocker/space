@@ -132,7 +132,7 @@ class MapSetup extends React.Component<PropTypes, StateType>
         },
           this.state.selectedTemplate.description
         ),
-        UIComponents.MapGenOptions(
+        MapGenOptions(
         {
           mapGenTemplate: this.state.selectedTemplate,
           ref: "mapGenOptions"

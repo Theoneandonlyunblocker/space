@@ -163,7 +163,7 @@ class PlayerSetup extends React.Component<PropTypes, StateType>
           value: this.state.name,
           onChange: this.handleNameChange
         }),
-        UIComponents.ColorSetter(
+        ColorSetter(
         {
           ref: "mainColor",
           onChange: this.setMainColor,
@@ -172,7 +172,7 @@ class PlayerSetup extends React.Component<PropTypes, StateType>
           flagHasCustomImage: this.state.flagHasCustomImage,
           color: this.state.mainColor
         }),
-        UIComponents.ColorSetter(
+        ColorSetter(
         {
           ref: "subColor",
           onChange: this.setSubColor,
@@ -181,7 +181,7 @@ class PlayerSetup extends React.Component<PropTypes, StateType>
           flagHasCustomImage: this.state.flagHasCustomImage,
           color: this.state.subColor
         }),
-        UIComponents.FlagSetter(
+        FlagSetter(
         {
           ref: "flagSetter",
           mainColor: this.state.mainColor,

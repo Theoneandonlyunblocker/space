@@ -123,7 +123,7 @@ class PossibleActions extends React.Component<PropTypes, StateType>
       {
         className: "expanded-action"
       },
-        UIComponents.BuildableBuildingList(
+        BuildableBuildingList(
         {
           player: this.props.player,
           star: this.props.selectedStar,
@@ -152,7 +152,7 @@ class PossibleActions extends React.Component<PropTypes, StateType>
       {
         className: "expanded-action"
       },
-        UIComponents.BuildingUpgradeList(
+        BuildingUpgradeList(
         {
           player: this.props.player,
           star: this.props.selectedStar,
@@ -184,7 +184,7 @@ class PossibleActions extends React.Component<PropTypes, StateType>
           attackTarget: attackTargets[i]
         };
 
-        attackTargetComponents.push(UIComponents.AttackTarget(
+        attackTargetComponents.push(AttackTarget(
           props
         ));
       }

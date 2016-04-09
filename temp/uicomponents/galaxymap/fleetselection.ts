@@ -130,7 +130,7 @@ class FleetSelection extends React.Component<PropTypes, StateType>
         isNotDetected: this.props.isInspecting && !this.props.player.fleetIsFullyIdentified(fleet)
       };
 
-      fleetInfos.push(UIComponents.FleetInfo(infoProps));
+      fleetInfos.push(FleetInfo(infoProps));
     }
 
     var fleetSelectionControls: ReactDOMPlaceHolder = null;
@@ -186,7 +186,7 @@ class FleetSelection extends React.Component<PropTypes, StateType>
 
     if (!hasMultipleSelected)
     {
-      fleetContents = UIComponents.FleetContents(
+      fleetContents = FleetContents(
       {
         fleet: selectedFleets[0],
         player: this.props.player
@@ -197,7 +197,7 @@ class FleetSelection extends React.Component<PropTypes, StateType>
     var reorganizeElement: ReactComponentPlaceHolder = null;
     if (isReorganizing)
     {
-      reorganizeElement = UIComponents.FleetReorganization(
+      reorganizeElement = FleetReorganization(
       {
         fleets: this.props.currentlyReorganizing,
         closeReorganization: this.props.closeReorganization

@@ -173,17 +173,17 @@ class Unit extends React.Component<PropTypes, StateType>
         className: "unit-left-container",
         key: "leftContainer"
       },
-        UIComponents.UnitPortrait(
+        UnitPortrait(
         {
           imageSrc: (unit.portrait ? unit.portrait.imageSrc : "")
         }),
-        UIComponents.UnitStatusEffects(
+        UnitStatusEffects(
         {
           unit: unit,
           isBattlePrep: !this.props.battle
         })
       ),
-      UIComponents.UnitInfo(infoProps),
+      UnitInfo(infoProps),
     ];
 
     if (this.props.facesLeft)
@@ -205,7 +205,7 @@ class Unit extends React.Component<PropTypes, StateType>
       React.DOM.div(containerProps,
         containerElements
       ),
-      UIComponents.UnitIcon(
+      UnitIcon(
         {
           icon: unit.template.icon,
           facesLeft: this.props.facesLeft,

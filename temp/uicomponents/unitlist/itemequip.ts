@@ -97,7 +97,7 @@ class ItemEquip extends React.Component<PropTypes, StateType>
       React.DOM.div({className: "item-equip"},
         React.DOM.div({className: "item-equip-left"},
 
-          UIComponents.MenuUnitInfo(
+          MenuUnitInfo(
           {
             unit: this.state.selectedUnit,
             onMouseUp: this.handleDrop,
@@ -107,7 +107,7 @@ class ItemEquip extends React.Component<PropTypes, StateType>
             onDragEnd: this.handleDragEnd,
             currentDragItem: this.state.currentDragItem
           }),
-          UIComponents.ItemList(
+          ItemList(
           {
             items: player.items,
             // only used to trigger updates
@@ -119,7 +119,7 @@ class ItemEquip extends React.Component<PropTypes, StateType>
           })
         ),
 
-        UIComponents.UnitList(
+        UnitList(
         {
           units: player.units,
           selectedUnit: this.state.selectedUnit,

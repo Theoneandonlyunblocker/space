@@ -85,12 +85,12 @@ class UnitInfo extends React.Component<PropTypes, StateType>
           this.props.name
         ),
         React.DOM.div({className: "unit-info-inner"},
-          UIComponents.UnitStatus(
+          UnitStatus(
           {
             guardAmount: this.props.guardAmount,
             isPreparing: this.props.isPreparing
           }),
-          UIComponents.UnitStrength(
+          UnitStrength(
           {
             maxHealth: this.props.maxHealth,
             currentHealth: this.props.currentHealth,
@@ -98,7 +98,7 @@ class UnitInfo extends React.Component<PropTypes, StateType>
             animateStrength: true,
             animateDuration: this.props.animateDuration
           }),
-          UIComponents.UnitActions(
+          UnitActions(
           {
             maxActionPoints: this.props.maxActionPoints,
             currentActionPoints: this.props.currentActionPoints,

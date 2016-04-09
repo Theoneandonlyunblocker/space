@@ -56,11 +56,11 @@ class IntroTutorial extends React.Component<PropTypes, StateType>
 
     this.popupId = this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.TopMenuPopup,
+      contentConstructor: TopMenuPopup,
       contentProps:
       {
         handleClose: this.closePopup,
-        contentConstructor: UIComponents.Tutorial,
+        contentConstructor: Tutorial,
         contentProps:
         {
           pages: Tutorials.introTutorial.pages,
@@ -104,7 +104,7 @@ class IntroTutorial extends React.Component<PropTypes, StateType>
     }
     
     return(
-      UIComponents.PopupManager(
+      PopupManager(
       {
         ref: "popupManager",
         onlyAllowOne: true

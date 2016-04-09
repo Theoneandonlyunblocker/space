@@ -93,7 +93,7 @@ class FormationRow extends React.Component<PropTypes, StateType>
       data.onDragStart = this.props.onDragStart;
       data.onDragEnd = this.props.onDragEnd;
 
-      units.push(UIComponents.UnitWrapper(data));
+      units.push(UnitWrapper(data));
     }
 
     return(

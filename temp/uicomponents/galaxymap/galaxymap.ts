@@ -63,7 +63,7 @@ class GalaxyMap extends React.Component<PropTypes, StateType>
           ref: "pixiContainer",
           id: "pixi-container"
         },
-          UIComponents.GalaxyMapUI(
+          GalaxyMapUI(
           {
             playerControl: this.props.playerControl,
             player: this.props.player,

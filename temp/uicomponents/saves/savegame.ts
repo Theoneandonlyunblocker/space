@@ -88,7 +88,7 @@ class SaveGame extends React.Component<PropTypes, StateType>
 
     this.refs.popupManager.makePopup(
     {
-      contentConstructor: UIComponents.ConfirmPopup,
+      contentConstructor: ConfirmPopup,
       contentProps: confirmProps
     });
   }
@@ -100,12 +100,12 @@ class SaveGame extends React.Component<PropTypes, StateType>
       {
         className: "save-game"
       },
-        UIComponents.PopupManager(
+        PopupManager(
         {
           ref: "popupManager",
           onlyAllowOne: true
         }),
-        UIComponents.SaveList(
+        SaveList(
         {
           onRowChange: this.handleRowChange,
           selectedKey: app.game.gameStorageKey,

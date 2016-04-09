@@ -70,7 +70,7 @@ class UnitItemWrapper extends React.Component<PropTypes, StateType>
     
     return(
       React.DOM.div(wrapperProps,
-        UIComponents.UnitItem(
+        UnitItem(
         {
           item: this.props.item,
           slot: this.props.slot,

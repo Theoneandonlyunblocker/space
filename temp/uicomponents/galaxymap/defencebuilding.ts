@@ -51,7 +51,7 @@ class DefenceBuilding extends React.Component<PropTypes, StateType>
           src: colorImageInPlayerColor(image, building.controller),
           title: building.template.displayName
         }),
-        UIComponents.PlayerFlag(
+        PlayerFlag(
         {
           props:
           {

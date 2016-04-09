@@ -59,7 +59,7 @@ class Formation extends React.Component<PropTypes, StateType>
 
     for (var i = 0; i < formation.length; i++)
     {
-      formationRows.push(UIComponents.FormationRow(
+      formationRows.push(FormationRow(
       {
         key: i,
         row: formation[i],

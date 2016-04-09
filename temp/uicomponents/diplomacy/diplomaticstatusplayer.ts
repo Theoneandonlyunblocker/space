@@ -65,7 +65,7 @@ class DiplomaticStatusPlayer extends React.Component<PropTypes, StateType>
           key: type,
           className: className
         },
-          UIComponents.PlayerFlag(
+          PlayerFlag(
           {
             flag: this.props.player.flag,
             props:
@@ -84,7 +84,7 @@ class DiplomaticStatusPlayer extends React.Component<PropTypes, StateType>
           key: type,
           className: className
         },
-          UIComponents.Opinion(
+          Opinion(
           {
             attitudeModifiers: this.props.attitudeModifiers,
             opinion: this.props.opinion,

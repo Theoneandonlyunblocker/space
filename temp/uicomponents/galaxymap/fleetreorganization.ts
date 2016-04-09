@@ -127,7 +127,7 @@ class FleetReorganization extends React.Component<PropTypes, StateType>
         {
           className: "fleet-reorganization-contents"
         },
-          UIComponents.FleetContents(
+          FleetContents(
           {
             fleet: selectedFleets[0],
 
@@ -140,7 +140,7 @@ class FleetReorganization extends React.Component<PropTypes, StateType>
           {
             className: "fleet-reorganization-contents-divider"
           }, null),
-          UIComponents.FleetContents(
+          FleetContents(
           {
             fleet: selectedFleets[1],
 

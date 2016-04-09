@@ -66,7 +66,7 @@ class TopBar extends React.Component<PropTypes, StateType>
           {
             className: "top-bar-player"
           },
-            UIComponents.PlayerFlag(
+            PlayerFlag(
             {
               props:
               {
@@ -83,7 +83,7 @@ class TopBar extends React.Component<PropTypes, StateType>
           {
             className: "top-bar-money"
           },
-            UIComponents.PlayerMoney(
+            PlayerMoney(
             {
               player: player
             }),
@@ -94,7 +94,7 @@ class TopBar extends React.Component<PropTypes, StateType>
               "(+" + player.getIncome() + ")"
             )
           ),
-          UIComponents.TopBarResources(
+          TopBarResources(
           {
             player: player  
           })

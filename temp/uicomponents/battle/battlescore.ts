@@ -64,7 +64,7 @@ class BattleScore extends React.Component<PropTypes, StateType>
           },
             null
           ),
-          UIComponents.PlayerFlag(
+          PlayerFlag(
           {
             props:
             {
@@ -97,7 +97,7 @@ class BattleScore extends React.Component<PropTypes, StateType>
               }
             })
           ),
-          UIComponents.PlayerFlag(
+          PlayerFlag(
           {
             props:
             {

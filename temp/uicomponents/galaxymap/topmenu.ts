@@ -294,7 +294,7 @@ class TopMenu extends React.Component<PropTypes, StateType>
           )
         ),
         openedCondensedMenu,
-        UIComponents.TopMenuPopups(
+        TopMenuPopups(
         {
           ref: "popups",
           player: this.props.player,

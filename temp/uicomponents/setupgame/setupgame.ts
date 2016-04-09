@@ -94,13 +94,13 @@ class SetupGame extends React.Component<PropTypes, StateType>
           {
             className: "setup-game-options"
           },
-            UIComponents.SetupGamePlayers(
+            SetupGamePlayers(
             {
               ref: "players",
               minPlayers: this.state.minPlayers,
               maxPlayers: this.state.maxPlayers
             }),
-            UIComponents.MapSetup(
+            MapSetup(
             {
               setPlayerLimits: this.setPlayerLimits,
               ref: "mapSetup"

@@ -86,7 +86,7 @@ class StarInfo extends React.Component<PropTypes, StateType>
         },
           "Income: " + star.getIncome()
         ),
-        UIComponents.DefenceBuildingList(
+        DefenceBuildingList(
         {
           buildings: star.buildings["defence"]
         })

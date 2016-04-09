@@ -73,7 +73,7 @@ class TopBarResources extends React.Component<PropTypes, StateType>
         income: income,
         key: resourceType
       }
-      resources.push(UIComponents.Resource(resourceData));
+      resources.push(Resource(resourceData));
     }
 
     return(

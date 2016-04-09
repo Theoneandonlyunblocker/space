@@ -59,7 +59,7 @@ class FleetContents extends React.Component<PropTypes, StateType>
     for (var i = 0; i < fleet.units.length; i++)
     {
       var unit = fleet.units[i];
-      fleetUnitInfos.push(UIComponents.FleetUnitInfo(
+      fleetUnitInfos.push(FleetUnitInfo(
       {
         key: unit.id,
         unit: unit,

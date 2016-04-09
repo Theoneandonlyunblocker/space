@@ -145,7 +145,7 @@ class SetupGamePlayers extends React.Component<PropTypes, StateType>
     var playerSetups: any[] = [];
     for (var i = 0; i < this.state.players.length; i++)
     {
-      playerSetups.push(UIComponents.PlayerSetup(
+      playerSetups.push(PlayerSetup(
       {
         key: this.state.players[i],
         keyTODO: this.state.players[i],

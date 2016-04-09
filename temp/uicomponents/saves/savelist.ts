@@ -63,7 +63,7 @@ class SaveList extends React.Component<PropTypes, StateType>
           name: saveData.name,
           date: prettifyDate(date),
           accurateDate: saveData.date,
-          rowConstructor: UIComponents.SaveListItem,
+          rowConstructor: SaveListItem,
           isMarkedForDeletion: isMarkedForDeletion,
           handleDelete: this.props.onDelete ?
             this.props.onDelete.bind(null, saveKeys[i]) :
@@ -108,7 +108,7 @@ class SaveList extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "save-list fixed-table-parent"},
-        UIComponents.List(
+        List(
         {
           listItems: rows,
           initialColumns: columns,

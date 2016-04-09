@@ -53,7 +53,7 @@ class TechnologiesList extends React.Component<PropTypes, StateType>
 
     for (var key in playerTechnology.technologies)
     {
-      rows.push(UIComponents.Technology(
+      rows.push(Technology(
       {
         playerTechnology: playerTechnology,
         technology: playerTechnology.technologies[key].technology,

@@ -58,7 +58,7 @@ class BuyItems extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "buy-items"},
-        UIComponents.ItemPurchaseList(
+        ItemPurchaseList(
         {
           items: items,
           onRowChange: this.handleSelectRow,

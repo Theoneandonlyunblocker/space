@@ -87,7 +87,7 @@ class FleetUnitInfo extends React.Component<PropTypes, StateType>
         {
           className: "fleet-unit-info-info"
         },
-          UIComponents.FleetUnitInfoName(
+          FleetUnitInfoName(
           {
             unit: unit,
             isNotDetected: isNotDetected
@@ -99,7 +99,7 @@ class FleetUnitInfo extends React.Component<PropTypes, StateType>
             isNotDetected ? "???" : unit.template.displayName
           )
         ),
-        UIComponents.UnitStrength(
+        UnitStrength(
         {
           maxHealth: unit.maxHealth,
           currentHealth: unit.currentHealth,

@@ -40,7 +40,7 @@ class Notifications extends React.Component<PropTypes, StateType>
       {
         className: "notifications-container"
       },
-        UIComponents.NotificationLog(
+        NotificationLog(
         {
           log: this.props.log,
           currentTurn: this.props.currentTurn,
