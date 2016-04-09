@@ -3,7 +3,6 @@ import * as React from "react";
 
 /// <reference path="../../playertechnology.ts" />
 
-import {Factory as TechnologyPrioritySlider} from "./technologyPrioritySlider.ts";
 
 export interface PropTypes
 {

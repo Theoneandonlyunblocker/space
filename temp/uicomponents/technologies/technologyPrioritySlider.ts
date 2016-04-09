@@ -16,7 +16,7 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
   displayName: string = "TechnologyPrioritySlider";
   state:
   {
-    priority: number;
+    
   };
 
   constructor(props: PropTypes)
@@ -25,7 +25,7 @@ export default class TechnologyPrioritySlider extends React.Component<PropTypes,
 
     this.state =
     {
-      priority: this.getPlayerPriority()
+      
     };
 
     this.bindMethods();
