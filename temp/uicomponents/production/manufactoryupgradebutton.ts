@@ -36,7 +36,7 @@ export default class ManufactoryUpgradeButton extends React.Component<PropTypes,
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

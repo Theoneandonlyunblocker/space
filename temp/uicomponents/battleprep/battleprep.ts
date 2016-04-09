@@ -34,7 +34,7 @@ export default class BattlePrep extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

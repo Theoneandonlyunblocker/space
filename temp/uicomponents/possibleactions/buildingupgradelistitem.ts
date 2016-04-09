@@ -34,7 +34,7 @@ export default class BuildingUpgradeListItem extends React.Component<PropTypes, 
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

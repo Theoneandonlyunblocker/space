@@ -27,7 +27,7 @@ export default class BattleDisplayStrength extends React.Component<PropTypes, {}
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

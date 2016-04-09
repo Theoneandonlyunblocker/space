@@ -30,7 +30,7 @@ export default class SetupGamePlayers extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     this.newPlayerId = 0;
 

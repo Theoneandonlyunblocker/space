@@ -34,7 +34,7 @@ export default class MapGenOptions extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return this.getDefaultValues(this.props.mapGenTemplate);
   }

@@ -48,7 +48,7 @@ export default class Battle extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

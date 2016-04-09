@@ -27,7 +27,7 @@ export default class TurnOrder extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

@@ -37,7 +37,7 @@ export default class ConstructManufactory extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

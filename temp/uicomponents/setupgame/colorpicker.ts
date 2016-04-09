@@ -31,7 +31,7 @@ export default class ColorPicker extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     var hexColor = this.props.hexColor || 0xFFFFFF;
     var hexString = "#" + hexToString(hexColor);

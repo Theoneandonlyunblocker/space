@@ -33,7 +33,7 @@ export default class ManufacturableThingsListItem extends React.Component<PropTy
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

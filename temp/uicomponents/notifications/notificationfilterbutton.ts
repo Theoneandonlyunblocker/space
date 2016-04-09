@@ -33,7 +33,7 @@ export default class NotificationFilterButton extends React.Component<PropTypes,
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

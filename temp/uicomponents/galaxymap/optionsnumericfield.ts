@@ -36,7 +36,7 @@ export default class OptionsNumericField extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

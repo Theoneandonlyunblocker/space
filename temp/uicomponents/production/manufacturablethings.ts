@@ -38,7 +38,7 @@ export default class ManufacturableThings extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

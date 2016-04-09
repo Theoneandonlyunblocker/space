@@ -32,7 +32,7 @@ export default class OptionsGroup extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

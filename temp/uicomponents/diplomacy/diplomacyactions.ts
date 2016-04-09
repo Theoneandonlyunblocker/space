@@ -35,7 +35,7 @@ export default class DiplomacyActions extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

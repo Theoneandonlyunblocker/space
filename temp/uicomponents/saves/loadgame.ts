@@ -34,7 +34,7 @@ export default class LoadGame extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

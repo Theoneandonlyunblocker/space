@@ -44,7 +44,7 @@ export default class Popup extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

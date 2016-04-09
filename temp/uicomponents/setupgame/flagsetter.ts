@@ -32,7 +32,7 @@ export default class FlagSetter extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     var flag = new Flag(
     {

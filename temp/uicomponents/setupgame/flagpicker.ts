@@ -29,7 +29,7 @@ export default class FlagPicker extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     var initialEmblem: SubEmblemTemplate = null;
     if (this.props.flag.foregroundEmblem)

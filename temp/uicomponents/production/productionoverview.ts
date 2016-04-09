@@ -40,7 +40,7 @@ export default class ProductionOverview extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     var initialSelected: Star = null;
     var player: Player = this.props.player;

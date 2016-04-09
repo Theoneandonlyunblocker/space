@@ -32,7 +32,7 @@ export default class FleetUnitInfoName extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

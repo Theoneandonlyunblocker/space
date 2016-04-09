@@ -33,7 +33,7 @@ export default class BattleSceneTester extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     var side1Units: Unit[] = [];
     var side2Units: Unit[] = [];

@@ -34,7 +34,7 @@ export default class FleetReorganization extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

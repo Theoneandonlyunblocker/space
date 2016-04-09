@@ -30,7 +30,7 @@ export default class Opinion extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

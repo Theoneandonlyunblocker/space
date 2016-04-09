@@ -32,7 +32,7 @@ export default class ColorSetter extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

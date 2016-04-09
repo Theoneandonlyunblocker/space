@@ -33,7 +33,7 @@ export default class MapSetup extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     var mapGenTemplates: MapGenTemplate[] = [];
 

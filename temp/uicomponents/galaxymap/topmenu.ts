@@ -40,7 +40,7 @@ export default class TopMenu extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

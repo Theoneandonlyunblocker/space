@@ -32,7 +32,7 @@ export default class NotificationFilterListItem extends React.Component<PropType
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

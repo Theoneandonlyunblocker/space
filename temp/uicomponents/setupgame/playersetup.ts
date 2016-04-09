@@ -31,7 +31,7 @@ export default class PlayerSetup extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

@@ -44,7 +44,7 @@ export default class TradeOverview extends React.Component<PropTypes, {}>
     this.otherPlayerTrade = new Trade(this.props.otherPlayer);
   }
 
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

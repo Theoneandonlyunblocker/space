@@ -38,7 +38,7 @@ export default class GalaxyMapUI extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     var pc = this.props.playerControl;
 

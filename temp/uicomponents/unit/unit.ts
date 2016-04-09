@@ -35,7 +35,7 @@ export default class Unit extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

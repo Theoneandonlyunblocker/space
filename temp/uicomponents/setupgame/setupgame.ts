@@ -33,7 +33,7 @@ export default class SetupGame extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

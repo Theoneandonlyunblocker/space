@@ -41,7 +41,7 @@ export default class TopMenuPopups extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {

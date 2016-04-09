@@ -37,7 +37,7 @@ export default class PossibleActions extends React.Component<PropTypes, {}>
     
   }
   
-  getInitialState()
+  private getInitialState()
   {
     return(
     {
