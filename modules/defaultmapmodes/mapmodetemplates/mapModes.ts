@@ -1,5 +1,6 @@
 import MapRendererMapModeTemplate from "../../../src/templateinterfaces/maprenderermapmodetemplate.d.ts";
-import * as MapRendererLayers from "../MapLayerTemplates.ts";
+
+import * as MapLayers from "../allMapLayerTemplates.ts";
 
 export const defaultMapMode: MapRendererMapModeTemplate =
 {
@@ -7,13 +8,13 @@ export const defaultMapMode: MapRendererMapModeTemplate =
   displayName: "Default",
   layers:
   [
-    MapRendererLayers.nonFillerVoronoiLines,
-    MapRendererLayers.starOwners,
-    MapRendererLayers.ownerBorders,
-    MapRendererLayers.starLinks,
-    MapRendererLayers.nonFillerStars,
-    MapRendererLayers.fogOfWar,
-    MapRendererLayers.fleets
+    MapLayers.nonFillerVoronoiLines,
+    MapLayers.starOwners,
+    MapLayers.ownerBorders,
+    MapLayers.starLinks,
+    MapLayers.nonFillerStars,
+    MapLayers.fogOfWar,
+    MapLayers.fleets
   ]
 }
 export const noStatic: MapRendererMapModeTemplate =
@@ -22,11 +23,11 @@ export const noStatic: MapRendererMapModeTemplate =
   displayName: "No Static Layers",
   layers:
   [
-    MapRendererLayers.starOwners,
-    MapRendererLayers.ownerBorders,
-    MapRendererLayers.nonFillerStars,
-    MapRendererLayers.fogOfWar,
-    MapRendererLayers.fleets
+    MapLayers.starOwners,
+    MapLayers.ownerBorders,
+    MapLayers.nonFillerStars,
+    MapLayers.fogOfWar,
+    MapLayers.fleets
   ]
 }
 export const income: MapRendererMapModeTemplate =
@@ -35,11 +36,11 @@ export const income: MapRendererMapModeTemplate =
   displayName: "Income",
   layers:
   [
-    MapRendererLayers.starIncome,
-    MapRendererLayers.nonFillerVoronoiLines,
-    MapRendererLayers.starLinks,
-    MapRendererLayers.nonFillerStars,
-    MapRendererLayers.fleets
+    MapLayers.starIncome,
+    MapLayers.nonFillerVoronoiLines,
+    MapLayers.starLinks,
+    MapLayers.nonFillerStars,
+    MapLayers.fleets
   ]
 }
 export const influence: MapRendererMapModeTemplate =
@@ -48,11 +49,11 @@ export const influence: MapRendererMapModeTemplate =
   displayName: "Player Influence",
   layers:
   [
-    MapRendererLayers.playerInfluence,
-    MapRendererLayers.nonFillerVoronoiLines,
-    MapRendererLayers.starLinks,
-    MapRendererLayers.nonFillerStars,
-    MapRendererLayers.fleets
+    MapLayers.playerInfluence,
+    MapLayers.nonFillerVoronoiLines,
+    MapLayers.starLinks,
+    MapLayers.nonFillerStars,
+    MapLayers.fleets
   ]
 }
 export const resources: MapRendererMapModeTemplate =
@@ -61,12 +62,12 @@ export const resources: MapRendererMapModeTemplate =
   displayName: "Resources",
   layers:
   [
-    MapRendererLayers.debugSectors,
-    MapRendererLayers.nonFillerVoronoiLines,
-    MapRendererLayers.starLinks,
-    MapRendererLayers.nonFillerStars,
-    MapRendererLayers.fogOfWar,
-    MapRendererLayers.fleets,
-    MapRendererLayers.resources
+    MapLayers.debugSectors,
+    MapLayers.nonFillerVoronoiLines,
+    MapLayers.starLinks,
+    MapLayers.nonFillerStars,
+    MapLayers.fogOfWar,
+    MapLayers.fleets,
+    MapLayers.resources
   ]
 }

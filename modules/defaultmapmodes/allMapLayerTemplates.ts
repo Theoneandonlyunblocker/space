@@ -1,0 +1,11 @@
+export {default as debugSectors} from  "./maplayertemplates/debugSectors.ts";
+export {default as nonFillerStars} from  "./maplayertemplates/nonFillerStars.ts";
+export {default as playerInfluence} from  "./maplayertemplates/playerInfluence.ts";
+export {default as starLinks} from  "./maplayertemplates/starLinks.ts";
+export {default as fleets} from  "./maplayertemplates/fleets.ts";
+export {default as nonFillerVoronoiLines} from  "./maplayertemplates/nonFillerVoronoiLines.ts";
+export {default as resources} from  "./maplayertemplates/resources.ts";
+export {default as starOwners} from  "./maplayertemplates/starOwners.ts";
+export {default as fogOfWar} from  "./maplayertemplates/fogOfWar.ts";
+export {default as ownerBorders} from  "./maplayertemplates/ownerBorders.ts";
+export {default as starIncome} from  "./maplayertemplates/starIncome.ts";

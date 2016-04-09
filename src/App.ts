@@ -1,4 +1,3 @@
-import buildTemplateIndexes from "./buildTemplateIndexes.ts";
 import GalaxyMap from "./GalaxyMap.ts";
 import Game from "./Game.ts";
 import GameLoader from "./GameLoader.ts";
@@ -69,9 +68,20 @@ class App
     {
       var moduleLoader = self.moduleLoader = new ModuleLoader();
       self.moduleData = moduleLoader.moduleData;
-
-      moduleLoader.addModuleFile(Modules.DefaultModule.moduleFile);
-      moduleLoader.addModuleFile(Modules.PaintingPortraits.moduleFile);
+      
+      moduleLoader.addModuleFile(defaultEmblems);
+      moduleLoader.addModuleFile(defaultRuleset);
+      moduleLoader.addModuleFile(defaultAI);
+      moduleLoader.addModuleFile(defaultItems);
+      moduleLoader.addModuleFile(defaultTechnologies);
+      moduleLoader.addModuleFile(defaultAttitudemodifiers);
+      moduleLoader.addModuleFile(defaultMapgen);
+      moduleLoader.addModuleFile(defaultUnits);
+      moduleLoader.addModuleFile(defaultBackgrounds);
+      moduleLoader.addModuleFile(defaultMapmodes);
+      moduleLoader.addModuleFile(paintingPortraits);
+      moduleLoader.addModuleFile(defaultBuildings);
+      moduleLoader.addModuleFile(defaultNotifications);
       
       moduleLoader.loadAll(boundMakeApp);
     });
@@ -84,7 +94,6 @@ class App
     loadTutorialStatus();
 
     setDynamicTemplateProperties();
-    buildTemplateIndexes();
     
     this.initUI();
     this.setInitialScene();

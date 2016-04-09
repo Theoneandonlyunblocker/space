@@ -8,6 +8,7 @@ import
 
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
 
+// TODO | add technology requirements
 export default function setDynamicTemplateProperties()
 {
   setAbilityGuardAddition();

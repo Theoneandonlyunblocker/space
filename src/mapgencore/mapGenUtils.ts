@@ -12,6 +12,7 @@ import Player from "../Player.ts";
 import Color from "../Color.ts";
 import Emblem from "../Emblem.ts";
 import Flag from "../Flag.ts";
+import TemplateIndexes from "../TemplateIndexes.ts";
 import
 {
   aStar
