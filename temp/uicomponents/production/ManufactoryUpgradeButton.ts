@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class ManufactoryUpgradeButton extends React.Component<PropTypes, StateType>
+class ManufactoryUpgradeButton_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufactoryUpgradeButton";
 
@@ -105,5 +105,5 @@ class ManufactoryUpgradeButton extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ManufactoryUpgradeButton);
+const Factory: React.Factory<PropTypes> = React.createFactory(ManufactoryUpgradeButton_COMPONENT_TODO);
 export default Factory;

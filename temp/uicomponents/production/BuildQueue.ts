@@ -24,7 +24,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class BuildQueue extends React.Component<PropTypes, StateType>
+class BuildQueue_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildQueue";
 
@@ -101,5 +101,5 @@ class BuildQueue extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BuildQueue);
+const Factory: React.Factory<PropTypes> = React.createFactory(BuildQueue_COMPONENT_TODO);
 export default Factory;

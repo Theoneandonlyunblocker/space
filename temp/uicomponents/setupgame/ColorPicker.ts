@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class ColorPicker extends React.Component<PropTypes, StateType>
+class ColorPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorPicker";
   onChangeTimeout: reactTypeTODO_any = null;
@@ -392,5 +392,5 @@ class ColorPicker extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ColorPicker);
+const Factory: React.Factory<PropTypes> = React.createFactory(ColorPicker_COMPONENT_TODO);
 export default Factory;

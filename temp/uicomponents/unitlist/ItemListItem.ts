@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class ItemListItem extends React.Component<PropTypes, StateType>
+class ItemListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemListItem";
   mixins: reactTypeTODO_any = [Draggable];
@@ -140,5 +140,5 @@ class ItemListItem extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ItemListItem);
+const Factory: React.Factory<PropTypes> = React.createFactory(ItemListItem_COMPONENT_TODO);
 export default Factory;

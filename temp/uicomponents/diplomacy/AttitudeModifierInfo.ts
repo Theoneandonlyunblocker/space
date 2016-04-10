@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class AttitudeModifierInfo extends React.Component<PropTypes, StateType>
+class AttitudeModifierInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierInfo";
 
@@ -112,5 +112,5 @@ class AttitudeModifierInfo extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierInfo);
+const Factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierInfo_COMPONENT_TODO);
 export default Factory;

@@ -23,7 +23,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class UpgradeUnit extends React.Component<PropTypes, StateType>
+class UpgradeUnit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeUnit";
   state: StateType;
@@ -162,5 +162,5 @@ class UpgradeUnit extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UpgradeUnit);
+const Factory: React.Factory<PropTypes> = React.createFactory(UpgradeUnit_COMPONENT_TODO);
 export default Factory;

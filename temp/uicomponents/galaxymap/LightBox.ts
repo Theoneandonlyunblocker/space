@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class LightBox extends React.Component<PropTypes, StateType>
+class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LightBox";
 
@@ -120,5 +120,5 @@ class LightBox extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(LightBox);
+const Factory: React.Factory<PropTypes> = React.createFactory(LightBox_COMPONENT_TODO);
 export default Factory;

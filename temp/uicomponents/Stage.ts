@@ -40,7 +40,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class Stage extends React.Component<PropTypes, StateType>
+class Stage_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Stage";
   state: StateType;
@@ -148,5 +148,5 @@ class Stage extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Stage);
+const Factory: React.Factory<PropTypes> = React.createFactory(Stage_COMPONENT_TODO);
 export default Factory;

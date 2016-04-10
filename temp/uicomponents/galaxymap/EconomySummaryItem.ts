@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class EconomySummaryItem extends React.Component<PropTypes, StateType>
+class EconomySummaryItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "EconomySummaryItem";
 
@@ -83,5 +83,5 @@ class EconomySummaryItem extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(EconomySummaryItem);
+const Factory: React.Factory<PropTypes> = React.createFactory(EconomySummaryItem_COMPONENT_TODO);
 export default Factory;

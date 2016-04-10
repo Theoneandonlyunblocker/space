@@ -22,7 +22,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class BattleSceneTester extends React.Component<PropTypes, StateType>
+class BattleSceneTester_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleSceneTester";
   idGenerator: number = 0;
@@ -439,5 +439,5 @@ class BattleSceneTester extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleSceneTester);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleSceneTester_COMPONENT_TODO);
 export default Factory;

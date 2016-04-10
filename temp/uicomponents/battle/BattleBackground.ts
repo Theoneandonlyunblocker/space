@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class BattleBackground extends React.Component<PropTypes, StateType>
+class BattleBackground_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleBackground";
 
@@ -80,5 +80,5 @@ class BattleBackground extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleBackground);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleBackground_COMPONENT_TODO);
 export default Factory;

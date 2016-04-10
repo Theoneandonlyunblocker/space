@@ -23,7 +23,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class Technology extends React.Component<PropTypes, StateType>
+class Technology_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Technology";
 
@@ -132,5 +132,5 @@ class Technology extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Technology);
+const Factory: React.Factory<PropTypes> = React.createFactory(Technology_COMPONENT_TODO);
 export default Factory;

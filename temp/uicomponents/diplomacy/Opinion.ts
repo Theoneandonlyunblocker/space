@@ -17,7 +17,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class Opinion extends React.Component<PropTypes, StateType>
+class Opinion_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Opinion";
 
@@ -119,5 +119,5 @@ class Opinion extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Opinion);
+const Factory: React.Factory<PropTypes> = React.createFactory(Opinion_COMPONENT_TODO);
 export default Factory;

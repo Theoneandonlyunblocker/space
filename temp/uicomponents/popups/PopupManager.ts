@@ -19,7 +19,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class PopupManager extends React.Component<PropTypes, StateType>
+class PopupManager_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupManager";
   popupId: number = 0;
@@ -258,5 +258,5 @@ class PopupManager extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PopupManager);
+const Factory: React.Factory<PropTypes> = React.createFactory(PopupManager_COMPONENT_TODO);
 export default Factory;

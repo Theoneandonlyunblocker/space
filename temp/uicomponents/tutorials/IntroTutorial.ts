@@ -24,7 +24,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class IntroTutorial extends React.Component<PropTypes, StateType>
+class IntroTutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "IntroTutorial";
   popupId: reactTypeTODO_any = null;
@@ -119,5 +119,5 @@ class IntroTutorial extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(IntroTutorial);
+const Factory: React.Factory<PropTypes> = React.createFactory(IntroTutorial_COMPONENT_TODO);
 export default Factory;

@@ -31,7 +31,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class ProductionOverview extends React.Component<PropTypes, StateType>
+class ProductionOverview_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ProductionOverview";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
@@ -206,5 +206,5 @@ class ProductionOverview extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ProductionOverview);
+const Factory: React.Factory<PropTypes> = React.createFactory(ProductionOverview_COMPONENT_TODO);
 export default Factory;

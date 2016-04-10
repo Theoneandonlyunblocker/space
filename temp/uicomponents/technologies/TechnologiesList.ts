@@ -21,7 +21,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class TechnologiesList extends React.Component<PropTypes, StateType>
+class TechnologiesList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TechnologiesList";
   updateListener: reactTypeTODO_any = undefined;
@@ -90,5 +90,5 @@ class TechnologiesList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TechnologiesList);
+const Factory: React.Factory<PropTypes> = React.createFactory(TechnologiesList_COMPONENT_TODO);
 export default Factory;

@@ -25,7 +25,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class BuildingUpgradeList extends React.Component<PropTypes, StateType>
+class BuildingUpgradeList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildingUpgradeList";
 
@@ -165,5 +165,5 @@ class BuildingUpgradeList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeList);
+const Factory: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeList_COMPONENT_TODO);
 export default Factory;

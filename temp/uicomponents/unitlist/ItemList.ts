@@ -21,7 +21,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class ItemList extends React.Component<PropTypes, StateType>
+class ItemList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemList";
 
@@ -214,5 +214,5 @@ class ItemList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ItemList);
+const Factory: React.Factory<PropTypes> = React.createFactory(ItemList_COMPONENT_TODO);
 export default Factory;

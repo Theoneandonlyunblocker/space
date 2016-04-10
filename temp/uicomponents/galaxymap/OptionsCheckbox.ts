@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class OptionsCheckbox extends React.Component<PropTypes, StateType>
+class OptionsCheckbox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsCheckbox";
   state: StateType;
@@ -54,5 +54,5 @@ class OptionsCheckbox extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(OptionsCheckbox);
+const Factory: React.Factory<PropTypes> = React.createFactory(OptionsCheckbox_COMPONENT_TODO);
 export default Factory;

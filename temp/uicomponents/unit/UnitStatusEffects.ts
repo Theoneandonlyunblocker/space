@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class UnitStatusEffects extends React.Component<PropTypes, StateType>
+class UnitStatusEffects_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStatusEffects";
 
@@ -118,5 +118,5 @@ class UnitStatusEffects extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitStatusEffects);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitStatusEffects_COMPONENT_TODO);
 export default Factory;

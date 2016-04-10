@@ -30,7 +30,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class Popup extends React.Component<PropTypes, StateType>
+class Popup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Popup";
   mixins: reactTypeTODO_any = [Draggable];
@@ -188,5 +188,5 @@ class Popup extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Popup);
+const Factory: React.Factory<PropTypes> = React.createFactory(Popup_COMPONENT_TODO);
 export default Factory;

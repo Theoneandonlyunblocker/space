@@ -21,7 +21,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class AttitudeModifierList extends React.Component<PropTypes, StateType>
+class AttitudeModifierList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierList";
   mixins: reactTypeTODO_any = [AutoPosition];
@@ -112,5 +112,5 @@ class AttitudeModifierList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierList);
+const Factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierList_COMPONENT_TODO);
 export default Factory;

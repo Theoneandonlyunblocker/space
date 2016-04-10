@@ -14,7 +14,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class OptionsGroup extends React.Component<PropTypes, StateType>
+class OptionsGroup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsGroup";
 
@@ -105,5 +105,5 @@ class OptionsGroup extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(OptionsGroup);
+const Factory: React.Factory<PropTypes> = React.createFactory(OptionsGroup_COMPONENT_TODO);
 export default Factory;

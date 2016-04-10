@@ -19,7 +19,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class ColorSetter extends React.Component<PropTypes, StateType>
+class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
@@ -167,5 +167,5 @@ class ColorSetter extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ColorSetter);
+const Factory: React.Factory<PropTypes> = React.createFactory(ColorSetter_COMPONENT_TODO);
 export default Factory;

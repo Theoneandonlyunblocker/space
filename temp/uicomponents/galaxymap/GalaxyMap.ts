@@ -20,7 +20,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class GalaxyMap extends React.Component<PropTypes, StateType>
+class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMap";
   
@@ -153,5 +153,5 @@ class GalaxyMap extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(GalaxyMap);
+const Factory: React.Factory<PropTypes> = React.createFactory(GalaxyMap_COMPONENT_TODO);
 export default Factory;

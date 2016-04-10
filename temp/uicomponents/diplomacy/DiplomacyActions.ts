@@ -25,7 +25,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class DiplomacyActions extends React.Component<PropTypes, StateType>
+class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DiplomacyActions";
 
@@ -209,5 +209,5 @@ class DiplomacyActions extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DiplomacyActions);
+const Factory: React.Factory<PropTypes> = React.createFactory(DiplomacyActions_COMPONENT_TODO);
 export default Factory;

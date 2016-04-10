@@ -21,7 +21,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class MapSetup extends React.Component<PropTypes, StateType>
+class MapSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapSetup";
 
@@ -147,5 +147,5 @@ class MapSetup extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapSetup);
+const Factory: React.Factory<PropTypes> = React.createFactory(MapSetup_COMPONENT_TODO);
 export default Factory;

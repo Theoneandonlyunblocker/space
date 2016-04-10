@@ -23,7 +23,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class FlagSetter extends React.Component<PropTypes, StateType>
+class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
@@ -362,5 +362,5 @@ class FlagSetter extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FlagSetter);
+const Factory: React.Factory<PropTypes> = React.createFactory(FlagSetter_COMPONENT_TODO);
 export default Factory;

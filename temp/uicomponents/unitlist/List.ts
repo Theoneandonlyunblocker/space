@@ -53,7 +53,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class List extends React.Component<PropTypes, StateType>
+class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 }
   mixins: [SplitMultilineText],
 
@@ -455,5 +455,5 @@ class List extends React.Component<PropTypes, StateType>
   
 }));
 
-const Factory: React.Factory<PropTypes> = React.createFactory(List);
+const Factory: React.Factory<PropTypes> = React.createFactory(List_COMPONENT_TODO);
 export default Factory;

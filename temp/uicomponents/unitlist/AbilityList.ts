@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class AbilityList extends React.Component<PropTypes, StateType>
+class AbilityList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AbilityList";
   state: StateType;
@@ -115,5 +115,5 @@ class AbilityList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(AbilityList);
+const Factory: React.Factory<PropTypes> = React.createFactory(AbilityList_COMPONENT_TODO);
 export default Factory;

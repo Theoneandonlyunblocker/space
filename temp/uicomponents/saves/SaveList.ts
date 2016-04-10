@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class SaveList extends React.Component<PropTypes, StateType>
+class SaveList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SaveList";
   state: StateType;
@@ -129,5 +129,5 @@ class SaveList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SaveList);
+const Factory: React.Factory<PropTypes> = React.createFactory(SaveList_COMPONENT_TODO);
 export default Factory;

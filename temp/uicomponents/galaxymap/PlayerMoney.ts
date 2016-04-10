@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class PlayerMoney extends React.Component<PropTypes, StateType>
+class PlayerMoney_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerMoney";
   lastAmountRendered: reactTypeTODO_any = undefined;
@@ -70,5 +70,5 @@ class PlayerMoney extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PlayerMoney);
+const Factory: React.Factory<PropTypes> = React.createFactory(PlayerMoney_COMPONENT_TODO);
 export default Factory;

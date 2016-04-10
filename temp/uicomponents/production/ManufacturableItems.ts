@@ -26,7 +26,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class ManufacturableItems extends React.Component<PropTypes, StateType>
+class ManufacturableItems_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableItems";
 
@@ -116,5 +116,5 @@ class ManufacturableItems extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ManufacturableItems);
+const Factory: React.Factory<PropTypes> = React.createFactory(ManufacturableItems_COMPONENT_TODO);
 export default Factory;

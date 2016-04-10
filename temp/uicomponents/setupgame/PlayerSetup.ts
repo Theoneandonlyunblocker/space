@@ -20,7 +20,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class PlayerSetup extends React.Component<PropTypes, StateType>
+class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerSetup";
 
@@ -205,5 +205,5 @@ class PlayerSetup extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PlayerSetup);
+const Factory: React.Factory<PropTypes> = React.createFactory(PlayerSetup_COMPONENT_TODO);
 export default Factory;

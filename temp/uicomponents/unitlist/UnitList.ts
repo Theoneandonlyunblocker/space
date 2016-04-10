@@ -20,7 +20,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class UnitList extends React.Component<PropTypes, StateType>
+class UnitList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitList";
   state: StateType;
@@ -148,5 +148,5 @@ class UnitList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitList);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitList_COMPONENT_TODO);
 export default Factory;

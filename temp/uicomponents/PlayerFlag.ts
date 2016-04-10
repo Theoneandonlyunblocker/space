@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class PlayerFlag extends React.Component<PropTypes, StateType>
+class PlayerFlag_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerFlag";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -90,5 +90,5 @@ class PlayerFlag extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PlayerFlag);
+const Factory: React.Factory<PropTypes> = React.createFactory(PlayerFlag_COMPONENT_TODO);
 export default Factory;

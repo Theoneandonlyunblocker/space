@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class UnitStrength extends React.Component<PropTypes, StateType>
+class UnitStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStrength";
   state: StateType;
@@ -194,5 +194,5 @@ class UnitStrength extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitStrength);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitStrength_COMPONENT_TODO);
 export default Factory;

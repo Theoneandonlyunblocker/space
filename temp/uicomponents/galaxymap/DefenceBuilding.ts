@@ -20,7 +20,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class DefenceBuilding extends React.Component<PropTypes, StateType>
+class DefenceBuilding_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DefenceBuilding";
   shouldComponentUpdate(newProps: any)
@@ -72,5 +72,5 @@ class DefenceBuilding extends React.Component<PropTypes, StateType>
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DefenceBuilding);
+const Factory: React.Factory<PropTypes> = React.createFactory(DefenceBuilding_COMPONENT_TODO);
 export default Factory;

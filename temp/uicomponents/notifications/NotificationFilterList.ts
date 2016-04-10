@@ -22,7 +22,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class NotificationFilterList extends React.Component<PropTypes, StateType>
+class NotificationFilterList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationFilterList";
   handleResetCategory(category: string)
@@ -130,5 +130,5 @@ class NotificationFilterList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterList);
+const Factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterList_COMPONENT_TODO);
 export default Factory;

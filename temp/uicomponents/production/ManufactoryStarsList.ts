@@ -23,7 +23,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class ManufactoryStarsList extends React.Component<PropTypes, StateType>
+class ManufactoryStarsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufactoryStarsList";
 
@@ -98,5 +98,5 @@ class ManufactoryStarsList extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ManufactoryStarsList);
+const Factory: React.Factory<PropTypes> = React.createFactory(ManufactoryStarsList_COMPONENT_TODO);
 export default Factory;

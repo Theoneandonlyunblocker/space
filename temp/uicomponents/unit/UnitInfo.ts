@@ -35,7 +35,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class UnitInfo extends React.Component<PropTypes, StateType>
+class UnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitInfo";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -119,5 +119,5 @@ class UnitInfo extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitInfo);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitInfo_COMPONENT_TODO);
 export default Factory;

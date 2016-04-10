@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class EmptyUnit extends React.Component<PropTypes, StateType>
+class EmptyUnit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "EmptyUnit";
   shouldComponentUpdate(newProps: any)
@@ -83,5 +83,5 @@ class EmptyUnit extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(EmptyUnit);
+const Factory: React.Factory<PropTypes> = React.createFactory(EmptyUnit_COMPONENT_TODO);
 export default Factory;

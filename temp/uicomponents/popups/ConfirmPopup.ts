@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class ConfirmPopup extends React.Component<PropTypes, StateType>
+class ConfirmPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConfirmPopup";
   mixins: reactTypeTODO_any = [SplitMultilineText];
@@ -107,5 +107,5 @@ class ConfirmPopup extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ConfirmPopup);
+const Factory: React.Factory<PropTypes> = React.createFactory(ConfirmPopup_COMPONENT_TODO);
 export default Factory;

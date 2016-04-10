@@ -20,7 +20,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class Tutorial extends React.Component<PropTypes, StateType>
+class Tutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Tutorial";
   mixins: reactTypeTODO_any = [SplitMultilineText];
@@ -173,5 +173,5 @@ class Tutorial extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Tutorial);
+const Factory: React.Factory<PropTypes> = React.createFactory(Tutorial_COMPONENT_TODO);
 export default Factory;

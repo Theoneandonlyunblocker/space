@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class MapRendererLayersListItem extends React.Component<PropTypes, StateType>
+class MapRendererLayersListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersListItem";
   mixins: reactTypeTODO_any = [Draggable, DropTarget, React.addons.PureRenderMixin];
@@ -153,5 +153,5 @@ class MapRendererLayersListItem extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListItem);
+const Factory: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListItem_COMPONENT_TODO);
 export default Factory;

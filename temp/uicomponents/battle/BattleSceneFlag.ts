@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class BattleSceneFlag extends React.Component<PropTypes, StateType>
+class BattleSceneFlag_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleSceneFlag";
   flagCanvas: reactTypeTODO_any = null;
@@ -111,5 +111,5 @@ class BattleSceneFlag extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleSceneFlag);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleSceneFlag_COMPONENT_TODO);
 export default Factory;

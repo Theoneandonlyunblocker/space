@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class BattleDisplayStrength extends React.Component<PropTypes, StateType>
+class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleDisplayStrength";
   state: StateType;
@@ -117,5 +117,5 @@ class BattleDisplayStrength extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleDisplayStrength);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleDisplayStrength_COMPONENT_TODO);
 export default Factory;

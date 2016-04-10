@@ -17,7 +17,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class FlagPicker extends React.Component<PropTypes, StateType>
+class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagPicker";
   state: StateType;
@@ -168,5 +168,5 @@ class FlagPicker extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FlagPicker);
+const Factory: React.Factory<PropTypes> = React.createFactory(FlagPicker_COMPONENT_TODO);
 export default Factory;

@@ -15,7 +15,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class UnitItem extends React.Component<PropTypes, StateType>
+class UnitItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitItem";
   mixins: reactTypeTODO_any = [Draggable];
@@ -109,5 +109,5 @@ class UnitItem extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitItem);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitItem_COMPONENT_TODO);
 export default Factory;

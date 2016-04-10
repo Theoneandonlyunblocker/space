@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class AttackTarget extends React.Component<PropTypes, StateType>
+class AttackTarget_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttackTarget";
   state: StateType;
@@ -66,5 +66,5 @@ class AttackTarget extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(AttackTarget);
+const Factory: React.Factory<PropTypes> = React.createFactory(AttackTarget_COMPONENT_TODO);
 export default Factory;

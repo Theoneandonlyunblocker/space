@@ -24,7 +24,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class TradeOverview extends React.Component<PropTypes, StateType>
+class TradeOverview_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeOverview";
   selfPlayerTrade: reactTypeTODO_any = undefined;
@@ -272,5 +272,5 @@ class TradeOverview extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TradeOverview);
+const Factory: React.Factory<PropTypes> = React.createFactory(TradeOverview_COMPONENT_TODO);
 export default Factory;

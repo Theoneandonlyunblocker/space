@@ -24,7 +24,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class FleetReorganization extends React.Component<PropTypes, StateType>
+class FleetReorganization_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetReorganization";
 
@@ -174,5 +174,5 @@ class FleetReorganization extends React.Component<PropTypes, StateType>
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetReorganization);
+const Factory: React.Factory<PropTypes> = React.createFactory(FleetReorganization_COMPONENT_TODO);
 export default Factory;

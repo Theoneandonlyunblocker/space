@@ -27,7 +27,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class FleetContents extends React.Component<PropTypes, StateType>
+class FleetContents_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetContents";
 
@@ -99,5 +99,5 @@ class FleetContents extends React.Component<PropTypes, StateType>
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetContents);
+const Factory: React.Factory<PropTypes> = React.createFactory(FleetContents_COMPONENT_TODO);
 export default Factory;

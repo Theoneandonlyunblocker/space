@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class MapModeSelector extends React.Component<PropTypes, StateType>
+class MapModeSelector_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapModeSelector";
 
@@ -86,5 +86,5 @@ class MapModeSelector extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapModeSelector);
+const Factory: React.Factory<PropTypes> = React.createFactory(MapModeSelector_COMPONENT_TODO);
 export default Factory;

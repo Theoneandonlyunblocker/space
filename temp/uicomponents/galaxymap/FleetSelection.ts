@@ -24,7 +24,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class FleetSelection extends React.Component<PropTypes, StateType>
+class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetSelection";
   state: StateType;
@@ -241,5 +241,5 @@ class FleetSelection extends React.Component<PropTypes, StateType>
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetSelection);
+const Factory: React.Factory<PropTypes> = React.createFactory(FleetSelection_COMPONENT_TODO);
 export default Factory;

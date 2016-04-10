@@ -26,7 +26,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class TopMenu extends React.Component<PropTypes, StateType>
+class TopMenu_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenu";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -314,5 +314,5 @@ class TopMenu extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TopMenu);
+const Factory: React.Factory<PropTypes> = React.createFactory(TopMenu_COMPONENT_TODO);
 export default Factory;

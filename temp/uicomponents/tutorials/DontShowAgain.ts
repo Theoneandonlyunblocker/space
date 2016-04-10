@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class DontShowAgain extends React.Component<PropTypes, StateType>
+class DontShowAgain_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DontShowAgain";
 
@@ -88,5 +88,5 @@ class DontShowAgain extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DontShowAgain);
+const Factory: React.Factory<PropTypes> = React.createFactory(DontShowAgain_COMPONENT_TODO);
 export default Factory;

@@ -37,7 +37,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class TopMenuPopups extends React.Component<PropTypes, StateType>
+class TopMenuPopups_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenuPopups";
   cachedPopupRects: {}
@@ -234,5 +234,5 @@ class TopMenuPopups extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TopMenuPopups);
+const Factory: React.Factory<PropTypes> = React.createFactory(TopMenuPopups_COMPONENT_TODO);
 export default Factory;

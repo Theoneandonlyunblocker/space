@@ -22,7 +22,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class LoadGame extends React.Component<PropTypes, StateType>
+class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LoadGame";
   popupId: reactTypeTODO_any = undefined;
@@ -259,5 +259,5 @@ class LoadGame extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(LoadGame);
+const Factory: React.Factory<PropTypes> = React.createFactory(LoadGame_COMPONENT_TODO);
 export default Factory;

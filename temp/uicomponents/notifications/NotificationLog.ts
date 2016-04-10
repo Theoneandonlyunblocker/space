@@ -24,7 +24,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class NotificationLog extends React.Component<PropTypes, StateType>
+class NotificationLog_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationLog";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -203,5 +203,5 @@ class NotificationLog extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(NotificationLog);
+const Factory: React.Factory<PropTypes> = React.createFactory(NotificationLog_COMPONENT_TODO);
 export default Factory;

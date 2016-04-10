@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class TradeMoney extends React.Component<PropTypes, StateType>
+class TradeMoney_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeMoney";
   mixins: reactTypeTODO_any = [Draggable];
@@ -135,5 +135,5 @@ class TradeMoney extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TradeMoney);
+const Factory: React.Factory<PropTypes> = React.createFactory(TradeMoney_COMPONENT_TODO);
 export default Factory;

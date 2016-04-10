@@ -11,7 +11,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class TurnOrder extends React.Component<PropTypes, StateType>
+class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TurnOrder";
   state: StateType;
@@ -160,5 +160,5 @@ class TurnOrder extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TurnOrder);
+const Factory: React.Factory<PropTypes> = React.createFactory(TurnOrder_COMPONENT_TODO);
 export default Factory;

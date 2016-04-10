@@ -18,7 +18,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class BattleScore extends React.Component<PropTypes, StateType>
+class BattleScore_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScore";
   lastEvaluation: reactTypeTODO_any = undefined;
@@ -116,5 +116,5 @@ class BattleScore extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleScore);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleScore_COMPONENT_TODO);
 export default Factory;

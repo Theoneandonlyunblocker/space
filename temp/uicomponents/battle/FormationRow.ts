@@ -47,7 +47,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class FormationRow extends React.Component<PropTypes, StateType>
+class FormationRow_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FormationRow";
 
@@ -112,5 +112,5 @@ class FormationRow extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FormationRow);
+const Factory: React.Factory<PropTypes> = React.createFactory(FormationRow_COMPONENT_TODO);
 export default Factory;

@@ -23,7 +23,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class BuildableBuilding extends React.Component<PropTypes, StateType>
+class BuildableBuilding_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildableBuilding";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
@@ -124,5 +124,5 @@ class BuildableBuilding extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BuildableBuilding);
+const Factory: React.Factory<PropTypes> = React.createFactory(BuildableBuilding_COMPONENT_TODO);
 export default Factory;

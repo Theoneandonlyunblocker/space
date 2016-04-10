@@ -23,7 +23,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class TopBar extends React.Component<PropTypes, StateType>
+class TopBar_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopBar";
   updateListener: reactTypeTODO_any = undefined;
@@ -112,5 +112,5 @@ class TopBar extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TopBar);
+const Factory: React.Factory<PropTypes> = React.createFactory(TopBar_COMPONENT_TODO);
 export default Factory;

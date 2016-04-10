@@ -26,7 +26,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class FleetUnitInfo extends React.Component<PropTypes, StateType>
+class FleetUnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetUnitInfo";
   mixins: reactTypeTODO_any = [Draggable];
@@ -118,5 +118,5 @@ class FleetUnitInfo extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetUnitInfo);
+const Factory: React.Factory<PropTypes> = React.createFactory(FleetUnitInfo_COMPONENT_TODO);
 export default Factory;

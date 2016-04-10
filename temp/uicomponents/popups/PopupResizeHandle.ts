@@ -13,7 +13,7 @@ interface StateType
   // TODO refactor | add state type
 }
 
-class PopupResizeHandle extends React.Component<PropTypes, StateType>
+class PopupResizeHandle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupResizeHandle";
   mixins: reactTypeTODO_any = [Draggable];
@@ -61,5 +61,5 @@ class PopupResizeHandle extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PopupResizeHandle);
+const Factory: React.Factory<PropTypes> = React.createFactory(PopupResizeHandle_COMPONENT_TODO);
 export default Factory;
