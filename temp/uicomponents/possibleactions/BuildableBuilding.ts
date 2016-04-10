@@ -5,6 +5,11 @@ import * as React from "react";
 
 /// <reference path="../../player.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import BuildingTemplate from "../../../src/templateinterfaces/BuildingTemplate.d.ts";
+
+
 export interface PropTypes
 {
   template: reactTypeTODO_object;

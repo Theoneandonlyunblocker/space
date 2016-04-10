@@ -5,6 +5,13 @@ import * as React from "react";
 
 /// <reference path="../../maprenderer.ts" />
 
+
+import MapRendererMapMode from "../../../src/MapRendererMapMode.ts";
+import MapRendererLayer from "../../../src/MapRendererLayer.ts";
+import MapRendererLayersListItem from "./MapRendererLayersListItem.ts";
+import MapRenderer from "../../../src/MapRenderer.ts";
+
+
 export interface PropTypes
 {
   mapRenderer: MapRenderer;

@@ -3,6 +3,10 @@ import * as React from "react";
 
 /// <reference path="defencebuilding.ts"/>
 
+
+import DefenceBuilding from "./DefenceBuilding.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

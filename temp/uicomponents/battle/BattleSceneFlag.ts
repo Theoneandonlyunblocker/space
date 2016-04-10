@@ -3,6 +3,10 @@ import * as React from "react";
 
 /// <reference path="../../flag.ts" />
 
+
+import Flag from "../../../src/Flag.ts";
+
+
 export interface PropTypes
 {
   flag: Flag;

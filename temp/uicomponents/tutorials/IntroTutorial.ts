@@ -8,6 +8,12 @@ import * as React from "react";
 
 /// <reference path="tutorial.ts" />
 
+
+import Tutorial from "./Tutorial.ts";
+import TopMenuPopup from "../popups/TopMenuPopup.ts";
+import PopupManager from "../popups/PopupManager.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

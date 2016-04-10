@@ -4,6 +4,11 @@ import * as React from "react";
 /// <reference path="popup.ts"/>
 /// <reference path="confirmpopup.ts"/>
 
+
+import Popup from "./Popup.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   onlyAllowOne?: boolean;

@@ -4,6 +4,10 @@ import * as React from "react";
 /// <reference path="../../player.ts" />
 /// <reference path="../mixins/updatewhenmoneychanges.ts" />
 
+
+import Player from "../../../src/Player.ts";
+
+
 export interface PropTypes
 {
   player: Player;

@@ -4,6 +4,13 @@ import * as React from "react";
 // TODO | remove this folder
 /// <reference path="itempurchaselist.ts" />
 
+
+import ItemTemplate from "../../../src/templateinterfaces/ItemTemplate.d.ts";
+import ItemPurchaseList from "./ItemPurchaseList.ts";
+import Item from "../../../src/Item.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

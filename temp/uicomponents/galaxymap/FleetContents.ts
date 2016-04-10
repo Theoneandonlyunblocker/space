@@ -6,6 +6,12 @@ import * as React from "react";
 /// <reference path="../../fleet.ts" />
 /// <reference path="../../player.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import FleetUnitInfo from "./FleetUnitInfo.ts";
+import Fleet from "../../../src/Fleet.ts";
+
+
 export interface PropTypes
 {
   fleet: Fleet;

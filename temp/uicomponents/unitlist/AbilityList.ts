@@ -1,4 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
+
+
+import AbilityBase from "../../../src/templateinterfaces/AbilityBase.d.ts";
+
 import * as React from "react";
 
 export interface PropTypes

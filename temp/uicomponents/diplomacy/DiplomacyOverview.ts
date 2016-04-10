@@ -4,6 +4,14 @@ import * as React from "react";
 /// <reference path="diplomacyactions.ts" />
 /// <reference path="diplomaticstatusplayer.ts" />
 
+
+import List from "../unitlist/List.ts";
+import DiplomacyActions from "./DiplomacyActions.ts";
+import Opinion from "./Opinion.ts";
+import DiplomaticStatusPlayer from "./DiplomaticStatusPlayer.ts";
+import PopupManager from "../popups/PopupManager.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

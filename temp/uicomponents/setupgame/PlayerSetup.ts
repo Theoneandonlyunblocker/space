@@ -4,6 +4,12 @@ import * as React from "react";
 /// <reference path="colorsetter.ts" />
 /// <reference path="flagsetter.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import FlagSetter from "./FlagSetter.ts";
+import ColorSetter from "./ColorSetter.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

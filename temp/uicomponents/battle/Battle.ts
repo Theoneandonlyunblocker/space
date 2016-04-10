@@ -10,6 +10,21 @@ import * as React from "react";
 /// <reference path="battledisplaystrength.ts"/>
 /// <reference path="battlebackground.ts"/>
 
+
+import Unit from "../unit/Unit.ts";
+import TurnOrder from "./TurnOrder.ts";
+import TurnCounter from "./TurnCounter.ts";
+import BattleBackground from "./BattleBackground.ts";
+import Options from "../../../src/options.ts";
+import MCTree from "../../../src/MCTree.ts";
+import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
+import BattleScore from "./BattleScore.ts";
+import BattleScene from "./BattleScene.ts";
+import Formation from "./Formation.ts";
+import BattleDisplayStrength from "./BattleDisplayStrength.ts";
+import AbilityTooltip from "./AbilityTooltip.ts";
+
+
 // TODO refactor
 // should have separate non-react class for battle logic
 export interface PropTypes

@@ -5,6 +5,13 @@ import * as React from "react";
 
 /// <reference path="resource.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import resources from "../../../modules/defaultmapmodes/maplayertemplates/resources.ts";
+import Resource from "./Resource.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

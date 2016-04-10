@@ -3,6 +3,11 @@ import * as React from "react";
 
 /// <reference path="../../player.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   player?: Player;

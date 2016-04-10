@@ -6,6 +6,15 @@ import * as React from "react";
 /// <reference path="../../player.ts" />
 /// <reference path="../../game.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import Game from "../../../src/Game.ts";
+import Options from "../../../src/options.ts";
+import Technology from "../technologies/Technology.ts";
+import TopMenuPopups from "./TopMenuPopups.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   player: Player;

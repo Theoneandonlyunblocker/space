@@ -6,6 +6,12 @@ import * as React from "react";
 
 /// <reference path="../../manufactory.ts" />
 
+
+import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton.ts";
+import ManufacturableThingsList from "./ManufacturableThingsList.ts";
+import Manufactory from "../../../src/Manufactory.ts";
+
+
 export interface PropTypes
 {
   manufactory: Manufactory;

@@ -4,6 +4,13 @@ import * as React from "react";
 /// <reference path="../galaxymap/optionsgroup.ts" />
 /// <reference path="notificationfilterlistitem.ts" />
 
+
+import OptionsGroup from "../galaxymap/OptionsGroup.ts";
+import NotificationFilterListItem from "./NotificationFilterListItem.ts";
+import NotificationFilter from "../../../src/NotificationFilter.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   filter: NotificationFilter;

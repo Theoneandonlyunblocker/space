@@ -5,6 +5,13 @@ import * as React from "react";
 /// <reference path="unitactions.ts"/>
 /// <reference path="unitstatus.ts"/>
 
+
+import UnitStatus from "./UnitStatus.ts";
+import UnitStrength from "./UnitStrength.ts";
+import GuardCoverage from "../../../src/GuardCoverage.ts";
+import UnitActions from "./UnitActions.ts";
+
+
 export interface PropTypes
 {
   name: string;

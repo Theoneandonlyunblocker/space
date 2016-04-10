@@ -4,6 +4,12 @@ import * as React from "react";
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="trademoney.ts" />
 
+
+import TradeMoney from "./TradeMoney.ts";
+import List from "../unitlist/List.ts";
+import Item from "../../../src/Item.ts";
+
+
 export interface PropTypes
 {
   tradeableItems?: reactTypeTODO_object; // ITradeableItems

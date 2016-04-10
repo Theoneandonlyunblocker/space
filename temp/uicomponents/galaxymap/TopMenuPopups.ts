@@ -11,6 +11,21 @@ import * as React from "react";
 /// <reference path="../production/productionoverview.ts" />
 
 /// <reference path="../popups/topmenupopup.ts" />
+
+
+import TopMenuPopup from "../popups/TopMenuPopup.ts";
+import PopupManager from "../popups/PopupManager.ts";
+import Player from "../../../src/Player.ts";
+import Game from "../../../src/Game.ts";
+import DiplomacyOverview from "../diplomacy/DiplomacyOverview.ts";
+import ItemEquip from "../unitlist/ItemEquip.ts";
+import EconomySummary from "./EconomySummary.ts";
+import TechnologiesList from "../technologies/TechnologiesList.ts";
+import ProductionOverview from "../production/ProductionOverview.ts";
+import LoadGame from "../saves/LoadGame.ts";
+import SaveGame from "../saves/SaveGame.ts";
+import OptionsList from "./OptionsList.ts";
+
 export interface PropTypes
 {
   player: Player;

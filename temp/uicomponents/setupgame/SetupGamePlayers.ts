@@ -3,6 +3,13 @@ import * as React from "react";
 
 /// <reference path="playersetup.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import Flag from "../../../src/Flag.ts";
+import PlayerSetup from "./PlayerSetup.ts";
+import Color from "../../../src/Color.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

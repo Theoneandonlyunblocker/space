@@ -6,6 +6,11 @@ import * as React from "react";
 /// <reference path="../../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="mapgenoptions.ts" />
 
+
+import MapGenOptions from "./MapGenOptions.ts";
+import MapGenTemplate from "../../../src/templateinterfaces/MapGenTemplate.d.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

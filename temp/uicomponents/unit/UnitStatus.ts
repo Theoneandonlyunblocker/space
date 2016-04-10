@@ -1,4 +1,10 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
+
+
+import Guard from "../../../src/shaders/Guard.ts";
+import Unit from "./Unit.ts";
+import GuardCoverage from "../../../src/GuardCoverage.ts";
+
 import * as React from "react";
 
 export interface PropTypes

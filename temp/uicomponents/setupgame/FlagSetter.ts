@@ -5,6 +5,14 @@ import * as React from "react";
 /// <reference path="../playerflag.ts" />
 
 /// <reference path="flagpicker.ts" />
+
+
+import FlagPicker from "./FlagPicker.ts";
+import PlayerFlag from "../PlayerFlag.ts";
+import Flag from "../../../src/Flag.ts";
+import Emblem from "../../../src/Emblem.ts";
+import SubEmblemTemplate from "../../../src/templateinterfaces/SubEmblemTemplate.d.ts";
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

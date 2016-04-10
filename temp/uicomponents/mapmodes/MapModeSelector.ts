@@ -3,6 +3,10 @@ import * as React from "react";
 
 /// <reference path="../../maprenderer.ts" />
 
+
+import MapRenderer from "../../../src/MapRenderer.ts";
+
+
 export interface PropTypes
 {
   mapRenderer: MapRenderer;

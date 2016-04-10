@@ -4,6 +4,10 @@ import * as React from "react";
 /// <reference path="../mixins/splitmultilinetext.ts" />
 /// <reference path="dontshowagain.ts" />
 
+
+import DontShowAgain from "./DontShowAgain.ts";
+
+
 export interface PropTypes
 {
   pages: reactTypeTODO_node[]; // React.PropTypes.node

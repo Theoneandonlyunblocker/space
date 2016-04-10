@@ -6,6 +6,12 @@ import * as React from "react";
 
 /// <reference path="tradeableitems.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import TradeableItems from "./TradeableItems.ts";
+import Trade from "../../../src/Trade.ts";
+
+
 export interface PropTypes
 {
   selfPlayer: Player;

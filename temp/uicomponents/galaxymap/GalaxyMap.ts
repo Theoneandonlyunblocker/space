@@ -5,6 +5,11 @@ import * as React from "react";
 
 /// <reference path="galaxymapui.ts"/>
 
+
+import GalaxyMapUI from "./GalaxyMapUI.ts";
+import Options from "../../../src/options.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

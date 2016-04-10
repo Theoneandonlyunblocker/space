@@ -5,6 +5,14 @@ import * as React from "react";
 
 /// <reference path="../../fleet.ts" />
 
+
+import Unit from "../unit/Unit.ts";
+import FleetContents from "./FleetContents.ts";
+import fleets from "../../../modules/defaultmapmodes/maplayertemplates/fleets.ts";
+import Fleet from "../../../src/Fleet.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   closeReorganization?: reactTypeTODO_func;

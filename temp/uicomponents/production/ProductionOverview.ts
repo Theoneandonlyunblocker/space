@@ -11,6 +11,16 @@ import * as React from "react";
 /// <reference path="../../player.ts" />
 /// <reference path="../../star.ts" />
 
+
+import BuildQueue from "./BuildQueue.ts";
+import Player from "../../../src/Player.ts";
+import ManufacturableThings from "./ManufacturableThings.ts";
+import Star from "../../../src/Star.ts";
+import ConstructManufactory from "./ConstructManufactory.ts";
+import ManufactoryStarsList from "./ManufactoryStarsList.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   player: Player;

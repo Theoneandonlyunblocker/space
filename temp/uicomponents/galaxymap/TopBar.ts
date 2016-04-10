@@ -5,6 +5,14 @@ import * as React from "react";
 /// <reference path="topbarresources.ts" />
 /// <reference path="../playerflag.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import PlayerFlag from "../PlayerFlag.ts";
+import PlayerMoney from "./PlayerMoney.ts";
+import TopBarResources from "./TopBarResources.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

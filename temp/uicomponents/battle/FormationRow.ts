@@ -11,6 +11,14 @@ import * as React from "react";
 
 /// <reference path="../unit/unitwrapper.ts"/>
 
+
+import Unit from "../unit/Unit.ts";
+import UnitWrapper from "../unit/UnitWrapper.ts";
+import Battle from "./Battle.ts";
+import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
+import UnitBattleSide from "../../../src/UnitBattleSide.ts";
+
+
 export interface PropTypes
 {
   row: Unit[];

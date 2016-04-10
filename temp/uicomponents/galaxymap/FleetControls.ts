@@ -3,6 +3,11 @@ import * as React from "react";
 
 /// <reference path="../../fleet.ts" />
 
+
+import Fleet from "../../../src/Fleet.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   fleet: Fleet;

@@ -11,6 +11,19 @@ import * as React from "react";
 /// <reference path="../tutorials/introtutorial.ts" />
 
 
+import MapModeSettings from "../mapmodes/MapModeSettings.ts";
+import TopBar from "./TopBar.ts";
+import Notifications from "../notifications/Notifications.ts";
+import StarInfo from "./StarInfo.ts";
+import FleetSelection from "./FleetSelection.ts";
+import Star from "../../../src/Star.ts";
+import TopMenu from "./TopMenu.ts";
+import PossibleActions from "../possibleactions/PossibleActions.ts";
+import IntroTutorial from "../tutorials/IntroTutorial.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

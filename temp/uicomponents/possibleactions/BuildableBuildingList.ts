@@ -4,6 +4,13 @@ import * as React from "react";
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="buildablebuilding.ts" />
 
+
+import BuildingTemplate from "../../../src/templateinterfaces/BuildingTemplate.d.ts";
+import List from "../unitlist/List.ts";
+import BuildableBuilding from "./BuildableBuilding.ts";
+import Building from "../../../src/Building.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

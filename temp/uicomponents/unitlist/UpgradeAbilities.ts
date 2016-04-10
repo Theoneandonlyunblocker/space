@@ -3,6 +3,10 @@ import * as React from "react";
 
 /// <reference path="abilitylist.ts" />
 
+
+import AbilityList from "./AbilityList.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

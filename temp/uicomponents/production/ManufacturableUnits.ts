@@ -4,6 +4,14 @@ import * as React from "react";
 /// <reference path="manufacturablethingslist.ts" />
 /// <reference path="manufactoryupgradebutton.ts" />
 
+
+import Star from "../../../src/Star.ts";
+import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate.d.ts";
+import ManufacturableThingsList from "./ManufacturableThingsList.ts";
+import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton.ts";
+import Manufactory from "../../../src/Manufactory.ts";
+
+
 export interface PropTypes
 {
   selectedStar?: Star;

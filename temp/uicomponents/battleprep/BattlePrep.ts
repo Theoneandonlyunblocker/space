@@ -8,6 +8,20 @@ import * as React from "react";
 /// <reference path="../battle/formation.ts" />
 /// <reference path="../battle/battlebackground.ts" />
 
+
+import Unit from "../unit/Unit.ts";
+import eventManager from "../../../src/eventManager.ts";
+import MenuUnitInfo from "../unitlist/MenuUnitInfo.ts";
+import BattleBackground from "../battle/BattleBackground.ts";
+import ItemList from "../unitlist/ItemList.ts";
+import Item from "../../../src/Item.ts";
+import Formation from "../battle/Formation.ts";
+import Options from "../../../src/options.ts";
+import BattleSimulator from "../../../src/BattleSimulator.ts";
+import UnitList from "../unitlist/UnitList.ts";
+import BattleInfo from "./BattleInfo.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

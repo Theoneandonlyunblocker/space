@@ -5,6 +5,15 @@ import * as React from "react";
 /// <reference path="fleetcontents.ts"/>
 /// <reference path="fleetreorganization.ts"/>
 
+
+import eventManager from "../../../src/eventManager.ts";
+import FleetInfo from "./FleetInfo.ts";
+import FleetContents from "./FleetContents.ts";
+import fleets from "../../../modules/defaultmapmodes/maplayertemplates/fleets.ts";
+import FleetReorganization from "./FleetReorganization.ts";
+import Fleet from "../../../src/Fleet.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

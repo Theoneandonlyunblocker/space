@@ -4,6 +4,11 @@ import * as React from "react";
 /// <reference path="../galaxymap/defencebuildinglist.ts"/>
 /// <reference path="../playerflag.ts" />
 
+
+import PlayerFlag from "../PlayerFlag.ts";
+import DefenceBuildingList from "../galaxymap/DefenceBuildingList.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

@@ -6,6 +6,12 @@ import * as React from "react";
 /// <reference path="setupgameplayers.ts" />
 /// <reference path="mapsetup.ts" />
 
+
+import SetupGamePlayers from "./SetupGamePlayers.ts";
+import MapSetup from "./MapSetup.ts";
+import MapGenFunction from "../../../src/templateinterfaces/MapGenFunction.d.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

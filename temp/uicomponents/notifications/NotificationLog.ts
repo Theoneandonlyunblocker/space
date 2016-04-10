@@ -5,6 +5,14 @@ import * as React from "react";
 /// <reference path="notification.ts" />
 /// <reference path="notificationfilterbutton.ts" />
 
+
+import Notification from "./Notification.ts";
+import ConfirmPopup from "../popups/ConfirmPopup.ts";
+import NotificationFilterButton from "./NotificationFilterButton.ts";
+import PopupManager from "../popups/PopupManager.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   log: NotificationLog;

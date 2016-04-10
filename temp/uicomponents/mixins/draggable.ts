@@ -1,5 +1,9 @@
 /// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 
+
+import eventManager from "../../../src/eventManager.ts";
+
+
 export var Draggable =
 {
   getDefaultProps: function()

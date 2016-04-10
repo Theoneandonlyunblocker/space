@@ -5,6 +5,10 @@ import * as React from "react";
 
 /// <reference path="colorpicker.ts" />
 
+
+import ColorPicker from "./ColorPicker.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

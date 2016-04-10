@@ -1,4 +1,8 @@
 // used to register event listeners for manually firing drop events because touch events suck
+
+
+import eventManager from "../../../src/eventManager.ts";
+
 export var DropTarget =
 {
   componentDidMount: function()

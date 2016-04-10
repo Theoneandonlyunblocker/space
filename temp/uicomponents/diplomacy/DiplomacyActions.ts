@@ -5,6 +5,14 @@ import * as React from "react";
 
 /// <reference path="../trade/tradeoverview.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import Trade from "../../../src/Trade.ts";
+import TradeOverview from "../trade/TradeOverview.ts";
+import TopMenuPopup from "../popups/TopMenuPopup.ts";
+import PopupManager from "../popups/PopupManager.ts";
+
+
 export interface PropTypes
 {
   player: Player;

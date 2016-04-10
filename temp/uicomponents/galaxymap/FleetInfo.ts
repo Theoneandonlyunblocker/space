@@ -3,6 +3,11 @@ import * as React from "react";
 
 /// <reference path="fleetcontrols.ts"/>
 
+
+import FleetControls from "./FleetControls.ts";
+import Fleet from "../../../src/Fleet.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

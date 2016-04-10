@@ -4,6 +4,11 @@ import * as React from "react";
 /// <reference path="../mixins/draggable.ts" />
 /// <reference path="../unit/unitstrength.ts" />
 
+
+import Unit from "../unit/Unit.ts";
+import UnitStrength from "../unit/UnitStrength.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

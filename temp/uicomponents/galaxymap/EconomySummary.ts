@@ -4,6 +4,11 @@ import * as React from "react";
 /// <reference path="../unitlist/list.ts"/>
 /// <reference path="economysummaryitem.ts"/>
 
+
+import List from "../unitlist/List.ts";
+import EconomySummaryItem from "./EconomySummaryItem.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

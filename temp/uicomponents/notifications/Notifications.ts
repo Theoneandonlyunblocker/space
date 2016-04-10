@@ -4,6 +4,10 @@ import * as React from "react";
 /// <reference path="../../notificationlog.ts" />
 /// <reference path="notificationlog.ts" />
 
+
+import NotificationLog from "./NotificationLog.ts";
+
+
 export interface PropTypes
 {
   log: NotificationLog;

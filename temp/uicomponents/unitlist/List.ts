@@ -3,6 +3,10 @@ import * as React from "react";
 
 /// <reference path="../mixins/splitmultilinetext.ts" />
 
+
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface IListColumn
 {
   label: string;

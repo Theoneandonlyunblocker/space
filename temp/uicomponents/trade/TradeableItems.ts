@@ -5,6 +5,10 @@ import * as React from "react";
 
 /// <reference path="tradeableitemslist.ts" />
 
+
+import TradeableItemsList from "./TradeableItemsList.ts";
+
+
 export interface PropTypes
 {
   tradeableItems: reactTypeTODO_object; // ITradeableItems

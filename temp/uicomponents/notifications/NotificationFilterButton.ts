@@ -4,6 +4,13 @@ import * as React from "react";
 /// <reference path="../../notificationfilter.ts" />
 /// <reference path="notificationfilterlist.ts" />
 
+
+import PopupManager from "../popups/PopupManager.ts";
+import NotificationFilterList from "./NotificationFilterList.ts";
+import NotificationFilter from "../../../src/NotificationFilter.ts";
+import TopMenuPopup from "../popups/TopMenuPopup.ts";
+
+
 export interface PropTypes
 {
   filter: NotificationFilter;

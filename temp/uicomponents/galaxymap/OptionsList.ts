@@ -11,6 +11,20 @@ import * as React from "react";
 
 /// <reference path="../../notificationlog.ts" />
 
+
+import Unit from "../unit/Unit.ts";
+import OptionsCheckbox from "./OptionsCheckbox.ts";
+import PopupManager from "../popups/PopupManager.ts";
+import Options from "../../../src/options.ts";
+import OptionsNumericField from "./OptionsNumericField.ts";
+import Battle from "../battle/Battle.ts";
+import OptionsGroup from "./OptionsGroup.ts";
+import ConfirmPopup from "../popups/ConfirmPopup.ts";
+import NotificationFilterButton from "../notifications/NotificationFilterButton.ts";
+import NotificationLog from "../notifications/NotificationLog.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   log: NotificationLog;

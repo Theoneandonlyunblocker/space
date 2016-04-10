@@ -1,4 +1,10 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
+
+
+import NotificationFilterState from "../../../src/NotificationFilterState.ts";
+import NotificationFilter from "../../../src/NotificationFilter.ts";
+import eventManager from "../../../src/eventManager.ts";
+
 import * as React from "react";
 
 export interface PropTypes

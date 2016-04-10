@@ -4,6 +4,11 @@ import * as React from "react";
 /// <reference path="../mixins/draggable.ts" />
 /// <reference path="resizehandle.ts" />
 
+
+import eventManager from "../../../src/eventManager.ts";
+import PopupResizeHandle from "./PopupResizeHandle.ts";
+
+
 export interface PropTypes
 {
   initialPosition?: reactTypeTODO_object;

@@ -5,6 +5,12 @@ import * as React from "react";
 
 /// <reference path="technology.ts" />
 
+
+import Technology from "./Technology.ts";
+import PlayerTechnology from "../../../src/PlayerTechnology.ts";
+import eventManager from "../../../src/eventManager.ts";
+
+
 export interface PropTypes
 {
   playerTechnology: PlayerTechnology;

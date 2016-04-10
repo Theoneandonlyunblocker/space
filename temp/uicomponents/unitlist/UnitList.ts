@@ -4,6 +4,12 @@ import * as React from "react";
 /// <reference path="list.ts" />
 /// <reference path="unitlistitem.ts" />
 
+
+import Unit from "../unit/Unit.ts";
+import List from "./List.ts";
+import UnitListItem from "./UnitListItem.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

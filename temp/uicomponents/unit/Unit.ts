@@ -7,6 +7,13 @@ import * as React from "react";
 /// <reference path="unitportrait.ts" />
 /// <reference path="../mixins/draggable.ts" />
 
+
+import UnitPortrait from "./UnitPortrait.ts";
+import UnitStatusEffects from "./UnitStatusEffects.ts";
+import UnitInfo from "./UnitInfo.ts";
+import UnitIcon from "./UnitIcon.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

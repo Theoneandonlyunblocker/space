@@ -5,6 +5,11 @@ import * as React from "react";
 
 /// <reference path="../../star.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import Star from "../../../src/Star.ts";
+
+
 export interface PropTypes
 {
   star: Star;

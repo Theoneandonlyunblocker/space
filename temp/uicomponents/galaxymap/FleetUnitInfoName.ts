@@ -3,6 +3,10 @@ import * as React from "react";
 
 /// <reference path="../../unit.ts" />
 
+
+import Unit from "../unit/Unit.ts";
+
+
 export interface PropTypes
 {
   unit: Unit;

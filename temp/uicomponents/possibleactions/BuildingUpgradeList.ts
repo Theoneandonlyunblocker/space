@@ -6,6 +6,13 @@ import * as React from "react";
 
 /// <reference path="buildingupgradelistitem.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import BuildingUpgradeListItem from "./BuildingUpgradeListItem.ts";
+import Star from "../../../src/Star.ts";
+import Building from "../../../src/Building.ts";
+
+
 export interface PropTypes
 {
   star: Star;

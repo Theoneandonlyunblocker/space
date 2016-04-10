@@ -7,6 +7,13 @@ import * as React from "react";
 /// <reference path="../../star.ts" />
 /// <reference path="../../manufactory.ts" />
 
+
+import Player from "../../../src/Player.ts";
+import ManufacturableItems from "./ManufacturableItems.ts";
+import ManufacturableUnits from "./ManufacturableUnits.ts";
+import Star from "../../../src/Star.ts";
+
+
 export interface PropTypes
 {
   selectedStar?: Star;

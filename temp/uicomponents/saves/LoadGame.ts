@@ -6,6 +6,12 @@ import * as React from "react";
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="savelist.ts"/>
 
+
+import SaveList from "./SaveList.ts";
+import PopupManager from "../popups/PopupManager.ts";
+import ConfirmPopup from "../popups/ConfirmPopup.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

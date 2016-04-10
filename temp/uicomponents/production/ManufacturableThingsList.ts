@@ -3,6 +3,10 @@ import * as React from "react";
 
 /// <reference path="manufacturablethingslistitem.ts" />
 
+
+import ManufacturableThingsListItem from "./ManufacturableThingsListItem.ts";
+
+
 export interface PropTypes
 {
   manufacturableThings: reactTypeTODO_couldntConvert;

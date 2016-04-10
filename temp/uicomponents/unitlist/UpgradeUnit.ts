@@ -4,6 +4,15 @@ import * as React from "react";
 /// <reference path="upgradeabilities.ts" />
 /// <reference path="upgradeattributes.ts" />
 
+
+import Unit from "../unit/Unit.ts";
+import AbilityBase from "../../../src/templateinterfaces/AbilityBase.d.ts";
+import UpgradeAttributes from "./UpgradeAttributes.ts";
+import UpgradeAbilities from "./UpgradeAbilities.ts";
+import TopMenuPopup from "../popups/TopMenuPopup.ts";
+import PopupManager from "../popups/PopupManager.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

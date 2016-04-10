@@ -3,6 +3,12 @@ import * as React from "react";
 
 /// <reference path="itempurchaselistitem.ts" />
 
+
+import ItemPurchaseListItem from "./ItemPurchaseListItem.ts";
+import List from "../unitlist/List.ts";
+import Item from "../../../src/Item.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

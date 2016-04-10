@@ -6,6 +6,11 @@ import * as React from "react";
 
 /// <reference path="attitudemodifierinfo.ts" />
 
+
+import List from "../unitlist/List.ts";
+import AttitudeModifierInfo from "./AttitudeModifierInfo.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types

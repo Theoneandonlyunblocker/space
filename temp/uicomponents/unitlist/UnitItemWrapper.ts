@@ -5,6 +5,10 @@ import * as React from "react";
 
 /// <reference path="unititem.ts"/>
 
+
+import UnitItem from "./UnitItem.ts";
+
+
 export interface PropTypes
 {
   // TODO refactor | add prop types
