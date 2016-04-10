@@ -51,7 +51,7 @@ class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     var minUnits = 7;
 
-    var containerElement = this.getDOMNode();
+    var containerElement = React.findDOMNode(this);
 
     var containerWidth = containerElement.getBoundingClientRect().width;
     containerWidth -= 30;

@@ -55,7 +55,7 @@ class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       this.clearSelectedEmblem();
       return;
     }
-    this.refs.imageUploader.getDOMNode().value = null;
+    React.findDOMNode(this.refs.imageUploader).value = null;
     this.props.handleSelectEmblem(emblemTemplate);
     this.setState({selectedEmblem: emblemTemplate});
   }
@@ -69,7 +69,7 @@ class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     if (!this.props.uploadFiles) throw new Error();
 
-    var files = this.refs.imageUploader.getDOMNode().files;
+    var files = React.findDOMNode(this.refs.imageUploader).files;
 
     this.props.uploadFiles(files);
   }

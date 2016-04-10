@@ -75,7 +75,7 @@ class NotificationLog_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
 
   componentDidUpdate()
   {
-    var domNode = this.getDOMNode();
+    var domNode = React.findDOMNode(this);
     if (!isFinite(this.scrollTop))
     {
       this.scrollTop = domNode.scrollTop;

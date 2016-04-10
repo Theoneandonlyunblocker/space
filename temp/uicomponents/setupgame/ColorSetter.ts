@@ -71,7 +71,7 @@ class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     var focusGraceTime = 500;
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
 
-    var node = this.refs.main.getDOMNode();
+    var node = React.findDOMNode(this.refs.main);
     if (e.target === node || node.contains(e.target))
     {
       return;
@@ -127,7 +127,7 @@ class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   getClientRect()
   {
-    return this.getDOMNode().firstChild.getBoundingClientRect();
+    return React.findDOMNode(this).firstChild.getBoundingClientRect();
   }
 
   render()

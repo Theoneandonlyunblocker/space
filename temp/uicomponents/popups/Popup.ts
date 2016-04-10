@@ -79,7 +79,7 @@ class Popup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   setInitialPosition()
   {
-    var domRect = this.getDOMNode().getBoundingClientRect();
+    var domRect = React.findDOMNode(this).getBoundingClientRect();
     var rect =
     {
       top: domRect.top,

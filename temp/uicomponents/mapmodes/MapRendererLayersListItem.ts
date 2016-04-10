@@ -64,7 +64,7 @@ class MapRendererLayersListItem_COMPONENT_TODO extends React.Component<PropTypes
   {
     if (!this.cachedMidPoint)
     {
-      var rect = this.getDOMNode().getBoundingClientRect();
+      var rect = React.findDOMNode(this)().getBoundingClientRect();
       this.cachedMidPoint = rect.top + rect.height / 2;
     }
 

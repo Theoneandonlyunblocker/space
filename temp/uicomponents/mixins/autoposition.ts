@@ -86,7 +86,7 @@ export var AutoPosition =
       flip if doesnt fit
      */
     var parentRect = this.props.getParentNode().getBoundingClientRect();
-    var ownNode = this.getDOMNode();
+    var ownNode = React.findDOMNode(this);
     var rect = ownNode.getBoundingClientRect();
 
     var ySide = this.props.ySide || "top";

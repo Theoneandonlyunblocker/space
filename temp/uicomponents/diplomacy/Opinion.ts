@@ -56,7 +56,7 @@ class Opinion_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   getOpinionTextNode()
   {
-    return this.getDOMNode().firstChild;
+    return React.findDOMNode(this).firstChild;
   }
 
   getColor()

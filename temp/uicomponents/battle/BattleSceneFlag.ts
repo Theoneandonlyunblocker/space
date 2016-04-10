@@ -56,19 +56,19 @@ class BattleSceneFlag_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
 
   setFlag()
   {
-    var DOMNode = this.getDOMNode();
+    var DOMNode = React.findDOMNode(this);
     if (this.flagCanvas)
     {
       DOMNode.removeChild(this.flagCanvas);
     }
 
     this.flagCanvas = this.drawFlag();
-    this.getDOMNode().appendChild(this.flagCanvas);
+    React.findDOMNode(this).appendChild(this.flagCanvas);
   }
 
   drawFlag()
   {
-    var bounds = this.getDOMNode().getBoundingClientRect();
+    var bounds = React.findDOMNode(this).getBoundingClientRect();
     var width = bounds.width;
 
     var canvas = this.props.flag.getCanvas(width, bounds.height, true, false);

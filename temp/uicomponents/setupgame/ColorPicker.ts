@@ -65,7 +65,7 @@ class ColorPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   setPosition()
   {
     var parentRect = this.props.getParentPosition();
-    var domNode = this.getDOMNode();
+    var domNode = React.findDOMNode(this);
     domNode.style.top = "" + parentRect.bottom + "px";
     domNode.style.left = "" + parentRect.left + "px";
   }

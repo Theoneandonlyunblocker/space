@@ -32,8 +32,8 @@ class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   handleResize()
   {
-    var container = this.refs.container.getDOMNode();
-    var wrapperRect = this.refs.wrapper.getDOMNode().getBoundingClientRect();
+    var container = React.findDOMNode(this.refs.container);
+    var wrapperRect = React.findDOMNode(this.refs.wrapper).getBoundingClientRect();
     container.classList.remove("light-box-horizontal-padding");
     container.classList.remove("light-box-fill-horizontal");
 

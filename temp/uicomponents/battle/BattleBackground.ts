@@ -55,7 +55,7 @@ class BattleBackground_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   {
     this.props.renderer.isBattleBackground = true;
 
-    this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
+    this.props.renderer.bindRendererView(React.findDOMNode(this.refs.pixiContainer));
 
     window.addEventListener("resize", this.handleResize, false);
   }

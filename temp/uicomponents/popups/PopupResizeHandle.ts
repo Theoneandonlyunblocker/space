@@ -36,14 +36,14 @@ class PopupResizeHandle_COMPONENT_TODO extends React.Component<PropTypes, StateT
   
   // onDragStart()
   // {
-  //   var rect = this.getDOMNode().getBoundingClientRect();
+  //   var rect = React.findDOMNode(this).getBoundingClientRect();
   //   this.originBottom = rect.bottom;
   //   this.originRight = rect.right;
   // }
 
   onDragMove(x: number, y: number)
   {
-    var rect = this.getDOMNode().getBoundingClientRect();
+    var rect = React.findDOMNode(this).getBoundingClientRect();
     this.props.handleResize(x + rect.width, y + rect.height);
   }
 

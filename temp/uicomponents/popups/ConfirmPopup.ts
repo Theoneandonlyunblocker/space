@@ -31,7 +31,7 @@ class ConfirmPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   componentDidMount()
   {
-    this.refs.okButton.getDOMNode().focus();
+    React.findDOMNode(this.refs.okButton).focus();
   }
 
   handleOk()

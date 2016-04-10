@@ -70,7 +70,7 @@ class BattleScene_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
     if (this.props.battleState === "start" && newProps.battleState === "active")
     {
-      this.battleScene = new BattleScene(this.getDOMNode());
+      this.battleScene = new BattleScene(React.findDOMNode(this));
       this.battleScene.resume();
     }
     else if (this.props.battleState === "active" && newProps.battleState === "finish")

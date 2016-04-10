@@ -92,9 +92,9 @@ class TopMenu_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     if (!this.cachedTopMenuWidth)
     {
-      this.cachedTopMenuWidth = this.refs.topMenu.getDOMNode().getBoundingClientRect().width;
+      this.cachedTopMenuWidth = React.findDOMNode(this.refs.topMenu).getBoundingClientRect().width;
 
-      var buttons = this.refs.topMenuItems.getDOMNode().children;
+      var buttons = React.findDOMNode(this.refs.topMenuItems).children;
 
       var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
 

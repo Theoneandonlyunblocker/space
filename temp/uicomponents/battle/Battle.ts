@@ -121,7 +121,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   getBlurArea()
   {
-    return this.refs.formationsContainer.getDOMNode().getBoundingClientRect();
+    return React.findDOMNode(this.refs.formationsContainer).getBoundingClientRect();
   }
 
   clearHoveredUnit()
@@ -167,7 +167,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     }
 
 
-    var tooltipElement = this.refs.abilityTooltip.getDOMNode();
+    var tooltipElement = React.findDOMNode(this.refs.abilityTooltip);
 
     if(
       toElement !== this.state.abilityTooltip.parentElement &&

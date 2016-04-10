@@ -43,14 +43,14 @@ export var Draggable =
   }
   componentDidMount: function()
   {
-    this.DOMNode = this.getDOMNode();
+    this.DOMNode = React.findDOMNode(this);
     this.containerElement = document.body;
     if (this.props.containerElement)
     {
       if (this.props.containerElement.getDOMNode)
       {
         // React component
-        this.containerElement = this.props.containerElement.getDOMNode();
+        this.containerElement = React.findDOMNode(this.props.containerElement);
       }
       // DOM node
       else this.containerElement = this.props.containerElement;
@@ -80,7 +80,7 @@ export var Draggable =
 
     if (this.state.dragging) return;
 
-    var clientRect = this.getDOMNode().getBoundingClientRect();
+    var clientRect = React.findDOMNode(this).getBoundingClientRect();
 
     // var e;
     // if (isFinite(e.clientX))
@@ -140,7 +140,7 @@ export var Draggable =
 
       if (delta >= this.props.dragThreshhold)
       {
-        var ownNode = this.getDOMNode();
+        var ownNode = React.findDOMNode(this);
 
         var stateObj: any =
         {
@@ -203,8 +203,8 @@ export var Draggable =
     }
     else
     {
-      domWidth = parseInt(this.getDOMNode().offsetWidth);
-      domHeight = parseInt(this.getDOMNode().offsetHeight);
+      domWidth = parseInt(React.findDOMNode(this).offsetWidth);
+      domHeight = parseInt(React.findDOMNode(this).offsetHeight);
     }
 
     var minX = this.containerRect.left;
