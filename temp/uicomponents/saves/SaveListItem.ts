@@ -61,19 +61,6 @@ class SaveListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       React.DOM.td(cellProps, cellContent)
     );
   }
-
-  state: StateType;
-
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    
-  }
   
   render()
   {

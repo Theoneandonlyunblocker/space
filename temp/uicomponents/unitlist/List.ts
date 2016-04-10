@@ -6,76 +6,65 @@ import * as React from "react";
 
 import eventManager from "../../../src/eventManager.ts";
 
+import ListItem from "./ListItem.d.ts";
+import ListColumn from "./ListColumn.d.ts";
 
-export interface IListColumn
-{
-  label: string;
-  title?: string;
-  key: string;
-  defaultOrder?: string; // optional only if notSortable = true
-  order?: string; // dont set this manually
-
-  notSortable?: boolean;
-  propToSortBy?: string;
-  sortingFunction?: <T>(a: T, b: T) => number;
-}
-export interface IListItem
-{
-  key: string | number;
-  data: any;
-}
 export interface PropTypes
 {
-  initialColumns: reactTypeTODO_object[]; // IListColumn[]
-
-  listItems: reactTypeTODO_object[]; // IListItem[]
-
-  initialSortOrder?: reactTypeTODO_object[]; // IListColumn[]
-
+  initialColumns: ListColumn[];
+  listItems: ListItem[];
+  initialSortOrder?: ListColumn[];
   keyboardSelect?: boolean; // boolean = false
-
-  initialSelected?: reactTypeTODO_object; // IListItem
-
+  initialSelected?: ListItem;
   tabIndex?: number; // number = 1
-
   noHeader?: boolean; // boolean = false
-
   addSpacer?: boolean; // boolean = false
-
-  onRowChange?: reactTypeTODO_func; // (row: IListItem) => void
-
-  colStylingFN?: reactTypeTODO_func; // (column: IListColumn, props: any) => any
-
+  onRowChange?: (row: ListItem) => void;
+  colStylingFN?: (column: ListColumn, props: any) => any;
 }
 
 interface StateType
 {
+  columns: ListColumn[];
+  selectedColumn: ListColumn;
+  sortingOrder: ListColumn[];
+  selected: ListItem[];
   // TODO refactor | add state type
 }
 
 class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
-}
-  mixins: [SplitMultilineText],
+{
+  mixins: [SplitMultilineText];
+  sortedItems: ListItem[] = [];
+  state: StateType;
 
-  sortedItems: [], // IListItem[]
-
-
-  getInitialState: function()
+  constructor(props: PropTypes)
   {
-    var initialColumn: IListColumn = this.props.initialSortOrder ?
+    super(props);
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    
+  }
+
+  getInitialState(): StateType
+  {
+    var initialColumn: ListColumn = this.props.initialSortOrder ?
       this.props.initialSortOrder[0] :
       this.props.initialColumns[0];
 
     return(
     {
-      columns: reactTypeTODO_any = this.props.initialColumns;
+      columns: this.props.initialColumns,
       selected: null, // set in componentDidMount
-      selectedColumn: reactTypeTODO_any = initialColumn;
+      selectedColumn: initialColumn,
       sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
     });
-  },
+  }
 
-  componentDidMount: function()
+  componentDidMount()
   {
     var self = this;
 
@@ -118,20 +107,20 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     {
       this.setState({selected: reactTypeTODO_any = this.sortedItems[0]});
     }
-  },
+  }
 
-  componentWillUnmount: function()
+  componentWillUnmount()
   {
     window.removeEventListener("resize", this.setDesiredHeight);
     eventManager.removeEventListener("popupResized", this.setDesiredHeight);
-  },
+  }
 
-  componentDidUpdate: function()
+  componentDidUpdate()
   {
     this.setDesiredHeight();
-  },
+  }
 
-  setDesiredHeight: function()
+  setDesiredHeight()
   {
     var ownNode = this.getDOMNode();
     var innerNode = this.refs.inner.getDOMNode();
@@ -155,9 +144,9 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
     ownNode.style.height = "" + desiredHeight + "px";
     innerNode.style.height = "" + desiredHeight + "px";
-  },
+  }
 
-  handleScroll: function(e: React.UIEvent)
+  handleScroll(e: React.UIEvent)
   {
     // scrolls header to match list contents
     var target = <Element> e.target;
@@ -170,9 +159,9 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     {
       titles[i].style.marginLeft = marginString;
     }
-  },
+  }
 
-  makeInitialSortingOrder: function(columns: IListColumn[], initialColumn: IListColumn)
+  makeInitialSortingOrder(columns: ListColumn[], initialColumn: ListColumn)
   {
     var initialSortOrder = this.props.initialSortOrder;
     if (!initialSortOrder || initialSortOrder.length < 1)
@@ -197,9 +186,9 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     }
 
     return order;
-  },
+  }
 
-  getNewSortingOrder: function(newColumn: IListColumn)
+  getNewSortingOrder(newColumn: ListColumn)
   {
     var order = this.state.sortingOrder.slice(0);
     var current = order.indexOf(newColumn);
@@ -212,9 +201,9 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     order.unshift(newColumn);
 
     return order;
-  },
+  }
 
-  handleSelectColumn: function(column: IListColumn)
+  handleSelectColumn(column: ListColumn)
   {
     if (column.notSortable) return;
     function getReverseOrder(order: string)
@@ -236,9 +225,9 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
         sortingOrder: this.getNewSortingOrder(column)
       })
     }
-  },
+  }
 
-  handleSelectRow: function(row: IListItem)
+  handleSelectRow(row: ListItem)
   {
     if (this.props.onRowChange && row) this.props.onRowChange.call(null, row);
 
@@ -246,9 +235,9 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     {
       selected: row
     });
-  },
+  }
 
-  sort: function()
+  sort()
   {
     var itemsToSort = this.props.listItems;
     var columnsToTry = this.state.columns;
@@ -259,13 +248,13 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     } = {};
 
 
-    function makeSortingFunction(column: IListColumn)
+    function makeSortingFunction(column: ListColumn)
     {
       if (column.sortingFunction) return column.sortingFunction;
 
       var propToSortBy = column.propToSortBy || column.key;
 
-      return (function (a: IListItem, b: IListItem)
+      return (function (a: ListItem, b: ListItem)
       {
         var a1 = a.data[propToSortBy];
         var b1 = b.data[propToSortBy];
@@ -276,7 +265,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       })
     }
 
-    itemsToSort.sort(function(a: IListItem, b: IListItem)
+    itemsToSort.sort(function(a: ListItem, b: ListItem)
     {
       var result = 0;
       for (var i = 0; i < sortOrder.length; i++)
@@ -303,9 +292,9 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     });
 
     this.sortedItems = itemsToSort;
-  },
+  }
 
-  shiftSelection: function(amountToShift: number)
+  shiftSelection(amountToShift: number)
   {
     var reverseIndexes = {};
     for (var i = 0; i < this.sortedItems.length; i++)
@@ -320,14 +309,14 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     }
 
     this.handleSelectRow(this.sortedItems[nextIndex]);
-  },
-  render: function()
+  }
+  render()
   {
     var self = this;
     var columns: ReactDOMPlaceHolder[] = [];
     var headerLabels: ReactDOMPlaceHolder[] = [];
 
-    this.state.columns.forEach(function(column: IListColumn)
+    this.state.columns.forEach(function(column: ListColumn)
     {
       var colProps: any =
       {
@@ -378,11 +367,11 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
     this.sort();
 
-    var sortedItems: IListItem[] = this.sortedItems;
+    var sortedItems: ListItem[] = this.sortedItems;
     
     var rows: ReactDOMPlaceHolder[] = [];
 
-    sortedItems.forEach(function(item: IListItem, i: number)
+    sortedItems.forEach(function(item: ListItem, i: number)
     {
       item.data.key = item.key;
       item.data.activeColumns = self.state.columns;
@@ -453,7 +442,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     );
   }
   
-}));
+}
 
 const Factory: React.Factory<PropTypes> = React.createFactory(List_COMPONENT_TODO);
 export default Factory;
