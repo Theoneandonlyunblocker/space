@@ -7,6 +7,7 @@ import * as React from "react";
 /// <reference path="battlesceneflag.ts" />
 
 
+import BattleScene from "../../../src/BattleScene.ts";
 import Unit from "../unit/Unit.ts";
 import BattleSFXTemplate from "../../../src/templateinterfaces/BattleSFXTemplate.d.ts";
 import Player from "../../../src/Player.ts";

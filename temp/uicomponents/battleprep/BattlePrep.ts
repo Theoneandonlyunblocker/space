@@ -9,6 +9,7 @@ import * as React from "react";
 /// <reference path="../battle/battlebackground.ts" />
 
 
+import BattlePrep from "../../../src/BattlePrep.ts";
 import Unit from "../unit/Unit.ts";
 import eventManager from "../../../src/eventManager.ts";
 import MenuUnitInfo from "../unitlist/MenuUnitInfo.ts";

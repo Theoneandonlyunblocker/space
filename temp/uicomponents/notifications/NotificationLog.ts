@@ -6,6 +6,7 @@ import * as React from "react";
 /// <reference path="notificationfilterbutton.ts" />
 
 
+import NotificationLog from "../../../src/NotificationLog.ts";
 import Notification from "./Notification.ts";
 import ConfirmPopup from "../popups/ConfirmPopup.ts";
 import NotificationFilterButton from "./NotificationFilterButton.ts";

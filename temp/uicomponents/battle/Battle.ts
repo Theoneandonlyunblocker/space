@@ -11,6 +11,7 @@ import * as React from "react";
 /// <reference path="battlebackground.ts"/>
 
 
+import Battle from "../../../src/Battle.ts";
 import Unit from "../unit/Unit.ts";
 import TurnOrder from "./TurnOrder.ts";
 import TurnCounter from "./TurnCounter.ts";

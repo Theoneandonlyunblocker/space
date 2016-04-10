@@ -5,6 +5,7 @@ import * as React from "react";
 /// <reference path="notificationlog.ts" />
 
 
+import Notifications from "../../../modules/defaultnotifications/NotificationTemplates.ts";
 import NotificationLog from "./NotificationLog.ts";
 
 

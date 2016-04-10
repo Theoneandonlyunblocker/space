@@ -6,6 +6,7 @@ import * as React from "react";
 /// <reference path="galaxymapui.ts"/>
 
 
+import GalaxyMap from "../../../src/GalaxyMap.ts";
 import GalaxyMapUI from "./GalaxyMapUI.ts";
 import Options from "../../../src/options.ts";
 
