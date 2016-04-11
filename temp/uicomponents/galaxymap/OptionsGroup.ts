@@ -31,7 +31,7 @@ class OptionsGroup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.toggleCollapse = this.toggleCollapse.bind(this);    
   }
   
   private getInitialState(): StateType

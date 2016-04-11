@@ -73,7 +73,8 @@ class ManufacturableItems_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
   private bindMethods()
   {
-    
+    this.upgradeItems = this.upgradeItems.bind(this);
+    this.addItemToBuildQueue = this.addItemToBuildQueue.bind(this);    
   }
   
   upgradeItems()

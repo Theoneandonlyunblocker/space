@@ -33,7 +33,7 @@ class PlayerMoney_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handlePlayerMoneyUpdated = this.handlePlayerMoneyUpdated.bind(this);    
   }
   
   componentDidMount()

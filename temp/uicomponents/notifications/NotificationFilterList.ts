@@ -42,7 +42,8 @@ class NotificationFilterList_COMPONENT_TODO extends React.Component<PropTypes, S
   }
   private bindMethods()
   {
-    
+    this.scrollToHighlighted = this.scrollToHighlighted.bind(this);
+    this.handleResetCategory = this.handleResetCategory.bind(this);    
   }
   
   scrollToHighlighted()

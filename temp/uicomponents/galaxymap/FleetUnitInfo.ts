@@ -42,7 +42,8 @@ class FleetUnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);    
   }
   
   onDragStart()

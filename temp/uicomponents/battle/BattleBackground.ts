@@ -40,7 +40,8 @@ class BattleBackground_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   }
   private bindMethods()
   {
-    
+    this.handleResize = this.handleResize.bind(this);
+    this.getBlurAreaFN = this.getBlurAreaFN.bind(this);    
   }
   
   handleResize()

@@ -43,7 +43,11 @@ class MapRendererLayersList_COMPONENT_TODO extends React.Component<PropTypes, St
   }
   private bindMethods()
   {
-    
+    this.handleDragEnd = this.handleDragEnd.bind(this);
+    this.handleToggleActive = this.handleToggleActive.bind(this);
+    this.updateLayer = this.updateLayer.bind(this);
+    this.handleSetHoverPosition = this.handleSetHoverPosition.bind(this);
+    this.handleDragStart = this.handleDragStart.bind(this);    
   }
   
   private getInitialState(): StateType

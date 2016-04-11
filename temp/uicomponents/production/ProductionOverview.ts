@@ -51,7 +51,10 @@ class ProductionOverview_COMPONENT_TODO extends React.Component<PropTypes, State
   }
   private bindMethods()
   {
-    
+    this.clearSelection = this.clearSelection.bind(this);
+    this.getStarsWithAndWithoutManufactories = this.getStarsWithAndWithoutManufactories.bind(this);
+    this.handleStarSelect = this.handleStarSelect.bind(this);
+    this.triggerUpdate = this.triggerUpdate.bind(this);    
   }
   
   private getInitialState(): StateType

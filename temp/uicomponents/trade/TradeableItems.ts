@@ -45,7 +45,7 @@ class TradeableItems_COMPONENT_TODO extends React.Component<PropTypes, StateType
   }
   private bindMethods()
   {
-    
+    this.handleMouseUp = this.handleMouseUp.bind(this);    
   }
   
   handleMouseUp()

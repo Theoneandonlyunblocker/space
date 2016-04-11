@@ -33,7 +33,8 @@ class FlagMaker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleSizeChange = this.handleSizeChange.bind(this);
+    this.makeFlags = this.makeFlags.bind(this);    
   }
   
   private getInitialState(): StateType

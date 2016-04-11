@@ -45,7 +45,9 @@ class SetupGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.startGame = this.startGame.bind(this);
+    this.randomize = this.randomize.bind(this);
+    this.setPlayerLimits = this.setPlayerLimits.bind(this);    
   }
   
   private getInitialState(): StateType

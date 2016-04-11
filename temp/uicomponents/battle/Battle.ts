@@ -89,7 +89,23 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.clearHoveredUnit = this.clearHoveredUnit.bind(this);
+    this.getBlurArea = this.getBlurArea.bind(this);
+    this.handleMouseEnterUnit = this.handleMouseEnterUnit.bind(this);
+    this.clearBattleEffect = this.clearBattleEffect.bind(this);
+    this.handleMouseEnterAbility = this.handleMouseEnterAbility.bind(this);
+    this.usePreparedAbility = this.usePreparedAbility.bind(this);
+    this.useAIAbility = this.useAIAbility.bind(this);
+    this.handleMouseLeaveAbility = this.handleMouseLeaveAbility.bind(this);
+    this.handleTurnEnd = this.handleTurnEnd.bind(this);
+    this.handleMouseLeaveUnit = this.handleMouseLeaveUnit.bind(this);
+    this.setBattleSceneUnits = this.setBattleSceneUnits.bind(this);
+    this.usePlayerAbility = this.usePlayerAbility.bind(this);
+    this.endBattleStart = this.endBattleStart.bind(this);
+    this.getUnitElement = this.getUnitElement.bind(this);
+    this.handleAbilityUse = this.handleAbilityUse.bind(this);
+    this.playBattleEffect = this.playBattleEffect.bind(this);
+    this.finishBattle = this.finishBattle.bind(this);    
   }
   
   private getInitialState(): StateType

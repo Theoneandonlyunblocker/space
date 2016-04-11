@@ -45,7 +45,17 @@ class TradeOverview_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleDragEnd = this.handleDragEnd.bind(this);
+    this.handleStagingDragStart = this.handleStagingDragStart.bind(this);
+    this.handleAvailableDragStart = this.handleAvailableDragStart.bind(this);
+    this.handleRemoveStagedItem = this.handleRemoveStagedItem.bind(this);
+    this.getActiveTrade = this.getActiveTrade.bind(this);
+    this.handleStageItem = this.handleStageItem.bind(this);
+    this.handleAdjustStagedItemAmount = this.handleAdjustStagedItemAmount.bind(this);
+    this.handleStagingAreaMouseUp = this.handleStagingAreaMouseUp.bind(this);
+    this.handleAvailableMouseUp = this.handleAvailableMouseUp.bind(this);
+    this.handleOk = this.handleOk.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);    
   }
   
   componentWillMount()

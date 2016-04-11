@@ -50,7 +50,9 @@ class Popup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.handleResizeMove = this.handleResizeMove.bind(this);
+    this.setInitialPosition = this.setInitialPosition.bind(this);    
   }
   
   private getInitialState(): StateType

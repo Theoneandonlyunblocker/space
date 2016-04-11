@@ -33,7 +33,9 @@ class BattleSceneFlag_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
   private bindMethods()
   {
-    
+    this.handleResize = this.handleResize.bind(this);
+    this.setFlag = this.setFlag.bind(this);
+    this.drawFlag = this.drawFlag.bind(this);    
   }
   
   componentDidMount()

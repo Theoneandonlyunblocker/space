@@ -37,7 +37,15 @@ class PopupManager_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.getHighestZIndexPopup = this.getHighestZIndexPopup.bind(this);
+    this.incrementZIndex = this.incrementZIndex.bind(this);
+    this.getInitialPosition = this.getInitialPosition.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+    this.makePopup = this.makePopup.bind(this);
+    this.setPopupContent = this.setPopupContent.bind(this);
+    this.getPopupId = this.getPopupId.bind(this);
+    this.hasPopup = this.hasPopup.bind(this);
+    this.getPopup = this.getPopup.bind(this);    
   }
   
   componentWillMount()

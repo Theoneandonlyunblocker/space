@@ -53,7 +53,18 @@ class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.getFirstValidImageFromFiles = this.getFirstValidImageFromFiles.bind(this);
+    this.displayImageLoadingFailMessage = this.displayImageLoadingFailMessage.bind(this);
+    this.setAsInactive = this.setAsInactive.bind(this);
+    this.setForegroundEmblem = this.setForegroundEmblem.bind(this);
+    this.clearImageLoadingFailMessage = this.clearImageLoadingFailMessage.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.setCustomImageFromFile = this.setCustomImageFromFile.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleUpload = this.handleUpload.bind(this);
+    this.handleDrop = this.handleDrop.bind(this);
+    this.toggleActive = this.toggleActive.bind(this);
+    this.stopEvent = this.stopEvent.bind(this);    
   }
   
   private getInitialState(): StateType

@@ -45,7 +45,8 @@ class BuildQueue_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.removeItem = this.removeItem.bind(this);
+    this.upgradeCapacity = this.upgradeCapacity.bind(this);    
   }
   
   upgradeCapacity()

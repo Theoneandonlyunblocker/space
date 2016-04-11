@@ -34,7 +34,9 @@ class UnitItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.getTechIcon = this.getTechIcon.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);    
   }
   
   onDragStart()

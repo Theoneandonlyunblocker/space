@@ -40,7 +40,7 @@ class FleetInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.setFleetName = this.setFleetName.bind(this);    
   }
   
   render()

@@ -44,7 +44,18 @@ class BattleSceneTester_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
   private bindMethods()
   {
-    
+    this.useSelectedAbility = this.useSelectedAbility.bind(this);
+    this.makeBattle = this.makeBattle.bind(this);
+    this.selectUnit = this.selectUnit.bind(this);
+    this.makeUnitElements = this.makeUnitElements.bind(this);
+    this.makeFormation = this.makeFormation.bind(this);
+    this.handleTestAbility1 = this.handleTestAbility1.bind(this);
+    this.makeUnit = this.makeUnit.bind(this);
+    this.handleUnitHover = this.handleUnitHover.bind(this);
+    this.handleClearHover = this.handleClearHover.bind(this);
+    this.handleChangeDuration = this.handleChangeDuration.bind(this);
+    this.makePlayer = this.makePlayer.bind(this);
+    this.handleSelectSFXTemplate = this.handleSelectSFXTemplate.bind(this);    
   }
   
   private getInitialState(): StateType

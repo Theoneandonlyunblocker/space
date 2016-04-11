@@ -40,7 +40,20 @@ class ColorPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.setHue = this.setHue.bind(this);
+    this.setPosition = this.setPosition.bind(this);
+    this.setSat = this.setSat.bind(this);
+    this.makeHsvInputs = this.makeHsvInputs.bind(this);
+    this.autoGenerateColor = this.autoGenerateColor.bind(this);
+    this.updateFromHex = this.updateFromHex.bind(this);
+    this.updateFromHsv = this.updateFromHsv.bind(this);
+    this.makeGradientStyle = this.makeGradientStyle.bind(this);
+    this.getHueGradientString = this.getHueGradientString.bind(this);
+    this.triggerParentOnChange = this.triggerParentOnChange.bind(this);
+    this.setHex = this.setHex.bind(this);
+    this.setVal = this.setVal.bind(this);
+    this.makeGradientString = this.makeGradientString.bind(this);
+    this.nullifyColor = this.nullifyColor.bind(this);    
   }
   
   private getInitialState(): StateType

@@ -30,7 +30,7 @@ class AttackTarget_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleAttack = this.handleAttack.bind(this);    
   }
   
   handleAttack()

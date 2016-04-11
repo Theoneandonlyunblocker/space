@@ -41,7 +41,12 @@ class MapGenOptions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.resetValuesToDefault = this.resetValuesToDefault.bind(this);
+    this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.getDefaultValues = this.getDefaultValues.bind(this);
+    this.getOptionValue = this.getOptionValue.bind(this);
+    this.randomizeOptions = this.randomizeOptions.bind(this);
+    this.getOptionValuesForTemplate = this.getOptionValuesForTemplate.bind(this);    
   }
   
   private getInitialState(): StateType

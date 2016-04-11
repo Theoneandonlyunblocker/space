@@ -44,7 +44,8 @@ class MapModeSelector_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
   private bindMethods()
   {
-    
+    this.makeOptions = this.makeOptions.bind(this);
+    this.handleChange = this.handleChange.bind(this);    
   }
   
   makeOptions()

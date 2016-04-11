@@ -35,7 +35,10 @@ class Opinion_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.getColor = this.getColor.bind(this);
+    this.getOpinionTextNode = this.getOpinionTextNode.bind(this);
+    this.setTooltip = this.setTooltip.bind(this);
+    this.clearTooltip = this.clearTooltip.bind(this);    
   }
   
   private getInitialState(): StateType

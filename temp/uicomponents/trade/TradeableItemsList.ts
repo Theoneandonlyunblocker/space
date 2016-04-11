@@ -85,7 +85,7 @@ class TradeableItemsList_COMPONENT_TODO extends React.Component<PropTypes, State
   }
   private bindMethods()
   {
-    
+    this.makeRowForTradeableItem = this.makeRowForTradeableItem.bind(this);    
   }
   
   render()

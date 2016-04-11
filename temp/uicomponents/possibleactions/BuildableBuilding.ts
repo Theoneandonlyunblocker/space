@@ -42,7 +42,8 @@ class BuildableBuilding_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
   private bindMethods()
   {
-    
+    this.overrideHandleMoneyChange = this.overrideHandleMoneyChange.bind(this);
+    this.makeCell = this.makeCell.bind(this);    
   }
   
   private getInitialState(): StateType

@@ -48,7 +48,11 @@ class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   }
   private bindMethods()
   {
-    
+    this.makePopup = this.makePopup.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);
+    this.handleMakePeace = this.handleMakePeace.bind(this);
+    this.handleDeclareWar = this.handleDeclareWar.bind(this);    
   }
   
   private getInitialState(): StateType

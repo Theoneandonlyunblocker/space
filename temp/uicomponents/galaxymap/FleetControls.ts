@@ -34,7 +34,9 @@ class FleetControls_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.deselectFleet = this.deselectFleet.bind(this);
+    this.selectFleet = this.selectFleet.bind(this);
+    this.splitFleet = this.splitFleet.bind(this);    
   }
   
   deselectFleet()

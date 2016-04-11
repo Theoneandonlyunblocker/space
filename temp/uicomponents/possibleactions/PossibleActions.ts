@@ -47,7 +47,12 @@ class PossibleActions_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
   private bindMethods()
   {
-    
+    this.buildBuildings = this.buildBuildings.bind(this);
+    this.canUpgradeBuildings = this.canUpgradeBuildings.bind(this);
+    this.clearExpandedAction = this.clearExpandedAction.bind(this);
+    this.handlePlayerBuiltBuilding = this.handlePlayerBuiltBuilding.bind(this);
+    this.updateActions = this.updateActions.bind(this);
+    this.upgradeBuildings = this.upgradeBuildings.bind(this);    
   }
   
   private getInitialState(): StateType

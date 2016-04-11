@@ -31,7 +31,7 @@ class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.setMaxUnits = this.setMaxUnits.bind(this);    
   }
   
   private getInitialState(): StateType

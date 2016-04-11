@@ -61,7 +61,20 @@ class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleMouseEnterUnit = this.handleMouseEnterUnit.bind(this);
+    this.handleDragEnd = this.handleDragEnd.bind(this);
+    this.handleItemDragStart = this.handleItemDragStart.bind(this);
+    this.setLeftLowerElement = this.setLeftLowerElement.bind(this);
+    this.handleItemDragEnd = this.handleItemDragEnd.bind(this);
+    this.handleItemDrop = this.handleItemDrop.bind(this);
+    this.setSelectedUnit = this.setSelectedUnit.bind(this);
+    this.handleMouseLeaveUnit = this.handleMouseLeaveUnit.bind(this);
+    this.clearSelectedUnit = this.clearSelectedUnit.bind(this);
+    this.autoMakeFormation = this.autoMakeFormation.bind(this);
+    this.handleSelectRow = this.handleSelectRow.bind(this);
+    this.handleDragStart = this.handleDragStart.bind(this);
+    this.handleDrop = this.handleDrop.bind(this);
+    this.getBackgroundBlurArea = this.getBackgroundBlurArea.bind(this);    
   }
   
   private getInitialState(): StateType

@@ -54,7 +54,7 @@ class ItemList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.getSlotIndex = this.getSlotIndex.bind(this);    
   }
   
   render()

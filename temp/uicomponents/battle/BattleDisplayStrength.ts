@@ -28,7 +28,8 @@ class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTypes, St
   }
   private bindMethods()
   {
-    
+    this.updateDisplayStrength = this.updateDisplayStrength.bind(this);
+    this.animateDisplayedStrength = this.animateDisplayedStrength.bind(this);    
   }
   
   private getInitialState(): StateType

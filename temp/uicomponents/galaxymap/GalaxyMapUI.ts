@@ -67,7 +67,13 @@ class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.clampExpandedActionElement = this.clampExpandedActionElement.bind(this);
+    this.setExpandedActionElement = this.setExpandedActionElement.bind(this);
+    this.closeReorganization = this.closeReorganization.bind(this);
+    this.endTurn = this.endTurn.bind(this);
+    this.toggleMapModeSettingsExpanded = this.toggleMapModeSettingsExpanded.bind(this);
+    this.updateSelection = this.updateSelection.bind(this);
+    this.setPlayerTurn = this.setPlayerTurn.bind(this);    
   }
   
   private getInitialState(): StateType

@@ -48,7 +48,9 @@ class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType
   }
   private bindMethods()
   {
-    
+    this.reorganizeFleets = this.reorganizeFleets.bind(this);
+    this.mergeFleets = this.mergeFleets.bind(this);
+    this.setElementPosition = this.setElementPosition.bind(this);    
   }
   
   mergeFleets()

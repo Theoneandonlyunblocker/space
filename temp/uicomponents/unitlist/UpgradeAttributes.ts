@@ -33,7 +33,7 @@ class UpgradeAttributes_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
   private bindMethods()
   {
-    
+    this.upgradeAttribute = this.upgradeAttribute.bind(this);    
   }
   
   render()

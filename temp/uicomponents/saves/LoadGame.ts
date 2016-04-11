@@ -48,7 +48,15 @@ class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleLoad = this.handleLoad.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.updateClosePopup = this.updateClosePopup.bind(this);
+    this.overRideLightBoxClose = this.overRideLightBoxClose.bind(this);
+    this.handleUndoDelete = this.handleUndoDelete.bind(this);
+    this.deleteSelectedKeys = this.deleteSelectedKeys.bind(this);
+    this.handleRowChange = this.handleRowChange.bind(this);
+    this.getClosePopupContent = this.getClosePopupContent.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);    
   }
   
   private getInitialState(): StateType

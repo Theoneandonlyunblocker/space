@@ -46,7 +46,10 @@ class UpgradeUnit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.upgradeAttribute = this.upgradeAttribute.bind(this);
+    this.upgradeAbility = this.upgradeAbility.bind(this);
+    this.makeAbilityLearnPopup = this.makeAbilityLearnPopup.bind(this);
+    this.closePopup = this.closePopup.bind(this);    
   }
   
   private getInitialState(): StateType

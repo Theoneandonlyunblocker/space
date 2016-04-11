@@ -36,7 +36,8 @@ class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleResize = this.handleResize.bind(this);
+    this.handleClose = this.handleClose.bind(this);    
   }
   
   handleResize()

@@ -37,7 +37,8 @@ class BuildingUpgradeListItem_COMPONENT_TODO extends React.Component<PropTypes, 
   }
   private bindMethods()
   {
-    
+    this.handleClick = this.handleClick.bind(this);
+    this.overrideHandleMoneyChange = this.overrideHandleMoneyChange.bind(this);    
   }
   
   private getInitialState(): StateType

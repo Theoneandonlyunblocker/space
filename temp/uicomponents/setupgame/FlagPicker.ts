@@ -41,7 +41,10 @@ class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.clearSelectedEmblem = this.clearSelectedEmblem.bind(this);
+    this.handleSelectEmblem = this.handleSelectEmblem.bind(this);
+    this.handleUpload = this.handleUpload.bind(this);
+    this.makeEmblemElement = this.makeEmblemElement.bind(this);    
   }
   
   private getInitialState(): StateType

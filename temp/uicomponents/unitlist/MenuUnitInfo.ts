@@ -40,7 +40,7 @@ class MenuUnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);    
   }
   
   handleUnitUpgrade()

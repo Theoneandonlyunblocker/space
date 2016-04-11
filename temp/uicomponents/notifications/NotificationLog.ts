@@ -49,7 +49,11 @@ class NotificationLog_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
   private bindMethods()
   {
-    
+    this.makePopup = this.makePopup.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+    this.getNotificationKey = this.getNotificationKey.bind(this);
+    this.handleMarkAsRead = this.handleMarkAsRead.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);    
   }
   
   private getInitialState(): StateType

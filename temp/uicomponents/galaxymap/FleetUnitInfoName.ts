@@ -35,7 +35,7 @@ class FleetUnitInfoName_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
   private bindMethods()
   {
-    
+    this.onChange = this.onChange.bind(this);    
   }
   
   private getInitialState(): StateType

@@ -59,7 +59,11 @@ class TopMenu_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleResize = this.handleResize.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);
+    this.toggleCondensedMenu = this.toggleCondensedMenu.bind(this);
+    this.handleToggleHamburger = this.handleToggleHamburger.bind(this);
+    this.delayedResize = this.delayedResize.bind(this);    
   }
   
   private getInitialState(): StateType

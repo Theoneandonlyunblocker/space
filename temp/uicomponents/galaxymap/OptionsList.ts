@@ -55,7 +55,7 @@ class OptionsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleResetAllOptions = this.handleResetAllOptions.bind(this);    
   }
   
   handleResetAllOptions()

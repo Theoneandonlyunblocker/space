@@ -26,7 +26,9 @@ class Notification_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleClick = this.handleClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleRightClick = this.handleRightClick.bind(this);    
   }
   
   handleClose()

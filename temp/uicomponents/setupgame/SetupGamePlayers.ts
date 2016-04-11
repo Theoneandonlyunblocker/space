@@ -38,7 +38,12 @@ class SetupGamePlayers_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   }
   private bindMethods()
   {
-    
+    this.makeNewPlayers = this.makeNewPlayers.bind(this);
+    this.makeAllPlayers = this.makeAllPlayers.bind(this);
+    this.setActiveColorPicker = this.setActiveColorPicker.bind(this);
+    this.setHumanPlayer = this.setHumanPlayer.bind(this);
+    this.randomizeAllPlayers = this.randomizeAllPlayers.bind(this);
+    this.removePlayers = this.removePlayers.bind(this);    
   }
   
   private getInitialState(): StateType

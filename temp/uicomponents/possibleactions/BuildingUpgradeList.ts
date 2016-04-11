@@ -39,7 +39,8 @@ class BuildingUpgradeList_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
   private bindMethods()
   {
-    
+    this.hasAvailableUpgrades = this.hasAvailableUpgrades.bind(this);
+    this.upgradeBuilding = this.upgradeBuilding.bind(this);    
   }
   
   hasAvailableUpgrades()

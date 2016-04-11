@@ -30,7 +30,8 @@ class DontShowAgain_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.toggleState = this.toggleState.bind(this);
+    this.getTutorialState = this.getTutorialState.bind(this);    
   }
   
   private getInitialState(): StateType

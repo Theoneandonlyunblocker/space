@@ -41,7 +41,8 @@ class BuildableBuildingList_COMPONENT_TODO extends React.Component<PropTypes, St
   }
   private bindMethods()
   {
-    
+    this.buildBuilding = this.buildBuilding.bind(this);
+    this.updateBuildings = this.updateBuildings.bind(this);    
   }
   
   private getInitialState(): StateType

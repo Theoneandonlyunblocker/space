@@ -45,7 +45,9 @@ class NotificationFilterButton_COMPONENT_TODO extends React.Component<PropTypes,
   }
   private bindMethods()
   {
-    
+    this.makePopup = this.makePopup.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);    
   }
   
   private getInitialState(): StateType

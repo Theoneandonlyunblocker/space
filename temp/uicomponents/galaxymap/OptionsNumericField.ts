@@ -35,7 +35,8 @@ class OptionsNumericField_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
   private bindMethods()
   {
-    
+    this.triggerOnChangeFN = this.triggerOnChangeFN.bind(this);
+    this.handleChange = this.handleChange.bind(this);    
   }
   
   private getInitialState(): StateType

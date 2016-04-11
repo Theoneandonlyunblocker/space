@@ -61,7 +61,7 @@ class ItemPurchaseListItem_COMPONENT_TODO extends React.Component<PropTypes, Sta
   }
   private bindMethods()
   {
-    
+    this.makeCell = this.makeCell.bind(this);    
   }
   
   render()

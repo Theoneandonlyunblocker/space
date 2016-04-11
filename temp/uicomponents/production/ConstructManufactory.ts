@@ -41,7 +41,7 @@ class ConstructManufactory_COMPONENT_TODO extends React.Component<PropTypes, Sta
   }
   private bindMethods()
   {
-    
+    this.handleConstruct = this.handleConstruct.bind(this);    
   }
   
   private getInitialState(): StateType

@@ -44,7 +44,12 @@ class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleClose = this.handleClose.bind(this);
+    this.makeConfirmOverWritePopup = this.makeConfirmOverWritePopup.bind(this);
+    this.setInputText = this.setInputText.bind(this);
+    this.saveGame = this.saveGame.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleRowChange = this.handleRowChange.bind(this);    
   }
   
   componentDidMount()

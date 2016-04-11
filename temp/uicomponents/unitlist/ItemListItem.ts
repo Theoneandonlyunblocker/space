@@ -37,7 +37,10 @@ class ItemListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
+    this.makeDragClone = this.makeDragClone.bind(this);
+    this.makeCell = this.makeCell.bind(this);    
   }
   
   onDragStart()

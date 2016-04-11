@@ -30,7 +30,7 @@ class PopupResizeHandle_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
   private bindMethods()
   {
-    
+    this.onDragMove = this.onDragMove.bind(this);    
   }
   
   // onDragStart()

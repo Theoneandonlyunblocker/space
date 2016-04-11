@@ -37,7 +37,7 @@ class NotificationFilterListItem_COMPONENT_TODO extends React.Component<PropType
   }
   private bindMethods()
   {
-    
+    this.handleChangeState = this.handleChangeState.bind(this);    
   }
   
   private getInitialState(): StateType

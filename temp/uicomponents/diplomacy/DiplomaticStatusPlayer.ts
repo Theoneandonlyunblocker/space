@@ -39,7 +39,7 @@ class DiplomaticStatusPlayer_COMPONENT_TODO extends React.Component<PropTypes, S
   }
   private bindMethods()
   {
-    
+    this.makeCell = this.makeCell.bind(this);    
   }
   
   private getInitialState(): StateType

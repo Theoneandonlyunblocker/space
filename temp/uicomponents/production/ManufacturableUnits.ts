@@ -74,7 +74,9 @@ class ManufacturableUnits_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
   private bindMethods()
   {
-    
+    this.addUnitToBuildQueue = this.addUnitToBuildQueue.bind(this);
+    this.upgradeStats = this.upgradeStats.bind(this);
+    this.upgradeHealth = this.upgradeHealth.bind(this);    
   }
   
   upgradeHealth()

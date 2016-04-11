@@ -44,7 +44,9 @@ class UnitExperience_COMPONENT_TODO extends React.Component<PropTypes, StateType
   }
   private bindMethods()
   {
-    
+    this.makePopup = this.makePopup.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+    this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);    
   }
   
   private getInitialState(): StateType

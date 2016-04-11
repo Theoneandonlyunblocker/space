@@ -44,7 +44,9 @@ class MapSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.setTemplate = this.setTemplate.bind(this);
+    this.getMapSetupInfo = this.getMapSetupInfo.bind(this);
+    this.updatePlayerLimits = this.updatePlayerLimits.bind(this);    
   }
   
   private getInitialState(): StateType

@@ -31,7 +31,11 @@ class UnitStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.updateDisplayStrength = this.updateDisplayStrength.bind(this);
+    this.makeSquadronInfo = this.makeSquadronInfo.bind(this);
+    this.animateDisplayedStrength = this.animateDisplayedStrength.bind(this);
+    this.makeStrengthText = this.makeStrengthText.bind(this);
+    this.makeCapitalInfo = this.makeCapitalInfo.bind(this);    
   }
   
   private getInitialState(): StateType

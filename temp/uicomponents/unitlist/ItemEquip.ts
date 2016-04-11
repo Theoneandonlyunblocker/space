@@ -39,7 +39,10 @@ class ItemEquip_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleDragStart = this.handleDragStart.bind(this);
+    this.handleDragEnd = this.handleDragEnd.bind(this);
+    this.handleDrop = this.handleDrop.bind(this);
+    this.handleSelectRow = this.handleSelectRow.bind(this);    
   }
   
   private getInitialState(): StateType

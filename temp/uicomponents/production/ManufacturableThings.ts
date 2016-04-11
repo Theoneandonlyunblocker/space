@@ -44,7 +44,10 @@ class ManufacturableThings_COMPONENT_TODO extends React.Component<PropTypes, Sta
   }
   private bindMethods()
   {
-    
+    this.makeTabButton = this.makeTabButton.bind(this);
+    this.getManufacturableThings = this.getManufacturableThings.bind(this);
+    this.selectTab = this.selectTab.bind(this);
+    this.makeTab = this.makeTab.bind(this);    
   }
   
   private getInitialState(): StateType

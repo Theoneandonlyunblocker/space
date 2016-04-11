@@ -37,7 +37,7 @@ class Technology_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.togglePriorityLock = this.togglePriorityLock.bind(this);    
   }
   
   togglePriorityLock()

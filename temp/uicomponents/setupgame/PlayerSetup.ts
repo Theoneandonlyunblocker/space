@@ -50,7 +50,16 @@ class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.randomize = this.randomize.bind(this);
+    this.setSubColor = this.setSubColor.bind(this);
+    this.generateSubColor = this.generateSubColor.bind(this);
+    this.setMainColor = this.setMainColor.bind(this);
+    this.generateMainColor = this.generateMainColor.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.makePlayer = this.makePlayer.bind(this);
+    this.handleSetHuman = this.handleSetHuman.bind(this);
+    this.handleSetCustomImage = this.handleSetCustomImage.bind(this);    
   }
   
   private getInitialState(): StateType

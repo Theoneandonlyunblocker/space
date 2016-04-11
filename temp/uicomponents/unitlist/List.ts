@@ -53,7 +53,14 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.getNewSortingOrder = this.getNewSortingOrder.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
+    this.makeInitialSortingOrder = this.makeInitialSortingOrder.bind(this);
+    this.shiftSelection = this.shiftSelection.bind(this);
+    this.handleSelectRow = this.handleSelectRow.bind(this);
+    this.setDesiredHeight = this.setDesiredHeight.bind(this);
+    this.handleSelectColumn = this.handleSelectColumn.bind(this);
+    this.sort = this.sort.bind(this);    
   }
 
   getInitialState(): StateType

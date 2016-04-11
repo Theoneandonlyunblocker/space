@@ -35,7 +35,7 @@ class ManufactoryStarsListItem_COMPONENT_TODO extends React.Component<PropTypes,
   }
   private bindMethods()
   {
-    
+    this.handleClick = this.handleClick.bind(this);    
   }
   
   handleClick()

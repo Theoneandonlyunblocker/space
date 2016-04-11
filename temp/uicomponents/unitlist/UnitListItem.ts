@@ -53,7 +53,12 @@ class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.makeCell = this.makeCell.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
+    this.onDragMove = this.onDragMove.bind(this);    
   }
   
   componentDidMount()

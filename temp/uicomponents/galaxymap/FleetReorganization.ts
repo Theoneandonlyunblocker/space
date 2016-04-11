@@ -41,7 +41,10 @@ class FleetReorganization_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
   private bindMethods()
   {
-    
+    this.handleDrop = this.handleDrop.bind(this);
+    this.handleDragEnd = this.handleDragEnd.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleDragStart = this.handleDragStart.bind(this);    
   }
   
   private getInitialState(): StateType

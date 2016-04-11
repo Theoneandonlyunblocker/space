@@ -48,7 +48,11 @@ class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleClick = this.handleClick.bind(this);
+    this.updateColor = this.updateColor.bind(this);
+    this.toggleActive = this.toggleActive.bind(this);
+    this.setAsInactive = this.setAsInactive.bind(this);
+    this.getClientRect = this.getClientRect.bind(this);    
   }
   
   private getInitialState(): StateType

@@ -39,7 +39,7 @@ class UnitItemWrapper_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
   private bindMethods()
   {
-    
+    this.handleMouseUp = this.handleMouseUp.bind(this);    
   }
   
   handleMouseUp()

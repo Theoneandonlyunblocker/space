@@ -33,7 +33,7 @@ class PlayerFlag_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.canUseDataURL = this.canUseDataURL.bind(this);    
   }
   
   canUseDataURL()

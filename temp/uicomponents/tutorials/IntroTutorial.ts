@@ -47,7 +47,7 @@ class IntroTutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.closePopup = this.closePopup.bind(this);    
   }
   
   private getInitialState(): StateType

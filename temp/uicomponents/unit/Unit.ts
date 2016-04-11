@@ -56,7 +56,11 @@ class Unit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleClick = this.handleClick.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);    
   }
   
   private getInitialState(): StateType

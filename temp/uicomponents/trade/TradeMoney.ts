@@ -34,7 +34,11 @@ class TradeMoney_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleClick = this.handleClick.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.captureEvent = this.captureEvent.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
+    this.handleMoneyAmountChange = this.handleMoneyAmountChange.bind(this);    
   }
   
   onDragStart()

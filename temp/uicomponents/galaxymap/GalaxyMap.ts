@@ -51,7 +51,7 @@ class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.changeScene = this.changeScene.bind(this);    
   }
   
   render()

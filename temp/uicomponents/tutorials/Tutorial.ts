@@ -39,7 +39,10 @@ class Tutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleEnterPage = this.handleEnterPage.bind(this);
+    this.flipPage = this.flipPage.bind(this);
+    this.handleLeavePage = this.handleLeavePage.bind(this);
+    this.handleClose = this.handleClose.bind(this);    
   }
   
   private getInitialState(): StateType

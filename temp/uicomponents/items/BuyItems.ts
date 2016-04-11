@@ -46,7 +46,7 @@ class BuyItems_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   private bindMethods()
   {
-    
+    this.handleSelectRow = this.handleSelectRow.bind(this);    
   }
   
   render()

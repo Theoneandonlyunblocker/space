@@ -42,7 +42,7 @@ class MapModeSettings_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
   private bindMethods()
   {
-    
+    this.handleReset = this.handleReset.bind(this);    
   }
   
   handleReset()

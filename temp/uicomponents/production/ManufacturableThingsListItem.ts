@@ -33,7 +33,7 @@ class ManufacturableThingsListItem_COMPONENT_TODO extends React.Component<PropTy
   }
   private bindMethods()
   {
-    
+    this.handleClick = this.handleClick.bind(this);    
   }
   
   private getInitialState(): StateType
