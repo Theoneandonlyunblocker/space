@@ -30,8 +30,6 @@ class ManufacturableThingsList_COMPONENT_TODO extends React.Component<PropTypes,
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
   }
   
   render()

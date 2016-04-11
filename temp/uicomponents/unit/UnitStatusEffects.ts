@@ -24,8 +24,6 @@ class UnitStatusEffects_COMPONENT_TODO extends React.Component<PropTypes, StateT
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
   }
   
   render()

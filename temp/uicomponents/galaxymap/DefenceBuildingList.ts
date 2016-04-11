@@ -40,8 +40,6 @@ class DefenceBuildingList_COMPONENT_TODO extends React.Component<PropTypes, Stat
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
   }
   
   render()

@@ -33,8 +33,6 @@ class AttitudeModifierList_COMPONENT_TODO extends React.Component<PropTypes, Sta
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
   }
   
   render()

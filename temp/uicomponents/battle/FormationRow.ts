@@ -56,8 +56,6 @@ class FormationRow_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
   }
   
   render()

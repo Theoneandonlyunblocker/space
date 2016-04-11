@@ -27,8 +27,6 @@ class UpgradeAbilities_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
   }
   
   render()
