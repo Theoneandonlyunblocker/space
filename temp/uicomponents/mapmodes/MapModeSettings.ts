@@ -32,6 +32,7 @@ class MapModeSettings_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
 
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

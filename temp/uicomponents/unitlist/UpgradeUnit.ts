@@ -34,6 +34,7 @@ class UpgradeUnit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeUnit";
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

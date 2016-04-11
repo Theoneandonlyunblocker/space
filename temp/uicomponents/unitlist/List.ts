@@ -43,6 +43,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   mixins: [SplitMultilineText];
   sortedItems: ListItem[] = [];
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

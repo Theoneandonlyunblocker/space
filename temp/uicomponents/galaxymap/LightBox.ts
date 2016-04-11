@@ -26,6 +26,7 @@ class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   // far from ideal as it always triggers reflow 4 times
   // cant figure out how to do resizing better since content size is dynamic
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

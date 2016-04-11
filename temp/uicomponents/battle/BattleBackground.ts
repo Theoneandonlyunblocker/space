@@ -30,6 +30,7 @@ class BattleBackground_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   displayName: string = "BattleBackground";
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

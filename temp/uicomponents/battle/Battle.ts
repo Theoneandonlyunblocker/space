@@ -77,6 +77,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   battleEndStartTime: reactTypeTODO_any = undefined;
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

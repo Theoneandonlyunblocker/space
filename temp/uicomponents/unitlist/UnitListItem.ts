@@ -43,6 +43,7 @@ class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   mixins: reactTypeTODO_any = [Draggable];
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

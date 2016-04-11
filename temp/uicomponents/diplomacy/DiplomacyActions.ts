@@ -36,6 +36,7 @@ class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateTy
 
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

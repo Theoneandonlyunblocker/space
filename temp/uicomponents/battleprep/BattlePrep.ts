@@ -48,6 +48,7 @@ class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattlePrep";
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

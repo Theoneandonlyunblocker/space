@@ -33,6 +33,7 @@ class SetupGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   displayName: string = "SetupGame";
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

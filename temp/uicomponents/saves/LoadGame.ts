@@ -35,6 +35,7 @@ class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   popupId: reactTypeTODO_any = undefined;
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

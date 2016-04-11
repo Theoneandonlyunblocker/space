@@ -32,6 +32,7 @@ class UnitExperience_COMPONENT_TODO extends React.Component<PropTypes, StateType
   displayName: string = "UnitExperience";
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

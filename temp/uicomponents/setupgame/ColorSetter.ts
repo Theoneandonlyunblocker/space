@@ -36,6 +36,7 @@ class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   displayName: string = "ColorSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

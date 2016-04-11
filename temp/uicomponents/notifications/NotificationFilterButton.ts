@@ -33,6 +33,7 @@ class NotificationFilterButton_COMPONENT_TODO extends React.Component<PropTypes,
   displayName: string = "NotificationFilterButton";
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

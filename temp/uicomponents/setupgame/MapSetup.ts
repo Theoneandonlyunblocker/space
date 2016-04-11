@@ -32,6 +32,7 @@ class MapSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   displayName: string = "MapSetup";
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

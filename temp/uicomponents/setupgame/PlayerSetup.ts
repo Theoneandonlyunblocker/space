@@ -38,6 +38,7 @@ class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   displayName: string = "PlayerSetup";
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {

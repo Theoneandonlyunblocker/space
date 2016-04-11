@@ -41,6 +41,7 @@ class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
 
   state: StateType;
+  refs: RefTypes;
 
   constructor(props: PropTypes)
   {
