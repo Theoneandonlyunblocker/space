@@ -3,24 +3,38 @@ import * as React from "react";
 
 /// <reference path="../mixins/droptarget.ts"/>
 
-/// <reference path="uniticon.ts"/>
-
-
 import EmptyUnit from "./EmptyUnit.ts";
-import Unit from "./Unit.ts";
+import Unit from "../../../src/Unit.ts";
+import Unit_COMPONENT_USE_CONFLICT from "./Unit.ts";
+import Battle from "../../../src/Battle.ts";
+import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  isCaptured: any; // TODO refactor | define prop type 123
-  onMouseUp: any; // TODO refactor | define prop type 123
-  facesLeft: any; // TODO refactor | define prop type 123
-  isDead: any; // TODO refactor | define prop type 123
-  position: any; // TODO refactor | define prop type 123
-  battle: any; // TODO refactor | define prop type 123
-  unit: any; // TODO refactor | define prop type 123
-  activeEffectUnits: any; // TODO refactor | define prop type 123
-  key: any; // TODO refactor | define prop type 123
+  isCaptured?: boolean;
+  isDead?: boolean;
+  position: number[];
+  unit: Unit;
+  
+  battle?: Battle;
+  facesLeft: boolean;
+  activeUnit?: Unit;
+  activeTargets?: {[id: number]: AbilityTemplate[];}; 
+
+  hoveredUnit?: Unit;
+  hoveredAbility?: AbilityTemplate;
+
+  targetsInPotentialArea?: Unit[];
+  activeEffectUnits?: Unit[];
+  isDraggable?: boolean;
+  
+  onUnitClick?: (unit: Unit) => void;
+  onMouseUp?: (position: number[]) => void;
+  handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
+  handleMouseEnterUnit: (unit: Unit) => void;
+  onDragStart?: (unit: Unit) => void;
+  onDragEnd?: (dropSuccessful?: boolean) => void;
 }
 
 interface StateType
@@ -167,7 +181,7 @@ class UnitWrapper_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       }
 
       this.props.key = "unit";
-      var unit = Unit(this.props);
+      var unit = Unit_COMPONENT_USE_CONFLICT(this.props);
       allElements.push(unit);
     }
     

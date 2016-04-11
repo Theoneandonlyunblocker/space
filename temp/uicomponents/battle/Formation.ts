@@ -22,9 +22,10 @@ export interface PropTypes extends React.Props<any>
   targetsInPotentialArea?: Unit[];
   activeEffectUnits?: Unit[];
   isDraggable?: boolean;
+  
   onUnitClick?: (unit: Unit) => void;
   onMouseUp?: (position: number[]) => void;
-  handleMouseLeaveUnit?: () => void;
+  handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
   handleMouseEnterUnit?: (unit: Unit) => void;
   onDragStart?: (unit: Unit) => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
