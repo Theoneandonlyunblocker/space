@@ -94,7 +94,7 @@ class UnitExperience_COMPONENT_TODO extends React.Component<PropTypes, StateType
   }
   render()
   {
-    var rows: ReactDOMPlaceHolder[] = [];
+    var rows: React.HTMLElement[] = [];
 
     var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
     var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);

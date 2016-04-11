@@ -32,7 +32,7 @@ class TurnCounter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     var turnsLeft = this.props.turnsLeft;
 
-    var turns: ReactDOMPlaceHolder[] = [];
+    var turns: React.HTMLElement[] = [];
 
     var usedTurns = this.props.maxTurns - turnsLeft;
 

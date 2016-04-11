@@ -81,7 +81,7 @@ class BuildingUpgradeList_COMPONENT_TODO extends React.Component<PropTypes, Stat
   {
     if (!this.hasAvailableUpgrades()) return null;
 
-    var upgradeGroups: ReactDOMPlaceHolder[] = [];
+    var upgradeGroups: React.HTMLElement[] = [];
 
     var possibleUpgrades = this.props.star.getBuildingUpgrades();
     var sortedParentBuildings = Object.keys(possibleUpgrades).sort(function(aId: string, bId: string)

@@ -93,7 +93,7 @@ class BuildableBuilding_COMPONENT_TODO extends React.Component<PropTypes, StateT
   render()
   {
     var template: BuildingTemplate = this.props.template;
-    var cells: ReactDOMPlaceHolder[] = [];
+    var cells: React.HTMLElement[] = [];
     var columns = this.props.activeColumns;
 
     for (var i = 0; i < columns.length; i++)

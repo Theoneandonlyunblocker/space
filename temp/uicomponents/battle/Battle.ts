@@ -611,7 +611,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     //   ) : upperFooterElement;
     var upperFooter = upperFooterElement;
 
-    var overlayContainer: ReactDOMPlaceHolder = null;
+    var overlayContainer: React.HTMLElement = null;
     var playerWonBattle: boolean = null;
     if (this.state.battleIsStarting)
     {

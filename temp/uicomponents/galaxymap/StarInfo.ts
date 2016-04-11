@@ -44,7 +44,7 @@ class StarInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     var star: Star = this.props.selectedStar;
     if (!star) return null;
 
-    var dumpDebugInfoButton: ReactDOMPlaceHolder = null;
+    var dumpDebugInfoButton: React.HTMLElement = null;
 
     if (Options.debugMode)
     {

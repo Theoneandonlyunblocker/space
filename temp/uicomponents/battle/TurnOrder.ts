@@ -97,7 +97,7 @@ class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
     turnOrder = turnOrder.slice(0, maxUnitsWithFake);
 
-    var toRender: ReactDOMPlaceHolder[] = [];
+    var toRender: React.HTMLElement[] = [];
 
     for (var i = 0; i < turnOrder.length; i++)
     {

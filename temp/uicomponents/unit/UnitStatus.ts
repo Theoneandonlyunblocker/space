@@ -40,7 +40,7 @@ class UnitStatus_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var statusElement: ReactDOMPlaceHolder = null;
+    var statusElement: React.HTMLElement = null;
 
     if (this.props.guardAmount > 0)
     {

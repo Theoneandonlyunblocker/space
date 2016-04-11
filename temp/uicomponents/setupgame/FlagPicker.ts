@@ -108,7 +108,7 @@ class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       emblems.push(this.makeEmblemElement(template));
     }
 
-    var imageInfoMessage: ReactDOMPlaceHolder;
+    var imageInfoMessage: React.HTMLElement;
     if (this.props.hasImageFailMessage)
     {
       imageInfoMessage =

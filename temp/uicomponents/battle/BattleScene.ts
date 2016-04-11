@@ -145,7 +145,7 @@ class BattleScene_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var componentToRender: ReactDOMPlaceHolder;
+    var componentToRender: React.HTMLElement;
 
     switch (this.props.battleState)
     {

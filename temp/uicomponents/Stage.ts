@@ -22,14 +22,6 @@ import GalaxyMap from "./galaxymap/GalaxyMap.ts";
 import FlagMaker from "./FlagMaker.ts";
 
 
-export interface ReactComponentPlaceHolder
-{
-
-}
-export interface ReactDOMPlaceHolder
-{
-  
-}
 export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types

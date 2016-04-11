@@ -39,7 +39,7 @@ class UpgradeAttributes_COMPONENT_TODO extends React.Component<PropTypes, StateT
   render()
   {
     var unit: Unit = this.props.unit;
-    var rows: ReactDOMPlaceHolder[] = [];
+    var rows: React.HTMLElement[] = [];
 
     for (var attribute in unit.baseAttributes)
     {

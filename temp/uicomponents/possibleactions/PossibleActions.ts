@@ -179,7 +179,7 @@ class PossibleActions_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
 
   render()
   {
-    var allActions: ReactDOMPlaceHolder[] = [];
+    var allActions: React.HTMLElement[] = [];
 
     var attackTargets = this.props.attackTargets;
     if (attackTargets && attackTargets.length > 0)

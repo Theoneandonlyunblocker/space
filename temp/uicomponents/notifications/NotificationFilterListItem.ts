@@ -70,7 +70,7 @@ class NotificationFilterListItem_COMPONENT_TODO extends React.Component<PropType
   
   render()
   {
-    var inputElements: ReactDOMPlaceHolder[] = [];
+    var inputElements: React.HTMLElement[] = [];
     var filterState: NotificationFilterState[] = this.state.filterState;
 
     for (var state in NotificationFilterState)

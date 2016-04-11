@@ -142,7 +142,7 @@ class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType
       fleetInfos.push(FleetInfo(infoProps));
     }
 
-    var fleetSelectionControls: ReactDOMPlaceHolder = null;
+    var fleetSelectionControls: React.HTMLElement = null;
 
     if (hasMultipleSelected)
     {

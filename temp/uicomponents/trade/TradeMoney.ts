@@ -88,7 +88,7 @@ class TradeMoney_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       rowProps.onClick = this.handleClick;
     }
     
-    var moneyElement: ReactDOMPlaceHolder;
+    var moneyElement: React.HTMLElement;
 
     if (this.props.adjustItemAmount)
     {

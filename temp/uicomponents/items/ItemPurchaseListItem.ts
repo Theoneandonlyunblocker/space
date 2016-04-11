@@ -64,7 +64,7 @@ class ItemPurchaseListItem_COMPONENT_TODO extends React.Component<PropTypes, Sta
   
   render()
   {
-    var cells: ReactDOMPlaceHolder[] = [];
+    var cells: React.HTMLElement[] = [];
     var columns = this.props.activeColumns;
 
     for (var i = 0; i < columns.length; i++)

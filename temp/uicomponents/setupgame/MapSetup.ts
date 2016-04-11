@@ -94,7 +94,7 @@ class MapSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var mapGenTemplateOptions: ReactDOMPlaceHolder[] = [];
+    var mapGenTemplateOptions: React.HTMLElement[] = [];
     for (var i = 0; i < this.state.templates.length; i++)
     {
       var template = this.state.templates[i];

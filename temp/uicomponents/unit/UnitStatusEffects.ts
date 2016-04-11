@@ -34,7 +34,7 @@ class UnitStatusEffects_COMPONENT_TODO extends React.Component<PropTypes, StateT
   
   render()
   {
-    var statusEffects: ReactDOMPlaceHolder[] = [];
+    var statusEffects: React.HTMLElement[] = [];
 
     var withItems = this.props.unit.getAttributesWithItems();
     var withEffects = this.props.unit.getAttributesWithEffects();
@@ -83,7 +83,7 @@ class UnitStatusEffects_COMPONENT_TODO extends React.Component<PropTypes, StateT
       }
     });
 
-    var passiveSkillsElement: ReactDOMPlaceHolder = null;
+    var passiveSkillsElement: React.HTMLElement = null;
     if (passiveSkills.length > 0)
     {
       var passiveSkillsElementTitle: string = "";

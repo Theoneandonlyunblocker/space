@@ -176,7 +176,7 @@ class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
     var isInspecting = this.state.inspectedFleets.length > 0;
 
-    var expandedActionElement: ReactDOMPlaceHolder = null;
+    var expandedActionElement: React.HTMLElement = null;
     if (this.state.expandedActionElement)
     {
       expandedActionElement = React.DOM.div(

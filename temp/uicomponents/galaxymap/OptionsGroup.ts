@@ -52,7 +52,7 @@ class OptionsGroup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var rows: ReactDOMPlaceHolder[] = [];
+    var rows: React.HTMLElement[] = [];
 
     if (!this.state.isCollapsed)
     {
@@ -70,7 +70,7 @@ class OptionsGroup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       }
     }
 
-    var resetButton: ReactDOMPlaceHolder = null;
+    var resetButton: React.HTMLElement = null;
     if (this.props.resetFN)
     {
       resetButton = React.DOM.button(

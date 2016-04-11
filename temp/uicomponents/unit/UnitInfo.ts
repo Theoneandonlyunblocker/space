@@ -56,7 +56,7 @@ class UnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var battleEndStatus: ReactDOMPlaceHolder = null;
+    var battleEndStatus: React.HTMLElement = null;
     if (this.props.isDead)
     {
       battleEndStatus = React.DOM.div(

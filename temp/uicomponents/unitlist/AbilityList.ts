@@ -39,7 +39,7 @@ class AbilityList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     if (abilities.length < 1) return null;
 
 
-    var abilityElements: ReactDOMPlaceHolder[] = [];
+    var abilityElements: React.HTMLElement[] = [];
     var addedAbilityTypes:
     {
       [abilityType: string]: number;

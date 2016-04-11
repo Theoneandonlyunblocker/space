@@ -51,7 +51,7 @@ class MapModeSelector_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   makeOptions()
   {
     var mapRenderer: MapRenderer = this.props.mapRenderer;
-    var options: ReactDOMPlaceHolder[] = [];
+    var options: React.HTMLElement[] = [];
 
     for (var key in mapRenderer.mapModes)
     {

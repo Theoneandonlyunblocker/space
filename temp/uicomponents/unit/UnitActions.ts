@@ -35,7 +35,7 @@ class UnitActions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     var hoveredSrc = "img\/icons\/spentAction.png";
     var spentSrc = "img\/icons\/spentAction.png";
 
-    var icons: ReactDOMPlaceHolder[] = [];
+    var icons: React.HTMLElement[] = [];
 
     var availableCount = this.props.currentActionPoints - this.props.hoveredActionPointExpenditure;
     for (var i = 0; i < availableCount; i++)

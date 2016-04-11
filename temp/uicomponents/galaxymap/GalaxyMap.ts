@@ -46,7 +46,7 @@ class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var mapModeOptions: ReactDOMPlaceHolder[] = [];
+    var mapModeOptions: React.HTMLElement[] = [];
 
     for (var mapModeName in this.props.mapRenderer.mapModes)
     {

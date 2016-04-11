@@ -117,7 +117,7 @@ class MapRendererLayersList_COMPONENT_TODO extends React.Component<PropTypes, St
     var layersData = mapMode.layers;
     var activeLayers = mapMode.getActiveLayers();
 
-    var listItems: ReactDOMPlaceHolder[] = [];
+    var listItems: React.HTMLElement[] = [];
 
     for (var i = 0; i < layersData.length; i++)
     {

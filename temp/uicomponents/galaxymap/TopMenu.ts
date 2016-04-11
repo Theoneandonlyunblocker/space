@@ -273,7 +273,7 @@ class TopMenu_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       }));
     }
 
-    var openedCondensedMenu: ReactDOMPlaceHolder = null;
+    var openedCondensedMenu: React.HTMLElement = null;
     if ((this.state.condensedMenuOpened || Options.ui.noHamburger) && leftoverButtons.length > 0)
     {
       openedCondensedMenu = React.DOM.div(
