@@ -19,6 +19,8 @@ import BattleBackground from "./BattleBackground.ts";
 import Options from "../../../src/options.ts";
 import MCTree from "../../../src/MCTree.ts";
 import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
+import {AbilityUseData} from "../../../src/battleAbilityProcessing.ts";
+import {getTargetsForAllAbilities} from "../../../src/battleAbilityTargeting.ts";
 import BattleScore from "./BattleScore.ts";
 import BattleScene from "./BattleScene.ts";
 import Formation from "./Formation.ts";
@@ -70,11 +72,11 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   // set as a property of the class instead of its state
   // as its not used for trigger updates
   // and needs to be changed synchronously
-  tempHoveredUnit: reactTypeTODO_any = null;
+  tempHoveredUnit: Unit = null;
   idGenerator: number = 0;
-  MCTree: reactTypeTODO_any = null;
-  battleStartStartTime: reactTypeTODO_any = undefined;
-  battleEndStartTime: reactTypeTODO_any = undefined;
+  MCTree: MCTree = null;
+  battleStartStartTime: number = undefined;
+  battleEndStartTime: number = undefined;
 
   state: StateType;
   refs: RefTypes;
@@ -124,7 +126,6 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       
       targetUnit: null,
       userUnit: null,
-      activeUnit: null,
       hoveredUnit: null,
       highlightedUnit: null,
 
@@ -133,7 +134,6 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       battleSceneUnit1: null,
       battleSceneUnit2: null,
       playingBattleEffect: false,
-      battleEffectId: undefined,
       battleEffectDuration: null,
       battleEffectSFX: null,
       afterAbilityFinishedCallback: null,
@@ -153,7 +153,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     this.setState(
     {
       battleIsStarting: false
-    }, this.setBattleSceneUnits(this.state.hoveredUnit));
+    }, this.setBattleSceneUnits.bind(this, this.state.hoveredUnit));
 
     if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
     {
@@ -249,7 +249,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     return document.getElementById("unit-id_" + unit.id);
   }
 
-  setBattleSceneUnits(hoveredUnit: Unit)
+  setBattleSceneUnits(hoveredUnit?: Unit)
   {
     if (this.state.playingBattleEffect) return;
 
@@ -318,7 +318,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   // or have this wait for battle scene units to finish animating.
   // battleSFX animation can trigger at the earliest after animationTiming.unitEnter, but
   // actual effect always gets triggered after animationTiming.beforeUse
-  playBattleEffect(abilityData: IAbilityUseData, i: number)
+  playBattleEffect(abilityData: AbilityUseData, i: number)
   {
     // TODO
     /* 
@@ -438,7 +438,6 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     this.setState(
     {
       playingBattleEffect: false,
-      battleEffectId: undefined,
       battleEffectDuration: null,
       battleEffectSFX: null,
       afterAbilityFinishedCallback: null,
