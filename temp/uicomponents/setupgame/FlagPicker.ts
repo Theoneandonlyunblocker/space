@@ -64,7 +64,7 @@ class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       this.clearSelectedEmblem();
       return;
     }
-    React.findDOMNode<HTMLElement>(this.refs.imageUploader).value = null;
+    React.findDOMNode<HTMLInputElement>(this.refs.imageUploader).value = null;
     this.props.handleSelectEmblem(emblemTemplate);
     this.setState({selectedEmblem: emblemTemplate});
   }

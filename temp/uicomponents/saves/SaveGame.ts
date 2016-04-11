@@ -60,7 +60,7 @@ class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   setInputText(newText: string)
   {
-    React.findDOMNode<HTMLElement>(this.refs.saveName).value = newText;
+    React.findDOMNode<HTMLInputElement>(this.refs.saveName).value = newText;
   }
 
   handleRowChange(row: IListItem)
@@ -70,7 +70,7 @@ class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   handleSave()
   {
-    var saveName = React.findDOMNode<HTMLElement>(this.refs.saveName).value
+    var saveName = React.findDOMNode<HTMLInputElement>(this.refs.saveName).value
     var saveKey = "Save." + saveName;
     if (localStorage[saveKey])
     {
@@ -83,7 +83,7 @@ class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   saveGame()
   {
-    app.game.save(React.findDOMNode<HTMLElement>(this.refs.saveName).value);
+    app.game.save(React.findDOMNode<HTMLInputElement>(this.refs.saveName).value);
     this.handleClose();
   }
   handleClose()
