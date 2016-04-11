@@ -1,15 +1,10 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../unit.ts" />
-/// <reference path="../../battle.ts" />
-
-/// <reference path="formationrow.ts"/>
-
 
 import Unit from "../../../src/Unit.ts";
 import FormationRow from "./FormationRow.ts";
-import Battle from "./Battle.ts";
+import Battle from "../../../src/Battle.ts";
 import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
 
 
@@ -19,20 +14,20 @@ export interface PropTypes extends React.Props<any>
   battle?: Battle;
   facesLeft: boolean;
   activeUnit?: Unit;
-  activeTargets?: reactTypeTODO_object; // {[id: number]: AbilityTemplate[];}
+  activeTargets?: {[id: number]: AbilityTemplate[];};
 
   hoveredUnit?: Unit;
-  hoveredAbility?: reactTypeTODO_object; // AbilityTemplate
+  hoveredAbility?: AbilityTemplate;
 
-  handleMouseLeaveUnit?: reactTypeTODO_func;
-  handleMouseEnterUnit?: reactTypeTODO_func;
   targetsInPotentialArea?: Unit[];
   activeEffectUnits?: Unit[];
-  onMouseUp?: reactTypeTODO_func;
-  onUnitClick?: reactTypeTODO_func;
   isDraggable?: boolean;
-  onDragStart?: reactTypeTODO_func;
-  onDragEnd?: reactTypeTODO_func;
+  onUnitClick?: (unit: Unit) => void;
+  onMouseUp?: (position: number[]) => void;
+  handleMouseLeaveUnit?: () => void;
+  handleMouseEnterUnit?: (unit: Unit) => void;
+  onDragStart?: (unit: Unit) => void;
+  onDragEnd?: (dropSuccessful?: boolean) => void;
 }
 
 interface StateType
