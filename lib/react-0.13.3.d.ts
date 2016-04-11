@@ -4,6 +4,16 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 declare namespace __React {
+    // 
+    // CUSTOM
+    // ----------------------------------------------------------------------
+    interface Refs {
+        [key: string]: Component<any, any>;
+    }
+    // 
+    // END CUSTOM
+    // ----------------------------------------------------------------------
+
     //
     // React Elements
     // ----------------------------------------------------------------------
@@ -145,9 +155,7 @@ declare namespace __React {
         props: P;
         state: S;
         context: {};
-        refs: {
-            [key: string]: Component<any, any>
-        };
+        refs: Refs; // CUSTOM
     }
 
     interface ClassicComponent<P, S> extends Component<P, S> {
@@ -954,9 +962,7 @@ declare module "react/addons" {
         props: P;
         state: S;
         context: {};
-        refs: {
-            [key: string]: Component<any, any>
-        };
+        refs: __React.Refs; // CUSTOM
     }
 
     interface ClassicComponent<P, S> extends Component<P, S> {
