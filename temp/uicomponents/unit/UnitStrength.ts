@@ -3,7 +3,7 @@ import * as React from "react";
 
 /// <reference path="../../../lib/tween.js.d.ts" />
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

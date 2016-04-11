@@ -10,7 +10,7 @@ import List from "./List.ts";
 import UnitListItem from "./UnitListItem.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

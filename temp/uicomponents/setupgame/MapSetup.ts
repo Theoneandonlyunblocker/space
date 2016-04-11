@@ -11,7 +11,7 @@ import MapGenOptions from "./MapGenOptions.ts";
 import MapGenTemplate from "../../../src/templateinterfaces/MapGenTemplate.d.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

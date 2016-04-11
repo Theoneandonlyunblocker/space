@@ -10,7 +10,7 @@ import List from "../unitlist/List.ts";
 import Item from "../../../src/Item.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   tradeableItems?: reactTypeTODO_object; // ITradeableItems
 

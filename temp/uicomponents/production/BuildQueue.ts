@@ -12,7 +12,7 @@ import ManufacturableThingsList from "./ManufacturableThingsList.ts";
 import Manufactory from "../../../src/Manufactory.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   manufactory: Manufactory;
   triggerUpdate: reactTypeTODO_func;

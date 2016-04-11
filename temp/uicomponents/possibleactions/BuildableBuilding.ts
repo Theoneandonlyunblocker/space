@@ -10,7 +10,7 @@ import Player from "../../../src/Player.ts";
 import BuildingTemplate from "../../../src/templateinterfaces/BuildingTemplate.d.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   template: reactTypeTODO_object;
   player: Player;

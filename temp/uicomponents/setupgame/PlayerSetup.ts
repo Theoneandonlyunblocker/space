@@ -10,7 +10,7 @@ import FlagSetter from "./FlagSetter.ts";
 import ColorSetter from "./ColorSetter.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

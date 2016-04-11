@@ -15,7 +15,7 @@ import BuildableBuildingList from "./BuildableBuildingList.ts";
 import eventManager from "../../../src/eventManager.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   player: Player;
   setExpandedActionElementOnParent: reactTypeTODO_func;

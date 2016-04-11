@@ -14,7 +14,7 @@ import FleetReorganization from "./FleetReorganization.ts";
 import Fleet from "../../../src/Fleet.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

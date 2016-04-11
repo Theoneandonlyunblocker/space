@@ -9,7 +9,7 @@ import PlayerFlag from "../PlayerFlag.ts";
 import DefenceBuildingList from "../galaxymap/DefenceBuildingList.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

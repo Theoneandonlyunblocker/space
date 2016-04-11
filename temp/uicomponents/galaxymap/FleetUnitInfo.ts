@@ -12,7 +12,7 @@ import FleetUnitInfoName from "./FleetUnitInfoName.ts";
 import UnitStrength from "../unit/UnitStrength.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   unit?: Unit;
   isIdentified: boolean;

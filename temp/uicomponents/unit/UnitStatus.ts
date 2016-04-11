@@ -7,7 +7,7 @@ import GuardCoverage from "../../../src/GuardCoverage.ts";
 
 import * as React from "react";
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   guardAmount?: number;
   guardCoverage?: number; // GuardCoverage enum

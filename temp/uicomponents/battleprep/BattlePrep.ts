@@ -23,7 +23,7 @@ import UnitList from "../unitlist/UnitList.ts";
 import BattleInfo from "./BattleInfo.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

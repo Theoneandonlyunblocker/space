@@ -11,7 +11,7 @@ import BuildableBuilding from "./BuildableBuilding.ts";
 import Building from "../../../src/Building.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

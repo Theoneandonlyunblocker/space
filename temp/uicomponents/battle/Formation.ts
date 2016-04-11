@@ -13,7 +13,7 @@ import Battle from "./Battle.ts";
 import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   formation: Unit[][];
   battle?: Battle;

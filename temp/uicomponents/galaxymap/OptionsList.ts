@@ -25,7 +25,7 @@ import NotificationLog from "../notifications/NotificationLog.ts";
 import eventManager from "../../../src/eventManager.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   log: NotificationLog;
 }

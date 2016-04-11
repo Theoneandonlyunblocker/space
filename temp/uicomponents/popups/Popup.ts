@@ -9,7 +9,7 @@ import eventManager from "../../../src/eventManager.ts";
 import PopupResizeHandle from "./PopupResizeHandle.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   initialPosition?: reactTypeTODO_object;
   minWidth?: number;

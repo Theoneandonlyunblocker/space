@@ -5,7 +5,7 @@ import Item from "../../../src/Item.ts";
 
 import * as React from "react";
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

@@ -10,7 +10,7 @@ import PlayerTechnology from "../../../src/PlayerTechnology.ts";
 import eventManager from "../../../src/eventManager.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   playerTechnology: PlayerTechnology;
   technology: TechnologyTemplate;

@@ -9,7 +9,7 @@ import Tutorial from "../../../src/tutorials/Tutorial.d.ts";
 import DontShowAgain from "./DontShowAgain.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   pages: reactTypeTODO_node[]; // React.PropTypes.node
 

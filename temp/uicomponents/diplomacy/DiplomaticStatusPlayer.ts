@@ -9,7 +9,7 @@ import Opinion from "./Opinion.ts";
 import PlayerFlag from "../PlayerFlag.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

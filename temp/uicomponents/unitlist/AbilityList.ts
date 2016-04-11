@@ -5,7 +5,7 @@ import AbilityBase from "../../../src/templateinterfaces/AbilityBase.d.ts";
 
 import * as React from "react";
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

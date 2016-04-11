@@ -15,7 +15,7 @@ import UnitInfo from "./UnitInfo.ts";
 import UnitIcon from "./UnitIcon.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

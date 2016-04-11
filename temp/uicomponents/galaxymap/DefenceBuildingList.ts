@@ -7,7 +7,7 @@ import * as React from "react";
 import DefenceBuilding from "./DefenceBuilding.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

@@ -11,7 +11,7 @@ import Item from "../../../src/Item.ts";
 import eventManager from "../../../src/eventManager.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

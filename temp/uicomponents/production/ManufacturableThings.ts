@@ -14,7 +14,7 @@ import ManufacturableUnits from "./ManufacturableUnits.ts";
 import Star from "../../../src/Star.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   selectedStar?: Star;
   player: Player;

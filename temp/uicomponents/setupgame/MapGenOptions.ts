@@ -16,7 +16,7 @@ import OptionsGroup from "../galaxymap/OptionsGroup.ts";
 import MapGenOption from "./MapGenOption.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

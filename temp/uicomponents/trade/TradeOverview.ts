@@ -12,7 +12,7 @@ import TradeableItems from "./TradeableItems.ts";
 import Trade from "../../../src/Trade.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   selfPlayer: Player;
   otherPlayer: Player;

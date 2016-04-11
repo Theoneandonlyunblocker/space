@@ -9,7 +9,7 @@ import List from "../unitlist/List.ts";
 import EconomySummaryItem from "./EconomySummaryItem.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

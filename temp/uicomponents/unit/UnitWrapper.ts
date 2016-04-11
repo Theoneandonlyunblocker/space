@@ -10,7 +10,7 @@ import EmptyUnit from "./EmptyUnit.ts";
 import Unit from "./Unit.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

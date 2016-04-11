@@ -13,7 +13,7 @@ import Flag from "../../../src/Flag.ts";
 import Emblem from "../../../src/Emblem.ts";
 import SubEmblemTemplate from "../../../src/templateinterfaces/SubEmblemTemplate.d.ts";
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

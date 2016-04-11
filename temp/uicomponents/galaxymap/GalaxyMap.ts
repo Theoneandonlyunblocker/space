@@ -11,7 +11,7 @@ import GalaxyMapUI from "./GalaxyMapUI.ts";
 import Options from "../../../src/options.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

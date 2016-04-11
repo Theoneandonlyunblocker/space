@@ -9,7 +9,7 @@ import TopMenuPopup from "../popups/TopMenuPopup.ts";
 import PopupManager from "../popups/PopupManager.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

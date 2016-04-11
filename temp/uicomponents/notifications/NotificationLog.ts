@@ -14,7 +14,7 @@ import PopupManager from "../popups/PopupManager.ts";
 import eventManager from "../../../src/eventManager.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   log: NotificationLog;
   currentTurn: number;

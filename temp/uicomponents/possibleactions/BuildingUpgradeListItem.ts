@@ -8,7 +8,7 @@ import * as React from "react";
 import Player from "../../../src/Player.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   player: Player;
   handleUpgrade: reactTypeTODO_func;

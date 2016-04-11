@@ -11,7 +11,7 @@ import List from "../unitlist/List.ts";
 import AttitudeModifierInfo from "./AttitudeModifierInfo.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }

@@ -9,7 +9,7 @@ import Unit from "../unit/Unit.ts";
 import UnitStrength from "../unit/UnitStrength.ts";
 
 
-export interface PropTypes
+export interface PropTypes extends React.Props<any>
 {
   // TODO refactor | add prop types
 }
