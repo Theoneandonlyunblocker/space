@@ -5,7 +5,7 @@ import * as React from "react";
 /// <reference path="upgradeattributes.ts" />
 
 
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import AbilityBase from "../../../src/templateinterfaces/AbilityBase.d.ts";
 import UpgradeAttributes from "./UpgradeAttributes.ts";
 import UpgradeAbilities from "./UpgradeAbilities.ts";

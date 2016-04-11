@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 
 
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 
 import * as React from "react";
 

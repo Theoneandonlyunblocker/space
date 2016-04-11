@@ -4,7 +4,7 @@ import * as React from "react";
 /// <reference path="../../unit.ts" />
 
 
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 
 
 export interface PropTypes extends React.Props<any>

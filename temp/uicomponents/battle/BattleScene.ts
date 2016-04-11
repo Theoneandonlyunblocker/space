@@ -8,7 +8,7 @@ import * as React from "react";
 
 
 import BattleScene from "../../../src/BattleScene.ts";
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import BattleSFXTemplate from "../../../src/templateinterfaces/BattleSFXTemplate.d.ts";
 import Player from "../../../src/Player.ts";
 import BattleSceneFlag from "./BattleSceneFlag.ts";

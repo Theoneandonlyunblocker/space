@@ -12,7 +12,7 @@ import * as React from "react";
 
 
 import Battle from "../../../src/Battle.ts";
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import TurnOrder from "./TurnOrder.ts";
 import TurnCounter from "./TurnCounter.ts";
 import BattleBackground from "./BattleBackground.ts";

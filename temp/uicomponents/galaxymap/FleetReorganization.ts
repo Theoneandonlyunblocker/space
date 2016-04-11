@@ -6,7 +6,7 @@ import * as React from "react";
 /// <reference path="../../fleet.ts" />
 
 
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import FleetContents from "./FleetContents.ts";
 import fleets from "../../../modules/defaultmapmodes/maplayertemplates/fleets.ts";
 import Fleet from "../../../src/Fleet.ts";

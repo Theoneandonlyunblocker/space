@@ -5,7 +5,7 @@ import * as React from "react";
 /// <reference path="../unit/unitstrength.ts" />
 
 
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import UnitStrength from "../unit/UnitStrength.ts";
 
 

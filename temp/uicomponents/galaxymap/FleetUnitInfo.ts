@@ -7,7 +7,7 @@ import * as React from "react";
 /// <reference path="../../unit.ts" />
 
 
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import FleetUnitInfoName from "./FleetUnitInfoName.ts";
 import UnitStrength from "../unit/UnitStrength.ts";
 

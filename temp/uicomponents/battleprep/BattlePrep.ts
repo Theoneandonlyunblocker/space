@@ -11,7 +11,7 @@ import * as React from "react";
 
 
 import BattlePrep from "../../../src/BattlePrep.ts";
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import eventManager from "../../../src/eventManager.ts";
 import MenuUnitInfo from "../unitlist/MenuUnitInfo.ts";
 import BattleBackground from "../battle/BattleBackground.ts";

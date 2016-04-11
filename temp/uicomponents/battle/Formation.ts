@@ -7,7 +7,7 @@ import * as React from "react";
 /// <reference path="formationrow.ts"/>
 
 
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import FormationRow from "./FormationRow.ts";
 import Battle from "./Battle.ts";
 import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";

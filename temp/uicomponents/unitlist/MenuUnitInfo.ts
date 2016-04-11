@@ -6,7 +6,7 @@ import * as React from "react";
 /// <reference path="unitexperience.ts" />
 
 
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import AbilityBase from "../../../src/templateinterfaces/AbilityBase.d.ts";
 import UnitItemWrapper from "./UnitItemWrapper.ts";
 import AbilityList from "./AbilityList.ts";

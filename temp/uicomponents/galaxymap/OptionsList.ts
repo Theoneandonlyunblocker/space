@@ -12,7 +12,7 @@ import * as React from "react";
 /// <reference path="../../notificationlog.ts" />
 
 
-import Unit from "../unit/Unit.ts";
+import Unit from "../../../src/Unit.ts";
 import OptionsCheckbox from "./OptionsCheckbox.ts";
 import PopupManager from "../popups/PopupManager.ts";
 import Options from "../../../src/options.ts";
