@@ -23,6 +23,12 @@ interface StateType
   saveKey?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  okButton: HTMLElement;
+  popupManager: React.Component<any, any>; // PopupManager
+}
+
 class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LoadGame";

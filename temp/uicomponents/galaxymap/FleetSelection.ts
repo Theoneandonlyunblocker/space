@@ -28,6 +28,12 @@ interface StateType
 {
 }
 
+interface RefTypes extends React.Refs
+{
+  main: HTMLElement;
+  selected: HTMLElement;
+}
+
 class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetSelection";

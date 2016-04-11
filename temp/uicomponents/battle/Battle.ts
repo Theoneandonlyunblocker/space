@@ -57,6 +57,12 @@ interface StateType
   hoveredAbility?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  formationsContainer: HTMLElement;
+  abilityTooltip: React.Component<any, any>; // AbilityTooltip
+}
+
 class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Battle";

@@ -20,6 +20,11 @@ interface StateType
   selectedEmblem?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  imageUploader: HTMLElement;
+}
+
 class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagPicker";

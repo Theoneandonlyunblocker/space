@@ -21,6 +21,11 @@ interface StateType
 {
 }
 
+interface RefTypes extends React.Refs
+{
+  layersList: React.Component<any, any>; // MapRendererLayersList
+}
+
 class MapModeSettings_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapModeSettings";

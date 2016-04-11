@@ -12,6 +12,13 @@ interface StateType
 {
 }
 
+interface RefTypes extends React.Refs
+{
+  wrapper: HTMLElement;
+  container: HTMLElement;
+  content: HTMLElement;
+}
+
 class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LightBox";

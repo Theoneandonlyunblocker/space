@@ -32,6 +32,12 @@ interface StateType
   selected: ListItem;
 }
 
+interface RefTypes extends React.Refs
+{
+  header: HTMLElement;
+  inner: HTMLElement;
+}
+
 class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   mixins: [SplitMultilineText];

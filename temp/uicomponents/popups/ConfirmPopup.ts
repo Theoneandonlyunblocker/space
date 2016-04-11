@@ -18,6 +18,11 @@ interface StateType
 {
 }
 
+interface RefTypes extends React.Refs
+{
+  okButton: HTMLElement;
+}
+
 class ConfirmPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConfirmPopup";

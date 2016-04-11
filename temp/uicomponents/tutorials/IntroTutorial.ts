@@ -24,6 +24,11 @@ interface StateType
   show?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  popupManager: React.Component<any, any>; // PopupManager
+}
+
 class IntroTutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "IntroTutorial";

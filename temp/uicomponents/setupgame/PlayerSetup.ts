@@ -28,6 +28,11 @@ interface StateType
   mainColor?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  flagSetter: React.Component<any, any>; // FlagSetter
+}
+
 class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerSetup";

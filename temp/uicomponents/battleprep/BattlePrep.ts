@@ -38,6 +38,12 @@ interface StateType
   selectedUnit?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  background: React.Component<any, any>; // BattleBackground
+  upper: HTMLElement;
+}
+
 class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattlePrep";

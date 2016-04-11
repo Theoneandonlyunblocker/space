@@ -24,6 +24,11 @@ interface StateType
 {
 }
 
+interface RefTypes extends React.Refs
+{
+  popupManager: React.Component<any, any>; // PopupManager
+}
+
 class DiplomacyOverview_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DiplomacyOverview";

@@ -44,6 +44,12 @@ interface StateType
   selectedStar?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  leftColumnContent: HTMLElement;
+  expandedActionElementContainer: HTMLElement;
+}
+
 class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMapUI";

@@ -29,6 +29,13 @@ interface StateType
   buttonsToPlace?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  topMenu: HTMLElement;
+  popups: React.Component<any, any>; // TopMenuPopups
+  topMenuItems: HTMLElement;
+}
+
 class TopMenu_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenu";

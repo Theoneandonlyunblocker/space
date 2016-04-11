@@ -30,6 +30,12 @@ interface StateType
   hasImageFailMessage?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  flagPicker: React.Component<any, any>; // FlagPicker
+  main: HTMLElement;
+}
+
 class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagSetter";

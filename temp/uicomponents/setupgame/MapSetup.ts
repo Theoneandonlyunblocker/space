@@ -22,6 +22,11 @@ interface StateType
   templates?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  mapGenOptions: React.Component<any, any>; // MapGenOptions
+}
+
 class MapSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapSetup";

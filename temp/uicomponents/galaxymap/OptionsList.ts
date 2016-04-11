@@ -34,6 +34,11 @@ interface StateType
 {
 }
 
+interface RefTypes extends React.Refs
+{
+  popupManager: React.Component<any, any>; // PopupManager
+}
+
 class OptionsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsList";

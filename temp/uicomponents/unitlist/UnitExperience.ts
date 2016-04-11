@@ -22,6 +22,11 @@ interface StateType
   upgradePopupId?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  popupManager: React.Component<any, any>; // PopupManager
+}
+
 class UnitExperience_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitExperience";

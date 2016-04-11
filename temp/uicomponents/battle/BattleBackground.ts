@@ -20,6 +20,11 @@ interface StateType
 {
 }
 
+interface RefTypes extends React.Refs
+{
+  pixiContainer: HTMLElement;
+}
+
 class BattleBackground_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleBackground";

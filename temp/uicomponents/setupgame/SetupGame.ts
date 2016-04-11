@@ -22,6 +22,12 @@ interface StateType
   minPlayers?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  players: React.Component<any, any>; // SetupGamePlayers
+  mapSetup: React.Component<any, any>; // MapSetup
+}
+
 class SetupGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SetupGame";

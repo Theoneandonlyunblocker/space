@@ -32,6 +32,11 @@ interface StateType
   dragging?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  dragClone: React.Component<any, any>; // Unit
+}
+
 class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitListItem";

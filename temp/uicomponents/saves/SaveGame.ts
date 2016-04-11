@@ -21,6 +21,13 @@ interface StateType
 {
 }
 
+interface RefTypes extends React.Refs
+{
+  okButton: HTMLElement;
+  popupManager: React.Component<any, any>; // PopupManager
+  saveName: HTMLElement;
+}
+
 class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SaveGame";

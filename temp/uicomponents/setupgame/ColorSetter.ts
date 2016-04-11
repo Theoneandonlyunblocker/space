@@ -26,6 +26,11 @@ interface StateType
   isActive?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  main: HTMLElement;
+}
+
 class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorSetter";

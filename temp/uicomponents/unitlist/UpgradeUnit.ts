@@ -25,6 +25,11 @@ interface StateType
   upgradeData?: any; // TODO refactor | define state type 456
 }
 
+interface RefTypes extends React.Refs
+{
+  popupManager: React.Component<any, any>; // PopupManager
+}
+
 class UpgradeUnit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeUnit";

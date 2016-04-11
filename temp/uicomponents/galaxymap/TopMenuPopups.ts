@@ -36,6 +36,11 @@ interface StateType
 {
 }
 
+interface RefTypes extends React.Refs
+{
+  popupManager: React.Component<any, any>; // PopupManager
+}
+
 class TopMenuPopups_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenuPopups";
