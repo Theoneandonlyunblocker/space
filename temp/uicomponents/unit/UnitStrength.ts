@@ -5,7 +5,10 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  isNotDetected: any; // TODO refactor | define prop type 123
+  currentHealth: any; // TODO refactor | define prop type 123
+  isSquadron: any; // TODO refactor | define prop type 123
+  maxHealth: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

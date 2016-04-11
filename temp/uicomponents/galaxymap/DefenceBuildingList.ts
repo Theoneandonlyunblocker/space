@@ -9,7 +9,8 @@ import DefenceBuilding from "./DefenceBuilding.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  buildings: any; // TODO refactor | define prop type 123
+  reverse: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

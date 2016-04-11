@@ -30,7 +30,9 @@ import AbilityTooltip from "./AbilityTooltip.ts";
 // should have separate non-react class for battle logic
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  renderer: any; // TODO refactor | define prop type 123
+  battle: any; // TODO refactor | define prop type 123
+  humanPlayer: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

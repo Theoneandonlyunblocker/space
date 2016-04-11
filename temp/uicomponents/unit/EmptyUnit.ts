@@ -7,7 +7,7 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  facesLeft: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

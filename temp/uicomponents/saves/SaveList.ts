@@ -10,7 +10,13 @@ import List from "../unitlist/List.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  onRowChange: any; // TODO refactor | define prop type 123
+  saveKeysToDelete: any; // TODO refactor | define prop type 123
+  selectedKey: any; // TODO refactor | define prop type 123
+  autoSelect: any; // TODO refactor | define prop type 123
+  allowDelete: any; // TODO refactor | define prop type 123
+  onUndoDelete: any; // TODO refactor | define prop type 123
+  onDelete: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

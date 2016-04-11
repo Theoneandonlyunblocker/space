@@ -11,7 +11,7 @@ import EconomySummaryItem from "./EconomySummaryItem.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  player: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

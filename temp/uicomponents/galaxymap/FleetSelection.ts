@@ -16,7 +16,12 @@ import Fleet from "../../../src/Fleet.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  selectedFleets: any; // TODO refactor | define prop type 123
+  player: any; // TODO refactor | define prop type 123
+  isInspecting: any; // TODO refactor | define prop type 123
+  closeReorganization: any; // TODO refactor | define prop type 123
+  currentlyReorganizing: any; // TODO refactor | define prop type 123
+  selectedStar: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

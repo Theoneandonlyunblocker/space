@@ -7,7 +7,11 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  onDragEnd: any; // TODO refactor | define prop type 123
+  onDragStart: any; // TODO refactor | define prop type 123
+  item: any; // TODO refactor | define prop type 123
+  isDraggable: any; // TODO refactor | define prop type 123
+  slot: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

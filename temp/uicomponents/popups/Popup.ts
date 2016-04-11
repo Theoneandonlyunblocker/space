@@ -11,6 +11,7 @@ import PopupResizeHandle from "./PopupResizeHandle.ts";
 
 export interface PropTypes extends React.Props<any>
 {
+  resizable: any; // TODO refactor | define prop type 123
   initialPosition?: reactTypeTODO_object;
   minWidth?: number;
   maxWidth?: number;

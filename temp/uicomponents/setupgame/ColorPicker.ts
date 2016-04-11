@@ -5,7 +5,12 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  generateColor: any; // TODO refactor | define prop type 123
+  getParentPosition: any; // TODO refactor | define prop type 123
+  hexColor: any; // TODO refactor | define prop type 123
+  flagHasCustomImage: any; // TODO refactor | define prop type 123
+  onChange: any; // TODO refactor | define prop type 123
+  limitUpdates: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

@@ -3,7 +3,15 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  listItemIsDragging: any; // TODO refactor | define prop type 123
+  onDragEnd: any; // TODO refactor | define prop type 123
+  onDragStart: any; // TODO refactor | define prop type 123
+  isActive: any; // TODO refactor | define prop type 123
+  layer: any; // TODO refactor | define prop type 123
+  setHoverPosition: any; // TODO refactor | define prop type 123
+  toggleActive: any; // TODO refactor | define prop type 123
+  updateLayer: any; // TODO refactor | define prop type 123
+  layerName: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

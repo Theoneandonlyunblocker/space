@@ -11,7 +11,7 @@ import Star from "../../../src/Star.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  selectedStar: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

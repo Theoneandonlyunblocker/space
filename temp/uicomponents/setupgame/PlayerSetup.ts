@@ -12,7 +12,12 @@ import ColorSetter from "./ColorSetter.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  setActiveColorPicker: any; // TODO refactor | define prop type 123
+  setHuman: any; // TODO refactor | define prop type 123
+  removePlayers: any; // TODO refactor | define prop type 123
+  initialName: any; // TODO refactor | define prop type 123
+  keyTODO: any; // TODO refactor | define prop type 123
+  isHuman: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

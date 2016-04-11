@@ -11,7 +11,10 @@ import PopupManager from "../popups/PopupManager.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  unit: any; // TODO refactor | define prop type 123
+  onUnitUpgrade: any; // TODO refactor | define prop type 123
+  experienceForCurrentLevel: any; // TODO refactor | define prop type 123
+  experienceToNextLevel: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

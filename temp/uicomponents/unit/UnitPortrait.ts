@@ -3,7 +3,8 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  className: any; // TODO refactor | define prop type 123
+  imageSrc: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

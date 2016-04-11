@@ -14,7 +14,7 @@ import ConfirmPopup from "../popups/ConfirmPopup.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  handleClose: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

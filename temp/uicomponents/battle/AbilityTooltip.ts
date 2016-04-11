@@ -3,7 +3,14 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  parentElement: any; // TODO refactor | define prop type 123
+  facesLeft: any; // TODO refactor | define prop type 123
+  activeTargets: any; // TODO refactor | define prop type 123
+  handleMouseLeave: any; // TODO refactor | define prop type 123
+  handleAbilityUse: any; // TODO refactor | define prop type 123
+  targetUnit: any; // TODO refactor | define prop type 123
+  handleMouseEnterAbility: any; // TODO refactor | define prop type 123
+  handleMouseLeaveAbility: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

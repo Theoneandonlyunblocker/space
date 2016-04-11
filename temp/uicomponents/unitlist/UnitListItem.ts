@@ -11,7 +11,20 @@ import UnitStrength from "../unit/UnitStrength.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  onDragEnd: any; // TODO refactor | define prop type 123
+  onDragStart: any; // TODO refactor | define prop type 123
+  onMouseLeave: any; // TODO refactor | define prop type 123
+  noActionsLeft: any; // TODO refactor | define prop type 123
+  isHovered: any; // TODO refactor | define prop type 123
+  isDraggable: any; // TODO refactor | define prop type 123
+  currentHealth: any; // TODO refactor | define prop type 123
+  isReserved: any; // TODO refactor | define prop type 123
+  isSelected: any; // TODO refactor | define prop type 123
+  onMouseEnter: any; // TODO refactor | define prop type 123
+  maxHealth: any; // TODO refactor | define prop type 123
+  activeColumns: any; // TODO refactor | define prop type 123
+  unit: any; // TODO refactor | define prop type 123
+  handleClick: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

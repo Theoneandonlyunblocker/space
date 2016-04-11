@@ -3,7 +3,11 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  icon: any; // TODO refactor | define prop type 123
+  unit: any; // TODO refactor | define prop type 123
+  isAnnihilated: any; // TODO refactor | define prop type 123
+  isActiveUnit: any; // TODO refactor | define prop type 123
+  facesLeft: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

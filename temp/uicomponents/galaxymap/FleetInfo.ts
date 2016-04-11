@@ -10,7 +10,10 @@ import Fleet from "../../../src/Fleet.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  isNotDetected: any; // TODO refactor | define prop type 123
+  fleet: any; // TODO refactor | define prop type 123
+  hasMultipleSelected: any; // TODO refactor | define prop type 123
+  isInspecting: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

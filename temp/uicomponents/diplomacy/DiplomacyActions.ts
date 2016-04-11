@@ -15,6 +15,7 @@ import PopupManager from "../popups/PopupManager.ts";
 
 export interface PropTypes extends React.Props<any>
 {
+  closePopup: any; // TODO refactor | define prop type 123
   player: Player;
   targetPlayer: Player;
   onUpdate: reactTypeTODO_func;

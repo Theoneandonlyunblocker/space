@@ -10,7 +10,10 @@ props
  */
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  getBlurArea: any; // TODO refactor | define prop type 123
+  children: any; // TODO refactor | define prop type 123
+  backgroundSeed: any; // TODO refactor | define prop type 123
+  renderer: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

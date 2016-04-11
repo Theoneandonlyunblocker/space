@@ -11,7 +11,12 @@ import PlayerFlag from "../PlayerFlag.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  baseOpinion: any; // TODO refactor | define prop type 123
+  player: any; // TODO refactor | define prop type 123
+  opinion: any; // TODO refactor | define prop type 123
+  activeColumns: any; // TODO refactor | define prop type 123
+  attitudeModifiers: any; // TODO refactor | define prop type 123
+  handleClick: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

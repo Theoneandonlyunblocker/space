@@ -17,7 +17,21 @@ import UnitIcon from "./UnitIcon.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  handleMouseEnterUnit: any; // TODO refactor | define prop type 123
+  onDragEnd: any; // TODO refactor | define prop type 123
+  onDragStart: any; // TODO refactor | define prop type 123
+  isCaptured: any; // TODO refactor | define prop type 123
+  handleMouseLeaveUnit: any; // TODO refactor | define prop type 123
+  facesLeft: any; // TODO refactor | define prop type 123
+  activeUnit: any; // TODO refactor | define prop type 123
+  isDraggable: any; // TODO refactor | define prop type 123
+  isDead: any; // TODO refactor | define prop type 123
+  hoveredAbility: any; // TODO refactor | define prop type 123
+  battle: any; // TODO refactor | define prop type 123
+  unit: any; // TODO refactor | define prop type 123
+  hoveredUnit: any; // TODO refactor | define prop type 123
+  targetsInPotentialArea: any; // TODO refactor | define prop type 123
+  onUnitClick: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

@@ -12,7 +12,15 @@ import Unit from "./Unit.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  isCaptured: any; // TODO refactor | define prop type 123
+  onMouseUp: any; // TODO refactor | define prop type 123
+  facesLeft: any; // TODO refactor | define prop type 123
+  isDead: any; // TODO refactor | define prop type 123
+  position: any; // TODO refactor | define prop type 123
+  battle: any; // TODO refactor | define prop type 123
+  unit: any; // TODO refactor | define prop type 123
+  activeEffectUnits: any; // TODO refactor | define prop type 123
+  key: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

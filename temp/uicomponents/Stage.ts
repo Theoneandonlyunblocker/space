@@ -24,7 +24,15 @@ import FlagMaker from "./FlagMaker.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  battlePrep: any; // TODO refactor | define prop type 123
+  mapRenderer: any; // TODO refactor | define prop type 123
+  player: any; // TODO refactor | define prop type 123
+  playerControl: any; // TODO refactor | define prop type 123
+  battle: any; // TODO refactor | define prop type 123
+  game: any; // TODO refactor | define prop type 123
+  changeSceneFunction: any; // TODO refactor | define prop type 123
+  sceneToRender: any; // TODO refactor | define prop type 123
+  renderer: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

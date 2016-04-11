@@ -11,7 +11,12 @@ import ColorPicker from "./ColorPicker.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  setActiveColorPicker: any; // TODO refactor | define prop type 123
+  generateColor: any; // TODO refactor | define prop type 123
+  isActive: any; // TODO refactor | define prop type 123
+  color: any; // TODO refactor | define prop type 123
+  flagHasCustomImage: any; // TODO refactor | define prop type 123
+  onChange: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

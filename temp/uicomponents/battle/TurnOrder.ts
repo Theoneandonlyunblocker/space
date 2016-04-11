@@ -3,7 +3,12 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  // TODO refactor | add prop types
+  potentialDelay: any; // TODO refactor | define prop type 123
+  onMouseLeaveUnit: any; // TODO refactor | define prop type 123
+  unitsBySide: any; // TODO refactor | define prop type 123
+  turnOrder: any; // TODO refactor | define prop type 123
+  hoveredUnit: any; // TODO refactor | define prop type 123
+  onMouseEnterUnit: any; // TODO refactor | define prop type 123
 }
 
 interface StateType
