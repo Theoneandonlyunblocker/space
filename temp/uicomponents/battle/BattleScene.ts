@@ -26,8 +26,8 @@ export interface PropTypes extends React.Props<any>
   hoveredUnit?: Unit;
   activeSFX?: BattleSFXTemplate;
 
-  afterAbilityFinishedCallback?: reactTypeTODO_func;
-  triggerEffectCallback?: reactTypeTODO_func;
+  afterAbilityFinishedCallback?: () => void;
+  triggerEffectCallback?: (forceUpdate?: boolean) => void;
   humanPlayerWonBattle?: boolean;
   side1Player?: Player;
   side2Player?: Player;
