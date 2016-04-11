@@ -572,7 +572,6 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
         handleMouseLeave: this.handleMouseLeaveUnit,
         handleMouseEnterAbility: this.handleMouseEnterAbility,
         handleMouseLeaveAbility: this.handleMouseLeaveAbility,
-        activeUnit: battle.activeUnit,
         targetUnit: this.state.hoveredUnit,
         parentElement: this.state.abilityTooltip.parentElement,
         facesLeft: this.state.abilityTooltip.facesLeft,

@@ -1,16 +1,19 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
+import Unit from "../../../src/Unit.ts";
+import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
+
 export interface PropTypes extends React.Props<any>
 {
-  parentElement: any; // TODO refactor | define prop type 123
-  facesLeft: any; // TODO refactor | define prop type 123
+  parentElement: HTMLElement;
+  facesLeft: boolean;
   activeTargets: any; // TODO refactor | define prop type 123
-  handleMouseLeave: any; // TODO refactor | define prop type 123
-  handleAbilityUse: any; // TODO refactor | define prop type 123
-  targetUnit: any; // TODO refactor | define prop type 123
-  handleMouseEnterAbility: any; // TODO refactor | define prop type 123
-  handleMouseLeaveAbility: any; // TODO refactor | define prop type 123
+  handleMouseLeave: (e: React.MouseEvent) => void;
+  handleAbilityUse: (ability: AbilityTemplate, target: Unit) => void;
+  targetUnit: Unit;
+  handleMouseEnterAbility: (ability: AbilityTemplate) => void;
+  handleMouseLeaveAbility: () => void;
 }
 
 interface StateType
