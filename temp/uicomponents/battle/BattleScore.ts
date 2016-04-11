@@ -1,16 +1,13 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../playerflag.ts" />
-
-
-import Battle from "./Battle.ts";
+import Battle from "../../../src/Battle.ts";
 import PlayerFlag from "../PlayerFlag.ts";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  battle: any; // TODO refactor | define prop type 123
+  battle: Battle;
 }
 
 interface StateType
@@ -20,7 +17,7 @@ interface StateType
 class BattleScore_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScore";
-  lastEvaluation: reactTypeTODO_any = undefined;
+  lastEvaluation: number
   shouldComponentUpdate(newProps: any)
   {
     var oldEvaluation = this.lastEvaluation;
@@ -33,8 +30,6 @@ class BattleScore_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
   }
   
   componentWillMount()
@@ -82,8 +77,8 @@ class BattleScore_COMPONENT_TODO extends React.Component<PropTypes, StateType>
               style:
               {
                 width: "" + evaluationPercentage + "%",
-                backgroundColor: "#" + hexToString(battle.side1Player.color),
-                borderColor: "#" + hexToString(battle.side1Player.secondaryColor)
+                backgroundColor: "#" + battle.side1Player.color.getHexString(),
+                borderColor: "#" + battle.side1Player.secondaryColor.getHexString()
               }
             }),
             React.DOM.div(
@@ -92,8 +87,8 @@ class BattleScore_COMPONENT_TODO extends React.Component<PropTypes, StateType>
               style:
               {
                 width: "" + (100 - evaluationPercentage) + "%",
-                backgroundColor: "#" + hexToString(battle.side2Player.color),
-                borderColor: "#" + hexToString(battle.side2Player.secondaryColor)
+                backgroundColor: "#" + battle.side2Player.color.getHexString(),
+                borderColor: "#" + battle.side2Player.secondaryColor.getHexString()
               }
             })
           ),
