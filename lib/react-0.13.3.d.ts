@@ -8,7 +8,7 @@ declare namespace __React {
     // CUSTOM
     // ----------------------------------------------------------------------
     interface Refs {
-        [key: string]: Component<any, any>;
+        [key: string]: Component<any, any> | Element;
     }
     // 
     // END CUSTOM
