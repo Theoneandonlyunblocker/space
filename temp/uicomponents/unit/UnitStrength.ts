@@ -1,25 +1,29 @@
+/// <reference path="../../../lib/tween.js.d.ts" />
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../../lib/tween.js.d.ts" />
 
 export interface PropTypes extends React.Props<any>
 {
-  isNotDetected: any; // TODO refactor | define prop type 123
-  currentHealth: any; // TODO refactor | define prop type 123
-  isSquadron: any; // TODO refactor | define prop type 123
-  maxHealth: any; // TODO refactor | define prop type 123
+  isNotDetected: boolean;
+  currentHealth: number;
+  isSquadron: boolean;
+  maxHealth: number;
+  animateStrength: boolean;
+  animateDuration: number;
 }
 
 interface StateType
 {
-  displayedStrength?: any; // TODO refactor | define state type 456
+  displayedStrength?: number;
 }
 
 class UnitStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStrength";
   state: StateType;
+  activeTween: TWEEN.Tween;
+  animationFrameHandle: number;
 
   constructor(props: PropTypes)
   {
@@ -43,10 +47,9 @@ class UnitStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     return(
     {
       displayedStrength: this.props.currentHealth,
-      activeTween: null
     });
   }
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     if (newProps.animateStrength &&
       newProps.currentHealth !== this.props.currentHealth &&
@@ -85,12 +88,12 @@ class UnitStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     {
       if (stopped)
       {
-        cancelAnimationFrame(self.requestAnimFrame);
+        cancelAnimationFrame(self.animationFrameHandle);
         return;
       }
 
       TWEEN.update();
-      self.requestAnimFrame = window.requestAnimationFrame(animateTween);
+      self.animationFrameHandle = window.requestAnimationFrame(animateTween);
     }
 
     var tween = new TWEEN.Tween(
