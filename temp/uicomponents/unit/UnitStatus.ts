@@ -1,17 +1,17 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
-
-
-import Guard from "../../../src/shaders/Guard.ts";
-import Unit from "./Unit.ts";
-import GuardCoverage from "../../../src/GuardCoverage.ts";
-
 import * as React from "react";
+
+import GuardCoverage from "../../../src/GuardCoverage.ts";
+import
+{
+  clamp
+} from "../../../src/utility.ts";
+
 
 export interface PropTypes extends React.Props<any>
 {
   guardAmount?: number;
-  guardCoverage?: number; // GuardCoverage enum
-
+  guardCoverage?: GuardCoverage;
   isPreparing?: boolean;
 }
 
