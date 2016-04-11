@@ -18,13 +18,13 @@ var bs: any;
 
 export interface PropTypes extends React.Props<any>
 {
-  battleState: string; // "start", "active", "finish"
+  battleState: "start" | "active" | "finish";
 
   targetUnit?: Unit;
   userUnit?: Unit;
   activeUnit?: Unit;
   hoveredUnit?: Unit;
-  activeSFX?: reactTypeTODO_object; // BattleSFXTemplate
+  activeSFX?: BattleSFXTemplate;
 
   afterAbilityFinishedCallback?: reactTypeTODO_func;
   triggerEffectCallback?: reactTypeTODO_func;
@@ -41,7 +41,7 @@ class BattleScene_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScene";
 
-  battleScene: null, // BattleScene
+  battleScene: BattleScene;
 
 
   shouldComponentUpdate(newProps: any)
@@ -69,7 +69,7 @@ class BattleScene_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
     if (this.props.battleState === "start" && newProps.battleState === "active")
     {
-      this.battleScene = new BattleScene(React.findDOMNode(this));
+      this.battleScene = new BattleScene(React.findDOMNode<HTMLElement>(this));
       this.battleScene.resume();
     }
     else if (this.props.battleState === "active" && newProps.battleState === "finish")

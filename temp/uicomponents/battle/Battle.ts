@@ -1,16 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="formation.ts"/>
-/// <reference path="turncounter.ts"/>
-/// <reference path="turnorder.ts"/>
-/// <reference path="abilitytooltip.ts"/>
-/// <reference path="battlescene.ts"/>
-/// <reference path="battlescore.ts"/>
-/// <reference path="battledisplaystrength.ts"/>
-/// <reference path="battlebackground.ts"/>
-
-
+import Renderer from "../../../src/Renderer.ts";
+import Player from "../../../src/Player.ts";
 import Battle from "../../../src/Battle.ts";
 import Unit from "../../../src/Unit.ts";
 import TurnOrder from "./TurnOrder.ts";
@@ -32,31 +24,39 @@ import AbilityTooltip from "./AbilityTooltip.ts";
 // should have separate non-react class for battle logic
 export interface PropTypes extends React.Props<any>
 {
-  renderer: any; // TODO refactor | define prop type 123
-  battle: any; // TODO refactor | define prop type 123
-  humanPlayer: any; // TODO refactor | define prop type 123
+  renderer: Renderer;
+  battle: Battle;
+  humanPlayer: Player;
 }
 
 interface StateType
 {
-  hoveredUnit?: any; // TODO refactor | define state type 456
-  highlightedUnit?: any; // TODO refactor | define state type 456
-  abilityTooltip?: any; // TODO refactor | define state type 456
-  battleIsStarting?: any; // TODO refactor | define state type 456
-  userUnit?: any; // TODO refactor | define state type 456
-  targetUnit?: any; // TODO refactor | define state type 456
-  afterAbilityFinishedCallback?: any; // TODO refactor | define state type 456
-  potentialDelay?: any; // TODO refactor | define state type 456
-  battleSceneUnit2StartingStrength?: any; // TODO refactor | define state type 456
-  battleSceneUnit1StartingStrength?: any; // TODO refactor | define state type 456
-  battleSceneUnit1?: any; // TODO refactor | define state type 456
-  triggerEffectCallback?: any; // TODO refactor | define state type 456
-  playingBattleEffect?: any; // TODO refactor | define state type 456
-  battleEffectDuration?: any; // TODO refactor | define state type 456
-  battleSceneUnit2?: any; // TODO refactor | define state type 456
-  targetsInPotentialArea?: any; // TODO refactor | define state type 456
+  hoveredUnit?: Unit;
+  highlightedUnit?: Unit;
+  abilityTooltip?:
+  {
+    parentElement?: HTMLElement;
+    facesLeft?: boolean;
+  };
+  battleIsStarting?: boolean;
+  userUnit?: Unit;
+  targetUnit?: Unit;
+  afterAbilityFinishedCallback?: () => void;
+  potentialDelay?:
+  {
+    id: number;
+    delay: number;
+  };
+  battleSceneUnit2StartingStrength?: number;
+  battleSceneUnit1StartingStrength?: number;
+  battleSceneUnit1?: Unit
+  triggerEffectCallback?: (forceUpdate?: boolean) => void;
+  playingBattleEffect?: boolean;
+  battleEffectDuration?: number;
+  battleSceneUnit2?: Unit
+  targetsInPotentialArea?: Unit[];
   battleEffectSFX?: any; // TODO refactor | define state type 456
-  hoveredAbility?: any; // TODO refactor | define state type 456
+  hoveredAbility?: AbilityTemplate;
 }
 
 interface RefTypes extends React.Refs
@@ -672,7 +672,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       playerWonBattle = this.props.humanPlayer === battle.getVictor();
     }
 
-    var battleState: string = null;
+    var battleState: "start" | "active" | "finish";
     if (this.state.battleIsStarting)
     {
       battleState = "start";
