@@ -236,7 +236,7 @@ class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     var location = battlePrep.battleData.location;
 
     // priority: hovered unit > selected unit > battle info
-    var leftUpperElement: ReactComponentPlaceHolder;
+    var leftUpperElement: React.ReactElement<any>;
 
     var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
     if (hoveredUnit)
@@ -272,7 +272,7 @@ class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     }
 
 
-    var leftLowerElement: ReactComponentPlaceHolder;
+    var leftLowerElement: React.ReactElement<any>;
     switch (this.state.leftLowerElement)
     {
       case "playerFormation":

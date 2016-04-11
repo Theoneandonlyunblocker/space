@@ -546,7 +546,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
     }
 
-    var upperFooterElement: ReactComponentPlaceHolder;
+    var upperFooterElement: React.ReactElement<any>;
     if (this.state.battleIsStarting)
     {
       upperFooterElement = null;

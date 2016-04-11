@@ -125,7 +125,7 @@ class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType
         break;
       }
     }
-    var fleetInfos: ReactComponentPlaceHolder[] = [];
+    var fleetInfos: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < selectedFleets.length; i++)
     {
@@ -191,7 +191,7 @@ class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType
       )
     }
 
-    var fleetContents: ReactComponentPlaceHolder = null;
+    var fleetContents: React.ReactElement<any> = null;
 
     if (!hasMultipleSelected)
     {
@@ -203,7 +203,7 @@ class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType
     }
 
     var isReorganizing = this.props.currentlyReorganizing.length > 0;
-    var reorganizeElement: ReactComponentPlaceHolder = null;
+    var reorganizeElement: React.ReactElement<any> = null;
     if (isReorganizing)
     {
       reorganizeElement = FleetReorganization(

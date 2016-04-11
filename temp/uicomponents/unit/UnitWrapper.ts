@@ -108,7 +108,7 @@ class UnitWrapper_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var allElements: ReactComponentPlaceHolder[] = [];
+    var allElements: React.ReactElement<any>[] = [];
 
     var wrapperProps: any =
     {

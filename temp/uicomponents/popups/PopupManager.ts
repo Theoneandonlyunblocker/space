@@ -227,7 +227,7 @@ class PopupManager_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     var popups = this.state.popups;
 
-    var toRender: ReactComponentPlaceHolder[] = [];
+    var toRender: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < popups.length; i++)
     {

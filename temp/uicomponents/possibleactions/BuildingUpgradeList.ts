@@ -100,7 +100,7 @@ class BuildingUpgradeList_COMPONENT_TODO extends React.Component<PropTypes, Stat
       var upgrades = possibleUpgrades[parentBuildingId];
       var parentBuilding: Building = upgrades[0].parentBuilding;
 
-      var upgradeElements: ReactComponentPlaceHolder[] = [];
+      var upgradeElements: React.ReactElement<any>[] = [];
 
       for (var j = 0; j < upgrades.length; j++)
       {

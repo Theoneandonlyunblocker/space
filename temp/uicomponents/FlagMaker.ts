@@ -66,7 +66,7 @@ class FlagMaker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   render()
   {
-    var flagElements: ReactComponentPlaceHolder[] = [];
+    var flagElements: React.ReactElement<any>[] = [];
     for (var i = 0; i < 100; i++)
     {
       var colorScheme = generateColorScheme();

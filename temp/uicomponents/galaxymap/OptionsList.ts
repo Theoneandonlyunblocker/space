@@ -93,7 +93,7 @@ class OptionsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var allOptions: ReactComponentPlaceHolder[] = [];
+    var allOptions: React.ReactElement<any>[] = [];
 
     // battle animation timing
     var battleAnimationOptions: any[] = [];

@@ -74,7 +74,7 @@ class FormationRow_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       this.props.rowIndexInOwnFormation :
       this.props.rowIndexInOwnFormation + app.moduleData.ruleSet.battle.rowsPerFormation;
 
-    var units: ReactComponentPlaceHolder[] = [];
+    var units: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < row.length; i++)
     {

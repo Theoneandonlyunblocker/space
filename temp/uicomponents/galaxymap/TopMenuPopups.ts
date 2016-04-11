@@ -95,7 +95,7 @@ class TopMenuPopups_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       this.cachedPopupRects[popupType] = {};
     }
 
-    var contentConstructor: ReactComponentPlaceHolder;
+    var contentConstructor: React.ReactElement<any>;
     var contentProps: any;
     var popupProps: any =
     {

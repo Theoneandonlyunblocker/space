@@ -46,7 +46,7 @@ class AbilityTooltip_COMPONENT_TODO extends React.Component<PropTypes, StateType
   {
     var abilities = this.props.activeTargets[this.props.targetUnit.id];
 
-    var abilityElements: ReactComponentPlaceHolder[] = [];
+    var abilityElements: React.ReactElement<any>[] = [];
 
     var containerProps: any =
     {

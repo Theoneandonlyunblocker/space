@@ -63,7 +63,7 @@ class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateTy
 
   makePopup(popupType: string)
   {
-    var contentConstructor: ReactComponentPlaceHolder;
+    var contentConstructor: React.ReactElement<any>;
     var contentProps: any;
     var popupProps: any =
     {

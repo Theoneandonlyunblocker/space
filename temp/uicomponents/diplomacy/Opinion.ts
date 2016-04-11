@@ -81,7 +81,7 @@ class Opinion_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var tooltip: ReactComponentPlaceHolder = null;
+    var tooltip: React.ReactElement<any> = null;
     if (this.state.hasAttitudeModifierTootlip)
     {
       tooltip = AttitudeModifierList(

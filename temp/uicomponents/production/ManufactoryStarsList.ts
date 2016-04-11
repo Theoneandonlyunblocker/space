@@ -48,7 +48,7 @@ class ManufactoryStarsList_COMPONENT_TODO extends React.Component<PropTypes, Sta
     var handleStarSelect: Function = this.props.handleStarSelect;
 
 
-    var rows: ReactComponentPlaceHolder[] = [];
+    var rows: React.ReactElement<any>[] = [];
 
     starsWithManufactories.sort(sortByManufactoryCapacityFN);
     starsWithoutManufactories.sort(sortByManufactoryCapacityFN);

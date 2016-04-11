@@ -52,7 +52,7 @@ class DefenceBuildingList_COMPONENT_TODO extends React.Component<PropTypes, Stat
   {
     if (!this.props.buildings) return null;
     
-    var buildings: ReactComponentPlaceHolder[] = [];
+    var buildings: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < this.props.buildings.length; i++)
     {

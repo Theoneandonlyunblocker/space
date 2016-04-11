@@ -60,7 +60,7 @@ class ConfirmPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var content: ReactComponentPlaceHolder;
+    var content: React.ReactElement<any>;
     if (this.props.contentText)
     {
       content = this.splitMultilineText(this.props.contentText);

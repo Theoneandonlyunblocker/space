@@ -50,7 +50,7 @@ class MenuUnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       React.DOM.div({className: "menu-unit-info"})
     )
 
-    var itemSlots: ReactComponentPlaceHolder[] = [];
+    var itemSlots: React.ReactElement<any>[] = [];
 
     for (var slot in unit.items)
     {

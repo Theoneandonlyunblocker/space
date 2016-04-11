@@ -184,7 +184,7 @@ class PossibleActions_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
     var attackTargets = this.props.attackTargets;
     if (attackTargets && attackTargets.length > 0)
     {
-      var attackTargetComponents: ReactComponentPlaceHolder[] = [];
+      var attackTargetComponents: React.ReactElement<any>[] = [];
       for (var i = 0; i < attackTargets.length; i++)
       {
         var props: any =

@@ -54,7 +54,7 @@ class TopBarResources_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   render()
   {
     var player: Player = this.props.player;
-    var resources: ReactComponentPlaceHolder[] = [];
+    var resources: React.ReactElement<any>[] = [];
     var resourceIncome = player.getResourceIncome();
     var resourceTypes: string[] = Object.keys(player.resources);
 

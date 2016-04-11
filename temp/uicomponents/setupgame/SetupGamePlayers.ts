@@ -116,7 +116,7 @@ class SetupGamePlayers_COMPONENT_TODO extends React.Component<PropTypes, StateTy
     });
   }
 
-  setActiveColorPicker(colorPicker: ReactComponentPlaceHolder)
+  setActiveColorPicker(colorPicker: React.ReactElement<any>)
   {
     if (this.state.activeColorPicker)
     {

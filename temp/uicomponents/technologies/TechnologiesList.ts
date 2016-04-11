@@ -55,7 +55,7 @@ class TechnologiesList_COMPONENT_TODO extends React.Component<PropTypes, StateTy
     var playerTechnology: PlayerTechnology = this.props.playerTechnology;
     
     var researchSpeed = playerTechnology.getResearchSpeed();
-    var rows: ReactComponentPlaceHolder[] = [];
+    var rows: React.ReactElement<any>[] = [];
 
     for (var key in playerTechnology.technologies)
     {

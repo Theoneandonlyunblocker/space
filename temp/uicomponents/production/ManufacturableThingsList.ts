@@ -43,7 +43,7 @@ class ManufacturableThingsList_COMPONENT_TODO extends React.Component<PropTypes,
   {
     var manufacturableThings: IManufacturableThing[] = this.props.manufacturableThings;
 
-    var items: ReactComponentPlaceHolder[] = [];
+    var items: React.ReactElement<any>[] = [];
     var keyByTemplateType:
     {
       [templateType: string]: number;

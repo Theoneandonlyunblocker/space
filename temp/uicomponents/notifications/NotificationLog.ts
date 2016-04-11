@@ -171,7 +171,7 @@ class NotificationLog_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
     var log: NotificationLog = this.props.log;
     var notifications: Notification[] = log.filterNotifications(log.unread);
 
-    var items: ReactComponentPlaceHolder[] = [];
+    var items: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < notifications.length; i++)
     {

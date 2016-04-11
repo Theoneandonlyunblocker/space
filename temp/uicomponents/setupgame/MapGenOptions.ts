@@ -160,7 +160,7 @@ class MapGenOptions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var optionGroups: ReactComponentPlaceHolder[] = [];
+    var optionGroups: React.ReactElement<any>[] = [];
 
     var optionGroupsInfo =
     {
@@ -186,7 +186,7 @@ class MapGenOptions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       if (!this.props.mapGenTemplate.options[groupName]) continue;
 
 
-      var options: {key: string; content: ReactComponentPlaceHolder;}[] = [];
+      var options: {key: string; content: React.ReactElement<any>;}[] = [];
 
       for (var optionName in this.props.mapGenTemplate.options[groupName])
       {

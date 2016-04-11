@@ -152,7 +152,7 @@ class ProductionOverview_COMPONENT_TODO extends React.Component<PropTypes, State
 
     var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
-    var queueElement: ReactComponentPlaceHolder = null;
+    var queueElement: React.ReactElement<any> = null;
     if (selectedStar)
     {
       if (selectedStar.manufactory)

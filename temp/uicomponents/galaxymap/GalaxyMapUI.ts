@@ -114,7 +114,7 @@ class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     });
   }
 
-  setExpandedActionElement(element: ReactComponentPlaceHolder)
+  setExpandedActionElement(element: React.ReactElement<any>)
   {
     this.setState(
     {

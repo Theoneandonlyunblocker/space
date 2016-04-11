@@ -57,7 +57,7 @@ class Stage_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var elementsToRender: ReactComponentPlaceHolder[] = [];
+    var elementsToRender: React.ReactElement<any>[] = [];
 
     switch (this.props.sceneToRender)
     {

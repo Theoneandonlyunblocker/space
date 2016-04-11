@@ -54,7 +54,7 @@ class FleetContents_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var fleetUnitInfos: ReactComponentPlaceHolder[] = [];
+    var fleetUnitInfos: React.ReactElement<any>[] = [];
     var fleet: Fleet = this.props.fleet;
 
     var hasDraggableContent = Boolean(

@@ -62,7 +62,7 @@ class Formation_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     var formation = this.props.formation;
 
-    var formationRows: ReactComponentPlaceHolder[] = [];
+    var formationRows: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < formation.length; i++)
     {

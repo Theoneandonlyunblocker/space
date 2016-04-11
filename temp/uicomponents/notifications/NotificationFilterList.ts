@@ -60,12 +60,12 @@ class NotificationFilterList_COMPONENT_TODO extends React.Component<PropTypes, S
     var filter: NotificationFilter = this.props.filter;
 
     var filtersByCategory = filter.getFiltersByCategory();
-    var filterGroupElements: ReactComponentPlaceHolder[] = [];
+    var filterGroupElements: React.ReactElement<any>[] = [];
 
     for (var category in filtersByCategory)
     {
       var filtersForCategory = filtersByCategory[category];
-      var filterElementsForCategory: ReactComponentPlaceHolder[] = [];
+      var filterElementsForCategory: React.ReactElement<any>[] = [];
       for (var i = 0; i < filtersForCategory.length; i++)
       {
         var notificationTemplate = filtersForCategory[i].notificationTemplate
