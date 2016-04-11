@@ -300,7 +300,7 @@ class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     }
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     var oldProps = this.props;
 

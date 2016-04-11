@@ -45,7 +45,7 @@ class ManufacturableThingsListItem_COMPONENT_TODO extends React.Component<PropTy
     });
   }
   
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     this.setState(
     {

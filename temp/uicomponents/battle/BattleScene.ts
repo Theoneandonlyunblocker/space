@@ -62,7 +62,7 @@ class BattleScene_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     return false;
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     bs = this;
     var self = this;

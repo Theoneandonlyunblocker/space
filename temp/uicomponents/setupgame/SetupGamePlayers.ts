@@ -63,7 +63,7 @@ class SetupGamePlayers_COMPONENT_TODO extends React.Component<PropTypes, StateTy
     });
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     if (newProps.minPlayers > this.state.players.length)
     {

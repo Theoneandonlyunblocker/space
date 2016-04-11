@@ -54,7 +54,7 @@ class MapGenOptions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     return this.getDefaultValues(this.props.mapGenTemplate);
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     if (newProps.mapGenTemplate.key !== this.props.mapGenTemplate.key)
     {

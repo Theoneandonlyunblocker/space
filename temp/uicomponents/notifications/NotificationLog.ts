@@ -64,7 +64,7 @@ class NotificationLog_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
     });
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     if (newProps.currentTurn !== this.props.currentTurn)
     {

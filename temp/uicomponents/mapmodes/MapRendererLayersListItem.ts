@@ -53,7 +53,7 @@ class MapRendererLayersListItem_COMPONENT_TODO extends React.Component<PropTypes
     });
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     if (newProps.listItemIsDragging !== this.props.listItemIsDragging)
     {

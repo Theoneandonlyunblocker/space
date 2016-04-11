@@ -65,7 +65,7 @@ class PossibleActions_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
     });
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     if (this.props.selectedStar !== newProps.selectedStar)
     {

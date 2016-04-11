@@ -71,7 +71,7 @@ class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     this.clearFocusTimerListener();
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     if (newProps.color !== this.state.hexColor)
     {

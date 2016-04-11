@@ -52,7 +52,7 @@ class ConstructManufactory_COMPONENT_TODO extends React.Component<PropTypes, Sta
     });
   }
   
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     this.setState(
     {

@@ -47,7 +47,7 @@ class OptionsNumericField_COMPONENT_TODO extends React.Component<PropTypes, Stat
     });
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     if (newProps.value !== this.state.value)
     {

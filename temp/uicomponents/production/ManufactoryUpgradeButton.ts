@@ -44,7 +44,7 @@ class ManufactoryUpgradeButton_COMPONENT_TODO extends React.Component<PropTypes,
     });
   }
 
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     this.setState(
     {

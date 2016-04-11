@@ -48,7 +48,7 @@ class NotificationFilterListItem_COMPONENT_TODO extends React.Component<PropType
     });
   }
   
-  componentWillReceiveProps(newProps: any)
+  componentWillReceiveProps(newProps: PropTypes)
   {
     this.setState(
     {
