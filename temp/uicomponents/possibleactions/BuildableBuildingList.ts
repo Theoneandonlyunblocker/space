@@ -21,7 +21,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  buildingTemplates: any; // TODO refactor | define state type 456
 }
 
 class BuildableBuildingList_COMPONENT_TODO extends React.Component<PropTypes, StateType>

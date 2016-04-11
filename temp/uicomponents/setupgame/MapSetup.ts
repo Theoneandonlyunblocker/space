@@ -18,7 +18,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  selectedTemplate: any; // TODO refactor | define state type 456
+  templates: any; // TODO refactor | define state type 456
 }
 
 class MapSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>

@@ -24,7 +24,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  activeTab: any; // TODO refactor | define state type 456
 }
 
 class ManufacturableThings_COMPONENT_TODO extends React.Component<PropTypes, StateType>

@@ -22,7 +22,10 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  flagHasCustomImage: any; // TODO refactor | define state type 456
+  name: any; // TODO refactor | define state type 456
+  subColor: any; // TODO refactor | define state type 456
+  mainColor: any; // TODO refactor | define state type 456
 }
 
 class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>

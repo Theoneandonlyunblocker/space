@@ -18,7 +18,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  filterState: any; // TODO refactor | define state type 456
 }
 
 class NotificationFilterListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>

@@ -29,7 +29,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  dragging: any; // TODO refactor | define state type 456
 }
 
 class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>

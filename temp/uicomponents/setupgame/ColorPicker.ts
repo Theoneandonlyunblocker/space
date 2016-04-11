@@ -15,7 +15,12 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  lastValidHexString: any; // TODO refactor | define state type 456
+  hexColor: any; // TODO refactor | define state type 456
+  hue: any; // TODO refactor | define state type 456
+  val: any; // TODO refactor | define state type 456
+  hexString: any; // TODO refactor | define state type 456
+  sat: any; // TODO refactor | define state type 456
 }
 
 class ColorPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>

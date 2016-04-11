@@ -25,7 +25,6 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
 }
 
 class MenuUnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>

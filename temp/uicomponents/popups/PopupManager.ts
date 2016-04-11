@@ -16,7 +16,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  popups: any; // TODO refactor | define state type 456
 }
 
 class PopupManager_COMPONENT_TODO extends React.Component<PropTypes, StateType>

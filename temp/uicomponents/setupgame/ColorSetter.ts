@@ -21,7 +21,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  isNull: any; // TODO refactor | define state type 456
+  hexColor: any; // TODO refactor | define state type 456
+  isActive: any; // TODO refactor | define state type 456
 }
 
 class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>

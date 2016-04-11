@@ -18,7 +18,11 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  selectedSide1Unit: any; // TODO refactor | define state type 456
+  selectedSFXTemplateKey: any; // TODO refactor | define state type 456
+  activeUnit: any; // TODO refactor | define state type 456
+  selectedSide2Unit: any; // TODO refactor | define state type 456
+  duration: any; // TODO refactor | define state type 456
 }
 
 class BattleSceneTester_COMPONENT_TODO extends React.Component<PropTypes, StateType>

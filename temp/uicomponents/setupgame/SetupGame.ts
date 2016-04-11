@@ -18,7 +18,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  maxPlayers: any; // TODO refactor | define state type 456
+  minPlayers: any; // TODO refactor | define state type 456
 }
 
 class SetupGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>

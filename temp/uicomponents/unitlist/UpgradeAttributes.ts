@@ -13,7 +13,6 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
 }
 
 class UpgradeAttributes_COMPONENT_TODO extends React.Component<PropTypes, StateType>

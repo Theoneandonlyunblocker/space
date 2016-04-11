@@ -21,7 +21,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  currentStagingItemDragKey: any; // TODO refactor | define state type 456
+  currentAvailableItemDragKey: any; // TODO refactor | define state type 456
+  currentDragItemPlayer: any; // TODO refactor | define state type 456
 }
 
 class TradeOverview_COMPONENT_TODO extends React.Component<PropTypes, StateType>

@@ -21,7 +21,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  // TODO refactor | add state type
+  popupId: any; // TODO refactor | define state type 456
+  upgradeData: any; // TODO refactor | define state type 456
 }
 
 class UpgradeUnit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
