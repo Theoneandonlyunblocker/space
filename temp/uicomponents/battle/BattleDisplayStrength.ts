@@ -1,22 +1,25 @@
+/// <reference path="../../../lib/tween.js.d.ts" />
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  delay: any; // TODO refactor | define prop type 123
-  from: any; // TODO refactor | define prop type 123
-  to: any; // TODO refactor | define prop type 123
+  delay: number;
+  from: number;
+  to: number;
 }
 
 interface StateType
 {
-  displayedStrength?: any; // TODO refactor | define state type 456
+  displayedStrength?: number;
 }
 
 class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleDisplayStrength";
   state: StateType;
+  activeTween: TWEEN.Tween;
+  animationFrameHandle: number;
 
   constructor(props: PropTypes)
   {
@@ -37,7 +40,6 @@ class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTypes, St
     return(
     {
       displayedStrength: this.props.from,
-      activeTween: null
     });
   }
 
@@ -80,7 +82,7 @@ class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTypes, St
       }
 
       TWEEN.update();
-      self.requestAnimFrame = window.requestAnimationFrame(animateTween);
+      self.animationFrameHandle = window.requestAnimationFrame(animateTween);
     }
 
     var tween = new TWEEN.Tween(
@@ -99,7 +101,7 @@ class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTypes, St
 
     tween.onStop(function()
     {
-      cancelAnimationFrame(self.requestAnimFrame);
+      cancelAnimationFrame(self.animationFrameHandle);
       stopped = true;
       TWEEN.remove(tween);
     });
