@@ -34,10 +34,6 @@ class DefenceBuilding_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
     
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    
-  }
   
   render()
   {

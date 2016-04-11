@@ -30,10 +30,6 @@ class UpgradeAbilities_COMPONENT_TODO extends React.Component<PropTypes, StateTy
     
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    
-  }
   
   render()
   {

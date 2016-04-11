@@ -27,10 +27,6 @@ class UnitStatusEffects_COMPONENT_TODO extends React.Component<PropTypes, StateT
     
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    
-  }
   
   render()
   {

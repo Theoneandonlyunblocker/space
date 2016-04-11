@@ -36,10 +36,6 @@ class AttitudeModifierList_COMPONENT_TODO extends React.Component<PropTypes, Sta
     
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    
-  }
   
   render()
   {

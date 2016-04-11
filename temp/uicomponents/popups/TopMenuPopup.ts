@@ -24,10 +24,6 @@ class TopMenuPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    
-  }
   
   render()
   {

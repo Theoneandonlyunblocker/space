@@ -34,10 +34,6 @@ class ManufactoryUpgradeButton_COMPONENT_TODO extends React.Component<PropTypes,
     
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    
-  }
   
   private getInitialState(): StateType
   {

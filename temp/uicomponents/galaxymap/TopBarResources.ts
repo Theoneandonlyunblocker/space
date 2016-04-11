@@ -34,10 +34,6 @@ class TopBarResources_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
     
     this.bindMethods();
   }
-  private bindMethods()
-  {
-    
-  }
   
   componentDidMount()
   {
