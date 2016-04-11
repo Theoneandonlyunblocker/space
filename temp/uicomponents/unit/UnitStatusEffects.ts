@@ -1,14 +1,14 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
+import * as React from "react";
 
-
+import Unit from "../../../src/Unit.ts";
 import PassiveSkillTemplate from "../../../src/templateinterfaces/PassiveSkillTemplate.d.ts";
 
-import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  unit: any; // TODO refactor | define prop type 123
-  isBattlePrep: any; // TODO refactor | define prop type 123
+  unit: Unit;
+  isBattlePrep: boolean;
 }
 
 interface StateType
@@ -18,7 +18,6 @@ interface StateType
 class UnitStatusEffects_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStatusEffects";
-
   state: StateType;
 
   constructor(props: PropTypes)
