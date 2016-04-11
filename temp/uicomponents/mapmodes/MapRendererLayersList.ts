@@ -20,9 +20,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  layerKeyToInsertNextTo: any; // TODO refactor | define state type 456
-  insertPosition: any; // TODO refactor | define state type 456
-  currentDraggingLayer: any; // TODO refactor | define state type 456
+  layerKeyToInsertNextTo?: any; // TODO refactor | define state type 456
+  insertPosition?: any; // TODO refactor | define state type 456
+  currentDraggingLayer?: any; // TODO refactor | define state type 456
 }
 
 class MapRendererLayersList_COMPONENT_TODO extends React.Component<PropTypes, StateType>

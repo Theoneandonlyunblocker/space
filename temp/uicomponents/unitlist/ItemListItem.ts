@@ -18,8 +18,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  clone: any; // TODO refactor | define state type 456
-  dragging: any; // TODO refactor | define state type 456
+  clone?: any; // TODO refactor | define state type 456
+  dragging?: any; // TODO refactor | define state type 456
 }
 
 class ItemListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>

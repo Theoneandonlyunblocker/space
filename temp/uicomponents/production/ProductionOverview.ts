@@ -28,9 +28,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  highlightedStars: any; // TODO refactor | define state type 456
-  money: any; // TODO refactor | define state type 456
-  selectedStar: any; // TODO refactor | define state type 456
+  highlightedStars?: any; // TODO refactor | define state type 456
+  money?: any; // TODO refactor | define state type 456
+  selectedStar?: any; // TODO refactor | define state type 456
 }
 
 class ProductionOverview_COMPONENT_TODO extends React.Component<PropTypes, StateType>

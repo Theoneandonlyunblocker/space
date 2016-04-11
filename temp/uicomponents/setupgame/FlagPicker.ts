@@ -17,7 +17,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  selectedEmblem: any; // TODO refactor | define state type 456
+  selectedEmblem?: any; // TODO refactor | define state type 456
 }
 
 class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>

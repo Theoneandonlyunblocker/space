@@ -31,11 +31,11 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hoveredUnit: any; // TODO refactor | define state type 456
-  currentDragUnit: any; // TODO refactor | define state type 456
-  leftLowerElement: any; // TODO refactor | define state type 456
-  currentDragItem: any; // TODO refactor | define state type 456
-  selectedUnit: any; // TODO refactor | define state type 456
+  hoveredUnit?: any; // TODO refactor | define state type 456
+  currentDragUnit?: any; // TODO refactor | define state type 456
+  leftLowerElement?: any; // TODO refactor | define state type 456
+  currentDragItem?: any; // TODO refactor | define state type 456
+  selectedUnit?: any; // TODO refactor | define state type 456
 }
 
 class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>

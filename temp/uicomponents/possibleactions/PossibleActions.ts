@@ -25,9 +25,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  canUpgradeBuildings: any; // TODO refactor | define state type 456
-  expandedAction: any; // TODO refactor | define state type 456
-  expandedActionElement: any; // TODO refactor | define state type 456
+  canUpgradeBuildings?: any; // TODO refactor | define state type 456
+  expandedAction?: any; // TODO refactor | define state type 456
+  expandedActionElement?: any; // TODO refactor | define state type 456
 }
 
 class PossibleActions_COMPONENT_TODO extends React.Component<PropTypes, StateType>

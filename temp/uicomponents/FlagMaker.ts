@@ -14,7 +14,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  size: any; // TODO refactor | define state type 456
+  size?: any; // TODO refactor | define state type 456
 }
 
 class FlagMaker_COMPONENT_TODO extends React.Component<PropTypes, StateType>

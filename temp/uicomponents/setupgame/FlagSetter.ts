@@ -25,9 +25,9 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  flag: any; // TODO refactor | define state type 456
-  isActive: any; // TODO refactor | define state type 456
-  hasImageFailMessage: any; // TODO refactor | define state type 456
+  flag?: any; // TODO refactor | define state type 456
+  isActive?: any; // TODO refactor | define state type 456
+  hasImageFailMessage?: any; // TODO refactor | define state type 456
 }
 
 class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>

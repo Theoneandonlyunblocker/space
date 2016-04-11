@@ -37,24 +37,24 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hoveredUnit: any; // TODO refactor | define state type 456
-  highlightedUnit: any; // TODO refactor | define state type 456
-  abilityTooltip: any; // TODO refactor | define state type 456
-  battleIsStarting: any; // TODO refactor | define state type 456
-  userUnit: any; // TODO refactor | define state type 456
-  targetUnit: any; // TODO refactor | define state type 456
-  afterAbilityFinishedCallback: any; // TODO refactor | define state type 456
-  potentialDelay: any; // TODO refactor | define state type 456
-  battleSceneUnit2StartingStrength: any; // TODO refactor | define state type 456
-  battleSceneUnit1StartingStrength: any; // TODO refactor | define state type 456
-  battleSceneUnit1: any; // TODO refactor | define state type 456
-  triggerEffectCallback: any; // TODO refactor | define state type 456
-  playingBattleEffect: any; // TODO refactor | define state type 456
-  battleEffectDuration: any; // TODO refactor | define state type 456
-  battleSceneUnit2: any; // TODO refactor | define state type 456
-  targetsInPotentialArea: any; // TODO refactor | define state type 456
-  battleEffectSFX: any; // TODO refactor | define state type 456
-  hoveredAbility: any; // TODO refactor | define state type 456
+  hoveredUnit?: any; // TODO refactor | define state type 456
+  highlightedUnit?: any; // TODO refactor | define state type 456
+  abilityTooltip?: any; // TODO refactor | define state type 456
+  battleIsStarting?: any; // TODO refactor | define state type 456
+  userUnit?: any; // TODO refactor | define state type 456
+  targetUnit?: any; // TODO refactor | define state type 456
+  afterAbilityFinishedCallback?: any; // TODO refactor | define state type 456
+  potentialDelay?: any; // TODO refactor | define state type 456
+  battleSceneUnit2StartingStrength?: any; // TODO refactor | define state type 456
+  battleSceneUnit1StartingStrength?: any; // TODO refactor | define state type 456
+  battleSceneUnit1?: any; // TODO refactor | define state type 456
+  triggerEffectCallback?: any; // TODO refactor | define state type 456
+  playingBattleEffect?: any; // TODO refactor | define state type 456
+  battleEffectDuration?: any; // TODO refactor | define state type 456
+  battleSceneUnit2?: any; // TODO refactor | define state type 456
+  targetsInPotentialArea?: any; // TODO refactor | define state type 456
+  battleEffectSFX?: any; // TODO refactor | define state type 456
+  hoveredAbility?: any; // TODO refactor | define state type 456
 }
 
 class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>

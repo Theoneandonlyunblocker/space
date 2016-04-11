@@ -19,8 +19,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  saveKeysToDelete: any; // TODO refactor | define state type 456
-  saveKey: any; // TODO refactor | define state type 456
+  saveKeysToDelete?: any; // TODO refactor | define state type 456
+  saveKey?: any; // TODO refactor | define state type 456
 }
 
 class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>

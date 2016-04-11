@@ -28,8 +28,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  zIndex: any; // TODO refactor | define state type 456
-  dragging: any; // TODO refactor | define state type 456
+  zIndex?: any; // TODO refactor | define state type 456
+  dragging?: any; // TODO refactor | define state type 456
 }
 
 class Popup_COMPONENT_TODO extends React.Component<PropTypes, StateType>

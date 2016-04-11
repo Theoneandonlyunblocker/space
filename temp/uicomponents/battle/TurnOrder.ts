@@ -13,7 +13,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  maxUnits: any; // TODO refactor | define state type 456
+  maxUnits?: any; // TODO refactor | define state type 456
 }
 
 class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateType>

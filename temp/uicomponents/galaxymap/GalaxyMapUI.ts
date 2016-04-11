@@ -34,14 +34,14 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  attackTargets: any; // TODO refactor | define state type 456
-  hasMapModeSettingsExpanded: any; // TODO refactor | define state type 456
-  currentlyReorganizing: any; // TODO refactor | define state type 456
-  selectedFleets: any; // TODO refactor | define state type 456
-  inspectedFleets: any; // TODO refactor | define state type 456
-  isPlayerTurn: any; // TODO refactor | define state type 456
-  expandedActionElement: any; // TODO refactor | define state type 456
-  selectedStar: any; // TODO refactor | define state type 456
+  attackTargets?: any; // TODO refactor | define state type 456
+  hasMapModeSettingsExpanded?: any; // TODO refactor | define state type 456
+  currentlyReorganizing?: any; // TODO refactor | define state type 456
+  selectedFleets?: any; // TODO refactor | define state type 456
+  inspectedFleets?: any; // TODO refactor | define state type 456
+  isPlayerTurn?: any; // TODO refactor | define state type 456
+  expandedActionElement?: any; // TODO refactor | define state type 456
+  selectedStar?: any; // TODO refactor | define state type 456
 }
 
 class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, StateType>

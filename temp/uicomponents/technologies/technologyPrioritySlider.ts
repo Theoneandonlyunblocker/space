@@ -19,7 +19,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  priority: any; // TODO refactor | define state type 456
+  priority?: any; // TODO refactor | define state type 456
 }
 
 class TechnologyPrioritySlider_COMPONENT_TODO extends React.Component<PropTypes, StateType>

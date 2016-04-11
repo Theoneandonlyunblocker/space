@@ -21,7 +21,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  show: any; // TODO refactor | define state type 456
+  show?: any; // TODO refactor | define state type 456
 }
 
 class IntroTutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
