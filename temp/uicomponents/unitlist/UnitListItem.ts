@@ -34,7 +34,7 @@ interface StateType
 
 interface RefTypes extends React.Refs
 {
-  dragClone: React.Component<any, any>; // Unit
+  dragClone: React.Component<any, any>; // TODO refactor | correct ref type 542 | Unit
 }
 
 class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>

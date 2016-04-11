@@ -32,7 +32,7 @@ interface StateType
 
 interface RefTypes extends React.Refs
 {
-  flagPicker: React.Component<any, any>; // FlagPicker
+  flagPicker: React.Component<any, any>; // TODO refactor | correct ref type 542 | FlagPicker
   main: HTMLElement;
 }
 

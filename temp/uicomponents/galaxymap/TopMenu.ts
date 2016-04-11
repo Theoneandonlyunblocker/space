@@ -32,7 +32,7 @@ interface StateType
 interface RefTypes extends React.Refs
 {
   topMenu: HTMLElement;
-  popups: React.Component<any, any>; // TopMenuPopups
+  popups: React.Component<any, any>; // TODO refactor | correct ref type 542 | TopMenuPopups
   topMenuItems: HTMLElement;
 }
 

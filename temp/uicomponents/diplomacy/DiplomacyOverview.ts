@@ -28,7 +28,7 @@ interface StateType
 
 interface RefTypes extends React.Refs
 {
-  popupManager: React.Component<any, any>; // PopupManager
+  popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
 }
 
 class DiplomacyOverview_COMPONENT_TODO extends React.Component<PropTypes, StateType>
