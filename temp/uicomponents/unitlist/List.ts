@@ -21,6 +21,7 @@ export interface PropTypes
   addSpacer?: boolean; // boolean = false
   onRowChange?: (row: ListItem) => void;
   colStylingFN?: (column: ListColumn, props: any) => any;
+  autoSelect: boolean;
 }
 
 interface StateType
@@ -28,8 +29,7 @@ interface StateType
   columns: ListColumn[];
   selectedColumn: ListColumn;
   sortingOrder: ListColumn[];
-  selected: ListItem[];
-  // TODO refactor | add state type
+  selected: ListItem;
 }
 
 class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
@@ -101,11 +101,11 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     else if (this.props.autoSelect)
     {
       this.handleSelectRow(this.sortedItems[0]);
-      React.findDOMNode(this).focus();
+      React.findDOMNode<HTMLElement>(this).focus();
     }
     else
     {
-      this.setState({selected: reactTypeTODO_any = this.sortedItems[0]});
+      this.setState({selected: this.sortedItems[0]});
     }
   }
 
@@ -122,13 +122,13 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   setDesiredHeight()
   {
-    var ownNode = React.findDOMNode(this);
-    var innerNode = React.findDOMNode(this.refs.inner);
+    var ownNode = React.findDOMNode<HTMLElement>(this);
+    var innerNode = React.findDOMNode<HTMLElement>(this.refs.inner);
 
     ownNode.style.height = "auto";
     innerNode.style.height = "auto";
 
-    var parentHeight = ownNode.parentNode.getBoundingClientRect().height;
+    var parentHeight = ownNode.parentElement.getBoundingClientRect().height;
     var ownRect = ownNode.getBoundingClientRect();
     var ownHeight = ownRect.height;
 
@@ -151,7 +151,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     // scrolls header to match list contents
     var target = <Element> e.target;
     var header = React.findDOMNode(this.refs.header);
-    var titles = header.getElementsByClassName("fixed-table-th-inner");
+    var titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 
     var marginString = "-" + target.scrollLeft + "px";
 
@@ -244,7 +244,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     var sortOrder = this.state.sortingOrder;
     var sortFunctions:
     {
-      [key: reactTypeTODO_any = string]: reactTypeTODO_any = any;
+      [key: string]: (a: any, b: any) => number;
     } = {};
 
 
@@ -313,8 +313,8 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   render()
   {
     var self = this;
-    var columns: ReactDOMPlaceHolder[] = [];
-    var headerLabels: ReactDOMPlaceHolder[] = [];
+    var columns: React.HTMLElement[] = [];
+    var headerLabels: React.HTMLElement[] = [];
 
     this.state.columns.forEach(function(column: ListColumn)
     {
@@ -332,7 +332,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
         React.DOM.col(colProps)
       );
 
-      var sortStatus: reactTypeTODO_any = string = "";
+      var sortStatus: string = "";
 
       if (!column.notSortable) sortStatus = " sortable";
 
@@ -346,18 +346,18 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
         React.DOM.th(
           {
             key: column.key
-          }
+          },
           React.DOM.div(
             {
               className: "fixed-table-th-inner"
-            }
+            },
             React.DOM.div(
             {
               className: "fixed-table-th-content" + sortStatus,
               title: column.title || colProps.title || null,
               onMouseDown: self.handleSelectColumn.bind(null, column),
               onTouchStart: self.handleSelectColumn.bind(null, column),
-            }
+            },
               column.label
             )
           )
@@ -369,7 +369,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
     var sortedItems: ListItem[] = this.sortedItems;
     
-    var rows: ReactDOMPlaceHolder[] = [];
+    var rows: React.ReactElement<any>[] = [];
 
     sortedItems.forEach(function(item: ListItem, i: number)
     {
@@ -403,14 +403,14 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
         {
-          className: reactTypeTODO_any = "fixed-table-container" + (this.props.noHeader ? " no-header" : reactTypeTODO_any = "");
+          className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
           tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
         },
         React.DOM.div({className: "fixed-table-header-background"}),
         React.DOM.div(
         {
-          className: string = "fixed-table-container-inner";
-          ref: string = "inner";
+          className: "fixed-table-container-inner",
+          ref: "inner",
           onScroll: this.handleScroll
         },
           React.DOM.table(
