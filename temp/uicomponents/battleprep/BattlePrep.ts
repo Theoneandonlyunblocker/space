@@ -238,7 +238,7 @@ class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   getBackgroundBlurArea()
   {
-    return React.findDOMNode(this.refs.upper).getBoundingClientRect();
+    return React.findDOMNode<HTMLElement>(this.refs.upper).getBoundingClientRect();
   }
 
   render()

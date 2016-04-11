@@ -157,7 +157,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     // scrolls header to match list contents
     var target = <Element> e.target;
-    var header = React.findDOMNode(this.refs.header);
+    var header = React.findDOMNode<HTMLElement>(this.refs.header);
     var titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 
     var marginString = "-" + target.scrollLeft + "px";

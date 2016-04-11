@@ -113,8 +113,8 @@ class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     if (!this.state.expandedActionElement) return;
 
-    var maxHeight = React.findDOMNode(this.refs.leftColumnContent).getBoundingClientRect().height;
-    var listElement = React.findDOMNode(this.refs.expandedActionElementContainer).firstChild.firstChild;
+    var maxHeight = React.findDOMNode<HTMLElement>(this.refs.leftColumnContent).getBoundingClientRect().height;
+    var listElement = React.findDOMNode<HTMLElement>(this.refs.expandedActionElementContainer).firstChild.firstChild;
     listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
   }
 

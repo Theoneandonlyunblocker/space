@@ -50,17 +50,17 @@ class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     if (app.game.gameStorageKey)
     {
-      React.findDOMNode(this.refs.okButton).focus();
+      React.findDOMNode<HTMLElement>(this.refs.okButton).focus();
     }
     else
     {
-      React.findDOMNode(this.refs.saveName).focus();
+      React.findDOMNode<HTMLElement>(this.refs.saveName).focus();
     }
   }
 
   setInputText(newText: string)
   {
-    React.findDOMNode(this.refs.saveName).value = newText;
+    React.findDOMNode<HTMLElement>(this.refs.saveName).value = newText;
   }
 
   handleRowChange(row: IListItem)
@@ -70,7 +70,7 @@ class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   handleSave()
   {
-    var saveName = React.findDOMNode(this.refs.saveName).value
+    var saveName = React.findDOMNode<HTMLElement>(this.refs.saveName).value
     var saveKey = "Save." + saveName;
     if (localStorage[saveKey])
     {
@@ -83,7 +83,7 @@ class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   saveGame()
   {
-    app.game.save(React.findDOMNode(this.refs.saveName).value);
+    app.game.save(React.findDOMNode<HTMLElement>(this.refs.saveName).value);
     this.handleClose();
   }
   handleClose()

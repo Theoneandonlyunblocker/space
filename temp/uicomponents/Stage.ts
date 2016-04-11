@@ -57,7 +57,7 @@ class Stage_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   changeScene()
   {
-    var newScene = React.findDOMNode(this.refs.sceneSelector).value;
+    var newScene = React.findDOMNode<HTMLElement>(this.refs.sceneSelector).value;
 
     this.props.changeSceneFunction(newScene);
   }

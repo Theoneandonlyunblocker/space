@@ -73,7 +73,7 @@ class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     if (this.needsFirstTouchUpdate && this.refs.dragClone)
     {
-      var node = React.findDOMNode(this.refs.dragClone);
+      var node = React.findDOMNode<HTMLElement>(this.refs.dragClone);
       node.classList.add("draggable");
       node.classList.add("dragging");
 
@@ -95,7 +95,7 @@ class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     if (!this.refs.dragClone) return;
 
-    var node = React.findDOMNode(this.refs.dragClone);
+    var node = React.findDOMNode<HTMLElement>(this.refs.dragClone);
     node.classList.add("draggable");
     node.classList.add("dragging");
     node.style.left = "" + x + "px";

@@ -101,7 +101,7 @@ class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     var focusGraceTime = 500;
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
 
-    var node = React.findDOMNode(this.refs.main);
+    var node = React.findDOMNode<HTMLElement>(this.refs.main);
     if (e.target === node || node.contains(e.target))
     {
       return;

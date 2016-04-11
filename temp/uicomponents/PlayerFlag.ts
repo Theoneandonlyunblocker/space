@@ -49,14 +49,14 @@ class PlayerFlag_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
       canvas.style.maxWidth = "100%";
       canvas.style.maxHeight = "100%";
-      React.findDOMNode(this.refs.container).appendChild(canvas);
+      React.findDOMNode<HTMLElement>(this.refs.container).appendChild(canvas);
     }
   }
   componentDidUpdate()
   {
     if (this.refs.container && this.props.isMutable)
     {
-      var containerNode = React.findDOMNode(this.refs.container);
+      var containerNode = React.findDOMNode<HTMLElement>(this.refs.container);
       if (containerNode.firstChild)
       {
         containerNode.removeChild(containerNode.firstChild);
