@@ -1,19 +1,13 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/*
-props
+import Renderer from "../../../src/Renderer.ts";
 
-  renderer
-  backgroundSeed
-  getBlurAreaFN()
- */
 export interface PropTypes extends React.Props<any>
 {
-  getBlurArea: any; // TODO refactor | define prop type 123
-  children: any; // TODO refactor | define prop type 123
-  backgroundSeed: any; // TODO refactor | define prop type 123
-  renderer: any; // TODO refactor | define prop type 123
+  getBlurArea: () => ClientRect;
+  backgroundSeed: string;
+  renderer: Renderer;
 }
 
 interface StateType
@@ -40,8 +34,7 @@ class BattleBackground_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   }
   private bindMethods()
   {
-    this.handleResize = this.handleResize.bind(this);
-    this.getBlurAreaFN = this.getBlurAreaFN.bind(this);    
+    this.handleResize = this.handleResize.bind(this);  
   }
   
   handleResize()

@@ -26,7 +26,7 @@ export default class Renderer
   forceFrame: boolean = false;
   backgroundIsDirty: boolean = true;
   isBattleBackground: boolean = false;
-  blurProps: number[];
+  blurProps: (number | string)[];
 
   toCenterOn: Point;
   resizeListener: (e: Event) => void;
