@@ -5,7 +5,7 @@ import Player from "../../../src/Player.ts";
 import Trade from "../../../src/Trade.ts";
 import TradeOverview from "../trade/TradeOverview.ts";
 import TopMenuPopup from "../popups/TopMenuPopup.ts";
-import PopupManager from "../popups/PopupManager.ts";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager.ts";
 
 
 interface PropTypes extends React.Props<any>
@@ -21,18 +21,12 @@ interface StateType
   trade?: number;
 }
 
-interface RefTypes extends React.Refs
-{
-  popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
-}
-
 export class DiplomacyActionsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DiplomacyActions";
 
-
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -178,10 +172,10 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       },
         PopupManager(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_popupManager = component;
-},
+          ref: (component: PopupManagerComponent) =>
+          {
+            this.ref_TODO_popupManager = component;
+          },
           onlyAllowOne: true
         }),
         React.DOM.button(
