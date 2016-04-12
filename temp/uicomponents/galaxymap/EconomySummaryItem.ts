@@ -6,7 +6,7 @@ import Star from "../../../src/Star.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  handleClick: any; // TODO refactor | define prop type 123
+  handleClick: () => void;
   isSelected: boolean;
   activeColumns: ListColumn[];
   

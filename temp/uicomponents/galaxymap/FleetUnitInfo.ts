@@ -1,12 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../unit/unitstrength.ts"/>
-/// <reference path="fleetunitinfoname.ts"/>
-
-/// <reference path="../../unit.ts" />
-
-
 import Unit from "../../../src/Unit.ts";
 import FleetUnitInfoName from "./FleetUnitInfoName.ts";
 import UnitStrength from "../unit/UnitStrength.ts";
@@ -17,8 +11,9 @@ interface PropTypes extends React.Props<any>
   unit?: Unit;
   isIdentified: boolean;
   isDraggable: boolean;
-  onDragStart?: reactTypeTODO_func;
-  onDragEnd?: reactTypeTODO_func;
+  onDragStart?: (unit: Unit) => void;
+  onDragEnd?: (e: DragEvent) => void;
+  onDragMove?: (x: number, y: number) => void;
 }
 
 interface StateType

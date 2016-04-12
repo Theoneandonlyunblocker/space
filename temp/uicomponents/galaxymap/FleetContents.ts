@@ -1,25 +1,20 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="fleetunitinfo.ts"/>
-
-/// <reference path="../../fleet.ts" />
-/// <reference path="../../player.ts" />
-
-
 import Player from "../../../src/Player.ts";
 import FleetUnitInfo from "./FleetUnitInfo.ts";
 import Fleet from "../../../src/Fleet.ts";
+import Unit from "../../../src/Unit.ts";
 
 
 interface PropTypes extends React.Props<any>
 {
   fleet: Fleet;
   player: Player;
-  onMouseUp?: reactTypeTODO_func;
-  onDragStart?: reactTypeTODO_func;
-  onDragEnd?: reactTypeTODO_func;
-  onDragMove?: reactTypeTODO_func;
+  onMouseUp?: (fleet: Fleet) => void;
+  onDragStart?: (unit: Unit) => void;
+  onDragEnd?: (e: DragEvent) => void;
+  onDragMove?: (x: number, y: number) => void;
 }
 
 interface StateType
