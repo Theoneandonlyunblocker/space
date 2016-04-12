@@ -12,7 +12,7 @@ import UnitItem from "./UnitItem.ts";
 interface PropTypes extends React.Props<any>
 {
   onDragEnd: any; // TODO refactor | define prop type 123
-  item: any; // TODO refactor | define prop type 123
+  item: Item;
   onDragStart: any; // TODO refactor | define prop type 123
   onMouseUp: any; // TODO refactor | define prop type 123
   slot: any; // TODO refactor | define prop type 123

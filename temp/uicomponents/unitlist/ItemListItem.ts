@@ -4,7 +4,7 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   onDragEnd: any; // TODO refactor | define prop type 123
-  item: any; // TODO refactor | define prop type 123
+  item: Item;
   onDragStart: any; // TODO refactor | define prop type 123
   ability: any; // TODO refactor | define prop type 123
   abilityIsPassive: boolean;
