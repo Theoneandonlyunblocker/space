@@ -22,7 +22,7 @@ interface StateType
   players?: any; // TODO refactor | define state type 456
 }
 
-class SetupGamePlayers_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class SetupGamePlayers_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SetupGamePlayers";
 

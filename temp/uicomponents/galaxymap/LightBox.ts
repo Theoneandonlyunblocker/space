@@ -19,7 +19,7 @@ interface RefTypes extends React.Refs
   content: HTMLElement;
 }
 
-class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LightBox";
 

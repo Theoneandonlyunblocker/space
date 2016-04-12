@@ -18,7 +18,7 @@ interface StateType
 {
 }
 
-class StarInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class StarInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "StarInfo";
   shouldComponentUpdate(newProps: any)

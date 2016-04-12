@@ -36,7 +36,7 @@ interface RefTypes extends React.Refs
   main: HTMLElement;
 }
 
-class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];

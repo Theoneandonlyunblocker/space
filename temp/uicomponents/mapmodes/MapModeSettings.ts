@@ -26,7 +26,7 @@ interface RefTypes extends React.Refs
   layersList: React.Component<any, any>; // TODO refactor | correct ref type 542 | MapRendererLayersList
 }
 
-class MapModeSettings_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class MapModeSettings_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapModeSettings";
 

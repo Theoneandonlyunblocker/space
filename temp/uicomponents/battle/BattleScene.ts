@@ -37,7 +37,7 @@ interface StateType
 {
 }
 
-class BattleScene_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleScene_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScene";
 

@@ -25,7 +25,7 @@ interface StateType
 {
 }
 
-class SaveList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class SaveList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SaveList";
   state: StateType;

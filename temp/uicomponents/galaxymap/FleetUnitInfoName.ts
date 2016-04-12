@@ -18,7 +18,7 @@ interface StateType
   value?: any; // TODO refactor | define state type 456
 }
 
-class FleetUnitInfoName_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FleetUnitInfoName_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetUnitInfoName";
 

@@ -22,7 +22,7 @@ interface StateType
 {
 }
 
-class ItemPurchaseList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ItemPurchaseList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemPurchaseList";
 

@@ -14,7 +14,7 @@ interface StateType
 {
 }
 
-class EmptyUnit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class EmptyUnit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "EmptyUnit";
   shouldComponentUpdate(newProps: any)

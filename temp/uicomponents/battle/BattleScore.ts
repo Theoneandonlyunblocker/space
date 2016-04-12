@@ -14,7 +14,7 @@ interface StateType
 {
 }
 
-class BattleScore_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleScore_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScore";
   lastEvaluation: number

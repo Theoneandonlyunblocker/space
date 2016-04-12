@@ -14,7 +14,7 @@ interface StateType
   isCollapsed?: any; // TODO refactor | define state type 456
 }
 
-class OptionsGroup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class OptionsGroup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsGroup";
 

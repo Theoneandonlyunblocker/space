@@ -23,7 +23,7 @@ interface StateType
 {
 }
 
-class DiplomaticStatusPlayer_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class DiplomaticStatusPlayer_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DiplomaticStatusPlayer";
 

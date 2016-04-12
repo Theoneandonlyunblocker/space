@@ -19,7 +19,7 @@ interface StateType
 {
 }
 
-class ManufacturableThingsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ManufacturableThingsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableThingsList";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

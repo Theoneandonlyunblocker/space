@@ -25,7 +25,7 @@ interface StateType
   currentDraggingLayer?: any; // TODO refactor | define state type 456
 }
 
-class MapRendererLayersList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class MapRendererLayersList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersList";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

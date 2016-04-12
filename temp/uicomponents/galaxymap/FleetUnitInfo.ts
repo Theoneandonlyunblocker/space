@@ -26,7 +26,7 @@ interface StateType
   dragging?: any; // TODO refactor | define state type 456
 }
 
-class FleetUnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FleetUnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetUnitInfo";
   mixins: reactTypeTODO_any = [Draggable];

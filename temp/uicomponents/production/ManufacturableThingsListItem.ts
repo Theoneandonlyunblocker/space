@@ -16,7 +16,7 @@ interface StateType
   isDisabled?: any; // TODO refactor | define state type 456
 }
 
-class ManufacturableThingsListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ManufacturableThingsListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableThingsListItem";
 

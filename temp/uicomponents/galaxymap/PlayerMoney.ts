@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-class PlayerMoney_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class PlayerMoney_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerMoney";
   lastAmountRendered: reactTypeTODO_any = undefined;

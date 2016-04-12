@@ -18,7 +18,7 @@ interface StateType
   value?: any; // TODO refactor | define state type 456
 }
 
-class OptionsNumericField_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class OptionsNumericField_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsNumericField";
 

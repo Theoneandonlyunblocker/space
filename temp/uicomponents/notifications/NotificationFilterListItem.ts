@@ -21,7 +21,7 @@ interface StateType
   filterState?: any; // TODO refactor | define state type 456
 }
 
-class NotificationFilterListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class NotificationFilterListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationFilterListItem";
 

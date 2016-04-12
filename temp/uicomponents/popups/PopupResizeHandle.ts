@@ -12,7 +12,7 @@ interface StateType
 {
 }
 
-class PopupResizeHandle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class PopupResizeHandle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupResizeHandle";
   mixins: reactTypeTODO_any = [Draggable];

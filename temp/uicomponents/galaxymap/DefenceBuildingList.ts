@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-class DefenceBuildingList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class DefenceBuildingList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DefenceBuildingList";
   shouldComponentUpdate(newProps: any)

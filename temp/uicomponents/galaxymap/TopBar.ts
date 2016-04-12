@@ -23,7 +23,7 @@ interface StateType
 {
 }
 
-class TopBar_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TopBar_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopBar";
   updateListener: reactTypeTODO_any = undefined;

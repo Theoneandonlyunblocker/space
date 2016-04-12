@@ -22,7 +22,7 @@ interface StateType
 {
 }
 
-class AttitudeModifierInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class AttitudeModifierInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierInfo";
   state: StateType;

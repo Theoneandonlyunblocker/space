@@ -27,7 +27,7 @@ interface StateType
   activeTab?: any; // TODO refactor | define state type 456
 }
 
-class ManufacturableThings_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ManufacturableThings_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableThings";
 

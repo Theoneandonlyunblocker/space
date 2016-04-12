@@ -20,7 +20,7 @@ interface StateType
 {
 }
 
-class EconomySummary_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class EconomySummary_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "EconomySummary";
 

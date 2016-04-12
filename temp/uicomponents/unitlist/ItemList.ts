@@ -27,7 +27,7 @@ interface StateType
 {
 }
 
-class ItemList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ItemList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemList";
 

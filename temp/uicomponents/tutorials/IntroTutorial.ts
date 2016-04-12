@@ -29,7 +29,7 @@ interface RefTypes extends React.Refs
   popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
 }
 
-class IntroTutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class IntroTutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "IntroTutorial";
   popupId: reactTypeTODO_any = null;

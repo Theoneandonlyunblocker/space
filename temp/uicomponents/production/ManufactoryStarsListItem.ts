@@ -20,7 +20,7 @@ interface StateType
 {
 }
 
-class ManufactoryStarsListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ManufactoryStarsListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufactoryStarsListItem";
 

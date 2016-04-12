@@ -23,7 +23,7 @@ interface StateType
   sat?: any; // TODO refactor | define state type 456
 }
 
-class ColorPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ColorPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorPicker";
   onChangeTimeout: reactTypeTODO_any = null;

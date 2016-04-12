@@ -21,7 +21,7 @@ interface StateType
 {
 }
 
-class NotificationFilterList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class NotificationFilterList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationFilterList";
   handleResetCategory(category: string)

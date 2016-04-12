@@ -20,7 +20,7 @@ interface StateType
 {
 }
 
-class FleetInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FleetInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetInfo";
   setFleetName(e: Event)

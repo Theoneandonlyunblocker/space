@@ -30,7 +30,7 @@ interface RefTypes extends React.Refs
   pixiContainer: HTMLElement;
 }
 
-class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMap";
   

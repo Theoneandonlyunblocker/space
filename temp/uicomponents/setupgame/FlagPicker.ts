@@ -25,7 +25,7 @@ interface RefTypes extends React.Refs
   imageUploader: HTMLElement;
 }
 
-class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagPicker";
   state: StateType;

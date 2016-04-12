@@ -12,7 +12,7 @@ interface StateType
 {
 }
 
-class TopMenuPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TopMenuPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenuPopup";
 

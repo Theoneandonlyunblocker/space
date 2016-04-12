@@ -16,7 +16,7 @@ interface StateType
 {
 }
 
-class BattleInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleInfo";
   state: StateType;

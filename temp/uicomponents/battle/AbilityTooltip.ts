@@ -20,7 +20,7 @@ interface StateType
 {
 }
 
-class AbilityTooltip_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class AbilityTooltip_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AbilityTooltip";
 

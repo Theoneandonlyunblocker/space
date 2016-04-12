@@ -39,7 +39,7 @@ interface StateType
   dragging?: any; // TODO refactor | define state type 456
 }
 
-class Unit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class Unit_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Unit";
   mixins: reactTypeTODO_any = [Draggable, React.addons.PureRenderMixin];

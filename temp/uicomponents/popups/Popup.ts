@@ -32,7 +32,7 @@ interface StateType
   dragging?: any; // TODO refactor | define state type 456
 }
 
-class Popup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class Popup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Popup";
   mixins: reactTypeTODO_any = [Draggable];

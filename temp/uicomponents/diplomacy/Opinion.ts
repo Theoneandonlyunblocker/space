@@ -19,7 +19,7 @@ interface StateType
   hasAttitudeModifierTootlip?: any; // TODO refactor | define state type 456
 }
 
-class Opinion_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class Opinion_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Opinion";
 

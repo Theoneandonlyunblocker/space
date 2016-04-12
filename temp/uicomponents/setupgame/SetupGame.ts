@@ -28,7 +28,7 @@ interface RefTypes extends React.Refs
   mapSetup: React.Component<any, any>; // TODO refactor | correct ref type 542 | MapSetup
 }
 
-class SetupGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class SetupGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SetupGame";
 

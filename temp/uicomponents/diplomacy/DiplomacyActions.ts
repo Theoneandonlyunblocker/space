@@ -26,7 +26,7 @@ interface RefTypes extends React.Refs
   popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
 }
 
-class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DiplomacyActions";
 

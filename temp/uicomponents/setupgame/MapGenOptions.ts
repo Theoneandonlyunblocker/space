@@ -25,7 +25,7 @@ interface StateType
 {
 }
 
-class MapGenOptions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class MapGenOptions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapGenOptions";
 

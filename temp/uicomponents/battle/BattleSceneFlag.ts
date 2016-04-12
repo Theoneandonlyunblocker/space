@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-class BattleSceneFlag_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleSceneFlag_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleSceneFlag";
   flagCanvas: HTMLCanvasElement = null;

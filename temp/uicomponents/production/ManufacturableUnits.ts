@@ -26,7 +26,7 @@ interface StateType
 {
 }
 
-class ManufacturableUnits_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ManufacturableUnits_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableUnits";
 

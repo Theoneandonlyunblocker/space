@@ -50,7 +50,7 @@ interface RefTypes extends React.Refs
   expandedActionElementContainer: HTMLElement;
 }
 
-class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMapUI";
 

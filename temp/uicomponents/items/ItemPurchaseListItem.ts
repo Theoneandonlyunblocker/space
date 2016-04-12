@@ -13,7 +13,7 @@ interface StateType
 {
 }
 
-class ItemPurchaseListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ItemPurchaseListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemPurchaseListItem";
   makeCell(type: string)

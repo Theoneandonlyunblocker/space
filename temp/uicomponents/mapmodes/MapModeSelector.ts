@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-class MapModeSelector_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class MapModeSelector_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapModeSelector";
 

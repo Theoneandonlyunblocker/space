@@ -21,7 +21,7 @@ interface StateType
 {
 }
 
-class AttitudeModifierList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class AttitudeModifierList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierList";
   mixins: reactTypeTODO_any = [AutoPosition];

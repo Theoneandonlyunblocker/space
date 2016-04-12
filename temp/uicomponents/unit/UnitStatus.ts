@@ -19,7 +19,7 @@ interface StateType
 {
 }
 
-class UnitStatus_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitStatus_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStatus";
 

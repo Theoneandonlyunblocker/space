@@ -34,7 +34,7 @@ interface StateType
 {
 }
 
-class UnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitInfo";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

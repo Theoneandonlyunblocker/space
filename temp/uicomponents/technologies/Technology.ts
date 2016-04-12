@@ -22,7 +22,7 @@ interface StateType
 {
 }
 
-class Technology_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class Technology_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Technology";
 

@@ -40,7 +40,7 @@ interface RefTypes extends React.Refs
   upper: HTMLElement;
 }
 
-class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattlePrep";
   state: StateType;

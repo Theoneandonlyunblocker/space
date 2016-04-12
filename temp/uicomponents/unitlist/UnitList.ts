@@ -32,7 +32,7 @@ interface StateType
 {
 }
 
-class UnitList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitList";
   state: StateType;

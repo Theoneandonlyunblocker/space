@@ -14,7 +14,7 @@ interface StateType
 {
 }
 
-class UnitIcon_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitIcon_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitIcon";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

@@ -36,7 +36,7 @@ interface RefTypes extends React.Refs
   topMenuItems: HTMLElement;
 }
 
-class TopMenu_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TopMenu_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenu";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];

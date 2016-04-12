@@ -25,7 +25,7 @@ interface StateType
   duration?: any; // TODO refactor | define state type 456
 }
 
-class BattleSceneTester_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleSceneTester_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleSceneTester";
   idGenerator: number = 0;

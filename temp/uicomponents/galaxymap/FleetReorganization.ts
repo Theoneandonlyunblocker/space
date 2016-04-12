@@ -24,7 +24,7 @@ interface StateType
   currentDragUnit?: any; // TODO refactor | define state type 456
 }
 
-class FleetReorganization_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FleetReorganization_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetReorganization";
 

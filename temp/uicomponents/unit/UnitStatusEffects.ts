@@ -15,7 +15,7 @@ interface StateType
 {
 }
 
-class UnitStatusEffects_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitStatusEffects_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStatusEffects";
   state: StateType;

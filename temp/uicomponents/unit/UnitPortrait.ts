@@ -11,7 +11,7 @@ interface StateType
 {
 }
 
-class UnitPortrait_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitPortrait_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitPortrait";
   state: StateType;

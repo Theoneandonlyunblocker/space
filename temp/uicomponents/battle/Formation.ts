@@ -35,7 +35,7 @@ interface StateType
 {
 }
 
-class Formation_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class Formation_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Formation";
 

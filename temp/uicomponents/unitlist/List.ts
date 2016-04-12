@@ -38,7 +38,7 @@ interface RefTypes extends React.Refs
   inner: HTMLElement;
 }
 
-class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   mixins: [SplitMultilineText];
   sortedItems: ListItem[] = [];

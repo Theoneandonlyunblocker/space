@@ -20,7 +20,7 @@ interface StateType
   canAfford?: any; // TODO refactor | define state type 456
 }
 
-class BuildingUpgradeListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BuildingUpgradeListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildingUpgradeListItem";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];

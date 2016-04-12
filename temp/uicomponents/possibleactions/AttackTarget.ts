@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-class AttackTarget_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class AttackTarget_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttackTarget";
   state: StateType;

@@ -24,7 +24,7 @@ interface StateType
   selectedUnit?: any; // TODO refactor | define state type 456
 }
 
-class ItemEquip_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ItemEquip_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemEquip";
   state: StateType;

@@ -26,7 +26,7 @@ interface StateType
   maxUnits?: number;
 }
 
-class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TurnOrder";
   state: StateType;

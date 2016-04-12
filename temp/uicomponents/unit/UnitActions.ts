@@ -14,7 +14,7 @@ interface StateType
 {
 }
 
-class UnitActions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitActions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitActions";
   state: StateType;

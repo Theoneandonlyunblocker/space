@@ -18,7 +18,7 @@ interface StateType
   displayedStrength?: number;
 }
 
-class UnitStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStrength";
   state: StateType;

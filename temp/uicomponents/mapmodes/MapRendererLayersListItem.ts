@@ -20,7 +20,7 @@ interface StateType
   hoverSide?: any; // TODO refactor | define state type 456
 }
 
-class MapRendererLayersListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class MapRendererLayersListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersListItem";
   mixins: reactTypeTODO_any = [Draggable, DropTarget, React.addons.PureRenderMixin];

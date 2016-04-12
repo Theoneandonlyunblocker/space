@@ -19,7 +19,7 @@ interface StateType
   popups?: any; // TODO refactor | define state type 456
 }
 
-class PopupManager_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class PopupManager_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupManager";
   popupId: number = 0;

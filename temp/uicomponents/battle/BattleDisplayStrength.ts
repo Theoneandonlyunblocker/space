@@ -14,7 +14,7 @@ interface StateType
   displayedStrength?: number;
 }
 
-class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleDisplayStrength";
   state: StateType;
