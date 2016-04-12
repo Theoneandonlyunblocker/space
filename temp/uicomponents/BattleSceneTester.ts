@@ -94,7 +94,7 @@ class BattleSceneTester_COMPONENT_TODO extends React.Component<PropTypes, StateT
 
   componentDidMount()
   {
-    var battleScene = this.battleScene = new BattleScene(this.refsTODO["main"].getDOMNode());
+    var battleScene = this.battleScene = new BattleScene(this.refsTODO.main.getDOMNode());
     battleScene.resume();
     battleScene.activeUnit = this.state.selectedSide1Unit;
     battleScene.updateUnits()
