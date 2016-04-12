@@ -6,17 +6,15 @@ import * as React from "react";
 
 /// <reference path="../mixins/autoposition.ts" />
 
-/// <reference path="attitudemodifierinfo.ts" />
-
-
 import List from "../unitlist/List.ts";
 import AttitudeModifierInfo from "./AttitudeModifierInfo.ts";
+import AttitudeModifier from "../../../src/AttitudeModifier.ts";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  attitudeModifiers: any; // TODO refactor | define prop type 123
-  baseOpinion: any; // TODO refactor | define prop type 123
+  attitudeModifiers: AttitudeModifier[];
+  baseOpinion: number;
 }
 
 interface StateType

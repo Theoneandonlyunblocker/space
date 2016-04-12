@@ -21,7 +21,7 @@ export interface PropTypes extends React.Props<any>
   addSpacer?: boolean; // boolean = false
   onRowChange?: (row: ListItem) => void;
   colStylingFN?: (column: ListColumn, props: any) => any;
-  autoSelect: boolean;
+  autoSelect?: boolean;
 }
 
 interface StateType
