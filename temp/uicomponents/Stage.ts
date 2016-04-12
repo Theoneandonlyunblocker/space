@@ -32,7 +32,7 @@ interface PropTypes extends React.Props<any>
   game: Game;
   changeSceneFunction: any; // TODO refactor | define prop type 123
   sceneToRender: any; // TODO refactor | define prop type 123
-  renderer: any; // TODO refactor | define prop type 123
+  renderer: Renderer;
 }
 
 interface StateType
