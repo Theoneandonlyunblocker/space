@@ -17,7 +17,7 @@ import BattleScore from "./BattleScore.ts";
 import BattleScene from "./BattleScene.ts";
 import Formation from "./Formation.ts";
 import BattleDisplayStrength from "./BattleDisplayStrength.ts";
-import AbilityTooltip from "./AbilityTooltip.ts";
+import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityTooltip.ts";
 
 
 // TODO refactor
@@ -59,12 +59,6 @@ interface StateType
   hoveredAbility?: AbilityTemplate;
 }
 
-interface RefTypes extends React.Refs
-{
-  formationsContainer: HTMLElement;
-  abilityTooltip: React.Component<any, any>; // TODO refactor | correct ref type 542 | AbilityTooltip
-}
-
 export class BattleComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Battle";
@@ -79,7 +73,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   battleEndStartTime: number = undefined;
 
   state: StateType;
-  refsTODO: RefTypes;
+  
+  ref_TODO_formationsContainer: React.HTMLComponent;
+  ref_TODO_abilityTooltip: AbilityTooltipComponent;
 
   constructor(props: PropTypes)
   {
@@ -163,7 +159,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
   getBlurArea()
   {
-    return React.findDOMNode<HTMLElement>(this.refsTODO.formationsContainer).getBoundingClientRect();
+    return React.findDOMNode<HTMLElement>(this.ref_TODO_formationsContainer).getBoundingClientRect();
   }
 
   clearHoveredUnit()
@@ -202,18 +198,18 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    if (!this.refsTODO.abilityTooltip)
+    if (!this.ref_TODO_abilityTooltip)
     {
       this.clearHoveredUnit();
       return;
     }
 
 
-    var tooltipElement = React.findDOMNode<HTMLElement>(this.refsTODO.abilityTooltip);
+    var tooltipElement = React.findDOMNode<HTMLElement>(this.ref_TODO_abilityTooltip);
 
     if(
       toElement !== this.state.abilityTooltip.parentElement &&
-      (this.refsTODO.abilityTooltip && toElement !== tooltipElement) &&
+      (this.ref_TODO_abilityTooltip && toElement !== tooltipElement) &&
       toElement.parentElement !== tooltipElement
     )
     {
@@ -575,7 +571,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         parentElement: this.state.abilityTooltip.parentElement,
         facesLeft: this.state.abilityTooltip.facesLeft,
         activeTargets: activeTargets,
-        ref: "abilityTooltip",
+        ref: (component: AbilityTooltipComponent) =>
+        {
+          this.ref_TODO_abilityTooltip = component;
+        },
         key: this.state.hoveredUnit.id
       });
     };
@@ -695,8 +694,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       },
         React.DOM.div(
         {
-          className: "battle-container",
-          ref: "battleContainer"
+          className: "battle-container"
         },
           overlayContainer,
           React.DOM.div(
@@ -731,7 +729,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           React.DOM.div(
           {
             className: "formations-container",
-            ref: "formationsContainer"
+            ref: (container: React.HTMLComponent) =>
+            {
+              this.ref_TODO_formationsContainer = container;
+            }
           },
             Formation(
             {
