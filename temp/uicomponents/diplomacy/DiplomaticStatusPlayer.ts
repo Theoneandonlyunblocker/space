@@ -1,22 +1,21 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../playerflag.ts" />
-/// <reference path="opinion.ts" />
-
-
+import Player from "../../../src/Player.ts";
+import AttitudeModifier from "../../../src/AttitudeModifier.ts";
 import Opinion from "./Opinion.ts";
 import PlayerFlag from "../PlayerFlag.ts";
+import ListColumn from "../unitlist/ListColumn.d.ts";
 
 
 interface PropTypes extends React.Props<any>
 {
-  baseOpinion: any; // TODO refactor | define prop type 123
-  player: any; // TODO refactor | define prop type 123
-  opinion: any; // TODO refactor | define prop type 123
-  activeColumns: any; // TODO refactor | define prop type 123
-  attitudeModifiers: any; // TODO refactor | define prop type 123
-  handleClick: any; // TODO refactor | define prop type 123
+  baseOpinion: number;
+  player: Player;
+  opinion: number;
+  activeColumns: ListColumn[];
+  attitudeModifiers: AttitudeModifier[];
+  handleClick: () => void;
 }
 
 interface StateType
@@ -121,7 +120,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
   {
     var columns = this.props.activeColumns;
 
-    var cells: any = [];
+    var cells: React.HTMLElement[] = [];
 
     for (var i = 0; i < columns.length; i++)
     {
@@ -130,7 +129,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
       cells.push(cell);
     }
 
-    var rowProps: any =
+    var rowProps =
     {
       className: "diplomatic-status-player",
       onClick : this.props.handleClick
