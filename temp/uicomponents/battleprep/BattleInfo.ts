@@ -1,17 +1,15 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../galaxymap/defencebuildinglist.ts"/>
-/// <reference path="../playerflag.ts" />
-
-
 import PlayerFlag from "../PlayerFlag.ts";
 import DefenceBuildingList from "../galaxymap/DefenceBuildingList.ts";
+
+import BattlePrep from "../../../src/BattlePrep.ts";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  battlePrep: any; // TODO refactor | define prop type 123
+  battlePrep: BattlePrep;
 }
 
 interface StateType

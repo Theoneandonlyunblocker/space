@@ -7,11 +7,11 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  width: any; // TODO refactor | define prop type 123
+  width?: any; // TODO refactor | define prop type 123
   props: any; // TODO refactor | define prop type 123
-  isMutable: any; // TODO refactor | define prop type 123
-  height: any; // TODO refactor | define prop type 123
-  stretch: any; // TODO refactor | define prop type 123
+  isMutable?: any; // TODO refactor | define prop type 123
+  height?: any; // TODO refactor | define prop type 123
+  stretch?: any; // TODO refactor | define prop type 123
   flag: any; // TODO refactor | define prop type 123
 }
 
