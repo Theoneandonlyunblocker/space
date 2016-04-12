@@ -18,7 +18,7 @@ interface StateType
   displayedStrength?: number;
 }
 
-export class UnitStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitStrength";
   state: StateType;
@@ -204,5 +204,5 @@ export class UnitStrength_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitStrength_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitStrengthComponent);
 export default Factory;

@@ -18,7 +18,7 @@ interface StateType
   value?: any; // TODO refactor | define state type 456
 }
 
-export class FleetUnitInfoName_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FleetUnitInfoNameComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetUnitInfoName";
 
@@ -65,5 +65,5 @@ export class FleetUnitInfoName_COMPONENT_TODO extends React.Component<PropTypes,
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetUnitInfoName_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FleetUnitInfoNameComponent);
 export default Factory;

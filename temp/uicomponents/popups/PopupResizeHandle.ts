@@ -12,7 +12,7 @@ interface StateType
 {
 }
 
-export class PopupResizeHandle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class PopupResizeHandleComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupResizeHandle";
   mixins: reactTypeTODO_any = [Draggable];
@@ -60,5 +60,5 @@ export class PopupResizeHandle_COMPONENT_TODO extends React.Component<PropTypes,
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PopupResizeHandle_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(PopupResizeHandleComponent);
 export default Factory;

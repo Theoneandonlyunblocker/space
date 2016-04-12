@@ -23,7 +23,7 @@ interface StateType
 {
 }
 
-export class BuildQueue_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BuildQueueComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildQueue";
 
@@ -101,5 +101,5 @@ export class BuildQueue_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BuildQueue_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BuildQueueComponent);
 export default Factory;

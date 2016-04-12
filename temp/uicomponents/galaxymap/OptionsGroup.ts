@@ -14,7 +14,7 @@ interface StateType
   isCollapsed?: any; // TODO refactor | define state type 456
 }
 
-export class OptionsGroup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsGroup";
 
@@ -105,5 +105,5 @@ export class OptionsGroup_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(OptionsGroup_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(OptionsGroupComponent);
 export default Factory;

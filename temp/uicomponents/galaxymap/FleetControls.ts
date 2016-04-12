@@ -19,7 +19,7 @@ interface StateType
 {
 }
 
-export class FleetControls_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FleetControlsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetControls";
 
@@ -98,5 +98,5 @@ export class FleetControls_COMPONENT_TODO extends React.Component<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetControls_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FleetControlsComponent);
 export default Factory;

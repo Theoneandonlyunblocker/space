@@ -20,7 +20,7 @@ interface StateType
 {
 }
 
-export class TechnologiesList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TechnologiesListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TechnologiesList";
   updateListener: reactTypeTODO_any = undefined;
@@ -85,5 +85,5 @@ export class TechnologiesList_COMPONENT_TODO extends React.Component<PropTypes, 
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TechnologiesList_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TechnologiesListComponent);
 export default Factory;

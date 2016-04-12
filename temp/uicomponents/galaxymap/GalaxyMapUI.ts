@@ -50,7 +50,7 @@ interface RefTypes extends React.Refs
   expandedActionElementContainer: HTMLElement;
 }
 
-export class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMapUI";
 
@@ -314,5 +314,5 @@ export class GalaxyMapUI_COMPONENT_TODO extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(GalaxyMapUI_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(GalaxyMapUIComponent);
 export default Factory;

@@ -24,7 +24,7 @@ interface StateType
 {
 }
 
-export class UnitItemWrapper_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitItemWrapperComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitItemWrapper";
   mixins: reactTypeTODO_any = [DropTarget];
@@ -94,5 +94,5 @@ export class UnitItemWrapper_COMPONENT_TODO extends React.Component<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitItemWrapper_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitItemWrapperComponent);
 export default Factory;

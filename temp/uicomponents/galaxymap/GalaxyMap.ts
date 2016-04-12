@@ -30,7 +30,7 @@ interface RefTypes extends React.Refs
   pixiContainer: HTMLElement;
 }
 
-export class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMap";
   
@@ -164,5 +164,5 @@ export class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(GalaxyMap_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(GalaxyMapComponent);
 export default Factory;

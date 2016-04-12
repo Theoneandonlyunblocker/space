@@ -22,7 +22,7 @@ interface StateType
   priority?: any; // TODO refactor | define state type 456
 }
 
-export class TechnologyPrioritySlider_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TechnologyPrioritySliderComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TechnologyPrioritySlider";
   state: StateType;;
@@ -107,5 +107,5 @@ export class TechnologyPrioritySlider_COMPONENT_TODO extends React.Component<Pro
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TechnologyPrioritySlider_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TechnologyPrioritySliderComponent);
 export default Factory;

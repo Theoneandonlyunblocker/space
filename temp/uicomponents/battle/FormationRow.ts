@@ -38,7 +38,7 @@ interface StateType
 {
 }
 
-export class FormationRow_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FormationRowComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FormationRow";
 
@@ -94,5 +94,5 @@ export class FormationRow_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FormationRow_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FormationRowComponent);
 export default Factory;

@@ -35,7 +35,7 @@ interface StateType
 {
 }
 
-export class Formation_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FormationComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Formation";
 
@@ -87,5 +87,5 @@ export class Formation_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Formation_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FormationComponent);
 export default Factory;

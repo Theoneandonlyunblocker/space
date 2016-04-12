@@ -22,7 +22,7 @@ interface StateType
 {
 }
 
-export class ManufactoryStarsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ManufactoryStarsListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufactoryStarsList";
 
@@ -91,5 +91,5 @@ export class ManufactoryStarsList_COMPONENT_TODO extends React.Component<PropTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ManufactoryStarsList_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ManufactoryStarsListComponent);
 export default Factory;

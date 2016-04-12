@@ -19,7 +19,7 @@ interface StateType
 {
 }
 
-export class Notifications_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class NotificationsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Notifications";
 
@@ -49,5 +49,5 @@ export class Notifications_COMPONENT_TODO extends React.Component<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Notifications_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(NotificationsComponent);
 export default Factory;

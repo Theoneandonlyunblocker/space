@@ -34,7 +34,7 @@ interface RefTypes extends React.Refs
   selected: HTMLElement;
 }
 
-export class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FleetSelectionComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetSelection";
   state: StateType;
@@ -254,5 +254,5 @@ export class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, St
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetSelection_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FleetSelectionComponent);
 export default Factory;

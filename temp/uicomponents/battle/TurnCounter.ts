@@ -11,7 +11,7 @@ interface StateType
 {
 }
 
-export class TurnCounter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TurnCounterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TurnCounter";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -64,5 +64,5 @@ export class TurnCounter_COMPONENT_TODO extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TurnCounter_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TurnCounterComponent);
 export default Factory;

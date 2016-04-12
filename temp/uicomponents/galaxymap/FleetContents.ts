@@ -26,7 +26,7 @@ interface StateType
 {
 }
 
-export class FleetContents_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FleetContentsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetContents";
 
@@ -98,5 +98,5 @@ export class FleetContents_COMPONENT_TODO extends React.Component<PropTypes, Sta
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetContents_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FleetContentsComponent);
 export default Factory;

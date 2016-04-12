@@ -26,7 +26,7 @@ interface StateType
   currentDragItemPlayer?: any; // TODO refactor | define state type 456
 }
 
-export class TradeOverview_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TradeOverviewComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeOverview";
   selfPlayerTrade: reactTypeTODO_any = undefined;
@@ -284,5 +284,5 @@ export class TradeOverview_COMPONENT_TODO extends React.Component<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TradeOverview_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TradeOverviewComponent);
 export default Factory;

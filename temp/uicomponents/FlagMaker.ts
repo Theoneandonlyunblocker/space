@@ -17,7 +17,7 @@ interface StateType
   size?: any; // TODO refactor | define state type 456
 }
 
-export class FlagMaker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FlagMakerComponent extends React.Component<PropTypes, StateType>
 {
   setStateTimeout: reactTypeTODO_any = undefined;
   sizeValue: number = 46;
@@ -121,5 +121,5 @@ export class FlagMaker_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FlagMaker_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FlagMakerComponent);
 export default Factory;

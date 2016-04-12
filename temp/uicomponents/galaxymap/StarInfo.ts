@@ -18,7 +18,7 @@ interface StateType
 {
 }
 
-export class StarInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class StarInfoComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "StarInfo";
   shouldComponentUpdate(newProps: any)
@@ -95,5 +95,5 @@ export class StarInfo_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(StarInfo_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(StarInfoComponent);
 export default Factory;

@@ -12,7 +12,7 @@ interface StateType
 {
 }
 
-export class TopMenuPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenuPopup";
 
@@ -49,5 +49,5 @@ export class TopMenuPopup_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TopMenuPopup_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TopMenuPopupComponent);
 export default Factory;

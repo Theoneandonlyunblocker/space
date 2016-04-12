@@ -23,7 +23,7 @@ interface StateType
 {
 }
 
-export class DiplomaticStatusPlayer_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DiplomaticStatusPlayer";
 
@@ -144,5 +144,5 @@ export class DiplomaticStatusPlayer_COMPONENT_TODO extends React.Component<PropT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DiplomaticStatusPlayer_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(DiplomaticStatusPlayerComponent);
 export default Factory;

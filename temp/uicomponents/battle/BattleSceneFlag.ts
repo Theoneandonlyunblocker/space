@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-export class BattleSceneFlag_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleSceneFlagComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleSceneFlag";
   flagCanvas: HTMLCanvasElement = null;
@@ -112,5 +112,5 @@ export class BattleSceneFlag_COMPONENT_TODO extends React.Component<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleSceneFlag_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleSceneFlagComponent);
 export default Factory;

@@ -12,7 +12,7 @@ interface StateType
 {
 }
 
-export class Resource_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ResourceComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Resource";
   state: StateType;
@@ -49,5 +49,5 @@ export class Resource_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Resource_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ResourceComponent);
 export default Factory;

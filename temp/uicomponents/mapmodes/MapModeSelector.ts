@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-export class MapModeSelector_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class MapModeSelectorComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapModeSelector";
 
@@ -86,5 +86,5 @@ export class MapModeSelector_COMPONENT_TODO extends React.Component<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapModeSelector_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(MapModeSelectorComponent);
 export default Factory;

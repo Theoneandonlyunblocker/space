@@ -18,7 +18,7 @@ interface StateType
   dragging?: any; // TODO refactor | define state type 456
 }
 
-export class TradeMoney_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeMoney";
   mixins: reactTypeTODO_any = [Draggable];
@@ -139,5 +139,5 @@ export class TradeMoney_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TradeMoney_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TradeMoneyComponent);
 export default Factory;

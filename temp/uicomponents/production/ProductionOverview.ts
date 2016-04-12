@@ -33,7 +33,7 @@ interface StateType
   selectedStar?: any; // TODO refactor | define state type 456
 }
 
-export class ProductionOverview_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ProductionOverviewComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ProductionOverview";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
@@ -211,5 +211,5 @@ export class ProductionOverview_COMPONENT_TODO extends React.Component<PropTypes
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ProductionOverview_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ProductionOverviewComponent);
 export default Factory;

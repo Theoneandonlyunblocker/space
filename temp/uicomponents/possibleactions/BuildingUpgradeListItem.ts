@@ -20,7 +20,7 @@ interface StateType
   canAfford?: any; // TODO refactor | define state type 456
 }
 
-export class BuildingUpgradeListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BuildingUpgradeListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildingUpgradeListItem";
   mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
@@ -102,5 +102,5 @@ export class BuildingUpgradeListItem_COMPONENT_TODO extends React.Component<Prop
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeListItem_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BuildingUpgradeListItemComponent);
 export default Factory;

@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-export class AttackTarget_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class AttackTargetComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttackTarget";
   state: StateType;
@@ -65,5 +65,5 @@ export class AttackTarget_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(AttackTarget_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(AttackTargetComponent);
 export default Factory;

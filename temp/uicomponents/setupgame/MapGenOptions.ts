@@ -25,7 +25,7 @@ interface StateType
 {
 }
 
-export class MapGenOptions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class MapGenOptionsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapGenOptions";
 
@@ -254,5 +254,5 @@ export class MapGenOptions_COMPONENT_TODO extends React.Component<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapGenOptions_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(MapGenOptionsComponent);
 export default Factory;

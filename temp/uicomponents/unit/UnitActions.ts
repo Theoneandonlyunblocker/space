@@ -14,7 +14,7 @@ interface StateType
 {
 }
 
-export class UnitActions_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitActionsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitActions";
   state: StateType;
@@ -77,5 +77,5 @@ export class UnitActions_COMPONENT_TODO extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitActions_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitActionsComponent);
 export default Factory;

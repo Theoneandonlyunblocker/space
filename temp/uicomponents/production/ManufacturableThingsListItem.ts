@@ -16,7 +16,7 @@ interface StateType
   isDisabled?: any; // TODO refactor | define state type 456
 }
 
-export class ManufacturableThingsListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ManufacturableThingsListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableThingsListItem";
 
@@ -98,5 +98,5 @@ export class ManufacturableThingsListItem_COMPONENT_TODO extends React.Component
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsListItem_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsListItemComponent);
 export default Factory;

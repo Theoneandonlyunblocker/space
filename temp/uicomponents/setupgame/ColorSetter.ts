@@ -31,7 +31,7 @@ interface RefTypes extends React.Refs
   main: HTMLElement;
 }
 
-export class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ColorSetterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
@@ -184,5 +184,5 @@ export class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ColorSetter_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ColorSetterComponent);
 export default Factory;

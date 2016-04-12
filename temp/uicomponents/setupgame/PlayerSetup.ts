@@ -33,7 +33,7 @@ interface RefTypes extends React.Refs
   flagSetter: React.Component<any, any>; // TODO refactor | correct ref type 542 | FlagSetter
 }
 
-export class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerSetup";
 
@@ -228,5 +228,5 @@ export class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PlayerSetup_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(PlayerSetupComponent);
 export default Factory;

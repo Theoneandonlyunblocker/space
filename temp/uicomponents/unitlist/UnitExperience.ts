@@ -27,7 +27,7 @@ interface RefTypes extends React.Refs
   popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
 }
 
-export class UnitExperience_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitExperienceComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitExperience";
 
@@ -188,5 +188,5 @@ export class UnitExperience_COMPONENT_TODO extends React.Component<PropTypes, St
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitExperience_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitExperienceComponent);
 export default Factory;

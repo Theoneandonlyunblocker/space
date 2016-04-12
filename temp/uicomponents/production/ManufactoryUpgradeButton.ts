@@ -19,7 +19,7 @@ interface StateType
   isDisabled?: any; // TODO refactor | define state type 456
 }
 
-export class ManufactoryUpgradeButton_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufactoryUpgradeButton";
 
@@ -102,5 +102,5 @@ export class ManufactoryUpgradeButton_COMPONENT_TODO extends React.Component<Pro
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ManufactoryUpgradeButton_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ManufactoryUpgradeButtonComponent);
 export default Factory;

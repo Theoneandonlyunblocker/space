@@ -30,7 +30,7 @@ interface RefTypes extends React.Refs
   popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
 }
 
-export class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class LoadGameComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LoadGame";
   popupId: reactTypeTODO_any = undefined;
@@ -276,5 +276,5 @@ export class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(LoadGame_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(LoadGameComponent);
 export default Factory;

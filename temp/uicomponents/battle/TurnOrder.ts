@@ -26,7 +26,7 @@ interface StateType
   maxUnits?: number;
 }
 
-export class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TurnOrder";
   state: StateType;
@@ -175,5 +175,5 @@ export class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TurnOrder_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TurnOrderComponent);
 export default Factory;

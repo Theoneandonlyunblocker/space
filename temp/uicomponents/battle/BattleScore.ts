@@ -14,7 +14,7 @@ interface StateType
 {
 }
 
-export class BattleScore_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleScoreComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScore";
   lastEvaluation: number
@@ -106,5 +106,5 @@ export class BattleScore_COMPONENT_TODO extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleScore_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleScoreComponent);
 export default Factory;

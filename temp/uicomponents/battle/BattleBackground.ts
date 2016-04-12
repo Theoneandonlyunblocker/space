@@ -19,7 +19,7 @@ interface RefTypes extends React.Refs
   pixiContainer: HTMLElement;
 }
 
-export class BattleBackground_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleBackgroundComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleBackground";
 
@@ -82,5 +82,5 @@ export class BattleBackground_COMPONENT_TODO extends React.Component<PropTypes, 
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleBackground_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleBackgroundComponent);
 export default Factory;

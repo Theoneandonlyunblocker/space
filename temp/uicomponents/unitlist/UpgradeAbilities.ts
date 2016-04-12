@@ -19,7 +19,7 @@ interface StateType
 {
 }
 
-export class UpgradeAbilities_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeAbilities";
   state: StateType;
@@ -71,5 +71,5 @@ export class UpgradeAbilities_COMPONENT_TODO extends React.Component<PropTypes, 
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UpgradeAbilities_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(UpgradeAbilitiesComponent);
 export default Factory;

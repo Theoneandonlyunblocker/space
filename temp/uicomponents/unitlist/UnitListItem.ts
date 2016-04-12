@@ -37,7 +37,7 @@ interface RefTypes extends React.Refs
   dragClone: React.Component<any, any>; // TODO refactor | correct ref type 542 | Unit
 }
 
-export class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitListItem";
   mixins: reactTypeTODO_any = [Draggable];
@@ -263,5 +263,5 @@ export class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitListItem_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitListItemComponent);
 export default Factory;

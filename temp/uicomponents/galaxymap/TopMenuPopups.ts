@@ -41,7 +41,7 @@ interface RefTypes extends React.Refs
   popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
 }
 
-export class TopMenuPopups_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenuPopups";
   cachedPopupRects: {}
@@ -241,5 +241,5 @@ export class TopMenuPopups_COMPONENT_TODO extends React.Component<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TopMenuPopups_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TopMenuPopupsComponent);
 export default Factory;

@@ -29,7 +29,7 @@ interface StateType
 {
 }
 
-export class TradeableItems_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TradeableItemsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeableItems";
   mixins: reactTypeTODO_any = [DropTarget];
@@ -92,5 +92,5 @@ export class TradeableItems_COMPONENT_TODO extends React.Component<PropTypes, St
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TradeableItems_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TradeableItemsComponent);
 export default Factory;

@@ -25,7 +25,7 @@ interface RefTypes extends React.Refs
   imageUploader: HTMLElement;
 }
 
-export class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FlagPickerComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagPicker";
   state: StateType;
@@ -180,5 +180,5 @@ export class FlagPicker_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FlagPicker_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FlagPickerComponent);
 export default Factory;

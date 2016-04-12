@@ -36,7 +36,7 @@ interface RefTypes extends React.Refs
   topMenuItems: HTMLElement;
 }
 
-export class TopMenu_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TopMenuComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenu";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -329,5 +329,5 @@ export class TopMenu_COMPONENT_TODO extends React.Component<PropTypes, StateType
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(TopMenu_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TopMenuComponent);
 export default Factory;

@@ -14,7 +14,7 @@ interface StateType
 {
 }
 
-export class UnitIcon_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UnitIconComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitIcon";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -81,5 +81,5 @@ export class UnitIcon_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitIcon_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitIconComponent);
 export default Factory;

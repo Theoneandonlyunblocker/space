@@ -27,7 +27,7 @@ interface StateType
   activeTab?: any; // TODO refactor | define state type 456
 }
 
-export class ManufacturableThings_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ManufacturableThingsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufacturableThings";
 
@@ -192,5 +192,5 @@ export class ManufacturableThings_COMPONENT_TODO extends React.Component<PropTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ManufacturableThings_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsComponent);
 export default Factory;

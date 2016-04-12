@@ -26,7 +26,7 @@ interface StateType
   buildingTemplates?: any; // TODO refactor | define state type 456
 }
 
-export class BuildableBuildingList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BuildableBuildingListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildableBuildingList";
   state: StateType;
@@ -140,5 +140,5 @@ export class BuildableBuildingList_COMPONENT_TODO extends React.Component<PropTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BuildableBuildingList_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BuildableBuildingListComponent);
 export default Factory;

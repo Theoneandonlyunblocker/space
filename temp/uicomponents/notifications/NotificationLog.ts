@@ -29,7 +29,7 @@ interface RefTypes extends React.Refs
   popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
 }
 
-export class NotificationLog_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class NotificationLogComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationLog";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -213,5 +213,5 @@ export class NotificationLog_COMPONENT_TODO extends React.Component<PropTypes, S
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(NotificationLog_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(NotificationLogComponent);
 export default Factory;

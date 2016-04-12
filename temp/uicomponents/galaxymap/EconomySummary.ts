@@ -20,7 +20,7 @@ interface StateType
 {
 }
 
-export class EconomySummary_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class EconomySummaryComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "EconomySummary";
 
@@ -90,5 +90,5 @@ export class EconomySummary_COMPONENT_TODO extends React.Component<PropTypes, St
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(EconomySummary_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(EconomySummaryComponent);
 export default Factory;

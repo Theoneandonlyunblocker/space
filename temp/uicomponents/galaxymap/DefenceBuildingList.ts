@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-export class DefenceBuildingList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class DefenceBuildingListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DefenceBuildingList";
   shouldComponentUpdate(newProps: any)
@@ -74,5 +74,5 @@ export class DefenceBuildingList_COMPONENT_TODO extends React.Component<PropType
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DefenceBuildingList_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(DefenceBuildingListComponent);
 export default Factory;

@@ -23,7 +23,7 @@ interface StateType
   canAfford?: any; // TODO refactor | define state type 456
 }
 
-export class ConstructManufactory_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ConstructManufactoryComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConstructManufactory";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -101,5 +101,5 @@ export class ConstructManufactory_COMPONENT_TODO extends React.Component<PropTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ConstructManufactory_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ConstructManufactoryComponent);
 export default Factory;

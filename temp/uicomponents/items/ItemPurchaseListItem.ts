@@ -13,7 +13,7 @@ interface StateType
 {
 }
 
-export class ItemPurchaseListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ItemPurchaseListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemPurchaseListItem";
   makeCell(type: string)
@@ -96,5 +96,5 @@ export class ItemPurchaseListItem_COMPONENT_TODO extends React.Component<PropTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ItemPurchaseListItem_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ItemPurchaseListItemComponent);
 export default Factory;

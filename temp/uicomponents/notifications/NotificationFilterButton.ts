@@ -28,7 +28,7 @@ interface RefTypes extends React.Refs
   popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
 }
 
-export class NotificationFilterButton_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class NotificationFilterButtonComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationFilterButton";
 
@@ -142,5 +142,5 @@ export class NotificationFilterButton_COMPONENT_TODO extends React.Component<Pro
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterButton_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterButtonComponent);
 export default Factory;

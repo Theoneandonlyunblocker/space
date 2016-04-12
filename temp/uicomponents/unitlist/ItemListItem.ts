@@ -22,7 +22,7 @@ interface StateType
   dragging?: any; // TODO refactor | define state type 456
 }
 
-export class ItemListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemListItem";
   mixins: reactTypeTODO_any = [Draggable];
@@ -154,5 +154,5 @@ export class ItemListItem_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ItemListItem_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ItemListItemComponent);
 export default Factory;

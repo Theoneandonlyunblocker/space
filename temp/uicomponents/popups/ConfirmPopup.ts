@@ -23,7 +23,7 @@ interface RefTypes extends React.Refs
   okButton: HTMLElement;
 }
 
-export class ConfirmPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConfirmPopup";
   mixins: reactTypeTODO_any = [SplitMultilineText];
@@ -121,5 +121,5 @@ export class ConfirmPopup_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(ConfirmPopup_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ConfirmPopupComponent);
 export default Factory;

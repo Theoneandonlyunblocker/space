@@ -22,7 +22,7 @@ interface StateType
 {
 }
 
-export class Technology_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TechnologyComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Technology";
 
@@ -131,5 +131,5 @@ export class Technology_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Technology_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TechnologyComponent);
 export default Factory;

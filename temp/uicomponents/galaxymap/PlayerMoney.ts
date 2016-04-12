@@ -17,7 +17,7 @@ interface StateType
 {
 }
 
-export class PlayerMoney_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerMoney";
   lastAmountRendered: reactTypeTODO_any = undefined;
@@ -69,5 +69,5 @@ export class PlayerMoney_COMPONENT_TODO extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PlayerMoney_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(PlayerMoneyComponent);
 export default Factory;

@@ -24,7 +24,7 @@ interface StateType
   currentDragUnit?: any; // TODO refactor | define state type 456
 }
 
-export class FleetReorganization_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FleetReorganizationComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetReorganization";
 
@@ -177,5 +177,5 @@ export class FleetReorganization_COMPONENT_TODO extends React.Component<PropType
 
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FleetReorganization_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FleetReorganizationComponent);
 export default Factory;

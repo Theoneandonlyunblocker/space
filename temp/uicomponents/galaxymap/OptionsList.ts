@@ -39,7 +39,7 @@ interface RefTypes extends React.Refs
   popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
 }
 
-export class OptionsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class OptionsListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsList";
 
@@ -367,5 +367,5 @@ export class OptionsList_COMPONENT_TODO extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(OptionsList_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(OptionsListComponent);
 export default Factory;

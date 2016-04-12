@@ -13,7 +13,7 @@ interface StateType
   isChecked?: any; // TODO refactor | define state type 456
 }
 
-export class DontShowAgain_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class DontShowAgainComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DontShowAgain";
 
@@ -89,5 +89,5 @@ export class DontShowAgain_COMPONENT_TODO extends React.Component<PropTypes, Sta
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(DontShowAgain_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(DontShowAgainComponent);
 export default Factory;

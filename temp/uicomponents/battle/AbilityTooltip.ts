@@ -20,7 +20,7 @@ interface StateType
 {
 }
 
-export class AbilityTooltip_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class AbilityTooltipComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AbilityTooltip";
 
@@ -110,5 +110,5 @@ export class AbilityTooltip_COMPONENT_TODO extends React.Component<PropTypes, St
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(AbilityTooltip_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(AbilityTooltipComponent);
 export default Factory;

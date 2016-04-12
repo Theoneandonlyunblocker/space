@@ -40,7 +40,7 @@ interface RefTypes extends React.Refs
   upper: HTMLElement;
 }
 
-export class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattlePrep";
   state: StateType;
@@ -454,5 +454,5 @@ export class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattlePrep_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattlePrepComponent);
 export default Factory;

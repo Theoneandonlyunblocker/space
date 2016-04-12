@@ -36,7 +36,7 @@ interface RefTypes extends React.Refs
   main: HTMLElement;
 }
 
-export class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
@@ -387,5 +387,5 @@ export class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(FlagSetter_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(FlagSetterComponent);
 export default Factory;

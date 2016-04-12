@@ -19,7 +19,7 @@ interface RefTypes extends React.Refs
   content: HTMLElement;
 }
 
-export class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class LightBoxComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "LightBox";
 
@@ -130,5 +130,5 @@ export class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(LightBox_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(LightBoxComponent);
 export default Factory;

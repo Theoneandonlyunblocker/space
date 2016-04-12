@@ -22,7 +22,7 @@ interface StateType
 {
 }
 
-export class AttitudeModifierInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class AttitudeModifierInfoComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierInfo";
   state: StateType;
@@ -128,5 +128,5 @@ export class AttitudeModifierInfo_COMPONENT_TODO extends React.Component<PropTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierInfo_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(AttitudeModifierInfoComponent);
 export default Factory;

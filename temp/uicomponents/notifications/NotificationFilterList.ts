@@ -21,7 +21,7 @@ interface StateType
 {
 }
 
-export class NotificationFilterList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class NotificationFilterListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationFilterList";
   handleResetCategory(category: string)
@@ -130,5 +130,5 @@ export class NotificationFilterList_COMPONENT_TODO extends React.Component<PropT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterList_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(NotificationFilterListComponent);
 export default Factory;

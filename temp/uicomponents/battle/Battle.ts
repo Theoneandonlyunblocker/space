@@ -65,7 +65,7 @@ interface RefTypes extends React.Refs
   abilityTooltip: React.Component<any, any>; // TODO refactor | correct ref type 542 | AbilityTooltip
 }
 
-export class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Battle";
 
@@ -777,5 +777,5 @@ export class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Battle_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleComponent);
 export default Factory;

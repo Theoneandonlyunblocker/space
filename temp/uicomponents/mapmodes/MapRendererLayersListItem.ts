@@ -20,7 +20,7 @@ interface StateType
   hoverSide?: any; // TODO refactor | define state type 456
 }
 
-export class MapRendererLayersListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class MapRendererLayersListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersListItem";
   mixins: reactTypeTODO_any = [Draggable, DropTarget, React.addons.PureRenderMixin];
@@ -166,5 +166,5 @@ export class MapRendererLayersListItem_COMPONENT_TODO extends React.Component<Pr
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListItem_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(MapRendererLayersListItemComponent);
 export default Factory;

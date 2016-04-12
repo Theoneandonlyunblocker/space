@@ -15,7 +15,7 @@ interface StateType
 {
 }
 
-export class UpgradeAttributes_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class UpgradeAttributesComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeAttributes";
   upgradeAttribute(attribute: string, e: MouseEvent)
@@ -79,5 +79,5 @@ export class UpgradeAttributes_COMPONENT_TODO extends React.Component<PropTypes,
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UpgradeAttributes_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(UpgradeAttributesComponent);
 export default Factory;

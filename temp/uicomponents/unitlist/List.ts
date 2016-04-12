@@ -38,7 +38,7 @@ interface RefTypes extends React.Refs
   inner: HTMLElement;
 }
 
-export class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class ListComponent extends React.Component<PropTypes, StateType>
 {
   mixins: [SplitMultilineText];
   sortedItems: ListItem[] = [];
@@ -458,5 +458,5 @@ export class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(List_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(ListComponent);
 export default Factory;

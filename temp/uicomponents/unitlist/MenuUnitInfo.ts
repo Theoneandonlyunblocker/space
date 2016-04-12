@@ -27,7 +27,7 @@ interface StateType
 {
 }
 
-export class MenuUnitInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MenuUnitInfo";
   state: StateType;
@@ -111,5 +111,5 @@ export class MenuUnitInfo_COMPONENT_TODO extends React.Component<PropTypes, Stat
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(MenuUnitInfo_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(MenuUnitInfoComponent);
 export default Factory;

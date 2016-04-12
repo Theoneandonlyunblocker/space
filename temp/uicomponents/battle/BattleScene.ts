@@ -37,7 +37,7 @@ interface StateType
 {
 }
 
-export class BattleScene_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleSceneComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScene";
 
@@ -200,5 +200,5 @@ export class BattleScene_COMPONENT_TODO extends React.Component<PropTypes, State
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleScene_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleSceneComponent);
 export default Factory;

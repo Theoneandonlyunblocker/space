@@ -29,7 +29,7 @@ interface RefTypes extends React.Refs
   saveName: HTMLElement;
 }
 
-export class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class SaveGameComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SaveGame";
 
@@ -158,5 +158,5 @@ export class SaveGame_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(SaveGame_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(SaveGameComponent);
 export default Factory;

@@ -21,7 +21,7 @@ interface StateType
   currentPage?: any; // TODO refactor | define state type 456
 }
 
-export class Tutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class TutorialComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Tutorial";
   mixins: reactTypeTODO_any = [SplitMultilineText];
@@ -177,5 +177,5 @@ export class Tutorial_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Tutorial_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(TutorialComponent);
 export default Factory;

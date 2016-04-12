@@ -39,7 +39,7 @@ interface StateType
 {
 }
 
-export class Stage_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class StageComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Stage";
   state: StateType;
@@ -147,5 +147,5 @@ export class Stage_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Stage_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(StageComponent);
 export default Factory;

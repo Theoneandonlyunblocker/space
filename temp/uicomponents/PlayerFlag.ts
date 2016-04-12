@@ -19,7 +19,7 @@ interface StateType
 {
 }
 
-export class PlayerFlag_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerFlag";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
@@ -94,5 +94,5 @@ export class PlayerFlag_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(PlayerFlag_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(PlayerFlagComponent);
 export default Factory;

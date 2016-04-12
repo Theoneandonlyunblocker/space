@@ -19,7 +19,7 @@ interface StateType
   hasAttitudeModifierTootlip?: any; // TODO refactor | define state type 456
 }
 
-export class Opinion_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class OpinionComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Opinion";
 
@@ -124,5 +124,5 @@ export class Opinion_COMPONENT_TODO extends React.Component<PropTypes, StateType
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(Opinion_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(OpinionComponent);
 export default Factory;

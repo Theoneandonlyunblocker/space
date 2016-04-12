@@ -14,7 +14,7 @@ interface StateType
   displayedStrength?: number;
 }
 
-export class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTypes, StateType>
+export class BattleDisplayStrengthComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleDisplayStrength";
   state: StateType;
@@ -122,5 +122,5 @@ export class BattleDisplayStrength_COMPONENT_TODO extends React.Component<PropTy
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(BattleDisplayStrength_COMPONENT_TODO);
+const Factory: React.Factory<PropTypes> = React.createFactory(BattleDisplayStrengthComponent);
 export default Factory;
