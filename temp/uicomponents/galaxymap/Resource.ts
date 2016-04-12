@@ -4,8 +4,8 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   resource: any; // TODO refactor | define prop type 123
-  amount: any; // TODO refactor | define prop type 123
-  income: any; // TODO refactor | define prop type 123
+  amount: number;
+  income: number;
 }
 
 interface StateType
