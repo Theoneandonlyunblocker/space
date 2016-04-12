@@ -16,7 +16,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  dragging?: any; // TODO refactor | define state type 456
+  dragging?: boolean;
 }
 
 export class UnitItemComponent extends React.Component<PropTypes, StateType>

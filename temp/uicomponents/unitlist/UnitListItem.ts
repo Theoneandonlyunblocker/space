@@ -29,7 +29,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  dragging?: any; // TODO refactor | define state type 456
+  dragging?: boolean;
 }
 
 interface RefTypes extends React.Refs

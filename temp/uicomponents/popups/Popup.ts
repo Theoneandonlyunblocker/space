@@ -29,7 +29,7 @@ interface PropTypes extends React.Props<any>
 interface StateType
 {
   zIndex?: any; // TODO refactor | define state type 456
-  dragging?: any; // TODO refactor | define state type 456
+  dragging?: boolean;
 }
 
 export class PopupComponent extends React.Component<PropTypes, StateType>
