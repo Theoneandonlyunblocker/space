@@ -9,8 +9,8 @@ interface PropTypes extends React.Props<any>
   cancelText: boolean;
   handleOk: any; // TODO refactor | define prop type 123
   contentProps: any; // TODO refactor | define prop type 123
-  contentText: any; // TODO refactor | define prop type 123
-  okText: any; // TODO refactor | define prop type 123
+  contentText: string;
+  okText: string;
   closePopup: any; // TODO refactor | define prop type 123
 }
 
