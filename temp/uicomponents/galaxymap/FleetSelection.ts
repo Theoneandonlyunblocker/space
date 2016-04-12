@@ -21,7 +21,7 @@ interface PropTypes extends React.Props<any>
   isInspecting: any; // TODO refactor | define prop type 123
   closeReorganization: any; // TODO refactor | define prop type 123
   currentlyReorganizing: any; // TODO refactor | define prop type 123
-  selectedstar: Star;
+  selectedStar: Star;
 }
 
 interface StateType
