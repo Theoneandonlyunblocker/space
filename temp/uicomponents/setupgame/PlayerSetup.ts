@@ -17,7 +17,7 @@ interface PropTypes extends React.Props<any>
   removePlayers: any; // TODO refactor | define prop type 123
   initialName: any; // TODO refactor | define prop type 123
   keyTODO: any; // TODO refactor | define prop type 123
-  isHuman: any; // TODO refactor | define prop type 123
+  isHuman: boolean;
 }
 
 interface StateType

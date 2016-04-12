@@ -12,8 +12,8 @@ interface PropTypes extends React.Props<any>
 {
   isNotDetected: boolean;
   fleet: Fleet;
-  hasMultipleSelected: any; // TODO refactor | define prop type 123
-  isInspecting: any; // TODO refactor | define prop type 123
+  hasMultipleSelected: boolean;
+  isInspecting: boolean;
 }
 
 interface StateType

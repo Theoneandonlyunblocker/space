@@ -13,9 +13,9 @@ interface PropTypes extends React.Props<any>
 {
   setActiveColorPicker: any; // TODO refactor | define prop type 123
   generateColor: any; // TODO refactor | define prop type 123
-  isActive: any; // TODO refactor | define prop type 123
+  isActive: boolean;
   color: any; // TODO refactor | define prop type 123
-  flagHasCustomImage: any; // TODO refactor | define prop type 123
+  flagHasCustomImage: boolean;
   onChange: any; // TODO refactor | define prop type 123
 }
 

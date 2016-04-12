@@ -18,7 +18,7 @@ interface PropTypes extends React.Props<any>
 {
   selectedFleets: any; // TODO refactor | define prop type 123
   player: Player;
-  isInspecting: any; // TODO refactor | define prop type 123
+  isInspecting: boolean;
   closeReorganization: any; // TODO refactor | define prop type 123
   currentlyReorganizing: any; // TODO refactor | define prop type 123
   selectedStar: Star;

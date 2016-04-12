@@ -3,7 +3,7 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  isMarkedForDeletion: any; // TODO refactor | define prop type 123
+  isMarkedForDeletion: boolean;
   handleClick: any; // TODO refactor | define prop type 123
   handleUndoDelete: any; // TODO refactor | define prop type 123
   handleDelete: any; // TODO refactor | define prop type 123

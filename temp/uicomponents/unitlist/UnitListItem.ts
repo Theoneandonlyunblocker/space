@@ -15,11 +15,11 @@ interface PropTypes extends React.Props<any>
   onDragStart: any; // TODO refactor | define prop type 123
   onMouseLeave: any; // TODO refactor | define prop type 123
   noActionsLeft: any; // TODO refactor | define prop type 123
-  isHovered: any; // TODO refactor | define prop type 123
-  isDraggable: any; // TODO refactor | define prop type 123
+  isHovered: boolean;
+  isDraggable: boolean;
   currentHealth: any; // TODO refactor | define prop type 123
-  isReserved: any; // TODO refactor | define prop type 123
-  isSelected: any; // TODO refactor | define prop type 123
+  isReserved: boolean;
+  isSelected: boolean;
   onMouseEnter: any; // TODO refactor | define prop type 123
   maxHealth: any; // TODO refactor | define prop type 123
   activeColumns: any; // TODO refactor | define prop type 123

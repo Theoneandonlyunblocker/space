@@ -20,12 +20,12 @@ interface PropTypes extends React.Props<any>
   handleMouseEnterUnit: any; // TODO refactor | define prop type 123
   onDragEnd: any; // TODO refactor | define prop type 123
   onDragStart: any; // TODO refactor | define prop type 123
-  isCaptured: any; // TODO refactor | define prop type 123
+  isCaptured: boolean;
   handleMouseLeaveUnit: any; // TODO refactor | define prop type 123
   facesLeft: any; // TODO refactor | define prop type 123
   activeUnit: any; // TODO refactor | define prop type 123
-  isDraggable: any; // TODO refactor | define prop type 123
-  isDead: any; // TODO refactor | define prop type 123
+  isDraggable: boolean;
+  isDead: boolean;
   hoveredAbility: any; // TODO refactor | define prop type 123
   battle: Battle;
   unit: Unit;

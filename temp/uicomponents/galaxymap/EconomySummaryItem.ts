@@ -4,7 +4,7 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   handleClick: any; // TODO refactor | define prop type 123
-  isSelected: any; // TODO refactor | define prop type 123
+  isSelected: boolean;
   activeColumns: any; // TODO refactor | define prop type 123
 }
 

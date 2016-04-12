@@ -5,7 +5,7 @@ interface PropTypes extends React.Props<any>
 {
   onChangeFN: any; // TODO refactor | define prop type 123
   label: any; // TODO refactor | define prop type 123
-  isChecked: any; // TODO refactor | define prop type 123
+  isChecked: boolean;
 }
 
 interface StateType

@@ -3,10 +3,10 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  listItemIsDragging: any; // TODO refactor | define prop type 123
+  listItemIsDragging: boolean;
   onDragEnd: any; // TODO refactor | define prop type 123
   onDragStart: any; // TODO refactor | define prop type 123
-  isActive: any; // TODO refactor | define prop type 123
+  isActive: boolean;
   layer: any; // TODO refactor | define prop type 123
   setHoverPosition: any; // TODO refactor | define prop type 123
   toggleActive: any; // TODO refactor | define prop type 123

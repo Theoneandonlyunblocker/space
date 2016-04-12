@@ -7,10 +7,10 @@ interface PropTypes extends React.Props<any>
   item: any; // TODO refactor | define prop type 123
   onDragStart: any; // TODO refactor | define prop type 123
   ability: any; // TODO refactor | define prop type 123
-  abilityIsPassive: any; // TODO refactor | define prop type 123
-  isDraggable: any; // TODO refactor | define prop type 123
-  isReserved: any; // TODO refactor | define prop type 123
-  isSelected: any; // TODO refactor | define prop type 123
+  abilityIsPassive: boolean;
+  isDraggable: boolean;
+  isReserved: boolean;
+  isSelected: boolean;
   activeColumns: any; // TODO refactor | define prop type 123
   keyTODO: any; // TODO refactor | define prop type 123
   handleClick: any; // TODO refactor | define prop type 123

@@ -5,8 +5,8 @@ interface PropTypes extends React.Props<any>
 {
   icon: any; // TODO refactor | define prop type 123
   unit: any; // TODO refactor | define prop type 123
-  isAnnihilated: any; // TODO refactor | define prop type 123
-  isActiveUnit: any; // TODO refactor | define prop type 123
+  isAnnihilated: boolean;
+  isActiveUnit: boolean;
   facesLeft: any; // TODO refactor | define prop type 123
 }
 

@@ -8,7 +8,7 @@ interface PropTypes extends React.Props<any>
   generateColor: any; // TODO refactor | define prop type 123
   getParentPosition: any; // TODO refactor | define prop type 123
   hexColor: any; // TODO refactor | define prop type 123
-  flagHasCustomImage: any; // TODO refactor | define prop type 123
+  flagHasCustomImage: boolean;
   onChange: any; // TODO refactor | define prop type 123
   limitUpdates: any; // TODO refactor | define prop type 123
 }

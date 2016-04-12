@@ -6,7 +6,7 @@ interface PropTypes extends React.Props<any>
   handleClose: any; // TODO refactor | define prop type 123
   contentConstructor: any; // TODO refactor | define prop type 123
   extraButtons: any; // TODO refactor | define prop type 123
-  cancelText: any; // TODO refactor | define prop type 123
+  cancelText: boolean;
   handleOk: any; // TODO refactor | define prop type 123
   contentProps: any; // TODO refactor | define prop type 123
   contentText: any; // TODO refactor | define prop type 123
