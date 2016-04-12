@@ -24,8 +24,8 @@ import FlagMaker from "./FlagMaker.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  battlePrep: any; // TODO refactor | define prop type 123
-  mapRenderer: any; // TODO refactor | define prop type 123
+  battlePrep: BattlePrep;
+  mapRenderer: MapRenderer;
   player: Player;
   playerControl: any; // TODO refactor | define prop type 123
   battle: any; // TODO refactor | define prop type 123
