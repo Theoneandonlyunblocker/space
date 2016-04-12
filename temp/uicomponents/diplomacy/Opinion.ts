@@ -1,22 +1,24 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="attitudemodifierlist.ts" />
-
-
 import AttitudeModifierList from "./AttitudeModifierList.ts";
-
+import AttitudeModifier from "../../../src/AttitudeModifier.ts";
+import
+{
+  clamp,
+  getRelativeValue,
+} from "../../../src/utility.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  attitudeModifiers: any; // TODO refactor | define prop type 123
-  baseOpinion: any; // TODO refactor | define prop type 123
-  opinion: any; // TODO refactor | define prop type 123
+  attitudeModifiers: AttitudeModifier[];
+  baseOpinion: number;
+  opinion: number;
 }
 
 interface StateType
 {
-  hasAttitudeModifierTootlip?: any; // TODO refactor | define state type 456
+  hasAttitudeModifierTootlip?: boolean;
 }
 
 export class OpinionComponent extends React.Component<PropTypes, StateType>
@@ -93,13 +95,13 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
       {
         attitudeModifiers: this.props.attitudeModifiers,
         baseOpinion: this.props.baseOpinion,
-        onLeave: this.clearTooltip,
         
-        getParentNode: this.getOpinionTextNode,
-        autoPosition: true,
-        ySide: "top",
-        xSide: "right",
-        yMargin: 10
+        // TODO refactor | mixins
+        // getParentNode: this.getOpinionTextNode,
+        // autoPosition: true,
+        // ySide: "top",
+        // xSide: "right",
+        // yMargin: 10
       });
     }
     return(
