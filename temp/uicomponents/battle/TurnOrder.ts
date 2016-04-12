@@ -15,9 +15,9 @@ interface PropTypes extends React.Props<any>
     side1: Unit[];
     side2: Unit[];
   }
-  turnOrder: (Unit | any)[]; // TODO refactor
+  turnOrder: any; // TODO refactor
   hoveredUnit: Unit;
-  onMouseLeaveUnit: () => void;
+  onMouseLeaveUnit: (e: React.MouseEvent) => void;
   onMouseEnterUnit: (unit: Unit) => void;
 }
 

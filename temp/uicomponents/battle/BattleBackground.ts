@@ -14,17 +14,12 @@ interface StateType
 {
 }
 
-interface RefTypes extends React.Refs
-{
-  pixiContainer: HTMLElement;
-}
-
 export class BattleBackgroundComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleBackground";
-
   state: StateType;
-  refsTODO: RefTypes;
+  
+  ref_TODO_pixiContainer: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -74,10 +69,10 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
       React.DOM.div(
       {
         className: "battle-pixi-container",
-        ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_pixiContainer = component;
-}
+        ref: (component: React.HTMLComponent) =>
+        {
+          this.ref_TODO_pixiContainer = component;
+        }
       },
         this.props.children
       )
