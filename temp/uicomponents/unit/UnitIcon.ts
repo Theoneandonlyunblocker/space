@@ -7,7 +7,7 @@ interface PropTypes extends React.Props<any>
   unit: Unit;
   isAnnihilated: boolean;
   isActiveUnit: boolean;
-  facesLeft: any; // TODO refactor | define prop type 123
+  facesLeft: boolean;
 }
 
 interface StateType

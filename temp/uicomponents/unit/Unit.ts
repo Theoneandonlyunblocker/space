@@ -22,7 +22,7 @@ interface PropTypes extends React.Props<any>
   onDragStart: any; // TODO refactor | define prop type 123
   isCaptured: boolean;
   handleMouseLeaveUnit: any; // TODO refactor | define prop type 123
-  facesLeft: any; // TODO refactor | define prop type 123
+  facesLeft: boolean;
   activeUnit: any; // TODO refactor | define prop type 123
   isDraggable: boolean;
   isDead: boolean;
