@@ -11,30 +11,41 @@ import List from "../unitlist/List.ts";
 import DiplomacyActions from "./DiplomacyActions.ts";
 import Opinion from "./Opinion.ts";
 import DiplomaticStatusPlayer from "./DiplomaticStatusPlayer.ts";
-import PopupManager from "../popups/PopupManager.ts";
+import DiplomacyState from "../../../src/DiplomacyState.ts";
+import Player from "../../../src/Player.ts";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager.ts";
 
 
 interface PropTypes extends React.Props<any>
 {
-  metPlayers: any; // TODO refactor | define prop type 123
-  totalPlayerCount: any; // TODO refactor | define prop type 123
-  statusByPlayer: any; // TODO refactor | define prop type 123
-  player: any; // TODO refactor | define prop type 123
+  metPlayers: {[id: number]: Player};
+  totalPlayerCount: number;
+  statusByPlayer: {[id: number]: DiplomacyState};
+  player: Player;
 }
 
 interface StateType
 {
 }
 
-interface RefTypes extends React.Refs
-{
-  popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
-}
-
 export class DiplomacyOverviewComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DiplomacyOverview";
+  state: StateType;
+  
+  ref_TODO_popupManager: PopupManagerComponent;
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    this.makeDiplomacyActionsPopup = this.makeDiplomacyActionsPopup.bind(this);    
+  }
+  
   makeDiplomacyActionsPopup(rowItem: ListItem)
   {
     var player = rowItem.data.player;
@@ -55,20 +66,6 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         containerDragOnly: true
       }
     });
-  }
-
-  state: StateType;
-  refsTODO: RefTypes;
-
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.makeDiplomacyActionsPopup = this.makeDiplomacyActionsPopup.bind(this);    
   }
   
   render()
@@ -91,7 +88,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
           player: player,
           name: player.name,
           baseOpinion: player.diplomacyStatus.getBaseOpinion(),
-          status: DiplomaticState[status],
+          status: DiplomacyState[status],
           statusEnum: status,
           opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
           attitudeModifiers:
@@ -148,10 +145,10 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
       React.DOM.div({className: "diplomacy-overview"},
         PopupManager(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_popupManager = component;
-},
+          ref: (component: PopupManagerComponent) =>
+          {
+            this.ref_TODO_popupManager = component;
+          },
           onlyAllowOne: true
         }),
         React.DOM.div({className: "diplomacy-status-list fixed-table-parent"},
