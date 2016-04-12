@@ -15,8 +15,8 @@ interface PropTypes extends React.Props<any>
 {
   toCenterOn: any; // TODO refactor | define prop type 123
   player: Player;
-  playerControl: any; // TODO refactor | define prop type 123
-  game: any; // TODO refactor | define prop type 123
+  playerControl: PlayerControl;
+  game: Game;
   mapRenderer: MapRenderer;
   renderer: any; // TODO refactor | define prop type 123
 }

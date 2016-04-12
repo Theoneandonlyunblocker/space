@@ -26,10 +26,10 @@ import eventManager from "../../../src/eventManager.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  game: any; // TODO refactor | define prop type 123
-  mapRenderer: any; // TODO refactor | define prop type 123
+  game: Game;
+  mapRenderer: MapRenderer;
   player: Player;
-  playerControl: any; // TODO refactor | define prop type 123
+  playerControl: PlayerControl;
 }
 
 interface StateType
