@@ -1,11 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../player.ts" />
-
-/// <reference path="../trade/tradeoverview.ts" />
-
-
 import Player from "../../../src/Player.ts";
 import Trade from "../../../src/Trade.ts";
 import TradeOverview from "../trade/TradeOverview.ts";
@@ -15,14 +10,15 @@ import PopupManager from "../popups/PopupManager.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  closePopup: any; // TODO refactor | define prop type 123
+  closePopup: () => void;
   player: Player;
   targetPlayer: Player;
-  onUpdate: reactTypeTODO_func;
+  onUpdate: () => void;
 }
 
 interface StateType
 {
+  trade?: number;
 }
 
 interface RefTypes extends React.Refs
@@ -66,14 +62,14 @@ class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   closePopup(popupType: string)
   {
     this.refs.popupManager.closePopup(this.state[popupType]);
-    var stateObj: any = {};
+    var stateObj: StateType = {};
     stateObj[popupType] = undefined;
     this.setState(stateObj);
   }
 
   makePopup(popupType: string)
   {
-    var contentConstructor: React.ReactElement<any>;
+    var contentConstructor: React.Factory<any>;
     var contentProps: any;
     var popupProps: any =
     {
