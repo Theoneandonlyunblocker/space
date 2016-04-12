@@ -15,7 +15,7 @@ import Item from "../../../src/Item.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  player: any; // TODO refactor | define prop type 123
+  player: Player;
 }
 
 interface StateType

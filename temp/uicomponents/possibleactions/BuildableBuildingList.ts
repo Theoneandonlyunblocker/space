@@ -17,8 +17,8 @@ interface PropTypes extends React.Props<any>
 {
   clearExpandedAction: any; // TODO refactor | define prop type 123
   star: any; // TODO refactor | define prop type 123
-  player: any; // TODO refactor | define prop type 123
-  humanPlayer: any; // TODO refactor | define prop type 123
+  player: Player;
+  humanplayer: Player;
 }
 
 interface StateType

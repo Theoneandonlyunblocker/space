@@ -28,7 +28,7 @@ interface PropTypes extends React.Props<any>
 {
   game: any; // TODO refactor | define prop type 123
   mapRenderer: any; // TODO refactor | define prop type 123
-  player: any; // TODO refactor | define prop type 123
+  player: Player;
   playerControl: any; // TODO refactor | define prop type 123
 }
 
