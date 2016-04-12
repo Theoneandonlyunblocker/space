@@ -16,7 +16,7 @@ import Building from "../../../src/Building.ts";
 interface PropTypes extends React.Props<any>
 {
   clearExpandedAction: any; // TODO refactor | define prop type 123
-  star: any; // TODO refactor | define prop type 123
+  star: Star;
   player: Player;
   humanplayer: Player;
 }
