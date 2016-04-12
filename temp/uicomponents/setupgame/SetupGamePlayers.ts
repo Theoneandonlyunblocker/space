@@ -12,8 +12,8 @@ import Color from "../../../src/Color.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  maxPlayers: any; // TODO refactor | define prop type 123
-  minPlayers: any; // TODO refactor | define prop type 123
+  maxPlayers: number;
+  minPlayers: number;
 }
 
 interface StateType

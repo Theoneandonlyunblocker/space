@@ -7,7 +7,7 @@ interface PropTypes extends React.Props<any>
 {
   currentActionPoints: any; // TODO refactor | define prop type 123
   hoveredActionPointExpenditure: any; // TODO refactor | define prop type 123
-  maxActionPoints: any; // TODO refactor | define prop type 123
+  maxActionPoints: number;
 }
 
 interface StateType
