@@ -357,7 +357,10 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       React.DOM.div(
       {
         className: "flag-setter",
-        ref: "main",
+        ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_main = component;
+},
         onDragEnter: this.stopEvent,
         onDragOver: this.stopEvent,
         onDrop: this.handleDrop
@@ -375,7 +378,10 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
         this.props.isActive || this.state.isActive ?
           FlagPicker(
           {
-            ref: "flagPicker",
+            ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_flagPicker = component;
+},
             flag: this.state.flag,
             handleSelectEmblem: this.setForegroundEmblem,
             hasImageFailMessage: this.state.hasImageFailMessage,

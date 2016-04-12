@@ -149,7 +149,10 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
       },
         PopupManager(
         {
-          ref: "popupManager",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popupManager = component;
+},
           onlyAllowOne: true
         }),
         React.DOM.div(

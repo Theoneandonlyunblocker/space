@@ -65,7 +65,10 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
         {
           mapRenderer: this.props.mapRenderer,
           onUpdate: this.forceUpdate.bind(this),
-          ref: "selector"
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_selector = component;
+}
         }),
         React.DOM.button(
         {
@@ -78,7 +81,10 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
         {
           mapRenderer: this.props.mapRenderer,
           currentMapMode: this.props.mapRenderer.currentMapMode,
-          ref: "layersList"
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_layersList = component;
+}
         })
       )
     );

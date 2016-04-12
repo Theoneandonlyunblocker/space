@@ -358,10 +358,16 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div({className: "battle-prep"},
         React.DOM.div({className: "battle-prep-left"},
-          React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: "upper"},
+          React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_upper = component;
+}},
             BattleBackground(
             {
-              ref: "background",
+              ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_background = component;
+},
               renderer: this.props.renderer,
               getBlurArea: this.getBackgroundBlurArea,
               backgroundSeed: battlePrep.battleData.location.getSeed()

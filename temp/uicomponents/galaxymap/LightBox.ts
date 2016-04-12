@@ -105,12 +105,18 @@ export class LightBoxComponent extends React.Component<PropTypes, StateType>
       React.DOM.div(
       {
         className: "light-box-wrapper",
-        ref: "wrapper"
+        ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_wrapper = component;
+}
       },
         React.DOM.div(
         {
           className: "light-box-container",
-          ref: "container"
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_container = component;
+}
         },
           React.DOM.button(
           {
@@ -120,7 +126,10 @@ export class LightBoxComponent extends React.Component<PropTypes, StateType>
           React.DOM.div(
           {
             className: "light-box-content",
-            ref: "content"
+            ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_content = component;
+}
           },
             this.props.contentConstructor(contentProps)
           )

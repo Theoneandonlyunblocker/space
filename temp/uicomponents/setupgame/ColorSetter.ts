@@ -167,7 +167,10 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
       });
 
     return(
-      React.DOM.div({className: "color-setter", ref: "main"},
+      React.DOM.div({className: "color-setter", ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_main = component;
+}},
         displayElement,
         this.props.isActive || this.state.isActive ?
           ColorPicker(

@@ -134,7 +134,10 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
         ),
         PopupManager(
         {
-          ref: "popupManager",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popupManager = component;
+},
           onlyAllowOne: true
         })
       )

@@ -230,7 +230,10 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       React.DOM.div(
       {
         className: "fleet-selection",
-        ref: "main"
+        ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_main = component;
+}
       },
         fleetSelectionControls,
         hasMultipleSelected ? null : fleetInfos,
@@ -241,7 +244,10 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
           React.DOM.div(
           {
             className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
-            ref: "selected"
+            ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_selected = component;
+}
           },
             hasMultipleSelected ? fleetInfos : null,
             fleetContents

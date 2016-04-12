@@ -395,7 +395,10 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         React.DOM.div(
         {
           className: "battle-scene-test-pixi-container",
-          ref: "main"
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_main = component;
+}
         },
           null
         ),

@@ -178,7 +178,10 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       },
         PopupManager(
         {
-          ref: "popupManager",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popupManager = component;
+},
           onlyAllowOne: true
         }),
         React.DOM.button(

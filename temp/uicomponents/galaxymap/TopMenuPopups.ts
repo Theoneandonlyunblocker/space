@@ -235,7 +235,10 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     return(
       PopupManager(
       {
-        ref: "popupManager"
+        ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popupManager = component;
+}
       })
     );
   }

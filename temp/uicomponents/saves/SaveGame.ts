@@ -121,7 +121,10 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
       },
         PopupManager(
         {
-          ref: "popupManager",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popupManager = component;
+},
           onlyAllowOne: true
         }),
         SaveList(
@@ -133,7 +136,10 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
         React.DOM.input(
         {
           className: "save-game-name",
-          ref: "saveName",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_saveName = component;
+},
           type: "text",
           maxLength: 64
         }),
@@ -145,7 +151,10 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-button",
             onClick: this.handleSave,
-            ref: "okButton"
+            ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_okButton = component;
+}
           }, "Save"),
           React.DOM.button(
           {

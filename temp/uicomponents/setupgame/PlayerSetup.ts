@@ -180,7 +180,10 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       },
         React.DOM.input(
         {
-          ref: "isHuman",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_isHuman = component;
+},
           className: "player-setup-is-human",
           type: "checkbox",
           checked: this.props.isHuman,
@@ -194,7 +197,10 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         }),
         ColorSetter(
         {
-          ref: "mainColor",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_mainColor = component;
+},
           onChange: this.setMainColor,
           setActiveColorPicker: this.props.setActiveColorPicker,
           generateColor: this.generateMainColor,
@@ -203,7 +209,10 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         }),
         ColorSetter(
         {
-          ref: "subColor",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_subColor = component;
+},
           onChange: this.setSubColor,
           setActiveColorPicker: this.props.setActiveColorPicker,
           generateColor: this.generateSubColor,
@@ -212,7 +221,10 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         }),
         FlagSetter(
         {
-          ref: "flagSetter",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_flagSetter = component;
+},
           mainColor: this.state.mainColor,
           subColor: this.state.subColor,
           setActiveColorPicker: this.props.setActiveColorPicker,

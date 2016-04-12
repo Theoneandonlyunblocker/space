@@ -111,14 +111,20 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
           },
             SetupGamePlayers(
             {
-              ref: "players",
+              ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_players = component;
+},
               minPlayers: this.state.minPlayers,
               maxPlayers: this.state.maxPlayers
             }),
             MapSetup(
             {
               setPlayerLimits: this.setPlayerLimits,
-              ref: "mapSetup"
+              ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_mapSetup = component;
+}
             })
           ),
           React.DOM.div(

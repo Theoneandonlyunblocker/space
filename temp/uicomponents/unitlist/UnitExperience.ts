@@ -169,7 +169,10 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
       },
         PopupManager(
         {
-          ref: "popupManager",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popupManager = component;
+},
           onlyAllowOne: true
         }),
         React.DOM.div(containerProps,

@@ -206,7 +206,10 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
         ),
         PopupManager(
         {
-          ref: "popupManager"
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popupManager = component;
+}
         })
       )
     );

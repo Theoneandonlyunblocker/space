@@ -307,12 +307,18 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(
         {
           className: "top-menu",
-          ref: "topMenu"
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_topMenu = component;
+}
         },
           React.DOM.div(
           {
             className: "top-menu-items",
-            ref: "topMenuItems"
+            ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_topMenuItems = component;
+}
           },
             topMenuItems
           )
@@ -320,7 +326,10 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
         openedCondensedMenu,
         TopMenuPopups(
         {
-          ref: "popups",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popups = component;
+},
           player: this.props.player,
           game: this.props.game
         })

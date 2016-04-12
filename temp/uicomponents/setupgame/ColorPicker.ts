@@ -382,7 +382,10 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           {
             className: "color-picker-slider",
             id: "" + rootId + "hex",
-            ref: "hex",
+            ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_hex = component;
+},
             type: "color",
             step: 1,
             value: this.state.lastValidHexString,
@@ -402,7 +405,10 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           React.DOM.input(
           {
             className: "color-picker-input color-picker-input-hex",
-            ref: "hex",
+            ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_hex = component;
+},
             type: "string",
             step: 1,
             value: this.state.hexString,

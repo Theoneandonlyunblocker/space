@@ -76,7 +76,10 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
         },
         React.DOM.div(
         {
-          ref: "pixiContainer",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_pixiContainer = component;
+},
           id: "pixi-container"
         },
           GalaxyMapUI(
@@ -95,7 +98,10 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
           React.DOM.select(
             {
               className: "reactui-selector debug",
-              ref: "sceneSelector",
+              ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_sceneSelector = component;
+},
               value: app.reactUI.currentScene,
               onChange: this.changeScene
             },

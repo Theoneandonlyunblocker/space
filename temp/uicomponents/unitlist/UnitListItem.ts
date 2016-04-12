@@ -198,7 +198,10 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       return(
         Unit(
         {
-          ref: "dragClone",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_dragClone = component;
+},
           unit: unit
         })
       );

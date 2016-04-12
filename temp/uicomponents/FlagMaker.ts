@@ -102,7 +102,10 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(
         {
           className: "flags",
-          ref: "flags" 
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_flags = component;
+} 
         },
           flagElements
         ),

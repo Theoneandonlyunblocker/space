@@ -74,7 +74,10 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
       React.DOM.div(
       {
         className: "battle-pixi-container",
-        ref: "pixiContainer"
+        ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_pixiContainer = component;
+}
       },
         this.props.children
       )

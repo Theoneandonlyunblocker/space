@@ -227,7 +227,10 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       },
         PopupManager(
         {
-          ref: "popupManager",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popupManager = component;
+},
           onlyAllowOne: true
         }),
         SaveList(
@@ -255,7 +258,10 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-button",
             onClick: this.handleLoad,
-            ref: "okButton"
+            ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_okButton = component;
+}
           }, "Load"),
           React.DOM.button(
           {

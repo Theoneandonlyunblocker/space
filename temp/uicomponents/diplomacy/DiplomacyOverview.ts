@@ -148,7 +148,10 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
       React.DOM.div({className: "diplomacy-overview"},
         PopupManager(
         {
-          ref: "popupManager",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_popupManager = component;
+},
           onlyAllowOne: true
         }),
         React.DOM.div({className: "diplomacy-status-list fixed-table-parent"},

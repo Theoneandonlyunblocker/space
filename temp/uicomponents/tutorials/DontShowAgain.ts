@@ -77,7 +77,10 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
           React.DOM.input(
           {
             type: "checkBox",
-            ref: "dontShowAgain",
+            ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_dontShowAgain = component;
+},
             className: "dont-show-again",
             checked: this.state.isChecked,
             onChange: this.toggleState

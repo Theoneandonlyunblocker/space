@@ -121,7 +121,10 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
         React.DOM.div(
         {
           className: "notification-filter-list-body",
-          ref: "body"
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_body = component;
+}
         },
           filterGroupElements
         )

@@ -424,7 +424,10 @@ export class ListComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(
         {
           className: "fixed-table-container-inner",
-          ref: "inner",
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_inner = component;
+},
           onScroll: this.handleScroll
         },
           React.DOM.table(
@@ -435,7 +438,10 @@ export class ListComponent extends React.Component<PropTypes, StateType>
               columns
             ),
 
-            React.DOM.thead({className: "fixed-table-actual-header", ref: "header"},
+            React.DOM.thead({className: "fixed-table-actual-header", ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_header = component;
+}},
               React.DOM.tr(null,
                 headerLabels
               )

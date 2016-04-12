@@ -149,7 +149,10 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
         MapGenOptions(
         {
           mapGenTemplate: this.state.selectedTemplate,
-          ref: "mapGenOptions"
+          ref: (component: TODO_TYPE) =>
+{
+  this.ref_TODO_mapGenOptions = component;
+}
         })
       )
     );
