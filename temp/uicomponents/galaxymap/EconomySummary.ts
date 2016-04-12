@@ -6,6 +6,7 @@ import * as React from "react";
 
 import List from "../unitlist/List.ts";
 import EconomySummaryItem from "./EconomySummaryItem.ts";
+import Player from "../../../src/Player.ts";
 
 
 interface PropTypes extends React.Props<any>
@@ -37,7 +38,7 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
     {
       var star = player.controlledLocations[i];
 
-      var data: any =
+      var data =
       {
         star: star,
 
