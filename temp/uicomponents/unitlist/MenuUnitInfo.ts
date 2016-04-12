@@ -15,12 +15,12 @@ import UnitExperience from "./UnitExperience.ts";
 
 export interface PropTypes extends React.Props<any>
 {
-  onDragEnd: any; // TODO refactor | define prop type 123
-  onDragStart: any; // TODO refactor | define prop type 123
-  onMouseUp: any; // TODO refactor | define prop type 123
-  currentDragItem: any; // TODO refactor | define prop type 123
+  onDragEnd?: any; // TODO refactor | define prop type 123
+  onDragStart?: any; // TODO refactor | define prop type 123
+  onMouseUp?: any; // TODO refactor | define prop type 123
+  currentDragItem?: any; // TODO refactor | define prop type 123
   unit: any; // TODO refactor | define prop type 123
-  isDraggable: any; // TODO refactor | define prop type 123
+  isDraggable?: any; // TODO refactor | define prop type 123
 }
 
 interface StateType

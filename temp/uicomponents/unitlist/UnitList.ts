@@ -19,7 +19,7 @@ export interface PropTypes extends React.Props<any>
   reservedUnits: any; // TODO refactor | define prop type 123
   onDragEnd: any; // TODO refactor | define prop type 123
   checkTimesActed: any; // TODO refactor | define prop type 123
-  autoSelect: any; // TODO refactor | define prop type 123
+  autoSelect?: any; // TODO refactor | define prop type 123
   isDraggable: any; // TODO refactor | define prop type 123
   selectedUnit: any; // TODO refactor | define prop type 123
   onMouseEnter: any; // TODO refactor | define prop type 123
