@@ -6,7 +6,7 @@ interface PropTypes extends React.Props<any>
   playerMoney: any; // TODO refactor | define prop type 123
   handleClick: any; // TODO refactor | define prop type 123
   buildCost: any; // TODO refactor | define prop type 123
-  activeColumns: any; // TODO refactor | define prop type 123
+  activeColumns: ListColumn[];
 }
 
 interface StateType

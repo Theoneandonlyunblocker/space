@@ -11,7 +11,7 @@ interface PropTypes extends React.Props<any>
   isDraggable: boolean;
   isReserved: boolean;
   isSelected: boolean;
-  activeColumns: any; // TODO refactor | define prop type 123
+  activeColumns: ListColumn[];
   keyTODO: any; // TODO refactor | define prop type 123
   handleClick: any; // TODO refactor | define prop type 123
 }

@@ -22,7 +22,7 @@ interface PropTypes extends React.Props<any>
   isSelected: boolean;
   onMouseEnter: any; // TODO refactor | define prop type 123
   maxHealth: any; // TODO refactor | define prop type 123
-  activeColumns: any; // TODO refactor | define prop type 123
+  activeColumns: ListColumn[];
   unit: any; // TODO refactor | define prop type 123
   handleClick: any; // TODO refactor | define prop type 123
 }

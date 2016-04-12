@@ -12,7 +12,7 @@ import BuildingTemplate from "../../../src/templateinterfaces/BuildingTemplate.d
 
 interface PropTypes extends React.Props<any>
 {
-  activeColumns: any; // TODO refactor | define prop type 123
+  activeColumns: ListColumn[];
   template: reactTypeTODO_object;
   player: Player;
   buildCost: number;

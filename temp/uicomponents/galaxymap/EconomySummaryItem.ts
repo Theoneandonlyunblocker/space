@@ -5,7 +5,7 @@ interface PropTypes extends React.Props<any>
 {
   handleClick: any; // TODO refactor | define prop type 123
   isSelected: boolean;
-  activeColumns: any; // TODO refactor | define prop type 123
+  activeColumns: ListColumn[];
 }
 
 interface StateType

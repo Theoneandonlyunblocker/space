@@ -7,7 +7,7 @@ interface PropTypes extends React.Props<any>
   handleClick: any; // TODO refactor | define prop type 123
   handleUndoDelete: any; // TODO refactor | define prop type 123
   handleDelete: any; // TODO refactor | define prop type 123
-  activeColumns: any; // TODO refactor | define prop type 123
+  activeColumns: ListColumn[];
 }
 
 interface StateType
