@@ -49,7 +49,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
   }
   render()
   {
-    var unit = this.props.Unit;
+    var unit: Unit = this.props.unit;
     if (!unit) return(
       React.DOM.div({className: "menu-unit-info"})
     )

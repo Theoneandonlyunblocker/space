@@ -62,8 +62,8 @@ export class ConstructManufactoryComponent extends React.Component<PropTypes, St
 
   handleConstruct()
   {
-    var star = this.props.Star;
-    var player = this.props.Player;
+    var star: Star = this.props.star;
+    var player: Player = this.props.player;
     star.buildManufactory();
     player.money -= app.moduleData.ruleSet.manufactory.buildCost;
     this.props.triggerUpdate();

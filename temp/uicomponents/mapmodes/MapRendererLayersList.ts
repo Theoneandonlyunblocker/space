@@ -71,7 +71,7 @@ export class MapRendererLayersListComponent extends React.Component<PropTypes, S
 
   handleDragEnd()
   {
-    var mapRenderer = this.props.MapRenderer;
+    var mapRenderer: MapRenderer = this.props.mapRenderer;
     var toInsert = this.state.currentDraggingLayer;
     var insertTarget = mapRenderer.layers[this.state.layerKeyToInsertNextTo];
     mapRenderer.currentMapMode.insertLayerNextToLayer(
@@ -93,7 +93,7 @@ export class MapRendererLayersListComponent extends React.Component<PropTypes, S
 
   handleToggleActive(layer: MapRendererLayer)
   {
-    var mapRenderer = this.props.MapRenderer;
+    var mapRenderer: MapRenderer = this.props.mapRenderer;
 
     mapRenderer.currentMapMode.toggleLayer(layer);
     mapRenderer.updateMapModeLayers([layer]);
@@ -111,14 +111,14 @@ export class MapRendererLayersListComponent extends React.Component<PropTypes, S
 
   updateLayer(layer: MapRendererLayer)
   {
-    var mapRenderer = this.props.MapRenderer;
+    var mapRenderer: MapRenderer = this.props.mapRenderer;
     mapRenderer.setLayerAsDirty(layer.template.key);
   }
 
   render()
   {
-    var mapRenderer = this.props.MapRenderer;
-    var mapMode = this.props.MapRendererMapMode;
+    var mapRenderer: MapRenderer = this.props.mapRenderer;
+    var mapMode: MapRendererMapMode = this.props.currentMapMode;
     if (!mapMode) return null;
     var layersData = mapMode.layers;
     var activeLayers = mapMode.getActiveLayers();

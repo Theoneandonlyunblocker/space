@@ -38,7 +38,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
   
   render()
   {
-    var unit = this.props.Unit;
+    var unit: Unit = this.props.unit;
     var rows: React.HTMLElement[] = [];
 
     for (var attribute in unit.baseAttributes)

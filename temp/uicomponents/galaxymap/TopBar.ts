@@ -50,7 +50,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var player = this.props.Player;
+    var player: Player = this.props.player;
 
     var income = player.getIncome();
 

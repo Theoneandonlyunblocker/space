@@ -30,7 +30,7 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
 
   removeItem(template: IManufacturableThing, parentIndex: number)
   {
-    var manufactory = this.props.Manufactory;
+    var manufactory: Manufactory = this.props.manufactory;
     manufactory.removeThingAtIndex(parentIndex);
     this.props.triggerUpdate();
   }
@@ -51,14 +51,14 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
   
   upgradeCapacity()
   {
-    var manufactory = this.props.Manufactory;
+    var manufactory: Manufactory = this.props.manufactory;
     manufactory.upgradeCapacity(1);
     this.props.triggerUpdate();
   }
 
   render()
   {
-    var manufactory = this.props.Manufactory;
+    var manufactory: Manufactory = this.props.manufactory;
 
     var convertedBuildQueue: IManufacturableThing[] = [];
 
