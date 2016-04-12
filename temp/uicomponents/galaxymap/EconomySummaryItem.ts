@@ -65,7 +65,7 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
   {
     var columns = this.props.activeColumns;
 
-    var cells: any = [];
+    var cells: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < columns.length; i++)
     {

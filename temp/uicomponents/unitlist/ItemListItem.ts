@@ -111,7 +111,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
       this.state.clone.style.top = "" + this.dragPos.top + "px";
     }
 
-    var cells: any = [];
+    var cells: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < columns.length; i++)
     {

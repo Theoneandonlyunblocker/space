@@ -208,7 +208,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     }
 
 
-    var cells: any = [];
+    var cells: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < columns.length; i++)
     {

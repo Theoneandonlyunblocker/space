@@ -69,7 +69,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
   {
     var columns = this.props.activeColumns;
 
-    var cells: any = [];
+    var cells: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < columns.length; i++)
     {
