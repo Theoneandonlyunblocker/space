@@ -60,7 +60,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   private getInitialState(): StateType
   {
     var initialSelected: Star = null;
-    var player: Player = this.props.player;
+    var player = this.props.Player;
 
     var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
@@ -100,7 +100,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
   getStarsWithAndWithoutManufactories()
   {
-    var player: Player = this.props.player;
+    var player = this.props.Player;
 
     var starsWithManufactories: Star[] = [];
     var starsWithoutManufactories: Star[] = [];
@@ -152,7 +152,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
   render()
   {
-    var player: Player = this.props.player;
+    var player = this.props.Player;
     var selectedStar: Star = this.state.selectedStar;
 
     var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();

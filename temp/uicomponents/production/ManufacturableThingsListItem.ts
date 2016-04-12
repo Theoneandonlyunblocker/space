@@ -65,7 +65,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
 
   render()
   {
-    var template: IManufacturableThing = this.props.template;
+    var template = this.props.IManufacturableThing;
     var isDisabled: boolean = this.state.isDisabled;
     if (this.props.showCost)
     {

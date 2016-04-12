@@ -26,7 +26,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   displayName: string = "NotificationFilterList";
   handleResetCategory(category: string)
   {
-    var filter: NotificationFilter = this.props.filter;
+    var filter = this.props.NotificationFilter;
     filter.setDefaultFilterStatesForCategory(category);
     filter.save();
     this.forceUpdate();
@@ -57,7 +57,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   }
   render()
   {
-    var filter: NotificationFilter = this.props.filter;
+    var filter = this.props.NotificationFilter;
 
     var filtersByCategory = filter.getFiltersByCategory();
     var filterGroupElements: React.ReactElement<any>[] = [];

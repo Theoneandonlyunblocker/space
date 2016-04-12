@@ -50,7 +50,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
   
   makeOptions()
   {
-    var mapRenderer: MapRenderer = this.props.mapRenderer;
+    var mapRenderer = this.props.MapRenderer;
     var options: React.HTMLElement[] = [];
 
     for (var key in mapRenderer.mapModes)
@@ -71,7 +71,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var mapRenderer: MapRenderer = this.props.mapRenderer;
+    var mapRenderer = this.props.MapRenderer;
 
     return(
       React.DOM.select(

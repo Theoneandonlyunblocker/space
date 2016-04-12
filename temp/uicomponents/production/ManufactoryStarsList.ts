@@ -38,7 +38,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
     var starsWithManufactories: Star[] = this.props.starsWithManufactories;
     var starsWithoutManufactories: Star[] = this.props.starsWithoutManufactories;
     var highlightedStars: Star[] = this.props.highlightedStars;
-    var handleStarSelect: Function = this.props.handleStarSelect;
+    var handleStarSelect = this.props.Function;
 
 
     var rows: React.ReactElement<any>[] = [];

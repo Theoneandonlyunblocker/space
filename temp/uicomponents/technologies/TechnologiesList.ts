@@ -47,7 +47,7 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
   }
   render()
   {
-    var playerTechnology: PlayerTechnology = this.props.playerTechnology;
+    var playerTechnology = this.props.PlayerTechnology;
     
     var researchSpeed = playerTechnology.getResearchSpeed();
     var rows: React.ReactElement<any>[] = [];

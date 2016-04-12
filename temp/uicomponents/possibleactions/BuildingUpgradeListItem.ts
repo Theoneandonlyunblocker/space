@@ -64,7 +64,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
 
   render()
   {
-    var upgradeData: IBuildingUpgradeData = this.props.upgradeData;
+    var upgradeData = this.props.IBuildingUpgradeData;
 
     var rowProps: any =
     {

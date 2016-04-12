@@ -48,7 +48,7 @@ export class TopBarResourcesComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var player: Player = this.props.player;
+    var player = this.props.Player;
     var resources: React.ReactElement<any>[] = [];
     var resourceIncome = player.getResourceIncome();
     var resourceTypes: string[] = Object.keys(player.resources);

@@ -38,7 +38,7 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
   }
   render()
   {
-    var battle: Battle = this.props.battle;
+    var battle = this.props.Battle;
     var evaluation = this.lastEvaluation;
 
     var evaluationPercentage = 50 + evaluation * 50;

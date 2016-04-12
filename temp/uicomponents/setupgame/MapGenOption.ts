@@ -45,7 +45,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var option: MapGenOption = this.props.option;
+    var option = this.props.MapGenOption;
     var range = option.range;
     var id = "mapGenOption_" + this.props.id;
 

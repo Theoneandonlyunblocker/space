@@ -254,7 +254,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var battlePrep: BattlePrep = this.props.battlePrep;
+    var battlePrep = this.props.BattlePrep;
     var player = battlePrep.humanPlayer;
     var location = battlePrep.battleData.location;
 

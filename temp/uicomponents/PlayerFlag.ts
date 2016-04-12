@@ -73,7 +73,7 @@ export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
     var props = this.props.props;
     if (this.canUseDataURL())
     {
-      var flag: Flag = this.props.flag;
+      var flag = this.props.Flag;
       props.src = flag.getCanvas(
         this.props.width, this.props.height, this.props.stretch, !this.props.isMutable).toDataURL();
       return(
