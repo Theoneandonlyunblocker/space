@@ -12,7 +12,7 @@ interface PropTypes extends React.Props<any>
   handleSelectEmblem: any; // TODO refactor | define prop type 123
   hasImageFailMessage: boolean;
   uploadFiles: any; // TODO refactor | define prop type 123
-  flag: any; // TODO refactor | define prop type 123
+  flag: Flag;
 }
 
 interface StateType
