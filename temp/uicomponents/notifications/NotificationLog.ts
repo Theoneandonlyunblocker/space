@@ -114,7 +114,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
 
   makePopup(notification: Notification, key: string)
   {
-    var log: NotificationLog = this.props.log;
+    var log = this.props.log;
 
     var popupId = this.ref_TODO_popupManager.makePopup(
     {
@@ -177,7 +177,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var log: NotificationLog = this.props.log;
+    var log = this.props.log;
     var notifications: Notification[] = log.filterNotifications(log.unread);
 
     var items: React.ReactElement<any>[] = [];

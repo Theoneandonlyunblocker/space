@@ -40,16 +40,16 @@ export class ManufactoryStarsListItemComponent extends React.Component<PropTypes
   
   handleClick()
   {
-    var star: Star = this.props.star;
+    var star = this.props.star;
     this.props.onClick(star);
   }
 
   render()
   {
-    var star: Star = this.props.star;
-    var isHighlighted: boolean = this.props.isHighlighted;
-    var usedCapacity: number = this.props.usedCapacity;
-    var totalCapacity: number = this.props.totalCapacity;
+    var star = this.props.star;
+    var isHighlighted = this.props.isHighlighted;
+    var usedCapacity = this.props.usedCapacity;
+    var totalCapacity = this.props.totalCapacity;
 
     var hasManufcatory = Boolean(totalCapacity);
     var hasCapacity = hasManufcatory && usedCapacity < totalCapacity;

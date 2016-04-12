@@ -102,7 +102,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var unit: Unit = this.props.unit;
+    var unit = this.props.unit;
     unit.uiDisplayIsDirty = false;
 
     var containerProps: any =

@@ -100,8 +100,8 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   getManufacturableThings(key: string)
   {
     var manufacturableThings: IManufacturableThing[] = [];
-    var selectedStar: Star = this.props.selectedStar;
-    var player: Player = this.props.player;
+    var selectedStar = this.props.selectedStar;
+    var player = this.props.player;
 
     switch (key)
     {

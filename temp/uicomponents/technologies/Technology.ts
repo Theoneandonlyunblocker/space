@@ -42,17 +42,17 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
   
   togglePriorityLock()
   {
-    var pt: PlayerTechnology = this.props.playerTechnology;
-    var technology: TechnologyTemplate = this.props.technology;
+    var pt = this.props.playerTechnology;
+    var technology = this.props.technology;
 
     pt.technologies[technology.key].priorityIsLocked = !pt.technologies[technology.key].priorityIsLocked;
     this.forceUpdate();
   }
   render()
   {
-    var technology: TechnologyTemplate = this.props.technology;
+    var technology = this.props.technology;
     var isAtMaxLevel: boolean = false;
-    var playerTechnology: PlayerTechnology = this.props.playerTechnology;
+    var playerTechnology = this.props.playerTechnology;
     var techData = playerTechnology.technologies[technology.key];
 
     var forCurrentLevel = playerTechnology.getResearchNeededForTechnologyLevel(techData.level);

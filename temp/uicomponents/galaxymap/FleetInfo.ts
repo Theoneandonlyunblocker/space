@@ -45,10 +45,10 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var fleet: Fleet = this.props.fleet;
+    var fleet = this.props.fleet;
     if (!fleet) return null;
     var totalHealth = fleet.getTotalHealth();
-    var isNotDetected: boolean = this.props.isNotDetected;
+    var isNotDetected = this.props.isNotDetected;
 
     var healthRatio = totalHealth.current / totalHealth.max;
     var critThreshhold = 0.3;

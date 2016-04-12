@@ -58,7 +58,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
 
   handleChangeState(state: NotificationFilterState)
   {
-    var filter: NotificationFilter = this.props.filter;
+    var filter = this.props.filter;
     filter.handleFilterStateChange(this.props.keyTODO/*TODO react*/, state);
     filter.save();
     this.setState(

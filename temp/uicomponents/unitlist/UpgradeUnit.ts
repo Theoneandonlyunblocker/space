@@ -62,7 +62,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   }
   upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
   {
-    var unit: Unit = this.props.unit;
+    var unit = this.props.unit;
     unit.upgradeAbility(source, newAbility);
     unit.handleLevelUp();
     this.setState(
@@ -74,7 +74,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   }
   upgradeAttribute(attribute: string)
   {
-    var unit: Unit = this.props.unit;
+    var unit = this.props.unit;
 
     unit.baseAttributes[attribute] += 1;
     unit.attributesAreDirty = true;
@@ -122,7 +122,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   }
   render()
   {
-    var unit: Unit = this.props.unit;
+    var unit = this.props.unit;
     var upgradableAbilities: AbilityBase[] = [];
 
     for (var source in this.state.upgradeData)

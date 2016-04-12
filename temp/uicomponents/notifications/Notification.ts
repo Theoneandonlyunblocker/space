@@ -48,7 +48,7 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var notification: Notification = this.props.notification;
+    var notification = this.props.notification;
     return(
       React.DOM.li(
       {

@@ -33,7 +33,7 @@ export class DefenceBuildingComponent extends React.Component<PropTypes, StateTy
   
   render()
   {
-    var building: Building = this.props.building;
+    var building = this.props.building;
     var image = app.images[building.template.iconSrc];
 
     return(

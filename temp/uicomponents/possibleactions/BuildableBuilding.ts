@@ -94,7 +94,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
 
   render()
   {
-    var template: BuildingTemplate = this.props.template;
+    var template = this.props.template;
     var cells: React.HTMLElement[] = [];
     var columns = this.props.activeColumns;
 
