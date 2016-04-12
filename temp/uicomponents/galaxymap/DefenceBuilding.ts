@@ -22,7 +22,7 @@ interface StateType
 export class DefenceBuildingComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "DefenceBuilding";
-  shouldComponentUpdate(newProps: any)
+  shouldComponentUpdate(newProps: PropTypes)
   {
     return newProps.building !== this.props.building;
   }

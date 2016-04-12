@@ -31,7 +31,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
   displayName: string = "ManufacturableUnits";
 
 
-  shouldComponentUpdate(newProps: any)
+  shouldComponentUpdate(newProps: PropTypes)
   {
     if (this.props.selectedStar !== newProps.selectedStar)
     {

@@ -25,7 +25,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
     this.props.onChange(this.props.id, newValue);
   }
 
-  shouldComponentUpdate(newProps: any)
+  shouldComponentUpdate(newProps: PropTypes)
   {
     return newProps.value !== this.props.value;
   }

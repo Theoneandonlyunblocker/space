@@ -45,7 +45,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitWrapper";
   mixins: reactTypeTODO_any = [DropTarget];
-  shouldComponentUpdate(newProps: any)
+  shouldComponentUpdate(newProps: PropTypes)
   {
     if (!this.props.unit && !newProps.unit) return false;
 

@@ -18,7 +18,7 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScore";
   lastEvaluation: number
-  shouldComponentUpdate(newProps: any)
+  shouldComponentUpdate(newProps: PropTypes)
   {
     var oldEvaluation = this.lastEvaluation;
     this.lastEvaluation = newProps.battle.getEvaluation();

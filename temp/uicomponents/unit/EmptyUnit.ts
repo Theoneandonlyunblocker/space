@@ -17,7 +17,7 @@ interface StateType
 export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "EmptyUnit";
-  shouldComponentUpdate(newProps: any)
+  shouldComponentUpdate(newProps: PropTypes)
   {
     return newProps.facesLeft === this.props.facesLeft;
   }

@@ -44,7 +44,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
   battleScene: BattleScene;
 
 
-  shouldComponentUpdate(newProps: any)
+  shouldComponentUpdate(newProps: PropTypes)
   {
     var shouldTriggerUpdate =
     {

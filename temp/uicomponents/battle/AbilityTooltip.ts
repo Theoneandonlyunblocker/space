@@ -24,7 +24,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
 {
   displayName: string = "AbilityTooltip";
 
-  shouldComponentUpdate(newProps: any)
+  shouldComponentUpdate(newProps: PropTypes)
   {
     for (var prop in newProps)
     {
