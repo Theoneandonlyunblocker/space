@@ -10,10 +10,10 @@ import Unit from "../../../src/Unit.ts";
 interface PropTypes extends React.Props<any>
 {
   fleet: Fleet;
-  player: Player;
+  player?: Player;
   onMouseUp?: (fleet: Fleet) => void;
   onDragStart?: (unit: Unit) => void;
-  onDragEnd?: (e: DragEvent) => void;
+  onDragEnd?: (dropSuccessful: boolean) => void;
   onDragMove?: (x: number, y: number) => void;
 }
 

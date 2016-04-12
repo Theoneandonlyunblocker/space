@@ -1,10 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="fleetcontents.ts"/>
-
-/// <reference path="../../fleet.ts" />
-
 
 import Unit from "../../../src/Unit.ts";
 import FleetContents from "./FleetContents.ts";
@@ -15,21 +11,21 @@ import eventManager from "../../../src/eventManager.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  closeReorganization?: reactTypeTODO_func;
+  closeReorganization?: () => void;
   fleets?: Fleet[];
 }
 
 interface StateType
 {
-  currentDragUnit?: any; // TODO refactor | define state type 456
+  currentDragUnit?: Unit;
 }
 
 export class FleetReorganizationComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetReorganization";
-
-
   state: StateType;
+  
+  hasClosed: boolean = false;
 
   constructor(props: PropTypes)
   {
