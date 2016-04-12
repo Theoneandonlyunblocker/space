@@ -32,7 +32,7 @@ class MapSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   displayName: string = "MapSetup";
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -97,7 +97,7 @@ class MapSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     return(
     {
       template: this.state.selectedTemplate,
-      optionValues: this.refs.mapGenOptions.getOptionValuesForTemplate()
+      optionValues: this.refsTODO.mapGenOptions.getOptionValuesForTemplate()
     });
   }
   

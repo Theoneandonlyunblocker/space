@@ -36,7 +36,7 @@ class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   popupId: reactTypeTODO_any = undefined;
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -70,7 +70,7 @@ class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   componentDidMount()
   {
-    React.findDOMNode<HTMLElement>(this.refs.okButton).focus();
+    React.findDOMNode<HTMLElement>(this.refsTODO.okButton).focus();
   }
 
   handleRowChange(row: ListItem)
@@ -90,7 +90,7 @@ class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       // https://github.com/facebook/react/issues/2988
       // https://github.com/facebook/react/issues/2605#issuecomment-118398797
       // without this react will keep a reference to this element causing a big memory leak
-      React.findDOMNode<HTMLElement>(this.refs.okButton).blur();
+      React.findDOMNode<HTMLElement>(this.refsTODO.okButton).blur();
       window.setTimeout(function()
       {
         app.load(saveKey);
@@ -109,7 +109,7 @@ class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   deleteSelectedKeys()
   {
-    this.popupId = this.refs.popupManager.makePopup(
+    this.popupId = this.refsTODO.popupManager.makePopup(
     {
       contentConstructor: ConfirmPopup,
       contentProps: this.getClosePopupContent(null, false, false)
@@ -164,12 +164,12 @@ class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     if (isFinite(this.popupId))
     {
-      this.refs.popupManager.setPopupContent(this.popupId,
+      this.refsTODO.popupManager.setPopupContent(this.popupId,
         {contentText: this.getClosePopupContent().contentText});
     }
     else if (this.state.saveKeysToDelete.length < 1)
     {
-      if (isFinite(this.popupID)) this.refs.popupManager.closePopup(this.popupId);
+      if (isFinite(this.popupID)) this.refsTODO.popupManager.closePopup(this.popupId);
       this.popupId = undefined;
     }
   }
@@ -182,7 +182,7 @@ class LoadGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       return;
     }
 
-    this.popupId = this.refs.popupManager.makePopup(
+    this.popupId = this.refsTODO.popupManager.makePopup(
     {
       contentConstructor: ConfirmPopup,
       contentProps: this.getClosePopupContent(afterCloseCallback, true, true)

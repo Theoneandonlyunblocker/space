@@ -29,7 +29,7 @@ class ConfirmPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   mixins: reactTypeTODO_any = [SplitMultilineText];
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -45,7 +45,7 @@ class ConfirmPopup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   componentDidMount()
   {
-    React.findDOMNode<HTMLElement>(this.refs.okButton).focus();
+    React.findDOMNode<HTMLElement>(this.refsTODO.okButton).focus();
   }
 
   handleOk()

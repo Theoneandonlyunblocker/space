@@ -45,7 +45,7 @@ class OptionsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -84,7 +84,7 @@ class OptionsList_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       contentText: "Are you sure you want to reset all options?"
     }
 
-    this.refs.popupManager.makePopup(
+    this.refsTODO.popupManager.makePopup(
     {
       contentConstructor: ConfirmPopup,
       contentProps: confirmProps,

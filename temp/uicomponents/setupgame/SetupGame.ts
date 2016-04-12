@@ -33,7 +33,7 @@ class SetupGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   displayName: string = "SetupGame";
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -76,9 +76,9 @@ class SetupGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     var playerData: any = {};
 
-    var players = this.refs.players.makeAllPlayers();
+    var players = this.refsTODO.players.makeAllPlayers();
 
-    var mapSetupInfo = this.refs.mapSetup.getMapSetupInfo();
+    var mapSetupInfo = this.refsTODO.mapSetup.getMapSetupInfo();
 
     var mapGenFunction: MapGenFunction = mapSetupInfo.template.mapGenFunction;
 
@@ -90,8 +90,8 @@ class SetupGame_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   randomize()
   {
-    this.refs.players.randomizeAllPlayers();
-    this.refs.mapSetup.refs.mapGenOptions.randomizeOptions();
+    this.refsTODO.players.randomizeAllPlayers();
+    this.refsTODO.mapSetup.refs.mapGenOptions.randomizeOptions();
   }
 
   render()

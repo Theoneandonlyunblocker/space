@@ -48,7 +48,7 @@ class TopMenuPopups_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -81,10 +81,10 @@ class TopMenuPopups_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   closePopup(popupType: string)
   {
-    var popupNode = this.refs.popupManager.refs[this.state[popupType]].getDOMNode();
+    var popupNode = this.refsTODO.popupManager.refs[this.state[popupType]].getDOMNode();
     this.cachedPopupRects[popupType] = popupNode.getBoundingClientRect();
 
-    this.refs.popupManager.closePopup(this.state[popupType]);
+    this.refsTODO.popupManager.closePopup(this.state[popupType]);
     var stateObj: any = {};
     stateObj[popupType] = undefined;
     this.setState(stateObj);
@@ -201,7 +201,7 @@ class TopMenuPopups_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       }
     }
 
-    var id = this.refs.popupManager.makePopup(
+    var id = this.refsTODO.popupManager.makePopup(
     {
       contentConstructor: TopMenuPopup,
       contentProps:

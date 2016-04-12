@@ -26,7 +26,7 @@ class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   // far from ideal as it always triggers reflow 4 times
   // cant figure out how to do resizing better since content size is dynamic
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -42,8 +42,8 @@ class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   
   handleResize()
   {
-    var container = React.findDOMNode<HTMLElement>(this.refs.container);
-    var wrapperRect = React.findDOMNode<HTMLElement>(this.refs.wrapper).getBoundingClientRect();
+    var container = React.findDOMNode<HTMLElement>(this.refsTODO.container);
+    var wrapperRect = React.findDOMNode<HTMLElement>(this.refsTODO.wrapper).getBoundingClientRect();
     container.classList.remove("light-box-horizontal-padding");
     container.classList.remove("light-box-fill-horizontal");
 
@@ -87,9 +87,9 @@ class LightBox_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   handleClose()
   {
 
-    if (this.refs.content.overRideLightBoxClose)
+    if (this.refsTODO.content.overRideLightBoxClose)
     {
-      this.refs.content.overRideLightBoxClose();
+      this.refsTODO.content.overRideLightBoxClose();
     }
     else
     {

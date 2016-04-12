@@ -79,7 +79,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   battleEndStartTime: number = undefined;
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -163,7 +163,7 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   getBlurArea()
   {
-    return React.findDOMNode<HTMLElement>(this.refs.formationsContainer).getBoundingClientRect();
+    return React.findDOMNode<HTMLElement>(this.refsTODO.formationsContainer).getBoundingClientRect();
   }
 
   clearHoveredUnit()
@@ -202,18 +202,18 @@ class Battle_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       return;
     }
 
-    if (!this.refs.abilityTooltip)
+    if (!this.refsTODO.abilityTooltip)
     {
       this.clearHoveredUnit();
       return;
     }
 
 
-    var tooltipElement = React.findDOMNode<HTMLElement>(this.refs.abilityTooltip);
+    var tooltipElement = React.findDOMNode<HTMLElement>(this.refsTODO.abilityTooltip);
 
     if(
       toElement !== this.state.abilityTooltip.parentElement &&
-      (this.refs.abilityTooltip && toElement !== tooltipElement) &&
+      (this.refsTODO.abilityTooltip && toElement !== tooltipElement) &&
       toElement.parentElement !== tooltipElement
     )
     {

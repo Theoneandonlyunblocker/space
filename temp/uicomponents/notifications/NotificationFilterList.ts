@@ -50,7 +50,7 @@ class NotificationFilterList_COMPONENT_TODO extends React.Component<PropTypes, S
   {
     if (this.props.highlightedOptionKey)
     {
-      var domNode = this.refs["body"].getDOMNode();
+      var domNode = this.refsTODO["body"].getDOMNode();
       var highlightedNode = domNode.getElementsByClassName("highlighted")[0];
       domNode.scrollTop = highlightedNode.offsetTop + domNode.scrollHeight / 3;
     }

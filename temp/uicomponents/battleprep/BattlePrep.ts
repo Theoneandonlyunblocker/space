@@ -44,7 +44,7 @@ class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattlePrep";
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -86,7 +86,7 @@ class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
   componentDidMount()
   {
-    this.refs.background.handleResize();
+    this.refsTODO.background.handleResize();
   }
   autoMakeFormation()
   {
@@ -247,7 +247,7 @@ class BattlePrep_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   getBackgroundBlurArea()
   {
-    return React.findDOMNode<HTMLElement>(this.refs.upper).getBoundingClientRect();
+    return React.findDOMNode<HTMLElement>(this.refsTODO.upper).getBoundingClientRect();
   }
 
   render()

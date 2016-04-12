@@ -41,7 +41,7 @@ class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -112,7 +112,7 @@ class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     var focusGraceTime = 500;
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
 
-    var node = React.findDOMNode<HTMLElement>(this.refs.main);
+    var node = React.findDOMNode<HTMLElement>(this.refsTODO.main);
     if (e.target === node || node.contains(e.target))
     {
       return;
@@ -337,9 +337,9 @@ class FlagSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
     if (this.state.flag.customImage)
     {
-      if (this.refs.flagPicker)
+      if (this.refsTODO.flagPicker)
       {
-        this.refs.flagPicker.clearSelectedEmblem();
+        this.refsTODO.flagPicker.clearSelectedEmblem();
       }
     }
 

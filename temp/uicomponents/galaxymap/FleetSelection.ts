@@ -38,7 +38,7 @@ class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType
 {
   displayName: string = "FleetSelection";
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -64,8 +64,8 @@ class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType
 
   setElementPosition()
   {
-    if (!this.refs.selected) return;
-    var domNode = React.findDOMNode<HTMLElement>(this.refs.selected);
+    if (!this.refsTODO.selected) return;
+    var domNode = React.findDOMNode<HTMLElement>(this.refsTODO.selected);
 
     if (!this.props.selectedStar)
     {
@@ -82,7 +82,7 @@ class FleetSelection_COMPONENT_TODO extends React.Component<PropTypes, StateType
       var rightMostRect = rightMostNode.getBoundingClientRect();
       var ownBottom = domNode.getBoundingClientRect().bottom;
 
-      var first = React.findDOMNode<HTMLElement>(this.refs.main).firstChild
+      var first = React.findDOMNode<HTMLElement>(this.refsTODO.main).firstChild
 
       if (ownBottom > actionsRect.top)
       {

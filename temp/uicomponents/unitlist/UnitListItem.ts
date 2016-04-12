@@ -43,7 +43,7 @@ class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   mixins: reactTypeTODO_any = [Draggable];
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -76,9 +76,9 @@ class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   componentDidUpdate()
   {
-    if (this.needsFirstTouchUpdate && this.refs.dragClone)
+    if (this.needsFirstTouchUpdate && this.refsTODO.dragClone)
     {
-      var node = React.findDOMNode<HTMLElement>(this.refs.dragClone);
+      var node = React.findDOMNode<HTMLElement>(this.refsTODO.dragClone);
       node.classList.add("draggable");
       node.classList.add("dragging");
 
@@ -98,9 +98,9 @@ class UnitListItem_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   onDragMove(x: number, y: number)
   {
-    if (!this.refs.dragClone) return;
+    if (!this.refsTODO.dragClone) return;
 
-    var node = React.findDOMNode<HTMLElement>(this.refs.dragClone);
+    var node = React.findDOMNode<HTMLElement>(this.refsTODO.dragClone);
     node.classList.add("draggable");
     node.classList.add("dragging");
     node.style.left = "" + x + "px";

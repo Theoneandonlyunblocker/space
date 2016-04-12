@@ -35,7 +35,7 @@ class IntroTutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   popupId: reactTypeTODO_any = null;
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -66,7 +66,7 @@ class IntroTutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
       return;
     }
 
-    this.popupId = this.refs.popupManager.makePopup(
+    this.popupId = this.refsTODO.popupManager.makePopup(
     {
       contentConstructor: TopMenuPopup,
       contentProps:
@@ -104,7 +104,7 @@ class IntroTutorial_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 
   closePopup()
   {
-    this.refs.popupManager.closePopup(this.popupId);
+    this.refsTODO.popupManager.closePopup(this.popupId);
     this.popupId = null;
   }
 

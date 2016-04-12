@@ -32,7 +32,7 @@ class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateTy
 
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -61,7 +61,7 @@ class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   
   closePopup(popupType: string)
   {
-    this.refs.popupManager.closePopup(this.state[popupType]);
+    this.refsTODO.popupManager.closePopup(this.state[popupType]);
     var stateObj: StateType = {};
     stateObj[popupType] = undefined;
     this.setState(stateObj);
@@ -95,7 +95,7 @@ class DiplomacyActions_COMPONENT_TODO extends React.Component<PropTypes, StateTy
       }
     }
 
-    var id = this.refs.popupManager.makePopup(
+    var id = this.refsTODO.popupManager.makePopup(
     {
       contentConstructor: TopMenuPopup,
       contentProps:

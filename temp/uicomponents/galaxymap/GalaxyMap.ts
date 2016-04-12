@@ -41,7 +41,7 @@ class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   }
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -143,7 +143,7 @@ class GalaxyMap_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   componentDidMount()
   {
     this.props.renderer.isBattleBackground = false;
-    this.props.renderer.bindRendererView(React.findDOMNode<HTMLElement>(this.refs.pixiContainer));
+    this.props.renderer.bindRendererView(React.findDOMNode<HTMLElement>(this.refsTODO.pixiContainer));
     this.props.mapRenderer.setMapModeByKey("defaultMapMode");
     
     this.props.renderer.resume();

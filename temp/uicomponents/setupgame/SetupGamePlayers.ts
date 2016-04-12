@@ -135,9 +135,9 @@ class SetupGamePlayers_COMPONENT_TODO extends React.Component<PropTypes, StateTy
 
   randomizeAllPlayers()
   {
-    for (var id in this.refs)
+    for (var id in this.refsTODO)
     {
-      var player = this.refs[id];
+      var player = this.refsTODO[id];
 
       player.randomize();
     }
@@ -146,9 +146,9 @@ class SetupGamePlayers_COMPONENT_TODO extends React.Component<PropTypes, StateTy
   makeAllPlayers()
   {
     var players: Player[] = [];
-    for (var id in this.refs)
+    for (var id in this.refsTODO)
     {
-      players.push(this.refs[id].makePlayer());
+      players.push(this.refsTODO[id].makePlayer());
     }
 
     return players;

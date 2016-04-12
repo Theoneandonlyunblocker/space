@@ -89,9 +89,9 @@ class PopupManager_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     if (this.state.popups.length === 0) return null;
     var popups: any = [];
-    for (var ref in this.refs)
+    for (var ref in this.refsTODO)
     {
-      popups.push(this.refs[ref]);
+      popups.push(this.refsTODO[ref]);
     }
     return popups.sort(function(a: any, b: any)
     {

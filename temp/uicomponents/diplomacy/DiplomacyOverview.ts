@@ -40,7 +40,7 @@ class DiplomacyOverview_COMPONENT_TODO extends React.Component<PropTypes, StateT
     var player = rowItem.data.player;
     if (!player) return;
 
-    this.refs.popupManager.makePopup(
+    this.refsTODO.popupManager.makePopup(
     {
       contentConstructor: DiplomacyActions,
       contentProps:
@@ -58,7 +58,7 @@ class DiplomacyOverview_COMPONENT_TODO extends React.Component<PropTypes, StateT
   }
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {

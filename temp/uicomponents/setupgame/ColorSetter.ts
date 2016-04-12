@@ -36,7 +36,7 @@ class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   displayName: string = "ColorSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -88,7 +88,7 @@ class ColorSetter_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     var focusGraceTime = 500;
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
 
-    var node = React.findDOMNode<HTMLElement>(this.refs.main);
+    var node = React.findDOMNode<HTMLElement>(this.refsTODO.main);
     if (e.target === node || node.contains(e.target))
     {
       return;

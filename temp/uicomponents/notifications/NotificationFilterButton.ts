@@ -33,7 +33,7 @@ class NotificationFilterButton_COMPONENT_TODO extends React.Component<PropTypes,
   displayName: string = "NotificationFilterButton";
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -62,12 +62,12 @@ class NotificationFilterButton_COMPONENT_TODO extends React.Component<PropTypes,
   {
     var scrollToHighlightedFN = function()
     {
-      var popup = this.refs[this.popupId - 1];
+      var popup = this.refsTODO[this.popupId - 1];
       var content = popup.refs["content"].refs["content"];
       content.scrollToHighlighted();
-    }.bind(this.refs.popupManager);
+    }.bind(this.refsTODO.popupManager);
 
-    var popupId = this.refs.popupManager.makePopup(
+    var popupId = this.refsTODO.popupManager.makePopup(
     {
       contentConstructor: TopMenuPopup,
       contentProps:
@@ -99,7 +99,7 @@ class NotificationFilterButton_COMPONENT_TODO extends React.Component<PropTypes,
 
   closePopup()
   {
-    this.refs.popupManager.closePopup(this.state.notificationFilterPopup);
+    this.refsTODO.popupManager.closePopup(this.state.notificationFilterPopup);
     this.setState(
     {
       notificationFilterPopup: undefined

@@ -38,7 +38,7 @@ class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   displayName: string = "PlayerSetup";
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -125,7 +125,7 @@ class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     if (!this.state.flagHasCustomImage)
     {
-      this.refs.flagSetter.state.flag.generateRandom();
+      this.refsTODO.flagSetter.state.flag.generateRandom();
     }
 
     var mainColor = generateMainColor();
@@ -148,7 +148,7 @@ class PlayerSetup_COMPONENT_TODO extends React.Component<PropTypes, StateType>
     player.secondaryColor = this.state.subColor === null ?
       this.generateSubColor(player.color) : this.state.subColor;
 
-    var flag = this.refs.flagSetter.state.flag;
+    var flag = this.refsTODO.flagSetter.state.flag;
 
     player.flag = flag;
     player.flag.setColorScheme(

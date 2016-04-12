@@ -43,7 +43,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   mixins: [SplitMultilineText];
   sortedItems: ListItem[] = [];
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -137,7 +137,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   setDesiredHeight()
   {
     var ownNode = React.findDOMNode<HTMLElement>(this);
-    var innerNode = React.findDOMNode<HTMLElement>(this.refs.inner);
+    var innerNode = React.findDOMNode<HTMLElement>(this.refsTODO.inner);
 
     ownNode.style.height = "auto";
     innerNode.style.height = "auto";
@@ -164,7 +164,7 @@ class List_COMPONENT_TODO extends React.Component<PropTypes, StateType>
   {
     // scrolls header to match list contents
     var target = <Element> e.target;
-    var header = React.findDOMNode<HTMLElement>(this.refs.header);
+    var header = React.findDOMNode<HTMLElement>(this.refsTODO.header);
     var titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 
     var marginString = "-" + target.scrollLeft + "px";

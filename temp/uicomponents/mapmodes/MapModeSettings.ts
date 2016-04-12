@@ -32,7 +32,7 @@ class MapModeSettings_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
 
 
   state: StateType;
-  refs: RefTypes;
+  refsTODO: RefTypes;
 
   constructor(props: PropTypes)
   {
@@ -51,7 +51,7 @@ class MapModeSettings_COMPONENT_TODO extends React.Component<PropTypes, StateTyp
     mapRenderer.currentMapMode.resetLayers();
     mapRenderer.resetMapModeLayersPosition();
     mapRenderer.setAllLayersAsDirty();
-    this.refs.layersList.forceUpdate();
+    this.refsTODO.layersList.forceUpdate();
   }
 
   render()
