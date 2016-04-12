@@ -1,12 +1,21 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
+import ListColumn from "../unitlist/ListColumn.d.ts";
+import ListItem from "../unitlist/ListItem.d.ts";
+
+import
+{
+  clamp,
+  getRelativeValue,
+} from "../../../src/utility.ts";
+
 export interface PropTypes extends React.Props<any>
 {
-  endTurn: any; // TODO refactor | define prop type 123
-  strength: any; // TODO refactor | define prop type 123
-  handleClick: any; // TODO refactor | define prop type 123
-  activeColumns: any; // TODO refactor | define prop type 123
+  endTurn: number;
+  strength: number;
+  handleClick: () => void;
+  activeColumns: ListColumn[];
 }
 
 interface StateType
@@ -16,15 +25,35 @@ interface StateType
 class AttitudeModifierInfo_COMPONENT_TODO extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierInfo";
+  state: StateType;
 
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    this.makeCell = this.makeCell.bind(this);    
+  }
+  
   makeCell(type: string)
   {
-    var cellProps: any = {};
+    var cellProps:
+    {
+      key?: string;
+      className?: string;
+      style?:
+      {
+        color: string;
+      }
+    } = {};
     cellProps.key = type;
     cellProps.className = "attitude-modifier-info-cell" +
       " attitude-modifier-info-" + type;
 
-    var cellContent: any;
+    var cellContent: string | number;
 
     switch (type)
     {
@@ -60,7 +89,7 @@ class AttitudeModifierInfo_COMPONENT_TODO extends React.Component<PropTypes, Sta
       {
         cellContent = this.props[type];
 
-        if (isFinite(cellContent))
+        if (isFinite(<number>cellContent))
         {
           cellProps.className += " center-text"
         }
@@ -73,25 +102,12 @@ class AttitudeModifierInfo_COMPONENT_TODO extends React.Component<PropTypes, Sta
       React.DOM.td(cellProps, cellContent)
     );
   }
-
-  state: StateType;
-
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.makeCell = this.makeCell.bind(this);    
-  }
   
   render()
   {
     var columns = this.props.activeColumns;
 
-    var cells: any = [];
+    var cells: React.HTMLElement[] = [];
 
     for (var i = 0; i < columns.length; i++)
     {
@@ -100,14 +116,12 @@ class AttitudeModifierInfo_COMPONENT_TODO extends React.Component<PropTypes, Sta
       cells.push(cell);
     }
 
-    var rowProps: any =
-    {
+    return(
+      React.DOM.tr(
+      {
       className: "diplomatic-status-player",
       onClick : this.props.handleClick
-    };
-
-    return(
-      React.DOM.tr(rowProps,
+      },
         cells
       )
     );
