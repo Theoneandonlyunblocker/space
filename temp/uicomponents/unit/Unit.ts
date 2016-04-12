@@ -28,7 +28,7 @@ interface PropTypes extends React.Props<any>
   isDead: any; // TODO refactor | define prop type 123
   hoveredAbility: any; // TODO refactor | define prop type 123
   battle: any; // TODO refactor | define prop type 123
-  unit: any; // TODO refactor | define prop type 123
+  unit: Unit;
   hoveredUnit: any; // TODO refactor | define prop type 123
   targetsInPotentialArea: any; // TODO refactor | define prop type 123
   onUnitClick: any; // TODO refactor | define prop type 123

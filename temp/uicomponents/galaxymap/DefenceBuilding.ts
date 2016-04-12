@@ -12,7 +12,7 @@ import Building from "../../../src/Building.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  building: any; // TODO refactor | define prop type 123
+  building: Building;
 }
 
 interface StateType

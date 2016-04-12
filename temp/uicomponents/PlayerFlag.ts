@@ -12,7 +12,7 @@ interface PropTypes extends React.Props<any>
   isMutable?: any; // TODO refactor | define prop type 123
   height?: any; // TODO refactor | define prop type 123
   stretch?: any; // TODO refactor | define prop type 123
-  flag: any; // TODO refactor | define prop type 123
+  flag: Flag;
 }
 
 interface StateType

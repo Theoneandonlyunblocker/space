@@ -5,7 +5,7 @@ interface PropTypes extends React.Props<any>
 {
   value: any; // TODO refactor | define prop type 123
   id: any; // TODO refactor | define prop type 123
-  option: any; // TODO refactor | define prop type 123
+  option: MapGenOption;
   onChange: any; // TODO refactor | define prop type 123
 }
 

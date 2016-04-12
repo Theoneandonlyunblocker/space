@@ -19,7 +19,7 @@ interface PropTypes extends React.Props<any>
   onDragStart?: any; // TODO refactor | define prop type 123
   onMouseUp?: any; // TODO refactor | define prop type 123
   currentDragItem?: any; // TODO refactor | define prop type 123
-  unit: any; // TODO refactor | define prop type 123
+  unit: Unit;
   isDraggable?: any; // TODO refactor | define prop type 123
 }
 

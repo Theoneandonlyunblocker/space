@@ -4,7 +4,7 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   markAsRead: any; // TODO refactor | define prop type 123
-  notification: any; // TODO refactor | define prop type 123
+  notification: Notification;
   togglePopup: any; // TODO refactor | define prop type 123
 }
 
