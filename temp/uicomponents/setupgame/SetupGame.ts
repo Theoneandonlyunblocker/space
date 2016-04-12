@@ -76,9 +76,9 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
   {
     var playerData: any = {};
 
-    var players = this.refsTODO.players.makeAllPlayers();
+    var players = this.ref_TODO_players.makeAllPlayers();
 
-    var mapSetupInfo = this.refsTODO.mapSetup.getMapSetupInfo();
+    var mapSetupInfo = this.ref_TODO_mapSetup.getMapSetupInfo();
 
     var mapGenFunction: MapGenFunction = mapSetupInfo.template.mapGenFunction;
 
@@ -90,8 +90,8 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
 
   randomize()
   {
-    this.refsTODO.players.randomizeAllPlayers();
-    this.refsTODO.mapSetup.refs.mapGenOptions.randomizeOptions();
+    this.ref_TODO_players.randomizeAllPlayers();
+    this.ref_TODO_mapSetup.refs.mapGenOptions.randomizeOptions();
   }
 
   render()

@@ -58,7 +58,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   }
   makePopup()
   {
-    var popupId = this.refsTODO.popupManager.makePopup(
+    var popupId = this.ref_TODO_popupManager.makePopup(
     {
       contentConstructor: TopMenuPopup,
       contentProps:
@@ -85,7 +85,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   }
   closePopup()
   {
-    this.refsTODO.popupManager.closePopup(this.state.upgradePopupId);
+    this.ref_TODO_popupManager.closePopup(this.state.upgradePopupId);
     this.setState(
     {
       upgradePopupId: undefined
@@ -99,7 +99,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     }
     else
     {
-      this.refsTODO.popupManager.forceUpdate();
+      this.ref_TODO_popupManager.forceUpdate();
     }
     this.props.onUnitUpgrade();
   }

@@ -125,7 +125,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.state.flagHasCustomImage)
     {
-      this.refsTODO.flagSetter.state.flag.generateRandom();
+      this.ref_TODO_flagSetter.state.flag.generateRandom();
     }
 
     var mainColor = generateMainColor();
@@ -148,7 +148,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     player.secondaryColor = this.state.subColor === null ?
       this.generateSubColor(player.color) : this.state.subColor;
 
-    var flag = this.refsTODO.flagSetter.state.flag;
+    var flag = this.ref_TODO_flagSetter.state.flag;
 
     player.flag = flag;
     player.flag.setColorScheme(

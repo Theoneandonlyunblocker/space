@@ -116,7 +116,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
   {
     var log: NotificationLog = this.props.log;
 
-    var popupId = this.refsTODO.popupManager.makePopup(
+    var popupId = this.ref_TODO_popupManager.makePopup(
     {
       contentConstructor: ConfirmPopup,
       contentProps:
@@ -155,7 +155,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
 
   closePopup(key: string)
   {
-    this.refsTODO.popupManager.closePopup(this.state[key]);
+    this.ref_TODO_popupManager.closePopup(this.state[key]);
 
     var stateObj: any = {};
     stateObj[key] = undefined;

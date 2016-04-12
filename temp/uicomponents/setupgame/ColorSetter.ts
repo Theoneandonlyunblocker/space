@@ -88,7 +88,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
     var focusGraceTime = 500;
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
 
-    var node = React.findDOMNode<HTMLElement>(this.refsTODO.main);
+    var node = React.findDOMNode<HTMLElement>(this.ref_TODO_main);
     if (e.target === node || node.contains(e.target))
     {
       return;

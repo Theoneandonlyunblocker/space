@@ -61,7 +61,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   
   closePopup(popupType: string)
   {
-    this.refsTODO.popupManager.closePopup(this.state[popupType]);
+    this.ref_TODO_popupManager.closePopup(this.state[popupType]);
     var stateObj: StateType = {};
     stateObj[popupType] = undefined;
     this.setState(stateObj);
@@ -95,7 +95,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
       }
     }
 
-    var id = this.refsTODO.popupManager.makePopup(
+    var id = this.ref_TODO_popupManager.makePopup(
     {
       contentConstructor: TopMenuPopup,
       contentProps:

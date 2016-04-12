@@ -40,7 +40,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
     var player = rowItem.data.player;
     if (!player) return;
 
-    this.refsTODO.popupManager.makePopup(
+    this.ref_TODO_popupManager.makePopup(
     {
       contentConstructor: DiplomacyActions,
       contentProps:

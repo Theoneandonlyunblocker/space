@@ -70,7 +70,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   
   componentDidMount()
   {
-    React.findDOMNode<HTMLElement>(this.refsTODO.okButton).focus();
+    React.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
   }
 
   handleRowChange(row: ListItem)
@@ -90,7 +90,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       // https://github.com/facebook/react/issues/2988
       // https://github.com/facebook/react/issues/2605#issuecomment-118398797
       // without this react will keep a reference to this element causing a big memory leak
-      React.findDOMNode<HTMLElement>(this.refsTODO.okButton).blur();
+      React.findDOMNode<HTMLElement>(this.ref_TODO_okButton).blur();
       window.setTimeout(function()
       {
         app.load(saveKey);
@@ -109,7 +109,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   }
   deleteSelectedKeys()
   {
-    this.popupId = this.refsTODO.popupManager.makePopup(
+    this.popupId = this.ref_TODO_popupManager.makePopup(
     {
       contentConstructor: ConfirmPopup,
       contentProps: this.getClosePopupContent(null, false, false)
@@ -164,12 +164,12 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   {
     if (isFinite(this.popupId))
     {
-      this.refsTODO.popupManager.setPopupContent(this.popupId,
+      this.ref_TODO_popupManager.setPopupContent(this.popupId,
         {contentText: this.getClosePopupContent().contentText});
     }
     else if (this.state.saveKeysToDelete.length < 1)
     {
-      if (isFinite(this.popupID)) this.refsTODO.popupManager.closePopup(this.popupId);
+      if (isFinite(this.popupID)) this.ref_TODO_popupManager.closePopup(this.popupId);
       this.popupId = undefined;
     }
   }
@@ -182,7 +182,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    this.popupId = this.refsTODO.popupManager.makePopup(
+    this.popupId = this.ref_TODO_popupManager.makePopup(
     {
       contentConstructor: ConfirmPopup,
       contentProps: this.getClosePopupContent(afterCloseCallback, true, true)

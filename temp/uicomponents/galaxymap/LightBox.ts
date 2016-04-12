@@ -42,8 +42,8 @@ export class LightBoxComponent extends React.Component<PropTypes, StateType>
   
   handleResize()
   {
-    var container = React.findDOMNode<HTMLElement>(this.refsTODO.container);
-    var wrapperRect = React.findDOMNode<HTMLElement>(this.refsTODO.wrapper).getBoundingClientRect();
+    var container = React.findDOMNode<HTMLElement>(this.ref_TODO_container);
+    var wrapperRect = React.findDOMNode<HTMLElement>(this.ref_TODO_wrapper).getBoundingClientRect();
     container.classList.remove("light-box-horizontal-padding");
     container.classList.remove("light-box-fill-horizontal");
 
@@ -87,9 +87,9 @@ export class LightBoxComponent extends React.Component<PropTypes, StateType>
   handleClose()
   {
 
-    if (this.refsTODO.content.overRideLightBoxClose)
+    if (this.ref_TODO_content.overRideLightBoxClose)
     {
-      this.refsTODO.content.overRideLightBoxClose();
+      this.ref_TODO_content.overRideLightBoxClose();
     }
     else
     {

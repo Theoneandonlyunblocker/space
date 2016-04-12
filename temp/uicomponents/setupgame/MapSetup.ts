@@ -97,7 +97,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     return(
     {
       template: this.state.selectedTemplate,
-      optionValues: this.refsTODO.mapGenOptions.getOptionValuesForTemplate()
+      optionValues: this.ref_TODO_mapGenOptions.getOptionValuesForTemplate()
     });
   }
   

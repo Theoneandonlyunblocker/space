@@ -50,7 +50,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
   {
     if (this.props.highlightedOptionKey)
     {
-      var domNode = this.refsTODO.body.getDOMNode();
+      var domNode = this.ref_TODO_body.getDOMNode();
       var highlightedNode = domNode.getElementsByClassName("highlighted")[0];
       domNode.scrollTop = highlightedNode.offsetTop + domNode.scrollHeight / 3;
     }

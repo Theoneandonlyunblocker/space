@@ -57,7 +57,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
   
   changeScene()
   {
-    var newScene = React.findDOMNode<HTMLInputElement>(this.refsTODO.sceneSelector).value;
+    var newScene = React.findDOMNode<HTMLInputElement>(this.ref_TODO_sceneSelector).value;
 
     this.props.changeSceneFunction(newScene);
   }

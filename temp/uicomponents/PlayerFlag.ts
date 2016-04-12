@@ -44,19 +44,19 @@ export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
   }
   componentDidMount()
   {
-    if (this.refsTODO.container && !this.props.isMutable)
+    if (this.ref_TODO_container && !this.props.isMutable)
     {
       var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
       canvas.style.maxWidth = "100%";
       canvas.style.maxHeight = "100%";
-      React.findDOMNode<HTMLElement>(this.refsTODO.container).appendChild(canvas);
+      React.findDOMNode<HTMLElement>(this.ref_TODO_container).appendChild(canvas);
     }
   }
   componentDidUpdate()
   {
-    if (this.refsTODO.container && this.props.isMutable)
+    if (this.ref_TODO_container && this.props.isMutable)
     {
-      var containerNode = React.findDOMNode<HTMLElement>(this.refsTODO.container);
+      var containerNode = React.findDOMNode<HTMLElement>(this.ref_TODO_container);
       if (containerNode.firstChild)
       {
         containerNode.removeChild(containerNode.firstChild);

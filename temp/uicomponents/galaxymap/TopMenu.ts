@@ -107,9 +107,9 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.cachedTopMenuWidth)
     {
-      this.cachedTopMenuWidth = React.findDOMNode<HTMLElement>(this.refsTODO.topMenu).getBoundingClientRect().width;
+      this.cachedTopMenuWidth = React.findDOMNode<HTMLElement>(this.ref_TODO_topMenu).getBoundingClientRect().width;
 
-      var buttons = React.findDOMNode<HTMLElement>(this.refsTODO.topMenuItems).children;
+      var buttons = React.findDOMNode<HTMLElement>(this.ref_TODO_topMenuItems).children;
 
       var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
 
@@ -196,7 +196,7 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
 
   togglePopup(popupType: string)
   {
-    this.refsTODO.popups.togglePopup(popupType);
+    this.ref_TODO_popups.togglePopup(popupType);
     this.forceUpdate();
   }
 

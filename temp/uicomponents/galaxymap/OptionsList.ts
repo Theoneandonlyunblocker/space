@@ -84,7 +84,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       contentText: "Are you sure you want to reset all options?"
     }
 
-    this.refsTODO.popupManager.makePopup(
+    this.ref_TODO_popupManager.makePopup(
     {
       contentConstructor: ConfirmPopup,
       contentProps: confirmProps,

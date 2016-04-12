@@ -112,7 +112,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     var focusGraceTime = 500;
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
 
-    var node = React.findDOMNode<HTMLElement>(this.refsTODO.main);
+    var node = React.findDOMNode<HTMLElement>(this.ref_TODO_main);
     if (e.target === node || node.contains(e.target))
     {
       return;
@@ -337,9 +337,9 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 
     if (this.state.flag.customImage)
     {
-      if (this.refsTODO.flagPicker)
+      if (this.ref_TODO_flagPicker)
       {
-        this.refsTODO.flagPicker.clearSelectedEmblem();
+        this.ref_TODO_flagPicker.clearSelectedEmblem();
       }
     }
 

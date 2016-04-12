@@ -86,7 +86,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   componentDidMount()
   {
-    this.refsTODO.background.handleResize();
+    this.ref_TODO_background.handleResize();
   }
   autoMakeFormation()
   {
@@ -247,7 +247,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
   getBackgroundBlurArea()
   {
-    return React.findDOMNode<HTMLElement>(this.refsTODO.upper).getBoundingClientRect();
+    return React.findDOMNode<HTMLElement>(this.ref_TODO_upper).getBoundingClientRect();
   }
 
   render()

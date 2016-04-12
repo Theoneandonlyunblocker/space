@@ -137,7 +137,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   setDesiredHeight()
   {
     var ownNode = React.findDOMNode<HTMLElement>(this);
-    var innerNode = React.findDOMNode<HTMLElement>(this.refsTODO.inner);
+    var innerNode = React.findDOMNode<HTMLElement>(this.ref_TODO_inner);
 
     ownNode.style.height = "auto";
     innerNode.style.height = "auto";
@@ -164,7 +164,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   {
     // scrolls header to match list contents
     var target = <Element> e.target;
-    var header = React.findDOMNode<HTMLElement>(this.refsTODO.header);
+    var header = React.findDOMNode<HTMLElement>(this.ref_TODO_header);
     var titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 
     var marginString = "-" + target.scrollLeft + "px";

@@ -56,17 +56,17 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   {
     if (app.game.gameStorageKey)
     {
-      React.findDOMNode<HTMLElement>(this.refsTODO.okButton).focus();
+      React.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
     }
     else
     {
-      React.findDOMNode<HTMLElement>(this.refsTODO.saveName).focus();
+      React.findDOMNode<HTMLElement>(this.ref_TODO_saveName).focus();
     }
   }
 
   setInputText(newText: string)
   {
-    React.findDOMNode<HTMLInputElement>(this.refsTODO.saveName).value = newText;
+    React.findDOMNode<HTMLInputElement>(this.ref_TODO_saveName).value = newText;
   }
 
   handleRowChange(row: ListItem)
@@ -76,7 +76,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
 
   handleSave()
   {
-    var saveName = React.findDOMNode<HTMLInputElement>(this.refsTODO.saveName).value
+    var saveName = React.findDOMNode<HTMLInputElement>(this.ref_TODO_saveName).value
     var saveKey = "Save." + saveName;
     if (localStorage[saveKey])
     {
@@ -89,7 +89,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   }
   saveGame()
   {
-    app.game.save(React.findDOMNode<HTMLInputElement>(this.refsTODO.saveName).value);
+    app.game.save(React.findDOMNode<HTMLInputElement>(this.ref_TODO_saveName).value);
     this.handleClose();
   }
   handleClose()
@@ -105,7 +105,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
         saveName.replace("Save.", "") + "?"
     }
 
-    this.refsTODO.popupManager.makePopup(
+    this.ref_TODO_popupManager.makePopup(
     {
       contentConstructor: ConfirmPopup,
       contentProps: confirmProps

@@ -45,7 +45,7 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
   
   componentDidMount()
   {
-    React.findDOMNode<HTMLElement>(this.refsTODO.okButton).focus();
+    React.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
   }
 
   handleOk()
