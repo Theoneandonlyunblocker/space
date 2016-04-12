@@ -1,16 +1,13 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="defencebuilding.ts"/>
-
-
 import DefenceBuilding from "./DefenceBuilding.ts";
-
+import Building from "../../../src/Building.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  buildings: any; // TODO refactor | define prop type 123
-  reverse: any; // TODO refactor | define prop type 123
+  buildings: Building[];
+  reverse: boolean;
 }
 
 interface StateType
