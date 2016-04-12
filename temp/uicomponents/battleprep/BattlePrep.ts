@@ -8,7 +8,7 @@ import BattlePrep from "../../../src/BattlePrep.ts";
 import Unit from "../../../src/Unit.ts";
 import eventManager from "../../../src/eventManager.ts";
 import MenuUnitInfo from "../unitlist/MenuUnitInfo.ts";
-import BattleBackground from "../battle/BattleBackground.ts";
+import {default as BattleBackground, BattleBackgroundComponent} from "../battle/BattleBackground.ts";
 import ItemList from "../unitlist/ItemList.ts";
 import Item from "../../../src/Item.ts";
 import Formation from "../battle/Formation.ts";
@@ -45,6 +45,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   displayName: string = "BattlePrep";
   state: StateType;
   refsTODO: RefTypes;
+  ref_TODO_background: BattleBackgroundComponent;
+  ref_TODO_upper: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -358,16 +360,16 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div({className: "battle-prep"},
         React.DOM.div({className: "battle-prep-left"},
-          React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_upper = component;
-}},
+          React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: (component: React.HTMLComponent) =>
+          {
+            this.ref_TODO_upper = component;
+          }},
             BattleBackground(
             {
-              ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_background = component;
-},
+              ref: (component: BattleBackgroundComponent) =>
+              {
+                this.ref_TODO_background = component;
+              },
               renderer: this.props.renderer,
               getBlurArea: this.getBackgroundBlurArea,
               backgroundSeed: battlePrep.battleData.location.getSeed()
