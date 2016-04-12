@@ -3,8 +3,8 @@ import * as React from "react";
 
 export interface PropTypes extends React.Props<any>
 {
-  turnsLeft: any; // TODO refactor | define prop type 123
-  maxTurns: any; // TODO refactor | define prop type 123
+  turnsLeft: number;
+  maxTurns: number;
 }
 
 interface StateType

@@ -1,19 +1,29 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
+import Unit from "../../../src/Unit.ts";
+
 export interface PropTypes extends React.Props<any>
 {
-  potentialDelay: any; // TODO refactor | define prop type 123
-  onMouseLeaveUnit: any; // TODO refactor | define prop type 123
-  unitsBySide: any; // TODO refactor | define prop type 123
-  turnOrder: any; // TODO refactor | define prop type 123
-  hoveredUnit: any; // TODO refactor | define prop type 123
-  onMouseEnterUnit: any; // TODO refactor | define prop type 123
+  potentialDelay:
+  {
+    id: number;
+    delay: number;
+  }
+  unitsBySide:
+  {
+    side1: Unit[];
+    side2: Unit[];
+  }
+  turnOrder: (Unit | any)[]; // TODO refactor
+  hoveredUnit: Unit;
+  onMouseLeaveUnit: () => void;
+  onMouseEnterUnit: (unit: Unit) => void;
 }
 
 interface StateType
 {
-  maxUnits?: any; // TODO refactor | define state type 456
+  maxUnits?: number;
 }
 
 class TurnOrder_COMPONENT_TODO extends React.Component<PropTypes, StateType>
