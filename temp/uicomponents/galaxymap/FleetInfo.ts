@@ -23,7 +23,7 @@ interface StateType
 export class FleetInfoComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetInfo";
-  setFleetName(e: Event)
+  setFleetName(e: React.FormEvent)
   {
     var target = <HTMLInputElement> e.target;
     this.props.fleet.name = target.value;
