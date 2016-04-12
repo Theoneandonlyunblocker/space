@@ -12,7 +12,7 @@ import MapSetup from "./MapSetup.ts";
 import MapGenFunction from "../../../src/templateinterfaces/MapGenFunction.d.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
 }
 

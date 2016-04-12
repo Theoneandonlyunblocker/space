@@ -16,7 +16,7 @@ import BattleSceneFlag from "./BattleSceneFlag.ts";
 
 var bs: any;
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   battleState: "start" | "active" | "finish";
 

@@ -8,7 +8,7 @@ import
 } from "../../../src/utility.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   guardAmount?: number;
   guardCoverage?: GuardCoverage;

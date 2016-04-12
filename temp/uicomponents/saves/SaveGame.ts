@@ -13,7 +13,7 @@ import PopupManager from "../popups/PopupManager.ts";
 import ConfirmPopup from "../popups/ConfirmPopup.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   handleClose: any; // TODO refactor | define prop type 123
 }

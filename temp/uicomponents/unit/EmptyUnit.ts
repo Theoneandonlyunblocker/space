@@ -5,7 +5,7 @@ import UnitIcon from "./UnitIcon.ts";
 
 import * as React from "react";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   facesLeft: any; // TODO refactor | define prop type 123
 }

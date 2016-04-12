@@ -12,7 +12,7 @@ import List from "./List.ts";
 import UnitListItem from "./UnitListItem.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   onMouseLeave: any; // TODO refactor | define prop type 123
   onDragStart: any; // TODO refactor | define prop type 123

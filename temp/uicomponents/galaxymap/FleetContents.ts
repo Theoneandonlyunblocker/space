@@ -12,7 +12,7 @@ import FleetUnitInfo from "./FleetUnitInfo.ts";
 import Fleet from "../../../src/Fleet.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   fleet: Fleet;
   player: Player;

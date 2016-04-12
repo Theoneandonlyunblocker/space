@@ -8,7 +8,7 @@ import Flag from "../../src/Flag.ts";
 import PlayerFlag from "./PlayerFlag.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
 }
 

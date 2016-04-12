@@ -7,7 +7,7 @@ import * as React from "react";
 import ManufacturableThingsListItem from "./ManufacturableThingsListItem.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   manufacturableThings: reactTypeTODO_couldntConvert;
   onClick?: reactTypeTODO_func;

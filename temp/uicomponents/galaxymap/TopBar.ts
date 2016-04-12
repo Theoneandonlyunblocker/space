@@ -13,7 +13,7 @@ import TopBarResources from "./TopBarResources.ts";
 import eventManager from "../../../src/eventManager.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   game: any; // TODO refactor | define prop type 123
   player: any; // TODO refactor | define prop type 123

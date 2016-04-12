@@ -11,7 +11,7 @@ import List from "../unitlist/List.ts";
 import Item from "../../../src/Item.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   items: any; // TODO refactor | define prop type 123
   playerMoney: any; // TODO refactor | define prop type 123

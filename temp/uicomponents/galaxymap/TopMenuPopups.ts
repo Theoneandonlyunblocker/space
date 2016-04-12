@@ -26,7 +26,7 @@ import LoadGame from "../saves/LoadGame.ts";
 import SaveGame from "../saves/SaveGame.ts";
 import OptionsList from "./OptionsList.ts";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   player: Player;
   game: Game;

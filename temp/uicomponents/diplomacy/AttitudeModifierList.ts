@@ -11,7 +11,7 @@ import AttitudeModifierInfo from "./AttitudeModifierInfo.ts";
 import AttitudeModifier from "../../../src/AttitudeModifier.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];
   baseOpinion: number;

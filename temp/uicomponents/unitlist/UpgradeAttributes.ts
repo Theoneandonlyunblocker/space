@@ -5,7 +5,7 @@ import Unit from "../../../src/Unit.ts";
 
 import * as React from "react";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   unit: any; // TODO refactor | define prop type 123
   handleClick: any; // TODO refactor | define prop type 123

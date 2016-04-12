@@ -9,7 +9,7 @@ import Options from "../../../src/options.ts";
 import Star from "../../../src/Star.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   selectedStar: any; // TODO refactor | define prop type 123
 }

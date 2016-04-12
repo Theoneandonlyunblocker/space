@@ -7,7 +7,7 @@ import * as React from "react";
 import MapRenderer from "../../../src/MapRenderer.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   mapRenderer: MapRenderer;
   onUpdate?: reactTypeTODO_func;

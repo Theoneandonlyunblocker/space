@@ -7,7 +7,7 @@ import * as React from "react";
 import Unit from "../../../src/Unit.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   unit: Unit;
   isNotDetected: boolean;

@@ -9,7 +9,7 @@ import Popup from "./Popup.ts";
 import eventManager from "../../../src/eventManager.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   onlyAllowOne?: boolean;
 }

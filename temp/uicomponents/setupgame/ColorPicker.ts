@@ -3,7 +3,7 @@ import * as React from "react";
 
 /// <reference path="../../color.ts" />
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   generateColor: any; // TODO refactor | define prop type 123
   getParentPosition: any; // TODO refactor | define prop type 123

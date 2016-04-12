@@ -7,7 +7,7 @@ import * as React from "react";
 import AbilityList from "./AbilityList.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   sourceAbility: any; // TODO refactor | define prop type 123
   handleClick: any; // TODO refactor | define prop type 123

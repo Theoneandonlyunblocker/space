@@ -10,7 +10,7 @@ import Player from "../../../src/Player.ts";
 import BuildingTemplate from "../../../src/templateinterfaces/BuildingTemplate.d.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   activeColumns: any; // TODO refactor | define prop type 123
   template: reactTypeTODO_object;

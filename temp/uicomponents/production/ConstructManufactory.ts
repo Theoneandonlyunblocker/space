@@ -10,7 +10,7 @@ import Player from "../../../src/Player.ts";
 import Star from "../../../src/Star.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   star: Star;
   player: Player;

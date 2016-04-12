@@ -10,7 +10,7 @@ import PlayerFlag from "../PlayerFlag.ts";
 import Building from "../../../src/Building.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   building: any; // TODO refactor | define prop type 123
 }

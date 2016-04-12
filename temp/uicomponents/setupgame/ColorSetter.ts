@@ -9,7 +9,7 @@ import * as React from "react";
 import ColorPicker from "./ColorPicker.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   setActiveColorPicker: any; // TODO refactor | define prop type 123
   generateColor: any; // TODO refactor | define prop type 123

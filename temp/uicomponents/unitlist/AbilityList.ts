@@ -5,7 +5,7 @@ import AbilityBase from "../../../src/templateinterfaces/AbilityBase.d.ts";
 
 import * as React from "react";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   handleClick: any; // TODO refactor | define prop type 123
   abilities: any; // TODO refactor | define prop type 123

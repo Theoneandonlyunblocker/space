@@ -12,7 +12,7 @@ import MapRenderer from "../../../src/MapRenderer.ts";
 import MapModeSelector from "./MapModeSelector.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   mapRenderer: MapRenderer;
 }

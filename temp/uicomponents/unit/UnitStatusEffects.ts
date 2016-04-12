@@ -5,7 +5,7 @@ import Unit from "../../../src/Unit.ts";
 import PassiveSkillTemplate from "../../../src/templateinterfaces/PassiveSkillTemplate.d.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   unit: Unit;
   isBattlePrep: boolean;

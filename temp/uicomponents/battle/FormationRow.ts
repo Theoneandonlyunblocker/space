@@ -10,7 +10,7 @@ import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.t
 import UnitBattleSide from "../../../src/UnitBattleSide.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   row: Unit[];
   rowIndexInOwnFormation: number;

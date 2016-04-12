@@ -9,7 +9,7 @@ import Notifications from "../../../modules/defaultnotifications/NotificationTem
 import NotificationLog from "./NotificationLog.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   log: NotificationLog;
   currentTurn: number;

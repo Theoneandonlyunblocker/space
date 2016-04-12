@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   handleClose: any; // TODO refactor | define prop type 123
   contentConstructor: any; // TODO refactor | define prop type 123

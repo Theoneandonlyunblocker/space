@@ -10,7 +10,7 @@ import SaveListItem from "./SaveListItem.ts";
 import List from "../unitlist/List.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   onRowChange: any; // TODO refactor | define prop type 123
   saveKeysToDelete: any; // TODO refactor | define prop type 123

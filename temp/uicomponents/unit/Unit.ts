@@ -15,7 +15,7 @@ import UnitInfo from "./UnitInfo.ts";
 import UnitIcon from "./UnitIcon.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   handleMouseEnterUnit: any; // TODO refactor | define prop type 123
   onDragEnd: any; // TODO refactor | define prop type 123

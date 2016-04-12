@@ -3,7 +3,7 @@
 import * as React from "react";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   isNotDetected: boolean;
   currentHealth: number;

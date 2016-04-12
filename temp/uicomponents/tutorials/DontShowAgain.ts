@@ -3,7 +3,7 @@ import * as React from "react";
 
 /// <reference path="../../tutorials/tutorialstatus.ts" />
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   tutorialId: string;
 }

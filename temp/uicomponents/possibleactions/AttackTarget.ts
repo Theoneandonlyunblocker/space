@@ -8,7 +8,7 @@ import eventManager from "../../../src/eventManager.ts";
 import PlayerFlag from "../PlayerFlag.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   attackTarget: any; // TODO refactor | define prop type 123
 }

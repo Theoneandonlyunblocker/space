@@ -9,7 +9,7 @@ import * as React from "react";
 import UnitItem from "./UnitItem.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   onDragEnd: any; // TODO refactor | define prop type 123
   item: any; // TODO refactor | define prop type 123

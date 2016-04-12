@@ -9,7 +9,7 @@ import * as React from "react";
 import TradeableItemsList from "./TradeableItemsList.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   tradeableItems: reactTypeTODO_object; // ITradeableItems
 

@@ -14,7 +14,7 @@ import DiplomaticStatusPlayer from "./DiplomaticStatusPlayer.ts";
 import PopupManager from "../popups/PopupManager.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   metPlayers: any; // TODO refactor | define prop type 123
   totalPlayerCount: any; // TODO refactor | define prop type 123

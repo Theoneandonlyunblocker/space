@@ -7,7 +7,7 @@ import * as React from "react";
 import Flag from "../../../src/Flag.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   flag: Flag;
   facingRight: boolean;

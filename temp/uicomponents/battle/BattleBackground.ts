@@ -3,7 +3,7 @@ import * as React from "react";
 
 import Renderer from "../../../src/Renderer.ts";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   getBlurArea: () => ClientRect;
   backgroundSeed: string;

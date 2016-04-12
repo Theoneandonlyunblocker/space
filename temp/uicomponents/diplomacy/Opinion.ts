@@ -7,7 +7,7 @@ import * as React from "react";
 import AttitudeModifierList from "./AttitudeModifierList.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: any; // TODO refactor | define prop type 123
   baseOpinion: any; // TODO refactor | define prop type 123

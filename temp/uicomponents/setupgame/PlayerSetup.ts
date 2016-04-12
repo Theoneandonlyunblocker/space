@@ -10,7 +10,7 @@ import FlagSetter from "./FlagSetter.ts";
 import ColorSetter from "./ColorSetter.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   setActiveColorPicker: any; // TODO refactor | define prop type 123
   setHuman: any; // TODO refactor | define prop type 123

@@ -5,7 +5,7 @@ import Battle from "../../../src/Battle.ts";
 import PlayerFlag from "../PlayerFlag.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   battle: Battle;
 }

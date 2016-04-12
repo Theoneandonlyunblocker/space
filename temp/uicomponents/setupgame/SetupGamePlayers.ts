@@ -10,7 +10,7 @@ import PlayerSetup from "./PlayerSetup.ts";
 import Color from "../../../src/Color.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   maxPlayers: any; // TODO refactor | define prop type 123
   minPlayers: any; // TODO refactor | define prop type 123

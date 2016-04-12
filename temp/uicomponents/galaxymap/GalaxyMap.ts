@@ -11,7 +11,7 @@ import GalaxyMapUI from "./GalaxyMapUI.ts";
 import Options from "../../../src/options.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   toCenterOn: any; // TODO refactor | define prop type 123
   player: any; // TODO refactor | define prop type 123

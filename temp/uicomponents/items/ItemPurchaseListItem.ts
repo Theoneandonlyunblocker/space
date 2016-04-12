@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   playerMoney: any; // TODO refactor | define prop type 123
   handleClick: any; // TODO refactor | define prop type 123

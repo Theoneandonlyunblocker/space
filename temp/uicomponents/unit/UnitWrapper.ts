@@ -10,7 +10,7 @@ import Battle from "../../../src/Battle.ts";
 import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   isCaptured?: boolean;
   isDead?: boolean;

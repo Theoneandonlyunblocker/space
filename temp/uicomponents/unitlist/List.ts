@@ -9,7 +9,7 @@ import eventManager from "../../../src/eventManager.ts";
 import ListItem from "./ListItem.d.ts";
 import ListColumn from "./ListColumn.d.ts";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   initialColumns: ListColumn[];
   listItems: ListItem[];

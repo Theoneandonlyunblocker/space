@@ -5,7 +5,7 @@ import Item from "../../../src/Item.ts";
 
 import * as React from "react";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   onDragEnd: any; // TODO refactor | define prop type 123
   onDragStart: any; // TODO refactor | define prop type 123

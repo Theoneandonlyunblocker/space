@@ -10,7 +10,7 @@ import Star from "../../../src/Star.ts";
 import ManufactoryStarsListItem from "./ManufactoryStarsListItem.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   starsWithManufactories: Star[];
   starsWithoutManufactories: Star[];

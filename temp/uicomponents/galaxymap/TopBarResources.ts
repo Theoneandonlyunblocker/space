@@ -12,7 +12,7 @@ import Resource from "./Resource.ts";
 import eventManager from "../../../src/eventManager.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   player: any; // TODO refactor | define prop type 123
 }

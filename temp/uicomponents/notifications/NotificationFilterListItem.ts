@@ -7,7 +7,7 @@ import eventManager from "../../../src/eventManager.ts";
 
 import * as React from "react";
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   displayName: string;
   filterState: number[];

@@ -8,7 +8,7 @@ import TopMenuPopup from "../popups/TopMenuPopup.ts";
 import PopupManager from "../popups/PopupManager.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   closePopup: () => void;
   player: Player;

@@ -22,7 +22,7 @@ import GalaxyMap from "./galaxymap/GalaxyMap.ts";
 import FlagMaker from "./FlagMaker.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   battlePrep: any; // TODO refactor | define prop type 123
   mapRenderer: any; // TODO refactor | define prop type 123

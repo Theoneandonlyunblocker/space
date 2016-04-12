@@ -11,7 +11,7 @@ import MapGenOptions from "./MapGenOptions.ts";
 import MapGenTemplate from "../../../src/templateinterfaces/MapGenTemplate.d.ts";
 
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   setPlayerLimits: any; // TODO refactor | define prop type 123
 }

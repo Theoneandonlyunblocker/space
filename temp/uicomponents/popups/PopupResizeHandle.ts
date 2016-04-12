@@ -3,7 +3,7 @@ import * as React from "react";
 
 /// <reference path="../mixins/draggable.ts" />
 
-export interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>
 {
   handleResize: any; // TODO refactor | define prop type 123
 }
