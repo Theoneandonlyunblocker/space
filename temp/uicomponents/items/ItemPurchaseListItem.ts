@@ -3,9 +3,9 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  playerMoney: any; // TODO refactor | define prop type 123
+  playerMoney: number;
   handleClick: any; // TODO refactor | define prop type 123
-  buildCost: any; // TODO refactor | define prop type 123
+  buildCost: number;
   activeColumns: ListColumn[];
 }
 
