@@ -1,12 +1,9 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="popup.ts"/>
-/// <reference path="confirmpopup.ts"/>
-
-
-import Popup from "./Popup.ts";
+import {default as Popup, PopupComponent} from "./Popup.ts";
 import eventManager from "../../../src/eventManager.ts";
+import {extendObject} from "../../../src/utility.ts";
 
 
 interface PropTypes extends React.Props<any>
@@ -16,16 +13,25 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  popups?: any; // TODO refactor | define state type 456
+  popups?: any[]; // TODO refactor | define state type 456
 }
 
 export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupManager";
-  popupId: number = 0;
-
-
   state: StateType;
+  
+  popupId: number = 0;
+  currentZIndex: number = 0;
+  
+  popupComponentsByID:
+  {
+    [id: number]: PopupComponent;
+  } = {};
+  listeners:
+  {
+    [key: string]: Function;
+  } = {};
 
   constructor(props: PropTypes)
   {
@@ -50,7 +56,6 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   
   componentWillMount()
   {
-    this.listeners = {};
     var self = this;
     this.listeners["makePopup"] =
       eventManager.addEventListener("makePopup", function(data: any)
@@ -89,9 +94,9 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   {
     if (this.state.popups.length === 0) return null;
     var popups: any = [];
-    for (var ref in this.refsTODO)
+    for (var id in this.popupComponentsByID)
     {
-      popups.push(this.refsTODO[ref]);
+      popups.push(this.popupComponentsByID[id]);
     }
     return popups.sort(function(a: any, b: any)
     {
@@ -122,8 +127,6 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
   incrementZIndex(childZIndex: number)
   {
-    if (!this.currentZIndex) this.currentZIndex = 0;
-
     if (childZIndex === this.currentZIndex)
     {
       return this.currentZIndex;
@@ -196,7 +199,10 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     popupProps.contentProps = props.contentProps;
     popupProps.id = id;
     popupProps.key = id;
-    popupProps.ref = id;
+    popupProps.ref = (component: PopupComponent) =>
+    {
+      this.popupComponentsByID[id] = component;
+    }
     popupProps.incrementZIndex = this.incrementZIndex;
     popupProps.closePopup = this.closePopup.bind(this, id);
     popupProps.getInitialPosition = this.getInitialPosition;
