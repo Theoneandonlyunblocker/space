@@ -1,11 +1,13 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
+import Notification from "../../Notification";
+
 interface PropTypes extends React.Props<any>
 {
-  markAsRead: any; // TODO refactor | define prop type 123
-  notification: Notification;
-  togglePopup: any; // TODO refactor | define prop type 123
+  markAsRead: (notification: Notification<any>) => void;
+  notification: Notification<any>;
+  togglePopup: (notification: Notification<any>) => void;
 }
 
 interface StateType
@@ -39,7 +41,7 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
   {
     this.props.togglePopup(this.props.notification);
   }
-  handleRightClick(e: MouseEvent)
+  handleRightClick(e: React.MouseEvent)
   {
     e.preventDefault();
     e.stopPropagation();
