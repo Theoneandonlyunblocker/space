@@ -1,18 +1,15 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../player.ts" />
-/// <reference path="../mixins/updatewhenmoneychanges.ts" />
-
-
+import BuildingUpgradeData from "../../BuildingUpgradeData";
 import Player from "../../Player";
 
 
 interface PropTypes extends React.Props<any>
 {
   player: Player;
-  handleUpgrade: reactTypeTODO_func;
-  upgradeData: reactTypeTODO_object;
+  handleUpgrade: (upgradeData: BuildingUpgradeData) => void;
+  upgradeData: BuildingUpgradeData
 }
 
 interface StateType
@@ -66,7 +63,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
   {
     var upgradeData = this.props.upgradeData;
 
-    var rowProps: any =
+    var rowProps: React.HTMLAttributes =
     {
       key: upgradeData.template.type,
       className: "building-upgrade-list-item",
@@ -74,7 +71,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
       title: upgradeData.template.description
     };
 
-    var costProps: any = 
+    var costProps: React.HTMLAttributes = 
     {
       key: "cost",
       className: "building-upgrade-list-item-cost"
