@@ -1,17 +1,11 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="topmenupopups.ts" />
-
-/// <reference path="../../player.ts" />
-/// <reference path="../../game.ts" />
-
-
 import Player from "../../../src/Player.ts";
 import Game from "../../../src/Game.ts";
 import Options from "../../../src/Options.ts";
 import Technology from "../technologies/Technology.ts";
-import TopMenuPopups from "./TopMenuPopups.ts";
+import {default as TopMenuPopups, TopMenuPopupsComponent} from "./TopMenuPopups.ts";
 import eventManager from "../../../src/eventManager.ts";
 
 
@@ -23,31 +17,25 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  condensedMenuOpened?: any; // TODO refactor | define state type 456
+  condensedMenuOpened?: boolean;
   hasCondensedMenu?: boolean;
-  opened?: any; // TODO refactor | define state type 456
-  buttonsToPlace?: any; // TODO refactor | define state type 456
-}
-
-interface RefTypes extends React.Refs
-{
-  topMenu: HTMLElement;
-  popups: React.Component<any, any>; // TODO refactor | correct ref type 542 | TopMenuPopups
-  topMenuItems: HTMLElement;
+  opened?: boolean;
+  buttonsToPlace?: number;
 }
 
 export class TopMenuComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenu";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
+  state: StateType;
 
-  cachedTopMenuWidth: reactTypeTODO_any = undefined;
-  cachedButtonWidths: reactTypeTODO_any = [];
+  cachedTopMenuWidth: number = undefined;
+  cachedButtonWidths: number[] = [];
   cachedMenuButtonWidth: number = 37;
 
-
-  state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_topMenu: React.HTMLComponent;
+  ref_TODO_popups: TopMenuPopupsComponent;
+  ref_TODO_topMenuItems: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -307,18 +295,18 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(
         {
           className: "top-menu",
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_topMenu = component;
-}
+          ref: (component: React.HTMLComponent) =>
+          {
+            this.ref_TODO_topMenu = component;
+          }
         },
           React.DOM.div(
           {
             className: "top-menu-items",
-            ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_topMenuItems = component;
-}
+            ref: (component: React.HTMLComponent) =>
+            {
+              this.ref_TODO_topMenuItems = component;
+            }
           },
             topMenuItems
           )
@@ -326,10 +314,10 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
         openedCondensedMenu,
         TopMenuPopups(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_popups = component;
-},
+          ref: (component: TopMenuPopupsComponent) =>
+          {
+            this.ref_TODO_popups = component;
+          },
           player: this.props.player,
           game: this.props.game
         })
