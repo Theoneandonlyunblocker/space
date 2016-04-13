@@ -1,20 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../saves/savegame.ts"/>
-/// <reference path="../saves/loadgame.ts"/>
-/// <reference path="../unitlist/itemequip.ts"/>
-/// <reference path="../diplomacy/diplomacyoverview.ts"/>
-/// <reference path="economysummary.ts"/>
-/// <reference path="optionslist.ts"/>
-/// <reference path="../technologies/technologieslist.ts" />
-/// <reference path="../production/productionoverview.ts" />
-
-/// <reference path="../popups/topmenupopup.ts" />
-
-
 import TopMenuPopup from "../popups/TopMenuPopup.ts";
-import PopupManager from "../popups/PopupManager.ts";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager.ts";
 import Player from "../../../src/Player.ts";
 import Game from "../../../src/Game.ts";
 import DiplomacyOverview from "../diplomacy/DiplomacyOverview.ts";
@@ -25,6 +13,7 @@ import ProductionOverview from "../production/ProductionOverview.ts";
 import LoadGame from "../saves/LoadGame.ts";
 import SaveGame from "../saves/SaveGame.ts";
 import OptionsList from "./OptionsList.ts";
+import Options from "../../../src/Options.ts";
 
 interface PropTypes extends React.Props<any>
 {
@@ -36,19 +25,16 @@ interface StateType
 {
 }
 
-interface RefTypes extends React.Refs
-{
-  popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
-}
-
 export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenuPopups";
-  cachedPopupRects: {}
-
+  cachedPopupRects:
+  {
+    [popupType: string]: ClientRect;
+  } = {};
 
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -81,28 +67,24 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   }
   closePopup(popupType: string)
   {
-    var popupNode = this.ref_TODO_popupManager.refs[this.state[popupType]].getDOMNode();
+    const popupComponent = this.ref_TODO_popupManager.popupComponentsByID[this.state[popupType]];
+    const popupNode = React.findDOMNode(popupComponent);
     this.cachedPopupRects[popupType] = popupNode.getBoundingClientRect();
 
     this.ref_TODO_popupManager.closePopup(this.state[popupType]);
-    var stateObj: any = {};
+    var stateObj: StateType = {};
     stateObj[popupType] = undefined;
     this.setState(stateObj);
 
     if (popupType === "options")
     {
-      saveOptions();
+      Options.save();
     }
   }
 
   makePopup(popupType: string)
   {
-    if (!this.cachedPopupRects[popupType])
-    {
-      this.cachedPopupRects[popupType] = {};
-    }
-
-    var contentConstructor: React.ReactElement<any>;
+    var contentConstructor: React.Factory<any>;
     var contentProps: any;
     var popupProps: any =
     {
@@ -235,10 +217,10 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     return(
       PopupManager(
       {
-        ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_popupManager = component;
-}
+        ref: (component: PopupManagerComponent) =>
+        {
+          this.ref_TODO_popupManager = component;
+        }
       })
     );
   }
