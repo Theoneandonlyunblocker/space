@@ -12,6 +12,8 @@ import FleetContents from "./FleetContents.ts";
 import fleets from "../../../modules/defaultmapmodes/maplayertemplates/fleets.ts";
 import FleetReorganization from "./FleetReorganization.ts";
 import Fleet from "../../../src/Fleet.ts";
+import Player from "../../../src/Player.ts";
+import Star from "../../../src/Star.ts";
 
 
 interface PropTypes extends React.Props<any>
@@ -19,8 +21,8 @@ interface PropTypes extends React.Props<any>
   selectedFleets: Fleet[];
   player: Player;
   isInspecting: boolean;
-  closeReorganization: any; // TODO refactor | define prop type 123
-  currentlyReorganizing: any; // TODO refactor | define prop type 123
+  closeReorganization: () => void;
+  currentlyReorganizing: Fleet[];
   selectedStar: Star;
 }
 
@@ -28,17 +30,13 @@ interface StateType
 {
 }
 
-interface RefTypes extends React.Refs
-{
-  main: HTMLElement;
-  selected: HTMLElement;
-}
-
 export class FleetSelectionComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetSelection";
   state: StateType;
-  refsTODO: RefTypes;
+
+  ref_TODO_main: React.HTMLComponent;
+  ref_TODO_selected: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -65,11 +63,11 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   setElementPosition()
   {
     if (!this.ref_TODO_selected) return;
-    var domNode = React.findDOMNode<HTMLElement>(this.ref_TODO_selected);
+    var domNode = <HTMLElement> React.findDOMNode(this.ref_TODO_selected);
 
     if (!this.props.selectedStar)
     {
-      domNode.style.left = 0;
+      domNode.style.left = "0";
     }
     else
     {
@@ -82,7 +80,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       var rightMostRect = rightMostNode.getBoundingClientRect();
       var ownBottom = domNode.getBoundingClientRect().bottom;
 
-      var first = React.findDOMNode<HTMLElement>(this.ref_TODO_main).firstChild
+      var first = <HTMLElement> React.findDOMNode(this.ref_TODO_main).firstChild
 
       if (ownBottom > actionsRect.top)
       {
@@ -93,8 +91,8 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       }
       else
       {
-        domNode.style.left = 0;
-        first.style.left = 0;
+        domNode.style.left = "0";
+        first.style.left = "0";
         first.classList.remove("fleet-selection-displaced");
       }
     }
@@ -143,16 +141,15 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
     for (var i = 0; i < selectedFleets.length; i++)
     {
       var fleet = selectedFleets[i];
-      var infoProps: any =
+
+      fleetInfos.push(FleetInfo(
       {
         key: fleet.id,
         fleet: fleet,
         hasMultipleSelected: hasMultipleSelected,
         isInspecting: this.props.isInspecting,
         isNotDetected: this.props.isInspecting && !this.props.player.fleetIsFullyIdentified(fleet)
-      };
-
-      fleetInfos.push(FleetInfo(infoProps));
+      }));
     }
 
     var fleetSelectionControls: React.HTMLElement = null;
@@ -162,7 +159,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       var fleetStealthsAreClashing =
         selectedFleets.length === 2 && selectedFleets[0].isStealthy !== selectedFleets[1].isStealthy;
 
-      var mergeProps: any =
+      var mergeProps: React.HTMLAttributes =
       {
         className: "fleet-selection-controls-merge"
       }
@@ -176,7 +173,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         mergeProps.className += " disabled";
       }
 
-      var reorganizeProps: any =
+      var reorganizeProps: React.HTMLAttributes =
       {
         className: "fleet-selection-controls-reorganize"
       }
@@ -230,10 +227,10 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       React.DOM.div(
       {
         className: "fleet-selection",
-        ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_main = component;
-}
+        ref: (component: React.HTMLComponent) =>
+        {
+          this.ref_TODO_main = component;
+        }
       },
         fleetSelectionControls,
         hasMultipleSelected ? null : fleetInfos,
@@ -244,10 +241,10 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
           React.DOM.div(
           {
             className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
-            ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_selected = component;
-}
+            ref: (component: React.HTMLComponent) =>
+            {
+              this.ref_TODO_selected = component;
+            }
           },
             hasMultipleSelected ? fleetInfos : null,
             fleetContents
