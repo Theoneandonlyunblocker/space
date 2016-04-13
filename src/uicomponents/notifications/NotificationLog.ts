@@ -1,13 +1,10 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../notificationlog.ts" />
-/// <reference path="notification.ts" />
-/// <reference path="notificationfilterbutton.ts" />
-
 
 import NotificationLog from "../../NotificationLog";
-import Notification from "./Notification";
+import NotificationComponentFactory from "./Notification";
+import Notification from "../../Notification";
 import ConfirmPopup from "../popups/ConfirmPopup";
 import NotificationFilterButton from "./NotificationFilterButton";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
@@ -24,20 +21,16 @@ interface StateType
 {
 }
 
-interface RefTypes extends React.Refs
-{
-  popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
-}
-
 export class NotificationLogComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationLog";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
-  updateListener: reactTypeTODO_any = undefined;
-
-
+  updateListener: Function = undefined;
+  
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_popupManager: PopupManagerComponent;
+  
+  scrollTop: number; // TODO refactor | unused?
 
   constructor(props: PropTypes)
   {
@@ -93,12 +86,12 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
     domNode.scrollTop = domNode.scrollHeight;
   }
 
-  getNotificationKey(notification: Notification)
+  getNotificationKey(notification: Notification<any>)
   {
     return "" + notification.turn + this.props.log.byTurn[notification.turn].indexOf(notification);
   }
 
-  handleMarkAsRead(notification: Notification)
+  handleMarkAsRead(notification: Notification<any>)
   {
     this.props.log.markAsRead(notification);
     var notificationKey = this.getNotificationKey(notification);
@@ -112,7 +105,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
     }
   }
 
-  makePopup(notification: Notification, key: string)
+  makePopup(notification: Notification<any>, key: string)
   {
     var log = this.props.log;
 
@@ -148,7 +141,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
       }
     });
 
-    var stateObj: any = {};
+    var stateObj: StateType = {};
     stateObj[key] = popupId;
     this.setState(stateObj);
   }
@@ -157,12 +150,12 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
   {
     this.ref_TODO_popupManager.closePopup(this.state[key]);
 
-    var stateObj: any = {};
+    var stateObj: StateType = {};
     stateObj[key] = undefined;
     this.setState(stateObj);
   }
 
-  togglePopup(notification: Notification)
+  togglePopup(notification: Notification<any>)
   {
     var key = this.getNotificationKey(notification);
     if (isFinite(this.state[key]))
@@ -178,13 +171,13 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
   render()
   {
     var log = this.props.log;
-    var notifications: Notification[] = log.filterNotifications(log.unread);
+    var notifications: Notification<any>[] = log.filterNotifications(log.unread);
 
     var items: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < notifications.length; i++)
     {
-      items.push(Notification(
+      items.push(NotificationComponentFactory(
       {
         notification: notifications[i],
         key: this.getNotificationKey(notifications[i]),
@@ -206,10 +199,10 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
         ),
         PopupManager(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_popupManager = component;
-}
+          ref: (component: PopupManagerComponent) =>
+          {
+            this.ref_TODO_popupManager = component;
+          }
         })
       )
     );
