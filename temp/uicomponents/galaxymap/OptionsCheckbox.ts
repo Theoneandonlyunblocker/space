@@ -3,7 +3,7 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  onChangeFN: any; // TODO refactor | define prop type 123
+  onChangeFN: (e: React.FormEvent) => void;
   label: string;
   isChecked: boolean;
 }
@@ -24,7 +24,7 @@ export class OptionsCheckboxComponent extends React.Component<PropTypes, StateTy
   
   render()
   {
-    var key = "options-checkbox-" + this.props.label
+    var checkboxID = "options-checkbox-" + this.props.label;
     
     return(
       React.DOM.div(
@@ -34,13 +34,13 @@ export class OptionsCheckboxComponent extends React.Component<PropTypes, StateTy
         React.DOM.input(
         {
           type: "checkbox",
-          id: key,
+          id: checkboxID,
           checked: this.props.isChecked,
           onChange: this.props.onChangeFN
         }),
         React.DOM.label(
         {
-          htmlFor: key
+          htmlFor: checkboxID
         },
           this.props.label
         )
