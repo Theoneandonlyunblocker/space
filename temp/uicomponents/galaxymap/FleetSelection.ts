@@ -16,7 +16,7 @@ import Fleet from "../../../src/Fleet.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  selectedFleets: any; // TODO refactor | define prop type 123
+  selectedFleets: Fleet[];
   player: Player;
   isInspecting: boolean;
   closeReorganization: any; // TODO refactor | define prop type 123

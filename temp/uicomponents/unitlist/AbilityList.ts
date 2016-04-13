@@ -8,7 +8,7 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   handleClick: any; // TODO refactor | define prop type 123
-  abilities: any; // TODO refactor | define prop type 123
+  abilities: AbilityBase[];
 }
 
 interface StateType

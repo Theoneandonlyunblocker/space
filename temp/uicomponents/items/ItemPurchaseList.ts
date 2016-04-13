@@ -13,7 +13,7 @@ import Item from "../../../src/Item.ts";
 
 interface PropTypes extends React.Props<any>
 {
-  items: any; // TODO refactor | define prop type 123
+  items: Item[];
   playerMoney: number;
   onRowChange: any; // TODO refactor | define prop type 123
 }
