@@ -9,8 +9,8 @@ interface PropTypes extends React.Props<any>
   currentHealth: number;
   isSquadron: boolean;
   maxHealth: number;
-  animateStrength: boolean;
-  animateDuration: number;
+  animateStrength?: boolean;
+  animateDuration?: number;
 }
 
 interface StateType
