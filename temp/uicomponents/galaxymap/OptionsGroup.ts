@@ -4,9 +4,13 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   isCollapsedInitially?: boolean;
-  resetFN?: reactTypeTODO_func;
+  resetFN?: () => void;
   header?: string;
-  options: reactTypeTODO_object[];
+  options:
+  {
+    key: string;
+    content: React.Component<any, any>;
+  }[];
 }
 
 interface StateType
@@ -17,7 +21,6 @@ interface StateType
 export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "OptionsGroup";
-
 
   state: StateType;
 
