@@ -21,9 +21,9 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  isNull: boolean;
+  isNull?: any; // TODO refactor | define state type 456
   hexColor?: any; // TODO refactor | define state type 456
-  isActive: boolean;
+  isActive?: any; // TODO refactor | define state type 456
 }
 
 interface RefTypes extends React.Refs

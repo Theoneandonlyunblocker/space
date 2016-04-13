@@ -26,8 +26,8 @@ interface PropTypes extends React.Props<any>
 interface StateType
 {
   flag?: any; // TODO refactor | define state type 456
-  isActive: boolean;
-  hasImageFailMessage: boolean;
+  isActive?: any; // TODO refactor | define state type 456
+  hasImageFailMessage?: any; // TODO refactor | define state type 456
 }
 
 interface RefTypes extends React.Refs

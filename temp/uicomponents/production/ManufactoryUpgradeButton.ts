@@ -15,8 +15,8 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  canAffordUpgrade: boolean;
-  isDisabled: boolean;
+  canAffordUpgrade?: any; // TODO refactor | define state type 456
+  isDisabled?: any; // TODO refactor | define state type 456
 }
 
 export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes, StateType>

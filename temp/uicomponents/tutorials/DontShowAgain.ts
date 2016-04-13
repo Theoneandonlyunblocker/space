@@ -10,7 +10,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  isChecked: boolean;
+  isChecked?: any; // TODO refactor | define state type 456
 }
 
 export class DontShowAgainComponent extends React.Component<PropTypes, StateType>

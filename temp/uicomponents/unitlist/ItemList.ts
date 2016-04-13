@@ -17,7 +17,7 @@ interface PropTypes extends React.Props<any>
 {
   onDragEnd: any; // TODO refactor | define prop type 123
   onDragStart: any; // TODO refactor | define prop type 123
-  isItemPurchaseList: boolean;
+  isItemPurchaseList?: any; // TODO refactor | define prop type 123
   items: Item[];
   isDraggable: boolean;
   onRowChange: any; // TODO refactor | define prop type 123
