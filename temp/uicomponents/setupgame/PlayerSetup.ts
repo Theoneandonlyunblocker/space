@@ -22,7 +22,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  flagHasCustomImage?: any; // TODO refactor | define state type 456
+  flagHasCustomImage?: boolean;
   name?: any; // TODO refactor | define state type 456
   subColor?: any; // TODO refactor | define state type 456
   mainColor?: any; // TODO refactor | define state type 456

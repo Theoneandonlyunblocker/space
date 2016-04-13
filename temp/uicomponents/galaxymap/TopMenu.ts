@@ -24,7 +24,7 @@ interface PropTypes extends React.Props<any>
 interface StateType
 {
   condensedMenuOpened?: any; // TODO refactor | define state type 456
-  hasCondensedMenu?: any; // TODO refactor | define state type 456
+  hasCondensedMenu?: boolean;
   opened?: any; // TODO refactor | define state type 456
   buttonsToPlace?: any; // TODO refactor | define state type 456
 }
