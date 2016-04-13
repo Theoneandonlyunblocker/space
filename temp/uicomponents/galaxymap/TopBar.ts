@@ -1,11 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="playermoney.ts" />
-/// <reference path="topbarresources.ts" />
-/// <reference path="../playerflag.ts" />
-
-
+import Game from "../../../src/Game.ts";
 import Player from "../../../src/Player.ts";
 import PlayerFlag from "../PlayerFlag.ts";
 import PlayerMoney from "./PlayerMoney.ts";
@@ -26,15 +22,13 @@ interface StateType
 export class TopBarComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopBar";
-  updateListener: reactTypeTODO_any = undefined;
+  updateListener: Function = undefined;
 
   state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
   }
   
   componentDidMount()
