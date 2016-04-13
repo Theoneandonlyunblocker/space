@@ -9,7 +9,7 @@ interface PropTypes extends React.Props<any>
   options:
   {
     key: string;
-    content: React.Component<any, any>;
+    content: React.ReactElement<any>;
   }[];
 }
 

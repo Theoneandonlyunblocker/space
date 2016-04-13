@@ -1,9 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../galaxymap/optionsgroup.ts" />
-/// <reference path="notificationfilterlistitem.ts" />
-
 
 import OptionsGroup from "../galaxymap/OptionsGroup";
 import NotificationFilterListItem from "./NotificationFilterListItem";
@@ -24,15 +21,8 @@ interface StateType
 export class NotificationFilterListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationFilterList";
-  handleResetCategory(category: string)
-  {
-    var filter = this.props.filter;
-    filter.setDefaultFilterStatesForCategory(category);
-    filter.save();
-    this.forceUpdate();
-    eventManager.dispatchEvent("updateNotificationLog");
-  }
   state: StateType;
+  ref_TODO_body: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -46,12 +36,20 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
     this.handleResetCategory = this.handleResetCategory.bind(this);    
   }
   
+  handleResetCategory(category: string)
+  {
+    var filter = this.props.filter;
+    filter.setDefaultFilterStatesForCategory(category);
+    filter.save();
+    this.forceUpdate();
+    eventManager.dispatchEvent("updateNotificationLog");
+  }
   scrollToHighlighted()
   {
     if (this.props.highlightedOptionKey)
     {
       var domNode = this.ref_TODO_body.getDOMNode();
-      var highlightedNode = domNode.getElementsByClassName("highlighted")[0];
+      var highlightedNode = <HTMLElement> domNode.getElementsByClassName("highlighted")[0];
       domNode.scrollTop = highlightedNode.offsetTop + domNode.scrollHeight / 3;
     }
   }
@@ -65,7 +63,11 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
     for (var category in filtersByCategory)
     {
       var filtersForCategory = filtersByCategory[category];
-      var filterElementsForCategory: React.ReactElement<any>[] = [];
+      var filterElementsForCategory:
+      {
+        key: string;
+        content: React.ReactElement<any>;
+      }[] = [];
       for (var i = 0; i < filtersForCategory.length; i++)
       {
         var notificationTemplate = filtersForCategory[i].notificationTemplate
@@ -121,10 +123,10 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
         React.DOM.div(
         {
           className: "notification-filter-list-body",
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_body = component;
-}
+          ref: (component: React.HTMLComponent) =>
+          {
+            this.ref_TODO_body = component;
+          }
         },
           filterGroupElements
         )
