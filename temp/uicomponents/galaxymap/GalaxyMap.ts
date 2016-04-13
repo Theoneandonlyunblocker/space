@@ -6,7 +6,7 @@ import * as React from "react";
 
 import GalaxyMap from "../../../src/GalaxyMap.ts";
 import GalaxyMapUI from "./GalaxyMapUI.ts";
-import Options from "../../../src/options.ts";
+import Options from "../../../src/Options.ts";
 import Player from "../../../src/Player.ts";
 import PlayerControl from "../../../src/PlayerControl.ts";
 import Game from "../../../src/Game.ts";

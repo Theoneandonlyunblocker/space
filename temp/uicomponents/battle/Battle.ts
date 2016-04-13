@@ -8,7 +8,7 @@ import Unit from "../../../src/Unit.ts";
 import TurnOrder from "./TurnOrder.ts";
 import TurnCounter from "./TurnCounter.ts";
 import BattleBackground from "./BattleBackground.ts";
-import Options from "../../../src/options.ts";
+import Options from "../../../src/Options.ts";
 import MCTree from "../../../src/MCTree.ts";
 import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
 import {AbilityUseData} from "../../../src/battleAbilityProcessing.ts";

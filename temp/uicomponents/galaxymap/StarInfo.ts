@@ -5,7 +5,7 @@ import * as React from "react";
 
 
 import DefenceBuildingList from "./DefenceBuildingList.ts";
-import Options from "../../../src/options.ts";
+import Options from "../../../src/Options.ts";
 import Star from "../../../src/Star.ts";
 
 

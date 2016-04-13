@@ -15,7 +15,7 @@ import * as React from "react";
 import Unit from "../../../src/Unit.ts";
 import OptionsCheckbox from "./OptionsCheckbox.ts";
 import PopupManager from "../popups/PopupManager.ts";
-import Options from "../../../src/options.ts";
+import Options from "../../../src/Options.ts";
 import OptionsNumericField from "./OptionsNumericField.ts";
 import Battle from "../battle/Battle.ts";
 import OptionsGroup from "./OptionsGroup.ts";

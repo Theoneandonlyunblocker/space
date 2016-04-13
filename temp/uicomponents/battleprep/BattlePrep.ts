@@ -12,7 +12,7 @@ import {default as BattleBackground, BattleBackgroundComponent} from "../battle/
 import ItemList from "../unitlist/ItemList.ts";
 import Item from "../../../src/Item.ts";
 import Formation from "../battle/Formation.ts";
-import Options from "../../../src/options.ts";
+import Options from "../../../src/Options.ts";
 import BattleSimulator from "../../../src/BattleSimulator.ts";
 import UnitList from "../unitlist/UnitList.ts";
 import BattleInfo from "./BattleInfo.ts";
