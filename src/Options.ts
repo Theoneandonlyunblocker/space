@@ -1,3 +1,4 @@
+import eventManager from "./eventManager.ts";
 import
 {
   getMatchingLocalstorageItemsByDate,
@@ -35,6 +36,31 @@ interface OptionsValues
   };
 }
 
+const defaultOptionsValues =
+{
+  battleAnimationTiming:
+  {
+    before: 750,
+    effectDuration: 1,
+    after: 1500,
+    unitEnter: 200,
+    unitExit: 100
+  },
+  debugMode: false,
+  debugOptions:
+  {
+    battleSimulationDepth: 20
+  },
+  ui:
+  {
+    noHamburger: false
+  },
+  display:
+  {
+    borderWidth: 8
+  },
+}
+
 class Options implements OptionsValues
 {
   battleAnimationTiming:
@@ -65,40 +91,48 @@ class Options implements OptionsValues
   }
   public setDefaultForCategory(category: OptionsCategory)
   {
+    let shouldReRenderUI = false;
+    let shouldReRenderMap = false;
+    
     // !!!cases are untyped https://github.com/Microsoft/TypeScript/issues/6149
     switch (category)
     {
       case "battleAnimationTiming":
-        this.battleAnimationTiming =
-        {
-          before: 750,
-          effectDuration: 1,
-          after: 1500,
-          unitEnter: 200,
-          unitExit: 100
-        };
+        this.battleAnimationTiming = defaultOptionsValues.battleAnimationTiming;
         break;
+        
       case "debugMode":
-        this.debugMode = false;
+        if (this.debugMode !== defaultOptionsValues.debugMode)
+        {
+          shouldReRenderUI = true;
+        }
+        this.debugMode = defaultOptionsValues.debugMode;
         break;
+        
       case "debugOptions":
-        this.debugOptions =
-        {
-          battleSimulationDepth: 20
-        };
+        this.debugOptions = defaultOptionsValues.debugOptions;
         break;
+        
       case "ui":
-        this.ui =
-        {
-          noHamburger: false
-        };
+        this.ui = defaultOptionsValues.ui;
         break;
+        
       case "display":
-        this.display =
+        if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
         {
-          borderWidth: 8
-        };
+          shouldReRenderMap = true;
+        }
+        this.display = defaultOptionsValues.display;
         break;
+    }
+    
+    if (shouldReRenderUI)
+    {
+      eventManager.dispatchEvent("renderUI");
+    }
+    if (shouldReRenderMap)
+    {
+      eventManager.dispatchEvent("renderMap");
     }
   }
   public setDefaults()

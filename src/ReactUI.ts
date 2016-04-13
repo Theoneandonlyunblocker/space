@@ -24,8 +24,6 @@ export default class ReactUI
   player: Player;
   game: Game;
 
-  switchSceneFN: any;
-
   constructor(public container: HTMLElement)
   {
     React.initializeTouchEvents(true);
@@ -33,12 +31,8 @@ export default class ReactUI
   }
   addEventListeners()
   {
-    this.switchSceneFN = function(sceneName: string)
-    {
-      this.switchScene(sceneName);
-    }.bind(this);
-
-    eventManager.addEventListener("switchScene", this.switchSceneFN);
+    eventManager.addEventListener("switchScene", this.switchScene.bind(this));
+    eventManager.addEventListener("renderUI", this.render.bind(this));
   }
   switchScene(newScene: string)
   {
@@ -47,7 +41,8 @@ export default class ReactUI
   }
   destroy()
   {
-    eventManager.removeEventListener("switchScene", this.switchSceneFN);
+    eventManager.removeAllListeners("switchScene");
+    eventManager.removeAllListeners("renderUI");
     React.unmountComponentAtNode(this.container);
     this.stage = null;
     this.container = null;
