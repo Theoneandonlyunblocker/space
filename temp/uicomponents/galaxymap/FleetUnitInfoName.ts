@@ -1,9 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../unit.ts" />
-
-
 import Unit from "../../../src/Unit.ts";
 
 
@@ -15,14 +12,12 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  value?: any; // TODO refactor | define state type 456
+  inputElementValue?: string;
 }
 
 export class FleetUnitInfoNameComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetUnitInfoName";
-
-
   state: StateType;
 
   constructor(props: PropTypes)
@@ -42,13 +37,13 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
   {
     return(
     {
-      value: this.props.unit.name
+      inputElementValue: this.props.unit.name
     });
   }
-  onChange(e: Event)
+  onChange(e: React.FormEvent)
   {
     var target = <HTMLInputElement> e.target;
-    this.setState({value: target.value});
+    this.setState({inputElementValue: target.value});
     this.props.unit.name = target.value;
   }
   render()
@@ -57,7 +52,7 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
       React.DOM.input(
       {
         className: "fleet-unit-info-name",
-        value: this.props.isNotDetected ? "Unidentified ship" : this.state.value,
+        value: this.props.isNotDetected ? "Unidentified ship" : this.state.inputElementValue,
         onChange: this.props.isNotDetected ? null :  this.onChange,
         readOnly: this.props.isNotDetected
       })
