@@ -20,12 +20,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  notificationFilterPopup?: any; // TODO refactor | define state type 456
-}
-
-interface RefTypes extends React.Refs
-{
-  popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
+  notificationFilterPopup?: number;
 }
 
 export class NotificationFilterButtonComponent extends React.Component<PropTypes, StateType>
@@ -33,7 +28,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   displayName: string = "NotificationFilterButton";
 
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -134,10 +129,10 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
         ),
         PopupManager(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_popupManager = component;
-},
+          ref: (component: PopupManagerComponent) =>
+          {
+            this.ref_TODO_popupManager = component;
+          },
           onlyAllowOne: true
         })
       )
