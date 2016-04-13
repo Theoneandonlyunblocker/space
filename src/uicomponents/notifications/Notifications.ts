@@ -1,12 +1,10 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../notificationlog.ts" />
-/// <reference path="notificationlog.ts" />
 
-
+import NotificationLog from "../../NotificationLog";
 import Notifications from "../../../modules/defaultnotifications/NotificationTemplates";
-import NotificationLog from "./NotificationLog";
+import NotificationLogComponentFactory from "./NotificationLog";
 
 
 interface PropTypes extends React.Props<any>
@@ -23,7 +21,6 @@ export class NotificationsComponent extends React.Component<PropTypes, StateType
 {
   displayName: string = "Notifications";
 
-
   state: StateType;
 
   constructor(props: PropTypes)
@@ -38,7 +35,7 @@ export class NotificationsComponent extends React.Component<PropTypes, StateType
       {
         className: "notifications-container"
       },
-        NotificationLog(
+        NotificationLogComponentFactory(
         {
           log: this.props.log,
           currentTurn: this.props.currentTurn,
