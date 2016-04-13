@@ -166,7 +166,12 @@ export default class Flag
 
     this._customImageToRender = canvas;
   }
-  getCanvas(width: number, height: number, stretch: boolean = true, useCache: boolean = true)
+  getCanvas(
+    width: number = this.width,
+    height: number = this.height,
+    stretch: boolean = true,
+    useCache: boolean = true
+  )
   {
     if (useCache)
     {

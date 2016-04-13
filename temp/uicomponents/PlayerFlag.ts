@@ -7,10 +7,10 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  width: number;
+  width?: number;
   props: any; // TODO refactor | define prop type 123
   isMutable?: boolean;
-  height: number;
+  height?: number;
   stretch?: any; // TODO refactor | define prop type 123
   flag: Flag;
 }
