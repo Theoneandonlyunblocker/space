@@ -1,30 +1,25 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="manufacturableunits.ts" />
-/// <reference path="manufacturableitems.ts" />
-
-/// <reference path="../../star.ts" />
-/// <reference path="../../manufactory.ts" />
-
-
 import Player from "../../Player";
 import ManufacturableItems from "./ManufacturableItems";
 import ManufacturableUnits from "./ManufacturableUnits";
 import Star from "../../Star";
+import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
+type TabKey = "units" | "items";
 
 interface PropTypes extends React.Props<any>
 {
   selectedStar?: Star;
   player: Player;
-  triggerUpdate: reactTypeTODO_func;
+  triggerUpdate: () => void;
   money: number;
 }
 
 interface StateType
 {
-  activeTab?: any; // TODO refactor | define state type 456
+  activeTab?: TabKey
 }
 
 export class ManufacturableThingsComponent extends React.Component<PropTypes, StateType>
@@ -58,7 +53,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     });
   }
 
-  selectTab(key: string)
+  selectTab(key: TabKey)
   {
     if (this.state.activeTab === key) return;
     this.setState(
@@ -67,7 +62,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     });
   }
   
-  makeTabButton(key: string)
+  makeTabButton(key: TabKey)
   {
     var displayString: string;
     switch (key)
@@ -97,9 +92,9 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     );
   }
 
-  getManufacturableThings(key: string)
+  getManufacturableThings(key: TabKey)
   {
-    var manufacturableThings: IManufacturableThing[] = [];
+    var manufacturableThings: ManufacturableThing[] = [];
     var selectedStar = this.props.selectedStar;
     var player = this.props.player;
 
@@ -136,7 +131,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     return manufacturableThings;
   }
 
-  makeTab(key: string)
+  makeTab(key: TabKey)
   {
     var props =
     {
