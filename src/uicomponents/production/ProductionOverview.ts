@@ -143,7 +143,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   render()
   {
     var player = this.props.player;
-    var selectedStar: Star = this.state.selectedStar;
+    var selectedStar = this.state.selectedStar;
 
     var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 

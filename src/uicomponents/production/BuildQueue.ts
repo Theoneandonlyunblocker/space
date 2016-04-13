@@ -1,21 +1,16 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="manufacturablethingslist.ts" />
-/// <reference path="manufactoryupgradebutton.ts" />
-
-/// <reference path="../../manufactory.ts" />
-
-
 import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
 import ManufacturableThingsList from "./ManufacturableThingsList";
 import Manufactory from "../../Manufactory";
+import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
 
 interface PropTypes extends React.Props<any>
 {
   manufactory: Manufactory;
-  triggerUpdate: reactTypeTODO_func;
+  triggerUpdate: () => void;
   money: number;
 }
 
@@ -28,7 +23,7 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
   displayName: string = "BuildQueue";
 
 
-  removeItem(template: IManufacturableThing, parentIndex: number)
+  removeItem(template: ManufacturableThing, parentIndex: number)
   {
     var manufactory = this.props.manufactory;
     manufactory.removeThingAtIndex(parentIndex);
@@ -60,7 +55,7 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
   {
     var manufactory = this.props.manufactory;
 
-    var convertedBuildQueue: IManufacturableThing[] = [];
+    var convertedBuildQueue: ManufacturableThing[] = [];
 
     for (var i = 0; i < manufactory.buildQueue.length; i++)
     {
