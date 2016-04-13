@@ -11,7 +11,7 @@ import PlayerControl from "./PlayerControl.ts";
 import ReactUI from "./ReactUI.ts";
 import Renderer from "./Renderer.ts";
 import setDynamicTemplateProperties from "./setDynamicTemplateProperties.ts";
-import {loadOptions} from "./options.ts";
+import Options from "./options.ts";
 import {loadTutorialStatus} from "./tutorials/TutorialStatus.ts";
 import
 {
@@ -90,7 +90,7 @@ class App
   {
     var startTime = Date.now();
 
-    loadOptions();
+    Options.load();
     loadTutorialStatus();
 
     setDynamicTemplateProperties();
