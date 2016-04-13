@@ -1,17 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="manufactorystarslist.ts" />
-/// <reference path="buildqueue.ts" />
-/// <reference path="manufacturablethings.ts" />
-/// <reference path="constructmanufactory.ts" />
-
-/// <reference path="../mixins/updatewhenmoneychanges.ts" />
-
-/// <reference path="../../player.ts" />
-/// <reference path="../../star.ts" />
-
-
 import BuildQueue from "./BuildQueue";
 import Player from "../../Player";
 import ManufacturableThings from "./ManufacturableThings";
@@ -19,6 +8,7 @@ import Star from "../../Star";
 import ConstructManufactory from "./ConstructManufactory";
 import ManufactoryStarsList from "./ManufactoryStarsList";
 import eventManager from "../../eventManager";
+import {sortByManufactoryCapacityFN} from "../../utility";
 
 
 interface PropTypes extends React.Props<any>
@@ -28,9 +18,9 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  highlightedStars?: any; // TODO refactor | define state type 456
-  money?: any; // TODO refactor | define state type 456
-  selectedStar?: any; // TODO refactor | define state type 456
+  highlightedStars?: Star[];
+  money?: number;
+  selectedStar?: Star;
 }
 
 export class ProductionOverviewComponent extends React.Component<PropTypes, StateType>
@@ -77,8 +67,8 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
     return(
     {
-      selectedStar: initialSelected, // Star
-      highlightedStars: [initialSelected], // Star[]
+      selectedStar: initialSelected,
+      highlightedStars: [initialSelected],
       money: player.money
     });
   }
