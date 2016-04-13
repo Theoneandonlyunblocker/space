@@ -1,14 +1,14 @@
-import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI.ts";
-import EconomyAI from "../../../src/mapai/EconomyAI.ts";
-import MapEvaluator from "../../../src/mapai/MapEvaluator.ts";
-import Objective from "../../../src/mapai/Objective.ts";
-import ObjectivesAI from "../../../src/mapai/ObjectivesAI.ts";
+import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI";
+import EconomyAI from "../../../src/mapai/EconomyAI";
+import MapEvaluator from "../../../src/mapai/MapEvaluator";
+import Objective from "../../../src/mapai/Objective";
+import ObjectivesAI from "../../../src/mapai/ObjectivesAI";
 
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
+import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate";
 
-import app from "../../../src/App.ts";
-import Player from "../../../src/Player.ts";
-import Star from "../../../src/Star.ts";
+import app from "../../../src/App";
+import Player from "../../../src/Player";
+import Star from "../../../src/Star";
 
 const expandManufactoryCapacity: ObjectiveTemplate =
 {

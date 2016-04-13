@@ -6,7 +6,7 @@ import * as React from "react";
 /// <reference path="unititem.ts"/>
 
 
-import UnitItem from "./UnitItem.ts";
+import UnitItem from "./UnitItem";
 
 
 interface PropTypes extends React.Props<any>

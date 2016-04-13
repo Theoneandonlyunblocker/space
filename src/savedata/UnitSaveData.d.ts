@@ -1,7 +1,7 @@
-import UnitAttributes from "../UnitAttributes.d.ts";
+import UnitAttributes from "../UnitAttributes";
 
-import UnitItemsSaveData from "./UnitItemsSaveData.d.ts";
-import UnitBattleStatsSaveData from "./UnitBattleStatsSaveData.d.ts";
+import UnitItemsSaveData from "./UnitItemsSaveData";
+import UnitBattleStatsSaveData from "./UnitBattleStatsSaveData";
 
 declare interface UnitSaveData
 {

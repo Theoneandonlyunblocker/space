@@ -1,14 +1,14 @@
-import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate.d.ts";
+import UnitTemplate from "../../../src/templateinterfaces/UnitTemplate";
 
-import * as UnitArchetypes from "../unitArchetypes.ts";
-import * as UnitFamilies from "../unitFamilies.ts";
-import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction.ts";
+import * as UnitArchetypes from "../unitArchetypes";
+import * as UnitFamilies from "../unitFamilies";
+import defaultUnitDrawingFunction from "../defaultUnitDrawingFunction";
 
 import
 {
   rangedAttack,
   standBy
-} from "../../common/abilitytemplates/abilities.ts";
+} from "../../common/abilitytemplates/abilities";
 
 const redShip: UnitTemplate =
 {

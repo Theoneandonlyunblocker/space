@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 import
 {
   randInt,
   getRandomArrayItem
-} from "../../../src/utility.ts";
+} from "../../../src/utility";
 
 export default function projectileAttack(props:
 {

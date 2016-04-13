@@ -5,9 +5,9 @@ import * as React from "react";
 /// <reference path="flagsetter.ts" />
 
 
-import Player from "../../Player.ts";
-import FlagSetter from "./FlagSetter.ts";
-import ColorSetter from "./ColorSetter.ts";
+import Player from "../../Player";
+import FlagSetter from "./FlagSetter";
+import ColorSetter from "./ColorSetter";
 
 
 interface PropTypes extends React.Props<any>

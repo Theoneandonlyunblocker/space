@@ -1,9 +1,9 @@
-import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
+import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate";
 
-import DamageType from "../../../src/DamageType.ts";
+import DamageType from "../../../src/DamageType";
 
-import * as BattleSFX from "../battlesfxtemplates/battleSFX.ts";
-import * as EffectActions from "../effectactiontemplates/effectActions.ts";
+import * as BattleSFX from "../battlesfxtemplates/battleSFX";
+import * as EffectActions from "../effectactiontemplates/effectActions";
 
 
 export var rangedAttack: AbilityTemplate =

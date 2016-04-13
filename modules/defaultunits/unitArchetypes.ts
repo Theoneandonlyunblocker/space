@@ -1,6 +1,6 @@
-import UnitArchetype from "../../src/templateinterfaces/UnitArchetype.d.ts";
+import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 
-import Unit from "../../src/Unit.ts";
+import Unit from "../../src/Unit";
 
 export const combat: UnitArchetype =
 {

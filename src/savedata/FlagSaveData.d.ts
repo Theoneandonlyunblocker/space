@@ -1,5 +1,5 @@
-import ColorSaveData from "./ColorSaveData.d.ts";
-import EmblemSaveData from "./EmblemSaveData.d.ts";
+import ColorSaveData from "./ColorSaveData";
+import EmblemSaveData from "./EmblemSaveData";
 
 declare interface FlagSaveData
 {

@@ -1,5 +1,5 @@
-import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate.d.ts";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
 
 const stealth: TechnologyTemplate =

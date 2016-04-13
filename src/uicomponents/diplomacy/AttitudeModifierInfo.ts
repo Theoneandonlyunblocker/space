@@ -1,14 +1,14 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import ListColumn from "../unitlist/ListColumn.d.ts";
-import ListItem from "../unitlist/ListItem.d.ts";
+import ListColumn from "../unitlist/ListColumn";
+import ListItem from "../unitlist/ListItem";
 
 import
 {
   clamp,
   getRelativeValue,
-} from "../../utility.ts";
+} from "../../utility";
 
 interface PropTypes extends React.Props<any>
 {

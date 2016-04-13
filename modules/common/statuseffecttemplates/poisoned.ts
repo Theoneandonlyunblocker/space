@@ -1,6 +1,6 @@
-import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
-import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate.d.ts";
-import {healSelf} from "../effectactiontemplates/effectActions.ts";
+import SFXParams from "../../../src/templateinterfaces/SFXParams";
+import StatusEffectTemplate from "../../../src/templateinterfaces/StatusEffectTemplate";
+import {healSelf} from "../effectactiontemplates/effectActions";
 
 const poisoned: StatusEffectTemplate =
 {

@@ -1,4 +1,4 @@
-import Unit from "./Unit.ts";
+import Unit from "./Unit";
 import
 {
   flatten2dArray,

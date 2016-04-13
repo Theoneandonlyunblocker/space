@@ -1,14 +1,14 @@
-import AbilityBase from "./AbilityBase.d.ts";
-import AbilityTemplate from "./AbilityTemplate.d.ts";
-import CultureTemplate from "./CultureTemplate.d.ts";
-import ManufacturableThing from "./ManufacturableThing.d.ts";
-import PassiveSkillTemplate from "./PassiveSkillTemplate.d.ts";
-import SpriteTemplate from "./SpriteTemplate.d.ts";
-import TechnologyRequirement from "./TechnologyRequirement.d.ts";
-import UnitArchetype from "./UnitArchetype.d.ts";
-import UnitDrawingFunction from "./UnitDrawingFunction.d.ts";
-import UnitFamily from "./UnitFamily.d.ts";
-import WeightedProbability from "./WeightedProbability.d.ts";
+import AbilityBase from "./AbilityBase";
+import AbilityTemplate from "./AbilityTemplate";
+import CultureTemplate from "./CultureTemplate";
+import ManufacturableThing from "./ManufacturableThing";
+import PassiveSkillTemplate from "./PassiveSkillTemplate";
+import SpriteTemplate from "./SpriteTemplate";
+import TechnologyRequirement from "./TechnologyRequirement";
+import UnitArchetype from "./UnitArchetype";
+import UnitDrawingFunction from "./UnitDrawingFunction";
+import UnitFamily from "./UnitFamily";
+import WeightedProbability from "./WeightedProbability";
 
 
 declare interface UnitTemplate extends ManufacturableThing

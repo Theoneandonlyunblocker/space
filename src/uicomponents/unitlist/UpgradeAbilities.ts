@@ -4,7 +4,7 @@ import * as React from "react";
 /// <reference path="abilitylist.ts" />
 
 
-import AbilityList from "./AbilityList.ts";
+import AbilityList from "./AbilityList";
 
 
 interface PropTypes extends React.Props<any>

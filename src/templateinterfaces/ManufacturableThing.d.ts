@@ -1,4 +1,4 @@
-import TechnologyRequirement from "./TechnologyRequirement.d.ts";
+import TechnologyRequirement from "./TechnologyRequirement";
 
 declare interface ManufacturableThing
 {

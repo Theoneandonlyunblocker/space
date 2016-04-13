@@ -5,8 +5,8 @@ import * as React from "react";
 /// <reference path="resizehandle.ts" />
 
 
-import eventManager from "../../eventManager.ts";
-import PopupResizeHandle from "./PopupResizeHandle.ts";
+import eventManager from "../../eventManager";
+import PopupResizeHandle from "./PopupResizeHandle";
 
 
 interface PropTypes extends React.Props<any>

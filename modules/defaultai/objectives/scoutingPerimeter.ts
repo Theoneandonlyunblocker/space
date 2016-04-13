@@ -1,9 +1,9 @@
-import MapEvaluator from "../../../src/mapai/MapEvaluator.ts";
-import Objective from "../../../src/mapai/Objective.ts";
+import MapEvaluator from "../../../src/mapai/MapEvaluator";
+import Objective from "../../../src/mapai/Objective";
 
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
+import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate";
 
-import Unit from "../../../src/Unit.ts";
+import Unit from "../../../src/Unit";
 
 import
 {
@@ -11,7 +11,7 @@ import
   scoutingUnitDesireFN,
   scoutingUnitFitFN,
   perimeterObjectiveCreation
-} from "../aiUtils.ts";
+} from "../aiUtils";
 
 const scoutingPerimeter: ObjectiveTemplate =
 {

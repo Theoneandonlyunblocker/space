@@ -1,13 +1,13 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
-import Battle from "./Battle.ts";
-import MCTree from "./MCTree.ts";
-import Options from "./options.ts";
-import Unit from "./Unit.ts";
+import Battle from "./Battle";
+import MCTree from "./MCTree";
+import Options from "./options";
+import Unit from "./Unit";
 import
 {
   useAbility
-} from "./battleAbilityUsage.ts";
+} from "./battleAbilityUsage";
 
 export default class BattleSimulator
 {

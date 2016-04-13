@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Player from "../../Player.ts";
-import Game from "../../Game.ts";
-import Options from "../../Options.ts";
-import Technology from "../technologies/Technology.ts";
-import {default as TopMenuPopups, TopMenuPopupsComponent} from "./TopMenuPopups.ts";
-import eventManager from "../../eventManager.ts";
+import Player from "../../Player";
+import Game from "../../Game";
+import Options from "../../Options";
+import Technology from "../technologies/Technology";
+import {default as TopMenuPopups, TopMenuPopupsComponent} from "./TopMenuPopups";
+import eventManager from "../../eventManager";
 
 
 interface PropTypes extends React.Props<any>

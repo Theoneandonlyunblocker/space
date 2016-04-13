@@ -1,7 +1,7 @@
-import MapRendererMapModeTemplate from "../../src/templateinterfaces/MapRendererMapModeTemplate.d.ts";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+import MapRendererMapModeTemplate from "../../src/templateinterfaces/MapRendererMapModeTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
-import * as MapModes from "./mapmodetemplates/mapModes.ts";
+import * as MapModes from "./mapmodetemplates/mapModes";
 
 const MapModeTemplates: TemplateCollection<MapRendererMapModeTemplate> =
 {

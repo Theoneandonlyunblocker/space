@@ -1,4 +1,4 @@
-import BuildingEffect from "./BuildingEffect.d.ts";
+import BuildingEffect from "./BuildingEffect";
 
 declare interface BuildingTemplate
 {

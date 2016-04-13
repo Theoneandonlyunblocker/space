@@ -2,19 +2,19 @@
 
 import * as React from "react";
 
-import Unit from "../../Unit.ts";
-import OptionsCheckbox from "./OptionsCheckbox.ts";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager.ts";
-import Options from "../../Options.ts";
-import OptionsNumericField from "./OptionsNumericField.ts";
-import Battle from "../battle/Battle.ts";
-import OptionsGroup from "./OptionsGroup.ts";
-import ConfirmPopup from "../popups/ConfirmPopup.ts";
-import NotificationFilterButton from "../notifications/NotificationFilterButton.ts";
-import NotificationLog from "../../NotificationLog.ts";
-import eventManager from "../../eventManager.ts";
-import {clamp} from "../../utility.ts";
-import {resetTutorialStatus} from "../../tutorials/TutorialStatus.ts";
+import Unit from "../../Unit";
+import OptionsCheckbox from "./OptionsCheckbox";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import Options from "../../Options";
+import OptionsNumericField from "./OptionsNumericField";
+import Battle from "../battle/Battle";
+import OptionsGroup from "./OptionsGroup";
+import ConfirmPopup from "../popups/ConfirmPopup";
+import NotificationFilterButton from "../notifications/NotificationFilterButton";
+import NotificationLog from "../../NotificationLog";
+import eventManager from "../../eventManager";
+import {clamp} from "../../utility";
+import {resetTutorialStatus} from "../../tutorials/TutorialStatus";
 
 
 interface PropTypes extends React.Props<any>

@@ -6,7 +6,7 @@ import * as React from "react";
 /// <reference path="tradeableitemslist.ts" />
 
 
-import TradeableItemsList from "./TradeableItemsList.ts";
+import TradeableItemsList from "./TradeableItemsList";
 
 
 interface PropTypes extends React.Props<any>

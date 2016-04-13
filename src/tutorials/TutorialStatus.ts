@@ -1,7 +1,7 @@
 import
 {
   extendObject
-} from "../utility.ts";
+} from "../utility";
 
 export enum TutorialState
 {

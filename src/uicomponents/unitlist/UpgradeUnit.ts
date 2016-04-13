@@ -5,12 +5,12 @@ import * as React from "react";
 /// <reference path="upgradeattributes.ts" />
 
 
-import Unit from "../../Unit.ts";
-import AbilityBase from "../../templateinterfaces/AbilityBase.d.ts";
-import UpgradeAttributes from "./UpgradeAttributes.ts";
-import UpgradeAbilities from "./UpgradeAbilities.ts";
-import TopMenuPopup from "../popups/TopMenuPopup.ts";
-import PopupManager from "../popups/PopupManager.ts";
+import Unit from "../../Unit";
+import AbilityBase from "../../templateinterfaces/AbilityBase";
+import UpgradeAttributes from "./UpgradeAttributes";
+import UpgradeAbilities from "./UpgradeAbilities";
+import TopMenuPopup from "../popups/TopMenuPopup";
+import PopupManager from "../popups/PopupManager";
 
 
 interface PropTypes extends React.Props<any>

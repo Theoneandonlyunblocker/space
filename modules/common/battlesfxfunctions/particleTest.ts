@@ -1,20 +1,20 @@
 /// <reference path="../../../lib/tween.js.d.ts" />
 
-import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
-import BeamFilter from "../../../src/shaders/Beam.ts";
-import ShinyParticleFilter from "../../../src/shaders/ShinyParticle.ts";
-import IntersectingEllipsesFilter from "../../../src/shaders/IntersectingEllipses.ts";
-import LightBurstFilter from "../../../src/shaders/LightBurst.ts";
+import BeamFilter from "../../../src/shaders/Beam";
+import ShinyParticleFilter from "../../../src/shaders/ShinyParticle";
+import IntersectingEllipsesFilter from "../../../src/shaders/IntersectingEllipses";
+import LightBurstFilter from "../../../src/shaders/LightBurst";
 
 import
 {
   createDummySpriteForShader,
   getDummyTextureForShader,
   getRelativeValue
-} from "../../../src/utility.ts";
+} from "../../../src/utility";
 
-import ProtonWrapper from "./ProtonWrapper.ts";
+import ProtonWrapper from "./ProtonWrapper";
 
 
 export default function particleTest(props: SFXParams)

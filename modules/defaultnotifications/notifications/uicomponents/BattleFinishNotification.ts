@@ -1,9 +1,9 @@
 /// <reference path="../../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Notification from "../../../../src/Notification.ts";
+import Notification from "../../../../src/Notification";
 
-import {PropTypes as NotificationProps} from "../battleFinishNotification.ts";
+import {PropTypes as NotificationProps} from "../battleFinishNotification";
 
 
 interface PropTypes

@@ -1,18 +1,18 @@
 /// <reference path="../../lib/quadtree.d.ts" />
 
-import MapVoronoiInfo from "../MapVoronoiInfo.ts";
-import Star from "../Star.ts";
-import FillerPoint from "../FillerPoint.ts";
-import Player from "../Player.ts";
-import Point from "../Point.ts";
-import GalaxyMap from "../GalaxyMap.ts";
-import Options from "../options.ts";
+import MapVoronoiInfo from "../MapVoronoiInfo";
+import Star from "../Star";
+import FillerPoint from "../FillerPoint";
+import Player from "../Player";
+import Point from "../Point";
+import GalaxyMap from "../GalaxyMap";
+import Options from "../options";
 
 import
 {
   relaxVoronoi,
   makeVoronoi
-} from "./voronoi.ts";
+} from "./voronoi";
 
 export default class MapGenResult
 {

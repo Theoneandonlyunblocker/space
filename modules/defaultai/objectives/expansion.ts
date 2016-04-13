@@ -1,11 +1,11 @@
-import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI.ts";
-import MapEvaluator from "../../../src/mapai/MapEvaluator.ts";
-import Objective from "../../../src/mapai/Objective.ts";
+import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI";
+import MapEvaluator from "../../../src/mapai/MapEvaluator";
+import Objective from "../../../src/mapai/Objective";
 
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
+import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate";
 
-import Star from "../../../src/Star.ts";
-import Unit from "../../../src/Unit.ts";
+import Star from "../../../src/Star";
+import Unit from "../../../src/Unit";
 
 import
 {
@@ -15,7 +15,7 @@ import
   defaultUnitFitFN,
   makeObjectivesFromScores,
   getUnitsToBeatImmediateTarget
-} from "../aiUtils.ts";
+} from "../aiUtils";
 
 const expansion: ObjectiveTemplate =
 {

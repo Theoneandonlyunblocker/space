@@ -4,10 +4,10 @@ import * as React from "react";
 /// <reference path="../mixins/splitmultilinetext.ts" />
 
 
-import eventManager from "../../eventManager.ts";
+import eventManager from "../../eventManager";
 
-import ListItem from "./ListItem.d.ts";
-import ListColumn from "./ListColumn.d.ts";
+import ListItem from "./ListItem";
+import ListColumn from "./ListColumn";
 
 interface PropTypes extends React.Props<any>
 {

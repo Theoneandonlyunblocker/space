@@ -1,8 +1,8 @@
 /// <reference path="projectileattack.ts" />
 
-import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
-import projectileAttack from "./projectileAttack.ts";
+import projectileAttack from "./projectileAttack";
 
 export default function rocketAttack(params: SFXParams)
 {

@@ -6,10 +6,10 @@ import * as React from "react";
 /// <reference path="unitstatus.ts"/>
 
 
-import UnitStatus from "./UnitStatus.ts";
-import UnitStrength from "./UnitStrength.ts";
-import GuardCoverage from "../../GuardCoverage.ts";
-import UnitActions from "./UnitActions.ts";
+import UnitStatus from "./UnitStatus";
+import UnitStrength from "./UnitStrength";
+import GuardCoverage from "../../GuardCoverage";
+import UnitActions from "./UnitActions";
 
 
 interface PropTypes extends React.Props<any>

@@ -1,4 +1,4 @@
-import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate.d.ts";
+import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
 
 export default class StatusEffect
 {

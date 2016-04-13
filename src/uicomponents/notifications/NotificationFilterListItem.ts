@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 
 
-import NotificationFilterState from "../../NotificationFilterState.ts";
-import NotificationFilter from "../../NotificationFilter.ts";
-import eventManager from "../../eventManager.ts";
+import NotificationFilterState from "../../NotificationFilterState";
+import NotificationFilter from "../../NotificationFilter";
+import eventManager from "../../eventManager";
 
 import * as React from "react";
 

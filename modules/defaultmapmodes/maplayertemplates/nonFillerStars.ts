@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import eventManager from "../../../src/eventManager.ts";
-import Star from "../../../src/Star.ts";
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate.d.ts";
-import GalaxyMap from "../../../src/GalaxyMap.ts";
+import eventManager from "../../../src/eventManager";
+import Star from "../../../src/Star";
+import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
+import GalaxyMap from "../../../src/GalaxyMap";
 
 
 const nonFillerStars: MapRendererLayerTemplate =

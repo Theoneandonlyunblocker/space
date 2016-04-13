@@ -1,5 +1,5 @@
-import Star from "../Star.ts";
-import Player from "../Player.ts";
+import Star from "../Star";
+import Player from "../Player";
 
 declare interface RoutineAdjustment
 {

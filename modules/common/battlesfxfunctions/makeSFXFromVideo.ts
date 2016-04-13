@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 export default function makeSFXFromVideo(videoSrc: string, onStartFN: (sprite: PIXI.Sprite) => void,
   props: SFXParams)

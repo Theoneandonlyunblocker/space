@@ -1,11 +1,11 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Player from "../../Player.ts";
-import AttitudeModifier from "../../AttitudeModifier.ts";
-import Opinion from "./Opinion.ts";
-import PlayerFlag from "../PlayerFlag.ts";
-import ListColumn from "../unitlist/ListColumn.d.ts";
+import Player from "../../Player";
+import AttitudeModifier from "../../AttitudeModifier";
+import Opinion from "./Opinion";
+import PlayerFlag from "../PlayerFlag";
+import ListColumn from "../unitlist/ListColumn";
 
 
 interface PropTypes extends React.Props<any>

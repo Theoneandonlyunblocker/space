@@ -1,4 +1,4 @@
-import Range from "../Range.ts";
+import Range from "../Range";
 
 declare interface MapGenOption
 {

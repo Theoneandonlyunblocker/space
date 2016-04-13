@@ -1,10 +1,10 @@
-import Triangle from "./Triangle.ts";
-import Point from "../Point.ts";
+import Triangle from "./Triangle";
+import Point from "../Point";
 
 import
 {
   pointsEqual
-} from "../utility.ts";
+} from "../utility";
 
 export function triangulate(vertices: Point[]): Triangle[]
 {

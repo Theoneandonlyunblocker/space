@@ -1,5 +1,5 @@
-import Star from "../Star.ts";
-import FillerPoint from "../FillerPoint.ts";
+import Star from "../Star";
+import FillerPoint from "../FillerPoint";
 
 export default class Region
 {

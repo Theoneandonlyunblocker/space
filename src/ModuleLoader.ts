@@ -1,10 +1,10 @@
-import ModuleData from "./ModuleData.ts";
-import ModuleFile from "./ModuleFile.d.ts";
-import RuleSet from "./RuleSet.ts";
+import ModuleData from "./ModuleData";
+import ModuleFile from "./ModuleFile";
+import RuleSet from "./RuleSet";
 import
 {
   deepMerge
-} from "./utility.ts";
+} from "./utility";
 
 export default class ModuleLoader
 {

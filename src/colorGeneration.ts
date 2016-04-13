@@ -1,18 +1,18 @@
-import Color from "./Color.ts";
-import Range from "./Range.ts";
+import Color from "./Color";
+import Range from "./Range";
 import
 {
   excludeFromRange,
   excludeFromRanges,
   getIntersectingRanges,
   randomSelectFromRanges
-} from "./rangeOperations.ts";
+} from "./rangeOperations";
 import
 {
   clamp,
   getAngleBetweenDegrees,
   randRange
-} from "./utility.ts";
+} from "./utility";
 
 
 function makeRandomVibrantColor(): Color

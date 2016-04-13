@@ -1,4 +1,4 @@
-import ArchetypeValues from "./ArchetypeValues.d.ts";
+import ArchetypeValues from "./ArchetypeValues";
 
 export interface Personality
 {

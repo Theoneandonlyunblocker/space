@@ -8,12 +8,12 @@ import * as React from "react";
 /// <reference path="../../templateinterfaces/mapgenoptions.d.ts" />
 
 
-import MapGenOptions from "../../templateinterfaces/MapGenOptions.d.ts";
-import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues.d.ts";
-import Options from "../../Options.ts";
-import MapGenTemplate from "../../templateinterfaces/MapGenTemplate.d.ts";
-import OptionsGroup from "../galaxymap/OptionsGroup.ts";
-import MapGenOption from "./MapGenOption.ts";
+import MapGenOptions from "../../templateinterfaces/MapGenOptions";
+import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues";
+import Options from "../../Options";
+import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
+import OptionsGroup from "../galaxymap/OptionsGroup";
+import MapGenOption from "./MapGenOption";
 
 
 interface PropTypes extends React.Props<any>

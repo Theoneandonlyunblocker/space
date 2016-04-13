@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 
 
-import eventManager from "../../eventManager.ts";
+import eventManager from "../../eventManager";
 
 
 export var UpdateWhenMoneyChanges =

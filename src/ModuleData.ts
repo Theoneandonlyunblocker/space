@@ -1,28 +1,28 @@
 /// <reference path="RuleSet.ts" />
-import ModuleFile from "./ModuleFile.d.ts";
-import Personality from "../src/Personality.d.ts";
-import TemplateCollection from "../src/templateinterfaces/TemplateCollection.d.ts";
+import ModuleFile from "./ModuleFile";
+import Personality from "../src/Personality";
+import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
 import
 {
   default as RuleSet,
   defaultRuleSet
-} from "./RuleSet.ts";
+} from "./RuleSet";
 
 import
 {
   extendObject,
   getRandomProperty
-} from "./utility.ts";
+} from "./utility";
 
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
-import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate.d.ts";
-import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate.d.ts";
-import BuildingTemplate from "./templateinterfaces/BuildingTemplate.d.ts";
-import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate.d.ts";
-import ItemTemplate from "./templateinterfaces/ItemTemplate.d.ts";
-import MapGenTemplate from "./templateinterfaces/MapGenTemplate.d.ts";
-import CultureTemplate from "./templateinterfaces/CultureTemplate.d.ts";
-import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate.d.ts";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
+import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
+import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
+import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate";
+import ItemTemplate from "./templateinterfaces/ItemTemplate";
+import MapGenTemplate from "./templateinterfaces/MapGenTemplate";
+import CultureTemplate from "./templateinterfaces/CultureTemplate";
+import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate";
 import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate.d.ts"
 import NotificationTemplate from "./templateinterfaces/NotificationTemplate.d.ts"
 import ObjectiveTemplate from "./templateinterfaces/ObjectiveTemplate.d.ts"

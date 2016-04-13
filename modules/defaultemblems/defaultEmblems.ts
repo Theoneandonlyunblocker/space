@@ -1,10 +1,10 @@
-import SubEmblemTemplates from "./SubEmblemTemplates.ts";
+import SubEmblemTemplates from "./SubEmblemTemplates";
 
-import app from "../../src/App.ts";
-import ModuleFile from "../../src/ModuleFile.d.ts";
-import ModuleData from "../../src/ModuleData.ts";
+import app from "../../src/App";
+import ModuleFile from "../../src/ModuleFile";
+import ModuleData from "../../src/ModuleData";
 
-import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate.d.ts";
+import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 
 const defaultBuildings: ModuleFile =
 {

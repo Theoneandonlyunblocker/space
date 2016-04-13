@@ -1,4 +1,4 @@
-import UnitFamily from "../../src/templateinterfaces/UnitFamily.d.ts";
+import UnitFamily from "../../src/templateinterfaces/UnitFamily";
 
 export const debug: UnitFamily =
 {

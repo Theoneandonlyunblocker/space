@@ -1,8 +1,8 @@
-import RuleSet from "../../src/RuleSet.ts";
-import ModuleData from "../../src/ModuleData.ts";
-import ModuleFile from "../../src/ModuleFile.d.ts";
+import RuleSet from "../../src/RuleSet";
+import ModuleData from "../../src/ModuleData";
+import ModuleFile from "../../src/ModuleFile";
 
-import NotificationTemplates from "./NotificationTemplates.ts";
+import NotificationTemplates from "./NotificationTemplates";
 
 const defaultNotifications: ModuleFile =
 {

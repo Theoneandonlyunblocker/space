@@ -1,15 +1,15 @@
-import ItemTemplate from "../../src/templateinterfaces/ItemTemplate.d.ts";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
 import
 {
   bombAttack,
   guardRow
-} from "../common/abilitytemplates/abilities.ts";
+} from "../common/abilitytemplates/abilities";
 import
 {
   overdrive
-} from "../common/passiveskilltemplates/passiveSkills.ts";
+} from "../common/passiveskilltemplates/passiveSkills";
 
 const bombLauncher1: ItemTemplate =
 {

@@ -1,5 +1,5 @@
-import Building from "./Building.ts";
-import BuildingTemplate from "./templateinterfaces/BuildingTemplate.d.ts";
+import Building from "./Building";
+import BuildingTemplate from "./templateinterfaces/BuildingTemplate";
 
 declare interface BuildingUpgradeData
 {

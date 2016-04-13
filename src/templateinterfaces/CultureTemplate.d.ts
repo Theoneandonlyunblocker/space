@@ -1,6 +1,6 @@
-import Unit from "../Unit.ts";
-import NameTemplate from "./NameTemplate.d.ts";
-import PortraitTemplate from "./PortraitTemplate.d.ts";
+import Unit from "../Unit";
+import NameTemplate from "./NameTemplate";
+import PortraitTemplate from "./PortraitTemplate";
 
 declare interface CultureTemplate
 {

@@ -1,4 +1,4 @@
-import DiplomacyEvaluation from "../DiplomacyEvaluation.d.ts";
+import DiplomacyEvaluation from "../DiplomacyEvaluation";
 
 declare interface AttitudeModifierTemplate
 {

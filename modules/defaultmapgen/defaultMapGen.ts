@@ -1,11 +1,11 @@
-import ModuleFile from "../../src/ModuleFile.d.ts";
-import ModuleData from "../../src/ModuleData.ts";
+import ModuleFile from "../../src/ModuleFile";
+import ModuleData from "../../src/ModuleData";
 
-import MapGenTemplate from "../../src/templateinterfaces/MapGenTemplate.d.ts";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+import MapGenTemplate from "../../src/templateinterfaces/MapGenTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
-import spiralGalaxy from "./templates/spiralGalaxy.ts";
-import tinierSpiralGalaxy from "./templates/tinierSpiralGalaxy.ts";
+import spiralGalaxy from "./templates/spiralGalaxy";
+import tinierSpiralGalaxy from "./templates/tinierSpiralGalaxy";
 
 const Templates: TemplateCollection<MapGenTemplate> =
 {

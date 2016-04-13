@@ -1,6 +1,6 @@
-import MapGenTemplate from "../../../src/templateinterfaces/mapgentemplate.d.ts";
+import MapGenTemplate from "../../../src/templateinterfaces/mapgentemplate";
 
-import spiralGalaxyGeneration from "../mapgenfunctions/spiralGalaxyGeneration.ts";
+import spiralGalaxyGeneration from "../mapgenfunctions/spiralGalaxyGeneration";
 
 const tinierSpiralGalaxy: MapGenTemplate =
 {

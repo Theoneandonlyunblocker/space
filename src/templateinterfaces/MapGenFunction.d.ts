@@ -1,6 +1,6 @@
-import MapGenOptionValues from "./MapGenOptionValues.d.ts";
-import Player from "../Player.ts";
-import MapGenResult from "../mapgencore/MapGenResult.ts";
+import MapGenOptionValues from "./MapGenOptionValues";
+import Player from "../Player";
+import MapGenResult from "../mapgencore/MapGenResult";
 
 declare interface MapGenFunction
 {

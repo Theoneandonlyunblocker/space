@@ -1,10 +1,10 @@
-import PassiveSkillTemplate from "../../../src/templateinterfaces/PassiveSkillTemplate.d.ts";
-import SFXParams from "../../../src/templateinterfaces/SFXParams.d.ts";
+import PassiveSkillTemplate from "../../../src/templateinterfaces/PassiveSkillTemplate";
+import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
-import Unit from "../../../src/Unit.ts";
-import BattlePrep from "../../../src/BattlePrep.ts";
+import Unit from "../../../src/Unit";
+import BattlePrep from "../../../src/BattlePrep";
 
-import * as EffectActions from "../effectactiontemplates/effectActions.ts";
+import * as EffectActions from "../effectactiontemplates/effectActions";
 
 export var autoHeal: PassiveSkillTemplate =
 {

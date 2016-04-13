@@ -1,23 +1,23 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Renderer from "../../Renderer.ts";
-import Player from "../../Player.ts";
-import Battle from "../../Battle.ts";
-import Unit from "../../Unit.ts";
-import TurnOrder from "./TurnOrder.ts";
-import TurnCounter from "./TurnCounter.ts";
-import BattleBackground from "./BattleBackground.ts";
-import Options from "../../Options.ts";
-import MCTree from "../../MCTree.ts";
-import AbilityTemplate from "../../templateinterfaces/AbilityTemplate.d.ts";
-import {AbilityUseData} from "../../battleAbilityProcessing.ts";
-import {getTargetsForAllAbilities} from "../../battleAbilityTargeting.ts";
-import BattleScore from "./BattleScore.ts";
-import BattleScene from "./BattleScene.ts";
-import Formation from "./Formation.ts";
-import BattleDisplayStrength from "./BattleDisplayStrength.ts";
-import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityTooltip.ts";
+import Renderer from "../../Renderer";
+import Player from "../../Player";
+import Battle from "../../Battle";
+import Unit from "../../Unit";
+import TurnOrder from "./TurnOrder";
+import TurnCounter from "./TurnCounter";
+import BattleBackground from "./BattleBackground";
+import Options from "../../Options";
+import MCTree from "../../MCTree";
+import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
+import {AbilityUseData} from "../../battleAbilityProcessing";
+import {getTargetsForAllAbilities} from "../../battleAbilityTargeting";
+import BattleScore from "./BattleScore";
+import BattleScene from "./BattleScene";
+import Formation from "./Formation";
+import BattleDisplayStrength from "./BattleDisplayStrength";
+import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityTooltip";
 
 
 // TODO refactor

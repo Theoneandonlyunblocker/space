@@ -1,9 +1,9 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate.d.ts";
+import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate";
 
-import GalaxyMap from "./GalaxyMap.ts";
-import MapRenderer from "./MapRenderer.ts";
+import GalaxyMap from "./GalaxyMap";
+import MapRenderer from "./MapRenderer";
 
 export default class MapRendererLayer
 {

@@ -1,12 +1,12 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import UnitTemplates from "./UnitTemplates.ts";
+import UnitTemplates from "./UnitTemplates";
 
-import ModuleFile from "../../src/ModuleFile.d.ts";
-import ModuleData from "../../src/ModuleData.ts";
-import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages.ts";
+import ModuleFile from "../../src/ModuleFile";
+import ModuleData from "../../src/ModuleData";
+import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 
-import UnitTemplate from "../../src/templateinterfaces/UnitTemplate.d.ts";
+import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
 const defaultUnits: ModuleFile =
 {

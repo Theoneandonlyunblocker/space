@@ -1,4 +1,4 @@
-import Player from "./Player.ts";
+import Player from "./Player";
 
 export interface TradeableItem
 {

@@ -1,9 +1,9 @@
-import Player from "./Player.ts";
-import Fleet from "./Fleet.ts";
-import eventManager from "./eventManager.ts";
-import Star from "./Star.ts";
-import FleetAttackTarget from "./FleetAttackTarget.d.ts";
-import RectangleSelect from "./RectangleSelect.ts";
+import Player from "./Player";
+import Fleet from "./Fleet";
+import eventManager from "./eventManager";
+import Star from "./Star";
+import FleetAttackTarget from "./FleetAttackTarget";
+import RectangleSelect from "./RectangleSelect";
 
 export default class PlayerControl
 {

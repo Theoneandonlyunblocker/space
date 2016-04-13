@@ -1,4 +1,4 @@
-import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate.d.ts";
+import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate";
 
 export const testResource1: ResourceTemplate =
 {

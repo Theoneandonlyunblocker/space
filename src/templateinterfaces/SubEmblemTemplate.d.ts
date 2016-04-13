@@ -1,5 +1,5 @@
-import SubEmblemCoverage from "../SubEmblemCoverage.ts";
-import SubEmblemPosition from "../SubEmblemPosition.ts";
+import SubEmblemCoverage from "../SubEmblemCoverage";
+import SubEmblemPosition from "../SubEmblemPosition";
 
 declare interface SubEmblemTemplate
 {

@@ -1,17 +1,17 @@
-import DiplomacyAI from "../../../src/mapai/DiplomacyAI.ts";
-import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI.ts";
-import MapEvaluator from "../../../src/mapai/MapEvaluator.ts";
-import Objective from "../../../src/mapai/Objective.ts";
+import DiplomacyAI from "../../../src/mapai/DiplomacyAI";
+import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI";
+import MapEvaluator from "../../../src/mapai/MapEvaluator";
+import Objective from "../../../src/mapai/Objective";
 
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
-import RoutineAdjustmentByID from "../../../src/templateinterfaces/RoutineAdjustmentByID.d.ts";
+import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate";
+import RoutineAdjustmentByID from "../../../src/templateinterfaces/RoutineAdjustmentByID";
 
-import Player from "../../../src/Player.ts";
+import Player from "../../../src/Player";
 
 import
 {
   makeObjectivesFromScores
-} from "../aiUtils.ts";
+} from "../aiUtils";
 
 const declareWar: ObjectiveTemplate =
 {

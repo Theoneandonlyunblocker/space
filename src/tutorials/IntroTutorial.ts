@@ -1,4 +1,4 @@
-import Tutorial from "./Tutorial.d.ts";
+import Tutorial from "./Tutorial";
 
 const IntroTutorial: Tutorial =
 {

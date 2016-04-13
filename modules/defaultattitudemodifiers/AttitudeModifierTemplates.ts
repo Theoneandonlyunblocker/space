@@ -1,8 +1,8 @@
-import AttitudeModifierTemplateBase from "../../src/templateinterfaces/AttitudeModifierTemplate.d.ts";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+import AttitudeModifierTemplateBase from "../../src/templateinterfaces/AttitudeModifierTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
-import DiplomacyEvaluation from "../../src/DiplomacyEvaluation.d.ts";
-import DiplomacyState from "../../src/DiplomacyState.ts";
+import DiplomacyEvaluation from "../../src/DiplomacyEvaluation";
+import DiplomacyState from "../../src/DiplomacyState";
 
 
 interface AttitudeModifierTemplate extends AttitudeModifierTemplateBase

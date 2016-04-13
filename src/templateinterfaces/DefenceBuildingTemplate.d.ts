@@ -1,4 +1,4 @@
-import BuildingTemplate from "./BuildingTemplate.d.ts";
+import BuildingTemplate from "./BuildingTemplate";
 
 declare interface DefenceBuildingTemplate extends BuildingTemplate
 {

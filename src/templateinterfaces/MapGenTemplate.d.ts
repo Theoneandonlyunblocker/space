@@ -1,5 +1,5 @@
-import MapGenOptions from "./MapGenOptions.d.ts";
-import MapGenFunction from "./MapGenFunction.d.ts";
+import MapGenOptions from "./MapGenOptions";
+import MapGenFunction from "./MapGenFunction";
 
 declare interface MapGenTemplate
 {

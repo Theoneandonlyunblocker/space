@@ -4,8 +4,8 @@ import * as React from "react";
 /// <reference path="fleetcontrols.ts"/>
 
 
-import FleetControls from "./FleetControls.ts";
-import Fleet from "../../Fleet.ts";
+import FleetControls from "./FleetControls";
+import Fleet from "../../Fleet";
 
 
 interface PropTypes extends React.Props<any>

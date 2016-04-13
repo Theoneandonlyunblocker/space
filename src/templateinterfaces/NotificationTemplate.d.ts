@@ -1,8 +1,8 @@
 /// <reference path="../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import NotificationFilterState from "../NotificationFilterState.ts";
-import GameLoader from "../GameLoader.ts";
+import NotificationFilterState from "../NotificationFilterState";
+import GameLoader from "../GameLoader";
 
 declare interface NotificationTemplate
 {

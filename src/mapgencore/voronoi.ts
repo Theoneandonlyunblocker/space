@@ -1,7 +1,7 @@
 /// <reference path="../../lib/voronoi.d.ts" />
 
-import Triangle from "./Triangle.ts";
-import Point from "../Point.ts";
+import Triangle from "./Triangle";
+import Point from "../Point";
 
 export function makeVoronoi(points: Point[], width: number, height: number)
 {

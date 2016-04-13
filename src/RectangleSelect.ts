@@ -1,7 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-import eventManager from "./eventManager.ts";
-import Point from "./Point.ts";
+import eventManager from "./eventManager";
+import Point from "./Point";
 
 export default class RectangleSelect
 {

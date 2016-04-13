@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import DefenceBuilding from "./DefenceBuilding.ts";
-import Building from "../../Building.ts";
+import DefenceBuilding from "./DefenceBuilding";
+import Building from "../../Building";
 
 interface PropTypes extends React.Props<any>
 {

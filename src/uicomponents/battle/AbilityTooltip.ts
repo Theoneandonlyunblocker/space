@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Unit from "../../Unit.ts";
-import AbilityTemplate from "../../templateinterfaces/AbilityTemplate.d.ts";
+import Unit from "../../Unit";
+import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 
 interface PropTypes extends React.Props<any>
 {

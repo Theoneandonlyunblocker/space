@@ -1,4 +1,4 @@
-import BuildingSaveData from "./BuildingSaveData.d.ts";
+import BuildingSaveData from "./BuildingSaveData";
 
 declare interface StarBuildingsSaveData
 {

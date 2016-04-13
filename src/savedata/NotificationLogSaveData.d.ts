@@ -1,4 +1,4 @@
-import NotificationSaveData from "./NotificationSaveData.d.ts";
+import NotificationSaveData from "./NotificationSaveData";
 
 declare interface NotificationLogSaveData
 {

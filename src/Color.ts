@@ -1,6 +1,6 @@
 /// <reference path="../lib/husl.d.ts" />
 
-import ColorSaveData from "./savedata/ColorSaveData.d.ts";
+import ColorSaveData from "./savedata/ColorSaveData";
 
 export default class Color
 {

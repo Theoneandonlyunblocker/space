@@ -7,10 +7,10 @@ import * as React from "react";
 /// <reference path="buildingupgradelistitem.ts" />
 
 
-import Player from "../../Player.ts";
-import BuildingUpgradeListItem from "./BuildingUpgradeListItem.ts";
-import Star from "../../Star.ts";
-import Building from "../../Building.ts";
+import Player from "../../Player";
+import BuildingUpgradeListItem from "./BuildingUpgradeListItem";
+import Star from "../../Star";
+import Building from "../../Building";
 
 
 interface PropTypes extends React.Props<any>

@@ -1,14 +1,14 @@
-import Star from "../Star.ts";
-import Player from "../Player.ts";
-import Game from "../Game.ts";
-import GalaxyMap from "../GalaxyMap.ts";
-import Fleet from "../Fleet.ts";
-import Unit from "../Unit.ts";
-import DiplomacyEvaluation from "../DiplomacyEvaluation.d.ts";
+import Star from "../Star";
+import Player from "../Player";
+import Game from "../Game";
+import GalaxyMap from "../GalaxyMap";
+import Fleet from "../Fleet";
+import Unit from "../Unit";
+import DiplomacyEvaluation from "../DiplomacyEvaluation";
 import
 {
   getRelativeValue
-} from "../utility.ts";
+} from "../utility";
 
 export var defaultEvaluationParameters =
 {

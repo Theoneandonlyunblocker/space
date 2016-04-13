@@ -6,14 +6,14 @@ import * as React from "react";
 /// <reference path="fleetreorganization.ts"/>
 
 
-import eventManager from "../../eventManager.ts";
-import FleetInfo from "./FleetInfo.ts";
-import FleetContents from "./FleetContents.ts";
-import fleets from "../../../modules/defaultmapmodes/maplayertemplates/fleets.ts";
-import FleetReorganization from "./FleetReorganization.ts";
-import Fleet from "../../Fleet.ts";
-import Player from "../../Player.ts";
-import Star from "../../Star.ts";
+import eventManager from "../../eventManager";
+import FleetInfo from "./FleetInfo";
+import FleetContents from "./FleetContents";
+import fleets from "../../../modules/defaultmapmodes/maplayertemplates/fleets";
+import FleetReorganization from "./FleetReorganization";
+import Fleet from "../../Fleet";
+import Player from "../../Player";
+import Star from "../../Star";
 
 
 interface PropTypes extends React.Props<any>

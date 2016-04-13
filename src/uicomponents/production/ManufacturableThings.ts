@@ -8,10 +8,10 @@ import * as React from "react";
 /// <reference path="../../manufactory.ts" />
 
 
-import Player from "../../Player.ts";
-import ManufacturableItems from "./ManufacturableItems.ts";
-import ManufacturableUnits from "./ManufacturableUnits.ts";
-import Star from "../../Star.ts";
+import Player from "../../Player";
+import ManufacturableItems from "./ManufacturableItems";
+import ManufacturableUnits from "./ManufacturableUnits";
+import Star from "../../Star";
 
 
 interface PropTypes extends React.Props<any>

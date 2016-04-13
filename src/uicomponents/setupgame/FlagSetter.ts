@@ -7,11 +7,11 @@ import * as React from "react";
 /// <reference path="flagpicker.ts" />
 
 
-import FlagPicker from "./FlagPicker.ts";
-import PlayerFlag from "../PlayerFlag.ts";
-import Flag from "../../Flag.ts";
-import Emblem from "../../Emblem.ts";
-import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate.d.ts";
+import FlagPicker from "./FlagPicker";
+import PlayerFlag from "../PlayerFlag";
+import Flag from "../../Flag";
+import Emblem from "../../Emblem";
+import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 interface PropTypes extends React.Props<any>
 {

@@ -1,18 +1,18 @@
-import RoutineAdjustment from "./RoutineAdjustment.d.ts";
-import RoutineAdjustmentByID from "./RoutineAdjustmentByID.d.ts";
+import RoutineAdjustment from "./RoutineAdjustment";
+import RoutineAdjustmentByID from "./RoutineAdjustmentByID";
 
-import ArchetypeValues from "../ArchetypeValues.d.ts";
-import Star from "../Star.ts";
-import Player from "../Player.ts";
-import Unit from "../Unit.ts";
+import ArchetypeValues from "../ArchetypeValues";
+import Star from "../Star";
+import Player from "../Player";
+import Unit from "../Unit";
 
-import Front from "../mapai/Front.ts";
-import GrandStrategyAI from "../mapai/GrandStrategyAI.ts";
-import MapEvaluator from "../mapai/MapEvaluator.ts";
-import Objective from "../mapai/Objective.ts";
-import ObjectivesAI from "../mapai/ObjectivesAI.ts";
-import EconomyAI from "../mapai/EconomyAI.ts";
-import DiplomacyAI from "../mapai/DiplomacyAI.ts";
+import Front from "../mapai/Front";
+import GrandStrategyAI from "../mapai/GrandStrategyAI";
+import MapEvaluator from "../mapai/MapEvaluator";
+import Objective from "../mapai/Objective";
+import ObjectivesAI from "../mapai/ObjectivesAI";
+import EconomyAI from "../mapai/EconomyAI";
+import DiplomacyAI from "../mapai/DiplomacyAI";
 
 
 declare interface ObjectiveTemplate

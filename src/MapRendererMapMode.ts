@@ -1,6 +1,6 @@
-import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate.d.ts";
+import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
 
-import MapRendererLayer from "./MapRendererLayer.ts";
+import MapRendererLayer from "./MapRendererLayer";
 
 export default class MapRendererMapMode
 {

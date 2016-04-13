@@ -1,5 +1,5 @@
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
-import UnitTemplate from "../../src/templateinterfaces/UnitTemplate.d.ts";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
+import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
 import battleCruiser from  "./templates/battleCruiser.ts";
 import commandShip from  "./templates/commandShip.ts";

@@ -1,11 +1,11 @@
-import Objectives from "./Objectives.ts";
+import Objectives from "./Objectives";
 
-import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages.ts";
-import ModuleData from "../../src/ModuleData.ts";
-import ModuleFile from "../../src/ModuleFile.d.ts";
-import RuleSet from "../../src/RuleSet.ts";
+import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
+import ModuleData from "../../src/ModuleData";
+import ModuleFile from "../../src/ModuleFile";
+import RuleSet from "../../src/RuleSet";
 
-import ObjectiveTemplate from "../../src/templateinterfaces/ObjectiveTemplate.d.ts";
+import ObjectiveTemplate from "../../src/templateinterfaces/ObjectiveTemplate";
 
 const defaultAI: ModuleFile =
 {

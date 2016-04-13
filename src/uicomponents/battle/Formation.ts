@@ -2,10 +2,10 @@
 import * as React from "react";
 
 
-import Unit from "../../Unit.ts";
-import FormationRow from "./FormationRow.ts";
-import Battle from "../../Battle.ts";
-import AbilityTemplate from "../../templateinterfaces/AbilityTemplate.d.ts";
+import Unit from "../../Unit";
+import FormationRow from "./FormationRow";
+import Battle from "../../Battle";
+import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 
 
 interface PropTypes extends React.Props<any>

@@ -1,5 +1,5 @@
-import BattlePrep from "../BattlePrep.ts";
-import Unit from "../Unit.ts";
+import BattlePrep from "../BattlePrep";
+import Unit from "../Unit";
 
 declare interface BattlePrepEffect
 {

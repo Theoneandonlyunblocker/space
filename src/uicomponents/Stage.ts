@@ -14,12 +14,12 @@ import * as React from "react";
 /// <reference path="battlescenetester.ts" />
 
 
-import BattlePrep from "./battleprep/BattlePrep.ts";
-import BattleSceneTester from "./BattleSceneTester.ts";
-import SetupGame from "./setupgame/SetupGame.ts";
-import Battle from "./battle/Battle.ts";
-import GalaxyMap from "./galaxymap/GalaxyMap.ts";
-import FlagMaker from "./FlagMaker.ts";
+import BattlePrep from "./battleprep/BattlePrep";
+import BattleSceneTester from "./BattleSceneTester";
+import SetupGame from "./setupgame/SetupGame";
+import Battle from "./battle/Battle";
+import GalaxyMap from "./galaxymap/GalaxyMap";
+import FlagMaker from "./FlagMaker";
 
 
 interface PropTypes extends React.Props<any>

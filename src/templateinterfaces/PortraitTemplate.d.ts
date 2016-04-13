@@ -1,4 +1,4 @@
-import RandomGenUnitRarity from "../RandomGenUnitRarity.ts";
+import RandomGenUnitRarity from "../RandomGenUnitRarity";
 
 declare interface PortraitTemplate
 {

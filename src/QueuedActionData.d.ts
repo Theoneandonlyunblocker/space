@@ -1,4 +1,4 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
 
 declare interface QueuedActionData
 {

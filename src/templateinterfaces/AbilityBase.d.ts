@@ -1,4 +1,4 @@
-import AbilityEffectTemplate from "./AbilityEffectTemplate.d.ts";
+import AbilityEffectTemplate from "./AbilityEffectTemplate";
 
 // base interface for abilities and passive skills
 declare interface AbilityBase

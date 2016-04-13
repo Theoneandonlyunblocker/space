@@ -1,12 +1,12 @@
-import poisonedStatusEffect from "../statuseffecttemplates/poisoned.ts";
+import poisonedStatusEffect from "../statuseffecttemplates/poisoned";
 
-import EffectActionTemplate from "../../../src/templateinterfaces/EffectActionTemplate.d.ts";
+import EffectActionTemplate from "../../../src/templateinterfaces/EffectActionTemplate";
 
-import Battle from "../../../src/Battle.ts";
-import DamageType from "../../../src/DamageType.ts";
-import GuardCoverage from "../../../src/GuardCoverage.ts";
-import StatusEffect from "../../../src/StatusEffect.ts";
-import Unit from "../../../src/Unit.ts";
+import Battle from "../../../src/Battle";
+import DamageType from "../../../src/DamageType";
+import GuardCoverage from "../../../src/GuardCoverage";
+import StatusEffect from "../../../src/StatusEffect";
+import Unit from "../../../src/Unit";
 import
 {
   TargetFormation,
@@ -17,7 +17,7 @@ import
   targetAll,
   targetNextRow,
   targetSelf
-} from "../../../src/targeting.ts";
+} from "../../../src/targeting";
 
 export const singleTargetDamage: EffectActionTemplate =
 {

@@ -1,4 +1,4 @@
-import MapRendererLayerTemplate from "./MapRendererLayerTemplate.d.ts";
+import MapRendererLayerTemplate from "./MapRendererLayerTemplate";
 
 export declare interface MapRendererMapModeTemplate
 {

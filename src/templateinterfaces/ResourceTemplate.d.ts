@@ -1,4 +1,4 @@
-import Distributable from "./Distributable.d.ts";
+import Distributable from "./Distributable";
 
 declare interface ResourceTemplate extends Distributable
 {

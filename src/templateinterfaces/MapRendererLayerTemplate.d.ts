@@ -1,6 +1,6 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import GalaxyMap from "../GalaxyMap.ts";
+import GalaxyMap from "../GalaxyMap";
 
 declare interface MapRendererLayerTemplate
 {

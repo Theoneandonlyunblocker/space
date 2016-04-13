@@ -1,6 +1,6 @@
-import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate.d.ts";
-import DefenceBuildingTemplate from "../../src/templateinterfaces/DefenceBuildingTemplate.d.ts";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate";
+import DefenceBuildingTemplate from "../../src/templateinterfaces/DefenceBuildingTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
 const sectorCommand: DefenceBuildingTemplate =
 {

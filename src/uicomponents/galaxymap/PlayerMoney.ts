@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Player from "../../Player.ts";
-import eventManager from "../../eventManager.ts";
+import Player from "../../Player";
+import eventManager from "../../eventManager";
 
 
 interface PropTypes extends React.Props<any>

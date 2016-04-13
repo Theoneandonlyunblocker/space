@@ -1,4 +1,4 @@
-import ItemSaveData from "./ItemSaveData.d.ts";
+import ItemSaveData from "./ItemSaveData";
 
 declare interface UnitItemsSaveData
 {

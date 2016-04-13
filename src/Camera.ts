@@ -1,7 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-import Point from "./Point.ts";
-import eventManager from "./eventManager.ts";
+import Point from "./Point";
+import eventManager from "./eventManager";
 
 var tempCameraId = 0;
 

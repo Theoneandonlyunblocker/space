@@ -1,5 +1,5 @@
-import Unit from "./Unit.ts";
-import TurnOrderDisplayData from "./TurnOrderDisplayData.d.ts";
+import Unit from "./Unit";
+import TurnOrderDisplayData from "./TurnOrderDisplayData";
 
 export default class BattleTurnOrder
 {

@@ -1,7 +1,7 @@
 // used to register event listeners for manually firing drop events because touch events suck
 
 
-import eventManager from "../../eventManager.ts";
+import eventManager from "../../eventManager";
 
 export var DropTarget =
 {

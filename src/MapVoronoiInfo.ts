@@ -1,5 +1,5 @@
-import Star from "./Star.ts";
-import Point from "./Point.ts";
+import Star from "./Star";
+import Point from "./Point";
 
 export default class MapVoronoiInfo
 {

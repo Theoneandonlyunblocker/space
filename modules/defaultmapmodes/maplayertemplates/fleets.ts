@@ -1,11 +1,11 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import Options from "../../../src/options.ts";
-import eventManager from "../../../src/eventManager.ts";
-import Fleet from "../../../src/Fleet.ts";
-import Star from "../../../src/Star.ts";
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate.d.ts";
-import GalaxyMap from "../../../src/GalaxyMap.ts";
+import Options from "../../../src/options";
+import eventManager from "../../../src/eventManager";
+import Fleet from "../../../src/Fleet";
+import Star from "../../../src/Star";
+import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
+import GalaxyMap from "../../../src/GalaxyMap";
 
 
 const fleets: MapRendererLayerTemplate =

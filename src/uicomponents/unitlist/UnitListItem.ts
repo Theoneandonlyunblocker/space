@@ -5,8 +5,8 @@ import * as React from "react";
 /// <reference path="../unit/unitstrength.ts" />
 
 
-import Unit from "../../Unit.ts";
-import UnitStrength from "../unit/UnitStrength.ts";
+import Unit from "../../Unit";
+import UnitStrength from "../unit/UnitStrength";
 
 
 interface PropTypes extends React.Props<any>

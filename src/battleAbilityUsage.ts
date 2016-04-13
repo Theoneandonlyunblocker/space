@@ -1,15 +1,15 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
-import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate.d.ts";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 
-import Unit from "./Unit.ts";
-import Battle from "./Battle.ts";
-import GuardCoverage from "./GuardCoverage.ts";
+import Unit from "./Unit";
+import Battle from "./Battle";
+import GuardCoverage from "./GuardCoverage";
 import
 {
   AbilityEffectData,
   AbilityEffectDataByPhase,
   getAbilityEffectDataByPhase
-} from "./battleAbilityProcessing.ts";
+} from "./battleAbilityProcessing";
 
 export interface UnitDisplayData
 {

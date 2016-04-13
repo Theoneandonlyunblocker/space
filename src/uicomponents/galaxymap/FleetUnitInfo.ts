@@ -1,9 +1,9 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Unit from "../../Unit.ts";
-import FleetUnitInfoName from "./FleetUnitInfoName.ts";
-import UnitStrength from "../unit/UnitStrength.ts";
+import Unit from "../../Unit";
+import FleetUnitInfoName from "./FleetUnitInfoName";
+import UnitStrength from "../unit/UnitStrength";
 
 
 interface PropTypes extends React.Props<any>

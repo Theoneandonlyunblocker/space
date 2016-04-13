@@ -9,10 +9,10 @@ import * as React from "react";
 /// <reference path="tutorial.ts" />
 
 
-import IntroTutorial from "../../tutorials/IntroTutorial.ts";
-import Tutorial from "./Tutorial.ts";
-import TopMenuPopup from "../popups/TopMenuPopup.ts";
-import PopupManager from "../popups/PopupManager.ts";
+import IntroTutorial from "../../tutorials/IntroTutorial";
+import Tutorial from "./Tutorial";
+import TopMenuPopup from "../popups/TopMenuPopup";
+import PopupManager from "../popups/PopupManager";
 
 
 interface PropTypes extends React.Props<any>

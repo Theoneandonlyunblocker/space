@@ -1,15 +1,15 @@
-import AbilityTemplate from "./templateinterfaces/AbilityTemplate.d.ts";
-import AbilityEffectTemplate from "./templateinterfaces/AbilityEffectTemplate.d.ts";
-import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate.d.ts";
+import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
+import AbilityEffectTemplate from "./templateinterfaces/AbilityEffectTemplate";
+import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate";
 
-import Unit from "./Unit.ts";
-import GuardCoverage from "./GuardCoverage.ts";
-import Battle from "./Battle.ts";
+import Unit from "./Unit";
+import GuardCoverage from "./GuardCoverage";
+import Battle from "./Battle";
 
 import
 {
   getFormationsToTarget
-} from "./battleAbilityTargeting.ts";
+} from "./battleAbilityTargeting";
 
 export interface AbilityUseData
 {

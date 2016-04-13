@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 
 
-import AbilityBase from "../../templateinterfaces/AbilityBase.d.ts";
+import AbilityBase from "../../templateinterfaces/AbilityBase";
 
 import * as React from "react";
 

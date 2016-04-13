@@ -1,4 +1,4 @@
-import Point from "./Point.ts";
+import Point from "./Point";
 
 export default class FillerPoint implements Point
 {

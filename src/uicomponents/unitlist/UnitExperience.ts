@@ -4,9 +4,9 @@ import * as React from "react";
 /// <reference path="upgradeunit.ts" />
 
 
-import UpgradeUnit from "./UpgradeUnit.ts";
-import TopMenuPopup from "../popups/TopMenuPopup.ts";
-import PopupManager from "../popups/PopupManager.ts";
+import UpgradeUnit from "./UpgradeUnit";
+import TopMenuPopup from "../popups/TopMenuPopup";
+import PopupManager from "../popups/PopupManager";
 
 
 interface PropTypes extends React.Props<any>

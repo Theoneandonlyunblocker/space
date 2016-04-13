@@ -1,11 +1,11 @@
-import BattleSFXTemplate from "../../../src/templateinterfaces/BattleSFXTemplate.d.ts";
+import BattleSFXTemplate from "../../../src/templateinterfaces/BattleSFXTemplate";
 
-import BlackToAlphaFilter from "../../../src/shaders/BlackToAlpha.ts";
+import BlackToAlphaFilter from "../../../src/shaders/BlackToAlpha";
 
-import rocketAttackDrawingFunction from "../battlesfxfunctions/rocketAttack.ts";
-import guardDrawingFunction from "../battlesfxfunctions/guard.ts";
-import particleTestDrawingFunction from "../battlesfxfunctions/particleTest.ts";
-import makeSFXFromVideo from "../battlesfxfunctions/makeSFXFromVideo.ts";
+import rocketAttackDrawingFunction from "../battlesfxfunctions/rocketAttack";
+import guardDrawingFunction from "../battlesfxfunctions/guard";
+import particleTestDrawingFunction from "../battlesfxfunctions/particleTest";
+import makeSFXFromVideo from "../battlesfxfunctions/makeSFXFromVideo";
 
 
 export var rocketAttack: BattleSFXTemplate =

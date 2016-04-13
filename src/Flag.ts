@@ -1,9 +1,9 @@
 /// <reference path="../lib/rng.d.ts" />
 
-import Color from "./Color.ts";
-import Emblem from "./Emblem.ts";
+import Color from "./Color";
+import Emblem from "./Emblem";
 
-import FlagSaveData from "./savedata/FlagSaveData.d.ts";
+import FlagSaveData from "./savedata/FlagSaveData";
 
 export default class Flag
 {

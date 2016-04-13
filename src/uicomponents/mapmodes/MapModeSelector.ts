@@ -4,7 +4,7 @@ import * as React from "react";
 /// <reference path="../../maprenderer.ts" />
 
 
-import MapRenderer from "../../MapRenderer.ts";
+import MapRenderer from "../../MapRenderer";
 
 
 interface PropTypes extends React.Props<any>

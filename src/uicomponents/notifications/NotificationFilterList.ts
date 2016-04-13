@@ -5,10 +5,10 @@ import * as React from "react";
 /// <reference path="notificationfilterlistitem.ts" />
 
 
-import OptionsGroup from "../galaxymap/OptionsGroup.ts";
-import NotificationFilterListItem from "./NotificationFilterListItem.ts";
-import NotificationFilter from "../../NotificationFilter.ts";
-import eventManager from "../../eventManager.ts";
+import OptionsGroup from "../galaxymap/OptionsGroup";
+import NotificationFilterListItem from "./NotificationFilterListItem";
+import NotificationFilter from "../../NotificationFilter";
+import eventManager from "../../eventManager";
 
 
 interface PropTypes extends React.Props<any>

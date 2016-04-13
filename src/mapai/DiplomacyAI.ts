@@ -1,13 +1,13 @@
-import RoutineAdjustmentByID from "../templateinterfaces/RoutineAdjustmentByID.d.ts";
+import RoutineAdjustmentByID from "../templateinterfaces/RoutineAdjustmentByID";
 
-import Personality from "../Personality.d.ts";
-import Game from "../Game.ts";
-import Player from "../Player.ts";
-import DiplomacyStatus from "../DiplomacyStatus.ts";
+import Personality from "../Personality";
+import Game from "../Game";
+import Player from "../Player";
+import DiplomacyStatus from "../DiplomacyStatus";
 
-import MapEvaluator from "./MapEvaluator.ts";
-import ObjectivesAI from "./ObjectivesAI.ts";
-import Objective from "./Objective.ts";
+import MapEvaluator from "./MapEvaluator";
+import ObjectivesAI from "./ObjectivesAI";
+import Objective from "./Objective";
 
 export default class DiplomacyAI
 {

@@ -1,4 +1,4 @@
-import RoutineAdjustment from "./RoutineAdjustment.d.ts";
+import RoutineAdjustment from "./RoutineAdjustment";
 
 declare interface RoutineAdjustmentByID
 {

@@ -1,4 +1,4 @@
-import DiplomacyState from "./DiplomacyState.ts";
+import DiplomacyState from "./DiplomacyState";
 
 declare interface DiplomacyEvaluation
 {

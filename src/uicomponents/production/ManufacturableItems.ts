@@ -4,11 +4,11 @@ import * as React from "react";
 /// <reference path="manufactoryupgradebutton.ts" />
 
 
-import ItemTemplate from "../../templateinterfaces/ItemTemplate.d.ts";
-import Star from "../../Star.ts";
-import ManufacturableThingsList from "./ManufacturableThingsList.ts";
-import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton.ts";
-import Manufactory from "../../Manufactory.ts";
+import ItemTemplate from "../../templateinterfaces/ItemTemplate";
+import Star from "../../Star";
+import ManufacturableThingsList from "./ManufacturableThingsList";
+import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
+import Manufactory from "../../Manufactory";
 
 
 interface PropTypes extends React.Props<any>

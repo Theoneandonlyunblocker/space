@@ -1,7 +1,7 @@
-import ModuleFile from "../../src/ModuleFile.d.ts";
-import ModuleData from "../../src/ModuleData.ts";
+import ModuleFile from "../../src/ModuleFile";
+import ModuleData from "../../src/ModuleData";
 
-import drawNebula from "./drawNebula.ts";
+import drawNebula from "./drawNebula";
 
 const defaultBackgrounds: ModuleFile =
 {

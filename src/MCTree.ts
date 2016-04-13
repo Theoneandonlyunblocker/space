@@ -2,8 +2,8 @@ import
 {
   default as MCTreeNode,
   Move
-} from "./MCTreeNode.ts";
-import Battle from "./Battle.ts";
+} from "./MCTreeNode";
+import Battle from "./Battle";
 
 export default class MCTree
 {

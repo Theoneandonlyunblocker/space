@@ -1,4 +1,4 @@
-import TechnologyTemplate from "./TechnologyTemplate.d.ts";
+import TechnologyTemplate from "./TechnologyTemplate";
 
 declare interface TechnologyRequirement
 {

@@ -1,18 +1,18 @@
-import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI.ts";
-import MapEvaluator from "../../../src/mapai/MapEvaluator.ts";
-import Objective from "../../../src/mapai/Objective.ts";
-import ObjectivesAI from "../../../src/mapai/ObjectivesAI.ts";
+import GrandStrategyAI from "../../../src/mapai/GrandStrategyAI";
+import MapEvaluator from "../../../src/mapai/MapEvaluator";
+import Objective from "../../../src/mapai/Objective";
+import ObjectivesAI from "../../../src/mapai/ObjectivesAI";
 
-import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate.d.ts";
+import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate";
 
-import DiplomacyState from "../../../src/DiplomacyState.ts";
-import Player from "../../../src/Player.ts";
-import Star from "../../../src/Star.ts";
-import Unit from "../../../src/Unit.ts";
+import DiplomacyState from "../../../src/DiplomacyState";
+import Player from "../../../src/Player";
+import Star from "../../../src/Star";
+import Unit from "../../../src/Unit";
 import
 {
   getObjectKeysSortedByValueOfProp
-} from "../../../src/utility.ts";
+} from "../../../src/utility";
 
 import
 {
@@ -21,7 +21,7 @@ import
   defaultUnitDesireFN,
   defaultUnitFitFN,
   getUnitsToBeatImmediateTarget
-} from "../aiUtils.ts";
+} from "../aiUtils";
 
 const conquer: ObjectiveTemplate =
 {

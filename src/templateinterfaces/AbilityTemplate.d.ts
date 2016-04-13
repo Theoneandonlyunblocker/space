@@ -1,5 +1,5 @@
-import AbilityBase from "./AbilityBase.d.ts";
-import AbilityEffectTemplate from "./AbilityEffectTemplate.d.ts";
+import AbilityBase from "./AbilityBase";
+import AbilityEffectTemplate from "./AbilityEffectTemplate";
 
 declare interface AbilityTemplate extends AbilityBase
 {

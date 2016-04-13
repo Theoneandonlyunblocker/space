@@ -1,6 +1,6 @@
-import GalaxyMapSaveData from "./GalaxyMapSaveData.d.ts";
-import PlayerSaveData from "./PlayerSaveData.d.ts";
-import NotificationLogSaveData from "./NotificationLogSaveData.d.ts";
+import GalaxyMapSaveData from "./GalaxyMapSaveData";
+import PlayerSaveData from "./PlayerSaveData";
+import NotificationLogSaveData from "./NotificationLogSaveData";
 
 declare interface GameSaveData
 {

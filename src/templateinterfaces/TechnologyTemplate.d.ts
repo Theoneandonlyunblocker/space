@@ -1,5 +1,5 @@
-import ItemTemplate from "./ItemTemplate.d.ts";
-import UnitTemplate from "./UnitTemplate.d.ts";
+import ItemTemplate from "./ItemTemplate";
+import UnitTemplate from "./UnitTemplate";
 
 declare interface TechnologyTemplate
 {

@@ -6,8 +6,8 @@ import * as React from "react";
 /// <reference path="../../star.ts" />
 
 
-import Star from "../../Star.ts";
-import ManufactoryStarsListItem from "./ManufactoryStarsListItem.ts";
+import Star from "../../Star";
+import ManufactoryStarsListItem from "./ManufactoryStarsListItem";
 
 
 interface PropTypes extends React.Props<any>

@@ -1,5 +1,5 @@
-import Unit from "../Unit.ts";
-import Battle from "../Battle.ts";
+import Unit from "../Unit";
+import Battle from "../Battle";
 import
 {
   TargetFormation,

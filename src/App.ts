@@ -1,39 +1,39 @@
-import GalaxyMap from "./GalaxyMap.ts";
-import Game from "./Game.ts";
-import GameLoader from "./GameLoader.ts";
-import idGenerators from "./idGenerators.ts";
-import MapRenderer from "./MapRenderer.ts";
-import ModuleData from "./ModuleData.ts";
-import ModuleLoader from "./ModuleLoader.ts";
-import NotificationLog from "./NotificationLog.ts";
-import Player from "./Player.ts";
-import PlayerControl from "./PlayerControl.ts";
-import ReactUI from "./ReactUI.ts";
-import Renderer from "./Renderer.ts";
-import setDynamicTemplateProperties from "./setDynamicTemplateProperties.ts";
-import Options from "./options.ts";
-import {loadTutorialStatus} from "./tutorials/TutorialStatus.ts";
+import GalaxyMap from "./GalaxyMap";
+import Game from "./Game";
+import GameLoader from "./GameLoader";
+import idGenerators from "./idGenerators";
+import MapRenderer from "./MapRenderer";
+import ModuleData from "./ModuleData";
+import ModuleLoader from "./ModuleLoader";
+import NotificationLog from "./NotificationLog";
+import Player from "./Player";
+import PlayerControl from "./PlayerControl";
+import ReactUI from "./ReactUI";
+import Renderer from "./Renderer";
+import setDynamicTemplateProperties from "./setDynamicTemplateProperties";
+import Options from "./options";
+import {loadTutorialStatus} from "./tutorials/TutorialStatus";
 import
 {
   extendObject,
   onDOMLoaded
-} from "./utility.ts";
+} from "./utility";
 
-import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues.d.ts";
+import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
 
-import defaultEmblems from "../modules/defaultemblems/defaultEmblems.ts";
-import defaultRuleset from "../modules/defaultruleset/defaultRuleset.ts";
-import defaultAI from "../modules/defaultai/defaultAI.ts";
-import defaultItems from "../modules/defaultitems/defaultItems.ts";
-import defaultTechnologies from "../modules/defaulttechnologies/defaultTechnologies.ts";
-import defaultAttitudemodifiers from "../modules/defaultattitudemodifiers/defaultAttitudemodifiers.ts";
-import defaultMapgen from "../modules/defaultmapgen/defaultMapgen.ts";
-import defaultUnits from "../modules/defaultunits/defaultUnits.ts";
-import defaultBackgrounds from "../modules/defaultbackgrounds/defaultBackgrounds.ts";
-import defaultMapmodes from "../modules/defaultmapmodes/defaultMapmodes.ts";
-import paintingPortraits from "../modules/paintingportraits/paintingPortraits.ts";
-import defaultBuildings from "../modules/defaultbuildings/defaultBuildings.ts";
-import defaultNotifications from "../modules/defaultnotifications/defaultNotifications.ts";
+import defaultEmblems from "../modules/defaultemblems/defaultEmblems";
+import defaultRuleset from "../modules/defaultruleset/defaultRuleset";
+import defaultAI from "../modules/defaultai/defaultAI";
+import defaultItems from "../modules/defaultitems/defaultItems";
+import defaultTechnologies from "../modules/defaulttechnologies/defaultTechnologies";
+import defaultAttitudemodifiers from "../modules/defaultattitudemodifiers/defaultAttitudemodifiers";
+import defaultMapgen from "../modules/defaultmapgen/defaultMapgen";
+import defaultUnits from "../modules/defaultunits/defaultUnits";
+import defaultBackgrounds from "../modules/defaultbackgrounds/defaultBackgrounds";
+import defaultMapmodes from "../modules/defaultmapmodes/defaultMapmodes";
+import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
+import defaultBuildings from "../modules/defaultbuildings/defaultBuildings";
+import defaultNotifications from "../modules/defaultnotifications/defaultNotifications";
 
 const app = new App();
 export default app;

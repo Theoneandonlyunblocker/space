@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 
 
-import UnitIcon from "./UnitIcon.ts";
+import UnitIcon from "./UnitIcon";
 
 import * as React from "react";
 

@@ -1,6 +1,6 @@
-import ManufacturableThing from "./ManufacturableThing.d.ts";
-import AbilityTemplate from "./AbilityTemplate.d.ts";
-import PassiveSkillTemplate from "./PassiveSkillTemplate.d.ts";
+import ManufacturableThing from "./ManufacturableThing";
+import AbilityTemplate from "./AbilityTemplate";
+import PassiveSkillTemplate from "./PassiveSkillTemplate";
 
 declare interface ItemTemplate extends ManufacturableThing
 {

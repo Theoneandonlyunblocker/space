@@ -1,5 +1,5 @@
-import ModuleData from "./ModuleData.ts";
-import RuleSet from "./RuleSet.ts";
+import ModuleData from "./ModuleData";
+import RuleSet from "./RuleSet";
 
 interface ModuleMetaData
 {

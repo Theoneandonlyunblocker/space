@@ -6,11 +6,11 @@ import * as React from "react";
 /// <reference path="unitexperience.ts" />
 
 
-import Unit from "../../Unit.ts";
-import AbilityBase from "../../templateinterfaces/AbilityBase.d.ts";
-import UnitItemWrapper from "./UnitItemWrapper.ts";
-import AbilityList from "./AbilityList.ts";
-import UnitExperience from "./UnitExperience.ts";
+import Unit from "../../Unit";
+import AbilityBase from "../../templateinterfaces/AbilityBase";
+import UnitItemWrapper from "./UnitItemWrapper";
+import AbilityList from "./AbilityList";
+import UnitExperience from "./UnitExperience";
 
 
 interface PropTypes extends React.Props<any>

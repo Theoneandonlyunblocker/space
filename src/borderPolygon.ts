@@ -1,15 +1,15 @@
 /// <reference path="../lib/offset.d.ts" />
 
-import Star from "./Star.ts";
-import Point from "./Point.ts";
-import MapVoronoiInfo from "./MapVoronoiInfo.ts";
-import Options from "./Options.ts";
+import Star from "./Star";
+import Point from "./Point";
+import MapVoronoiInfo from "./MapVoronoiInfo";
+import Options from "./Options";
 
 import
 {
   clamp,
   pointsEqual
-} from "./utility.ts";
+} from "./utility";
 
 // some problems with this as well as pixi polygon rendering can lead to silly behavior sometimes.
 // overlapping lines, acute angles etc etc.

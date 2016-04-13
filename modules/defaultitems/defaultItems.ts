@@ -1,9 +1,9 @@
-import ItemTemplates from "./ItemTemplates.ts";
+import ItemTemplates from "./ItemTemplates";
 
-import ModuleFile from "../../src/ModuleFile.d.ts";
-import ModuleData from "../../src/ModuleData.ts";
+import ModuleFile from "../../src/ModuleFile";
+import ModuleData from "../../src/ModuleData";
 
-import ItemTemplate from "../../src/templateinterfaces/ItemTemplate.d.ts";
+import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
 
 const defaultItems: ModuleFile =
 {

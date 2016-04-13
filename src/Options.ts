@@ -1,9 +1,9 @@
-import eventManager from "./eventManager.ts";
+import eventManager from "./eventManager";
 import
 {
   getMatchingLocalstorageItemsByDate,
   deepMerge,
-} from "./utility.ts";
+} from "./utility";
 
 type OptionsCategory = "battleAnimationTiming" | "debugMode" | "debugOptions" | "ui" | "display";
 const OptionsCategories: OptionsCategory[] =

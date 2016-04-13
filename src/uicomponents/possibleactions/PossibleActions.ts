@@ -7,12 +7,12 @@ import * as React from "react";
 /// <reference path="buildingupgradelist.ts"/>
 
 
-import Player from "../../Player.ts";
-import Star from "../../Star.ts";
-import AttackTarget from "./AttackTarget.ts";
-import BuildingUpgradeList from "./BuildingUpgradeList.ts";
-import BuildableBuildingList from "./BuildableBuildingList.ts";
-import eventManager from "../../eventManager.ts";
+import Player from "../../Player";
+import Star from "../../Star";
+import AttackTarget from "./AttackTarget";
+import BuildingUpgradeList from "./BuildingUpgradeList";
+import BuildableBuildingList from "./BuildableBuildingList";
+import eventManager from "../../eventManager";
 
 
 interface PropTypes extends React.Props<any>

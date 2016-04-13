@@ -4,7 +4,7 @@ import * as React from "react";
 /// <reference path="manufacturablethingslistitem.ts" />
 
 
-import ManufacturableThingsListItem from "./ManufacturableThingsListItem.ts";
+import ManufacturableThingsListItem from "./ManufacturableThingsListItem";
 
 
 interface PropTypes extends React.Props<any>

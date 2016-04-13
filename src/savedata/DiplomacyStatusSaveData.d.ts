@@ -1,5 +1,5 @@
-import AttitudeModifierSaveData from "./AttitudeModifierSaveData.d.ts";
-import DiplomacyState from "../DiplomacyState.ts";
+import AttitudeModifierSaveData from "./AttitudeModifierSaveData";
+import DiplomacyState from "../DiplomacyState";
 
 declare interface DiplomacyStatusSaveData
 {

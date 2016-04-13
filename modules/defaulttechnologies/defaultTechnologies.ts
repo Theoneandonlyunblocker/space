@@ -1,9 +1,9 @@
-import TechnologyTemplates from "./TechnologyTemplates.ts";
+import TechnologyTemplates from "./TechnologyTemplates";
 
-import ModuleFile from "../../src/ModuleFile.d.ts";
-import ModuleData from "../../src/ModuleData.ts";
+import ModuleFile from "../../src/ModuleFile";
+import ModuleData from "../../src/ModuleData";
 
-import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate.d.ts";
+import TechnologyTemplate from "../../src/templateinterfaces/TechnologyTemplate";
 
 const defaultTechnologies: ModuleFile =
 {

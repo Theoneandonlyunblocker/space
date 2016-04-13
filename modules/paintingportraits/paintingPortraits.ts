@@ -1,7 +1,7 @@
-import ModuleFile from "../../src/ModuleFile.d.ts";
-import ModuleData from "../../src/ModuleData.ts";
-import paintingPortraitsCulture from "./paintingPortraitsCulture.ts";
-import CultureTemplate from "../../src/templateinterfaces/CultureTemplate.d.ts";
+import ModuleFile from "../../src/ModuleFile";
+import ModuleData from "../../src/ModuleData";
+import paintingPortraitsCulture from "./paintingPortraitsCulture";
+import CultureTemplate from "../../src/templateinterfaces/CultureTemplate";
 
 const paintingPortraits: ModuleFile =
 {

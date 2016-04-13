@@ -4,7 +4,7 @@ import * as React from "react";
 /// <reference path="../../star.ts" />
 
 
-import Star from "../../Star.ts";
+import Star from "../../Star";
 
 
 interface PropTypes extends React.Props<any>

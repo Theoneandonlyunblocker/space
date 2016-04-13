@@ -5,9 +5,9 @@ import * as React from "react";
 /// <reference path="../../templateinterfaces/itechnologytemplate.d.ts" />
 
 
-import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate.d.ts";
-import PlayerTechnology from "../../PlayerTechnology.ts";
-import eventManager from "../../eventManager.ts";
+import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate";
+import PlayerTechnology from "../../PlayerTechnology";
+import eventManager from "../../eventManager";
 
 
 interface PropTypes extends React.Props<any>

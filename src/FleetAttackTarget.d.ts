@@ -1,6 +1,6 @@
-import Building from "./Building.ts";
-import Player from "./Player.ts";
-import Unit from "./Unit.ts";
+import Building from "./Building";
+import Player from "./Player";
+import Unit from "./Unit";
 
 declare interface FleetAttackTarget
 {

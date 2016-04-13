@@ -1,5 +1,5 @@
-import ObjectiveTemplate from "../../src/templateinterfaces/ObjectiveTemplate.d.ts";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+import ObjectiveTemplate from "../../src/templateinterfaces/ObjectiveTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
 import declareWar from  "./objectives/declareWar.ts";
 import expansion from  "./objectives/expansion.ts";

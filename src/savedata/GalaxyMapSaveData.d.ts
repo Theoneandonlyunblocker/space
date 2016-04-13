@@ -1,5 +1,5 @@
-import Point from "../Point.ts";
-import StarSaveData from "./StarSaveData.d.ts";
+import Point from "../Point";
+import StarSaveData from "./StarSaveData";
 
 declare interface GalaxyMapSaveData
 {

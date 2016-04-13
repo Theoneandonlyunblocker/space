@@ -1,13 +1,13 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import AttitudeModifierList from "./AttitudeModifierList.ts";
-import AttitudeModifier from "../../AttitudeModifier.ts";
+import AttitudeModifierList from "./AttitudeModifierList";
+import AttitudeModifier from "../../AttitudeModifier";
 import
 {
   clamp,
   getRelativeValue,
-} from "../../utility.ts";
+} from "../../utility";
 
 interface PropTypes extends React.Props<any>
 {

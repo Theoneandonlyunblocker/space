@@ -5,10 +5,10 @@ import * as React from "react";
 /// <reference path="notificationfilterlist.ts" />
 
 
-import PopupManager from "../popups/PopupManager.ts";
-import NotificationFilterList from "./NotificationFilterList.ts";
-import NotificationFilter from "../../NotificationFilter.ts";
-import TopMenuPopup from "../popups/TopMenuPopup.ts";
+import PopupManager from "../popups/PopupManager";
+import NotificationFilterList from "./NotificationFilterList";
+import NotificationFilter from "../../NotificationFilter";
+import TopMenuPopup from "../popups/TopMenuPopup";
 
 
 interface PropTypes extends React.Props<any>

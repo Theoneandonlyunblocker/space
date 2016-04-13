@@ -7,9 +7,9 @@ import * as React from "react";
 /// <reference path="../../manufactory.ts" />
 
 
-import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton.ts";
-import ManufacturableThingsList from "./ManufacturableThingsList.ts";
-import Manufactory from "../../Manufactory.ts";
+import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
+import ManufacturableThingsList from "./ManufacturableThingsList";
+import Manufactory from "../../Manufactory";
 
 
 interface PropTypes extends React.Props<any>

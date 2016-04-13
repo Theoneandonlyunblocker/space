@@ -8,11 +8,11 @@ import * as React from "react";
 /// <reference path="../mixins/draggable.ts" />
 
 
-import Unit from "../../Unit.ts";
-import UnitPortrait from "./UnitPortrait.ts";
-import UnitStatusEffects from "./UnitStatusEffects.ts";
-import UnitInfo from "./UnitInfo.ts";
-import UnitIcon from "./UnitIcon.ts";
+import Unit from "../../Unit";
+import UnitPortrait from "./UnitPortrait";
+import UnitStatusEffects from "./UnitStatusEffects";
+import UnitInfo from "./UnitInfo";
+import UnitIcon from "./UnitIcon";
 
 
 interface PropTypes extends React.Props<any>

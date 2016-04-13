@@ -5,7 +5,7 @@ import * as React from "react";
 /// <reference path="../mixins/updatewhenmoneychanges.ts" />
 
 
-import Player from "../../Player.ts";
+import Player from "../../Player";
 
 
 interface PropTypes extends React.Props<any>

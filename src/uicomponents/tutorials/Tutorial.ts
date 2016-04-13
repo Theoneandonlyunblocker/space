@@ -5,8 +5,8 @@ import * as React from "react";
 /// <reference path="dontshowagain.ts" />
 
 
-import Tutorial from "../../tutorials/Tutorial.d.ts";
-import DontShowAgain from "./DontShowAgain.ts";
+import Tutorial from "../../tutorials/Tutorial";
+import DontShowAgain from "./DontShowAgain";
 
 
 interface PropTypes extends React.Props<any>

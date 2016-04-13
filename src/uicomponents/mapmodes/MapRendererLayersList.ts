@@ -6,10 +6,10 @@ import * as React from "react";
 /// <reference path="../../maprenderer.ts" />
 
 
-import MapRendererMapMode from "../../MapRendererMapMode.ts";
-import MapRendererLayer from "../../MapRendererLayer.ts";
-import MapRendererLayersListItem from "./MapRendererLayersListItem.ts";
-import MapRenderer from "../../MapRenderer.ts";
+import MapRendererMapMode from "../../MapRendererMapMode";
+import MapRendererLayer from "../../MapRendererLayer";
+import MapRendererLayersListItem from "./MapRendererLayersListItem";
+import MapRenderer from "../../MapRenderer";
 
 
 interface PropTypes extends React.Props<any>

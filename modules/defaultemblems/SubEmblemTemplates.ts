@@ -1,8 +1,8 @@
-import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate.d.ts";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
-import SubEmblemCoverage from "../../src/SubEmblemCoverage.ts";
-import SubEmblemPosition from "../../src/SubEmblemPosition.ts";
+import SubEmblemCoverage from "../../src/SubEmblemCoverage";
+import SubEmblemPosition from "../../src/SubEmblemPosition";
 
 const Aguila_explayada_2: SubEmblemTemplate =
 {

@@ -1,7 +1,7 @@
-import QueuedActionData from "./QueuedActionData.d.ts";
-import UnitBattleSide from "./UnitBattleSide.ts";
-import GuardCoverage from "./GuardCoverage.ts";
-import StatusEffect from "./StatusEffect.ts";
+import QueuedActionData from "./QueuedActionData";
+import UnitBattleSide from "./UnitBattleSide";
+import GuardCoverage from "./GuardCoverage";
+import StatusEffect from "./StatusEffect";
 
 declare interface UnitBattleStats
 {

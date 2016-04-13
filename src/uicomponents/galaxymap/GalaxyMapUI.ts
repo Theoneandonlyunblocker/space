@@ -1,21 +1,21 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import MapModeSettings from "../mapmodes/MapModeSettings.ts";
-import TopBar from "./TopBar.ts";
-import Notifications from "../notifications/Notifications.ts";
-import StarInfo from "./StarInfo.ts";
-import FleetSelection from "./FleetSelection.ts";
-import Star from "../../Star.ts";
-import TopMenu from "./TopMenu.ts";
-import PossibleActions from "../possibleactions/PossibleActions.ts";
-import IntroTutorial from "../tutorials/IntroTutorial.ts";
-import eventManager from "../../eventManager.ts";
-import PlayerControl from "../../PlayerControl.ts";
-import Game from "../../Game.ts";
-import MapRenderer from "../../MapRenderer.ts";
-import Renderer from "../../Renderer.ts";
-import Player from "../../Player.ts";
+import MapModeSettings from "../mapmodes/MapModeSettings";
+import TopBar from "./TopBar";
+import Notifications from "../notifications/Notifications";
+import StarInfo from "./StarInfo";
+import FleetSelection from "./FleetSelection";
+import Star from "../../Star";
+import TopMenu from "./TopMenu";
+import PossibleActions from "../possibleactions/PossibleActions";
+import IntroTutorial from "../tutorials/IntroTutorial";
+import eventManager from "../../eventManager";
+import PlayerControl from "../../PlayerControl";
+import Game from "../../Game";
+import MapRenderer from "../../MapRenderer";
+import Renderer from "../../Renderer";
+import Player from "../../Player";
 
 
 interface PropTypes extends React.Props<any>

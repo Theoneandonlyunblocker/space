@@ -1,7 +1,7 @@
-import MapRendererLayerTemplate from "../../src/templateinterfaces/MapRendererLayerTemplate.d.ts";
-import TemplateCollection from "../../src/templateinterfaces/TemplateCollection.d.ts";
+import MapRendererLayerTemplate from "../../src/templateinterfaces/MapRendererLayerTemplate";
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
-import * as MapLayers from "./allMapLayerTemplates.ts";
+import * as MapLayers from "./allMapLayerTemplates";
 
 const MapLayerTemplates: TemplateCollection<MapRendererLayerTemplate> =
 {

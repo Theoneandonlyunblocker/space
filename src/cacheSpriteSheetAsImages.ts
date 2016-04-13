@@ -1,4 +1,4 @@
-import app from "./App.ts";
+import app from "./App";
 
 interface SpriteSheetFrame
 {

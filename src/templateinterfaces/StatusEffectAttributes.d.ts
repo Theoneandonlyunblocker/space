@@ -1,4 +1,4 @@
-import StatusEffectAttributeAdjustment from "./StatusEffectAttributeAdjustment.d.ts";
+import StatusEffectAttributeAdjustment from "./StatusEffectAttributeAdjustment";
 
 declare interface StatusEffectAttributes
 {

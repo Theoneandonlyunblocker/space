@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Battle from "../../Battle.ts";
-import PlayerFlag from "../PlayerFlag.ts";
+import Battle from "../../Battle";
+import PlayerFlag from "../PlayerFlag";
 
 
 interface PropTypes extends React.Props<any>

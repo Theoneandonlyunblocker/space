@@ -1,5 +1,5 @@
-import ManufactorySaveData from "./ManufactorySaveData.d.ts";
-import StarBuildingsSaveData from "./StarBuildingsSaveData.d.ts";
+import ManufactorySaveData from "./ManufactorySaveData";
+import StarBuildingsSaveData from "./StarBuildingsSaveData";
 
 declare interface StarSaveData
 {

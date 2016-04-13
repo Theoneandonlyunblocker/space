@@ -1,10 +1,10 @@
 /// <reference path="../../../lib/pixi.d.ts" />
 
-import Options from "../../../src/options.ts";
-import Star from "../../../src/Star.ts";
-import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate.d.ts";
-import GalaxyMap from "../../../src/GalaxyMap.ts";
-import {getRevealedBorderEdges} from "../../../src/borderPolygon.ts";
+import Options from "../../../src/options";
+import Star from "../../../src/Star";
+import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
+import GalaxyMap from "../../../src/GalaxyMap";
+import {getRevealedBorderEdges} from "../../../src/borderPolygon";
 
 
 const ownerBorders: MapRendererLayerTemplate =

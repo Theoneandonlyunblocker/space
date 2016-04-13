@@ -7,9 +7,9 @@ import * as React from "react";
 /// <reference path="tradeableitems.ts" />
 
 
-import Player from "../../Player.ts";
-import TradeableItems from "./TradeableItems.ts";
-import Trade from "../../Trade.ts";
+import Player from "../../Player";
+import TradeableItems from "./TradeableItems";
+import Trade from "../../Trade";
 
 
 interface PropTypes extends React.Props<any>

@@ -1,6 +1,6 @@
-import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate.d.ts";
-import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData.d.ts";
-import DiplomacyEvaluation from "./DiplomacyEvaluation.d.ts";
+import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
+import AttitudeModifierSaveData from "./savedata/AttitudeModifierSaveData";
+import DiplomacyEvaluation from "./DiplomacyEvaluation";
 import
 {
   getRelativeValue

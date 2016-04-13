@@ -1,4 +1,4 @@
-import UnitSaveData from "./UnitSaveData.d.ts";
+import UnitSaveData from "./UnitSaveData";
 
 declare interface FleetSaveData
 {

@@ -1,10 +1,10 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate.d.ts";
-import SFXParams from "./templateinterfaces/SFXParams.d.ts";
+import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
+import SFXParams from "./templateinterfaces/SFXParams";
 
-import Unit from "./Unit.ts";
-import Options from "./options.ts";
+import Unit from "./Unit";
+import Options from "./options";
 
 export default class BattleSceneUnitOverlay
 {

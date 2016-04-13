@@ -1,11 +1,11 @@
-import GalaxyMapSaveData from "./savedata/GalaxyMapSaveData.d.ts";
+import GalaxyMapSaveData from "./savedata/GalaxyMapSaveData";
 
-import MapGenResult from "./mapgencore/MapGenResult.ts";
+import MapGenResult from "./mapgencore/MapGenResult";
 
-import Star from "./Star.ts";
-import FillerPoint from "./FillerPoint.ts";
-import Player from "./Player.ts";
-import MapVoronoiInfo from "./MapVoronoiInfo.ts";
+import Star from "./Star";
+import FillerPoint from "./FillerPoint";
+import Player from "./Player";
+import MapVoronoiInfo from "./MapVoronoiInfo";
 
 
 export default class GalaxyMap

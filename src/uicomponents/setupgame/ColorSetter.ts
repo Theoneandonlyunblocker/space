@@ -6,7 +6,7 @@ import * as React from "react";
 /// <reference path="colorpicker.ts" />
 
 
-import ColorPicker from "./ColorPicker.ts";
+import ColorPicker from "./ColorPicker";
 
 
 interface PropTypes extends React.Props<any>

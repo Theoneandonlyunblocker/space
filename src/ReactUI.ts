@@ -1,16 +1,16 @@
 /// <reference path="../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Battle from "./Battle.ts";
-import BattlePrep from "./BattlePrep.ts";
-import Renderer from "./Renderer.ts";
-import MapRenderer from "./MapRenderer.ts";
-import PlayerControl from "./PlayerControl.ts";
-import Player from "./Player.ts";
-import Game from "./Game.ts";
-import eventManager from "./eventManager.ts";
+import Battle from "./Battle";
+import BattlePrep from "./BattlePrep";
+import Renderer from "./Renderer";
+import MapRenderer from "./MapRenderer";
+import PlayerControl from "./PlayerControl";
+import Player from "./Player";
+import Game from "./Game";
+import eventManager from "./eventManager";
 
-import Stage from "./uicomponents/Stage.ts";
+import Stage from "./uicomponents/Stage";
 
 export default class ReactUI
 {

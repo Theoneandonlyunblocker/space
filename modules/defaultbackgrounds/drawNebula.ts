@@ -1,13 +1,13 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 
-import NebulaFilter from "../../src/shaders/Nebula.ts";
+import NebulaFilter from "../../src/shaders/Nebula";
 
-import {generateColorScheme} from "../../src/colorGeneration.ts";
+import {generateColorScheme} from "../../src/colorGeneration";
 import
 {
   randRange
-} from "../../src/utility.ts";
+} from "../../src/utility";
 
 export default function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
 {

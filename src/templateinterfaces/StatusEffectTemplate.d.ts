@@ -1,5 +1,5 @@
-import AbilityEffectTemplate from "./AbilityEffectTemplate.d.ts";
-import StatusEffectAttributes from "./StatusEffectAttributes.d.ts";
+import AbilityEffectTemplate from "./AbilityEffectTemplate";
+import StatusEffectAttributes from "./StatusEffectAttributes";
 
 declare interface StatusEffectTemplate
 {

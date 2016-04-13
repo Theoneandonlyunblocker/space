@@ -1,19 +1,19 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import TopMenuPopup from "../popups/TopMenuPopup.ts";
-import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager.ts";
-import Player from "../../Player.ts";
-import Game from "../../Game.ts";
-import DiplomacyOverview from "../diplomacy/DiplomacyOverview.ts";
-import ItemEquip from "../unitlist/ItemEquip.ts";
-import EconomySummary from "./EconomySummary.ts";
-import TechnologiesList from "../technologies/TechnologiesList.ts";
-import ProductionOverview from "../production/ProductionOverview.ts";
-import LoadGame from "../saves/LoadGame.ts";
-import SaveGame from "../saves/SaveGame.ts";
-import OptionsList from "./OptionsList.ts";
-import Options from "../../Options.ts";
+import TopMenuPopup from "../popups/TopMenuPopup";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import Player from "../../Player";
+import Game from "../../Game";
+import DiplomacyOverview from "../diplomacy/DiplomacyOverview";
+import ItemEquip from "../unitlist/ItemEquip";
+import EconomySummary from "./EconomySummary";
+import TechnologiesList from "../technologies/TechnologiesList";
+import ProductionOverview from "../production/ProductionOverview";
+import LoadGame from "../saves/LoadGame";
+import SaveGame from "../saves/SaveGame";
+import OptionsList from "./OptionsList";
+import Options from "../../Options";
 
 interface PropTypes extends React.Props<any>
 {

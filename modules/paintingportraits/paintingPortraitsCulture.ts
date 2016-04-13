@@ -1,5 +1,5 @@
-import CultureTemplate from "../../src/templateinterfaces/CultureTemplate.d.ts";
-import RandomGenUnitRarity from "../../src/RandomGenUnitRarity.ts";
+import CultureTemplate from "../../src/templateinterfaces/CultureTemplate";
+import RandomGenUnitRarity from "../../src/RandomGenUnitRarity";
 
 const paintingPortraitsCulture: CultureTemplate =
 {

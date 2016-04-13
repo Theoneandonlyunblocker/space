@@ -4,10 +4,10 @@ import * as React from "react";
 /// <reference path="playersetup.ts" />
 
 
-import Player from "../../Player.ts";
-import Flag from "../../Flag.ts";
-import PlayerSetup from "./PlayerSetup.ts";
-import Color from "../../Color.ts";
+import Player from "../../Player";
+import Flag from "../../Flag";
+import PlayerSetup from "./PlayerSetup";
+import Color from "../../Color";
 
 
 interface PropTypes extends React.Props<any>

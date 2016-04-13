@@ -4,8 +4,8 @@ import * as React from "react";
 /// <reference path="playerflag.ts" />
 
 
-import Flag from "../../src/Flag.ts";
-import PlayerFlag from "./PlayerFlag.ts";
+import Flag from "../../src/Flag";
+import PlayerFlag from "./PlayerFlag";
 
 
 interface PropTypes extends React.Props<any>

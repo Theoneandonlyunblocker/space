@@ -1,7 +1,7 @@
-import AbilityBase from "./AbilityBase.d.ts";
-import AbilityEffectTemplate from "./AbilityEffectTemplate.d.ts";
-import BattlePrepEffect from "./BattlePrepEffect.d.ts";
-import TurnStartEffect from "./TurnStartEffect.d.ts";
+import AbilityBase from "./AbilityBase";
+import AbilityEffectTemplate from "./AbilityEffectTemplate";
+import BattlePrepEffect from "./BattlePrepEffect";
+import TurnStartEffect from "./TurnStartEffect";
 
 declare interface PassiveSkillTemplate extends AbilityBase
 {

@@ -1,12 +1,12 @@
 /// <reference path="../../lib/pixi.d.ts" />
 
-import BuildingTemplates from "./BuildingTemplates.ts";
+import BuildingTemplates from "./BuildingTemplates";
 
-import ModuleFile from "../../src/ModuleFile.d.ts";
-import ModuleData from "../../src/ModuleData.ts";
-import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages.ts";
+import ModuleFile from "../../src/ModuleFile";
+import ModuleData from "../../src/ModuleData";
+import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 
-import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate.d.ts";
+import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate";
 
 const defaultBuildings: ModuleFile =
 {

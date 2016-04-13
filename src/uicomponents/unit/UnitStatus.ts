@@ -1,11 +1,11 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import GuardCoverage from "../../GuardCoverage.ts";
+import GuardCoverage from "../../GuardCoverage";
 import
 {
   clamp
-} from "../../utility.ts";
+} from "../../utility";
 
 
 interface PropTypes extends React.Props<any>
