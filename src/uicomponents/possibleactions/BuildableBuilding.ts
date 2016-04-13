@@ -1,11 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../mixins/updatewhenmoneychanges.ts" />
-
-/// <reference path="../../player.ts" />
-
-
+import ListColumn from "../unitlist/ListColumn";
 import Player from "../../Player";
 import BuildingTemplate from "../../templateinterfaces/BuildingTemplate";
 
@@ -13,10 +9,11 @@ import BuildingTemplate from "../../templateinterfaces/BuildingTemplate";
 interface PropTypes extends React.Props<any>
 {
   activeColumns: ListColumn[];
-  template: reactTypeTODO_object;
+  template: BuildingTemplate;
   player: Player;
   buildCost: number;
-  handleClick: reactTypeTODO_func;
+  handleClick: () => void;
+  typeName: string;
 }
 
 interface StateType
@@ -64,11 +61,11 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
 
   makeCell(type: string)
   {
-    var cellProps: any = {};
+    var cellProps: React.HTMLAttributes = {};
     cellProps.key = type;
     cellProps.className = "buildable-building-list-item-cell " + type;
 
-    var cellContent: any;
+    var cellContent: string | number;
 
     switch (type)
     {
@@ -105,7 +102,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
       );
     }
 
-    var props: any =
+    var props: React.HTMLAttributes =
     {
       className: "buildable-item buildable-building",
       onClick: this.props.handleClick,
