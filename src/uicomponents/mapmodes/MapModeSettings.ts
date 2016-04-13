@@ -1,13 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="mapmodeselector.ts" />
-/// <reference path="maprendererlayerslist.ts" />
 
-/// <reference path="../../maprenderer.ts" />
-
-
-import MapRendererLayersList from "./MapRendererLayersList";
+import {default as MapRendererLayersList, MapRendererLayersListComponent} from "./MapRendererLayersList";
 import MapRenderer from "../../MapRenderer";
 import MapModeSelector from "./MapModeSelector";
 
@@ -21,18 +16,12 @@ interface StateType
 {
 }
 
-interface RefTypes extends React.Refs
-{
-  layersList: React.Component<any, any>; // TODO refactor | correct ref type 542 | MapRendererLayersList
-}
-
 export class MapModeSettingsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapModeSettings";
 
-
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_layersList: MapRendererLayersListComponent;
 
   constructor(props: PropTypes)
   {
@@ -64,11 +53,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
         MapModeSelector(
         {
           mapRenderer: this.props.mapRenderer,
-          onUpdate: this.forceUpdate.bind(this),
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_selector = component;
-}
+          onUpdate: this.forceUpdate.bind(this)
         }),
         React.DOM.button(
         {
@@ -81,10 +66,10 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
         {
           mapRenderer: this.props.mapRenderer,
           currentMapMode: this.props.mapRenderer.currentMapMode,
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_layersList = component;
-}
+          ref: (component: MapRendererLayersListComponent) =>
+          {
+            this.ref_TODO_layersList = component;
+          }
         })
       )
     );
