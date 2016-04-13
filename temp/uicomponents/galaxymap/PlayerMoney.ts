@@ -1,9 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../player.ts" />
-
-
 import Player from "../../../src/Player.ts";
 import eventManager from "../../../src/eventManager.ts";
 
@@ -20,7 +17,7 @@ interface StateType
 export class PlayerMoneyComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerMoney";
-  lastAmountRendered: reactTypeTODO_any = undefined;
+  lastAmountRendered: number = undefined;
 
 
   state: StateType;
