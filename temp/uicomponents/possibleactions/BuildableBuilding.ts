@@ -6,8 +6,8 @@ import * as React from "react";
 /// <reference path="../../player.ts" />
 
 
-import Player from "../../../src/Player.ts";
-import BuildingTemplate from "../../../src/templateinterfaces/BuildingTemplate.d.ts";
+import Player from "../../Player.ts";
+import BuildingTemplate from "../../templateinterfaces/BuildingTemplate.d.ts";
 
 
 interface PropTypes extends React.Props<any>

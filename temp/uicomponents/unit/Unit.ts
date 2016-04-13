@@ -8,7 +8,7 @@ import * as React from "react";
 /// <reference path="../mixins/draggable.ts" />
 
 
-import Unit from "../../../src/Unit.ts";
+import Unit from "../../Unit.ts";
 import UnitPortrait from "./UnitPortrait.ts";
 import UnitStatusEffects from "./UnitStatusEffects.ts";
 import UnitInfo from "./UnitInfo.ts";

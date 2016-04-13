@@ -13,12 +13,12 @@ import * as React from "react";
 
 
 import BuildQueue from "./BuildQueue.ts";
-import Player from "../../../src/Player.ts";
+import Player from "../../Player.ts";
 import ManufacturableThings from "./ManufacturableThings.ts";
-import Star from "../../../src/Star.ts";
+import Star from "../../Star.ts";
 import ConstructManufactory from "./ConstructManufactory.ts";
 import ManufactoryStarsList from "./ManufactoryStarsList.ts";
-import eventManager from "../../../src/eventManager.ts";
+import eventManager from "../../eventManager.ts";
 
 
 interface PropTypes extends React.Props<any>

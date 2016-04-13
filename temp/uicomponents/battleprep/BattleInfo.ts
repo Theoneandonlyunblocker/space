@@ -4,7 +4,7 @@ import * as React from "react";
 import PlayerFlag from "../PlayerFlag.ts";
 import DefenceBuildingList from "../galaxymap/DefenceBuildingList.ts";
 
-import BattlePrep from "../../../src/BattlePrep.ts";
+import BattlePrep from "../../BattlePrep.ts";
 
 
 interface PropTypes extends React.Props<any>

@@ -2,7 +2,7 @@
 import * as React from "react";
 
 import ListColumn from "../unitlist/Listcolumn.d.ts";
-import Star from "../../../src/Star.ts";
+import Star from "../../Star.ts";
 
 interface PropTypes extends React.Props<any>
 {

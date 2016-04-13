@@ -2,11 +2,11 @@
 import * as React from "react";
 
 
-import Unit from "../../../src/Unit.ts";
+import Unit from "../../Unit.ts";
 import FleetContents from "./FleetContents.ts";
 import fleets from "../../../modules/defaultmapmodes/maplayertemplates/fleets.ts";
-import Fleet from "../../../src/Fleet.ts";
-import eventManager from "../../../src/eventManager.ts";
+import Fleet from "../../Fleet.ts";
+import eventManager from "../../eventManager.ts";
 
 
 interface PropTypes extends React.Props<any>

@@ -3,8 +3,8 @@ import * as React from "react";
 
 
 import DefenceBuildingList from "./DefenceBuildingList.ts";
-import Options from "../../../src/Options.ts";
-import Star from "../../../src/Star.ts";
+import Options from "../../Options.ts";
+import Star from "../../Star.ts";
 
 
 interface PropTypes extends React.Props<any>

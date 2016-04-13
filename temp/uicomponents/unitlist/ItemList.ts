@@ -7,10 +7,10 @@ import * as React from "react";
 /// <reference path="itemlistitem.ts" />
 
 
-import Unit from "../../../src/Unit.ts";
+import Unit from "../../Unit.ts";
 import List from "./List.ts";
 import ItemListItem from "./ItemListItem.ts";
-import Item from "../../../src/Item.ts";
+import Item from "../../Item.ts";
 
 
 interface PropTypes extends React.Props<any>

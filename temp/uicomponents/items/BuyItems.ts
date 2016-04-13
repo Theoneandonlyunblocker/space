@@ -6,10 +6,10 @@ import * as React from "react";
 /// <reference path="itempurchaselist.ts" />
 
 
-import ItemTemplate from "../../../src/templateinterfaces/ItemTemplate.d.ts";
+import ItemTemplate from "../../templateinterfaces/ItemTemplate.d.ts";
 import ItemPurchaseList from "./ItemPurchaseList.ts";
-import Item from "../../../src/Item.ts";
-import eventManager from "../../../src/eventManager.ts";
+import Item from "../../Item.ts";
+import eventManager from "../../eventManager.ts";
 
 
 interface PropTypes extends React.Props<any>

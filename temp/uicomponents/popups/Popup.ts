@@ -5,7 +5,7 @@ import * as React from "react";
 /// <reference path="resizehandle.ts" />
 
 
-import eventManager from "../../../src/eventManager.ts";
+import eventManager from "../../eventManager.ts";
 import PopupResizeHandle from "./PopupResizeHandle.ts";
 
 

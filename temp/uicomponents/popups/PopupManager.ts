@@ -2,8 +2,8 @@
 import * as React from "react";
 
 import {default as Popup, PopupComponent} from "./Popup.ts";
-import eventManager from "../../../src/eventManager.ts";
-import {extendObject} from "../../../src/utility.ts";
+import eventManager from "../../eventManager.ts";
+import {extendObject} from "../../utility.ts";
 
 
 interface PropTypes extends React.Props<any>

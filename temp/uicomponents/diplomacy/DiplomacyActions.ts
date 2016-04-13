@@ -1,8 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Player from "../../../src/Player.ts";
-import Trade from "../../../src/Trade.ts";
+import Player from "../../Player.ts";
+import Trade from "../../Trade.ts";
 import TradeOverview from "../trade/TradeOverview.ts";
 import TopMenuPopup from "../popups/TopMenuPopup.ts";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager.ts";

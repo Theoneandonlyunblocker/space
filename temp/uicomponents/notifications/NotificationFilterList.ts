@@ -7,8 +7,8 @@ import * as React from "react";
 
 import OptionsGroup from "../galaxymap/OptionsGroup.ts";
 import NotificationFilterListItem from "./NotificationFilterListItem.ts";
-import NotificationFilter from "../../../src/NotificationFilter.ts";
-import eventManager from "../../../src/eventManager.ts";
+import NotificationFilter from "../../NotificationFilter.ts";
+import eventManager from "../../eventManager.ts";
 
 
 interface PropTypes extends React.Props<any>

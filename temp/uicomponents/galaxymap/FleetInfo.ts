@@ -5,7 +5,7 @@ import * as React from "react";
 
 
 import FleetControls from "./FleetControls.ts";
-import Fleet from "../../../src/Fleet.ts";
+import Fleet from "../../Fleet.ts";
 
 
 interface PropTypes extends React.Props<any>

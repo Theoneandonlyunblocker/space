@@ -4,7 +4,7 @@ import * as React from "react";
 /// <reference path="../mixins/splitmultilinetext.ts" />
 
 
-import eventManager from "../../../src/eventManager.ts";
+import eventManager from "../../eventManager.ts";
 
 import ListItem from "./ListItem.d.ts";
 import ListColumn from "./ListColumn.d.ts";

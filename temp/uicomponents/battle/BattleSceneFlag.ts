@@ -4,7 +4,7 @@ import * as React from "react";
 /// <reference path="../../flag.ts" />
 
 
-import Flag from "../../../src/Flag.ts";
+import Flag from "../../Flag.ts";
 
 
 interface PropTypes extends React.Props<any>

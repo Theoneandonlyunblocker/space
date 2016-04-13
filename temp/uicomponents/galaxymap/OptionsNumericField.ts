@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import {clamp} from "../../../src/utility.ts";
+import {clamp} from "../../utility.ts";
 
 interface PropTypes extends React.Props<any>
 {

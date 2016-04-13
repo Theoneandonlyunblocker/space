@@ -7,10 +7,10 @@ import * as React from "react";
 /// <reference path="buildablebuilding.ts" />
 
 
-import BuildingTemplate from "../../../src/templateinterfaces/BuildingTemplate.d.ts";
+import BuildingTemplate from "../../templateinterfaces/BuildingTemplate.d.ts";
 import List from "../unitlist/List.ts";
 import BuildableBuilding from "./BuildableBuilding.ts";
-import Building from "../../../src/Building.ts";
+import Building from "../../Building.ts";
 
 
 interface PropTypes extends React.Props<any>

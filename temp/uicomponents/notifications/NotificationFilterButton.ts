@@ -7,7 +7,7 @@ import * as React from "react";
 
 import PopupManager from "../popups/PopupManager.ts";
 import NotificationFilterList from "./NotificationFilterList.ts";
-import NotificationFilter from "../../../src/NotificationFilter.ts";
+import NotificationFilter from "../../NotificationFilter.ts";
 import TopMenuPopup from "../popups/TopMenuPopup.ts";
 
 

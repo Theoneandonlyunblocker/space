@@ -8,10 +8,10 @@ import * as React from "react";
 /// <reference path="../../templateinterfaces/mapgenoptions.d.ts" />
 
 
-import MapGenOptions from "../../../src/templateinterfaces/MapGenOptions.d.ts";
-import MapGenOptionValues from "../../../src/templateinterfaces/MapGenOptionValues.d.ts";
-import Options from "../../../src/Options.ts";
-import MapGenTemplate from "../../../src/templateinterfaces/MapGenTemplate.d.ts";
+import MapGenOptions from "../../templateinterfaces/MapGenOptions.d.ts";
+import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues.d.ts";
+import Options from "../../Options.ts";
+import MapGenTemplate from "../../templateinterfaces/MapGenTemplate.d.ts";
 import OptionsGroup from "../galaxymap/OptionsGroup.ts";
 import MapGenOption from "./MapGenOption.ts";
 

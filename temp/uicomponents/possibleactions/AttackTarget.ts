@@ -4,7 +4,7 @@ import * as React from "react";
 /// <reference path="../playerflag.ts" />
 
 
-import eventManager from "../../../src/eventManager.ts";
+import eventManager from "../../eventManager.ts";
 import PlayerFlag from "../PlayerFlag.ts";
 
 

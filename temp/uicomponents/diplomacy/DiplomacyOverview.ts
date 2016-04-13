@@ -7,8 +7,8 @@ import List from "../unitlist/List.ts";
 import DiplomacyActions from "./DiplomacyActions.ts";
 import Opinion from "./Opinion.ts";
 import DiplomaticStatusPlayer from "./DiplomaticStatusPlayer.ts";
-import DiplomacyState from "../../../src/DiplomacyState.ts";
-import Player from "../../../src/Player.ts";
+import DiplomacyState from "../../DiplomacyState.ts";
+import Player from "../../Player.ts";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager.ts";
 
 

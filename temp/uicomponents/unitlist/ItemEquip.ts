@@ -10,7 +10,7 @@ import * as React from "react";
 import MenuUnitInfo from "./MenuUnitInfo.ts";
 import UnitList from "./UnitList.ts";
 import ItemList from "./ItemList.ts";
-import Item from "../../../src/Item.ts";
+import Item from "../../Item.ts";
 
 
 interface PropTypes extends React.Props<any>

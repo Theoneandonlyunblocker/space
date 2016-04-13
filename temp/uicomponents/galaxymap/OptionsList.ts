@@ -2,19 +2,19 @@
 
 import * as React from "react";
 
-import Unit from "../../../src/Unit.ts";
+import Unit from "../../Unit.ts";
 import OptionsCheckbox from "./OptionsCheckbox.ts";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager.ts";
-import Options from "../../../src/Options.ts";
+import Options from "../../Options.ts";
 import OptionsNumericField from "./OptionsNumericField.ts";
 import Battle from "../battle/Battle.ts";
 import OptionsGroup from "./OptionsGroup.ts";
 import ConfirmPopup from "../popups/ConfirmPopup.ts";
 import NotificationFilterButton from "../notifications/NotificationFilterButton.ts";
-import NotificationLog from "../../../src/NotificationLog.ts";
-import eventManager from "../../../src/eventManager.ts";
-import {clamp} from "../../../src/utility.ts";
-import {resetTutorialStatus} from "../../../src/tutorials/TutorialStatus.ts";
+import NotificationLog from "../../NotificationLog.ts";
+import eventManager from "../../eventManager.ts";
+import {clamp} from "../../utility.ts";
+import {resetTutorialStatus} from "../../tutorials/TutorialStatus.ts";
 
 
 interface PropTypes extends React.Props<any>

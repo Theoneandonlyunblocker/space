@@ -2,7 +2,7 @@
 import * as React from "react";
 
 import DefenceBuilding from "./DefenceBuilding.ts";
-import Building from "../../../src/Building.ts";
+import Building from "../../Building.ts";
 
 interface PropTypes extends React.Props<any>
 {

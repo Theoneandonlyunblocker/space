@@ -1,12 +1,12 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Game from "../../../src/Game.ts";
-import Player from "../../../src/Player.ts";
+import Game from "../../Game.ts";
+import Player from "../../Player.ts";
 import PlayerFlag from "../PlayerFlag.ts";
 import PlayerMoney from "./PlayerMoney.ts";
 import TopBarResources from "./TopBarResources.ts";
-import eventManager from "../../../src/eventManager.ts";
+import eventManager from "../../eventManager.ts";
 
 
 interface PropTypes extends React.Props<any>

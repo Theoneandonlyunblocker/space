@@ -1,18 +1,18 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-import Renderer from "../../../src/Renderer.ts";
-import Player from "../../../src/Player.ts";
-import Battle from "../../../src/Battle.ts";
-import Unit from "../../../src/Unit.ts";
+import Renderer from "../../Renderer.ts";
+import Player from "../../Player.ts";
+import Battle from "../../Battle.ts";
+import Unit from "../../Unit.ts";
 import TurnOrder from "./TurnOrder.ts";
 import TurnCounter from "./TurnCounter.ts";
 import BattleBackground from "./BattleBackground.ts";
-import Options from "../../../src/Options.ts";
-import MCTree from "../../../src/MCTree.ts";
-import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
-import {AbilityUseData} from "../../../src/battleAbilityProcessing.ts";
-import {getTargetsForAllAbilities} from "../../../src/battleAbilityTargeting.ts";
+import Options from "../../Options.ts";
+import MCTree from "../../MCTree.ts";
+import AbilityTemplate from "../../templateinterfaces/AbilityTemplate.d.ts";
+import {AbilityUseData} from "../../battleAbilityProcessing.ts";
+import {getTargetsForAllAbilities} from "../../battleAbilityTargeting.ts";
 import BattleScore from "./BattleScore.ts";
 import BattleScene from "./BattleScene.ts";
 import Formation from "./Formation.ts";

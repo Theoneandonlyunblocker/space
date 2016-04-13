@@ -4,10 +4,10 @@ import * as React from "react";
 /// <reference path="../mixins/droptarget.ts"/>
 
 import EmptyUnit from "./EmptyUnit.ts";
-import Unit from "../../../src/Unit.ts";
+import Unit from "../../Unit.ts";
 import Unit_COMPONENT_USE_CONFLICT from "./Unit.ts";
-import Battle from "../../../src/Battle.ts";
-import AbilityTemplate from "../../../src/templateinterfaces/AbilityTemplate.d.ts";
+import Battle from "../../Battle.ts";
+import AbilityTemplate from "../../templateinterfaces/AbilityTemplate.d.ts";
 
 
 interface PropTypes extends React.Props<any>

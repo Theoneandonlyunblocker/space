@@ -6,12 +6,12 @@ import * as React from "react";
 /// <reference path="notificationfilterbutton.ts" />
 
 
-import NotificationLog from "../../../src/NotificationLog.ts";
+import NotificationLog from "../../NotificationLog.ts";
 import Notification from "./Notification.ts";
 import ConfirmPopup from "../popups/ConfirmPopup.ts";
 import NotificationFilterButton from "./NotificationFilterButton.ts";
 import PopupManager from "../popups/PopupManager.ts";
-import eventManager from "../../../src/eventManager.ts";
+import eventManager from "../../eventManager.ts";
 
 
 interface PropTypes extends React.Props<any>

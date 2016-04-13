@@ -5,7 +5,7 @@ import * as React from "react";
 /// <reference path="dontshowagain.ts" />
 
 
-import Tutorial from "../../../src/tutorials/Tutorial.d.ts";
+import Tutorial from "../../tutorials/Tutorial.d.ts";
 import DontShowAgain from "./DontShowAgain.ts";
 
 

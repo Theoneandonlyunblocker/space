@@ -5,7 +5,7 @@ import * as React from "react";
 /// <reference path="flagsetter.ts" />
 
 
-import Player from "../../../src/Player.ts";
+import Player from "../../Player.ts";
 import FlagSetter from "./FlagSetter.ts";
 import ColorSetter from "./ColorSetter.ts";
 

@@ -9,7 +9,7 @@ import * as React from "react";
 
 import TradeMoney from "./TradeMoney.ts";
 import List from "../unitlist/List.ts";
-import Item from "../../../src/Item.ts";
+import Item from "../../Item.ts";
 
 
 interface PropTypes extends React.Props<any>

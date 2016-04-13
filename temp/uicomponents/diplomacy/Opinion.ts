@@ -2,12 +2,12 @@
 import * as React from "react";
 
 import AttitudeModifierList from "./AttitudeModifierList.ts";
-import AttitudeModifier from "../../../src/AttitudeModifier.ts";
+import AttitudeModifier from "../../AttitudeModifier.ts";
 import
 {
   clamp,
   getRelativeValue,
-} from "../../../src/utility.ts";
+} from "../../utility.ts";
 
 interface PropTypes extends React.Props<any>
 {

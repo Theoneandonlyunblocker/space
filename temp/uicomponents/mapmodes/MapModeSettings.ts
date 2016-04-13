@@ -8,7 +8,7 @@ import * as React from "react";
 
 
 import MapRendererLayersList from "./MapRendererLayersList.ts";
-import MapRenderer from "../../../src/MapRenderer.ts";
+import MapRenderer from "../../MapRenderer.ts";
 import MapModeSelector from "./MapModeSelector.ts";
 
 

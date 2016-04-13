@@ -6,7 +6,7 @@ import * as React from "react";
 
 import List from "../unitlist/List.ts";
 import EconomySummaryItem from "./EconomySummaryItem.ts";
-import Player from "../../../src/Player.ts";
+import Player from "../../Player.ts";
 
 
 interface PropTypes extends React.Props<any>

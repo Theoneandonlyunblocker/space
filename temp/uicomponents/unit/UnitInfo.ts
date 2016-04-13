@@ -8,7 +8,7 @@ import * as React from "react";
 
 import UnitStatus from "./UnitStatus.ts";
 import UnitStrength from "./UnitStrength.ts";
-import GuardCoverage from "../../../src/GuardCoverage.ts";
+import GuardCoverage from "../../GuardCoverage.ts";
 import UnitActions from "./UnitActions.ts";
 
 

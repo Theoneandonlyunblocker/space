@@ -9,7 +9,7 @@ import * as React from "react";
 /// <reference path="tutorial.ts" />
 
 
-import IntroTutorial from "../../../src/tutorials/IntroTutorial.ts";
+import IntroTutorial from "../../tutorials/IntroTutorial.ts";
 import Tutorial from "./Tutorial.ts";
 import TopMenuPopup from "../popups/TopMenuPopup.ts";
 import PopupManager from "../popups/PopupManager.ts";

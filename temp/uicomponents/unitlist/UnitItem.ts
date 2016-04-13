@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 
 
-import Item from "../../../src/Item.ts";
+import Item from "../../Item.ts";
 
 import * as React from "react";
 

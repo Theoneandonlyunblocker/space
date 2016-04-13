@@ -4,9 +4,9 @@ import * as React from "react";
 /// <reference path="../../playertechnology.ts" />
 
 
-import TechnologyTemplate from "../../../src/templateinterfaces/TechnologyTemplate.d.ts";
+import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate.d.ts";
 import TechnologyPrioritySlider from "./technologyPrioritySlider.ts";
-import PlayerTechnology from "../../../src/PlayerTechnology.ts";
+import PlayerTechnology from "../../PlayerTechnology.ts";
 
 
 

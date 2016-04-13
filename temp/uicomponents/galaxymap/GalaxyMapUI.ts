@@ -6,16 +6,16 @@ import TopBar from "./TopBar.ts";
 import Notifications from "../notifications/Notifications.ts";
 import StarInfo from "./StarInfo.ts";
 import FleetSelection from "./FleetSelection.ts";
-import Star from "../../../src/Star.ts";
+import Star from "../../Star.ts";
 import TopMenu from "./TopMenu.ts";
 import PossibleActions from "../possibleactions/PossibleActions.ts";
 import IntroTutorial from "../tutorials/IntroTutorial.ts";
-import eventManager from "../../../src/eventManager.ts";
-import PlayerControl from "../../../src/PlayerControl.ts";
-import Game from "../../../src/Game.ts";
-import MapRenderer from "../../../src/MapRenderer.ts";
-import Renderer from "../../../src/Renderer.ts";
-import Player from "../../../src/Player.ts";
+import eventManager from "../../eventManager.ts";
+import PlayerControl from "../../PlayerControl.ts";
+import Game from "../../Game.ts";
+import MapRenderer from "../../MapRenderer.ts";
+import Renderer from "../../Renderer.ts";
+import Player from "../../Player.ts";
 
 
 interface PropTypes extends React.Props<any>
