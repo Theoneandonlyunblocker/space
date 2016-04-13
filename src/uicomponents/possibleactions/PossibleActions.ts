@@ -1,11 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../star.ts" />
-/// <reference path="attacktarget.ts"/>
-/// <reference path="buildablebuildinglist.ts"/>
-/// <reference path="buildingupgradelist.ts"/>
-
 
 import Player from "../../Player";
 import Star from "../../Star";
@@ -13,21 +8,21 @@ import AttackTarget from "./AttackTarget";
 import BuildingUpgradeList from "./BuildingUpgradeList";
 import BuildableBuildingList from "./BuildableBuildingList";
 import eventManager from "../../eventManager";
-
+import FleetAttackTarget from "../../FleetAttackTarget";
 
 interface PropTypes extends React.Props<any>
 {
   player: Player;
-  setExpandedActionElementOnParent: reactTypeTODO_func;
+  setExpandedActionElementOnParent: (element: React.ReactElement<any>) => void;
   selectedStar?: Star;
-  attackTargets?: reactTypeTODO_object[];
+  attackTargets?: FleetAttackTarget[];
 }
 
 interface StateType
 {
   canUpgradeBuildings?: boolean;
-  expandedAction?: any; // TODO refactor | define state type 456
-  expandedActionElement?: any; // TODO refactor | define state type 456
+  expandedAction?: "buildBuildings" | "upgradeBuildings";
+  expandedActionElement?: React.HTMLElement;
 }
 
 export class PossibleActionsComponent extends React.Component<PropTypes, StateType>
@@ -69,8 +64,8 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
   {
     if (this.props.selectedStar !== newProps.selectedStar)
     {
-      var newState: any = {};
-      var afterStateSetCallback: Function = null;
+      var newState: StateType = {};
+      var afterStateSetCallback: () => void;
 
       newState.canUpgradeBuildings = this.canUpgradeBuildings(newProps.selectedStar);
       if (this.state.expandedActionElement)
@@ -194,15 +189,11 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
       var attackTargetComponents: React.ReactElement<any>[] = [];
       for (var i = 0; i < attackTargets.length; i++)
       {
-        var props: any =
+        attackTargetComponents.push(AttackTarget(
         {
           key: i,
           attackTarget: attackTargets[i]
-        };
-
-        attackTargetComponents.push(AttackTarget(
-          props
-        ));
+        }));
       }
       allActions.push(
         React.DOM.div(

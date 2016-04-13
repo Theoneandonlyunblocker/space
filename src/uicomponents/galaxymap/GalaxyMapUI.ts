@@ -16,6 +16,8 @@ import Game from "../../Game";
 import MapRenderer from "../../MapRenderer";
 import Renderer from "../../Renderer";
 import Player from "../../Player";
+import Fleet from "../../Fleet";
+import FleetAttackTarget from "../../FleetAttackTarget";
 
 
 interface PropTypes extends React.Props<any>
@@ -28,14 +30,14 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  attackTargets?: any; // TODO refactor | define state type 456
+  attackTargets?: FleetAttackTarget[];
   hasMapModeSettingsExpanded?: boolean;
-  currentlyReorganizing?: any; // TODO refactor | define state type 456
-  selectedFleets?: any; // TODO refactor | define state type 456
-  inspectedFleets?: any; // TODO refactor | define state type 456
+  currentlyReorganizing?: Fleet[];
+  selectedFleets?: Fleet[];
+  inspectedFleets?: Fleet[];
   isPlayerTurn?: boolean;
-  expandedActionElement?: any; // TODO refactor | define state type 456
-  selectedStar?: any; // TODO refactor | define state type 456
+  expandedActionElement?: React.ReactElement<any>;
+  selectedStar?: Star;
 }
 
 export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
