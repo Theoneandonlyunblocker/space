@@ -1,8 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../maprenderer.ts" />
-
 
 import MapRenderer from "../../MapRenderer";
 
@@ -10,7 +8,7 @@ import MapRenderer from "../../MapRenderer";
 interface PropTypes extends React.Props<any>
 {
   mapRenderer: MapRenderer;
-  onUpdate?: reactTypeTODO_func;
+  onUpdate?: () => void;
 }
 
 interface StateType
@@ -22,7 +20,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
   displayName: string = "MapModeSelector";
 
 
-  handleChange(e: Event)
+  handleChange(e: React.FormEvent)
   {
     var target = <HTMLInputElement> e.target;
     var value = target.value;
