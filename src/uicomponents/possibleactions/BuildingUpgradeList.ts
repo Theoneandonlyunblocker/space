@@ -1,23 +1,18 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../player.ts" />
-/// <reference path="../../star.ts" />
-
-/// <reference path="buildingupgradelistitem.ts" />
-
-
 import Player from "../../Player";
 import BuildingUpgradeListItem from "./BuildingUpgradeListItem";
 import Star from "../../Star";
 import Building from "../../Building";
+import BuildingUpgradeData from "../../BuildingUpgradeData";
 
 
 interface PropTypes extends React.Props<any>
 {
   star: Star;
   player: Player;
-  clearExpandedAction: reactTypeTODO_func;
+  clearExpandedAction: () => void;
 }
 
 interface StateType
@@ -49,7 +44,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     return Object.keys(possibleUpgrades).length > 0;
   }
 
-  upgradeBuilding(upgradeData: IBuildingUpgradeData)
+  upgradeBuilding(upgradeData: BuildingUpgradeData)
   {
     var star = upgradeData.parentBuilding.location
 
