@@ -1,30 +1,32 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
+import MapRendererLayer from "../../MapRendererLayer";
+
 interface PropTypes extends React.Props<any>
 {
   listItemIsDragging: boolean;
-  onDragEnd: any; // TODO refactor | define prop type 123
-  onDragStart: any; // TODO refactor | define prop type 123
+  onDragEnd: () => void;
+  onDragStart: (layer: MapRendererLayer) => void;
   isActive: boolean;
-  layer: any; // TODO refactor | define prop type 123
-  setHoverPosition: any; // TODO refactor | define prop type 123
-  toggleActive: any; // TODO refactor | define prop type 123
-  updateLayer: any; // TODO refactor | define prop type 123
-  layerName: any; // TODO refactor | define prop type 123
+  layer: MapRendererLayer;
+  setHoverPosition: (layer: MapRendererLayer, position: string) => void;
+  toggleActive: () => void;
+  updateLayer: (layer: MapRendererLayer) => void;
+  layerName: string;
 }
 
 interface StateType
 {
   dragging?: boolean;
-  hoverSide?: any; // TODO refactor | define state type 456
+  hoverSide?: "top" | "bottom";
 }
 
 export class MapRendererLayersListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersListItem";
   mixins: reactTypeTODO_any = [Draggable, DropTarget, React.addons.PureRenderMixin];
-  cachedMidPoint: reactTypeTODO_any = undefined;
+  cachedMidPoint: number; // Y mid point for list item
 
   state: StateType;
 
@@ -73,22 +75,23 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
     this.props.onDragEnd();
   }
 
-  handleHover(e: MouseEvent)
+  handleHover(e: React.MouseEvent)
   {
     if (!this.cachedMidPoint)
     {
-      var rect = React.findDOMNode(this)().getBoundingClientRect();
+      var rect = React.findDOMNode(this).getBoundingClientRect();
       this.cachedMidPoint = rect.top + rect.height / 2;
     }
 
     var isAbove = e.clientY < this.cachedMidPoint;
+    const hoverSide: "top" | "bottom" = isAbove ? "top" : "bottom";
 
     this.setState(
     {
-      hoverSide: (isAbove ? "top" : "bottom")
+      hoverSide: hoverSide
     });
 
-    this.props.setHoverPosition(this.props.layer, isAbove);
+    this.props.setHoverPosition(this.props.layer, hoverSide);
   }
 
   clearHover()
@@ -99,7 +102,7 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
     });
   }
 
-  setLayerAlpha(e: Event)
+  setLayerAlpha(e: React.FormEvent)
   {
     var target = <HTMLInputElement> e.target;
     var value = parseFloat(target.value)
@@ -113,7 +116,7 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
 
   render()
   {
-    var divProps: any =
+    var divProps: React.HTMLAttributes =
     {
       className: "map-renderer-layers-list-item draggable draggable-container",
       onMouseDown: this.handleMouseDown,
@@ -158,7 +161,7 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
           min: 0,
           max: 1,
           step: 0.05,
-          value: this.props.layer.alpha,
+          value: "" + this.props.layer.alpha,
           onChange: this.setLayerAlpha
         })
       )
