@@ -11,7 +11,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  isCollapsed?: any; // TODO refactor | define state type 456
+  isCollapsed: boolean;
 }
 
 export class OptionsGroupComponent extends React.Component<PropTypes, StateType>

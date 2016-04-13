@@ -20,7 +20,7 @@ interface PropTypes extends React.Props<any>
   onMouseUp?: any; // TODO refactor | define prop type 123
   currentDragItem?: any; // TODO refactor | define prop type 123
   unit: Unit;
-  isDraggable?: any; // TODO refactor | define prop type 123
+  isDraggable: boolean;
 }
 
 interface StateType

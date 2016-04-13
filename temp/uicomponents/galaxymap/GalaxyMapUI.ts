@@ -29,11 +29,11 @@ interface PropTypes extends React.Props<any>
 interface StateType
 {
   attackTargets?: any; // TODO refactor | define state type 456
-  hasMapModeSettingsExpanded?: any; // TODO refactor | define state type 456
+  hasMapModeSettingsExpanded: boolean;
   currentlyReorganizing?: any; // TODO refactor | define state type 456
   selectedFleets?: any; // TODO refactor | define state type 456
   inspectedFleets?: any; // TODO refactor | define state type 456
-  isPlayerTurn?: any; // TODO refactor | define state type 456
+  isPlayerTurn: boolean;
   expandedActionElement?: any; // TODO refactor | define state type 456
   selectedStar?: any; // TODO refactor | define state type 456
 }

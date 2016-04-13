@@ -25,7 +25,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  canUpgradeBuildings?: any; // TODO refactor | define state type 456
+  canUpgradeBuildings: boolean;
   expandedAction?: any; // TODO refactor | define state type 456
   expandedActionElement?: any; // TODO refactor | define state type 456
 }

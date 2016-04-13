@@ -9,7 +9,7 @@ interface PropTypes extends React.Props<any>
 {
   width: number;
   props: any; // TODO refactor | define prop type 123
-  isMutable?: any; // TODO refactor | define prop type 123
+  isMutable: boolean;
   height: number;
   stretch?: any; // TODO refactor | define prop type 123
   flag: Flag;
