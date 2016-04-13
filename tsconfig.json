@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "amd",
+        "moduleResolution": "classic",
+        "outFile": "src/js/main.js",
+        
+        "noImplicitAny": true,
+        "suppressImplicitAnyIndexErrors": true,
+        
+        "declaration": false,
+        "experimentalDecorators": false,
+        "emitDecoratorMetadata": false,
+        
+        // "isolatedModules": false,
+        // "noImplicitUseStrict": false,
+        // "noLib": false,
+        // "preserveConstEnums": true,
+        "removeComments": true
+    },
+    "files": [
+      "src/App.ts"
+    ],
+    // "exclude": [
+    //     "node_modules",
+    //     "typings/browser",
+    //     "typings/browser.d.ts",
+    //     "lib"
+    // ],
+    "compileOnSave": false,
+    "buildOnSave": false
+}
