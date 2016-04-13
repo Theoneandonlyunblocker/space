@@ -1,16 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="topmenu.ts"/>
-/// <reference path="topbar.ts"/>
-/// <reference path="fleetselection.ts"/>
-/// <reference path="starinfo.ts"/>
-/// <reference path="../possibleactions/possibleactions.ts"/>
-/// <reference path="../mapmodes/mapmodesettings.ts" />
-/// <reference path="../notifications/notifications.ts" />
-/// <reference path="../tutorials/introtutorial.ts" />
-
-
 import MapModeSettings from "../mapmodes/MapModeSettings.ts";
 import TopBar from "./TopBar.ts";
 import Notifications from "../notifications/Notifications.ts";
@@ -21,7 +11,11 @@ import TopMenu from "./TopMenu.ts";
 import PossibleActions from "../possibleactions/PossibleActions.ts";
 import IntroTutorial from "../tutorials/IntroTutorial.ts";
 import eventManager from "../../../src/eventManager.ts";
-
+import PlayerControl from "../../../src/PlayerControl.ts";
+import Game from "../../../src/Game.ts";
+import MapRenderer from "../../../src/MapRenderer.ts";
+import Renderer from "../../../src/Renderer.ts";
+import Player from "../../../src/Player.ts";
 
 
 interface PropTypes extends React.Props<any>
@@ -44,18 +38,13 @@ interface StateType
   selectedStar?: any; // TODO refactor | define state type 456
 }
 
-interface RefTypes extends React.Refs
-{
-  leftColumnContent: HTMLElement;
-  expandedActionElementContainer: HTMLElement;
-}
-
 export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "GalaxyMapUI";
 
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_leftColumnContent: React.HTMLComponent;
+  ref_TODO_expandedActionElementContainer: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -120,7 +109,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     if (!this.state.expandedActionElement) return;
 
     var maxHeight = React.findDOMNode<HTMLElement>(this.ref_TODO_leftColumnContent).getBoundingClientRect().height;
-    var listElement = React.findDOMNode<HTMLElement>(this.ref_TODO_expandedActionElementContainer).firstChild.firstChild;
+    var listElement = <HTMLElement> React.findDOMNode(this.ref_TODO_expandedActionElementContainer).firstChild.firstChild;
     listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
   }
 
