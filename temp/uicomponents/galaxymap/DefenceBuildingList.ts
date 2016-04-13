@@ -7,7 +7,7 @@ import Building from "../../../src/Building.ts";
 interface PropTypes extends React.Props<any>
 {
   buildings: Building[];
-  reverse: boolean;
+  reverse?: boolean;
 }
 
 interface StateType

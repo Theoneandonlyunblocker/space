@@ -1,8 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="defencebuildinglist.ts"/>
-
 
 import DefenceBuildingList from "./DefenceBuildingList.ts";
 import Options from "../../../src/Options.ts";
