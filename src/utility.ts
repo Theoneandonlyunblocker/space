@@ -339,7 +339,10 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
 }
 
 // https://github.com/KyleAMathews/deepmerge
-export function deepMerge(target: any, src: any, excludeKeysNotInTarget: boolean = false): any
+// The MIT License (MIT)
+// 
+// Copyright (c) 2012 Nicholas Fisher
+export function deepMerge<T>(target: any, src: any, excludeKeysNotInTarget: boolean = false): T
 {
   if (excludeKeysNotInTarget)
   {
