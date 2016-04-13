@@ -5,7 +5,7 @@ interface PropTypes extends React.Props<any>
 {
   money: number;
   upgradeCost: number;
-  onClick: reactTypeTODO_func;
+  onClick: () => void;
   actionString: string;
   currentLevel: number;
   maxLevel: number;
@@ -15,33 +15,16 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  canAffordUpgrade?: boolean;
-  isDisabled?: boolean;
 }
 
 export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ManufactoryUpgradeButton";
-
-
   state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.state = this.getInitialState();
-    
-    this.bindMethods();
-  }
-  
-  private getInitialState(): StateType
-  {
-    return(
-    {
-      canAffordUpgrade: this.props.money >= this.props.upgradeCost,
-      isDisabled: this.props.currentLevel >= this.props.maxLevel
-    });
   }
 
   componentWillReceiveProps(newProps: PropTypes)
@@ -55,16 +38,19 @@ export class ManufactoryUpgradeButtonComponent extends React.Component<PropTypes
 
   render()
   {
-    var unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
-    var unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
-
-    var isDisabled = this.state.isDisabled || !this.state.canAffordUpgrade;
+    let unitUpgradeButtonBaseClassName = "manufactory-upgrade-button";
+    let unitUpgradeCostBaseClassName = "manufactory-upgrade-button-cost";
+    
+    const isAtMaxLevel = this.props.currentLevel >= this.props.maxLevel;
+    const canAffordUpgrade = this.props.money >= this.props.upgradeCost;
+    const isDisabled = isAtMaxLevel || !canAffordUpgrade;
+    
     if (isDisabled)
     {
       unitUpgradeButtonBaseClassName += " disabled";
     }
 
-    if (!this.state.canAffordUpgrade)
+    if (!canAffordUpgrade)
     {
       unitUpgradeCostBaseClassName += " negative";
     }
