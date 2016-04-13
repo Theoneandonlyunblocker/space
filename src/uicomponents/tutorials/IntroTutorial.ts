@@ -12,7 +12,7 @@ import * as React from "react";
 import IntroTutorial from "../../tutorials/IntroTutorial";
 import Tutorial from "./Tutorial";
 import TopMenuPopup from "../popups/TopMenuPopup";
-import PopupManager from "../popups/PopupManager";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 
 
 interface PropTypes extends React.Props<any>

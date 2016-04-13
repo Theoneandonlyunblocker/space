@@ -5,7 +5,7 @@ import * as React from "react";
 /// <reference path="notificationfilterlist.ts" />
 
 
-import PopupManager from "../popups/PopupManager";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import NotificationFilterList from "./NotificationFilterList";
 import NotificationFilter from "../../NotificationFilter";
 import TopMenuPopup from "../popups/TopMenuPopup";

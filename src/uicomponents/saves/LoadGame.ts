@@ -9,7 +9,7 @@ import * as React from "react";
 
 
 import SaveList from "./SaveList";
-import PopupManager from "../popups/PopupManager";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import ConfirmPopup from "../popups/ConfirmPopup";
 
 

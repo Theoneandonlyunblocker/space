@@ -10,7 +10,7 @@ import AbilityBase from "../../templateinterfaces/AbilityBase";
 import UpgradeAttributes from "./UpgradeAttributes";
 import UpgradeAbilities from "./UpgradeAbilities";
 import TopMenuPopup from "../popups/TopMenuPopup";
-import PopupManager from "../popups/PopupManager";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 
 
 interface PropTypes extends React.Props<any>

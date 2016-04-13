@@ -10,7 +10,7 @@ import NotificationLog from "../../NotificationLog";
 import Notification from "./Notification";
 import ConfirmPopup from "../popups/ConfirmPopup";
 import NotificationFilterButton from "./NotificationFilterButton";
-import PopupManager from "../popups/PopupManager";
+import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import eventManager from "../../eventManager";
 
 
