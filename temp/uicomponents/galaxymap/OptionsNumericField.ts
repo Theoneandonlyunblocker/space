@@ -1,9 +1,11 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
+import {clamp} from "../../../src/utility.ts";
+
 interface PropTypes extends React.Props<any>
 {
-  onChangeFN: reactTypeTODO_func; // (value: number) => void
+  onChangeFN: (value: number) => void;
 
   label: string;
   id: string;
@@ -15,7 +17,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  value?: any; // TODO refactor | define state type 456
+  value?: number;
 }
 
 export class OptionsNumericFieldComponent extends React.Component<PropTypes, StateType>
@@ -61,7 +63,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
     this.props.onChangeFN(this.state.value);
   }
 
-  handleChange(e: Event)
+  handleChange(e: React.FormEvent)
   {
     var target = <HTMLInputElement> e.target;
     var value = parseFloat(target.value);
@@ -94,7 +96,7 @@ export class OptionsNumericFieldComponent extends React.Component<PropTypes, Sta
           className: "options-numeric-field-input",
           type: "number",
           id: inputId,
-          value: this.state.value,
+          value: "" + this.state.value,
           min: this.props.min,
           max: this.props.max,
           step: this.props.step,
