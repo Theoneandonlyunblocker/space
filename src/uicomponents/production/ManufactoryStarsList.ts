@@ -1,13 +1,9 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="manufactorystarslistitem.ts" />
-
-/// <reference path="../../star.ts" />
-
-
 import Star from "../../Star";
 import ManufactoryStarsListItem from "./ManufactoryStarsListItem";
+import {sortByManufactoryCapacityFN} from "../../utility";
 
 
 interface PropTypes extends React.Props<any>
@@ -15,7 +11,7 @@ interface PropTypes extends React.Props<any>
   starsWithManufactories: Star[];
   starsWithoutManufactories: Star[];
   highlightedStars: Star[];
-  handleStarSelect: reactTypeTODO_func;
+  handleStarSelect: (star: Star) => void;
 }
 
 interface StateType
@@ -35,22 +31,16 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
   
   render()
   {
-    var starsWithManufactories: Star[] = this.props.starsWithManufactories;
-    var starsWithoutManufactories: Star[] = this.props.starsWithoutManufactories;
-    var highlightedStars: Star[] = this.props.highlightedStars;
-    var handleStarSelect = this.props.handleStarSelect;
-
-
     var rows: React.ReactElement<any>[] = [];
 
-    starsWithManufactories.sort(sortByManufactoryCapacityFN);
-    starsWithoutManufactories.sort(sortByManufactoryCapacityFN);
+    this.props.starsWithManufactories.sort(sortByManufactoryCapacityFN);
+    this.props.starsWithoutManufactories.sort(sortByManufactoryCapacityFN);
 
-    for (var i = 0; i < starsWithManufactories.length; i++)
+    for (var i = 0; i < this.props.starsWithManufactories.length; i++)
     {
-      var star = starsWithManufactories[i];
+      var star = this.props.starsWithManufactories[i];
       var manufactory = star.manufactory;
-      var isHighlighted = highlightedStars.indexOf(star) !== -1;
+      var isHighlighted = this.props.highlightedStars.indexOf(star) !== -1;
 
       rows.push(ManufactoryStarsListItem(
       {
@@ -60,13 +50,13 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
         usedCapacity: manufactory.buildQueue.length,
         totalCapacity: manufactory.capacity,
 
-        onClick: handleStarSelect
+        onClick: this.props.handleStarSelect
       }));
     }
-    for (var i = 0; i < starsWithoutManufactories.length; i++)
+    for (var i = 0; i < this.props.starsWithoutManufactories.length; i++)
     {
-      var star = starsWithoutManufactories[i];
-      var isHighlighted = highlightedStars.indexOf(star) !== -1;
+      var star = this.props.starsWithoutManufactories[i];
+      var isHighlighted = this.props.highlightedStars.indexOf(star) !== -1;
 
       rows.push(ManufactoryStarsListItem(
       {
@@ -76,7 +66,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
         usedCapacity: 0,
         totalCapacity: 0,
 
-        onClick: handleStarSelect
+        onClick: this.props.handleStarSelect
       }));
     }
 
