@@ -1,4 +1,4 @@
-const enum NotificationFilterState
+enum NotificationFilterState
 {
   alwaysShow,
   showIfInvolved,

@@ -10,7 +10,7 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   displayName: string;
-  filterState: number[];
+  filterState: NotificationFilterState[];
   keyTODO: string;
   filter: NotificationFilter;
   isHighlighted: boolean;
@@ -18,7 +18,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  filterState?: any; // TODO refactor | define state type 456
+  filterState?: NotificationFilterState[];
 }
 
 export class NotificationFilterListItemComponent extends React.Component<PropTypes, StateType>
