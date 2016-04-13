@@ -1,11 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="maprendererlayerslistitem.ts" />
-
-/// <reference path="../../maprenderer.ts" />
-
-
 import MapRendererMapMode from "../../MapRendererMapMode";
 import MapRendererLayer from "../../MapRendererLayer";
 import MapRendererLayersListItem from "./MapRendererLayersListItem";
@@ -20,9 +15,9 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  layerKeyToInsertNextTo?: any; // TODO refactor | define state type 456
-  insertPosition?: any; // TODO refactor | define state type 456
-  currentDraggingLayer?: any; // TODO refactor | define state type 456
+  layerKeyToInsertNextTo?: string;
+  insertPosition?: string;
+  currentDraggingLayer?: MapRendererLayer;
 }
 
 export class MapRendererLayersListComponent extends React.Component<PropTypes, StateType>
@@ -55,7 +50,6 @@ export class MapRendererLayersListComponent extends React.Component<PropTypes, S
     return(
     {
       currentDraggingLayer: null,
-      indexToSwapInto: undefined,
       layerKeyToInsertNextTo: null,
       insertPosition: null
     });
@@ -85,7 +79,6 @@ export class MapRendererLayersListComponent extends React.Component<PropTypes, S
     this.setState(
     {
       currentDraggingLayer: null,
-      indexToSwapInto: undefined,
       layerKeyToInsertNextTo: null,
       insertPosition: null
     });
