@@ -1,16 +1,13 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="manufacturablethingslistitem.ts" />
-
-
 import ManufacturableThingsListItem from "./ManufacturableThingsListItem";
-
+import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
 interface PropTypes extends React.Props<any>
 {
-  manufacturableThings: reactTypeTODO_couldntConvert;
-  onClick?: reactTypeTODO_func;
+  manufacturableThings: ManufacturableThing[];
+  onClick?: (toManufacture: ManufacturableThing) => void;
   showCost: boolean;
   money?: number;
 }
@@ -34,7 +31,7 @@ export class ManufacturableThingsListComponent extends React.Component<PropTypes
   
   render()
   {
-    var manufacturableThings: IManufacturableThing[] = this.props.manufacturableThings;
+    var manufacturableThings: ManufacturableThing[] = this.props.manufacturableThings;
 
     var items: React.ReactElement<any>[] = [];
     var keyByTemplateType:
