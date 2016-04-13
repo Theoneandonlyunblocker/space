@@ -1,23 +1,19 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="manufacturablethingslist.ts" />
-/// <reference path="manufactoryupgradebutton.ts" />
-
-
 import Star from "../../Star";
 import UnitTemplate from "../../templateinterfaces/UnitTemplate";
 import ManufacturableThingsList from "./ManufacturableThingsList";
 import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
 import Manufactory from "../../Manufactory";
-
+import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
 interface PropTypes extends React.Props<any>
 {
   selectedStar?: Star;
   consolidateLocations: boolean;
-  manufacturableThings: reactTypeTODO_couldntConvert;
-  triggerUpdate: reactTypeTODO_func;
+  manufacturableThings: ManufacturableThing[];
+  triggerUpdate: () => void;
   canBuild: boolean;
   money: number;
 }
