@@ -14,7 +14,7 @@ import NotificationFilterButton from "../notifications/NotificationFilterButton"
 import NotificationLog from "../../NotificationLog";
 import eventManager from "../../eventManager";
 import {clamp} from "../../utility";
-import {resetTutorialStatus} from "../../tutorials/TutorialStatus";
+import TutorialStatus from "../../tutorials/TutorialStatus";
 
 
 interface PropTypes extends React.Props<any>
@@ -258,7 +258,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       content: React.DOM.button(
       {
         className: "reset-tutorials-button",
-        onClick: resetTutorialStatus
+        onClick: TutorialStatus.reset
       },
         "Reset tutorials"
       )

@@ -3,48 +3,74 @@ import
   extendObject
 } from "../utility";
 
-export enum TutorialState
-{
-  neverShow = -1,
-  dontShowThisSession = 0,
-  show = 1
-}
+import TutorialState from "./TutorialState";
 
-export function saveTutorialStatus()
-{
-  localStorage.setItem("TutorialStatus", JSON.stringify(TutorialStatus));
-}
-
-export function loadTutorialStatus()
-{
-  if (localStorage["TutorialStatus"])
-  {
-    var parsedData = JSON.parse(localStorage.getItem("TutorialStatus"));
-    TutorialStatus = extendObject(parsedData, TutorialStatus, true);
-    for (var tutorialId in TutorialStatus)
-    {
-      if (TutorialStatus[tutorialId] === TutorialState.dontShowThisSession)
-      {
-        TutorialStatus[tutorialId] = TutorialState.show;
-      }
-    }
-  }
-}
-
-export function resetTutorialStatus()
-{
-  localStorage.removeItem("TutorialStatus");
-  TutorialStatus = extendObject(defaultTutorialStatus);
-}
-
-interface TutorialStatus
+interface TutorialStatusValues
 {
   introTutorial: TutorialState;
 }
 
-export const defaultTutorialStatus: TutorialStatus =
+const defaultTutorialStatus =
 {
   introTutorial: TutorialState.show
 }
 
-export let TutorialStatus: TutorialStatus = extendObject(defaultTutorialStatus);
+class TutorialStatus implements TutorialStatusValues
+{
+  introTutorial: TutorialState;
+  
+  constructor()
+  {
+    this.setDefaultValues();
+  }
+  private setDefaultValues()
+  {
+    this.introTutorial = defaultTutorialStatus.introTutorial;
+  }
+  private setDefaultValuesForUndefined()
+  {
+    this.introTutorial = isFinite(this.introTutorial) ? this.introTutorial : defaultTutorialStatus.introTutorial;
+  }
+  public save()
+  {
+    localStorage.setItem("TutorialStatus", JSON.stringify(this.serialize()));
+  }
+  public load()
+  {
+    this.setDefaultValues();
+    
+    if (!localStorage["TutorialStatus"])
+    {
+      return;
+    }
+    
+    var parsedData: TutorialStatusValues = JSON.parse(localStorage.getItem("TutorialStatus"));
+    this.deSerialize(parsedData);
+  }
+  public reset()
+  {
+    localStorage.removeItem("TutorialStatus");
+    this.setDefaultValues();
+  }
+  
+  private serialize(): TutorialStatusValues
+  {
+    return(
+    {
+      introTutorial: this.introTutorial
+    });
+  }
+  private static getDeSerializedState(state: TutorialState)
+  {
+    return state === TutorialState.dontShowThisSession ? TutorialState.show : state;
+  }
+  private deSerialize(data: TutorialStatusValues)
+  {
+    this.introTutorial = TutorialStatus.getDeSerializedState(data.introTutorial);
+    
+    this.setDefaultValuesForUndefined();
+  }
+}
+
+const tutorialStatus = new TutorialStatus();
+export default tutorialStatus;

@@ -12,7 +12,7 @@ import ReactUI from "./ReactUI";
 import Renderer from "./Renderer";
 import setDynamicTemplateProperties from "./setDynamicTemplateProperties";
 import Options from "./options";
-import {loadTutorialStatus} from "./tutorials/TutorialStatus";
+import TutorialStatus from "./tutorials/TutorialStatus";
 import
 {
   extendObject,
@@ -91,7 +91,7 @@ class App
     var startTime = Date.now();
 
     Options.load();
-    loadTutorialStatus();
+    TutorialStatus.load();
 
     setDynamicTemplateProperties();
     
