@@ -24,6 +24,16 @@ export default class Color
       (hex & 0xFF) / 255
     );
   }
+  public static fromHexString(hexString: string): Color
+  {
+    let hexDigits: string;
+    if (hexString.charAt(0) === "#")
+    {
+      hexDigits = hexString.substring(1, 7);
+    }
+
+    return Color.fromHex(parseInt(hexDigits, 16));
+  }
   // 0-1
   public static fromHSV(h: number, s: number, v: number): Color
   {
@@ -82,6 +92,16 @@ export default class Color
     return new Color(RGB[0], RGB[1], RGB[2]);
   }
   
+  // 0-1 -> 0-360, 0-100, 0-100
+  public static convertScalarsToDegrees(s: number[])
+  {
+    return [s[0] * 360, s[1] * 100, s[2] * 100];
+  }
+  public static convertDegreesToScalars(d: number[])
+  {
+    return [d[0] / 360, d[1] / 100, d[2] / 100];
+  }
+  
   // 0-1
   public getRGB(): number[]
   {
@@ -116,6 +136,37 @@ export default class Color
   {
     const husl = HUSL.fromRGB(this.r, this.g, this.b);
     return [husl[0] / 360, husl[1] / 100, husl[2] / 100];
+  }
+  
+  // ??
+  public getHSV(): number[]
+  {
+    const r = this.r;
+    const g = this.g;
+    const b = this.b;
+    
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h: number, s: number, v: number = max;
+
+    var d: number = max - min;
+    s = max == 0 ? 0 : d / max;
+
+    if(max == min)
+    {
+      h = 0; // achromatic
+    }
+    else
+    {
+      switch(max)
+      {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+
+    return [h, s, v];
   }
   
   public serialize(): ColorSaveData

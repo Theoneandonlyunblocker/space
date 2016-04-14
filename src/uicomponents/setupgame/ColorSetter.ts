@@ -1,34 +1,22 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../mixins/focustimer.ts" />
-
-/// <reference path="colorpicker.ts" />
-
-
+import Color from "../../Color";
 import ColorPicker from "./ColorPicker";
 
 
 interface PropTypes extends React.Props<any>
 {
-  setActiveColorPicker: any; // TODO refactor | define prop type 123
-  generateColor: any; // TODO refactor | define prop type 123
-  isActive: boolean;
-  color: any; // TODO refactor | define prop type 123
+  setActiveColorPicker: (colorSetter: ColorSetterComponent) => void;
+  generateColor: () => void;
+  color: Color;
   flagHasCustomImage: boolean;
-  onChange: any; // TODO refactor | define prop type 123
+  onChange: (color: Color, isNull: boolean) => void;
 }
 
 interface StateType
 {
-  isNull?: boolean;
-  hexColor?: any; // TODO refactor | define state type 456
   isActive?: boolean;
-}
-
-interface RefTypes extends React.Refs
-{
-  main: HTMLElement;
 }
 
 export class ColorSetterComponent extends React.Component<PropTypes, StateType>
@@ -36,7 +24,8 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   displayName: string = "ColorSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_main: React.HTMLComponent;
+  isMounted: boolean = false;
 
   constructor(props: PropTypes)
   {
@@ -49,7 +38,6 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   private bindMethods()
   {
     this.handleClick = this.handleClick.bind(this);
-    this.updateColor = this.updateColor.bind(this);
     this.toggleActive = this.toggleActive.bind(this);
     this.setAsInactive = this.setAsInactive.bind(this);
     this.getClientRect = this.getClientRect.bind(this);    
@@ -59,37 +47,30 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      hexColor: this.props.color || 0xFFFFFF,
-      isNull: true,
-      active: false
+      isActive: false
     });
+  }
+  
+  componentDidMount()
+  {
+    this.isMounted = true;
   }
 
   componentWillUnmount()
   {
+    this.isMounted = false;
     document.removeEventListener("click", this.handleClick);
     this.clearFocusTimerListener();
   }
 
-  componentWillReceiveProps(newProps: PropTypes)
-  {
-    if (newProps.color !== this.state.hexColor)
-    {
-      this.setState(
-      {
-        hexColor: newProps.color,
-        isNull: newProps.color === null
-      });
-    }
-  }
-
   handleClick(e: MouseEvent)
   {
-    var focusGraceTime = 500;
+    const focusGraceTime = 500;
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
 
-    var node = React.findDOMNode<HTMLElement>(this.ref_TODO_main);
-    if (e.target === node || node.contains(e.target))
+    const node = React.findDOMNode<HTMLElement>(this.ref_TODO_main);
+    const target = <HTMLElement> e.target;
+    if (target === node || node.contains(target))
     {
       return;
     }
@@ -118,38 +99,28 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   }
   setAsInactive()
   {
-    if (this.isMounted() && this.state.isActive)
+    if (this.isMounted && this.state.isActive)
     {
       this.setState({isActive: false});
       document.removeEventListener("click", this.handleClick);
       this.clearFocusTimerListener();
     }
   }
-  updateColor(hexColor: number, isNull: boolean)
+  updateColor(color: Color, isNull: boolean)
   {
-    if (isNull)
-    {
-      this.setState({isNull: isNull});
-    }
-    else
-    {
-      this.setState({hexColor: hexColor, isNull: isNull});
-    }
-
-    if (this.props.onChange)
-    {
-      this.props.onChange(hexColor, isNull);
-    }
+    this.props.onChange(color, isNull);
   }
 
   getClientRect()
   {
-    return React.findDOMNode(this).firstChild.getBoundingClientRect();
+    const ownNode: HTMLElement = <HTMLElement> React.findDOMNode(this);
+    const firstChild: HTMLElement = <HTMLElement> ownNode.firstChild;
+    return firstChild.getBoundingClientRect();
   }
 
   render()
   {
-    var displayElement = this.state.isNull ?
+    var displayElement = this.props.color === null ?
       React.DOM.img(
       {
         className: "color-setter-display",
@@ -161,24 +132,24 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
         className: "color-setter-display",
         style:
         {
-          backgroundColor: "#" + hexToString(this.state.hexColor)
+          backgroundColor: "#" + this.props.color.getHexString()
         },
         onClick: this.toggleActive
       });
 
     return(
-      React.DOM.div({className: "color-setter", ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_main = component;
-}},
+      React.DOM.div({className: "color-setter", ref: (component: React.HTMLComponent) =>
+      {
+        this.ref_TODO_main = component;
+      }},
         displayElement,
-        this.props.isActive || this.state.isActive ?
+        this.state.isActive ?
           ColorPicker(
           {
-            hexColor: this.state.hexColor,
+            color: this.props.color,
             generateColor: this.props.generateColor,
-            onChange: this.updateColor,
-            setAsInactive: this.setAsInactive,
+            onChange: this.props.onChange,
+            // setAsInactive: this.setAsInactive,
             flagHasCustomImage: this.props.flagHasCustomImage,
             getParentPosition: this.getClientRect
           }) : null
