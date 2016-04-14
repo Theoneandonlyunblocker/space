@@ -1,13 +1,19 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
+import ListColumn from "../unitlist/ListColumn";
+
 interface PropTypes extends React.Props<any>
 {
   isMarkedForDeletion: boolean;
-  handleClick: any; // TODO refactor | define prop type 123
-  handleUndoDelete: any; // TODO refactor | define prop type 123
-  handleDelete: any; // TODO refactor | define prop type 123
+  handleClick: () => void;
+  handleUndoDelete: (callback?: () => void) => void;
+  handleDelete: () => void;
   activeColumns: ListColumn[];
+  
+  storageKey: string;
+  name: string;
+  date: string;
 }
 
 interface StateType
@@ -30,11 +36,11 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
   }
   makeCell(type: string)
   {
-    var cellProps: any = {};
+    var cellProps: React.HTMLAttributes = {};
     cellProps.key = type;
     cellProps.className = "save-list-item-cell" + " save-list-" + type;
 
-    var cellContent: any;
+    var cellContent: string;
 
     switch (type)
     {
@@ -78,7 +84,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
       cells.push(cell);
     }
 
-    var rowProps: any =
+    var rowProps: React.HTMLAttributes =
     {
       className: "save-list-item",
       onClick : this.props.handleClick
