@@ -1,11 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../player.ts" />
-/// <reference path="../../trade.ts" />
-
-/// <reference path="tradeableitems.ts" />
-
 
 import Player from "../../Player";
 import TradeableItems from "./TradeableItems";
@@ -16,21 +11,21 @@ interface PropTypes extends React.Props<any>
 {
   selfPlayer: Player;
   otherPlayer: Player;
-  handleClose: reactTypeTODO_func;
+  handleClose: () => void;
 }
 
 interface StateType
 {
-  currentStagingItemDragKey?: any; // TODO refactor | define state type 456
-  currentAvailableItemDragKey?: any; // TODO refactor | define state type 456
-  currentDragItemPlayer?: any; // TODO refactor | define state type 456
+  currentStagingItemDragKey?: string;
+  currentAvailableItemDragKey?: string;
+  currentDragItemPlayer?: "self" | "other";
 }
 
 export class TradeOverviewComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeOverview";
-  selfPlayerTrade: reactTypeTODO_any = undefined;
-  otherPlayerTrade: reactTypeTODO_any = undefined;
+  selfPlayerTrade: Trade = undefined;
+  otherPlayerTrade: Trade = undefined;
 
 
   state: StateType;
@@ -103,7 +98,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     else return null;
   }
 
-  handleStageItem(player: string, key: string)
+  handleStageItem(player: "self" | "other", key: string)
   {
     var activeTrade = this.getActiveTrade(player);
 
@@ -126,7 +121,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     }
   }
 
-  handleAdjustStagedItemAmount(player: string, key: string, newAmount: number)
+  handleAdjustStagedItemAmount(player: "self" | "other", key: string, newAmount: number)
   {
     var activeTrade = this.getActiveTrade(player);
     {
@@ -136,7 +131,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.forceUpdate();
   }
 
-  handleRemoveStagedItem(player: string, key: string)
+  handleRemoveStagedItem(player: "self" | "other", key: string)
   {
     var activeTrade = this.getActiveTrade(player);
     activeTrade.removeStagedItem(key);
@@ -147,7 +142,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     }
   }
 
-  handleAvailableDragStart(player: string, key: string)
+  handleAvailableDragStart(player: "self" | "other", key: string)
   {
     this.setState(
     {
@@ -156,7 +151,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     });
   }
 
-  handleStagingDragStart(player: string, key: string)
+  handleStagingDragStart(player: "self" | "other", key: string)
   {
     this.setState(
     {
