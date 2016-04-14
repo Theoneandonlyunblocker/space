@@ -11,30 +11,26 @@ import UpgradeAttributes from "./UpgradeAttributes";
 import UpgradeAbilities from "./UpgradeAbilities";
 import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
+import AbilityUpgradeData from "../../AbilityUpgradeData";
 
 
 interface PropTypes extends React.Props<any>
 {
   unit: Unit;
-  onUnitUpgrade: any; // TODO refactor | define prop type 123
+  onUnitUpgrade: () => void;
 }
 
 interface StateType
 {
-  popupId?: any; // TODO refactor | define state type 456
-  upgradeData?: any; // TODO refactor | define state type 456
-}
-
-interface RefTypes extends React.Refs
-{
-  popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
+  popupId?: number;
+  upgradeData?: AbilityUpgradeData;
 }
 
 export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UpgradeUnit";
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -149,10 +145,10 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
       },
         PopupManager(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_popupManager = component;
-},
+          ref: (component: PopupManagerComponent) =>
+          {
+            this.ref_TODO_popupManager = component;
+          },
           onlyAllowOne: true
         }),
         React.DOM.div(
