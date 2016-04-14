@@ -1,10 +1,12 @@
-/// <reference path="../../../lib/react-0.13.3.d.ts" />
+/// <reference path="../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
 /// <reference path="playerflag.ts" />
 
 
-import Flag from "../../src/Flag";
+import Flag from "../Flag";
+import {generateColorScheme} from "../colorGeneration";
+
 import PlayerFlag from "./PlayerFlag";
 
 
@@ -14,14 +16,15 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  size?: any; // TODO refactor | define state type 456
+  size?: number;
 }
 
 export class FlagMakerComponent extends React.Component<PropTypes, StateType>
 {
-  setStateTimeout: reactTypeTODO_any = undefined;
+  setStateTimeoutHandle: number = undefined;
   sizeValue: number = 46;
   state: StateType;
+  ref_TODO_flags: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -41,23 +44,22 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      sizeValue: 46,
       size: 46
     });
   }
 
-  handleSizeChange(e: Event)
+  handleSizeChange(e: React.FormEvent)
   {
-    if (this.setStateTimeout)
+    if (this.setStateTimeoutHandle)
     {
-      window.clearTimeout(this.setStateTimeout);
+      window.clearTimeout(this.setStateTimeoutHandle);
     }
     var target = <HTMLInputElement> e.target;
     var value = parseInt(target.value);
     if (isFinite(value))
     {
       this.sizeValue = value;
-      this.setStateTimeout = window.setTimeout(this.setState.bind(this, {size: value}), 500);
+      this.setStateTimeoutHandle = window.setTimeout(this.setState.bind(this, {size: value}), 500);
     }
   }
   makeFlags()
@@ -102,10 +104,10 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(
         {
           className: "flags",
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_flags = component;
-} 
+          ref: (component: React.HTMLComponent) =>
+          {
+            this.ref_TODO_flags = component;
+          } 
         },
           flagElements
         ),
@@ -116,7 +118,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
         React.DOM.input(
         {
           onChange: this.handleSizeChange,
-          defaultValue: this.sizeValue,
+          defaultValue: "" + this.sizeValue,
           type: "number"
         })
       )
