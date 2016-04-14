@@ -1,10 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="unitstrength.ts"/>
-/// <reference path="unitactions.ts"/>
-/// <reference path="unitstatus.ts"/>
-
 
 import UnitStatus from "./UnitStatus";
 import UnitStrength from "./UnitStrength";
@@ -24,7 +20,7 @@ interface PropTypes extends React.Props<any>
   isDead?: boolean;
   isCaptured?: boolean;
   guardAmount: number;
-  guardCoverage?: number; // GuardCoverage enum
+  guardCoverage?: GuardCoverage;
 
   isPreparing?: boolean;
   animateDuration?: number;

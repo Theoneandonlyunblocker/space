@@ -5,7 +5,7 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  isNotDetected: boolean;
+  isNotDetected?: boolean;
   currentHealth: number;
   isSquadron: boolean;
   maxHealth: number;
