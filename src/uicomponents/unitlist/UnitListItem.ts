@@ -7,43 +7,40 @@ import * as React from "react";
 
 import Unit from "../../Unit";
 import UnitStrength from "../unit/UnitStrength";
+import ListColumn from "./ListColumn";
+import {default as UnitComponentFactory, UnitComponent} from "../unit/Unit";
 
 
 interface PropTypes extends React.Props<any>
 {
-  onDragEnd: any; // TODO refactor | define prop type 123
-  onDragStart: any; // TODO refactor | define prop type 123
-  onMouseLeave: any; // TODO refactor | define prop type 123
-  noActionsLeft: any; // TODO refactor | define prop type 123
+  onDragEnd: (dropSuccesful?: boolean) => void;
+  onDragStart: (unit: Unit) => void;
+  onMouseLeave: () => void;
+  hasNoActionsLeft: boolean;
   isHovered: boolean;
   isDraggable: boolean;
-  currentHealth: any; // TODO refactor | define prop type 123
+  currentHealth: number;
   isReserved: boolean;
   isSelected: boolean;
-  onMouseEnter: any; // TODO refactor | define prop type 123
+  onMouseEnter: (unit: Unit) => void;
   maxHealth: number;
   activeColumns: ListColumn[];
   unit: Unit;
-  handleClick: any; // TODO refactor | define prop type 123
+  handleClick: () => void;
 }
 
 interface StateType
 {
   dragging?: boolean;
 }
-
-interface RefTypes extends React.Refs
-{
-  dragClone: React.Component<any, any>; // TODO refactor | correct ref type 542 | Unit
-}
-
 export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitListItem";
   mixins: reactTypeTODO_any = [Draggable];
 
   state: StateType;
-  refsTODO: RefTypes;
+  needsFirstTouchUpdate: boolean = true;
+  ref_TODO_dragClone: UnitComponent;
 
   constructor(props: PropTypes)
   {
@@ -138,11 +135,11 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   makeCell(type: string)
   {
     var unit = this.props.unit;
-    var cellProps: any = {};
+    var cellProps: React.HTMLAttributes = {};
     cellProps.key = type;
     cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
 
-    var cellContent: any;
+    var cellContent: string | number | React.ReactElement<any>;
 
     switch (type)
     {
@@ -188,7 +185,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     );
   }
 
-  render(): any
+  render(): React.ReactElement<any>
   {
     var unit = this.props.unit;
     var columns = this.props.activeColumns;
@@ -196,13 +193,14 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     if (this.state.dragging)
     {
       return(
-        Unit(
+        UnitComponentFactory(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_dragClone = component;
-},
-          unit: unit
+          ref: (component: UnitComponent) =>
+          {
+            this.ref_TODO_dragClone = component;
+          },
+          unit: unit,
+          facesLeft: true
         })
       );
     }
@@ -217,13 +215,13 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       cells.push(cell);
     }
 
-    var rowProps: any =
+    var rowProps: React.HTMLAttributes =
     {
       className: "unit-list-item",
       onClick : this.props.handleClick
     };
 
-    if (this.props.isDraggable && !this.props.noActionsLeft)
+    if (this.props.isDraggable && !this.props.hasNoActionsLeft)
     {
       rowProps.className += " draggable";
       rowProps.onTouchStart = rowProps.onMouseDown =
@@ -245,7 +243,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       rowProps.className += " unit-list-item-hovered";
     }
 
-    if (this.props.noActionsLeft)
+    if (this.props.hasNoActionsLeft)
     {
       rowProps.className += " no-actions-left";
     }

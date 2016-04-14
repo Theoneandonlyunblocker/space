@@ -72,7 +72,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
         makeClone: true,
 
         isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
-        noActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),
+        hasNoActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),
         isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
         isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
 

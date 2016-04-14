@@ -14,7 +14,7 @@ interface PropTypes extends React.Props<any>
 {
   isCaptured?: boolean;
   isDead?: boolean;
-  position: number[];
+  position?: number[];
   unit: Unit;
   
   battle?: Battle;
@@ -32,7 +32,7 @@ interface PropTypes extends React.Props<any>
   onUnitClick?: (unit: Unit) => void;
   onMouseUp?: (position: number[]) => void;
   handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
-  handleMouseEnterUnit: (unit: Unit) => void;
+  handleMouseEnterUnit?: (unit: Unit) => void;
   onDragStart?: (unit: Unit) => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
 }
