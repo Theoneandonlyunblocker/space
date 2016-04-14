@@ -9,12 +9,15 @@ import * as React from "react/addons";
 import List from "../unitlist/List";
 import AttitudeModifierInfo from "./AttitudeModifierInfo";
 import AttitudeModifier from "../../AttitudeModifier";
-
+import {default as AutoPositioner, AutoPositionerProps} from "../mixins/AutoPositioner";
+import applyMixins from "../mixins/applyMixins";
 
 interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];
   baseOpinion: number;
+  
+  autoPositionProps?: AutoPositionerProps;
 }
 
 interface StateType
@@ -24,13 +27,16 @@ interface StateType
 export class AttitudeModifierListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "AttitudeModifierList";
-  // mixins = [AutoPosition];
 
   state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
+    if (this.props.autoPositionProps)
+    {
+      applyMixins(this, new AutoPositioner(this, this.props.autoPositionProps));
+    }
   }
   
   render()

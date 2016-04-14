@@ -38,7 +38,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
   private bindMethods()
   {
     this.getColor = this.getColor.bind(this);
-    this.getOpinionTextNode = this.getOpinionTextNode.bind(this);
+    this.getOpinionTextNodeRect = this.getOpinionTextNodeRect.bind(this);
     this.setTooltip = this.setTooltip.bind(this);
     this.clearTooltip = this.clearTooltip.bind(this);    
   }
@@ -61,9 +61,10 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
     this.setState({hasAttitudeModifierTootlip: false});
   }
 
-  getOpinionTextNode()
+  getOpinionTextNodeRect()
   {
-    return React.findDOMNode(this).firstChild;
+    const firstChild = <HTMLElement> React.findDOMNode<HTMLElement>(this).firstChild
+    return firstChild.getBoundingClientRect();
   }
 
   getColor()
@@ -96,12 +97,14 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
         attitudeModifiers: this.props.attitudeModifiers,
         baseOpinion: this.props.baseOpinion,
         
-        // TODO refactor | mixins
-        // getParentNode: this.getOpinionTextNode,
-        // autoPosition: true,
-        // ySide: "top",
-        // xSide: "right",
-        // yMargin: 10
+        autoPositionProps:
+        {
+          getParentClientRect: this.getOpinionTextNodeRect,
+          positionOnUpdate: true,
+          ySide: "top",
+          xSide: "right",
+          yMargin: 10
+        }
       });
     }
     return(
