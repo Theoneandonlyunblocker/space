@@ -1,13 +1,12 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="playersetup.ts" />
-
 
 import Player from "../../Player";
 import Flag from "../../Flag";
-import PlayerSetup from "./PlayerSetup";
+import {default as PlayerSetup, PlayerSetupComponent} from "./PlayerSetup";
 import Color from "../../Color";
+import {ColorSetterComponent} from "./ColorSetter";
 
 
 interface PropTypes extends React.Props<any>
@@ -18,8 +17,8 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  activeColorPicker?: any; // TODO refactor | define state type 456
-  players?: any; // TODO refactor | define state type 456
+  activeColorSetter?: ColorSetterComponent;
+  playerKeys?: number[];
 }
 
 export class SetupGamePlayersComponent extends React.Component<PropTypes, StateType>
@@ -27,6 +26,11 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   displayName: string = "SetupGamePlayers";
 
   state: StateType;
+  newPlayerID: number = 0;
+  playerSetupComponentsByID:
+  {
+    [playerID: number]: PlayerSetupComponent;
+  } = {};
 
   constructor(props: PropTypes)
   {
@@ -40,7 +44,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   {
     this.makeNewPlayers = this.makeNewPlayers.bind(this);
     this.makeAllPlayers = this.makeAllPlayers.bind(this);
-    this.setActiveColorPicker = this.setActiveColorPicker.bind(this);
+    this.setActiveColorSetter = this.setActiveColorSetter.bind(this);
     this.setHumanPlayer = this.setHumanPlayer.bind(this);
     this.randomizeAllPlayers = this.randomizeAllPlayers.bind(this);
     this.removePlayers = this.removePlayers.bind(this);    
@@ -48,37 +52,35 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   
   private getInitialState(): StateType
   {
-    this.newPlayerId = 0;
-
     var players: number[] = [];
     for (var i = 0; i < this.props.maxPlayers; i++)
     {
-      players.push(this.newPlayerId++);
+      players.push(this.newPlayerID++);
     }
 
     return(
     {
-      players: players,
-      activeColorPicker: null
+      playerKeys: players,
+      activeColorSetter: null
     });
   }
 
   componentWillReceiveProps(newProps: PropTypes)
   {
-    if (newProps.minPlayers > this.state.players.length)
+    if (newProps.minPlayers > this.state.playerKeys.length)
     {
-      this.makeNewPlayers(newProps.minPlayers - this.state.players.length);
+      this.makeNewPlayers(newProps.minPlayers - this.state.playerKeys.length);
     }
-    else if (newProps.maxPlayers < this.state.players.length)
+    else if (newProps.maxPlayers < this.state.playerKeys.length)
     {
-      var overflowCount = this.state.players.length - newProps.maxPlayers;
-      this.removePlayers(this.state.players.slice(-overflowCount));
+      var overflowCount = this.state.playerKeys.length - newProps.maxPlayers;
+      this.removePlayers(this.state.playerKeys.slice(-overflowCount));
     }
   }
 
   makeNewPlayers(amountToMake: number = 1)
   {
-    if (this.state.players.length >= this.props.maxPlayers)
+    if (this.state.playerKeys.length >= this.props.maxPlayers)
     {
       return;
     }
@@ -87,57 +89,57 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
     for (var i = 0; i < amountToMake; i++)
     {
-      newIds.push(this.newPlayerId++);
+      newIds.push(this.newPlayerID++);
     }
 
     this.setState(
     {
-      players: this.state.players.concat(newIds)
+      playerKeys: this.state.playerKeys.concat(newIds)
     });
   }
 
   setHumanPlayer(playerId: number)
   {
-    var index = this.state.players.indexOf(playerId);
+    var index = this.state.playerKeys.indexOf(playerId);
 
-    var newPlayerOrder = this.state.players.slice(0);
+    var newPlayerOrder = this.state.playerKeys.slice(0);
 
     newPlayerOrder.unshift(newPlayerOrder.splice(index, 1)[0]);
 
-    this.setState({players: newPlayerOrder});
+    this.setState({playerKeys: newPlayerOrder});
   }
 
   removePlayers(toRemove: number[])
   {
-    if (this.state.players.length <= this.props.minPlayers)
+    if (this.state.playerKeys.length <= this.props.minPlayers)
     {
       return;
     }
 
     this.setState(
     {
-      players: this.state.players.filter(function(playerId: number)
+      playerKeys: this.state.playerKeys.filter(function(playerId: number)
       {
         return toRemove.indexOf(playerId) === -1;
       })
     });
   }
 
-  setActiveColorPicker(colorPicker: React.ReactElement<any>)
+  setActiveColorSetter(colorSetter: ColorSetterComponent)
   {
-    if (this.state.activeColorPicker)
+    if (this.state.activeColorSetter)
     {
-      this.state.activeColorPicker.setAsInactive();
+      this.state.activeColorSetter.setAsInactive();
     }
 
-    this.setState({activeColorPicker: colorPicker});
+    this.setState({activeColorSetter: colorSetter});
   }
 
   randomizeAllPlayers()
   {
-    for (var id in this.refsTODO)
+    for (var id in this.playerSetupComponentsByID)
     {
-      var player = this.refsTODO[id];
+      var player = this.playerSetupComponentsByID[id];
 
       player.randomize();
     }
@@ -146,9 +148,9 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   makeAllPlayers()
   {
     var players: Player[] = [];
-    for (var id in this.refsTODO)
+    for (var id in this.playerSetupComponentsByID)
     {
-      players.push(this.refsTODO[id].makePlayer());
+      players.push(this.playerSetupComponentsByID[id].makePlayer());
     }
 
     return players;
@@ -156,24 +158,27 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   render()
   {
-    var playerSetups: any[] = [];
-    for (var i = 0; i < this.state.players.length; i++)
+    var playerSetups: React.ReactElement<any>[] = [];
+    for (var i = 0; i < this.state.playerKeys.length; i++)
     {
       playerSetups.push(PlayerSetup(
       {
-        key: this.state.players[i],
-        keyTODO: this.state.players[i],
-        ref: this.state.players[i],
+        key: this.state.playerKeys[i],
+        keyTODO: this.state.playerKeys[i],
+        ref: (component: PlayerSetupComponent) =>
+        {
+          this.playerSetupComponentsByID[i] = component;
+        },
         removePlayers: this.removePlayers,
-        setActiveColorPicker: this.setActiveColorPicker,
-        initialName: "Player " + this.state.players[i],
+        setActiveColorSetter: this.setActiveColorSetter,
+        initialName: "Player " + this.state.playerKeys[i],
         isHuman: i === 0,
         setHuman: this.setHumanPlayer
       }));
     }
 
 
-    var canAddPlayers = this.state.players.length < this.props.maxPlayers;
+    var canAddPlayers = this.state.playerKeys.length < this.props.maxPlayers;
 
     return(
       React.DOM.div({className: "setup-game-players"},
