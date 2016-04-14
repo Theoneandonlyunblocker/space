@@ -7,11 +7,11 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  onDragEnd: any; // TODO refactor | define prop type 123
-  onDragStart: any; // TODO refactor | define prop type 123
+  onDragEnd: (dropSuccesful?: boolean) => void;
+  onDragStart: (item: Item) => void;
   item: Item;
   isDraggable: boolean;
-  slot: any; // TODO refactor | define prop type 123
+  slot: string;
 }
 
 interface StateType
@@ -74,7 +74,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
     }
     var item = this.props.item;
 
-    var divProps: any =
+    var divProps: React.HTMLAttributes =
     {
       className: "unit-item",
       title: item.template.displayName
