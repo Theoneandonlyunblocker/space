@@ -4,7 +4,6 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   icon: any; // TODO refactor | define prop type 123
-  unit: Unit;
   isAnnihilated: boolean;
   isActiveUnit: boolean;
   facesLeft: boolean;
@@ -27,8 +26,6 @@ export class UnitIconComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var unit = this.props.unit;
-
     var containerProps: any =
     {
       className: "unit-icon-container"

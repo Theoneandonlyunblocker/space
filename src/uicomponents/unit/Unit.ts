@@ -1,37 +1,40 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="unitinfo.ts"/>
-/// <reference path="uniticon.ts"/>
-/// <reference path="unitstatuseffects.ts" />
-/// <reference path="unitportrait.ts" />
-/// <reference path="../mixins/draggable.ts" />
-
-
 import Unit from "../../Unit";
 import UnitPortrait from "./UnitPortrait";
 import UnitStatusEffects from "./UnitStatusEffects";
 import UnitInfo from "./UnitInfo";
 import UnitIcon from "./UnitIcon";
+import Battle from "../../Battle";
+import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 
 
 interface PropTypes extends React.Props<any>
 {
-  handleMouseEnterUnit: any; // TODO refactor | define prop type 123
-  onDragEnd: any; // TODO refactor | define prop type 123
-  onDragStart: any; // TODO refactor | define prop type 123
-  isCaptured: boolean;
-  handleMouseLeaveUnit: any; // TODO refactor | define prop type 123
-  facesLeft: boolean;
-  activeUnit: any; // TODO refactor | define prop type 123
-  isDraggable: boolean;
-  isDead: boolean;
-  hoveredAbility: any; // TODO refactor | define prop type 123
-  battle: Battle;
+  isCaptured?: boolean;
+  isDead?: boolean;
+  position: number[];
   unit: Unit;
-  hoveredUnit: any; // TODO refactor | define prop type 123
-  targetsInPotentialArea: any; // TODO refactor | define prop type 123
-  onUnitClick: any; // TODO refactor | define prop type 123
+  
+  battle?: Battle;
+  facesLeft: boolean;
+  activeUnit?: Unit;
+  activeTargets?: {[id: number]: AbilityTemplate[];}; 
+
+  hoveredUnit?: Unit;
+  hoveredAbility?: AbilityTemplate;
+
+  targetsInPotentialArea?: Unit[];
+  activeEffectUnits?: Unit[];
+  isDraggable?: boolean;
+  
+  onUnitClick?: (unit: Unit) => void;
+  onMouseUp?: (position: number[]) => void;
+  handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
+  handleMouseEnterUnit: (unit: Unit) => void;
+  onDragStart?: (unit: Unit) => void;
+  onDragEnd?: (dropSuccessful?: boolean) => void;
 }
 
 interface StateType
@@ -67,8 +70,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      hasPopup: false,
-      popupElement: null
+      
     });
   }
 
@@ -93,7 +95,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
 
     this.props.handleMouseEnterUnit(this.props.unit);
   }
-  handleMouseLeave(e: MouseEvent)
+  handleMouseLeave(e: React.MouseEvent)
   {
     if (!this.props.handleMouseLeaveUnit) return;
 
@@ -178,7 +180,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
       name: unit.name,
       guardAmount: unit.battleStats.guardAmount,
       guardCoverage: unit.battleStats.guardCoverage,
-      isPreparing: unit.battleStats.queuedAction,
+      isPreparing: Boolean(unit.battleStats.queuedAction),
       maxHealth: unit.maxHealth,
       currentHealth: unit.currentHealth,
       isSquadron: unit.isSquadron,

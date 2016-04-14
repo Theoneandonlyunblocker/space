@@ -3,7 +3,7 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  className: any; // TODO refactor | define prop type 123
+  className?: any; // TODO refactor | define prop type 123
   imageSrc: any; // TODO refactor | define prop type 123
 }
 
