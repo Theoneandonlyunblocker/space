@@ -3,8 +3,8 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  className?: any; // TODO refactor | define prop type 123
-  imageSrc: any; // TODO refactor | define prop type 123
+  className?: string;
+  imageSrc: string;
 }
 
 interface StateType
@@ -23,7 +23,7 @@ export class UnitPortraitComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var props: any = {};
+    var props: React.HTMLAttributes = {};
     props.className = "unit-portrait " + (this.props.className || "");
     if (this.props.imageSrc)
     {
