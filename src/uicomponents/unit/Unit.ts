@@ -45,7 +45,7 @@ interface StateType
 export class UnitComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Unit";
-  mixins: reactTypeTODO_any = [Draggable, React.addons.PureRenderMixin];
+  // mixins = [Draggable, React.addons.PureRenderMixin];
   
   state: StateType;
 

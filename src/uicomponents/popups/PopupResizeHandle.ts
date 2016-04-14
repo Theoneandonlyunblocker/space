@@ -15,7 +15,7 @@ interface StateType
 export class PopupResizeHandleComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupResizeHandle";
-  mixins: reactTypeTODO_any = [Draggable];
+  // mixins = [Draggable];
 
   // originBottom: reactTypeTODO_any = undefined;
   // originRight: reactTypeTODO_any = undefined;

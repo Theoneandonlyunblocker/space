@@ -26,7 +26,7 @@ interface StateType
 export class TopMenuComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenu";
-  mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
+  // mixins = [React.addons.PureRenderMixin];
   state: StateType;
 
   cachedTopMenuWidth: number = undefined;

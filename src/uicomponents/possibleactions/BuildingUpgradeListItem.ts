@@ -20,7 +20,7 @@ interface StateType
 export class BuildingUpgradeListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildingUpgradeListItem";
-  mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
+  // mixins = [UpdateWhenMoneyChanges];
 
   state: StateType;
 

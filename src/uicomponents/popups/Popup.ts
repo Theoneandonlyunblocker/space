@@ -35,7 +35,7 @@ interface StateType
 export class PopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Popup";
-  mixins: reactTypeTODO_any = [Draggable];
+  // mixins = [Draggable];
 
 
   state: StateType;

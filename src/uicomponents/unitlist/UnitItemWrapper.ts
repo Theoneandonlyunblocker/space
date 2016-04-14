@@ -28,7 +28,7 @@ interface StateType
 export class UnitItemWrapperComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitItemWrapper";
-  mixins: reactTypeTODO_any = [DropTarget];
+  // mixins = [DropTarget];
 
   state: StateType;
 

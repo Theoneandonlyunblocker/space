@@ -24,7 +24,7 @@ interface StateType
 export class TutorialComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Tutorial";
-  mixins: reactTypeTODO_any = [SplitMultilineText];
+  // mixins = [SplitMultilineText];
 
 
   state: StateType;

@@ -22,7 +22,7 @@ interface StateType
 export class ColorSetterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorSetter";
-  mixins: reactTypeTODO_any = [FocusTimer];
+  // mixins = [FocusTimer];
   state: StateType;
   ref_TODO_main: React.HTMLComponent;
   isMounted: boolean = false;

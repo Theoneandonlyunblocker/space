@@ -24,7 +24,7 @@ interface StateType
 export class BuildableBuildingComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildableBuilding";
-  mixins: reactTypeTODO_any = [UpdateWhenMoneyChanges];
+  // mixins = [UpdateWhenMoneyChanges];
 
 
   state: StateType;

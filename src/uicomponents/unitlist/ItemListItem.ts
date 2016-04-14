@@ -38,7 +38,7 @@ interface StateType
 export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemListItem";
-  mixins: reactTypeTODO_any = [Draggable];
+  // mixins = [Draggable];
 
   state: StateType;
 

@@ -22,7 +22,7 @@ interface StateType
 export class UnitItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitItem";
-  mixins: reactTypeTODO_any = [Draggable];
+  // mixins = [Draggable];
 
   state: StateType;
 

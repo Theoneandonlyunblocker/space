@@ -36,7 +36,7 @@ interface StateType
 export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitListItem";
-  mixins: reactTypeTODO_any = [Draggable];
+  // mixins = [Draggable];
 
   state: StateType;
   needsFirstTouchUpdate: boolean = true;

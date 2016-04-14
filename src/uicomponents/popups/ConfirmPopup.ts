@@ -26,7 +26,7 @@ interface RefTypes extends React.Refs
 export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConfirmPopup";
-  mixins: reactTypeTODO_any = [SplitMultilineText];
+  // mixins = [SplitMultilineText];
 
   state: StateType;
   refsTODO: RefTypes;

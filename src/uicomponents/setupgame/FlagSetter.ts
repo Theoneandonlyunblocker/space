@@ -28,7 +28,7 @@ interface StateType
 export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagSetter";
-  mixins: reactTypeTODO_any = [FocusTimer];
+  // mixins = [FocusTimer];
   state: StateType;
   
   ref_TODO_flagPicker: FlagPickerComponent;

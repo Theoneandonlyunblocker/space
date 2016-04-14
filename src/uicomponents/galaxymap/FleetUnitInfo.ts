@@ -24,7 +24,7 @@ interface StateType
 export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetUnitInfo";
-  mixins: reactTypeTODO_any = [Draggable];
+  // mixins = [Draggable];
 
 
   state: StateType;

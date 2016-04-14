@@ -21,7 +21,7 @@ interface StateType
 export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeMoney";
-  mixins: reactTypeTODO_any = [Draggable];
+  // mixins = [Draggable];
 
 
   state: StateType;
