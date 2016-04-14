@@ -8,7 +8,7 @@ import ColorPicker from "./ColorPicker";
 interface PropTypes extends React.Props<any>
 {
   setActiveColorPicker: (colorSetter: ColorSetterComponent) => void;
-  generateColor: () => void;
+  generateColor: (toContrastWith?: Color) => Color;
   color: Color;
   flagHasCustomImage: boolean;
   onChange: (color: Color, isNull: boolean) => void;
@@ -146,7 +146,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
         this.state.isActive ?
           ColorPicker(
           {
-            color: this.props.color,
+            hexColor: this.props.color.getHex(),
             generateColor: this.props.generateColor,
             onChange: this.props.onChange,
             // setAsInactive: this.setAsInactive,

@@ -1,34 +1,36 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../color.ts" />
+import Color from "../../Color";
 
 interface PropTypes extends React.Props<any>
 {
-  generateColor: any; // TODO refactor | define prop type 123
-  getParentPosition: any; // TODO refactor | define prop type 123
-  hexColor: any; // TODO refactor | define prop type 123
+  generateColor: (toContrastWith?: Color) => Color;
+  getParentPosition: () => ClientRect;
+  hexColor: number;
   flagHasCustomImage: boolean;
-  onChange: any; // TODO refactor | define prop type 123
-  limitUpdates: any; // TODO refactor | define prop type 123
+  onChange: (color: Color, isNull: boolean) => void;
+  limitUpdates?: boolean;
 }
 
 interface StateType
 {
-  lastValidHexString?: any; // TODO refactor | define state type 456
-  hexColor?: any; // TODO refactor | define state type 456
-  hue?: any; // TODO refactor | define state type 456
-  val?: any; // TODO refactor | define state type 456
-  hexString?: any; // TODO refactor | define state type 456
-  sat?: any; // TODO refactor | define state type 456
+  lastValidHexString?: string;
+  hexString?: string;
+  hexColor?: number;
+  hue?: number;
+  val?: number;
+  sat?: number;
 }
 
 export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorPicker";
-  onChangeTimeout: reactTypeTODO_any = null;
-
   state: StateType;
+
+  private onChangeTimeoutHandle: number = null;
+  private hueGradientString: string;
+  private _rootNodeID: string = "asdsad";
 
   constructor(props: PropTypes)
   {
@@ -58,19 +60,19 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   
   private getInitialState(): StateType
   {
-    var hexColor = this.props.hexColor || 0xFFFFFF;
-    var hexString = "#" + hexToString(hexColor);
-    var hsvColor = colorFromScalars(hexToHsv(hexColor));
+    const color = isFinite(this.props.hexColor) ? Color.fromHex(this.props.hexColor) : new Color(1, 1, 1);
+    const hexColor = this.props.hexColor || 0xFFFFFF;
+    const hexString = "#" + color.getHexString();
+    const hsvColor = Color.convertScalarsToDegrees(color.getHSV());
 
     return(
     {
-      hexColor: hexColor,
+      hexColor: color.getHex(),
       hexString: hexString,
       lastValidHexString: hexString,
       hue: hsvColor[0],
       sat: hsvColor[1],
-      val: hsvColor[2],
-      isNull: true
+      val: hsvColor[2]
     });
   }
 
@@ -88,34 +90,35 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   setPosition()
   {
     var parentRect = this.props.getParentPosition();
-    var domNode = React.findDOMNode(this);
+    var domNode = React.findDOMNode<HTMLElement>(this);
     domNode.style.top = "" + parentRect.bottom + "px";
     domNode.style.left = "" + parentRect.left + "px";
   }
 
-  triggerParentOnChange(color: number, isNull: boolean)
+  triggerParentOnChange(color: Color, isNull: boolean)
   {
-    if (this.onChangeTimeout)
+    if (this.onChangeTimeoutHandle)
     {
-      window.clearTimeout(this.onChangeTimeout);
-      this.onChangeTimeout = null;
+      window.clearTimeout(this.onChangeTimeoutHandle);
+      this.onChangeTimeoutHandle = null;
     }
 
-    this.onChangeTimeout = window.setTimeout(this.props.onChange.bind(null, color, isNull), 50);
+    this.onChangeTimeoutHandle = window.setTimeout(() =>
+    {
+      this.props.onChange(color, isNull);
+    }, 50);
   }
 
   updateFromHsv(hue: number, sat: number, val: number, e?: Event)
   {
-    var hsvColor = [hue, sat, val];
-    var hexColor = Math.round(hsvToHex.apply(null, scalarsFromColor(hsvColor)));
-    var hexString = "#" + hexToString(hexColor);
+    const color: Color = Color.fromHSV.apply(null, Color.convertDegreesToScalars([hue, sat, val]));
+    const hexString = "#" + color.getHexString();
 
     this.setState(
     {
-      hexColor: hexColor,
+      hexColor: color.getHex(),
       hexString: hexString,
-      lastValidHexString: hexString,
-      isNull: false
+      lastValidHexString: hexString
     });
 
     if (this.props.onChange)
@@ -127,13 +130,14 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
         target.type !== "range" ||
         e.type !== "input"))
       {
-        this.triggerParentOnChange(hexColor, false);
+        this.triggerParentOnChange(color, false);
       }
     }
   }
   updateFromHex(hexColor: number)
   {
-    var hsvColor = colorFromScalars(hexToHsv(hexColor));
+    const color = Color.fromHex(hexColor);
+    const hsvColor = Color.convertScalarsToDegrees(color.getHSV());
 
     this.setState(
     {
@@ -144,10 +148,10 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.onChange)
     {
-      this.triggerParentOnChange(hexColor, false);
+      this.triggerParentOnChange(color, false);
     }
   }
-  setHex(e: Event)
+  setHex(e: React.FormEvent | ClipboardEvent)
   {
     e.stopPropagation();
     e.preventDefault();
@@ -171,15 +175,14 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     }
     var isValid = /^#[0-9A-F]{6}$/i.test(hexString);
 
-    var hexColor = stringToHex(hexString);
+    var hexColor = Color.fromHexString(hexString).getHex();
 
 
     this.setState(
     {
       hexString: hexString,
       lastValidHexString: isValid ? hexString : this.state.lastValidHexString,
-      hexColor: isValid ? hexColor : this.state.hexColor,
-      isNull: !isValid
+      hexColor: isValid ? hexColor : this.state.hexColor
     });
 
     if (isValid)
@@ -215,8 +218,9 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
   autoGenerateColor()
   {
-    var hexColor = this.props.generateColor();
-    var hexString = "#" + hexToString(hexColor);
+    const color = this.props.generateColor();
+    const hexColor = color.getHex();
+    const hexString = "#" + color.getHexString();
 
     this.setState(
     {
@@ -230,11 +234,9 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
   nullifyColor()
   {
-    this.setState({isNull: true});
-
     if (this.props.onChange)
     {
-      this.triggerParentOnChange(this.state.hexColor, true);
+      this.triggerParentOnChange(Color.fromHex(this.state.hexColor), true);
     }
   }
 
@@ -277,6 +279,12 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       max + " 100%)"
     );
   }
+  
+  private makeHexStringFromHSVDegreeArray(hsv: number[])
+  {
+    const color: Color = Color.fromHSV.apply(null, Color.convertDegreesToScalars(hsv));
+    return "#" + color.getHexString();
+  }
 
   makeGradientStyle(type: string)
   {
@@ -295,8 +303,8 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       }
       case "sat":
       {
-        var min = "#" + hexToString(hsvToHex.apply(null, scalarsFromColor([hue, 0, val])));
-        var max = "#" + hexToString(hsvToHex.apply(null, scalarsFromColor([hue, 100, val])));
+        var min = "#" + this.makeHexStringFromHSVDegreeArray([hue, 0, val]);
+        var max = "#" + this.makeHexStringFromHSVDegreeArray([hue, 100, val]);
         return(
         {
           background: this.makeGradientString(min, max)
@@ -304,8 +312,8 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
       }
       case "val":
       {
-        var min = "#" + hexToString(hsvToHex.apply(null, scalarsFromColor([hue, sat, 0])));
-        var max = "#" + hexToString(hsvToHex.apply(null, scalarsFromColor([hue, sat, 100])));
+        var min = "#" + this.makeHexStringFromHSVDegreeArray([hue, sat, 0]);
+        var max = "#" + this.makeHexStringFromHSVDegreeArray([hue, sat, 100]);
         return(
         {
           background: this.makeGradientString(min, max)
@@ -320,7 +328,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
   makeHsvInputs(type: string)
   {
-    var rootId = this._rootNodeID;
     var label = "" + type[0].toUpperCase() + ":";
 
     var max = type === "hue" ? 360 : 100;
@@ -333,7 +340,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "color-picker-input-container", key: type},
-        React.DOM.label({className: "color-picker-label", htmlFor: "" + rootId + type}, label),
+        React.DOM.label({className: "color-picker-label", htmlFor: "" + this._rootNodeID + type}, label),
         React.DOM.div(
         {
           className: "color-picker-slider-background",
@@ -342,7 +349,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           React.DOM.input(
           {
             className: "color-picker-slider",
-            id: "" + rootId + type,
+            id: "" + this._rootNodeID + type,
             ref: type,
             type: "range",
             min: 0,
@@ -367,8 +374,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   }
   render()
   {
-    var rootId = this._rootNodeID;
-
     return(
       React.DOM.div({className: "color-picker"},
         React.DOM.div({className: "color-picker-hsv"},
@@ -377,7 +382,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           this.makeHsvInputs("val")
         ),
         React.DOM.div({className: "color-picker-input-container", key: "hex"},
-          React.DOM.label({className: "color-picker-label", htmlFor: "" + rootId + "hex"}, "Hex:"),
+          React.DOM.label({className: "color-picker-label", htmlFor: "" + this._rootNodeID + "hex"}, "Hex:"),
           /*React.DOM.input(
           {
             className: "color-picker-slider",
@@ -405,10 +410,6 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           React.DOM.input(
           {
             className: "color-picker-input color-picker-input-hex",
-            ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_hex = component;
-},
             type: "string",
             step: 1,
             value: this.state.hexString,
