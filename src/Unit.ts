@@ -36,6 +36,7 @@ import GuardCoverage from "./GuardCoverage";
 import QueuedActionData from "./QueuedActionData";
 import UnitBattleStats from "./UnitBattleStats";
 import UnitBattleSide from "./UnitBattleSide";
+import AbilityUpgradeData from "./AbilityUpgradeData";
 
 import UnitSaveData from "./savedata/UnitSaveData";
 import UnitItemsSaveData from "./savedata/UnitItemsSaveData";
@@ -1047,16 +1048,9 @@ export default class Unit
 
     return true;
   }
-  getAbilityUpgradeData()
+  public getAbilityUpgradeData(): AbilityUpgradeData
   {
-    var upgradeData:
-    {
-      [source: string]:
-      {
-        base: AbilityBase;
-        possibleUpgrades: AbilityBase[];
-      }
-    } = {};
+    var upgradeData: AbilityUpgradeData = {};
 
     var allAbilities: AbilityBase[] = this.getAllAbilities();
     allAbilities = allAbilities.concat(this.getAllPassiveSkills());
