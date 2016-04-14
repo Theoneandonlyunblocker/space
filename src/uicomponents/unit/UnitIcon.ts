@@ -3,7 +3,7 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  icon: any; // TODO refactor | define prop type 123
+  icon: string;
   isAnnihilated?: boolean;
   isActiveUnit?: boolean;
   facesLeft: boolean;
@@ -26,12 +26,12 @@ export class UnitIconComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var containerProps: any =
+    var containerProps: React.HTMLAttributes =
     {
       className: "unit-icon-container"
     };
 
-    var fillerProps: any =
+    var fillerProps: React.HTMLAttributes =
     {
       className: "unit-icon-filler"
     };

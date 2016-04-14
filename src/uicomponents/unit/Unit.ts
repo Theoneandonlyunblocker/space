@@ -107,13 +107,13 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     var unit = this.props.unit;
     unit.uiDisplayIsDirty = false;
 
-    var containerProps: any =
+    var containerProps: React.HTMLAttributes =
     {
       className: "unit-container",
       id: "unit-id_" + unit.id,
       key: "container"
     };
-    var wrapperProps: any =
+    var wrapperProps: React.HTMLAttributes =
     {
       className: "unit"
     };
