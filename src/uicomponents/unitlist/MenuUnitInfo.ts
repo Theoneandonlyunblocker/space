@@ -5,7 +5,7 @@ import * as React from "react";
 /// <reference path="unititemwrapper.ts"/>
 /// <reference path="unitexperience.ts" />
 
-
+import Item from "../../Item";
 import Unit from "../../Unit";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 import UnitItemWrapper from "./UnitItemWrapper";
@@ -15,10 +15,10 @@ import UnitExperience from "./UnitExperience";
 
 interface PropTypes extends React.Props<any>
 {
-  onDragEnd?: any; // TODO refactor | define prop type 123
-  onDragStart?: any; // TODO refactor | define prop type 123
-  onMouseUp?: any; // TODO refactor | define prop type 123
-  currentDragItem?: any; // TODO refactor | define prop type 123
+  onDragEnd?: (dropSuccesful?: boolean) => void;
+  onDragStart?: (item: Item) => void;
+  onMouseUp?: () => void;
+  currentDragItem?: Item;
   unit: Unit;
   isDraggable?: boolean;
 }
