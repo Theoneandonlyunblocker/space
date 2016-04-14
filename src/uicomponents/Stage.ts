@@ -1,26 +1,20 @@
-/// <reference path="../../../lib/react-0.13.3.d.ts" />
+/// <reference path="../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../lib/react-global-0.13.3.d.ts" />
-
-/// <reference path="battle/battle.ts"/>
-/// <reference path="unitlist/unitlist.ts"/>
-/// <reference path="unitlist/itemequip.ts"/>
-/// <reference path="battleprep/battleprep.ts"/>
-/// <reference path="galaxymap/galaxymap.ts"/>
-/// <reference path="setupgame/setupgame.ts"/>
-
-/// <reference path="flagmaker.ts"/>
-/// <reference path="battlescenetester.ts" />
-
-
-import BattlePrep from "./battleprep/BattlePrep";
+import BattlePrepComponentFactory from "./battleprep/BattlePrep";
 import BattleSceneTester from "./BattleSceneTester";
 import SetupGame from "./setupgame/SetupGame";
-import Battle from "./battle/Battle";
+import BattleComponentFactory from "./battle/Battle";
 import GalaxyMap from "./galaxymap/GalaxyMap";
 import FlagMaker from "./FlagMaker";
 
+import BattlePrep from "../BattlePrep";
+import MapRenderer from "../MapRenderer";
+import Player from "../Player";
+import PlayerControl from "../PlayerControl";
+import Battle from "../Battle";
+import Game from "../Game";
+import Renderer from "../Renderer";
 
 interface PropTypes extends React.Props<any>
 {
@@ -30,8 +24,7 @@ interface PropTypes extends React.Props<any>
   playerControl: PlayerControl;
   battle: Battle;
   game: Game;
-  changeSceneFunction: any; // TODO refactor | define prop type 123
-  sceneToRender: any; // TODO refactor | define prop type 123
+  sceneToRender: string;
   renderer: Renderer;
 }
 
@@ -47,19 +40,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.changeScene = this.changeScene.bind(this);    
-  }
-  
-  changeScene()
-  {
-    var newScene = React.findDOMNode<HTMLInputElement>(this.ref_TODO_sceneSelector).value;
-
-    this.props.changeSceneFunction(newScene);
   }
 
   render()
@@ -71,7 +51,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
       case "battle":
       {
         elementsToRender.push(
-          Battle(
+          BattleComponentFactory(
           {
             battle: this.props.battle,
             humanPlayer: this.props.player,
@@ -84,7 +64,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
       case "battlePrep":
       {
         elementsToRender.push(
-          BattlePrep(
+          BattlePrepComponentFactory(
           {
             battlePrep: this.props.battlePrep,
             renderer: this.props.renderer,

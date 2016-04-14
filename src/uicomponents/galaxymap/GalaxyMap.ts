@@ -16,7 +16,7 @@ import Point from "../../Point";
 
 interface PropTypes extends React.Props<any>
 {
-  toCenterOn: Point;
+  toCenterOn?: Point;
   player: Player;
   playerControl: PlayerControl;
   game: Game;
