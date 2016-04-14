@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-0.13.3.d.ts" />
+/// <reference path="../../lib/react-0.13.3.d.ts" />
 
 
 import Flag from "../../src/Flag";
@@ -8,10 +8,10 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   width?: number;
-  props: any; // TODO refactor | define prop type 123
+  props: React.HTMLAttributes;
   isMutable?: boolean;
   height?: number;
-  stretch?: any; // TODO refactor | define prop type 123
+  stretch?: boolean;
   flag: Flag;
 }
 
@@ -24,6 +24,8 @@ export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
   displayName: string = "PlayerFlag";
   mixins: reactTypeTODO_any = [React.addons.PureRenderMixin];
   state: StateType;
+  
+  ref_TODO_container: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -84,7 +86,10 @@ export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      props.ref = "container";
+      props.ref = (component: React.HTMLComponent) =>
+      {
+        this.ref_TODO_container = component;
+      };
       return(
         React.DOM.div(props,
           null
