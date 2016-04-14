@@ -1,9 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../mixins/splitmultilinetext.ts" />
-
-
 import eventManager from "../../eventManager";
 
 import ListItem from "./ListItem";
@@ -26,24 +23,19 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  columns: ListColumn[];
-  selectedColumn: ListColumn;
-  sortingOrder: ListColumn[];
-  selected: ListItem;
-}
-
-interface RefTypes extends React.Refs
-{
-  header: HTMLElement;
-  inner: HTMLElement;
+  columns?: ListColumn[];
+  selectedColumn?: ListColumn;
+  sortingOrder?: ListColumn[];
+  selected?: ListItem;
 }
 
 export class ListComponent extends React.Component<PropTypes, StateType>
 {
-  mixins: [SplitMultilineText];
   sortedItems: ListItem[] = [];
   state: StateType;
-  refsTODO: RefTypes;
+  
+  ref_TODO_header: React.HTMLComponent;
+  ref_TODO_inner: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -222,7 +214,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     if (column.notSortable) return;
     function getReverseOrder(order: string)
     {
-      return order === "desc" ? "asc" : string = "desc";
+      return order === "desc" ? "asc" : "desc";
     }
 
     if (this.state.selectedColumn.key === column.key)
@@ -424,10 +416,10 @@ export class ListComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(
         {
           className: "fixed-table-container-inner",
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_inner = component;
-},
+          ref: (component: React.HTMLComponent) =>
+          {
+            this.ref_TODO_inner = component;
+          },
           onScroll: this.handleScroll
         },
           React.DOM.table(
@@ -438,10 +430,10 @@ export class ListComponent extends React.Component<PropTypes, StateType>
               columns
             ),
 
-            React.DOM.thead({className: "fixed-table-actual-header", ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_header = component;
-}},
+            React.DOM.thead({className: "fixed-table-actual-header", ref: (component: React.HTMLComponent) =>
+            {
+              this.ref_TODO_header = component;
+            }},
               React.DOM.tr(null,
                 headerLabels
               )
