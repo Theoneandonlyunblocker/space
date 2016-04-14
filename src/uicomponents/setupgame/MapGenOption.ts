@@ -1,12 +1,18 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
+import MapGenOption from "../../templateinterfaces/MapGenOption";
+import
+{
+  clamp
+} from "../../utility";
+
 interface PropTypes extends React.Props<any>
 {
-  value: any; // TODO refactor | define prop type 123
-  id: any; // TODO refactor | define prop type 123
+  value: number;
+  id: string;
   option: MapGenOption;
-  onChange: any; // TODO refactor | define prop type 123
+  onChange: (optionName: string, newValue: number) => void;
 }
 
 interface StateType
@@ -17,11 +23,11 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapGenOption";
 
-  handleChange(e: Event)
+  handleChange(e: React.FormEvent)
   {
     var target = <HTMLInputElement> e.target;
     var option = this.props.option;
-    var newValue = clamp(parseFloat(target.value), option.min, option.max);
+    var newValue = clamp(parseFloat(target.value), option.range.min, option.range.max);
     this.props.onChange(this.props.id, newValue);
   }
 
@@ -80,7 +86,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
           min: range.min,
           max: range.max,
           step: range.step,
-          value: this.props.value,
+          value: "" + this.props.value,
           onChange: this.handleChange
         }),
         React.DOM.input(
@@ -91,7 +97,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
           min: range.min,
           max: range.max,
           step: range.step,
-          value: this.props.value,
+          value: "" + this.props.value,
           onChange: this.handleChange
         })
       )

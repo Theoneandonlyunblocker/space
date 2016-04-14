@@ -170,7 +170,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
           this.playerSetupComponentsByID[i] = component;
         },
         removePlayers: this.removePlayers,
-        setActiveColorSetter: this.setActiveColorSetter,
+        setActiveSetterComponent: this.setActiveColorSetter,
         initialName: "Player " + this.state.playerKeys[i],
         isHuman: i === 0,
         setHuman: this.setHumanPlayer

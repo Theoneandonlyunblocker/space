@@ -119,7 +119,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     this.setState(changedState);
   }
 
-  getOptionValue(optionName: string)
+  getOptionValue(optionName: string): number
   {
     return this.state["optionValue_" + optionName];
   }
