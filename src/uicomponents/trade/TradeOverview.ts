@@ -3,7 +3,7 @@ import * as React from "react";
 
 
 import Player from "../../Player";
-import TradeableItems from "./TradeableItems";
+import TradeableItemsComponentFactory from "./TradeableItems";
 import Trade from "../../Trade";
 
 
@@ -203,7 +203,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         {
           className: "tradeable-items-container available-items-container"
         },
-          TradeableItems(
+          TradeableItemsComponentFactory(
           {
             header: "tradeable items " + this.props.selfPlayer.name,
             tradeableItems: selfAvailableItems,
@@ -214,7 +214,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             onMouseUp: this.handleAvailableMouseUp,
             onItemClick: this.handleStageItem.bind(this, "self")
           }),
-          TradeableItems(
+          TradeableItemsComponentFactory(
           {
             header: "tradeable items " + this.props.otherPlayer.name,
             tradeableItems: otherAvailableItems,
@@ -230,7 +230,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         {
           className: "tradeable-items-container trade-staging-areas-container"
         },
-          TradeableItems(
+          TradeableItemsComponentFactory(
           {
             tradeableItems: this.selfPlayerTrade.stagedItems,
             availableItems: this.selfPlayerTrade.allItems,
@@ -242,7 +242,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             onItemClick: this.handleRemoveStagedItem.bind(this, "self"),
             adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "self")
           }),
-          TradeableItems(
+          TradeableItemsComponentFactory(
           {
             tradeableItems: this.otherPlayerTrade.stagedItems,
             availableItems: this.otherPlayerTrade.allItems,

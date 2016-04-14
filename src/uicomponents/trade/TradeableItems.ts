@@ -1,28 +1,23 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../player.ts" />
-
-/// <reference path="tradeableitemslist.ts" />
-
-
 import TradeableItemsList from "./TradeableItemsList";
-
+import {TradeableItems} from "../../Trade";
 
 interface PropTypes extends React.Props<any>
 {
-  tradeableItems: reactTypeTODO_object; // ITradeableItems
+  tradeableItems: TradeableItems; // TODO refactor | rename -> staged items
 
-  availableItems?: reactTypeTODO_object;
+  availableItems?: TradeableItems;
   header?: string;
   noListHeader?: boolean;
-  onMouseUp?: reactTypeTODO_func;
-  onDragStart?: reactTypeTODO_func;
-  onDragEnd?: reactTypeTODO_func;
+  onMouseUp?: () => void;
+  onDragStart?: (tradeableItemKey: string) => void;
+  onDragEnd?: () => void;
   hasDragItem?: boolean;
   isInvalidDropTarget?: boolean;
-  onItemClick?: reactTypeTODO_func;
-  adjustItemAmount?: reactTypeTODO_func;
+  onItemClick?: (tradeableItemKey: string) => void;
+  adjustItemAmount?: (newAmount: number) => void;
 }
 
 interface StateType
@@ -55,7 +50,7 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
 
   render()
   {
-    var divProps: any =
+    var divProps: React.HTMLAttributes =
     {
       className: "tradeable-items"
     };
