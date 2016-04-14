@@ -11,16 +11,18 @@ import Unit from "../../Unit";
 import List from "./List";
 import ItemListItem from "./ItemListItem";
 import Item from "../../Item";
+import AbilityBase from "../../templateinterfaces/AbilityBase";
 
 
 interface PropTypes extends React.Props<any>
 {
-  onDragEnd: any; // TODO refactor | define prop type 123
-  onDragStart: any; // TODO refactor | define prop type 123
+  onDragEnd: (dropSuccesful?: boolean) => void;
+  onDragStart: (item: Item) => void;
   isItemPurchaseList?: boolean;
   items: Item[];
   isDraggable: boolean;
-  onRowChange: any; // TODO refactor | define prop type 123
+  onRowChange: (row: ListItem) => void;
+  
   selectedUnit: Unit; // only used to trigger updates
 }
 
@@ -67,7 +69,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
     {
       var item = items[i];
 
-      var ability: any = null;
+      var ability: AbilityBase = null;
       var abilityIsPassive = false;
       if (item.template.ability)
       {
@@ -79,7 +81,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         abilityIsPassive = true;
       }
 
-      var data: any =
+      var data =
       {
         item: item,
         key: item.id,
