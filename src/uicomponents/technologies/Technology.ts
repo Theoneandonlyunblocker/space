@@ -1,8 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../playertechnology.ts" />
-
 
 import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate";
 import TechnologyPrioritySlider from "./technologyPrioritySlider";
@@ -13,7 +11,7 @@ import PlayerTechnology from "../../PlayerTechnology";
 interface PropTypes extends React.Props<any>
 {
   playerTechnology: PlayerTechnology;
-  technology: reactTypeTODO_object; // TechnologyTemplate
+  technology: TechnologyTemplate;
 
   researchPoints: number;
 }
