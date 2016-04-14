@@ -1,14 +1,14 @@
 import ObjectiveTemplate from "../../src/templateinterfaces/ObjectiveTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 
-import declareWar from  "./objectives/declareWar.ts";
-import expansion from  "./objectives/expansion.ts";
-import cleanUpPirates from  "./objectives/cleanUpPirates.ts";
-import discovery from  "./objectives/discovery.ts";
-import heal from  "./objectives/heal.ts";
-import conquer from  "./objectives/conquer.ts";
-import expandManufactoryCapacity from  "./objectives/expandManufactoryCapacity.ts";
-import scoutingPerimeter from  "./objectives/scoutingPerimeter.ts";
+import declareWar from  "./objectives/declareWar";
+import expansion from  "./objectives/expansion";
+import cleanUpPirates from  "./objectives/cleanUpPirates";
+import discovery from  "./objectives/discovery";
+import heal from  "./objectives/heal";
+import conquer from  "./objectives/conquer";
+import expandManufactoryCapacity from  "./objectives/expandManufactoryCapacity";
+import scoutingPerimeter from  "./objectives/scoutingPerimeter";
 
 const Objectives: TemplateCollection<ObjectiveTemplate> =
 {

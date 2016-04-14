@@ -1,16 +1,16 @@
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 
-import battleCruiser from  "./templates/battleCruiser.ts";
-import commandShip from  "./templates/commandShip.ts";
-import redShip from  "./templates/redShip.ts";
-import stealthShip from  "./templates/stealthShip.ts";
-import blueShip from  "./templates/blueShip.ts";
-import debugShip from  "./templates/debugShip.ts";
-import scout from  "./templates/scout.ts";
-import bomberSquadron from  "./templates/bomberSquadron.ts";
-import fighterSquadron from  "./templates/fighterSquadron.ts";
-import shieldBoat from  "./templates/shieldBoat.ts";
+import battleCruiser from  "./templates/battleCruiser";
+import commandShip from  "./templates/commandShip";
+import redShip from  "./templates/redShip";
+import stealthShip from  "./templates/stealthShip";
+import blueShip from  "./templates/blueShip";
+import debugShip from  "./templates/debugShip";
+import scout from  "./templates/scout";
+import bomberSquadron from  "./templates/bomberSquadron";
+import fighterSquadron from  "./templates/fighterSquadron";
+import shieldBoat from  "./templates/shieldBoat";
 
 const UnitTemplates: TemplateCollection<UnitTemplate> =
 {
