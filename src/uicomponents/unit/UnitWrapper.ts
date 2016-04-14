@@ -5,7 +5,7 @@ import * as React from "react";
 
 import EmptyUnit from "./EmptyUnit";
 import Unit from "../../Unit";
-import Unit_COMPONENT_USE_CONFLICT from "./Unit";
+import UnitComponentFactory from "./Unit";
 import Battle from "../../Battle";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 
@@ -131,7 +131,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
   {
     var allElements: React.ReactElement<any>[] = [];
 
-    var wrapperProps: any =
+    var wrapperProps: React.HTMLAttributes =
     {
       className: "unit-wrapper drop-target"
     };
@@ -181,7 +181,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
       }
 
       this.props.key = "unit";
-      var unit = Unit_COMPONENT_USE_CONFLICT(this.props);
+      var unit = UnitComponentFactory(this.props);
       allElements.push(unit);
     }
     
