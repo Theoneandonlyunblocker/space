@@ -5,8 +5,8 @@ import * as React from "react";
 
 interface PropTypes extends React.Props<any>
 {
-  currentActionPoints: any; // TODO refactor | define prop type 123
-  hoveredActionPointExpenditure: any; // TODO refactor | define prop type 123
+  currentActionPoints: number;
+  hoveredActionPointExpenditure: number;
   maxActionPoints: number;
 }
 
