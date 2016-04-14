@@ -5,14 +5,14 @@ import * as React from "react";
 
 
 import AbilityList from "./AbilityList";
-
+import AbilityBase from "../../templateinterfaces/AbilityBase";
 
 interface PropTypes extends React.Props<any>
 {
-  sourceAbility: any; // TODO refactor | define prop type 123
-  handleClick: any; // TODO refactor | define prop type 123
-  abilities: any; // TODO refactor | define prop type 123
-  learningNewability: any; // TODO refactor | define prop type 123
+  sourceAbility?: AbilityBase;
+  handleClick: (ability: AbilityBase) => void;
+  abilities: AbilityBase[];
+  learningNewability?: boolean;
 }
 
 interface StateType
