@@ -3,7 +3,7 @@
 
 import Item from "../../Item";
 
-import * as React from "react";
+import * as React from "react/addons";
 
 interface PropTypes extends React.Props<any>
 {

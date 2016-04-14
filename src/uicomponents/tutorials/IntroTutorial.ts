@@ -1,5 +1,5 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
-import * as React from "react";
+import * as React from "react/addons";
 
 import IntroTutorial from "../../tutorials/IntroTutorial";
 import TutorialState from "../../tutorials/TutorialState";
