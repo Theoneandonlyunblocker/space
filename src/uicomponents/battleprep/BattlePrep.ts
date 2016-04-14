@@ -454,7 +454,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
           onRowChange: this.handleSelectRow,
 
-          onMouseEnter: this.handleMouseEnterUnit,
+          onMouseEnterUnit: this.handleMouseEnterUnit,
           onMouseLeave: this.handleMouseLeaveUnit
         })
       )

@@ -14,19 +14,19 @@ import UnitListItem from "./UnitListItem";
 
 interface PropTypes extends React.Props<any>
 {
-  units: any; // TODO refactor | define prop type 123
-  selectedUnit: any; // TODO refactor | define prop type 123
-  onRowChange: any; // TODO refactor | define prop type 123
+  units: Unit[]
+  selectedUnit: Unit;
+  onRowChange: (row: ListItem) => void;
   isDraggable: boolean;
   
-  autoSelect?: any; // TODO refactor | define prop type 123
-  onMouseLeave?: any; // TODO refactor | define prop type 123
-  onDragStart?: any; // TODO refactor | define prop type 123
-  reservedUnits?: any; // TODO refactor | define prop type 123
-  onDragEnd?: any; // TODO refactor | define prop type 123
-  checkTimesActed?: any; // TODO refactor | define prop type 123
-  onMouseEnter?: any; // TODO refactor | define prop type 123
-  hoveredUnit?: any; // TODO refactor | define prop type 123
+  autoSelect?: boolean;
+  onMouseLeave?: () => void;
+  onDragStart?: (unit: Unit) => void;
+  reservedUnits?: {[unitId: number]: number[]};
+  onDragEnd?: (dropSuccesful?: boolean) => void;
+  checkTimesActed?: boolean;
+  onMouseEnterUnit?: (unit: Unit) => void;
+  hoveredUnit?: Unit;
 }
 
 interface StateType
@@ -51,7 +51,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
     {
       var unit = this.props.units[id];
 
-      var data: any =
+      var data =
       {
         unit: unit,
 
@@ -76,7 +76,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
         isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
         isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
 
-        onMouseEnter: this.props.onMouseEnter,
+        onMouseEnter: this.props.onMouseEnterUnit,
         onMouseLeave: this.props.onMouseLeave,
 
         isDraggable: this.props.isDraggable,
