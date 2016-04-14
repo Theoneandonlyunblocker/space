@@ -21,6 +21,7 @@ interface PropTypes extends React.Props<any>
   items: Item[];
   isDraggable: boolean;
   onRowChange: any; // TODO refactor | define prop type 123
+  selectedUnit: Unit; // only used to trigger updates
 }
 
 interface StateType

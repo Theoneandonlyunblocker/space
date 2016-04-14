@@ -6,7 +6,8 @@ import * as React from "react";
 /// <reference path="unitlist.ts" />
 /// <reference path="menuunitinfo.ts" />
 
-
+import Player from "../../Player";
+import Unit from "../../Unit";
 import MenuUnitInfo from "./MenuUnitInfo";
 import UnitList from "./UnitList";
 import ItemList from "./ItemList";
@@ -20,8 +21,8 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  currentDragItem?: any; // TODO refactor | define state type 456
-  selectedUnit?: any; // TODO refactor | define state type 456
+  currentDragItem?: Item;
+  selectedUnit?: Unit;
 }
 
 export class ItemEquipComponent extends React.Component<PropTypes, StateType>
@@ -122,8 +123,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
           ItemList(
           {
             items: player.items,
-            // only used to trigger updates
-            selectedUnit: this.state.selectedUnit,
+            selectedUnit: this.state.selectedUnit, // only used to trigger updates
             isDraggable: true,
             onDragStart: this.handleDragStart,
             onDragEnd: this.handleDragEnd,

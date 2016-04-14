@@ -14,18 +14,19 @@ import UnitListItem from "./UnitListItem";
 
 interface PropTypes extends React.Props<any>
 {
-  onMouseLeave: any; // TODO refactor | define prop type 123
-  onDragStart: any; // TODO refactor | define prop type 123
-  reservedUnits: any; // TODO refactor | define prop type 123
-  onDragEnd: any; // TODO refactor | define prop type 123
-  checkTimesActed: any; // TODO refactor | define prop type 123
-  autoSelect?: any; // TODO refactor | define prop type 123
-  isDraggable: boolean;
-  selectedUnit: any; // TODO refactor | define prop type 123
-  onMouseEnter: any; // TODO refactor | define prop type 123
   units: any; // TODO refactor | define prop type 123
-  hoveredUnit: any; // TODO refactor | define prop type 123
+  selectedUnit: any; // TODO refactor | define prop type 123
   onRowChange: any; // TODO refactor | define prop type 123
+  isDraggable: boolean;
+  
+  autoSelect?: any; // TODO refactor | define prop type 123
+  onMouseLeave?: any; // TODO refactor | define prop type 123
+  onDragStart?: any; // TODO refactor | define prop type 123
+  reservedUnits?: any; // TODO refactor | define prop type 123
+  onDragEnd?: any; // TODO refactor | define prop type 123
+  checkTimesActed?: any; // TODO refactor | define prop type 123
+  onMouseEnter?: any; // TODO refactor | define prop type 123
+  hoveredUnit?: any; // TODO refactor | define prop type 123
 }
 
 interface StateType
