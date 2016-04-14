@@ -1,36 +1,32 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="colorsetter.ts" />
-/// <reference path="flagsetter.ts" />
-
-
 import Player from "../../Player";
-import FlagSetter from "./FlagSetter";
-import ColorSetter from "./ColorSetter";
-
+import Color from "../../Color";
+import {default as FlagSetter, FlagSetterComponent} from "./FlagSetter";
+import {default as ColorSetter, ColorSetterComponent} from "./ColorSetter";
+import
+{
+  generateMainColor,
+  generateSecondaryColor
+} from "../../colorGeneration";
 
 interface PropTypes extends React.Props<any>
 {
-  setActiveColorPicker: any; // TODO refactor | define prop type 123
-  setHuman: any; // TODO refactor | define prop type 123
-  removePlayers: any; // TODO refactor | define prop type 123
-  initialName: any; // TODO refactor | define prop type 123
-  keyTODO: any; // TODO refactor | define prop type 123
+  setActiveColorSetter: (colorSetter: ColorSetterComponent) => void;
+  setHuman: (playerID: number) => void;
+  removePlayers: (playerIDsToRemove: number[]) => void;
+  initialName: string;
+  keyTODO: number;
   isHuman: boolean;
 }
 
 interface StateType
 {
   flagHasCustomImage?: boolean;
-  name?: any; // TODO refactor | define state type 456
-  subColor?: any; // TODO refactor | define state type 456
-  mainColor?: any; // TODO refactor | define state type 456
-}
-
-interface RefTypes extends React.Refs
-{
-  flagSetter: React.Component<any, any>; // TODO refactor | correct ref type 542 | FlagSetter
+  name?: string;
+  subColor?: Color;
+  mainColor?: Color;
 }
 
 export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
@@ -38,7 +34,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   displayName: string = "PlayerSetup";
 
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_flagSetter: FlagSetterComponent;
 
   constructor(props: PropTypes)
   {
@@ -99,17 +95,17 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.props.setHuman(this.props.keyTODO/*TODO react*/);
   }
 
-  handleNameChange(e: Event)
+  handleNameChange(e: React.FormEvent)
   {
     var target = <HTMLInputElement> e.target;
     this.setState({name: target.value});
   }
 
-  setMainColor(color: number, isNull: boolean)
+  setMainColor(color: Color, isNull: boolean)
   {
     this.setState({mainColor: isNull ? null : color});
   }
-  setSubColor(color: number, isNull: boolean)
+  setSubColor(color: Color, isNull: boolean)
   {
     this.setState({subColor: isNull ? null : color});
   }
@@ -180,10 +176,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       },
         React.DOM.input(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_isHuman = component;
-},
           className: "player-setup-is-human",
           type: "checkbox",
           checked: this.props.isHuman,
@@ -197,37 +189,37 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         }),
         ColorSetter(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_mainColor = component;
-},
+          // ref: (component: ColorSetterComponent) =>
+          // {
+          //   this.ref_TODO_mainColor = component;
+          // },
           onChange: this.setMainColor,
-          setActiveColorPicker: this.props.setActiveColorPicker,
+          setActiveColorPicker: this.props.setActiveColorSetter,
           generateColor: this.generateMainColor,
           flagHasCustomImage: this.state.flagHasCustomImage,
           color: this.state.mainColor
         }),
         ColorSetter(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_subColor = component;
-},
+          // ref: (component: ColorSetterComponent) =>
+          // {
+          //   this.ref_TODO_subColor = component;
+          // },
           onChange: this.setSubColor,
-          setActiveColorPicker: this.props.setActiveColorPicker,
+          setActiveColorPicker: this.props.setActiveColorSetter,
           generateColor: this.generateSubColor,
           flagHasCustomImage: this.state.flagHasCustomImage,
           color: this.state.subColor
         }),
         FlagSetter(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_flagSetter = component;
-},
+          ref: (component: FlagSetterComponent) =>
+          {
+            this.ref_TODO_flagSetter = component;
+          },
           mainColor: this.state.mainColor,
           subColor: this.state.subColor,
-          setActiveColorPicker: this.props.setActiveColorPicker,
+          setActiveColorPicker: this.props.setActiveColorSetter,
           toggleCustomImage: this.handleSetCustomImage
         }),
         React.DOM.button(
