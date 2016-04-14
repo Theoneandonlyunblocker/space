@@ -4,8 +4,8 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   icon: any; // TODO refactor | define prop type 123
-  isAnnihilated: boolean;
-  isActiveUnit: boolean;
+  isAnnihilated?: boolean;
+  isActiveUnit?: boolean;
   facesLeft: boolean;
 }
 

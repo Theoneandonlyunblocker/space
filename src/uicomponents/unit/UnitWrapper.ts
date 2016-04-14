@@ -151,8 +151,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
     var empty = EmptyUnit(
     {
       facesLeft: this.props.facesLeft,
-      key: "empty",
-      position: this.props.position
+      key: "empty"
     });
 
     allElements.push(empty);

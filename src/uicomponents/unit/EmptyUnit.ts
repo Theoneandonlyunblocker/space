@@ -19,7 +19,7 @@ export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
   displayName: string = "EmptyUnit";
   shouldComponentUpdate(newProps: PropTypes)
   {
-    return newProps.facesLeft === this.props.facesLeft;
+    return newProps.facesLeft !== this.props.facesLeft;
   }
   state: StateType;
 
@@ -30,7 +30,7 @@ export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var wrapperProps: any =
+    var wrapperProps: React.HTMLAttributes =
     {
       className: "unit empty-unit"
     };
