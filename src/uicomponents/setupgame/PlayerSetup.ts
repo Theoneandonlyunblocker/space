@@ -13,7 +13,7 @@ import
 
 interface PropTypes extends React.Props<any>
 {
-  setActiveColorSetter: (colorSetter: ColorSetterComponent) => void;
+  setActiveSetterComponent: (setter: ColorSetterComponent | FlagSetterComponent) => void;
   setHuman: (playerID: number) => void;
   removePlayers: (playerIDsToRemove: number[]) => void;
   initialName: string;
@@ -194,7 +194,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
           //   this.ref_TODO_mainColor = component;
           // },
           onChange: this.setMainColor,
-          setActiveColorPicker: this.props.setActiveColorSetter,
+          setActiveColorPicker: this.props.setActiveSetterComponent,
           generateColor: this.generateMainColor,
           flagHasCustomImage: this.state.flagHasCustomImage,
           color: this.state.mainColor
@@ -206,7 +206,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
           //   this.ref_TODO_subColor = component;
           // },
           onChange: this.setSubColor,
-          setActiveColorPicker: this.props.setActiveColorSetter,
+          setActiveColorPicker: this.props.setActiveSetterComponent,
           generateColor: this.generateSubColor,
           flagHasCustomImage: this.state.flagHasCustomImage,
           color: this.state.subColor
@@ -219,7 +219,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
           },
           mainColor: this.state.mainColor,
           subColor: this.state.subColor,
-          setActiveColorPicker: this.props.setActiveColorSetter,
+          setActiveColorPicker: this.props.setActiveSetterComponent,
           toggleCustomImage: this.handleSetCustomImage
         }),
         React.DOM.button(

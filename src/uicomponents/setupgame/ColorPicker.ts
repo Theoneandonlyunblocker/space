@@ -30,7 +30,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
   private onChangeTimeoutHandle: number = null;
   private hueGradientString: string;
-  private _rootNodeID: string = "asdsad";
+  private baseElementID: string = "color-picker"; // TODO refactor | does this work? used to be this._rootNodeID 
 
   constructor(props: PropTypes)
   {
@@ -340,7 +340,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div({className: "color-picker-input-container", key: type},
-        React.DOM.label({className: "color-picker-label", htmlFor: "" + this._rootNodeID + type}, label),
+        React.DOM.label({className: "color-picker-label", htmlFor: "" + this.baseElementID + type}, label),
         React.DOM.div(
         {
           className: "color-picker-slider-background",
@@ -349,7 +349,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           React.DOM.input(
           {
             className: "color-picker-slider",
-            id: "" + this._rootNodeID + type,
+            id: "" + this.baseElementID + type,
             ref: type,
             type: "range",
             min: 0,
@@ -382,7 +382,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
           this.makeHsvInputs("val")
         ),
         React.DOM.div({className: "color-picker-input-container", key: "hex"},
-          React.DOM.label({className: "color-picker-label", htmlFor: "" + this._rootNodeID + "hex"}, "Hex:"),
+          React.DOM.label({className: "color-picker-label", htmlFor: "" + this.baseElementID + "hex"}, "Hex:"),
           /*React.DOM.input(
           {
             className: "color-picker-slider",

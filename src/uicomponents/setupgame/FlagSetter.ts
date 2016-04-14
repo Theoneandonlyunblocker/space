@@ -1,39 +1,28 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../mixins/focustimer.ts" />
-/// <reference path="../playerflag.ts" />
 
-/// <reference path="flagpicker.ts" />
-
-
-import FlagPicker from "./FlagPicker";
+import {default as FlagPicker, FlagPickerComponent} from "./FlagPicker";
 import PlayerFlag from "../PlayerFlag";
 import Flag from "../../Flag";
+import Color from "../../Color";
 import Emblem from "../../Emblem";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
 interface PropTypes extends React.Props<any>
 {
-  mainColor: any; // TODO refactor | define prop type 123
-  setActiveColorPicker: any; // TODO refactor | define prop type 123
-  toggleCustomImage: any; // TODO refactor | define prop type 123
-  isActive: boolean;
-  subColor: any; // TODO refactor | define prop type 123
-  tetriaryColor: any; // TODO refactor | define prop type 123
+  mainColor: Color;
+  subColor: Color;
+  tetriaryColor?: Color;
+  setActiveColorPicker: (setterComponent: FlagSetterComponent) => void;
+  toggleCustomImage: (image?: string) => void;
 }
 
 interface StateType
 {
-  flag?: any; // TODO refactor | define state type 456
+  flag?: Flag;
   isActive?: boolean;
   hasImageFailMessage?: boolean;
-}
-
-interface RefTypes extends React.Refs
-{
-  flagPicker: React.Component<any, any>; // TODO refactor | correct ref type 542 | FlagPicker
-  main: HTMLElement;
 }
 
 export class FlagSetterComponent extends React.Component<PropTypes, StateType>
@@ -41,7 +30,13 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   displayName: string = "FlagSetter";
   mixins: reactTypeTODO_any = [FocusTimer];
   state: StateType;
-  refsTODO: RefTypes;
+  
+  ref_TODO_flagPicker: FlagPickerComponent;
+  ref_TODO_main: React.HTMLComponent;
+  
+  imageLoadingFailTimeoutHandle: number;
+  isMounted: boolean = false;
+  
 
   constructor(props: PropTypes)
   {
@@ -80,13 +75,17 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     return(
     {
       flag: flag,
-      hasImageFailMessage: false,
-      active: false
+      hasImageFailMessage: false
     });
+  }
+  componentDidMount()
+  {
+    this.isMounted = true;
   }
   componentWillUnmount()
   {
-    window.clearTimeout(this.imageLoadingFailTimeout);
+    this.isMounted = false;
+    window.clearTimeout(this.imageLoadingFailTimeoutHandle);
     document.removeEventListener("click", this.handleClick);
     this.clearFocusTimerListener();
   }
@@ -94,16 +93,16 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   {
     this.setState({hasImageFailMessage: true});
 
-    this.imageLoadingFailTimeout = window.setTimeout(function()
+    this.imageLoadingFailTimeoutHandle = window.setTimeout(() =>
     {
       this.setState({hasImageFailMessage: false});
-    }.bind(this), 10000);
+    }, 10000);
   }
   clearImageLoadingFailMessage()
   {
-    if (this.imageLoadingFailTimeout)
+    if (this.imageLoadingFailTimeoutHandle)
     {
-      window.clearTimeout(this.imageLoadingFailTimeout);
+      window.clearTimeout(this.imageLoadingFailTimeoutHandle);
     }
     this.setState({hasImageFailMessage: false});
   }
@@ -113,7 +112,8 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
 
     var node = React.findDOMNode<HTMLElement>(this.ref_TODO_main);
-    if (e.target === node || node.contains(e.target))
+    const target = <HTMLElement> e.target;
+    if (target === node || node.contains(target))
     {
       return;
     }
@@ -142,7 +142,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   setAsInactive()
   {
-    if (this.isMounted() && this.state.isActive)
+    if (this.isMounted && this.state.isActive)
     {
       this.setState({isActive: false});
       document.removeEventListener("click", this.handleClick);
@@ -168,13 +168,13 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  stopEvent(e: Event)
+  stopEvent(e: React.DragEvent)
   {
     e.stopPropagation();
     e.preventDefault();
   }
 
-  handleDrop(e: DragEvent)
+  handleDrop(e: React.DragEvent)
   {
     if (e.dataTransfer)
     {
@@ -357,10 +357,10 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       React.DOM.div(
       {
         className: "flag-setter",
-        ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_main = component;
-},
+        ref: (component: React.HTMLComponent) =>
+        {
+          this.ref_TODO_main = component;
+        },
         onDragEnter: this.stopEvent,
         onDragOver: this.stopEvent,
         onDrop: this.handleDrop
@@ -375,17 +375,17 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
             onClick: this.toggleActive
           }
         }),
-        this.props.isActive || this.state.isActive ?
+        this.state.isActive ?
           FlagPicker(
           {
-            ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_flagPicker = component;
-},
+            ref: (component: FlagPickerComponent) =>
+            {
+              this.ref_TODO_flagPicker = component;
+            },
             flag: this.state.flag,
             handleSelectEmblem: this.setForegroundEmblem,
             hasImageFailMessage: this.state.hasImageFailMessage,
-            onChange: this.handleUpdate,
+            // onChange: this.handleUpdate,
             uploadFiles: this.handleUpload
           }) : null
       )
