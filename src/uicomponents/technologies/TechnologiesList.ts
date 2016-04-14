@@ -1,10 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../playertechnology.ts" />
-
-/// <reference path="technology.ts" />
-
 
 import Technology from "./Technology";
 import PlayerTechnology from "../../PlayerTechnology";
@@ -23,7 +19,7 @@ interface StateType
 export class TechnologiesListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TechnologiesList";
-  updateListener: reactTypeTODO_any = undefined;
+  updateListener: Function = undefined;
 
 
   state: StateType;
@@ -31,8 +27,6 @@ export class TechnologiesListComponent extends React.Component<PropTypes, StateT
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
   }
   
   componentDidMount()
