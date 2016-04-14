@@ -19,7 +19,7 @@ import
   clamp,
   randInt,
   reverseSide
-} from "./utility.ts"
+} from "./utility";
 
 export default class Battle
 {

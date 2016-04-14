@@ -3,7 +3,7 @@ import
 {
   flatten2dArray,
   getFrom2dArray
-} from "./utility.ts"
+} from "./utility";
 
 export enum TargetFormation
 {

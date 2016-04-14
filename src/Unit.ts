@@ -25,7 +25,7 @@ import
   clamp,
   getItemsFromWeightedProbabilities,
   defaultNameGenerator
-} from "./utility.ts"
+} from "./utility";
 import Battle from "./Battle";
 import Item from "./Item";
 import StatusEffect from "./StatusEffect";

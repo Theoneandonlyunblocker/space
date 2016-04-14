@@ -8,7 +8,7 @@ import Battle from "./Battle";
 import
 {
   reverseSide
-} from "./utility.ts"
+} from "./utility";
 import
 {
   TargetFormation

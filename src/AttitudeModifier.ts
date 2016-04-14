@@ -4,7 +4,7 @@ import DiplomacyEvaluation from "./DiplomacyEvaluation";
 import
 {
   getRelativeValue
-} from "./utility.ts"
+} from "./utility";
 
 export default class AttitudeModifier
 {

@@ -8,7 +8,7 @@ import Fleet from "./Fleet";
 import
 {
   extendObject
-} from "./utility.ts"
+} from "./utility";
 import Building from "./Building";
 import Star from "./Star";
 import Flag from "./Flag";

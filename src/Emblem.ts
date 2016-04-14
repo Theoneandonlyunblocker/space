@@ -11,7 +11,7 @@ import
 {
   clamp,
   getSeededRandomArrayItem
-} from "./utility.ts"
+} from "./utility";
 
 export default class Emblem
 {

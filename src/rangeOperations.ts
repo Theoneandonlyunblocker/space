@@ -2,7 +2,7 @@ import Range from "./Range";
 import
 {
   randRange
-} from "./Utility.ts"
+} from "./utility";
 
 export function excludeFromRanges(ranges: Range[], toExclude: Range): Range[]
 {
