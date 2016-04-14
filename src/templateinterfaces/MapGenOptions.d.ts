@@ -1,10 +1,5 @@
-import Range from "../Range";
+import MapGenOption from "./MapGenOption";
 
-declare interface MapGenOption
-{
-  displayName: string;
-  range: Range;
-}
 declare interface MapDefaultOptions
 {
   height: MapGenOption; // pixels
