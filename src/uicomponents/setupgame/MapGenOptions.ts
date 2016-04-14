@@ -1,12 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../utility.ts" />
-/// <reference path="../galaxymap/optionsgroup.ts" />
-/// <reference path="mapgenoption.ts" />
-
-/// <reference path="../../templateinterfaces/mapgenoptions.d.ts" />
-
 
 import MapGenOptions from "../../templateinterfaces/MapGenOptions";
 import MapGenOptionValues from "../../templateinterfaces/MapGenOptionValues";
@@ -14,15 +8,26 @@ import Options from "../../Options";
 import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
 import OptionsGroup from "../galaxymap/OptionsGroup";
 import MapGenOption from "./MapGenOption";
+import Range from "../../Range";
+import
+{
+  clamp,
+  getRelativeValue,
+  roundToNearestMultiple,
+  extendObject,
+  randInt
+} from "../../utility";
 
 
 interface PropTypes extends React.Props<any>
 {
-  mapGenTemplate: any; // TODO refactor | define prop type 123
+  mapGenTemplate: MapGenTemplate;
 }
 
 interface StateType
 {
+  // has property for every option value in this.props.mapGenTemplate
+  // TODO refactor | move outside state object (?)
 }
 
 export class MapGenOptionsComponent extends React.Component<PropTypes, StateType>
@@ -73,7 +78,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
       for (var optionName in options)
       {
-        var option: IRange = options[optionName].range;
+        var option: Range = options[optionName].range;
         var value: number;
 
         if (unsetOnly && this.state && isFinite(this.getOptionValue(optionName)))
@@ -108,7 +113,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
   handleOptionChange(optionName: string, newValue: number)
   {
-    var changedState: any = {};
+    var changedState: StateType = {};
     changedState["optionValue_" + optionName] = newValue;
 
     this.setState(changedState);
@@ -121,7 +126,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 
   randomizeOptions()
   {
-    var newValues: any = {};
+    var newValues: StateType = {};
 
     var optionGroups: MapGenOptions = this.props.mapGenTemplate.options;
     for (var optionGroupName in optionGroups)
