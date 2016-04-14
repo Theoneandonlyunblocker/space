@@ -1,7 +1,8 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../../tutorials/tutorialstatus.ts" />
+import TutorialStateTODO from "../../tutorials/TutorialState";
+import TutorialStatus from "../../tutorials/TutorialStatus";
 
 interface PropTypes extends React.Props<any>
 {
@@ -38,27 +39,27 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   {
     return(
     {
-      isChecked: this.getTutorialState() === tutorialStatus.neverShow
+      isChecked: this.getTutorialState() === TutorialStateTODO.neverShow
     });
   }
   
   getTutorialState()
   {
-    return TutorialState[this.props.tutorialId];
+    return TutorialStatus[this.props.tutorialId];
   }
 
   toggleState()
   {
     if (this.state.isChecked)
     {
-      TutorialState[this.props.tutorialId] = tutorialStatus.show;
+      TutorialStatus[this.props.tutorialId] = TutorialStateTODO.show;
     }
     else
     {
-      TutorialState[this.props.tutorialId] = tutorialStatus.neverShow;
+      TutorialStatus[this.props.tutorialId] = TutorialStateTODO.neverShow;
     }
 
-    saveTutorialState();
+    TutorialStatus.save();
 
     this.setState(
     {
@@ -77,10 +78,6 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
           React.DOM.input(
           {
             type: "checkBox",
-            ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_dontShowAgain = component;
-},
             className: "dont-show-again",
             checked: this.state.isChecked,
             onChange: this.toggleState
