@@ -16,7 +16,7 @@ interface StateType
 export class UnitIconComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitIcon";
-  // mixins = [React.addons.PureRenderMixin];
+  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   state: StateType;
 
   constructor(props: PropTypes)

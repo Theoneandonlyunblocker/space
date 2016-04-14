@@ -23,7 +23,7 @@ interface StateType
 export class ConstructManufactoryComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConstructManufactory";
-  // mixins = [React.addons.PureRenderMixin];
+  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
 
 
   state: StateType;

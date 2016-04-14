@@ -22,7 +22,7 @@ interface StateType
 export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PlayerFlag";
-  // mixins = [React.addons.PureRenderMixin];
+  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   state: StateType;
   
   ref_TODO_container: React.HTMLComponent;

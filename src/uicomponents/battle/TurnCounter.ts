@@ -14,7 +14,7 @@ interface StateType
 export class TurnCounterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TurnCounter";
-  // mixins = [React.addons.PureRenderMixin];
+  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   state: StateType;
 
   constructor(props: PropTypes)
