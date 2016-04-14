@@ -87,7 +87,6 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
         key: i,
         props:
         {
-          tag: "flagMaker",
           width: this.state.size,
           height: this.state.size,
           style:

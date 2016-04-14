@@ -12,7 +12,7 @@ interface PropTypes extends React.Props<any>
   isIdentified: boolean;
   isDraggable: boolean;
   onDragStart?: (unit: Unit) => void;
-  onDragEnd?: (e: DragEvent) => void;
+  onDragEnd?: (dropSuccessful: boolean) => void;
   onDragMove?: (x: number, y: number) => void;
 }
 
@@ -47,7 +47,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
   }
   onDragEnd(e: DragEvent)
   {
-    this.props.onDragEnd(e)
+    this.props.onDragEnd(Boolean(e))
   }
 
   render()
