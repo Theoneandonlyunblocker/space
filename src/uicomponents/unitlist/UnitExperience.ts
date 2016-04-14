@@ -7,24 +7,19 @@ import * as React from "react";
 import UpgradeUnit from "./UpgradeUnit";
 import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-
+import Unit from "../../Unit";
 
 interface PropTypes extends React.Props<any>
 {
   unit: Unit;
-  onUnitUpgrade: any; // TODO refactor | define prop type 123
-  experienceForCurrentLevel: any; // TODO refactor | define prop type 123
-  experienceToNextLevel: any; // TODO refactor | define prop type 123
+  onUnitUpgrade: () => void;
+  experienceForCurrentLevel: number;
+  experienceToNextLevel: number;
 }
 
 interface StateType
 {
-  upgradePopupId?: any; // TODO refactor | define state type 456
-}
-
-interface RefTypes extends React.Refs
-{
-  popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
+  upgradePopupId?: number;
 }
 
 export class UnitExperienceComponent extends React.Component<PropTypes, StateType>
@@ -32,7 +27,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   displayName: string = "UnitExperience";
 
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -113,7 +108,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
 
     for (var i = 0; i < totalBars; i++)
     {
-      var bgProps: any =
+      var bgProps: React.HTMLAttributes =
       {
         className: "unit-experience-bar-point-background"
       };
@@ -147,11 +142,11 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
 
     var isReadyToLevelUp = this.props.experienceForCurrentLevel >= this.props.experienceToNextLevel;
 
-    var containerProps: any =
+    var containerProps: React.HTMLAttributes =
     {
       className: "unit-experience-bar-container"
     }
-    var barProps: any =
+    var barProps: React.HTMLAttributes =
     {
       className: "unit-experience-bar",
       title: "" + this.props.experienceForCurrentLevel + "/" + this.props.experienceToNextLevel + " exp"
@@ -169,10 +164,10 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
       },
         PopupManager(
         {
-          ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_popupManager = component;
-},
+          ref: (component: PopupManagerComponent) =>
+          {
+            this.ref_TODO_popupManager = component;
+          },
           onlyAllowOne: true
         }),
         React.DOM.div(containerProps,
