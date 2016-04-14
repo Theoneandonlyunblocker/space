@@ -1,15 +1,9 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react";
 
-/// <reference path="../popups/popupmanager.ts" />
-/// <reference path="../popups/topmenupopup.ts" />
-
-/// <reference path="../../tutorials/introtutorial.ts" />
-
-/// <reference path="tutorial.ts" />
-
-
 import IntroTutorial from "../../tutorials/IntroTutorial";
+import TutorialState from "../../tutorials/TutorialState";
+import TutorialStatus from "../../tutorials/TutorialStatus";
 import Tutorial from "./Tutorial";
 import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
@@ -21,21 +15,16 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  show?: any; // TODO refactor | define state type 456
-}
-
-interface RefTypes extends React.Refs
-{
-  popupManager: React.Component<any, any>; // TODO refactor | correct ref type 542 | PopupManager
+  shouldShow?: boolean;
 }
 
 export class IntroTutorialComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "IntroTutorial";
-  popupId: reactTypeTODO_any = null;
+  popupId: number = null;
 
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
   {
@@ -47,21 +36,21 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
   }
   private bindMethods()
   {
-    this.closePopup = this.closePopup.bind(this);    
+    this.closePopup = this.closePopup.bind(this);
   }
   
   private getInitialState(): StateType
   {
     return(
     {
-      show: TutorialState["introTutorial"] === tutorialStatus.show
+      shouldShow: TutorialStatus.introTutorial === TutorialState.show
     });
   }
   
 
   componentDidMount()
   {
-    if (!this.state.show)
+    if (!this.state.shouldShow)
     {
       return;
     }
@@ -75,7 +64,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
         contentConstructor: Tutorial,
         contentProps:
         {
-          pages: Tutorials.introTutorial.pages,
+          pages: IntroTutorial.pages,
           tutorialId: "introTutorial"
         }
       },
@@ -110,7 +99,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
 
   render()
   {
-    if (!this.state.show)
+    if (!this.state.shouldShow)
     {
       return null;
     }
@@ -118,10 +107,10 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
     return(
       PopupManager(
       {
-        ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_popupManager = component;
-},
+        ref: (component: PopupManagerComponent) =>
+        {
+          this.ref_TODO_popupManager = component;
+        },
         onlyAllowOne: true
       })
     );
