@@ -8,7 +8,7 @@ import * as React from "react";
 interface PropTypes extends React.Props<any>
 {
   unit: Unit;
-  handleClick: any; // TODO refactor | define prop type 123
+  handleClick: (attribute: string) => void;
 }
 
 interface StateType
