@@ -7,10 +7,10 @@ interface PropTypes extends React.Props<any>
   moneyAmount: number;
   title: string;
   maxMoneyAvailable?: number;
-  onDragStart?: reactTypeTODO_func;
-  onDragEnd?: reactTypeTODO_func;
-  onClick?: reactTypeTODO_func;
-  adjustItemAmount?: reactTypeTODO_func;
+  onDragStart?: (tradeableItemKey: string) => void;
+  onDragEnd?: () => void;
+  onClick?: (tradeableItemKey: string) => void;
+  adjustItemAmount?: (tradeableItemKey: string, newAmount: number) => void;
 }
 
 interface StateType
@@ -56,7 +56,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     this.props.onClick(this.props.keyTODO/*TODO react*/);
   }
 
-  handleMoneyAmountChange(e: Event)
+  handleMoneyAmountChange(e: React.FormEvent)
   {
     var target = <HTMLInputElement> e.target;
     var value = parseInt(target.value);
@@ -64,14 +64,14 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     this.props.adjustItemAmount(this.props.keyTODO/*TODO react*/, value);
   }
 
-  captureEvent(e: MouseEvent)
+  captureEvent(e: React.MouseEvent | React.TouchEvent)
   {
     e.stopPropagation();
   }
 
   render()
   {
-    var rowProps: any =
+    var rowProps: React.HTMLAttributes =
     {
       className: "tradeable-items-list-item"
     };
@@ -96,14 +96,14 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.adjustItemAmount)
     {
-      var moneyProps: any =
+      var moneyProps: React.HTMLAttributes =
       {
         className: "trade-money-money-available trade-item-adjust",
         type: "number",
         min: 0,
         max: this.props.maxMoneyAvailable,
         step: 1,
-        value: this.props.moneyAmount,
+        value: "" + this.props.moneyAmount,
         onChange: this.handleMoneyAmountChange,
         onClick: this.captureEvent,
         onMouseDown: this.captureEvent,

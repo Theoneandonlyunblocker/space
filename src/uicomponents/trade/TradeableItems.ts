@@ -17,7 +17,7 @@ interface PropTypes extends React.Props<any>
   hasDragItem?: boolean;
   isInvalidDropTarget?: boolean;
   onItemClick?: (tradeableItemKey: string) => void;
-  adjustItemAmount?: (newAmount: number) => void;
+  adjustItemAmount?: (tradeableItemKey: string, newAmount: number) => void;
 }
 
 interface StateType
