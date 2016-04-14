@@ -188,7 +188,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   {
     contentConstructor: any;
     contentProps: any;
-    popupProps: any;
+    popupProps?: any;
   })
   {
     var id = this.getPopupId();
