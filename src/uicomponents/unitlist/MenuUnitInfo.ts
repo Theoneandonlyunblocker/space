@@ -17,7 +17,7 @@ interface PropTypes extends React.Props<any>
 {
   onDragEnd?: (dropSuccesful?: boolean) => void;
   onDragStart?: (item: Item) => void;
-  onMouseUp?: () => void;
+  onMouseUp?: (itemSlot: string) => void;
   currentDragItem?: Item;
   unit: Unit;
   isDraggable?: boolean;

@@ -7,16 +7,17 @@ import * as React from "react";
 
 
 import UnitItem from "./UnitItem";
+import Item from "../../Item";
 
 
 interface PropTypes extends React.Props<any>
 {
-  onDragEnd: any; // TODO refactor | define prop type 123
+  onDragEnd: (dropSuccesful?: boolean) => void;
   item: Item;
-  onDragStart: any; // TODO refactor | define prop type 123
-  onMouseUp: any; // TODO refactor | define prop type 123
-  slot: any; // TODO refactor | define prop type 123
-  currentDragItem: any; // TODO refactor | define prop type 123
+  onDragStart: (item: Item) => void;
+  onMouseUp: () => void;
+  slot: string;
+  currentDragItem: Item;
   isDraggable: boolean;
 }
 
@@ -44,14 +45,14 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
   
   handleMouseUp()
   {
-    this.props.onMouseUp(this.props.slot);
+    this.props.onMouseUp();
   }
 
   render()
   {
     var item = this.props.item;
 
-    var wrapperProps: any =
+    var wrapperProps: React.HTMLAttributes =
     {
       className: "unit-item-wrapper"
     };
