@@ -15,7 +15,7 @@ import
 import
 {
   getTargetsForAllAbilities
-} from "./battleAbilityTargeting.ts"
+} from "./battleAbilityTargeting";
 
 export interface Move
 {

@@ -12,7 +12,7 @@ import
 import
 {
   TargetFormation
-} from "./targeting.ts"
+} from "./targeting";
 
 var _nullFormation: Unit[][];
 export function getNullFormation()

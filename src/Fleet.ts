@@ -13,7 +13,7 @@ import
 {
   aStar,
   backTrace
-} from "./pathFinding.ts"
+} from "./pathFinding";
 
 
 export default class Fleet

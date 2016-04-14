@@ -23,17 +23,17 @@ import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import MapGenTemplate from "./templateinterfaces/MapGenTemplate";
 import CultureTemplate from "./templateinterfaces/CultureTemplate";
 import MapRendererLayerTemplate from "./templateinterfaces/MapRendererLayerTemplate";
-import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate.d.ts"
-import NotificationTemplate from "./templateinterfaces/NotificationTemplate.d.ts"
-import ObjectiveTemplate from "./templateinterfaces/ObjectiveTemplate.d.ts"
-import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate.d.ts"
-import ResourceTemplate from "./templateinterfaces/ResourceTemplate.d.ts"
-import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate.d.ts"
-import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate.d.ts"
-import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate.d.ts"
-import UnitArchetype from "./templateinterfaces/UnitArchetype.d.ts"
-import UnitFamily from "./templateinterfaces/UnitFamily.d.ts"
-import UnitTemplate from "./templateinterfaces/UnitTemplate.d.ts"
+import MapRendererMapModeTemplate from "./templateinterfaces/MapRendererMapModeTemplate";
+import NotificationTemplate from "./templateinterfaces/NotificationTemplate";
+import ObjectiveTemplate from "./templateinterfaces/ObjectiveTemplate";
+import PassiveSkillTemplate from "./templateinterfaces/PassiveSkillTemplate";
+import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
+import StatusEffectTemplate from "./templateinterfaces/StatusEffectTemplate";
+import SubEmblemTemplate from "./templateinterfaces/SubEmblemTemplate";
+import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
+import UnitArchetype from "./templateinterfaces/UnitArchetype";
+import UnitFamily from "./templateinterfaces/UnitFamily";
+import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
 
 interface Templates

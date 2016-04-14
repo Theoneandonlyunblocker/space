@@ -27,7 +27,7 @@ import Point from "./Point";
 import
 {
   generateColorScheme
-} from "./colorGeneration.ts"
+} from "./colorGeneration";
 import Options from "./options";
 
 import AIController from "./mapai/AIController";

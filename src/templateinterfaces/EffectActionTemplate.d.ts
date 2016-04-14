@@ -5,7 +5,7 @@ import
   TargetFormation,
   BattleAreaFunction,
   TargetRangeFunction
-} from "../targeting.ts"
+} from "../targeting";
 
 declare interface EffectActionTemplate
 {
