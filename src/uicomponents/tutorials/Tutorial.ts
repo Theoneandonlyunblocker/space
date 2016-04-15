@@ -7,6 +7,10 @@ import DontShowAgain from "./DontShowAgain";
 import {clamp} from "../../utility";
 import TutorialState from "../../tutorials/TutorialState";
 import TutorialStatus from "../../tutorials/TutorialStatus";
+import
+{
+  splitMultilineText
+} from "../../utility";
 
 
 interface PropTypes extends React.Props<any>
@@ -164,7 +168,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
           React.DOM.div(
           {
             className: "tutorial-content"
-          }, this.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)),
+          }, splitMultilineText(this.props.pages[this.state.currentPageIndex].content)),
 
           forwardElement
         ),

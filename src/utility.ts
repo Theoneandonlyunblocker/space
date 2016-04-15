@@ -767,3 +767,24 @@ export function makeRandomPersonality(): Personality
     unitCompositionPreference: unitCompositionPreference
   });
 }
+
+export function splitMultilineText(text: string | React.ReactFragment): string | React.ReactNode[]
+{
+  if (Array.isArray(text))
+  {
+    var returnArr: React.ReactNode[] = [];
+    for (var i = 0; i < text.length; i++)
+    {
+      returnArr.push(text[i]);
+      returnArr.push(React.DOM.br(
+      {
+        key: "" + i
+      }));
+    }
+    return returnArr;
+  }
+  else
+  {
+    return <string> text;
+  }
+}

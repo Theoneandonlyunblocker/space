@@ -1,6 +1,11 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react/addons";
 
+import
+{
+  splitMultilineText
+} from "../../utility";
+
 interface PropTypes extends React.Props<any>
 {
   handleClose: any; // TODO refactor | define prop type 123
@@ -26,7 +31,6 @@ interface RefTypes extends React.Refs
 export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ConfirmPopup";
-  // mixins = [SplitMultilineText];
 
   state: StateType;
   refsTODO: RefTypes;
@@ -77,7 +81,7 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
     var content: React.ReactElement<any>;
     if (this.props.contentText)
     {
-      content = this.splitMultilineText(this.props.contentText);
+      content = splitMultilineText(this.props.contentText);
     }
     else if (this.props.contentConstructor)
     {
