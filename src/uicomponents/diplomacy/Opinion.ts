@@ -97,7 +97,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
         attitudeModifiers: this.props.attitudeModifiers,
         baseOpinion: this.props.baseOpinion,
         
-        autoPositionProps:
+        autoPositionerProps:
         {
           getParentClientRect: this.getOpinionTextNodeRect,
           positionOnUpdate: true,
