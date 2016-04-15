@@ -4,6 +4,8 @@ import * as React from "react/addons";
 import Color from "../../Color";
 import ColorPicker from "./ColorPicker";
 
+import {default as FocusTimer, FocusTimerProps} from "../mixins/FocusTimer";
+import applyMixins from "../mixins/applyMixins";
 
 interface PropTypes extends React.Props<any>
 {
@@ -12,6 +14,8 @@ interface PropTypes extends React.Props<any>
   color: Color;
   flagHasCustomImage: boolean;
   onChange: (color: Color, isNull: boolean) => void;
+  
+  focusTimerProps?: FocusTimerProps;
 }
 
 interface StateType
@@ -22,16 +26,19 @@ interface StateType
 export class ColorSetterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorSetter";
-  // mixins = [FocusTimer];
   state: StateType;
   ref_TODO_main: React.HTMLComponent;
   isMounted: boolean = false;
+  focusTimer: FocusTimer<ColorSetterComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
     
     this.state = this.getInitialState();
+    
+    this.focusTimer = new FocusTimer(this);
+    applyMixins(this, this.focusTimer);
     
     this.bindMethods();
   }
@@ -60,13 +67,12 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   {
     this.isMounted = false;
     document.removeEventListener("click", this.handleClick);
-    this.clearFocusTimerListener();
+    this.focusTimer.clearListener();
   }
 
   handleClick(e: MouseEvent)
   {
-    const focusGraceTime = 500;
-    if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
+    if (this.focusTimer.isWithinGracePeriod()) return;
 
     const node = React.findDOMNode<HTMLElement>(this.ref_TODO_main);
     const target = <HTMLElement> e.target;
@@ -94,7 +100,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
       }
       this.setState({isActive: true});
       document.addEventListener("click", this.handleClick, false);
-      this.registerFocusTimerListener();
+      this.focusTimer.registerListener();
     }
   }
   setAsInactive()
@@ -103,7 +109,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
     {
       this.setState({isActive: false});
       document.removeEventListener("click", this.handleClick);
-      this.clearFocusTimerListener();
+      this.focusTimer.clearListener();
     }
   }
   updateColor(color: Color, isNull: boolean)

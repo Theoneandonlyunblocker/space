@@ -17,7 +17,7 @@ interface PropTypes extends React.Props<any>
   attitudeModifiers: AttitudeModifier[];
   baseOpinion: number;
   
-  autoPositionProps?: AutoPositionerProps;
+  autoPositionerProps?: AutoPositionerProps;
 }
 
 interface StateType
@@ -33,9 +33,9 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
   constructor(props: PropTypes)
   {
     super(props);
-    if (this.props.autoPositionProps)
+    if (this.props.autoPositionerProps)
     {
-      applyMixins(this, new AutoPositioner(this, this.props.autoPositionProps));
+      applyMixins(this, new AutoPositioner(this));
     }
   }
   

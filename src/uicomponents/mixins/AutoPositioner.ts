@@ -19,12 +19,15 @@ export interface AutoPositionerProps
 export default class AutoPositioner<T extends React.Component<any, any>> implements MixinBase<T>
 {
   private owner: T;
-  private props: AutoPositionerProps;
+  private get props(): AutoPositionerProps
+  {
+    return this.owner.props.autoPositionerProps;
+  }
   
-  constructor(owner: T, props: AutoPositionerProps)
+  
+  constructor(owner: T)
   {
     this.owner = owner;
-    this.props = props;
   }
   
   public componentDidMount()

@@ -9,6 +9,9 @@ import Color from "../../Color";
 import Emblem from "../../Emblem";
 import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 
+import {default as FocusTimer, FocusTimerProps} from "../mixins/FocusTimer";
+import applyMixins from "../mixins/applyMixins";
+
 interface PropTypes extends React.Props<any>
 {
   mainColor: Color;
@@ -16,6 +19,8 @@ interface PropTypes extends React.Props<any>
   tetriaryColor?: Color;
   setActiveColorPicker: (setterComponent: FlagSetterComponent) => void;
   toggleCustomImage: (image?: string) => void;
+  
+  focusTimerProps?: FocusTimerProps;
 }
 
 interface StateType
@@ -28,7 +33,6 @@ interface StateType
 export class FlagSetterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagSetter";
-  // mixins = [FocusTimer];
   state: StateType;
   
   ref_TODO_flagPicker: FlagPickerComponent;
@@ -36,6 +40,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   
   imageLoadingFailTimeoutHandle: number;
   isMounted: boolean = false;
+  focusTimer: FocusTimer<FlagSetterComponent>;
   
 
   constructor(props: PropTypes)
@@ -43,6 +48,9 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     super(props);
     
     this.state = this.getInitialState();
+    
+    this.focusTimer = new FocusTimer(this);
+    applyMixins(this, this.focusTimer);
     
     this.bindMethods();
   }
@@ -87,7 +95,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.isMounted = false;
     window.clearTimeout(this.imageLoadingFailTimeoutHandle);
     document.removeEventListener("click", this.handleClick);
-    this.clearFocusTimerListener();
+    this.focusTimer.clearListener();
   }
   displayImageLoadingFailMessage()
   {
@@ -108,8 +116,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   handleClick(e: MouseEvent)
   {
-    var focusGraceTime = 500;
-    if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
+    if (this.focusTimer.isWithinGracePeriod()) return;
 
     var node = React.findDOMNode<HTMLElement>(this.ref_TODO_main);
     const target = <HTMLElement> e.target;
@@ -137,7 +144,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       }
       this.setState({isActive: true});
       document.addEventListener("click", this.handleClick, false);
-      this.registerFocusTimerListener();
+      this.focusTimer.registerListener();
     }
   }
   setAsInactive()
@@ -146,7 +153,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     {
       this.setState({isActive: false});
       document.removeEventListener("click", this.handleClick);
-      this.clearFocusTimerListener();
+      this.focusTimer.clearListener();
     }
   }
 
