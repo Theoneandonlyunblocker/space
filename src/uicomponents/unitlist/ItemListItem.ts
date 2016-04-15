@@ -36,8 +36,6 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  clone?: HTMLImageElement;
-  dragging?: boolean;
 }
 
 export class ItemListItemComponent extends React.Component<PropTypes, StateType>
@@ -132,12 +130,6 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
   {
     var item = this.props.item;
     var columns = this.props.activeColumns;
-
-    // if (this.state.dragging && this.state.clone)
-    // {
-    //   this.state.clone.style.left = "" + this.dragPos.left + "px";
-    //   this.state.clone.style.top = "" + this.dragPos.top + "px";
-    // }
 
     var cells: React.ReactElement<any>[] = [];
 
