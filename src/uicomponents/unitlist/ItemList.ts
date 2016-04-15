@@ -100,10 +100,13 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         abilityIsPassive: abilityIsPassive,
 
         isReserved: Boolean(item.unit),
-
-        makeClone: true,
-        forcedDragOffset: {x: 32, y: 32},
         rowConstructor: ItemListItem,
+
+        dragPositionerProps:
+        {
+          makeClone: true,
+          forcedDragOffset: {x: 32, y: 32},
+        },
         isDraggable: this.props.isDraggable,
         onDragStart: this.props.onDragStart,
         onDragEnd: this.props.onDragEnd

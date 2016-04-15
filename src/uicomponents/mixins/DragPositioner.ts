@@ -37,8 +37,12 @@ function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEv
     
     button: nativeEvent.button,
     
-    preventDefault: (reactEvent ? reactEvent.preventDefault : nativeEvent.preventDefault),
-    stopPropagation: (reactEvent ? reactEvent.stopPropagation : nativeEvent.stopPropagation),
+    preventDefault: (reactEvent ?
+      reactEvent.preventDefault.bind(reactEvent) :
+      nativeEvent.preventDefault.bind(nativeEvent)),
+    stopPropagation: (reactEvent ?
+      reactEvent.stopPropagation.bind(reactEvent) :
+      nativeEvent.stopPropagation.bind(nativeEvent)),
   })
 }
 function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEvent): NormalizedEvent
@@ -56,8 +60,12 @@ function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEv
     
     button: -1,
     
-    preventDefault: (reactEvent ? reactEvent.preventDefault : nativeEvent.preventDefault),
-    stopPropagation: (reactEvent ? reactEvent.stopPropagation : nativeEvent.stopPropagation),
+    preventDefault: (reactEvent ?
+      reactEvent.preventDefault.bind(reactEvent) :
+      nativeEvent.preventDefault.bind(nativeEvent)),
+    stopPropagation: (reactEvent ?
+      reactEvent.stopPropagation.bind(reactEvent) :
+      nativeEvent.stopPropagation.bind(nativeEvent)),
   })
 }
 
@@ -105,8 +113,8 @@ const emptyProps: DragPositionerProps = {};
 
 export default class DragPositioner<T extends React.Component<any, any>> implements MixinBase<T>
 {
-  public dragPos: Point;
-  public dragSize: Point;
+  public dragPos: Point = {x: 0, y: 0};
+  public dragSize: Point = {x: 0, y: 0};
   public mouseIsDown: boolean = false;
   public dragOffset: Point = {x: 0, y: 0};
   public mouseDownPosition: Point = {x: 0, y: 0};
@@ -116,9 +124,9 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public cloneElement: HTMLElement = null;
   
   public makeDragClone: () => HTMLElement;
-  public onDragStart: (e: NormalizedEvent) => void;
+  public onDragStart: () => void;
   public onDragMove: (x: number, y: number) => void;
-  public onDragEnd: (e: NormalizedEvent) => boolean; // return value: was drop succesful
+  public onDragEnd: () => boolean | void; // return value: was drop succesful
   
   
   private owner: T;
@@ -139,6 +147,10 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     this.owner = owner;
     
     this.setContainerRect = this.setContainerRect.bind(this);
+    
+    this.handleNativeMoveEvent = this.handleNativeMoveEvent.bind(this);
+    this.handleNativeUpEvent = this.handleNativeUpEvent.bind(this);
+    this.handleReactDownEvent = this.handleReactDownEvent.bind(this);
   }
   
   public componentDidMount()
@@ -175,6 +187,16 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   //   // do we need to update clone position here? some components used to, but
   //   // it gets updated in this.handleDrag() anyway
   // }
+  public getStyleAttributes(): React.CSSProperties
+  {
+    return(
+    {
+      top: this.dragPos.y,
+      left: this.dragPos.x,
+      width: this.dragSize.x,
+      height: this.dragSize.y
+    });
+  }
   public handleReactDownEvent(e: React.MouseEvent | React.TouchEvent)
   {
     this.handleMouseDown(normalizeEvent(e));
@@ -251,8 +273,8 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
       const delta = deltaX + deltaY;
 
-
-      if (delta >= this.props.dragThreshhold)
+      const threshhold = isFinite(this.props.dragThreshhold) ? this.props.dragThreshhold : 5;
+      if (delta >= threshhold)
       {
         this.isDragging = true;
         if (!this.props.preventAutoResize)
@@ -261,7 +283,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
           this.dragSize.y = this.ownerDOMNode.offsetHeight;
         }
 
-        if (this.props.makeClone)
+        if (this.props.makeClone || this.makeDragClone)
         {
           if (!this.makeDragClone)
           {
@@ -280,9 +302,11 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
           }
         }
 
+        this.owner.forceUpdate();
+
         if (this.onDragStart)
         {
-          this.onDragStart(e);
+          this.onDragStart();
         }
         if (this.onDragMove)
         {
@@ -396,8 +420,10 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
     if (this.onDragEnd)
     {
-      const endSuccesful = this.onDragEnd(e);
+      const endSuccesful = this.onDragEnd();
     }
+    
+    this.owner.forceUpdate();
   }
   private setContainerRect()
   {

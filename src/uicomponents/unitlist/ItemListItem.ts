@@ -43,7 +43,6 @@ interface StateType
 export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ItemListItem";
-  // mixins = [Draggable];
 
   state: StateType;
   dragPositioner: DragPositioner<ItemListItemComponent>; 
@@ -57,29 +56,32 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
     if (this.props.isDraggable)
     {
       this.dragPositioner = new DragPositioner(this);
+      this.dragPositioner.onDragStart = this.onDragStart;
+      this.dragPositioner.onDragEnd = this.onDragEnd;
+      this.dragPositioner.makeDragClone = this.makeDragClone;
       applyMixins(this, this.dragPositioner);
     }
   }
   private bindMethods()
   {
-    this.makeCell = this.makeCell.bind(this);    
+    this.makeCell = this.makeCell.bind(this);
     
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
     this.makeDragClone = this.makeDragClone.bind(this);
   }
   
-  onDragStart()
+  private onDragStart()
   {
     console.log("onDragStart", this.props.item.template.displayName);
     this.props.onDragStart(this.props.item);
   }
-  onDragEnd()
+  private onDragEnd()
   {
     this.props.onDragEnd();
   }
 
-  makeCell(type: string)
+  private makeCell(type: string)
   {
     var cellProps: React.HTMLAttributes = {};
     cellProps.key = type;
@@ -117,7 +119,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
     );
   }
 
-  makeDragClone()
+  private makeDragClone()
   {
     var clone = new Image();
     clone.src = this.props.item.template.icon;
