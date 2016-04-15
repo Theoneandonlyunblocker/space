@@ -157,7 +157,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
     {
       rowProps.className += " draggable";
       rowProps.onTouchStart = rowProps.onMouseDown =
-        this.dragPositioner.handleMouseDown;
+        this.dragPositioner.handleReactDownEvent;
     }
 
     if (this.props.isSelected)

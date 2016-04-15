@@ -6,10 +6,12 @@ import MixinBase from "./MixinBase";
 import Point from "../../Point";
 import {recursiveRemoveAttribute} from "../../utility";
 
+// TODO performance | performance might be pretty bad
+// we should be able to use native event and fetch some flags
+// using methods like wasTouchEvent(e) & didHaveButtonPressed(e)
 interface NormalizedEvent
 {
   wasTouchEvent: boolean;
-  originalEvent: Event;
   clientX: number;
   clientY: number;
   pageX: number;
@@ -27,7 +29,6 @@ function normalizeMouseEvent(nativeEvent: MouseEvent, reactEvent?: React.MouseEv
   return(
   {
     wasTouchEvent: false,
-    originalEvent: nativeEvent,
     clientX: nativeEvent.clientX,
     clientY: nativeEvent.clientY,
     pageX: nativeEvent.pageX,
@@ -47,7 +48,6 @@ function normalizeTouchEvent(nativeEvent: TouchEvent, reactEvent?: React.TouchEv
   return(
   {
     wasTouchEvent: true,
-    originalEvent: nativeEvent,
     clientX: touch.clientX,
     clientY: touch.clientY,
     pageX: touch.pageX,
@@ -116,9 +116,9 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public cloneElement: HTMLElement = null;
   
   public makeDragClone: () => HTMLElement;
-  public onDragStart: (e: MouseEvent) => void;
+  public onDragStart: (e: NormalizedEvent) => void;
   public onDragMove: (x: number, y: number) => void;
-  public onDragEnd: (e: MouseEvent) => boolean; // return value: was drop succesful
+  public onDragEnd: (e: NormalizedEvent) => boolean; // return value: was drop succesful
   
   
   private owner: T;
@@ -172,45 +172,40 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   }
   // public onRender()
   // {
-
+  //   // do we need to update clone position here? some components used to, but
+  //   // it gets updated in this.handleDrag() anyway
   // }
-  
-  public handleMouseDown(originalEvent: React.MouseEvent | React.TouchEvent)
+  public handleReactDownEvent(e: React.MouseEvent | React.TouchEvent)
   {
-    const originalTouchEvent = <React.TouchEvent> originalEvent;
-    const originalMouseEvent = <React.MouseEvent> originalEvent;
-    
-    if (originalMouseEvent.button)
+    this.handleMouseDown(normalizeEvent(e));
+  }
+  
+  private handleMouseDown(e: NormalizedEvent)
+  {
+    if (e.button)
     {
       return;
     }
     if (this.props.containerDragOnly)
     {
-      var target = <HTMLElement> originalEvent.target;
-      if (!target.classList.contains("draggable-container"))
+      if (!e.target.classList.contains("draggable-container"))
       {
         return;
       }
     }
     
-    originalEvent.preventDefault();
-    originalEvent.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
 
     if (this.isDragging)
     {
       return;
     }
 
-    var clientRect = this.ownerDOMNode.getBoundingClientRect();
+    const clientRect = this.ownerDOMNode.getBoundingClientRect();
 
-    let e: React.MouseEvent | Touch;
-    if (isFinite(e.clientX))
+    if (e.wasTouchEvent)
     {
-      e = <React.MouseEvent> originalEvent;
-    }
-    else
-    {
-      e = originalTouchEvent.touches[0];
       this.needsFirstTouchUpdate = true;
       this.touchEventTarget = <HTMLElement> e.target;
     }
@@ -240,16 +235,9 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       this.handleMouseMove(e);
     }
   }
-  public handleMouseMove(e: MouseEvent | Touch)
+  private handleMouseMove(e: NormalizedEvent)
   {
-    const castedMouseEvent = <MouseEvent> e;
-    if (castedMouseEvent.preventDefault)
-    {
-      castedMouseEvent.preventDefault();
-    }
-
-    // var e = e.clientX ? e : e.touches[0];
-
+    e.preventDefault();
 
     if (e.clientX === 0 && e.clientY === 0)
     {
@@ -258,10 +246,10 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
     if (!this.isDragging)
     {
-      var deltaX = Math.abs(e.pageX - this.mouseDownPosition.x);
-      var deltaY = Math.abs(e.pageY - this.mouseDownPosition.y);
+      const deltaX = Math.abs(e.pageX - this.mouseDownPosition.x);
+      const deltaY = Math.abs(e.pageY - this.mouseDownPosition.y);
 
-      var delta = deltaX + deltaY;
+      const delta = deltaX + deltaY;
 
 
       if (delta >= this.props.dragThreshhold)
@@ -277,8 +265,8 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
         {
           if (!this.makeDragClone)
           {
-            var nextSibling = this.ownerDOMNode.nextSibling;
-            var clone = <HTMLElement> this.ownerDOMNode.cloneNode(true);
+            const nextSibling = this.ownerDOMNode.nextSibling;
+            const clone = <HTMLElement> this.ownerDOMNode.cloneNode(true);
             recursiveRemoveAttribute(clone, "data-reactid");
 
             this.ownerDOMNode.parentNode.insertBefore(clone, nextSibling);
@@ -286,7 +274,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
           }
           else
           {
-            var clone = this.makeDragClone();
+            const clone = this.makeDragClone();
             document.body.appendChild(clone);
             this.cloneElement = clone;
           }
@@ -308,7 +296,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       this.handleDrag(e);
     }
   }
-  public handleDrag(e: MouseEvent)
+  private handleDrag(e: NormalizedEvent)
   {
     let domWidth: number;
     let domHeight: number;
@@ -364,17 +352,17 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       this.updateDOMNodeStyle();
     }
   }
-  public handleMouseUp(e: MouseEvent)
+  private handleMouseUp(e: NormalizedEvent)
   {
     // if (this.touchEventTarget)
     // {
-    //   var touch = e.changedTouches[0];
+    //   const touch = e.changedTouches[0];
 
-    //   var dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
+    //   const dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
     //   console.log(dropTarget);
     //   if (dropTarget)
     //   {
-    //     var reactid = dropTarget.getAttribute("data-reactid");
+    //     const reactid = dropTarget.getAttribute("data-reactid");
     //     eventManager.dispatchEvent("drop" + reactid);
     //   }
     // }
@@ -394,7 +382,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
     this.removeEventListeners();
   }
-  public handleDragEnd(e: MouseEvent)
+  private handleDragEnd(e: NormalizedEvent)
   {
     if (this.cloneElement)
     {
@@ -408,33 +396,41 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
     if (this.onDragEnd)
     {
-      var endSuccesful = this.onDragEnd(e);
+      const endSuccesful = this.onDragEnd(e);
     }
   }
   private setContainerRect()
   {
     this.containerRect = this.containerElement.getBoundingClientRect();
   }
+  private handleNativeMoveEvent(e: MouseEvent | TouchEvent)
+  {
+    this.handleMouseMove(normalizeEvent(e));
+  }
+  private handleNativeUpEvent(e: MouseEvent | TouchEvent)
+  {
+    this.handleMouseUp(normalizeEvent(e));
+  }
   private addEventListeners()
   {
-    this.containerElement.addEventListener("mousemove", this.handleMouseMove);
-    document.addEventListener("mouseup", this.handleMouseUp);
+    this.containerElement.addEventListener("mousemove", this.handleNativeMoveEvent);
+    document.addEventListener("mouseup", this.handleNativeUpEvent);
 
     if (this.touchEventTarget)
     {
-      this.touchEventTarget.addEventListener("touchmove", this.handleMouseMove);
-      this.touchEventTarget.addEventListener("touchend", this.handleMouseUp);
+      this.touchEventTarget.addEventListener("touchmove", this.handleNativeMoveEvent);
+      this.touchEventTarget.addEventListener("touchend", this.handleNativeUpEvent);
     }
   }
   private removeEventListeners()
   {
-    this.containerElement.removeEventListener("mousemove", this.handleMouseMove);
-    document.removeEventListener("mouseup", this.handleMouseUp);
+    this.containerElement.removeEventListener("mousemove", this.handleNativeMoveEvent);
+    document.removeEventListener("mouseup", this.handleNativeUpEvent);
 
     if (this.touchEventTarget)
     {
-      this.touchEventTarget.removeEventListener("touchmove", this.handleMouseMove);
-      this.touchEventTarget.removeEventListener("touchend", this.handleMouseUp);
+      this.touchEventTarget.removeEventListener("touchmove", this.handleNativeMoveEvent);
+      this.touchEventTarget.removeEventListener("touchend", this.handleNativeUpEvent);
       this.touchEventTarget = null;
     }
   }
