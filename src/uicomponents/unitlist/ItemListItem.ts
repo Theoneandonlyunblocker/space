@@ -6,19 +6,24 @@ import Item from "../../Item";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 import Unit from "../../Unit";
 
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
+
 interface PropTypes extends React.Props<any>
 {
-  onDragEnd: (dropSuccesful?: boolean) => void;
   item: Item;
-  onDragStart: (item: Item) => void;
   ability: AbilityBase;
   abilityIsPassive: boolean;
-  isDraggable: boolean;
   isReserved: boolean;
   isSelected: boolean;
   activeColumns: ListColumn[];
   keyTODO: number;
   handleClick: () => void;
+  
+  isDraggable: boolean;
+  onDragEnd: (dropSuccesful?: boolean) => void;
+  onDragStart: (item: Item) => void;
+  dragPositionerProps?: DragPositionerProps;
   
   cost: number;
   techLevel: number;
@@ -41,19 +46,27 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
   // mixins = [Draggable];
 
   state: StateType;
+  dragPositioner: DragPositioner<ItemListItemComponent>; 
 
   constructor(props: PropTypes)
   {
     super(props);
     
     this.bindMethods();
+    
+    if (this.props.isDraggable)
+    {
+      this.dragPositioner = new DragPositioner(this);
+      applyMixins(this, this.dragPositioner);
+    }
   }
   private bindMethods()
   {
+    this.makeCell = this.makeCell.bind(this);    
+    
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
     this.makeDragClone = this.makeDragClone.bind(this);
-    this.makeCell = this.makeCell.bind(this);    
   }
   
   onDragStart()
@@ -118,11 +131,11 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
     var item = this.props.item;
     var columns = this.props.activeColumns;
 
-    if (this.state.dragging && this.state.clone)
-    {
-      this.state.clone.style.left = "" + this.dragPos.left + "px";
-      this.state.clone.style.top = "" + this.dragPos.top + "px";
-    }
+    // if (this.state.dragging && this.state.clone)
+    // {
+    //   this.state.clone.style.left = "" + this.dragPos.left + "px";
+    //   this.state.clone.style.top = "" + this.dragPos.top + "px";
+    // }
 
     var cells: React.ReactElement<any>[] = [];
 
@@ -140,11 +153,11 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
       key: this.props.keyTODO/*TODO react*/
     };
     
-    if (this.props.isDraggable)
+    if (this.dragPositioner)
     {
       rowProps.className += " draggable";
       rowProps.onTouchStart = rowProps.onMouseDown =
-        this.handleMouseDown;
+        this.dragPositioner.handleMouseDown;
     }
 
     if (this.props.isSelected)
