@@ -71,14 +71,17 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
       popupProps:
       {
         resizable: true,
-        containerDragOnly: true,
         initialPosition:
         {
           width: 600,
           height: 350
         },
         minWidth: 300,
-        minHeight: 250
+        minHeight: 250,
+        dragPositionerProps:
+        {
+          containerDragOnly: true
+        }
       }
     });
   }

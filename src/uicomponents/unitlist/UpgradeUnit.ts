@@ -98,8 +98,11 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
       },
       popupProps:
       {
-        preventAutoResize: true,
-        containerDragOnly: true
+        dragPositionerProps:
+        {
+          preventAutoResize: true,
+          containerDragOnly: true
+        }
       }
     });
 

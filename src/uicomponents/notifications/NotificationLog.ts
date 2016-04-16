@@ -136,8 +136,11 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
       },
       popupProps:
       {
-        containerDragOnly: true,
-        preventAutoResize: true
+        dragPositionerProps:
+        {
+          containerDragOnly: true,
+          preventAutoResize: true
+        }
       }
     });
 

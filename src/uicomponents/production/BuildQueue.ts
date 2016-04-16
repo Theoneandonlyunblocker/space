@@ -89,7 +89,8 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
         {
           manufacturableThings: convertedBuildQueue,
           onClick: this.removeItem,
-          showCost: false
+          showCost: false,
+          money: this.props.money
         })
       )
     );

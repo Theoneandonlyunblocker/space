@@ -58,8 +58,11 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
       },
       popupProps:
       {
-        preventAutoResize: true,
-        containerDragOnly: true
+        dragPositionerProps:
+        {
+          preventAutoResize: true,
+          containerDragOnly: true
+        }
       }
     });
   }

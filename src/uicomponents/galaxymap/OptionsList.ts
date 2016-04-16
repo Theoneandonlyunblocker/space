@@ -63,8 +63,11 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       contentProps: confirmProps,
       popupProps:
       {
-        containerDragOnly: true,
-        preventAutoResize: true
+        dragPositionerProps:
+        {
+          containerDragOnly: true,
+          preventAutoResize: true
+        }
       }
     });
   }

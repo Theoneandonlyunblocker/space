@@ -6,13 +6,14 @@ import Item from "../../Item";
 
 interface PropTypes extends React.Props<any>
 {
-  onDragEnd: (dropSuccesful?: boolean) => void;
   item: Item;
-  onDragStart: (item: Item) => void;
   onMouseUp: () => void;
   slot: string;
   currentDragItem: Item;
+  
   isDraggable: boolean;
+  onDragStart: (item: Item) => void;
+  onDragEnd: (dropSuccesful?: boolean) => void;
 }
 
 interface StateType

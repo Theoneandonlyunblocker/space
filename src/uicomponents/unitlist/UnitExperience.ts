@@ -68,8 +68,11 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
       },
       popupProps:
       {
-        preventAutoResize: true,
-        containerDragOnly: true
+        dragPositionerProps:
+        {
+          preventAutoResize: true,
+          containerDragOnly: true
+        }
       }
     });
 

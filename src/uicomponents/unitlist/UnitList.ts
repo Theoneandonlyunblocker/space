@@ -14,7 +14,7 @@ import UnitListItem from "./UnitListItem";
 
 interface PropTypes extends React.Props<any>
 {
-  units: Unit[]
+  units: {[unitId: number]: Unit};
   selectedUnit: Unit;
   onRowChange: (row: ListItem) => void;
   isDraggable: boolean;

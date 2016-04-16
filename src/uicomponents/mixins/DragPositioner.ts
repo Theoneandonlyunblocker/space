@@ -23,10 +23,10 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public isDragging: boolean = false;
   
   public containerElementDescriptor: HTMLElement | React.Component<any, any>;
-  public containerDragOnly: boolean = true;
+  public containerDragOnly: boolean = false;
   public forcedDragOffset: Point;
   public dragThreshhold: number = 5;
-  public preventAutoResize: boolean = true;
+  public preventAutoResize: boolean = false;
   public shouldMakeClone: boolean = false;
   
   public makeDragClone: () => HTMLElement;
