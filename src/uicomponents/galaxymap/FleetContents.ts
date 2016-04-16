@@ -13,8 +13,7 @@ interface PropTypes extends React.Props<any>
   player?: Player;
   onMouseUp?: (fleet: Fleet) => void;
   onDragStart?: (unit: Unit) => void;
-  onDragEnd?: (dropSuccessful: boolean) => void;
-  onDragMove?: (x: number, y: number) => void;
+  onDragEnd?: () => void;
 }
 
 interface StateType
@@ -65,7 +64,6 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
         unit: unit,
         isDraggable: hasDraggableContent,
         onDragStart: this.props.onDragStart,
-        onDragMove: this.props.onDragMove,
         onDragEnd: this.props.onDragEnd,
         isIdentified: this.props.player.unitIsIdentified(unit)
       }));

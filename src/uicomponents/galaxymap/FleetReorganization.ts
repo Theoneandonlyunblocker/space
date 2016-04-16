@@ -59,7 +59,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
     });
   }
 
-  handleDragEnd(dropSuccesful: boolean = false)
+  handleDragEnd()
   {
     this.setState(
     {
@@ -78,7 +78,7 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
       eventManager.dispatchEvent("playerControlUpdated", null);
     }
 
-    this.handleDragEnd(true);
+    this.handleDragEnd();
   }
 
   handleClose()

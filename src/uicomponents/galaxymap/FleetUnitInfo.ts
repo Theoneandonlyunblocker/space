@@ -5,6 +5,8 @@ import Unit from "../../Unit";
 import FleetUnitInfoName from "./FleetUnitInfoName";
 import UnitStrength from "../unit/UnitStrength";
 
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
 
 interface PropTypes extends React.Props<any>
 {
@@ -12,28 +14,33 @@ interface PropTypes extends React.Props<any>
   isIdentified: boolean;
   isDraggable: boolean;
   onDragStart?: (unit: Unit) => void;
-  onDragEnd?: (dropSuccessful: boolean) => void;
-  onDragMove?: (x: number, y: number) => void;
+  onDragEnd?: () => void;
 }
 
 interface StateType
 {
-  dragging?: boolean;
 }
 
 export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FleetUnitInfo";
-  // mixins = [Draggable];
-
-
   state: StateType;
+  
+  dragPositioner: DragPositioner<FleetUnitInfoComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
     
     this.bindMethods();
+    
+    if (this.props.isDraggable)
+    {
+      this.dragPositioner = new DragPositioner(this);
+      this.dragPositioner.onDragStart = this.onDragStart;
+      this.dragPositioner.onDragEnd = this.onDragEnd;
+      applyMixins(this, this.dragPositioner);
+    }
   }
   private bindMethods()
   {
@@ -45,9 +52,9 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
   {
     this.props.onDragStart(this.props.unit);
   }
-  onDragEnd(e: DragEvent)
+  onDragEnd()
   {
-    this.props.onDragEnd(Boolean(e))
+    this.props.onDragEnd()
   }
 
   render()
@@ -63,12 +70,12 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
     if (this.props.isDraggable)
     {
       divProps.className += " draggable";
-      divProps.onTouchStart = this.handleMouseDown;
-      divProps.onMouseDown = this.handleMouseDown;
+      divProps.onTouchStart = divProps.onMouseDown =
+        this.dragPositioner.handleReactDownEvent;
 
-      if (this.state.dragging)
+      if (this.dragPositioner.isDragging)
       {
-        divProps.style = this.dragPos;
+        divProps.style = this.dragPositioner.getStyleAttributes();
         divProps.className += " dragging";
       }
     }
