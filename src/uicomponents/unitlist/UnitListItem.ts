@@ -37,7 +37,6 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   displayName: string = "UnitListItem";
   
   state: StateType;
-  ref_TODO_dragClone: UnitComponent;
   dragPositioner: DragPositioner<UnitListItemComponent>;
 
   constructor(props: PropTypes)

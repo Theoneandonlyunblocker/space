@@ -1,5 +1,7 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
 
 import Item from "../../Item";
 
@@ -7,36 +9,44 @@ import * as React from "react/addons";
 
 interface PropTypes extends React.Props<any>
 {
-  onDragEnd: (dropSuccesful?: boolean) => void;
-  onDragStart: (item: Item) => void;
   item: Item;
-  isDraggable: boolean;
   slot: string;
+  
+  isDraggable: boolean;
+  onDragEnd?: (dropSuccesful?: boolean) => void;
+  onDragStart?: (item: Item) => void;
+  dragPositionerProps?: DragPositionerProps;
 }
 
 interface StateType
 {
-  dragging?: boolean;
 }
 
 export class UnitItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitItem";
-  // mixins = [Draggable];
-
   state: StateType;
+  dragPositioner: DragPositioner<UnitItemComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
     
     this.bindMethods();
+    
+    if (this.props.isDraggable)
+    {
+      this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+      this.dragPositioner.onDragStart = this.onDragStart;
+      this.dragPositioner.onDragEnd = this.onDragEnd;
+      applyMixins(this, this.dragPositioner);
+    }
   }
   private bindMethods()
   {
     this.onDragEnd = this.onDragEnd.bind(this);
     this.getTechIcon = this.getTechIcon.bind(this);
-    this.onDragStart = this.onDragStart.bind(this);    
+    this.onDragStart = this.onDragStart.bind(this);
   }
   
   onDragStart()
@@ -84,12 +94,12 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
     {
       divProps.className += " draggable";
       divProps.onMouseDown = divProps.onTouchStart =
-        this.handleMouseDown;
+        this.dragPositioner.handleReactDownEvent;
     }
 
-    if (this.state.dragging)
+    if (this.dragPositioner.isDragging)
     {
-      divProps.style = this.dragPos;
+      divProps.style = this.dragPositioner.getStyleAttributes();
       divProps.className += " dragging";
     }
 
