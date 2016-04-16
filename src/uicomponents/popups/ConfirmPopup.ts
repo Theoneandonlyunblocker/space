@@ -8,24 +8,19 @@ import
 
 interface PropTypes extends React.Props<any>
 {
-  handleClose: any; // TODO refactor | define prop type 123
-  contentConstructor: any; // TODO refactor | define prop type 123
-  extraButtons: any; // TODO refactor | define prop type 123
+  handleClose: () => void;
+  contentConstructor: React.Factory<any>;
+  extraButtons: React.ReactElement<any>[];
   cancelText: boolean;
-  handleOk: any; // TODO refactor | define prop type 123
-  contentProps: any; // TODO refactor | define prop type 123
+  handleOk: () => boolean; // return value: was callback successful
+  contentProps: any;
   contentText: string;
   okText: string;
-  closePopup: any; // TODO refactor | define prop type 123
+  closePopup: () => void;
 }
 
 interface StateType
 {
-}
-
-interface RefTypes extends React.Refs
-{
-  okButton: HTMLElement;
 }
 
 export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
@@ -33,7 +28,7 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
   displayName: string = "ConfirmPopup";
 
   state: StateType;
-  refsTODO: RefTypes;
+  ref_TODO_okButton: React.HTMLComponent;
 
   constructor(props: PropTypes)
   {
@@ -78,10 +73,10 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var content: React.ReactElement<any>;
+    var content: string | React.ReactElement<any>;
     if (this.props.contentText)
     {
-      content = splitMultilineText(this.props.contentText);
+      content = <string> splitMultilineText(this.props.contentText);
     }
     else if (this.props.contentConstructor)
     {
@@ -111,10 +106,10 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
           {
             className: "popup-button",
             onClick: this.handleOk,
-            ref: (component: TODO_TYPE) =>
-{
-  this.ref_TODO_okButton = component;
-}
+            ref: (component: React.HTMLComponent) =>
+            {
+              this.ref_TODO_okButton = component;
+            }
           }, this.props.okText || "Confirm"),
           this.props.extraButtons,
           React.DOM.button(
