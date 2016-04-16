@@ -136,13 +136,14 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     {
       wrapperProps.className += " draggable";
       wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.dragPositioner.handleReactDownEvent;
+      
+      if (this.dragPositioner.isDragging)
+      {
+        wrapperProps.style = this.dragPositioner.getStyleAttributes();
+        wrapperProps.className += " dragging";
+      }
     }
 
-    if (this.dragPositioner.isDragging)
-    {
-      wrapperProps.style = this.dragPositioner.getStyleAttributes();
-      wrapperProps.className += " dragging";
-    }
 
     if (this.props.onUnitClick)
     {

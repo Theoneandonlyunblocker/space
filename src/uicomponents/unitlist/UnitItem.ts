@@ -94,13 +94,14 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
       divProps.className += " draggable";
       divProps.onMouseDown = divProps.onTouchStart =
         this.dragPositioner.handleReactDownEvent;
+
+      if (this.dragPositioner.isDragging)
+      {
+        divProps.style = this.dragPositioner.getStyleAttributes();
+        divProps.className += " dragging";
+      }
     }
 
-    if (this.dragPositioner.isDragging)
-    {
-      divProps.style = this.dragPositioner.getStyleAttributes();
-      divProps.className += " dragging";
-    }
 
     return(
       React.DOM.div(divProps,
