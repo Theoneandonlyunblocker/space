@@ -1,33 +1,43 @@
-/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
+// TODO refactor | this should 100% be removed
 
+/// <reference path="../../../lib/react-0.13.3.d.ts" />
+import * as React from "react";
+
+import MixinBase from "./MixinBase";
 
 import eventManager from "../../eventManager";
 
 
-export var UpdateWhenMoneyChanges =
+export default class UpdateWhenMoneyChanges<T extends React.Component<any, any>> implements MixinBase<T>
 {
-  handleMoneyChange: function()
+  private owner: T;
+  private onMoneyChange: () => void;
+  
+  constructor(owner: T, onMoneyChange?: () => void)
   {
-    if (this.overrideHandleMoneyChange)
-    {
-      this.overrideHandleMoneyChange();
-    }
-    else
-    {
-      this.setState(
-      {
-        money: this.props.player.money
-      });
-    }
+    this.owner = owner;
+    this.onMoneyChange = onMoneyChange;
   }
-
-  componentDidMount: function()
+  
+  public componentDidMount()
   {
     eventManager.addEventListener("playerMoneyUpdated", this.handleMoneyChange);
   }
 
-  componentWillUnmount: function()
+  public componentWillUnmount()
   {
     eventManager.removeEventListener("playerMoneyUpdated", this.handleMoneyChange);
+  }
+  
+  private handleMoneyChange()
+  {
+    if (this.onMoneyChange)
+    {
+      this.onMoneyChange();
+    }
+    else
+    {
+      this.owner.setState({money: this.owner.props.player.money});
+    }
   }
 }
