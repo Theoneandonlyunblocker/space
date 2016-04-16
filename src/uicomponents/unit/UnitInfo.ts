@@ -32,7 +32,7 @@ interface StateType
 export class UnitInfoComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitInfo";
-  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
 
 
   state: StateType;

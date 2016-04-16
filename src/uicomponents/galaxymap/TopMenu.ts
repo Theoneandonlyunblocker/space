@@ -25,7 +25,7 @@ interface StateType
 export class TopMenuComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenu";
-  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   state: StateType;
 
   cachedTopMenuWidth: number = undefined;

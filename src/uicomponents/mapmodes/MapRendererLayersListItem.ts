@@ -62,7 +62,7 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
     });
   }
   
-  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
 
   componentWillReceiveProps(newProps: PropTypes)
   {

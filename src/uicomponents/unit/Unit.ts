@@ -83,7 +83,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     });
   }
   
-  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
 
   onDragStart()
   {

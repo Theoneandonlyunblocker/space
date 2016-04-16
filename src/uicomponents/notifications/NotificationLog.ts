@@ -23,7 +23,7 @@ interface StateType
 export class NotificationLogComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "NotificationLog";
-  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   updateListener: Function = undefined;
   
   state: StateType;

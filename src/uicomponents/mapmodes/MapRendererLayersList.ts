@@ -22,7 +22,7 @@ interface StateType
 export class MapRendererLayersListComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersList";
-  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
 
 
   state: StateType;
