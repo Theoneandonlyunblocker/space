@@ -34,18 +34,19 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public onDragMove: (x: number, y: number) => void;
   public onDragEnd: () => boolean | void; // return value: was drop succesful
   
+  public dragPos: Point = {x: 0, y: 0};
+  public dragSize: Point = {x: 0, y: 0};
+  public containerElement: HTMLElement; // set in componentDidMount
+  
   
   private owner: T;
   
-  private dragPos: Point = {x: 0, y: 0};
-  private dragSize: Point = {x: 0, y: 0};
   private mouseIsDown: boolean = false;
   private dragOffset: Point = {x: 0, y: 0};
   private mouseDownPosition: Point = {x: 0, y: 0};
   private originPosition: Point = {x: 0, y: 0};
   
   private cloneElement: HTMLElement = null;
-  private containerElement: HTMLElement; // set in componentDidMount
   
   private ownerDOMNode: HTMLElement;
   private containerRect: ClientRect;
@@ -129,6 +130,24 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public handleReactDownEvent(e: React.MouseEvent | React.TouchEvent)
   {
     this.handleMouseDown(normalizeEvent(e));
+  }
+  public updateDOMNodeStyle()
+  {
+    let s: CSSStyleDeclaration;
+    if (this.cloneElement)
+    {
+      s = this.cloneElement.style;
+    }
+    else
+    {
+      s = this.ownerDOMNode.style;
+      // should we check this.preventAutoResize here?
+      s.width = "" + this.dragSize.x + "px";
+      s.height = "" + this.dragSize.y + "px";
+    }
+    
+    s.left = "" + this.dragPos.x + "px";
+    s.top = "" + this.dragPos.y + "px";
   }
   
   private handleMouseDown(e: NormalizedEvent)
@@ -388,23 +407,5 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       this.touchEventTarget.removeEventListener("touchend", this.handleNativeUpEvent);
       this.touchEventTarget = null;
     }
-  }
-  private updateDOMNodeStyle()
-  {
-    let s: CSSStyleDeclaration;
-    if (this.cloneElement)
-    {
-      s = this.cloneElement.style;
-    }
-    else
-    {
-      s = this.ownerDOMNode.style;
-      // should we check this.preventAutoResize here?
-      s.width = "" + this.dragSize.x + "px";
-      s.height = "" + this.dragSize.y + "px";
-    }
-    
-    s.left = "" + this.dragPos.x + "px";
-    s.top = "" + this.dragPos.y + "px";
   }
 }

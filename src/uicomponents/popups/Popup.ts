@@ -1,13 +1,21 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react/addons";
 
-/// <reference path="../mixins/draggable.ts" />
-/// <reference path="resizehandle.ts" />
-
 
 import eventManager from "../../eventManager";
 import PopupResizeHandle from "./PopupResizeHandle";
+import {clamp} from "../../utility";
 
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
+
+export interface InitialPositionRect
+{
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
 
 export interface CustomPopupProps
 {
@@ -36,7 +44,7 @@ export interface PropTypes extends CustomPopupProps, React.Props<any>
   id?: number;
   incrementZIndex: (childZIndex: number) => number;
   closePopup: () => void;
-  getInitialPosition: (childRect: ClientRect, container: HTMLElement) =>
+  getInitialPosition: (childRect: InitialPositionRect, container: HTMLElement) =>
   {
     left: number;
     top: number;
@@ -79,6 +87,9 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     this.state = this.getInitialState();
     
     this.bindMethods();
+    
+    this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+    applyMixins(this, this.dragPositioner);
   }
   private bindMethods()
   {
@@ -100,9 +111,9 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     this.setInitialPosition();
   }
 
-  onMouseDown(e: MouseEvent)
+  onMouseDown(e: React.MouseEvent | React.TouchEvent)
   {
-    this.handleMouseDown(e);
+    this.dragPositioner.handleReactDownEvent(e);
     var newZIndex = this.props.incrementZIndex(this.state.zIndex);
     if (this.state.zIndex !== newZIndex)
     {
@@ -116,7 +127,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
   setInitialPosition()
   {
     var domRect = React.findDOMNode(this).getBoundingClientRect();
-    var rect =
+    var rect: InitialPositionRect =
     {
       top: domRect.top,
       left: domRect.left,
@@ -126,7 +137,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     var left: number;
     var top: number;
 
-    var container = this.containerElement; // set in draggable mixin
+    var container = this.dragPositioner.containerElement;
     if (this.props.initialPosition)
     {
       rect.top = this.props.initialPosition.top || rect.top;
@@ -158,10 +169,10 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     left = clamp(left, 0, container.offsetWidth - rect.width);
     top = clamp(top, 0, container.offsetHeight - rect.height);
 
-    this.dragPos.top = top;
-    this.dragPos.left = left;
-    this.dragPos.width = Math.min(window.innerWidth, rect.width);
-    this.dragPos.height = Math.min(window.innerHeight, rect.height);
+    this.dragPositioner.dragPos.y = top;
+    this.dragPositioner.dragPos.x = left;
+    this.dragPositioner.dragSize.x = Math.min(window.innerWidth, rect.width);
+    this.dragPositioner.dragSize.y = Math.min(window.innerHeight, rect.height);
     this.setState(
     {
       zIndex: this.props.incrementZIndex(this.state.zIndex)
@@ -175,32 +186,32 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
     var minHeight = this.props.minHeight || 0;
     var maxHeight = this.props.maxHeight || window.innerHeight;
 
-    this.dragPos.width = clamp(x + 5 - this.dragPos.left, minWidth, maxWidth);
-    this.dragPos.height = clamp(y + 5 - this.dragPos.top, minHeight, maxHeight);
-    this.updateDOMNodeStyle();
+    this.dragPositioner.dragSize.x = clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
+    this.dragPositioner.dragSize.y = clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
+    this.dragPositioner.updateDOMNodeStyle();
     eventManager.dispatchEvent("popupResized");
   }
 
   render()
   {
-    var divProps: any =
+    var divProps: React.HTMLAttributes =
     {
       className: "popup draggable-container",
       onTouchStart: this.onMouseDown,
       onMouseDown: this.onMouseDown,
       style:
       {
-        top: this.dragPos ? this.dragPos.top : 0,
-        left: this.dragPos ? this.dragPos.left : 0,
-        width: this.dragPos.width,
-        height: this.dragPos.height,
+        top: this.dragPositioner.dragPos ? this.dragPositioner.dragPos.y : 0,
+        left: this.dragPositioner.dragPos ? this.dragPositioner.dragPos.x : 0,
+        width: this.dragPositioner.dragSize.x,
+        height: this.dragPositioner.dragSize.y,
         zIndex: this.state.zIndex,
         minWidth: this.props.minWidth,
         minHeight: this.props.minHeight
       }
     };
 
-    if (this.state.dragging)
+    if (this.dragPositioner.isDragging)
     {
       divProps.className += " dragging";
     }

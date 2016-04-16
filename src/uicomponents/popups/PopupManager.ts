@@ -6,7 +6,8 @@ import
   default as Popup,
   PopupComponent,
   CustomPopupProps,
-  PropTypes as PopupProps
+  PropTypes as PopupProps,
+  InitialPositionRect
 } from "./Popup";
 import eventManager from "../../eventManager";
 import {extendObject} from "../../utility";
@@ -117,7 +118,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     })[0];
   }
 
-  getInitialPosition(rect: ClientRect, container: HTMLElement)
+  getInitialPosition(rect: InitialPositionRect, container: HTMLElement)
   {
     if (this.state.popups.length === 1)
     {
