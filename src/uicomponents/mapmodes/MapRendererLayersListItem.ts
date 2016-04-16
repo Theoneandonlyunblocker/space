@@ -37,7 +37,7 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
     this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
@@ -54,7 +54,7 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
     this.setLayerAlpha = this.setLayerAlpha.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

@@ -55,7 +55,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
     if (this.props.isDraggable)
@@ -75,7 +75,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     this.handleMouseLeave = this.handleMouseLeave.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

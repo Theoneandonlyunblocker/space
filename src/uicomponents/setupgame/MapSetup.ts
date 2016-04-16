@@ -29,7 +29,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -40,7 +40,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     this.updatePlayerLimits = this.updatePlayerLimits.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     var mapGenTemplates: MapGenTemplate[] = [];
 

@@ -34,7 +34,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -46,7 +46,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
     this.handleClose = this.handleClose.bind(this);
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

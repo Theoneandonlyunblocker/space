@@ -32,7 +32,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -49,7 +49,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
     this.handleDelete = this.handleDelete.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

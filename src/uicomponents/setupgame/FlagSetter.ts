@@ -46,7 +46,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.focusTimer = new FocusTimer(this);
     applyMixins(this, this.focusTimer);
@@ -69,7 +69,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
     this.stopEvent = this.stopEvent.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     var flag = new Flag(
     {

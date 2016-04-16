@@ -39,7 +39,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -53,7 +53,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     this.getOptionValuesForTemplate = this.getOptionValuesForTemplate.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return this.getDefaultValues(this.props.mapGenTemplate);
   }

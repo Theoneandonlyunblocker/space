@@ -32,7 +32,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -42,7 +42,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
     this.updateBuildings = this.updateBuildings.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

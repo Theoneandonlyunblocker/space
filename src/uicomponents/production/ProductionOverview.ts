@@ -34,7 +34,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
     applyMixins(this, new UpdateWhenMoneyChanges(this));
@@ -47,7 +47,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     this.triggerUpdate = this.triggerUpdate.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     var initialSelected: Star = null;
     var player = this.props.player;

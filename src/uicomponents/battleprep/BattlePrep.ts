@@ -44,7 +44,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -66,7 +66,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     this.getBackgroundBlurArea = this.getBackgroundBlurArea.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

@@ -30,7 +30,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -39,7 +39,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
     this.handleChangeState = this.handleChangeState.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

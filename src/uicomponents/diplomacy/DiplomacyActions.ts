@@ -31,7 +31,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -44,7 +44,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
     this.handleDeclareWar = this.handleDeclareWar.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

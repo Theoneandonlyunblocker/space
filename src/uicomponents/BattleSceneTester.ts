@@ -46,7 +46,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -66,7 +66,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     this.handleSelectSFXTemplate = this.handleSelectSFXTemplate.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     var side1Units: Unit[] = [];
     var side2Units: Unit[] = [];

@@ -31,7 +31,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
     applyMixins(this, new UpdateWhenMoneyChanges(this, this.overrideHandleMoneyChange));
@@ -42,7 +42,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     this.makeCell = this.makeCell.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

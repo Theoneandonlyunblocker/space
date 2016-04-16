@@ -50,7 +50,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -95,7 +95,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

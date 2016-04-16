@@ -40,7 +40,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.getInitialState();
+    this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -56,7 +56,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     this.sort = this.sort.bind(this);    
   }
 
-  getInitialState(): StateType
+  getInitialStateTODO(): StateType
   {
     var initialColumn: ListColumn = this.props.initialSortOrder ?
       this.props.initialSortOrder[0] :

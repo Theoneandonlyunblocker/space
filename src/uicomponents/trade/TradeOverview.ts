@@ -33,7 +33,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -58,7 +58,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.otherPlayerTrade = new Trade(this.props.otherPlayer);
   }
 
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

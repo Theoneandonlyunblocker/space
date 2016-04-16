@@ -33,7 +33,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -44,7 +44,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
     this.togglePopup = this.togglePopup.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

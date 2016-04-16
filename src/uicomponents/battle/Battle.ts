@@ -80,7 +80,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -105,7 +105,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.finishBattle = this.finishBattle.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

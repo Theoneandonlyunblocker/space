@@ -31,7 +31,7 @@ export class ConstructManufactoryComponent extends React.Component<PropTypes, St
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -40,7 +40,7 @@ export class ConstructManufactoryComponent extends React.Component<PropTypes, St
     this.handleConstruct = this.handleConstruct.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

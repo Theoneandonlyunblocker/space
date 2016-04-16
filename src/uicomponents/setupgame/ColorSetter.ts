@@ -34,7 +34,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.focusTimer = new FocusTimer(this);
     applyMixins(this, this.focusTimer);
@@ -49,7 +49,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
     this.getClientRect = this.getClientRect.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

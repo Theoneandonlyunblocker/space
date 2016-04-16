@@ -29,7 +29,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -41,7 +41,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
     this.makeEmblemElement = this.makeEmblemElement.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     var initialEmblem: SubEmblemTemplate = null;
     if (this.props.flag.foregroundEmblem)

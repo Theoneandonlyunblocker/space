@@ -51,7 +51,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -66,7 +66,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     this.setPlayerTurn = this.setPlayerTurn.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     var pc = this.props.playerControl;
 

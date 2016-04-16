@@ -26,7 +26,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -35,7 +35,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
     this.handleClick = this.handleClick.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

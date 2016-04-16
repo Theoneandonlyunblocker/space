@@ -23,7 +23,7 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -32,7 +32,7 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
     this.onChange = this.onChange.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

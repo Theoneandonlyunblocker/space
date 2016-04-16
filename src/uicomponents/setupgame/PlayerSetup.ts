@@ -39,7 +39,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -57,7 +57,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.handleSetCustomImage = this.handleSetCustomImage.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

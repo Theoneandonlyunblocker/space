@@ -32,7 +32,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -43,7 +43,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

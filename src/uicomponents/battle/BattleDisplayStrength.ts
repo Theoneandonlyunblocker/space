@@ -24,7 +24,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -34,7 +34,7 @@ export class BattleDisplayStrengthComponent extends React.Component<PropTypes, S
     this.animateDisplayedStrength = this.animateDisplayedStrength.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

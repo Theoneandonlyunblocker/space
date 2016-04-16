@@ -35,7 +35,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -49,7 +49,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     this.removePlayers = this.removePlayers.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     var players: number[] = [];
     for (let i = 0; i < this.props.maxPlayers; i++)

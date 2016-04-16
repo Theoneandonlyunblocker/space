@@ -35,7 +35,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -49,7 +49,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     this.upgradeBuildings = this.upgradeBuildings.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

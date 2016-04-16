@@ -35,7 +35,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -57,7 +57,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     this.nullifyColor = this.nullifyColor.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     const color = isFinite(this.props.hexColor) ? Color.fromHex(this.props.hexColor) : new Color(1, 1, 1);
     const hexColor = this.props.hexColor || 0xFFFFFF;

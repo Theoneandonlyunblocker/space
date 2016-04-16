@@ -35,7 +35,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -48,7 +48,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
     this.togglePopup = this.togglePopup.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

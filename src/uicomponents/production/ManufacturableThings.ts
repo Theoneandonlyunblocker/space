@@ -32,7 +32,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -44,7 +44,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     this.makeTab = this.makeTab.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {

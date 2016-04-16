@@ -33,7 +33,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.state = this.getInitialState();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
@@ -45,7 +45,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     this.handleSelectRow = this.handleSelectRow.bind(this);    
   }
   
-  private getInitialState(): StateType
+  private getInitialStateTODO(): StateType
   {
     return(
     {
