@@ -86,6 +86,8 @@ export default class Battle
     this.side2 = props.side2;
     this.side2Player = props.side2Player;
     this.battleData = props.battleData;
+    
+    this.turnOrder = new BattleTurnOrder();
   }
   init()
   {
