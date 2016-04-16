@@ -57,8 +57,8 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
   {
     var scrollToHighlightedFN = function()
     {
-      var popup = this.refsTODO[this.popupId - 1];
-      var content = popup.refs["content"].refs["content"];
+      const popup = this.popupComponentsByID[this.popupId - 1];
+      var content = popup.ref_TODO_content.ref_TODO_content;
       content.scrollToHighlighted();
     }.bind(this.ref_TODO_popupManager);
 
@@ -77,8 +77,11 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
       },
       popupProps:
       {
-        containerDragOnly: true,
-        preventAutoResize: true,
+        dragPositionerProps:
+        {
+          containerDragOnly: true,
+          preventAutoResize: true,
+        },
         resizable: true,
         minWidth: 440,
         minHeight: 150,

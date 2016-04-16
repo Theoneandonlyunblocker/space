@@ -3,9 +3,9 @@ import * as React from "react/addons";
 
 interface PropTypes extends React.Props<any>
 {
-  handleClose: any; // TODO refactor | define prop type 123
-  contentConstructor: any; // TODO refactor | define prop type 123
-  contentProps: any; // TODO refactor | define prop type 123
+  handleClose: () => void;
+  contentConstructor: React.Factory<any>;
+  contentProps: any;
 }
 
 interface StateType
@@ -15,8 +15,8 @@ interface StateType
 export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TopMenuPopup";
-
   state: StateType;
+  ref_TODO_content: React.ReactElement<any>;
 
   constructor(props: PropTypes)
   {
@@ -26,7 +26,10 @@ export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
   render()
   {
     var contentProps = this.props.contentProps;
-    contentProps.ref = "content";
+    contentProps.ref = (component: React.ReactElement<any>) =>
+    {
+      this.ref_TODO_content = component;
+    };
 
     return(
       React.DOM.div(

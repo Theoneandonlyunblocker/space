@@ -34,17 +34,10 @@ interface StateType
   selectedUnit?: Unit;
 }
 
-interface RefTypes extends React.Refs
-{
-  background: React.Component<any, any>; // TODO refactor | correct ref type 542 | BattleBackground
-  upper: HTMLElement;
-}
-
 export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattlePrep";
   state: StateType;
-  refsTODO: RefTypes;
   ref_TODO_background: BattleBackgroundComponent;
   ref_TODO_upper: React.HTMLComponent;
 
