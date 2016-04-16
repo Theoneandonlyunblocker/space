@@ -69,7 +69,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
         speed: unit.attributes.speed,
 
         rowConstructor: UnitListItem,
-        makeClone: true,
+        shouldMakeClone: true,
 
         isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
         hasNoActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),

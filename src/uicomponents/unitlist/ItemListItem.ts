@@ -53,7 +53,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
     
     if (this.props.isDraggable)
     {
-      this.dragPositioner = new DragPositioner(this);
+      this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
       this.dragPositioner.onDragStart = this.onDragStart;
       this.dragPositioner.onDragEnd = this.onDragEnd;
       this.dragPositioner.makeDragClone = this.makeDragClone;

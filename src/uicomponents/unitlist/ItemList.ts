@@ -104,7 +104,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
 
         dragPositionerProps:
         {
-          makeClone: true,
+          shouldMakeClone: true,
           forcedDragOffset: {x: 32, y: 32},
         },
         isDraggable: this.props.isDraggable,
