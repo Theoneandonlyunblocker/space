@@ -1,20 +1,16 @@
 /// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 
 import Unit from "../../Unit";
+import TurnOrderDisplayData from "../../TurnOrderDisplayData";
 
 interface PropTypes extends React.Props<any>
 {
-  potentialDelay:
-  {
-    id: number;
-    delay: number;
-  }
   unitsBySide:
   {
     side1: Unit[];
     side2: Unit[];
   }
-  turnOrder: any; // TODO refactor
+  turnOrderDisplayData: TurnOrderDisplayData[];
   hoveredUnit: Unit;
   onMouseLeaveUnit: (e: React.MouseEvent) => void;
   onMouseEnterUnit: (unit: Unit) => void;
@@ -63,15 +59,14 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
   setMaxUnits()
   {
-    var minUnits = 7;
+    const minUnits = 7;
 
-    var containerElement = React.findDOMNode(this);
+    const containerElement = React.findDOMNode(this);
 
-    var containerWidth = containerElement.getBoundingClientRect().width;
-    containerWidth -= 30;
-    var unitElementWidth = 160;
+    const containerWidth = containerElement.getBoundingClientRect().width - 30;
+    const unitElementWidth = 160;
 
-    var ceil = Math.ceil(containerWidth / unitElementWidth);
+    const ceil = Math.ceil(containerWidth / unitElementWidth);
 
     this.setState(
     {
@@ -81,43 +76,17 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var maxUnits = this.state.maxUnits;
-    var turnOrder = this.props.turnOrder.slice(0);
+    const hasGhost = this.props.turnOrderDisplayData.some(d => d.isGhost);
+    const maxUnits = hasGhost ? this.state.maxUnits + 1 : this.state.maxUnits;
+    const amountOfUnitsToDisplay = Math.min(maxUnits, this.props.turnOrderDisplayData.length);
 
-    if (this.props.potentialDelay)
+    const toRender: React.HTMLElement[] = [];
+
+    for (let i = 0; i < amountOfUnitsToDisplay; i++)
     {
-      var fake =
-      {
-        isFake: true,
-        id: this.props.potentialDelay.id,
-        battleStats:
-        {
-          moveDelay: this.props.potentialDelay.delay
-        }
-      };
+      const displayData = this.props.turnOrderDisplayData[i];
 
-      turnOrder.push(fake);
-
-      // TODO
-      // turnOrder.sort(turnOrderSortFunction);
-    }
-
-    var maxUnitsWithFake = maxUnits;
-
-    if (fake && turnOrder.indexOf(fake) <= maxUnits)
-    {
-      maxUnitsWithFake++;
-    }
-
-    turnOrder = turnOrder.slice(0, maxUnitsWithFake);
-
-    var toRender: React.HTMLElement[] = [];
-
-    for (let i = 0; i < turnOrder.length; i++)
-    {
-      var unit = turnOrder[i];
-
-      if (unit.isFake)
+      if (displayData.isGhost)
       {
         toRender.push(React.DOM.div(
         {
@@ -127,37 +96,36 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         continue;
       }
 
-      var data =
+      const data: React.HTMLAttributes =
       {
         key: "" + i,
         className: "turn-order-unit",
-        title: "delay: " + unit.battleStats.moveDelay + "\n" +
-          "speed: " + unit.attributes.speed,
-        onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit),
+        title: "delay: " + displayData.moveDelay + "\n",
+        onMouseEnter: this.props.onMouseEnterUnit.bind(null, displayData.unit),
         onMouseLeave: this.props.onMouseLeaveUnit
       };
 
-      if (this.props.unitsBySide.side1.indexOf(unit) > -1)
+      if (this.props.unitsBySide.side1.indexOf(displayData.unit) > -1)
       {
         data.className += " turn-order-unit-friendly";
       }
-      else if (this.props.unitsBySide.side2.indexOf(unit) > -1)
+      else
       {
         data.className += " turn-order-unit-enemy";
       }
 
-      if (this.props.hoveredUnit && unit.id === this.props.hoveredUnit.id)
+      if (this.props.hoveredUnit && displayData.unit === this.props.hoveredUnit)
       {
         data.className += " turn-order-unit-hover";
       }
 
       toRender.push(
-        React.DOM.div(data, unit.name)
+        React.DOM.div(data, displayData.unit.name)
       )
 
     }
 
-    if (this.props.turnOrder.length > maxUnits)
+    if (this.props.turnOrderDisplayData.length > maxUnits)
     {
       toRender.push(React.DOM.div(
       {

@@ -41,11 +41,9 @@ interface StateType
   userUnit?: Unit;
   targetUnit?: Unit;
   afterAbilityFinishedCallback?: () => void;
-  potentialDelay?:
-  {
-    id: number;
-    delay: number;
-  };
+  potentialDelayID?: number;
+  potentialDelayAmount?: number;
+
   battleSceneUnit2StartingStrength?: number;
   battleSceneUnit1StartingStrength?: number;
   battleSceneUnit1?: Unit
@@ -115,7 +113,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         facesLeft: null
       },
       targetsInPotentialArea: [],
-      potentialDelay: null,
+      potentialDelayID: undefined,
+      potentialDelayAmount: undefined,
 
       hoveredAbility: null,
       
@@ -173,7 +172,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         parentElement: null
       },
       hoveredAbility: null,
-      potentialDelay: null,
+      potentialDelayID: undefined,
+      potentialDelayAmount: undefined,
       targetsInPotentialArea: []
     });
 
@@ -414,7 +414,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         parentElement: null
       },
       hoveredAbility: null,
-      potentialDelay: null,
+      potentialDelayID: undefined,
+      potentialDelayAmount: undefined,
       targetsInPotentialArea: []
     });
     */
@@ -506,14 +507,13 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
   handleMouseEnterAbility(ability: AbilityTemplate)
   {
-// TODO
-/* 
-    var targetsInPotentialArea = getUnitsInAbilityArea(
-      this.props.battle,
-      this.props.battle.activeUnit,
-      ability,
-      this.state.hoveredUnit.battleStats.position
-    )
+    // TODO ability use
+    // var targetsInPotentialArea = getUnitsInAbilityArea(
+    //   this.props.battle,
+    //   this.props.battle.activeUnit,
+    //   ability,
+    //   this.state.hoveredUnit.battleStats.position
+    // )
 
     var abilityUseDelay = ability.preparation ?
       ability.preparation.prepDelay * ability.preparation.turnsToPrep :
@@ -522,21 +522,18 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       hoveredAbility: ability,
-      potentialDelay:
-      {
-        id: this.props.battle.activeUnit.id,
-        delay: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay
-      },
-      targetsInPotentialArea: targetsInPotentialArea
+      potentialDelayID: this.props.battle.activeUnit.id,
+      potentialDelayAmount: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay,
+      // targetsInPotentialArea: targetsInPotentialArea
     });
-*/
   }
   handleMouseLeaveAbility()
   {
     this.setState(
     {
       hoveredAbility: null,
-      potentialDelay: null,
+      potentialDelayID: undefined,
+      potentialDelayAmount: undefined,
       targetsInPotentialArea: []
     });
   }
@@ -591,12 +588,15 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
     else if (!this.state.playingBattleEffect)
     {
+      const turnOrderDisplayData = battle.turnOrder.getDisplayData(
+        this.state.potentialDelayAmount,
+        this.state.potentialDelayID);
+
       upperFooterElement = TurnOrder(
       {
         key: "turnOrder",
-        turnOrder: battle.turnOrder,
+        turnOrderDisplayData: turnOrderDisplayData,
         unitsBySide: battle.unitsBySide,
-        potentialDelay: this.state.potentialDelay,
         hoveredUnit: this.state.highlightedUnit,
         onMouseEnterUnit: this.handleMouseEnterUnit,
         onMouseLeaveUnit: this.handleMouseLeaveUnit
