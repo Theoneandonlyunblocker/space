@@ -40,7 +40,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
-    this.getInitialStateTODO();
+    this.state = this.getInitialStateTODO();
     
     this.bindMethods();
   }
