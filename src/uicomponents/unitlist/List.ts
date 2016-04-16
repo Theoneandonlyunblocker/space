@@ -40,6 +40,8 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
     
+    this.getInitialState();
+    
     this.bindMethods();
   }
   private bindMethods()

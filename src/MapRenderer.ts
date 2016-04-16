@@ -181,11 +181,12 @@ export default class MapRenderer
       }
     }
   }
+  // TODO refactor | belongs in module
   makeFowSprite()
   {
     if (!this.fowTilingSprite)
     {
-      var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
+      var fowTexture = PIXI.Texture.fromFrame("modules/defaultmapmodes/img/fowTexture.png");
       var w = this.galaxyMap.width;
       var h = this.galaxyMap.height;
 
