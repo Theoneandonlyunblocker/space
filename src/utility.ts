@@ -338,6 +338,18 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
   return to;
 }
 
+export function shallowCopy<T>(toCopy: T): T
+{
+  const cloned = {};
+  
+  for (let key in toCopy)
+  {
+    cloned[key] = toCopy[key];
+  }
+  
+  return <T> cloned;
+}
+
 // https://github.com/KyleAMathews/deepmerge
 // The MIT License (MIT)
 // 

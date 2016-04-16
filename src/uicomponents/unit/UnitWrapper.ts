@@ -5,7 +5,7 @@ import Unit from "../../Unit";
 import UnitComponentFactory from "./Unit";
 import Battle from "../../Battle";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
-
+import {shallowCopy} from "../../utility";
 
 interface PropTypes extends React.Props<any>
 {
@@ -155,14 +155,14 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.unit)
     {
-
+      const clonedProps = shallowCopy(this.props);
       var isDead = false;
       if (this.props.battle &&
         this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0)
       {
         if (this.props.battle.deadUnits.indexOf(this.props.unit) >= 0)
         {
-          this.props.isDead = true;
+          clonedProps.isDead = true;
         }
       }
 
@@ -172,12 +172,12 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
       {
         if (this.props.battle.capturedUnits.indexOf(this.props.unit) >= 0)
         {
-          this.props.isCaptured = true;
+          clonedProps.isCaptured = true;
         }
       }
 
-      this.props.key = "unit";
-      var unit = UnitComponentFactory(this.props);
+      clonedProps.key = "unit";
+      var unit = UnitComponentFactory(clonedProps);
       allElements.push(unit);
     }
     
