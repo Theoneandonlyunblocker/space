@@ -45,7 +45,7 @@ interface StateType
 export class UnitComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Unit";
-  // mixins = [Draggable, React.addons.PureRenderMixin];
+  // mixins = [Draggable];
   
   state: StateType;
 
@@ -73,6 +73,8 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
       
     });
   }
+  
+  componentShouldUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
 
   onDragStart()
   {
