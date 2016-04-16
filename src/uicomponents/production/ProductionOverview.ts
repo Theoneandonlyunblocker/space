@@ -10,6 +10,8 @@ import ManufactoryStarsList from "./ManufactoryStarsList";
 import eventManager from "../../eventManager";
 import {sortByManufactoryCapacityFN} from "../../utility";
 
+import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
+import applyMixins from "../mixins/applyMixins";
 
 interface PropTypes extends React.Props<any>
 {
@@ -26,8 +28,6 @@ interface StateType
 export class ProductionOverviewComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ProductionOverview";
-  // mixins = [UpdateWhenMoneyChanges];
-
 
   state: StateType;
 
@@ -38,6 +38,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     this.state = this.getInitialState();
     
     this.bindMethods();
+    applyMixins(this, new UpdateWhenMoneyChanges(this));
   }
   private bindMethods()
   {

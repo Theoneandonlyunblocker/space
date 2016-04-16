@@ -4,6 +4,8 @@ import * as React from "react/addons";
 import BuildingUpgradeData from "../../BuildingUpgradeData";
 import Player from "../../Player";
 
+import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
+import applyMixins from "../mixins/applyMixins";
 
 interface PropTypes extends React.Props<any>
 {
@@ -20,8 +22,6 @@ interface StateType
 export class BuildingUpgradeListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildingUpgradeListItem";
-  // mixins = [UpdateWhenMoneyChanges];
-
   state: StateType;
 
   constructor(props: PropTypes)
@@ -31,6 +31,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
     this.state = this.getInitialState();
     
     this.bindMethods();
+    applyMixins(this, new UpdateWhenMoneyChanges(this, this.overrideHandleMoneyChange));
   }
   private bindMethods()
   {

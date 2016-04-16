@@ -5,6 +5,8 @@ import ListColumn from "../unitlist/ListColumn";
 import Player from "../../Player";
 import BuildingTemplate from "../../templateinterfaces/BuildingTemplate";
 
+import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
+import applyMixins from "../mixins/applyMixins";
 
 interface PropTypes extends React.Props<any>
 {
@@ -24,9 +26,6 @@ interface StateType
 export class BuildableBuildingComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BuildableBuilding";
-  // mixins = [UpdateWhenMoneyChanges];
-
-
   state: StateType;
 
   constructor(props: PropTypes)
@@ -36,6 +35,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     this.state = this.getInitialState();
     
     this.bindMethods();
+    applyMixins(this, new UpdateWhenMoneyChanges(this, this.overrideHandleMoneyChange));
   }
   private bindMethods()
   {
