@@ -9,36 +9,68 @@ import eventManager from "../../eventManager";
 import PopupResizeHandle from "./PopupResizeHandle";
 
 
-interface PropTypes extends React.Props<any>
+export interface CustomPopupProps
 {
-  resizable: any; // TODO refactor | define prop type 123
-  initialPosition?: reactTypeTODO_object;
+  resizable?: boolean;
   minWidth?: number;
   maxWidth?: number;
   minHeight?: number;
   maxHeight?: number;
-  contentConstructor: reactTypeTODO_element; // React.PropTypes.element
-
-  contentProps: reactTypeTODO_object;
-  closePopup: reactTypeTODO_func;
-  incrementZIndex: reactTypeTODO_func;
-  getInitialPosition: reactTypeTODO_func;
-  finishedMountingCallback?: reactTypeTODO_func;
+  initialPosition?:
+  {
+    top?: number;
+    left?: number;
+    width?: number;
+    height?: number;
+  }
+  finishedMountingCallback?: () => void;
+  
+  dragPositionerProps: DragPositionerProps;
 }
+
+export interface PropTypes extends CustomPopupProps, React.Props<any>
+{
+  contentConstructor: React.Factory<any>;
+  contentProps: any;
+  
+  id?: number;
+  incrementZIndex: (childZIndex: number) => number;
+  closePopup: () => void;
+  getInitialPosition: (childRect: ClientRect, container: HTMLElement) =>
+  {
+    left: number;
+    top: number;
+  }
+}
+
+// export interface PropTypes extends React.Props<any>
+// {
+//   resizable: boolean;
+//   initialPosition?: reactTypeTODO_object;
+//   minWidth?: number;
+//   maxWidth?: number;
+//   minHeight?: number;
+//   maxHeight?: number;
+//   contentConstructor: reactTypeTODO_element; // React.PropTypes.element
+
+//   contentProps: reactTypeTODO_object;
+//   closePopup: reactTypeTODO_func;
+//   incrementZIndex: reactTypeTODO_func;
+//   getInitialPosition: reactTypeTODO_func;
+//   finishedMountingCallback?: reactTypeTODO_func;
+// }
 
 interface StateType
 {
-  zIndex?: any; // TODO refactor | define state type 456
-  dragging?: boolean;
+  zIndex?: number;
 }
 
 export class PopupComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Popup";
-  // mixins = [Draggable];
-
-
   state: StateType;
+  
+  dragPositioner: DragPositioner<PopupComponent>; 
 
   constructor(props: PropTypes)
   {

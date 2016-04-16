@@ -1,10 +1,23 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react/addons";
 
-import {default as Popup, PopupComponent} from "./Popup";
+import
+{
+  default as Popup,
+  PopupComponent,
+  CustomPopupProps,
+  PropTypes as PopupProps
+} from "./Popup";
 import eventManager from "../../eventManager";
 import {extendObject} from "../../utility";
 
+
+interface MakePopupFunctionProps
+{
+  contentConstructor: React.Factory<any>;
+  contentProps: any;
+  popupProps?: CustomPopupProps;
+}
 
 interface PropTypes extends React.Props<any>
 {
@@ -13,7 +26,7 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  popups?: any[]; // TODO refactor | define state type 456
+  popups?: PopupProps[];
 }
 
 export class PopupManagerComponent extends React.Component<PropTypes, StateType>
@@ -58,7 +71,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   {
     var self = this;
     this.listeners["makePopup"] =
-      eventManager.addEventListener("makePopup", function(data: any)
+      eventManager.addEventListener("makePopup", function(data: MakePopupFunctionProps)
       {
         self.makePopup(data);
       });
@@ -68,7 +81,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
         self.closePopup(popupId);
       });
     this.listeners["setPopupContent"] =
-      eventManager.addEventListener("setPopupContent", function(data: any)
+      eventManager.addEventListener("setPopupContent", function(data: {id: number; content: any;})
       {
         self.setPopupContent(data.id, data.content);
       });
@@ -93,12 +106,12 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   getHighestZIndexPopup()
   {
     if (this.state.popups.length === 0) return null;
-    var popups: any = [];
+    var popups: PopupComponent[] = [];
     for (var id in this.popupComponentsByID)
     {
       popups.push(this.popupComponentsByID[id]);
     }
-    return popups.sort(function(a: any, b: any)
+    return popups.sort(function(a: PopupComponent, b: PopupComponent)
     {
       return b.state.zIndex - a.state.zIndex;
     })[0];
@@ -116,11 +129,11 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      var highestZPosition = this.getHighestZIndexPopup().dragPos;
+      var topMostPopupPosition = this.getHighestZIndexPopup().dragPositioner.dragPos;
       return(
       {
-        left: highestZPosition.left + 20,
-        top: highestZPosition.top + 20
+        left: topMostPopupPosition.x + 20,
+        top: topMostPopupPosition.y + 20
       });
     }
   }
@@ -166,12 +179,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.hasPopup(id)) throw new Error("No such popup");
 
-    var newPopups:
-    {
-      contentConstructor: any;
-      contentProps: any;
-      id: number;
-    }[] = [];
+    var newPopups: PopupProps[] = [];
 
     for (var i = 0; i < this.state.popups.length; i++)
     {
@@ -184,16 +192,11 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     this.setState({popups: newPopups});
   }
 
-  makePopup(props:
-  {
-    contentConstructor: any;
-    contentProps: any;
-    popupProps?: any;
-  })
+  makePopup(props: MakePopupFunctionProps)
   {
     var id = this.getPopupId();
 
-    var popupProps = props.popupProps ? extendObject(props.popupProps) : {};
+    var popupProps: PopupProps = props.popupProps ? extendObject(props.popupProps) : {};
 
     popupProps.contentConstructor = props.contentConstructor;
     popupProps.contentProps = props.contentProps;
