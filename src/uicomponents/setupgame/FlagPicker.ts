@@ -108,7 +108,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
   {
     var emblemElements: React.HTMLElement[] = [];
 
-    for (var emblemType in app.moduleData.Templates.SubEmblems)
+    for (let emblemType in app.moduleData.Templates.SubEmblems)
     {
       var template = app.moduleData.Templates.SubEmblems[emblemType];
       emblemElements.push(this.makeEmblemElement(template));

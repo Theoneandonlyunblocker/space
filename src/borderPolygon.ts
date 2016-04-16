@@ -83,7 +83,7 @@ export function getBorderingHalfEdges(stars: Star[])
   {
     var contiguousEdgeEndPoint = sharedEdge.getStartpoint();
     var oppositeSite = getHalfEdgeOppositeSite(sharedEdge);
-    for (var i = 0; i < oppositeSite.voronoiCell.halfedges.length; i++)
+    for (let i = 0; i < oppositeSite.voronoiCell.halfedges.length; i++)
     {
       var halfEdge = oppositeSite.voronoiCell.halfedges[i];
       if (halfEdge.getStartpoint() === contiguousEdgeEndPoint)
@@ -98,11 +98,11 @@ export function getBorderingHalfEdges(stars: Star[])
 
   var startEdge: any;
   var star: Star;
-  for (var i = 0; i < stars.length; i++)
+  for (let i = 0; i < stars.length; i++)
   {
     if (star) break;
 
-    for (var j = 0; j < stars[i].voronoiCell.halfedges.length; j++)
+    for (let j = 0; j < stars[i].voronoiCell.halfedges.length; j++)
     {
       var halfEdge = stars[i].voronoiCell.halfedges[j];
       if (halfEdgeIsBorder(halfEdge))
@@ -120,10 +120,10 @@ export function getBorderingHalfEdges(stars: Star[])
   var contiguousEdge: any = null;
   // just a precaution to make sure we don't get into an infinite loop
   // should always return earlier unless somethings wrong
-  for (var j = 0; j < stars.length * 40; j++)
+  for (let j = 0; j < stars.length * 40; j++)
   {
     var indexShift = 0;
-    for (var _i = 0; _i < star.voronoiCell.halfedges.length; _i++)
+    for (let _i = 0; _i < star.voronoiCell.halfedges.length; _i++)
     {
       if (!hasProcessedStartEdge)
       {
@@ -174,7 +174,7 @@ export function getBorderingHalfEdges(stars: Star[])
 }
 export function joinPointsWithin(points: Point[], maxDistance: number)
 {
-  for (var i = points.length - 2; i >= 0; i--)
+  for (let i = points.length - 2; i >= 0; i--)
   {
     var x1 = points[i].x;
     var y1 = points[i].y;
@@ -227,7 +227,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
     [starId: number]: boolean;
   } = {};
 
-  for (var ii = 0; ii < revealedStars.length; ii++)
+  for (let ii = 0; ii < revealedStars.length; ii++)
   {
     var star = revealedStars[ii];
     if (processedStarsById[star.id])
@@ -249,7 +249,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
       var offsetted = convertHalfEdgeDataToOffset(halfEdgesDataForIsland);
 
       // set stars
-      for (var j = 0; j < offsetted.length; j++)
+      for (let j = 0; j < offsetted.length; j++)
       {
         var point = <any> offsetted[j];
         var nextPoint = <any> offsetted[(j + 1) % offsetted.length];
@@ -279,7 +279,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
       // set that point as start of polygon
       var startIndex: number = 0; // default = all stars of polygon are revealed
 
-      for (var j = 0; j < offsetted.length; j++)
+      for (let j = 0; j < offsetted.length; j++)
       {
         var currPoint = <any> offsetted[j];
         var prevPoint = <any> offsetted[(j === 0 ? offsetted.length - 1 : j - 1)];
@@ -290,7 +290,7 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
       }
 
       // get polylines
-      for (var _j = startIndex; _j < offsetted.length + startIndex; _j++)
+      for (let _j = startIndex; _j < offsetted.length + startIndex; _j++)
       {
         var j = _j % offsetted.length;
         var point = <any> offsetted[j];
@@ -322,12 +322,12 @@ export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVo
     isClosed: boolean;
   }[] = [];
 
-  for (var i = 0; i < polyLines.length; i++)
+  for (let i = 0; i < polyLines.length; i++)
   {
     var polyLine = polyLines[i];
     var isClosed = pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
     if (isClosed) polyLine.pop();
-    for (var j = 0; j < polyLine.length; j++)
+    for (let j = 0; j < polyLine.length; j++)
     {
       // stupid hack to fix pixi bug with drawing polygons
       // without this consecutive edges with the same angle disappear

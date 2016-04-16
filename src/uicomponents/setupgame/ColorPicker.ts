@@ -249,7 +249,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 
     var gradientString = "linear-gradient(to right, ";
 
-    for (var i = 0; i < steps; i++)
+    for (let i = 0; i < steps; i++)
     {
       var hue = hueStep * i;
       var grade = gradeStep * i;

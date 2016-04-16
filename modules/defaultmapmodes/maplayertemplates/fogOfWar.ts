@@ -19,7 +19,7 @@ const fogOfWar: MapRendererLayerTemplate =
 
     if (!points || points.length < 1) return doc;
 
-    for (var i = 0; i < points.length; i++)
+    for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
       var sprite = this.getFowSpriteForStar(star);

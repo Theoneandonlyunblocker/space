@@ -32,7 +32,7 @@ export default class NotificationFilter
   {
     var notifications = app.moduleData.Templates.Notifications;
 
-    for (var key in notifications)
+    for (let key in notifications)
     {
       var notificationTemplate = notifications[key];
       this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
@@ -51,7 +51,7 @@ export default class NotificationFilter
     }
 
     var playerIsInvolved: boolean = false;
-    for (var key in notification.props)
+    for (let key in notification.props)
     {
       if (notification.props[key] === this.player)
       {
@@ -103,7 +103,7 @@ export default class NotificationFilter
     {
       var newState: NotificationFilterState[] = [state];
       var compatibleStates = this.getCompatibleFilterStates(state);
-      for (var i = 0; i < this.filters[filterKey].length; i++)
+      for (let i = 0; i < this.filters[filterKey].length; i++)
       {
         if (compatibleStates.indexOf(this.filters[filterKey][i]) !== -1)
         {
@@ -125,7 +125,7 @@ export default class NotificationFilter
     } = {};
     var notifications = app.moduleData.Templates.Notifications;
 
-    for (var key in this.filters)
+    for (let key in this.filters)
     {
       var notificationTemplate = notifications[key];
       if (notificationTemplate)
@@ -150,7 +150,7 @@ export default class NotificationFilter
     var byCategory = this.getFiltersByCategory();
     var forSelectedCategory = byCategory[category];
 
-    for (var i = 0; i < forSelectedCategory.length; i++)
+    for (let i = 0; i < forSelectedCategory.length; i++)
     {
       var template = forSelectedCategory[i].notificationTemplate;
       this.filters[template.key] = template.defaultFilterState.slice(0);

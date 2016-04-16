@@ -84,7 +84,7 @@ const defaultUnitDrawingFunction: UnitDrawingFunction = function(
   var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
   zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
 
-  for (var i = unitsToDraw - 1; i >= 0; i--)
+  for (let i = unitsToDraw - 1; i >= 0; i--)
   {
     var column = Math.floor(i / maxUnitsPerColumn);
     var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);

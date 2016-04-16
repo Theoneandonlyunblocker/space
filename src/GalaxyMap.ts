@@ -36,7 +36,7 @@ export default class GalaxyMap
   {
     var min: number, max: number;
 
-    for (var i = 0; i < this.stars.length; i++)
+    for (let i = 0; i < this.stars.length; i++)
     {
       var star = this.stars[i];
       var income = star.getIncome();

@@ -52,7 +52,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
 
     var formationRows: React.ReactElement<any>[] = [];
 
-    for (var i = 0; i < formation.length; i++)
+    for (let i = 0; i < formation.length; i++)
     {
       formationRows.push(FormationRow(
       {

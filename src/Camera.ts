@@ -54,7 +54,7 @@ export default class Camera
   }
   destroy()
   {
-    for (var name in this.listeners)
+    for (let name in this.listeners)
     {
       eventManager.removeEventListener(name, this.listeners[name]);
     }
@@ -142,7 +142,7 @@ export default class Camera
   }
   private onMove()
   {
-    for (var i = 0; i < this.onMoveCallbacks.length; i++)
+    for (let i = 0; i < this.onMoveCallbacks.length; i++)
     {
       this.onMoveCallbacks[i](this.container.position.x, this.container.position.y);
     }
@@ -214,7 +214,7 @@ export default class Camera
   }
   private onZoom()
   {
-    for (var i = 0; i < this.onZoomCallbacks.length; i++)
+    for (let i = 0; i < this.onZoomCallbacks.length; i++)
     {
       this.onZoomCallbacks[i](this.currZoom);
     }

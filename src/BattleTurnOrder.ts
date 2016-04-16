@@ -89,7 +89,7 @@ export default class BattleTurnOrder
   }
   private getGhostIndex(ghostMoveDelay: number, ghostId: number): number
   {
-    for (var i = 0; i < this.orderedUnits.length; i++)
+    for (let i = 0; i < this.orderedUnits.length; i++)
     {
       var unit = this.orderedUnits[i];
       var unitMoveDelay = unit.battleStats.moveDelay;
@@ -104,7 +104,7 @@ export default class BattleTurnOrder
       }
     }
 
-    return i;
+    return this.orderedUnits.length;
   }
   public getDisplayData(ghostMoveDelay?: number, ghostId?: number): TurnOrderDisplayData[]
   {

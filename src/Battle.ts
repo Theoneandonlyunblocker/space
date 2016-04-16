@@ -95,9 +95,9 @@ export default class Battle
     UnitBattleSides.forEach(function(sideId: UnitBattleSide)
     {
       var side = self[sideId];
-      for (var i = 0; i < side.length; i++)
+      for (let i = 0; i < side.length; i++)
       {
-        for (var j = 0; j < side[i].length; j++)
+        for (let j = 0; j < side[i].length; j++)
         {
           if (side[i][j])
           {
@@ -137,7 +137,7 @@ export default class Battle
   }
   forEachUnit(operator: (unit: Unit) => any): void
   {
-    for (var id in this.unitsById)
+    for (let id in this.unitsById)
     {
        operator.call(this, this.unitsById[id]);
     }
@@ -157,9 +157,9 @@ export default class Battle
       if (passiveSkillsByPhase["atBattleStart"])
       {
         var skills = passiveSkillsByPhase["atBattleStart"];
-        for (var i = 0; i < skills.length; i++)
+        for (let i = 0; i < skills.length; i++)
         {
-          for (var j = 0; j < skills[i].atBattleStart.length; j++)
+          for (let j = 0; j < skills[i].atBattleStart.length; j++)
           {
             var effect = skills[i].atBattleStart[j];
             effect.action.executeAction(unit, unit, this, effect.data);
@@ -236,7 +236,7 @@ export default class Battle
 
     var capturedUnits: Unit[] = [];
 
-    for (var i = 0; i < losingUnits.length; i++)
+    for (let i = 0; i < losingUnits.length; i++)
     {
       if (capturedUnits.length >= maxCapturedUnits) break;
 
@@ -323,7 +323,7 @@ export default class Battle
   {
     var victor = forcedVictor || this.getVictor();
 
-    for (var i = 0; i < this.deadUnits.length; i++)
+    for (let i = 0; i < this.deadUnits.length; i++)
     {
       this.deadUnits[i].removeFromPlayer();
     }
@@ -348,7 +348,7 @@ export default class Battle
 
     if (victor)
     {
-      for (var i = 0; i < this.capturedUnits.length; i++)
+      for (let i = 0; i < this.capturedUnits.length; i++)
       {
         this.capturedUnits[i].transferToPlayer(victor);
         this.capturedUnits[i].experienceForCurrentLevel = 0;
@@ -383,7 +383,7 @@ export default class Battle
         victor: victor
       });
     }
-    for (var i = 0; i < this.afterFinishCallbacks.length; i++)
+    for (let i = 0; i < this.afterFinishCallbacks.length; i++)
     {
       this.afterFinishCallbacks[i]();
     }
@@ -401,7 +401,7 @@ export default class Battle
     var row = this.getRowByPosition(position);
     var total = 0;
 
-    for (var i = 0; i < row.length; i++)
+    for (let i = 0; i < row.length; i++)
     {
       if (row[i])
       {
@@ -421,7 +421,7 @@ export default class Battle
 
     var units = this.unitsBySide[side];
 
-    for (var i = 0; i < units.length; i++)
+    for (let i = 0; i < units.length; i++)
     {
       var unit = units[i];
       health.current += unit.currentHealth;
@@ -447,7 +447,7 @@ export default class Battle
       // how much health remains from strating health 0.0-1.0
       var currentHealthFactor = currentHealth / self.startHealth[side];
 
-      for (var i = 0; i < self.unitsBySide[side].length; i++)
+      for (let i = 0; i < self.unitsBySide[side].length; i++)
       {
         if (self.unitsBySide[side][i].currentHealth <= 0)
         {
@@ -490,10 +490,10 @@ export default class Battle
   updateBattlePositions(side: UnitBattleSide)
   {
     var units = this[side];
-    for (var i = 0; i < units.length; i++)
+    for (let i = 0; i < units.length; i++)
     {
       var row = this[side][i];
-      for (var j = 0; j < row.length; j++)
+      for (let j = 0; j < row.length; j++)
       {
         var pos = this.getAbsolutePositionFromSidePosition([i, j], side);
         var unit = row[j];
@@ -516,7 +516,7 @@ export default class Battle
     var nextHealthyRowIndex: number;
 
     // start at 1 because frontmost row shouldn't be healthy if this is called
-    for (var i = 1; i < formation.length; i++)
+    for (let i = 1; i < formation.length; i++)
     {
       var absoluteRow = side === "side1" ? i : i + app.moduleData.ruleSet.battle.rowsPerFormation;
       if (this.getTotalHealthForRow(absoluteRow) > 0)
@@ -565,11 +565,11 @@ export default class Battle
       side2: 0
     };
 
-    for (var side in this.unitsBySide)
+    for (let side in this.unitsBySide)
     {
       var totalValue = 0;
       var units = this.unitsBySide[side];
-      for (var i = 0; i < units.length; i++)
+      for (let i = 0; i < units.length; i++)
       {
         totalValuePerSide[side] += units[i].level + 1;
       }
@@ -603,11 +603,11 @@ export default class Battle
     function cloneUnits(units: Unit[][]): Unit[][]
     {
       var clones: Unit[][] = [];
-      for (var i = 0; i < units.length; i++)
+      for (let i = 0; i < units.length; i++)
       {
         var row: Unit[] = [];
 
-        for (var j = 0; j < units[i].length; j++)
+        for (let j = 0; j < units[i].length; j++)
         {
           var unit = units[i][j];
           if (!unit)
@@ -642,9 +642,9 @@ export default class Battle
 
     [side1, side2].forEach(function(side: Unit[][])
     {
-      for (var i = 0; i < side.length; i++)
+      for (let i = 0; i < side.length; i++)
       {
-        for (var j = 0; j < side[i].length; j++)
+        for (let j = 0; j < side[i].length; j++)
         {
           if (!side[i][j]) continue;
           clone.turnOrder.addUnit(side[i][j]);

@@ -177,7 +177,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
 
     var items: React.ReactElement<any>[] = [];
 
-    for (var i = 0; i < notifications.length; i++)
+    for (let i = 0; i < notifications.length; i++)
     {
       items.push(NotificationComponentFactory(
       {

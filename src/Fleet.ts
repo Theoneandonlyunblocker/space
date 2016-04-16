@@ -98,7 +98,7 @@ export default class Fleet
   }
   addUnits(units: Unit[])
   {
-    for (var i = 0; i < units.length; i++)
+    for (let i = 0; i < units.length; i++)
     {
       this.addUnit(units[i]);
     }
@@ -121,7 +121,7 @@ export default class Fleet
   }
   removeUnits(units: Unit[])
   {
-    for (var i = 0; i < units.length; i++)
+    for (let i = 0; i < units.length; i++)
     {
       this.removeUnit(units[i]);
     }
@@ -170,7 +170,7 @@ export default class Fleet
 
     var min = this.units[0].currentMovePoints;
 
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       min = Math.min(this.units[i].currentMovePoints, min);
     }
@@ -182,7 +182,7 @@ export default class Fleet
 
     var min = this.units[0].maxMovePoints;
 
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       min = Math.min(this.units[i].maxMovePoints, min);
     }
@@ -190,7 +190,7 @@ export default class Fleet
   }
   canMove()
   {
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       if (this.units[i].currentMovePoints <= 0)
       {
@@ -207,7 +207,7 @@ export default class Fleet
   }
   subtractMovePoints()
   {
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       this.units[i].currentMovePoints--;
     }
@@ -229,7 +229,7 @@ export default class Fleet
     this.player.visionIsDirty = true;
 
     // maybe send an event instead?
-    for (var i = 0; i < app.game.playerOrder.length; i++)
+    for (let i = 0; i < app.game.playerOrder.length; i++)
     {
       var player = app.game.playerOrder[i];
       if (player.isIndependent || player === this.player)
@@ -281,7 +281,7 @@ export default class Fleet
   {
     var total = 0;
 
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       total += this.units[i].getStrengthEvaluation();
     }
@@ -296,7 +296,7 @@ export default class Fleet
       max: 0
     }
 
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       total.current += this.units[i].currentHealth;
       total.max += this.units[i].maxHealth;
@@ -309,7 +309,7 @@ export default class Fleet
     var highestVisionRange = 0;
     var highestDetectionRange = -1;
 
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       highestVisionRange = Math.max(this.units[i].getVisionRange(), highestVisionRange);
       highestDetectionRange = Math.max(this.units[i].getDetectionRange(), highestDetectionRange);

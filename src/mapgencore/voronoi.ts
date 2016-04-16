@@ -16,7 +16,7 @@ export function makeVoronoi(points: Point[], width: number, height: number)
   var voronoi = new Voronoi();
   var diagram = voronoi.compute(points, boundingBox);
 
-  for (var i = 0; i < diagram.cells.length; i++)
+  for (let i = 0; i < diagram.cells.length; i++)
   {
     var cell = diagram.cells[i];
     cell.site.voronoiCell = cell;
@@ -35,7 +35,7 @@ export function makeVoronoi(points: Point[], width: number, height: number)
  */
 export function relaxVoronoi(diagram: any, dampeningFunction?: (point: Point) => number)
 {
-  for (var i = 0; i < diagram.cells.length; i++)
+  for (let i = 0; i < diagram.cells.length; i++)
   {
     var cell = diagram.cells[i];
     var point = cell.site;
@@ -105,7 +105,7 @@ function getVerticesFromCell(cell: any)
 {
   var vertices: Point[] = [];
 
-  for (var i = 0; i < cell.halfedges.length; i++)
+  for (let i = 0; i < cell.halfedges.length; i++)
   {
     vertices.push(cell.halfedges[i].getStartpoint());
   }

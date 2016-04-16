@@ -89,7 +89,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
   componentWillUnmount()
   {
-    for (var listenerId in this.listeners)
+    for (let listenerId in this.listeners)
     {
       eventManager.removeEventListener(listenerId, this.listeners[listenerId]);
     }
@@ -107,7 +107,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   {
     if (this.state.popups.length === 0) return null;
     var popups: PopupComponent[] = [];
-    for (var id in this.popupComponentsByID)
+    for (let id in this.popupComponentsByID)
     {
       popups.push(this.popupComponentsByID[id]);
     }
@@ -157,7 +157,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
   getPopup(id: number)
   {
-    for (var i = 0; i < this.state.popups.length; i++)
+    for (let i = 0; i < this.state.popups.length; i++)
     {
       if (this.state.popups[i].id === id) return this.state.popups[i];
     }
@@ -167,7 +167,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
   hasPopup(id: number)
   {
-    for (var i = 0; i < this.state.popups.length; i++)
+    for (let i = 0; i < this.state.popups.length; i++)
     {
       if (this.state.popups[i].id === id) return true;
     }
@@ -181,7 +181,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
     var newPopups: PopupProps[] = [];
 
-    for (var i = 0; i < this.state.popups.length; i++)
+    for (let i = 0; i < this.state.popups.length; i++)
     {
       if (this.state.popups[i].id !== id)
       {
@@ -246,7 +246,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
     var toRender: React.ReactElement<any>[] = [];
 
-    for (var i = 0; i < popups.length; i++)
+    for (let i = 0; i < popups.length; i++)
     {
       var popup = popups[i];
 

@@ -23,10 +23,10 @@ export function getNullFormation()
 
     var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
     var columns = app.moduleData.ruleSet.battle.cellsPerRow;
-    for (var i = 0; i < rows; i++)
+    for (let i = 0; i < rows; i++)
     {
       _nullFormation.push([]);
-      for (var j = 0; j < columns; j++)
+      for (let j = 0; j < columns; j++)
       {
         _nullFormation[i].push(null);
       }
@@ -100,13 +100,13 @@ export function getTargetsForAllAbilities(battle: Battle, user: Unit)
   } = {};
 
   var abilities = user.getAllAbilities();
-  for (var i = 0; i < abilities.length; i++)
+  for (let i = 0; i < abilities.length; i++)
   {
     var ability = abilities[i];
 
     var targets = getPotentialTargets(battle, user, ability);
 
-    for (var j = 0; j < targets.length; j++)
+    for (let j = 0; j < targets.length; j++)
     {
       var target = targets[j];
 

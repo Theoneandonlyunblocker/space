@@ -38,7 +38,7 @@ export class ManufacturableThingsListComponent extends React.Component<PropTypes
       [templateType: string]: number;
     } = {};
 
-    for (var i = 0; i < manufacturableThings.length; i++)
+    for (let i = 0; i < manufacturableThings.length; i++)
     {
       var templateType = manufacturableThings[i].type;
       if (!keyByTemplateType[templateType])

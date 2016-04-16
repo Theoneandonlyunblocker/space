@@ -45,7 +45,7 @@ export default class MCTree
     }
 
     var iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
-    for (var i = iterationStart; i < iterations; i++)
+    for (let i = iterationStart; i < iterations; i++)
     {
       // select & expand
       var toSimulateFrom = root.getRecursiveBestUctChild();
@@ -123,7 +123,7 @@ export default class MCTree
   printToConsole(nodes: MCTreeNode[]): void
   {
     var consoleRows: any[] = [];
-    for (var i = 0; i < nodes.length; i++)
+    for (let i = 0; i < nodes.length; i++)
     {
       var node = nodes[i];
       var row =

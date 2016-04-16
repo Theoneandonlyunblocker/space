@@ -65,10 +65,10 @@ export default class MCTreeNode
 
     var actions: Move[] = [];
 
-    for (var id in targets)
+    for (let id in targets)
     {
       var targetActions = targets[id];
-      for (var i = 0; i < targetActions.length; i++)
+      for (let i = 0; i < targetActions.length; i++)
       {
         if (!this.isBetweenAI || !targetActions[i].disableInAIBattles)
         {
@@ -117,7 +117,7 @@ export default class MCTreeNode
   }
   getChildForMove(move: Move): MCTreeNode
   {
-    for (var i = 0; i < this.children.length; i++)
+    for (let i = 0; i < this.children.length; i++)
     {
       var child = this.children[i];
       if (child.move.targetId === move.targetId &&
@@ -132,7 +132,7 @@ export default class MCTreeNode
       this.possibleMoves = this.getPossibleMoves();
     }
 
-    for (var i = 0; i < this.possibleMoves.length; i++)
+    for (let i = 0; i < this.possibleMoves.length; i++)
     {
       var possibleMove = this.possibleMoves[i];
       if (possibleMove.targetId === move.targetId &&
@@ -173,10 +173,10 @@ export default class MCTreeNode
     {
       [targetIdAndAbilityType: string]: number;
     } = {};
-    for (var targetId in actions)
+    for (let targetId in actions)
     {
       var abilities = actions[targetId];
-      for (var i = 0; i < abilities.length; i++)
+      for (let i = 0; i < abilities.length; i++)
       {
         var priority = isFinite(abilities[i].AIEvaluationPriority) ? abilities[i].AIEvaluationPriority : 1;
         prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
@@ -253,7 +253,7 @@ export default class MCTreeNode
   getHighestUctChild(): MCTreeNode
   {
     var highest = this.children[0];
-    for (var i = 0; i < this.children.length; i++)
+    for (let i = 0; i < this.children.length; i++)
     {
       var child = this.children[i];
       if (child.uctIsDirty)

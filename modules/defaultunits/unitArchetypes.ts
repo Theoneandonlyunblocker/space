@@ -52,7 +52,7 @@ export const defence: UnitArchetype =
     var threshhold = 6;
     var alreadyHasDefender = false;
 
-    for (var i = 0; i < rowUnits.length; i++)
+    for (let i = 0; i < rowUnits.length; i++)
     {
       var unit = rowUnits[i];
       if (!unit) continue

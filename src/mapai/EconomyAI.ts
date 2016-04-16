@@ -46,7 +46,7 @@ export default class EconomyAI
     var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
     var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
 
-    for (var i = 0; i < objectives.length; i++)
+    for (let i = 0; i < objectives.length; i++)
     {
       var objective = objectives[i];
       objective.template.economyRoutineFN(objective, this, adjustments);
@@ -64,7 +64,7 @@ export default class EconomyAI
     {
       return b.objective.priority - a.objective.priority;
     });
-    for (var i = 0; i < allRequests.length; i++)
+    for (let i = 0; i < allRequests.length; i++)
     {
       var request = allRequests[i];
       // is front
@@ -103,7 +103,7 @@ export default class EconomyAI
     var buildableUnitTypes = player.getGloballyBuildableUnits().concat(
       manufactory.getLocalUnitTypes().manufacturable);
 
-    for (var i = 0; i < buildableUnitTypes.length; i++)
+    for (let i = 0; i < buildableUnitTypes.length; i++)
     {
       var archetype = buildableUnitTypes[i].archetype;
 
@@ -122,7 +122,7 @@ export default class EconomyAI
     var sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
     var unitType: UnitTemplate;
 
-    for (var i = 0; i < sortedScores.length; i++)
+    for (let i = 0; i < sortedScores.length; i++)
     {
       if (buildableUnitTypesByArchetype[sortedScores[i]])
       {

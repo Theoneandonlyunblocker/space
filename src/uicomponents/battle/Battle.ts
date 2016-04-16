@@ -290,7 +290,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     var abilityData = getAbilityUseData(this.props.battle,
       this.props.battle.activeUnit, ability, target);
 
-    for (var i = 0; i < abilityData.beforeUse.length; i++)
+    for (let i = 0; i < abilityData.beforeUse.length; i++)
     {
       abilityData.beforeUse[i]();
     }
@@ -321,7 +321,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     var effectData = abilityData.effectsToCall;
     if (!effectData[i])
     {
-      for (var i = 0; i < abilityData.afterUse.length; i++)
+      for (let i = 0; i < abilityData.afterUse.length; i++)
       {
         abilityData.afterUse[i]();
       }
@@ -374,7 +374,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     var callEffectsFN = function(forceUpdate: boolean = true)
     {
-      for (var j = 0; j < effectData[i].effects.length; j++)
+      for (let j = 0; j < effectData[i].effects.length; j++)
       {
         effectData[i].effects[j]();
       }

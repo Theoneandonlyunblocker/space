@@ -28,7 +28,7 @@ const declareWar: ObjectiveTemplate =
       score: number;
     }[] = [];
 
-    for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers)
+    for (let playerId in mapEvaluator.player.diplomacyStatus.metPlayers)
     {
       var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
       if (!mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player))

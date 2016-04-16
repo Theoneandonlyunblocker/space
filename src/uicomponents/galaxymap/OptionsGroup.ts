@@ -58,7 +58,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
 
     if (!this.state.isCollapsed)
     {
-      for (var i = 0; i < this.props.options.length; i++)
+      for (let i = 0; i < this.props.options.length; i++)
       {
         var option = this.props.options[i];
 

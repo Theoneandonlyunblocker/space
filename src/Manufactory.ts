@@ -138,7 +138,7 @@ export default class Manufactory
     var manufacturable: UnitTemplate[] = [];
     var potential: UnitTemplate[] = [];
 
-    for (var i = 0; i < this.star.buildableUnitTypes.length; i++)
+    for (let i = 0; i < this.star.buildableUnitTypes.length; i++)
     {
       var type = this.star.buildableUnitTypes[i];
       if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements))

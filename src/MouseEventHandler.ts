@@ -49,7 +49,7 @@ export default class MouseEventHandler
   }
   destroy()
   {
-    for (var name in this.listeners)
+    for (let name in this.listeners)
     {
       eventManager.removeEventListener(name, this.listeners[name]);
     }

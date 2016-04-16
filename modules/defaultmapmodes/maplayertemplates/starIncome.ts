@@ -59,7 +59,7 @@ const starIncome: MapRendererLayerTemplate =
       return colorIndexes[value];
     }
 
-    for (var i = 0; i < points.length; i++)
+    for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
       var income = star.getIncome();

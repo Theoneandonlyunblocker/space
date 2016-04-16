@@ -28,7 +28,7 @@ export default class PlayerTechnology
     this.technologies = {};
 
     var totalTechnologies = Object.keys(app.moduleData.Templates.Technologies).length;
-    for (var key in app.moduleData.Templates.Technologies)
+    for (let key in app.moduleData.Templates.Technologies)
     {
       var technology = app.moduleData.Templates.Technologies[key]
       this.technologies[key] =
@@ -55,7 +55,7 @@ export default class PlayerTechnology
     var priorityToAllocate: number = 1;
     var techsToInit: TechnologyTemplate[] = [];
 
-    for (var key in this.technologies)
+    for (let key in this.technologies)
     {
       var techData = this.technologies[key];
       if (techData.priority === undefined)
@@ -91,13 +91,13 @@ export default class PlayerTechnology
     // probably not needed as priority should always add up to 1 anyway,
     // but this is cheap and infrequently called so this is here as a safeguard at least for now
     var totalPriority: number = 0;
-    for (var key in this.technologies)
+    for (let key in this.technologies)
     {
       totalPriority += this.technologies[key].priority;
     }
 
 
-    for (var key in this.technologies)
+    for (let key in this.technologies)
     {
       var techData = this.technologies[key];
       var relativePriority = techData.priority / totalPriority;
@@ -138,7 +138,7 @@ export default class PlayerTechnology
 
     var total = 0;
 
-    for (var i = 0; i < level; i++)
+    for (let i = 0; i < level; i++)
     {
       swap = a;
       a = b;
@@ -188,7 +188,7 @@ export default class PlayerTechnology
   {
     var openPriority = 0;
 
-    for (var key in this.technologies)
+    for (let key in this.technologies)
     {
       var techData = this.technologies[key];
       if (!techData.priorityIsLocked)
@@ -216,7 +216,7 @@ export default class PlayerTechnology
     var totalOtherPriority: number = 0;
     var totalOtherPriorityWasZero: boolean = false;
     var totalOthersCount: number = 0;
-    for (var key in this.technologies)
+    for (let key in this.technologies)
     {
       if (key !== technology.key)
       {
@@ -265,7 +265,7 @@ export default class PlayerTechnology
       totalOtherPriorityWasZero = true;
     }
 
-    for (var key in this.technologies)
+    for (let key in this.technologies)
     {
       if (key !== technology.key && !this.technologies[key].priorityIsLocked)
       {
@@ -299,7 +299,7 @@ export default class PlayerTechnology
   {
     var overflowPriority: number = 0;
 
-    for (var key in this.technologies)
+    for (let key in this.technologies)
     {
       var techData = this.technologies[key];
 
@@ -317,7 +317,7 @@ export default class PlayerTechnology
   {
     var data: PlayerTechnologySaveData = {};
 
-    for (var key in this.technologies)
+    for (let key in this.technologies)
     {
       data[key] =
       {

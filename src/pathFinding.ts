@@ -55,7 +55,7 @@ export function aStar(start: Star, target: Star)
 
     var neighbors = current.getAllLinks();
 
-    for (var i = 0; i < neighbors.length; i++)
+    for (let i = 0; i < neighbors.length; i++)
     {
       var neigh = neighbors[i];
       if (!neigh) continue;

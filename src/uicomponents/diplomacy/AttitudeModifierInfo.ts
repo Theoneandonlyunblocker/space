@@ -108,7 +108,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
 
     var cells: React.HTMLElement[] = [];
 
-    for (var i = 0; i < columns.length; i++)
+    for (let i = 0; i < columns.length; i++)
     {
       var cell = this.makeCell(columns[i].key);
 

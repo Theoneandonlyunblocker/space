@@ -259,7 +259,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   {
     var image: File;
 
-    for (var i = 0; i < files.length; i++)
+    for (let i = 0; i < files.length; i++)
     {
       var file = files[i];
       if (file.type.indexOf("image") !== -1)

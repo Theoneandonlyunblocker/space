@@ -35,7 +35,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
     this.props.starsWithManufactories.sort(sortByManufactoryCapacityFN);
     this.props.starsWithoutManufactories.sort(sortByManufactoryCapacityFN);
 
-    for (var i = 0; i < this.props.starsWithManufactories.length; i++)
+    for (let i = 0; i < this.props.starsWithManufactories.length; i++)
     {
       var star = this.props.starsWithManufactories[i];
       var manufactory = star.manufactory;
@@ -52,7 +52,7 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
         onClick: this.props.handleStarSelect
       }));
     }
-    for (var i = 0; i < this.props.starsWithoutManufactories.length; i++)
+    for (let i = 0; i < this.props.starsWithoutManufactories.length; i++)
     {
       var star = this.props.starsWithoutManufactories[i];
       var isHighlighted = this.props.highlightedStars.indexOf(star) !== -1;

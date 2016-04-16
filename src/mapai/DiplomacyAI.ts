@@ -38,7 +38,7 @@ export default class DiplomacyAI
     var diplomacyEvaluations =
       this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
 
-    for (var playerId in diplomacyEvaluations)
+    for (let playerId in diplomacyEvaluations)
     {
       this.diplomacyStatus.processAttitudeModifiersForPlayer(
         this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]

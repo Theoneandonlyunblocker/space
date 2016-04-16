@@ -50,7 +50,7 @@ export default class Emblem
 
     if (!this.inner)
     {
-      for (var key in app.moduleData.Templates.SubEmblems)
+      for (let key in app.moduleData.Templates.SubEmblems)
       {
         if (!app.moduleData.Templates.SubEmblems[key].disallowRandomGeneration)
         {
@@ -62,7 +62,7 @@ export default class Emblem
     {
       if (this.canAddOuterTemplate())
       {
-        for (var key in app.moduleData.Templates.SubEmblems)
+        for (let key in app.moduleData.Templates.SubEmblems)
         {
           var template = app.moduleData.Templates.SubEmblems[key];
           if (!template.disallowRandomGeneration && template.coverage.indexOf(SubEmblemCoverage.outer) !== -1)

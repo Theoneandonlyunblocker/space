@@ -70,7 +70,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   {
     var side1Units: Unit[] = [];
     var side2Units: Unit[] = [];
-    for (var i = 0; i < 5; i++)
+    for (let i = 0; i < 5; i++)
     {
       side1Units.push(this.makeUnit());
       side2Units.push(this.makeUnit());
@@ -129,10 +129,10 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     var formation: Unit[][] = [];
     var unitsIndex: number = 0;
 
-    for (var i = 0; i < 2; i++)
+    for (let i = 0; i < 2; i++)
     {
       formation.push([]);
-      for (var j = 0; j < 3; j++)
+      for (let j = 0; j < 3; j++)
       {
         var unitToAdd = units[unitsIndex] ? units[unitsIndex] : null;
         formation[i].push(unitToAdd);
@@ -337,7 +337,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   {
     var unitElements: React.HTMLElement[] = [];
 
-    for (var i = 0; i < units.length; i++)
+    for (let i = 0; i < units.length; i++)
     {
       var unit = units[i];
       var style: any = {};
@@ -384,7 +384,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
       "null"
     ))
 
-    for (var key in app.moduleData.Templates.BattleSFX)
+    for (let key in app.moduleData.Templates.BattleSFX)
     {
       var template = app.moduleData.Templates.BattleSFX[key];
 

@@ -48,11 +48,11 @@ export default class Game
   {
     this.notificationLog.destroy();
     this.notificationLog = null;
-    for (var i = 0; i < this.playerOrder.length; i++)
+    for (let i = 0; i < this.playerOrder.length; i++)
     {
       this.playerOrder[i].destroy();
     }
-    for (var i = 0; i < this.independents.length; i++)
+    for (let i = 0; i < this.independents.length; i++)
     {
       this.independents[i].destroy();
     }
@@ -79,7 +79,7 @@ export default class Game
     {
       this.turnNumber++;
       
-      for (var i = 0; i < this.independents.length; i++)
+      for (let i = 0; i < this.independents.length; i++)
       {
         this.processPlayerStartTurn(this.independents[i]);
       }
@@ -99,10 +99,10 @@ export default class Game
       var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase.atTurnStart)
       {
-        for (var i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++)
+        for (let i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++)
         {
           var skill = passiveSkillsByPhase.atTurnStart[i];
-          for (var j = 0; j < skill.atTurnStart.length; j++)
+          for (let j = 0; j < skill.atTurnStart.length; j++)
           {
             skill.atTurnStart[j](unit);
           }
@@ -119,7 +119,7 @@ export default class Game
       player.money += player.getIncome();
 
       var allResourceIncomeData = player.getResourceIncome();
-      for (var resourceType in allResourceIncomeData)
+      for (let resourceType in allResourceIncomeData)
       {
         var resourceData = allResourceIncomeData[resourceType];
         player.addResource(resourceData.resource, resourceData.amount);
@@ -141,7 +141,7 @@ export default class Game
   killPlayer(playerToKill: Player)
   {
     var playerOrderIndex: number;
-    for (var i = 0; i < this.playerOrder.length; i++)
+    for (let i = 0; i < this.playerOrder.length; i++)
     {
       var player = this.playerOrder[i];
       if (player === playerToKill)

@@ -53,7 +53,7 @@ export default class BattlePrep
     var star = this.battleData.location;
     var allUnits = star.getAllUnitsOfPlayer(this.attacker).concat(star.getAllUnitsOfPlayer(this.defender));
 
-    for (var i = 0; i < allUnits.length; i++)
+    for (let i = 0; i < allUnits.length; i++)
     {
       allUnits[i].resetBattleStats();
     }
@@ -62,16 +62,16 @@ export default class BattlePrep
   {
     var star = this.battleData.location;
     var allUnits = star.getAllUnitsOfPlayer(this.attacker).concat(star.getAllUnitsOfPlayer(this.defender));
-    for (var i = 0; i < allUnits.length; i++)
+    for (let i = 0; i < allUnits.length; i++)
     {
       var unit = allUnits[i]
       var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase.inBattlePrep)
       {
-        for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++)
+        for (let j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++)
         {
           var skill = passiveSkillsByPhase.inBattlePrep[j];
-          for (var k = 0; k < skill.inBattlePrep.length; k++)
+          for (let k = 0; k < skill.inBattlePrep.length; k++)
           {
             skill.inBattlePrep[k](unit, this);
           }
@@ -82,10 +82,10 @@ export default class BattlePrep
   makeEmptyFormation(): Unit[][]
   {
     var formation: Unit[][] = [];
-    for (var i = 0; i < app.moduleData.ruleSet.battle.rowsPerFormation; i++)
+    for (let i = 0; i < app.moduleData.ruleSet.battle.rowsPerFormation; i++)
     {
       var row: Unit[] = [];
-      for (var j = 0; j < app.moduleData.ruleSet.battle.cellsPerRow; j++)
+      for (let j = 0; j < app.moduleData.ruleSet.battle.cellsPerRow; j++)
       {
         row.push(null);
       }
@@ -189,7 +189,7 @@ export default class BattlePrep
         row: string; // "ROW_FRONT" or "ROW_BACK" // TODO enum
       }[] = [];
 
-      for (var i = 0; i < unitsToPlace.length; i++)
+      for (let i = 0; i < unitsToPlace.length; i++)
       {
         var unit = unitsToPlace[i];
 
@@ -251,9 +251,9 @@ export default class BattlePrep
   // called after player formation is created automatically
   setupPlayerFormation(formation: Unit[][])
   {
-    for (var i = 0; i < formation.length; i++)
+    for (let i = 0; i < formation.length; i++)
     {
-      for (var j = 0; j < formation[i].length; j++)
+      for (let j = 0; j < formation[i].length; j++)
       {
         if (formation[i][j])
         {
@@ -339,9 +339,9 @@ export default class BattlePrep
 
   forEachUnitInFormation(formation: Unit[][], operator: (unit: Unit) => any): void
   {
-    for (var i = 0; i < formation.length; i++)
+    for (let i = 0; i < formation.length; i++)
     {
-      for (var j = 0; j < formation[i].length; j++)
+      for (let j = 0; j < formation[i].length; j++)
       {
         operator(formation[i][j]);
       }

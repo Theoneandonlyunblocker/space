@@ -54,7 +54,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
       else return 0;
     });
 
-    for (var i = 0; i < abilities.length; i++)
+    for (let i = 0; i < abilities.length; i++)
     {
       var ability = abilities[i];
       if (ability.isHidden)

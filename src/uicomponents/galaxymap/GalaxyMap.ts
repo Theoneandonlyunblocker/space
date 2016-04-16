@@ -56,7 +56,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   {
     var mapModeOptions: React.HTMLElement[] = [];
 
-    for (var mapModeName in this.props.mapRenderer.mapModes)
+    for (let mapModeName in this.props.mapRenderer.mapModes)
     {
       mapModeOptions.push(React.DOM.option(
       {

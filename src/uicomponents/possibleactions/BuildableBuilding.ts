@@ -94,7 +94,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     var cells: React.HTMLElement[] = [];
     var columns = this.props.activeColumns;
 
-    for (var i = 0; i < columns.length; i++)
+    for (let i = 0; i < columns.length; i++)
     {
       cells.push(
         this.makeCell(columns[i].key)

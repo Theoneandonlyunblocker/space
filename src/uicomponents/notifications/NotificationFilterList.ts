@@ -59,7 +59,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
     var filtersByCategory = filter.getFiltersByCategory();
     var filterGroupElements: React.ReactElement<any>[] = [];
 
-    for (var category in filtersByCategory)
+    for (let category in filtersByCategory)
     {
       var filtersForCategory = filtersByCategory[category];
       var filterElementsForCategory:
@@ -67,7 +67,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
         key: string;
         content: React.ReactElement<any>;
       }[] = [];
-      for (var i = 0; i < filtersForCategory.length; i++)
+      for (let i = 0; i < filtersForCategory.length; i++)
       {
         var notificationTemplate = filtersForCategory[i].notificationTemplate
         var isHighlighted = Boolean(this.props.highlightedOptionKey &&

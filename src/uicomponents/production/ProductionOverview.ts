@@ -95,7 +95,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     var starsWithManufactories: Star[] = [];
     var starsWithoutManufactories: Star[] = [];
 
-    for (var i = 0; i < player.controlledLocations.length; i++)
+    for (let i = 0; i < player.controlledLocations.length; i++)
     {
       var star = player.controlledLocations[i];
       if (star.manufactory)

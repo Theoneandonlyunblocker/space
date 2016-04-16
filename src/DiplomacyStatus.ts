@@ -44,12 +44,12 @@ export default class DiplomacyStatus
   }
   addEventListeners()
   {
-    for (var key in app.moduleData.Templates.AttitudeModifiers)
+    for (let key in app.moduleData.Templates.AttitudeModifiers)
     {
       var template = app.moduleData.Templates.AttitudeModifiers[key];
       if (template.triggers)
       {
-        for (var i = 0; i < template.triggers.length; i++)
+        for (let i = 0; i < template.triggers.length; i++)
         {
           var listenerKey = template.triggers[i];
           var listener = eventManager.addEventListener(listenerKey,
@@ -66,9 +66,9 @@ export default class DiplomacyStatus
   }
   destroy()
   {
-    for (var key in this.listeners)
+    for (let key in this.listeners)
     {
-      for (var i = 0; i < this.listeners[key].length; i++)
+      for (let i = 0; i < this.listeners[key].length; i++)
       {
         eventManager.removeEventListener(key, this.listeners[key][i]);
       }
@@ -114,7 +114,7 @@ export default class DiplomacyStatus
     var attitudeModifiers = this.attitudeModifiersByPlayer[player.id];
     var modifierOpinion = 0;
 
-    for (var i = 0; i < attitudeModifiers.length; i++)
+    for (let i = 0; i < attitudeModifiers.length; i++)
     {
       modifierOpinion += attitudeModifiers[i].getAdjustedStrength();
     }
@@ -217,7 +217,7 @@ export default class DiplomacyStatus
   {
     var modifiers = this.attitudeModifiersByPlayer[player.id];
 
-    for (var i = 0; i < modifiers.length; i++)
+    for (let i = 0; i < modifiers.length; i++)
     {
       if (modifiers[i].template.type === modifier.template.type)
       {
@@ -267,7 +267,7 @@ export default class DiplomacyStatus
     var modifiersByPlayer = this.attitudeModifiersByPlayer;
     var allModifiers = app.moduleData.Templates.AttitudeModifiers;
 
-    for (var playerId in modifiersByPlayer)
+    for (let playerId in modifiersByPlayer)
 
     var playerModifiers = modifiersByPlayer[player.id];
 
@@ -287,7 +287,7 @@ export default class DiplomacyStatus
     } = {};
 
     // remove modifiers & build active modifiers index
-    for (var i = playerModifiers.length - 1; i >= 0; i--)
+    for (let i = playerModifiers.length - 1; i >= 0; i--)
     {
       var modifier = playerModifiers[i];
       if (modifier.shouldEnd(evaluation))
@@ -306,7 +306,7 @@ export default class DiplomacyStatus
     // add it and mark as active
     // 
     // if modifier is active, set strength based on evaluation
-    for (var modifierType in allModifiers)
+    for (let modifierType in allModifiers)
     {
       var template = allModifiers[modifierType];
 
@@ -350,7 +350,7 @@ export default class DiplomacyStatus
   serialize(): DiplomacyStatusSaveData
   {
     var metPlayerIds: number[] = [];
-    for (var playerId in this.metPlayers)
+    for (let playerId in this.metPlayers)
     {
       metPlayerIds.push(this.metPlayers[playerId].id);
     }
@@ -359,7 +359,7 @@ export default class DiplomacyStatus
     {
       [playerId: number]: AttitudeModifierSaveData[];
     } = {};
-    for (var playerId in this.attitudeModifiersByPlayer)
+    for (let playerId in this.attitudeModifiersByPlayer)
     {
       var serializedModifiers =
         this.attitudeModifiersByPlayer[playerId].map(function(modifier)

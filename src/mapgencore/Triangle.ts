@@ -109,7 +109,7 @@ export default class Triangle
     var otherPoints = toCheckAgainst.getPoints();
     var shared = 0;
 
-    for (var i = 0; i < ownPoints.length; i++)
+    for (let i = 0; i < ownPoints.length; i++)
     {
       if (otherPoints.indexOf(ownPoints[i]) >= 0)
       {

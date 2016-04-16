@@ -108,7 +108,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);
     var lastBarWidth = (10 * (this.props.experienceForCurrentLevel % 10));
 
-    for (var i = 0; i < totalBars; i++)
+    for (let i = 0; i < totalBars; i++)
     {
       var bgProps: React.HTMLAttributes =
       {

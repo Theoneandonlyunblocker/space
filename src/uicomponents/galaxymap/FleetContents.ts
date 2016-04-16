@@ -54,7 +54,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
       this.props.onDragEnd
     );
 
-    for (var i = 0; i < fleet.units.length; i++)
+    for (let i = 0; i < fleet.units.length; i++)
     {
       var unit = fleet.units[i];
       fleetUnitInfos.push(FleetUnitInfo(

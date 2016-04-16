@@ -50,7 +50,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
     var mapRenderer = this.props.mapRenderer;
     var options: React.HTMLElement[] = [];
 
-    for (var key in mapRenderer.mapModes)
+    for (let key in mapRenderer.mapModes)
     {
       var mapMode = mapRenderer.mapModes[key];
       options.push(React.DOM.option(

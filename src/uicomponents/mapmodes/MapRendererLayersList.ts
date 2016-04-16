@@ -117,7 +117,7 @@ export class MapRendererLayersListComponent extends React.Component<PropTypes, S
 
     var listItems: React.ReactElement<any>[] = [];
 
-    for (var i = 0; i < layersData.length; i++)
+    for (let i = 0; i < layersData.length; i++)
     {
       var layer = layersData[i];
       var layerKey = layer.template.key;

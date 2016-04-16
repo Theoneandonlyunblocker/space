@@ -110,7 +110,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   {
     var deleteFN = function()
     {
-      for (var i = 0; i < this.state.saveKeysToDelete.length; i++)
+      for (let i = 0; i < this.state.saveKeysToDelete.length; i++)
       {
         localStorage.removeItem(this.state.saveKeysToDelete[i]);
       }

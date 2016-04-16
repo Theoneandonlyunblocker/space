@@ -23,7 +23,7 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
     if (newBuildings.length !== oldBuildings.length) return true;
     else
     {
-      for (var i = 0; i < newBuildings.length; i++)
+      for (let i = 0; i < newBuildings.length; i++)
       {
         if (oldBuildings.indexOf(newBuildings[i]) === -1) return true;
       }
@@ -44,7 +44,7 @@ export class DefenceBuildingListComponent extends React.Component<PropTypes, Sta
     
     var buildings: React.ReactElement<any>[] = [];
 
-    for (var i = 0; i < this.props.buildings.length; i++)
+    for (let i = 0; i < this.props.buildings.length; i++)
     {
       buildings.push(DefenceBuilding(
       {

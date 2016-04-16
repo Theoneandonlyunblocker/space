@@ -167,7 +167,7 @@ export default class BattleScene
       this.hoveredUnit
     ];
 
-    for (var i = 0; i < units.length; i++)
+    for (let i = 0; i < units.length; i++)
     {
       var unit = units[i];
       if (unit && unit.battleStats.side === side)

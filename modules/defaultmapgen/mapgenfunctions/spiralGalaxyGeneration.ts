@@ -70,7 +70,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
       starsToAddPerDeficitArm = starsDeficit > 0 ? 1 : -1;
       var deficitStep = totalArms / Math.abs(starsDeficit);
 
-      for (var i = 0; i < totalArms; i += deficitStep)
+      for (let i = 0; i < totalArms; i += deficitStep)
       {
         armsToMakeUpDeficit.push(Math.round(i));
       }
@@ -142,7 +142,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
   var fillerRegionId = 0;
   var regionId = 0;
 
-  for (var i = 0; i < sg.totalArms; i++)
+  for (let i = 0; i < sg.totalArms; i++)
   {
     var isFiller = i % 2 !== 0;
     var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
@@ -158,7 +158,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
 
     var maxOffsetForThisArm = isFiller ? sg.armOffsetMax / 2 : sg.armOffsetMax;
 
-    for (var j = 0; j < amountForThisArm; j++)
+    for (let j = 0; j < amountForThisArm; j++)
     {
       var point = makePoint(sg.centerSize, 1, i, maxOffsetForThisArm);
 
@@ -179,7 +179,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
       }
     }
 
-    for (var j = 0; j < amountForThisCenter; j++)
+    for (let j = 0; j < amountForThisCenter; j++)
     {
       var point = makePoint(0, sg.centerSize, i, maxOffsetForThisArm);
       var star = makeStar(point.pos, point.distance);
@@ -199,7 +199,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
   var regularity = options.basicOptions["starSizeRegularity"] / 100;
   var centerDensity = options.basicOptions["centerDensity"] / 100;
   var inverseCenterDensity = 1 - centerDensity;
-  for (var i = 0; i < 2; i++)
+  for (let i = 0; i < 2; i++)
   {
     relaxVoronoi(voronoi, function(star: Star)
     {
@@ -214,7 +214,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
   linkAllStars(stars);
 
   // sever links
-  for (var i = 0; i < regions.length; i++)
+  for (let i = 0; i < regions.length; i++)
   {
     regions[i].severLinksByQualifier(function(a, b)
     {
@@ -225,7 +225,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
       );
     });
 
-    for (var j = 0; j < regions[i].stars.length; j++)
+    for (let j = 0; j < regions[i].stars.length; j++)
     {
       severLinksToNonAdjacentStars(regions[i].stars[j]);
     }
@@ -245,7 +245,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
 
   // set resources && local units
   var allSectors: Sector[] = [];
-  for (var sectorId in sectorsById)
+  for (let sectorId in sectorsById)
   {
     allSectors.push(sectorsById[sectorId]);
   }
@@ -259,7 +259,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
 
   var localUnitPlacerFN = function(sector: Sector, unitFamily: UnitFamily)
   {
-    for (var i = 0; i < sector.stars.length; i++)
+    for (let i = 0; i < sector.stars.length; i++)
     {
       var star = sector.stars[i];
       star.buildableUnitTypes = star.buildableUnitTypes.concat(unitFamily.associatedTemplates);
@@ -282,7 +282,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
       return region.id.indexOf("arm") !== -1;
     });
 
-    for (var i = 0; i < playerCount; i++)
+    for (let i = 0; i < playerCount; i++)
     {
       var regionNumber = Math.floor(i * playerArmStep);
       var regionToAdd = candidateRegions[regionNumber];
@@ -297,7 +297,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
   {
     var startPositions: Star[] = [];
 
-    for (var i = 0; i < regions.length; i++)
+    for (let i = 0; i < regions.length; i++)
     {
       var region = regions[i];
 
@@ -313,7 +313,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
     return startPositions
   })(startRegions);
 
-  for (var i = 0; i < startPositions.length; i++)
+  for (let i = 0; i < startPositions.length; i++)
   {
     var star = startPositions[i];
     var player = players[i];
@@ -327,7 +327,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: MapGenOptionVal
   var pirates = new Player(true);
   setupPirates(pirates);
 
-  for (var i = 0; i < allSectors.length; i++)
+  for (let i = 0; i < allSectors.length; i++)
   {
     var sector = allSectors[i];
     sector.setupIndependents(pirates, 1, 0);

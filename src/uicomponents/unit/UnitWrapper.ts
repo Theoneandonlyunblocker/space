@@ -69,7 +69,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
     };
 
 
-    for (var prop in newProps)
+    for (let prop in newProps)
     {
       if (!targetedProps[prop] && prop !== "position")
       {
@@ -79,7 +79,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
         }
       }
     }
-    for (var prop in targetedProps)
+    for (let prop in targetedProps)
     {
       var unit = newProps.unit;
       var oldValue = this.props[prop];

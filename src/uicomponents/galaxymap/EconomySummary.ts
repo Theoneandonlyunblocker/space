@@ -33,7 +33,7 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
     var rows: ListItem[] = [];
     var player = this.props.player;
 
-    for (var i = 0; i < player.controlledLocations.length; i++)
+    for (let i = 0; i < player.controlledLocations.length; i++)
     {
       var star = player.controlledLocations[i];
 

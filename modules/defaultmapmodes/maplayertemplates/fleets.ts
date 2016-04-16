@@ -111,7 +111,7 @@ const fleets: MapRendererLayerTemplate =
       return fleetContainer;
     }
 
-    for (var i = 0; i < points.length; i++)
+    for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
       var fleets = star.getAllFleets();
@@ -121,7 +121,7 @@ const fleets: MapRendererLayerTemplate =
       fleetsContainer.x = star.x;
       fleetsContainer.y = star.y - 40;
 
-      for (var j = 0; j < fleets.length; j++)
+      for (let j = 0; j < fleets.length; j++)
       {
         if (fleets[j].units.length === 0)
         {

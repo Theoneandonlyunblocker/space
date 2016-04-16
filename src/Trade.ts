@@ -36,7 +36,7 @@ export default class Trade
   {
     var available: TradeableItems = {};
 
-    for (var key in this.allItems)
+    for (let key in this.allItems)
     {
       var stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
       available[key] =
@@ -55,7 +55,7 @@ export default class Trade
   }
   removeAllStagedItems()
   {
-    for (var key in this.stagedItems)
+    for (let key in this.stagedItems)
     {
       this.removeStagedItem(key);
     }
@@ -104,7 +104,7 @@ export default class Trade
   }
   executeAllStagedTrades(targetPlayer: Player)
   {
-    for (var key in this.stagedItems)
+    for (let key in this.stagedItems)
     {
       this.handleTradeOfItem(key, this.stagedItems[key].amount, targetPlayer);
     }

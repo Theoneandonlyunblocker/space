@@ -22,7 +22,7 @@ const nonFillerVoronoiLines: MapRendererLayerTemplate =
 
     var lines = map.voronoi.getNonFillerVoronoiLines(visible);
 
-    for (var i = 0; i < lines.length; i++)
+    for (let i = 0; i < lines.length; i++)
     {
       var line = lines[i];
       gfx.moveTo(line.va.x, line.va.y);

@@ -46,7 +46,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
   {
     var rows: ListItem[] = [];
 
-    for (var id in this.props.units)
+    for (let id in this.props.units)
     {
       var unit = this.props.units[id];
 

@@ -100,7 +100,7 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
 
       var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
 
-      for (var i = 0; i < buttons.length; i++)
+      for (let i = 0; i < buttons.length; i++)
       {
         var buttonWidth = buttons[i].getBoundingClientRect().width + margin;
         this.cachedButtonWidths.push(buttonWidth);
@@ -155,7 +155,7 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
       }
       var padding = window.innerHeight > 600 ? 25 : 0;
 
-      for (var i = 0; i < this.cachedButtonWidths.length; i++)
+      for (let i = 0; i < this.cachedButtonWidths.length; i++)
       {
         var buttonWidthToCheck = this.cachedButtonWidths[i];
         if (spaceAvailable > buttonWidthToCheck + padding)

@@ -55,7 +55,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
 
     var itemSlots: React.ReactElement<any>[] = [];
 
-    for (var slot in unit.items)
+    for (let slot in unit.items)
     {
       itemSlots.push(UnitItemWrapper(
       {

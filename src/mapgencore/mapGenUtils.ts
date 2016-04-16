@@ -39,10 +39,10 @@ export function linkAllStars(stars: Star[])
 
   var triangles = triangulate(stars);
 
-  for (var i = 0; i < triangles.length; i++)
+  for (let i = 0; i < triangles.length; i++)
   {
     var edges = <Star[][]> triangles[i].getEdges();
-    for (var j = 0; j < edges.length; j++)
+    for (let j = 0; j < edges.length; j++)
     {
       edges[j][0].addLink(edges[j][1]);
     }
@@ -50,7 +50,7 @@ export function linkAllStars(stars: Star[])
 }
 export function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number)
 {
-  for (var i = 0; i < stars.length; i++)
+  for (let i = 0; i < stars.length; i++)
   {
     var star = stars[i];
     var regionsAlreadyCut:
@@ -62,7 +62,7 @@ export function partiallyCutLinks(stars: Star[], minConnections: number, maxCuts
 
     if (neighbors.length <= minConnections) continue;
 
-    for (var j = neighbors.length - 1; j >= 0; j--)
+    for (let j = neighbors.length - 1; j >= 0; j--)
     {
       var neighbor = neighbors[j];
 
@@ -109,11 +109,11 @@ export function partiallyCutLinks(stars: Star[], minConnections: number, maxCuts
 }
 export function calculateConnectedness(stars: Star[], maxRange: number)
 {
-  for (var i = 0; i < stars.length; i++)
+  for (let i = 0; i < stars.length; i++)
   {
     var connectedness: number = 0;
     var linkedByRange = stars[i].getLinkedInRange(maxRange).byRange;
-    for (var rangeString in linkedByRange)
+    for (let rangeString in linkedByRange)
     {
       var range = parseInt(rangeString);
       connectedness += linkedByRange[rangeString].length / range;
@@ -197,7 +197,7 @@ export function makeSectors(stars: Star[], minSize: number, maxSize: number)
             [starId: number]: number
           } = {};
 
-          for (var i = 0; i < frontier.length; i++)
+          for (let i = 0; i < frontier.length; i++)
           {
             var perimeter = sector.getPerimeterLengthWithStar(frontier[i]) / 15;
             var sortScore = frontier[i].mapGenData.connectedness - perimeter;
@@ -236,7 +236,7 @@ export function makeSectors(stars: Star[], minSize: number, maxSize: number)
     } = {};
     var candidateSectors: Sector[] = [];
 
-    for (var j = 0; j < neighbors.length; j++)
+    for (let j = 0; j < neighbors.length; j++)
     {
       if (!neighbors[j].mapGenData.sector) continue;
       else
@@ -262,11 +262,11 @@ export function makeSectors(stars: Star[], minSize: number, maxSize: number)
       [sectorId: number]: number;
     } = {};
 
-    for (var j = 0; j < candidateSectors.length; j++)
+    for (let j = 0; j < candidateSectors.length; j++)
     {
       var sectorNeighbors = candidateSectors[j].getNeighboringStars();
       var unclaimed = 0;
-      for (var k = 0; k < sectorNeighbors.length; k++)
+      for (let k = 0; k < sectorNeighbors.length; k++)
       {
         if (!sectorNeighbors[k].mapGenData.sector)
         {
@@ -297,12 +297,12 @@ export function makeSectors(stars: Star[], minSize: number, maxSize: number)
 }
 export function setSectorDistributionFlags(sectors: Sector[])
 {
-  for (var i = 0; i < sectors.length; i++)
+  for (let i = 0; i < sectors.length; i++)
   {
     var sector = sectors[i];
     sector.distributionFlags = [];
     var majorityRegions = sector.getMajorityRegions();
-    for (var j = 0; j < majorityRegions.length; j++)
+    for (let j = 0; j < majorityRegions.length; j++)
     {
       if (majorityRegions[j].id.indexOf("center") !== -1)
       {
@@ -329,18 +329,18 @@ export function distributeDistributablesPerSector(sectors: Sector[],
   {
     [distributableName: string]: number;
   } = {};
-  for (var name in allDistributables)
+  for (let name in allDistributables)
   {
     probabilityWeights[name] = allDistributables[name].rarity;
   }
 
-  for (var i = 0; i < sectors.length; i++)
+  for (let i = 0; i < sectors.length; i++)
   {
     var sector = sectors[i];
     var alreadyAddedByWeight = getRelativeWeightsFromObject(probabilityWeights);
     var candidates: Distributable[] = [];
 
-    for (var j = 0; j < sector.distributionFlags.length; j++)
+    for (let j = 0; j < sector.distributionFlags.length; j++)
     {
       var flag = sector.distributionFlags[j];
       var distributablesForFlag = TemplateIndexes.distributablesByDistributionGroup[flag][distributableType];
@@ -352,7 +352,7 @@ export function distributeDistributablesPerSector(sectors: Sector[],
     var neighborSectors = sector.getNeighboringSectors();
     var candidatesNotInNeighboringSectors = candidates.filter(function(candidate: Distributable)
     {
-      for (var k = 0; k < neighborSectors.length; k++)
+      for (let k = 0; k < neighborSectors.length; k++)
       {
         if (neighborSectors[k].addedDistributables.indexOf(candidate) !== -1)
         {
@@ -372,7 +372,7 @@ export function distributeDistributablesPerSector(sectors: Sector[],
     {
       [distributableName: string]: number;
     } = {};
-    for (var j = 0; j < candidates.length; j++)
+    for (let j = 0; j < candidates.length; j++)
     {
       candidatesByWeight[candidates[j].type] =
         alreadyAddedByWeight[candidates[j].type];
@@ -410,7 +410,7 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
     var amount = amount - 1;
   }
 
-  for (var i = 0; i < amount; i++)
+  for (let i = 0; i < amount; i++)
   {
     star.addBuilding(new Building(
     {
@@ -446,7 +446,7 @@ export function severLinksToNonAdjacentStars(star: Star)
 
   var neighborVoronoiIds = star.voronoiCell.getNeighborIds();
 
-  for (var i = 0; i < allLinks.length; i++)
+  for (let i = 0; i < allLinks.length; i++)
   {
     var toSever = allLinks[i];
 

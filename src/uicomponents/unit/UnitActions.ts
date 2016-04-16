@@ -32,7 +32,7 @@ export class UnitActionsComponent extends React.Component<PropTypes, StateType>
     var icons: React.HTMLElement[] = [];
 
     var availableCount = this.props.currentActionPoints - this.props.hoveredActionPointExpenditure;
-    for (var i = 0; i < availableCount; i++)
+    for (let i = 0; i < availableCount; i++)
     {
       icons.push(React.DOM.img(
         {
@@ -45,7 +45,7 @@ export class UnitActionsComponent extends React.Component<PropTypes, StateType>
 
     var hoveredCount = Math.min(this.props.hoveredActionPointExpenditure, this.props.currentActionPoints);
 
-    for (var i = 0; i < hoveredCount; i++)
+    for (let i = 0; i < hoveredCount; i++)
     {
       icons.push(React.DOM.img(
         {
@@ -57,7 +57,7 @@ export class UnitActionsComponent extends React.Component<PropTypes, StateType>
     }
 
     var spentCount = this.props.maxActionPoints - this.props.currentActionPoints;
-    for (var i = 0; i < spentCount; i++)
+    for (let i = 0; i < spentCount; i++)
     {
       icons.push(React.DOM.img(
         {

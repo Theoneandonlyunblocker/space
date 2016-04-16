@@ -77,7 +77,7 @@ export default class MapGenResult
     };
 
     // move all stars to centroid of their voronoi cell. store original position for serialization
-    for (var i = 0; i < this.stars.length; i++)
+    for (let i = 0; i < this.stars.length; i++)
     {
       var star = this.stars[i];
       star.basisX = star.x;
@@ -104,7 +104,7 @@ export default class MapGenResult
       height: this.height
     });
 
-    for (var i = 0; i < this.stars.length; i++)
+    for (let i = 0; i < this.stars.length; i++)
     {
       var cell = this.stars[i].voronoiCell;
       var bbox = cell.getBbox();
@@ -122,7 +122,7 @@ export default class MapGenResult
       console.log("Skipped cleaning map gen data due to debug mode being enabled");
       return;
     }
-    for (var i = 0; i < this.stars.length; i++)
+    for (let i = 0; i < this.stars.length; i++)
     {
       this.stars[i].mapGenData = null;
       delete this.stars[i].mapGenData;

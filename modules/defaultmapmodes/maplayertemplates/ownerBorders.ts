@@ -24,7 +24,7 @@ const ownerBorders: MapRendererLayerTemplate =
     var revealedStars = this.player.getRevealedStars();
     var borderEdges = getRevealedBorderEdges(revealedStars, map.voronoi);
 
-    for (var i = 0; i < borderEdges.length; i++)
+    for (let i = 0; i < borderEdges.length; i++)
     {
       var gfx = new PIXI.Graphics();
       doc.addChild(gfx);

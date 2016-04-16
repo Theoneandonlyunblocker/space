@@ -94,7 +94,7 @@ export function getRandomProperty(target: {[props: string]: any;})
 export function getAllPropertiesWithKey(target: {[props: string]: any}, keyToFind: string)
 {
   var matchingProperties: any[] = [];
-  for (var key in target)
+  for (let key in target)
   {
     if (target[key][keyToFind])
     {
@@ -126,13 +126,13 @@ export function getRandomPropertyWithKey(target: {[props: string]: any}, keyToFi
 export function getRandomKeyWithWeights(target: {[prop: string]: number})
 {
   var totalWeight: number = 0;
-  for (var prop in target)
+  for (let prop in target)
   {
     totalWeight += target[prop];
   }
 
   var selection = randRange(0, totalWeight);
-  for (var prop in target)
+  for (let prop in target)
   {
     selection -= target[prop];
     if (selection <= 0)
@@ -144,13 +144,13 @@ export function getRandomKeyWithWeights(target: {[prop: string]: number})
 export function getRandomArrayItemWithWeights<T extends {weight?: number}>(arr: T[]): T
 {
   var totalWeight: number = 0;
-  for (var i = 0; i < arr.length; i++)
+  for (let i = 0; i < arr.length; i++)
   {
     totalWeight += arr[i].weight;
   }
 
   var selection = randRange(0, totalWeight);
-  for (var i = 0; i < arr.length; i++)
+  for (let i = 0; i < arr.length; i++)
   {
     selection -= arr[i].weight;
     if (selection <= 0)
@@ -171,7 +171,7 @@ export function findItemWithKey<T>(source: {[key: string]: any},
     }
   };
 
-  for (var key in source)
+  for (let key in source)
   {
     if (key === parentKey)
     {
@@ -195,7 +195,7 @@ export function findItemWithKey<T>(source: {[key: string]: any},
 export function getFrom2dArray(target: any[][], arr: number[][]): any[]
 {
   var result: any[] = [];
-  for (var i = 0; i < arr.length; i++)
+  for (let i = 0; i < arr.length; i++)
   {
     if 
     ( 
@@ -217,9 +217,9 @@ export function getFrom2dArray(target: any[][], arr: number[][]): any[]
 export function flatten2dArray(toFlatten: any[][]): any[]
 {
   var flattened: any[] = [];
-  for (var i = 0; i < toFlatten.length; i++)
+  for (let i = 0; i < toFlatten.length; i++)
   {
-    for (var j = 0; j < toFlatten[i].length; j++)
+    for (let j = 0; j < toFlatten[i].length; j++)
     {
       flattened.push(toFlatten[i][j]);
     }
@@ -327,7 +327,7 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
   to = to || new from.constructor();
   var toIterateOver = onlyExtendAlreadyPresent ? to : from;
 
-  for (var name in toIterateOver)
+  for (let name in toIterateOver)
   {
     if (!onlyExtendAlreadyPresent || from.hasOwnProperty(name))
     {
@@ -414,7 +414,7 @@ export function deletePropertiesNotSharedWithTarget(source: {[key: string]: any}
 {
   var dst: any = {};
 
-  for (var key in target)
+  for (let key in target)
   {
     if (typeof target[key] !== "object" || !target[key])
     {
@@ -433,7 +433,7 @@ export function recursiveRemoveAttribute(parent: HTMLElement, attribute: string)
 {
   parent.removeAttribute(attribute);
 
-  for (var i = 0; i < parent.children.length; i++)
+  for (let i = 0; i < parent.children.length; i++)
   {
     var child = <HTMLElement> parent.children[i];
     recursiveRemoveAttribute(child, attribute);
@@ -488,7 +488,7 @@ export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
   var matchingItems: any[] = [];
 
 
-  for (var i = 0; i < allKeys.length; i++)
+  for (let i = 0; i < allKeys.length; i++)
   {
     if (allKeys[i].indexOf(stringToMatch) !== -1)
     {
@@ -554,13 +554,13 @@ export function getRelativeWeightsFromObject(byCount: {[prop: string]: number}, 
 
   var min = 0;
   var max: number;
-  for (var prop in byCount)
+  for (let prop in byCount)
   {
     var count = byCount[prop];
     max = isFinite(max) ? Math.max(max, count) : count;
   }
 
-  for (var prop in byCount)
+  for (let prop in byCount)
   {
     var count = byCount[prop];
     relativeWeights[prop] = getRelativeValue(count, min, max);
@@ -577,7 +577,7 @@ export function getDropTargetAtLocation(x: number, y: number)
     y: y
   }
 
-  for (var i = 0; i < dropTargets.length; i++)
+  for (let i = 0; i < dropTargets.length; i++)
   {
     var node = <HTMLElement> dropTargets[i];
     var nodeBounds = node.getBoundingClientRect();
@@ -610,7 +610,7 @@ export function onDOMLoaded(onLoaded: () => void)
 }
 export function meetAllPlayers()
 {
-  for (var i = 0; i < app.game.playerOrder.length; i++)
+  for (let i = 0; i < app.game.playerOrder.length; i++)
   {
     var player = app.game.playerOrder[i];
     if (player !== app.humanPlayer)
@@ -648,7 +648,7 @@ export function getItemsFromWeightedProbabilities<T>(probabilities: WeightedProb
   else
   {
     // flat probability
-    for (var i = 0; i < probabilities.length; i++)
+    for (let i = 0; i < probabilities.length; i++)
     {
       var selected: WeightedProbability<T> = probabilities[i];
       if (Math.random() < selected.flatProbability)
@@ -724,7 +724,7 @@ export function findEasingFunctionHighPoint(easingFunction: (x: number) => numbe
   var highestValueIndex: number
 
   var step = (endIndex - startIndex) / resolution;
-  for (var i = 0; i < resolution; i++)
+  for (let i = 0; i < resolution; i++)
   {
     var currentIndex = startIndex + i * step;
     var currentValue = easingFunction(currentIndex);
@@ -753,7 +753,7 @@ export function makeRandomPersonality(): Personality
 {
   var unitCompositionPreference: ArchetypeValues = {};
 
-  for (var archetype in app.moduleData.Templates.UnitArchetypes)
+  for (let archetype in app.moduleData.Templates.UnitArchetypes)
   {
     unitCompositionPreference[archetype] = Math.random();
   }
@@ -773,7 +773,7 @@ export function splitMultilineText(text: string | React.ReactFragment): string |
   if (Array.isArray(text))
   {
     var returnArr: React.ReactNode[] = [];
-    for (var i = 0; i < text.length; i++)
+    for (let i = 0; i < text.length; i++)
     {
       returnArr.push(text[i]);
       returnArr.push(React.DOM.br(

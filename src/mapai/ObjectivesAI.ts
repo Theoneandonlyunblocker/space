@@ -87,7 +87,7 @@ export default class ObjectivesAI
   {
     var objectiveTemplates = app.moduleData.Templates.Objectives;
 
-    for (var key in objectiveTemplates)
+    for (let key in objectiveTemplates)
     {
       var template = objectiveTemplates[key];
       if (template[propKey])
@@ -103,7 +103,7 @@ export default class ObjectivesAI
     var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
     var finalObjectives: Objective[] = [];
 
-    for (var i = 0; i < newObjectives.length; i++)
+    for (let i = 0; i < newObjectives.length; i++)
     {
       var newObjective = newObjectives[i];
       if (newObjective.priority < 0.04)
@@ -143,7 +143,7 @@ export default class ObjectivesAI
       return objectivesByTarget;
     }
 
-    for (var i = 0; i < this.objectivesByType[objectiveType].length; i++)
+    for (let i = 0; i < this.objectivesByType[objectiveType].length; i++)
     {
       var objective = this.objectivesByType[objectiveType][i];
       if (markAsOngoing) objective.isOngoing = true;
@@ -166,9 +166,9 @@ export default class ObjectivesAI
     var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
     var adjustments: RoutineAdjustmentByID;
 
-    for (var i = 0; i < withAdjustment.length; i++)
+    for (let i = 0; i < withAdjustment.length; i++)
     {
-      for (var j = 0; j < withAdjustment[i].template[propKey].length; j++)
+      for (let j = 0; j < withAdjustment[i].template[propKey].length; j++)
       {
         var adjustment = withAdjustment[i].template[propKey][j];
         if (!adjustments[adjustment.target.id])

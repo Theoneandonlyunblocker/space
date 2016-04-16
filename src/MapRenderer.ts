@@ -72,7 +72,7 @@ export default class MapRenderer
     this.preventRender = true;
     this.container.renderable = false;
 
-    for (var name in this.listeners)
+    for (let name in this.listeners)
     {
       eventManager.removeEventListener(name, this.listeners[name]);
     }
@@ -85,14 +85,14 @@ export default class MapRenderer
     this.parent = null;
     this.occupationShaders = null;
     
-    for (var starId in this.fowSpriteCache)
+    for (let starId in this.fowSpriteCache)
     {
       var sprite = this.fowSpriteCache[starId];
       sprite.renderable = false;
       sprite.texture.destroy(true);
       this.fowSpriteCache[starId] = null;
     }
-    for (var fleetSize in this.fleetTextTextureCache)
+    for (let fleetSize in this.fleetTextTextureCache)
     {
       var texture = this.fleetTextTextureCache[fleetSize];
       texture.destroy(true);
@@ -161,9 +161,9 @@ export default class MapRenderer
   }
   updateShaderOffsets(x: number, y: number)
   {
-    for (var owner in this.occupationShaders)
+    for (let owner in this.occupationShaders)
     {
-      for (var occupier in this.occupationShaders[owner])
+      for (let occupier in this.occupationShaders[owner])
       {
         var shader = this.occupationShaders[owner][occupier];
         shader.uniforms.offset.value = [-x, y];
@@ -172,9 +172,9 @@ export default class MapRenderer
   }
   updateShaderZoom(zoom: number)
   {
-    for (var owner in this.occupationShaders)
+    for (let owner in this.occupationShaders)
     {
-      for (var occupier in this.occupationShaders[owner])
+      for (let occupier in this.occupationShaders[owner])
       {
         var shader = this.occupationShaders[owner][occupier];
         shader.uniforms.zoom.value = zoom;
@@ -273,7 +273,7 @@ export default class MapRenderer
   }
   initLayers()
   {
-    for (var layerKey in app.moduleData.Templates.MapRendererLayers)
+    for (let layerKey in app.moduleData.Templates.MapRendererLayers)
     {
       var template = app.moduleData.Templates.MapRendererLayers[layerKey];
       var layer = new MapRendererLayer(template);
@@ -282,21 +282,21 @@ export default class MapRenderer
   }
   initMapModes()
   {
-    var buildMapMode = function(template: MapRendererMapModeTemplate)
+    var buildMapMode = function(mapModeKey: string, template: MapRendererMapModeTemplate)
     {
       var alreadyAdded :
       {
         [layerKey: string]: boolean;
       } = {};
       var mapMode = new MapRendererMapMode(template);
-      for (var i = 0; i < template.layers.length; i++)
+      for (let i = 0; i < template.layers.length; i++)
       {
         var layer = template.layers[i];
         
         mapMode.addLayer(this.layers[layer.key], true);
         alreadyAdded[layer.key] = true;
       }
-      for (var layerKey in this.layers)
+      for (let layerKey in this.layers)
       {
         if (!alreadyAdded[layerKey])
         {
@@ -307,10 +307,10 @@ export default class MapRenderer
       this.mapModes[mapModeKey] = mapMode;
     }.bind(this);
 
-    for (var mapModeKey in app.moduleData.Templates.MapRendererMapModes)
+    for (let mapModeKey in app.moduleData.Templates.MapRendererMapModes)
     {
       var template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
-      buildMapMode(template);
+      buildMapMode(mapModeKey, template);
     }
 
     // var customMapModeTemplate: MapRendererMapModeTemplate =
@@ -348,7 +348,7 @@ export default class MapRenderer
   }
   setAllLayersAsDirty()
   {
-    for (var i = 0; i < this.currentMapMode.layers.length; i++)
+    for (let i = 0; i < this.currentMapMode.layers.length; i++)
     {
       this.currentMapMode.layers[i].isDirty = true;
     }
@@ -360,7 +360,7 @@ export default class MapRenderer
   }
   updateMapModeLayers(updatedLayers: MapRendererLayer[])
   {
-    for (var i = 0; i < updatedLayers.length; i++)
+    for (let i = 0; i < updatedLayers.length; i++)
     {
       var layer = updatedLayers[i];
       var childIndex = this.container.getChildIndex(layer.container);
@@ -381,7 +381,7 @@ export default class MapRenderer
     this.resetContainer();
 
     var layerData = this.currentMapMode.getActiveLayers();
-    for (var i = 0; i < layerData.length; i++)
+    for (let i = 0; i < layerData.length; i++)
     {
       var layer = layerData[i];
       this.container.addChild(layer.container);
@@ -408,7 +408,7 @@ export default class MapRenderer
     this.resetContainer();
     
     var layerData = this.currentMapMode.getActiveLayers();
-    for (var i = 0; i < layerData.length; i++)
+    for (let i = 0; i < layerData.length; i++)
     {
       var layer = layerData[i];
       this.container.addChild(layer.container);
@@ -421,7 +421,7 @@ export default class MapRenderer
     if (this.preventRender || !this.isDirty) return;
 
     var layerData = this.currentMapMode.getActiveLayers();
-    for (var i = 0; i < layerData.length; i++)
+    for (let i = 0; i < layerData.length; i++)
     {
       var layer = layerData[i];
       layer.draw(this.galaxyMap, this);

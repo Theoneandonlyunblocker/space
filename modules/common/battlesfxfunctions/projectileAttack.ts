@@ -85,7 +85,7 @@ params: SFXParams)
       });
     }
 
-    for (var i = 0; i < projectiles.length; i++)
+    for (let i = 0; i < projectiles.length; i++)
     {
       var projectile = projectiles[i];
       if (!projectile.hasImpact)

@@ -72,7 +72,7 @@ function executeMultipleEffects(battle: Battle, abilityEffectData: AbilityEffect
   {
     var useEffects: AbilityUseEffect[] = [];
 
-    for (var i = 0; i < abilityEffectData.length; i++)
+    for (let i = 0; i < abilityEffectData.length; i++)
     {
       var useEffect = executeAbilityEffectDataAndGetUseEffect(battle, abilityEffectData[i]);
       if (useEffect)
@@ -85,7 +85,7 @@ function executeMultipleEffects(battle: Battle, abilityEffectData: AbilityEffect
   }
   else
   {
-    for (var i = 0; i < abilityEffectData.length; i++)
+    for (let i = 0; i < abilityEffectData.length; i++)
     {
       executeAbilityEffectData(battle, abilityEffectData[i]);
     }

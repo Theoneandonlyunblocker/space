@@ -29,7 +29,7 @@ export class TurnCounterComponent extends React.Component<PropTypes, StateType>
 
     var usedTurns = this.props.maxTurns - turnsLeft;
 
-    for (var i = 0; i < usedTurns; i++)
+    for (let i = 0; i < usedTurns; i++)
     {
       turns.push(
         React.DOM.div(
@@ -40,7 +40,7 @@ export class TurnCounterComponent extends React.Component<PropTypes, StateType>
       );
     }
 
-    for (var i = 0; i < turnsLeft; i++)
+    for (let i = 0; i < turnsLeft; i++)
     {
       turns.push(
         React.DOM.div(

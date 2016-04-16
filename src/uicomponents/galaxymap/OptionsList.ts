@@ -116,7 +116,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         step: 10
       }
     ];
-    for (var i = 0; i < battleAnimationStages.length; i++)
+    for (let i = 0; i < battleAnimationStages.length; i++)
     {
       var props = battleAnimationStages[i];
       var stage = props.stage;

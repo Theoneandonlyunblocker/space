@@ -36,7 +36,7 @@ const expandManufactoryCapacity: ObjectiveTemplate =
 
     if (player.money < 1200) return;
 
-    for (var i = 0; i < stars.length; i++)
+    for (let i = 0; i < stars.length; i++)
     {
       var star = stars[i];
       var fullyExpanded = star.manufactory && star.manufactory.capacity >= star.manufactory.maxCapacity;

@@ -69,14 +69,14 @@ export default class ModuleLoader
       }
     }.bind(this);
 
-    for (var index in this.moduleFiles)
+    for (let index in this.moduleFiles)
     {
       this.loadModuleFile(this.moduleFiles[index], boundCheckAll);
     }
   }
   hasFinishedLoading(): boolean
   {
-    for (var index in this.hasLoaded)
+    for (let index in this.hasLoaded)
     {
       if (!this.hasLoaded[index])
       {

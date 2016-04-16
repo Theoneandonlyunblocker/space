@@ -89,7 +89,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
     if (this.state.buildingTemplates.length < 1) return null;
     var rows: ListItem[] = [];
 
-    for (var i = 0; i < this.state.buildingTemplates.length; i++)
+    for (let i = 0; i < this.state.buildingTemplates.length; i++)
     {
       var template: BuildingTemplate = this.state.buildingTemplates[i];
 

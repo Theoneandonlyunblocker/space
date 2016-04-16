@@ -25,11 +25,11 @@ export default class Region
   }
   severLinksByQualifier(qualifierFN: (a: Star, b: Star) => boolean)
   {
-    for (var i = 0; i < this.stars.length; i++)
+    for (let i = 0; i < this.stars.length; i++)
     {
       var star = this.stars[i];
       var links = star.getAllLinks();
-      for (var j = 0; j < links.length; j++)
+      for (let j = 0; j < links.length; j++)
       {
         if (qualifierFN(star, links[j]))
         {

@@ -29,7 +29,7 @@ export default class MapRendererMapMode
   }
   getLayerIndex(layer: MapRendererLayer)
   {
-    for (var i = 0; i < this.layers.length; i++)
+    for (let i = 0; i < this.layers.length; i++)
     {
       if (this.layers[i] === layer) return i;
     }
@@ -43,7 +43,7 @@ export default class MapRendererMapMode
   getLayerIndexInContainer(layer: MapRendererLayer)
   {
     var index = -1;
-    for (var i = 0; i < this.layers.length; i++)
+    for (let i = 0; i < this.layers.length; i++)
     {
       if (this.activeLayers[this.layers[i].template.key])
       {
@@ -99,13 +99,13 @@ export default class MapRendererMapMode
     var layersInTemplate: MapRendererLayer[] = [];
     var layersNotInTemplate: MapRendererLayer[] = [];
 
-    for (var i = 0; i < this.layers.length; i++)
+    for (let i = 0; i < this.layers.length; i++)
     {
       var layer = this.layers[i];
       layersByKey[layer.template.key] = layer;
     }
 
-    for (var i = 0; i < this.template.layers.length; i++)
+    for (let i = 0; i < this.template.layers.length; i++)
     {
       var layerTemplate = this.template.layers[i];
       var layer = layersByKey[layerTemplate.key];
@@ -115,7 +115,7 @@ export default class MapRendererMapMode
       delete layersByKey[layerTemplate.key];
     }
 
-    for (var key in layersByKey)
+    for (let key in layersByKey)
     {
       var layer = layersByKey[key];
       newLayers.push(layer);
@@ -125,7 +125,7 @@ export default class MapRendererMapMode
     this.layers = newLayers;
     this.activeLayers = newActive;
     
-    for (var i = 0; i < this.layers.length; i++)
+    for (let i = 0; i < this.layers.length; i++)
     {
       this.layers[i].resetAlpha();
     }

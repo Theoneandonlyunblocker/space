@@ -75,7 +75,7 @@ function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
     return a.battleStats.guardAmount - b.battleStats.guardAmount;
   });
 
-  for (var i = 0; i < guarding.length; i++)
+  for (let i = 0; i < guarding.length; i++)
   {
     var guardRoll = Math.random() * 100;
     if (guardRoll <= guarding[i].battleStats.guardAmount)
@@ -139,13 +139,13 @@ function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData:
 {
   var effectData: AbilityEffectData[] = [];
 
-  for (var i = 0; i < effectTemplates.length; i++)
+  for (let i = 0; i < effectTemplates.length; i++)
   {
     var templateEffect = effectTemplates[i];
     var targetsForEffect = getUnitsInEffectArea(battle, templateEffect.action,
       abilityUseData.user, abilityUseData.actualTarget);
 
-    for (var j = 0; j < targetsForEffect.length; j++)
+    for (let j = 0; j < targetsForEffect.length; j++)
     {
       effectData.push(
       {
@@ -164,13 +164,13 @@ function getEffectTemplatesWithAttachedEffects(templates: AbilityEffectTemplate[
 {
   var withAttached: AbilityEffectTemplate[] = [];
 
-  for (var i = 0; i < templates.length; i++)
+  for (let i = 0; i < templates.length; i++)
   {
     var template = templates[i];
     withAttached.push(template);
     if (template.attachedEffects)
     {
-      for (var j = 0; j < template.attachedEffects.length; j++)
+      for (let j = 0; j < template.attachedEffects.length; j++)
       {
         withAttached.push(template.attachedEffects[j]);
       }
@@ -190,7 +190,7 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abi
   // var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().beforeAbilityUse;
   // if (passiveSkills)
   // {
-  //   for (var i = 0; i < passiveSkills.length; i++)
+  //   for (let i = 0; i < passiveSkills.length; i++)
   //   {
   //     beforeUseEffects = beforeUseEffects.concat(passiveSkills[i].beforeAbilityUse);
   //   }
@@ -223,7 +223,7 @@ function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abil
   // var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().afterAbilityUse;
   // if (passiveSkills)
   // {
-  //   for (var i = 0; i < passiveSkills.length; i++)
+  //   for (let i = 0; i < passiveSkills.length; i++)
   //   {
   //     afterUseEffects = afterUseEffects.concat(passiveSkills[i].afterAbilityUse);
   //   }

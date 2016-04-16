@@ -62,7 +62,7 @@ export var areaColumn: BattleAreaFunction = function(units: Unit[][], target: nu
   var y = target[1];
   var targetLocations: number[][] = [];
 
-  for (var i = 0; i < units.length; i++)
+  for (let i = 0; i < units.length; i++)
   {
     targetLocations.push([i,y]);
   }
@@ -79,7 +79,7 @@ export var areaRow: BattleAreaFunction = function(units: Unit[][], target: numbe
   var x = target[0];
   var targetLocations: number[][] = [];
 
-  for (var i = 0; i < units[x].length; i++)
+  for (let i = 0; i < units[x].length; i++)
   {
     targetLocations.push([x,i]);
   }

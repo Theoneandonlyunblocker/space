@@ -124,14 +124,14 @@ export default class Player
     this.diplomacyStatus = null;
     this.AIController = null;
 
-    for (var key in this.listeners)
+    for (let key in this.listeners)
     {
       eventManager.removeEventListener(key, this.listeners[key]);
     }
   }
   die()
   {
-    for (var i = 0; i < this.fleets.length; i++)
+    for (let i = 0; i < this.fleets.length; i++)
     {
       this.fleets[i].deleteFleet(false);
     }
@@ -187,7 +187,7 @@ export default class Player
   getAllUnits()
   {
     var allUnits: Unit[] = [];
-    for (var unitId in this.units)
+    for (let unitId in this.units)
     {
       allUnits.push(this.units[unitId]);
     }
@@ -195,7 +195,7 @@ export default class Player
   }
   forEachUnit(operator: (unit: Unit) => void)
   {
-    for (var unitId in this.units)
+    for (let unitId in this.units)
     {
       operator(this.units[unitId]);
     }
@@ -231,7 +231,7 @@ export default class Player
       data: Fleet;
     }[] = [];
 
-    for (var i = 0; i < this.fleets.length; i++)
+    for (let i = 0; i < this.fleets.length; i++)
     {
       var fleet = this.fleets[i];
 
@@ -275,7 +275,7 @@ export default class Player
   {
     var income = 0;
 
-    for (var i = 0; i < this.controlledLocations.length; i++)
+    for (let i = 0; i < this.controlledLocations.length; i++)
     {
       income += this.controlledLocations[i].getIncome();
     }
@@ -302,7 +302,7 @@ export default class Player
       };
     } = {};
 
-    for (var i = 0; i < this.controlledLocations.length; i++)
+    for (let i = 0; i < this.controlledLocations.length; i++)
     {
       var star = this.controlledLocations[i];
 
@@ -331,11 +331,11 @@ export default class Player
       [id: number]: Star;
     } = {};
 
-    for (var i = 0; i < this.controlledLocations.length; i++)
+    for (let i = 0; i < this.controlledLocations.length; i++)
     {
       var currentOwned = this.controlledLocations[i];
       var frontier =  currentOwned.getLinkedInRange(1).all;
-      for (var j = 0; j < frontier.length; j++)
+      for (let j = 0; j < frontier.length; j++)
       {
         if (stars[frontier[j].id])
         {
@@ -354,7 +354,7 @@ export default class Player
 
     var allStars: Star[] = [];
 
-    for (var id in stars)
+    for (let id in stars)
     {
       allStars.push(stars[id]);
     }
@@ -378,7 +378,7 @@ export default class Player
     }
     // identify units
     var unitsToIdentify = star.getAllUnits();
-    for (var i = 0; i < unitsToIdentify.length; i++)
+    for (let i = 0; i < unitsToIdentify.length; i++)
     {
       this.identifyUnit(unitsToIdentify[i]);
     }
@@ -398,7 +398,7 @@ export default class Player
   {
     var presentPlayersByVisibility = star.getPresentPlayersByVisibility();
 
-    for (var playerId in presentPlayersByVisibility[visibility])
+    for (let playerId in presentPlayersByVisibility[visibility])
     {
       var player = presentPlayersByVisibility[visibility][playerId];
       if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent)
@@ -420,18 +420,18 @@ export default class Player
 
     var allVisible: Star[] = [];
     var allDetected: Star[] = [];
-    for (var i = 0; i < this.controlledLocations.length; i++)
+    for (let i = 0; i < this.controlledLocations.length; i++)
     {
       allVisible = allVisible.concat(this.controlledLocations[i].getVision());
       allDetected = allDetected.concat(this.controlledLocations[i].getDetection());
     }
-    for (var i = 0; i < this.fleets.length; i++)
+    for (let i = 0; i < this.fleets.length; i++)
     {
       allVisible = allVisible.concat(this.fleets[i].getVision());
       allDetected = allDetected.concat(this.fleets[i].getDetection());
     }
 
-    for (var i = 0; i < allVisible.length; i++)
+    for (let i = 0; i < allVisible.length; i++)
     {
       var star = allVisible[i];
       if (!this.visibleStars[star.id])
@@ -450,7 +450,7 @@ export default class Player
       }
     }
 
-    for (var i = 0; i < allDetected.length; i++)
+    for (let i = 0; i < allDetected.length; i++)
     {
       var star = allDetected[i];
       if (!this.detectedStars[star.id])
@@ -476,11 +476,11 @@ export default class Player
         Object.keys(previousDetectedStars).length);
     }
 
-    for (var i = 0; i < newVisibleStars.length; i++)
+    for (let i = 0; i < newVisibleStars.length; i++)
     {
       this.updateVisionInStar(newVisibleStars[i]);
     }
-    for (var i = 0; i < newDetectedStars.length; i++)
+    for (let i = 0; i < newDetectedStars.length; i++)
     {
       this.updateDetectionInStar(newDetectedStars[i]);
     }
@@ -504,7 +504,7 @@ export default class Player
 
     var visible: Star[] = [];
 
-    for (var id in this.visibleStars)
+    for (let id in this.visibleStars)
     {
       var star = this.visibleStars[id];
       visible.push(star);
@@ -522,7 +522,7 @@ export default class Player
 
     var toReturn: Star[] = [];
 
-    for (var id in this.revealedStars)
+    for (let id in this.revealedStars)
     {
       toReturn.push(this.revealedStars[id]);
     }
@@ -535,7 +535,7 @@ export default class Player
 
     var toReturn: Star[] = [];
 
-    for (var id in this.revealedStars)
+    for (let id in this.revealedStars)
     {
       if (!this.visibleStars[id])
       {
@@ -555,7 +555,7 @@ export default class Player
 
     var toReturn: Star[] = [];
 
-    for (var id in this.detectedStars)
+    for (let id in this.detectedStars)
     {
       toReturn.push(this.detectedStars[id]);
     }
@@ -589,11 +589,11 @@ export default class Player
       [starId: number]: Star[];
     } = {};
 
-    for (var starId in this.revealedStars)
+    for (let starId in this.revealedStars)
     {
       var star = this.revealedStars[starId];
       var links = star.getAllLinks();
-      for (var i = 0; i < links.length; i++)
+      for (let i = 0; i < links.length; i++)
       {
         var linkedStar = links[i];
         if (!this.revealedStars[linkedStar.id])
@@ -633,7 +633,7 @@ export default class Player
     {
       return true;
     }
-    for (var i = 0; i < fleet.units.length; i++)
+    for (let i = 0; i < fleet.units.length; i++)
     {
       if (!this.identifiedUnits[fleet.units[i].id])
       {
@@ -710,7 +710,7 @@ export default class Player
     var research = 0;
     research += app.moduleData.ruleSet.research.baseResearchSpeed;
 
-    for (var i = 0; i < this.controlledLocations.length; i++)
+    for (let i = 0; i < this.controlledLocations.length; i++)
     {
       research += this.controlledLocations[i].getResearchPoints();
     }
@@ -722,7 +722,7 @@ export default class Player
   {
     var manufactories: Manufactory[] = [];
 
-    for (var i = 0; i < this.controlledLocations.length; i++)
+    for (let i = 0; i < this.controlledLocations.length; i++)
     {
       if (this.controlledLocations[i].manufactory)
       {
@@ -734,7 +734,7 @@ export default class Player
   }
   meetsTechnologyRequirements(requirements: TechnologyRequirement[])
   {
-    for (var i = 0; i < requirements.length; i++)
+    for (let i = 0; i < requirements.length; i++)
     {
       var requirement = requirements[i];
       if (this.playerTechnology.technologies[requirement.technology.key].level < requirement.level)
@@ -759,7 +759,7 @@ export default class Player
       unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
     }
 
-    for (var i = 0; i < unitsToAdd.length; i++)
+    for (let i = 0; i < unitsToAdd.length; i++)
     {
       var template = unitsToAdd[i];
       if (typesAlreadyAddedChecked[template.type]) continue;
@@ -782,7 +782,7 @@ export default class Player
     // TODO manufactory
     var itemTypes: ItemTemplate[] = [];
 
-    for (var key in app.moduleData.Templates.Items)
+    for (let key in app.moduleData.Templates.Items)
     {
       itemTypes.push(app.moduleData.Templates.Items[key]);
     }
@@ -813,7 +813,7 @@ export default class Player
     }
     var manufactories = this.getAllManufactories();
 
-    for (var i = 0; i < manufactories.length; i++)
+    for (let i = 0; i < manufactories.length; i++)
     {
       var manufactory = manufactories[i];
       var isBuildable = !manufactory.queueIsFull() &&
@@ -835,19 +835,19 @@ export default class Player
   serialize(): PlayerSaveData
   {
     var unitIds: number[] = [];
-    for (var id in this.units)
+    for (let id in this.units)
     {
       unitIds.push(this.units[id].id);
     }
     
     var revealedStarIds: number[] = [];
-    for (var id in this.revealedStars)
+    for (let id in this.revealedStars)
     {
       revealedStarIds.push(this.revealedStars[id].id);
     }
 
     var identifiedUnitIds: number[] = [];
-    for (var id in this.identifiedUnits)
+    for (let id in this.identifiedUnits)
     {
       identifiedUnitIds.push(this.identifiedUnits[id].id);
     }

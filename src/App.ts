@@ -196,7 +196,7 @@ class App
   {
     var players: Player[] = [];
 
-    for (var i = 0; i < 5; i++)
+    for (let i = 0; i < 5; i++)
     {
       var player = new Player(i >= 1);
       player.makeRandomFlag();
@@ -248,7 +248,7 @@ class App
 
     this.playerControl = new PlayerControl(this.humanPlayer);
 
-    for (var i = 0; i < this.game.playerOrder.length; i++)
+    for (let i = 0; i < this.game.playerOrder.length; i++)
     {
       var player = this.game.playerOrder[i];
       if (player.isAI)

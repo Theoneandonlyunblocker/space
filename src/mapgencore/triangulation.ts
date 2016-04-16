@@ -13,12 +13,12 @@ export function triangulate(vertices: Point[]): Triangle[]
   var superTriangle = makeSuperTriangle(vertices);
   triangles.push(superTriangle);
 
-  for (var i = 0; i < vertices.length; i++)
+  for (let i = 0; i < vertices.length; i++)
   {
     var vertex: Point = vertices[i];
     var edgeBuffer: Point[][] = [];
 
-    for (var j = 0; j < triangles.length; j++)
+    for (let j = 0; j < triangles.length; j++)
     {
       var triangle = triangles[j];
 
@@ -32,9 +32,9 @@ export function triangulate(vertices: Point[]): Triangle[]
     }
     if (i >= vertices.length) continue;
 
-    for (var j = edgeBuffer.length - 2; j >= 0; j--)
+    for (let j = edgeBuffer.length - 2; j >= 0; j--)
     {
-      for (var k = edgeBuffer.length - 1; k >= j + 1; k--)
+      for (let k = edgeBuffer.length - 1; k >= j + 1; k--)
       {
         if (edgesEqual(edgeBuffer[k], edgeBuffer[j]))
         {
@@ -45,7 +45,7 @@ export function triangulate(vertices: Point[]): Triangle[]
         }
       }
     }
-    for (var j = 0; j < edgeBuffer.length; j++)
+    for (let j = 0; j < edgeBuffer.length; j++)
     {
       var newTriangle = new Triangle(
         edgeBuffer[j][0],
@@ -57,7 +57,7 @@ export function triangulate(vertices: Point[]): Triangle[]
     }
   }
 
-  for (var i = triangles.length - 1; i >= 0; i--)
+  for (let i = triangles.length - 1; i >= 0; i--)
   {
     if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
     {
@@ -80,7 +80,7 @@ function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): 
   {
     max = vertices[0].x;
 
-    for (var i = 0; i < vertices.length; i++)
+    for (let i = 0; i < vertices.length; i++)
     {
       if (vertices[i].x > max)
       {

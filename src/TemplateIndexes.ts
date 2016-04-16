@@ -73,10 +73,10 @@ class TemplateIndexes
 
     function putInGroups(distributables: any, distributableType: string)
     {
-      for (var prop in distributables)
+      for (let prop in distributables)
       {
         var distributable = distributables[prop];
-        for (var i = 0; i < distributable.distributionGroups.length; i++)
+        for (let i = 0; i < distributable.distributionGroups.length; i++)
         {
           var groupName = distributable.distributionGroups[i];
           if (!result[groupName])
@@ -104,7 +104,7 @@ class TemplateIndexes
     {
       [techLevel: number]: ItemTemplate[];
     } = {};
-    for (var itemName in app.moduleData.Templates.Items)
+    for (let itemName in app.moduleData.Templates.Items)
     {
       var item = app.moduleData.Templates.Items[itemName];
 

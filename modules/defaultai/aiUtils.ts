@@ -43,7 +43,7 @@ export function moveToRoutine(front: Front,
     }
   };
 
-  for (var i = 0; i < fleets.length; i++)
+  for (let i = 0; i < fleets.length; i++)
   {
     var moveTarget: Star = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : front.objective.target;
     fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
@@ -71,7 +71,7 @@ export function musterAndAttackRoutine(targetFilter: (target: any) => boolean,
 
   var inRangeOfTarget = 0;
 
-  for (var i = 0; i < fleets.length; i++)
+  for (let i = 0; i < fleets.length; i++)
   {
     var distance = fleets[i].location.getDistanceToStar(front.targetLocation);
     if (fleets[i].getMinCurrentMovePoints() >= distance)
@@ -136,7 +136,7 @@ export function musterAndAttackRoutine(targetFilter: (target: any) => boolean,
     }
   };
 
-  for (var i = 0; i < fleets.length; i++)
+  for (let i = 0; i < fleets.length; i++)
   {
     fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
   }
@@ -230,7 +230,7 @@ export function scoutingUnitFitFN(unit: Unit, front: Front)
 }
 export function mergeScoresByStar(merged: ScoresByStar, scores: {star: Star; score: number;}[])
 {
-  for (var i = 0; i < scores.length; i++)
+  for (let i = 0; i < scores.length; i++)
   {
     var star = scores[i].star;
     if (!merged[star.id])
@@ -253,13 +253,13 @@ export function makeObjectivesFromScores(template: ObjectiveTemplate,
   var minScore: number = 0;
   var maxScore: number;
 
-  for (var i = 0; i < evaluationScores.length; i++)
+  for (let i = 0; i < evaluationScores.length; i++)
   {
     var score = evaluationScores[i].score;
     maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
   }
 
-  for (var i = 0; i < evaluationScores.length; i++)
+  for (let i = 0; i < evaluationScores.length; i++)
   {
     var star = evaluationScores[i].star || null;
     var player = evaluationScores[i].player || null;
@@ -279,7 +279,7 @@ export function perimeterObjectiveCreation(template: ObjectiveTemplate, isForSco
   var playersToEstablishPerimeterAgainst: Player[] = [];
   var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
   var statusByPlayer = diplomacyStatus.statusByPlayer;
-  for (var playerId in statusByPlayer)
+  for (let playerId in statusByPlayer)
   {
     if (statusByPlayer[playerId] >= DiplomacyState.war)
     {
@@ -288,7 +288,7 @@ export function perimeterObjectiveCreation(template: ObjectiveTemplate, isForSco
   }
 
   var allScoresByStar: ScoresByStar = {};
-  for (var i = 0; i < playersToEstablishPerimeterAgainst.length; i++)
+  for (let i = 0; i < playersToEstablishPerimeterAgainst.length; i++)
   {
     var player = playersToEstablishPerimeterAgainst[i];
     var scores = mapEvaluator.getScoredPerimeterLocationsAgainstPlayer(player, 1, isForScouting);
@@ -301,7 +301,7 @@ export function perimeterObjectiveCreation(template: ObjectiveTemplate, isForSco
     star: Star;
     score: number;
   }[] = [];
-  for (var starId in allScoresByStar)
+  for (let starId in allScoresByStar)
   {
     if (allScoresByStar[starId].score > 0.04)
     {

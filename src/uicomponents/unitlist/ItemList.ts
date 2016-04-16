@@ -64,7 +64,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
     var rows: ListItem[] = [];
     var items: Item[] = this.props.items;
 
-    for (var i = 0; i < items.length; i++)
+    for (let i = 0; i < items.length; i++)
     {
       var item = items[i];
 

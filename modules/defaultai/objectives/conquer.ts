@@ -41,7 +41,7 @@ const conquer: ObjectiveTemplate =
   {
     var hostilePlayers: Player[] = [];
     var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
-    for (var playerId in diplomacyStatus.metPlayers)
+    for (let playerId in diplomacyStatus.metPlayers)
     {
       if (diplomacyStatus.statusByPlayer[playerId] >= DiplomacyState.war)
       {
@@ -52,7 +52,7 @@ const conquer: ObjectiveTemplate =
     var relativeThreatOfPlayers = mapEvaluator.getRelativePerceivedThreatOfAllKnownPlayers();
 
     var possibleTargets: Star[] = [];
-    for (var i = 0; i < hostilePlayers.length; i++)
+    for (let i = 0; i < hostilePlayers.length; i++)
     {
       var desirabilityByStar = mapEvaluator.evaluateDesirabilityOfPlayersStars(hostilePlayers[i]).byStar;
       var sortedIds = getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
@@ -65,7 +65,7 @@ const conquer: ObjectiveTemplate =
 
     var template = conquer;
     var objectives: Objective[] = [];
-    for (var i = 0; i < possibleTargets.length; i++)
+    for (let i = 0; i < possibleTargets.length; i++)
     {
       var star = possibleTargets[i];
       var player = star.owner;

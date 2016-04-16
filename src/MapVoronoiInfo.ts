@@ -45,7 +45,7 @@ export default class MapVoronoiInfo
         var adjacentFillerSites = 0;
         var maxAllowedFillerSites = 2;
 
-        for (var i = 0; i < adjacentSites.length; i++)
+        for (let i = 0; i < adjacentSites.length; i++)
         {
           var site = adjacentSites[i];
 
@@ -94,7 +94,7 @@ export default class MapVoronoiInfo
   getStarAtPoint(point: Point)
   {
     var items = this.treeMap.retrieve(point);
-    for (var i = 0; i < items.length; i++)
+    for (let i = 0; i < items.length; i++)
     {
       var cell = items[i].cell;
       if (cell.pointIntersection(point.x, point.y) > -1)

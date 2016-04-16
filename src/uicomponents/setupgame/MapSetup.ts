@@ -44,7 +44,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   {
     var mapGenTemplates: MapGenTemplate[] = [];
 
-    for (var template in app.moduleData.Templates.MapGen)
+    for (let template in app.moduleData.Templates.MapGen)
     {
       if (app.moduleData.Templates.MapGen[template].key)
       {
@@ -95,7 +95,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   render()
   {
     var mapGenTemplateOptions: React.HTMLElement[] = [];
-    for (var i = 0; i < this.state.templates.length; i++)
+    for (let i = 0; i < this.state.templates.length; i++)
     {
       var template = this.state.templates[i];
 

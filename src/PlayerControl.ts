@@ -48,7 +48,7 @@ export default class PlayerControl
   }
   removeEventListeners(): void
   {
-    for (var name in this.listeners)
+    for (let name in this.listeners)
     {
       this.removeEventListener(name);
     }
@@ -143,7 +143,7 @@ export default class PlayerControl
   {
     if (this.selectedFleets.length <= 0) return false;
     
-    for (var i = 1; i < this.selectedFleets.length; i++)
+    for (let i = 1; i < this.selectedFleets.length; i++)
     {
       if (this.selectedFleets[i].location !== this.selectedFleets[i-1].location)
       {
@@ -164,7 +164,7 @@ export default class PlayerControl
     
     var playerFleets: Fleet[] = [];
     var otherFleets: Fleet[] = [];
-    for (var i = 0; i < fleets.length; i++)
+    for (let i = 0; i < fleets.length; i++)
     {
       if (fleets[i].player === this.player)
       {
@@ -192,7 +192,7 @@ export default class PlayerControl
   {
     this.clearSelection();
 
-    for (var i = 0; i < fleets.length; i++)
+    for (let i = 0; i < fleets.length; i++)
     {
       if (fleets[i].units.length < 1)
       {
@@ -239,7 +239,7 @@ export default class PlayerControl
     fleets.splice(fleets.indexOf(master), 1);
     var slaves = fleets;
 
-    for (var i = 0; i < slaves.length; i++)
+    for (let i = 0; i < slaves.length; i++)
     {
       slaves[i].mergeWith(master, i === slaves.length - 1);
     }
@@ -252,7 +252,7 @@ export default class PlayerControl
     var normalFleets: Fleet[] = [];
     var stealthyFleets: Fleet[] = [];
 
-    for (var i = 0; i < allFleets.length; i++)
+    for (let i = 0; i < allFleets.length; i++)
     {
       if (allFleets[i].isStealthy)
       {
@@ -280,7 +280,7 @@ export default class PlayerControl
   }
   moveFleets(star: Star): void
   {
-    for (var i = 0; i < this.selectedFleets.length; i++)
+    for (let i = 0; i < this.selectedFleets.length; i++)
     {
       this.selectedFleets[i].pathFind(star);
     }
@@ -314,7 +314,7 @@ export default class PlayerControl
   }
   endReorganizingFleets(): void
   {
-    for (var i = 0; i < this.currentlyReorganizing.length; i++)
+    for (let i = 0; i < this.currentlyReorganizing.length; i++)
     {
       var fleet = this.currentlyReorganizing[i];
       if (fleet.units.length <= 0)

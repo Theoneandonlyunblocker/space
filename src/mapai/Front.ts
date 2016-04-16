@@ -69,7 +69,7 @@ export default class Front
     }.bind(this);
 
     // build indexes of pure fleets and impure units
-    for (var i = 0; i < allFleets.length; i++)
+    for (let i = 0; i < allFleets.length; i++)
     {
       var fleet = allFleets[i];
       var star = fleet.location;
@@ -87,7 +87,7 @@ export default class Front
       {
         var ownUnits = fleet.units.filter(ownUnitFilterFN);
 
-        for (var j = 0; j < ownUnits.length; j++)
+        for (let j = 0; j < ownUnits.length; j++)
         {
           if (!impureFleetMembersByLocation[star.id])
           {
@@ -104,7 +104,7 @@ export default class Front
       return b.units.length - a.units.length;
     }
 
-    for (var starId in pureFleetsByLocation)
+    for (let starId in pureFleetsByLocation)
     {
       // combine pure fleets at same location
       var fleets = pureFleetsByLocation[starId];
@@ -113,7 +113,7 @@ export default class Front
         fleets.sort(sortFleetsBySizeFN);
 
         // only goes down to i = 1 !!
-        for (var i = fleets.length - 1; i >= 1; i--)
+        for (let i = fleets.length - 1; i >= 1; i--)
         {
           fleets[i].mergeWith(fleets[0]);
           fleets.splice(i, 1);
@@ -123,7 +123,7 @@ export default class Front
       // move impure units to pure fleets at same location
       if (impureFleetMembersByLocation[starId])
       {
-        for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--)
+        for (let i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--)
         {
           var unit = impureFleetMembersByLocation[starId][i];
           unit.fleet.transferUnit(fleets[0], unit);
@@ -133,13 +133,13 @@ export default class Front
     }
 
     // create new pure fleets from leftover impure units
-    for (var starId in impureFleetMembersByLocation)
+    for (let starId in impureFleetMembersByLocation)
     {
       var units = impureFleetMembersByLocation[starId];
       if (units.length < 1) continue;
       var newFleet = new Fleet(units[0].fleet.player, [], units[0].fleet.location);
 
-      for (var i = units.length - 1; i >= 0; i--)
+      for (let i = units.length - 1; i >= 0; i--)
       {
         units[i].fleet.transferUnit(newFleet, units[i]);
       }
@@ -148,7 +148,7 @@ export default class Front
   }
   isFleetPure(fleet: Fleet): boolean
   {
-    for (var i = 0; i < fleet.units.length; i++)
+    for (let i = 0; i < fleet.units.length; i++)
     {
       if (this.getUnitIndex(fleet.units[i]) === -1)
       {
@@ -165,7 +165,7 @@ export default class Front
       [fleetId: number]: Fleet;
     } = {};
 
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       if (!this.units[i].fleet) continue;
       
@@ -177,7 +177,7 @@ export default class Front
 
     var allFleets: Fleet[] = [];
 
-    for (var fleetId in fleetsById)
+    for (let fleetId in fleetsById)
     {
       allFleets.push(fleetsById[fleetId]);
     }
@@ -208,7 +208,7 @@ export default class Front
   {
     var unitCountByArchetype: ArchetypeValues = {};
 
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       var archetype = this.units[i].template.archetype;
       
@@ -229,7 +229,7 @@ export default class Front
       [starId: number]: Unit[];
     } = {};
 
-    for (var i = 0; i < this.units.length; i++)
+    for (let i = 0; i < this.units.length; i++)
     {
       var star = this.units[i].fleet.location;
       if (!byLocation[star.id])
@@ -285,7 +285,7 @@ export default class Front
     var idealWeights = this.objective.template.preferredUnitComposition;
     var scores: ArchetypeValues = {};
 
-    for (var unitType in idealWeights)
+    for (let unitType in idealWeights)
     {
       var archetypeCount = countByArchetype[unitType] || 0;
       scores[unitType] = totalUnits * idealWeights[unitType] - archetypeCount;

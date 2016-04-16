@@ -88,7 +88,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
       else return 0;
     });
 
-    for (var i = 0; i < sortedParentBuildings.length; i++)
+    for (let i = 0; i < sortedParentBuildings.length; i++)
     {
       var parentBuildingId = sortedParentBuildings[i];
       var upgrades = possibleUpgrades[parentBuildingId];
@@ -96,7 +96,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
 
       var upgradeElements: React.ReactElement<any>[] = [];
 
-      for (var j = 0; j < upgrades.length; j++)
+      for (let j = 0; j < upgrades.length; j++)
       {
         if (j > 0)
         {

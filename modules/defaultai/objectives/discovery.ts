@@ -49,7 +49,7 @@ const discovery: ObjectiveTemplate =
     var minDistance: number;
     var maxDistance: number;
 
-    for (var starId in linksToUnrevealedStars)
+    for (let starId in linksToUnrevealedStars)
     {
       var star = mapEvaluator.player.revealedStars[starId];
       var nearest = mapEvaluator.player.getNearestOwnedStarTo(star);
@@ -74,7 +74,7 @@ const discovery: ObjectiveTemplate =
       }
     }
 
-    for (var starId in linksToUnrevealedStars)
+    for (let starId in linksToUnrevealedStars)
     {
       var star = mapEvaluator.player.revealedStars[starId];
       var score = 0;

@@ -160,7 +160,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     var marginString = "-" + target.scrollLeft + "px";
 
-    for (var i = 0; i < titles.length; i++)
+    for (let i = 0; i < titles.length; i++)
     {
       titles[i].style.marginLeft = marginString;
     }
@@ -178,7 +178,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     var order = initialSortOrder;
 
 
-    for (var i = 0; i < columns.length; i++)
+    for (let i = 0; i < columns.length; i++)
     {
       if (!columns[i].order)
       {
@@ -273,7 +273,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     itemsToSort.sort(function(a: ListItem, b: ListItem)
     {
       var result = 0;
-      for (var i = 0; i < sortOrder.length; i++)
+      for (let i = 0; i < sortOrder.length; i++)
       {
         var columnToSortBy = sortOrder[i];
 
@@ -302,7 +302,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   shiftSelection(amountToShift: number)
   {
     var reverseIndexes = {};
-    for (var i = 0; i < this.sortedItems.length; i++)
+    for (let i = 0; i < this.sortedItems.length; i++)
     {
       reverseIndexes[this.sortedItems[i].key] = i;
     };

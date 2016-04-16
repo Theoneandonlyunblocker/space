@@ -57,7 +57,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
       }
     });
 
-    for (var i = 0; i < modifiers.length; i++)
+    for (let i = 0; i < modifiers.length; i++)
     {
       var modifier = modifiers[i];
       if (modifier.isOverRidden) continue;

@@ -8,7 +8,7 @@ export default function rocketAttack(params: SFXParams)
 {
   var explosionTextures: PIXI.Texture[] = [];
 
-  for (var i = 0; i < 26; i++)
+  for (let i = 0; i < 26; i++)
   {
      var explosionTexture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + '.png');
      explosionTextures.push(explosionTexture);

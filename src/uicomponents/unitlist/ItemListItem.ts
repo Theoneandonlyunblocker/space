@@ -132,7 +132,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
     var cells: React.ReactElement<any>[] = [];
 
-    for (var i = 0; i < columns.length; i++)
+    for (let i = 0; i < columns.length; i++)
     {
       var cell = this.makeCell(columns[i].key);
 

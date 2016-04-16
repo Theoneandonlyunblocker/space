@@ -35,7 +35,7 @@ const debugSectors: MapRendererLayerTemplate =
       [id: number]: boolean;
     } = {};
 
-    for (var i = 0; i < points.length; i++)
+    for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
       if (star.mapGenData && star.mapGenData.sector)
@@ -45,7 +45,7 @@ const debugSectors: MapRendererLayerTemplate =
     }
     var sectorsCount = Object.keys(sectorIds).length;
 
-    for (var i = 0; i < points.length; i++)
+    for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
 

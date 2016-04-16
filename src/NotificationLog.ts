@@ -34,10 +34,10 @@ export default class NotificationLog
   }
   addEventListeners()
   {
-    for (var key in app.moduleData.Templates.Notifications)
+    for (let key in app.moduleData.Templates.Notifications)
     {
       var template = app.moduleData.Templates.Notifications[key];
-      for (var i = 0; i < template.eventListeners.length; i++)
+      for (let i = 0; i < template.eventListeners.length; i++)
       {
         var listenerKey = template.eventListeners[i];
         var listener = eventManager.addEventListener(listenerKey,
@@ -53,9 +53,9 @@ export default class NotificationLog
   }
   destroy()
   {
-    for (var key in this.listeners)
+    for (let key in this.listeners)
     {
-      for (var i = 0; i < this.listeners[key].length; i++)
+      for (let i = 0; i < this.listeners[key].length; i++)
       {
         eventManager.removeEventListener(key, this.listeners[key][i]);
       }
@@ -108,7 +108,7 @@ export default class NotificationLog
   {
     var filtered: Notification<any>[] = [];
 
-    for (var i = 0; i < notifications.length; i++)
+    for (let i = 0; i < notifications.length; i++)
     {
       if (this.notificationFilter.shouldDisplayNotification(notifications[i]))
       {
@@ -122,10 +122,10 @@ export default class NotificationLog
   {
     var notificationsSaveData: NotificationSaveData[] = []
 
-    for (var turnNumber in this.byTurn)
+    for (let turnNumber in this.byTurn)
     {
       var notifications = this.byTurn[turnNumber];
-      for (var i = 0; i < notifications.length; i++)
+      for (let i = 0; i < notifications.length; i++)
       {
         notificationsSaveData.push(notifications[i].serialize());
       }

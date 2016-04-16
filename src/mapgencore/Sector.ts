@@ -57,10 +57,10 @@ export default class Sector
       [starId: number]: boolean;
     } = {};
 
-    for (var i = 0; i < this.stars.length; i++)
+    for (let i = 0; i < this.stars.length; i++)
     {
       var frontier = this.stars[i].getLinkedInRange(1).all;
-      for (var j = 0; j < frontier.length; j++)
+      for (let j = 0; j < frontier.length; j++)
       {
         if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id])
         {
@@ -83,7 +83,7 @@ export default class Sector
 
     var neighborStars = this.getNeighboringStars();
 
-    for (var i = 0; i < neighborStars.length; i++)
+    for (let i = 0; i < neighborStars.length; i++)
     {
       var sector = neighborStars[i].mapGenData.sector;
       if (!alreadyAdded[sector.id])
@@ -108,7 +108,7 @@ export default class Sector
     } = {};
 
     var biggestRegionStarCount = 0;
-    for (var i = 0; i < this.stars.length; i++)
+    for (let i = 0; i < this.stars.length; i++)
     {
       var star = this.stars[i];
       var region = star.mapGenData.region;
@@ -131,7 +131,7 @@ export default class Sector
     }
 
     var majorityRegions: Region[] = [];
-    for (var regionId in regionsByStars)
+    for (let regionId in regionsByStars)
     {
       if (regionsByStars[regionId].count >= biggestRegionStarCount)
       {
@@ -145,11 +145,11 @@ export default class Sector
   {
     var perimeterLength: number = 0;
 
-    for (var i = 0; i < this.stars.length; i++)
+    for (let i = 0; i < this.stars.length; i++)
     {
       var ownStar = this.stars[i];
       var halfEdges = ownStar.voronoiCell.halfedges;
-      for (var j = 0; j < halfEdges.length; j++)
+      for (let j = 0; j < halfEdges.length; j++)
       {
         var edge = halfEdges[j].edge;
         if (edge.lSite === star || edge.rSite === star)
@@ -193,7 +193,7 @@ export default class Sector
 
     var maxDistance: number = 0;
 
-    for (var i = 0; i < independentStars.length; i++)
+    for (let i = 0; i < independentStars.length; i++)
     {
       var star = independentStars[i];
 
@@ -226,14 +226,14 @@ export default class Sector
 
     var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
 
-    for (var i = 0; i < independentStars.length; i++)
+    for (let i = 0; i < independentStars.length; i++)
     {
       var star = independentStars[i];
       var distance = distanceFromPlayerOwnedLocationById[star.id];
       var inverseMapGenDistance = 1 - star.mapGenData.distance;
 
       var localBuildableUnitTypes: UnitTemplate[] = [];
-      for (var j = 0; j < star.buildableUnitTypes.length; j++)
+      for (let j = 0; j < star.buildableUnitTypes.length; j++)
       {
         var template = star.buildableUnitTypes[j];
         if (!template.technologyRequirements ||
@@ -245,7 +245,7 @@ export default class Sector
 
       // TODO map gen | kinda weird
       var unitsToAddCount = minUnits;
-      for (var j = minUnits; j < distance; j++)
+      for (let j = minUnits; j < distance; j++)
       {
         unitsToAddCount += (1 - variance + Math.random() * distance * variance) * intensity;
 
@@ -267,7 +267,7 @@ export default class Sector
         commander.name = "Pirate commander";
         units.push(commander);
       }
-      for (var j = 0; j < unitsToAddCount; j++)
+      for (let j = 0; j < unitsToAddCount; j++)
       {
         var isElite = j < elitesAmount;
         var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;

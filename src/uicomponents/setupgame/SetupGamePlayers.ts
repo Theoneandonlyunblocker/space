@@ -52,7 +52,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   private getInitialState(): StateType
   {
     var players: number[] = [];
-    for (var i = 0; i < this.props.maxPlayers; i++)
+    for (let i = 0; i < this.props.maxPlayers; i++)
     {
       players.push(this.newPlayerID++);
     }
@@ -86,7 +86,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
     var newIds: number[] = [];
 
-    for (var i = 0; i < amountToMake; i++)
+    for (let i = 0; i < amountToMake; i++)
     {
       newIds.push(this.newPlayerID++);
     }
@@ -136,7 +136,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
 
   randomizeAllPlayers()
   {
-    for (var id in this.playerSetupComponentsByID)
+    for (let id in this.playerSetupComponentsByID)
     {
       var player = this.playerSetupComponentsByID[id];
 
@@ -147,7 +147,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   makeAllPlayers()
   {
     var players: Player[] = [];
-    for (var id in this.playerSetupComponentsByID)
+    for (let id in this.playerSetupComponentsByID)
     {
       players.push(this.playerSetupComponentsByID[id].makePlayer());
     }

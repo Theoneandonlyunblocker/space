@@ -50,7 +50,7 @@ export default class Building
       this.template.effectMultiplierFN(this.upgradeLevel) :
       this.upgradeLevel;
 
-    for (var key in this.template.effect)
+    for (let key in this.template.effect)
     {
       var prop = this.template.effect[key];
       if (isFinite(prop))
@@ -67,7 +67,7 @@ export default class Building
         {
           effect[key] = {};
         }
-        for (var key2 in prop)
+        for (let key2 in prop)
         {
           if (!effect[key][key2])
           {

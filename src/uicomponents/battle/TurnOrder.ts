@@ -113,7 +113,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
     var toRender: React.HTMLElement[] = [];
 
-    for (var i = 0; i < turnOrder.length; i++)
+    for (let i = 0; i < turnOrder.length; i++)
     {
       var unit = turnOrder[i];
 

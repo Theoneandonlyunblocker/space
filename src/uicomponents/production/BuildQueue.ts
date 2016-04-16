@@ -56,7 +56,7 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
 
     var convertedBuildQueue: ManufacturableThing[] = [];
 
-    for (var i = 0; i < manufactory.buildQueue.length; i++)
+    for (let i = 0; i < manufactory.buildQueue.length; i++)
     {
       convertedBuildQueue.push(manufactory.buildQueue[i].template);
     }

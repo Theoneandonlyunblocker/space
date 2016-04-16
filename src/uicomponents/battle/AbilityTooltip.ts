@@ -25,7 +25,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
 
   shouldComponentUpdate(newProps: PropTypes)
   {
-    for (var prop in newProps)
+    for (let prop in newProps)
     {
       if (prop !== "activeTargets")
       {
@@ -76,7 +76,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
       containerProps.style.left = parentRect.right - 128;
     }
 
-    for (var i = 0; i < abilities.length; i++)
+    for (let i = 0; i < abilities.length; i++)
     {
       var ability = abilities[i];
       var data: any = {};

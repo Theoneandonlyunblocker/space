@@ -75,7 +75,7 @@ export default class PathfindingArrow
   }
   removeEventListeners()
   {
-    for (var name in this.listeners)
+    for (let name in this.listeners)
     {
       this.removeEventListener(name);
     }
@@ -231,7 +231,7 @@ export default class PathfindingArrow
       path: any;
     }[] = [];
 
-    for (var i = 0; i < this.selectedFleets.length; i++)
+    for (let i = 0; i < this.selectedFleets.length; i++)
     {
       var fleet = this.selectedFleets[i];
 
@@ -271,9 +271,9 @@ export default class PathfindingArrow
     // get total paths passing through star
     // used for seperating overlapping paths to pass through
     // orbits around the star
-    for (var i = 0; i < paths.length; i++)
+    for (let i = 0; i < paths.length; i++)
     {
-      for (var j = 0; j < paths[i].path.length; j++)
+      for (let j = 0; j < paths[i].path.length; j++)
       {
         var star = paths[i].path[j].star;
 
@@ -287,7 +287,7 @@ export default class PathfindingArrow
       }
     }
 
-    for (var i = 0; i < paths.length; i++)
+    for (let i = 0; i < paths.length; i++)
     {
       var fleet = paths[i].fleet;
       var path = paths[i].path;
@@ -300,7 +300,7 @@ export default class PathfindingArrow
 
       var curvePoints: Point[] = [];
 
-      for (var j = path.length - 1; j >= 0; j--)
+      for (let j = path.length - 1; j >= 0; j--)
       {
         var star = path[j].star;
 
@@ -336,7 +336,7 @@ export default class PathfindingArrow
 
     var curves = this.getAllCurrentCurves();
 
-    for (var i = 0; i < curves.length; i++)
+    for (let i = 0; i < curves.length; i++)
     {
       var curve = this.drawCurve(curves[i].curveData, this.curveStyles[curves[i].style]);
 
@@ -352,7 +352,7 @@ export default class PathfindingArrow
     abababa.push(points[points.length - 1]);
 
 
-    for (var i = 3, n = abababa.length; i < n; i++)
+    for (let i = 3, n = abababa.length; i < n; i++)
     {
 
       var p0 = abababa[i - 3];
@@ -384,7 +384,7 @@ export default class PathfindingArrow
     gfx.lineStyle(12, style.color.getHex(), 0.7);
     gfx.moveTo(points[0][0], points[0][1]);
 
-    for (var i = 0; i < points.length; i++)
+    for (let i = 0; i < points.length; i++)
     {
       gfx.bezierCurveTo.apply(gfx, points[i]);
     }
@@ -432,7 +432,7 @@ export default class PathfindingArrow
     var buttMidX = x2 + Math.cos(lineAngle + Math.PI) * headLength;
     var buttMidY = y2 + Math.sin(lineAngle + Math.PI) * headLength;
 
-    for (var i = points.length - 1; i >= 0; i -= 2)
+    for (let i = points.length - 1; i >= 0; i -= 2)
     {
       var y = points[i];
       var x = points[i-1];

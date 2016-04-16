@@ -223,7 +223,7 @@ export default class Renderer
       touchendoutside: mainMouseUpOutsideFN,
     };
 
-    for (var eventType in mainListeners)
+    for (let eventType in mainListeners)
     {
       main.on(eventType, mainListeners[eventType]);
     }

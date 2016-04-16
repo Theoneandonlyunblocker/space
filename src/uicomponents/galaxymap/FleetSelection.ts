@@ -127,7 +127,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
     var allFleetsInSameLocation = true;
     var hasMultipleSelected = selectedFleets.length >= 2;
 
-    for (var i = 1; i < selectedFleets.length; i++)
+    for (let i = 1; i < selectedFleets.length; i++)
     {
       if (selectedFleets[i].location !== selectedFleets[i-1].location)
       {
@@ -137,7 +137,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
     }
     var fleetInfos: React.ReactElement<any>[] = [];
 
-    for (var i = 0; i < selectedFleets.length; i++)
+    for (let i = 0; i < selectedFleets.length; i++)
     {
       var fleet = selectedFleets[i];
 

@@ -43,7 +43,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
       return (key.indexOf("Save") > -1);
     });
 
-    for (var i = 0; i < saveKeys.length; i++)
+    for (let i = 0; i < saveKeys.length; i++)
     {
       var saveData = JSON.parse(localStorage.getItem(saveKeys[i]));
       var date = new Date(saveData.date);

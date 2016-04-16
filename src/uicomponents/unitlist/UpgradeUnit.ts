@@ -123,7 +123,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
     var unit = this.props.unit;
     var upgradableAbilities: AbilityBase[] = [];
 
-    for (var source in this.state.upgradeData)
+    for (let source in this.state.upgradeData)
     {
       if (this.state.upgradeData[source].base)
       {

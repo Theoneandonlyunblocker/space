@@ -112,7 +112,7 @@ export default class RectangleSelect
   {
     var toReturn: any[] = [];
 
-    for (var i = 0; i < this.toSelectFrom.length; i++)
+    for (let i = 0; i < this.toSelectFrom.length; i++)
     {
       if (this.selectionContains(this.toSelectFrom[i].position))
       {

@@ -31,7 +31,7 @@ export class UnitStatusEffectsComponent extends React.Component<PropTypes, State
     var withItems = this.props.unit.getAttributesWithItems();
     var withEffects = this.props.unit.getAttributesWithEffects();
 
-    for (var attribute in withEffects)
+    for (let attribute in withEffects)
     {
       if (attribute === "maxActionPoints") continue;
 
@@ -64,7 +64,7 @@ export class UnitStatusEffectsComponent extends React.Component<PropTypes, State
     {
       if (passiveSkillsByPhase[phase])
       {
-        for (var i = 0; i < passiveSkillsByPhase[phase].length; i++)
+        for (let i = 0; i < passiveSkillsByPhase[phase].length; i++)
         {
           var skill = passiveSkillsByPhase[phase][i];
           if (!skill.isHidden)
@@ -79,7 +79,7 @@ export class UnitStatusEffectsComponent extends React.Component<PropTypes, State
     if (passiveSkills.length > 0)
     {
       var passiveSkillsElementTitle: string = "";
-      for (var i = 0; i < passiveSkills.length; i++)
+      for (let i = 0; i < passiveSkills.length; i++)
       {
         passiveSkillsElementTitle += passiveSkills[i].displayName + ": " +
           passiveSkills[i].description + "\n";

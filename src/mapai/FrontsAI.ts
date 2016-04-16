@@ -40,7 +40,7 @@ export default class FrontsAI
   {
     var scores: IFrontUnitScore[] = [];
 
-    for (var i = 0; i < units.length; i++)
+    for (let i = 0; i < units.length; i++)
     {
       scores.push(
       {
@@ -67,7 +67,7 @@ export default class FrontsAI
     {
       var frontScores = unitScoresByFront[front.id];
 
-      for (var i = 0; i < frontScores.length; i++)
+      for (let i = 0; i < frontScores.length; i++)
       {
         frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
       }
@@ -75,7 +75,7 @@ export default class FrontsAI
 
     var removeUnit = function(unit: Unit)
     {
-      for (var frontId in unitScoresByFront)
+      for (let frontId in unitScoresByFront)
       {
         unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function(score)
         {
@@ -90,7 +90,7 @@ export default class FrontsAI
       return a.score - b.score;
     }
 
-    for (var i = 0; i < this.fronts.length; i++)
+    for (let i = 0; i < this.fronts.length; i++)
     {
       var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
       unitScoresByFront[this.fronts[i].id] = frontScores;
@@ -124,7 +124,7 @@ export default class FrontsAI
 
   getFrontWithId(id: number)
   {
-    for (var i = 0; i < this.fronts.length; i++)
+    for (let i = 0; i < this.fronts.length; i++)
     {
       if (this.fronts[i].id === id)
       {
@@ -160,12 +160,12 @@ export default class FrontsAI
   removeInactiveFronts()
   {
     // loop backwards because splicing
-    for (var i = this.fronts.length - 1; i >= 0; i--)
+    for (let i = this.fronts.length - 1; i >= 0; i--)
     {
       var front = this.fronts[i];
       var hasActiveObjective = false;
 
-      for (var j = 0; j < this.objectivesAI.objectives.length; j++)
+      for (let j = 0; j < this.objectivesAI.objectives.length; j++)
       {
         var objective = this.objectivesAI.objectives[j];
         if (objective.id === front.id)
@@ -190,7 +190,7 @@ export default class FrontsAI
      */
     this.removeInactiveFronts();
 
-    for (var i = 0; i < this.objectivesAI.objectives.length; i++)
+    for (let i = 0; i < this.objectivesAI.objectives.length; i++)
     {
       var objective = this.objectivesAI.objectives[i];
       if (!objective.template.moveRoutineFN)
@@ -208,7 +208,7 @@ export default class FrontsAI
 
   organizeFleets()
   {
-    for (var i = 0; i < this.fronts.length; i++)
+    for (let i = 0; i < this.fronts.length; i++)
     {
       this.fronts[i].organizeFleets();
     }
@@ -245,7 +245,7 @@ export default class FrontsAI
    
     this.frontsRequestingUnits = [];
 
-    for (var i = 0; i < this.fronts.length; i++)
+    for (let i = 0; i < this.fronts.length; i++)
     {
       var front = this.fronts[i];
       if (front.units.length < front.idealUnitsDesired)

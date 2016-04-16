@@ -24,7 +24,7 @@ const starOwners: MapRendererLayerTemplate =
       points = this.player.getRevealedStars();
     }
 
-    for (var i = 0; i < points.length; i++)
+    for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
       var occupier = star.getSecondaryController();

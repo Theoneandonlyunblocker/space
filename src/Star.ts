@@ -124,7 +124,7 @@ export default class Star implements Point
 
     if (this.owner === app.humanPlayer)
     {
-      for (var key in building.template.effect)
+      for (let key in building.template.effect)
       {
         eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
       }
@@ -174,7 +174,7 @@ export default class Star implements Point
     if (!this.buildings["defence"]) return null;
 
     var defenceBuildings = this.buildings["defence"];
-    for (var i = 0; i < defenceBuildings.length; i++)
+    for (let i = 0; i < defenceBuildings.length; i++)
     {
       if (defenceBuildings[i].controller !== this.owner)
       {
@@ -213,9 +213,9 @@ export default class Star implements Point
   {
     var effect: BuildingEffect = {};
 
-    for (var category in this.buildings)
+    for (let category in this.buildings)
     {
-      for (var i = 0; i < this.buildings[category].length; i++)
+      for (let i = 0; i < this.buildings[category].length; i++)
       {
         var building = this.buildings[category][i];
         building.getEffect(effect);
@@ -273,7 +273,7 @@ export default class Star implements Point
   {
     var buildings: Building[] = [];
 
-    for (var category in this.buildings)
+    for (let category in this.buildings)
     {
       buildings = buildings.concat(this.buildings[category]);
     }
@@ -298,7 +298,7 @@ export default class Star implements Point
 
     if (categoryBuildings)
     {
-      for (var i = 0; i < categoryBuildings.length; i++)
+      for (let i = 0; i < categoryBuildings.length; i++)
       {
         if (categoryBuildings[i].template[propToCheck] === buildingTemplate[propToCheck])
         {
@@ -312,7 +312,7 @@ export default class Star implements Point
   getBuildableBuildings()
   {
     var canBuild: BuildingTemplate[] = [];
-    for (var buildingType in app.moduleData.Templates.Buildings)
+    for (let buildingType in app.moduleData.Templates.Buildings)
     {
       var template: BuildingTemplate = app.moduleData.Templates.Buildings[buildingType];
       var alreadyBuilt: Building[];
@@ -349,7 +349,7 @@ export default class Star implements Point
 
     var ownerBuildings = this.getBuildingsForPlayer(this.owner);
 
-    for (var i = 0; i < ownerBuildings.length; i++)
+    for (let i = 0; i < ownerBuildings.length; i++)
     {
       var building = ownerBuildings[i];
       var upgrades = building.getPossibleUpgrades();
@@ -389,7 +389,7 @@ export default class Star implements Point
   {
     var allFleets: Fleet[] = [];
 
-    for (var playerId in this.fleets)
+    for (let playerId in this.fleets)
     {
       allFleets = allFleets.concat(this.fleets[playerId]);
     }
@@ -419,7 +419,7 @@ export default class Star implements Point
   }
   addFleets(fleets: Fleet[])
   {
-    for (var i = 0; i < fleets.length; i++)
+    for (let i = 0; i < fleets.length; i++)
     {
       this.addFleet(fleets[i]);
     }
@@ -439,7 +439,7 @@ export default class Star implements Point
   }
   removeFleets(fleets: Fleet[])
   {
-    for (var i = 0; i < fleets.length; i++)
+    for (let i = 0; i < fleets.length; i++)
     {
       this.removeFleet(fleets[i]);
     }
@@ -451,7 +451,7 @@ export default class Star implements Point
     var fleets = this.fleets[player.id];
     if (!fleets) return [];
 
-    for (var i = 0; i < fleets.length; i++)
+    for (let i = 0; i < fleets.length; i++)
     {
       allUnits = allUnits.concat(fleets[i].units);
     }
@@ -461,7 +461,7 @@ export default class Star implements Point
   getAllUnits(): Unit[]
   {
     var allUnits: Unit[] = [];
-    for (var playerId in this.fleets)
+    for (let playerId in this.fleets)
     {
       var fleets = this.fleets[playerId];
       allUnits = allUnits.concat(this.getAllUnitsOfPlayer(fleets[0].player));
@@ -473,7 +473,7 @@ export default class Star implements Point
   {
     var units: Unit[] = [];
 
-    for (var playerId in this.fleets)
+    for (let playerId in this.fleets)
     {
       var player = this.fleets[playerId][0].player;
       if (player.isIndependent)
@@ -509,7 +509,7 @@ export default class Star implements Point
         units: this.getAllUnitsOfPlayer(buildingTarget.controller)
       });
     }
-    for (var i = 0; i < fleetOwners.length; i++)
+    for (let i = 0; i < fleetOwners.length; i++)
     {
       if (diplomacyStatus.canAttackFleetOfPlayer(fleetOwners[i]))
       {
@@ -532,7 +532,7 @@ export default class Star implements Point
     var defenceBuildings = this.buildings["defence"].slice(0);
     if (this.owner === player) defenceBuildings = defenceBuildings.reverse();
 
-    for (var i = defenceBuildings.length - 1; i >= 0; i--)
+    for (let i = defenceBuildings.length - 1; i >= 0; i--)
     {
       if (defenceBuildings[i].controller.id !== player.id)
       {
@@ -546,7 +546,7 @@ export default class Star implements Point
   {
     var fleetOwners: Player[] = [];
 
-    for (var playerId in this.fleets)
+    for (let playerId in this.fleets)
     {
       var intPlayerId = parseInt(playerId);
       if (intPlayerId == player.id) continue;
@@ -609,7 +609,7 @@ export default class Star implements Point
   }
   getEdgeWith(neighbor: Star)
   {
-    for (var i = 0; i < this.voronoiCell.halfedges.length; i++)
+    for (let i = 0; i < this.voronoiCell.halfedges.length; i++)
     {
       var edge = this.voronoiCell.halfedges[i].edge;
 
@@ -631,7 +631,7 @@ export default class Star implements Point
 
     var sharedNeighbors: Star[] = [];
 
-    for (var i = 0; i < ownNeighbors.length; i++)
+    for (let i = 0; i < ownNeighbors.length; i++)
     {
       var star = ownNeighbors[i];
       if (star !== neighbor && neighborNeighbors.indexOf(star) !== -1)
@@ -647,7 +647,7 @@ export default class Star implements Point
   {
     var neighbors: Star[] = [];
 
-    for (var i = 0; i < this.voronoiCell.halfedges.length; i++)
+    for (let i = 0; i < this.voronoiCell.halfedges.length; i++)
     {
       var edge = this.voronoiCell.halfedges[i].edge;
 
@@ -687,18 +687,18 @@ export default class Star implements Point
     var current: Star[] = [];
     var frontier: Star[] = [this];
 
-    for (var i = 0; i < range; i++)
+    for (let i = 0; i < range; i++)
     {
       current = frontier.slice(0);
       if (current.length <= 0) break;
       frontier = [];
       visitedByRange[i+1] = [];
 
-      for (var j = 0; j < current.length; j++)
+      for (let j = 0; j < current.length; j++)
       {
         var neighbors = current[j].getAllLinks();
 
-        for (var k = 0; k < neighbors.length; k++)
+        for (let k = 0; k < neighbors.length; k++)
         {
           if (visited[neighbors[k].id]) continue;
 
@@ -711,7 +711,7 @@ export default class Star implements Point
     }
     var allVisited: Star[] = [];
 
-    for (var id in visited)
+    for (let id in visited)
     {
       allVisited.push(visited[id]);
     }
@@ -755,7 +755,7 @@ export default class Star implements Point
       connected[current.id] = current;
       var neighbors = current.getLinkedInRange(1).all;
       
-      for (var i = 0; i < neighbors.length; i++)
+      for (let i = 0; i < neighbors.length; i++)
       {
         var neighbor = neighbors[i];
         if (visited[neighbor.id]) continue;
@@ -770,7 +770,7 @@ export default class Star implements Point
       // breaks when sufficiently big island has been found
       if (earlyReturnSize && sizeFound >= earlyReturnSize)
       {
-        for (var i = 0; i < frontier.length; i++)
+        for (let i = 0; i < frontier.length; i++)
         {
           connected[frontier[i].id] = frontier[i];
         }
@@ -780,7 +780,7 @@ export default class Star implements Point
     }
 
     var island: Star[] = [];
-    for (var starId in connected)
+    for (let starId in connected)
     {
       island.push(connected[starId]);
     }
@@ -806,7 +806,7 @@ export default class Star implements Point
       var current = frontier.shift();
       var neighbors = current.getLinkedInRange(1).all;
 
-      for (var i = 0; i < neighbors.length; i++)
+      for (let i = 0; i < neighbors.length; i++)
       {
         var neighbor = neighbors[i];
         if (visited[neighbor.id]) continue;
@@ -844,7 +844,7 @@ export default class Star implements Point
       }
       else
       {
-        for (var id in a.cost)
+        for (let id in a.cost)
         {
           this.indexedDistanceToStar[id] = a.cost[id];
         }
@@ -911,10 +911,10 @@ export default class Star implements Point
       byVisibilityAndId.visible[secondaryController.id] = secondaryController;
     }
 
-    for (var playerId in this.fleets)
+    for (let playerId in this.fleets)
     {
       var fleets = this.fleets[playerId];
-      for (var i = 0; i < fleets.length; i++)
+      for (let i = 0; i < fleets.length; i++)
       {
         var fleetPlayer = fleets[i].player;
         if (byVisibilityAndId.detected[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id])
@@ -956,10 +956,10 @@ export default class Star implements Point
   {
     var buildings: StarBuildingsSaveData = {};
 
-    for (var category in this.buildings)
+    for (let category in this.buildings)
     {
       buildings[category] = [];
-      for (var i = 0; i < this.buildings[category].length; i++)
+      for (let i = 0; i < this.buildings[category].length; i++)
       {
         buildings[category].push(this.buildings[category][i].serialize())
       }

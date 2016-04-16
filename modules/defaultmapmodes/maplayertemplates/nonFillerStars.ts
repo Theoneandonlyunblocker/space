@@ -53,7 +53,7 @@ const nonFillerStars: MapRendererLayerTemplate =
     {
       eventManager.dispatchEvent("touchEnd", event);
     }
-    for (var i = 0; i < points.length; i++)
+    for (let i = 0; i < points.length; i++)
     {
       var star = points[i];
       var starSize = 1;

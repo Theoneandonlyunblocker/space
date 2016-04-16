@@ -73,7 +73,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
     var rows: ListItem[] = [];
 
-    for (var playerId in this.props.statusByPlayer)
+    for (let playerId in this.props.statusByPlayer)
     {
       var player = this.props.metPlayers[playerId];
       var status = this.props.player.diplomacyStatus.statusByPlayer[playerId];
@@ -96,7 +96,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
       });
     }
 
-    for (var i = 0; i < unmetPlayerCount; i++)
+    for (let i = 0; i < unmetPlayerCount; i++)
     {
       rows.push(
       {

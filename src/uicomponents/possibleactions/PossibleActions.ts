@@ -186,7 +186,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
     if (attackTargets && attackTargets.length > 0)
     {
       var attackTargetComponents: React.ReactElement<any>[] = [];
-      for (var i = 0; i < attackTargets.length; i++)
+      for (let i = 0; i < attackTargets.length; i++)
       {
         attackTargetComponents.push(AttackTarget(
         {

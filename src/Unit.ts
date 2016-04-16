@@ -229,7 +229,7 @@ export default class Unit
       high: null
     };
 
-    for (var slot in items)
+    for (let slot in items)
     {
       this.addItem(items[slot]);
     }
@@ -277,7 +277,7 @@ export default class Unit
       maxActionPoints: randInt(3, 5)
     }
 
-    for (var attribute in template.attributeLevels)
+    for (let attribute in template.attributeLevels)
     {
       var attributeLevel = template.attributeLevels[attribute];
 
@@ -424,7 +424,7 @@ export default class Unit
   }
   updateStatusEffects()
   {
-    for (var i = 0; i < this.battleStats.statusEffects.length; i++)
+    for (let i = 0; i < this.battleStats.statusEffects.length; i++)
     {
       this.battleStats.statusEffects[i].processTurnEnd();
       if (this.battleStats.statusEffects[i].duration === 0)
@@ -539,7 +539,7 @@ export default class Unit
   }
   destroyAllItems()
   {
-    for (var slot in this.items)
+    for (let slot in this.items)
     {
       var item = this.items[slot];
       if (item)
@@ -552,12 +552,12 @@ export default class Unit
   {
     var attributes = extendObject(this.baseAttributes);
 
-    for (var itemSlot in this.items)
+    for (let itemSlot in this.items)
     {
       if (this.items[itemSlot])
       {
         var item = this.items[itemSlot];
-        for (var attribute in item.template.attributes)
+        for (let attribute in item.template.attributes)
         {
           attributes[attribute] = clamp(
             attributes[attribute] + item.template.attributes[attribute], 1, 9);
@@ -615,15 +615,15 @@ export default class Unit
     }
 
     var adjustments: StatusEffectAttributes = {};
-    for (var i = 0; i < this.battleStats.statusEffects.length; i++)
+    for (let i = 0; i < this.battleStats.statusEffects.length; i++)
     {
       var statusEffect = this.battleStats.statusEffects[i];
       if (!statusEffect.template.attributes) continue;
 
-      for (var attribute in statusEffect.template.attributes)
+      for (let attribute in statusEffect.template.attributes)
       {
         adjustments[attribute] = {};
-        for (var type in statusEffect.template.attributes[attribute])
+        for (let type in statusEffect.template.attributes[attribute])
         {
           if (!adjustments[attribute][type])
           {
@@ -642,7 +642,7 @@ export default class Unit
     var withItems = this.getAttributesWithItems();
 
     var adjustments = this.getTotalStatusEffectAttributeAdjustments();
-    for (var attribute in adjustments)
+    for (let attribute in adjustments)
     {
       if (adjustments[attribute].flat)
       {
@@ -687,7 +687,7 @@ export default class Unit
   {
     var itemAbilities: AbilityTemplate[] = [];
 
-    for (var slot in this.items)
+    for (let slot in this.items)
     {
       if (!this.items[slot] || !this.items[slot].template.ability) continue;
       itemAbilities.push(this.items[slot].template.ability);
@@ -703,7 +703,7 @@ export default class Unit
   {
     var itemPassiveSkills: PassiveSkillTemplate[] = [];
 
-    for (var slot in this.items)
+    for (let slot in this.items)
     {
       if (!this.items[slot] || !this.items[slot].template.passiveSkill) continue;
       itemPassiveSkills.push(this.items[slot].template.passiveSkill);
@@ -726,7 +726,7 @@ export default class Unit
 
     var allSkills = this.getAllPassiveSkills();
 
-    for (var i = 0; i < allSkills.length; i++)
+    for (let i = 0; i < allSkills.length; i++)
     {
       var skill = allSkills[i];
       ["atBattleStart", "atTurnStart", "inBattlePrep"].forEach(function(phase)
@@ -941,7 +941,7 @@ export default class Unit
   {
     var totalCost = 0;
     totalCost += this.template.buildCost;
-    for (var slot in this.items)
+    for (let slot in this.items)
     {
       if (this.items[slot])
       {
@@ -988,7 +988,7 @@ export default class Unit
   }
   hasAbility(ability: AbilityBase, allAbilities: AbilityBase[])
   {
-    for (var i = 0; i < allAbilities.length; i++)
+    for (let i = 0; i < allAbilities.length; i++)
     {
       if (allAbilities[i].type === ability.type)
       {
@@ -1004,13 +1004,13 @@ export default class Unit
 
     if (!this.template.learnableAbilities) return abilities;
 
-    for (var i = 0; i < this.template.learnableAbilities.length; i++)
+    for (let i = 0; i < this.template.learnableAbilities.length; i++)
     {
       var learnableItem = this.template.learnableAbilities[i];
       if (Array.isArray(learnableItem))
       {
         var hasAbilityFromGroup: boolean = false;
-        for (var j = 0; j < learnableItem.length; j++)
+        for (let j = 0; j < learnableItem.length; j++)
         {
           if (this.hasAbility(learnableItem[j], allAbilities))
           {
@@ -1057,12 +1057,12 @@ export default class Unit
 
     var templates = app.moduleData.Templates;
 
-    for (var i = 0; i < allAbilities.length; i++)
+    for (let i = 0; i < allAbilities.length; i++)
     {
       var parentAbility = allAbilities[i];
       if (!parentAbility.canUpgradeInto) continue;
 
-      for (var j = 0; j < parentAbility.canUpgradeInto.length; j++)
+      for (let j = 0; j < parentAbility.canUpgradeInto.length; j++)
       {
         var childAbilityType = parentAbility.canUpgradeInto[j];
         var childAbility: AbilityBase =
@@ -1133,7 +1133,7 @@ export default class Unit
 
     if (includeItems)
     {
-      for (var slot in this.items)
+      for (let slot in this.items)
       {
         if (this.items[slot])
         {
