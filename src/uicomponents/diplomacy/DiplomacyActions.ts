@@ -5,7 +5,7 @@ import Trade from "../../Trade";
 import TradeOverview from "../trade/TradeOverview";
 import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
-
+import {CustomPopupProps} from "../popups/popup";
 
 interface PropTypes extends React.Props<any>
 {
@@ -64,13 +64,16 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
   {
     var contentConstructor: React.Factory<any>;
     var contentProps: any;
-    var popupProps: any =
+    var popupProps: CustomPopupProps =
     {
       resizable: true,
-      containerDragOnly: true,
       minWidth: 150,
       minHeight: 50,
-      preventAutoResize: true
+      dragPositionerProps:
+      {
+        containerDragOnly: true,
+        preventAutoResize: true
+      }
     };
 
     switch (popupType)

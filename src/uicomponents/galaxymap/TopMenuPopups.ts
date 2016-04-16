@@ -13,6 +13,7 @@ import LoadGame from "../saves/LoadGame";
 import SaveGame from "../saves/SaveGame";
 import OptionsList from "./OptionsList";
 import Options from "../../Options";
+import {CustomPopupProps} from "../popups/popup";
 
 interface PropTypes extends React.Props<any>
 {
@@ -85,14 +86,18 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   {
     var contentConstructor: React.Factory<any>;
     var contentProps: any;
-    var popupProps: any =
+    const popupProps: CustomPopupProps =
     {
       resizable: true,
-      containerDragOnly: true,
       minWidth: 150,
-      minHeight: 50,
-      initialPosition: this.cachedPopupRects[popupType],
-      preventAutoResize: true
+      minHeight: 100,
+      initialPosition: this.cachedPopupRects[popupType] || {},
+      
+      dragPositionerProps:
+      {
+        preventAutoResize: true,
+        containerDragOnly: true,
+      }
     };
 
     switch (popupType)
@@ -108,7 +113,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         if (!popupProps.initialPosition.width)
         {
           popupProps.initialPosition.width = 600;
-          popupProps.initialPosition.height = 300;
+          // popupProps.initialPosition.height = 300;
         }
         break;
       }
@@ -194,7 +199,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       popupProps: popupProps
     });
 
-    var stateObj: any = {};
+    var stateObj: StateType = {};
     stateObj[popupType] = id;
     this.setState(stateObj)
   }
