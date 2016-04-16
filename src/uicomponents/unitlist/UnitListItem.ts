@@ -1,10 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react/addons";
 
-/// <reference path="../mixins/draggable.ts" />
-/// <reference path="../unit/unitstrength.ts" />
-
-
 import Unit from "../../Unit";
 import UnitStrength from "../unit/UnitStrength";
 import ListColumn from "./ListColumn";

@@ -1,16 +1,21 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react/addons";
 
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
+
 interface PropTypes extends React.Props<any>
 {
   keyTODO: string;
   moneyAmount: number;
   title: string;
   maxMoneyAvailable?: number;
-  onDragStart?: (tradeableItemKey: string) => void;
-  onDragEnd?: () => void;
   onClick?: (tradeableItemKey: string) => void;
   adjustItemAmount?: (tradeableItemKey: string, newAmount: number) => void;
+  
+  onDragStart?: (tradeableItemKey: string) => void;
+  onDragEnd?: () => void;
+  dragPositionerProps: DragPositionerProps;
 }
 
 interface StateType
@@ -21,16 +26,19 @@ interface StateType
 export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeMoney";
-  // mixins = [Draggable];
-
-
   state: StateType;
+  dragPositioner: DragPositioner<TradeMoneyComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
     
     this.bindMethods();
+    
+    this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+    this.dragPositioner.onDragStart = this.onDragStart;
+    this.dragPositioner.onDragEnd = this.onDragEnd;
+      applyMixins(this, this.dragPositioner);
   }
   private bindMethods()
   {
@@ -79,12 +87,12 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
     if (this.props.onDragStart)
     {
       rowProps.className += " draggable";
-      rowProps.onMouseDown = rowProps.onTouchStart = this.handleMouseDown;
+      rowProps.onMouseDown = rowProps.onTouchStart = this.dragPositioner.handleReactDownEvent;
     }
 
     if (this.state.dragging)
     {
-      rowProps.style = this.dragPos;
+      rowProps.style = this.dragPositioner.getStyleAttributes();
       rowProps.className += " dragging";
     }
     else if (this.props.onClick)
