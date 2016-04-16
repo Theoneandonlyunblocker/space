@@ -1,8 +1,6 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react/addons";
 
-/// <reference path="../mixins/droptarget.ts"/>
-
 import EmptyUnit from "./EmptyUnit";
 import Unit from "../../Unit";
 import UnitComponentFactory from "./Unit";
@@ -44,7 +42,19 @@ interface StateType
 export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitWrapper";
-  // mixins = [DropTarget];
+  state: StateType;
+
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    this.handleMouseUp = this.handleMouseUp.bind(this);    
+  }
+  
   shouldComponentUpdate(newProps: PropTypes)
   {
     if (!this.props.unit && !newProps.unit) return false;
@@ -107,18 +117,6 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
     }
 
     return false;
-  }
-  state: StateType;
-
-  constructor(props: PropTypes)
-  {
-    super(props);
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.handleMouseUp = this.handleMouseUp.bind(this);    
   }
   
   handleMouseUp()

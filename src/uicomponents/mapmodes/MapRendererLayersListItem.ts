@@ -25,7 +25,7 @@ interface StateType
 export class MapRendererLayersListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersListItem";
-  // mixins = [Draggable, DropTarget, React.addons.PureRenderMixin];
+  // mixins = [Draggable, React.addons.PureRenderMixin];
   cachedMidPoint: number; // Y mid point for list item
 
   state: StateType;

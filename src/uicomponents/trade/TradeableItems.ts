@@ -27,9 +27,6 @@ interface StateType
 export class TradeableItemsComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TradeableItems";
-  // mixins = [DropTarget];
-
-
   state: StateType;
 
   constructor(props: PropTypes)

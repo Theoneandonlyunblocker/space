@@ -3,9 +3,6 @@ import * as React from "react/addons";
 
 import UnitItem from "./UnitItem";
 import Item from "../../Item";
-import DropTarget from "../mixins/DropTarget";
-import applyMixins from "../mixins/applyMixins";
-
 
 interface PropTypes extends React.Props<any>
 {
@@ -32,7 +29,6 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
     super(props);
     
     this.bindMethods();
-    applyMixins(this, new DropTarget(this.handleMouseUp));
   }
   private bindMethods()
   {
