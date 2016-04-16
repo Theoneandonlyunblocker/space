@@ -1,11 +1,12 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react/addons";
 
-/// <reference path="../mixins/draggable.ts" />
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
 
 interface PropTypes extends React.Props<any>
 {
-  handleResize: any; // TODO refactor | define prop type 123
+  handleResize: (x: number, y: number) => void;
 }
 
 interface StateType
@@ -15,22 +16,25 @@ interface StateType
 export class PopupResizeHandleComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "PopupResizeHandle";
-  // mixins = [Draggable];
-
   // originBottom: reactTypeTODO_any = undefined;
   // originRight: reactTypeTODO_any = undefined;
 
   state: StateType;
+  dragPositioner: DragPositioner<PopupResizeHandleComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
     
     this.bindMethods();
+    
+    this.dragPositioner = new DragPositioner(this);
+    this.dragPositioner.onDragMove = this.onDragMove;
+    applyMixins(this, this.dragPositioner);
   }
   private bindMethods()
   {
-    this.onDragMove = this.onDragMove.bind(this);    
+    this.onDragMove = this.onDragMove.bind(this);
   }
   
   // onDragStart()
@@ -53,8 +57,8 @@ export class PopupResizeHandleComponent extends React.Component<PropTypes, State
       {
         className: "popup-resize-handle",
         src: "img\/icons\/resizeHandle.png",
-        onTouchStart: this.handleMouseDown,
-        onMouseDown: this.handleMouseDown
+        onTouchStart: this.dragPositioner.handleReactDownEvent,
+        onMouseDown: this.dragPositioner.handleReactDownEvent
       })
     );
   }
