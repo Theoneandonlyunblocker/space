@@ -17,7 +17,7 @@ const defaultAttitudeModifiers: ModuleFile =
   },
   constructModule: function(moduleData: ModuleData)
   {
-    moduleData.copyTemplates<AttitudeModifierTemplate>(AttitudeModifierTemplates, "AttitudeModifierTemplates");
+    moduleData.copyTemplates<AttitudeModifierTemplate>(AttitudeModifierTemplates, "AttitudeModifiers");
     
     return moduleData;
   }

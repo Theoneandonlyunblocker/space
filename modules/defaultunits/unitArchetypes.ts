@@ -1,8 +1,9 @@
+import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 
 import Unit from "../../src/Unit";
 
-export const combat: UnitArchetype =
+const combat: UnitArchetype =
 {
   type: "combat",
   idealWeightInBattle: 1,
@@ -13,7 +14,7 @@ export const combat: UnitArchetype =
     ROW_BACK: 0.6
   }
 }
-export const utility: UnitArchetype =
+const utility: UnitArchetype =
 {
   type: "utility",
   idealWeightInBattle: 0.33,
@@ -24,7 +25,7 @@ export const utility: UnitArchetype =
     ROW_BACK: 0.6
   }
 }
-export const scouting: UnitArchetype =
+const scouting: UnitArchetype =
 {
   type: "scouting",
   idealWeightInBattle: 0.01,
@@ -35,7 +36,7 @@ export const scouting: UnitArchetype =
     ROW_BACK: 0.02
   }
 }
-export const defence: UnitArchetype =
+const defence: UnitArchetype =
 {
   type: "defence",
   idealWeightInBattle: 0.5,
@@ -68,3 +69,13 @@ export const defence: UnitArchetype =
     return multiplier + totalDefenceUnderThreshhold * 0.2;
   }
 }
+
+const UnitArchetypes: TemplateCollection<UnitArchetype> =
+{
+  [combat.type]: combat,
+  [utility.type]: utility,
+  [scouting.type]: scouting,
+  [defence.type]: defence,
+}
+
+export default UnitArchetypes;
