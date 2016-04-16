@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-0.13.3.d.ts" />
+/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 
 import IntroTutorial from "../../tutorials/IntroTutorial";
 import TutorialState from "../../tutorials/TutorialState";

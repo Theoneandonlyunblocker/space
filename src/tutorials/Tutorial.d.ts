@@ -1,9 +1,8 @@
-/// <reference path="../../lib/react-0.13.3.d.ts" />
-import {ReactType} from "react";
+/// <reference path="../../lib/react-global-0.13.3.d.ts" />
 
 export declare interface TutorialPage
 {
-  content: ReactType | ReactType[]; // React component or string or array of these
+  content: React.ReactType | React.ReactType[];
   onOpen?: () => void;
   onClose?: () => void;
   desiredSize?:

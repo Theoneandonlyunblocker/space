@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-0.13.3.d.ts" />
+/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 
 import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";

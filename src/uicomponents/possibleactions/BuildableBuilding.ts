@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-0.13.3.d.ts" />
+/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 
 import ListColumn from "../unitlist/ListColumn";
 import Player from "../../Player";

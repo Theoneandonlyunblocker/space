@@ -1,6 +1,6 @@
 // TODO refactor | this should 100% be removed
 
-/// <reference path="../../../lib/react-0.13.3.d.ts" />
+/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
 
 import MixinBase from "./MixinBase";
 
