@@ -3,17 +3,22 @@ import * as React from "react/addons";
 
 import MapRendererLayer from "../../MapRendererLayer";
 
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
+
 interface PropTypes extends React.Props<any>
 {
   listItemIsDragging: boolean;
-  onDragEnd: () => void;
-  onDragStart: (layer: MapRendererLayer) => void;
   isActive: boolean;
   layer: MapRendererLayer;
   setHoverPosition: (layer: MapRendererLayer, position: string) => void;
   toggleActive: () => void;
   updateLayer: (layer: MapRendererLayer) => void;
   layerName: string;
+  
+  onDragEnd: () => void;
+  onDragStart: (layer: MapRendererLayer) => void;
+  dragPositionerProps: DragPositionerProps;
 }
 
 interface StateType
@@ -25,10 +30,10 @@ interface StateType
 export class MapRendererLayersListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "MapRendererLayersListItem";
-  // mixins = [Draggable];
   cachedMidPoint: number; // Y mid point for list item
 
   state: StateType;
+  dragPositioner: DragPositioner<MapRendererLayersListItemComponent>; 
 
   constructor(props: PropTypes)
   {
@@ -37,6 +42,10 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
     this.state = this.getInitialState();
     
     this.bindMethods();
+    this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+    this.dragPositioner.onDragStart = this.onDragStart;
+    this.dragPositioner.onDragEnd = this.onDragEnd;
+    applyMixins(this, this.dragPositioner);
   }
   private bindMethods()
   {
@@ -121,13 +130,13 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
     var divProps: React.HTMLAttributes =
     {
       className: "map-renderer-layers-list-item draggable draggable-container",
-      onMouseDown: this.handleMouseDown,
-      onTouchStart: this.handleMouseDown
+      onMouseDown: this.dragPositioner.handleReactDownEvent,
+      onTouchStart: this.dragPositioner.handleReactDownEvent
     };
 
     if (this.state.dragging)
     {
-      divProps.style = this.dragPos;
+      divProps.style = this.dragPositioner.getStyleAttributes();
       divProps.className += " dragging";
     }
     if (this.props.listItemIsDragging)

@@ -116,7 +116,7 @@ export class MapRendererLayersListComponent extends React.Component<PropTypes, S
     var layersData = mapMode.layers;
     var activeLayers = mapMode.getActiveLayers();
 
-    var listItems: React.HTMLElement[] = [];
+    var listItems: React.ReactElement<any>[] = [];
 
     for (var i = 0; i < layersData.length; i++)
     {
@@ -135,8 +135,11 @@ export class MapRendererLayersListComponent extends React.Component<PropTypes, S
         onDragEnd: this.handleDragEnd,
         setHoverPosition: this.handleSetHoverPosition,
         updateLayer: this.updateLayer,
-        containerDragOnly: true,
-        containerElement: this
+        dragPositionerProps:
+        {
+          containerElement: this,
+          containerDragOnly: true,
+        }
       }));
     }
     
