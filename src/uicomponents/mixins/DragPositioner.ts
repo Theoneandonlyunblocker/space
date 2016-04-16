@@ -36,21 +36,44 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   
   
   private owner: T;
-  private get props(): DragPositionerProps
-  {
-    return this.owner.props.dragPositionerProps || emptyProps;
-  }
+  
+  private dragPos: Point = {x: 0, y: 0};
+  private dragSize: Point = {x: 0, y: 0};
+  private mouseIsDown: boolean = false;
+  private dragOffset: Point = {x: 0, y: 0};
+  private mouseDownPosition: Point = {x: 0, y: 0};
+  private originPosition: Point = {x: 0, y: 0};
+  
+  private cloneElement: HTMLElement = null;
+  private containerElement: HTMLElement; // set in componentDidMount
   
   private ownerDOMNode: HTMLElement;
-  private containerElement: HTMLElement;
   private containerRect: ClientRect;
   private touchEventTarget: HTMLElement;
   private needsFirstTouchUpdate: boolean;
   
   
-  constructor(owner: T)
+  constructor(owner: T, props?: DragPositionerProps)
   {
     this.owner = owner;
+    if (props)
+    {
+      const propKeysMap =
+      {
+        containerElement: "containerElementDescriptor"
+      }
+      for (let key in props)
+      {
+        if (propKeysMap[key])
+        {
+          this[propKeysMap[key]] = props[key];
+        }
+        else
+        {
+          this[key] = props[key];
+        }
+      }
+    }
     
     this.setContainerRect = this.setContainerRect.bind(this);
     
@@ -62,17 +85,17 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   public componentDidMount()
   {
     this.ownerDOMNode = React.findDOMNode<HTMLElement>(this.owner);
-    if (this.props.containerElement)
+    if (this.containerElementDescriptor)
     {
-      if (React.isValidElement(this.props.containerElement))
+      if (React.isValidElement(this.containerElementDescriptor))
       {
         // React element
-        this.containerElement = React.findDOMNode<HTMLElement>(this.props.containerElement);
+        this.containerElement = React.findDOMNode<HTMLElement>(this.containerElementDescriptor);
       }
       // DOM node
       else
       {
-        this.containerElement = <HTMLElement>this.props.containerElement;
+        this.containerElement = <HTMLElement>this.containerElementDescriptor;
       }
     }
     else
@@ -114,7 +137,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     {
       return;
     }
-    if (this.props.containerDragOnly)
+    if (this.containerDragOnly)
     {
       if (!e.target.classList.contains("draggable-container"))
       {
@@ -140,7 +163,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
     this.addEventListeners();
 
-    this.dragOffset = this.props.forcedDragOffset ||
+    this.dragOffset = this.forcedDragOffset ||
     {
       x: e.clientX - clientRect.left,
       y: e.clientY - clientRect.top
@@ -158,7 +181,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       y: clientRect.top + document.body.scrollTop
     }
 
-    if (this.props.dragThreshhold <= 0)
+    if (this.dragThreshhold <= 0)
     {
       this.handleMouseMove(e);
     }
@@ -179,17 +202,16 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
 
       const delta = deltaX + deltaY;
 
-      const threshhold = isFinite(this.props.dragThreshhold) ? this.props.dragThreshhold : 5;
-      if (delta >= threshhold)
+      if (delta >= this.dragThreshhold)
       {
         this.isDragging = true;
-        if (!this.props.preventAutoResize)
+        if (!this.preventAutoResize)
         {
           this.dragSize.x = this.ownerDOMNode.offsetWidth;
           this.dragSize.y = this.ownerDOMNode.offsetHeight;
         }
 
-        if (this.props.makeClone || this.makeDragClone)
+        if (this.shouldMakeClone || this.makeDragClone)
         {
           if (!this.makeDragClone)
           {
