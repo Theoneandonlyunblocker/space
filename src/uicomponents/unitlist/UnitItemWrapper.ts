@@ -1,13 +1,10 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
 import * as React from "react/addons";
 
-/// <reference path="../mixins/droptarget.ts"/>
-
-/// <reference path="unititem.ts"/>
-
-
 import UnitItem from "./UnitItem";
 import Item from "../../Item";
+import DropTarget from "../mixins/DropTarget";
+import applyMixins from "../mixins/applyMixins";
 
 
 interface PropTypes extends React.Props<any>
@@ -28,8 +25,6 @@ interface StateType
 export class UnitItemWrapperComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitItemWrapper";
-  // mixins = [DropTarget];
-
   state: StateType;
 
   constructor(props: PropTypes)
@@ -37,6 +32,7 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
     super(props);
     
     this.bindMethods();
+    applyMixins(this, new DropTarget(this.handleMouseUp));
   }
   private bindMethods()
   {
