@@ -23,7 +23,6 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  dragging?: boolean;
   hoverSide?: "top" | "bottom";
 }
 

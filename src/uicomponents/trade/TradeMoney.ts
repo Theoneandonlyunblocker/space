@@ -20,7 +20,6 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  dragging?: boolean;
 }
 
 export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
