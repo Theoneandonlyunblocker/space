@@ -16,6 +16,7 @@ export default class UpdateWhenMoneyChanges<T extends React.Component<any, any>>
   {
     this.owner = owner;
     this.onMoneyChange = onMoneyChange;
+    this.handleMoneyChange = this.handleMoneyChange.bind(this);
   }
   
   public componentDidMount()
