@@ -89,7 +89,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
       rowProps.onMouseDown = rowProps.onTouchStart = this.dragPositioner.handleReactDownEvent;
     }
 
-    if (this.state.dragging)
+    if (this.dragPositioner.isDragging)
     {
       rowProps.style = this.dragPositioner.getStyleAttributes();
       rowProps.className += " dragging";

@@ -133,7 +133,7 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
       onTouchStart: this.dragPositioner.handleReactDownEvent
     };
 
-    if (this.state.dragging)
+    if (this.dragPositioner.isDragging)
     {
       divProps.style = this.dragPositioner.getStyleAttributes();
       divProps.className += " dragging";
