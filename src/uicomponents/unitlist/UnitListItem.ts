@@ -10,15 +10,14 @@ import UnitStrength from "../unit/UnitStrength";
 import ListColumn from "./ListColumn";
 import {default as UnitComponentFactory, UnitComponent} from "../unit/Unit";
 
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
 
 interface PropTypes extends React.Props<any>
 {
-  onDragEnd: (dropSuccesful?: boolean) => void;
-  onDragStart: (unit: Unit) => void;
   onMouseLeave: () => void;
   hasNoActionsLeft: boolean;
   isHovered: boolean;
-  isDraggable: boolean;
   currentHealth: number;
   isReserved: boolean;
   isSelected: boolean;
@@ -27,35 +26,50 @@ interface PropTypes extends React.Props<any>
   activeColumns: ListColumn[];
   unit: Unit;
   handleClick: () => void;
+  
+  isDraggable: boolean;
+  onDragEnd: (dropSuccesful?: boolean) => void;
+  onDragStart: (unit: Unit) => void;
+  dragPositionerProps?: DragPositionerProps;
 }
 
 interface StateType
 {
-  dragging?: boolean;
 }
 export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "UnitListItem";
-  // mixins = [Draggable];
-
+  
   state: StateType;
-  needsFirstTouchUpdate: boolean = true;
   ref_TODO_dragClone: UnitComponent;
+  dragPositioner: DragPositioner<UnitListItemComponent>;
 
   constructor(props: PropTypes)
   {
     super(props);
     
     this.bindMethods();
+    
+    if (this.props.isDraggable)
+    {
+      this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+      this.dragPositioner.onDragStart = this.onDragStart;
+      this.dragPositioner.makeDragClone = this.makeDragClone;
+      // this.dragPositioner.onDragMove = this.onDragMove;
+      this.dragPositioner.onDragEnd = this.onDragEnd;
+      applyMixins(this, this.dragPositioner);
+    }
   }
   private bindMethods()
   {
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
-    this.onDragEnd = this.onDragEnd.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.makeCell = this.makeCell.bind(this);
+    
+    this.onDragEnd = this.onDragEnd.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
-    this.onDragMove = this.onDragMove.bind(this);    
+    this.makeDragClone = this.makeDragClone.bind(this);
+    // this.onDragMove = this.onDragMove.bind(this);    
   }
   
   componentDidMount()
@@ -64,57 +78,88 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 
     var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
 
-    this.forcedDragOffset =
+    this.dragPositioner.forcedDragOffset =
     {
       x: container.offsetWidth / 2,
       y: container.offsetHeight / 2
     }
   }
 
-  componentDidUpdate()
-  {
-    if (this.needsFirstTouchUpdate && this.ref_TODO_dragClone)
-    {
-      var node = React.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
-      node.classList.add("draggable");
-      node.classList.add("dragging");
+  // componentDidUpdate()
+  // {
+  //   if (this.dragPositioner.needsFirstTouchUpdate && this.ref_TODO_dragClone)
+  //   {
+  //     var node = React.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
+  //     node.classList.add("draggable");
+  //     node.classList.add("dragging");
 
-      var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+  //     var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
 
-      node.style.width = "" + container.offsetWidth + "px";
-      node.style.height = "" + container.offsetHeight + "px";
+  //     node.style.width = "" + container.offsetWidth + "px";
+  //     node.style.height = "" + container.offsetHeight + "px";
 
-      this.needsFirstTouchUpdate = false;
-    }
-  }
+  //     this.dragPositioner.needsFirstTouchUpdate = false;
+  //   }
+  // }
 
   onDragStart()
   {
     this.props.onDragStart(this.props.unit);
   }
-
-  onDragMove(x: number, y: number)
+  makeDragClone()
   {
-    if (!this.ref_TODO_dragClone) return;
-
-    var node = React.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
-    node.classList.add("draggable");
-    node.classList.add("dragging");
-    node.style.left = "" + x + "px";
-    node.style.top = "" + y + "px";
-
-    var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
-
-    node.style.width = "" + container.offsetWidth + "px";
-    node.style.height = "" + container.offsetHeight + "px";
-
-
-    this.forcedDragOffset =
+    const container = document.createElement("div");
+    
+    React.render(
+      UnitComponentFactory(
+      {
+        ref: (component: UnitComponent) =>
+        {
+          this.ref_TODO_dragClone = component;
+        },
+        unit: this.props.unit,
+        facesLeft: true,
+      }),
+      container
+    );
+    
+    const renderedElement = <HTMLElement> container.firstChild;
+    const wrapperElement = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+    
+    renderedElement.classList.add("draggable", "dragging");
+    
+    renderedElement.style.width = "" + wrapperElement.offsetWidth + "px";
+    renderedElement.style.height = "" + wrapperElement.offsetHeight + "px";
+    this.dragPositioner.forcedDragOffset =
     {
-      x: container.offsetWidth / 2,
-      y: container.offsetHeight / 2
+      x: wrapperElement.offsetWidth / 2,
+      y: wrapperElement.offsetHeight / 2
     }
+    
+    return renderedElement;
   }
+  // onDragMove(x: number, y: number)
+  // {
+  //   if (!this.ref_TODO_dragClone) return;
+
+  //   var node = React.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
+  //   node.classList.add("draggable");
+  //   node.classList.add("dragging");
+  //   node.style.left = "" + x + "px";
+  //   node.style.top = "" + y + "px";
+
+  //   var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+
+  //   node.style.width = "" + container.offsetWidth + "px";
+  //   node.style.height = "" + container.offsetHeight + "px";
+
+
+  //   this.dragPositioner.forcedDragOffset =
+  //   {
+  //     x: container.offsetWidth / 2,
+  //     y: container.offsetHeight / 2
+  //   }
+  // }
 
   onDragEnd()
   {
@@ -187,24 +232,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 
   render(): React.ReactElement<any>
   {
-    var unit = this.props.unit;
     var columns = this.props.activeColumns;
-
-    if (this.state.dragging)
-    {
-      return(
-        UnitComponentFactory(
-        {
-          ref: (component: UnitComponent) =>
-          {
-            this.ref_TODO_dragClone = component;
-          },
-          unit: unit,
-          facesLeft: true
-        })
-      );
-    }
-
 
     var cells: React.ReactElement<any>[] = [];
 
@@ -225,7 +253,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     {
       rowProps.className += " draggable";
       rowProps.onTouchStart = rowProps.onMouseDown =
-        this.handleMouseDown;
+        this.dragPositioner.handleReactDownEvent;
     }
 
 

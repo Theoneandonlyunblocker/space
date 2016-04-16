@@ -225,6 +225,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
           else
           {
             const clone = this.makeDragClone();
+            recursiveRemoveAttribute(clone, "data-reactid");
             document.body.appendChild(clone);
             this.cloneElement = clone;
           }
@@ -398,6 +399,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
     else
     {
       s = this.ownerDOMNode.style;
+      // should we check this.preventAutoResize here?
       s.width = "" + this.dragSize.x + "px";
       s.height = "" + this.dragSize.y + "px";
     }
