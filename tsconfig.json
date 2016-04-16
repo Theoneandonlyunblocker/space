@@ -4,6 +4,7 @@
         "module": "amd",
         "moduleResolution": "classic",
         "outFile": "src/js/main.js",
+        "sourceMap": true,
         
         "noImplicitAny": true,
         "suppressImplicitAnyIndexErrors": true,

@@ -35,9 +35,6 @@ import paintingPortraits from "../modules/paintingportraits/paintingPortraits";
 import defaultBuildings from "../modules/defaultbuildings/defaultBuildings";
 import defaultNotifications from "../modules/defaultnotifications/defaultNotifications";
 
-const app = new App();
-export default app;
-
 class App
 {
   seed: string;
@@ -307,4 +304,8 @@ class App
     }
   }
 }
+
+const app = new App();
+console.log("create app");
+export default app;
 

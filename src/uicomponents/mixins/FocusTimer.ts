@@ -39,7 +39,7 @@ export default class FocusTimer<T extends React.Component<any, any>> implements 
   }
   public isWithinGracePeriod(): boolean
   {
-    const graceTime = isFinite(this.props.graceTime) ? this.props.graceTime : 500;
+    const graceTime = this.props && isFinite(this.props.graceTime) ? this.props.graceTime : 500;
     
     return Date.now() < this.lastFocusTime + graceTime;
   }

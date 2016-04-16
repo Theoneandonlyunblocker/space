@@ -38,7 +38,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   ref_TODO_main: React.HTMLComponent;
   
   imageLoadingFailTimeoutHandle: number;
-  isMounted: boolean = false;
+  isMountedTODO/*TODO refactor*/: boolean = false;
   focusTimer: FocusTimer<FlagSetterComponent>;
   
 
@@ -87,11 +87,11 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   componentDidMount()
   {
-    this.isMounted = true;
+    this.isMountedTODO/*TODO refactor*/ = true;
   }
   componentWillUnmount()
   {
-    this.isMounted = false;
+    this.isMountedTODO/*TODO refactor*/ = false;
     window.clearTimeout(this.imageLoadingFailTimeoutHandle);
     document.removeEventListener("click", this.handleClick);
     this.focusTimer.clearListener();
@@ -148,7 +148,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   }
   setAsInactive()
   {
-    if (this.isMounted && this.state.isActive)
+    if (this.isMountedTODO/*TODO refactor*/ && this.state.isActive)
     {
       this.setState({isActive: false});
       document.removeEventListener("click", this.handleClick);

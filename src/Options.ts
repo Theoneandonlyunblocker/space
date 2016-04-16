@@ -118,7 +118,7 @@ class Options implements OptionsValues
         break;
         
       case "display":
-        if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
+        if (this.display && this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
         {
           shouldReRenderMap = true;
         }

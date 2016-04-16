@@ -158,7 +158,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
   render()
   {
     var playerSetups: React.ReactElement<any>[] = [];
-    for (var i = 0; i < this.state.playerKeys.length; i++)
+    for (let i = 0; i < this.state.playerKeys.length; i++)
     {
       playerSetups.push(PlayerSetup(
       {

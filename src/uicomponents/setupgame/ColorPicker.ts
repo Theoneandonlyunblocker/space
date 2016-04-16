@@ -6,7 +6,7 @@ interface PropTypes extends React.Props<any>
 {
   generateColor: (toContrastWith?: Color) => Color;
   getParentPosition: () => ClientRect;
-  hexColor: number;
+  hexColor?: number;
   flagHasCustomImage: boolean;
   onChange: (color: Color, isNull: boolean) => void;
   limitUpdates?: boolean;
@@ -282,7 +282,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   private makeHexStringFromHSVDegreeArray(hsv: number[])
   {
     const color: Color = Color.fromHSV.apply(null, Color.convertDegreesToScalars(hsv));
-    return "#" + color.getHexString();
+    return color.getHexString();
   }
 
   makeGradientStyle(type: string)

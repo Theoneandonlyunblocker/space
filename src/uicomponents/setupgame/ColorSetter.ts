@@ -27,7 +27,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   displayName: string = "ColorSetter";
   state: StateType;
   ref_TODO_main: React.HTMLComponent;
-  isMounted: boolean = false;
+  isMountedTODO/*TODO refactor*/: boolean = false;
   focusTimer: FocusTimer<ColorSetterComponent>;
 
   constructor(props: PropTypes)
@@ -59,12 +59,12 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   
   componentDidMount()
   {
-    this.isMounted = true;
+    this.isMountedTODO/*TODO refactor*/ = true;
   }
 
   componentWillUnmount()
   {
-    this.isMounted = false;
+    this.isMountedTODO/*TODO refactor*/ = false;
     document.removeEventListener("click", this.handleClick);
     this.focusTimer.clearListener();
   }
@@ -104,7 +104,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   }
   setAsInactive()
   {
-    if (this.isMounted && this.state.isActive)
+    if (this.isMountedTODO/*TODO refactor*/ && this.state.isActive)
     {
       this.setState({isActive: false});
       document.removeEventListener("click", this.handleClick);
@@ -151,7 +151,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
         this.state.isActive ?
           ColorPicker(
           {
-            hexColor: this.props.color.getHex(),
+            hexColor: this.props.color ? this.props.color.getHex() : null,
             generateColor: this.props.generateColor,
             onChange: this.props.onChange,
             // setAsInactive: this.setAsInactive,

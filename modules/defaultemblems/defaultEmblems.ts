@@ -6,12 +6,12 @@ import ModuleData from "../../src/ModuleData";
 
 import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 
-const defaultBuildings: ModuleFile =
+const defaultEmblems: ModuleFile =
 {
-  key: "defaultBuildings",
+  key: "defaultEmblems",
   metaData:
   {
-    name: "Default Buildings",
+    name: "Default Emblems",
     version: "0.1.0",
     author: "giraluna",
     description: ""
@@ -60,4 +60,4 @@ const defaultBuildings: ModuleFile =
   }
 }
 
-export default defaultBuildings;
+export default defaultEmblems;
