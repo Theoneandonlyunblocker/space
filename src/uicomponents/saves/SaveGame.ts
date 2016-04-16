@@ -15,13 +15,17 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+  saveName?: string;
 }
 
 export class SaveGameComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SaveGame";
 
-  state: StateType;
+  state: StateType =
+  {
+    saveName: ""
+  };
   ref_TODO_okButton: React.HTMLComponent;
   ref_TODO_popupManager: PopupManagerComponent;
   ref_TODO_saveName: React.HTMLComponent;
@@ -36,7 +40,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   {
     this.handleClose = this.handleClose.bind(this);
     this.makeConfirmOverWritePopup = this.makeConfirmOverWritePopup.bind(this);
-    this.setInputText = this.setInputText.bind(this);
+    this.setSaveName = this.setSaveName.bind(this);
     this.saveGame = this.saveGame.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleRowChange = this.handleRowChange.bind(this);    
@@ -54,19 +58,28 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  setInputText(newText: string)
+  setSaveName(newText: string)
   {
-    React.findDOMNode<HTMLInputElement>(this.ref_TODO_saveName).value = newText;
+    this.setState(
+    {
+      saveName: newText
+    });
+  }
+  
+  handleSaveNameInput(e: React.FormEvent)
+  {
+    const target = <HTMLInputElement> e.target;
+    this.setSaveName(target.value);
   }
 
   handleRowChange(row: ListItem)
   {
-    this.setInputText(row.data.name)
+    this.setSaveName(row.data.name)
   }
 
   handleSave()
   {
-    var saveName = React.findDOMNode<HTMLInputElement>(this.ref_TODO_saveName).value
+    var saveName = this.state.saveName
     var saveKey = "Save." + saveName;
     if (localStorage[saveKey])
     {
@@ -79,7 +92,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   }
   saveGame()
   {
-    app.game.save(React.findDOMNode<HTMLInputElement>(this.ref_TODO_saveName).value);
+    app.game.save(this.state.saveName);
     this.handleClose();
   }
   handleClose()
@@ -131,6 +144,8 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             this.ref_TODO_saveName = component;
           },
           type: "text",
+          value: this.state.saveName,
+          onChange: this.handleSaveNameInput,
           maxLength: 64
         }),
         React.DOM.div(
