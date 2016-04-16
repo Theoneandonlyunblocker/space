@@ -21,14 +21,9 @@
 
   <script src="lib/require.js"></script>
   <script type="text/javascript">
-    console.log("lol");
-    require(["./src/js/main.js"], function(asd)
+    require(["./built/main.js"], function()
     {
-      console.log("main loaded");
-      require(["./src/App"], function(asd)
-      {
-        console.log("app loaded");
-      })
+      require(["./src/App"]);
     });
   </script>
   <!--<script src="src/js/main.js"></script>-->
