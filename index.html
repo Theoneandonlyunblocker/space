@@ -19,7 +19,19 @@
   <script src="lib/offset.js"></script>
   <script src="lib/proton-1.0.0.js"></script>
 
-  <script src="src/js/main.js"></script>
+  <script src="lib/require.js"></script>
+  <script type="text/javascript">
+    console.log("lol");
+    require(["./src/js/main.js"], function(asd)
+    {
+      console.log("main loaded");
+      require(["./src/App"], function(asd)
+      {
+        console.log("app loaded");
+      })
+    });
+  </script>
+  <!--<script src="src/js/main.js"></script>-->
 
 </head>
 <body>
