@@ -21,11 +21,11 @@ function wrapLifeCycleFunction(base: React.Component<any, any>, functionName: Li
   {
     mixinsWithFunction.forEach(m =>
     {
-      m[functionName].call(m, args);
+      m[functionName].apply(m, args);
     });
     if (originalFunction)
     {
-      originalFunction.call(base, args);
+      originalFunction.apply(base, args);
     }
   }
 }
