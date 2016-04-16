@@ -1,17 +1,27 @@
 // used to register event listeners for manually firing drop events because touch events suck
 
+/// <reference path="../../../lib/react-0.13.3.d.ts" />
+import * as React from "react";
 
+import MixinBase from "./MixinBase";
 import eventManager from "../../eventManager";
 
-export var DropTarget =
+export default class DropTarget<T extends React.Component<any, any>> implements MixinBase<T>
 {
-  componentDidMount: function()
+  private id: number | string;
+  private handleMouseUp: () => void;
+  constructor(id: number | string, handleMouseUp: () => void)
   {
-    if (!this.handleMouseUp) console.warn("No mouseUp handler on drop target", this);
-    eventManager.addEventListener("drop" + this._rootNodeID, this.handleMouseUp);
+    this.id = id;
+    this.handleMouseUp = handleMouseUp;
   }
-  componentWillUnmount: function()
+  
+  public componentDidMount()
   {
-    eventManager.removeEventListener("drop" + this._rootNodeID, this.handleMouseUp);
+    eventManager.addEventListener("drop" + this.id, this.handleMouseUp);
+  }
+  public componentWillUnmount()
+  {
+    eventManager.removeEventListener("drop" + this.id, this.handleMouseUp);
   }
 }
