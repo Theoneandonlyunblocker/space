@@ -1,9 +1,4 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
-import * as React from "react/addons";
-
-/// <reference path="../../playertechnology.ts" />
-/// <reference path="../../templateinterfaces/itechnologytemplate.d.ts" />
-
 
 import TechnologyTemplate from "../../templateinterfaces/TechnologyTemplate";
 import PlayerTechnology from "../../PlayerTechnology";

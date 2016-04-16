@@ -3,7 +3,6 @@
 
 import Flag from "../../src/Flag";
 
-import * as React from "react/addons";
 
 interface PropTypes extends React.Props<any>
 {

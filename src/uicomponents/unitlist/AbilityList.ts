@@ -3,7 +3,6 @@
 
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 
-import * as React from "react/addons";
 
 interface PropTypes extends React.Props<any>
 {

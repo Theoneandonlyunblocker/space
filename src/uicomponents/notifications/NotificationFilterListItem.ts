@@ -5,7 +5,6 @@ import NotificationFilterState from "../../NotificationFilterState";
 import NotificationFilter from "../../NotificationFilter";
 import eventManager from "../../eventManager";
 
-import * as React from "react/addons";
 
 interface PropTypes extends React.Props<any>
 {

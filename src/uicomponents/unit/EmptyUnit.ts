@@ -3,7 +3,6 @@
 
 import UnitIcon from "./UnitIcon";
 
-import * as React from "react/addons";
 
 interface PropTypes extends React.Props<any>
 {

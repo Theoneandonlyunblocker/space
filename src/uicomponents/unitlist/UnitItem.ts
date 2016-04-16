@@ -5,7 +5,6 @@ import applyMixins from "../mixins/applyMixins";
 
 import Item from "../../Item";
 
-import * as React from "react/addons";
 
 interface PropTypes extends React.Props<any>
 {

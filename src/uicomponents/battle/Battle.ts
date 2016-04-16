@@ -1,5 +1,4 @@
 /// <reference path="../../../lib/react-0.13.3.d.ts" />
-import * as React from "react/addons";
 
 import Renderer from "../../Renderer";
 import Player from "../../Player";
