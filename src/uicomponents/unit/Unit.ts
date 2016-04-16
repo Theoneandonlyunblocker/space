@@ -9,6 +9,8 @@ import UnitIcon from "./UnitIcon";
 import Battle from "../../Battle";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 
+import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
+import applyMixins from "../mixins/applyMixins";
 
 interface PropTypes extends React.Props<any>
 {
@@ -27,27 +29,28 @@ interface PropTypes extends React.Props<any>
 
   targetsInPotentialArea?: Unit[];
   activeEffectUnits?: Unit[];
-  isDraggable?: boolean;
   
   onUnitClick?: (unit: Unit) => void;
   onMouseUp?: (position: number[]) => void;
   handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
   handleMouseEnterUnit?: (unit: Unit) => void;
+  
+  isDraggable?: boolean;
   onDragStart?: (unit: Unit) => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
+  dragPositionerProps?: DragPositionerProps;
 }
 
 interface StateType
 {
-  dragging?: boolean;
 }
 
 export class UnitComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "Unit";
-  // mixins = [Draggable];
-  
   state: StateType;
+  
+  dragPositioner: DragPositioner<UnitComponent>;
 
   constructor(props: PropTypes)
   {
@@ -56,6 +59,13 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     this.state = this.getInitialState();
     
     this.bindMethods();
+    if (this.props.isDraggable)
+    {
+      this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+      this.dragPositioner.onDragStart = this.onDragStart;
+      this.dragPositioner.onDragEnd = this.onDragEnd;
+      applyMixins(this, this.dragPositioner);
+    }
   }
   private bindMethods()
   {
@@ -126,12 +136,12 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     if (this.props.isDraggable)
     {
       wrapperProps.className += " draggable";
-      wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.handleMouseDown;
+      wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.dragPositioner.handleReactDownEvent;
     }
 
-    if (this.state.dragging)
+    if (this.dragPositioner.isDragging)
     {
-      wrapperProps.style = this.dragPos;
+      wrapperProps.style = this.dragPositioner.getStyleAttributes();
       wrapperProps.className += " dragging";
     }
 
