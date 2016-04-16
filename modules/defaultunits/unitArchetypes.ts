@@ -3,7 +3,7 @@ import UnitArchetype from "../../src/templateinterfaces/UnitArchetype";
 
 import Unit from "../../src/Unit";
 
-const combat: UnitArchetype =
+export const combat: UnitArchetype =
 {
   type: "combat",
   idealWeightInBattle: 1,
@@ -14,7 +14,7 @@ const combat: UnitArchetype =
     ROW_BACK: 0.6
   }
 }
-const utility: UnitArchetype =
+export const utility: UnitArchetype =
 {
   type: "utility",
   idealWeightInBattle: 0.33,
@@ -25,7 +25,7 @@ const utility: UnitArchetype =
     ROW_BACK: 0.6
   }
 }
-const scouting: UnitArchetype =
+export const scouting: UnitArchetype =
 {
   type: "scouting",
   idealWeightInBattle: 0.01,
@@ -36,7 +36,7 @@ const scouting: UnitArchetype =
     ROW_BACK: 0.02
   }
 }
-const defence: UnitArchetype =
+export const defence: UnitArchetype =
 {
   type: "defence",
   idealWeightInBattle: 0.5,

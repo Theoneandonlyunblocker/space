@@ -35,6 +35,29 @@ import UnitArchetype from "./templateinterfaces/UnitArchetype";
 import UnitFamily from "./templateinterfaces/UnitFamily";
 import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
+type TemplateKey =
+  "Abilities" |
+  "AttitudeModifiers" |
+  "BattleSFX" |
+  "Buildings" |
+  "Cultures" |
+  "EffectActions" |
+  "Items" |
+  "MapGen" |
+  "MapRendererLayers" |
+  "MapRendererMapModes" |
+  "Notifications" |
+  "Objectives" |
+  "PassiveSkills" |
+  "Personalities" |
+  "Resources" |
+  "StatusEffects" |
+  "SubEmblems" |
+  "Technologies" |
+  "UnitArchetypes" |
+  "UnitFamilies" |
+  "Units";
+
 
 interface Templates
 {
@@ -136,16 +159,6 @@ export default class ModuleData
   starBackgroundDrawingFunction: (seed: string,
     renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
 
-  // TODO refactor | unused?
-  // mapRendererLayers:
-  // {
-  //   [layerKey: string]: MapRendererLayerTemplate;
-  // } = {};
-  // mapRendererMapModes:
-  // {
-  //   [mapModeKey: string]: MapRendererMapModeTemplate;
-  // } = {};
-
   Templates: Templates =
   {
     Abilities: {},
@@ -178,7 +191,7 @@ export default class ModuleData
   {
     
   }
-  public copyTemplates<T>(source: TemplateCollection<T>, category: string): void
+  public copyTemplates<T>(source: TemplateCollection<T>, category: TemplateKey): void
   {
     if (!this.Templates[category])
     {
@@ -203,7 +216,7 @@ export default class ModuleData
     {
       if (source[category])
       {
-        this.copyTemplates(source[category], category);
+        this.copyTemplates(source[category], <TemplateKey>category);
       }
     }
   }

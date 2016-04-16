@@ -1,7 +1,7 @@
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
 import UnitFamily from "../../src/templateinterfaces/UnitFamily";
 
-const debug: UnitFamily =
+export const debug: UnitFamily =
 {
   type: "debug",
   debugOnly: true,
@@ -9,7 +9,7 @@ const debug: UnitFamily =
   rarity: 0,
   distributionGroups: []
 }
-const basic: UnitFamily =
+export const basic: UnitFamily =
 {
   type: "basic",
   debugOnly: false,
@@ -17,7 +17,7 @@ const basic: UnitFamily =
   rarity: 0,
   distributionGroups: []
 }
-const red: UnitFamily =
+export const red: UnitFamily =
 {
   type: "red",
   debugOnly: false,
@@ -25,7 +25,7 @@ const red: UnitFamily =
   rarity: 1,
   distributionGroups: ["common", "rare"]
 }
-const blue: UnitFamily =
+export const blue: UnitFamily =
 {
   type: "blue",
   debugOnly: false,

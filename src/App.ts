@@ -21,6 +21,7 @@ import
 
 import MapGenOptionValues from "./templateinterfaces/MapGenOptionValues";
 
+import copyCommonTemplates from "../modules/common/copyCommonTemplates";
 import defaultEmblems from "../modules/defaultemblems/defaultEmblems";
 import defaultRuleset from "../modules/defaultruleset/defaultRuleset";
 import defaultAI from "../modules/defaultai/defaultAI";
@@ -79,6 +80,8 @@ class App
       moduleLoader.addModuleFile(paintingPortraits);
       moduleLoader.addModuleFile(defaultBuildings);
       moduleLoader.addModuleFile(defaultNotifications);
+      
+      copyCommonTemplates(moduleLoader.moduleData);
       
       moduleLoader.loadAll(boundMakeApp);
     });

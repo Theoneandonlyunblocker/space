@@ -159,7 +159,7 @@ export default class Unit
     this.timesActedThisTurn = data.timesActedThisTurn;
 
     this.baseAttributes = extendObject(data.baseAttributes);
-    this.attributes = extendObject(this.baseAttributes);
+    this.cachedAttributes = extendObject(this.baseAttributes);
 
     this.abilities = data.abilityTemplateTypes.map(function(key: string)
     {
@@ -289,7 +289,7 @@ export default class Unit
     }
 
     this.baseAttributes = extendObject(attributes);
-    this.attributes = attributes;
+    this.cachedAttributes = attributes;
     this.attributesAreDirty = true;
   }
   setCulture()
