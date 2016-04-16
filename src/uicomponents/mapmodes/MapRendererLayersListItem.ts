@@ -42,6 +42,7 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
     this.bindMethods();
     this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
     this.dragPositioner.onDragStart = this.onDragStart;
+    this.dragPositioner.onDragMove = this.onDragMove;
     this.dragPositioner.onDragEnd = this.onDragEnd;
     applyMixins(this, this.dragPositioner);
   }
@@ -50,8 +51,9 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
     this.onDragEnd = this.onDragEnd.bind(this);
     this.handleHover = this.handleHover.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
+    this.onDragMove = this.onDragMove.bind(this);
     this.clearHover = this.clearHover.bind(this);
-    this.setLayerAlpha = this.setLayerAlpha.bind(this);    
+    this.setLayerAlpha = this.setLayerAlpha.bind(this);
   }
   
   private getInitialStateTODO(): StateType
@@ -77,6 +79,12 @@ export class MapRendererLayersListItemComponent extends React.Component<PropType
   onDragStart()
   {
     this.props.onDragStart(this.props.layer);
+  }
+  
+  onDragMove(x: number, y: number)
+  {
+    this.dragPositioner.dragPos.y = y;
+    this.dragPositioner.updateDOMNodeStyle();
   }
 
   onDragEnd()
