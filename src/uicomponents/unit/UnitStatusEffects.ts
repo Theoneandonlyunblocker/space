@@ -26,7 +26,7 @@ export class UnitStatusEffectsComponent extends React.Component<PropTypes, State
   
   render()
   {
-    var statusEffects: React.HTMLElement[] = [];
+    var statusEffects: React.ReactHTMLElement<any>[] = [];
 
     var withItems = this.props.unit.getAttributesWithItems();
     var withEffects = this.props.unit.getAttributesWithEffects();
@@ -75,7 +75,7 @@ export class UnitStatusEffectsComponent extends React.Component<PropTypes, State
       }
     });
 
-    var passiveSkillsElement: React.HTMLElement = null;
+    var passiveSkillsElement: React.ReactHTMLElement<any> = null;
     if (passiveSkills.length > 0)
     {
       var passiveSkillsElementTitle: string = "";

@@ -320,8 +320,8 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   render()
   {
     var self = this;
-    var columns: React.HTMLElement[] = [];
-    var headerLabels: React.HTMLElement[] = [];
+    var columns: React.ReactHTMLElement<any>[] = [];
+    var headerLabels: React.ReactHTMLElement<any>[] = [];
 
     this.state.columns.forEach(function(column: ListColumn)
     {

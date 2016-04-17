@@ -54,7 +54,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var rows: React.HTMLElement[] = [];
+    var rows: React.ReactHTMLElement<any>[] = [];
 
     if (!this.state.isCollapsed)
     {
@@ -72,7 +72,7 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
       }
     }
 
-    var resetButton: React.HTMLElement = null;
+    var resetButton: React.ReactHTMLElement<any> = null;
     if (this.props.resetFN)
     {
       resetButton = React.DOM.button(

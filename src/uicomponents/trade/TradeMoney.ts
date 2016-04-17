@@ -99,7 +99,7 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
       rowProps.onClick = this.handleClick;
     }
     
-    var moneyElement: React.HTMLElement;
+    var moneyElement: React.ReactHTMLElement<any>;
 
     if (this.props.adjustItemAmount)
     {

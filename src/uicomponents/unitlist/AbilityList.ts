@@ -32,7 +32,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
     if (abilities.length < 1) return null;
 
 
-    var abilityElements: React.HTMLElement[] = [];
+    var abilityElements: React.ReactHTMLElement<any>[] = [];
     var addedAbilityTypes:
     {
       [abilityType: string]: number;

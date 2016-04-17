@@ -119,7 +119,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
   {
     var columns = this.props.activeColumns;
 
-    var cells: React.HTMLElement[] = [];
+    var cells: React.ReactHTMLElement<any>[] = [];
 
     for (let i = 0; i < columns.length; i++)
     {

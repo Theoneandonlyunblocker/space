@@ -649,7 +649,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     //   ) : upperFooterElement;
     var upperFooter = upperFooterElement;
 
-    var overlayContainer: React.HTMLElement = null;
+    var overlayContainer: React.ReactHTMLElement<any> = null;
     var playerWonBattle: boolean = null;
     if (this.state.battleIsStarting)
     {

@@ -151,7 +151,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       }));
     }
 
-    var fleetSelectionControls: React.HTMLElement = null;
+    var fleetSelectionControls: React.ReactHTMLElement<any> = null;
 
     if (hasMultipleSelected)
     {

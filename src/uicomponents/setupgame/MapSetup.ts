@@ -94,7 +94,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var mapGenTemplateOptions: React.HTMLElement[] = [];
+    var mapGenTemplateOptions: React.ReactHTMLElement<any>[] = [];
     for (let i = 0; i < this.state.templates.length; i++)
     {
       var template = this.state.templates[i];

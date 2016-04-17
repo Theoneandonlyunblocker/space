@@ -102,7 +102,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   }
   render()
   {
-    var rows: React.HTMLElement[] = [];
+    var rows: React.ReactHTMLElement<any>[] = [];
 
     var totalBars = Math.ceil(this.props.experienceToNextLevel) / 10;
     var filledBars = Math.ceil(this.props.experienceForCurrentLevel / 10);

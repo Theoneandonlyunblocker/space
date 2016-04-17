@@ -189,7 +189,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
 
     var isInspecting = this.state.inspectedFleets.length > 0;
 
-    var expandedActionElement: React.HTMLElement = null;
+    var expandedActionElement: React.ReactHTMLElement<any> = null;
     if (this.state.expandedActionElement)
     {
       expandedActionElement = React.DOM.div(

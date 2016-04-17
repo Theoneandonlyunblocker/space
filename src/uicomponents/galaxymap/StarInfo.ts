@@ -34,7 +34,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
     var star = this.props.selectedStar;
     if (!star) return null;
 
-    var dumpDebugInfoButton: React.HTMLElement = null;
+    var dumpDebugInfoButton: React.ReactHTMLElement<any> = null;
 
     if (Options.debugMode)
     {

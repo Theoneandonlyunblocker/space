@@ -116,7 +116,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
   render()
   {
     var hasBackArrow = this.state.currentPageIndex > 0;
-    var backElement: React.HTMLElement;
+    var backElement: React.ReactHTMLElement<any>;
     if (hasBackArrow)
     {
       backElement = React.DOM.div(
@@ -134,7 +134,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
     }
 
     var hasForwardArrow = this.state.currentPageIndex < this.props.pages.length - 1;
-    var forwardElement: React.HTMLElement;
+    var forwardElement: React.ReactHTMLElement<any>;
     if (hasForwardArrow)
     {
       forwardElement = React.DOM.div(

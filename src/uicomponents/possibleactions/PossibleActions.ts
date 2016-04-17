@@ -21,7 +21,7 @@ interface StateType
 {
   canUpgradeBuildings?: boolean;
   expandedAction?: "buildBuildings" | "upgradeBuildings";
-  expandedActionElement?: React.HTMLElement;
+  expandedActionElement?: React.ReactHTMLElement<any>;
 }
 
 export class PossibleActionsComponent extends React.Component<PropTypes, StateType>
@@ -180,7 +180,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
 
   render()
   {
-    var allActions: React.HTMLElement[] = [];
+    var allActions: React.ReactHTMLElement<any>[] = [];
 
     var attackTargets = this.props.attackTargets;
     if (attackTargets && attackTargets.length > 0)

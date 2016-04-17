@@ -87,7 +87,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       return i < maxUnitsWithGhost || d.isGhost;
     });
     
-    const toRender: React.HTMLElement[] = [];
+    const toRender: React.ReactHTMLElement<any>[] = [];
 
     for (let i = 0; i < filteredTurnOrderDisplayData.length; i++)
     {

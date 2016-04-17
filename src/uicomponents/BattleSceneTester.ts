@@ -335,7 +335,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   makeUnitElements(units: Unit[])
   {
-    var unitElements: React.HTMLElement[] = [];
+    var unitElements: React.ReactHTMLElement<any>[] = [];
 
     for (let i = 0; i < units.length; i++)
     {
@@ -371,10 +371,10 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   {
     var battle: Battle = this.battle;
 
-    var side1UnitElements: React.HTMLElement[] = this.makeUnitElements(battle.unitsBySide["side1"]);
-    var side2UnitElements: React.HTMLElement[] = this.makeUnitElements(battle.unitsBySide["side2"]);
+    var side1UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.unitsBySide["side1"]);
+    var side2UnitElements: React.ReactHTMLElement<any>[] = this.makeUnitElements(battle.unitsBySide["side2"]);
 
-    var SFXTemplateSelectOptions: React.HTMLElement[] = [];
+    var SFXTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
 
     SFXTemplateSelectOptions.push(React.DOM.option(
     {

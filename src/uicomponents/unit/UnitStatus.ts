@@ -32,7 +32,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var statusElement: React.HTMLElement = null;
+    var statusElement: React.ReactHTMLElement<any> = null;
 
     if (this.props.guardAmount > 0)
     {

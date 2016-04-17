@@ -106,7 +106,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var emblemElements: React.HTMLElement[] = [];
+    var emblemElements: React.ReactHTMLElement<any>[] = [];
 
     for (let emblemType in app.moduleData.Templates.SubEmblems)
     {
@@ -114,7 +114,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
       emblemElements.push(this.makeEmblemElement(template));
     }
 
-    var imageInfoMessage: React.HTMLElement;
+    var imageInfoMessage: React.ReactHTMLElement<any>;
     if (this.props.hasImageFailMessage)
     {
       imageInfoMessage =

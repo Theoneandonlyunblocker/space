@@ -25,7 +25,7 @@ export class TurnCounterComponent extends React.Component<PropTypes, StateType>
   {
     var turnsLeft = this.props.turnsLeft;
 
-    var turns: React.HTMLElement[] = [];
+    var turns: React.ReactHTMLElement<any>[] = [];
 
     var usedTurns = this.props.maxTurns - turnsLeft;
 

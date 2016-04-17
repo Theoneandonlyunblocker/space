@@ -29,7 +29,7 @@ export class UnitActionsComponent extends React.Component<PropTypes, StateType>
     var hoveredSrc = "img/icons/spentAction.png";
     var spentSrc = "img/icons/spentAction.png";
 
-    var icons: React.HTMLElement[] = [];
+    var icons: React.ReactHTMLElement<any>[] = [];
 
     var availableCount = this.props.currentActionPoints - this.props.hoveredActionPointExpenditure;
     for (let i = 0; i < availableCount; i++)

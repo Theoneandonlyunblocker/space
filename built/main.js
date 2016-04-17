@@ -10462,10 +10462,10 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
             this.handleReactDownEvent = this.handleReactDownEvent.bind(this);
         }
         DragPositioner.prototype.componentDidMount = function () {
-            this.ownerDOMNode = React.findDOMNode(this.owner);
+            this.ownerDOMNode = ReactDOM.findDOMNode(this.owner);
             if (this.containerElementDescriptor) {
                 if (this.containerElementDescriptor instanceof React.Component) {
-                    this.containerElement = React.findDOMNode(this.containerElementDescriptor);
+                    this.containerElement = ReactDOM.findDOMNode(this.containerElementDescriptor);
                 }
                 else {
                     this.containerElement = this.containerElementDescriptor;
@@ -10990,7 +10990,7 @@ define("src/uicomponents/popups/PopupResizeHandle", ["require", "exports", "src/
             this.onDragMove = this.onDragMove.bind(this);
         };
         PopupResizeHandleComponent.prototype.onDragMove = function (x, y) {
-            var rect = React.findDOMNode(this).getBoundingClientRect();
+            var rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
             this.props.handleResize(x + rect.width, y + rect.height);
         };
         PopupResizeHandleComponent.prototype.render = function () {
@@ -11043,7 +11043,7 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
             }
         };
         PopupComponent.prototype.setInitialPosition = function () {
-            var domRect = React.findDOMNode(this).getBoundingClientRect();
+            var domRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
             var rect = {
                 top: domRect.top,
                 left: domRect.left,
@@ -11601,7 +11601,7 @@ define("src/uicomponents/battle/BattleBackground", ["require", "exports"], funct
         };
         BattleBackgroundComponent.prototype.componentDidMount = function () {
             this.props.renderer.isBattleBackground = true;
-            this.props.renderer.bindRendererView(React.findDOMNode(this.ref_TODO_pixiContainer));
+            this.props.renderer.bindRendererView(ReactDOM.findDOMNode(this.ref_TODO_pixiContainer));
             window.addEventListener("resize", this.handleResize, false);
         };
         BattleBackgroundComponent.prototype.componentWillUnmount = function () {
@@ -11660,7 +11660,7 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
             window.addEventListener("resize", this.setDesiredHeight, false);
             eventManager_19.default.addEventListener("popupResized", this.setDesiredHeight);
             if (this.props.keyboardSelect) {
-                React.findDOMNode(this).addEventListener("keydown", function (event) {
+                ReactDOM.findDOMNode(this).addEventListener("keydown", function (event) {
                     switch (event.keyCode) {
                         case 40:
                             {
@@ -11684,7 +11684,7 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
             }
             else if (this.props.autoSelect) {
                 this.handleSelectRow(this.sortedItems[0]);
-                React.findDOMNode(this).focus();
+                ReactDOM.findDOMNode(this).focus();
             }
             else {
                 this.setState({ selected: this.sortedItems[0] });
@@ -11698,8 +11698,8 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
             this.setDesiredHeight();
         };
         ListComponent.prototype.setDesiredHeight = function () {
-            var ownNode = React.findDOMNode(this);
-            var innerNode = React.findDOMNode(this.ref_TODO_inner);
+            var ownNode = ReactDOM.findDOMNode(this);
+            var innerNode = ReactDOM.findDOMNode(this.ref_TODO_inner);
             ownNode.style.height = "auto";
             innerNode.style.height = "auto";
             var parentHeight = ownNode.parentElement.getBoundingClientRect().height;
@@ -11715,7 +11715,7 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
         };
         ListComponent.prototype.handleScroll = function (e) {
             var target = e.target;
-            var header = React.findDOMNode(this.ref_TODO_header);
+            var header = ReactDOM.findDOMNode(this.ref_TODO_header);
             var titles = header.getElementsByClassName("fixed-table-th-inner");
             var marginString = "-" + target.scrollLeft + "px";
             for (var i = 0; i < titles.length; i++) {
@@ -13230,12 +13230,12 @@ define("src/uicomponents/PlayerFlag", ["require", "exports"], function (require,
                 var canvas = this.props.flag.getCanvas(this.props.width, this.props.height, this.props.stretch, false);
                 canvas.style.maxWidth = "100%";
                 canvas.style.maxHeight = "100%";
-                React.findDOMNode(this.ref_TODO_container).appendChild(canvas);
+                ReactDOM.findDOMNode(this.ref_TODO_container).appendChild(canvas);
             }
         };
         PlayerFlagComponent.prototype.componentDidUpdate = function () {
             if (this.ref_TODO_container && this.props.isMutable) {
-                var containerNode = React.findDOMNode(this.ref_TODO_container);
+                var containerNode = ReactDOM.findDOMNode(this.ref_TODO_container);
                 if (containerNode.firstChild) {
                     containerNode.removeChild(containerNode.firstChild);
                 }
@@ -13529,7 +13529,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
             this.handleItemDragEnd(true);
         };
         BattlePrepComponent.prototype.getBackgroundBlurArea = function () {
-            return React.findDOMNode(this.ref_TODO_upper).getBoundingClientRect();
+            return ReactDOM.findDOMNode(this.ref_TODO_upper).getBoundingClientRect();
         };
         BattlePrepComponent.prototype.render = function () {
             var _this = this;
@@ -14375,7 +14375,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             });
         };
         BattleSceneTesterComponent.prototype.componentDidMount = function () {
-            var battleScene = this.battleScene = new BattleScene_1.default(React.findDOMNode(this.ref_TODO_main));
+            var battleScene = this.battleScene = new BattleScene_1.default(ReactDOM.findDOMNode(this.ref_TODO_main));
             battleScene.resume();
             battleScene.activeUnit = this.state.selectedSide1Unit;
             battleScene.updateUnits();
@@ -14641,7 +14641,7 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"
                 this.clearSelectedEmblem();
                 return;
             }
-            React.findDOMNode(this.ref_TODO_imageUploader).value = null;
+            ReactDOM.findDOMNode(this.ref_TODO_imageUploader).value = null;
             this.props.handleSelectEmblem(emblemTemplate);
             this.setState({ selectedEmblem: emblemTemplate });
         };
@@ -14651,7 +14651,7 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"
         FlagPickerComponent.prototype.handleUpload = function () {
             if (!this.props.uploadFiles)
                 throw new Error();
-            var files = React.findDOMNode(this.ref_TODO_imageUploader).files;
+            var files = ReactDOM.findDOMNode(this.ref_TODO_imageUploader).files;
             this.props.uploadFiles(files);
         };
         FlagPickerComponent.prototype.makeEmblemElement = function (template) {
@@ -14809,7 +14809,7 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
         FlagSetterComponent.prototype.handleClick = function (e) {
             if (this.focusTimer.isWithinGracePeriod())
                 return;
-            var node = React.findDOMNode(this.ref_TODO_main);
+            var node = ReactDOM.findDOMNode(this.ref_TODO_main);
             var target = e.target;
             if (target === node || node.contains(target)) {
                 return;
@@ -15048,7 +15048,7 @@ define("src/uicomponents/setupgame/ColorPicker", ["require", "exports", "src/Col
         };
         ColorPickerComponent.prototype.setPosition = function () {
             var parentRect = this.props.getParentPosition();
-            var domNode = React.findDOMNode(this);
+            var domNode = ReactDOM.findDOMNode(this);
             domNode.style.top = "" + parentRect.bottom + "px";
             domNode.style.left = "" + parentRect.left + "px";
         };
@@ -15312,7 +15312,7 @@ define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uic
         ColorSetterComponent.prototype.handleClick = function (e) {
             if (this.focusTimer.isWithinGracePeriod())
                 return;
-            var node = React.findDOMNode(this.ref_TODO_main);
+            var node = ReactDOM.findDOMNode(this.ref_TODO_main);
             var target = e.target;
             if (target === node || node.contains(target)) {
                 return;
@@ -15345,7 +15345,7 @@ define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uic
             this.props.onChange(color, isNull);
         };
         ColorSetterComponent.prototype.getClientRect = function () {
-            var ownNode = React.findDOMNode(this);
+            var ownNode = ReactDOM.findDOMNode(this);
             var firstChild = ownNode.firstChild;
             return firstChild.getBoundingClientRect();
         };
@@ -16128,7 +16128,7 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports"], function (re
         };
         TurnOrderComponent.prototype.setMaxUnits = function () {
             var minUnits = 7;
-            var containerElement = React.findDOMNode(this);
+            var containerElement = ReactDOM.findDOMNode(this);
             var containerWidth = containerElement.getBoundingClientRect().width - 30;
             var unitElementWidth = 160;
             var ceil = Math.ceil(containerWidth / unitElementWidth);
@@ -16307,15 +16307,15 @@ define("src/uicomponents/battle/battlesceneflag", ["require", "exports"], functi
             this.setFlag();
         };
         BattleSceneFlagComponent.prototype.setFlag = function () {
-            var DOMNode = React.findDOMNode(this);
+            var DOMNode = ReactDOM.findDOMNode(this);
             if (this.flagCanvas) {
                 DOMNode.removeChild(this.flagCanvas);
             }
             this.flagCanvas = this.drawFlag();
-            React.findDOMNode(this).appendChild(this.flagCanvas);
+            ReactDOM.findDOMNode(this).appendChild(this.flagCanvas);
         };
         BattleSceneFlagComponent.prototype.drawFlag = function () {
-            var bounds = React.findDOMNode(this).getBoundingClientRect();
+            var bounds = ReactDOM.findDOMNode(this).getBoundingClientRect();
             var width = bounds.width;
             var canvas = this.props.flag.getCanvas(width, bounds.height, true, false);
             var context = canvas.getContext("2d");
@@ -16372,7 +16372,7 @@ define("src/uicomponents/battle/BattleScene", ["require", "exports", "src/Battle
             bs = this;
             var self = this;
             if (this.props.battleState === "start" && newProps.battleState === "active") {
-                this.battleScene = new BattleScene_2.default(React.findDOMNode(this));
+                this.battleScene = new BattleScene_2.default(ReactDOM.findDOMNode(this));
                 this.battleScene.resume();
             }
             else if (this.props.battleState === "active" && newProps.battleState === "finish") {
@@ -16669,7 +16669,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
             }
         };
         BattleComponent.prototype.getBlurArea = function () {
-            return React.findDOMNode(this.ref_TODO_formationsContainer).getBoundingClientRect();
+            return ReactDOM.findDOMNode(this.ref_TODO_formationsContainer).getBoundingClientRect();
         };
         BattleComponent.prototype.clearHoveredUnit = function () {
             this.tempHoveredUnit = null;
@@ -16701,7 +16701,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 this.clearHoveredUnit();
                 return;
             }
-            var tooltipElement = React.findDOMNode(this.ref_TODO_abilityTooltip);
+            var tooltipElement = ReactDOM.findDOMNode(this.ref_TODO_abilityTooltip);
             if (toElement !== this.state.abilityTooltip.parentElement &&
                 (this.ref_TODO_abilityTooltip && toElement !== tooltipElement) &&
                 toElement.parentElement !== tooltipElement) {
@@ -17045,7 +17045,7 @@ define("src/uicomponents/mapmodes/MapRendererLayersListItem", ["require", "expor
         };
         MapRendererLayersListItemComponent.prototype.handleHover = function (e) {
             if (!this.cachedMidPoint) {
-                var rect = React.findDOMNode(this).getBoundingClientRect();
+                var rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
                 this.cachedMidPoint = rect.top + rect.height / 2;
             }
             var isAbove = e.clientY < this.cachedMidPoint;
@@ -17737,7 +17737,7 @@ define("src/uicomponents/popups/ConfirmPopup", ["require", "exports", "src/utili
             this.handleClose = this.handleClose.bind(this);
         };
         ConfirmPopupComponent.prototype.componentDidMount = function () {
-            React.findDOMNode(this.ref_TODO_okButton).focus();
+            ReactDOM.findDOMNode(this.ref_TODO_okButton).focus();
         };
         ConfirmPopupComponent.prototype.handleOk = function () {
             if (!this.props.handleOk) {
@@ -18060,7 +18060,7 @@ define("src/uicomponents/notifications/NotificationLog", ["require", "exports", 
             eventManager_26.default.removeEventListener("updateNotificationLog", this.updateListener);
         };
         NotificationLogComponent.prototype.componentDidUpdate = function () {
-            var domNode = React.findDOMNode(this);
+            var domNode = ReactDOM.findDOMNode(this);
             if (!isFinite(this.scrollTop)) {
                 this.scrollTop = domNode.scrollTop;
             }
@@ -18739,7 +18739,7 @@ define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/
         FleetSelectionComponent.prototype.setElementPosition = function () {
             if (!this.ref_TODO_selected)
                 return;
-            var domNode = React.findDOMNode(this.ref_TODO_selected);
+            var domNode = ReactDOM.findDOMNode(this.ref_TODO_selected);
             if (!this.props.selectedStar) {
                 domNode.style.left = "0";
             }
@@ -18752,7 +18752,7 @@ define("src/uicomponents/galaxymap/FleetSelection", ["require", "exports", "src/
                     containerNode.lastChild);
                 var rightMostRect = rightMostNode.getBoundingClientRect();
                 var ownBottom = domNode.getBoundingClientRect().bottom;
-                var first = React.findDOMNode(this.ref_TODO_main).firstChild;
+                var first = ReactDOM.findDOMNode(this.ref_TODO_main).firstChild;
                 if (ownBottom > actionsRect.top) {
                     var styleString = "" + (rightMostRect.right) + "px";
                     domNode.style.left = styleString;
@@ -19768,7 +19768,7 @@ define("src/uicomponents/mixins/AutoPositioner", ["require", "exports"], functio
         };
         AutoPositioner.prototype.setAutoPosition = function () {
             var parentRect = this.props.getParentClientRect();
-            var ownNode = React.findDOMNode(this.owner);
+            var ownNode = ReactDOM.findDOMNode(this.owner);
             var ownRect = ownNode.getBoundingClientRect();
             var ySide = this.props.ySide || "top";
             var xSide = this.props.xSide || "right";
@@ -19904,7 +19904,7 @@ define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicompo
             this.setState({ hasAttitudeModifierTootlip: false });
         };
         OpinionComponent.prototype.getOpinionTextNodeRect = function () {
-            var firstChild = React.findDOMNode(this).firstChild;
+            var firstChild = ReactDOM.findDOMNode(this).firstChild;
             return firstChild.getBoundingClientRect();
         };
         OpinionComponent.prototype.getColor = function () {
@@ -21327,7 +21327,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
             });
         };
         LoadGameComponent.prototype.componentDidMount = function () {
-            React.findDOMNode(this.ref_TODO_okButton).focus();
+            ReactDOM.findDOMNode(this.ref_TODO_okButton).focus();
         };
         LoadGameComponent.prototype.handleRowChange = function (row) {
             this.setState({
@@ -21338,7 +21338,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
         LoadGameComponent.prototype.handleLoad = function () {
             var saveKey = this.state.saveKey;
             var afterConfirmFN = function () {
-                React.findDOMNode(this.ref_TODO_okButton).blur();
+                ReactDOM.findDOMNode(this.ref_TODO_okButton).blur();
                 window.setTimeout(function () {
                     App_33.default.load(saveKey);
                 }, 5);
@@ -21506,10 +21506,10 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
         };
         SaveGameComponent.prototype.componentDidMount = function () {
             if (App_34.default.game.gameStorageKey) {
-                React.findDOMNode(this.ref_TODO_okButton).focus();
+                ReactDOM.findDOMNode(this.ref_TODO_okButton).focus();
             }
             else {
-                React.findDOMNode(this.ref_TODO_saveName).focus();
+                ReactDOM.findDOMNode(this.ref_TODO_saveName).focus();
             }
         };
         SaveGameComponent.prototype.setSaveName = function (newText) {
@@ -22006,7 +22006,7 @@ define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/u
         };
         TopMenuPopupsComponent.prototype.closePopup = function (popupType) {
             var popupComponent = this.ref_TODO_popupManager.popupComponentsByID[this.state[popupType]];
-            var popupNode = React.findDOMNode(popupComponent);
+            var popupNode = ReactDOM.findDOMNode(popupComponent);
             this.cachedPopupRects[popupType] = popupNode.getBoundingClientRect();
             this.ref_TODO_popupManager.closePopup(this.state[popupType]);
             var stateObj = {};
@@ -22196,8 +22196,8 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
         };
         TopMenuComponent.prototype.handleResize = function () {
             if (!this.cachedTopMenuWidth) {
-                this.cachedTopMenuWidth = React.findDOMNode(this.ref_TODO_topMenu).getBoundingClientRect().width;
-                var buttons = React.findDOMNode(this.ref_TODO_topMenuItems).children;
+                this.cachedTopMenuWidth = ReactDOM.findDOMNode(this.ref_TODO_topMenu).getBoundingClientRect().width;
+                var buttons = ReactDOM.findDOMNode(this.ref_TODO_topMenuItems).children;
                 var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
                 for (var i = 0; i < buttons.length; i++) {
                     var buttonWidth = buttons[i].getBoundingClientRect().width + margin;
@@ -23184,8 +23184,8 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uic
         GalaxyMapUIComponent.prototype.clampExpandedActionElement = function () {
             if (!this.state.expandedActionElement)
                 return;
-            var maxHeight = React.findDOMNode(this.ref_TODO_leftColumnContent).getBoundingClientRect().height;
-            var listElement = React.findDOMNode(this.ref_TODO_expandedActionElementContainer).firstChild.firstChild;
+            var maxHeight = ReactDOM.findDOMNode(this.ref_TODO_leftColumnContent).getBoundingClientRect().height;
+            var listElement = ReactDOM.findDOMNode(this.ref_TODO_expandedActionElementContainer).firstChild.firstChild;
             listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
         };
         GalaxyMapUIComponent.prototype.endTurn = function () {
@@ -23385,7 +23385,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
         };
         GalaxyMapComponent.prototype.componentDidMount = function () {
             this.props.renderer.isBattleBackground = false;
-            this.props.renderer.bindRendererView(React.findDOMNode(this.ref_TODO_pixiContainer));
+            this.props.renderer.bindRendererView(ReactDOM.findDOMNode(this.ref_TODO_pixiContainer));
             this.props.mapRenderer.setMapModeByKey("defaultMapMode");
             this.props.renderer.resume();
             this.props.mapRenderer.setAllLayersAsDirty();
@@ -23577,11 +23577,11 @@ define("src/ReactUI", ["require", "exports", "src/eventManager", "src/uicomponen
         ReactUI.prototype.destroy = function () {
             eventManager_40.default.removeAllListeners("switchScene");
             eventManager_40.default.removeAllListeners("renderUI");
-            React.unmountComponentAtNode(this.container);
+            ReactDOM.unmountComponentAtNode(this.container);
             this.container = null;
         };
         ReactUI.prototype.render = function () {
-            React.render(Stage_1.default({
+            ReactDOM.render(Stage_1.default({
                 sceneToRender: this.currentScene,
                 battle: this.battle,
                 battlePrep: this.battlePrep,
