@@ -76,15 +76,22 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    const hasGhost = this.props.turnOrderDisplayData.some(d => d.isGhost);
-    const maxUnits = hasGhost ? this.state.maxUnits + 1 : this.state.maxUnits;
-    const amountOfUnitsToDisplay = Math.min(maxUnits, this.props.turnOrderDisplayData.length);
-
+    const needsExtraSpaceForGhost = this.props.turnOrderDisplayData.some((d, i) =>
+    {
+      return d.isGhost && i < this.state.maxUnits;
+    });
+    
+    const maxUnitsWithGhost = needsExtraSpaceForGhost ? this.state.maxUnits + 1 : this.state.maxUnits;
+    const filteredTurnOrderDisplayData = this.props.turnOrderDisplayData.filter((d, i) =>
+    {
+      return i < maxUnitsWithGhost || d.isGhost;
+    });
+    
     const toRender: React.HTMLElement[] = [];
 
-    for (let i = 0; i < amountOfUnitsToDisplay; i++)
+    for (let i = 0; i < filteredTurnOrderDisplayData.length; i++)
     {
-      const displayData = this.props.turnOrderDisplayData[i];
+      const displayData = filteredTurnOrderDisplayData[i];
 
       if (displayData.isGhost)
       {
@@ -125,14 +132,14 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
     }
 
-    if (this.props.turnOrderDisplayData.length > maxUnits)
-    {
-      toRender.push(React.DOM.div(
-      {
-        className: "turn-order-more",
-        key: "more"
-      }, "..."));
-    }
+    // if (this.props.turnOrderDisplayData.length > maxUnits)
+    // {
+    //   toRender.push(React.DOM.div(
+    //   {
+    //     className: "turn-order-more",
+    //     key: "more"
+    //   }, "..."));
+    // }
 
     return(
       React.DOM.div({className: "turn-order-container"},
