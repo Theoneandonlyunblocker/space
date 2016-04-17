@@ -6,7 +6,12 @@
     "less": "^2.6.0"
   },
   "scripts": {
-    "build": "tsc && lessc css/main.less css/main.css",
+    "build": "tsc && lessc css/main.less built/main.css",
     "convert-shaders": "python scripts/convert_shaders.py"
+  },
+  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/giraluna/spacegame.git"
   }
 }
