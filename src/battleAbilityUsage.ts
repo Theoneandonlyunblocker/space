@@ -4,6 +4,7 @@ import BattleSFXTemplate from "./templateinterfaces/BattleSFXTemplate";
 import Unit from "./Unit";
 import Battle from "./Battle";
 import GuardCoverage from "./GuardCoverage";
+import UnitDisplayData from "./UnitDisplayData";
 import
 {
   AbilityEffectData,
@@ -11,16 +12,6 @@ import
   getAbilityEffectDataByPhase
 } from "./battleAbilityProcessing";
 
-export interface UnitDisplayData
-{
-  health: number;
-  guardAmount: number;
-  guardType: GuardCoverage;
-  actionPoints: number;
-
-  isPreparing: boolean;
-  isAnnihilated: boolean;
-}
 export interface UnitDisplayDataById
 {
   [unitId: number]: UnitDisplayData;
