@@ -34,8 +34,8 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   displayName: string = "FleetSelection";
   state: StateType;
 
-  ref_TODO_main: React.HTMLComponent;
-  ref_TODO_selected: React.HTMLComponent;
+  ref_TODO_main: HTMLElement;
+  ref_TODO_selected: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -226,7 +226,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       React.DOM.div(
       {
         className: "fleet-selection",
-        ref: (component: React.HTMLComponent) =>
+        ref: (component: HTMLElement) =>
         {
           this.ref_TODO_main = component;
         }
@@ -240,7 +240,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
           React.DOM.div(
           {
             className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
-            ref: (component: React.HTMLComponent) =>
+            ref: (component: HTMLElement) =>
             {
               this.ref_TODO_selected = component;
             }

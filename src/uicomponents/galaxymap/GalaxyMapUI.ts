@@ -44,8 +44,8 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
   displayName: string = "GalaxyMapUI";
 
   state: StateType;
-  ref_TODO_leftColumnContent: React.HTMLComponent;
-  ref_TODO_expandedActionElementContainer: React.HTMLComponent;
+  ref_TODO_leftColumnContent: HTMLElement;
+  ref_TODO_expandedActionElementContainer: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -195,7 +195,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
       expandedActionElement = React.DOM.div(
       {
         className: "galaxy-map-ui-bottom-left-column",
-        ref: (component: React.HTMLComponent) =>
+        ref: (component: HTMLElement) =>
         {
           this.ref_TODO_expandedActionElementContainer = component;
         }
@@ -256,7 +256,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             React.DOM.div(
             {
               className: "galaxy-map-ui-bottom-left-leftmost-column-wrapper",
-              ref: (component: React.HTMLComponent) =>
+              ref: (component: HTMLElement) =>
               {
                 this.ref_TODO_leftColumnContent = component;
               },

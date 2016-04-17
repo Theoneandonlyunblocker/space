@@ -27,7 +27,7 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
   displayName: string = "ConfirmPopup";
 
   state: StateType;
-  ref_TODO_okButton: React.HTMLComponent;
+  ref_TODO_okButton: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -105,7 +105,7 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
           {
             className: "popup-button",
             onClick: this.handleOk,
-            ref: (component: React.HTMLComponent) =>
+            ref: (component: HTMLElement) =>
             {
               this.ref_TODO_okButton = component;
             }

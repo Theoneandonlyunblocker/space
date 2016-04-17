@@ -40,7 +40,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   state: StateType;
   
-  ref_TODO_main: React.HTMLComponent;
+  ref_TODO_main: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -405,7 +405,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         React.DOM.div(
         {
           className: "battle-scene-test-pixi-container",
-          ref: (component: React.HTMLComponent) =>
+          ref: (component: HTMLElement) =>
           {
             this.ref_TODO_main = component;
           }

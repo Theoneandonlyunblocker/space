@@ -35,7 +35,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   state: StateType;
   
   ref_TODO_flagPicker: FlagPickerComponent;
-  ref_TODO_main: React.HTMLComponent;
+  ref_TODO_main: HTMLElement;
   
   imageLoadingFailTimeoutHandle: number;
   isMountedTODO/*TODO refactor*/: boolean = false;
@@ -363,7 +363,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       React.DOM.div(
       {
         className: "flag-setter",
-        ref: (component: React.HTMLComponent) =>
+        ref: (component: HTMLElement) =>
         {
           this.ref_TODO_main = component;
         },

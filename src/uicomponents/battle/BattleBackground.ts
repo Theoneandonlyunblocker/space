@@ -18,7 +18,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   displayName: string = "BattleBackground";
   state: StateType;
   
-  ref_TODO_pixiContainer: React.HTMLComponent;
+  ref_TODO_pixiContainer: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -68,7 +68,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
       React.DOM.div(
       {
         className: "battle-pixi-container",
-        ref: (component: React.HTMLComponent) =>
+        ref: (component: HTMLElement) =>
         {
           this.ref_TODO_pixiContainer = component;
         }

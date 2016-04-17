@@ -21,7 +21,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
 {
   displayName: string = "NotificationFilterList";
   state: StateType;
-  ref_TODO_body: React.HTMLComponent;
+  ref_TODO_body: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -122,7 +122,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
         React.DOM.div(
         {
           className: "notification-filter-list-body",
-          ref: (component: React.HTMLComponent) =>
+          ref: (component: HTMLElement) =>
           {
             this.ref_TODO_body = component;
           }

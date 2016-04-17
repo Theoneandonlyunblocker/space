@@ -25,7 +25,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   popupID: number = undefined;
 
   state: StateType;
-  ref_TODO_okButton: React.HTMLComponent;
+  ref_TODO_okButton: HTMLElement;
   ref_TODO_popupManager: PopupManagerComponent;
 
   constructor(props: PropTypes)
@@ -248,7 +248,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-button",
             onClick: this.handleLoad,
-            ref: (component: React.HTMLComponent) =>
+            ref: (component: HTMLElement) =>
             {
               this.ref_TODO_okButton = component;
             }

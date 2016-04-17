@@ -38,7 +38,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   displayName: string = "BattlePrep";
   state: StateType;
   ref_TODO_background: BattleBackgroundComponent;
-  ref_TODO_upper: React.HTMLComponent;
+  ref_TODO_upper: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -352,7 +352,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div({className: "battle-prep"},
         React.DOM.div({className: "battle-prep-left"},
-          React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: (component: React.HTMLComponent) =>
+          React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: (component: HTMLElement) =>
           {
             this.ref_TODO_upper = component;
           }},

@@ -33,8 +33,8 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   sortedItems: ListItem[] = [];
   state: StateType;
   
-  ref_TODO_header: React.HTMLComponent;
-  ref_TODO_inner: React.HTMLComponent;
+  ref_TODO_header: HTMLElement;
+  ref_TODO_inner: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -417,7 +417,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(
         {
           className: "fixed-table-container-inner",
-          ref: (component: React.HTMLComponent) =>
+          ref: (component: HTMLElement) =>
           {
             this.ref_TODO_inner = component;
           },
@@ -431,7 +431,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
               columns
             ),
 
-            React.DOM.thead({className: "fixed-table-actual-header", ref: (component: React.HTMLComponent) =>
+            React.DOM.thead({className: "fixed-table-actual-header", ref: (component: HTMLElement) =>
             {
               this.ref_TODO_header = component;
             }},

@@ -26,7 +26,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "ColorSetter";
   state: StateType;
-  ref_TODO_main: React.HTMLComponent;
+  ref_TODO_main: HTMLElement;
   isMountedTODO/*TODO refactor*/: boolean = false;
   focusTimer: FocusTimer<ColorSetterComponent>;
 
@@ -143,7 +143,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
       });
 
     return(
-      React.DOM.div({className: "color-setter", ref: (component: React.HTMLComponent) =>
+      React.DOM.div({className: "color-setter", ref: (component: HTMLElement) =>
       {
         this.ref_TODO_main = component;
       }},

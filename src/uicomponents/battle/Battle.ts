@@ -71,7 +71,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
   state: StateType;
   
-  ref_TODO_formationsContainer: React.HTMLComponent;
+  ref_TODO_formationsContainer: HTMLElement;
   ref_TODO_abilityTooltip: AbilityTooltipComponent;
 
   constructor(props: PropTypes)
@@ -728,7 +728,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           React.DOM.div(
           {
             className: "formations-container",
-            ref: (container: React.HTMLComponent) =>
+            ref: (container: HTMLElement) =>
             {
               this.ref_TODO_formationsContainer = container;
             }

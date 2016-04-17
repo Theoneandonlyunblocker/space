@@ -32,9 +32,9 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
   cachedButtonWidths: number[] = [];
   cachedMenuButtonWidth: number = 37;
 
-  ref_TODO_topMenu: React.HTMLComponent;
+  ref_TODO_topMenu: HTMLElement;
   ref_TODO_popups: TopMenuPopupsComponent;
-  ref_TODO_topMenuItems: React.HTMLComponent;
+  ref_TODO_topMenuItems: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -294,7 +294,7 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
         React.DOM.div(
         {
           className: "top-menu",
-          ref: (component: React.HTMLComponent) =>
+          ref: (component: HTMLElement) =>
           {
             this.ref_TODO_topMenu = component;
           }
@@ -302,7 +302,7 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
           React.DOM.div(
           {
             className: "top-menu-items",
-            ref: (component: React.HTMLComponent) =>
+            ref: (component: HTMLElement) =>
             {
               this.ref_TODO_topMenuItems = component;
             }

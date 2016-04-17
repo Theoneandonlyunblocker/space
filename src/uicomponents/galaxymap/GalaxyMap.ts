@@ -32,8 +32,8 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   displayName: string = "GalaxyMap";
   state: StateType;
   
-  ref_TODO_pixiContainer: React.HTMLComponent;
-  ref_TODO_sceneSelector: React.HTMLComponent;
+  ref_TODO_pixiContainer: HTMLElement;
+  ref_TODO_sceneSelector: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -74,7 +74,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
         },
         React.DOM.div(
         {
-          ref: (component: React.HTMLComponent) =>
+          ref: (component: HTMLElement) =>
           {
             this.ref_TODO_pixiContainer = component;
           },
@@ -96,7 +96,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
           React.DOM.select(
             {
               className: "reactui-selector debug",
-              ref: (component: React.HTMLComponent) =>
+              ref: (component: HTMLElement) =>
               {
                 this.ref_TODO_sceneSelector = component;
               },

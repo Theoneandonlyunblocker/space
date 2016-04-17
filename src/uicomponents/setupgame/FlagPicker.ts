@@ -23,7 +23,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "FlagPicker";
   state: StateType;
-  ref_TODO_imageUploader: React.HTMLComponent;
+  ref_TODO_imageUploader: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -152,7 +152,7 @@ export class FlagPickerComponent extends React.Component<PropTypes, StateType>
             {
               className: "flag-image-upload-button",
               type: "file",
-              ref: (component: React.HTMLComponent) =>
+              ref: (component: HTMLElement) =>
               {
                 this.ref_TODO_imageUploader = component;
               },

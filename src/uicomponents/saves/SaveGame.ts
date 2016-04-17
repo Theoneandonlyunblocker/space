@@ -26,9 +26,9 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   {
     saveName: ""
   };
-  ref_TODO_okButton: React.HTMLComponent;
+  ref_TODO_okButton: HTMLElement;
   ref_TODO_popupManager: PopupManagerComponent;
-  ref_TODO_saveName: React.HTMLComponent;
+  ref_TODO_saveName: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -139,7 +139,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
         React.DOM.input(
         {
           className: "save-game-name",
-          ref: (component: React.HTMLComponent) =>
+          ref: (component: HTMLElement) =>
           {
             this.ref_TODO_saveName = component;
           },
@@ -156,7 +156,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           {
             className: "save-game-button",
             onClick: this.handleSave,
-            ref: (component: React.HTMLComponent) =>
+            ref: (component: HTMLElement) =>
             {
               this.ref_TODO_okButton = component;
             }

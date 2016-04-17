@@ -24,7 +24,7 @@ export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
   shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   state: StateType;
   
-  ref_TODO_container: React.HTMLComponent;
+  ref_TODO_container: HTMLElement;
 
   constructor(props: PropTypes)
   {
@@ -85,7 +85,7 @@ export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      props.ref = (component: React.HTMLComponent) =>
+      props.ref = (component: HTMLElement) =>
       {
         this.ref_TODO_container = component;
       };
