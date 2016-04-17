@@ -1,0 +1,12 @@
+{
+  "name": "spacegame",
+  "version": "0.1.0",
+  "devDependencies": {
+    "typescript": "^1.8.0",
+    "less": "^2.6.0"
+  },
+  "scripts": {
+    "build": "tsc && lessc css/main.less css/main.css",
+    "convert-shaders": "python scripts/convert_shaders.py"
+  }
+}
