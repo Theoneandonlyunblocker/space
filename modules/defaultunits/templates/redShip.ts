@@ -25,7 +25,7 @@ const redShip: UnitTemplate =
   },
   isSquadron: true,
   buildCost: 200,
-  icon: "modules\/defaultunits\/img\/icons\/sc.png",
+  icon: "modules/defaultunits/img/icons/sc.png",
   maxHealth: 0.6,
   maxMovePoints: 2,
   visionRange: 2,

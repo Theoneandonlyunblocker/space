@@ -129,7 +129,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
       React.DOM.img(
       {
         className: "color-setter-display",
-        src: "img\/icons\/nullcolor.png",
+        src: "img/icons/nullcolor.png",
         onClick: this.toggleActive
       }) :
       React.DOM.div(

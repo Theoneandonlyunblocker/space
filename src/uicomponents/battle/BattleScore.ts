@@ -54,7 +54,7 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
           React.DOM.img(
           {
             className: "battle-score-mid-point",
-            src: "img\/icons\/battleScoreMidPoint.png"
+            src: "img/icons/battleScoreMidPoint.png"
           },
             null
           ),

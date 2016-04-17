@@ -27,11 +27,11 @@ const defaultUnits: ModuleFile =
     const loader = new PIXI.loaders.Loader();
     const spriteSheetKey = "units";
     
-    loader.add(spriteSheetKey, "modules\/defaultunits\/img\/sprites\/units.json");
+    loader.add(spriteSheetKey, "modules/defaultunits/img/sprites/units.json");
     
     // TODO refactor | can't sfx function load these?
-    loader.add("explosion", "modules\/common\/battlesfxfunctions\/img\/explosion.json");
-    loader.add("modules\/common\/battlesfxfunctions\/img\/rocket.png");
+    loader.add("explosion", "modules/common/battlesfxfunctions/img/explosion.json");
+    loader.add("modules/common/battlesfxfunctions/img/rocket.png");
     
     loader.load(function(loader: PIXI.loaders.Loader)
     {

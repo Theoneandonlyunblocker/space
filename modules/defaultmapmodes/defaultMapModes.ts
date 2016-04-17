@@ -23,7 +23,7 @@ const defaultMapModes: ModuleFile =
   {
     var loader = new PIXI.loaders.Loader();
 
-    loader.add("modules\/defaultmapmodes\/img\/fowTexture.png");
+    loader.add("modules/defaultmapmodes/img/fowTexture.png");
     loader.load(function(loader: PIXI.loaders.Loader)
     {
       onLoaded();

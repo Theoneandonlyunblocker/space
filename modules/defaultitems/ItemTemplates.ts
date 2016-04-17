@@ -16,7 +16,7 @@ const bombLauncher1: ItemTemplate =
   type: "bombLauncher1",
   displayName: "Bomb Launcher 1",
   description: "",
-  icon: "modules\/default\/img\/items\/cannon.png",
+  icon: "modules/default/img/items/cannon.png",
   
   techLevel: 1,
   buildCost: 100,
@@ -29,7 +29,7 @@ const bombLauncher2: ItemTemplate =
   type: "bombLauncher2",
   displayName: "Bomb Launcher 2",
   description: "",
-  icon: "modules\/default\/img\/items\/cannon.png",
+  icon: "modules/default/img/items/cannon.png",
   
   techLevel: 2,
   buildCost: 200,
@@ -47,7 +47,7 @@ const bombLauncher3: ItemTemplate =
   type: "bombLauncher3",
   displayName: "Bomb Launcher 3",
   description: "",
-  icon: "modules\/default\/img\/items\/cannon.png",
+  icon: "modules/default/img/items/cannon.png",
   
   techLevel: 3,
   buildCost: 300,
@@ -66,7 +66,7 @@ const afterBurner1: ItemTemplate =
   type: "afterBurner1",
   displayName: "Afterburner 1",
   description: "",
-  icon: "modules\/default\/img\/items\/blueThing.png",
+  icon: "modules/default/img/items/blueThing.png",
   
   techLevel: 1,
   buildCost: 100,
@@ -84,7 +84,7 @@ const afterBurner2: ItemTemplate =
   type: "afterBurner2",
   displayName: "Afterburner 2",
   description: "",
-  icon: "modules\/default\/img\/items\/blueThing.png",
+  icon: "modules/default/img/items/blueThing.png",
   
   techLevel: 2,
   buildCost: 200,
@@ -101,7 +101,7 @@ const afterBurner3: ItemTemplate =
   type: "afterBurner3",
   displayName: "Afterburner 3",
   description: "",
-  icon: "modules\/default\/img\/items\/blueThing.png",
+  icon: "modules/default/img/items/blueThing.png",
   
   techLevel: 3,
   buildCost: 300,
@@ -119,7 +119,7 @@ const shieldPlating1: ItemTemplate =
   type: "shieldPlating1",
   displayName: "Shield Plating 1",
   description: "",
-  icon: "modules\/default\/img\/items\/armor1.png",
+  icon: "modules/default/img/items/armor1.png",
   
   techLevel: 1,
   buildCost: 100,
@@ -136,7 +136,7 @@ const shieldPlating2: ItemTemplate =
   type: "shieldPlating2",
   displayName: "Shield Plating 2",
   description: "",
-  icon: "modules\/default\/img\/items\/armor1.png",
+  icon: "modules/default/img/items/armor1.png",
   
   techLevel: 2,
   buildCost: 200,
@@ -153,7 +153,7 @@ const shieldPlating3: ItemTemplate =
   type: "shieldPlating3",
   displayName: "Shield Plating 3",
   description: "",
-  icon: "modules\/default\/img\/items\/armor1.png",
+  icon: "modules/default/img/items/armor1.png",
   
   techLevel: 3,
   buildCost: 300,

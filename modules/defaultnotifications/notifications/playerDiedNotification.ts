@@ -21,7 +21,7 @@ const playerDiedNotification: NotificationTemplate =
   displayName: "Player died",
   category: "game",
   defaultFilterState: [NotificationFilterState.alwaysShow],
-  iconSrc: "modules\/common\/resourcetemplates\/img\/test1.png",
+  iconSrc: "modules/common/resourcetemplates/img/test1.png",
   eventListeners: ["makePlayerDiedNotification"],
   contentConstructor: UIComponent,
   messageConstructor: function(props: PropTypes)

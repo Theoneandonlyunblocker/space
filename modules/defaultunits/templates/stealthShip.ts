@@ -25,7 +25,7 @@ const stealthShip: UnitTemplate =
   },
   isSquadron: true,
   buildCost: 500,
-  icon: "modules\/defaultunits\/img\/icons\/sc.png",
+  icon: "modules/defaultunits/img/icons/sc.png",
   maxHealth: 0.6,
   maxMovePoints: 1,
   visionRange: 1,

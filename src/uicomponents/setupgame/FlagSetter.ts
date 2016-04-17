@@ -193,7 +193,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
       if (!image)
       {
         // try to get image from any html img element dropped
-        var htmlContent = e.dataTransfer.getData("text\/html");
+        var htmlContent = e.dataTransfer.getData("text/html");
         var imageSource = htmlContent.match(/src\s*=\s*"(.+?)"/)[1];
 
         if (!imageSource)

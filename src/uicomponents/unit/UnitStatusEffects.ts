@@ -43,7 +43,7 @@ export class UnitStatusEffectsComponent extends React.Component<PropTypes, State
       var polarityString = eff > ite ? "positive" : "negative";
       var polaritySign = eff > ite ? " +" : " ";
 
-      var imageSrc = "img\/icons\/statusEffect_" + polarityString + "_" + attribute + ".png";
+      var imageSrc = "img/icons/statusEffect_" + polarityString + "_" + attribute + ".png";
 
       var titleString = "" + attribute + polaritySign + (eff - ite);
 
@@ -88,7 +88,7 @@ export class UnitStatusEffectsComponent extends React.Component<PropTypes, State
       passiveSkillsElement = React.DOM.img(
       {
         className: "unit-status-effects-passive-skills",
-        src: "img\/icons\/availableAction.png",
+        src: "img/icons/availableAction.png",
         title: passiveSkillsElementTitle
       })
     }

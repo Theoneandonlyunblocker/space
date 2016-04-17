@@ -29,7 +29,7 @@ const battleFinishNotification: NotificationTemplate =
   displayName: "Battle finished",
   category: "combat",
   defaultFilterState: [NotificationFilterState.neverShow],
-  iconSrc: "modules\/common\/resourcetemplates\/img\/test1.png",
+  iconSrc: "modules/common/resourcetemplates/img/test1.png",
   eventListeners: ["makeBattleFinishNotification"],
   contentConstructor: UIComponent,
   messageConstructor: function(props: PropTypes)

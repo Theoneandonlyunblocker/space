@@ -16,7 +16,7 @@ export default function rocketAttack(params: SFXParams)
 
   var props =
   {
-    projectileTextures: [PIXI.Texture.fromFrame("modules\/default\/img\/battleEffects\/rocket.png")],
+    projectileTextures: [PIXI.Texture.fromFrame("modules/default/img/battleEffects/rocket.png")],
     impactTextures: [explosionTextures],
 
     maxSpeed: 3,

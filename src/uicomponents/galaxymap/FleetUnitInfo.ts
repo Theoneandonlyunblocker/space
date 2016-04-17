@@ -88,7 +88,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
           React.DOM.img(
           {
             className: "fleet-unit-info-icon",
-            src: isNotDetected ? "img\/icons\/unDetected.png" : unit.template.icon
+            src: isNotDetected ? "img/icons/unDetected.png" : unit.template.icon
           })
         ),
         React.DOM.div(
