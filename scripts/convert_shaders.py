@@ -190,7 +190,7 @@ def writeConvertedShader(outFile, sourceLines, shaderName, fileName):
   )
 
 
-os.chdir("../src/shaders")
+os.chdir("src/shaders")
 
 for fileName in os.listdir("."):
   if fileName.endswith(".glsl") or fileName.endswith(".frag"):
