@@ -24,7 +24,7 @@ const WarDeclarationNotification: NotificationTemplate =
   displayName: "War declaration",
   category: "diplomacy",
   defaultFilterState: [NotificationFilterState.showIfInvolved],
-  iconSrc: "modules\/default\/img\/resources\/test2.png",
+  iconSrc: "modules\/common\/resourcetemplates\/img\/test2.png",
   eventListeners: ["makeWarDeclarationNotification"],
   contentConstructor: UIComponent,
   messageConstructor: function(props: PropTypes)
