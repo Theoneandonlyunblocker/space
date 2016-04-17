@@ -24,7 +24,6 @@ export default class ReactUI
 
   constructor(public container: HTMLElement)
   {
-    React.initializeTouchEvents(true);
     this.addEventListeners();
   }
   private addEventListeners()
@@ -41,12 +40,12 @@ export default class ReactUI
   {
     eventManager.removeAllListeners("switchScene");
     eventManager.removeAllListeners("renderUI");
-    React.unmountComponentAtNode(this.container);
+    ReactDOM.unmountComponentAtNode(this.container);
     this.container = null;
   }
   public render()
   {
-    React.render(
+    ReactDOM.render(
       Stage(
       {
         sceneToRender: this.currentScene,
