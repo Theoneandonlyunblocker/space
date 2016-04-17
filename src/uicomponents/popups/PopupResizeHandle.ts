@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
+/// <reference path="../../../lib/react-global.d.ts" />
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";

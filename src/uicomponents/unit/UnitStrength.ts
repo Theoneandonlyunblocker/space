@@ -1,5 +1,5 @@
 /// <reference path="../../../lib/tween.js.d.ts" />
-/// <reference path="../../../lib/react-global-0.13.3.d.ts" />
+/// <reference path="../../../lib/react-global.d.ts" />
 
 
 interface PropTypes extends React.Props<any>
