@@ -51,7 +51,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   {
     this.props.renderer.isBattleBackground = true;
 
-    this.props.renderer.bindRendererView(React.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer));
+    this.props.renderer.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer));
 
     window.addEventListener("resize", this.handleResize, false);
   }

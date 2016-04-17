@@ -117,7 +117,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType>
   {
     if (this.focusTimer.isWithinGracePeriod()) return;
 
-    var node = React.findDOMNode<HTMLElement>(this.ref_TODO_main);
+    var node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_main);
     const target = <HTMLElement> e.target;
     if (target === node || node.contains(target))
     {

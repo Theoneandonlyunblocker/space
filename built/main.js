@@ -674,6 +674,14 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
         return to;
     }
     exports.extendObject = extendObject;
+    function shallowCopy(toCopy) {
+        var cloned = {};
+        for (var key in toCopy) {
+            cloned[key] = toCopy[key];
+        }
+        return cloned;
+    }
+    exports.shallowCopy = shallowCopy;
     function deepMerge(target, src, excludeKeysNotInTarget) {
         if (excludeKeysNotInTarget === void 0) { excludeKeysNotInTarget = false; }
         if (excludeKeysNotInTarget) {
@@ -1674,7 +1682,7 @@ define("src/BattleTurnOrder", ["require", "exports"], function (require, exports
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleTurnOrder;
 });
-define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/UnitBattleSide", "src/utility"], function (require, exports, App_5, eventManager_2, UnitBattleSide_1, utility_2) {
+define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/BattleTurnOrder", "src/UnitBattleSide", "src/utility"], function (require, exports, App_5, eventManager_2, BattleTurnOrder_1, UnitBattleSide_1, utility_2) {
     "use strict";
     var Battle = (function () {
         function Battle(props) {
@@ -1693,6 +1701,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
             this.side2 = props.side2;
             this.side2Player = props.side2Player;
             this.battleData = props.battleData;
+            this.turnOrder = new BattleTurnOrder_1.default();
         }
         Battle.prototype.init = function () {
             var self = this;
@@ -10757,11 +10766,11 @@ define("src/uicomponents/unitlist/UnitItem", ["require", "exports", "src/uicompo
             switch (techLevel) {
                 case 2:
                     {
-                        return "img\/icons\/t2icon.png";
+                        return "img/icons/t2icon.png";
                     }
                 case 3:
                     {
-                        return "img\/icons\/t3icon.png";
+                        return "img/icons/t3icon.png";
                     }
             }
         };
@@ -10779,10 +10788,10 @@ define("src/uicomponents/unitlist/UnitItem", ["require", "exports", "src/uicompo
                 divProps.className += " draggable";
                 divProps.onMouseDown = divProps.onTouchStart =
                     this.dragPositioner.handleReactDownEvent;
-            }
-            if (this.dragPositioner.isDragging) {
-                divProps.style = this.dragPositioner.getStyleAttributes();
-                divProps.className += " dragging";
+                if (this.dragPositioner.isDragging) {
+                    divProps.style = this.dragPositioner.getStyleAttributes();
+                    divProps.className += " dragging";
+                }
             }
             return (React.DOM.div(divProps, React.DOM.div({
                 className: "item-icon-container"
@@ -10987,7 +10996,7 @@ define("src/uicomponents/popups/PopupResizeHandle", ["require", "exports", "src/
         PopupResizeHandleComponent.prototype.render = function () {
             return (React.DOM.img({
                 className: "popup-resize-handle",
-                src: "img\/icons\/resizeHandle.png",
+                src: "img/icons/resizeHandle.png",
                 onTouchStart: this.dragPositioner.handleReactDownEvent,
                 onMouseDown: this.dragPositioner.handleReactDownEvent
             }));
@@ -12287,7 +12296,7 @@ define("src/uicomponents/unit/UnitStatusEffects", ["require", "exports"], functi
                     continue;
                 var polarityString = eff > ite ? "positive" : "negative";
                 var polaritySign = eff > ite ? " +" : " ";
-                var imageSrc = "img\/icons\/statusEffect_" + polarityString + "_" + attribute + ".png";
+                var imageSrc = "img/icons/statusEffect_" + polarityString + "_" + attribute + ".png";
                 var titleString = "" + attribute + polaritySign + (eff - ite);
                 statusEffects.push(React.DOM.img({
                     className: "status-effect-icon" + " status-effect-icon-" + attribute,
@@ -12318,7 +12327,7 @@ define("src/uicomponents/unit/UnitStatusEffects", ["require", "exports"], functi
                 }
                 passiveSkillsElement = React.DOM.img({
                     className: "unit-status-effects-passive-skills",
-                    src: "img\/icons\/availableAction.png",
+                    src: "img/icons/availableAction.png",
                     title: passiveSkillsElementTitle
                 });
             }
@@ -12519,9 +12528,9 @@ define("src/uicomponents/unit/UnitActions", ["require", "exports"], function (re
             this.displayName = "UnitActions";
         }
         UnitActionsComponent.prototype.render = function () {
-            var availableSrc = "img\/icons\/availableAction.png";
-            var hoveredSrc = "img\/icons\/spentAction.png";
-            var spentSrc = "img\/icons\/spentAction.png";
+            var availableSrc = "img/icons/availableAction.png";
+            var hoveredSrc = "img/icons/spentAction.png";
+            var spentSrc = "img/icons/spentAction.png";
             var icons = [];
             var availableCount = this.props.currentActionPoints - this.props.hoveredActionPointExpenditure;
             for (var i = 0; i < availableCount; i++) {
@@ -12667,10 +12676,10 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
             if (this.props.isDraggable) {
                 wrapperProps.className += " draggable";
                 wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.dragPositioner.handleReactDownEvent;
-            }
-            if (this.dragPositioner.isDragging) {
-                wrapperProps.style = this.dragPositioner.getStyleAttributes();
-                wrapperProps.className += " dragging";
+                if (this.dragPositioner.isDragging) {
+                    wrapperProps.style = this.dragPositioner.getStyleAttributes();
+                    wrapperProps.className += " dragging";
+                }
             }
             if (this.props.onUnitClick) {
                 wrapperProps.onClick = this.handleClick;
@@ -12754,7 +12763,7 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitWrapper", ["require", "exports", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit"], function (require, exports, EmptyUnit_1, Unit_3) {
+define("src/uicomponents/unit/UnitWrapper", ["require", "exports", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, EmptyUnit_1, Unit_3, utility_25) {
     "use strict";
     var UnitWrapperComponent = (function (_super) {
         __extends(UnitWrapperComponent, _super);
@@ -12837,22 +12846,23 @@ define("src/uicomponents/unit/UnitWrapper", ["require", "exports", "src/uicompon
             });
             allElements.push(empty);
             if (this.props.unit) {
+                var clonedProps = utility_25.shallowCopy(this.props);
                 var isDead = false;
                 if (this.props.battle &&
                     this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0) {
                     if (this.props.battle.deadUnits.indexOf(this.props.unit) >= 0) {
-                        this.props.isDead = true;
+                        clonedProps.isDead = true;
                     }
                 }
                 var isCaptured = false;
                 if (this.props.battle &&
                     this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0) {
                     if (this.props.battle.capturedUnits.indexOf(this.props.unit) >= 0) {
-                        this.props.isCaptured = true;
+                        clonedProps.isCaptured = true;
                     }
                 }
-                this.props.key = "unit";
-                var unit = Unit_3.default(this.props);
+                clonedProps.key = "unit";
+                var unit = Unit_3.default(clonedProps);
                 allElements.push(unit);
             }
             return (React.DOM.div(wrapperProps, allElements));
@@ -13257,7 +13267,7 @@ define("src/uicomponents/PlayerFlag", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_25, PlayerFlag_1, utility_25) {
+define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_25, PlayerFlag_1, utility_26) {
     "use strict";
     var DefenceBuildingComponent = (function (_super) {
         __extends(DefenceBuildingComponent, _super);
@@ -13275,7 +13285,7 @@ define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src
                 className: "defence-building"
             }, React.DOM.img({
                 className: "defence-building-icon",
-                src: utility_25.colorImageInPlayerColor(image, building.controller),
+                src: utility_26.colorImageInPlayerColor(image, building.controller),
                 title: building.template.displayName
             }), PlayerFlag_1.default({
                 props: {
@@ -14313,7 +14323,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleScene;
 });
-define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_26, App_27) {
+define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_27, App_27) {
     "use strict";
     var BattleSceneTesterComponent = (function (_super) {
         __extends(BattleSceneTesterComponent, _super);
@@ -14371,7 +14381,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             battleScene.updateUnits();
         };
         BattleSceneTesterComponent.prototype.makeUnit = function () {
-            var template = utility_26.getRandomProperty(App_27.default.moduleData.Templates.Units);
+            var template = utility_27.getRandomProperty(App_27.default.moduleData.Templates.Units);
             return new Unit_5.default(template, this.idGenerator++);
         };
         BattleSceneTesterComponent.prototype.makePlayer = function () {
@@ -14511,7 +14521,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var user = this.state.activeUnit;
             var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
             var bs = this.battleScene;
-            var SFXTemplate = utility_26.extendObject(App_27.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+            var SFXTemplate = utility_27.extendObject(App_27.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
             if (this.state.duration) {
                 SFXTemplate.duration = this.state.duration;
             }
@@ -14849,7 +14859,7 @@ define("src/uicomponents/setupgame/FlagSetter", ["require", "exports", "src/uico
                 var files = e.dataTransfer.files;
                 var image = this.getFirstValidImageFromFiles(files);
                 if (!image) {
-                    var htmlContent = e.dataTransfer.getData("text\/html");
+                    var htmlContent = e.dataTransfer.getData("text/html");
                     var imageSource = htmlContent.match(/src\s*=\s*"(.+?)"/)[1];
                     if (!imageSource) {
                         console.error("None of the files provided are valid images");
@@ -15344,7 +15354,7 @@ define("src/uicomponents/setupgame/ColorSetter", ["require", "exports", "src/uic
             var displayElement = this.props.color === null ?
                 React.DOM.img({
                     className: "color-setter-display",
-                    src: "img\/icons\/nullcolor.png",
+                    src: "img/icons/nullcolor.png",
                     onClick: this.toggleActive
                 }) :
                 React.DOM.div({
@@ -15716,7 +15726,7 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_27) {
+define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_28) {
     "use strict";
     var MapGenOptionComponent = (function (_super) {
         __extends(MapGenOptionComponent, _super);
@@ -15728,7 +15738,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
         MapGenOptionComponent.prototype.handleChange = function (e) {
             var target = e.target;
             var option = this.props.option;
-            var newValue = utility_27.clamp(parseFloat(target.value), option.range.min, option.range.max);
+            var newValue = utility_28.clamp(parseFloat(target.value), option.range.min, option.range.max);
             this.props.onChange(this.props.id, newValue);
         };
         MapGenOptionComponent.prototype.shouldComponentUpdate = function (newProps) {
@@ -15779,7 +15789,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_28) {
+define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_29) {
     "use strict";
     var MapGenOptionsComponent = (function (_super) {
         __extends(MapGenOptionsComponent, _super);
@@ -15821,13 +15831,13 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                         var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
                         if (!oldOption)
                             continue;
-                        var oldValuePercentage = utility_28.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
+                        var oldValuePercentage = utility_29.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
                         value = option.min + (option.max - option.min) * oldValuePercentage;
                     }
                     else {
                         value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                     }
-                    value = utility_28.clamp(utility_28.roundToNearestMultiple(value, option.step), option.min, option.max);
+                    value = utility_29.clamp(utility_29.roundToNearestMultiple(value, option.step), option.min, option.max);
                     defaultValues["optionValue_" + optionName] = value;
                 }
             }.bind(this));
@@ -15851,14 +15861,14 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                 var optionGroup = optionGroups[optionGroupName];
                 for (var optionName in optionGroup) {
                     var option = optionGroup[optionName].range;
-                    var optionValue = utility_28.clamp(utility_28.roundToNearestMultiple(utility_28.randInt(option.min, option.max), option.step), option.min, option.max);
+                    var optionValue = utility_29.clamp(utility_29.roundToNearestMultiple(utility_29.randInt(option.min, option.max), option.step), option.min, option.max);
                     newValues["optionValue_" + optionName] = optionValue;
                 }
             }
             this.setState(newValues);
         };
         MapGenOptionsComponent.prototype.getOptionValuesForTemplate = function () {
-            var optionValues = utility_28.extendObject(this.props.mapGenTemplate.options);
+            var optionValues = utility_29.extendObject(this.props.mapGenTemplate.options);
             for (var groupName in optionValues) {
                 var optionsGroup = optionValues[groupName];
                 for (var optionName in optionsGroup) {
@@ -16119,8 +16129,7 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports"], function (re
         TurnOrderComponent.prototype.setMaxUnits = function () {
             var minUnits = 7;
             var containerElement = React.findDOMNode(this);
-            var containerWidth = containerElement.getBoundingClientRect().width;
-            containerWidth -= 30;
+            var containerWidth = containerElement.getBoundingClientRect().width - 30;
             var unitElementWidth = 160;
             var ceil = Math.ceil(containerWidth / unitElementWidth);
             this.setState({
@@ -16128,27 +16137,18 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports"], function (re
             });
         };
         TurnOrderComponent.prototype.render = function () {
-            var maxUnits = this.state.maxUnits;
-            var turnOrder = this.props.turnOrder.slice(0);
-            if (this.props.potentialDelay) {
-                var fake = {
-                    isFake: true,
-                    id: this.props.potentialDelay.id,
-                    battleStats: {
-                        moveDelay: this.props.potentialDelay.delay
-                    }
-                };
-                turnOrder.push(fake);
-            }
-            var maxUnitsWithFake = maxUnits;
-            if (fake && turnOrder.indexOf(fake) <= maxUnits) {
-                maxUnitsWithFake++;
-            }
-            turnOrder = turnOrder.slice(0, maxUnitsWithFake);
+            var _this = this;
+            var needsExtraSpaceForGhost = this.props.turnOrderDisplayData.some(function (d, i) {
+                return d.isGhost && i < _this.state.maxUnits;
+            });
+            var maxUnitsWithGhost = needsExtraSpaceForGhost ? this.state.maxUnits + 1 : this.state.maxUnits;
+            var filteredTurnOrderDisplayData = this.props.turnOrderDisplayData.filter(function (d, i) {
+                return i < maxUnitsWithGhost || d.isGhost;
+            });
             var toRender = [];
-            for (var i = 0; i < turnOrder.length; i++) {
-                var unit = turnOrder[i];
-                if (unit.isFake) {
+            for (var i = 0; i < filteredTurnOrderDisplayData.length; i++) {
+                var displayData = filteredTurnOrderDisplayData[i];
+                if (displayData.isGhost) {
                     toRender.push(React.DOM.div({
                         className: "turn-order-arrow",
                         key: "" + i
@@ -16158,27 +16158,20 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports"], function (re
                 var data = {
                     key: "" + i,
                     className: "turn-order-unit",
-                    title: "delay: " + unit.battleStats.moveDelay + "\n" +
-                        "speed: " + unit.attributes.speed,
-                    onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit),
+                    title: "delay: " + displayData.moveDelay + "\n",
+                    onMouseEnter: this.props.onMouseEnterUnit.bind(null, displayData.unit),
                     onMouseLeave: this.props.onMouseLeaveUnit
                 };
-                if (this.props.unitsBySide.side1.indexOf(unit) > -1) {
+                if (this.props.unitsBySide.side1.indexOf(displayData.unit) > -1) {
                     data.className += " turn-order-unit-friendly";
                 }
-                else if (this.props.unitsBySide.side2.indexOf(unit) > -1) {
+                else {
                     data.className += " turn-order-unit-enemy";
                 }
-                if (this.props.hoveredUnit && unit.id === this.props.hoveredUnit.id) {
+                if (this.props.hoveredUnit && displayData.unit === this.props.hoveredUnit) {
                     data.className += " turn-order-unit-hover";
                 }
-                toRender.push(React.DOM.div(data, unit.name));
-            }
-            if (this.props.turnOrder.length > maxUnits) {
-                toRender.push(React.DOM.div({
-                    className: "turn-order-more",
-                    key: "more"
-                }, "..."));
+                toRender.push(React.DOM.div(data, displayData.unit.name));
             }
             return (React.DOM.div({ className: "turn-order-container" }, toRender));
         };
@@ -16252,7 +16245,7 @@ define("src/uicomponents/battle/BattleScore", ["require", "exports", "src/uicomp
                 className: "battle-score-container"
             }, React.DOM.img({
                 className: "battle-score-mid-point",
-                src: "img\/icons\/battleScoreMidPoint.png"
+                src: "img/icons/battleScoreMidPoint.png"
             }, null), PlayerFlag_4.default({
                 props: {
                     className: "battle-score-flag"
@@ -16643,7 +16636,8 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                     facesLeft: null
                 },
                 targetsInPotentialArea: [],
-                potentialDelay: null,
+                potentialDelayID: undefined,
+                potentialDelayAmount: undefined,
                 hoveredAbility: null,
                 targetUnit: null,
                 userUnit: null,
@@ -16686,7 +16680,8 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                     parentElement: null
                 },
                 hoveredAbility: null,
-                potentialDelay: null,
+                potentialDelayID: undefined,
+                potentialDelayAmount: undefined,
                 targetsInPotentialArea: []
             });
             this.setBattleSceneUnits(null);
@@ -16827,11 +16822,20 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
             battle.finishBattle();
         };
         BattleComponent.prototype.handleMouseEnterAbility = function (ability) {
+            var abilityUseDelay = ability.preparation ?
+                ability.preparation.prepDelay * ability.preparation.turnsToPrep :
+                ability.moveDelay;
+            this.setState({
+                hoveredAbility: ability,
+                potentialDelayID: this.props.battle.activeUnit.id,
+                potentialDelayAmount: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay,
+            });
         };
         BattleComponent.prototype.handleMouseLeaveAbility = function () {
             this.setState({
                 hoveredAbility: null,
-                potentialDelay: null,
+                potentialDelayID: undefined,
+                potentialDelayAmount: undefined,
                 targetsInPotentialArea: []
             });
         };
@@ -16871,11 +16875,11 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 upperFooterElement = null;
             }
             else if (!this.state.playingBattleEffect) {
+                var turnOrderDisplayData = battle.turnOrder.getDisplayData(this.state.potentialDelayAmount, this.state.potentialDelayID);
                 upperFooterElement = TurnOrder_1.default({
                     key: "turnOrder",
-                    turnOrder: battle.turnOrder,
+                    turnOrderDisplayData: turnOrderDisplayData,
                     unitsBySide: battle.unitsBySide,
-                    potentialDelay: this.state.potentialDelay,
                     hoveredUnit: this.state.highlightedUnit,
                     onMouseEnterUnit: this.handleMouseEnterUnit,
                     onMouseLeaveUnit: this.handleMouseLeaveUnit
@@ -17534,7 +17538,7 @@ define("modules/defaultnotifications/notifications/battleFinishNotification", ["
         displayName: "Battle finished",
         category: "combat",
         defaultFilterState: [NotificationFilterState_2.default.neverShow],
-        iconSrc: "modules\/default\/img\/resources\/test1.png",
+        iconSrc: "modules/common/resourcetemplates/img/test1.png",
         eventListeners: ["makeBattleFinishNotification"],
         contentConstructor: BattleFinishNotification_1.default,
         messageConstructor: function (props) {
@@ -17589,7 +17593,7 @@ define("modules/defaultnotifications/notifications/playerDiedNotification", ["re
         displayName: "Player died",
         category: "game",
         defaultFilterState: [NotificationFilterState_3.default.alwaysShow],
-        iconSrc: "modules\/default\/img\/resources\/test1.png",
+        iconSrc: "modules/common/resourcetemplates/img/test1.png",
         eventListeners: ["makePlayerDiedNotification"],
         contentConstructor: PlayerDiedNotification_1.default,
         messageConstructor: function (props) {
@@ -17638,7 +17642,7 @@ define("modules/defaultnotifications/notifications/warDeclarationNotification", 
         displayName: "War declaration",
         category: "diplomacy",
         defaultFilterState: [NotificationFilterState_4.default.showIfInvolved],
-        iconSrc: "modules\/default\/img\/resources\/test2.png",
+        iconSrc: "modules/common/resourcetemplates/img/test2.png",
         eventListeners: ["makeWarDeclarationNotification"],
         contentConstructor: WarDeclarationNotification_1.default,
         messageConstructor: function (props) {
@@ -17719,7 +17723,7 @@ define("src/uicomponents/notifications/Notification", ["require", "exports"], fu
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/popups/ConfirmPopup", ["require", "exports", "src/utility"], function (require, exports, utility_29) {
+define("src/uicomponents/popups/ConfirmPopup", ["require", "exports", "src/utility"], function (require, exports, utility_30) {
     "use strict";
     var ConfirmPopupComponent = (function (_super) {
         __extends(ConfirmPopupComponent, _super);
@@ -17755,7 +17759,7 @@ define("src/uicomponents/popups/ConfirmPopup", ["require", "exports", "src/utili
             var _this = this;
             var content;
             if (this.props.contentText) {
-                content = utility_29.splitMultilineText(this.props.contentText);
+                content = utility_30.splitMultilineText(this.props.contentText);
             }
             else if (this.props.contentConstructor) {
                 content = this.props.contentConstructor(this.props.contentProps);
@@ -18427,7 +18431,7 @@ define("src/uicomponents/galaxymap/FleetUnitInfo", ["require", "exports", "src/u
                 className: "fleet-unit-info-icon-container"
             }, React.DOM.img({
                 className: "fleet-unit-info-icon",
-                src: isNotDetected ? "img\/icons\/unDetected.png" : unit.template.icon
+                src: isNotDetected ? "img/icons/unDetected.png" : unit.template.icon
             })), React.DOM.div({
                 className: "fleet-unit-info-info"
             }, FleetUnitInfoName_1.default({
@@ -19131,10 +19135,10 @@ define("src/uicomponents/trade/TradeMoney", ["require", "exports", "src/uicompon
             if (this.props.onDragStart) {
                 rowProps.className += " draggable";
                 rowProps.onMouseDown = rowProps.onTouchStart = this.dragPositioner.handleReactDownEvent;
-            }
-            if (this.dragPositioner.isDragging) {
-                rowProps.style = this.dragPositioner.getStyleAttributes();
-                rowProps.className += " dragging";
+                if (this.dragPositioner.isDragging) {
+                    rowProps.style = this.dragPositioner.getStyleAttributes();
+                    rowProps.className += " dragging";
+                }
             }
             else if (this.props.onClick) {
                 rowProps.onClick = this.handleClick;
@@ -19610,7 +19614,7 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_30) {
+define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_31) {
     "use strict";
     var AttitudeModifierInfoComponent = (function (_super) {
         __extends(AttitudeModifierInfoComponent, _super);
@@ -19638,8 +19642,8 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
                     }
                 case "strength":
                     {
-                        var relativeValue = utility_30.getRelativeValue(this.props.strength, -20, 20);
-                        relativeValue = utility_30.clamp(relativeValue, 0, 1);
+                        var relativeValue = utility_31.getRelativeValue(this.props.strength, -20, 20);
+                        relativeValue = utility_31.clamp(relativeValue, 0, 1);
                         var deviation = Math.abs(0.5 - relativeValue) * 2;
                         var hue = 110 * relativeValue;
                         var saturation = 0 + 50 * deviation;
@@ -19872,7 +19876,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_31) {
+define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_32) {
     "use strict";
     var OpinionComponent = (function (_super) {
         __extends(OpinionComponent, _super);
@@ -19904,8 +19908,8 @@ define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicompo
             return firstChild.getBoundingClientRect();
         };
         OpinionComponent.prototype.getColor = function () {
-            var relativeValue = utility_31.getRelativeValue(this.props.opinion, -30, 30);
-            relativeValue = utility_31.clamp(relativeValue, 0, 1);
+            var relativeValue = utility_32.getRelativeValue(this.props.opinion, -30, 30);
+            relativeValue = utility_32.clamp(relativeValue, 0, 1);
             var deviation = Math.abs(0.5 - relativeValue) * 2;
             var hue = 110 * relativeValue;
             var saturation = 0 + 50 * deviation;
@@ -20940,7 +20944,7 @@ define("src/uicomponents/production/ManufactoryStarsListItem", ["require", "expo
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_32) {
+define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_33) {
     "use strict";
     var ManufactoryStarsListComponent = (function (_super) {
         __extends(ManufactoryStarsListComponent, _super);
@@ -20950,8 +20954,8 @@ define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports"
         }
         ManufactoryStarsListComponent.prototype.render = function () {
             var rows = [];
-            this.props.starsWithManufactories.sort(utility_32.sortByManufactoryCapacityFN);
-            this.props.starsWithoutManufactories.sort(utility_32.sortByManufactoryCapacityFN);
+            this.props.starsWithManufactories.sort(utility_33.sortByManufactoryCapacityFN);
+            this.props.starsWithoutManufactories.sort(utility_33.sortByManufactoryCapacityFN);
             for (var i = 0; i < this.props.starsWithManufactories.length; i++) {
                 var star = this.props.starsWithManufactories[i];
                 var manufactory = star.manufactory;
@@ -21017,7 +21021,7 @@ define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", 
     exports.default = UpdateWhenMoneyChanges;
     var _a;
 });
-define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_34, utility_33, UpdateWhenMoneyChanges_1, applyMixins_13) {
+define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_34, utility_34, UpdateWhenMoneyChanges_1, applyMixins_13) {
     "use strict";
     var ProductionOverviewComponent = (function (_super) {
         __extends(ProductionOverviewComponent, _super);
@@ -21039,11 +21043,11 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
             var player = this.props.player;
             var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
             if (starsByManufactoryPresence.withManufactories.length > 0) {
-                starsByManufactoryPresence.withManufactories.sort(utility_33.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withManufactories.sort(utility_34.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withManufactories[0];
             }
             else if (starsByManufactoryPresence.withoutManufactories.length > 0) {
-                starsByManufactoryPresence.withoutManufactories.sort(utility_33.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withoutManufactories.sort(utility_34.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withoutManufactories[0];
             }
             return ({
@@ -21209,7 +21213,7 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/unitlist/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_34) {
+define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/unitlist/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_35) {
     "use strict";
     var SaveListComponent = (function (_super) {
         __extends(SaveListComponent, _super);
@@ -21238,7 +21242,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
                     data: {
                         storageKey: saveKeys[i],
                         name: saveData.name,
-                        date: utility_34.prettifyDate(date),
+                        date: utility_35.prettifyDate(date),
                         accurateDate: saveData.date,
                         rowConstructor: SaveListItem_1.default,
                         isMarkedForDeletion: isMarkedForDeletion,
@@ -21487,12 +21491,15 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
         function SaveGameComponent(props) {
             _super.call(this, props);
             this.displayName = "SaveGame";
+            this.state = {
+                saveName: ""
+            };
             this.bindMethods();
         }
         SaveGameComponent.prototype.bindMethods = function () {
             this.handleClose = this.handleClose.bind(this);
             this.makeConfirmOverWritePopup = this.makeConfirmOverWritePopup.bind(this);
-            this.setInputText = this.setInputText.bind(this);
+            this.setSaveName = this.setSaveName.bind(this);
             this.saveGame = this.saveGame.bind(this);
             this.handleSave = this.handleSave.bind(this);
             this.handleRowChange = this.handleRowChange.bind(this);
@@ -21505,14 +21512,20 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
                 React.findDOMNode(this.ref_TODO_saveName).focus();
             }
         };
-        SaveGameComponent.prototype.setInputText = function (newText) {
-            React.findDOMNode(this.ref_TODO_saveName).value = newText;
+        SaveGameComponent.prototype.setSaveName = function (newText) {
+            this.setState({
+                saveName: newText
+            });
+        };
+        SaveGameComponent.prototype.handleSaveNameInput = function (e) {
+            var target = e.target;
+            this.setSaveName(target.value);
         };
         SaveGameComponent.prototype.handleRowChange = function (row) {
-            this.setInputText(row.data.name);
+            this.setSaveName(row.data.name);
         };
         SaveGameComponent.prototype.handleSave = function () {
-            var saveName = React.findDOMNode(this.ref_TODO_saveName).value;
+            var saveName = this.state.saveName;
             var saveKey = "Save." + saveName;
             if (localStorage[saveKey]) {
                 this.makeConfirmOverWritePopup(saveName);
@@ -21522,7 +21535,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             }
         };
         SaveGameComponent.prototype.saveGame = function () {
-            App_34.default.game.save(React.findDOMNode(this.ref_TODO_saveName).value);
+            App_34.default.game.save(this.state.saveName);
             this.handleClose();
         };
         SaveGameComponent.prototype.handleClose = function () {
@@ -21558,6 +21571,8 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
                     _this.ref_TODO_saveName = component;
                 },
                 type: "text",
+                value: this.state.saveName,
+                onChange: this.handleSaveNameInput,
                 maxLength: 64
             }), React.DOM.div({
                 className: "save-game-buttons-container"
@@ -21609,7 +21624,7 @@ define("src/uicomponents/galaxymap/OptionsCheckbox", ["require", "exports"], fun
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_35) {
+define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_36) {
     "use strict";
     var OptionsNumericFieldComponent = (function (_super) {
         __extends(OptionsNumericFieldComponent, _super);
@@ -21642,7 +21657,7 @@ define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", 
             if (!isFinite(value)) {
                 return;
             }
-            value = utility_35.clamp(value, parseFloat(target.min), parseFloat(target.max));
+            value = utility_36.clamp(value, parseFloat(target.min), parseFloat(target.max));
             this.setState({
                 value: value
             }, this.triggerOnChangeFN);
@@ -21735,7 +21750,7 @@ define("src/tutorials/TutorialStatus", ["require", "exports", "src/tutorials/Tut
     exports.default = tutorialStatus;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_36, TutorialStatus_1) {
+define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_37, TutorialStatus_1) {
     "use strict";
     var OptionsListComponent = (function (_super) {
         __extends(OptionsListComponent, _super);
@@ -21864,7 +21879,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                             if (!isFinite(value)) {
                                 return;
                             }
-                            value = utility_36.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                            value = utility_37.clamp(value, parseFloat(target.min), parseFloat(target.max));
                             Options_3.default.debugOptions.battleSimulationDepth = value;
                             _this.forceUpdate();
                         }
@@ -22946,7 +22961,7 @@ define("src/uicomponents/tutorials/DontShowAgain", ["require", "exports", "src/t
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_37, TutorialState_3, TutorialStatus_3, utility_38) {
+define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_38, TutorialState_3, TutorialStatus_3, utility_39) {
     "use strict";
     var TutorialComponent = (function (_super) {
         __extends(TutorialComponent, _super);
@@ -22991,7 +23006,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
         TutorialComponent.prototype.flipPage = function (amount) {
             var lastPage = this.props.pages.length - 1;
             var newPage = this.state.currentPageIndex + amount;
-            newPage = utility_37.clamp(newPage, 0, lastPage);
+            newPage = utility_38.clamp(newPage, 0, lastPage);
             this.handleLeavePage(this.props.pages[this.state.currentPageIndex]);
             this.setState({
                 currentPageIndex: newPage
@@ -23035,7 +23050,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
                 className: "tutorial-inner"
             }, backElement, React.DOM.div({
                 className: "tutorial-content"
-            }, utility_38.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
+            }, utility_39.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
                 tutorialId: this.props.tutorialId
             })));
         };
@@ -23549,7 +23564,6 @@ define("src/ReactUI", ["require", "exports", "src/eventManager", "src/uicomponen
     var ReactUI = (function () {
         function ReactUI(container) {
             this.container = container;
-            React.initializeTouchEvents(true);
             this.addEventListeners();
         }
         ReactUI.prototype.addEventListeners = function () {
@@ -23584,7 +23598,7 @@ define("src/ReactUI", ["require", "exports", "src/eventManager", "src/uicomponen
     exports.default = ReactUI;
     var _a;
 });
-define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "src/Unit", "src/utility"], function (require, exports, App_36, Unit_6, utility_39) {
+define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "src/Unit", "src/utility"], function (require, exports, App_36, Unit_6, utility_40) {
     "use strict";
     function setDynamicTemplateProperties() {
         setAbilityGuardAddition();
@@ -23599,8 +23613,8 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
             if (ability.secondaryEffects) {
                 effects = effects.concat(ability.secondaryEffects);
             }
-            var dummyUser = new Unit_6.default(utility_39.getRandomProperty(App_36.default.moduleData.Templates.Units));
-            var dummyTarget = new Unit_6.default(utility_39.getRandomProperty(App_36.default.moduleData.Templates.Units));
+            var dummyUser = new Unit_6.default(utility_40.getRandomProperty(App_36.default.moduleData.Templates.Units));
+            var dummyTarget = new Unit_6.default(utility_40.getRandomProperty(App_36.default.moduleData.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
                 effects[i].action.executeAction(dummyUser, dummyTarget, null, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
@@ -23678,7 +23692,7 @@ define("src/shaders/BlackToAlpha", ["require", "exports"], function (require, ex
     ];
     var _a;
 });
-define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_40) {
+define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_41) {
     "use strict";
     function projectileAttack(props, params) {
         var minY = Math.max(params.height * 0.3, 30);
@@ -23695,7 +23709,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
         var stopSpawningTime = startTime + params.duration / 2;
         var lastTime = startTime;
         var nextSpawnTime = startTime;
-        var amountToSpawn = utility_40.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
+        var amountToSpawn = utility_41.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
         var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
         var projectiles = [];
         var hasTriggeredEffect = false;
@@ -23705,16 +23719,16 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
             lastTime = currentTime;
             if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
                 nextSpawnTime += spawnRate;
-                var texture = utility_40.getRandomArrayItem(props.projectileTextures);
+                var texture = utility_41.getRandomArrayItem(props.projectileTextures);
                 var sprite = new PIXI.Sprite(texture);
                 sprite.x = 20;
-                sprite.y = utility_40.randInt(minY, maxY);
+                sprite.y = utility_41.randInt(minY, maxY);
                 container.addChild(sprite);
                 projectiles.push({
                     sprite: sprite,
                     speed: 0,
                     willImpact: (projectiles.length - 1) % props.impactRate === 0,
-                    impactX: utility_40.randInt(params.width - 200, params.width - 50),
+                    impactX: utility_41.randInt(params.width - 200, params.width - 50),
                     hasImpact: false
                 });
             }
@@ -23733,7 +23747,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
                         params.triggerEffect();
                     }
                     projectile.hasImpact = true;
-                    var impactTextures = utility_40.getRandomArrayItem(props.impactTextures);
+                    var impactTextures = utility_41.getRandomArrayItem(props.impactTextures);
                     var impactClip = new PIXI.extras.MovieClip(impactTextures);
                     impactClip.anchor = new PIXI.Point(0.5, 0.5);
                     impactClip.loop = false;
@@ -23766,7 +23780,7 @@ define("modules/common/battlesfxfunctions/rocketAttack", ["require", "exports", 
             explosionTextures.push(explosionTexture);
         }
         var props = {
-            projectileTextures: [PIXI.Texture.fromFrame("modules\/default\/img\/battleEffects\/rocket.png")],
+            projectileTextures: [PIXI.Texture.fromFrame("modules/default/img/battleEffects/rocket.png")],
             impactTextures: [explosionTextures],
             maxSpeed: 3,
             acceleration: 0.05,
@@ -23900,7 +23914,7 @@ define("src/shaders/Guard", ["require", "exports"], function (require, exports) 
     ];
     var _a;
 });
-define("modules/common/battlesfxfunctions/guard", ["require", "exports", "src/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_41) {
+define("modules/common/battlesfxfunctions/guard", ["require", "exports", "src/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_42) {
     "use strict";
     function guard(props) {
         var userCanvasWidth = props.width * 0.4;
@@ -23932,9 +23946,9 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "src/sh
                     hasTriggeredEffect = true;
                     props.triggerEffect();
                 }
-                var adjustedtime = utility_41.getRelativeValue(time, travelTime - 0.02, 1);
+                var adjustedtime = utility_42.getRelativeValue(time, travelTime - 0.02, 1);
                 adjustedtime = Math.pow(adjustedtime, 4);
-                var relativeDistance = utility_41.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+                var relativeDistance = utility_42.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
                 guardFilter.setUniformValues({
                     trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
                     blockWidth: adjustedtime * maxBlockWidth,
@@ -24585,7 +24599,7 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
     exports.default = ProtonWrapper;
     var _a;
 });
-define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "src/shaders/Beam", "src/shaders/ShinyParticle", "src/shaders/IntersectingEllipses", "src/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_42, ProtonWrapper_1) {
+define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "src/shaders/Beam", "src/shaders/ShinyParticle", "src/shaders/IntersectingEllipses", "src/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_43, ProtonWrapper_1) {
     "use strict";
     function particleTest(props) {
         var width2 = props.width / 2;
@@ -24654,7 +24668,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
             rampUpValue = Math.pow(rampUpValue, 7.0);
             var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-            var relativeTimeAfterImpact = utility_42.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
+            var relativeTimeAfterImpact = utility_43.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
             var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
             var beamIntensity = rampUpValue - rampDownValue;
             beamFilter.setUniformValues({
@@ -24676,7 +24690,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
                 lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
             });
         };
-        var beamSprite = utility_42.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
+        var beamSprite = utility_43.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
         beamSprite.shader = beamFilter;
         beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(beamSprite);
@@ -24717,7 +24731,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         var shinyEmitter = new Proton.BehaviourEmitter();
         shinyEmitter.p.x = beamOrigin.x;
         shinyEmitter.p.y = beamOrigin.y;
-        var shinyParticleTexture = utility_42.getDummyTextureForShader();
+        var shinyParticleTexture = utility_43.getDummyTextureForShader();
         shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
         var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
         shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
@@ -24784,7 +24798,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             x: props.height * 3.0,
             y: props.height * 3.0
         };
-        var shockWaveSprite = utility_42.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
+        var shockWaveSprite = utility_43.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
         shockWaveSprite.shader = shockWaveFilter;
         mainContainer.addChild(shockWaveSprite);
         var lightBurstFilter = new LightBurst_1.default({
@@ -24809,7 +24823,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             x: props.height * 1.5,
             y: props.height * 3
         };
-        var lightBurstSprite = utility_42.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
+        var lightBurstSprite = utility_43.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
         lightBurstSprite.shader = lightBurstFilter;
         lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(lightBurstSprite);
@@ -24824,7 +24838,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             particleShaderColorArray[3] = particleShaderColor.a;
             var timePassed = elapsedTime / props.duration;
             var lifeLeft = 1 - timePassed;
-            var timePassedSinceImpact = utility_42.getRelativeValue(timePassed, relativeImpactTime, 1.0);
+            var timePassedSinceImpact = utility_43.getRelativeValue(timePassed, relativeImpactTime, 1.0);
             if (timePassed >= relativeImpactTime - 0.02) {
                 if (!impactHasOccurred) {
                     impactHasOccurred = true;
@@ -25273,35 +25287,35 @@ define("modules/common/resourcetemplates/resources", ["require", "exports"], fun
     exports.testResource1 = {
         type: "testResource1",
         displayName: "Test Resource 1",
-        icon: "modules\/default\/img\/resources\/test1.png",
+        icon: "modules/common/resourcetemplates/img/test1.png",
         rarity: 1,
         distributionGroups: ["common"]
     };
     exports.testResource2 = {
         type: "testResource2",
         displayName: "Test Resource 2",
-        icon: "modules\/default\/img\/resources\/test2.png",
+        icon: "modules/common/resourcetemplates/img/test2.png",
         rarity: 1,
         distributionGroups: ["common"]
     };
     exports.testResource3 = {
         type: "testResource3",
         displayName: "Test Resource 3",
-        icon: "modules\/default\/img\/resources\/test3.png",
+        icon: "modules/common/resourcetemplates/img/test3.png",
         rarity: 1,
         distributionGroups: ["common"]
     };
     exports.testResource4 = {
         type: "testResource4",
         displayName: "Test Resource 4",
-        icon: "modules\/default\/img\/resources\/test4.png",
+        icon: "modules/common/resourcetemplates/img/test4.png",
         rarity: 1,
         distributionGroups: ["rare"]
     };
     exports.testResource5 = {
         type: "testResource5",
         displayName: "Test Resource 5",
-        icon: "modules\/default\/img\/resources\/test5.png",
+        icon: "modules/common/resourcetemplates/img/test5.png",
         rarity: 1,
         distributionGroups: ["rare"]
     };
@@ -25428,127 +25442,127 @@ define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], func
     "use strict";
     var Aguila_explayada_2 = {
         key: "Aguila_explayada_2",
-        src: "modules\/defaultemblems\/img\/Aguila_explayada_2.svg",
+        src: "modules/defaultemblems/img/Aguila_explayada_2.svg",
         coverage: [2],
         position: [2]
     };
     var Berliner_Baer = {
         key: "Berliner_Baer",
-        src: "modules\/defaultemblems\/img\/Berliner_Baer.svg",
+        src: "modules/defaultemblems/img/Berliner_Baer.svg",
         coverage: [2],
         position: [2]
     };
     var Cles_en_sautoir = {
         key: "Cles_en_sautoir",
-        src: "modules\/defaultemblems\/img\/Cles_en_sautoir.svg",
+        src: "modules/defaultemblems/img/Cles_en_sautoir.svg",
         coverage: [2],
         position: [2]
     };
     var Coa_Illustration_Cross_Bowen_3 = {
         key: "Coa_Illustration_Cross_Bowen_3",
-        src: "modules\/defaultemblems\/img\/Coa_Illustration_Cross_Bowen_3.svg",
+        src: "modules/defaultemblems/img/Coa_Illustration_Cross_Bowen_3.svg",
         coverage: [2],
         position: [2]
     };
     var Coa_Illustration_Cross_Malte_1 = {
         key: "Coa_Illustration_Cross_Malte_1",
-        src: "modules\/defaultemblems\/img\/Coa_Illustration_Cross_Malte_1.svg",
+        src: "modules/defaultemblems/img/Coa_Illustration_Cross_Malte_1.svg",
         coverage: [2],
         position: [2]
     };
     var Coa_Illustration_Elements_Planet_Moon = {
         key: "Coa_Illustration_Elements_Planet_Moon",
-        src: "modules\/defaultemblems\/img\/Coa_Illustration_Elements_Planet_Moon.svg",
+        src: "modules/defaultemblems/img/Coa_Illustration_Elements_Planet_Moon.svg",
         coverage: [2],
         position: [2]
     };
     var Couronne_heraldique_svg = {
         key: "Couronne_heraldique_svg",
-        src: "modules\/defaultemblems\/img\/Couronne_heraldique_svg.svg",
+        src: "modules/defaultemblems/img/Couronne_heraldique_svg.svg",
         coverage: [2],
         position: [2]
     };
     var Gomaisasa = {
         key: "Gomaisasa",
-        src: "modules\/defaultemblems\/img\/Gomaisasa.svg",
+        src: "modules/defaultemblems/img/Gomaisasa.svg",
         coverage: [2],
         position: [2]
     };
     var Gryphon_Segreant = {
         key: "Gryphon_Segreant",
-        src: "modules\/defaultemblems\/img\/Gryphon_Segreant.svg",
+        src: "modules/defaultemblems/img/Gryphon_Segreant.svg",
         coverage: [2],
         position: [2]
     };
     var Heraldic_pentacle = {
         key: "Heraldic_pentacle",
-        src: "modules\/defaultemblems\/img\/Heraldic_pentacle.svg",
+        src: "modules/defaultemblems/img/Heraldic_pentacle.svg",
         coverage: [2],
         position: [2]
     };
     var Japanese_Crest_Futatsudomoe_1 = {
         key: "Japanese_Crest_Futatsudomoe_1",
-        src: "modules\/defaultemblems\/img\/Japanese_Crest_Futatsudomoe_1.svg",
+        src: "modules/defaultemblems/img/Japanese_Crest_Futatsudomoe_1.svg",
         coverage: [2],
         position: [2]
     };
     var Japanese_Crest_Hana_Hisi = {
         key: "Japanese_Crest_Hana_Hisi",
-        src: "modules\/defaultemblems\/img\/Japanese_Crest_Hana_Hisi.svg",
+        src: "modules/defaultemblems/img/Japanese_Crest_Hana_Hisi.svg",
         coverage: [2],
         position: [2]
     };
     var Japanese_Crest_Mitsumori_Janome = {
         key: "Japanese_Crest_Mitsumori_Janome",
-        src: "modules\/defaultemblems\/img\/Japanese_Crest_Mitsumori_Janome.svg",
+        src: "modules/defaultemblems/img/Japanese_Crest_Mitsumori_Janome.svg",
         coverage: [2],
         position: [2]
     };
     var Japanese_Crest_Oda_ka = {
         key: "Japanese_Crest_Oda_ka",
-        src: "modules\/defaultemblems\/img\/Japanese_Crest_Oda_ka.svg",
+        src: "modules/defaultemblems/img/Japanese_Crest_Oda_ka.svg",
         coverage: [2],
         position: [2]
     };
     var Japanese_crest_Tsuki_ni_Hoshi = {
         key: "Japanese_crest_Tsuki_ni_Hoshi",
-        src: "modules\/defaultemblems\/img\/Japanese_crest_Tsuki_ni_Hoshi.svg",
+        src: "modules/defaultemblems/img/Japanese_crest_Tsuki_ni_Hoshi.svg",
         coverage: [2],
         position: [2]
     };
     var Japanese_Crest_Ume = {
         key: "Japanese_Crest_Ume",
-        src: "modules\/defaultemblems\/img\/Japanese_Crest_Ume.svg",
+        src: "modules/defaultemblems/img/Japanese_Crest_Ume.svg",
         coverage: [2],
         position: [2]
     };
     var Mitsuuroko = {
         key: "Mitsuuroko",
-        src: "modules\/defaultemblems\/img\/Mitsuuroko.svg",
+        src: "modules/defaultemblems/img/Mitsuuroko.svg",
         coverage: [2],
         position: [2]
     };
     var Musubikashiwa = {
         key: "Musubikashiwa",
-        src: "modules\/defaultemblems\/img\/Musubi-kashiwa.svg",
+        src: "modules/defaultemblems/img/Musubi-kashiwa.svg",
         coverage: [2],
         position: [2]
     };
     var Takeda_mon = {
         key: "Takeda_mon",
-        src: "modules\/defaultemblems\/img\/Takeda_mon.svg",
+        src: "modules/defaultemblems/img/Takeda_mon.svg",
         coverage: [2],
         position: [2]
     };
     var threeHorns = {
         key: "threeHorns",
-        src: "modules\/defaultemblems\/img\/threeHorns.svg",
+        src: "modules/defaultemblems/img/threeHorns.svg",
         coverage: [2],
         position: [2]
     };
     var Flag_of_Edward_England = {
         key: "Flag_of_Edward_England",
-        src: "modules\/defaultemblems\/img\/Flag_of_Edward_England.svg",
+        src: "modules/defaultemblems/img/Flag_of_Edward_England.svg",
         coverage: [2],
         position: [2],
         disallowRandomGeneration: true
@@ -25663,7 +25677,7 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports"], function
     exports.default = defaultRuleSet;
     var _a, _b;
 });
-define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, DiplomacyState_3, utility_43) {
+define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, DiplomacyState_3, utility_44) {
     "use strict";
     function moveToRoutine(front, afterMoveCallback, getMoveTargetFN) {
         var fleets = front.getAssociatedFleets();
@@ -25806,7 +25820,7 @@ define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective"
         var cost = unit.getTotalCost();
         baseScore -= cost / 1000;
         var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 2);
-        return utility_43.clamp(score, 0, 1);
+        return utility_44.clamp(score, 0, 1);
     }
     exports.scoutingUnitFitFN = scoutingUnitFitFN;
     function mergeScoresByStar(merged, scores) {
@@ -25835,7 +25849,7 @@ define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective"
             var player = evaluationScores[i].player || null;
             if (score < 0.04)
                 continue;
-            var relativeScore = utility_43.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
+            var relativeScore = utility_44.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
             var priority = relativeScore * basePriority;
             allObjectives.push(new Objective_1.default(template, priority, star, player));
         }
@@ -25975,7 +25989,7 @@ define("modules/defaultai/objectives/cleanUpPirates", ["require", "exports", "mo
     exports.default = cleanUpPirates;
     var _a, _b;
 });
-define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, utility_44, aiUtils_4) {
+define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, utility_45, aiUtils_4) {
     "use strict";
     var discovery = {
         key: "discovery",
@@ -26013,7 +26027,7 @@ define("modules/defaultai/objectives/discovery", ["require", "exports", "src/uti
             for (var starId in linksToUnrevealedStars) {
                 var star = mapEvaluator.player.revealedStars[starId];
                 var score = 0;
-                var relativeDistance = utility_44.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
+                var relativeDistance = utility_45.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
                 var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
                 var linksScore = linksToUnrevealedStars[starId].length * 20;
                 score += linksScore;
@@ -26067,7 +26081,7 @@ define("modules/defaultai/objectives/heal", ["require", "exports", "src/mapai/Ob
     exports.default = heal;
     var _a, _b;
 });
-define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, Objective_3, DiplomacyState_4, utility_45, aiUtils_6) {
+define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, Objective_3, DiplomacyState_4, utility_46, aiUtils_6) {
     "use strict";
     var conquer = {
         key: "conquer",
@@ -26092,7 +26106,7 @@ define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai
             var possibleTargets = [];
             for (var i = 0; i < hostilePlayers.length; i++) {
                 var desirabilityByStar = mapEvaluator.evaluateDesirabilityOfPlayersStars(hostilePlayers[i]).byStar;
-                var sortedIds = utility_45.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
+                var sortedIds = utility_46.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
                 if (sortedIds.length === 0) {
                     continue;
                 }
@@ -26259,7 +26273,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "bombLauncher1",
         displayName: "Bomb Launcher 1",
         description: "",
-        icon: "modules\/default\/img\/items\/cannon.png",
+        icon: "modules/default/img/items/cannon.png",
         techLevel: 1,
         buildCost: 100,
         slot: "high",
@@ -26269,7 +26283,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "bombLauncher2",
         displayName: "Bomb Launcher 2",
         description: "",
-        icon: "modules\/default\/img\/items\/cannon.png",
+        icon: "modules/default/img/items/cannon.png",
         techLevel: 2,
         buildCost: 200,
         attributes: {
@@ -26282,7 +26296,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "bombLauncher3",
         displayName: "Bomb Launcher 3",
         description: "",
-        icon: "modules\/default\/img\/items\/cannon.png",
+        icon: "modules/default/img/items/cannon.png",
         techLevel: 3,
         buildCost: 300,
         attributes: {
@@ -26295,7 +26309,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "afterBurner1",
         displayName: "Afterburner 1",
         description: "",
-        icon: "modules\/default\/img\/items\/blueThing.png",
+        icon: "modules/default/img/items/blueThing.png",
         techLevel: 1,
         buildCost: 100,
         attributes: {
@@ -26308,7 +26322,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "afterBurner2",
         displayName: "Afterburner 2",
         description: "",
-        icon: "modules\/default\/img\/items\/blueThing.png",
+        icon: "modules/default/img/items/blueThing.png",
         techLevel: 2,
         buildCost: 200,
         attributes: {
@@ -26320,7 +26334,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "afterBurner3",
         displayName: "Afterburner 3",
         description: "",
-        icon: "modules\/default\/img\/items\/blueThing.png",
+        icon: "modules/default/img/items/blueThing.png",
         techLevel: 3,
         buildCost: 300,
         attributes: {
@@ -26333,7 +26347,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "shieldPlating1",
         displayName: "Shield Plating 1",
         description: "",
-        icon: "modules\/default\/img\/items\/armor1.png",
+        icon: "modules/default/img/items/armor1.png",
         techLevel: 1,
         buildCost: 100,
         attributes: {
@@ -26345,7 +26359,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "shieldPlating2",
         displayName: "Shield Plating 2",
         description: "",
-        icon: "modules\/default\/img\/items\/armor1.png",
+        icon: "modules/default/img/items/armor1.png",
         techLevel: 2,
         buildCost: 200,
         attributes: {
@@ -26357,7 +26371,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "shieldPlating3",
         displayName: "Shield Plating 3",
         description: "",
-        icon: "modules\/default\/img\/items\/armor1.png",
+        icon: "modules/default/img/items/armor1.png",
         techLevel: 3,
         buildCost: 300,
         attributes: {
@@ -26565,7 +26579,7 @@ define("src/mapgencore/Region", ["require", "exports"], function (require, expor
     exports.default = Region;
     var _a, _b, _c, _d, _e, _f;
 });
-define("src/mapgencore/Sector", ["require", "exports", "src/App", "src/Unit", "src/Building", "src/Fleet", "src/utility"], function (require, exports, App_40, Unit_7, Building_4, Fleet_5, utility_46) {
+define("src/mapgencore/Sector", ["require", "exports", "src/App", "src/Unit", "src/Building", "src/Fleet", "src/utility"], function (require, exports, App_40, Unit_7, Building_4, Fleet_5, utility_47) {
     "use strict";
     var Sector = (function () {
         function Sector(id) {
@@ -26717,7 +26731,7 @@ define("src/mapgencore/Sector", ["require", "exports", "src/App", "src/Unit", "s
                 var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
                 var units = [];
                 if (star === commanderStar) {
-                    var template = utility_46.getRandomArrayItem(localBuildableUnitTypes);
+                    var template = utility_47.getRandomArrayItem(localBuildableUnitTypes);
                     var commander = makeUnitFN(template, player, 1.4, 1.4 + inverseMapGenDistance);
                     commander.name = "Pirate commander";
                     units.push(commander);
@@ -26726,7 +26740,7 @@ define("src/mapgencore/Sector", ["require", "exports", "src/App", "src/Unit", "s
                     var isElite = j < elitesAmount;
                     var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
                     var unitStatsModifier = (isElite ? 1.2 : 1);
-                    var template = utility_46.getRandomArrayItem(templateCandidates);
+                    var template = utility_47.getRandomArrayItem(templateCandidates);
                     var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
                     unit.name = (isElite ? "Pirate elite" : "Pirate");
                     units.push(unit);
@@ -26741,7 +26755,7 @@ define("src/mapgencore/Sector", ["require", "exports", "src/App", "src/Unit", "s
     exports.default = Sector;
     var _a, _b, _c, _d, _e, _f;
 });
-define("src/mapgencore/triangulation", ["require", "exports", "src/mapgencore/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_47) {
+define("src/mapgencore/triangulation", ["require", "exports", "src/mapgencore/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_48) {
     "use strict";
     function triangulate(vertices) {
         var triangles = [];
@@ -26813,8 +26827,8 @@ define("src/mapgencore/triangulation", ["require", "exports", "src/mapgencore/Tr
         return triangle;
     }
     function edgesEqual(e1, e2) {
-        return ((utility_47.pointsEqual(e1[0], e2[0]) && utility_47.pointsEqual(e1[1], e2[1])) ||
-            (utility_47.pointsEqual(e1[0], e2[1]) && utility_47.pointsEqual(e1[1], e2[0])));
+        return ((utility_48.pointsEqual(e1[0], e2[0]) && utility_48.pointsEqual(e1[1], e2[1])) ||
+            (utility_48.pointsEqual(e1[0], e2[1]) && utility_48.pointsEqual(e1[1], e2[0])));
     }
     var _a, _b, _c, _d, _e, _f;
 });
@@ -26893,7 +26907,7 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
     exports.default = indexes;
     var _a, _b, _c, _d, _e, _f;
 });
-define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapgencore/Sector", "src/mapgencore/triangulation", "src/Building", "src/Color", "src/Emblem", "src/Flag", "src/TemplateIndexes", "src/pathfinding", "src/utility"], function (require, exports, App_42, Sector_1, triangulation_1, Building_5, Color_5, Emblem_4, Flag_5, TemplateIndexes_1, pathfinding_1, utility_48) {
+define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapgencore/Sector", "src/mapgencore/triangulation", "src/Building", "src/Color", "src/Emblem", "src/Flag", "src/TemplateIndexes", "src/pathfinding", "src/utility"], function (require, exports, App_42, Sector_1, triangulation_1, Building_5, Color_5, Emblem_4, Flag_5, TemplateIndexes_1, pathfinding_1, utility_49) {
     "use strict";
     function linkAllStars(stars) {
         if (stars.length < 3) {
@@ -27086,7 +27100,7 @@ define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapg
         }
         for (var i = 0; i < sectors.length; i++) {
             var sector = sectors[i];
-            var alreadyAddedByWeight = utility_48.getRelativeWeightsFromObject(probabilityWeights);
+            var alreadyAddedByWeight = utility_49.getRelativeWeightsFromObject(probabilityWeights);
             var candidates = [];
             for (var j = 0; j < sector.distributionFlags.length; j++) {
                 var flag = sector.distributionFlags[j];
@@ -27112,7 +27126,7 @@ define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapg
                 candidatesByWeight[candidates[j].type] =
                     alreadyAddedByWeight[candidates[j].type];
             }
-            var selectedKey = utility_48.getRandomKeyWithWeights(candidatesByWeight);
+            var selectedKey = utility_49.getRandomKeyWithWeights(candidatesByWeight);
             var selectedType = allDistributables[selectedKey];
             probabilityWeights[selectedKey] /= 2;
             placerFunction(sector, selectedType);
@@ -27174,7 +27188,7 @@ define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapg
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/Player", "src/Star", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/Region", "src/mapgencore/voronoi", "src/mapgencore/mapGenUtils"], function (require, exports, App_43, FillerPoint_2, Player_4, Star_2, utility_49, MapGenResult_2, Region_1, voronoi_2, mapGenUtils_1) {
+define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/Player", "src/Star", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/Region", "src/mapgencore/voronoi", "src/mapgencore/mapGenUtils"], function (require, exports, App_43, FillerPoint_2, Player_4, Star_2, utility_50, MapGenResult_2, Region_1, voronoi_2, mapGenUtils_1) {
     "use strict";
     var spiralGalaxyGeneration = function (options, players) {
         var sg = (function setStarGenerationProps(options) {
@@ -27212,11 +27226,11 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
                 armDistance: Math.PI * 2 / totalArms,
                 armOffsetMax: 0.5,
                 armRotationFactor: actualArms / 3,
-                galaxyRotation: utility_49.randRange(0, Math.PI * 2)
+                galaxyRotation: utility_50.randRange(0, Math.PI * 2)
             });
         })(options);
         function makePoint(distanceMin, distanceMax, arm, maxOffset) {
-            var distance = utility_49.randRange(distanceMin, distanceMax);
+            var distance = utility_50.randRange(distanceMin, distanceMax);
             var offset = Math.random() * maxOffset - maxOffset / 2;
             offset *= (1 / distance);
             if (offset < 0)
@@ -27240,7 +27254,7 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
         function makeStar(point, distance) {
             var star = new Star_2.default(point.x, point.y);
             star.mapGenData.distance = distance;
-            star.baseIncome = utility_49.randInt(4, 10) * 10;
+            star.baseIncome = utility_50.randInt(4, 10) * 10;
             return star;
         }
         var stars = [];
@@ -27655,7 +27669,7 @@ define("modules/defaultunits/unitFamilies", ["require", "exports"], function (re
     exports.default = UnitFamilies;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_44, utility_50) {
+define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_44, utility_51) {
     "use strict";
     var defaultUnitDrawingFunction = function (unit, SFXParams) {
         var spriteTemplate = unit.template.sprite;
@@ -27692,7 +27706,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
             unitsToDraw = Math.round(unitsToDraw * heightRatio);
             zDistance *= (1 / heightRatio);
-            unitsToDraw = utility_50.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+            unitsToDraw = utility_51.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
         }
         var xMin, xMax, yMin, yMax;
         var rotationAngle = Math.PI / 180 * props.rotationAngle;
@@ -27736,7 +27750,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             var scaledHeight = image.height * scale;
             var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
             var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-            var translated = utility_50.transformMat3({ x: x, y: y }, rotationMatrix);
+            var translated = utility_51.transformMat3({ x: x, y: y }, rotationMatrix);
             x = Math.round(translated.x);
             y = Math.round(translated.y);
             var sprite = new PIXI.Sprite(texture);
@@ -27767,7 +27781,7 @@ define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "m
         },
         isSquadron: true,
         buildCost: 200,
-        icon: "modules\/defaultunits\/img\/icons\/bc.png",
+        icon: "modules/defaultunits/img/icons/bc.png",
         maxHealth: 1,
         maxMovePoints: 1,
         visionRange: 1,
@@ -27809,7 +27823,7 @@ define("modules/defaultunits/templates/commandShip", ["require", "exports", "mod
         },
         isSquadron: false,
         buildCost: 300,
-        icon: "modules\/defaultunits\/img\/icons\/sh.png",
+        icon: "modules/defaultunits/img/icons/sh.png",
         maxHealth: 0.7,
         maxMovePoints: 1,
         visionRange: 1,
@@ -27858,7 +27872,7 @@ define("modules/defaultunits/templates/redShip", ["require", "exports", "modules
         },
         isSquadron: true,
         buildCost: 200,
-        icon: "modules\/defaultunits\/img\/icons\/sc.png",
+        icon: "modules/defaultunits/img/icons/sc.png",
         maxHealth: 0.6,
         maxMovePoints: 2,
         visionRange: 2,
@@ -27899,7 +27913,7 @@ define("modules/defaultunits/templates/stealthShip", ["require", "exports", "mod
         },
         isSquadron: true,
         buildCost: 500,
-        icon: "modules\/defaultunits\/img\/icons\/sc.png",
+        icon: "modules/defaultunits/img/icons/sc.png",
         maxHealth: 0.6,
         maxMovePoints: 1,
         visionRange: 1,
@@ -27941,7 +27955,7 @@ define("modules/defaultunits/templates/blueShip", ["require", "exports", "module
         },
         isSquadron: true,
         buildCost: 200,
-        icon: "modules\/defaultunits\/img\/icons\/sc.png",
+        icon: "modules/defaultunits/img/icons/sc.png",
         maxHealth: 0.6,
         maxMovePoints: 2,
         visionRange: 2,
@@ -27982,7 +27996,7 @@ define("modules/defaultunits/templates/debugShip", ["require", "exports", "modul
         },
         isSquadron: false,
         buildCost: 0,
-        icon: "modules\/defaultunits\/img\/icons\/f.png",
+        icon: "modules/defaultunits/img/icons/f.png",
         maxHealth: 1,
         maxMovePoints: 999,
         visionRange: 1,
@@ -28064,7 +28078,7 @@ define("modules/defaultunits/templates/scout", ["require", "exports", "modules/d
         },
         isSquadron: true,
         buildCost: 200,
-        icon: "modules\/defaultunits\/img\/icons\/sc.png",
+        icon: "modules/defaultunits/img/icons/sc.png",
         maxHealth: 0.6,
         maxMovePoints: 2,
         visionRange: 2,
@@ -28105,7 +28119,7 @@ define("modules/defaultunits/templates/bomberSquadron", ["require", "exports", "
         },
         isSquadron: true,
         buildCost: 200,
-        icon: "modules\/defaultunits\/img\/icons\/fb.png",
+        icon: "modules/defaultunits/img/icons/fb.png",
         maxHealth: 0.5,
         maxMovePoints: 1,
         visionRange: 1,
@@ -28147,7 +28161,7 @@ define("modules/defaultunits/templates/fighterSquadron", ["require", "exports", 
         },
         isSquadron: true,
         buildCost: 100,
-        icon: "modules\/defaultunits\/img\/icons\/fa.png",
+        icon: "modules/defaultunits/img/icons/fa.png",
         maxHealth: 0.7,
         maxMovePoints: 2,
         visionRange: 1,
@@ -28189,7 +28203,7 @@ define("modules/defaultunits/templates/shieldBoat", ["require", "exports", "modu
         },
         isSquadron: true,
         buildCost: 200,
-        icon: "modules\/defaultunits\/img\/icons\/sh.png",
+        icon: "modules/defaultunits/img/icons/sh.png",
         maxHealth: 0.9,
         maxMovePoints: 1,
         visionRange: 1,
@@ -28256,9 +28270,9 @@ define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defa
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             var spriteSheetKey = "units";
-            loader.add(spriteSheetKey, "modules\/defaultunits\/img\/sprites\/units.json");
-            loader.add("explosion", "modules\/common\/battlesfxfunctions\/img\/explosion.json");
-            loader.add("modules\/common\/battlesfxfunctions\/img\/rocket.png");
+            loader.add(spriteSheetKey, "modules/defaultunits/img/sprites/units.json");
+            loader.add("explosion", "modules/common/battlesfxfunctions/img/explosion.json");
+            loader.add("modules/common/battlesfxfunctions/img/rocket.png");
             loader.load(function (loader) {
                 var json = loader.resources[spriteSheetKey].data;
                 var image = loader.resources[spriteSheetKey + "_image"].data;
@@ -28458,7 +28472,7 @@ define("src/shaders/Nebula", ["require", "exports"], function (require, exports)
     ];
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "src/shaders/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_51) {
+define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "src/shaders/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_52) {
     "use strict";
     function drawNebula(seed, renderer) {
         var oldRng = Math.random;
@@ -28468,12 +28482,12 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "src/shad
             baseColor: nebulaColorScheme.main.getRGB(),
             overlayColor: nebulaColorScheme.secondary.getRGB(),
             highlightColor: [1.0, 1.0, 1.0],
-            coverage: utility_51.randRange(0.28, 0.32),
-            scale: utility_51.randRange(4, 8),
-            diffusion: utility_51.randRange(1.5, 3.0),
-            streakiness: utility_51.randRange(1.5, 2.5),
-            streakLightness: utility_51.randRange(1, 1.2),
-            cloudLightness: utility_51.randRange(1, 1.2),
+            coverage: utility_52.randRange(0.28, 0.32),
+            scale: utility_52.randRange(4, 8),
+            diffusion: utility_52.randRange(1.5, 3.0),
+            streakiness: utility_52.randRange(1.5, 2.5),
+            streakLightness: utility_52.randRange(1, 1.2),
+            cloudLightness: utility_52.randRange(1, 1.2),
             highlightA: 0.9,
             highlightB: 2.2,
             seed: [Math.random() * 100, Math.random() * 100]
@@ -28863,7 +28877,7 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
     exports.default = fogOfWar;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_52) {
+define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_53) {
     "use strict";
     function starsOnlyShareNarrowBorder(a, b) {
         var minBorderWidth = Options_7.default.display.borderWidth * 2;
@@ -29024,8 +29038,8 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                     var point = offsetted[j_1];
                     var nextPoint = offsetted[(j_1 + 1) % offsetted.length];
                     var edgeCenter = {
-                        x: utility_52.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-                        y: utility_52.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
+                        x: utility_53.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: utility_53.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     if (!pointStar) {
@@ -29067,7 +29081,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
         var polyLinesData = [];
         for (var i = 0; i < polyLines.length; i++) {
             var polyLine = polyLines[i];
-            var isClosed = utility_52.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            var isClosed = utility_53.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
             if (isClosed)
                 polyLine.pop();
             for (var j_3 = 0; j_3 < polyLine.length; j_3++) {
@@ -29299,7 +29313,7 @@ define("modules/defaultmapmodes/defaultMapmodes", ["require", "exports", "module
         },
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
-            loader.add("modules\/defaultmapmodes\/img\/fowTexture.png");
+            loader.add("modules/defaultmapmodes/img/fowTexture.png");
             loader.load(function (loader) {
                 onLoaded();
             });
@@ -29321,7 +29335,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
         portraits: {
             adelaide_hanscom1: {
                 key: "adelaide_hanscom1",
-                imageSrc: "modules\/paintingportraits\/img\/adelaide_hanscom1.png",
+                imageSrc: "modules/paintingportraits/img/adelaide_hanscom1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29330,7 +29344,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             alessandro_allori1: {
                 key: "alessandro_allori1",
-                imageSrc: "modules\/paintingportraits\/img\/alessandro_allori1.png",
+                imageSrc: "modules/paintingportraits/img/alessandro_allori1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29339,7 +29353,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             alessandro_allori2: {
                 key: "alessandro_allori2",
-                imageSrc: "modules\/paintingportraits\/img\/alessandro_allori2.png",
+                imageSrc: "modules/paintingportraits/img/alessandro_allori2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29348,7 +29362,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             alexandre_cabanel1: {
                 key: "alexandre_cabanel1",
-                imageSrc: "modules\/paintingportraits\/img\/alexandre_cabanel1.png",
+                imageSrc: "modules/paintingportraits/img/alexandre_cabanel1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29357,7 +29371,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             alexei_harlamov1: {
                 key: "alexei_harlamov1",
-                imageSrc: "modules\/paintingportraits\/img\/alexei_harlamov1.png",
+                imageSrc: "modules/paintingportraits/img/alexei_harlamov1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29366,7 +29380,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             alexey_petrovich_antropov1: {
                 key: "alexey_petrovich_antropov1",
-                imageSrc: "modules\/paintingportraits\/img\/alexey_petrovich_antropov1.png",
+                imageSrc: "modules/paintingportraits/img/alexey_petrovich_antropov1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29375,7 +29389,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             alice_pike_barney1: {
                 key: "alice_pike_barney1",
-                imageSrc: "modules\/paintingportraits\/img\/alice_pike_barney1.png",
+                imageSrc: "modules/paintingportraits/img/alice_pike_barney1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29384,7 +29398,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             aman_theodor1: {
                 key: "aman_theodor1",
-                imageSrc: "modules\/paintingportraits\/img\/aman_theodor1.png",
+                imageSrc: "modules/paintingportraits/img/aman_theodor1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29393,7 +29407,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             antonello_messina1: {
                 key: "antonello_messina1",
-                imageSrc: "modules\/paintingportraits\/img\/antonello_messina1.png",
+                imageSrc: "modules/paintingportraits/img/antonello_messina1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29402,7 +29416,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             antonio_herrera_toro1: {
                 key: "antonio_herrera_toro1",
-                imageSrc: "modules\/paintingportraits\/img\/antonio_herrera_toro1.png",
+                imageSrc: "modules/paintingportraits/img/antonio_herrera_toro1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29411,7 +29425,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             benjaminconstant1: {
                 key: "benjaminconstant1",
-                imageSrc: "modules\/paintingportraits\/img\/benjamin-constant1.png",
+                imageSrc: "modules/paintingportraits/img/benjamin-constant1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29420,7 +29434,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             benoist_marieguillemine1: {
                 key: "benoist_marieguillemine1",
-                imageSrc: "modules\/paintingportraits\/img\/benoist_marie-guillemine1.png",
+                imageSrc: "modules/paintingportraits/img/benoist_marie-guillemine1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29429,7 +29443,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             bouguereau_williamadolphe1: {
                 key: "bouguereau_williamadolphe1",
-                imageSrc: "modules\/paintingportraits\/img\/bouguereau_william-adolphe1.png",
+                imageSrc: "modules/paintingportraits/img/bouguereau_william-adolphe1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29438,7 +29452,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             byron1: {
                 key: "byron1",
-                imageSrc: "modules\/paintingportraits\/img\/byron1.png",
+                imageSrc: "modules/paintingportraits/img/byron1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29447,7 +29461,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             carl_fredric_breda1: {
                 key: "carl_fredric_breda1",
-                imageSrc: "modules\/paintingportraits\/img\/carl_fredric_breda1.png",
+                imageSrc: "modules/paintingportraits/img/carl_fredric_breda1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29456,7 +29470,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             carl_fredric_breda2: {
                 key: "carl_fredric_breda2",
-                imageSrc: "modules\/paintingportraits\/img\/carl_fredric_breda2.png",
+                imageSrc: "modules/paintingportraits/img/carl_fredric_breda2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29465,7 +29479,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             cramacj_lucas1: {
                 key: "cramacj_lucas1",
-                imageSrc: "modules\/paintingportraits\/img\/cramacj_lucas1.png",
+                imageSrc: "modules/paintingportraits/img/cramacj_lucas1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29474,7 +29488,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             cranach_lucas2: {
                 key: "cranach_lucas2",
-                imageSrc: "modules\/paintingportraits\/img\/cranach_lucas2.png",
+                imageSrc: "modules/paintingportraits/img/cranach_lucas2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29483,7 +29497,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             cristobal_rojas1: {
                 key: "cristobal_rojas1",
-                imageSrc: "modules\/paintingportraits\/img\/cristobal_rojas1.png",
+                imageSrc: "modules/paintingportraits/img/cristobal_rojas1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29492,7 +29506,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             delacroix_eugene_ferdinand_victor1: {
                 key: "delacroix_eugene_ferdinand_victor1",
-                imageSrc: "modules\/paintingportraits\/img\/delacroix_eugene_ferdinand_victor1.png",
+                imageSrc: "modules/paintingportraits/img/delacroix_eugene_ferdinand_victor1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29501,7 +29515,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             domenikos_theotokopoulos1: {
                 key: "domenikos_theotokopoulos1",
-                imageSrc: "modules\/paintingportraits\/img\/domenikos_theotokopoulos1.png",
+                imageSrc: "modules/paintingportraits/img/domenikos_theotokopoulos1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29510,7 +29524,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             edmund_blair_leighton1: {
                 key: "edmund_blair_leighton1",
-                imageSrc: "modules\/paintingportraits\/img\/edmund_blair_leighton1.png",
+                imageSrc: "modules/paintingportraits/img/edmund_blair_leighton1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29519,7 +29533,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             edmund_blair_leighton2: {
                 key: "edmund_blair_leighton2",
-                imageSrc: "modules\/paintingportraits\/img\/edmund_blair_leighton2.png",
+                imageSrc: "modules/paintingportraits/img/edmund_blair_leighton2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29528,7 +29542,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             edwin_longsden_long1: {
                 key: "edwin_longsden_long1",
-                imageSrc: "modules\/paintingportraits\/img\/edwin_longsden_long1.png",
+                imageSrc: "modules/paintingportraits/img/edwin_longsden_long1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29537,7 +29551,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             falero_luis_ricardo1: {
                 key: "falero_luis_ricardo1",
-                imageSrc: "modules\/paintingportraits\/img\/falero_luis_ricardo1.png",
+                imageSrc: "modules/paintingportraits/img/falero_luis_ricardo1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29546,7 +29560,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             felix_bonfils1: {
                 key: "felix_bonfils1",
-                imageSrc: "modules\/paintingportraits\/img\/felix_bonfils1.png",
+                imageSrc: "modules/paintingportraits/img/felix_bonfils1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29555,7 +29569,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             francesco_hayez1: {
                 key: "francesco_hayez1",
-                imageSrc: "modules\/paintingportraits\/img\/francesco_hayez1.png",
+                imageSrc: "modules/paintingportraits/img/francesco_hayez1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29564,7 +29578,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             francisco_goya_lucientes1: {
                 key: "francisco_goya_lucientes1",
-                imageSrc: "modules\/paintingportraits\/img\/francisco_goya_lucientes1.png",
+                imageSrc: "modules/paintingportraits/img/francisco_goya_lucientes1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29573,7 +29587,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             francisco_goya_lucientes2: {
                 key: "francisco_goya_lucientes2",
-                imageSrc: "modules\/paintingportraits\/img\/francisco_goya_lucientes2.png",
+                imageSrc: "modules/paintingportraits/img/francisco_goya_lucientes2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29582,7 +29596,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             francisco_zurbaran1: {
                 key: "francisco_zurbaran1",
-                imageSrc: "modules\/paintingportraits\/img\/francisco_zurbaran1.png",
+                imageSrc: "modules/paintingportraits/img/francisco_zurbaran1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29591,7 +29605,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             franz_von_defregger1: {
                 key: "franz_von_defregger1",
-                imageSrc: "modules\/paintingportraits\/img\/franz_von_defregger1.png",
+                imageSrc: "modules/paintingportraits/img/franz_von_defregger1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29600,7 +29614,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             franz_von_defregger2: {
                 key: "franz_von_defregger2",
-                imageSrc: "modules\/paintingportraits\/img\/franz_von_defregger2.png",
+                imageSrc: "modules/paintingportraits/img/franz_von_defregger2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29609,7 +29623,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             franz_von_defregger3: {
                 key: "franz_von_defregger3",
-                imageSrc: "modules\/paintingportraits\/img\/franz_von_defregger3.png",
+                imageSrc: "modules/paintingportraits/img/franz_von_defregger3.png",
                 generatedFor: [
                     0,
                     1,
@@ -29618,7 +29632,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             frederick_leighton1: {
                 key: "frederick_leighton1",
-                imageSrc: "modules\/paintingportraits\/img\/frederick_leighton1.png",
+                imageSrc: "modules/paintingportraits/img/frederick_leighton1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29627,7 +29641,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             frederic_westin1: {
                 key: "frederic_westin1",
-                imageSrc: "modules\/paintingportraits\/img\/frederic_westin1.png",
+                imageSrc: "modules/paintingportraits/img/frederic_westin1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29636,7 +29650,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             frederic_yates1: {
                 key: "frederic_yates1",
-                imageSrc: "modules\/paintingportraits\/img\/frederic_yates1.png",
+                imageSrc: "modules/paintingportraits/img/frederic_yates1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29645,7 +29659,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             gaston_bussiere1: {
                 key: "gaston_bussiere1",
-                imageSrc: "modules\/paintingportraits\/img\/gaston_bussiere1.png",
+                imageSrc: "modules/paintingportraits/img/gaston_bussiere1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29654,7 +29668,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             george_henry_hall1: {
                 key: "george_henry_hall1",
-                imageSrc: "modules\/paintingportraits\/img\/george_henry_hall1.png",
+                imageSrc: "modules/paintingportraits/img/george_henry_hall1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29663,7 +29677,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             giovanni_battista_tiepolo1: {
                 key: "giovanni_battista_tiepolo1",
-                imageSrc: "modules\/paintingportraits\/img\/giovanni_battista_tiepolo1.png",
+                imageSrc: "modules/paintingportraits/img/giovanni_battista_tiepolo1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29672,7 +29686,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             giovanni_bellini1: {
                 key: "giovanni_bellini1",
-                imageSrc: "modules\/paintingportraits\/img\/giovanni_bellini1.png",
+                imageSrc: "modules/paintingportraits/img/giovanni_bellini1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29681,7 +29695,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             hans_holbein1: {
                 key: "hans_holbein1",
-                imageSrc: "modules\/paintingportraits\/img\/hans_holbein1.png",
+                imageSrc: "modules/paintingportraits/img/hans_holbein1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29690,7 +29704,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             hayez_francesco1: {
                 key: "hayez_francesco1",
-                imageSrc: "modules\/paintingportraits\/img\/hayez_francesco1.png",
+                imageSrc: "modules/paintingportraits/img/hayez_francesco1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29699,7 +29713,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             henryk_siemiradzki1: {
                 key: "henryk_siemiradzki1",
-                imageSrc: "modules\/paintingportraits\/img\/henryk_siemiradzki1.png",
+                imageSrc: "modules/paintingportraits/img/henryk_siemiradzki1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29708,7 +29722,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             ilja_jefimowitsch_repin1: {
                 key: "ilja_jefimowitsch_repin1",
-                imageSrc: "modules\/paintingportraits\/img\/ilja_jefimowitsch_repin1.png",
+                imageSrc: "modules/paintingportraits/img/ilja_jefimowitsch_repin1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29717,7 +29731,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             james_carrol_beckwith1: {
                 key: "james_carrol_beckwith1",
-                imageSrc: "modules\/paintingportraits\/img\/james_carrol_beckwith1.png",
+                imageSrc: "modules/paintingportraits/img/james_carrol_beckwith1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29726,7 +29740,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             jeanbaptistecamille_corot1: {
                 key: "jeanbaptistecamille_corot1",
-                imageSrc: "modules\/paintingportraits\/img\/jean-baptiste-camille_corot1.png",
+                imageSrc: "modules/paintingportraits/img/jean-baptiste-camille_corot1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29735,7 +29749,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             jeanbaptistecamille_corot2: {
                 key: "jeanbaptistecamille_corot2",
-                imageSrc: "modules\/paintingportraits\/img\/jean-baptiste-camille_corot2.png",
+                imageSrc: "modules/paintingportraits/img/jean-baptiste-camille_corot2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29744,7 +29758,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             jeanleon_gerome1: {
                 key: "jeanleon_gerome1",
-                imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome1.png",
+                imageSrc: "modules/paintingportraits/img/jean-leon_gerome1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29753,7 +29767,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             jeanleon_gerome2: {
                 key: "jeanleon_gerome2",
-                imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome2.png",
+                imageSrc: "modules/paintingportraits/img/jean-leon_gerome2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29762,7 +29776,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             jeanleon_gerome3: {
                 key: "jeanleon_gerome3",
-                imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome3.png",
+                imageSrc: "modules/paintingportraits/img/jean-leon_gerome3.png",
                 generatedFor: [
                     0,
                     1,
@@ -29771,7 +29785,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             jeanleon_gerome4: {
                 key: "jeanleon_gerome4",
-                imageSrc: "modules\/paintingportraits\/img\/jean-leon_gerome4.png",
+                imageSrc: "modules/paintingportraits/img/jean-leon_gerome4.png",
                 generatedFor: [
                     0,
                     1,
@@ -29780,7 +29794,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             john_william_godward1: {
                 key: "john_william_godward1",
-                imageSrc: "modules\/paintingportraits\/img\/john_william_godward1.png",
+                imageSrc: "modules/paintingportraits/img/john_william_godward1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29789,7 +29803,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             john_william_godward2: {
                 key: "john_william_godward2",
-                imageSrc: "modules\/paintingportraits\/img\/john_william_godward2.png",
+                imageSrc: "modules/paintingportraits/img/john_william_godward2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29798,7 +29812,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             john_william_godward3: {
                 key: "john_william_godward3",
-                imageSrc: "modules\/paintingportraits\/img\/john_william_godward3.png",
+                imageSrc: "modules/paintingportraits/img/john_william_godward3.png",
                 generatedFor: [
                     0,
                     1,
@@ -29807,7 +29821,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             julije_klovic1: {
                 key: "julije_klovic1",
-                imageSrc: "modules\/paintingportraits\/img\/julije_klovic1.png",
+                imageSrc: "modules/paintingportraits/img/julije_klovic1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29816,7 +29830,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             juriaen_streek1: {
                 key: "juriaen_streek1",
-                imageSrc: "modules\/paintingportraits\/img\/juriaen_streek1.png",
+                imageSrc: "modules/paintingportraits/img/juriaen_streek1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29825,7 +29839,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             kiprenskij_orest_adamovic1: {
                 key: "kiprenskij_orest_adamovic1",
-                imageSrc: "modules\/paintingportraits\/img\/kiprenskij_orest_adamovic1.png",
+                imageSrc: "modules/paintingportraits/img/kiprenskij_orest_adamovic1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29834,7 +29848,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             konstantin_makovsky1: {
                 key: "konstantin_makovsky1",
-                imageSrc: "modules\/paintingportraits\/img\/konstantin_makovsky1.png",
+                imageSrc: "modules/paintingportraits/img/konstantin_makovsky1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29843,7 +29857,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             lefebvre_jules_joseph1: {
                 key: "lefebvre_jules_joseph1",
-                imageSrc: "modules\/paintingportraits\/img\/lefebvre_jules_joseph1.png",
+                imageSrc: "modules/paintingportraits/img/lefebvre_jules_joseph1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29852,7 +29866,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             leonfrancois_comerre1: {
                 key: "leonfrancois_comerre1",
-                imageSrc: "modules\/paintingportraits\/img\/leon-francois_comerre1.png",
+                imageSrc: "modules/paintingportraits/img/leon-francois_comerre1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29861,7 +29875,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             leopold_loffler1: {
                 key: "leopold_loffler1",
-                imageSrc: "modules\/paintingportraits\/img\/leopold_loffler1.png",
+                imageSrc: "modules/paintingportraits/img/leopold_loffler1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29870,7 +29884,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             lewis_john_frederick1: {
                 key: "lewis_john_frederick1",
-                imageSrc: "modules\/paintingportraits\/img\/lewis_john_frederick1.png",
+                imageSrc: "modules/paintingportraits/img/lewis_john_frederick1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29879,7 +29893,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             madrazo_garreta_raimundo1: {
                 key: "madrazo_garreta_raimundo1",
-                imageSrc: "modules\/paintingportraits\/img\/madrazo_garreta_raimundo1.png",
+                imageSrc: "modules/paintingportraits/img/madrazo_garreta_raimundo1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29888,7 +29902,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             marie_bashkirtseff1: {
                 key: "marie_bashkirtseff1",
-                imageSrc: "modules\/paintingportraits\/img\/marie_bashkirtseff1.png",
+                imageSrc: "modules/paintingportraits/img/marie_bashkirtseff1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29897,7 +29911,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             moritz_kellerhoven1: {
                 key: "moritz_kellerhoven1",
-                imageSrc: "modules\/paintingportraits\/img\/moritz_kellerhoven1.png",
+                imageSrc: "modules/paintingportraits/img/moritz_kellerhoven1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29906,7 +29920,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             nathaniel_jocelyn1: {
                 key: "nathaniel_jocelyn1",
-                imageSrc: "modules\/paintingportraits\/img\/nathaniel_jocelyn1.png",
+                imageSrc: "modules/paintingportraits/img/nathaniel_jocelyn1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29915,7 +29929,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             nikolai_alexandrowitsch_jaroschenko1: {
                 key: "nikolai_alexandrowitsch_jaroschenko1",
-                imageSrc: "modules\/paintingportraits\/img\/nikolai_alexandrowitsch_jaroschenko1.png",
+                imageSrc: "modules/paintingportraits/img/nikolai_alexandrowitsch_jaroschenko1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29924,7 +29938,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             nils_johan_olsson_blommer1: {
                 key: "nils_johan_olsson_blommer1",
-                imageSrc: "modules\/paintingportraits\/img\/nils_johan_olsson_blommer1.png",
+                imageSrc: "modules/paintingportraits/img/nils_johan_olsson_blommer1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29933,7 +29947,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             paolo_veronese1: {
                 key: "paolo_veronese1",
-                imageSrc: "modules\/paintingportraits\/img\/paolo_veronese1.png",
+                imageSrc: "modules/paintingportraits/img/paolo_veronese1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29942,7 +29956,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             parmigianino1: {
                 key: "parmigianino1",
-                imageSrc: "modules\/paintingportraits\/img\/parmigianino1.png",
+                imageSrc: "modules/paintingportraits/img/parmigianino1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29951,7 +29965,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             paul_cesar_helleu1: {
                 key: "paul_cesar_helleu1",
-                imageSrc: "modules\/paintingportraits\/img\/paul_cesar_helleu1.png",
+                imageSrc: "modules/paintingportraits/img/paul_cesar_helleu1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29960,7 +29974,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             regnault_henri1: {
                 key: "regnault_henri1",
-                imageSrc: "modules\/paintingportraits\/img\/regnault_henri1.png",
+                imageSrc: "modules/paintingportraits/img/regnault_henri1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29969,7 +29983,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             richard_bergh1: {
                 key: "richard_bergh1",
-                imageSrc: "modules\/paintingportraits\/img\/richard_bergh1.png",
+                imageSrc: "modules/paintingportraits/img/richard_bergh1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29978,7 +29992,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             richard_bergh2: {
                 key: "richard_bergh2",
-                imageSrc: "modules\/paintingportraits\/img\/richard_bergh2.png",
+                imageSrc: "modules/paintingportraits/img/richard_bergh2.png",
                 generatedFor: [
                     0,
                     1,
@@ -29987,7 +30001,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             robert_dampier1: {
                 key: "robert_dampier1",
-                imageSrc: "modules\/paintingportraits\/img\/robert_dampier1.png",
+                imageSrc: "modules/paintingportraits/img/robert_dampier1.png",
                 generatedFor: [
                     0,
                     1,
@@ -29996,7 +30010,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             robert_lefevre1: {
                 key: "robert_lefevre1",
-                imageSrc: "modules\/paintingportraits\/img\/robert_lefevre1.png",
+                imageSrc: "modules/paintingportraits/img/robert_lefevre1.png",
                 generatedFor: [
                     0,
                     1,
@@ -30005,7 +30019,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             robert_leopold1: {
                 key: "robert_leopold1",
-                imageSrc: "modules\/paintingportraits\/img\/robert_leopold1.png",
+                imageSrc: "modules/paintingportraits/img/robert_leopold1.png",
                 generatedFor: [
                     0,
                     1,
@@ -30014,7 +30028,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             sichel_nathanael1: {
                 key: "sichel_nathanael1",
-                imageSrc: "modules\/paintingportraits\/img\/sichel_nathanael1.png",
+                imageSrc: "modules/paintingportraits/img/sichel_nathanael1.png",
                 generatedFor: [
                     0,
                     1,
@@ -30023,7 +30037,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             svetoslav_roerich1: {
                 key: "svetoslav_roerich1",
-                imageSrc: "modules\/paintingportraits\/img\/svetoslav_roerich1.png",
+                imageSrc: "modules/paintingportraits/img/svetoslav_roerich1.png",
                 generatedFor: [
                     0,
                     1,
@@ -30032,7 +30046,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             velazquez_diego1: {
                 key: "velazquez_diego1",
-                imageSrc: "modules\/paintingportraits\/img\/velazquez_diego1.png",
+                imageSrc: "modules/paintingportraits/img/velazquez_diego1.png",
                 generatedFor: [
                     0,
                     1,
@@ -30041,7 +30055,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             viktor_vasnetsov1: {
                 key: "viktor_vasnetsov1",
-                imageSrc: "modules\/paintingportraits\/img\/viktor_vasnetsov1.png",
+                imageSrc: "modules/paintingportraits/img/viktor_vasnetsov1.png",
                 generatedFor: [
                     0,
                     1,
@@ -30050,7 +30064,7 @@ define("modules/paintingportraits/paintingPortraitsCulture", ["require", "export
             },
             williamadolphe_bouguereau1: {
                 key: "williamadolphe_bouguereau1",
-                imageSrc: "modules\/paintingportraits\/img\/william-adolphe_bouguereau1.png",
+                imageSrc: "modules/paintingportraits/img/william-adolphe_bouguereau1.png",
                 generatedFor: [
                     0,
                     1,
@@ -30241,7 +30255,7 @@ define("modules/defaultbuildings/defaultBuildings", ["require", "exports", "modu
         loadAssets: function (onLoaded) {
             var loader = new PIXI.loaders.Loader();
             var spriteSheetKey = "buildings";
-            loader.add(spriteSheetKey, "modules\/defaultbuildings\/img\/buildings.json");
+            loader.add(spriteSheetKey, "modules/defaultbuildings/img/buildings.json");
             loader.load(function (loader) {
                 var json = loader.resources[spriteSheetKey].data;
                 var image = loader.resources[spriteSheetKey + "_image"].data;
@@ -30277,7 +30291,7 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
     exports.default = defaultNotifications;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
 });
-define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_10, TutorialStatus_5, utility_53, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
+define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_10, TutorialStatus_5, utility_54, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
     "use strict";
     var App = (function () {
         function App() {
@@ -30287,7 +30301,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
-            utility_53.onDOMLoaded(function () {
+            utility_54.onDOMLoaded(function () {
                 var moduleLoader = self.moduleLoader = new ModuleLoader_1.default();
                 self.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(defaultEmblems_1.default);

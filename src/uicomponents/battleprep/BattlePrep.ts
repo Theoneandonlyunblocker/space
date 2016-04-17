@@ -241,7 +241,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
 
   getBackgroundBlurArea()
   {
-    return React.findDOMNode<HTMLElement>(this.ref_TODO_upper).getBoundingClientRect();
+    return ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_upper).getBoundingClientRect();
   }
 
   render()

@@ -73,7 +73,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
   {
     if (this.focusTimer.isWithinGracePeriod()) return;
 
-    const node = React.findDOMNode<HTMLElement>(this.ref_TODO_main);
+    const node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_main);
     const target = <HTMLElement> e.target;
     if (target === node || node.contains(target))
     {
@@ -118,7 +118,7 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType>
 
   getClientRect()
   {
-    const ownNode: HTMLElement = <HTMLElement> React.findDOMNode(this);
+    const ownNode: HTMLElement = <HTMLElement> ReactDOM.findDOMNode(this);
     const firstChild: HTMLElement = <HTMLElement> ownNode.firstChild;
     return firstChild.getBoundingClientRect();
   }

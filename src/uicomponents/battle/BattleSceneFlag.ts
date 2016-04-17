@@ -56,19 +56,19 @@ export class BattleSceneFlagComponent extends React.Component<PropTypes, StateTy
 
   setFlag()
   {
-    var DOMNode = React.findDOMNode(this);
+    var DOMNode = ReactDOM.findDOMNode(this);
     if (this.flagCanvas)
     {
       DOMNode.removeChild(this.flagCanvas);
     }
 
     this.flagCanvas = this.drawFlag();
-    React.findDOMNode(this).appendChild(this.flagCanvas);
+    ReactDOM.findDOMNode(this).appendChild(this.flagCanvas);
   }
 
   drawFlag()
   {
-    var bounds = React.findDOMNode(this).getBoundingClientRect();
+    var bounds = ReactDOM.findDOMNode(this).getBoundingClientRect();
     var width = bounds.width;
 
     var canvas = this.props.flag.getCanvas(width, bounds.height, true, false);

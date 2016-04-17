@@ -84,13 +84,13 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   
   public componentDidMount()
   {
-    this.ownerDOMNode = React.findDOMNode<HTMLElement>(this.owner);
+    this.ownerDOMNode = ReactDOM.findDOMNode<HTMLElement>(this.owner);
     if (this.containerElementDescriptor)
     {
       if (this.containerElementDescriptor instanceof React.Component)
       {
         // React element
-        this.containerElement = React.findDOMNode<HTMLElement>(this.containerElementDescriptor);
+        this.containerElement = ReactDOM.findDOMNode<HTMLElement>(this.containerElementDescriptor);
       }
       // DOM node
       else

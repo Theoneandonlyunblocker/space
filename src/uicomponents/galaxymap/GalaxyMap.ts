@@ -149,7 +149,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   componentDidMount()
   {
     this.props.renderer.isBattleBackground = false;
-    this.props.renderer.bindRendererView(React.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer));
+    this.props.renderer.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer));
     this.props.mapRenderer.setMapModeByKey("defaultMapMode");
     
     this.props.renderer.resume();

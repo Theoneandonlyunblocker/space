@@ -125,7 +125,7 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
 
   setInitialPosition()
   {
-    var domRect = React.findDOMNode(this).getBoundingClientRect();
+    var domRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
     var rect: InitialPositionRect =
     {
       top: domRect.top,

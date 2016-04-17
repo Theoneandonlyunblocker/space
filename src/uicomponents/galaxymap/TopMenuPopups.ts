@@ -68,7 +68,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   closePopup(popupType: string)
   {
     const popupComponent = this.ref_TODO_popupManager.popupComponentsByID[this.state[popupType]];
-    const popupNode = React.findDOMNode(popupComponent);
+    const popupNode = ReactDOM.findDOMNode(popupComponent);
     this.cachedPopupRects[popupType] = popupNode.getBoundingClientRect();
 
     this.ref_TODO_popupManager.closePopup(this.state[popupType]);

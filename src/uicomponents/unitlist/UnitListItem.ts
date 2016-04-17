@@ -83,7 +83,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   // {
   //   if (this.dragPositioner.needsFirstTouchUpdate && this.ref_TODO_dragClone)
   //   {
-  //     var node = React.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
+  //     var node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
   //     node.classList.add("draggable");
   //     node.classList.add("dragging");
 
@@ -132,7 +132,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   // {
   //   if (!this.ref_TODO_dragClone) return;
 
-  //   var node = React.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
+  //   var node = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_dragClone);
   //   node.classList.add("draggable");
   //   node.classList.add("dragging");
   //   node.style.left = "" + x + "px";

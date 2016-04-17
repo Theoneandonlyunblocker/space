@@ -50,11 +50,11 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   {
     if (app.game.gameStorageKey)
     {
-      React.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
+      ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
     }
     else
     {
-      React.findDOMNode<HTMLElement>(this.ref_TODO_saveName).focus();
+      ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_saveName).focus();
     }
   }
 

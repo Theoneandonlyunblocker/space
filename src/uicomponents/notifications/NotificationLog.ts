@@ -76,7 +76,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
 
   componentDidUpdate()
   {
-    var domNode = React.findDOMNode(this);
+    var domNode = ReactDOM.findDOMNode(this);
     if (!isFinite(this.scrollTop))
     {
       this.scrollTop = domNode.scrollTop;

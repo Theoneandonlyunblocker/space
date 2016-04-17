@@ -112,7 +112,7 @@ export default class AutoPositioner<T extends React.Component<any, any>> impleme
       flip if doesnt fit
      */
     const parentRect = this.props.getParentClientRect();
-    const ownNode = React.findDOMNode<HTMLElement>(this.owner);
+    const ownNode = ReactDOM.findDOMNode<HTMLElement>(this.owner);
     const ownRect = ownNode.getBoundingClientRect();
 
     let ySide = this.props.ySide || "top";

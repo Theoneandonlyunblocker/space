@@ -94,9 +94,9 @@ export class TopMenuComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.cachedTopMenuWidth)
     {
-      this.cachedTopMenuWidth = React.findDOMNode<HTMLElement>(this.ref_TODO_topMenu).getBoundingClientRect().width;
+      this.cachedTopMenuWidth = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_topMenu).getBoundingClientRect().width;
 
-      var buttons = React.findDOMNode<HTMLElement>(this.ref_TODO_topMenuItems).children;
+      var buttons = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_topMenuItems).children;
 
       var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
 

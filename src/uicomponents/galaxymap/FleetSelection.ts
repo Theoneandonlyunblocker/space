@@ -62,7 +62,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
   setElementPosition()
   {
     if (!this.ref_TODO_selected) return;
-    var domNode = <HTMLElement> React.findDOMNode(this.ref_TODO_selected);
+    var domNode = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_selected);
 
     if (!this.props.selectedStar)
     {
@@ -79,7 +79,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
       var rightMostRect = rightMostNode.getBoundingClientRect();
       var ownBottom = domNode.getBoundingClientRect().bottom;
 
-      var first = <HTMLElement> React.findDOMNode(this.ref_TODO_main).firstChild
+      var first = <HTMLElement> ReactDOM.findDOMNode(this.ref_TODO_main).firstChild
 
       if (ownBottom > actionsRect.top)
       {

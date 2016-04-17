@@ -89,7 +89,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   setPosition()
   {
     var parentRect = this.props.getParentPosition();
-    var domNode = React.findDOMNode<HTMLElement>(this);
+    var domNode = ReactDOM.findDOMNode<HTMLElement>(this);
     domNode.style.top = "" + parentRect.bottom + "px";
     domNode.style.left = "" + parentRect.left + "px";
   }

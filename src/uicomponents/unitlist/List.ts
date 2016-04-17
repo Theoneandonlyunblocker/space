@@ -80,7 +80,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.keyboardSelect)
     {
-      React.findDOMNode(this).addEventListener("keydown", function(event: KeyboardEvent)
+      ReactDOM.findDOMNode(this).addEventListener("keydown", function(event: KeyboardEvent)
       {
         switch (event.keyCode)
         {
@@ -108,7 +108,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     else if (this.props.autoSelect)
     {
       this.handleSelectRow(this.sortedItems[0]);
-      React.findDOMNode<HTMLElement>(this).focus();
+      ReactDOM.findDOMNode<HTMLElement>(this).focus();
     }
     else
     {
@@ -129,8 +129,8 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   setDesiredHeight()
   {
-    var ownNode = React.findDOMNode<HTMLElement>(this);
-    var innerNode = React.findDOMNode<HTMLElement>(this.ref_TODO_inner);
+    var ownNode = ReactDOM.findDOMNode<HTMLElement>(this);
+    var innerNode = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_inner);
 
     ownNode.style.height = "auto";
     innerNode.style.height = "auto";
@@ -157,7 +157,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   {
     // scrolls header to match list contents
     var target = <Element> e.target;
-    var header = React.findDOMNode<HTMLElement>(this.ref_TODO_header);
+    var header = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_header);
     var titles = <NodeListOf<HTMLElement>> header.getElementsByClassName("fixed-table-th-inner");
 
     var marginString = "-" + target.scrollLeft + "px";

@@ -60,7 +60,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   
   componentDidMount()
   {
-    React.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
+    ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_okButton).focus();
   }
 
   handleRowChange(row: ListItem)
@@ -80,7 +80,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
       // https://github.com/facebook/react/issues/2988
       // https://github.com/facebook/react/issues/2605#issuecomment-118398797
       // without this react will keep a reference to this element causing a big memory leak
-      React.findDOMNode<HTMLElement>(this.ref_TODO_okButton).blur();
+      ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_okButton).blur();
       window.setTimeout(function()
       {
         app.load(saveKey);
