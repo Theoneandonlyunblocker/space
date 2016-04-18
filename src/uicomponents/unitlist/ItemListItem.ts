@@ -80,7 +80,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
   private makeCell(type: string)
   {
-    var cellProps: React.HTMLAttributes = {};
+    var cellProps: React.HTMLProps<HTMLTableCellElement> = {};
     cellProps.key = type;
     cellProps.className = "item-list-item-cell" + " item-list-" + type;
 

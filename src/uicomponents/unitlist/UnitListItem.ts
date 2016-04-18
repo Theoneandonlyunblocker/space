@@ -104,7 +104,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   {
     const container = document.createElement("div");
     
-    React.render(
+    ReactDOM.render(
       UnitComponentFactory(
       {
         unit: this.props.unit,
@@ -170,7 +170,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
   makeCell(type: string)
   {
     var unit = this.props.unit;
-    var cellProps: React.HTMLAttributes = {};
+    var cellProps: React.HTMLProps<HTMLTableCellElement> = {};
     cellProps.key = type;
     cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
 

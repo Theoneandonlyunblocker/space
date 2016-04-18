@@ -87,10 +87,10 @@ function getUnitDisplayData(unit: Unit): UnitDisplayData
 {
   return(
   {
-    health: unit.currentHealth,
+    currentHealth: unit.currentHealth,
     guardAmount: unit.battleStats.guardAmount,
     guardType: unit.battleStats.guardCoverage,
-    actionPoints: unit.battleStats.currentActionPoints,
+    currentActionPoints: unit.battleStats.currentActionPoints,
 
     isPreparing: Boolean(unit.battleStats.queuedAction),
     isAnnihilated: unit.battleStats.isAnnihilated

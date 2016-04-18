@@ -35,7 +35,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
   }
   makeCell(type: string)
   {
-    var cellProps: React.HTMLAttributes = {};
+    var cellProps: React.HTMLProps<HTMLTableCellElement> = {};
     cellProps.key = type;
     cellProps.className = "save-list-item-cell" + " save-list-" + type;
 

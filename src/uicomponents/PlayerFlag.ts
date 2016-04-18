@@ -7,7 +7,7 @@ import Flag from "../../src/Flag";
 interface PropTypes extends React.Props<any>
 {
   width?: number;
-  props: React.HTMLAttributes;
+  props: React.HTMLProps<any>;
   isMutable?: boolean;
   height?: number;
   stretch?: boolean;
@@ -69,7 +69,7 @@ export class PlayerFlagComponent extends React.Component<PropTypes, StateType>
       containerNode.appendChild(canvas);
     }
   }
-  render()
+  render(): React.ReactHTMLElement<any>
   {
     var props = this.props.props;
     if (this.canUseDataURL())

@@ -60,7 +60,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
 
   makeCell(type: string)
   {
-    var cellProps: React.HTMLAttributes = {};
+    var cellProps: React.HTMLProps<HTMLTableCellElement> = {};
     cellProps.key = type;
     cellProps.className = "buildable-building-list-item-cell " + type;
 
