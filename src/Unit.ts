@@ -37,6 +37,7 @@ import QueuedActionData from "./QueuedActionData";
 import UnitBattleStats from "./UnitBattleStats";
 import UnitBattleSide from "./UnitBattleSide";
 import AbilityUpgradeData from "./AbilityUpgradeData";
+import UnitDisplayData from "./UnitDisplayData";
 
 import UnitSaveData from "./savedata/UnitSaveData";
 import UnitItemsSaveData from "./savedata/UnitItemsSaveData";
@@ -1126,6 +1127,28 @@ export default class Unit
   drawBattleScene(params: SFXParams)
   {
     this.template.unitDrawingFN(this, params);
+  }
+  public getDisplayData(): UnitDisplayData
+  {
+    return(
+  {
+    unit: this,
+  
+    currentHealth: this.currentHealth,
+    maxHealth: this.maxHealth,
+    
+    guardAmount: this.battleStats.guardAmount,
+    guardType: this.battleStats.guardCoverage,
+    
+    currentActionPoints: this.battleStats.currentActionPoints,
+    maxActionPoints: this.attributes.maxActionPoints,
+
+    isPreparing: Boolean(this.battleStats.queuedAction),
+    isAnnihilated: this.battleStats.isAnnihilated,
+    
+    portraitSrc: this.portrait.imageSrc,
+    iconSrc: this.template.icon,
+  });
   }
   serialize(includeItems: boolean = true, includeFluff: boolean = true): UnitSaveData
   {

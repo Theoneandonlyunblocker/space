@@ -3,27 +3,27 @@ import Unit from "./Unit";
 
 interface UnitDisplayData
 {
-  // unit: Unit;
+  unit: Unit;
   
-  // currentHealth: number;
-  // maxHealth: number;
+  currentHealth: number;
+  maxHealth: number;
   
-  // guardAmount: number;
-  // guardType: GuardCoverage;
+  guardAmount: number;
+  guardType: GuardCoverage;
   
-  // currentActionPoints: number;
-  // maxActionPoints: number;
+  currentActionPoints: number;
+  maxActionPoints: number;
 
-  // isPreparing: boolean;
-  // isAnnihilated: boolean;
-  // isDestroyed: boolean;
-  // isCaptured: boolean;
+  isPreparing: boolean;
+  isAnnihilated: boolean;
   
-  // portraitSrc: string;
-  // iconSrc: string;
+  portraitSrc: string;
+  iconSrc: string;
   
+  isDestroyed?: boolean;
+  isCaptured?: boolean;
   
-  // hoveredActionPointsExpenditure: number;
+  hoveredActionPointsExpenditure?: number;
 }
 
 export default UnitDisplayData;

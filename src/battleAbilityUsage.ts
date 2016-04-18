@@ -12,14 +12,10 @@ import
   getAbilityEffectDataByPhase
 } from "./battleAbilityProcessing";
 
-export interface UnitDisplayDataById
-{
-  [unitId: number]: UnitDisplayData;
-}
 export interface AbilityUseEffect
 {
   actionName: string;
-  unitDisplayDataAfterUsingById: UnitDisplayDataById;
+  unitDisplayDataAfterUsingById: {[unitId: number]: UnitDisplayData};
   sfx: BattleSFXTemplate;
   sfxUser: Unit;
   sfxTarget: Unit;
@@ -83,20 +79,6 @@ function executeMultipleEffects(battle: Battle, abilityEffectData: AbilityEffect
   }
 }
 
-function getUnitDisplayData(unit: Unit): UnitDisplayData
-{
-  return(
-  {
-    currentHealth: unit.currentHealth,
-    guardAmount: unit.battleStats.guardAmount,
-    guardType: unit.battleStats.guardCoverage,
-    currentActionPoints: unit.battleStats.currentActionPoints,
-
-    isPreparing: Boolean(unit.battleStats.queuedAction),
-    isAnnihilated: unit.battleStats.isAnnihilated
-  });
-}
-
 function shouldEffectActionTrigger(abilityEffectData: AbilityEffectData)
 {
   if (!abilityEffectData.trigger)
@@ -131,9 +113,9 @@ function executeAbilityEffectDataAndGetUseEffect(battle: Battle,
     return null;
   }
 
-  var unitDisplayData: UnitDisplayDataById = {}
-  unitDisplayData[abilityEffectData.user.id] = getUnitDisplayData(abilityEffectData.user);
-  unitDisplayData[abilityEffectData.target.id] = getUnitDisplayData(abilityEffectData.target);
+  var unitDisplayData: {[unitId: number]: UnitDisplayData} = {}
+  unitDisplayData[abilityEffectData.user.id] = abilityEffectData.user.getDisplayData();
+  unitDisplayData[abilityEffectData.target.id] = abilityEffectData.target.getDisplayData();
 
   return(
   {

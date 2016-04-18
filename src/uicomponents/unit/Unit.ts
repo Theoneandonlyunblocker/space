@@ -7,11 +7,12 @@ import UnitInfo from "./UnitInfo";
 import UnitIcon from "./UnitIcon";
 import Battle from "../../Battle";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
+import UnitDisplayData from "../../UnitDisplayData";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-interface PropTypes extends React.Props<any>
+interface PropTypes extends React.Props<any>, UnitDisplayData
 {
   isCaptured?: boolean;
   isDead?: boolean;
