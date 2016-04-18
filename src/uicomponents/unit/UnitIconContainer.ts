@@ -2,26 +2,25 @@
 
 interface PropTypes extends React.Props<any>
 {
-  icon: string;
-  isAnnihilated?: boolean;
-  isActiveUnit?: boolean;
   facesLeft: boolean;
+  iconSrc?: string;
 }
 
 interface StateType
 {
 }
 
-export class UnitIconComponent extends React.Component<PropTypes, StateType>
+export class UnitIconContainerComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "UnitIcon";
-  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+  displayName: string = "UnitIconContainer";
   state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
+  
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   
   render()
   {
@@ -34,18 +33,7 @@ export class UnitIconComponent extends React.Component<PropTypes, StateType>
     {
       className: "unit-icon-filler"
     };
-
-    if (this.props.isActiveUnit)
-    {
-      fillerProps.className += " active-border";
-      containerProps.className += " active-border";
-    }
-
-    if (this.props.isAnnihilated)
-    {
-      containerProps.className += " icon-annihilated-overlay";
-    }
-
+    
     if (this.props.facesLeft)
     {
       fillerProps.className += " unit-border-right";
@@ -56,20 +44,16 @@ export class UnitIconComponent extends React.Component<PropTypes, StateType>
       fillerProps.className += " unit-border-left";
       containerProps.className += " unit-border-no-left";
     }
-
-    var iconImage = this.props.icon ?
-      React.DOM.img(
-      {
-        className: "unit-icon",
-        src: this.props.icon
-      }) :
-      null;
+    
+    const iconElement = React.Children.count(this.props.children) === 1 ?
+      React.Children.only(this.props.children) :
+      React.DOM.img({src: this.props.iconSrc});
 
     return(
       React.DOM.div({className: "unit-icon-wrapper"},
         React.DOM.div(fillerProps),
         React.DOM.div(containerProps,
-          iconImage
+          iconElement
         ),
         React.DOM.div(fillerProps)
       )
@@ -77,5 +61,5 @@ export class UnitIconComponent extends React.Component<PropTypes, StateType>
   }
 }
 
-const Factory: React.Factory<PropTypes> = React.createFactory(UnitIconComponent);
+const Factory: React.Factory<PropTypes> = React.createFactory(UnitIconContainerComponent);
 export default Factory;
