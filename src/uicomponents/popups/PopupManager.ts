@@ -14,8 +14,9 @@ import {extendObject} from "../../utility";
 
 interface MakePopupFunctionProps
 {
-  contentConstructor: React.Factory<any>;
-  contentProps: any;
+  // contentConstructor: React.Factory<any>;
+  // contentProps: any;
+  content: React.ReactElement<any>;
   popupProps?: CustomPopupProps;
 }
 
@@ -61,7 +62,7 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     this.getInitialPosition = this.getInitialPosition.bind(this);
     this.closePopup = this.closePopup.bind(this);
     this.makePopup = this.makePopup.bind(this);
-    this.setPopupContent = this.setPopupContent.bind(this);
+    // this.setPopupContent = this.setPopupContent.bind(this);
     this.getPopupId = this.getPopupId.bind(this);
     this.hasPopup = this.hasPopup.bind(this);
     this.getPopup = this.getPopup.bind(this);    
@@ -80,11 +81,11 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
       {
         self.closePopup(popupId);
       });
-    this.listeners["setPopupContent"] =
-      eventManager.addEventListener("setPopupContent", function(data: {id: number; content: any;})
-      {
-        self.setPopupContent(data.id, data.content);
-      });
+    // this.listeners["setPopupContent"] =
+    //   eventManager.addEventListener("setPopupContent", function(data: {id: number; content: any;})
+    //   {
+    //     self.setPopupContent(data.id, data.content);
+    //   });
   }
 
   componentWillUnmount()
@@ -198,8 +199,9 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
 
     var popupProps: PopupProps = props.popupProps ? extendObject(props.popupProps) : {};
 
-    popupProps.contentConstructor = props.contentConstructor;
-    popupProps.contentProps = props.contentProps;
+    popupProps.content = props.content;
+    // popupProps.contentConstructor = props.contentConstructor;
+    // popupProps.contentProps = props.contentProps;
     popupProps.id = id;
     popupProps.key = id;
     popupProps.ref = (component: PopupComponent) =>
@@ -230,15 +232,15 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     return id;
   }
 
-  setPopupContent(popupId: number, newContent: any)
-  {
-    var popup = this.getPopup(popupId);
-    if (!popup) throw new Error();
+  // setPopupContent(popupId: number, newContent: any)
+  // {
+  //   var popup = this.getPopup(popupId);
+  //   if (!popup) throw new Error();
 
-    popup.contentProps = extendObject(newContent, popup.contentProps);
+  //   popup.contentProps = extendObject(newContent, popup.contentProps);
 
-    this.forceUpdate();
-  }
+  //   this.forceUpdate();
+  // }
 
   render()
   {

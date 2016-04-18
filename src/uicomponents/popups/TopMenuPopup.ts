@@ -3,8 +3,7 @@
 interface PropTypes extends React.Props<any>
 {
   handleClose: () => void;
-  contentConstructor: React.Factory<any>;
-  contentProps: any;
+  content: React.ReactElement<any>;
 }
 
 interface StateType
@@ -24,12 +23,14 @@ export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var contentProps = this.props.contentProps;
-    contentProps.ref = (component: React.ReactElement<any>) =>
+    const contentProps =
     {
-      this.ref_TODO_content = component;
-    };
-
+      ref: (component: React.ReactElement<any>) =>
+      {
+        this.ref_TODO_content = component;
+      }
+    }
+    
     return(
       React.DOM.div(
       {
@@ -44,7 +45,8 @@ export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
         {
           className: "light-box-content"
         },
-          this.props.contentConstructor(contentProps)
+          React.cloneElement(this.props.content, contentProps)
+          // this.props.contentConstructor(contentProps)
         )
       )
     );

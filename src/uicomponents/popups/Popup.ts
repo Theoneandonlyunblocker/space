@@ -37,8 +37,9 @@ export interface CustomPopupProps
 
 export interface PropTypes extends CustomPopupProps, React.Props<any>
 {
-  contentConstructor: React.Factory<any>;
-  contentProps: any;
+  // contentConstructor: React.Factory<any>;
+  // contentProps: any;
+  content: React.ReactElement<any>;
   
   id?: number;
   incrementZIndex: (childZIndex: number) => number;
@@ -215,10 +216,11 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
       divProps.className += " dragging";
     }
 
-    var contentProps = this.props.contentProps;
-
-    contentProps.closePopup = this.props.closePopup
-    contentProps.ref = "content";
+    var contentProps =
+    {
+      closePopup: this.props.closePopup
+    }
+    // contentProps.ref = "content";
 
     var resizeHandle = !this.props.resizable ? null : PopupResizeHandle(
     {
@@ -227,7 +229,8 @@ export class PopupComponent extends React.Component<PropTypes, StateType>
 
     return(
       React.DOM.div(divProps,
-        this.props.contentConstructor(contentProps),
+        React.cloneElement(this.props.content, contentProps),
+        // this.props.contentConstructor(contentProps),
         resizeHandle
       )
     );
