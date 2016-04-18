@@ -56,17 +56,15 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
 
     this.popupId = this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: TopMenuPopup,
-      contentProps:
+      content: TopMenuPopup(
       {
         handleClose: this.closePopup,
-        contentConstructor: Tutorial,
-        contentProps:
+        content: Tutorial(
         {
           pages: IntroTutorial.pages,
           tutorialId: "introTutorial"
-        }
-      },
+        })
+      }),
       popupProps:
       {
         resizable: true,

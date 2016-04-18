@@ -46,7 +46,6 @@ export class TopMenuPopupComponent extends React.Component<PropTypes, StateType>
           className: "light-box-content"
         },
           React.cloneElement(this.props.content, contentProps)
-          // this.props.contentConstructor(contentProps)
         )
       )
     );

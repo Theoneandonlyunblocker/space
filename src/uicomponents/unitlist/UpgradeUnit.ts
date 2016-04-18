@@ -82,19 +82,17 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
     var upgradeData = this.state.upgradeData[ability.type];
     var popupId = this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: TopMenuPopup,
-      contentProps:
+      content: TopMenuPopup(
       {
         handleClose: this.closePopup,
-        contentConstructor: UpgradeAbilities,
-        contentProps:
+        content: UpgradeAbilities(
         {
           abilities: upgradeData.possibleUpgrades,
           handleClick: this.upgradeAbility.bind(this, upgradeData.base),
           sourceAbility: upgradeData.base,
           learningNewability: !Boolean(upgradeData.base)
-        }
-      },
+        })
+      }),
       popupProps:
       {
         dragPositionerProps:

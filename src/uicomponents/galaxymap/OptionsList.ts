@@ -46,20 +46,17 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
   
   handleResetAllOptions()
   {
-    var confirmProps =
-    {
-      handleOk: () =>
-      {
-        Options.setDefaults();
-        this.forceUpdate();
-      },
-      contentText: "Are you sure you want to reset all options?"
-    }
-
     this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: ConfirmPopup,
-      contentProps: confirmProps,
+      content: ConfirmPopup(
+      {
+        handleOk: () =>
+        {
+          Options.setDefaults();
+          this.forceUpdate();
+        },
+        content: "Are you sure you want to reset all options?"
+      }),
       popupProps:
       {
         dragPositionerProps:

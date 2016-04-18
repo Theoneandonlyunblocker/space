@@ -54,17 +54,15 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
   {
     var popupId = this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: TopMenuPopup,
-      contentProps:
+      content: TopMenuPopup(
       {
         handleClose: this.closePopup,
-        contentConstructor: UpgradeUnit,
-        contentProps:
+        content: UpgradeUnit(
         {
           unit: this.props.unit,
           onUnitUpgrade: this.handleUnitUpgrade
-        }
-      },
+        })
+      }),
       popupProps:
       {
         dragPositionerProps:

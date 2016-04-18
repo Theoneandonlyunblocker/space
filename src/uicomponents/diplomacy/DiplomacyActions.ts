@@ -9,7 +9,7 @@ import {CustomPopupProps} from "../popups/popup";
 
 interface PropTypes extends React.Props<any>
 {
-  closePopup: () => void;
+  closePopup?: () => void;
   player: Player;
   targetPlayer: Player;
   onUpdate: () => void;
@@ -62,8 +62,8 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
 
   makePopup(popupType: string)
   {
-    var contentConstructor: React.Factory<any>;
-    var contentProps: any;
+    let content: React.ReactElement<any>;
+
     var popupProps: CustomPopupProps =
     {
       resizable: true,
@@ -80,26 +80,23 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
     {
       case "trade":
       {
-        contentConstructor = TradeOverview;
-        contentProps =
+        content = TradeOverview(
         {
           selfPlayer: this.props.player,
           otherPlayer: this.props.targetPlayer,
           handleClose: this.closePopup.bind(this, popupType)
-        };
+        });
         break;
       }
     }
 
     var id = this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: TopMenuPopup,
-      contentProps:
+      content: TopMenuPopup(
       {
-        contentConstructor: contentConstructor,
-        contentProps: contentProps,
+        content: content,
         handleClose: this.closePopup.bind(this, popupType)
-      },
+      }),
       popupProps: popupProps
     });
 

@@ -189,13 +189,11 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
 
     var id = this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: TopMenuPopup,
-      contentProps:
+      content: TopMenuPopup(
       {
-        contentConstructor: contentConstructor,
-        contentProps: contentProps,
+        content: contentConstructor(contentProps),
         handleClose: this.closePopup.bind(this, popupType)
-      },
+      }),
       popupProps: popupProps
     });
 

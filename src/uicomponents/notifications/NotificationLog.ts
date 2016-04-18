@@ -110,14 +110,12 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
 
     var popupId = this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: ConfirmPopup,
-      contentProps:
+      content: ConfirmPopup(
       {
-        contentConstructor: notification.template.contentConstructor,
-        contentProps:
+        content: notification.template.contentConstructor(
         {
           notification: notification
-        },
+        }),
         handleOk: this.handleMarkAsRead.bind(this, notification),
         handleClose: this.closePopup.bind(this, key),
         okText: "Mark as read",
@@ -132,7 +130,7 @@ export class NotificationLogComponent extends React.Component<PropTypes, StateTy
             highlightedOptionKey: notification.template.key
           })
         ]
-      },
+      }),
       popupProps:
       {
         dragPositionerProps:

@@ -48,13 +48,12 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
     this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: DiplomacyActions,
-      contentProps:
+      content: DiplomacyActions(
       {
         player: this.props.player,
         targetPlayer: player,
         onUpdate: this.forceUpdate.bind(this)
-      },
+      }),
       popupProps:
       {
         dragPositionerProps:

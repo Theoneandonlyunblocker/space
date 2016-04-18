@@ -63,17 +63,15 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
 
     var popupId = this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: TopMenuPopup,
-      contentProps:
+      content: TopMenuPopup(
       {
-        contentConstructor: NotificationFilterList,
-        contentProps:
+        content: NotificationFilterList(
         {
           filter: this.props.filter,
           highlightedOptionKey: this.props.highlightedOptionKey
-        },
+        }),
         handleClose: this.closePopup
-      },
+      }),
       popupProps:
       {
         dragPositionerProps:

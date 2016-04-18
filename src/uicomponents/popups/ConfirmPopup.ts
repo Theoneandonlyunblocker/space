@@ -1,21 +1,14 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import
+export interface PropTypes extends React.Props<any>
 {
-  splitMultilineText
-} from "../../utility";
-
-interface PropTypes extends React.Props<any>
-{
-  handleClose: () => void;
-  contentConstructor: React.Factory<any>;
-  extraButtons: React.ReactElement<any>[];
-  cancelText: boolean;
-  handleOk: () => boolean; // return value: was callback successful
-  contentProps: any;
-  contentText: string;
-  okText: string;
-  closePopup: () => void;
+  handleClose?: () => void;
+  content: React.ReactNode;
+  extraButtons?: React.ReactNode[];
+  cancelText?: string;
+  handleOk: () => boolean | void; // return value: was callback successful
+  okText?: string;
+  closePopup?: () => void;
 }
 
 interface StateType
@@ -72,20 +65,6 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    var content: string | React.ReactElement<any>;
-    if (this.props.contentText)
-    {
-      content = <string> splitMultilineText(this.props.contentText);
-    }
-    else if (this.props.contentConstructor)
-    {
-      content = this.props.contentConstructor(this.props.contentProps);
-    }
-    else
-    {
-      throw new Error("Confirm popup has no content");
-    }
-
     return(
       React.DOM.div(
       {
@@ -95,7 +74,7 @@ export class ConfirmPopupComponent extends React.Component<PropTypes, StateType>
         {
           className: "confirm-popup-content"
         },
-          content
+          this.props.content
         ),
         React.DOM.div(
         {

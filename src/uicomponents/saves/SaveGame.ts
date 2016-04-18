@@ -102,16 +102,16 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
   makeConfirmOverWritePopup(saveName: string)
   {
     var confirmProps =
-    {
-      handleOk: this.saveGame,
-      contentText: "Are you sure you want to overwrite " +
-        saveName.replace("Save.", "") + "?"
-    }
+    
 
     this.ref_TODO_popupManager.makePopup(
     {
-      contentConstructor: ConfirmPopup,
-      contentProps: confirmProps
+      content: ConfirmPopup(
+      {
+        handleOk: this.saveGame,
+        content: "Are you sure you want to overwrite " +
+          saveName.replace("Save.", "") + "?"
+      })
     });
   }
 
