@@ -675,13 +675,23 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
     }
     exports.extendObject = extendObject;
     function shallowCopy(toCopy) {
-        var cloned = {};
-        for (var key in toCopy) {
-            cloned[key] = toCopy[key];
-        }
-        return cloned;
+        return shallowExtend({}, toCopy);
     }
     exports.shallowCopy = shallowCopy;
+    function shallowExtend(destination) {
+        var sources = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            sources[_i - 1] = arguments[_i];
+        }
+        for (var _c = 0, sources_1 = sources; _c < sources_1.length; _c++) {
+            var source = sources_1[_c];
+            for (var key in source) {
+                destination[key] = source[key];
+            }
+        }
+        return destination;
+    }
+    exports.shallowExtend = shallowExtend;
     function deepMerge(target, src, excludeKeysNotInTarget) {
         if (excludeKeysNotInTarget === void 0) { excludeKeysNotInTarget = false; }
         if (excludeKeysNotInTarget) {
@@ -2127,6 +2137,23 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Battle;
 });
+define("src/getNullFormation", ["require", "exports", "src/App"], function (require, exports, App_6) {
+    "use strict";
+    function getNullFormation() {
+        var nullFormation = [];
+        var rows = App_6.default.moduleData.ruleSet.battle.rowsPerFormation;
+        var columns = App_6.default.moduleData.ruleSet.battle.cellsPerRow;
+        for (var i = 0; i < rows; i++) {
+            nullFormation.push([]);
+            for (var j = 0; j < columns; j++) {
+                nullFormation[i].push(null);
+            }
+        }
+        return nullFormation;
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = getNullFormation;
+});
 define("src/targeting", ["require", "exports", "src/utility"], function (require, exports, utility_3) {
     "use strict";
     (function (TargetFormation) {
@@ -2189,24 +2216,8 @@ define("src/targeting", ["require", "exports", "src/utility"], function (require
         return utility_3.getFrom2dArray(units, targetLocations);
     };
 });
-define("src/battleAbilityTargeting", ["require", "exports", "src/App", "src/utility", "src/targeting"], function (require, exports, App_6, utility_4, targeting_1) {
+define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormation", "src/utility", "src/targeting"], function (require, exports, getNullFormation_1, utility_4, targeting_1) {
     "use strict";
-    var _nullFormation;
-    function getNullFormation() {
-        if (!_nullFormation) {
-            _nullFormation = [];
-            var rows = App_6.default.moduleData.ruleSet.battle.rowsPerFormation;
-            var columns = App_6.default.moduleData.ruleSet.battle.cellsPerRow;
-            for (var i = 0; i < rows; i++) {
-                _nullFormation.push([]);
-                for (var j = 0; j < columns; j++) {
-                    _nullFormation[i].push(null);
-                }
-            }
-        }
-        return _nullFormation;
-    }
-    exports.getNullFormation = getNullFormation;
     function getFormationsToTarget(battle, user, effect) {
         if (effect.targetFormations === targeting_1.TargetFormation.either) {
             return battle.side1.concat(battle.side2);
@@ -2226,10 +2237,10 @@ define("src/battleAbilityTargeting", ["require", "exports", "src/App", "src/util
             throw new Error("Invalid target formation for effect: " + effect.name);
         }
         if (insertNullBefore) {
-            return getNullFormation().concat(toConcat);
+            return getNullFormation_1.default().concat(toConcat);
         }
         else {
-            return toConcat.concat(getNullFormation());
+            return toConcat.concat(getNullFormation_1.default());
         }
     }
     exports.getFormationsToTarget = getFormationsToTarget;
@@ -2415,16 +2426,6 @@ define("src/battleAbilityUsage", ["require", "exports", "src/battleAbilityProces
             }
         }
     }
-    function getUnitDisplayData(unit) {
-        return ({
-            health: unit.currentHealth,
-            guardAmount: unit.battleStats.guardAmount,
-            guardType: unit.battleStats.guardCoverage,
-            actionPoints: unit.battleStats.currentActionPoints,
-            isPreparing: Boolean(unit.battleStats.queuedAction),
-            isAnnihilated: unit.battleStats.isAnnihilated
-        });
-    }
     function shouldEffectActionTrigger(abilityEffectData) {
         if (!abilityEffectData.trigger) {
             return true;
@@ -2444,8 +2445,8 @@ define("src/battleAbilityUsage", ["require", "exports", "src/battleAbilityProces
             return null;
         }
         var unitDisplayData = {};
-        unitDisplayData[abilityEffectData.user.id] = getUnitDisplayData(abilityEffectData.user);
-        unitDisplayData[abilityEffectData.target.id] = getUnitDisplayData(abilityEffectData.target);
+        unitDisplayData[abilityEffectData.user.id] = abilityEffectData.user.getDisplayData("battle");
+        unitDisplayData[abilityEffectData.target.id] = abilityEffectData.target.getDisplayData("battle");
         return ({
             actionName: abilityEffectData.templateEffect.action.name,
             unitDisplayDataAfterUsingById: unitDisplayData,
@@ -6372,114 +6373,132 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Player;
 });
-define("src/BattlePrep", ["require", "exports", "src/App", "src/Battle"], function (require, exports, App_17, Battle_1) {
+define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNullFormation"], function (require, exports, App_17, getNullFormation_2) {
     "use strict";
-    var BattlePrep = (function () {
-        function BattlePrep(battleData) {
-            this.alreadyPlaced = {};
-            this.minDefendersInNeutralTerritory = 1;
-            this.afterBattleFinishCallbacks = [];
-            this.attacker = battleData.attacker.player;
-            this.attackerUnits = battleData.attacker.units;
-            this.defender = battleData.defender.player;
-            this.defenderUnits = battleData.defender.units;
-            this.battleData = battleData;
-            this.resetBattleStats();
-            this.triggerPassiveSkills();
-            this.makeAIFormations();
-            this.setupPlayer();
+    var BattlePrepFormation = (function () {
+        function BattlePrepFormation(player, units, hasScouted, minUnits) {
+            this.placedUnitPositionsByID = {};
+            this.displayDataIsDirty = true;
+            this.player = player;
+            this.units = units;
+            this.hasScouted = hasScouted;
+            this.minUnits = minUnits;
+            this.formation = getNullFormation_2.default();
         }
-        BattlePrep.prototype.resetBattleStats = function () {
-            var star = this.battleData.location;
-            var allUnits = star.getAllUnitsOfPlayer(this.attacker).concat(star.getAllUnitsOfPlayer(this.defender));
-            for (var i = 0; i < allUnits.length; i++) {
-                allUnits[i].resetBattleStats();
-            }
-        };
-        BattlePrep.prototype.triggerPassiveSkills = function () {
-            var star = this.battleData.location;
-            var allUnits = star.getAllUnitsOfPlayer(this.attacker).concat(star.getAllUnitsOfPlayer(this.defender));
-            for (var i = 0; i < allUnits.length; i++) {
-                var unit = allUnits[i];
-                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-                if (passiveSkillsByPhase.inBattlePrep) {
-                    for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++) {
-                        var skill = passiveSkillsByPhase.inBattlePrep[j];
-                        for (var k = 0; k < skill.inBattlePrep.length; k++) {
-                            skill.inBattlePrep[k](unit, this);
-                        }
+        BattlePrepFormation.prototype.forEachUnitInFormation = function (f) {
+            for (var i = 0; i < this.formation.length; i++) {
+                for (var j = 0; j < this.formation[i].length; j++) {
+                    var unit = this.formation[i][j];
+                    if (unit) {
+                        f(unit, [i, j]);
                     }
                 }
             }
         };
-        BattlePrep.prototype.makeEmptyFormation = function () {
-            var formation = [];
-            for (var i = 0; i < App_17.default.moduleData.ruleSet.battle.rowsPerFormation; i++) {
-                var row = [];
-                for (var j = 0; j < App_17.default.moduleData.ruleSet.battle.cellsPerRow; j++) {
-                    row.push(null);
-                }
-                formation.push(row);
+        BattlePrepFormation.prototype.getDisplayData = function () {
+            if (this.displayDataIsDirty) {
+                this.cachedDisplayData = this.getFormationDisplayData();
+                this.displayDataIsDirty = false;
             }
-            return formation;
+            return this.cachedDisplayData;
         };
-        BattlePrep.prototype.makeAIFormations = function () {
-            if (this.attacker.isAI) {
-                this.attackerFormation = this.makeAutoFormation(this.battleData.attacker.units, this.battleData.defender.units, this.attacker);
-            }
-            if (this.defender.isAI) {
-                this.defenderFormation = this.makeAutoFormation(this.battleData.defender.units, this.battleData.attacker.units, this.defender);
-            }
-        };
-        BattlePrep.prototype.setupPlayer = function () {
-            if (!this.attacker.isAI) {
-                this.availableUnits = this.battleData.attacker.units;
-                this.enemyUnits = this.battleData.defender.units;
-                this.attackerFormation = this.makeEmptyFormation();
-                this.playerFormation = this.attackerFormation;
-                this.enemyFormation = this.defenderFormation;
-                this.humanPlayer = this.attacker;
-                this.enemyPlayer = this.defender;
-            }
-            else if (!this.defender.isAI) {
-                this.availableUnits = this.battleData.defender.units;
-                this.enemyUnits = this.battleData.attacker.units;
-                this.defenderFormation = this.makeEmptyFormation();
-                this.playerFormation = this.defenderFormation;
-                this.enemyFormation = this.attackerFormation;
-                this.humanPlayer = this.defender;
-                this.enemyPlayer = this.attacker;
-            }
-        };
-        BattlePrep.prototype.makeAutoFormation = function (units, enemyUnits, player) {
-            var self = this;
-            var maxUnitsPerSide = App_17.default.moduleData.ruleSet.battle.maxUnitsPerSide;
-            var maxUnitsPerRow = App_17.default.moduleData.ruleSet.battle.maxUnitsPerRow;
-            var formation = this.makeEmptyFormation();
-            var unitsToPlace = units.filter(function (unit) {
-                return unit.canActThisTurn();
+        BattlePrepFormation.prototype.setAutoFormation = function (enemyUnits, enemyFormation) {
+            var _this = this;
+            this.clearFormation();
+            this.formation = this.getAutoFormation(enemyUnits, enemyFormation);
+            this.forEachUnitInFormation(function (unit, pos) {
+                _this.placedUnitPositionsByID[unit.id] = pos;
             });
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.getUnitPosition = function (unit) {
+            return this.placedUnitPositionsByID[unit.id];
+        };
+        BattlePrepFormation.prototype.getUnitAtPosition = function (position) {
+            return this.formation[position[0]][position[1]];
+        };
+        BattlePrepFormation.prototype.clearFormation = function () {
+            this.placedUnitPositionsByID = {};
+            this.formation = getNullFormation_2.default();
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.isFormationValid = function () {
+            var amountOfUnitsPlaced = 0;
+            this.forEachUnitInFormation(function (unit) { return amountOfUnitsPlaced += 1; });
+            var availableUnits = this.units.filter(function (unit) { return unit.canActThisTurn(); });
+            var hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
+            return amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits;
+        };
+        BattlePrepFormation.prototype.setUnit = function (unit, position) {
+            var unitInTargetPosition = this.getUnitAtPosition(position);
+            console.log(unitInTargetPosition);
+            if (unitInTargetPosition) {
+                this.swapUnits(unit, unitInTargetPosition);
+            }
+            else {
+                this.removeUnit(unit);
+                if (!position) {
+                    console.warn("Use BattlePrepFormation.removeUnit() instead");
+                }
+                this.formation[position[0]][position[1]] = unit;
+                this.placedUnitPositionsByID[unit.id] = position;
+                this.displayDataIsDirty = true;
+                console.log("set unit", unit.name);
+            }
+        };
+        BattlePrepFormation.prototype.removeUnit = function (unit) {
+            var position = this.getUnitPosition(unit);
+            if (!position) {
+                return;
+            }
+            this.formation[position[0]][position[1]] = null;
+            delete this.placedUnitPositionsByID[unit.id];
+            this.displayDataIsDirty = true;
+            console.log("remove unit", unit.name);
+        };
+        BattlePrepFormation.prototype.swapUnits = function (unit1, unit2) {
+            if (unit1 === unit2)
+                return;
+            var new1Pos = this.getUnitPosition(unit2);
+            var new2Pos = this.getUnitPosition(unit1);
+            this.removeUnit(unit1);
+            this.removeUnit(unit2);
+            this.setUnit(unit1, new1Pos);
+            this.setUnit(unit2, new2Pos);
+            console.log("swap units", unit1.name, unit2.name);
+        };
+        BattlePrepFormation.prototype.getFormationDisplayData = function () {
+            var displayDataByID = {};
+            this.forEachUnitInFormation(function (u) {
+                displayDataByID[u.id] = u.getDisplayData("battlePrep");
+            });
+            return displayDataByID;
+        };
+        BattlePrepFormation.prototype.getAutoFormation = function (enemyUnits, enemyFormation) {
+            var scoutedUnits = this.hasScouted ? enemyUnits : null;
+            var scoutedFormation = this.hasScouted ? enemyFormation : null;
+            var formation = getNullFormation_2.default();
+            var unitsToPlace = this.units.filter(function (u) { return u.canActThisTurn(); });
+            var maxUnitsPerRow = formation[0].length;
+            var maxUnitsPerSide = App_17.default.moduleData.ruleSet.battle.maxUnitsPerSide;
             var placedInFront = 0;
             var placedInBack = 0;
             var totalPlaced = 0;
             var unitsPlacedByArchetype = {};
             var getUnitScoreFN = function (unit, row) {
-                var score = unit.getStrengthEvaluation();
+                var baseScore = unit.getStrengthEvaluation();
                 var archetype = unit.template.archetype;
-                var rowModifier = archetype.rowScores[row];
-                if (archetype.scoreMultiplierForRowFN) {
-                    var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
-                    var scoutedUnits = player.starIsDetected(self.battleData.location) ? enemyUnits : null;
-                    rowModifier = archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits);
-                }
-                var idealMaxUnits = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
-                var unitsPlaced = unitsPlacedByArchetype[archetype.type] || 0;
-                var overMax = Math.max(0, unitsPlaced - idealMaxUnits);
-                score *= 1 - overMax * 0.15;
-                score *= rowModifier;
+                var idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
+                var unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
+                var overMaxOfArchetypeIdeal = Math.max(0, unitsPlacedOfArchetype - idealMaxUnitsOfArchetype);
+                var archetypeIdealAdjust = 1 - overMaxOfArchetypeIdeal * 0.15;
+                var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
+                var rowModifier = archetype.scoreMultiplierForRowFN ?
+                    archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
+                    archetype.rowScores[row];
                 return ({
                     unit: unit,
-                    score: score,
+                    score: baseScore * archetypeIdealAdjust * rowModifier,
                     row: row
                 });
             };
@@ -6515,91 +6534,108 @@ define("src/BattlePrep", ["require", "exports", "src/App", "src/Battle"], functi
             }
             return formation;
         };
-        BattlePrep.prototype.getUnitPosition = function (unit) {
-            return this.alreadyPlaced[unit.id];
-        };
-        BattlePrep.prototype.getUnitAtPosition = function (position) {
-            return this.playerFormation[position[0]][position[1]];
-        };
-        BattlePrep.prototype.clearPlayerFormation = function () {
-            this.alreadyPlaced = {};
-            this.playerFormation = this.makeEmptyFormation();
-        };
-        BattlePrep.prototype.setupPlayerFormation = function (formation) {
-            for (var i = 0; i < formation.length; i++) {
-                for (var j = 0; j < formation[i].length; j++) {
-                    if (formation[i][j]) {
-                        this.setUnit(formation[i][j], [i, j]);
-                    }
-                }
+        return BattlePrepFormation;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattlePrepFormation;
+});
+define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFormation"], function (require, exports, Battle_1, BattlePrepFormation_1) {
+    "use strict";
+    var BattlePrep = (function () {
+        function BattlePrep(battleData) {
+            this.afterBattleFinishCallbacks = [];
+            this.attacker = battleData.attacker.player;
+            this.defender = battleData.defender.player;
+            this.battleData = battleData;
+            this.attackerUnits = battleData.attacker.units;
+            this.defenderUnits = battleData.defender.units;
+            var attackerHasScouted = this.attacker.starIsDetected(battleData.location);
+            this.attackerFormation = new BattlePrepFormation_1.default(this.attacker, this.attackerUnits, attackerHasScouted, 0);
+            var defenderHasScouted = this.defender.starIsDetected(battleData.location);
+            this.defenderFormation = new BattlePrepFormation_1.default(this.defender, this.defenderUnits, defenderHasScouted);
+            this.resetBattleStats();
+            this.minDefenders = this.getInitialMinDefenders();
+            this.setHumanAndEnemy();
+            if (this.enemyFormation) {
+                this.enemyFormation.setAutoFormation(this.humanUnits);
+                this.triggerPassiveSkills(this.enemyFormation);
+                this.defenderFormation.minUnits = this.minDefenders;
             }
-        };
-        BattlePrep.prototype.setUnit = function (unit, position) {
-            this.removeUnit(unit);
-            if (!position) {
-                return;
+            else {
+                this.attackerFormation.setAutoFormation(this.defenderUnits);
+                this.triggerPassiveSkills(this.attackerFormation);
+                this.defenderFormation.minUnits = this.minDefenders;
+                this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
             }
-            var oldUnitInPosition = this.getUnitAtPosition(position);
-            if (oldUnitInPosition) {
-                this.removeUnit(oldUnitInPosition);
-            }
-            this.playerFormation[position[0]][position[1]] = unit;
-            this.alreadyPlaced[unit.id] = position;
+        }
+        BattlePrep.prototype.forEachUnit = function (f) {
+            this.attackerUnits.forEach(f);
+            this.defenderUnits.forEach(f);
         };
-        BattlePrep.prototype.swapUnits = function (unit1, unit2) {
-            if (unit1 === unit2)
-                return;
-            var new1Pos = this.getUnitPosition(unit2);
-            var new2Pos = this.getUnitPosition(unit1);
-            this.setUnit(unit1, new1Pos);
-            this.setUnit(unit2, new2Pos);
-        };
-        BattlePrep.prototype.removeUnit = function (unit) {
-            var currentPosition = this.getUnitPosition(unit);
-            if (!currentPosition)
-                return;
-            this.playerFormation[currentPosition[0]][currentPosition[1]] = null;
-            this.alreadyPlaced[unit.id] = null;
-            delete this.alreadyPlaced[unit.id];
-        };
-        BattlePrep.prototype.humanFormationIsValid = function () {
-            var unitsPlaced = 0;
-            this.forEachUnitInFormation(this.playerFormation, function (unit) {
-                if (unit)
-                    unitsPlaced++;
-            });
-            var minRequiredUnits = 0;
-            if (!this.attacker.isAI) {
-                minRequiredUnits = 1;
-            }
-            else if (!this.battleData.building) {
-                minRequiredUnits = this.minDefendersInNeutralTerritory;
-            }
-            minRequiredUnits = Math.min(minRequiredUnits, this.availableUnits.length);
-            return unitsPlaced >= minRequiredUnits;
-        };
-        BattlePrep.prototype.forEachUnitInFormation = function (formation, operator) {
-            for (var i = 0; i < formation.length; i++) {
-                for (var j = 0; j < formation[i].length; j++) {
-                    operator(formation[i][j]);
-                }
-            }
+        BattlePrep.prototype.isLocationNeutral = function () {
+            return (this.battleData.location.owner !== this.attacker &&
+                this.battleData.location.owner !== this.defender);
         };
         BattlePrep.prototype.makeBattle = function () {
-            var side1Formation = this.playerFormation || this.attackerFormation;
+            var side1Formation = this.humanFormation || this.attackerFormation;
             var side2Formation = this.enemyFormation || this.defenderFormation;
             var side1Player = this.humanPlayer || this.attacker;
             var side2Player = this.enemyPlayer || this.defender;
             var battle = new Battle_1.default({
                 battleData: this.battleData,
-                side1: side1Formation,
-                side2: side2Formation.reverse(),
+                side1: side1Formation.formation,
+                side2: side2Formation.formation.reverse(),
                 side1Player: side1Player,
                 side2Player: side2Player
             });
             battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
             battle.init();
             return battle;
+        };
+        BattlePrep.prototype.setHumanAndEnemy = function () {
+            if (!this.attacker.isAI) {
+                this.humanPlayer = this.attacker;
+                this.enemyPlayer = this.defender;
+                this.humanUnits = this.attackerUnits;
+                this.enemyUnits = this.defenderUnits;
+                this.humanFormation = this.attackerFormation;
+                this.enemyFormation = this.defenderFormation;
+            }
+            else if (!this.defender.isAI) {
+                this.humanPlayer = this.defender;
+                this.enemyPlayer = this.attacker;
+                this.humanUnits = this.defenderUnits;
+                this.enemyUnits = this.attackerUnits;
+                this.humanFormation = this.defenderFormation;
+                this.enemyFormation = this.attackerFormation;
+            }
+        };
+        BattlePrep.prototype.resetBattleStats = function () {
+            this.forEachUnit(function (u) {
+                u.resetBattleStats();
+            });
+        };
+        BattlePrep.prototype.triggerPassiveSkills = function (formation) {
+            var _this = this;
+            formation.forEachUnitInFormation(function (u) {
+                var passiveSkillsByPhase = u.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase.inBattlePrep) {
+                    for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++) {
+                        var skill = passiveSkillsByPhase.inBattlePrep[j];
+                        for (var k = 0; k < skill.inBattlePrep.length; k++) {
+                            skill.inBattlePrep[k](u, _this);
+                        }
+                    }
+                }
+            });
+        };
+        BattlePrep.prototype.getInitialMinDefenders = function () {
+            if (this.isLocationNeutral()) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
         };
         return BattlePrep;
     }());
@@ -7011,6 +7047,18 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             }
             return withItems;
         };
+        Unit.prototype.getAttributesWithEffectsDifference = function () {
+            var withItems = this.getAttributesWithItems();
+            var withEffects = this.getAttributesWithEffects();
+            var difference = {};
+            for (var attributeType in withEffects) {
+                var differenceForThisAttribute = withEffects[attributeType] - withItems[attributeType];
+                if (differenceForThisAttribute !== 0) {
+                    difference[attributeType] = differenceForThisAttribute;
+                }
+            }
+            return difference;
+        };
         Unit.prototype.updateCachedAttributes = function () {
             this.cachedAttributes = this.getAttributesWithEffects();
         };
@@ -7080,6 +7128,36 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 this.updatePassiveSkillsByPhase();
             }
             return this.passiveSkillsByPhase;
+        };
+        Unit.prototype.getPassiveEffectsForScene = function (scene) {
+            var relevantTemplateKeys = [];
+            switch (scene) {
+                case "galaxyMap":
+                    break;
+                case "battlePrep":
+                    relevantTemplateKeys.push("atBattleStart", "inBattlePrep");
+                    break;
+                case "battle":
+                    relevantTemplateKeys.push("beforeAbilityUse", "afterAbilityUse");
+                    break;
+            }
+            var effectFilterFN = function (e) {
+                if (e.isHidden) {
+                    return false;
+                }
+                for (var _i = 0, relevantTemplateKeys_1 = relevantTemplateKeys; _i < relevantTemplateKeys_1.length; _i++) {
+                    var key = relevantTemplateKeys_1[_i];
+                    if (e[key]) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            var relevantStatusEffectTemplates = this.battleStats.statusEffects.map(function (s) {
+                return s.template;
+            }).filter(effectFilterFN);
+            var relevantPassiveEffectTemplates = this.getAllPassiveSkills().filter(effectFilterFN);
+            return relevantStatusEffectTemplates.concat(relevantPassiveEffectTemplates);
         };
         Unit.prototype.receiveDamage = function (amount, damageType) {
             var damageReduction = this.getReducedDamageFactor(damageType);
@@ -7347,6 +7425,25 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
         };
         Unit.prototype.drawBattleScene = function (params) {
             this.template.unitDrawingFN(this, params);
+        };
+        Unit.prototype.getDisplayData = function (scene) {
+            return ({
+                name: this.name,
+                facesLeft: this.battleStats.side === "side2",
+                currentHealth: this.currentHealth,
+                maxHealth: this.maxHealth,
+                guardAmount: this.battleStats.guardAmount,
+                guardType: this.battleStats.guardCoverage,
+                currentActionPoints: this.battleStats.currentActionPoints,
+                maxActionPoints: this.attributes.maxActionPoints,
+                isPreparing: Boolean(this.battleStats.queuedAction),
+                isAnnihilated: this.battleStats.isAnnihilated,
+                isSquadron: this.isSquadron,
+                portraitSrc: this.portrait.imageSrc,
+                iconSrc: this.template.icon,
+                attributeChanges: this.getAttributesWithEffectsDifference(),
+                passiveEffects: this.getPassiveEffectsForScene(scene),
+            });
         };
         Unit.prototype.serialize = function (includeItems, includeFluff) {
             if (includeItems === void 0) { includeItems = true; }
@@ -10442,6 +10539,7 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
             this.mouseDownPosition = { x: 0, y: 0 };
             this.originPosition = { x: 0, y: 0 };
             this.cloneElement = null;
+            this.ownerIsMounted = false;
             this.owner = owner;
             if (props) {
                 var propKeysMap = {
@@ -10462,6 +10560,7 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
             this.handleReactDownEvent = this.handleReactDownEvent.bind(this);
         }
         DragPositioner.prototype.componentDidMount = function () {
+            this.ownerIsMounted = true;
             this.ownerDOMNode = ReactDOM.findDOMNode(this.owner);
             if (this.containerElementDescriptor) {
                 if (this.containerElementDescriptor instanceof React.Component) {
@@ -10478,6 +10577,7 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
             window.addEventListener("resize", this.setContainerRect, false);
         };
         DragPositioner.prototype.componentWillUnmount = function () {
+            this.ownerIsMounted = false;
             this.removeEventListeners();
             window.removeEventListener("resize", this.setContainerRect);
         };
@@ -10653,7 +10753,9 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
             if (this.onDragEnd) {
                 var endSuccesful = this.onDragEnd();
             }
-            this.owner.forceUpdate();
+            if (this.ownerIsMounted) {
+                this.owner.forceUpdate();
+            }
         };
         DragPositioner.prototype.setContainerRect = function () {
             this.containerRect = this.containerElement.getBoundingClientRect();
@@ -10954,9 +11056,10 @@ define("src/uicomponents/popups/TopMenuPopup", ["require", "exports"], function 
         }
         TopMenuPopupComponent.prototype.render = function () {
             var _this = this;
-            var contentProps = this.props.contentProps;
-            contentProps.ref = function (component) {
-                _this.ref_TODO_content = component;
+            var contentProps = {
+                ref: function (component) {
+                    _this.ref_TODO_content = component;
+                }
             };
             return (React.DOM.div({
                 className: "top-menu-popup-container draggable-container"
@@ -10965,7 +11068,7 @@ define("src/uicomponents/popups/TopMenuPopup", ["require", "exports"], function 
                 onClick: this.props.handleClose
             }, "X"), React.DOM.div({
                 className: "light-box-content"
-            }, this.props.contentConstructor(contentProps))));
+            }, React.cloneElement(this.props.content, contentProps))));
         };
         return TopMenuPopupComponent;
     }(React.Component));
@@ -11110,13 +11213,13 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
             if (this.dragPositioner.isDragging) {
                 divProps.className += " dragging";
             }
-            var contentProps = this.props.contentProps;
-            contentProps.closePopup = this.props.closePopup;
-            contentProps.ref = "content";
+            var contentProps = {
+                closePopup: this.props.closePopup
+            };
             var resizeHandle = !this.props.resizable ? null : PopupResizeHandle_1.default({
                 handleResize: this.handleResizeMove
             });
-            return (React.DOM.div(divProps, this.props.contentConstructor(contentProps), resizeHandle));
+            return (React.DOM.div(divProps, React.cloneElement(this.props.content, contentProps), resizeHandle));
         };
         return PopupComponent;
     }(React.Component));
@@ -11145,7 +11248,6 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
             this.getInitialPosition = this.getInitialPosition.bind(this);
             this.closePopup = this.closePopup.bind(this);
             this.makePopup = this.makePopup.bind(this);
-            this.setPopupContent = this.setPopupContent.bind(this);
             this.getPopupId = this.getPopupId.bind(this);
             this.hasPopup = this.hasPopup.bind(this);
             this.getPopup = this.getPopup.bind(this);
@@ -11159,10 +11261,6 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
             this.listeners["closePopup"] =
                 eventManager_18.default.addEventListener("closePopup", function (popupId) {
                     self.closePopup(popupId);
-                });
-            this.listeners["setPopupContent"] =
-                eventManager_18.default.addEventListener("setPopupContent", function (data) {
-                    self.setPopupContent(data.id, data.content);
                 });
         };
         PopupManagerComponent.prototype.componentWillUnmount = function () {
@@ -11241,8 +11339,7 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
             var _this = this;
             var id = this.getPopupId();
             var popupProps = props.popupProps ? utility_23.extendObject(props.popupProps) : {};
-            popupProps.contentConstructor = props.contentConstructor;
-            popupProps.contentProps = props.contentProps;
+            popupProps.content = props.content;
             popupProps.id = id;
             popupProps.key = id;
             popupProps.ref = function (component) {
@@ -11263,13 +11360,6 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
                 });
             }
             return id;
-        };
-        PopupManagerComponent.prototype.setPopupContent = function (popupId, newContent) {
-            var popup = this.getPopup(popupId);
-            if (!popup)
-                throw new Error();
-            popup.contentProps = utility_23.extendObject(newContent, popup.contentProps);
-            this.forceUpdate();
         };
         PopupManagerComponent.prototype.render = function () {
             var popups = this.state.popups;
@@ -11336,17 +11426,15 @@ define("src/uicomponents/unitlist/upgradeunit", ["require", "exports", "src/uico
         UpgradeUnitComponent.prototype.makeAbilityLearnPopup = function (ability) {
             var upgradeData = this.state.upgradeData[ability.type];
             var popupId = this.ref_TODO_popupManager.makePopup({
-                contentConstructor: TopMenuPopup_1.default,
-                contentProps: {
+                content: TopMenuPopup_1.default({
                     handleClose: this.closePopup,
-                    contentConstructor: UpgradeAbilities_1.default,
-                    contentProps: {
+                    content: UpgradeAbilities_1.default({
                         abilities: upgradeData.possibleUpgrades,
                         handleClick: this.upgradeAbility.bind(this, upgradeData.base),
                         sourceAbility: upgradeData.base,
                         learningNewability: !Boolean(upgradeData.base)
-                    }
-                },
+                    })
+                }),
                 popupProps: {
                     dragPositionerProps: {
                         preventAutoResize: true,
@@ -11426,15 +11514,13 @@ define("src/uicomponents/unitlist/unitexperience", ["require", "exports", "src/u
         };
         UnitExperienceComponent.prototype.makePopup = function () {
             var popupId = this.ref_TODO_popupManager.makePopup({
-                contentConstructor: TopMenuPopup_2.default,
-                contentProps: {
+                content: TopMenuPopup_2.default({
                     handleClose: this.closePopup,
-                    contentConstructor: UpgradeUnit_1.default,
-                    contentProps: {
+                    content: UpgradeUnit_1.default({
                         unit: this.props.unit,
                         onUnitUpgrade: this.handleUnitUpgrade
-                    }
-                },
+                    })
+                }),
                 popupProps: {
                     dragPositionerProps: {
                         preventAutoResize: true,
@@ -12158,29 +12244,42 @@ define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicompo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitIcon", ["require", "exports"], function (require, exports) {
+define("src/uicomponents/unit/UnitWrapper", ["require", "exports"], function (require, exports) {
     "use strict";
-    var UnitIconComponent = (function (_super) {
-        __extends(UnitIconComponent, _super);
-        function UnitIconComponent(props) {
+    var UnitWrapperComponent = (function (_super) {
+        __extends(UnitWrapperComponent, _super);
+        function UnitWrapperComponent(props) {
             _super.call(this, props);
-            this.displayName = "UnitIcon";
+            this.displayName = "UnitWrapper";
+        }
+        UnitWrapperComponent.prototype.render = function () {
+            return (React.DOM.div({
+                className: "unit-wrapper"
+            }, this.props.children));
+        };
+        return UnitWrapperComponent;
+    }(React.Component));
+    exports.UnitWrapperComponent = UnitWrapperComponent;
+    var Factory = React.createFactory(UnitWrapperComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
+define("src/uicomponents/unit/UnitIconContainer", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var UnitIconContainerComponent = (function (_super) {
+        __extends(UnitIconContainerComponent, _super);
+        function UnitIconContainerComponent(props) {
+            _super.call(this, props);
+            this.displayName = "UnitIconContainer";
             this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
         }
-        UnitIconComponent.prototype.render = function () {
+        UnitIconContainerComponent.prototype.render = function () {
             var containerProps = {
                 className: "unit-icon-container"
             };
             var fillerProps = {
                 className: "unit-icon-filler"
             };
-            if (this.props.isActiveUnit) {
-                fillerProps.className += " active-border";
-                containerProps.className += " active-border";
-            }
-            if (this.props.isAnnihilated) {
-                containerProps.className += " icon-annihilated-overlay";
-            }
             if (this.props.facesLeft) {
                 fillerProps.className += " unit-border-right";
                 containerProps.className += " unit-border-no-right";
@@ -12189,58 +12288,46 @@ define("src/uicomponents/unit/UnitIcon", ["require", "exports"], function (requi
                 fillerProps.className += " unit-border-left";
                 containerProps.className += " unit-border-no-left";
             }
-            var iconImage = this.props.icon ?
-                React.DOM.img({
-                    className: "unit-icon",
-                    src: this.props.icon
-                }) :
-                null;
-            return (React.DOM.div({ className: "unit-icon-wrapper" }, React.DOM.div(fillerProps), React.DOM.div(containerProps, iconImage), React.DOM.div(fillerProps)));
+            var iconElement = React.Children.count(this.props.children) === 1 ?
+                React.Children.only(this.props.children) :
+                React.DOM.img({ src: this.props.iconSrc });
+            return (React.DOM.div({ className: "unit-icon-wrapper" }, React.DOM.div(fillerProps), React.DOM.div(containerProps, iconElement), React.DOM.div(fillerProps)));
         };
-        return UnitIconComponent;
+        return UnitIconContainerComponent;
     }(React.Component));
-    exports.UnitIconComponent = UnitIconComponent;
-    var Factory = React.createFactory(UnitIconComponent);
+    exports.UnitIconContainerComponent = UnitIconContainerComponent;
+    var Factory = React.createFactory(UnitIconContainerComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/EmptyUnit", ["require", "exports", "src/uicomponents/unit/UnitIcon"], function (require, exports, UnitIcon_1) {
+define("src/uicomponents/unit/EmptyUnit", ["require", "exports", "src/uicomponents/unit/UnitIconContainer"], function (require, exports, UnitIconContainer_1) {
     "use strict";
     var EmptyUnitComponent = (function (_super) {
         __extends(EmptyUnitComponent, _super);
         function EmptyUnitComponent(props) {
             _super.call(this, props);
             this.displayName = "EmptyUnit";
+            this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
         }
-        EmptyUnitComponent.prototype.shouldComponentUpdate = function (newProps) {
-            return newProps.facesLeft !== this.props.facesLeft;
-        };
         EmptyUnitComponent.prototype.render = function () {
-            var wrapperProps = {
-                className: "unit empty-unit"
-            };
-            var containerProps = {
-                className: "unit-container",
-                key: "container"
-            };
-            if (this.props.facesLeft) {
-                wrapperProps.className += " enemy-unit";
-            }
-            else {
-                wrapperProps.className += " friendly-unit";
-            }
-            var allElements = [
-                React.DOM.div(containerProps, null),
-                UnitIcon_1.default({
-                    icon: null,
+            var innerElements = [
+                React.DOM.div({
+                    className: "unit-body",
+                    key: "body"
+                }, null),
+                UnitIconContainer_1.default({
+                    iconSrc: null,
                     facesLeft: this.props.facesLeft,
                     key: "icon"
                 })
             ];
             if (this.props.facesLeft) {
-                allElements = allElements.reverse();
+                innerElements.reverse();
             }
-            return (React.DOM.div(wrapperProps, allElements));
+            return (React.DOM.div({
+                className: "unit empty-unit" + (this.props.facesLeft ? " enemy-unit" : " friendly-unit"),
+                onMouseUp: this.props.onMouseUp
+            }, innerElements));
         };
         return EmptyUnitComponent;
     }(React.Component));
@@ -12275,72 +12362,74 @@ define("src/uicomponents/unit/UnitPortrait", ["require", "exports"], function (r
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitStatusEffects", ["require", "exports"], function (require, exports) {
+define("src/uicomponents/unit/UnitPassiveEffects", ["require", "exports"], function (require, exports) {
     "use strict";
-    var UnitStatusEffectsComponent = (function (_super) {
-        __extends(UnitStatusEffectsComponent, _super);
-        function UnitStatusEffectsComponent(props) {
+    var UnitPassiveEffectsComponent = (function (_super) {
+        __extends(UnitPassiveEffectsComponent, _super);
+        function UnitPassiveEffectsComponent(props) {
             _super.call(this, props);
-            this.displayName = "UnitStatusEffects";
+            this.displayName = "UnitPassiveEffects";
+            this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
         }
-        UnitStatusEffectsComponent.prototype.render = function () {
-            var statusEffects = [];
-            var withItems = this.props.unit.getAttributesWithItems();
-            var withEffects = this.props.unit.getAttributesWithEffects();
-            for (var attribute in withEffects) {
-                if (attribute === "maxActionPoints")
-                    continue;
-                var ite = withItems[attribute];
-                var eff = withEffects[attribute];
-                if (ite === eff)
-                    continue;
-                var polarityString = eff > ite ? "positive" : "negative";
-                var polaritySign = eff > ite ? " +" : " ";
-                var imageSrc = "img/icons/statusEffect_" + polarityString + "_" + attribute + ".png";
-                var titleString = "" + attribute + polaritySign + (eff - ite);
-                statusEffects.push(React.DOM.img({
-                    className: "status-effect-icon" + " status-effect-icon-" + attribute,
-                    src: imageSrc,
-                    key: attribute,
-                    title: titleString
-                }));
-            }
-            var passiveSkills = [];
-            var passiveSkillsByPhase = this.props.unit.getPassiveSkillsByPhase();
-            var phasesToCheck = this.props.isBattlePrep ? ["atBattleStart"] : ["beforeAbilityUse", "afterAbilityUse"];
-            phasesToCheck.forEach(function (phase) {
-                if (passiveSkillsByPhase[phase]) {
-                    for (var i = 0; i < passiveSkillsByPhase[phase].length; i++) {
-                        var skill = passiveSkillsByPhase[phase][i];
-                        if (!skill.isHidden) {
-                            passiveSkills.push(skill);
-                        }
-                    }
-                }
-            });
-            var passiveSkillsElement = null;
-            if (passiveSkills.length > 0) {
-                var passiveSkillsElementTitle = "";
-                for (var i = 0; i < passiveSkills.length; i++) {
-                    passiveSkillsElementTitle += passiveSkills[i].displayName + ": " +
-                        passiveSkills[i].description + "\n";
-                }
-                passiveSkillsElement = React.DOM.img({
-                    className: "unit-status-effects-passive-skills",
+        UnitPassiveEffectsComponent.prototype.render = function () {
+            return ((this.props.passiveEffects && this.props.passiveEffects.length > 0) ?
+                React.DOM.img({
+                    className: "unit-passive-effects-icon",
                     src: "img/icons/availableAction.png",
-                    title: passiveSkillsElementTitle
-                });
+                    title: this.props.passiveEffects.reduce(function (t, e) {
+                        return t + e.displayName + ": " + e.description + "\n";
+                    }, "")
+                }) :
+                null);
+        };
+        return UnitPassiveEffectsComponent;
+    }(React.Component));
+    exports.UnitPassiveEffectsComponent = UnitPassiveEffectsComponent;
+    var Factory = React.createFactory(UnitPassiveEffectsComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
+define("src/uicomponents/unit/UnitAttributeChanges", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var UnitAttributeChangesComponent = (function (_super) {
+        __extends(UnitAttributeChangesComponent, _super);
+        function UnitAttributeChangesComponent(props) {
+            _super.call(this, props);
+            this.displayName = "UnitAttributeChanges";
+            this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+        }
+        UnitAttributeChangesComponent.prototype.render = function () {
+            var attributeElements = [];
+            if (this.props.attributeChanges) {
+                for (var attributeType in this.props.attributeChanges) {
+                    if (attributeType === "maxActionPoints") {
+                        continue;
+                    }
+                    var amountChanged = this.props.attributeChanges[attributeType];
+                    if (!amountChanged) {
+                        throw new Error();
+                    }
+                    var changeIsPositive = amountChanged > 0;
+                    var polarityString = changeIsPositive ? "positive" : "negative";
+                    var polaritySign = changeIsPositive ? " +" : " ";
+                    var imageSrc = "img/icons/statusEffect_" + polarityString + "_" + attributeType + ".png";
+                    var titleString = "" + attributeType + polaritySign + amountChanged;
+                    attributeElements.push(React.DOM.img({
+                        className: "attribute-change-icon" + " attribute-change-icon-" + attributeType,
+                        src: imageSrc,
+                        key: attributeType,
+                        title: titleString
+                    }));
+                }
             }
             return (React.DOM.div({
-                className: "unit-status-effects-container"
-            }, passiveSkillsElement, React.DOM.div({
-                className: "unit-status-effects-attributes"
-            }, statusEffects)));
+                className: "unit-attribute-changes"
+            }, attributeElements));
         };
-        return UnitStatusEffectsComponent;
+        return UnitAttributeChangesComponent;
     }(React.Component));
-    exports.UnitStatusEffectsComponent = UnitStatusEffectsComponent;
-    var Factory = React.createFactory(UnitStatusEffectsComponent);
+    exports.UnitAttributeChangesComponent = UnitAttributeChangesComponent;
+    var Factory = React.createFactory(UnitAttributeChangesComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
@@ -12526,13 +12615,14 @@ define("src/uicomponents/unit/UnitActions", ["require", "exports"], function (re
         function UnitActionsComponent(props) {
             _super.call(this, props);
             this.displayName = "UnitActions";
+            this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
         }
         UnitActionsComponent.prototype.render = function () {
             var availableSrc = "img/icons/availableAction.png";
             var hoveredSrc = "img/icons/spentAction.png";
             var spentSrc = "img/icons/spentAction.png";
             var icons = [];
-            var availableCount = this.props.currentActionPoints - this.props.hoveredActionPointExpenditure;
+            var availableCount = this.props.currentActionPoints - (this.props.hoveredActionPointExpenditure || 0);
             for (var i = 0; i < availableCount; i++) {
                 icons.push(React.DOM.img({
                     src: availableSrc,
@@ -12575,15 +12665,16 @@ define("src/uicomponents/unit/UnitInfo", ["require", "exports", "src/uicomponent
             this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
         }
         UnitInfoComponent.prototype.render = function () {
+            console.log("unitinfo", this.props.currentActionPoints);
             var battleEndStatus = null;
-            if (this.props.isDead) {
+            if (this.props.wasDestroyed) {
                 battleEndStatus = React.DOM.div({
                     className: "unit-battle-end-status-container"
                 }, React.DOM.div({
                     className: "unit-battle-end-status unit-battle-end-status-dead"
                 }, "Destroyed"));
             }
-            else if (this.props.isCaptured) {
+            else if (this.props.wasCaptured) {
                 battleEndStatus = React.DOM.div({
                     className: "unit-battle-end-status-container"
                 }, React.DOM.div({
@@ -12612,7 +12703,7 @@ define("src/uicomponents/unit/UnitInfo", ["require", "exports", "src/uicomponent
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/unit/UnitPortrait", "src/uicomponents/unit/UnitStatusEffects", "src/uicomponents/unit/UnitInfo", "src/uicomponents/unit/UnitIcon", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, UnitPortrait_1, UnitStatusEffects_1, UnitInfo_1, UnitIcon_2, DragPositioner_5, applyMixins_5) {
+define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/unit/UnitPortrait", "src/uicomponents/unit/UnitPassiveEffects", "src/uicomponents/unit/UnitAttributeChanges", "src/uicomponents/unit/UnitInfo", "src/uicomponents/unit/UnitIconContainer", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, UnitPortrait_1, UnitPassiveEffects_1, UnitAttributeChanges_1, UnitInfo_1, UnitIconContainer_2, DragPositioner_5, applyMixins_5) {
     "use strict";
     var UnitComponent = (function (_super) {
         __extends(UnitComponent, _super);
@@ -12640,39 +12731,28 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
             return ({});
         };
         UnitComponent.prototype.onDragStart = function () {
-            this.props.onDragStart(this.props.unit);
+            this.props.onDragStart();
         };
         UnitComponent.prototype.onDragEnd = function () {
             this.props.onDragEnd();
         };
         UnitComponent.prototype.handleClick = function () {
-            this.props.onUnitClick(this.props.unit);
+            this.props.onUnitClick();
         };
         UnitComponent.prototype.handleMouseEnter = function () {
-            if (!this.props.handleMouseEnterUnit)
-                return;
-            if (this.props.unit.currentHealth <= 0)
-                return;
-            this.props.handleMouseEnterUnit(this.props.unit);
+            this.props.handleMouseEnterUnit();
         };
         UnitComponent.prototype.handleMouseLeave = function (e) {
-            if (!this.props.handleMouseLeaveUnit)
-                return;
             this.props.handleMouseLeaveUnit(e);
         };
         UnitComponent.prototype.render = function () {
-            var unit = this.props.unit;
-            unit.uiDisplayIsDirty = false;
-            var containerProps = {
-                className: "unit-container",
-                id: "unit-id_" + unit.id,
-                key: "container"
-            };
             var wrapperProps = {
-                className: "unit"
+                className: "unit",
+                onMouseEnter: this.props.handleMouseEnterUnit ? this.handleMouseEnter : null,
+                onMouseLeave: this.props.handleMouseLeaveUnit ? this.handleMouseLeave : null,
+                onClick: this.props.onUnitClick ? this.handleClick : null,
+                onMouseUp: this.props.onMouseUp
             };
-            wrapperProps.onMouseEnter = this.handleMouseEnter;
-            wrapperProps.onMouseLeave = this.handleMouseLeave;
             if (this.props.isDraggable) {
                 wrapperProps.className += " draggable";
                 wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.dragPositioner.handleReactDownEvent;
@@ -12681,80 +12761,71 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
                     wrapperProps.className += " dragging";
                 }
             }
-            if (this.props.onUnitClick) {
-                wrapperProps.onClick = this.handleClick;
-            }
             if (this.props.facesLeft) {
                 wrapperProps.className += " enemy-unit";
             }
             else {
                 wrapperProps.className += " friendly-unit";
             }
-            var isActiveUnit = (this.props.activeUnit &&
-                unit.id === this.props.activeUnit.id);
-            if (isActiveUnit) {
+            if (this.props.isActiveUnit) {
                 wrapperProps.className += " active-unit";
             }
-            var isInPotentialTargetArea = (this.props.targetsInPotentialArea &&
-                this.props.targetsInPotentialArea.indexOf(unit) >= 0);
-            if (isInPotentialTargetArea) {
+            if (this.props.isInPotentialTargetArea) {
                 wrapperProps.className += " target-unit";
             }
-            if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id) {
+            if (this.props.isHovered) {
                 wrapperProps.className += " hovered-unit";
             }
-            var hoveredActionPointExpenditure = 0;
-            if (isActiveUnit && this.props.hoveredAbility) {
-                hoveredActionPointExpenditure = this.props.hoveredAbility.actionsUse;
+            if (this.props.isTargetOfActiveEffect) {
+                wrapperProps.className += " active-effect-unit";
             }
-            var infoProps = {
-                key: "info",
-                name: unit.name,
-                guardAmount: unit.battleStats.guardAmount,
-                guardCoverage: unit.battleStats.guardCoverage,
-                isPreparing: Boolean(unit.battleStats.queuedAction),
-                maxHealth: unit.maxHealth,
-                currentHealth: unit.currentHealth,
-                isSquadron: unit.isSquadron,
-                maxActionPoints: unit.attributes.maxActionPoints,
-                currentActionPoints: unit.battleStats.currentActionPoints,
-                hoveredActionPointExpenditure: hoveredActionPointExpenditure,
-                isDead: this.props.isDead,
-                isCaptured: this.props.isCaptured,
-                animateDuration: unit.sfxDuration
-            };
-            var containerElements = [
+            var bodyElements = [
                 React.DOM.div({
-                    className: "unit-left-container",
-                    key: "leftContainer"
+                    className: "unit-portrait-container",
+                    key: "portraitContainer"
                 }, UnitPortrait_1.default({
-                    imageSrc: (unit.portrait ? unit.portrait.imageSrc : "")
-                }), UnitStatusEffects_1.default({
-                    unit: unit,
-                    isBattlePrep: !this.props.battle
+                    imageSrc: (this.props.portraitSrc || "")
+                }), UnitPassiveEffects_1.default({
+                    passiveEffects: this.props.passiveEffects
+                }), UnitAttributeChanges_1.default({
+                    attributeChanges: this.props.attributeChanges
                 })),
-                UnitInfo_1.default(infoProps),
+                UnitInfo_1.default({
+                    key: "info",
+                    name: this.props.name,
+                    guardAmount: this.props.guardAmount,
+                    guardType: this.props.guardType,
+                    isPreparing: this.props.isPreparing,
+                    maxHealth: this.props.maxHealth,
+                    currentHealth: this.props.currentHealth,
+                    currentActionPoints: this.props.currentActionPoints,
+                    maxActionPoints: this.props.maxActionPoints,
+                    hoveredActionPointExpenditure: this.props.hoveredActionPointExpenditure,
+                    isSquadron: this.props.isSquadron,
+                    wasDestroyed: this.props.wasDestroyed,
+                    wasCaptured: this.props.wasCaptured,
+                    animateDuration: this.props.animateDuration,
+                }),
             ];
             if (this.props.facesLeft) {
-                containerElements = containerElements.reverse();
+                bodyElements.reverse();
             }
-            if (unit.displayFlags.isAnnihilated) {
-                containerElements.push(React.DOM.div({ key: "overlay", className: "unit-annihilated-overlay" }, "Unit annihilated"));
+            if (this.props.isAnnihilated) {
+                bodyElements.push(React.DOM.div({ key: "overlay", className: "unit-annihilated-overlay" }, "Unit annihilated"));
             }
-            var allElements = [
-                React.DOM.div(containerProps, containerElements),
-                UnitIcon_2.default({
-                    icon: unit.template.icon,
-                    facesLeft: this.props.facesLeft,
+            var innerElements = [
+                React.DOM.div({
+                    className: "unit-body",
+                    id: "unit-id_" + this.props.id,
+                    key: "body"
+                }, bodyElements),
+                UnitIconContainer_2.default({
                     key: "icon",
-                    isActiveUnit: isActiveUnit,
-                    isAnnihilated: unit.displayFlags.isAnnihilated
+                    facesLeft: this.props.facesLeft,
+                    iconSrc: this.props.iconSrc
                 })
             ];
-            if (this.props.facesLeft) {
-                allElements = allElements.reverse();
-            }
-            return (React.DOM.div(wrapperProps, allElements));
+            return (React.DOM.div(wrapperProps, this.props.facesLeft ? innerElements.reverse() : innerElements));
         };
         return UnitComponent;
     }(React.Component));
@@ -12763,164 +12834,7 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitWrapper", ["require", "exports", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, EmptyUnit_1, Unit_3, utility_25) {
-    "use strict";
-    var UnitWrapperComponent = (function (_super) {
-        __extends(UnitWrapperComponent, _super);
-        function UnitWrapperComponent(props) {
-            _super.call(this, props);
-            this.displayName = "UnitWrapper";
-            this.bindMethods();
-        }
-        UnitWrapperComponent.prototype.bindMethods = function () {
-            this.handleMouseUp = this.handleMouseUp.bind(this);
-        };
-        UnitWrapperComponent.prototype.shouldComponentUpdate = function (newProps) {
-            if (!this.props.unit && !newProps.unit)
-                return false;
-            if (newProps.unit && newProps.unit.uiDisplayIsDirty)
-                return true;
-            var targetedProps = {
-                activeUnit: true,
-                hoveredUnit: true,
-                targetsInPotentialArea: true,
-                activeEffectUnits: true
-            };
-            for (var prop in newProps) {
-                if (!targetedProps[prop] && prop !== "position") {
-                    if (newProps[prop] !== this.props[prop]) {
-                        return true;
-                    }
-                }
-            }
-            for (var prop in targetedProps) {
-                var unit = newProps.unit;
-                var oldValue = this.props[prop];
-                var newValue = newProps[prop];
-                if (!newValue && !oldValue)
-                    continue;
-                if (prop === "targetsInPotentialArea" || prop === "activeEffectUnits") {
-                    if (!oldValue) {
-                        if (newValue.indexOf(unit) >= 0)
-                            return true;
-                        else {
-                            continue;
-                        }
-                    }
-                    if ((oldValue.indexOf(unit) >= 0) !==
-                        (newValue.indexOf(unit) >= 0)) {
-                        return true;
-                    }
-                }
-                else if (newValue !== oldValue &&
-                    (oldValue === unit || newValue === unit)) {
-                    return true;
-                }
-            }
-            if (newProps.battle && newProps.battle.ended) {
-                return true;
-            }
-            return false;
-        };
-        UnitWrapperComponent.prototype.handleMouseUp = function () {
-            console.log("unitMouseUp", this.props.position);
-            this.props.onMouseUp(this.props.position);
-        };
-        UnitWrapperComponent.prototype.render = function () {
-            var allElements = [];
-            var wrapperProps = {
-                className: "unit-wrapper drop-target"
-            };
-            if (this.props.onMouseUp) {
-                wrapperProps.onMouseUp = wrapperProps.onTouchEnd = this.handleMouseUp;
-            }
-            ;
-            if (this.props.activeEffectUnits) {
-                if (this.props.activeEffectUnits.indexOf(this.props.unit) >= 0) {
-                    wrapperProps.className += " active-effect-unit";
-                }
-            }
-            var empty = EmptyUnit_1.default({
-                facesLeft: this.props.facesLeft,
-                key: "empty"
-            });
-            allElements.push(empty);
-            if (this.props.unit) {
-                var clonedProps = utility_25.shallowCopy(this.props);
-                var isDead = false;
-                if (this.props.battle &&
-                    this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0) {
-                    if (this.props.battle.deadUnits.indexOf(this.props.unit) >= 0) {
-                        clonedProps.isDead = true;
-                    }
-                }
-                var isCaptured = false;
-                if (this.props.battle &&
-                    this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0) {
-                    if (this.props.battle.capturedUnits.indexOf(this.props.unit) >= 0) {
-                        clonedProps.isCaptured = true;
-                    }
-                }
-                clonedProps.key = "unit";
-                var unit = Unit_3.default(clonedProps);
-                allElements.push(unit);
-            }
-            return (React.DOM.div(wrapperProps, allElements));
-        };
-        return UnitWrapperComponent;
-    }(React.Component));
-    exports.UnitWrapperComponent = UnitWrapperComponent;
-    var Factory = React.createFactory(UnitWrapperComponent);
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Factory;
-});
-define("src/uicomponents/battle/FormationRow", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper"], function (require, exports, App_24, UnitWrapper_1) {
-    "use strict";
-    var FormationRowComponent = (function (_super) {
-        __extends(FormationRowComponent, _super);
-        function FormationRowComponent(props) {
-            _super.call(this, props);
-            this.displayName = "FormationRow";
-        }
-        FormationRowComponent.prototype.render = function () {
-            var row = this.props.row;
-            var side = this.props.facesLeft ? "side2" : "side1";
-            var absoluteRowIndex = side === "side1" ?
-                this.props.rowIndexInOwnFormation :
-                this.props.rowIndexInOwnFormation + App_24.default.moduleData.ruleSet.battle.rowsPerFormation;
-            var units = [];
-            for (var i = 0; i < row.length; i++) {
-                units.push(UnitWrapper_1.default({
-                    key: i,
-                    unit: row[i],
-                    position: [absoluteRowIndex, i],
-                    battle: this.props.battle,
-                    facesLeft: this.props.facesLeft,
-                    activeUnit: this.props.activeUnit,
-                    activeTargets: this.props.activeTargets,
-                    hoveredUnit: this.props.hoveredUnit,
-                    hoveredAbility: this.props.hoveredAbility,
-                    handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
-                    handleMouseEnterUnit: this.props.handleMouseEnterUnit,
-                    targetsInPotentialArea: this.props.targetsInPotentialArea,
-                    activeEffectUnits: this.props.activeEffectUnits,
-                    onMouseUp: this.props.onMouseUp,
-                    onUnitClick: this.props.onUnitClick,
-                    isDraggable: this.props.isDraggable,
-                    onDragStart: this.props.onDragStart,
-                    onDragEnd: this.props.onDragEnd,
-                }));
-            }
-            return (React.DOM.div({ className: "battle-formation-row" }, units));
-        };
-        return FormationRowComponent;
-    }(React.Component));
-    exports.FormationRowComponent = FormationRowComponent;
-    var Factory = React.createFactory(FormationRowComponent);
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Factory;
-});
-define("src/uicomponents/battle/Formation", ["require", "exports", "src/uicomponents/battle/FormationRow"], function (require, exports, FormationRow_1) {
+define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_24, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_25) {
     "use strict";
     var FormationComponent = (function (_super) {
         __extends(FormationComponent, _super);
@@ -12928,31 +12842,72 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/uicompon
             _super.call(this, props);
             this.displayName = "Formation";
         }
-        FormationComponent.prototype.render = function () {
-            var formation = this.props.formation;
-            var formationRows = [];
-            for (var i = 0; i < formation.length; i++) {
-                formationRows.push(FormationRow_1.default({
-                    key: i,
-                    row: formation[i],
-                    rowIndexInOwnFormation: i,
-                    battle: this.props.battle,
-                    facesLeft: this.props.facesLeft,
-                    activeUnit: this.props.activeUnit,
-                    hoveredUnit: this.props.hoveredUnit,
-                    hoveredAbility: this.props.hoveredAbility,
-                    handleMouseEnterUnit: this.props.handleMouseEnterUnit,
-                    handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
-                    targetsInPotentialArea: this.props.targetsInPotentialArea,
-                    activeEffectUnits: this.props.activeEffectUnits,
-                    onMouseUp: this.props.onMouseUp,
-                    onUnitClick: this.props.onUnitClick,
-                    isDraggable: this.props.isDraggable,
-                    onDragStart: this.props.onDragStart,
-                    onDragEnd: this.props.onDragEnd
-                }));
+        FormationComponent.prototype.makeBoundFunction = function (functionToBind, valueToBind) {
+            if (!functionToBind) {
+                return null;
             }
-            return (React.DOM.div({ className: "battle-formation" }, formationRows));
+            else {
+                return (function () { functionToBind(valueToBind); });
+            }
+        };
+        FormationComponent.prototype.unitInArray = function (unit, arr) {
+            if (!arr) {
+                return false;
+            }
+            else {
+                return arr.some(function (u) { return u === unit; });
+            }
+        };
+        FormationComponent.prototype.render = function () {
+            var formationRowElements = [];
+            for (var i = 0; i < this.props.formation.length; i++) {
+                var absoluteRowIndex = this.props.facesLeft ?
+                    i + App_24.default.moduleData.ruleSet.battle.rowsPerFormation :
+                    i;
+                var unitElements = [];
+                for (var j = 0; j < this.props.formation[i].length; j++) {
+                    var unit = this.props.formation[i][j];
+                    var absolutePosition = [absoluteRowIndex, j];
+                    var onMouseUp = this.props.onMouseUp ?
+                        this.props.onMouseUp.bind(null, absolutePosition) :
+                        null;
+                    var unitProps = void 0;
+                    if (unit) {
+                        var unitDisplayData = this.props.unitDisplayDataByID[unit.id];
+                        var componentProps = {
+                            id: unit.id,
+                            onUnitClick: this.makeBoundFunction(this.props.onUnitClick, unit),
+                            handleMouseEnterUnit: this.makeBoundFunction(this.props.handleMouseEnterUnit, unit),
+                            handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
+                            isDraggable: this.props.isDraggable,
+                            onDragStart: this.makeBoundFunction(this.props.onDragStart, unit),
+                            onDragEnd: this.props.onDragEnd,
+                            onMouseUp: onMouseUp
+                        };
+                        var displayProps = {
+                            wasDestroyed: this.unitInArray(unit, this.props.destroyedUnits),
+                            wasCaptured: this.unitInArray(unit, this.props.capturedUnits),
+                            isInBattlePrep: this.props.isInBattlePrep,
+                            isActiveUnit: this.props.activeUnit === unit,
+                            isHovered: this.props.hoveredUnit === unit,
+                            isInPotentialTargetArea: this.unitInArray(unit, this.props.targetsInPotentialArea),
+                            isTargetOfActiveEffect: this.unitInArray(unit, this.props.activeEffectUnits),
+                            hoveredActionPointExpenditure: this.props.hoveredAbility &&
+                                this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
+                        };
+                        unitProps = utility_25.shallowExtend(unitDisplayData, componentProps, displayProps);
+                    }
+                    unitElements.push(UnitWrapper_1.default({ key: ("unit_wrapper_" + i) + j }, EmptyUnit_1.default({
+                        facesLeft: this.props.facesLeft,
+                        onMouseUp: onMouseUp
+                    }), !unit ? null : Unit_3.default(unitProps)));
+                }
+                formationRowElements.push(React.DOM.div({
+                    className: "battle-formation-row",
+                    key: "row_" + i
+                }, unitElements));
+            }
+            return (React.DOM.div({ className: "battle-formation" }, formationRowElements));
         };
         return FormationComponent;
     }(React.Component));
@@ -12961,7 +12916,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/uicompon
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
+define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_26, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
     "use strict";
     var UnitListItemComponent = (function (_super) {
         __extends(UnitListItemComponent, _super);
@@ -13000,10 +12955,7 @@ define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/uic
         };
         UnitListItemComponent.prototype.makeDragClone = function () {
             var container = document.createElement("div");
-            React.render(Unit_4.default({
-                unit: this.props.unit,
-                facesLeft: true,
-            }), container);
+            ReactDOM.render(Unit_4.default(utility_26.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
             var renderedElement = container.firstChild;
             var wrapperElement = document.getElementsByClassName("unit-wrapper")[0];
             renderedElement.classList.add("draggable", "dragging");
@@ -13267,7 +13219,7 @@ define("src/uicomponents/PlayerFlag", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_25, PlayerFlag_1, utility_26) {
+define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_25, PlayerFlag_1, utility_27) {
     "use strict";
     var DefenceBuildingComponent = (function (_super) {
         __extends(DefenceBuildingComponent, _super);
@@ -13285,7 +13237,7 @@ define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src
                 className: "defence-building"
             }, React.DOM.img({
                 className: "defence-building-icon",
-                src: utility_26.colorImageInPlayerColor(image, building.controller),
+                src: utility_27.colorImageInPlayerColor(image, building.controller),
                 title: building.template.displayName
             }), PlayerFlag_1.default({
                 props: {
@@ -13424,10 +13376,8 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
             this.ref_TODO_background.handleResize();
         };
         BattlePrepComponent.prototype.autoMakeFormation = function () {
-            var battlePrep = this.props.battlePrep;
-            battlePrep.clearPlayerFormation();
-            battlePrep.playerFormation = battlePrep.makeAutoFormation(battlePrep.availableUnits, battlePrep.enemyUnits, battlePrep.humanPlayer);
-            battlePrep.setupPlayerFormation(battlePrep.playerFormation);
+            this.props.battlePrep.humanFormation.clearFormation();
+            this.props.battlePrep.humanFormation.setAutoFormation(this.props.battlePrep.enemyUnits, this.props.battlePrep.enemyFormation.formation);
             this.setLeftLowerElement("playerFormation");
             this.forceUpdate();
         };
@@ -13469,7 +13419,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
         BattlePrepComponent.prototype.handleDragEnd = function (dropSuccesful) {
             if (dropSuccesful === void 0) { dropSuccesful = false; }
             if (!dropSuccesful && this.state.currentDragUnit) {
-                this.props.battlePrep.removeUnit(this.state.currentDragUnit);
+                this.props.battlePrep.humanFormation.removeUnit(this.state.currentDragUnit);
             }
             this.setState({
                 currentDragUnit: null,
@@ -13480,13 +13430,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
         BattlePrepComponent.prototype.handleDrop = function (position) {
             var battlePrep = this.props.battlePrep;
             if (this.state.currentDragUnit) {
-                var unitCurrentlyInPosition = battlePrep.getUnitAtPosition(position);
-                if (unitCurrentlyInPosition) {
-                    battlePrep.swapUnits(this.state.currentDragUnit, unitCurrentlyInPosition);
-                }
-                else {
-                    battlePrep.setUnit(this.state.currentDragUnit, position);
-                }
+                battlePrep.humanFormation.setUnit(this.state.currentDragUnit, position);
             }
             this.handleDragEnd(true);
         };
@@ -13544,7 +13488,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 });
             }
             else if (this.state.selectedUnit) {
-                var selectedUnitIsFriendly = battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
+                var selectedUnitIsFriendly = battlePrep.humanUnits.some(function (unit) { return unit === _this.state.selectedUnit; });
                 leftUpperElement = MenuUnitInfo_1.default({
                     unit: this.state.selectedUnit,
                     onMouseUp: this.handleItemDrop,
@@ -13565,17 +13509,19 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                     {
                         leftLowerElement = Formation_1.default({
                             key: "playerFormation",
-                            formation: battlePrep.playerFormation.slice(0),
+                            formation: battlePrep.humanFormation.formation,
                             facesLeft: false,
+                            unitDisplayDataByID: battlePrep.humanFormation.getDisplayData(),
+                            isInBattlePrep: true,
                             hoveredUnit: this.state.hoveredUnit,
                             activeUnit: this.state.selectedUnit,
                             onMouseUp: this.handleDrop,
                             onUnitClick: this.setSelectedUnit,
+                            handleMouseEnterUnit: this.handleMouseEnterUnit,
+                            handleMouseLeaveUnit: this.handleMouseLeaveUnit,
                             isDraggable: true,
                             onDragStart: this.handleDragStart,
                             onDragEnd: this.handleDragEnd,
-                            handleMouseEnterUnit: this.handleMouseEnterUnit,
-                            handleMouseLeaveUnit: this.handleMouseLeaveUnit
                         });
                         break;
                     }
@@ -13583,14 +13529,16 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                     {
                         leftLowerElement = Formation_1.default({
                             key: "enemyFormation",
-                            formation: battlePrep.enemyFormation,
+                            formation: battlePrep.enemyFormation.formation,
                             facesLeft: true,
+                            unitDisplayDataByID: battlePrep.enemyFormation.getDisplayData(),
+                            isInBattlePrep: true,
                             hoveredUnit: this.state.hoveredUnit,
                             activeUnit: this.state.selectedUnit,
                             onUnitClick: this.setSelectedUnit,
-                            isDraggable: false,
                             handleMouseEnterUnit: this.handleMouseEnterUnit,
-                            handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                            handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+                            isDraggable: false,
                         });
                         break;
                     }
@@ -13609,7 +13557,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
             }
             ;
             var playerIsDefending = player === battlePrep.defender;
-            var humanFormationIsValid = battlePrep.humanFormationIsValid();
+            var humanFormationIsValid = battlePrep.humanFormation.isFormationValid();
             var canScout = player.starIsDetected(battlePrep.battleData.location);
             return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: function (component) {
                     _this.ref_TODO_upper = component;
@@ -13660,9 +13608,9 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                     eventManager_20.default.dispatchEvent("switchScene", "galaxyMap");
                 }.bind(this)
             }, "Simulate battle")), React.DOM.div({ className: "battle-prep-left-lower" }, leftLowerElement)), UnitList_1.default({
-                units: battlePrep.availableUnits,
+                units: battlePrep.humanFormation.units,
                 selectedUnit: this.state.selectedUnit,
-                reservedUnits: battlePrep.alreadyPlaced,
+                reservedUnits: battlePrep.humanFormation.placedUnitPositionsByID,
                 hoveredUnit: this.state.hoveredUnit,
                 checkTimesActed: true,
                 isDraggable: this.state.leftLowerElement === "playerFormation",
@@ -14323,7 +14271,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleScene;
 });
-define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_27, App_27) {
+define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_28, App_27) {
     "use strict";
     var BattleSceneTesterComponent = (function (_super) {
         __extends(BattleSceneTesterComponent, _super);
@@ -14381,7 +14329,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             battleScene.updateUnits();
         };
         BattleSceneTesterComponent.prototype.makeUnit = function () {
-            var template = utility_27.getRandomProperty(App_27.default.moduleData.Templates.Units);
+            var template = utility_28.getRandomProperty(App_27.default.moduleData.Templates.Units);
             return new Unit_5.default(template, this.idGenerator++);
         };
         BattleSceneTesterComponent.prototype.makePlayer = function () {
@@ -14521,7 +14469,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var user = this.state.activeUnit;
             var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
             var bs = this.battleScene;
-            var SFXTemplate = utility_27.extendObject(App_27.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+            var SFXTemplate = utility_28.extendObject(App_27.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
             if (this.state.duration) {
                 SFXTemplate.duration = this.state.duration;
             }
@@ -15726,7 +15674,7 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_28) {
+define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_29) {
     "use strict";
     var MapGenOptionComponent = (function (_super) {
         __extends(MapGenOptionComponent, _super);
@@ -15738,7 +15686,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
         MapGenOptionComponent.prototype.handleChange = function (e) {
             var target = e.target;
             var option = this.props.option;
-            var newValue = utility_28.clamp(parseFloat(target.value), option.range.min, option.range.max);
+            var newValue = utility_29.clamp(parseFloat(target.value), option.range.min, option.range.max);
             this.props.onChange(this.props.id, newValue);
         };
         MapGenOptionComponent.prototype.shouldComponentUpdate = function (newProps) {
@@ -15789,7 +15737,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_29) {
+define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_30) {
     "use strict";
     var MapGenOptionsComponent = (function (_super) {
         __extends(MapGenOptionsComponent, _super);
@@ -15831,13 +15779,13 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                         var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
                         if (!oldOption)
                             continue;
-                        var oldValuePercentage = utility_29.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
+                        var oldValuePercentage = utility_30.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
                         value = option.min + (option.max - option.min) * oldValuePercentage;
                     }
                     else {
                         value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                     }
-                    value = utility_29.clamp(utility_29.roundToNearestMultiple(value, option.step), option.min, option.max);
+                    value = utility_30.clamp(utility_30.roundToNearestMultiple(value, option.step), option.min, option.max);
                     defaultValues["optionValue_" + optionName] = value;
                 }
             }.bind(this));
@@ -15861,14 +15809,14 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                 var optionGroup = optionGroups[optionGroupName];
                 for (var optionName in optionGroup) {
                     var option = optionGroup[optionName].range;
-                    var optionValue = utility_29.clamp(utility_29.roundToNearestMultiple(utility_29.randInt(option.min, option.max), option.step), option.min, option.max);
+                    var optionValue = utility_30.clamp(utility_30.roundToNearestMultiple(utility_30.randInt(option.min, option.max), option.step), option.min, option.max);
                     newValues["optionValue_" + optionName] = optionValue;
                 }
             }
             this.setState(newValues);
         };
         MapGenOptionsComponent.prototype.getOptionValuesForTemplate = function () {
-            var optionValues = utility_29.extendObject(this.props.mapGenTemplate.options);
+            var optionValues = utility_30.extendObject(this.props.mapGenTemplate.options);
             for (var groupName in optionValues) {
                 var optionsGroup = optionValues[groupName];
                 for (var optionName in optionsGroup) {
@@ -16961,32 +16909,36 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                     _this.ref_TODO_formationsContainer = container;
                 }
             }, Formation_2.default({
-                battle: battle,
+                unitDisplayDataByID: this.props.unitDisplayDataByID,
                 formation: battle.side1,
                 facesLeft: false,
-                activeUnit: battle.activeUnit,
-                hoveredUnit: this.state.highlightedUnit,
-                hoveredAbility: this.state.hoveredAbility,
-                activeTargets: activeTargets,
-                targetsInPotentialArea: this.state.targetsInPotentialArea,
                 handleMouseEnterUnit: this.handleMouseEnterUnit,
                 handleMouseLeaveUnit: this.handleMouseLeaveUnit,
-                activeEffectUnits: activeEffectUnits
+                isInBattlePrep: false,
+                hoveredUnit: this.state.highlightedUnit,
+                activeUnit: battle.activeUnit,
+                targetsInPotentialArea: this.state.targetsInPotentialArea,
+                activeEffectUnits: activeEffectUnits,
+                hoveredAbility: this.state.hoveredAbility,
+                capturedUnits: this.props.battle.capturedUnits,
+                destroyedUnits: this.props.battle.deadUnits,
             }), TurnCounter_1.default({
                 turnsLeft: battle.turnsLeft,
                 maxTurns: battle.maxTurns
             }), Formation_2.default({
-                battle: battle,
+                unitDisplayDataByID: this.props.unitDisplayDataByID,
                 formation: battle.side2,
                 facesLeft: true,
-                activeUnit: battle.activeUnit,
-                hoveredUnit: this.state.highlightedUnit,
-                hoveredAbility: this.state.hoveredAbility,
-                activeTargets: activeTargets,
-                targetsInPotentialArea: this.state.targetsInPotentialArea,
                 handleMouseEnterUnit: this.handleMouseEnterUnit,
                 handleMouseLeaveUnit: this.handleMouseLeaveUnit,
-                activeEffectUnits: activeEffectUnits
+                isInBattlePrep: false,
+                hoveredUnit: this.state.highlightedUnit,
+                activeUnit: battle.activeUnit,
+                targetsInPotentialArea: this.state.targetsInPotentialArea,
+                activeEffectUnits: activeEffectUnits,
+                hoveredAbility: this.state.hoveredAbility,
+                capturedUnits: this.props.battle.capturedUnits,
+                destroyedUnits: this.props.battle.deadUnits,
             }), abilityTooltip, this.state.playingBattleEffect ?
                 React.DOM.div({ className: "battle-formations-darken" }, null) :
                 null))));
@@ -17723,7 +17675,7 @@ define("src/uicomponents/notifications/Notification", ["require", "exports"], fu
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/popups/ConfirmPopup", ["require", "exports", "src/utility"], function (require, exports, utility_30) {
+define("src/uicomponents/popups/ConfirmPopup", ["require", "exports"], function (require, exports) {
     "use strict";
     var ConfirmPopupComponent = (function (_super) {
         __extends(ConfirmPopupComponent, _super);
@@ -17757,21 +17709,11 @@ define("src/uicomponents/popups/ConfirmPopup", ["require", "exports", "src/utili
         };
         ConfirmPopupComponent.prototype.render = function () {
             var _this = this;
-            var content;
-            if (this.props.contentText) {
-                content = utility_30.splitMultilineText(this.props.contentText);
-            }
-            else if (this.props.contentConstructor) {
-                content = this.props.contentConstructor(this.props.contentProps);
-            }
-            else {
-                throw new Error("Confirm popup has no content");
-            }
             return (React.DOM.div({
                 className: "confirm-popup draggable-container"
             }, React.DOM.div({
                 className: "confirm-popup-content"
-            }, content), React.DOM.div({
+            }, this.props.content), React.DOM.div({
                 className: "popup-buttons draggable-container"
             }, React.DOM.button({
                 className: "popup-button",
@@ -17881,7 +17823,7 @@ define("src/uicomponents/notifications/notificationfilterlist", ["require", "exp
         };
         NotificationFilterListComponent.prototype.scrollToHighlighted = function () {
             if (this.props.highlightedOptionKey) {
-                var domNode = this.ref_TODO_body.getDOMNode();
+                var domNode = ReactDOM.findDOMNode(this.ref_TODO_body);
                 var highlightedNode = domNode.getElementsByClassName("highlighted")[0];
                 domNode.scrollTop = highlightedNode.offsetTop + domNode.scrollHeight / 3;
             }
@@ -17966,15 +17908,13 @@ define("src/uicomponents/notifications/NotificationFilterButton", ["require", "e
                 content.scrollToHighlighted();
             }.bind(this.ref_TODO_popupManager);
             var popupId = this.ref_TODO_popupManager.makePopup({
-                contentConstructor: TopMenuPopup_3.default,
-                contentProps: {
-                    contentConstructor: NotificationFilterList_1.default,
-                    contentProps: {
+                content: TopMenuPopup_3.default({
+                    content: NotificationFilterList_1.default({
                         filter: this.props.filter,
                         highlightedOptionKey: this.props.highlightedOptionKey
-                    },
+                    }),
                     handleClose: this.closePopup
-                },
+                }),
                 popupProps: {
                     dragPositionerProps: {
                         containerDragOnly: true,
@@ -18082,12 +18022,10 @@ define("src/uicomponents/notifications/NotificationLog", ["require", "exports", 
         NotificationLogComponent.prototype.makePopup = function (notification, key) {
             var log = this.props.log;
             var popupId = this.ref_TODO_popupManager.makePopup({
-                contentConstructor: ConfirmPopup_1.default,
-                contentProps: {
-                    contentConstructor: notification.template.contentConstructor,
-                    contentProps: {
+                content: ConfirmPopup_1.default({
+                    content: notification.template.contentConstructor({
                         notification: notification
-                    },
+                    }),
                     handleOk: this.handleMarkAsRead.bind(this, notification),
                     handleClose: this.closePopup.bind(this, key),
                     okText: "Mark as read",
@@ -18100,7 +18038,7 @@ define("src/uicomponents/notifications/NotificationLog", ["require", "exports", 
                             highlightedOptionKey: notification.template.key
                         })
                     ]
-                },
+                }),
                 popupProps: {
                     dragPositionerProps: {
                         containerDragOnly: true,
@@ -19510,8 +19448,7 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
             this.setState(stateObj);
         };
         DiplomacyActionsComponent.prototype.makePopup = function (popupType) {
-            var contentConstructor;
-            var contentProps;
+            var content;
             var popupProps = {
                 resizable: true,
                 minWidth: 150,
@@ -19524,23 +19461,19 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
             switch (popupType) {
                 case "trade":
                     {
-                        contentConstructor = TradeOverview_1.default;
-                        contentProps =
-                            {
-                                selfPlayer: this.props.player,
-                                otherPlayer: this.props.targetPlayer,
-                                handleClose: this.closePopup.bind(this, popupType)
-                            };
+                        content = TradeOverview_1.default({
+                            selfPlayer: this.props.player,
+                            otherPlayer: this.props.targetPlayer,
+                            handleClose: this.closePopup.bind(this, popupType)
+                        });
                         break;
                     }
             }
             var id = this.ref_TODO_popupManager.makePopup({
-                contentConstructor: TopMenuPopup_4.default,
-                contentProps: {
-                    contentConstructor: contentConstructor,
-                    contentProps: contentProps,
+                content: TopMenuPopup_4.default({
+                    content: content,
                     handleClose: this.closePopup.bind(this, popupType)
-                },
+                }),
                 popupProps: popupProps
             });
             var stateObj = {};
@@ -20047,12 +19980,11 @@ define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "s
             if (!player)
                 return;
             this.ref_TODO_popupManager.makePopup({
-                contentConstructor: DiplomacyActions_1.default,
-                contentProps: {
+                content: DiplomacyActions_1.default({
                     player: this.props.player,
                     targetPlayer: player,
                     onUpdate: this.forceUpdate.bind(this)
-                },
+                }),
                 popupProps: {
                     dragPositionerProps: {
                         preventAutoResize: true,
@@ -21353,8 +21285,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
         };
         LoadGameComponent.prototype.deleteSelectedKeys = function () {
             this.popupID = this.ref_TODO_popupManager.makePopup({
-                contentConstructor: ConfirmPopup_2.default,
-                contentProps: this.getClosePopupContent(null, false, false)
+                content: ConfirmPopup_2.default(this.getClosePopupContent(null, false, false))
             });
         };
         LoadGameComponent.prototype.getClosePopupContent = function (afterCloseCallback, shouldCloseParent, shouldUndoAll) {
@@ -21388,12 +21319,11 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
             return ({
                 handleOk: deleteFN,
                 handleClose: closeFN,
-                contentText: confirmText
+                content: confirmText
             });
         };
         LoadGameComponent.prototype.updateClosePopup = function () {
             if (isFinite(this.popupID)) {
-                this.ref_TODO_popupManager.setPopupContent(this.popupID, { contentText: this.getClosePopupContent().contentText });
             }
             else if (this.state.saveKeysToDelete.length < 1) {
                 if (isFinite(this.popupID))
@@ -21410,8 +21340,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 return;
             }
             this.popupID = this.ref_TODO_popupManager.makePopup({
-                contentConstructor: ConfirmPopup_2.default,
-                contentProps: this.getClosePopupContent(afterCloseCallback, true, true)
+                content: ConfirmPopup_2.default(this.getClosePopupContent(afterCloseCallback, true, true))
             });
         };
         LoadGameComponent.prototype.handleDelete = function (saveKey) {
@@ -21542,14 +21471,12 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             this.props.handleClose();
         };
         SaveGameComponent.prototype.makeConfirmOverWritePopup = function (saveName) {
-            var confirmProps = {
-                handleOk: this.saveGame,
-                contentText: "Are you sure you want to overwrite " +
-                    saveName.replace("Save.", "") + "?"
-            };
-            this.ref_TODO_popupManager.makePopup({
-                contentConstructor: ConfirmPopup_3.default,
-                contentProps: confirmProps
+            var confirmProps = this.ref_TODO_popupManager.makePopup({
+                content: ConfirmPopup_3.default({
+                    handleOk: this.saveGame,
+                    content: "Are you sure you want to overwrite " +
+                        saveName.replace("Save.", "") + "?"
+                })
             });
         };
         SaveGameComponent.prototype.render = function () {
@@ -21764,16 +21691,14 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
         };
         OptionsListComponent.prototype.handleResetAllOptions = function () {
             var _this = this;
-            var confirmProps = {
-                handleOk: function () {
-                    Options_3.default.setDefaults();
-                    _this.forceUpdate();
-                },
-                contentText: "Are you sure you want to reset all options?"
-            };
             this.ref_TODO_popupManager.makePopup({
-                contentConstructor: ConfirmPopup_4.default,
-                contentProps: confirmProps,
+                content: ConfirmPopup_4.default({
+                    handleOk: function () {
+                        Options_3.default.setDefaults();
+                        _this.forceUpdate();
+                    },
+                    content: "Are you sure you want to reset all options?"
+                }),
                 popupProps: {
                     dragPositionerProps: {
                         containerDragOnly: true,
@@ -22112,12 +22037,10 @@ define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/u
                     }
             }
             var id = this.ref_TODO_popupManager.makePopup({
-                contentConstructor: TopMenuPopup_5.default,
-                contentProps: {
-                    contentConstructor: contentConstructor,
-                    contentProps: contentProps,
+                content: TopMenuPopup_5.default({
+                    content: contentConstructor(contentProps),
                     handleClose: this.closePopup.bind(this, popupType)
-                },
+                }),
                 popupProps: popupProps
             });
             var stateObj = {};
@@ -23086,15 +23009,13 @@ define("src/uicomponents/tutorials/IntroTutorial", ["require", "exports", "src/t
                 return;
             }
             this.popupId = this.ref_TODO_popupManager.makePopup({
-                contentConstructor: TopMenuPopup_6.default,
-                contentProps: {
+                content: TopMenuPopup_6.default({
                     handleClose: this.closePopup,
-                    contentConstructor: Tutorial_1.default,
-                    contentProps: {
+                    content: Tutorial_1.default({
                         pages: IntroTutorial_1.default.pages,
                         tutorialId: "introTutorial"
-                    }
-                },
+                    })
+                }),
                 popupProps: {
                     resizable: true,
                     initialPosition: {
@@ -23502,6 +23423,7 @@ define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/battle
                             battle: this.props.battle,
                             humanPlayer: this.props.player,
                             renderer: this.props.renderer,
+                            unitDisplayDataByID: this.props.unitDisplayDataByID,
                             key: "battle"
                         }));
                         break;
@@ -25400,8 +25322,8 @@ define("modules/common/passiveskilltemplates/passiveSkills", ["require", "export
         description: "Forces an extra unit to defend in neutral territory",
         inBattlePrep: [
             function (user, battlePrep) {
-                if (user.fleet.player === battlePrep.attacker) {
-                    battlePrep.minDefendersInNeutralTerritory += 1;
+                if (battlePrep.isLocationNeutral() && user.fleet.player === battlePrep.attacker) {
+                    battlePrep.minDefenders += 1;
                 }
             }
         ],

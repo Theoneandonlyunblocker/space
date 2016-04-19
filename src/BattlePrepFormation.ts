@@ -27,6 +27,8 @@ export default class BattlePrepFormation
     this.units = units;
     this.hasScouted = hasScouted;
     this.minUnits = minUnits;
+    
+    this.formation = getNullFormation();
   }
   
   public forEachUnitInFormation(f: (unit: Unit, pos?: number[]) => void): void
@@ -62,6 +64,7 @@ export default class BattlePrepFormation
     {
       this.placedUnitPositionsByID[unit.id] = pos;
     });
+    this.displayDataIsDirty = true;
   }
   // human formation stuff
   public getUnitPosition(unit: Unit): number[]
@@ -76,6 +79,7 @@ export default class BattlePrepFormation
   {
     this.placedUnitPositionsByID = {};
     this.formation = getNullFormation();
+    this.displayDataIsDirty = true;
   }
   // end human formation stuff
   public isFormationValid(): boolean
@@ -87,7 +91,7 @@ export default class BattlePrepFormation
     
     return amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits;
   }
-  public setUnit(unit: Unit, position?: number[]): void
+  public setUnit(unit: Unit, position: number[]): void
   {
     const unitInTargetPosition = this.getUnitAtPosition(position);
     if (unitInTargetPosition)
@@ -98,18 +102,14 @@ export default class BattlePrepFormation
     {
       this.removeUnit(unit);
       
-      if (!position)
-      {
-        return;
-      }
-      const oldUnitPosition = this.getUnitPosition(unit);
-      
       this.formation[position[0]][position[1]] = unit;
       this.placedUnitPositionsByID[unit.id] = position;
+      this.displayDataIsDirty = true;
     }
   }
-  public removeUnit(unit: Unit, position = this.getUnitPosition(unit)): void
+  public removeUnit(unit: Unit): void
   {
+    const position = this.getUnitPosition(unit);
     if (!position)
     {
       return;
@@ -117,6 +117,7 @@ export default class BattlePrepFormation
     
     this.formation[position[0]][position[1]] = null;
     delete this.placedUnitPositionsByID[unit.id];
+    this.displayDataIsDirty = true;
   }
   
   private swapUnits(unit1: Unit, unit2: Unit): void
@@ -125,6 +126,9 @@ export default class BattlePrepFormation
 
     var new1Pos = this.getUnitPosition(unit2);
     var new2Pos = this.getUnitPosition(unit1);
+    
+    this.removeUnit(unit1);
+    this.removeUnit(unit2);
 
     this.setUnit(unit1, new1Pos);
     this.setUnit(unit2, new2Pos);

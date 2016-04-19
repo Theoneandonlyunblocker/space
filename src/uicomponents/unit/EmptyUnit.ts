@@ -53,7 +53,7 @@ export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
     return(
       React.DOM.div(
       {
-        className: "unit empty unit" + (this.props.facesLeft ? " enemy-unit" : "friendly-unit"),
+        className: "unit empty-unit" + (this.props.facesLeft ? " enemy-unit" : " friendly-unit"),
         onMouseUp: this.props.onMouseUp
       },
         innerElements

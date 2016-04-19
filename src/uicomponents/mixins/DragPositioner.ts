@@ -51,7 +51,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   private containerRect: ClientRect;
   private touchEventTarget: HTMLElement;
   private needsFirstTouchUpdate: boolean;
-  
+  private ownerIsMounted: boolean = false;
   
   constructor(owner: T, props?: DragPositionerProps)
   {
@@ -84,6 +84,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   
   public componentDidMount()
   {
+    this.ownerIsMounted = true;
     this.ownerDOMNode = ReactDOM.findDOMNode<HTMLElement>(this.owner);
     if (this.containerElementDescriptor)
     {
@@ -108,6 +109,7 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
   }
   public componentWillUnmount()
   {
+    this.ownerIsMounted = false;
     this.removeEventListeners();
     window.removeEventListener("resize", this.setContainerRect);
   }
@@ -370,7 +372,10 @@ export default class DragPositioner<T extends React.Component<any, any>> impleme
       const endSuccesful = this.onDragEnd();
     }
     
-    this.owner.forceUpdate();
+    if (this.ownerIsMounted)
+    {
+      this.owner.forceUpdate();
+    }
   }
   private setContainerRect()
   {

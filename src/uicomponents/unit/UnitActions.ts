@@ -5,8 +5,8 @@
 interface PropTypes extends React.Props<any>
 {
   currentActionPoints: number;
-  hoveredActionPointExpenditure: number;
   maxActionPoints: number;
+  hoveredActionPointExpenditure?: number;
 }
 
 interface StateType
@@ -33,7 +33,8 @@ export class UnitActionsComponent extends React.Component<PropTypes, StateType>
 
     var icons: React.ReactHTMLElement<any>[] = [];
 
-    var availableCount = this.props.currentActionPoints - this.props.hoveredActionPointExpenditure;
+    console.log(this.props.hoveredActionPointExpenditure);
+    var availableCount = this.props.currentActionPoints - (this.props.hoveredActionPointExpenditure || 0);
     for (let i = 0; i < availableCount; i++)
     {
       icons.push(React.DOM.img(

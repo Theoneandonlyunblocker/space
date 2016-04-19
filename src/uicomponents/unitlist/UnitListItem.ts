@@ -1,6 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import Unit from "../../Unit";
+import {shallowExtend} from "../../utility";
 import UnitStrength from "../unit/UnitStrength";
 import ListColumn from "./ListColumn";
 import {default as UnitComponentFactory, UnitComponent} from "../unit/Unit";
@@ -105,11 +106,10 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     const container = document.createElement("div");
     
     ReactDOM.render(
-      UnitComponentFactory(
-      {
-        unit: this.props.unit,
-        facesLeft: true,
-      }),
+      UnitComponentFactory(shallowExtend(
+        this.props.unit.getDisplayData("battlePrep"),
+        {id: this.props.unit.id}
+      )),
       container
     );
     

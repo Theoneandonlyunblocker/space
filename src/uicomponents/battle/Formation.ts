@@ -104,13 +104,18 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
       const unitElements: React.ReactElement<any>[] = [];
       for (let j = 0; j < this.props.formation[i].length; j++)
       {
-        const absolutePosition = [absoluteRowIndex, j];
         const unit = this.props.formation[i][j];
         
+        const absolutePosition = [absoluteRowIndex, j];
+        const onMouseUp = this.props.onMouseUp ?
+          this.props.onMouseUp.bind(null, absolutePosition) :
+          null;
+          
         let unitProps: UnitPropTypes;
         
         if (unit)
         {
+          
           const unitDisplayData = this.props.unitDisplayDataByID[unit.id];
           const componentProps: UnitComponentPropTypes =
           {
@@ -121,6 +126,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             isDraggable: this.props.isDraggable,
             onDragStart: this.makeBoundFunction(this.props.onDragStart, unit),
             onDragEnd: this.props.onDragEnd,
+            onMouseUp: onMouseUp
           }
           const displayProps: UnitDisplayStatus =
           {
@@ -144,9 +150,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             EmptyUnit(
             {
               facesLeft: this.props.facesLeft,
-              onMouseUp: this.props.onMouseUp ?
-                this.props.onMouseUp.bind(null, absolutePosition) :
-                null
+              onMouseUp: onMouseUp
             }),
             !unit ? null : UnitComponentFactory(
               unitProps

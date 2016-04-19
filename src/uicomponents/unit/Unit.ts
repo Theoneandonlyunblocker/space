@@ -21,6 +21,7 @@ export interface ComponentPropTypes extends React.Props<any>
   
   // onUnitClick?: (unit: Unit) => void;
   onUnitClick?: () => void;
+  onMouseUp?: () => void;
   
   handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
   // handleMouseEnterUnit?: (unit: Unit) => void;
@@ -127,6 +128,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
       onMouseEnter: this.props.handleMouseEnterUnit ? this.handleMouseEnter : null,
       onMouseLeave: this.props.handleMouseLeaveUnit ? this.handleMouseLeave : null,
       onClick: this.props.onUnitClick ? this.handleClick : null,
+      onMouseUp: this.props.onMouseUp
     };
 
     if (this.props.isDraggable)
@@ -165,7 +167,6 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     {
       wrapperProps.className += " active-effect-unit"
     }
-
     const bodyElements =
     [
       React.DOM.div(

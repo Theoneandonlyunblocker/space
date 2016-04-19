@@ -1,30 +1,21 @@
 import app from "./App";
 import Unit from "./Unit";
 
-let nullFormation: Unit[][];
 
-export default function getNullFormation()
+export default function getNullFormation(): Unit[][]
 {
-  if (!nullFormation)
-  {
-    nullFormation = [];
+  const nullFormation: Unit[][] = [];
 
-    var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
-    var columns = app.moduleData.ruleSet.battle.cellsPerRow;
-    for (let i = 0; i < rows; i++)
+  var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
+  var columns = app.moduleData.ruleSet.battle.cellsPerRow;
+  for (let i = 0; i < rows; i++)
+  {
+    nullFormation.push([]);
+    for (let j = 0; j < columns; j++)
     {
-      nullFormation.push([]);
-      for (let j = 0; j < columns; j++)
-      {
-        nullFormation[i].push(null);
-      }
+      nullFormation[i].push(null);
     }
   }
 
-  return nullFormation.slice();
-}
-
-export function reset()
-{
-  nullFormation = null;
+  return nullFormation;
 }

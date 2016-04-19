@@ -618,15 +618,16 @@ ol {
   flex-flow: row;
   height: 100%;
   width: 100%;
+  color: #eeeeec;
 }
-.unit-container {
+.unit-body {
   position: relative;
   display: flex;
   flex-flow: row;
   flex: 1;
   padding: 1px;
 }
-.hovered-unit .unit-container::before {
+.hovered-unit .unit-body::before {
   content: "";
   position: absolute;
   top: 0;
@@ -645,7 +646,7 @@ ol {
   -webkit-animation-name: none !important;
   animation-name: none !important;
 }
-.empty-unit .unit-container {
+.empty-unit .unit-body {
   background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0)) !important;
 }
 .empty-unit .unit-icon-container {
@@ -655,7 +656,7 @@ ol {
   background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)) !important;
   border-bottom: 1px solid rgba(26, 26, 26, 0.4) !important;
 }
-.friendly-unit .unit-container {
+.friendly-unit .unit-body {
   background: linear-gradient(to left, rgba(100, 120, 250, 0.5), rgba(100, 120, 250, 0.3));
 }
 .friendly-unit .unit-icon-container {
@@ -665,11 +666,11 @@ ol {
   background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid rgba(146, 161, 255, 0.9);
 }
-.friendly-unit .unit-container {
+.friendly-unit .unit-body {
   border: 1px solid #999999;
   border-right: 0;
 }
-.enemy-unit .unit-container {
+.enemy-unit .unit-body {
   background: linear-gradient(to right, rgba(250, 100, 120, 0.5), rgba(250, 100, 120, 0.3));
 }
 .enemy-unit .unit-icon-container {
@@ -679,12 +680,12 @@ ol {
   background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid rgba(255, 146, 161, 0.9);
 }
-.enemy-unit .unit-container {
+.enemy-unit .unit-body {
   border: 1px solid #999999;
   border-left: 0;
   left: 0.5px;
 }
-.active-unit.friendly-unit .unit-container {
+.active-unit.friendly-unit .unit-body {
   background: linear-gradient(to left, rgba(200, 200, 20, 0.5), rgba(200, 200, 20, 0.3));
 }
 .active-unit.friendly-unit .unit-icon-container {
@@ -697,7 +698,7 @@ ol {
 .active-unit.friendly-unit * {
   border-color: yellow;
 }
-.active-unit.enemy-unit .unit-container {
+.active-unit.enemy-unit .unit-body {
   background: linear-gradient(to right, rgba(200, 200, 20, 0.5), rgba(200, 200, 20, 0.3));
 }
 .active-unit.enemy-unit .unit-icon-container {
@@ -710,7 +711,7 @@ ol {
 .active-unit.enemy-unit * {
   border-color: yellow;
 }
-.target-unit.friendly-unit .unit-container {
+.target-unit.friendly-unit .unit-body {
   background: linear-gradient(to left, rgba(20, 200, 20, 0.5), rgba(20, 200, 20, 0.3));
 }
 .target-unit.friendly-unit .unit-icon-container {
@@ -720,7 +721,7 @@ ol {
   background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid rgba(146, 161, 255, 0.9);
 }
-.target-unit.enemy-unit .unit-container {
+.target-unit.enemy-unit .unit-body {
   background: linear-gradient(to right, rgba(20, 200, 20, 0.5), rgba(20, 200, 20, 0.3));
 }
 .target-unit.enemy-unit .unit-icon-container {
@@ -749,51 +750,50 @@ ol {
     margin-right: 0%;
   }
 }
-.unit-left-container {
+.unit-portrait-container {
   width: 64px;
 }
 @media (max-width: 850px) {
-  .unit-left-container {
+  .unit-portrait-container {
     display: none;
   }
 }
+.unit-portrait-container > * {
+  position: absolute;
+}
 .unit-portrait {
+  z-index: 1;
   width: 64px;
   height: 80px;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
 }
-.unit-status-effects-container {
-  position: absolute;
-  top: 0;
-  width: 64px;
-  height: 80px;
+.unit-passive-effects-icon {
+  z-index: 3;
+  top: 5px;
+  right: 5px;
 }
-.unit-status-effects-passive-skills {
-  float: right;
-  margin: 5px;
-}
-.unit-status-effects-attributes {
-  position: absolute;
+.unit-attribute-changes {
+  z-index: 2;
   height: 12px;
   bottom: 0px;
   width: 100%;
 }
-.status-effect-icon {
+.attribute-change-icon {
   width: 16px;
   position: absolute;
 }
-.status-effect-icon-strength {
+.attribute-change-icon-strength {
   left: 0px;
 }
-.status-effect-icon-defence {
+.attribute-change-icon-defence {
   left: 16px;
 }
-.status-effect-icon-intelligence {
+.attribute-change-icon-intelligence {
   left: 32px;
 }
-.status-effect-icon-speed {
+.attribute-change-icon-speed {
   left: 48px;
 }
 .unit-info {

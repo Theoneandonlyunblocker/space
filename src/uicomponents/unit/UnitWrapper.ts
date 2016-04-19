@@ -1,7 +1,5 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-// TODO react | remove?
-
 interface PropTypes extends React.Props<any>
 {
 }
