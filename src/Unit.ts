@@ -1132,8 +1132,9 @@ export default class Unit
   {
     return(
   {
-    unit: this,
-  
+    name: this.name,
+    
+    facesLeft: this.battleStats.side === "side2",
     currentHealth: this.currentHealth,
     maxHealth: this.maxHealth,
     

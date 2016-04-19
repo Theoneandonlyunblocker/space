@@ -3,27 +3,32 @@ import Unit from "./Unit";
 
 interface UnitDisplayData
 {
-  unit: Unit;
+  facesLeft: boolean;
+  name: string;
   
   currentHealth: number;
   maxHealth: number;
-  
   guardAmount: number;
   guardType: GuardCoverage;
-  
   currentActionPoints: number;
   maxActionPoints: number;
-
   isPreparing: boolean;
   isAnnihilated: boolean;
+  isSquadron: boolean;
   
   portraitSrc: string;
+  // iconElement: React.ReactElement<any>; // TODO fluff | allow other icon elements
   iconSrc: string;
   
-  isDestroyed?: boolean;
-  isCaptured?: boolean;
+  wasDestroyed?: boolean;
+  wasCaptured?: boolean;
   
-  hoveredActionPointsExpenditure?: number;
+  isInBattlePrep?: boolean;
+  isActiveUnit?: boolean;
+  isHovered?: boolean;
+  isInPotentialTargetArea?: boolean;
+  isTargetOfActiveEffect?: boolean;
+  hoveredActionPointExpenditure?: number;
 }
 
 export default UnitDisplayData;
