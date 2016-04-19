@@ -6431,19 +6431,14 @@ define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNull
         };
         BattlePrepFormation.prototype.setUnit = function (unit, position) {
             var unitInTargetPosition = this.getUnitAtPosition(position);
-            console.log(unitInTargetPosition);
             if (unitInTargetPosition) {
                 this.swapUnits(unit, unitInTargetPosition);
             }
             else {
                 this.removeUnit(unit);
-                if (!position) {
-                    console.warn("Use BattlePrepFormation.removeUnit() instead");
-                }
                 this.formation[position[0]][position[1]] = unit;
                 this.placedUnitPositionsByID[unit.id] = position;
                 this.displayDataIsDirty = true;
-                console.log("set unit", unit.name);
             }
         };
         BattlePrepFormation.prototype.removeUnit = function (unit) {
@@ -6454,7 +6449,6 @@ define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNull
             this.formation[position[0]][position[1]] = null;
             delete this.placedUnitPositionsByID[unit.id];
             this.displayDataIsDirty = true;
-            console.log("remove unit", unit.name);
         };
         BattlePrepFormation.prototype.swapUnits = function (unit1, unit2) {
             if (unit1 === unit2)
@@ -6465,7 +6459,6 @@ define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNull
             this.removeUnit(unit2);
             this.setUnit(unit1, new1Pos);
             this.setUnit(unit2, new2Pos);
-            console.log("swap units", unit1.name, unit2.name);
         };
         BattlePrepFormation.prototype.getFormationDisplayData = function () {
             var displayDataByID = {};
@@ -12622,6 +12615,7 @@ define("src/uicomponents/unit/UnitActions", ["require", "exports"], function (re
             var hoveredSrc = "img/icons/spentAction.png";
             var spentSrc = "img/icons/spentAction.png";
             var icons = [];
+            console.log(this.props.hoveredActionPointExpenditure);
             var availableCount = this.props.currentActionPoints - (this.props.hoveredActionPointExpenditure || 0);
             for (var i = 0; i < availableCount; i++) {
                 icons.push(React.DOM.img({
@@ -12665,7 +12659,6 @@ define("src/uicomponents/unit/UnitInfo", ["require", "exports", "src/uicomponent
             this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
         }
         UnitInfoComponent.prototype.render = function () {
-            console.log("unitinfo", this.props.currentActionPoints);
             var battleEndStatus = null;
             if (this.props.wasDestroyed) {
                 battleEndStatus = React.DOM.div({
