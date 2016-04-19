@@ -669,7 +669,11 @@ export default class Unit
     
     for (let attributeType in withEffects)
     {
-      difference[attributeType] = withEffects[attributeType] - withItems[attributeType];
+      const differenceForThisAttribute = withEffects[attributeType] - withItems[attributeType]; 
+      if (differenceForThisAttribute !== 0)
+      {
+        difference[attributeType] = differenceForThisAttribute;
+      }
     }
     
     return difference;
