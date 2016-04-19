@@ -17,10 +17,6 @@ interface StateType
 export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "EmptyUnit";
-  shouldComponentUpdate(newProps: PropTypes)
-  {
-    return newProps.facesLeft !== this.props.facesLeft;
-  }
   state: StateType;
 
   constructor(props: PropTypes)
@@ -28,31 +24,17 @@ export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
     super(props);
   }
   
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+  
   render()
   {
-    var wrapperProps: React.HTMLAttributes =
-    {
-      className: "unit empty-unit"
-    };
-
-    var containerProps =
-    {
-      className: "unit-container",
-      key: "container"
-    };
-
-    if (this.props.facesLeft)
-    {
-      wrapperProps.className += " enemy-unit";
-    }
-    else
-    {
-      wrapperProps.className += " friendly-unit";
-    }
-
-    var allElements =
+    const innerElements =
     [
-      React.DOM.div(containerProps,
+      React.DOM.div(
+      {
+        className: "unit-body",
+        key: "body"
+      },
         null
       ),
       UnitIconContainer(
@@ -65,12 +47,16 @@ export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.facesLeft)
     {
-      allElements = allElements.reverse();
+      innerElements.reverse();
     }
     
     return(
-      React.DOM.div(wrapperProps,
-        allElements
+      React.DOM.div(
+      {
+        className: "unit empty unit" + (this.props.facesLeft ? " enemy-unit" : "friendly-unit"),
+        onMouseUp: this.props.onMouseUp
+      },
+        innerElements
       )
     );
   }
