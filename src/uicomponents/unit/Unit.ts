@@ -21,8 +21,7 @@ export interface PropTypes extends React.Props<any>, UnitDisplayData
   
   // onUnitClick?: (unit: Unit) => void;
   onUnitClick?: () => void;
-  // onMouseUp?: (position: number[]) => void;
-  onMouseUp?: () => void;
+  
   handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
   // handleMouseEnterUnit?: (unit: Unit) => void;
   handleMouseEnterUnit?: () => void;
