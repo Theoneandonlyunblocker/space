@@ -958,7 +958,7 @@ ul, ol
   width: 100%;
 }
 
-.unit-container
+.unit-body
 {
   position: relative;
   display: flex;
@@ -970,7 +970,7 @@ ul, ol
 
 .hovered-unit
 {
-  .unit-container::before
+  .unit-body::before
   {
     .hover-border(30px, 4px);
   }
@@ -988,7 +988,7 @@ ul, ol
 
 .unit-style(@bg-color, @dir: to left, @accent-color: @bg-color)
 {
-  .unit-container
+  .unit-body
   {
     background: linear-gradient(@dir,
       @bg-color, fadeout(@bg-color, 20%));
@@ -1016,7 +1016,7 @@ ul, ol
 .friendly-unit
 {
   .unit-style(@friendly-unit-bg, to left);
-  .unit-container
+  .unit-body
   {
     .unit-border-no-right;
   }
@@ -1025,7 +1025,7 @@ ul, ol
 .enemy-unit
 {
   .unit-style(@enemy-unit-bg, to right);
-  .unit-container
+  .unit-body
   {
     .unit-border-no-left;
     left: 0.5px;

@@ -119,12 +119,6 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     var unit = this.props.unit;
     unit.uiDisplayIsDirty = false;
 
-    var containerProps: React.HTMLAttributes =
-    {
-      className: "unit-container",
-      id: "unit-id_" + unit.id,
-      key: "container"
-    };
     var wrapperProps: React.HTMLAttributes =
     {
       className: "unit"
@@ -207,7 +201,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
       animateDuration: unit.sfxDuration
     }
 
-    var containerElements =
+    const bodyElements =
     [
       React.DOM.div(
       {
@@ -229,12 +223,12 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
 
     if (this.props.facesLeft)
     {
-      containerElements = containerElements.reverse();
+      bodyElements.reverse();
     }
 
     if (unit.displayFlags.isAnnihilated)
     {
-      containerElements.push(
+      bodyElements.push(
         React.DOM.div({key: "overlay", className: "unit-annihilated-overlay"},
           "Unit annihilated"
         )
@@ -245,6 +239,13 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     [
       React.DOM.div(containerProps,
         containerElements
+      React.DOM.div(
+      {
+        className: "unit-body",
+        id: "unit-id_" + this.props.id,
+        key: "body"
+      },
+        bodyElements
       ),
       UnitIcon(
         {
