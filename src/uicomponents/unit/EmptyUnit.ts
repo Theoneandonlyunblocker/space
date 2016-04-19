@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-import UnitIcon from "./UnitIcon";
+import UnitIconContainer from "./UnitIconContainer";
 
 
 interface PropTypes extends React.Props<any>
@@ -54,9 +54,9 @@ export class EmptyUnitComponent extends React.Component<PropTypes, StateType>
       React.DOM.div(containerProps,
         null
       ),
-      UnitIcon(
+      UnitIconContainer(
         {
-          icon: null,
+          iconSrc: null,
           facesLeft: this.props.facesLeft,
           key: "icon"
         })
