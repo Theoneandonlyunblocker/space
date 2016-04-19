@@ -1,5 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import UnitDisplayData from "../../UnitDisplayData";
 import Renderer from "../../Renderer";
 import Player from "../../Player";
 import Battle from "../../Battle";
@@ -26,6 +27,7 @@ interface PropTypes extends React.Props<any>
   renderer: Renderer;
   battle: Battle;
   humanPlayer: Player;
+  unitDisplayDataByID: {[unitID: number]: UnitDisplayData};
 }
 
 interface StateType
@@ -735,17 +737,22 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           },
             Formation(
             {
-              battle: battle,
+              unitDisplayDataByID: this.props.unitDisplayDataByID, // TODO
               formation: battle.side1,
               facesLeft: false,
-              activeUnit: battle.activeUnit,
-              hoveredUnit: this.state.highlightedUnit,
-              hoveredAbility: this.state.hoveredAbility,
-              activeTargets: activeTargets,
-              targetsInPotentialArea: this.state.targetsInPotentialArea,
+              
               handleMouseEnterUnit: this.handleMouseEnterUnit,
               handleMouseLeaveUnit: this.handleMouseLeaveUnit,
-              activeEffectUnits: activeEffectUnits
+              
+              isInBattlePrep: false,
+              hoveredUnit: this.state.highlightedUnit,
+              activeUnit: battle.activeUnit,
+              targetsInPotentialArea: this.state.targetsInPotentialArea,
+              activeEffectUnits: activeEffectUnits,
+              hoveredAbility: this.state.hoveredAbility,
+              
+              capturedUnits: this.props.battle.capturedUnits,
+              destroyedUnits: this.props.battle.deadUnits,
             }),
             TurnCounter(
             {
@@ -754,17 +761,22 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             }),
             Formation(
             {
-              battle: battle,
+              unitDisplayDataByID: this.props.unitDisplayDataByID, // TODO
               formation: battle.side2,
               facesLeft: true,
-              activeUnit: battle.activeUnit,
-              hoveredUnit: this.state.highlightedUnit,
-              hoveredAbility: this.state.hoveredAbility,
-              activeTargets: activeTargets,
-              targetsInPotentialArea: this.state.targetsInPotentialArea,
+              
               handleMouseEnterUnit: this.handleMouseEnterUnit,
               handleMouseLeaveUnit: this.handleMouseLeaveUnit,
-              activeEffectUnits: activeEffectUnits
+              
+              isInBattlePrep: false,
+              hoveredUnit: this.state.highlightedUnit,
+              activeUnit: battle.activeUnit,
+              targetsInPotentialArea: this.state.targetsInPotentialArea,
+              activeEffectUnits: activeEffectUnits,
+              hoveredAbility: this.state.hoveredAbility,
+              
+              capturedUnits: this.props.battle.capturedUnits,
+              destroyedUnits: this.props.battle.deadUnits,
             }),
             abilityTooltip,
             this.state.playingBattleEffect ?

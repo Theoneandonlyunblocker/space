@@ -1192,17 +1192,14 @@ export default class Unit
     return(
     {
       name: this.name,
-      
       facesLeft: this.battleStats.side === "side2",
+      
       currentHealth: this.currentHealth,
       maxHealth: this.maxHealth,
-      
       guardAmount: this.battleStats.guardAmount,
       guardType: this.battleStats.guardCoverage,
-      
       currentActionPoints: this.battleStats.currentActionPoints,
       maxActionPoints: this.attributes.maxActionPoints,
-
       isPreparing: Boolean(this.battleStats.queuedAction),
       isAnnihilated: this.battleStats.isAnnihilated,
       isSquadron: this.isSquadron,
@@ -1211,7 +1208,7 @@ export default class Unit
       iconSrc: this.template.icon,
       
       attributeChanges: this.getAttributesWithEffectsDifference(),
-      passiveEffects: this.getPassiveEffectsForScene(scene)
+      passiveEffects: this.getPassiveEffectsForScene(scene),
     });
   }
   serialize(includeItems: boolean = true, includeFluff: boolean = true): UnitSaveData

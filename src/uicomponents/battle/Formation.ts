@@ -10,11 +10,12 @@ import
 {
   default as UnitComponentFactory,
   PropTypes as UnitPropTypes,
-  ComponentPropTypes as UnitComponentPropTypes
+  ComponentPropTypes as UnitComponentPropTypes,
+  DisplayStatus as UnitDisplayStatus
 } from "../unit/Unit";
 import Battle from "../../Battle";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
-import {extendObject} from "../../utility";
+import {shallowExtend} from "../../utility";
 
 
 interface PropTypes extends React.Props<any>
@@ -36,14 +37,15 @@ interface PropTypes extends React.Props<any>
   onDragStart?: (unit: Unit) => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
   
-  // battle?: Battle;
-  // activeUnit?: Unit;
+  isInBattlePrep?: boolean;
+  hoveredUnit?: Unit;
+  activeUnit?: Unit;
+  targetsInPotentialArea?: Unit[];
+  activeEffectUnits?: Unit[];
+  hoveredAbility?: AbilityTemplate;
+  capturedUnits?: Unit[];
+  destroyedUnits?: Unit[];
 
-  // hoveredUnit?: Unit;
-  // hoveredAbility?: AbilityTemplate;
-
-  // targetsInPotentialArea?: Unit[];
-  // activeEffectUnits?: Unit[];
   
   // onMouseUp?: (position: number[]) => void;
 }
@@ -78,6 +80,18 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     }
   }
   
+  private unitInArray(unit: Unit, arr: Unit[]): boolean
+  {
+    if (!arr)
+    {
+      return false;
+    }
+    else
+    {
+      return arr.some(u => u === unit);
+    }
+  }
+  
   render()
   {
     var formationRowElements: React.ReactHTMLElement<HTMLDivElement>[] = [];
@@ -108,8 +122,21 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
             onDragStart: this.makeBoundFunction(this.props.onDragStart, unit),
             onDragEnd: this.props.onDragEnd,
           }
+          const displayProps: UnitDisplayStatus =
+          {
+            wasDestroyed: this.unitInArray(unit, this.props.destroyedUnits),
+            wasCaptured: this.unitInArray(unit, this.props.capturedUnits),
+            
+            isInBattlePrep: this.props.isInBattlePrep,
+            isActiveUnit: this.props.activeUnit === unit,
+            isHovered: this.props.hoveredUnit === unit,
+            isInPotentialTargetArea: this.unitInArray(unit, this.props.targetsInPotentialArea),
+            isTargetOfActiveEffect: this.unitInArray(unit, this.props.activeEffectUnits),
+            hoveredActionPointExpenditure: this.props.hoveredAbility &&
+              this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
+          }
           
-          unitProps = extendObject(unitDisplayData, componentProps);
+          unitProps = shallowExtend(unitDisplayData, componentProps, displayProps);
         }
         
         unitElements.push(

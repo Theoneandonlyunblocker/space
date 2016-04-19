@@ -14,6 +14,7 @@ import PlayerControl from "../PlayerControl";
 import Battle from "../Battle";
 import Game from "../Game";
 import Renderer from "../Renderer";
+import UnitDisplayData from "../UnitDisplayData";
 
 interface PropTypes extends React.Props<any>
 {
@@ -25,6 +26,7 @@ interface PropTypes extends React.Props<any>
   game: Game;
   sceneToRender: string;
   renderer: Renderer;
+  unitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
 }
 
 interface StateType
@@ -55,6 +57,7 @@ export class StageComponent extends React.Component<PropTypes, StateType>
             battle: this.props.battle,
             humanPlayer: this.props.player,
             renderer: this.props.renderer,
+            unitDisplayDataByID: this.props.unitDisplayDataByID,
             key: "battle"
           })
         );
