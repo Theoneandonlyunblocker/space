@@ -23,6 +23,8 @@ export class UnitActionsComponent extends React.Component<PropTypes, StateType>
     super(props);
   }
   
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+  
   render()
   {
     var availableSrc = "img/icons/availableAction.png";
