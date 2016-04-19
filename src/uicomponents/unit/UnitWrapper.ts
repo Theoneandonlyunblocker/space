@@ -136,13 +136,6 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
     {
       wrapperProps.onMouseUp = wrapperProps.onTouchEnd = this.handleMouseUp
     };
-    if (this.props.activeEffectUnits)
-    {
-      if (this.props.activeEffectUnits.indexOf(this.props.unit) >= 0)
-      {
-        wrapperProps.className += " active-effect-unit";
-      }
-    }
 
     var empty = EmptyUnit(
     {

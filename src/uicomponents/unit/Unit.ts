@@ -132,20 +132,21 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     {
       wrapperProps.className += " friendly-unit";
     }
-    
     if (this.props.isActiveUnit)
     {
       wrapperProps.className += " active-unit";
     }
-
     if (this.props.isInPotentialTargetArea)
     {
       wrapperProps.className += " target-unit";
     }
-
     if (this.props.isHovered)
     {
       wrapperProps.className += " hovered-unit";
+    }
+    if (this.props.isTargetOfActiveEffect)
+    {
+      wrapperProps.className += " active-effect-unit"
     }
 
     const bodyElements =
