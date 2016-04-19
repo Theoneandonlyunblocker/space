@@ -340,14 +340,19 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
 
 export function shallowCopy<T>(toCopy: T): T
 {
-  const cloned = {};
-  
-  for (let key in toCopy)
+  return <T> shallowExtend({}, toCopy);
+}
+export function shallowExtend(destination: any, ...sources: any[])
+{
+  for (let source of sources)
   {
-    cloned[key] = toCopy[key];
+    for (let key in source)
+    {
+      destination[key] = source[key];
+    }
   }
   
-  return <T> cloned;
+  return destination;
 }
 
 // https://github.com/KyleAMathews/deepmerge
