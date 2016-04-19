@@ -1,32 +1,51 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
+import app from "../../App";
 import Unit from "../../Unit";
-import FormationRow from "./FormationRow";
+import UnitWrapper from "../unit/UnitWrapper";
+import UnitDisplayData from "../../UnitDisplayData";
+import EmptyUnit from "../unit/EmptyUnit";
+import
+{
+  default as UnitComponentFactory,
+  PropTypes as UnitPropTypes,
+  ComponentPropTypes as UnitComponentPropTypes
+} from "../unit/Unit";
 import Battle from "../../Battle";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
+import {extendObject} from "../../utility";
 
 
 interface PropTypes extends React.Props<any>
 {
   formation: Unit[][];
-  battle?: Battle;
   facesLeft: boolean;
-  activeUnit?: Unit;
-
-  hoveredUnit?: Unit;
-  hoveredAbility?: AbilityTemplate;
-
-  targetsInPotentialArea?: Unit[];
-  activeEffectUnits?: Unit[];
-  isDraggable?: boolean;
+  unitDisplayDataByID:
+  {
+    [unitID: number]: UnitDisplayData;
+  };
+  
+  onMouseUp?: (position: number[]) => void;
   
   onUnitClick?: (unit: Unit) => void;
-  onMouseUp?: (position: number[]) => void;
   handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
   handleMouseEnterUnit?: (unit: Unit) => void;
+  
+  isDraggable?: boolean;
   onDragStart?: (unit: Unit) => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
+  
+  // battle?: Battle;
+  // activeUnit?: Unit;
+
+  // hoveredUnit?: Unit;
+  // hoveredAbility?: AbilityTemplate;
+
+  // targetsInPotentialArea?: Unit[];
+  // activeEffectUnits?: Unit[];
+  
+  // onMouseUp?: (position: number[]) => void;
 }
 
 interface StateType
@@ -45,41 +64,82 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     super(props);
   }
   
+  private makeBoundFunction(functionToBind: Function, valueToBind: any): () => void
+  {
+    if (!functionToBind)
+    {
+      return null;
+    }
+    else
+    {
+      return(
+        () => {functionToBind(valueToBind)}
+      );
+    }
+  }
+  
   render()
   {
-    var formation = this.props.formation;
+    var formationRowElements: React.ReactHTMLElement<HTMLDivElement>[] = [];
 
-    var formationRows: React.ReactElement<any>[] = [];
-
-    for (let i = 0; i < formation.length; i++)
+    for (let i = 0; i < this.props.formation.length; i++)
     {
-      formationRows.push(FormationRow(
+      const absoluteRowIndex = this.props.facesLeft ?
+        i + app.moduleData.ruleSet.battle.rowsPerFormation :
+        i;
+      const unitElements: React.ReactElement<any>[] = [];
+      for (let j = 0; j < this.props.formation[i].length; j++)
       {
-        key: i,
-        row: formation[i],
-        rowIndexInOwnFormation: i,
-        battle: this.props.battle,
-        facesLeft: this.props.facesLeft,
-        activeUnit: this.props.activeUnit,
-        hoveredUnit: this.props.hoveredUnit,
-        hoveredAbility: this.props.hoveredAbility,
-        handleMouseEnterUnit: this.props.handleMouseEnterUnit,
-        handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
-        targetsInPotentialArea: this.props.targetsInPotentialArea,
-        activeEffectUnits: this.props.activeEffectUnits,
-
-        onMouseUp: this.props.onMouseUp,
-        onUnitClick: this.props.onUnitClick,
-
-        isDraggable: this.props.isDraggable,
-        onDragStart: this.props.onDragStart,
-        onDragEnd: this.props.onDragEnd
-      }));
+        const absolutePosition = [absoluteRowIndex, j];
+        const unit = this.props.formation[i][j];
+        
+        let unitProps: UnitPropTypes;
+        
+        if (unit)
+        {
+          const unitDisplayData = this.props.unitDisplayDataByID[unit.id];
+          const componentProps: UnitComponentPropTypes =
+          {
+            id: unit.id,
+            onUnitClick: this.makeBoundFunction(this.props.onUnitClick, unit),
+            handleMouseEnterUnit: this.makeBoundFunction(this.props.handleMouseEnterUnit, unit),
+            handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
+            isDraggable: this.props.isDraggable,
+            onDragStart: this.makeBoundFunction(this.props.onDragStart, unit),
+            onDragEnd: this.props.onDragEnd,
+          }
+          
+          unitProps = extendObject(unitDisplayData, componentProps);
+        }
+        
+        unitElements.push(
+          UnitWrapper({key: ("unit_wrapper_" + i) + j},
+            EmptyUnit(
+            {
+              facesLeft: this.props.facesLeft,
+              onMouseUp: this.props.onMouseUp ?
+                this.props.onMouseUp.bind(null, absolutePosition) :
+                null
+            }),
+            !unit ? null : UnitComponentFactory(
+              unitProps
+            )
+          )
+        );
+      }
+      
+      formationRowElements.push(React.DOM.div(
+      {
+        className: "battle-formation-row",
+        key: "row_" + i
+      },
+        unitElements
+      ))
     }
 
     return(
       React.DOM.div({className: "battle-formation"},
-        formationRows
+        formationRowElements
       )
     );
   }
