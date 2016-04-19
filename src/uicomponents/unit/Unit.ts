@@ -33,8 +33,21 @@ export interface ComponentPropTypes extends React.Props<any>
   dragPositionerProps?: DragPositionerProps;
 }
 
-export interface PropTypes extends ComponentPropTypes, UnitDisplayData
-{  
+export interface DisplayStatus
+{
+  wasDestroyed?: boolean;
+  wasCaptured?: boolean;
+  
+  isInBattlePrep?: boolean;
+  isActiveUnit?: boolean;
+  isHovered?: boolean;
+  isInPotentialTargetArea?: boolean;
+  isTargetOfActiveEffect?: boolean;
+  hoveredActionPointExpenditure?: number;
+}
+
+export interface PropTypes extends ComponentPropTypes, UnitDisplayData, DisplayStatus
+{
 
 }
 

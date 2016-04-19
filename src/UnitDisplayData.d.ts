@@ -24,15 +24,16 @@ interface UnitDisplayData
   iconSrc: string;
   // iconElement: React.ReactElement<any>; // TODO fluff | allow other icon elements
   
-  wasDestroyed?: boolean;
-  wasCaptured?: boolean;
+  // in src/uicomponents/unit.ts:DisplayStatus
+  // wasDestroyed?: boolean;
+  // wasCaptured?: boolean;
   
-  isInBattlePrep?: boolean;
-  isActiveUnit?: boolean;
-  isHovered?: boolean;
-  isInPotentialTargetArea?: boolean;
-  isTargetOfActiveEffect?: boolean;
-  hoveredActionPointExpenditure?: number;
+  // isInBattlePrep?: boolean;
+  // isActiveUnit?: boolean;
+  // isHovered?: boolean;
+  // isInPotentialTargetArea?: boolean;
+  // isTargetOfActiveEffect?: boolean;
+  // hoveredActionPointExpenditure?: number;
 }
 
 export default UnitDisplayData;
