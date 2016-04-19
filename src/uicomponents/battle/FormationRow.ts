@@ -16,7 +16,6 @@ interface PropTypes extends React.Props<any>
   battle?: Battle;
   facesLeft: boolean;
   activeUnit?: Unit;
-  activeTargets?: {[id: number]: AbilityTemplate[];}; 
 
   hoveredUnit?: Unit;
   hoveredAbility?: AbilityTemplate;
@@ -70,7 +69,6 @@ export class FormationRowComponent extends React.Component<PropTypes, StateType>
         battle: this.props.battle,
         facesLeft: this.props.facesLeft,
         activeUnit: this.props.activeUnit,
-        activeTargets: this.props.activeTargets,
         hoveredUnit: this.props.hoveredUnit,
         hoveredAbility: this.props.hoveredAbility,
         handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,

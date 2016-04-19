@@ -13,7 +13,6 @@ interface PropTypes extends React.Props<any>
   battle?: Battle;
   facesLeft: boolean;
   activeUnit?: Unit;
-  activeTargets?: {[id: number]: AbilityTemplate[];};
 
   hoveredUnit?: Unit;
   hoveredAbility?: AbilityTemplate;
