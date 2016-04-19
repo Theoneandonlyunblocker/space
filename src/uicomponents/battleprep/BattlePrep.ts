@@ -75,7 +75,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
       selectedUnit: null,
       currentDragItem: null,
 
-      leftLowerElement: "playerFormation" // "playerFormation" || "enemyFormation" || "itemEquip"
+      leftLowerElement: "playerFormation"
     });
   }
   componentDidMount()
@@ -84,13 +84,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   autoMakeFormation()
   {
-    var battlePrep = this.props.battlePrep;
-
-    battlePrep.clearPlayerFormation();
-    battlePrep.playerFormation = battlePrep.makeAutoFormation(
-      battlePrep.availableUnits, battlePrep.enemyUnits, battlePrep.humanPlayer);
-
-    battlePrep.setupPlayerFormation(battlePrep.playerFormation);
+    this.props.battlePrep.humanFormation.clearFormation();
+    this.props.battlePrep.humanFormation.setAutoFormation(
+      this.props.battlePrep.enemyUnits, this.props.battlePrep.enemyFormation.formation);
 
     this.setLeftLowerElement("playerFormation");
     this.forceUpdate();
@@ -154,7 +150,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   {
     if (!dropSuccesful && this.state.currentDragUnit)
     {
-      this.props.battlePrep.removeUnit(this.state.currentDragUnit);
+      this.props.battlePrep.humanFormation.removeUnit(this.state.currentDragUnit);
     }
 
     this.setState(
@@ -170,16 +166,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     var battlePrep = this.props.battlePrep;
     if (this.state.currentDragUnit)
     {
-      var unitCurrentlyInPosition = battlePrep.getUnitAtPosition(position);
-      if (unitCurrentlyInPosition)
-      {
-        battlePrep.swapUnits(this.state.currentDragUnit, unitCurrentlyInPosition);
-      }
-      else
-      {
-        battlePrep.setUnit(this.state.currentDragUnit, position);
-      }
-
+      battlePrep.humanFormation.setUnit(this.state.currentDragUnit, position);
     }
 
     this.handleDragEnd(true);
@@ -263,9 +250,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     }
     else if (this.state.selectedUnit)
     {
-      var selectedUnitIsFriendly =
-        battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
-
+      var selectedUnitIsFriendly = battlePrep.humanUnits.some(unit => unit === this.state.selectedUnit);
 
       leftUpperElement = MenuUnitInfo(
       {
@@ -295,9 +280,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         leftLowerElement = Formation(
         {
           key: "playerFormation",
-          formation: battlePrep.playerFormation.slice(0),
+          formation: battlePrep.humanFormation.formation,
           facesLeft: false,
-          unitDisplayDataByID: battlePrep.humanPlayerDisplayData,
+          unitDisplayDataByID: battlePrep.humanFormation.getDisplayData(),
           
           isInBattlePrep: true,
           
@@ -320,9 +305,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         leftLowerElement = Formation(
         {
           key: "enemyFormation",
-          formation: battlePrep.enemyFormation,
+          formation: battlePrep.enemyFormation.formation,
           facesLeft: true,
-          unitDisplayDataByID: battlePrep.enemyPlayerDisplayData,
+          unitDisplayDataByID: battlePrep.enemyFormation.getDisplayData(),
           
           isInBattlePrep: true,
           
@@ -353,7 +338,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     };
 
     var playerIsDefending = player === battlePrep.defender;
-    var humanFormationIsValid = battlePrep.humanFormationIsValid();
+    var humanFormationIsValid = battlePrep.humanFormation.isFormationValid();
     var canScout = player.starIsDetected(battlePrep.battleData.location);
 
     return(
@@ -440,9 +425,9 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
         ),
         UnitList(
         {
-          units: battlePrep.availableUnits,
+          units: battlePrep.humanFormation.units,
           selectedUnit: this.state.selectedUnit,
-          reservedUnits: battlePrep.alreadyPlaced,
+          reservedUnits: battlePrep.humanFormation.placedUnitPositionsByID,
           hoveredUnit: this.state.hoveredUnit,
 
           checkTimesActed: true,

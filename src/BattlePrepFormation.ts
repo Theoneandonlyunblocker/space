@@ -11,12 +11,12 @@ export default class BattlePrepFormation
   public units: Unit[];
   public minUnits: number;
   public hasScouted: boolean;
-  
-  private player: Player;
-  private placedUnitPositionsByID:
+  public placedUnitPositionsByID:
   {
     [id: number]: number[];
   } = {};
+  
+  private player: Player;
   
   private cachedDisplayData: {[unitID: number]: UnitDisplayData};
   private displayDataIsDirty: boolean = true;
@@ -108,6 +108,16 @@ export default class BattlePrepFormation
       this.placedUnitPositionsByID[unit.id] = position;
     }
   }
+  public removeUnit(unit: Unit, position = this.getUnitPosition(unit)): void
+  {
+    if (!position)
+    {
+      return;
+    }
+    
+    this.formation[position[0]][position[1]] = null;
+    delete this.placedUnitPositionsByID[unit.id];
+  }
   
   private swapUnits(unit1: Unit, unit2: Unit): void
   {
@@ -118,16 +128,6 @@ export default class BattlePrepFormation
 
     this.setUnit(unit1, new1Pos);
     this.setUnit(unit2, new2Pos);
-  }
-  private removeUnit(unit: Unit, position = this.getUnitPosition(unit)): void
-  {
-    if (!position)
-    {
-      return;
-    }
-    
-    this.formation[position[0]][position[1]] = null;
-    this.placedUnitPositionsByID[unit.id] = null;
   }
   private getFormationDisplayData()
   {

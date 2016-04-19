@@ -11,21 +11,23 @@ import getNullFormation from "./getNullFormation";
 
 export default class BattlePrep
 {
-  private attacker: Player;
-  private defender: Player;
-  private battleData: BattleData;
+  public battleData: BattleData;
+  public attacker: Player;
+  public defender: Player;
+  public humanPlayer: Player;
+  public enemyPlayer: Player;
+  public humanFormation: BattlePrepFormation;
+  public enemyFormation: BattlePrepFormation;
+  public humanUnits: Unit[];
+  public enemyUnits: Unit[];
+  
+  
   private attackerUnits: Unit[];
   private defenderUnits: Unit[];
 
   private attackerFormation: BattlePrepFormation;
   private defenderFormation: BattlePrepFormation;
 
-  private humanPlayer: Player;
-  private enemyPlayer: Player;
-  private humanUnits: Unit[];
-  private enemyUnits: Unit[];
-  private humanFormation: BattlePrepFormation;
-  private enemyFormation: BattlePrepFormation;
 
   minDefenders: number;
 
