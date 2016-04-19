@@ -16,10 +16,10 @@ interface PropTypes extends React.Props<any>
   maxActionPoints: number;
   currentActionPoints: number;
   hoveredActionPointExpenditure: number;
-  isDead?: boolean;
-  isCaptured?: boolean;
+  wasDestroyed?: boolean;
+  wasCaptured?: boolean;
   guardAmount: number;
-  guardCoverage?: GuardCoverage;
+  guardType?: GuardCoverage;
 
   isPreparing?: boolean;
   animateDuration?: number;
@@ -45,7 +45,7 @@ export class UnitInfoComponent extends React.Component<PropTypes, StateType>
   render()
   {
     var battleEndStatus: React.ReactHTMLElement<any> = null;
-    if (this.props.isDead)
+    if (this.props.wasDestroyed)
     {
       battleEndStatus = React.DOM.div(
       {
@@ -59,7 +59,7 @@ export class UnitInfoComponent extends React.Component<PropTypes, StateType>
         )
       )
     }
-    else if (this.props.isCaptured)
+    else if (this.props.wasCaptured)
     {
       battleEndStatus = React.DOM.div(
       {
