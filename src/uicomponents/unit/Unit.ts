@@ -2,7 +2,7 @@
 
 import Unit from "../../Unit";
 import UnitPortrait from "./UnitPortrait";
-import UnitStatusEffects from "./UnitStatusEffects";
+import UnitPassiveEffects from "./UnitPassiveEffects";
 import UnitAttributeChanges from "./UnitAttributeChanges";
 import UnitInfo from "./UnitInfo";
 import UnitIconContainer from "./UnitIconContainer";
@@ -159,10 +159,9 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
         {
           imageSrc: (this.props.portraitSrc || "")
         }),
-        UnitStatusEffects(
+        UnitPassiveEffects(
         {
-          unit: unit,
-          isBattlePrep: this.props.isInBattlePrep
+          passiveEffects: this.props.passiveEffects
         }),
         UnitAttributeChanges(
         {
