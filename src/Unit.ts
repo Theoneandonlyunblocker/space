@@ -10,9 +10,10 @@ import CultureTemplate from "./templateinterfaces/CultureTemplate";
 import StatusEffectAttributes from "./templateinterfaces/StatusEffectAttributes";
 import AbilityBase from "./templateinterfaces/AbilityBase";
 import SFXParams from "./templateinterfaces/SFXParams";
+import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
 
 import DamageType from "./DamageType";
-import UnitAttributes from "./UnitAttributes";
+import {default as UnitAttributes, PartialUnitAttributes} from "./UnitAttributes";
 import
 {
   extendObject,
@@ -103,8 +104,8 @@ export default class Unit
   passiveSkillsByPhase:
   {
     atBattleStart?: PassiveSkillTemplate[];
-    beforeAbilityUse?: PassiveSkillTemplate[];
-    afterAbilityUse?: PassiveSkillTemplate[];
+    // beforeAbilityUse?: PassiveSkillTemplate[];
+    // afterAbilityUse?: PassiveSkillTemplate[];
     atTurnStart?: PassiveSkillTemplate[];
     inBattlePrep?: PassiveSkillTemplate[];
   } = {};
@@ -122,7 +123,7 @@ export default class Unit
   sfxDuration: number;
   lastHealthDrawnAt: number;
   // end old
-  // new
+  // todo new, but irrelevant due to unitdisplaydata
   displayedHealth: number;
   
   // end new
@@ -659,6 +660,20 @@ export default class Unit
 
     return withItems;
   }
+  private getAttributesWithEffectsDifference(): PartialUnitAttributes
+  {
+    const withItems = this.getAttributesWithItems();
+    const withEffects = this.getAttributesWithEffects();
+    
+    const difference: PartialUnitAttributes = {};
+    
+    for (let attributeType in withEffects)
+    {
+      difference[attributeType] = withEffects[attributeType] - withItems[attributeType];
+    }
+    
+    return difference;
+  }
   updateCachedAttributes()
   {
     this.cachedAttributes = this.getAttributesWithEffects();
@@ -759,6 +774,46 @@ export default class Unit
 
     return this.passiveSkillsByPhase;
   }
+  private getPassiveEffectsForScene(scene: "galaxyMap" | "battle" | "battlePrep"): UnitPassiveEffect[]
+  {
+    const relevantTemplateKeys: string[] = [];
+    switch (scene)
+    {
+      case "galaxyMap":
+        break;
+      case "battlePrep":
+        relevantTemplateKeys.push("atBattleStart", "inBattlePrep");
+        break;
+      case "battle":
+        relevantTemplateKeys.push("beforeAbilityUse", "afterAbilityUse");
+        break;
+    }
+    
+    const effectFilterFN = (e: UnitPassiveEffect) =>
+    {
+      if (e.isHidden)
+      {
+        return false;
+      }
+      for (let key of relevantTemplateKeys)
+      {
+        if (e[key])
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    const relevantStatusEffectTemplates = this.battleStats.statusEffects.map(s =>
+    {
+      return s.template;
+    }).filter(effectFilterFN);
+    
+    const relevantPassiveEffectTemplates = this.getAllPassiveSkills().filter(effectFilterFN);
+    
+    return relevantStatusEffectTemplates.concat(relevantPassiveEffectTemplates);
+  } 
   receiveDamage(amount: number, damageType: DamageType)
   {
     var damageReduction = this.getReducedDamageFactor(damageType);
@@ -1128,28 +1183,32 @@ export default class Unit
   {
     this.template.unitDrawingFN(this, params);
   }
-  public getDisplayData(): UnitDisplayData
+  public getDisplayData(scene: "galaxyMap" | "battle" | "battlePrep"): UnitDisplayData
   {
     return(
-  {
-    name: this.name,
-    
-    facesLeft: this.battleStats.side === "side2",
-    currentHealth: this.currentHealth,
-    maxHealth: this.maxHealth,
-    
-    guardAmount: this.battleStats.guardAmount,
-    guardType: this.battleStats.guardCoverage,
-    
-    currentActionPoints: this.battleStats.currentActionPoints,
-    maxActionPoints: this.attributes.maxActionPoints,
+    {
+      name: this.name,
+      
+      facesLeft: this.battleStats.side === "side2",
+      currentHealth: this.currentHealth,
+      maxHealth: this.maxHealth,
+      
+      guardAmount: this.battleStats.guardAmount,
+      guardType: this.battleStats.guardCoverage,
+      
+      currentActionPoints: this.battleStats.currentActionPoints,
+      maxActionPoints: this.attributes.maxActionPoints,
 
-    isPreparing: Boolean(this.battleStats.queuedAction),
-    isAnnihilated: this.battleStats.isAnnihilated,
-    
-    portraitSrc: this.portrait.imageSrc,
-    iconSrc: this.template.icon,
-  });
+      isPreparing: Boolean(this.battleStats.queuedAction),
+      isAnnihilated: this.battleStats.isAnnihilated,
+      isSquadron: this.isSquadron,
+      
+      portraitSrc: this.portrait.imageSrc,
+      iconSrc: this.template.icon,
+      
+      attributeChanges: this.getAttributesWithEffectsDifference(),
+      passiveEffects: this.getPassiveEffectsForScene(scene)
+    });
   }
   serialize(includeItems: boolean = true, includeFluff: boolean = true): UnitSaveData
   {

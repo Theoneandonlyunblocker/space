@@ -1,5 +1,6 @@
 import GuardCoverage from "./GuardCoverage";
 import {PartialUnitAttributes} from "./UnitAttributes";
+import UnitPassiveEffect from "./templateinterfaces/UnitPassiveEffect";
 
 interface UnitDisplayData
 {
@@ -17,6 +18,7 @@ interface UnitDisplayData
   isSquadron: boolean;
   
   attributeChanges?: PartialUnitAttributes;
+  passiveEffects?: UnitPassiveEffect[];
   
   portraitSrc: string; // TODO fluff | allow other portrait elements
   iconSrc: string;
