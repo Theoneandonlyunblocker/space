@@ -1,5 +1,5 @@
 import GuardCoverage from "./GuardCoverage";
-import Unit from "./Unit";
+import {PartialUnitAttributes} from "./UnitAttributes";
 
 interface UnitDisplayData
 {
@@ -15,6 +15,8 @@ interface UnitDisplayData
   isPreparing: boolean;
   isAnnihilated: boolean;
   isSquadron: boolean;
+  
+  attributeChanges?: PartialUnitAttributes;
   
   portraitSrc: string; // TODO fluff | allow other portrait elements
   iconSrc: string;
