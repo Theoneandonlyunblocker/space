@@ -297,18 +297,21 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           key: "playerFormation",
           formation: battlePrep.playerFormation.slice(0),
           facesLeft: false,
+          unitDisplayDataByID: battlePrep.humanPlayerDisplayData,
+          
+          isInBattlePrep: true,
+          
           hoveredUnit: this.state.hoveredUnit,
           activeUnit: this.state.selectedUnit,
 
           onMouseUp: this.handleDrop,
           onUnitClick: this.setSelectedUnit,
+          handleMouseEnterUnit: this.handleMouseEnterUnit,
+          handleMouseLeaveUnit: this.handleMouseLeaveUnit,
 
           isDraggable: true,
           onDragStart: this.handleDragStart,
           onDragEnd: this.handleDragEnd,
-
-          handleMouseEnterUnit: this.handleMouseEnterUnit,
-          handleMouseLeaveUnit: this.handleMouseLeaveUnit
         });
         break;
       }
@@ -319,14 +322,18 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           key: "enemyFormation",
           formation: battlePrep.enemyFormation,
           facesLeft: true,
+          unitDisplayDataByID: battlePrep.enemyPlayerDisplayData,
+          
+          isInBattlePrep: true,
+          
           hoveredUnit: this.state.hoveredUnit,
           activeUnit: this.state.selectedUnit,
 
           onUnitClick: this.setSelectedUnit,
-          isDraggable: false,
-
           handleMouseEnterUnit: this.handleMouseEnterUnit,
-          handleMouseLeaveUnit: this.handleMouseLeaveUnit
+          handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+
+          isDraggable: false,
         });
         break;
       }

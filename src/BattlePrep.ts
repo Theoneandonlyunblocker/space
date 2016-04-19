@@ -5,6 +5,7 @@ import Unit from "./Unit";
 import Player from "./Player";
 import Battle from "./Battle";
 import BattleData from "./BattleData";
+import UnitDisplayData from "./UnitDisplayData";
 
 export default class BattlePrep
 {
@@ -32,6 +33,55 @@ export default class BattlePrep
   minDefendersInNeutralTerritory: number = 1;
 
   afterBattleFinishCallbacks: Function[] = [];
+  
+  private cachedAttackerDisplayData: {[unitID: number]: UnitDisplayData};
+  private cachedAttackerDisplayDataIsDirty: boolean = true;
+  public get attackerDisplayData()
+  {
+    if (this.cachedAttackerDisplayDataIsDirty)
+    {
+      this.cachedAttackerDisplayData = this.getFormationDisplayData(this.attackerFormation);
+      this.cachedAttackerDisplayDataIsDirty = false;
+    }
+    
+    return this.cachedAttackerDisplayData;
+  }
+  
+  private cachedDefenderDisplayData: {[unitID: number]: UnitDisplayData};
+  private cachedDefenderDisplayDataIsDirty: boolean = true;
+  public get defenderDisplayData()
+  {
+    if (this.cachedDefenderDisplayDataIsDirty)
+    {
+      this.cachedDefenderDisplayData = this.getFormationDisplayData(this.defenderFormation);
+      this.cachedDefenderDisplayDataIsDirty = false;
+    }
+    
+    return this.cachedDefenderDisplayData;
+  }
+  
+  public get humanPlayerDisplayData()
+  {
+    if (this.humanPlayer === this.attacker)
+    {
+      return this.attackerDisplayData;
+    }
+    else
+    {
+      return this.defenderDisplayData;
+    }
+  }
+  public get enemyPlayerDisplayData()
+  {
+    if (this.enemyPlayer === this.attacker)
+    {
+      return this.attackerDisplayData;
+    }
+    else
+    {
+      return this.defenderDisplayData;
+    }
+  }
 
   constructor(battleData: BattleData)
   {
@@ -57,6 +107,22 @@ export default class BattlePrep
     {
       allUnits[i].resetBattleStats();
     }
+  }
+  private getFormationDisplayData(formation: Unit[][])
+  {
+    const displayDataByID: {[unitID: number]: UnitDisplayData} = {};
+    for (let row of formation)
+    {
+      for (let unit of row)
+      {
+        if (unit)
+        {
+          displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
+        }
+      }
+    }
+    
+    return displayDataByID;
   }
   triggerPassiveSkills()
   {
