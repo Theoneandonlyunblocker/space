@@ -4,7 +4,7 @@ import Unit from "../../Unit";
 import UnitPortrait from "./UnitPortrait";
 import UnitStatusEffects from "./UnitStatusEffects";
 import UnitInfo from "./UnitInfo";
-import UnitIcon from "./UnitIcon";
+import UnitIconContainer from "./UnitIconContainer";
 import Battle from "../../Battle";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 import UnitDisplayData from "../../UnitDisplayData";
@@ -12,30 +12,23 @@ import UnitDisplayData from "../../UnitDisplayData";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-interface PropTypes extends React.Props<any>, UnitDisplayData
-{
-  isCaptured?: boolean;
-  isDead?: boolean;
-  position?: number[];
-  unit: Unit;
+export interface PropTypes extends React.Props<any>, UnitDisplayData
+{  
+  id: number;
   
-  battle?: Battle;
-  facesLeft: boolean;
-  activeUnit?: Unit;
-
-  hoveredUnit?: Unit;
-  hoveredAbility?: AbilityTemplate;
-
-  targetsInPotentialArea?: Unit[];
-  activeEffectUnits?: Unit[];
+  animateDuration?: number;
   
-  onUnitClick?: (unit: Unit) => void;
-  onMouseUp?: (position: number[]) => void;
+  // onUnitClick?: (unit: Unit) => void;
+  onUnitClick?: () => void;
+  // onMouseUp?: (position: number[]) => void;
+  onMouseUp?: () => void;
   handleMouseLeaveUnit?: (e: React.MouseEvent) => void;
-  handleMouseEnterUnit?: (unit: Unit) => void;
+  // handleMouseEnterUnit?: (unit: Unit) => void;
+  handleMouseEnterUnit?: () => void;
   
   isDraggable?: boolean;
-  onDragStart?: (unit: Unit) => void;
+  // onDragStart?: (unit: Unit) => void;
+  onDragStart?: () => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
   dragPositionerProps?: DragPositionerProps;
 }
@@ -87,7 +80,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
 
   onDragStart()
   {
-    this.props.onDragStart(this.props.unit);
+    this.props.onDragStart();
   }
   onDragEnd()
   {
@@ -96,35 +89,27 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
 
   handleClick()
   {
-    this.props.onUnitClick(this.props.unit);
+    this.props.onUnitClick();
   }
 
   handleMouseEnter()
   {
-    if (!this.props.handleMouseEnterUnit) return;
-    if (this.props.unit.currentHealth <= 0) return;
-
-    this.props.handleMouseEnterUnit(this.props.unit);
+    this.props.handleMouseEnterUnit();
   }
   handleMouseLeave(e: React.MouseEvent)
   {
-    if (!this.props.handleMouseLeaveUnit) return;
-
     this.props.handleMouseLeaveUnit(e);
   }
 
   render()
   {
-    var unit = this.props.unit;
-    unit.uiDisplayIsDirty = false;
-
-    var wrapperProps: React.HTMLAttributes =
+    const wrapperProps: React.HTMLAttributes =
     {
-      className: "unit"
+      className: "unit",
+      onMouseEnter: this.props.handleMouseEnterUnit ? this.handleMouseEnter : null,
+      onMouseLeave: this.props.handleMouseLeaveUnit ? this.handleMouseLeave : null,
+      onClick: this.props.onUnitClick ? this.handleClick : null,
     };
-
-    wrapperProps.onMouseEnter = this.handleMouseEnter;
-    wrapperProps.onMouseLeave = this.handleMouseLeave;
 
     if (this.props.isDraggable)
     {
@@ -138,12 +123,6 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
       }
     }
 
-
-    if (this.props.onUnitClick)
-    {
-      wrapperProps.onClick = this.handleClick;
-    }
-
     if (this.props.facesLeft)
     {
       wrapperProps.className += " enemy-unit";
@@ -152,72 +131,57 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
     {
       wrapperProps.className += " friendly-unit";
     }
-
-    var isActiveUnit = ( this.props.activeUnit &&
-      unit.id === this.props.activeUnit.id);
-
-    if (isActiveUnit)
+    
+    if (this.props.isActiveUnit)
     {
       wrapperProps.className += " active-unit";
     }
 
-    var isInPotentialTargetArea = (this.props.targetsInPotentialArea &&
-      this.props.targetsInPotentialArea.indexOf(unit) >= 0);
-
-    if (isInPotentialTargetArea)
+    if (this.props.isInPotentialTargetArea)
     {
       wrapperProps.className += " target-unit";
     }
 
-    if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id)
+    if (this.props.isHovered)
     {
       wrapperProps.className += " hovered-unit";
-    }
-
-    var hoveredActionPointExpenditure = 0;
-    if (isActiveUnit && this.props.hoveredAbility)
-    {
-      hoveredActionPointExpenditure = this.props.hoveredAbility.actionsUse;
-    }
-
-    var infoProps =
-    {
-      key: "info",
-      name: unit.name,
-      guardAmount: unit.battleStats.guardAmount,
-      guardCoverage: unit.battleStats.guardCoverage,
-      isPreparing: Boolean(unit.battleStats.queuedAction),
-      maxHealth: unit.maxHealth,
-      currentHealth: unit.currentHealth,
-      isSquadron: unit.isSquadron,
-      maxActionPoints: unit.attributes.maxActionPoints,
-      currentActionPoints: unit.battleStats.currentActionPoints,
-      hoveredActionPointExpenditure: hoveredActionPointExpenditure,
-
-      isDead: this.props.isDead,
-      isCaptured: this.props.isCaptured,
-
-      animateDuration: unit.sfxDuration
     }
 
     const bodyElements =
     [
       React.DOM.div(
       {
-        className: "unit-left-container",
-        key: "leftContainer"
+        className: "unit-portrait-container",
+        key: "portraitContainer"
       },
         UnitPortrait(
         {
-          imageSrc: (unit.portrait ? unit.portrait.imageSrc : "")
+          imageSrc: (this.props.portraitSrc || "")
         }),
         UnitStatusEffects(
         {
           unit: unit,
-          isBattlePrep: !this.props.battle
+          isBattlePrep: this.props.isInBattlePrep
         })
       ),
-      UnitInfo(infoProps),
+      UnitInfo(
+      {
+        key: "info",
+        name: this.props.name,
+        guardAmount: this.props.guardAmount,
+        guardType: this.props.guardType,
+        isPreparing: this.props.isPreparing,
+        maxHealth: this.props.maxHealth,
+        currentHealth: this.props.currentHealth,
+        currentActionPoints: this.props.currentActionPoints,
+        maxActionPoints: this.props.maxActionPoints,
+        hoveredActionPointExpenditure: this.props.hoveredActionPointExpenditure,
+        isSquadron: this.props.isSquadron,
+        wasDestroyed: this.props.wasDestroyed,
+        wasCaptured: this.props.wasCaptured,
+        
+        animateDuration: this.props.animateDuration,
+      }),
     ];
 
     if (this.props.facesLeft)
@@ -225,7 +189,7 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
       bodyElements.reverse();
     }
 
-    if (unit.displayFlags.isAnnihilated)
+    if (this.props.isAnnihilated)
     {
       bodyElements.push(
         React.DOM.div({key: "overlay", className: "unit-annihilated-overlay"},
@@ -234,10 +198,8 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
       );
     }
 
-    var allElements =
+    const innerElements =
     [
-      React.DOM.div(containerProps,
-        containerElements
       React.DOM.div(
       {
         className: "unit-body",
@@ -246,24 +208,17 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
       },
         bodyElements
       ),
-      UnitIcon(
+      UnitIconContainer(
         {
-          icon: unit.template.icon,
-          facesLeft: this.props.facesLeft,
           key: "icon",
-          isActiveUnit: isActiveUnit,
-          isAnnihilated: unit.displayFlags.isAnnihilated
+          facesLeft: this.props.facesLeft,
+          iconSrc: this.props.iconSrc
         })
     ];
 
-    if (this.props.facesLeft)
-    {
-      allElements = allElements.reverse();
-    }
-
     return(
       React.DOM.div(wrapperProps,
-        allElements
+        this.props.facesLeft ? innerElements.reverse() : innerElements
       )
     );
   }

@@ -16,9 +16,9 @@ interface UnitDisplayData
   isAnnihilated: boolean;
   isSquadron: boolean;
   
-  portraitSrc: string;
-  // iconElement: React.ReactElement<any>; // TODO fluff | allow other icon elements
+  portraitSrc: string; // TODO fluff | allow other portrait elements
   iconSrc: string;
+  // iconElement: React.ReactElement<any>; // TODO fluff | allow other icon elements
   
   wasDestroyed?: boolean;
   wasCaptured?: boolean;
