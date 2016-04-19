@@ -13,8 +13,8 @@ import UnitDisplayData from "../../UnitDisplayData";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-export interface PropTypes extends React.Props<any>, UnitDisplayData
-{  
+export interface ComponentPropTypes extends React.Props<any>
+{
   id: number;
   
   animateDuration?: number;
@@ -31,6 +31,11 @@ export interface PropTypes extends React.Props<any>, UnitDisplayData
   onDragStart?: () => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
   dragPositionerProps?: DragPositionerProps;
+}
+
+export interface PropTypes extends ComponentPropTypes, UnitDisplayData
+{  
+
 }
 
 interface StateType
