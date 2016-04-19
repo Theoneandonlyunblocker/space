@@ -5,12 +5,14 @@ declare interface UnitArchetype
   type: string;
   idealWeightInFleet: number; // relative to others
   idealWeightInBattle: number;
-  rowScores:
+  
+  // one of these two must be defined
+  rowScores?:
   {
     ROW_FRONT: number;
     ROW_BACK: number;
   }; // TODO enum
-  scoreMultiplierForRowFN?: (row: string, rowUnits: Unit[], enemyUnits: Unit[]) => number;
+  scoreMultiplierForRowFN?: (row: string, rowUnits: Unit[], enemyUnits?: Unit[], enemyFormation?: Unit[][]) => number;
 }
 
 export default UnitArchetype;

@@ -116,9 +116,9 @@ export var warpJammer: PassiveSkillTemplate =
   [
     function(user: Unit, battlePrep: BattlePrep)
     {
-      if (user.fleet.player === battlePrep.attacker)
+      if (battlePrep.locationIsNeutral() && user.fleet.player === battlePrep.attacker)
       {
-        battlePrep.minDefendersInNeutralTerritory += 1;
+        battlePrep.minDefenders += 1;
       }
     }
   ],
