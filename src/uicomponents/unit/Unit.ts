@@ -3,6 +3,7 @@
 import Unit from "../../Unit";
 import UnitPortrait from "./UnitPortrait";
 import UnitStatusEffects from "./UnitStatusEffects";
+import UnitAttributeChanges from "./UnitAttributeChanges";
 import UnitInfo from "./UnitInfo";
 import UnitIconContainer from "./UnitIconContainer";
 import Battle from "../../Battle";
@@ -162,6 +163,10 @@ export class UnitComponent extends React.Component<PropTypes, StateType>
         {
           unit: unit,
           isBattlePrep: this.props.isInBattlePrep
+        }),
+        UnitAttributeChanges(
+        {
+          attributeChanges: this.props.attributeChanges
         })
       ),
       UnitInfo(

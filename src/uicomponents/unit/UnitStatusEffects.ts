@@ -2,11 +2,12 @@
 
 import Unit from "../../Unit";
 import PassiveSkillTemplate from "../../templateinterfaces/PassiveSkillTemplate";
+import {PartialUnitAttributes} from "../../UnitAttributes";
 
 
 interface PropTypes extends React.Props<any>
 {
-  unit: Unit;
+  attributeChanges?: PartialUnitAttributes;
   isBattlePrep: boolean;
 }
 
@@ -26,36 +27,6 @@ export class UnitStatusEffectsComponent extends React.Component<PropTypes, State
   
   render()
   {
-    var statusEffects: React.ReactHTMLElement<any>[] = [];
-
-    var withItems = this.props.unit.getAttributesWithItems();
-    var withEffects = this.props.unit.getAttributesWithEffects();
-
-    for (let attribute in withEffects)
-    {
-      if (attribute === "maxActionPoints") continue;
-
-      var ite = withItems[attribute];
-      var eff = withEffects[attribute];
-
-      if (ite === eff) continue;
-
-      var polarityString = eff > ite ? "positive" : "negative";
-      var polaritySign = eff > ite ? " +" : " ";
-
-      var imageSrc = "img/icons/statusEffect_" + polarityString + "_" + attribute + ".png";
-
-      var titleString = "" + attribute + polaritySign + (eff - ite);
-
-      statusEffects.push(React.DOM.img(
-      {
-        className: "status-effect-icon" + " status-effect-icon-" + attribute,
-        src: imageSrc,
-        key: attribute,
-        title: titleString
-      }))
-    }
-
     var passiveSkills: PassiveSkillTemplate[] = [];
     var passiveSkillsByPhase = this.props.unit.getPassiveSkillsByPhase();
     var phasesToCheck = this.props.isBattlePrep ? ["atBattleStart"] : ["beforeAbilityUse", "afterAbilityUse"];
@@ -98,13 +69,7 @@ export class UnitStatusEffectsComponent extends React.Component<PropTypes, State
       {
         className: "unit-status-effects-container"
       },
-        passiveSkillsElement,
-        React.DOM.div(
-        {
-          className: "unit-status-effects-attributes"
-        },
-          statusEffects
-        )
+        passiveSkillsElement
       )
     );
   }

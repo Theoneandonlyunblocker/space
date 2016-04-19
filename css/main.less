@@ -1092,10 +1092,16 @@ ul, ol
   {
     display: none;
   }
+  
+  >*
+  {
+    position: absolute;
+  }
 }
 
 .unit-portrait
 {
+  z-index: 1;
   width: 64px;
   height: 80px;
   background-repeat: no-repeat;
@@ -1105,7 +1111,7 @@ ul, ol
 
 .unit-status-effects-container
 {
-  position: absolute;
+  z-index: 3;
   top: 0;
   width: 64px;
   height: 80px;
@@ -1117,37 +1123,37 @@ ul, ol
   margin: 5px;
 }
 
-.unit-status-effects-attributes
+.unit-attribute-changes
 {
-  position: absolute;
+  z-index: 2;
   height: 12px;
   bottom: 0px;
   width: 100%;
 }
 
-@status-effect-icon-width: 16px;
+@attribute-change-icon-width: 16px;
 
-.status-effect-icon
+.attribute-change-icon
 {
-  width: @status-effect-icon-width;
+  width: @attribute-change-icon-width;
   position: absolute;
 }
 
-.status-effect-icon-strength
+.attribute-change-icon-strength
 {
   left: 0px;
 }
-.status-effect-icon-defence
+.attribute-change-icon-defence
 {
-  left: @status-effect-icon-width * 1;
+  left: @attribute-change-icon-width * 1;
 }
-.status-effect-icon-intelligence
+.attribute-change-icon-intelligence
 {
-  left: @status-effect-icon-width * 2;
+  left: @attribute-change-icon-width * 2;
 }
-.status-effect-icon-speed
+.attribute-change-icon-speed
 {
-  left: @status-effect-icon-width * 3;
+  left: @attribute-change-icon-width * 3;
 }
 
 .unit-info
