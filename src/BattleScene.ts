@@ -95,6 +95,86 @@ export default class BattleScene
 
     window.removeEventListener("resize", this.resizeListener);
   }
+  public handleAbilityUse(props:
+  {
+    SFXTemplate: BattleSFXTemplate;
+    triggerEffectCallback: () => void;
+    user: Unit;
+    target: Unit;
+    afterFinishedCallback: () => void;
+  })
+  {
+    this.clearActiveSFX();
+
+    this.userUnit = props.user;
+    this.targetUnit = props.target;
+    this.activeSFX = props.SFXTemplate;
+
+
+    this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
+    this.activeSFXHasFinishedCallback = this.cleanUpAfterSFX.bind(this);
+
+    this.triggerEffectCallback = props.triggerEffectCallback;
+    this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
+    this.prepareSFX();
+
+    // this.prepareSFX();
+    // this.playSFX();
+    // props.triggerEffectCallback();
+    // this.cleanUpAfterSFX();
+    // props.afterFinishedCallback();
+  }
+  public updateUnits(afterFinishedUpdatingCallback?: () => void)
+  {
+    var boundAfterFinishFN1: () => void = null;
+    var boundAfterFinishFN2: () => void = null;
+    if (afterFinishedUpdatingCallback)
+    {
+      this.afterUnitsHaveFinishedUpdatingCallback = afterFinishedUpdatingCallback;
+
+      boundAfterFinishFN1 = this.finishUpdatingUnit.bind(this, "side1");
+      boundAfterFinishFN2 = this.finishUpdatingUnit.bind(this, "side2");
+
+      this.side1UnitHasFinishedUpdating = false;
+      this.side2UnitHasFinishedUpdating = false;
+    }
+
+    var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
+    var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
+
+    this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
+    this.side1Overlay.activeUnit = activeSide1Unit;
+
+    this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
+    this.side2Overlay.activeUnit = activeSide2Unit;
+  }
+  public clearActiveSFX()
+  {
+    this.activeSFX = null;
+
+    this.userUnit = null;
+    this.targetUnit = null;
+
+    this.clearBattleOverlay();
+    this.clearUnitOverlays();
+  }
+  public renderOnce()
+  {
+    this.forceFrame = true;
+    this.render();
+  }
+  public pause()
+  {
+    this.isPaused = true;
+    this.forceFrame = false;
+  }
+  public resume()
+  {
+    this.isPaused = false;
+    this.forceFrame = false;
+    this.render();
+  }
+  
   private initLayers()
   {
     this.layers =
@@ -156,7 +236,6 @@ export default class BattleScene
       triggerEnd: props.triggerEnd
     });
   }
-  
   private getHighestPriorityUnitForSide(side: UnitBattleSide)
   {
     var units =
@@ -208,36 +287,6 @@ export default class BattleScene
 
     this.executeIfBothUnitsHaveFinishedUpdating();
   }
-  public handleAbilityUse(props:
-  {
-    SFXTemplate: BattleSFXTemplate;
-    triggerEffectCallback: () => void;
-    user: Unit;
-    target: Unit;
-    afterFinishedCallback: () => void;
-  })
-  {
-    this.clearActiveSFX();
-
-    this.userUnit = props.user;
-    this.targetUnit = props.target;
-    this.activeSFX = props.SFXTemplate;
-
-
-    this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
-    this.activeSFXHasFinishedCallback = this.cleanUpAfterSFX.bind(this);
-
-    this.triggerEffectCallback = props.triggerEffectCallback;
-    this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
-    this.prepareSFX();
-
-    // this.prepareSFX();
-    // this.playSFX();
-    // props.triggerEffectCallback();
-    // this.cleanUpAfterSFX();
-    // props.afterFinishedCallback();
-  }
-
   private executeBeforeUseDelayHasFinishedCallback()
   {
     if (!this.beforeUseDelayHasFinishedCallback)
@@ -357,40 +406,6 @@ export default class BattleScene
       this.executeAfterUseDelayHasFinishedCallback();
     }
   }
-  public updateUnits(afterFinishedUpdatingCallback?: () => void)
-  {
-    var boundAfterFinishFN1: () => void = null;
-    var boundAfterFinishFN2: () => void = null;
-    if (afterFinishedUpdatingCallback)
-    {
-      this.afterUnitsHaveFinishedUpdatingCallback = afterFinishedUpdatingCallback;
-
-      boundAfterFinishFN1 = this.finishUpdatingUnit.bind(this, "side1");
-      boundAfterFinishFN2 = this.finishUpdatingUnit.bind(this, "side2");
-
-      this.side1UnitHasFinishedUpdating = false;
-      this.side2UnitHasFinishedUpdating = false;
-    }
-
-    var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
-    var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
-
-    this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
-    this.side1Overlay.activeUnit = activeSide1Unit;
-
-    this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
-    this.side2Overlay.activeUnit = activeSide2Unit;
-  }
-  public clearActiveSFX()
-  {
-    this.activeSFX = null;
-
-    this.userUnit = null;
-    this.targetUnit = null;
-
-    this.clearBattleOverlay();
-    this.clearUnitOverlays();
-  }
   private triggerSFXStart(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit,
     afterFinishedCallback?: () => void)
   {
@@ -458,24 +473,6 @@ export default class BattleScene
         return this.side2Overlay;
       }
     }
-  }
-
-  // RENDERING
-  public renderOnce()
-  {
-    this.forceFrame = true;
-    this.render();
-  }
-  public pause()
-  {
-    this.isPaused = true;
-    this.forceFrame = false;
-  }
-  public resume()
-  {
-    this.isPaused = false;
-    this.forceFrame = false;
-    this.render();
   }
   private render(timeStamp?: number)
   {
