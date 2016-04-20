@@ -16171,6 +16171,57 @@ define("src/uicomponents/battle/TurnCounter", ["require", "exports"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
+define("src/AbilityUseEffectQueue", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var AbilityUseEffectQueue = (function () {
+        function AbilityUseEffectQueue(battleScene) {
+            this.queue = [];
+            this.battleScene = battleScene;
+            this.triggerEffect = this.triggerEffect.bind(this);
+            this.finishEffect = this.finishEffect.bind(this);
+        }
+        AbilityUseEffectQueue.prototype.addEffects = function (effects) {
+            (_a = this.queue).push.apply(_a, effects);
+            var _a;
+        };
+        AbilityUseEffectQueue.prototype.playOnce = function () {
+            this.currentEffect = this.queue.shift();
+            if (!this.currentEffect) {
+                this.handleEndOfQueue();
+                return;
+            }
+            if (this.onEffectStart) {
+                this.onEffectStart(this.currentEffect);
+            }
+            this.battleScene.handleAbilityUse({
+                SFXTemplate: this.currentEffect.sfx,
+                user: this.currentEffect.sfxUser,
+                target: this.currentEffect.sfxTarget,
+                triggerEffectCallback: this.triggerEffect,
+                afterFinishedCallback: this.finishEffect
+            });
+        };
+        AbilityUseEffectQueue.prototype.triggerEffect = function () {
+            if (this.onEffectTrigger) {
+                this.onEffectTrigger(this.currentEffect);
+            }
+        };
+        AbilityUseEffectQueue.prototype.finishEffect = function () {
+            if (this.onCurrentFinished) {
+                this.onCurrentFinished();
+            }
+            this.currentEffect = null;
+        };
+        AbilityUseEffectQueue.prototype.handleEndOfQueue = function () {
+            if (this.onAllFinished) {
+                this.onAllFinished();
+            }
+        };
+        return AbilityUseEffectQueue;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = AbilityUseEffectQueue;
+});
 define("src/battleAbilityUI", ["require", "exports", "src/battleAbilityProcessing", "src/battleAbilityTargeting"], function (require, exports, battleAbilityProcessing_2, battleAbilityTargeting_3) {
     "use strict";
     function getUnitsInAbilityArea(battle, ability, user, target) {
@@ -16552,7 +16603,7 @@ define("src/uicomponents/battle/AbilityTooltip", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounter", "src/uicomponents/battle/BattleBackground", "src/MCTree", "src/BattleScene", "src/battleAbilityUI", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, TurnOrder_1, TurnCounter_1, BattleBackground_2, MCTree_2, BattleScene_2, battleAbilityUI_1, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, AbilityTooltip_1) {
+define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounter", "src/uicomponents/battle/BattleBackground", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, TurnOrder_1, TurnCounter_1, BattleBackground_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, AbilityTooltip_1) {
     "use strict";
     var BattleComponent = (function (_super) {
         __extends(BattleComponent, _super);
@@ -16565,27 +16616,33 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
             this.battleStartStartTime = undefined;
             this.battleEndStartTime = undefined;
             this.state = this.getInitialStateTODO();
-            this.battleScene = new BattleScene_2.default();
             this.bindMethods();
+            this.battleScene = new BattleScene_2.default();
+            this.abilityUseEffectQueue = new AbilityUseEffectQueue_1.default(this.battleScene);
+            this.abilityUseEffectQueue.onEffectStart = this.setStateForBattleEffect;
+            this.abilityUseEffectQueue.onEffectTrigger = this.onBattleEffectTrigger;
+            this.abilityUseEffectQueue.onCurrentFinished = this.playQueuedBattleEffects;
+            this.abilityUseEffectQueue.onAllFinished = this.finishPlayingQueuedBattleEffects;
         }
         BattleComponent.prototype.bindMethods = function () {
             this.clearHoveredUnit = this.clearHoveredUnit.bind(this);
             this.getBlurArea = this.getBlurArea.bind(this);
             this.handleMouseEnterUnit = this.handleMouseEnterUnit.bind(this);
-            this.clearBattleEffect = this.clearBattleEffect.bind(this);
             this.handleMouseEnterAbility = this.handleMouseEnterAbility.bind(this);
             this.usePreparedAbility = this.usePreparedAbility.bind(this);
             this.useAIAbility = this.useAIAbility.bind(this);
             this.handleMouseLeaveAbility = this.handleMouseLeaveAbility.bind(this);
             this.handleTurnEnd = this.handleTurnEnd.bind(this);
             this.handleMouseLeaveUnit = this.handleMouseLeaveUnit.bind(this);
-            this.setBattleSceneUnits = this.setBattleSceneUnits.bind(this);
             this.usePlayerAbility = this.usePlayerAbility.bind(this);
             this.endBattleStart = this.endBattleStart.bind(this);
             this.getUnitElement = this.getUnitElement.bind(this);
             this.handleAbilityUse = this.handleAbilityUse.bind(this);
-            this.playBattleEffect = this.playBattleEffect.bind(this);
             this.finishBattle = this.finishBattle.bind(this);
+            this.setStateForBattleEffect = this.setStateForBattleEffect.bind(this);
+            this.playQueuedBattleEffects = this.playQueuedBattleEffects.bind(this);
+            this.finishPlayingQueuedBattleEffects = this.finishPlayingQueuedBattleEffects.bind(this);
+            this.onBattleEffectTrigger = this.onBattleEffectTrigger.bind(this);
         };
         BattleComponent.prototype.getInitialStateTODO = function () {
             var initialDisplayData = {};
@@ -16616,14 +16673,16 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
             this.battleStartStartTime = Date.now();
         };
         BattleComponent.prototype.endBattleStart = function () {
+            var _this = this;
             if (Date.now() < this.battleStartStartTime + 1000)
                 return;
             this.setState({
                 battleIsStarting: false
-            }, this.setBattleSceneUnits.bind(this, this.state.hoveredUnit));
-            if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
-                this.useAIAbility();
-            }
+            }, function () {
+                if (_this.props.battle.getActivePlayer() !== _this.props.humanPlayer) {
+                    _this.useAIAbility();
+                }
+            });
         };
         BattleComponent.prototype.getBlurArea = function () {
             return ReactDOM.findDOMNode(this.ref_TODO_formationsContainer).getBoundingClientRect();
@@ -16641,7 +16700,6 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 potentialDelayAmount: undefined,
                 targetsInPotentialArea: []
             });
-            this.setBattleSceneUnits(null);
         };
         BattleComponent.prototype.handleMouseLeaveUnit = function (e) {
             if (!this.state.hoveredUnit || this.state.playingBattleEffect) {
@@ -16679,7 +16737,6 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 hoveredUnit: unit,
                 highlightedUnit: unit
             });
-            this.setBattleSceneUnits(unit);
         };
         BattleComponent.prototype.handleMouseEnterAbility = function (ability) {
             var targetsInPotentialArea = battleAbilityUI_1.getUnitsInAbilityArea(this.props.battle, ability, this.props.battle.activeUnit, this.state.hoveredUnit);
@@ -16704,51 +16761,43 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
         BattleComponent.prototype.getUnitElement = function (unit) {
             return document.getElementById("unit-id_" + unit.id);
         };
-        BattleComponent.prototype.setBattleSceneUnits = function (hoveredUnit) {
-            if (this.state.playingBattleEffect)
-                return;
-            var activeUnit = this.props.battle.activeUnit;
-            if (!activeUnit) {
-                this.setState({
-                    battleSceneUnit1: null,
-                    battleSceneUnit2: null
-                });
-                return;
-            }
-            var shouldDisplayHovered = (hoveredUnit &&
-                hoveredUnit.battleStats.side !== activeUnit.battleStats.side);
-            var unit1, unit2;
-            if (activeUnit.battleStats.side === "side1") {
-                unit1 = activeUnit;
-                unit2 = shouldDisplayHovered ? hoveredUnit : null;
-            }
-            else {
-                unit1 = shouldDisplayHovered ? hoveredUnit : null;
-                unit2 = activeUnit;
-            }
-            this.setState({
-                battleSceneUnit1: unit1,
-                battleSceneUnit2: unit2
+        BattleComponent.prototype.handleAbilityUse = function (ability, target, wasByPlayer) {
+            var abilityUseEffects = battleAbilityUsage_3.useAbility(this.props.battle, ability, this.props.battle.activeUnit, target, true);
+            this.abilityUseEffectQueue.addEffects(abilityUseEffects);
+            this.playQueuedBattleEffects();
+        };
+        BattleComponent.getUnitsBySideFromEffect = function (effect) {
+            var userSide = effect.sfxUser.battleStats.side;
+            var targetSide = effect.sfxTarget.battleStats.side;
+            return ({
+                battleSceneUnit1: (targetSide === "side1" ? effect.sfxTarget :
+                    (userSide === "side1" ? effect.sfxUser : null)),
+                battleSceneUnit2: (targetSide === "side2" ? effect.sfxTarget :
+                    (userSide === "side2" ? effect.sfxUser : null))
             });
         };
-        BattleComponent.prototype.handleAbilityUse = function (ability, target, wasByPlayer) {
+        BattleComponent.prototype.setStateForBattleEffect = function (effect) {
+            var stateObj = BattleComponent.getUnitsBySideFromEffect(effect);
+            stateObj.playingBattleEffect = true;
+            stateObj.battleEffectDuration = effect.sfx.duration;
+            this.setState(stateObj);
         };
-        BattleComponent.prototype.playBattleEffect = function (abilityData, i) {
+        BattleComponent.prototype.playQueuedBattleEffects = function () {
+            this.abilityUseEffectQueue.playOnce();
         };
-        BattleComponent.prototype.clearBattleEffect = function () {
-            var newHoveredUnit = null;
-            if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle()) {
-                newHoveredUnit = this.tempHoveredUnit;
-                this.tempHoveredUnit = null;
-            }
-            var afterStateUpdateCallback = newHoveredUnit ?
-                this.handleMouseEnterUnit.bind(this, newHoveredUnit) : this.clearHoveredUnit;
+        BattleComponent.prototype.onBattleEffectTrigger = function (effect) {
             this.setState({
+                previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
+                unitDisplayDataByID: effect.unitDisplayDataAfterUsingById
+            });
+        };
+        BattleComponent.prototype.finishPlayingQueuedBattleEffects = function () {
+            this.setState({
+                battleSceneUnit1: null,
+                battleSceneUnit2: null,
                 playingBattleEffect: false,
-                battleEffectDuration: null,
-                hoveredUnit: null,
-                highlightedUnit: null,
-            }, afterStateUpdateCallback);
+                battleEffectDuration: undefined
+            });
         };
         BattleComponent.prototype.handleTurnEnd = function () {
             if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable()) {
@@ -16758,7 +16807,6 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 this.clearHoveredUnit();
             }
             this.props.battle.endTurn();
-            this.setBattleSceneUnits(this.state.hoveredUnit);
             if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction) {
                 this.usePreparedAbility();
             }

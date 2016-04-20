@@ -3,17 +3,20 @@ import BattleScene from "./BattleScene";
 
 export default class AbilityUseEffectQueue
 {
+  public onEffectStart: (effect: AbilityUseEffect) => void;
   public onCurrentFinished: () => void;
   public onAllFinished: () => void;
   public onEffectTrigger: (abilityUseEffect: AbilityUseEffect) => void;
   
-  private queue: AbilityUseEffect[];
+  private queue: AbilityUseEffect[] = [];
   private currentEffect: AbilityUseEffect;
   private battleScene: BattleScene;
   
   
-  constructor()
+  constructor(battleScene: BattleScene)
   {
+    this.battleScene = battleScene;
+    
     this.triggerEffect = this.triggerEffect.bind(this);
     this.finishEffect = this.finishEffect.bind(this);
   }
@@ -30,6 +33,11 @@ export default class AbilityUseEffectQueue
     {
       this.handleEndOfQueue();
       return;
+    }
+    
+    if (this.onEffectStart)
+    {
+      this.onEffectStart(this.currentEffect);
     }
     
     this.battleScene.handleAbilityUse(

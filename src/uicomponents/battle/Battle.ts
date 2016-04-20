@@ -11,8 +11,13 @@ import BattleBackground from "./BattleBackground";
 import Options from "../../Options";
 import MCTree from "../../MCTree";
 import BattleScene from "../../BattleScene";
+import AbilityUseEffectQueue from "../../AbilityUseEffectQueue";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
-import {AbilityUseData} from "../../battleAbilityProcessing";
+import
+{
+  useAbility,
+  AbilityUseEffect
+} from "../../battleAbilityUsage";
 import
 {
   getTargetsForAllAbilities,
@@ -69,6 +74,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   private ref_TODO_abilityTooltip: AbilityTooltipComponent;
   
   private battleScene: BattleScene;
+  private abilityUseEffectQueue: AbilityUseEffectQueue;
   
   // set as a property of the class instead of its state
   // as its not used for trigger updates
@@ -87,29 +93,37 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     super(props);
     
     this.state = this.getInitialStateTODO();
+    this.bindMethods();
+    
     this.battleScene = new BattleScene();
     
-    this.bindMethods();
+    this.abilityUseEffectQueue = new AbilityUseEffectQueue(this.battleScene);
+    this.abilityUseEffectQueue.onEffectStart = this.setStateForBattleEffect;
+    this.abilityUseEffectQueue.onEffectTrigger = this.onBattleEffectTrigger;
+    this.abilityUseEffectQueue.onCurrentFinished = this.playQueuedBattleEffects;
+    this.abilityUseEffectQueue.onAllFinished = this.finishPlayingQueuedBattleEffects;
   }
   private bindMethods()
   {
     this.clearHoveredUnit = this.clearHoveredUnit.bind(this);
     this.getBlurArea = this.getBlurArea.bind(this);
     this.handleMouseEnterUnit = this.handleMouseEnterUnit.bind(this);
-    this.clearBattleEffect = this.clearBattleEffect.bind(this);
     this.handleMouseEnterAbility = this.handleMouseEnterAbility.bind(this);
     this.usePreparedAbility = this.usePreparedAbility.bind(this);
     this.useAIAbility = this.useAIAbility.bind(this);
     this.handleMouseLeaveAbility = this.handleMouseLeaveAbility.bind(this);
     this.handleTurnEnd = this.handleTurnEnd.bind(this);
     this.handleMouseLeaveUnit = this.handleMouseLeaveUnit.bind(this);
-    this.setBattleSceneUnits = this.setBattleSceneUnits.bind(this);
     this.usePlayerAbility = this.usePlayerAbility.bind(this);
     this.endBattleStart = this.endBattleStart.bind(this);
     this.getUnitElement = this.getUnitElement.bind(this);
     this.handleAbilityUse = this.handleAbilityUse.bind(this);
-    this.playBattleEffect = this.playBattleEffect.bind(this);
-    this.finishBattle = this.finishBattle.bind(this);    
+    this.finishBattle = this.finishBattle.bind(this);
+    
+    this.setStateForBattleEffect = this.setStateForBattleEffect.bind(this);
+    this.playQueuedBattleEffects = this.playQueuedBattleEffects.bind(this);
+    this.finishPlayingQueuedBattleEffects = this.finishPlayingQueuedBattleEffects.bind(this);
+    this.onBattleEffectTrigger = this.onBattleEffectTrigger.bind(this);
   }
   
   private getInitialStateTODO(): StateType
@@ -155,15 +169,19 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   private endBattleStart()
   {
     if (Date.now() < this.battleStartStartTime + 1000) return;
+    
+    
     this.setState(
     {
       battleIsStarting: false
-    }, this.setBattleSceneUnits.bind(this, this.state.hoveredUnit));
-
-    if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
+    },() =>
     {
-      this.useAIAbility();
-    }
+      if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
+      {
+        this.useAIAbility();
+      }
+    });
+
   }
   private getBlurArea()
   {
@@ -185,8 +203,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       potentialDelayAmount: undefined,
       targetsInPotentialArea: []
     });
-
-    this.setBattleSceneUnits(null);
   }
   private handleMouseLeaveUnit(e: React.MouseEvent)
   {
@@ -243,9 +259,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       hoveredUnit: unit,
       highlightedUnit: unit
     });
-
-
-    this.setBattleSceneUnits(unit);
   }
   private handleMouseEnterAbility(ability: AbilityTemplate)
   {
@@ -282,203 +295,72 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     return document.getElementById("unit-id_" + unit.id);
   }
-  // TODO refactor
-  private setBattleSceneUnits(hoveredUnit?: Unit)
-  {
-    if (this.state.playingBattleEffect) return;
-
-    var activeUnit = this.props.battle.activeUnit;
-    if (!activeUnit)
-    {
-      this.setState(
-      {
-        battleSceneUnit1: null,
-        battleSceneUnit2: null
-      });
-      return;
-    }
-
-    var shouldDisplayHovered = (hoveredUnit &&
-      hoveredUnit.battleStats.side !== activeUnit.battleStats.side);
-
-    var unit1: Unit, unit2: Unit;
-
-    if (activeUnit.battleStats.side === "side1")
-    {
-      unit1 = activeUnit;
-      unit2 = shouldDisplayHovered ? hoveredUnit : null;
-    }
-    else
-    {
-      unit1 = shouldDisplayHovered ? hoveredUnit : null;
-      unit2 = activeUnit;
-    }
-
-    this.setState(
-    {
-      battleSceneUnit1: unit1,
-      battleSceneUnit2: unit2
-    });
-  }
-  // TODO refactor
   private handleAbilityUse(ability: AbilityTemplate, target: Unit, wasByPlayer: boolean)
   {
+    const abilityUseEffects = useAbility(
+      this.props.battle,
+      ability,
+      this.props.battle.activeUnit,
+      target,
+      true
+    );
+    
+    this.abilityUseEffectQueue.addEffects(abilityUseEffects);
+
     // TODO
-    /* 
-    var abilityData = getAbilityUseData(this.props.battle,
-      this.props.battle.activeUnit, ability, target);
-
-    for (let i = 0; i < abilityData.beforeUse.length; i++)
-    {
-      abilityData.beforeUse[i]();
-    }
-
-    this.playBattleEffect(abilityData, 0);
-
-
-    if (wasByPlayer && this.MCTree)
-    {
-      this.MCTree.advanceMove(
-      {
-        ability: ability,
-        targetId: "" + abilityData.actualTarget.id
-      });
-    }
-    */
+    // if (wasByPlayer && this.MCTree)
+    // {
+    //   this.MCTree.advanceMove(
+    //   {
+    //     ability: ability,
+    //     targetId: abilityData.actualTarget.id
+    //   });
+    // }
+    
+    this.playQueuedBattleEffects();
   }
-  // TODO battleSFX
-  // need to either force BattleScene to play animation as soon as it starts
-  // or have this wait for battle scene units to finish animating.
-  // battleSFX animation can trigger at the earliest after animationTiming.unitEnter, but
-  // actual effect always gets triggered after animationTiming.beforeUse
-  // TODO refactor
-  private playBattleEffect(abilityData: AbilityUseData, i: number)
+  private static getUnitsBySideFromEffect(effect: AbilityUseEffect): StateType
   {
-    // TODO
-    /* 
-    var self = this;
-    var effectData = abilityData.effectsToCall;
-    if (!effectData[i])
+    const userSide = effect.sfxUser.battleStats.side;
+    const targetSide = effect.sfxTarget.battleStats.side;
+    
+    return(
     {
-      for (let i = 0; i < abilityData.afterUse.length; i++)
-      {
-        abilityData.afterUse[i]();
-      }
-
-      this.clearBattleEffect(abilityData);
-
-      this.handleTurnEnd();
-
-      return;
-    };
-
-    effectData[i].user.sfxDuration = null;
-    effectData[i].target.sfxDuration = null;
-
-    if (effectData[i].trigger && !effectData[i].trigger(effectData[i].user, effectData[i].target))
-    {
-      return this.playBattleEffect(abilityData, i + 1);
-    }
-
-    var side1Unit: Unit = null;
-    var side2Unit: Unit = null;
-    [effectData[i].user, effectData[i].target].forEach(function(unit: Unit)
-    {
-      if (unit.battleStats.side === "side1" && !side1Unit)
-      {
-        side1Unit = unit;
-      }
-      else if (unit.battleStats.side === "side2" && !side2Unit)
-      {
-        side2Unit = unit;
-      }
+      battleSceneUnit1: (targetSide === "side1" ? effect.sfxTarget :
+        (userSide === "side1" ? effect.sfxUser : null)),
+      battleSceneUnit2: (targetSide === "side2" ? effect.sfxTarget :
+        (userSide === "side2" ? effect.sfxUser : null))
     });
-
-    var previousUnit1Strength = side1Unit ? side1Unit.currentHealth : null;
-    var previousUnit2Strength = side2Unit ? side2Unit.currentHealth : null;
-
-    var hasSFX = effectData[i].sfx;
-    var shouldDeferCallingEffects = false;
-    var effectDuration = 0;
-    if (hasSFX)
-    {
-      effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming.effectDuration;
-      shouldDeferCallingEffects = Boolean(effectData[i].sfx.SFXWillTriggerEffect);
-    }
-
-    effectData[i].user.sfxDuration = effectDuration;
-    effectData[i].target.sfxDuration = effectDuration;
-
-    var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
-
-    var callEffectsFN = function(forceUpdate: boolean = true)
-    {
-      for (let j = 0; j < effectData[i].effects.length; j++)
-      {
-        effectData[i].effects[j]();
-      }
-      if (forceUpdate)
-      {
-        self.forceUpdate();
-      }
-    }
-
-    if (!shouldDeferCallingEffects)
-    {
-      callEffectsFN(false);
-    }
-
+  }
+  private setStateForBattleEffect(effect: AbilityUseEffect)
+  {
+    const stateObj: StateType = BattleComponent.getUnitsBySideFromEffect(effect);
+    stateObj.playingBattleEffect = true;
+    stateObj.battleEffectDuration = effect.sfx.duration;
+    
+    this.setState(stateObj);
+  }
+  private playQueuedBattleEffects()
+  {
+    this.abilityUseEffectQueue.playOnce();
+  }
+  private onBattleEffectTrigger(effect: AbilityUseEffect)
+  {
     this.setState(
     {
-      battleSceneUnit1StartingStrength: previousUnit1Strength,
-      battleSceneUnit2StartingStrength: previousUnit2Strength,
-      battleSceneUnit1: side1Unit,
-      battleSceneUnit2: side2Unit,
-      playingBattleEffect: true,
-
-      hoveredUnit: null,
-      highlightedUnit: abilityData.originalTarget,
-      userUnit: effectData[i].user,
-      targetUnit: effectData[i].target,
-
-      battleEffectId: hasSFX ? this.idGenerator++ : null,
-      battleEffectDuration: effectDuration,
-      battleEffectSFX: effectData[i].sfx,
-
-      afterAbilityFinishedCallback: finishEffectFN,
-      triggerEffectCallback: callEffectsFN,
-
-      abilityTooltip:
-      {
-        parentElement: null
-      },
-      hoveredAbility: null,
-      potentialDelayID: undefined,
-      potentialDelayAmount: undefined,
-      targetsInPotentialArea: []
+      previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
+      unitDisplayDataByID: effect.unitDisplayDataAfterUsingById
     });
-    */
   }
-  // TODO refactor
-  private clearBattleEffect()
+  private finishPlayingQueuedBattleEffects()
   {
-    var newHoveredUnit: Unit = null;
-    if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle())
-    {
-      newHoveredUnit = this.tempHoveredUnit;
-      this.tempHoveredUnit = null;
-    }
-    var afterStateUpdateCallback = newHoveredUnit ?
-      this.handleMouseEnterUnit.bind(this, newHoveredUnit) : this.clearHoveredUnit;
-
     this.setState(
     {
+      battleSceneUnit1: null,
+      battleSceneUnit2: null,
       playingBattleEffect: false,
-      battleEffectDuration: null,
-      
-      hoveredUnit: null,
-      highlightedUnit: null,
-    }, afterStateUpdateCallback);
+      battleEffectDuration: undefined
+    });
   }
   private handleTurnEnd()
   {
@@ -492,7 +374,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     this.props.battle.endTurn();
-    this.setBattleSceneUnits(this.state.hoveredUnit);
 
     if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
     {
