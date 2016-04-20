@@ -41,23 +41,25 @@ export function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: Abil
 {
   abilityUseData.actualTarget = getTargetOrGuard(battle, abilityUseData);
 
-  var beforeUse = getAbilityEffectDataFromEffectTemplates(
+  const beforeUse = getAbilityEffectDataFromEffectTemplates(
     battle,
     abilityUseData,
     getBeforeAbilityUseEffectTemplates(abilityUseData)
   );
+  beforeUse.push(...getDefaultBeforeUseEffects(abilityUseData));
 
-  var abilityEffects = getAbilityEffectDataFromEffectTemplates(
+  const abilityEffects = getAbilityEffectDataFromEffectTemplates(
     battle,
     abilityUseData,
     getAbilityUseEffectTemplates(abilityUseData)
   );
 
-  var afterUse = getAbilityEffectDataFromEffectTemplates(
+  const afterUse = getAbilityEffectDataFromEffectTemplates(
     battle,
     abilityUseData,
     getAfterAbilityUseEffectTemplates(abilityUseData)
   );
+  afterUse.push(...getDefaultAfterUseEffects(abilityUseData));
 
   return(
   {
@@ -200,27 +202,6 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abi
   //     beforeUseEffects = beforeUseEffects.concat(passiveSkills[i].beforeAbilityUse);
   //   }
   // }
-  
-  beforeUseEffects.push(
-  {
-    action:
-    {
-      name: "removeGuardAndActionPoints",
-      
-      targetFormations: TargetFormation.either,
-      battleAreaFunction: areaSingle,
-      targetRangeFunction: targetAll,
-      executeAction: (user, target, battle) =>
-      {
-        if (!abilityUseData.ability.addsGuard)
-        {
-          user.removeAllGuard();
-        }
-        
-        user.removeActionPoints(abilityUseData.ability.actionsUse);
-      }
-    }
-  });
 
   return getEffectTemplatesWithAttachedEffects(beforeUseEffects);
 }
@@ -254,22 +235,66 @@ function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abil
   //   }
   // }
   
-  afterUseEffects.push(
-  {
-    action:
-    {
-      name: "addMoveDelayAndUpdateStatusEffects",
-      
-      targetFormations: TargetFormation.either,
-      battleAreaFunction: areaSingle,
-      targetRangeFunction: targetAll,
-      executeAction: (user, target, battle) =>
-      {
-        user.addMoveDelay(abilityUseData.ability.moveDelay);
-        user.updateStatusEffects();
-      }
-    }
-  });
-
   return getEffectTemplatesWithAttachedEffects(afterUseEffects);
+}
+function makeSelfAbilityEffectData(
+  user: Unit, name: string, actionFN: (user: Unit) => void): AbilityEffectData
+{
+  return(
+  {
+    templateEffect:
+    {
+      action:
+      {
+        name: name,
+        
+        targetFormations: TargetFormation.either,
+        battleAreaFunction: areaSingle,
+        targetRangeFunction: targetAll,
+        executeAction: actionFN
+      }
+    },
+    user: user,
+    target: user,
+    trigger: null
+  });
+}
+function getDefaultBeforeUseEffects(abilityUseData: AbilityUseData): AbilityEffectData[]
+{
+  const effects: AbilityEffectData[] = [];
+  
+  if (!abilityUseData.ability.addsGuard)
+  {
+    effects.push(makeSelfAbilityEffectData(
+      abilityUseData.user,
+      "removeGuard",
+      user => user.removeAllGuard()
+    ));
+  }
+  
+  effects.push(makeSelfAbilityEffectData(
+    abilityUseData.user,
+    "removeActionPoints",
+    user => user.removeActionPoints(abilityUseData.ability.actionsUse)
+  ));
+  
+  return effects;
+}
+function getDefaultAfterUseEffects(abilityUseData: AbilityUseData): AbilityEffectData[]
+{
+  const effects: AbilityEffectData[] = [];
+  
+  effects.push(makeSelfAbilityEffectData(
+    abilityUseData.user,
+    "addMoveDelay",
+    user => user.addMoveDelay(abilityUseData.ability.moveDelay)
+  ));
+  
+  effects.push(makeSelfAbilityEffectData(
+    abilityUseData.user,
+    "updateStatusEffects",
+    user => user.updateStatusEffects()
+  ));
+  
+  return effects;
 }
