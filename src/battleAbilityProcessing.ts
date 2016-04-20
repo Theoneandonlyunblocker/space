@@ -60,6 +60,15 @@ export function getAbilityEffectDataByPhase(battle: Battle, abilityUseData: Abil
     afterUse: afterUse
   });
 }
+export function getUnitsInEffectArea(battle: Battle, effect: EffectActionTemplate,
+  user: Unit, target: Unit): Unit[]
+{
+  var targetFormations = getFormationsToTarget(battle, user, effect);
+
+  var inArea = effect.battleAreaFunction(targetFormations, target.battleStats.position);
+
+  return inArea.filter(activeUnitsFilterFN);
+}
 
 function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
 {
@@ -124,16 +133,6 @@ function activeUnitsFilterFN(unit: Unit)
 {
   return unit && unit.isActiveInBattle();
 }
-function getUnitsInEffectArea(battle: Battle,effect: EffectActionTemplate,
-  user: Unit, target: Unit): Unit[]
-{
-  var targetFormations = getFormationsToTarget(battle, user, effect);
-
-  var inArea = effect.battleAreaFunction(targetFormations, target.battleStats.position);
-
-  return inArea.filter(activeUnitsFilterFN);
-}
-
 function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData: AbilityUseData,
   effectTemplates: AbilityEffectTemplate[]): AbilityEffectData[]
 {

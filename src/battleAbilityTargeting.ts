@@ -49,27 +49,12 @@ export function getFormationsToTarget(battle: Battle, user: Unit, effect: Effect
     return toConcat.concat(getNullFormation());
   }
 }
-
-function isTargetableFilterFN(unit: Unit)
-{
-  return unit && unit.isTargetable();
-}
-function getPotentialTargets(battle: Battle, user: Unit, ability: AbilityTemplate): Unit[]
-{
-  var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
-
-  var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
-
-  var targets = targetsInRange.filter(isTargetableFilterFN);
-
-  return targets;
-}
 export function getTargetsForAllAbilities(battle: Battle, user: Unit)
 {
-  // TODO | does this ever matter?
+  // TODO | does this ever happen?
   if (!user || !battle.activeUnit)
   {
-    return null;
+    throw new Error();
   }
 
   var allTargets:
@@ -98,4 +83,19 @@ export function getTargetsForAllAbilities(battle: Battle, user: Unit)
   }
 
   return allTargets;
+}
+
+function isTargetableFilterFN(unit: Unit)
+{
+  return unit && unit.isTargetable();
+}
+function getPotentialTargets(battle: Battle, user: Unit, ability: AbilityTemplate): Unit[]
+{
+  var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
+
+  var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
+
+  var targets = targetsInRange.filter(isTargetableFilterFN);
+
+  return targets;
 }
