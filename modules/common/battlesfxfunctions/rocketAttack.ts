@@ -4,7 +4,9 @@ import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
 import projectileAttack from "./projectileAttack";
 
-export default function rocketAttack(params: SFXParams)
+const rocketUrl = "modules/common/battlesfxfunctions/img/rocket.png";
+
+function rocketAttack(params: SFXParams)
 {
   var explosionTextures: PIXI.Texture[] = [];
 
@@ -16,7 +18,7 @@ export default function rocketAttack(params: SFXParams)
 
   var props =
   {
-    projectileTextures: [PIXI.Texture.fromFrame("modules/default/img/battleEffects/rocket.png")],
+    projectileTextures: [PIXI.Texture.fromFrame(rocketUrl)],
     impactTextures: [explosionTextures],
 
     maxSpeed: 3,
@@ -30,5 +32,19 @@ export default function rocketAttack(params: SFXParams)
     impactRate: 5
   };
 
-  return projectileAttack(props, params);
+  projectileAttack(props, params);
 }
+
+export default function preLoadedRocketAttack(params: SFXParams)
+{
+  const loader = new PIXI.loaders.Loader();
+  
+  loader.add("explosion", "modules/common/battlesfxfunctions/img/explosion.json");
+  loader.add(rocketUrl);
+  
+  loader.load(loader =>
+  {
+    rocketAttack(params);
+  });
+}
+
