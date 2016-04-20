@@ -1,5 +1,10 @@
 import {AbilityUseEffect} from "./battleAbilityUsage";
 import BattleScene from "./BattleScene";
+import UnitDisplayData from "./UnitDisplayData";
+import
+{
+  shallowExtend
+} from "./utility";
 
 export default class AbilityUseEffectQueue
 {
@@ -23,7 +28,7 @@ export default class AbilityUseEffectQueue
   
   public addEffects(effects: AbilityUseEffect[])
   {
-    this.queue.push(...effects);
+    this.queue.push(...AbilityUseEffectQueue.squashEffectsWithoutSFX(effects));
   }
   public playOnce()
   {
@@ -50,6 +55,46 @@ export default class AbilityUseEffectQueue
     });
   }
   
+  private static squashEffectsWithoutSFX(sourceEffects: AbilityUseEffect[]): AbilityUseEffect[]
+  {
+    const squashed: AbilityUseEffect[] = [];
+    let effectsToSquash: AbilityUseEffect[] = [];
+    for (var i = sourceEffects.length - 1; i >= 0; i--)
+    {
+      const effect = sourceEffects[i];
+      if (effect.sfx)
+      {
+        if (effectsToSquash.length > 0)
+        {
+          const squashedChangedUnitDisplayDataByID: {[unitID: number]: UnitDisplayData} =
+          shallowExtend(
+            {},
+            effect.changedUnitDisplayDataByID,
+            ...effectsToSquash.map(e => e.changedUnitDisplayDataByID)
+          );
+
+          const squashedEffect: AbilityUseEffect = shallowExtend(
+            {},
+            effect,
+            {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID}
+          );
+          effectsToSquash = [];
+          
+          squashed.push(squashedEffect);
+        }
+        else
+        {
+          squashed.push(effect);
+        }
+      }
+      else
+      {
+        effectsToSquash.unshift(effect);
+      }
+    }
+    
+    return squashed;
+  }
   private triggerEffect()
   {
     if (this.onEffectTrigger)
