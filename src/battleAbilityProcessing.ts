@@ -5,6 +5,12 @@ import EffectActionTemplate from "./templateinterfaces/EffectActionTemplate";
 import Unit from "./Unit";
 import GuardCoverage from "./GuardCoverage";
 import Battle from "./Battle";
+import
+{
+  TargetFormation,
+  areaSingle,
+  targetSelf
+} from "./targeting";
 
 import
 {
@@ -180,10 +186,10 @@ function getEffectTemplatesWithAttachedEffects(templates: AbilityEffectTemplate[
 }
 function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
 {
-  var beforeUseEffects: AbilityEffectTemplate[] = [];
+  const beforeUseEffects: AbilityEffectTemplate[] = [];
   if (abilityUseData.ability.beforeUse)
   {
-    beforeUseEffects = beforeUseEffects.concat(abilityUseData.ability.beforeUse);
+    beforeUseEffects.push(...abilityUseData.ability.beforeUse);
   }
   // TODO get these from status effects
   // var passiveSkills = abilityUseData.user.getPassiveSkillsByPhase().beforeAbilityUse;
@@ -194,9 +200,29 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abi
   //     beforeUseEffects = beforeUseEffects.concat(passiveSkills[i].beforeAbilityUse);
   //   }
   // }
+  
+  beforeUseEffects.push(
+  {
+    action:
+    {
+      name: "removeGuardAndActionPoints",
+      
+      targetFormations: TargetFormation.ally,
+      battleAreaFunction: areaSingle,
+      targetRangeFunction: targetSelf,
+      executeAction: (user, target, battle) =>
+      {
+        if (!abilityUseData.ability.addsGuard)
+        {
+          user.removeAllGuard();
+        }
+        
+        user.removeActionPoints(abilityUseData.ability.actionsUse);
+      }
+    }
+  });
 
   return getEffectTemplatesWithAttachedEffects(beforeUseEffects);
-  // TODO remove guard & action points
 }
 function getAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
 {
@@ -212,10 +238,10 @@ function getAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEf
 }
 function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
 {
-  var afterUseEffects: AbilityEffectTemplate[] = [];
+  const afterUseEffects: AbilityEffectTemplate[] = [];
   if (abilityUseData.ability.afterUse)
   {
-    afterUseEffects = afterUseEffects.concat(abilityUseData.ability.afterUse);
+    afterUseEffects.push(...abilityUseData.ability.afterUse);
   }
 
   // TODO get these from status effects
@@ -227,7 +253,23 @@ function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abil
   //     afterUseEffects = afterUseEffects.concat(passiveSkills[i].afterAbilityUse);
   //   }
   // }
+  
+  afterUseEffects.push(
+  {
+    action:
+    {
+      name: "addMoveDelayAndUpdateStatusEffects",
+      
+      targetFormations: TargetFormation.ally,
+      battleAreaFunction: areaSingle,
+      targetRangeFunction: targetSelf,
+      executeAction: (user, target, battle) =>
+      {
+        user.addMoveDelay(abilityUseData.ability.moveDelay);
+        user.updateStatusEffects();
+      }
+    }
+  });
 
   return getEffectTemplatesWithAttachedEffects(afterUseEffects);
-  // TODO add move delay & update status effects
 }
