@@ -15,7 +15,7 @@ import
 export interface AbilityUseEffect
 {
   actionName: string;
-  unitDisplayDataAfterUsingById: {[unitId: number]: UnitDisplayData};
+  changedUnitDisplayDataByID: {[unitId: number]: UnitDisplayData};
   sfx: BattleSFXTemplate;
   sfxUser: Unit;
   sfxTarget: Unit;
@@ -120,7 +120,7 @@ function executeAbilityEffectDataAndGetUseEffect(battle: Battle,
   return(
   {
     actionName: abilityEffectData.templateEffect.action.name,
-    unitDisplayDataAfterUsingById: unitDisplayData,
+    changedUnitDisplayDataByID: unitDisplayData,
     sfx: abilityEffectData.templateEffect.sfx,
     sfxUser: abilityEffectData.user,
     sfxTarget: abilityEffectData.target

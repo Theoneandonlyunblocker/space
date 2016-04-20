@@ -23,6 +23,10 @@ import
   getTargetsForAllAbilities,
   getUnitsInAbilityArea
 } from "../../battleAbilityUI";
+import
+{
+  shallowExtend
+} from "../../utility";
 import BattleScore from "./BattleScore";
 import BattleSceneComponentFactory from "./BattleScene";
 import Formation from "./Formation";
@@ -349,7 +353,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
-      unitDisplayDataByID: effect.unitDisplayDataAfterUsingById
+      unitDisplayDataByID: shallowExtend(
+        this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
     });
   }
   private finishPlayingQueuedBattleEffects()

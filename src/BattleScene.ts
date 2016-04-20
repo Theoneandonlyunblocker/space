@@ -217,6 +217,10 @@ export default class BattleScene
   }
   private handleResize()
   {
+    if (!this.containerElement)
+    {
+      return;
+    }
     var w = this.containerElement.clientWidth * window.devicePixelRatio;
     var h = this.containerElement.clientHeight * window.devicePixelRatio;
     this.renderer.resize(w, h);
