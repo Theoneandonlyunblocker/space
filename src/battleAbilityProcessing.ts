@@ -141,6 +141,20 @@ function activeUnitsFilterFN(unit: Unit)
 {
   return unit && unit.isActiveInBattle();
 }
+function recursivelyGetAttachedEffects(effectTemplate: AbilityEffectTemplate): AbilityEffectTemplate[]
+{
+  const attachedEffects: AbilityEffectTemplate[] = [];
+  const frontier: AbilityEffectTemplate[] = [effectTemplate];
+  
+  while (frontier.length > 0)
+  {
+    const currentEffect = frontier.pop();
+    attachedEffects.push(...currentEffect.attachedEffects);
+    frontier.push(...currentEffect.attachedEffects);
+  }
+  
+  return attachedEffects;
+}
 function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData: AbilityUseData,
   effectTemplates: AbilityEffectTemplate[]): AbilityEffectData[]
 {
@@ -151,40 +165,24 @@ function getAbilityEffectDataFromEffectTemplates(battle: Battle, abilityUseData:
     var templateEffect = effectTemplates[i];
     var targetsForEffect = getUnitsInEffectArea(battle, templateEffect.action,
       abilityUseData.user, abilityUseData.actualTarget);
+    const withAttached = [templateEffect].concat(recursivelyGetAttachedEffects(templateEffect));
 
     for (let j = 0; j < targetsForEffect.length; j++)
     {
-      effectData.push(
+      for (let k = 0; k < withAttached.length; k++)
       {
-        templateEffect: templateEffect,
-        user: abilityUseData.user,
-        target: targetsForEffect[j],
-        trigger: templateEffect.trigger
-      });
-    }
-  }
-
-  return effectData;
-}
-function getEffectTemplatesWithAttachedEffects(templates: AbilityEffectTemplate[]):
-  AbilityEffectTemplate[]
-{
-  var withAttached: AbilityEffectTemplate[] = [];
-
-  for (let i = 0; i < templates.length; i++)
-  {
-    var template = templates[i];
-    withAttached.push(template);
-    if (template.attachedEffects)
-    {
-      for (let j = 0; j < template.attachedEffects.length; j++)
-      {
-        withAttached.push(template.attachedEffects[j]);
+        effectData.push(
+        {
+          templateEffect: withAttached[k],
+          user: abilityUseData.user,
+          target: targetsForEffect[j],
+          trigger: templateEffect.trigger
+        });
       }
     }
   }
 
-  return withAttached;
+  return effectData;
 }
 function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
 {
@@ -203,7 +201,7 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abi
   //   }
   // }
 
-  return getEffectTemplatesWithAttachedEffects(beforeUseEffects);
+  return beforeUseEffects;
 }
 function getAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
 {
@@ -215,7 +213,7 @@ function getAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEf
     abilityUseEffects = abilityUseEffects.concat(abilityUseData.ability.secondaryEffects);
   }
 
-  return getEffectTemplatesWithAttachedEffects(abilityUseEffects);
+  return abilityUseEffects;
 }
 function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): AbilityEffectTemplate[]
 {
@@ -235,7 +233,7 @@ function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abil
   //   }
   // }
   
-  return getEffectTemplatesWithAttachedEffects(afterUseEffects);
+  return afterUseEffects;
 }
 function makeSelfAbilityEffectData(
   user: Unit, name: string, actionFN: (user: Unit) => void): AbilityEffectData

@@ -2137,23 +2137,6 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Battle;
 });
-define("src/getNullFormation", ["require", "exports", "src/App"], function (require, exports, App_6) {
-    "use strict";
-    function getNullFormation() {
-        var nullFormation = [];
-        var rows = App_6.default.moduleData.ruleSet.battle.rowsPerFormation;
-        var columns = App_6.default.moduleData.ruleSet.battle.cellsPerRow;
-        for (var i = 0; i < rows; i++) {
-            nullFormation.push([]);
-            for (var j = 0; j < columns; j++) {
-                nullFormation[i].push(null);
-            }
-        }
-        return nullFormation;
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = getNullFormation;
-});
 define("src/targeting", ["require", "exports", "src/utility"], function (require, exports, utility_3) {
     "use strict";
     (function (TargetFormation) {
@@ -2216,6 +2199,23 @@ define("src/targeting", ["require", "exports", "src/utility"], function (require
         return utility_3.getFrom2dArray(units, targetLocations);
     };
 });
+define("src/getNullFormation", ["require", "exports", "src/App"], function (require, exports, App_6) {
+    "use strict";
+    function getNullFormation() {
+        var nullFormation = [];
+        var rows = App_6.default.moduleData.ruleSet.battle.rowsPerFormation;
+        var columns = App_6.default.moduleData.ruleSet.battle.cellsPerRow;
+        for (var i = 0; i < rows; i++) {
+            nullFormation.push([]);
+            for (var j = 0; j < columns; j++) {
+                nullFormation[i].push(null);
+            }
+        }
+        return nullFormation;
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = getNullFormation;
+});
 define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormation", "src/utility", "src/targeting"], function (require, exports, getNullFormation_1, utility_4, targeting_1) {
     "use strict";
     function getFormationsToTarget(battle, user, effect) {
@@ -2274,13 +2274,15 @@ define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormatio
         return targets;
     }
 });
-define("src/battleAbilityProcessing", ["require", "exports", "src/battleAbilityTargeting"], function (require, exports, battleAbilityTargeting_1) {
+define("src/battleAbilityProcessing", ["require", "exports", "src/targeting", "src/battleAbilityTargeting"], function (require, exports, targeting_2, battleAbilityTargeting_1) {
     "use strict";
     function getAbilityEffectDataByPhase(battle, abilityUseData) {
         abilityUseData.actualTarget = getTargetOrGuard(battle, abilityUseData);
         var beforeUse = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getBeforeAbilityUseEffectTemplates(abilityUseData));
+        beforeUse.push.apply(beforeUse, getDefaultBeforeUseEffects(abilityUseData));
         var abilityEffects = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getAbilityUseEffectTemplates(abilityUseData));
         var afterUse = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getAfterAbilityUseEffectTemplates(abilityUseData));
+        afterUse.push.apply(afterUse, getDefaultAfterUseEffects(abilityUseData));
         return ({
             beforeUse: beforeUse,
             abilityEffects: abilityEffects,
@@ -2335,41 +2337,41 @@ define("src/battleAbilityProcessing", ["require", "exports", "src/battleAbilityT
     function activeUnitsFilterFN(unit) {
         return unit && unit.isActiveInBattle();
     }
+    function recursivelyGetAttachedEffects(effectTemplate) {
+        var attachedEffects = [];
+        var frontier = [effectTemplate];
+        while (frontier.length > 0) {
+            var currentEffect = frontier.pop();
+            attachedEffects.push.apply(attachedEffects, currentEffect.attachedEffects);
+            frontier.push.apply(frontier, currentEffect.attachedEffects);
+        }
+        return attachedEffects;
+    }
     function getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, effectTemplates) {
         var effectData = [];
         for (var i = 0; i < effectTemplates.length; i++) {
             var templateEffect = effectTemplates[i];
             var targetsForEffect = getUnitsInEffectArea(battle, templateEffect.action, abilityUseData.user, abilityUseData.actualTarget);
+            var withAttached = [templateEffect].concat(recursivelyGetAttachedEffects(templateEffect));
             for (var j = 0; j < targetsForEffect.length; j++) {
-                effectData.push({
-                    templateEffect: templateEffect,
-                    user: abilityUseData.user,
-                    target: targetsForEffect[j],
-                    trigger: templateEffect.trigger
-                });
+                for (var k = 0; k < withAttached.length; k++) {
+                    effectData.push({
+                        templateEffect: withAttached[k],
+                        user: abilityUseData.user,
+                        target: targetsForEffect[j],
+                        trigger: templateEffect.trigger
+                    });
+                }
             }
         }
         return effectData;
     }
-    function getEffectTemplatesWithAttachedEffects(templates) {
-        var withAttached = [];
-        for (var i = 0; i < templates.length; i++) {
-            var template = templates[i];
-            withAttached.push(template);
-            if (template.attachedEffects) {
-                for (var j = 0; j < template.attachedEffects.length; j++) {
-                    withAttached.push(template.attachedEffects[j]);
-                }
-            }
-        }
-        return withAttached;
-    }
     function getBeforeAbilityUseEffectTemplates(abilityUseData) {
         var beforeUseEffects = [];
         if (abilityUseData.ability.beforeUse) {
-            beforeUseEffects = beforeUseEffects.concat(abilityUseData.ability.beforeUse);
+            beforeUseEffects.push.apply(beforeUseEffects, abilityUseData.ability.beforeUse);
         }
-        return getEffectTemplatesWithAttachedEffects(beforeUseEffects);
+        return beforeUseEffects;
     }
     function getAbilityUseEffectTemplates(abilityUseData) {
         var abilityUseEffects = [];
@@ -2377,14 +2379,44 @@ define("src/battleAbilityProcessing", ["require", "exports", "src/battleAbilityT
         if (abilityUseData.ability.secondaryEffects) {
             abilityUseEffects = abilityUseEffects.concat(abilityUseData.ability.secondaryEffects);
         }
-        return getEffectTemplatesWithAttachedEffects(abilityUseEffects);
+        return abilityUseEffects;
     }
     function getAfterAbilityUseEffectTemplates(abilityUseData) {
         var afterUseEffects = [];
         if (abilityUseData.ability.afterUse) {
-            afterUseEffects = afterUseEffects.concat(abilityUseData.ability.afterUse);
+            afterUseEffects.push.apply(afterUseEffects, abilityUseData.ability.afterUse);
         }
-        return getEffectTemplatesWithAttachedEffects(afterUseEffects);
+        return afterUseEffects;
+    }
+    function makeSelfAbilityEffectData(user, name, actionFN) {
+        return ({
+            templateEffect: {
+                action: {
+                    name: name,
+                    targetFormations: targeting_2.TargetFormation.either,
+                    battleAreaFunction: targeting_2.areaSingle,
+                    targetRangeFunction: targeting_2.targetAll,
+                    executeAction: actionFN
+                }
+            },
+            user: user,
+            target: user,
+            trigger: null
+        });
+    }
+    function getDefaultBeforeUseEffects(abilityUseData) {
+        var effects = [];
+        if (!abilityUseData.ability.addsGuard) {
+            effects.push(makeSelfAbilityEffectData(abilityUseData.user, "removeGuard", function (user) { return user.removeAllGuard(); }));
+        }
+        effects.push(makeSelfAbilityEffectData(abilityUseData.user, "removeActionPoints", function (user) { return user.removeActionPoints(abilityUseData.ability.actionsUse); }));
+        return effects;
+    }
+    function getDefaultAfterUseEffects(abilityUseData) {
+        var effects = [];
+        effects.push(makeSelfAbilityEffectData(abilityUseData.user, "addMoveDelay", function (user) { return user.addMoveDelay(abilityUseData.ability.moveDelay); }));
+        effects.push(makeSelfAbilityEffectData(abilityUseData.user, "updateStatusEffects", function (user) { return user.updateStatusEffects(); }));
+        return effects;
     }
 });
 define("src/battleAbilityUsage", ["require", "exports", "src/battleAbilityProcessing"], function (require, exports, battleAbilityProcessing_1) {
@@ -16204,6 +16236,11 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
                 afterFinishedCallback: this.finishEffect
             });
         };
+        AbilityUseEffectQueue.squashEffects = function (parent, toSquash) {
+            var squashedChangedUnitDisplayDataByID = utility_31.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (e) { return e.changedUnitDisplayDataByID; })));
+            var squashedEffect = utility_31.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
+            return squashedEffect;
+        };
         AbilityUseEffectQueue.squashEffectsWithoutSFX = function (sourceEffects) {
             var squashed = [];
             var effectsToSquash = [];
@@ -16211,9 +16248,7 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
                 var effect = sourceEffects[i];
                 if (effect.sfx) {
                     if (effectsToSquash.length > 0) {
-                        var squashedChangedUnitDisplayDataByID = utility_31.shallowExtend.apply(void 0, [{}, effect.changedUnitDisplayDataByID].concat(effectsToSquash.map(function (e) { return e.changedUnitDisplayDataByID; })));
-                        var squashedEffect = utility_31.shallowExtend({}, effect, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
-                        console.log("squashed: " + effectsToSquash.map(function (e) { return e.actionName; }).join(", "));
+                        var squashedEffect = AbilityUseEffectQueue.squashEffects(effect, effectsToSquash);
                         effectsToSquash = [];
                         squashed.push(squashedEffect);
                     }
@@ -16225,6 +16260,7 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
                     effectsToSquash.unshift(effect);
                 }
             }
+            squashed.reverse();
             return squashed;
         };
         AbilityUseEffectQueue.prototype.triggerEffect = function () {
@@ -16233,10 +16269,10 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
             }
         };
         AbilityUseEffectQueue.prototype.finishEffect = function () {
+            this.currentEffect = null;
             if (this.onCurrentFinished) {
                 this.onCurrentFinished();
             }
-            this.currentEffect = null;
         };
         AbilityUseEffectQueue.prototype.handleEndOfQueue = function () {
             if (this.onAllFinished) {
@@ -16790,6 +16826,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
         BattleComponent.prototype.handleAbilityUse = function (ability, target, wasByPlayer) {
             var abilityUseEffects = battleAbilityUsage_3.useAbility(this.props.battle, ability, this.props.battle.activeUnit, target, true);
             this.abilityUseEffectQueue.addEffects(abilityUseEffects);
+            this.clearHoveredUnit();
             this.playQueuedBattleEffects();
         };
         BattleComponent.getUnitsBySideFromEffect = function (effect) {
@@ -16824,10 +16861,10 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 playingBattleEffect: false,
                 battleEffectDuration: undefined
             });
+            this.handleTurnEnd();
         };
         BattleComponent.prototype.handleTurnEnd = function () {
             if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable()) {
-                this.forceUpdate();
             }
             else {
                 this.clearHoveredUnit();
@@ -16838,6 +16875,9 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
             }
             else if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
                 this.useAIAbility();
+            }
+            else {
+                this.forceUpdate();
             }
         };
         BattleComponent.prototype.usePreparedAbility = function () {
@@ -25009,13 +25049,13 @@ define("modules/common/statuseffecttemplates/poisoned", ["require", "exports", "
     exports.default = poisoned;
     var _a;
 });
-define("modules/common/effectactiontemplates/effectActions", ["require", "exports", "modules/common/statuseffecttemplates/poisoned", "src/StatusEffect", "src/targeting"], function (require, exports, poisoned_1, StatusEffect_1, targeting_2) {
+define("modules/common/effectactiontemplates/effectActions", ["require", "exports", "modules/common/statuseffecttemplates/poisoned", "src/StatusEffect", "src/targeting"], function (require, exports, poisoned_1, StatusEffect_1, targeting_3) {
     "use strict";
     exports.singleTargetDamage = {
         name: "singleTargetDamage",
-        targetFormations: targeting_2.TargetFormation.enemy,
-        battleAreaFunction: targeting_2.areaSingle,
-        targetRangeFunction: targeting_2.targetAll,
+        targetFormations: targeting_3.TargetFormation.enemy,
+        battleAreaFunction: targeting_3.areaSingle,
+        targetRangeFunction: targeting_3.targetAll,
         executeAction: function (user, target, battle, data) {
             var baseDamage = data.baseDamage;
             var damageType = data.damageType;
@@ -25026,9 +25066,9 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
     };
     exports.closeAttack = {
         name: "closeAttack",
-        targetFormations: targeting_2.TargetFormation.enemy,
-        battleAreaFunction: targeting_2.areaRowNeighbors,
-        targetRangeFunction: targeting_2.targetNextRow,
+        targetFormations: targeting_3.TargetFormation.enemy,
+        battleAreaFunction: targeting_3.areaRowNeighbors,
+        targetRangeFunction: targeting_3.targetNextRow,
         executeAction: function (user, target, battle) {
             var baseDamage = 0.66;
             var damageType = 0;
@@ -25039,9 +25079,9 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
     };
     exports.wholeRowAttack = {
         name: "wholeRowAttack",
-        targetFormations: targeting_2.TargetFormation.either,
-        battleAreaFunction: targeting_2.areaColumn,
-        targetRangeFunction: targeting_2.targetAll,
+        targetFormations: targeting_3.TargetFormation.either,
+        battleAreaFunction: targeting_3.areaColumn,
+        targetRangeFunction: targeting_3.targetAll,
         executeAction: function (user, target, battle) {
             var baseDamage = 0.75;
             var damageType = 1;
@@ -25052,9 +25092,9 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
     };
     exports.bombAttack = {
         name: "bombAttack",
-        targetFormations: targeting_2.TargetFormation.enemy,
-        battleAreaFunction: targeting_2.areaNeighbors,
-        targetRangeFunction: targeting_2.targetAll,
+        targetFormations: targeting_3.TargetFormation.enemy,
+        battleAreaFunction: targeting_3.areaNeighbors,
+        targetRangeFunction: targeting_3.targetAll,
         executeAction: function (user, target, battle) {
             var baseDamage = 0.5;
             var damageType = 0;
@@ -25065,9 +25105,9 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
     };
     exports.guardRow = {
         name: "guardRow",
-        targetFormations: targeting_2.TargetFormation.either,
-        battleAreaFunction: targeting_2.areaSingle,
-        targetRangeFunction: targeting_2.targetSelf,
+        targetFormations: targeting_3.TargetFormation.either,
+        battleAreaFunction: targeting_3.areaSingle,
+        targetRangeFunction: targeting_3.targetSelf,
         executeAction: function (user, target, battle, data) {
             var guardPerInt = data.perInt || 0;
             var flat = data.flat || 0;
@@ -25077,9 +25117,9 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
     };
     exports.receiveCounterAttack = {
         name: "receiveCounterAttack",
-        targetFormations: targeting_2.TargetFormation.either,
-        battleAreaFunction: targeting_2.areaSingle,
-        targetRangeFunction: targeting_2.targetSelf,
+        targetFormations: targeting_3.TargetFormation.either,
+        battleAreaFunction: targeting_3.areaSingle,
+        targetRangeFunction: targeting_3.targetSelf,
         executeAction: function (user, target, battle, data) {
             var counterStrength = target.getCounterAttackStrength();
             if (counterStrength) {
@@ -25092,9 +25132,9 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
     };
     exports.increaseCaptureChance = {
         name: "increaseCaptureChance",
-        targetFormations: targeting_2.TargetFormation.enemy,
-        battleAreaFunction: targeting_2.areaSingle,
-        targetRangeFunction: targeting_2.targetAll,
+        targetFormations: targeting_3.TargetFormation.enemy,
+        battleAreaFunction: targeting_3.areaSingle,
+        targetRangeFunction: targeting_3.targetAll,
         executeAction: function (user, target, battle, data) {
             if (!data)
                 return;
@@ -25108,18 +25148,18 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
     };
     exports.buffTest = {
         name: "buffTest",
-        targetFormations: targeting_2.TargetFormation.either,
-        battleAreaFunction: targeting_2.areaSingle,
-        targetRangeFunction: targeting_2.targetAll,
+        targetFormations: targeting_3.TargetFormation.either,
+        battleAreaFunction: targeting_3.areaSingle,
+        targetRangeFunction: targeting_3.targetAll,
         executeAction: function (user, target, battle) {
             target.addStatusEffect(new StatusEffect_1.default(poisoned_1.default, 2));
         }
     };
     exports.healTarget = {
         name: "healTarget",
-        targetFormations: targeting_2.TargetFormation.ally,
-        battleAreaFunction: targeting_2.areaSingle,
-        targetRangeFunction: targeting_2.targetAll,
+        targetFormations: targeting_3.TargetFormation.ally,
+        battleAreaFunction: targeting_3.areaSingle,
+        targetRangeFunction: targeting_3.targetAll,
         executeAction: function (user, target, battle, data) {
             var healAmount = 0;
             if (data.flat) {
@@ -25136,18 +25176,18 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
     };
     exports.healSelf = {
         name: "healSelf",
-        targetFormations: targeting_2.TargetFormation.ally,
-        battleAreaFunction: targeting_2.areaSingle,
-        targetRangeFunction: targeting_2.targetSelf,
+        targetFormations: targeting_3.TargetFormation.ally,
+        battleAreaFunction: targeting_3.areaSingle,
+        targetRangeFunction: targeting_3.targetSelf,
         executeAction: function (user, target, battle, data) {
             exports.healTarget.executeAction(user, user, battle, data);
         }
     };
     exports.standBy = {
         name: "standBy",
-        targetFormations: targeting_2.TargetFormation.either,
-        battleAreaFunction: targeting_2.areaSingle,
-        targetRangeFunction: targeting_2.targetSelf,
+        targetFormations: targeting_3.TargetFormation.either,
+        battleAreaFunction: targeting_3.areaSingle,
+        targetRangeFunction: targeting_3.targetSelf,
         executeAction: function () { }
     };
     var _a;
