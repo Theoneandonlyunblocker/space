@@ -65,21 +65,20 @@ interface StateType
 
 export class BattleComponent extends React.Component<PropTypes, StateType>
 {
-  displayName: string = "Battle";
+  public displayName: string = "Battle";
+  public state: StateType;
 
+  private ref_TODO_formationsContainer: HTMLElement;
+  private ref_TODO_abilityTooltip: AbilityTooltipComponent;
+  
   // set as a property of the class instead of its state
   // as its not used for trigger updates
   // and needs to be changed synchronously
-  tempHoveredUnit: Unit = null;
-  idGenerator: number = 0;
-  MCTree: MCTree = null;
-  battleStartStartTime: number = undefined;
-  battleEndStartTime: number = undefined;
-
-  state: StateType;
-  
-  ref_TODO_formationsContainer: HTMLElement;
-  ref_TODO_abilityTooltip: AbilityTooltipComponent;
+  private tempHoveredUnit: Unit = null;
+  private idGenerator: number = 0;
+  private MCTree: MCTree = null;
+  private battleStartStartTime: number = undefined;
+  private battleEndStartTime: number = undefined;
 
   constructor(props: PropTypes)
   {
@@ -156,7 +155,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.battleStartStartTime = Date.now();
   }
 
-  endBattleStart()
+  private endBattleStart()
   {
     if (Date.now() < this.battleStartStartTime + 1000) return;
     this.setState(
@@ -169,13 +168,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       this.useAIAbility();
     }
   }
-
-  getBlurArea()
+  private getBlurArea()
   {
     return ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_formationsContainer).getBoundingClientRect();
   }
-
-  clearHoveredUnit()
+  private clearHoveredUnit()
   {
     this.tempHoveredUnit = null;
     this.setState(
@@ -194,7 +191,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.setBattleSceneUnits(null);
   }
-  handleMouseLeaveUnit(e: React.MouseEvent)
+  private handleMouseLeaveUnit(e: React.MouseEvent)
   {
     if (!this.state.hoveredUnit || this.state.playingBattleEffect)
     {
@@ -230,7 +227,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       this.clearHoveredUnit();
     }
   }
-  handleMouseEnterUnit(unit: Unit)
+  private handleMouseEnterUnit(unit: Unit)
   {
     this.tempHoveredUnit = unit;
 
@@ -254,12 +251,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.setBattleSceneUnits(unit);
   }
 
-  getUnitElement(unit: Unit)
+  private getUnitElement(unit: Unit)
   {
     return document.getElementById("unit-id_" + unit.id);
   }
-
-  setBattleSceneUnits(hoveredUnit?: Unit)
+  private setBattleSceneUnits(hoveredUnit?: Unit)
   {
     if (this.state.playingBattleEffect) return;
 
@@ -295,10 +291,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit1: unit1,
       battleSceneUnit2: unit2
     });
-
   }
-
-  handleAbilityUse(ability: AbilityTemplate, target: Unit, wasByPlayer: boolean)
+  private handleAbilityUse(ability: AbilityTemplate, target: Unit, wasByPlayer: boolean)
   {
     // TODO
     /* 
@@ -328,7 +322,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   // or have this wait for battle scene units to finish animating.
   // battleSFX animation can trigger at the earliest after animationTiming.unitEnter, but
   // actual effect always gets triggered after animationTiming.beforeUse
-  playBattleEffect(abilityData: AbilityUseData, i: number)
+  private playBattleEffect(abilityData: AbilityUseData, i: number)
   {
     // TODO
     /* 
@@ -435,7 +429,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     });
     */
   }
-  clearBattleEffect()
+  private clearBattleEffect()
   {
     var newHoveredUnit: Unit = null;
     if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle())
@@ -459,8 +453,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       userUnit: null
     }, afterStateUpdateCallback);
   }
-
-  handleTurnEnd()
+  private handleTurnEnd()
   {
     if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable())
     {
@@ -483,7 +476,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       this.useAIAbility();
     }
   }
-  usePreparedAbility()
+  private usePreparedAbility()
   {
     var unit: Unit = this.props.battle.activeUnit;
     var action = unit.battleStats.queuedAction;
@@ -493,11 +486,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.handleAbilityUse(action.ability, target, userIsHuman);
   }
-  usePlayerAbility(ability: AbilityTemplate, target: Unit)
+  private usePlayerAbility(ability: AbilityTemplate, target: Unit)
   {
     this.handleAbilityUse(ability, target, true);
   }
-  useAIAbility()
+  private useAIAbility()
   {
     if (!this.props.battle.activeUnit || this.props.battle.ended) return;
     
@@ -510,8 +503,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.handleAbilityUse(move.ability, target, false);
   }
-
-  finishBattle()
+  private finishBattle()
   {
     if (Date.now() < this.battleEndStartTime + 1000) return;
     var battle = this.props.battle;
@@ -519,8 +511,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     battle.finishBattle();
   }
-
-  handleMouseEnterAbility(ability: AbilityTemplate)
+  private handleMouseEnterAbility(ability: AbilityTemplate)
   {
     const targetsInPotentialArea = getUnitsInAbilityArea(
       this.props.battle,
@@ -541,7 +532,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       targetsInPotentialArea: targetsInPotentialArea,
     });
   }
-  handleMouseLeaveAbility()
+  private handleMouseLeaveAbility()
   {
     this.setState(
     {
@@ -551,7 +542,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       targetsInPotentialArea: []
     });
   }
-
 
   render()
   {
