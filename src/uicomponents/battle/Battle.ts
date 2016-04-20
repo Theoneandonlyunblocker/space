@@ -10,6 +10,7 @@ import TurnCounter from "./TurnCounter";
 import BattleBackground from "./BattleBackground";
 import Options from "../../Options";
 import MCTree from "../../MCTree";
+import BattleScene from "../../BattleScene";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 import {AbilityUseData} from "../../battleAbilityProcessing";
 import
@@ -18,7 +19,7 @@ import
   getUnitsInAbilityArea
 } from "../../battleAbilityUI";
 import BattleScore from "./BattleScore";
-import BattleScene from "./BattleScene";
+import BattleSceneComponentFactory from "./BattleScene";
 import Formation from "./Formation";
 import BattleDisplayStrength from "./BattleDisplayStrength";
 import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityTooltip";
@@ -35,32 +36,28 @@ interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  hoveredUnit?: Unit;
   highlightedUnit?: Unit;
+  hoveredUnit?: Unit;
+  hoveredAbility?: AbilityTemplate;
+  targetsInPotentialArea?: Unit[];
+  potentialDelayID?: number;
+  potentialDelayAmount?: number;
+  
   abilityTooltip?:
   {
     parentElement?: HTMLElement;
     facesLeft?: boolean;
   };
+  
   battleIsStarting?: boolean;
-  userUnit?: Unit;
-  targetUnit?: Unit;
-  afterAbilityFinishedCallback?: () => void;
-  potentialDelayID?: number;
-  potentialDelayAmount?: number;
-
-  battleSceneUnit2StartingStrength?: number;
-  battleSceneUnit1StartingStrength?: number;
+  
   battleSceneUnit1?: Unit
-  triggerEffectCallback?: (forceUpdate?: boolean) => void;
+  battleSceneUnit2?: Unit
   playingBattleEffect?: boolean;
   battleEffectDuration?: number;
-  battleSceneUnit2?: Unit
-  targetsInPotentialArea?: Unit[];
-  battleEffectSFX?: any; // TODO refactor | define state type 456
-  hoveredAbility?: AbilityTemplate;
   
   unitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
+  previousUnitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
 }
 
 export class BattleComponent extends React.Component<PropTypes, StateType>
@@ -71,12 +68,17 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   private ref_TODO_formationsContainer: HTMLElement;
   private ref_TODO_abilityTooltip: AbilityTooltipComponent;
   
+  private battleScene: BattleScene;
+  
   // set as a property of the class instead of its state
   // as its not used for trigger updates
   // and needs to be changed synchronously
   private tempHoveredUnit: Unit = null;
+  
   private idGenerator: number = 0;
+  
   private MCTree: MCTree = null;
+  
   private battleStartStartTime: number = undefined;
   private battleEndStartTime: number = undefined;
 
@@ -85,6 +87,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     super(props);
     
     this.state = this.getInitialStateTODO();
+    this.battleScene = new BattleScene();
     
     this.bindMethods();
   }
@@ -119,34 +122,28 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     
     return(
     {
+      highlightedUnit: null,
+      hoveredUnit: null,
+      hoveredAbility: null,
+      targetsInPotentialArea: [],
+      potentialDelayID: undefined,
+      potentialDelayAmount: undefined,
+      
       abilityTooltip:
       {
         parentElement: null,
         facesLeft: null
       },
-      targetsInPotentialArea: [],
-      potentialDelayID: undefined,
-      potentialDelayAmount: undefined,
-
-      hoveredAbility: null,
       
-      targetUnit: null,
-      userUnit: null,
-      hoveredUnit: null,
-      highlightedUnit: null,
+      battleIsStarting: true,
 
-      battleSceneUnit1StartingStrength: null,
-      battleSceneUnit2StartingStrength: null,
       battleSceneUnit1: null,
       battleSceneUnit2: null,
       playingBattleEffect: false,
       battleEffectDuration: null,
-      battleEffectSFX: null,
-      afterAbilityFinishedCallback: null,
-      triggerEffectCallback: null,
-      battleIsStarting: true,
       
-      unitDisplayDataByID: initialDisplayData
+      unitDisplayDataByID: initialDisplayData,
+      previousUnitDisplayDataByID: initialDisplayData,
     });
   }
 
@@ -250,11 +247,42 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.setBattleSceneUnits(unit);
   }
+  private handleMouseEnterAbility(ability: AbilityTemplate)
+  {
+    const targetsInPotentialArea = getUnitsInAbilityArea(
+      this.props.battle,
+      ability,
+      this.props.battle.activeUnit,
+      this.state.hoveredUnit
+    )
 
+    const abilityUseDelay = ability.preparation ?
+      ability.preparation.prepDelay * ability.preparation.turnsToPrep :
+      ability.moveDelay;
+
+    this.setState(
+    {
+      hoveredAbility: ability,
+      potentialDelayID: this.props.battle.activeUnit.id,
+      potentialDelayAmount: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay,
+      targetsInPotentialArea: targetsInPotentialArea,
+    });
+  }
+  private handleMouseLeaveAbility()
+  {
+    this.setState(
+    {
+      hoveredAbility: null,
+      potentialDelayID: undefined,
+      potentialDelayAmount: undefined,
+      targetsInPotentialArea: []
+    });
+  }
   private getUnitElement(unit: Unit)
   {
     return document.getElementById("unit-id_" + unit.id);
   }
+  // TODO refactor
   private setBattleSceneUnits(hoveredUnit?: Unit)
   {
     if (this.state.playingBattleEffect) return;
@@ -292,6 +320,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit2: unit2
     });
   }
+  // TODO refactor
   private handleAbilityUse(ability: AbilityTemplate, target: Unit, wasByPlayer: boolean)
   {
     // TODO
@@ -322,6 +351,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   // or have this wait for battle scene units to finish animating.
   // battleSFX animation can trigger at the earliest after animationTiming.unitEnter, but
   // actual effect always gets triggered after animationTiming.beforeUse
+  // TODO refactor
   private playBattleEffect(abilityData: AbilityUseData, i: number)
   {
     // TODO
@@ -429,6 +459,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     });
     */
   }
+  // TODO refactor
   private clearBattleEffect()
   {
     var newHoveredUnit: Unit = null;
@@ -444,13 +475,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       playingBattleEffect: false,
       battleEffectDuration: null,
-      battleEffectSFX: null,
-      afterAbilityFinishedCallback: null,
-      triggerEffectCallback: null,
+      
       hoveredUnit: null,
       highlightedUnit: null,
-      targetUnit: null,
-      userUnit: null
     }, afterStateUpdateCallback);
   }
   private handleTurnEnd()
@@ -510,37 +537,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     if (!battle.ended) throw new Error();
 
     battle.finishBattle();
-  }
-  private handleMouseEnterAbility(ability: AbilityTemplate)
-  {
-    const targetsInPotentialArea = getUnitsInAbilityArea(
-      this.props.battle,
-      ability,
-      this.props.battle.activeUnit,
-      this.state.hoveredUnit
-    )
-
-    const abilityUseDelay = ability.preparation ?
-      ability.preparation.prepDelay * ability.preparation.turnsToPrep :
-      ability.moveDelay;
-
-    this.setState(
-    {
-      hoveredAbility: ability,
-      potentialDelayID: this.props.battle.activeUnit.id,
-      potentialDelayAmount: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay,
-      targetsInPotentialArea: targetsInPotentialArea,
-    });
-  }
-  private handleMouseLeaveAbility()
-  {
-    this.setState(
-    {
-      hoveredAbility: null,
-      potentialDelayID: undefined,
-      potentialDelayAmount: undefined,
-      targetsInPotentialArea: []
-    });
   }
 
   render()
@@ -622,8 +618,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           {
             key: "" + this.state.battleSceneUnit1.id + Date.now(),
             delay: this.state.battleEffectDuration,
-            from: this.state.battleSceneUnit1StartingStrength,
-            to: this.state.battleSceneUnit1.currentHealth
+            from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth,
+            to: this.state.unitDisplayDataByID[this.state.battleSceneUnit1.id].currentHealth
           }) : null
         ),
         React.DOM.div(
@@ -634,13 +630,14 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           {
             key: "" + this.state.battleSceneUnit2.id + Date.now(),
             delay: this.state.battleEffectDuration,
-            from: this.state.battleSceneUnit2StartingStrength,
-            to: this.state.battleSceneUnit2.currentHealth
+            from: this.state.previousUnitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth,
+            to: this.state.unitDisplayDataByID[this.state.battleSceneUnit2.id].currentHealth
           }) : null
         )
       )
     }
 
+    // is this still relevant? written for react-0.11
     // TODO react
     // hack
     // 
@@ -709,24 +706,14 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
               battle: battle
             }),
             upperFooter,
-            BattleScene(
+            BattleSceneComponentFactory(
             {
               battleState: battleState,
-
-              targetUnit: this.state.targetUnit,
-              userUnit: this.state.userUnit,
-              activeUnit: battle.activeUnit,
-              hoveredUnit: this.state.hoveredUnit,
-
-              activeSFX: this.state.battleEffectSFX,
-
-              afterAbilityFinishedCallback: this.state.afterAbilityFinishedCallback,
-              triggerEffectCallback: this.state.triggerEffectCallback,
-
+              battleScene: this.battleScene,
               humanPlayerWonBattle: playerWonBattle,
-
-              side1Player: battle.side1Player,
-              side2Player: battle.side2Player
+              
+              flag1: battle.side1Player.flag,
+              flag2: battle.side2Player.flag,
             })
           ),
           React.DOM.div(

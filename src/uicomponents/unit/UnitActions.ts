@@ -33,7 +33,6 @@ export class UnitActionsComponent extends React.Component<PropTypes, StateType>
 
     var icons: React.ReactHTMLElement<any>[] = [];
 
-    console.log(this.props.hoveredActionPointExpenditure);
     var availableCount = this.props.currentActionPoints - (this.props.hoveredActionPointExpenditure || 0);
     for (let i = 0; i < availableCount; i++)
     {

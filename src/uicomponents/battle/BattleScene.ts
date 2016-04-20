@@ -16,19 +16,9 @@ interface PropTypes extends React.Props<any>
   battleState: "start" | "active" | "finish";
   battleScene: BattleScene;
   humanPlayerWonBattle: boolean;
+  
   flag1: Flag;
   flag2: Flag;
-  
-  targetUnit?: Unit;
-  userUnit?: Unit;
-  activeUnit?: Unit;
-  hoveredUnit?: Unit;
-  activeSFX?: BattleSFXTemplate;
-
-  afterAbilityFinishedCallback?: () => void;
-  triggerEffectCallback?: (forceUpdate?: boolean) => void;
-  side1Player?: Player;
-  side2Player?: Player;
 }
 
 interface StateType
@@ -38,20 +28,23 @@ interface StateType
 export class BattleSceneComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScene";
+  state: StateType;
 
-  battleScene: BattleScene;
-
-
+  constructor(props: PropTypes)
+  {
+    super(props);
+  }
+  
   shouldComponentUpdate(newProps: PropTypes)
   {
-    var shouldTriggerUpdate =
+    const propsThatShouldTriggerUpdate =
     {
       battleState: true
     };
 
     for (let key in newProps)
     {
-      if (shouldTriggerUpdate[key] && newProps[key] !== this.props[key])
+      if (propsThatShouldTriggerUpdate[key] && newProps[key] !== this.props[key])
       {
         return true;
       }
@@ -62,75 +55,16 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
 
   componentWillReceiveProps(newProps: PropTypes)
   {
-    var self = this;
-
     if (this.props.battleState === "start" && newProps.battleState === "active")
     {
-      this.battleScene = new BattleScene(ReactDOM.findDOMNode<HTMLElement>(this));
-      this.battleScene.resume();
+      this.props.battleScene.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this));
+      this.props.battleScene.resume();
     }
     else if (this.props.battleState === "active" && newProps.battleState === "finish")
     {
-      this.battleScene.destroy();
-      this.battleScene = null;
+      this.props.battleScene.destroy();
+      this.props.battleScene = null;
     }
-
-    var battleScene: BattleScene = this.battleScene;
-
-    if (battleScene)
-    {
-      var activeSFXChanged = newProps.activeSFX !== this.props.activeSFX;
-      var shouldPlaySFX = Boolean(newProps.activeSFX &&
-      (
-        activeSFXChanged ||
-        newProps.targetUnit !== this.props.targetUnit ||
-        newProps.userUnit !== this.props.userUnit
-      ));
-
-
-      if (shouldPlaySFX)
-      {
-        battleScene.handleAbilityUse(
-        {
-          user: newProps.userUnit,
-          target: newProps.targetUnit,
-          SFXTemplate: newProps.activeSFX,
-          afterFinishedCallback: newProps.afterAbilityFinishedCallback,
-          triggerEffectCallback: newProps.triggerEffectCallback
-        });
-      }
-      else if (activeSFXChanged)
-      {
-        battleScene.clearActiveSFX();
-      }
-
-      var unitsHaveUpdated = false;
-      [
-        "targetUnit",
-        "userUnit",
-        "activeUnit",
-        "hoveredUnit"
-      ].forEach(function(unitKey: string)
-      {
-        if (battleScene[unitKey] !== newProps[unitKey])
-        {
-          unitsHaveUpdated = true;
-        }
-        battleScene[unitKey] = newProps[unitKey];
-      });
-
-      if (unitsHaveUpdated && !shouldPlaySFX && !newProps.activeSFX)
-      {
-        battleScene.updateUnits();
-      }
-    }
-  }
-
-  state: StateType;
-
-  constructor(props: PropTypes)
-  {
-    super(props);
   }
   
   render()
@@ -147,12 +81,12 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
         },
           BattleSceneFlag(
           {
-            flag: this.props.side1Player.flag,
+            flag: this.props.flag1,
             facingRight: true
           }),
           BattleSceneFlag(
           {
-            flag: this.props.side2Player.flag,
+            flag: this.props.flag2,
             facingRight: false
           })
         )
@@ -160,7 +94,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
       }
       case "active":
       {
-        componentToRender = null;
+        componentToRender = null; // has battlescene view
         break;
       }
       case "finish":
