@@ -16,7 +16,7 @@ export default class BattleScene
 {
   container: PIXI.Container;
   renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-  pixiContainer: HTMLElement;
+  containerElement: HTMLElement;
 
   layers:
   {
@@ -54,29 +54,32 @@ export default class BattleScene
 
   resizeListener: (e: Event) => void;
 
-  constructor(pixiContainer: HTMLElement)
+  constructor(containerElement?: HTMLElement)
   {
-    this.pixiContainer = pixiContainer;
     this.container = new PIXI.Container();
-
-    var pixiContainerStyle = window.getComputedStyle(this.pixiContainer);
+    this.containerElement = containerElement;
+    
     this.renderer = PIXI.autoDetectRenderer(
-      parseInt(pixiContainerStyle.width),
-      parseInt(pixiContainerStyle.height),
+      2, // set in this.bindRendererView()
+      2, // set in this.bindRendererView()
       {
         autoResize: false,
         antialias: true,
         transparent: true
       }
     );
-
-    this.pixiContainer.appendChild(this.renderer.view);
-    this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
     
+    this.renderer.view.setAttribute("id", "battle-scene-pixi-canvas");
+        
     this.initLayers();
 
     this.resizeListener = this.handleResize.bind(this);
     window.addEventListener("resize", this.resizeListener, false);
+    
+    if (containerElement)
+    {
+      this.bindRendererView(containerElement);
+    }
   }
   public destroy()
   {
@@ -91,9 +94,25 @@ export default class BattleScene
 
     this.container.destroy(true);
     this.container = null;
-    this.pixiContainer = null;
+    this.containerElement = null;
 
     window.removeEventListener("resize", this.resizeListener);
+  }
+  public bindRendererView(containerElement: HTMLElement)
+  {
+    if (this.containerElement)
+    {
+      this.containerElement.removeChild(this.renderer.view);
+    }
+    
+    this.containerElement = containerElement;
+    
+    if (this.renderer)
+    {
+      this.handleResize();
+    }
+    
+    this.containerElement.appendChild(this.renderer.view);
   }
   public handleAbilityUse(props:
   {
@@ -198,8 +217,8 @@ export default class BattleScene
   }
   private handleResize()
   {
-    var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
-    var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
+    var w = this.containerElement.clientWidth * window.devicePixelRatio;
+    var h = this.containerElement.clientHeight * window.devicePixelRatio;
     this.renderer.resize(w, h);
 
     this.side1Unit.resize();
