@@ -12,7 +12,11 @@ import Options from "../../Options";
 import MCTree from "../../MCTree";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 import {AbilityUseData} from "../../battleAbilityProcessing";
-import {getTargetsForAllAbilities} from "../../battleAbilityTargeting";
+import
+{
+  getTargetsForAllAbilities,
+  getUnitsInAbilityArea
+} from "../../battleAbilityUI";
 import BattleScore from "./BattleScore";
 import BattleScene from "./BattleScene";
 import Formation from "./Formation";
@@ -509,15 +513,14 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
   handleMouseEnterAbility(ability: AbilityTemplate)
   {
-    // TODO ability use
-    // var targetsInPotentialArea = getUnitsInAbilityArea(
-    //   this.props.battle,
-    //   this.props.battle.activeUnit,
-    //   ability,
-    //   this.state.hoveredUnit.battleStats.position
-    // )
+    const targetsInPotentialArea = getUnitsInAbilityArea(
+      this.props.battle,
+      ability,
+      this.props.battle.activeUnit,
+      this.state.hoveredUnit
+    )
 
-    var abilityUseDelay = ability.preparation ?
+    const abilityUseDelay = ability.preparation ?
       ability.preparation.prepDelay * ability.preparation.turnsToPrep :
       ability.moveDelay;
 
@@ -526,7 +529,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       hoveredAbility: ability,
       potentialDelayID: this.props.battle.activeUnit.id,
       potentialDelayAmount: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay,
-      // targetsInPotentialArea: targetsInPotentialArea
+      targetsInPotentialArea: targetsInPotentialArea,
     });
   }
   handleMouseLeaveAbility()
