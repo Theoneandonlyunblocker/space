@@ -375,7 +375,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable())
     {
-      this.forceUpdate();
+      // this.forceUpdate();
     }
     else
     {
@@ -383,7 +383,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     this.props.battle.endTurn();
-
+    
     if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
     {
       this.usePreparedAbility();
@@ -391,6 +391,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     else if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
     {
       this.useAIAbility();
+    }
+    else
+    {
+      this.forceUpdate();
     }
   }
   private usePreparedAbility()

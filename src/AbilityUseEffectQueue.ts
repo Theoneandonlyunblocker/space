@@ -55,6 +55,23 @@ export default class AbilityUseEffectQueue
     });
   }
   
+  private static squashEffects(parent: AbilityUseEffect, toSquash: AbilityUseEffect[]): AbilityUseEffect
+  {
+    const squashedChangedUnitDisplayDataByID: {[unitID: number]: UnitDisplayData} =
+    shallowExtend(
+      {},
+      parent.changedUnitDisplayDataByID,
+      ...toSquash.map(e => e.changedUnitDisplayDataByID)
+    );
+
+    const squashedEffect: AbilityUseEffect = shallowExtend(
+      {},
+      parent,
+      {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID}
+    );
+    
+    return squashedEffect;
+  }
   private static squashEffectsWithoutSFX(sourceEffects: AbilityUseEffect[]): AbilityUseEffect[]
   {
     const squashed: AbilityUseEffect[] = [];
@@ -66,18 +83,7 @@ export default class AbilityUseEffectQueue
       {
         if (effectsToSquash.length > 0)
         {
-          const squashedChangedUnitDisplayDataByID: {[unitID: number]: UnitDisplayData} =
-          shallowExtend(
-            {},
-            effect.changedUnitDisplayDataByID,
-            ...effectsToSquash.map(e => e.changedUnitDisplayDataByID)
-          );
-
-          const squashedEffect: AbilityUseEffect = shallowExtend(
-            {},
-            effect,
-            {changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID}
-          );
+          const squashedEffect = AbilityUseEffectQueue.squashEffects(effect, effectsToSquash);
           effectsToSquash = [];
           
           squashed.push(squashedEffect);
@@ -92,6 +98,10 @@ export default class AbilityUseEffectQueue
         effectsToSquash.unshift(effect);
       }
     }
+    
+    // Effects without sfx that fall through are discarded
+    
+    squashed.reverse();
     
     return squashed;
   }
