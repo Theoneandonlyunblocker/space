@@ -1,24 +1,24 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-/// <reference path="../../player.ts" />
-/// <reference path="../../unit.ts" />
+import BattleFinish from "./BattleFinish";
+import BattleSceneFlag from "./BattleSceneFlag";
 
-/// <reference path="battlesceneflag.ts" />
-
-
+import Flag from "../../Flag";
 import BattleScene from "../../BattleScene";
+
 import Unit from "../../Unit";
 import BattleSFXTemplate from "../../templateinterfaces/BattleSFXTemplate";
 import Player from "../../Player";
-import BattleSceneFlag from "./BattleSceneFlag";
 
-
-var bs: any;
 
 interface PropTypes extends React.Props<any>
 {
   battleState: "start" | "active" | "finish";
-
+  battleScene: BattleScene;
+  humanPlayerWonBattle: boolean;
+  flag1: Flag;
+  flag2: Flag;
+  
   targetUnit?: Unit;
   userUnit?: Unit;
   activeUnit?: Unit;
@@ -27,7 +27,6 @@ interface PropTypes extends React.Props<any>
 
   afterAbilityFinishedCallback?: () => void;
   triggerEffectCallback?: (forceUpdate?: boolean) => void;
-  humanPlayerWonBattle?: boolean;
   side1Player?: Player;
   side2Player?: Player;
 }
@@ -63,7 +62,6 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
 
   componentWillReceiveProps(newProps: PropTypes)
   {
-    bs = this;
     var self = this;
 
     if (this.props.battleState === "start" && newProps.battleState === "active")
@@ -137,7 +135,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
   
   render()
   {
-    var componentToRender: React.ReactHTMLElement<any>;
+    var componentToRender: React.ReactElement<any>;
 
     switch (this.props.battleState)
     {
@@ -167,23 +165,10 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
       }
       case "finish":
       {
-        componentToRender = React.DOM.div(
+        componentToRender = BattleFinish(
         {
-          className: "battle-scene-finish-container"
-        },
-          React.DOM.h1(
-          {
-            className: "battle-scene-finish-header"
-          },
-            this.props.humanPlayerWonBattle ? "You win" : "You lose"
-          ),
-          React.DOM.h3(
-          {
-            className: "battle-scene-finish-subheader"
-          },
-            "Click to continue"
-          )
-        )
+          humanPlayerWonBattle: this.props.humanPlayerWonBattle
+        })
         break;
       }
     }
