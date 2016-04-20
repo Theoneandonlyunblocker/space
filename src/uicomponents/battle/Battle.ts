@@ -321,6 +321,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     //   });
     // }
     
+    this.clearHoveredUnit();
+    
     this.playQueuedBattleEffects();
   }
   private static getUnitsBySideFromEffect(effect: AbilityUseEffect): StateType
@@ -366,6 +368,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       playingBattleEffect: false,
       battleEffectDuration: undefined
     });
+    
+    this.handleTurnEnd();
   }
   private handleTurnEnd()
   {

@@ -9,7 +9,7 @@ import
 {
   TargetFormation,
   areaSingle,
-  targetSelf
+  targetAll
 } from "./targeting";
 
 import
@@ -207,9 +207,9 @@ function getBeforeAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abi
     {
       name: "removeGuardAndActionPoints",
       
-      targetFormations: TargetFormation.ally,
+      targetFormations: TargetFormation.either,
       battleAreaFunction: areaSingle,
-      targetRangeFunction: targetSelf,
+      targetRangeFunction: targetAll,
       executeAction: (user, target, battle) =>
       {
         if (!abilityUseData.ability.addsGuard)
@@ -260,9 +260,9 @@ function getAfterAbilityUseEffectTemplates(abilityUseData: AbilityUseData): Abil
     {
       name: "addMoveDelayAndUpdateStatusEffects",
       
-      targetFormations: TargetFormation.ally,
+      targetFormations: TargetFormation.either,
       battleAreaFunction: areaSingle,
-      targetRangeFunction: targetSelf,
+      targetRangeFunction: targetAll,
       executeAction: (user, target, battle) =>
       {
         user.addMoveDelay(abilityUseData.ability.moveDelay);

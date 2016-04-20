@@ -104,11 +104,11 @@ export default class AbilityUseEffectQueue
   }
   private finishEffect()
   {
+    this.currentEffect = null;
     if (this.onCurrentFinished)
     {
       this.onCurrentFinished();
     }
-    this.currentEffect = null;
   }
   private handleEndOfQueue()
   {

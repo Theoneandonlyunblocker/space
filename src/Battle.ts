@@ -676,9 +676,6 @@ export default class Battle
 
     return clone;
   }
-
-
-  // 
   private updateTurnOrder(): void
   {
     this.turnOrder.update();
