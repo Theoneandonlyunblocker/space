@@ -26,7 +26,6 @@ interface PropTypes extends React.Props<any>
   game: Game;
   sceneToRender: string;
   renderer: Renderer;
-  unitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
 }
 
 interface StateType
@@ -57,7 +56,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
             battle: this.props.battle,
             humanPlayer: this.props.player,
             renderer: this.props.renderer,
-            unitDisplayDataByID: this.props.unitDisplayDataByID,
             key: "battle"
           })
         );

@@ -31,7 +31,6 @@ interface PropTypes extends React.Props<any>
   renderer: Renderer;
   battle: Battle;
   humanPlayer: Player;
-  unitDisplayDataByID: {[unitID: number]: UnitDisplayData};
 }
 
 interface StateType
@@ -60,6 +59,8 @@ interface StateType
   targetsInPotentialArea?: Unit[];
   battleEffectSFX?: any; // TODO refactor | define state type 456
   hoveredAbility?: AbilityTemplate;
+  
+  unitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
 }
 
 export class BattleComponent extends React.Component<PropTypes, StateType>
@@ -111,6 +112,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   
   private getInitialStateTODO(): StateType
   {
+    const initialDisplayData: {[unitID: number]: UnitDisplayData} = {};
+    this.props.battle.forEachUnit(unit =>
+    {
+      initialDisplayData[unit.id] = unit.getDisplayData("battle");
+    });
+    
     return(
     {
       abilityTooltip:
@@ -138,7 +145,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleEffectSFX: null,
       afterAbilityFinishedCallback: null,
       triggerEffectCallback: null,
-      battleIsStarting: true
+      battleIsStarting: true,
+      
+      unitDisplayDataByID: initialDisplayData
     });
   }
 
@@ -740,7 +749,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           },
             Formation(
             {
-              unitDisplayDataByID: this.props.unitDisplayDataByID, // TODO
+              unitDisplayDataByID: this.state.unitDisplayDataByID,
               formation: battle.side1,
               facesLeft: false,
               
@@ -764,7 +773,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             }),
             Formation(
             {
-              unitDisplayDataByID: this.props.unitDisplayDataByID, // TODO
+              unitDisplayDataByID: this.state.unitDisplayDataByID,
               formation: battle.side2,
               facesLeft: true,
               
