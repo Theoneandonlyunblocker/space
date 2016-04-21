@@ -189,6 +189,8 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
         newPopups.push(this.state.popups[i]);
       }
     }
+    this.popupComponentsByID[id] = null;
+    delete this.popupComponentsByID[id];
 
     this.setState({popups: newPopups});
   }
@@ -206,7 +208,10 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
     popupProps.key = id;
     popupProps.ref = (component: PopupComponent) =>
     {
-      this.popupComponentsByID[id] = component;
+      if (component)
+      {
+        this.popupComponentsByID[id] = component;
+      }
     }
     popupProps.incrementZIndex = this.incrementZIndex;
     popupProps.closePopup = this.closePopup.bind(this, id);
