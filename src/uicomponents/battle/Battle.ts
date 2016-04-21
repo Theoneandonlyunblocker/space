@@ -180,6 +180,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleIsStarting: false
     },() =>
     {
+      if (this.tempHoveredUnit)
+      {
+        this.handleMouseEnterUnit(this.tempHoveredUnit);
+      }
       if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
       {
         this.useAIAbility();
@@ -248,7 +252,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     this.tempHoveredUnit = unit;
 
-    if (this.props.battle.ended || this.state.playingBattleEffect) return;
+    if (this.state.battleIsStarting || this.props.battle.ended || this.state.playingBattleEffect)
+    {
+      return;
+    }
 
     var facesLeft = unit.battleStats.side === "side2";
     var parentElement = this.getUnitElement(unit);
@@ -544,24 +551,26 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     //   ) : upperFooterElement;
     var upperFooter = upperFooterElement;
 
-    var overlayContainer: React.ReactHTMLElement<any> = null;
+    const containerProps: React.HTMLAttributes =
+    {
+      className: "battle-container"
+    };
     var playerWonBattle: boolean = null;
     if (this.state.battleIsStarting)
     {
-      overlayContainer = React.DOM.div(
-      {
-        className: "battle-start-overlay",
-        onClick: this.endBattleStart
-      });
+      containerProps.className += " battle-start-overlay";
+      containerProps.onClick = this.endBattleStart;
     }
     else if (battle.ended)
     {
-      if (!this.battleEndStartTime) this.battleEndStartTime = Date.now();
-      overlayContainer = React.DOM.div(
+      if (!this.battleEndStartTime)
       {
-        className: "battle-start-overlay",
-        onClick: this.finishBattle
-      });
+        this.battleEndStartTime = Date.now();
+      }
+
+      containerProps.className += " battle-start-overlay";
+      containerProps.onClick = this.finishBattle;
+      
       playerWonBattle = this.props.humanPlayer === battle.getVictor();
     }
 
@@ -586,11 +595,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         backgroundSeed: this.props.battle.battleData.location.getSeed(),
         getBlurArea: this.getBlurArea
       },
-        React.DOM.div(
-        {
-          className: "battle-container"
-        },
-          overlayContainer,
+        React.DOM.div(containerProps,
           React.DOM.div(
           {
             className: "battle-upper"
