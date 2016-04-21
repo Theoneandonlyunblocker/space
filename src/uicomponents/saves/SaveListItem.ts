@@ -22,6 +22,20 @@ interface StateType
 export class SaveListItemComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "SaveListItem";
+  state: StateType;
+
+  constructor(props: PropTypes)
+  {
+    super(props);
+    
+    this.bindMethods();
+  }
+  private bindMethods()
+  {
+    this.handleUndoDelete = this.handleUndoDelete.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.makeCell = this.makeCell.bind(this);
+  }
 
   handleDelete(e: React.MouseEvent)
   {
