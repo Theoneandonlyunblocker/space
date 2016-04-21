@@ -180,15 +180,8 @@ export class PopupManagerComponent extends React.Component<PropTypes, StateType>
   {
     if (!this.hasPopup(id)) throw new Error("No such popup");
 
-    var newPopups: PopupProps[] = [];
+    const newPopups: PopupProps[] = this.state.popups.filter(p => p.id !== id);
 
-    for (let i = 0; i < this.state.popups.length; i++)
-    {
-      if (this.state.popups[i].id !== id)
-      {
-        newPopups.push(this.state.popups[i]);
-      }
-    }
     this.popupComponentsByID[id] = null;
     delete this.popupComponentsByID[id];
 
