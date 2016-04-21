@@ -114,7 +114,7 @@ export default class Color
   // 0-255
   public get8BitRGB(): number[]
   {
-    return this.getRGB().map((x: number) => x * 255);
+    return this.getRGB().map(x => x * 255);
   }
   
   // 0x000000-0xFFFFFF

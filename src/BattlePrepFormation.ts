@@ -137,9 +137,9 @@ export default class BattlePrepFormation
   {
     const displayDataByID: {[unitID: number]: UnitDisplayData} = {};
     
-    this.forEachUnitInFormation(u =>
+    this.forEachUnitInFormation(unit =>
     {
-      displayDataByID[u.id] = u.getDisplayData("battlePrep");
+      displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
     });
     
     return displayDataByID;
@@ -151,7 +151,7 @@ export default class BattlePrepFormation
     const scoutedFormation = this.hasScouted ? enemyFormation : null;
     
     const formation = getNullFormation();
-    const unitsToPlace = this.units.filter(u => u.canActThisTurn());
+    const unitsToPlace = this.units.filter(unit => unit.canActThisTurn());
     
     const maxUnitsPerRow = formation[0].length;
     const maxUnitsPerSide = app.moduleData.ruleSet.battle.maxUnitsPerSide;

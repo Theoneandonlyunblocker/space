@@ -80,7 +80,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     }
   }
   
-  private unitInArray(unit: Unit, arr: Unit[]): boolean
+  private unitInArray(unitToCheck: Unit, arr: Unit[]): boolean
   {
     if (!arr)
     {
@@ -88,7 +88,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      return arr.some(u => u === unit);
+      return arr.some(unit => unit === unitToCheck);
     }
   }
   

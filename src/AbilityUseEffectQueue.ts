@@ -62,7 +62,7 @@ export default class AbilityUseEffectQueue
     shallowExtend(
       {},
       parent.changedUnitDisplayDataByID,
-      ...toSquash.map(e => e.changedUnitDisplayDataByID)
+      ...toSquash.map(effect => effect.changedUnitDisplayDataByID)
     );
     
     if (parentIsOldest)

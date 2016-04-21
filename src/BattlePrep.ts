@@ -131,16 +131,16 @@ export default class BattlePrep
   }
   private resetBattleStats(): void
   {
-    this.forEachUnit(u =>
+    this.forEachUnit(unit =>
     {
-      u.resetBattleStats();
+      unit.resetBattleStats();
     });
   }
   private triggerPassiveSkills(formation: BattlePrepFormation): void
   {
-    formation.forEachUnitInFormation(u =>
+    formation.forEachUnitInFormation(unit =>
     {
-      const passiveSkillsByPhase = u.getPassiveSkillsByPhase();
+      const passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
       if (passiveSkillsByPhase.inBattlePrep)
       {
         for (let j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++)
@@ -148,7 +148,7 @@ export default class BattlePrep
           const skill = passiveSkillsByPhase.inBattlePrep[j];
           for (let k = 0; k < skill.inBattlePrep.length; k++)
           {
-            skill.inBattlePrep[k](u, this);
+            skill.inBattlePrep[k](unit, this);
           }
         }
       }

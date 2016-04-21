@@ -793,15 +793,15 @@ export default class Unit
         break;
     }
     
-    const effectFilterFN = (e: UnitPassiveEffect) =>
+    const effectFilterFN = (passiveEffect: UnitPassiveEffect) =>
     {
-      if (e.isHidden)
+      if (passiveEffect.isHidden)
       {
         return false;
       }
       for (let key of relevantTemplateKeys)
       {
-        if (e[key])
+        if (passiveEffect[key])
         {
           return true;
         }
@@ -809,9 +809,9 @@ export default class Unit
       return false;
     }
     
-    const relevantStatusEffectTemplates = this.battleStats.statusEffects.map(s =>
+    const relevantStatusEffectTemplates = this.battleStats.statusEffects.map(statusEffect =>
     {
-      return s.template;
+      return statusEffect.template;
     }).filter(effectFilterFN);
     
     const relevantPassiveEffectTemplates = this.getAllPassiveSkills().filter(effectFilterFN);
