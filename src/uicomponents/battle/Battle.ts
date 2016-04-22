@@ -391,7 +391,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.props.battle.endTurn();
     
-    if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
+    if (this.props.battle.ended)
+    {
+      this.forceUpdate();
+    }
+    else if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
     {
       this.usePreparedAbility();
     }
