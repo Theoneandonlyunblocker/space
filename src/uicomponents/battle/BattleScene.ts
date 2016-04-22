@@ -63,7 +63,6 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
     else if (this.props.battleState === "active" && newProps.battleState === "finish")
     {
       this.props.battleScene.destroy();
-      this.props.battleScene = null;
     }
   }
   
