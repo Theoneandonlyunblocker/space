@@ -169,6 +169,25 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     this.battleStartStartTime = Date.now();
   }
+  componentWillUpdate(newProps: PropTypes, newState: StateType)
+  {
+    let battleSceneNeedsUpdate = false;
+    if (newState.hoveredUnit !== this.battleScene.hoveredUnit)
+    {
+      battleSceneNeedsUpdate = true;
+      this.battleScene.hoveredUnit = newState.hoveredUnit;
+    }
+    if (newProps.battle.activeUnit !== this.battleScene.activeUnit)
+    {
+      battleSceneNeedsUpdate = true;
+      this.battleScene.activeUnit = newProps.battle.activeUnit;
+    }
+    
+    if (battleSceneNeedsUpdate)
+    {
+      this.battleScene.updateUnits();
+    }
+  }
 
   private endBattleStart()
   {
