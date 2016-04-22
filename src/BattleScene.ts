@@ -391,9 +391,13 @@ export default class BattleScene
     var SFXDuration = Options.battleAnimationTiming.effectDuration *
       this.activeSFX.duration;
 
-    if (SFXDuration <= 0)
+    if (!this.activeSFX.SFXWillTriggerEffect || SFXDuration <= 0)
     {
       this.executeTriggerEffectCallback();
+    }
+    
+    if (SFXDuration <= 0)
+    {
       this.handleActiveSFXEnd();
     }
     else
