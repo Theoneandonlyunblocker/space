@@ -43,7 +43,8 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
     this.setSaveName = this.setSaveName.bind(this);
     this.saveGame = this.saveGame.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.handleRowChange = this.handleRowChange.bind(this);    
+    this.handleRowChange = this.handleRowChange.bind(this);
+    this.handleSaveNameInput = this.handleSaveNameInput.bind(this);
   }
   
   componentDidMount()
