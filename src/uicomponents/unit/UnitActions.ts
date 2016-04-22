@@ -28,7 +28,7 @@ export class UnitActionsComponent extends React.Component<PropTypes, StateType>
   render()
   {
     var availableSrc = "img/icons/availableAction.png";
-    var hoveredSrc = "img/icons/spentAction.png";
+    var hoveredSrc = "img/icons/hoveredAction.png";
     var spentSrc = "img/icons/spentAction.png";
 
     var icons: React.ReactHTMLElement<any>[] = [];
