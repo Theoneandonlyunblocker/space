@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Assumes uniform types are in typeScriptTypes dict
 # Assumes uniforms not in pixiUniforms array should be included
 # Assumes no block comments
