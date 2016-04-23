@@ -2,11 +2,8 @@
 import ModuleFile from "./ModuleFile";
 import Personality from "../src/Personality";
 import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
-import
-{
-  default as RuleSet,
-  defaultRuleSet
-} from "./RuleSet";
+import RuleSetValues from "./RuleSetValues";
+import RuleSet from "./RuleSet";
 
 import
 {
@@ -185,7 +182,6 @@ export default class ModuleData
   };
 
   defaultMap: MapGenTemplate;
-  ruleSet: RuleSet = extendObject(defaultRuleSet);
 
   constructor()
   {
@@ -232,5 +228,9 @@ export default class ModuleData
       return getRandomProperty(this.Templates.MapGen);
     }
     else throw new Error("Module has no maps registered");
+  }
+  public applyRuleSet(ruleSetValuesToCopy: RuleSetValues): void
+  {
+    RuleSet.copyRules(ruleSetValuesToCopy);
   }
 }

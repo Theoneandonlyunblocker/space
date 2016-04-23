@@ -1,4 +1,4 @@
-import app from "./App";
+import RuleSet from "./RuleSet";
 import Player from "./Player";
 import Unit from "./Unit";
 import UnitDisplayData from "./UnitDisplayData";
@@ -154,7 +154,7 @@ export default class BattlePrepFormation
     const unitsToPlace = this.units.filter(unit => unit.canActThisTurn());
     
     const maxUnitsPerRow = formation[0].length;
-    const maxUnitsPerSide = app.moduleData.ruleSet.battle.maxUnitsPerSide;
+    const maxUnitsPerSide = RuleSet.battle.maxUnitsPerSide;
 
     let placedInFront = 0;
     let placedInBack = 0;

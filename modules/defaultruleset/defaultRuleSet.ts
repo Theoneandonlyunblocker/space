@@ -1,5 +1,6 @@
 import RuleSet from "../../src/RuleSet";
 import ModuleFile from "../../src/ModuleFile";
+import ModuleData from "../../src/ModuleData";
 
 const defaultRuleSet: ModuleFile =
 {
@@ -11,35 +12,38 @@ const defaultRuleSet: ModuleFile =
     author: "giraluna",
     description: ""
   },
-  ruleSet:
+  constructModule: function(moduleData: ModuleData)
   {
-    manufactory:
+    moduleData.applyRuleSet(
     {
-      startingCapacity: 1,
-      maxCapacity: 3,
-      buildCost: 1000
-    },
-    research:
-    {
-      baseResearchSpeed: 3000
-    },
-    battle:
-    {
-      rowsPerFormation: 2,
-      cellsPerRow: 3,
+      manufactory:
+      {
+        startingCapacity: 1,
+        maxCapacity: 3,
+        buildCost: 1000
+      },
+      research:
+      {
+        baseResearchSpeed: 3000
+      },
+      battle:
+      {
+        rowsPerFormation: 2,
+        cellsPerRow: 3,
 
-      maxUnitsPerSide: 6,
-      maxUnitsPerRow: 3,
+        maxUnitsPerSide: 6,
+        maxUnitsPerRow: 3,
 
-      baseMaxCapturedUnits: 1,
-      absoluteMaxCapturedUnits: 3,
-      baseUnitCaptureChance: 0.1,
+        baseMaxCapturedUnits: 1,
+        absoluteMaxCapturedUnits: 3,
+        baseUnitCaptureChance: 0.1,
 
-      humanUnitDeathChance: 0.65,
-      aiUnitDeathChance: 0.65,
-      independentUnitDeathChance: 1.0,
-      loserUnitExtraDeathChance: 0.35
-    }
+        humanUnitDeathChance: 0.65,
+        aiUnitDeathChance: 0.65,
+        independentUnitDeathChance: 1.0,
+        loserUnitExtraDeathChance: 0.35
+      }
+    });
   }
 }
 

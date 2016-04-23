@@ -1,4 +1,4 @@
-import app from "./App";
+import RuleSet from "./RuleSet";
 import Unit from "./Unit";
 
 
@@ -6,8 +6,8 @@ export default function getNullFormation(): Unit[][]
 {
   const nullFormation: Unit[][] = [];
 
-  var rows = app.moduleData.ruleSet.battle.rowsPerFormation;
-  var columns = app.moduleData.ruleSet.battle.cellsPerRow;
+  var rows = RuleSet.battle.rowsPerFormation;
+  var columns = RuleSet.battle.cellsPerRow;
   for (let i = 0; i < rows; i++)
   {
     nullFormation.push([]);

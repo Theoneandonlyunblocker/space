@@ -1,10 +1,6 @@
 import ModuleData from "./ModuleData";
 import ModuleFile from "./ModuleFile";
-import RuleSet from "./RuleSet";
-import
-{
-  deepMerge
-} from "./utility";
+import RuleSetValues from "./RuleSet";
 
 export default class ModuleLoader
 {
@@ -42,11 +38,6 @@ export default class ModuleLoader
     if (!this.moduleFiles[moduleFile.key])
     {
       this.addModuleFile(moduleFile);
-    }
-
-    if (moduleFile.ruleSet)
-    {
-      this.copyRuleSet(moduleFile.ruleSet);
     }
     
     this.moduleLoadStart[moduleFile.key] = Date.now();
@@ -102,9 +93,5 @@ export default class ModuleLoader
     }
     
     this.moduleData.addSubModule(moduleFile);
-  }
-  copyRuleSet(toCopy: RuleSet)
-  {
-    this.moduleData.ruleSet = deepMerge(this.moduleData.ruleSet, toCopy);
   }
 }
