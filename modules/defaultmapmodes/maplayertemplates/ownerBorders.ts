@@ -4,6 +4,7 @@ import Options from "../../../src/options";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
+import Player from "../../../src/Player";
 import {getRevealedBorderEdges} from "../../../src/borderPolygon";
 
 
@@ -29,8 +30,8 @@ const ownerBorders: MapRendererLayerTemplate =
       var gfx = new PIXI.Graphics();
       doc.addChild(gfx);
       var polyLineData = borderEdges[i];
-      var player = polyLineData.points[0].star.owner;
-      gfx.lineStyle(Options.display.borderWidth, player.secondaryColor, 1);
+      var player: Player = polyLineData.points[0].star.owner;
+      gfx.lineStyle(Options.display.borderWidth, player.secondaryColor.getHex(), 1);
 
       var polygon = new PIXI.Polygon(polyLineData.points);
       polygon.closed = polyLineData.isClosed;
