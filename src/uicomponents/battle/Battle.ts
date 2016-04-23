@@ -172,6 +172,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   componentWillUpdate(newProps: PropTypes, newState: StateType)
   {
     let battleSceneNeedsUpdate = false;
+    if (this.battleScene.activeSFX)
+    {
+      return;
+    }
     if (newState.hoveredUnit !== this.battleScene.hoveredUnit)
     {
       battleSceneNeedsUpdate = true;
