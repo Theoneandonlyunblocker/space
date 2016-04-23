@@ -82,7 +82,7 @@ class RuleSet implements RuleSetValues
     {
       if (this.validCategories[category])
       {
-        this[category] = deepMerge(this[category], toCopy[category], true);
+        this[category] = deepMerge(this[category], toCopy[category]);
       }
       else
       {
