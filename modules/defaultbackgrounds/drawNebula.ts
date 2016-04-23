@@ -1,7 +1,7 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 
-import NebulaFilter from "../../src/shaders/Nebula";
+import NebulaFilter from "./Nebula";
 
 import {generateColorScheme} from "../../src/colorGeneration";
 import

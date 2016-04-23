@@ -2,10 +2,10 @@
 
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
 
-import BeamFilter from "../../../src/shaders/Beam";
-import ShinyParticleFilter from "../../../src/shaders/ShinyParticle";
-import IntersectingEllipsesFilter from "../../../src/shaders/IntersectingEllipses";
-import LightBurstFilter from "../../../src/shaders/LightBurst";
+import BeamFilter from "./shaders/Beam";
+import ShinyParticleFilter from "./shaders/ShinyParticle";
+import IntersectingEllipsesFilter from "./shaders/IntersectingEllipses";
+import LightBurstFilter from "./shaders/LightBurst";
 
 import
 {

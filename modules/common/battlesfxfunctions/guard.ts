@@ -1,5 +1,5 @@
 import SFXParams from "../../../src/templateinterfaces/SFXParams";
-import GuardFilter from "../../../src/shaders/Guard";
+import GuardFilter from "./shaders/Guard";
 
 import
 {
