@@ -15,13 +15,13 @@ import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate";
 import UnitFamily from "../../../src/templateinterfaces/UnitFamily";
 
 import MapGenResult from "../../../src/mapgencore/MapGenResult";
-import Region from "../../../src/mapgencore/Region";
-import Sector from "../../../src/mapgencore/Sector";
 import
 {
   makeVoronoi,
   relaxVoronoi
 } from "../../../src/mapgencore/voronoi";
+import Region from "../common/Region";
+import Sector from "../common/Sector";
 import
 {
   addDefenceBuildings,
@@ -31,7 +31,7 @@ import
   partiallyCutLinks,
   setupPirates,
   severLinksToNonAdjacentStars
-} from "../../../src/mapgencore/mapGenUtils";
+} from "../common/mapGenUtils";
 
 
 

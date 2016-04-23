@@ -1,12 +1,12 @@
 import Triangle from "./Triangle";
-import Point from "../Point";
+import Point from "../../../src/Point";
 
 import
 {
   pointsEqual
-} from "../utility";
+} from "../../../src/utility";
 
-export function triangulate(vertices: Point[]): Triangle[]
+export default function triangulate(vertices: Point[]): Triangle[]
 {
   var triangles: Triangle[] = [];
 

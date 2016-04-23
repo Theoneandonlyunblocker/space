@@ -1,4 +1,4 @@
-import Point from "../Point";
+import Point from "../../../src/Point";
 
 export default class Triangle
 {
