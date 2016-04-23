@@ -1,37 +1,10 @@
-interface RuleSet
+import
 {
-  manufactory?:
-  {
-    startingCapacity?: number;
-    maxCapacity?: number;
-    buildCost?: number;
-  }
-  research?:
-  {
-    baseResearchSpeed?: number;
-  }
-  battle?:
-  {
-    rowsPerFormation?: number; // probably breaks some stuff if not 2
-    cellsPerRow?: number;
+  deepMerge
+} from "./utility";
+import RuleSetValues from "./RuleSetValues";
 
-    maxUnitsPerSide?: number; // TODO | not handled properly for humans
-    maxUnitsPerRow?: number; // TODO | not handled properly for humans
-
-    baseMaxCapturedUnits?: number;
-    absoluteMaxCapturedUnits?: number;
-    baseUnitCaptureChance?: number;
-
-    humanUnitDeathChance?: number;
-    aiUnitDeathChance?: number;
-    independentUnitDeathChance?: number;
-    loserUnitExtraDeathChance?: number;
-  }
-}
-
-export default RuleSet;
-
-export const defaultRuleSet: RuleSet =
+const defaultRuleSet: RuleSetValues =
 {
   manufactory:
   {
@@ -61,3 +34,64 @@ export const defaultRuleSet: RuleSet =
     loserUnitExtraDeathChance: 0.35
   }
 }
+
+class RuleSet implements RuleSetValues
+{
+  public manufactory:
+  {
+    startingCapacity: number;
+    maxCapacity: number;
+    buildCost: number;
+  }
+  public research:
+  {
+    baseResearchSpeed: number;
+  }
+  public battle:
+  {
+    rowsPerFormation: number;
+    cellsPerRow: number;
+
+    maxUnitsPerSide: number;
+    maxUnitsPerRow: number;
+
+    baseMaxCapturedUnits: number;
+    absoluteMaxCapturedUnits: number;
+    baseUnitCaptureChance: number;
+
+    humanUnitDeathChance: number;
+    aiUnitDeathChance: number;
+    independentUnitDeathChance: number;
+    loserUnitExtraDeathChance: number;
+  }
+  
+  private validCategories =
+  {
+    manufactory: true,
+    battle: true,
+    research: true,
+  }
+  
+  constructor()
+  {
+    
+  }
+  public copyRules(toCopy: RuleSetValues)
+  {
+    for (let category in toCopy)
+    {
+      if (this.validCategories[category])
+      {
+        this[category] = deepMerge(this[category], toCopy[category], true);
+      }
+      else
+      {
+        console.warn("Invalid ruleset category " + category + ". Category must be one of: [" +
+          Object.keys(this.validCategories).join(", ") + "].");
+      }
+    }
+  }
+}
+
+const ruleSet = new RuleSet();
+export default ruleSet;
