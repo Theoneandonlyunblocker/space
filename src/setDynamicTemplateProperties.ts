@@ -85,3 +85,26 @@ function setUnitFamilyAssociatedTemplates(moduleData: ModuleData)
     }
   }
 }
+function setTechnologyRequirements(moduleData: ModuleData)
+{
+  for (let technologyKey in moduleData.Templates.Technologies)
+  {
+    const technology = moduleData.Templates.Technologies[technologyKey];
+    for (let level in technology.unlocksPerLevel)
+    {
+      const unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
+      unlockedTemplatesForLevel.forEach(template =>
+      {
+        if (!template.technologyRequirements)
+        {
+          template.technologyRequirements = [];
+        }
+        template.technologyRequirements.push(
+        {
+          technology: technology,
+          level: parseInt(level)
+        });
+      });
+    }
+  }
+}

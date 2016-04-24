@@ -1,5 +1,4 @@
-import ItemTemplate from "./ItemTemplate";
-import UnitTemplate from "./UnitTemplate";
+import ManufacturableThing from "./ManufacturableThing";
 
 declare interface TechnologyTemplate
 {
@@ -9,10 +8,9 @@ declare interface TechnologyTemplate
 
   maxLevel: number;
 
-  // set dynamically
-  unlocksPerLevel?:
+  unlocksPerLevel:
   {
-    [level: number]: Array<UnitTemplate | ItemTemplate>;
+    [level: number]: ManufacturableThing[];
   }
 }
 

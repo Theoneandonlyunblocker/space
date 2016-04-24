@@ -4,7 +4,6 @@ import CultureTemplate from "./CultureTemplate";
 import ManufacturableThing from "./ManufacturableThing";
 import PassiveSkillTemplate from "./PassiveSkillTemplate";
 import SpriteTemplate from "./SpriteTemplate";
-import TechnologyRequirement from "./TechnologyRequirement";
 import UnitArchetype from "./UnitArchetype";
 import UnitDrawingFunction from "./UnitDrawingFunction";
 import UnitFamily from "./UnitFamily";
