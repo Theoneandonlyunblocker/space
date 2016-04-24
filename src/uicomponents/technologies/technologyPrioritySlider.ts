@@ -20,16 +20,13 @@ interface StateType
 export class TechnologyPrioritySliderComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TechnologyPrioritySlider";
-  state: StateType;;
+  state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.state =
-    {
-      
-    };
+    this.state = this.getInitialStateTODO();
 
     this.bindMethods();
   }
@@ -39,6 +36,13 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
     this.getPlayerPriority = this.getPlayerPriority.bind(this);
     this.updatePriority = this.updatePriority.bind(this);
     this.handlePriorityChange = this.handlePriorityChange.bind(this);
+  }
+  private getInitialStateTODO(): StateType
+  {
+    return(
+    {
+      priority: this.getPlayerPriority()
+    });
   }
   private componentDidMount()
   {
