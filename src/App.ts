@@ -93,7 +93,7 @@ class App
     Options.load();
     TutorialStatus.load();
 
-    setDynamicTemplateProperties();
+    setDynamicTemplateProperties(this.moduleData);
     
     this.initUI();
     this.setInitialScene();
