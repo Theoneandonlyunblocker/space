@@ -3,14 +3,14 @@
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
-
+import Player from "../../../src/Player";
 
 const nonFillerVoronoiLines: MapRendererLayerTemplate =
 {
   key: "nonFillerVoronoiLines",
   displayName: "Star borders",
   interactive: false,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     var doc = new PIXI.Container();
 
@@ -18,7 +18,7 @@ const nonFillerVoronoiLines: MapRendererLayerTemplate =
     doc.addChild(gfx);
     gfx.lineStyle(1, 0xA0A0A0, 0.5);
 
-    var visible = this.player ? this.player.getRevealedStars() : null;
+    var visible = perspectivePlayer ? perspectivePlayer.getRevealedStars() : null;
 
     var lines = map.voronoi.getNonFillerVoronoiLines(visible);
 

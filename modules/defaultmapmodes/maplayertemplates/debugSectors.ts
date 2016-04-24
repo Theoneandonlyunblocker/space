@@ -4,7 +4,7 @@ import Color from "../../../src/Color";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
-
+import Player from "../../../src/Player";
 
 const debugSectors: MapRendererLayerTemplate =
 {
@@ -12,17 +12,17 @@ const debugSectors: MapRendererLayerTemplate =
   displayName: "Sectors (debug)",
   interactive: false,
   alpha: 0.5,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, persectivePlayer: Player)
   {
     var doc = new PIXI.Container();
     var points: Star[];
-    if (!this.player)
+    if (!persectivePlayer)
     {
       points = map.stars;
     }
     else
     {
-      points = this.player.getRevealedStars();
+      points = persectivePlayer.getRevealedStars();
     }
 
     if (!points[0].mapGenData || !points[0].mapGenData.sector)

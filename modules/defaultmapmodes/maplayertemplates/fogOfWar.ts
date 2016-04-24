@@ -3,7 +3,7 @@
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
-
+import Player from "../../../src/Player";
 
 const fogOfWar: MapRendererLayerTemplate =
 {
@@ -11,20 +11,20 @@ const fogOfWar: MapRendererLayerTemplate =
   displayName: "Fog of war",
   interactive: false,
   alpha: 0.35,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     var doc = new PIXI.Container();
-    if (!this.player) return doc;
-    var points: Star[] = this.player.getRevealedButNotVisibleStars();
-
-    if (!points || points.length < 1) return doc;
-
-    for (let i = 0; i < points.length; i++)
+    if (perspectivePlayer)
     {
-      var star = points[i];
-      var sprite = this.getFowSpriteForStar(star);
+      var starsInFogOfWar: Star[] = perspectivePlayer.getRevealedButNotVisibleStars();
 
-      doc.addChild(sprite);
+      for (let i = 0; i < starsInFogOfWar.length; i++)
+      {
+        var star = starsInFogOfWar[i];
+        var sprite = getFowSpriteForStar(star); // TODO layers
+
+        doc.addChild(sprite);
+      }
     }
 
     return doc;

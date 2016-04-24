@@ -6,6 +6,7 @@ import Fleet from "../../../src/Fleet";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
+import Player from "../../../src/Player";
 
 
 const fleets: MapRendererLayerTemplate =
@@ -13,46 +14,44 @@ const fleets: MapRendererLayerTemplate =
   key: "fleets",
   displayName: "Fleets",
   interactive: true,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var self = this;
-
     var doc = new PIXI.Container();
 
     var points: Star[];
-    if (!this.player)
+    if (!perspectivePlayer)
     {
       points = map.stars;
     }
     else
     {
-      points = this.player.getVisibleStars();
+      points = perspectivePlayer.getVisibleStars();
     }
 
-    var mouseDownFN = function(event: PIXI.interaction.InteractionEvent)
+    const mouseDownFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
     {
-      eventManager.dispatchEvent("mouseDown", event, this.location);
+      eventManager.dispatchEvent("mouseDown", event, fleet.location);
     }
-    var mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
+    const mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("mouseUp", event);
     }
-    var mouseOverFN = function(fleet: Fleet)
+    const mouseOverFN = function(fleet: Fleet)
     {
       eventManager.dispatchEvent("hoverStar", fleet.location);
       if (Options.debugMode && fleet.units.length > 0 && fleet.units[0].front)
       {
-        var objective = fleet.units[0].front.objective;
-        var target = objective.target ? objective.target.id : null;
+        const objective = fleet.units[0].front.objective;
+        const target = objective.target ? objective.target.id : null;
         console.log(objective.type, target, objective.priority);
       }
     }
-    function fleetClickFn(event: PIXI.interaction.InteractionEvent)
+    const fleetClickFN = function(fleet: Fleet, event: PIXI.interaction.InteractionEvent)
     {
       var originalEvent = <MouseEvent> event.data.originalEvent;;
       if (originalEvent.button === 0)
       {
-        eventManager.dispatchEvent("selectFleets", [this]);
+        eventManager.dispatchEvent("selectFleets", [fleet]);
       }
     }
     function singleFleetDrawFN(fleet: Fleet)
@@ -62,7 +61,7 @@ const fleets: MapRendererLayerTemplate =
       var color = fleet.player.color.getHex();
       var fillAlpha = fleet.isStealthy ? 0.3 : 0.7;
 
-      var textTexture = self.getFleetTextTexture(fleet);
+      var textTexture = getFleetTextTexture(fleet); // TODO layers
       var text = new PIXI.Sprite(textTexture);
 
       var containerGfx = new PIXI.Graphics();
@@ -98,15 +97,15 @@ const fleets: MapRendererLayerTemplate =
       
       fleetContainer.interactive = true;
       
-      var boundMouseDownFN = mouseDownFN.bind(fleet);
-      var boundFleetClickFN = fleetClickFn.bind(fleet);
+      const boundMouseDownFN = mouseDownFN.bind(null, fleet);
+      const boundFleetClickFN = fleetClickFN.bind(null, fleet);
       fleetContainer.on("click", boundFleetClickFN);
       fleetContainer.on("tap", boundFleetClickFN);
       fleetContainer.on("mousedown", boundMouseDownFN);
       fleetContainer.on("mouseup", mouseUpFN);
       fleetContainer.on("rightdown", boundMouseDownFN);
       fleetContainer.on("rightup", mouseUpFN);
-      fleetContainer.on("mouseover", mouseOverFN.bind(fleetContainer, fleet));
+      fleetContainer.on("mouseover", mouseOverFN.bind(null, fleet));
 
       return fleetContainer;
     }
@@ -127,7 +126,7 @@ const fleets: MapRendererLayerTemplate =
         {
           continue;
         }
-        if (fleets[j].isStealthy && this.player && !this.player.starIsDetected(fleets[j].location))
+        if (fleets[j].isStealthy && perspectivePlayer && !perspectivePlayer.starIsDetected(fleets[j].location))
         {
           continue;
         }

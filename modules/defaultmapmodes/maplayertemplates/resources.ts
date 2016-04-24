@@ -3,27 +3,25 @@
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
-
+import Player from "../../../src/Player";
 
 const resources: MapRendererLayerTemplate =
 {
   key: "resources",
   displayName: "Resources",
   interactive: false,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
-    var self = this;
-
     var doc = new PIXI.Container();
 
     var points: Star[];
-    if (!this.player)
+    if (!perspectivePlayer)
     {
       points = map.stars;
     }
     else
     {
-      points = this.player.getRevealedStars();
+      points = perspectivePlayer.getRevealedStars();
     }
 
     for (let i = 0; i < points.length; i++)

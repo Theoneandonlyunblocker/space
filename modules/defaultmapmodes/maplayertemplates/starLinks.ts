@@ -3,14 +3,14 @@
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
-
+import Player from "../../../src/Player";
 
 const starLinks: MapRendererLayerTemplate =
 {
   key: "starLinks",
   displayName: "Links",
   interactive: false,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     var doc = new PIXI.Container();
 
@@ -19,13 +19,13 @@ const starLinks: MapRendererLayerTemplate =
     gfx.lineStyle(1, 0xCCCCCC, 0.6);
 
     var points: Star[];
-    if (!this.player)
+    if (!perspectivePlayer)
     {
       points = map.stars;
     }
     else
     {
-      points = this.player.getRevealedStars();
+      points = perspectivePlayer.getRevealedStars();
     }
 
     var starsFullyConnected:

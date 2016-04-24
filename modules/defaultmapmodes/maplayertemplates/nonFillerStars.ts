@@ -4,30 +4,30 @@ import eventManager from "../../../src/eventManager";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
-
+import Player from "../../../src/Player";
 
 const nonFillerStars: MapRendererLayerTemplate =
 {
   key: "nonFillerStars",
   displayName: "Stars",
   interactive: true,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     var doc = new PIXI.Container();
 
     var points: Star[];
-    if (!this.player)
+    if (!perspectivePlayer)
     {
       points = map.stars;
     }
     else
     {
-      points = this.player.getRevealedStars();
+      points = perspectivePlayer.getRevealedStars();
     }
 
-    var mouseDownFN = function(event: PIXI.interaction.InteractionEvent)
+    var mouseDownFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
     {
-      eventManager.dispatchEvent("mouseDown", event, this);
+      eventManager.dispatchEvent("mouseDown", event, star);
     }
     var mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
     {
@@ -75,12 +75,12 @@ const nonFillerStars: MapRendererLayerTemplate =
       gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
 
       var boundMouseDown = mouseDownFN.bind(star);
-      var gfxClickFN = function(event: PIXI.interaction.InteractionEvent)
+      var gfxClickFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
       {
         var originalEvent = <MouseEvent> event.data.originalEvent;
         if (originalEvent.button) return;
 
-        onClickFN(this);
+        onClickFN(star);
       }.bind(star);
 
       gfx.on("mousedown", boundMouseDown);

@@ -5,27 +5,27 @@ import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
 import MapEvaluator from "../../../src/mapai/MapEvaluator";
-
+import Player from "../../../src/Player";
 
 const playerInfluence: MapRendererLayerTemplate =
 {
   key: "playerInfluence",
   displayName: "Influence",
   interactive: false,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     var doc = new PIXI.Container();
     var points: Star[];
-    if (!this.player)
+    if (!perspectivePlayer)
     {
       points = map.stars;
     }
     else
     {
-      points = this.player.getRevealedStars();
+      points = perspectivePlayer.getRevealedStars();
     }
-    var mapEvaluator = new MapEvaluator(map, this.player);
-    var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
+    var mapEvaluator = new MapEvaluator(map, perspectivePlayer);
+    var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(perspectivePlayer);
 
     var minInfluence: number, maxInfluence: number;
 

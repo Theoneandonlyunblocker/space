@@ -14,7 +14,7 @@ const ownerBorders: MapRendererLayerTemplate =
   displayName: "Owner borders",
   interactive: false,
   alpha: 0.7,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     var doc = new PIXI.Container();
     if (Options.display.borderWidth <= 0)
@@ -22,7 +22,7 @@ const ownerBorders: MapRendererLayerTemplate =
       return doc;
     }
 
-    var revealedStars = this.player.getRevealedStars();
+    var revealedStars = perspectivePlayer.getRevealedStars();
     var borderEdges = getRevealedBorderEdges(revealedStars, map.voronoi);
 
     for (let i = 0; i < borderEdges.length; i++)

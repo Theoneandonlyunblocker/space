@@ -4,24 +4,24 @@ import Color from "../../../src/Color";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
-
+import Player from "../../../src/Player";
 
 const starIncome: MapRendererLayerTemplate =
 {
   key: "starIncome",
   displayName: "Income",
   interactive: false,
-  drawingFunction: function(map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     var doc = new PIXI.Container();
     var points: Star[];
-    if (!this.player)
+    if (!perspectivePlayer)
     {
       points = map.stars;
     }
     else
     {
-      points = this.player.getRevealedStars();
+      points = perspectivePlayer.getRevealedStars();
     }
     var incomeBounds = map.getIncomeBounds();
 
