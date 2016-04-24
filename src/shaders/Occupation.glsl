@@ -24,5 +24,5 @@ void main()
   float stripeIntensity = sin(q.x) / 2.0 + 0.5;
   stripeIntensity = step(stripeIntensity, stripeSize);
   
-  gl_FragColor = color + stripeColor * stripeIntensity;
+  gl_FragColor = mix(color, stripeColor * color.a, stripeIntensity);
 }
