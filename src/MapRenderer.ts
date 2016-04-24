@@ -13,8 +13,6 @@ import eventManager from "./eventManager";
 import Options from "./options";
 import Fleet from "./Fleet";
 
-import OccupationFilter from "./shaders/Occupation";
-
 
 export default class MapRenderer
 {
@@ -22,14 +20,6 @@ export default class MapRenderer
   parent: PIXI.Container;
   galaxyMap: GalaxyMap;
   player: Player;
-
-  occupationShaders:
-  {
-    [ownerId: string]:
-    {
-      [occupierId: string]: PIXI.AbstractFilter;
-    };
-  } = {};
 
   layers:
   {
@@ -83,7 +73,6 @@ export default class MapRenderer
     this.player = null;
     this.container = null;
     this.parent = null;
-    this.occupationShaders = null;
     
     for (let starId in this.fowSpriteCache)
     {
@@ -142,47 +131,11 @@ export default class MapRenderer
         self.setLayerAsDirty(layerName);
       }
     });
-
-    var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
-    var boundUpdateZoom = this.updateShaderZoom.bind(this);
-
-    this.listeners["registerOnMoveCallback"] =
-      eventManager.addEventListener("registerOnMoveCallback", function(callbacks: Function[])
-      {
-        callbacks.push(boundUpdateOffsets);
-      });
-    this.listeners["registerOnZoomCallback"] =
-      eventManager.addEventListener("registerOnZoomCallback", function(callbacks: Function[])
-      {
-        callbacks.push(boundUpdateZoom);
-      });
   }
   setPlayer(player: Player)
   {
     this.player = player;
     this.setAllLayersAsDirty();
-  }
-  updateShaderOffsets(x: number, y: number)
-  {
-    for (let owner in this.occupationShaders)
-    {
-      for (let occupier in this.occupationShaders[owner])
-      {
-        var shader = this.occupationShaders[owner][occupier];
-        shader.uniforms.offset.value = [-x, y];
-      }
-    }
-  }
-  updateShaderZoom(zoom: number)
-  {
-    for (let owner in this.occupationShaders)
-    {
-      for (let occupier in this.occupationShaders[owner])
-      {
-        var shader = this.occupationShaders[owner][occupier];
-        shader.uniforms.zoom.value = zoom;
-      }
-    }
   }
   // TODO refactor | belongs in module
   makeFowSprite()
@@ -227,28 +180,6 @@ export default class MapRenderer
     }
 
     return this.fowSpriteCache[star.id];
-  }
-  // TODO refactor | should be in map layers module
-  getOccupationShader(owner: Player, occupier: Player)
-  {
-    if (!this.occupationShaders[owner.id])
-    {
-      this.occupationShaders[owner.id] = {};
-    }
-
-    if (!this.occupationShaders[owner.id][occupier.id])
-    {
-      this.occupationShaders[owner.id][occupier.id] = new OccupationFilter(
-      {
-        stripeColor: occupier.color.getRGBA(1.0),
-        stripeSize: 0.5,
-        offset: [0.0, 0.0],
-        angle: 0.25 * Math.PI,
-        scale: 8.0
-      });
-    }
-
-    return this.occupationShaders[owner.id][occupier.id]
   }
   getFleetTextTexture(fleet: Fleet)
   {
