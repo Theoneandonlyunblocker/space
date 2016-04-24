@@ -20,7 +20,7 @@ Compile Typescript and .less files.
 npm run build
 ```
 
-To run the game locally you need to host it on a local http server inside the project's root folder (where index.html is located).
+To run the game locally you need to host it on a http server.
 
 Simple http server using node:
 ```bash
