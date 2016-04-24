@@ -38,7 +38,7 @@ export default class MapRendererLayer
   {
     if (!this.isDirty) return;
     this.container.removeChildren();
-    this.container.addChild(this.template.drawingFunction.call(mapRenderer, map));
+    this.container.addChild(this.template.drawingFunction(map, mapRenderer.player));
     this.isDirty = false;
   }
   public destroy()

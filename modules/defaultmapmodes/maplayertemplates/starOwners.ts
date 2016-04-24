@@ -4,7 +4,6 @@ import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
-import MapRenderer from "../../../src/MapRenderer";
 
 import OccupationShader from "./shaders/Occupation";
 
@@ -21,17 +20,17 @@ const starOwners: MapRendererLayerTemplate =
       delete occupationShaders[key];
     }
   },
-  drawingFunction: function(mapRenderer: MapRenderer, map: GalaxyMap)
+  drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     var doc = new PIXI.Container();
     var points: Star[];
-    if (!mapRenderer.player)
+    if (!perspectivePlayer)
     {
       points = map.stars;
     }
     else
     {
-      points = mapRenderer.player.getRevealedStars();
+      points = perspectivePlayer.getRevealedStars();
     }
 
     for (let i = 0; i < points.length; i++)
