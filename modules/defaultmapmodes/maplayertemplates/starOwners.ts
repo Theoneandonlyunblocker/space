@@ -1,9 +1,13 @@
+// TODO performance | TODO PIXI4 | rework occupation
+// probably generate texture for tiling sprite + use masks
+
 /// <reference path="../../../lib/pixi.d.ts" />
 
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
+import eventManager from "../../../src/eventManager";
 
 import OccupationShader from "./shaders/Occupation";
 
@@ -49,24 +53,22 @@ const starOwners: MapRendererLayerTemplate =
 
       if (occupier)
       {
-        var container = new PIXI.Container();
-        doc.addChild(container);
+        // var container = new PIXI.Container();
+        // doc.addChild(container);
 
-        var mask = new PIXI.Graphics();
-        mask.isMask = true;
-        mask.beginFill(0);
-        mask.drawShape(poly);
-        mask.endFill();
+        // var mask = new PIXI.Graphics();
+        // mask.isMask = true;
+        // mask.beginFill(0);
+        // mask.drawShape(poly);
+        // mask.endFill();
 
-        container.addChild(gfx);
-        container.addChild(mask);
+        // container.addChild(gfx);
+        // container.addChild(mask);
+        // container.mask = mask;
         gfx.filters = [getOccupationShader(star.owner, occupier)];
-        container.mask = mask;
       }
-      else
-      {
-        doc.addChild(gfx);
-      }
+      
+      doc.addChild(gfx);
     }
     return doc;
   }
@@ -82,8 +84,14 @@ const occupationShaders:
   };
 } = {};
 
+const hasAddedEventListeners = false;
 function getOccupationShader(owner: Player, occupier: Player)
 {
+  if (!hasAddedEventListeners)
+  {
+    eventManager.addEventListener("cameraZoomed", updateShaderZoom);
+    eventManager.addEventListener("cameraMoved", updateShaderOffset);
+  }
   if (!occupationShaders[owner.id])
   {
     occupationShaders[owner.id] = {};
@@ -94,7 +102,7 @@ function getOccupationShader(owner: Player, occupier: Player)
     occupationShaders[owner.id][occupier.id] = new OccupationShader(
     {
       stripeColor: occupier.color.getRGBA(1.0),
-      stripeSize: 0.5,
+      stripeSize: 0.33,
       offset: [0.0, 0.0],
       angle: 0.25 * Math.PI,
       scale: 8.0
@@ -113,7 +121,7 @@ function forEachOccupationShader(cb: (shader: OccupationShader) => void)
     }
   }
 }
-function updateOccupationShaderOffset(x: number, y: number)
+function updateShaderOffset(x: number, y: number)
 {
   forEachOccupationShader(shader =>
   {
@@ -124,6 +132,6 @@ function updateShaderZoom(zoom: number)
 {
   forEachOccupationShader(shader =>
   {
-    shader.uniforms.scale.value = zoom;
+    shader.uniforms.scale.value = zoom * 8.0;
   });
 }

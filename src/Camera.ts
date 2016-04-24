@@ -22,9 +22,6 @@ export default class Camera
   toCenterOn: Point; // point to center on once
                      // renderer view is mounted
 
-  onMoveCallbacks: {(x: number, y: number): void;}[] = [];
-  onZoomCallbacks: {(zoom: number): void;}[] = [];
-
   listeners:
   {
     [name: string]: any;
@@ -58,8 +55,6 @@ export default class Camera
     {
       eventManager.removeEventListener(name, this.listeners[name]);
     }
-    this.onMoveCallbacks = [];
-    this.onZoomCallbacks = [];
 
     window.removeEventListener("resize", this.resizeListener);
   }
@@ -84,11 +79,6 @@ export default class Camera
     {
       self.toCenterOn = position;
     });
-
-    
-    eventManager.dispatchEvent("registerOnMoveCallback", self.onMoveCallbacks);
-    
-    eventManager.dispatchEvent("registerOnZoomCallback", self.onZoomCallbacks);
   }
 
   private setBounds()
@@ -142,10 +132,7 @@ export default class Camera
   }
   private onMove()
   {
-    for (let i = 0; i < this.onMoveCallbacks.length; i++)
-    {
-      this.onMoveCallbacks[i](this.container.position.x, this.container.position.y);
-    }
+    eventManager.dispatchEvent("cameraMoved", this.container.position.x, this.container.position.y);
   }
   getScreenCenter()
   {
@@ -214,10 +201,7 @@ export default class Camera
   }
   private onZoom()
   {
-    for (let i = 0; i < this.onZoomCallbacks.length; i++)
-    {
-      this.onZoomCallbacks[i](this.currZoom);
-    }
+    eventManager.dispatchEvent("cameraZoomed", this.currZoom);
   }
   deltaZoom( delta: number, scale: number )
   {

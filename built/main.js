@@ -29,9 +29,6 @@ define("src/idGenerators", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = idGenerators;
 });
-define("src/RandomGenUnitRarity", ["require", "exports"], function (require, exports) {
-    "use strict";
-});
 define("src/priorityqueue", ["require", "exports"], function (require, exports) {
     "use strict";
     var PriorityQueue = (function () {
@@ -417,621 +414,7 @@ define("src/Fleet", ["require", "exports", "src/idGenerators", "src/App", "src/e
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Fleet;
 });
-define("src/utility", ["require", "exports", "src/App"], function (require, exports, App_2) {
-    "use strict";
-    function randInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-    exports.randInt = randInt;
-    function randRange(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-    exports.randRange = randRange;
-    function getRandomArrayKey(target) {
-        return Math.floor(Math.random() * (target.length));
-    }
-    exports.getRandomArrayKey = getRandomArrayKey;
-    function getRandomArrayItem(target) {
-        var _rnd = Math.floor(Math.random() * (target.length));
-        return target[_rnd];
-    }
-    exports.getRandomArrayItem = getRandomArrayItem;
-    function getSeededRandomArrayItem(array, rng) {
-        var _rnd = Math.floor(rng.uniform() * array.length);
-        return array[_rnd];
-    }
-    exports.getSeededRandomArrayItem = getSeededRandomArrayItem;
-    function getRandomKey(target) {
-        var _targetKeys = Object.keys(target);
-        var _rnd = Math.floor(Math.random() * (_targetKeys.length));
-        return _targetKeys[_rnd];
-    }
-    exports.getRandomKey = getRandomKey;
-    function getObjectKeysSortedByValue(obj, order) {
-        return Object.keys(obj).sort(function (a, b) {
-            if (order === "asc") {
-                return obj[a] - obj[b];
-            }
-            else
-                return obj[b] - obj[a];
-        });
-    }
-    exports.getObjectKeysSortedByValue = getObjectKeysSortedByValue;
-    function getObjectKeysSortedByValueOfProp(obj, prop, order) {
-        return Object.keys(obj).sort(function (a, b) {
-            if (order === "asc") {
-                return obj[a][prop] - obj[b][prop];
-            }
-            else
-                return obj[b][prop] - obj[a][prop];
-        });
-    }
-    exports.getObjectKeysSortedByValueOfProp = getObjectKeysSortedByValueOfProp;
-    function sortObjectsByProperty(objects, prop, order) {
-        return objects.sort(function (a, b) {
-            if (order === "asc") {
-                return a[prop] - b[prop];
-            }
-            else
-                return b[prop] - a[prop];
-        });
-    }
-    exports.sortObjectsByProperty = sortObjectsByProperty;
-    function getRandomProperty(target) {
-        var _rndProp = target[getRandomKey(target)];
-        return _rndProp;
-    }
-    exports.getRandomProperty = getRandomProperty;
-    function getAllPropertiesWithKey(target, keyToFind) {
-        var matchingProperties = [];
-        for (var key in target) {
-            if (target[key][keyToFind]) {
-                matchingProperties.push(target[key]);
-            }
-        }
-        return matchingProperties;
-    }
-    exports.getAllPropertiesWithKey = getAllPropertiesWithKey;
-    function getRandomPropertyWithKey(target, keyToFind) {
-        var keys = Object.keys(target);
-        while (keys.length > 0) {
-            var key = getRandomArrayItem(keys);
-            var prop = target[key];
-            if (prop[keyToFind]) {
-                return prop;
-            }
-            else {
-                keys.splice(keys.indexOf(key), 1);
-            }
-        }
-        return null;
-    }
-    exports.getRandomPropertyWithKey = getRandomPropertyWithKey;
-    function getRandomKeyWithWeights(target) {
-        var totalWeight = 0;
-        for (var prop in target) {
-            totalWeight += target[prop];
-        }
-        var selection = randRange(0, totalWeight);
-        for (var prop in target) {
-            selection -= target[prop];
-            if (selection <= 0) {
-                return prop;
-            }
-        }
-    }
-    exports.getRandomKeyWithWeights = getRandomKeyWithWeights;
-    function getRandomArrayItemWithWeights(arr) {
-        var totalWeight = 0;
-        for (var i = 0; i < arr.length; i++) {
-            totalWeight += arr[i].weight;
-        }
-        var selection = randRange(0, totalWeight);
-        for (var i = 0; i < arr.length; i++) {
-            selection -= arr[i].weight;
-            if (selection <= 0) {
-                return arr[i];
-            }
-        }
-    }
-    exports.getRandomArrayItemWithWeights = getRandomArrayItemWithWeights;
-    function findItemWithKey(source, keyToFind, parentKey, hasParentKey) {
-        if (hasParentKey === void 0) { hasParentKey = false; }
-        var hasParentKey = hasParentKey;
-        if (source[keyToFind]) {
-            if (!parentKey || hasParentKey) {
-                return source[keyToFind];
-            }
-        }
-        ;
-        for (var key in source) {
-            if (key === parentKey) {
-                hasParentKey = true;
-            }
-            if (source[key][keyToFind]) {
-                if (!parentKey || hasParentKey) {
-                    return source[key][keyToFind];
-                }
-            }
-            else if (typeof source[key] === "object") {
-                return findItemWithKey(source[key], keyToFind, parentKey, hasParentKey);
-            }
-        }
-        return null;
-    }
-    exports.findItemWithKey = findItemWithKey;
-    function getFrom2dArray(target, arr) {
-        var result = [];
-        for (var i = 0; i < arr.length; i++) {
-            if ((arr[i] !== undefined) &&
-                (arr[i][0] >= 0 && arr[i][0] < target.length) &&
-                (arr[i][1] >= 0 && arr[i][1] < target[0].length)) {
-                result.push(target[arr[i][0]][arr[i][1]]);
-            }
-            else {
-                result.push(null);
-            }
-        }
-        ;
-        return result;
-    }
-    exports.getFrom2dArray = getFrom2dArray;
-    function flatten2dArray(toFlatten) {
-        var flattened = [];
-        for (var i = 0; i < toFlatten.length; i++) {
-            for (var j = 0; j < toFlatten[i].length; j++) {
-                flattened.push(toFlatten[i][j]);
-            }
-        }
-        return flattened;
-    }
-    exports.flatten2dArray = flatten2dArray;
-    function reverseSide(side) {
-        switch (side) {
-            case "side1":
-                {
-                    return "side2";
-                }
-            case "side2":
-                {
-                    return "side1";
-                }
-            default:
-                {
-                    throw new Error("Invalid side");
-                }
-        }
-    }
-    exports.reverseSide = reverseSide;
-    function sortByManufactoryCapacityFN(a, b) {
-        var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
-        var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
-        if (bLevel !== aLevel) {
-            return bLevel - aLevel;
-        }
-        var _a = a.name.toLowerCase();
-        var _b = b.name.toLowerCase();
-        if (_a > _b)
-            return 1;
-        else if (_a < _b)
-            return -1;
-        else
-            return 0;
-    }
-    exports.sortByManufactoryCapacityFN = sortByManufactoryCapacityFN;
-    function rectContains(rect, point) {
-        var x = point.x;
-        var y = point.y;
-        var x1 = Math.min(rect.x1, rect.x2);
-        var x2 = Math.max(rect.x1, rect.x2);
-        var y1 = Math.min(rect.y1, rect.y2);
-        var y2 = Math.max(rect.y1, rect.y2);
-        return ((x >= x1 && x <= x2) &&
-            (y >= y1 && y <= y2));
-    }
-    exports.rectContains = rectContains;
-    function hexToString(hex) {
-        hex = Math.round(hex);
-        var converted = hex.toString(16);
-        return '000000'.substr(0, 6 - converted.length) + converted;
-    }
-    exports.hexToString = hexToString;
-    function stringToHex(text) {
-        if (text.charAt(0) === "#") {
-            text = text.substring(1, 7);
-        }
-        return parseInt(text, 16);
-    }
-    exports.stringToHex = stringToHex;
-    function colorImageInPlayerColor(image, player) {
-        var canvas = document.createElement("canvas");
-        canvas.width = image.width;
-        canvas.height = image.height;
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(image, 0, 0, image.width, image.height);
-        ctx.globalCompositeOperation = "source-in";
-        ctx.fillStyle = "#" + player.color.getHexString();
-        ctx.fillRect(0, 0, image.width, image.height);
-        return canvas.toDataURL();
-    }
-    exports.colorImageInPlayerColor = colorImageInPlayerColor;
-    function extendObject(from, to, onlyExtendAlreadyPresent) {
-        if (onlyExtendAlreadyPresent === void 0) { onlyExtendAlreadyPresent = false; }
-        if (from == null || typeof from != "object")
-            return from;
-        if (from.constructor != Object && from.constructor != Array)
-            return from;
-        if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
-            from.constructor == String || from.constructor == Number || from.constructor == Boolean)
-            return new from.constructor(from);
-        to = to || new from.constructor();
-        var toIterateOver = onlyExtendAlreadyPresent ? to : from;
-        for (var name_1 in toIterateOver) {
-            if (!onlyExtendAlreadyPresent || from.hasOwnProperty(name_1)) {
-                to[name_1] = extendObject(from[name_1], null);
-            }
-        }
-        return to;
-    }
-    exports.extendObject = extendObject;
-    function shallowCopy(toCopy) {
-        return shallowExtend({}, toCopy);
-    }
-    exports.shallowCopy = shallowCopy;
-    function shallowExtend(destination) {
-        var sources = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            sources[_i - 1] = arguments[_i];
-        }
-        for (var _c = 0, sources_1 = sources; _c < sources_1.length; _c++) {
-            var source = sources_1[_c];
-            for (var key in source) {
-                destination[key] = source[key];
-            }
-        }
-        return destination;
-    }
-    exports.shallowExtend = shallowExtend;
-    function deepMerge(target, src, excludeKeysNotInTarget) {
-        if (excludeKeysNotInTarget === void 0) { excludeKeysNotInTarget = false; }
-        if (excludeKeysNotInTarget) {
-            var merged = deepMerge(target, src, false);
-            return deletePropertiesNotSharedWithTarget(merged, target);
-        }
-        var array = Array.isArray(src);
-        var dst = array && [] || {};
-        if (array) {
-            target = target || [];
-            dst = dst.concat(target);
-            src.forEach(function (e, i) {
-                if (typeof dst[i] === 'undefined') {
-                    dst[i] = e;
-                }
-                else if (typeof e === 'object') {
-                    dst[i] = deepMerge(target[i], e);
-                }
-                else {
-                    if (target.indexOf(e) === -1) {
-                        dst.push(e);
-                    }
-                }
-            });
-        }
-        else {
-            if (target && typeof target === 'object') {
-                Object.keys(target).forEach(function (key) {
-                    dst[key] = target[key];
-                });
-            }
-            Object.keys(src).forEach(function (key) {
-                if (typeof src[key] !== 'object' || !src[key]) {
-                    dst[key] = src[key];
-                }
-                else {
-                    if (!target[key]) {
-                        dst[key] = src[key];
-                    }
-                    else {
-                        dst[key] = deepMerge(target[key], src[key]);
-                    }
-                }
-            });
-        }
-        return dst;
-    }
-    exports.deepMerge = deepMerge;
-    function deletePropertiesNotSharedWithTarget(source, target) {
-        var dst = {};
-        for (var key in target) {
-            if (typeof target[key] !== "object" || !target[key]) {
-                dst[key] = source[key];
-            }
-            else {
-                dst[key] = deletePropertiesNotSharedWithTarget(source[key], target[key]);
-            }
-        }
-        return dst;
-    }
-    exports.deletePropertiesNotSharedWithTarget = deletePropertiesNotSharedWithTarget;
-    function recursiveRemoveAttribute(parent, attribute) {
-        parent.removeAttribute(attribute);
-        for (var i = 0; i < parent.children.length; i++) {
-            var child = parent.children[i];
-            recursiveRemoveAttribute(child, attribute);
-        }
-    }
-    exports.recursiveRemoveAttribute = recursiveRemoveAttribute;
-    function clamp(value, min, max) {
-        if (value < min)
-            return min;
-        else if (value > max)
-            return max;
-        else
-            return value;
-    }
-    exports.clamp = clamp;
-    function roundToNearestMultiple(value, multiple) {
-        var resto = value % multiple;
-        if (resto <= (multiple / 2)) {
-            return value - resto;
-        }
-        else {
-            return value + multiple - resto;
-        }
-    }
-    exports.roundToNearestMultiple = roundToNearestMultiple;
-    function getAngleBetweenDegrees(degA, degB) {
-        var angle = Math.abs(degB - degA) % 360;
-        var distance = Math.min(360 - angle, angle);
-        return distance;
-    }
-    exports.getAngleBetweenDegrees = getAngleBetweenDegrees;
-    function prettifyDate(date) {
-        return ([
-            [
-                date.getDate(),
-                date.getMonth() + 1,
-                date.getFullYear().toString().slice(2, 4)
-            ].join("/"),
-            [
-                date.getHours(),
-                date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes().toString()
-            ].join(":")
-        ].join(" "));
-    }
-    exports.prettifyDate = prettifyDate;
-    function getMatchingLocalstorageItemsByDate(stringToMatch) {
-        var allKeys = Object.keys(localStorage);
-        var matchingItems = [];
-        for (var i = 0; i < allKeys.length; i++) {
-            if (allKeys[i].indexOf(stringToMatch) !== -1) {
-                var item = localStorage.getItem(allKeys[i]);
-                var parsed = JSON.parse(item);
-                if (parsed.date) {
-                    matchingItems.push(parsed);
-                }
-            }
-        }
-        matchingItems.sort(function (a, b) {
-            return Date.parse(b.date) - Date.parse(a.date);
-        });
-        return matchingItems;
-    }
-    exports.getMatchingLocalstorageItemsByDate = getMatchingLocalstorageItemsByDate;
-    function shuffleArray(toShuffle, seed) {
-        var rng = new RNG(seed);
-        var resultArray = toShuffle.slice(0);
-        var i = resultArray.length;
-        while (i > 0) {
-            i--;
-            var n = rng.random(0, i);
-            var temp = resultArray[i];
-            resultArray[i] = resultArray[n];
-            resultArray[n] = temp;
-        }
-        return resultArray;
-    }
-    exports.shuffleArray = shuffleArray;
-    function getRelativeValue(value, min, max, inverse) {
-        if (inverse === void 0) { inverse = false; }
-        if (inverse) {
-            if (min === max)
-                return 0;
-            else {
-                return 1 - ((value - min) / (max - min));
-            }
-        }
-        else {
-            if (min === max)
-                return 1;
-            else {
-                return (value - min) / (max - min);
-            }
-        }
-    }
-    exports.getRelativeValue = getRelativeValue;
-    function getRelativeWeightsFromObject(byCount, inverse) {
-        var relativeWeights = {};
-        var min = 0;
-        var max;
-        for (var prop in byCount) {
-            var count = byCount[prop];
-            max = isFinite(max) ? Math.max(max, count) : count;
-        }
-        for (var prop in byCount) {
-            var count = byCount[prop];
-            relativeWeights[prop] = getRelativeValue(count, min, max);
-        }
-        return relativeWeights;
-    }
-    exports.getRelativeWeightsFromObject = getRelativeWeightsFromObject;
-    function getDropTargetAtLocation(x, y) {
-        var dropTargets = document.getElementsByClassName("drop-target");
-        var point = {
-            x: x,
-            y: y
-        };
-        for (var i = 0; i < dropTargets.length; i++) {
-            var node = dropTargets[i];
-            var nodeBounds = node.getBoundingClientRect();
-            var rect = {
-                x1: nodeBounds.left,
-                x2: nodeBounds.right,
-                y1: nodeBounds.top,
-                y2: nodeBounds.bottom
-            };
-            if (rectContains(rect, point)) {
-                return node;
-            }
-        }
-        return null;
-    }
-    exports.getDropTargetAtLocation = getDropTargetAtLocation;
-    function onDOMLoaded(onLoaded) {
-        if (document.readyState === "interactive" || document.readyState === "complete") {
-            onLoaded();
-        }
-        else {
-            document.addEventListener('DOMContentLoaded', onLoaded);
-        }
-    }
-    exports.onDOMLoaded = onDOMLoaded;
-    function meetAllPlayers() {
-        for (var i = 0; i < App_2.default.game.playerOrder.length; i++) {
-            var player = App_2.default.game.playerOrder[i];
-            if (player !== App_2.default.humanPlayer) {
-                App_2.default.humanPlayer.diplomacyStatus.meetPlayer(player);
-            }
-        }
-    }
-    exports.meetAllPlayers = meetAllPlayers;
-    function getItemsFromWeightedProbabilities(probabilities) {
-        var allItems = [];
-        if (probabilities.length === 0) {
-            return allItems;
-        }
-        if (probabilities[0].weight) {
-            var selected = getRandomArrayItemWithWeights(probabilities);
-            var firstItem = selected.probabilityItems[0];
-            if (firstItem.probabilityItems) {
-                var probabilityItems = selected.probabilityItems;
-                allItems = allItems.concat(getItemsFromWeightedProbabilities(probabilityItems));
-            }
-            else {
-                var toAdd = selected.probabilityItems;
-                allItems = allItems.concat(toAdd);
-            }
-        }
-        else {
-            for (var i = 0; i < probabilities.length; i++) {
-                var selected = probabilities[i];
-                if (Math.random() < selected.flatProbability) {
-                    var firstItem = selected.probabilityItems[0];
-                    if (firstItem.probabilityItems) {
-                        var probabilityItems = selected.probabilityItems;
-                        allItems = allItems.concat(getItemsFromWeightedProbabilities(probabilityItems));
-                    }
-                    else {
-                        var toAdd = selected.probabilityItems;
-                        allItems = allItems.concat(toAdd);
-                    }
-                }
-            }
-        }
-        return allItems;
-    }
-    exports.getItemsFromWeightedProbabilities = getItemsFromWeightedProbabilities;
-    function defaultNameGenerator(unit) {
-        return "" + unit.id + " " + unit.template.displayName;
-    }
-    exports.defaultNameGenerator = defaultNameGenerator;
-    function transformMat3(a, m) {
-        var x = m[0] * a.x + m[3] * a.y + m[6];
-        var y = m[1] * a.x + m[4] * a.y + m[7];
-        return { x: x, y: y };
-    }
-    exports.transformMat3 = transformMat3;
-    function createDummySpriteForShader(x, y, width, height) {
-        var texture = getDummyTextureForShader();
-        var sprite = new PIXI.Sprite(texture);
-        if (x || y) {
-            sprite.position = new PIXI.Point(x || 0, y || 0);
-        }
-        if (width) {
-            sprite.width = width;
-        }
-        if (height) {
-            sprite.height = height;
-        }
-        return sprite;
-    }
-    exports.createDummySpriteForShader = createDummySpriteForShader;
-    function getDummyTextureForShader() {
-        var canvas = document.createElement("canvas");
-        canvas._pixiId = "dummyShaderTexture";
-        canvas.width = 1;
-        canvas.height = 1;
-        return PIXI.Texture.fromCanvas(canvas);
-    }
-    exports.getDummyTextureForShader = getDummyTextureForShader;
-    function findEasingFunctionHighPoint(easingFunction, resolution, maxIterations, startIndex, endIndex, iteration) {
-        if (resolution === void 0) { resolution = 10; }
-        if (maxIterations === void 0) { maxIterations = 4; }
-        if (startIndex === void 0) { startIndex = 0; }
-        if (endIndex === void 0) { endIndex = 1; }
-        if (iteration === void 0) { iteration = 0; }
-        if (iteration >= maxIterations) {
-            return (startIndex + endIndex) / 2;
-        }
-        var highestValue;
-        var highestValueIndex;
-        var step = (endIndex - startIndex) / resolution;
-        for (var i = 0; i < resolution; i++) {
-            var currentIndex = startIndex + i * step;
-            var currentValue = easingFunction(currentIndex);
-            if (!isFinite(highestValue) || currentValue > highestValue) {
-                highestValue = currentValue;
-                highestValueIndex = currentIndex;
-            }
-        }
-        return findEasingFunctionHighPoint(easingFunction, resolution, maxIterations, highestValueIndex - step / 2, highestValueIndex + step / 2, iteration + 1);
-    }
-    exports.findEasingFunctionHighPoint = findEasingFunctionHighPoint;
-    function pointsEqual(p1, p2) {
-        return (p1.x === p2.x && p1.y === p2.y);
-    }
-    exports.pointsEqual = pointsEqual;
-    function makeRandomPersonality() {
-        var unitCompositionPreference = {};
-        for (var archetype in App_2.default.moduleData.Templates.UnitArchetypes) {
-            unitCompositionPreference[archetype] = Math.random();
-        }
-        return ({
-            expansiveness: Math.random(),
-            aggressiveness: Math.random(),
-            friendliness: Math.random(),
-            unitCompositionPreference: unitCompositionPreference
-        });
-    }
-    exports.makeRandomPersonality = makeRandomPersonality;
-    function splitMultilineText(text) {
-        if (Array.isArray(text)) {
-            var returnArr = [];
-            for (var i = 0; i < text.length; i++) {
-                returnArr.push(text[i]);
-                returnArr.push(React.DOM.br({
-                    key: "" + i
-                }));
-            }
-            return returnArr;
-        }
-        else {
-            return text;
-        }
-    }
-    exports.splitMultilineText = splitMultilineText;
-});
-define("src/Building", ["require", "exports", "src/idGenerators", "src/App"], function (require, exports, idGenerators_2, App_3) {
+define("src/Building", ["require", "exports", "src/idGenerators", "src/App"], function (require, exports, idGenerators_2, App_2) {
     "use strict";
     var Building = (function () {
         function Building(props) {
@@ -1085,7 +468,7 @@ define("src/Building", ["require", "exports", "src/idGenerators", "src/App"], fu
             }
             else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
                 var templatedUpgrades = this.template.upgradeInto.map(function (upgradeData) {
-                    var template = App_3.default.moduleData.Templates.Buildings[upgradeData.templateType];
+                    var template = App_2.default.moduleData.Templates.Buildings[upgradeData.templateType];
                     return ({
                         level: upgradeData.level,
                         template: template,
@@ -1171,23 +554,23 @@ define("src/Color", ["require", "exports"], function (require, exports) {
         };
         Color.fromHSL = function (h, s, l) {
             var r, g, b;
+            function hue2rgb(p, q, t) {
+                if (t < 0)
+                    t += 1;
+                if (t > 1)
+                    t -= 1;
+                if (t < 1 / 6)
+                    return p + (q - p) * 6 * t;
+                if (t < 1 / 2)
+                    return q;
+                if (t < 2 / 3)
+                    return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            }
             if (s == 0) {
                 r = g = b = l;
             }
             else {
-                function hue2rgb(p, q, t) {
-                    if (t < 0)
-                        t += 1;
-                    if (t > 1)
-                        t -= 1;
-                    if (t < 1 / 6)
-                        return p + (q - p) * 6 * t;
-                    if (t < 1 / 2)
-                        return q;
-                    if (t < 2 / 3)
-                        return p + (q - p) * (2 / 3 - t) * 6;
-                    return p;
-                }
                 var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
                 var p = 2 * l - q;
                 r = hue2rgb(p, q, h + 1 / 3);
@@ -1274,7 +657,7 @@ define("src/SubEmblemCoverage", ["require", "exports"], function (require, expor
 define("src/SubEmblemPosition", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_4, utility_1) {
+define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_3, utility_1) {
     "use strict";
     var Emblem = (function () {
         function Emblem(color, alpha, inner, outer) {
@@ -1298,16 +681,16 @@ define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function 
                 throw new Error("Tried to get available sub emblems for emblem that already has both inner and outer");
             }
             if (!this.inner) {
-                for (var key in App_4.default.moduleData.Templates.SubEmblems) {
-                    if (!App_4.default.moduleData.Templates.SubEmblems[key].disallowRandomGeneration) {
-                        possibleTemplates.push(App_4.default.moduleData.Templates.SubEmblems[key]);
+                for (var key in App_3.default.moduleData.Templates.SubEmblems) {
+                    if (!App_3.default.moduleData.Templates.SubEmblems[key].disallowRandomGeneration) {
+                        possibleTemplates.push(App_3.default.moduleData.Templates.SubEmblems[key]);
                     }
                 }
             }
             else {
                 if (this.canAddOuterTemplate()) {
-                    for (var key in App_4.default.moduleData.Templates.SubEmblems) {
-                        var template = App_4.default.moduleData.Templates.SubEmblems[key];
+                    for (var key in App_3.default.moduleData.Templates.SubEmblems) {
+                        var template = App_3.default.moduleData.Templates.SubEmblems[key];
                         if (!template.disallowRandomGeneration && template.coverage.indexOf(1) !== -1) {
                             possibleTemplates.push(template);
                         }
@@ -1331,7 +714,7 @@ define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function 
             return false;
         };
         Emblem.prototype.drawSubEmblem = function (toDraw, maxWidth, maxHeight, stretch) {
-            var image = App_4.default.images[toDraw.src];
+            var image = App_3.default.images[toDraw.src];
             var width = image.width;
             var height = image.height;
             if (stretch) {
@@ -1556,54 +939,6 @@ define("src/Flag", ["require", "exports", "src/Emblem"], function (require, expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Flag;
 });
-define("src/Item", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_3) {
-    "use strict";
-    var Item = (function () {
-        function Item(template, id) {
-            this.id = isFinite(id) ? id : idGenerators_3.default.item++;
-            this.template = template;
-        }
-        Item.prototype.serialize = function () {
-            var data = {
-                id: this.id,
-                templateType: this.template.type
-            };
-            if (this.unit) {
-                data.unitId = this.unit.id;
-            }
-            return data;
-        };
-        return Item;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Item;
-});
-define("src/RuleSet", ["require", "exports"], function (require, exports) {
-    "use strict";
-    exports.defaultRuleSet = {
-        manufactory: {
-            startingCapacity: 1,
-            maxCapacity: 3,
-            buildCost: 1000
-        },
-        research: {
-            baseResearchSpeed: 3000
-        },
-        battle: {
-            rowsPerFormation: 2,
-            cellsPerRow: 3,
-            maxUnitsPerSide: 6,
-            maxUnitsPerRow: 3,
-            baseMaxCapturedUnits: 1,
-            absoluteMaxCapturedUnits: 3,
-            baseUnitCaptureChance: 0.1,
-            humanUnitDeathChance: 0.65,
-            aiUnitDeathChance: 0.65,
-            independentUnitDeathChance: 1.0,
-            loserUnitExtraDeathChance: 0.35
-        }
-    };
-});
 define("src/BattleTurnOrder", ["require", "exports"], function (require, exports) {
     "use strict";
     var BattleTurnOrder = (function () {
@@ -1692,7 +1027,7 @@ define("src/BattleTurnOrder", ["require", "exports"], function (require, exports
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleTurnOrder;
 });
-define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/BattleTurnOrder", "src/UnitBattleSide", "src/utility"], function (require, exports, App_5, eventManager_2, BattleTurnOrder_1, UnitBattleSide_1, utility_2) {
+define("src/Battle", ["require", "exports", "src/RuleSet", "src/App", "src/eventManager", "src/BattleTurnOrder", "src/UnitBattleSide", "src/utility"], function (require, exports, RuleSet_1, App_4, eventManager_2, BattleTurnOrder_1, UnitBattleSide_1, utility_2) {
     "use strict";
     var Battle = (function () {
         function Battle(props) {
@@ -1805,7 +1140,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
             return this.getPlayerForSide(side);
         };
         Battle.prototype.getRowByPosition = function (position) {
-            var rowsPerSide = App_5.default.moduleData.ruleSet.battle.rowsPerFormation;
+            var rowsPerSide = RuleSet_1.default.battle.rowsPerFormation;
             var side = position < rowsPerSide ? "side1" : "side2";
             var relativePosition = position % rowsPerSide;
             return this[side][relativePosition];
@@ -1838,21 +1173,20 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
             return capturedUnits;
         };
         Battle.prototype.getUnitDeathChance = function (unit, victor) {
-            var ruleSet = App_5.default.moduleData.ruleSet;
             var player = unit.fleet.player;
             var deathChance;
             if (player.isIndependent) {
-                deathChance = ruleSet.battle.independentUnitDeathChance;
+                deathChance = RuleSet_1.default.battle.independentUnitDeathChance;
             }
             else if (player.isAI) {
-                deathChance = ruleSet.battle.aiUnitDeathChance;
+                deathChance = RuleSet_1.default.battle.aiUnitDeathChance;
             }
             else {
-                deathChance = ruleSet.battle.humanUnitDeathChance;
+                deathChance = RuleSet_1.default.battle.humanUnitDeathChance;
             }
             var playerDidLose = (victor && player !== victor);
             if (playerDidLose) {
-                deathChance += ruleSet.battle.loserUnitExtraDeathChance;
+                deathChance += RuleSet_1.default.battle.loserUnitExtraDeathChance;
             }
             return deathChance;
         };
@@ -1877,7 +1211,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
                 return;
             this.activeUnit = null;
             var victor = this.getVictor();
-            var maxCapturedUnits = App_5.default.moduleData.ruleSet.battle.baseMaxCapturedUnits;
+            var maxCapturedUnits = RuleSet_1.default.battle.baseMaxCapturedUnits;
             this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
             this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
             eventManager_2.default.dispatchEvent("battleEnd", null);
@@ -1915,7 +1249,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
                 eventManager_2.default.dispatchEvent("setCameraToCenterOn", this.battleData.location);
                 eventManager_2.default.dispatchEvent("switchScene", "galaxyMap");
             }
-            if (App_5.default.humanPlayer.starIsVisible(this.battleData.location)) {
+            if (App_4.default.humanPlayer.starIsVisible(this.battleData.location)) {
                 eventManager_2.default.dispatchEvent("makeBattleFinishNotification", {
                     location: this.battleData.location,
                     attacker: this.battleData.attacker.player,
@@ -1993,7 +1327,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
                 return relativePosition;
             }
             else {
-                var rowsPerSide = App_5.default.moduleData.ruleSet.battle.rowsPerFormation;
+                var rowsPerSide = RuleSet_1.default.battle.rowsPerFormation;
                 return [relativePosition[0] + rowsPerSide, relativePosition[1]];
             }
         };
@@ -2017,7 +1351,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
             }
             var nextHealthyRowIndex;
             for (var i = 1; i < formation.length; i++) {
-                var absoluteRow = side === "side1" ? i : i + App_5.default.moduleData.ruleSet.battle.rowsPerFormation;
+                var absoluteRow = side === "side1" ? i : i + RuleSet_1.default.battle.rowsPerFormation;
                 if (this.getTotalHealthForRow(absoluteRow) > 0) {
                     nextHealthyRowIndex = i;
                     break;
@@ -2035,7 +1369,7 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
             this.updateBattlePositions(side);
         };
         Battle.prototype.shiftRowsIfNeeded = function () {
-            var rowsPerSide = App_5.default.moduleData.ruleSet.battle.rowsPerFormation;
+            var rowsPerSide = RuleSet_1.default.battle.rowsPerFormation;
             var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
             if (side1FrontRowHealth <= 0) {
                 this.shiftRowsForSide("side1");
@@ -2137,6 +1471,307 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Battle;
 });
+define("src/getNullFormation", ["require", "exports", "src/RuleSet"], function (require, exports, RuleSet_2) {
+    "use strict";
+    function getNullFormation() {
+        var nullFormation = [];
+        var rows = RuleSet_2.default.battle.rowsPerFormation;
+        var columns = RuleSet_2.default.battle.cellsPerRow;
+        for (var i = 0; i < rows; i++) {
+            nullFormation.push([]);
+            for (var j = 0; j < columns; j++) {
+                nullFormation[i].push(null);
+            }
+        }
+        return nullFormation;
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = getNullFormation;
+});
+define("src/BattlePrepFormation", ["require", "exports", "src/RuleSet", "src/getNullFormation"], function (require, exports, RuleSet_3, getNullFormation_1) {
+    "use strict";
+    var BattlePrepFormation = (function () {
+        function BattlePrepFormation(player, units, hasScouted, minUnits) {
+            this.placedUnitPositionsByID = {};
+            this.displayDataIsDirty = true;
+            this.player = player;
+            this.units = units;
+            this.hasScouted = hasScouted;
+            this.minUnits = minUnits;
+            this.formation = getNullFormation_1.default();
+        }
+        BattlePrepFormation.prototype.forEachUnitInFormation = function (f) {
+            for (var i = 0; i < this.formation.length; i++) {
+                for (var j = 0; j < this.formation[i].length; j++) {
+                    var unit = this.formation[i][j];
+                    if (unit) {
+                        f(unit, [i, j]);
+                    }
+                }
+            }
+        };
+        BattlePrepFormation.prototype.getDisplayData = function () {
+            if (this.displayDataIsDirty) {
+                this.cachedDisplayData = this.getFormationDisplayData();
+                this.displayDataIsDirty = false;
+            }
+            return this.cachedDisplayData;
+        };
+        BattlePrepFormation.prototype.setAutoFormation = function (enemyUnits, enemyFormation) {
+            var _this = this;
+            this.clearFormation();
+            this.formation = this.getAutoFormation(enemyUnits, enemyFormation);
+            this.forEachUnitInFormation(function (unit, pos) {
+                _this.placedUnitPositionsByID[unit.id] = pos;
+            });
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.getUnitPosition = function (unit) {
+            return this.placedUnitPositionsByID[unit.id];
+        };
+        BattlePrepFormation.prototype.getUnitAtPosition = function (position) {
+            return this.formation[position[0]][position[1]];
+        };
+        BattlePrepFormation.prototype.clearFormation = function () {
+            this.placedUnitPositionsByID = {};
+            this.formation = getNullFormation_1.default();
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.isFormationValid = function () {
+            var amountOfUnitsPlaced = 0;
+            this.forEachUnitInFormation(function (unit) { return amountOfUnitsPlaced += 1; });
+            var availableUnits = this.units.filter(function (unit) { return unit.canActThisTurn(); });
+            var hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
+            return amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits;
+        };
+        BattlePrepFormation.prototype.setUnit = function (unit, position) {
+            var unitInTargetPosition = this.getUnitAtPosition(position);
+            if (unitInTargetPosition) {
+                this.swapUnits(unit, unitInTargetPosition);
+            }
+            else {
+                this.removeUnit(unit);
+                this.formation[position[0]][position[1]] = unit;
+                this.placedUnitPositionsByID[unit.id] = position;
+                this.displayDataIsDirty = true;
+            }
+        };
+        BattlePrepFormation.prototype.removeUnit = function (unit) {
+            var position = this.getUnitPosition(unit);
+            if (!position) {
+                return;
+            }
+            this.formation[position[0]][position[1]] = null;
+            delete this.placedUnitPositionsByID[unit.id];
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.swapUnits = function (unit1, unit2) {
+            if (unit1 === unit2)
+                return;
+            var new1Pos = this.getUnitPosition(unit2);
+            var new2Pos = this.getUnitPosition(unit1);
+            this.removeUnit(unit1);
+            this.removeUnit(unit2);
+            this.setUnit(unit1, new1Pos);
+            this.setUnit(unit2, new2Pos);
+        };
+        BattlePrepFormation.prototype.getFormationDisplayData = function () {
+            var displayDataByID = {};
+            this.forEachUnitInFormation(function (unit) {
+                displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
+            });
+            return displayDataByID;
+        };
+        BattlePrepFormation.prototype.getAutoFormation = function (enemyUnits, enemyFormation) {
+            var scoutedUnits = this.hasScouted ? enemyUnits : null;
+            var scoutedFormation = this.hasScouted ? enemyFormation : null;
+            var formation = getNullFormation_1.default();
+            var unitsToPlace = this.units.filter(function (unit) { return unit.canActThisTurn(); });
+            var maxUnitsPerRow = formation[0].length;
+            var maxUnitsPerSide = RuleSet_3.default.battle.maxUnitsPerSide;
+            var placedInFront = 0;
+            var placedInBack = 0;
+            var totalPlaced = 0;
+            var unitsPlacedByArchetype = {};
+            var getUnitScoreFN = function (unit, row) {
+                var baseScore = unit.getStrengthEvaluation();
+                var archetype = unit.template.archetype;
+                var idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
+                var unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
+                var overMaxOfArchetypeIdeal = Math.max(0, unitsPlacedOfArchetype - idealMaxUnitsOfArchetype);
+                var archetypeIdealAdjust = 1 - overMaxOfArchetypeIdeal * 0.15;
+                var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
+                var rowModifier = archetype.scoreMultiplierForRowFN ?
+                    archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
+                    archetype.rowScores[row];
+                return ({
+                    unit: unit,
+                    score: baseScore * archetypeIdealAdjust * rowModifier,
+                    row: row
+                });
+            };
+            while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide) {
+                var positionScores = [];
+                for (var i = 0; i < unitsToPlace.length; i++) {
+                    var unit = unitsToPlace[i];
+                    if (placedInFront < maxUnitsPerRow) {
+                        positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
+                    }
+                    if (placedInBack < maxUnitsPerRow) {
+                        positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
+                    }
+                }
+                positionScores.sort(function (a, b) {
+                    return (b.score - a.score);
+                });
+                var topScore = positionScores[0];
+                if (topScore.row === "ROW_FRONT") {
+                    placedInFront++;
+                    formation[1][placedInFront - 1] = topScore.unit;
+                }
+                else {
+                    placedInBack++;
+                    formation[0][placedInBack - 1] = topScore.unit;
+                }
+                totalPlaced++;
+                if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type]) {
+                    unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
+                }
+                unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
+                unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
+            }
+            return formation;
+        };
+        return BattlePrepFormation;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattlePrepFormation;
+});
+define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFormation"], function (require, exports, Battle_1, BattlePrepFormation_1) {
+    "use strict";
+    var BattlePrep = (function () {
+        function BattlePrep(battleData) {
+            this.afterBattleFinishCallbacks = [];
+            this.attacker = battleData.attacker.player;
+            this.defender = battleData.defender.player;
+            this.battleData = battleData;
+            this.attackerUnits = battleData.attacker.units;
+            this.defenderUnits = battleData.defender.units;
+            var attackerHasScouted = this.attacker.starIsDetected(battleData.location);
+            this.attackerFormation = new BattlePrepFormation_1.default(this.attacker, this.attackerUnits, attackerHasScouted, 0);
+            var defenderHasScouted = this.defender.starIsDetected(battleData.location);
+            this.defenderFormation = new BattlePrepFormation_1.default(this.defender, this.defenderUnits, defenderHasScouted);
+            this.resetBattleStats();
+            this.minDefenders = this.getInitialMinDefenders();
+            this.setHumanAndEnemy();
+            if (this.enemyFormation) {
+                this.enemyFormation.setAutoFormation(this.humanUnits);
+                this.triggerPassiveSkills(this.enemyFormation);
+                this.defenderFormation.minUnits = this.minDefenders;
+            }
+            else {
+                this.attackerFormation.setAutoFormation(this.defenderUnits);
+                this.triggerPassiveSkills(this.attackerFormation);
+                this.defenderFormation.minUnits = this.minDefenders;
+                this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
+            }
+        }
+        BattlePrep.prototype.forEachUnit = function (f) {
+            this.attackerUnits.forEach(f);
+            this.defenderUnits.forEach(f);
+        };
+        BattlePrep.prototype.isLocationNeutral = function () {
+            return (this.battleData.location.owner !== this.attacker &&
+                this.battleData.location.owner !== this.defender);
+        };
+        BattlePrep.prototype.makeBattle = function () {
+            var side1Formation = this.humanFormation || this.attackerFormation;
+            var side2Formation = this.enemyFormation || this.defenderFormation;
+            var side1Player = this.humanPlayer || this.attacker;
+            var side2Player = this.enemyPlayer || this.defender;
+            var battle = new Battle_1.default({
+                battleData: this.battleData,
+                side1: side1Formation.formation,
+                side2: side2Formation.formation.reverse(),
+                side1Player: side1Player,
+                side2Player: side2Player
+            });
+            battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
+            battle.init();
+            return battle;
+        };
+        BattlePrep.prototype.setHumanAndEnemy = function () {
+            if (!this.attacker.isAI) {
+                this.humanPlayer = this.attacker;
+                this.enemyPlayer = this.defender;
+                this.humanUnits = this.attackerUnits;
+                this.enemyUnits = this.defenderUnits;
+                this.humanFormation = this.attackerFormation;
+                this.enemyFormation = this.defenderFormation;
+            }
+            else if (!this.defender.isAI) {
+                this.humanPlayer = this.defender;
+                this.enemyPlayer = this.attacker;
+                this.humanUnits = this.defenderUnits;
+                this.enemyUnits = this.attackerUnits;
+                this.humanFormation = this.defenderFormation;
+                this.enemyFormation = this.attackerFormation;
+            }
+        };
+        BattlePrep.prototype.resetBattleStats = function () {
+            this.forEachUnit(function (unit) {
+                unit.resetBattleStats();
+            });
+        };
+        BattlePrep.prototype.triggerPassiveSkills = function (formation) {
+            var _this = this;
+            formation.forEachUnitInFormation(function (unit) {
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase.inBattlePrep) {
+                    for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++) {
+                        var skill = passiveSkillsByPhase.inBattlePrep[j];
+                        for (var k = 0; k < skill.inBattlePrep.length; k++) {
+                            skill.inBattlePrep[k](unit, _this);
+                        }
+                    }
+                }
+            });
+        };
+        BattlePrep.prototype.getInitialMinDefenders = function () {
+            if (this.isLocationNeutral()) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        };
+        return BattlePrep;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattlePrep;
+});
+define("src/Item", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_3) {
+    "use strict";
+    var Item = (function () {
+        function Item(template, id) {
+            this.id = isFinite(id) ? id : idGenerators_3.default.item++;
+            this.template = template;
+        }
+        Item.prototype.serialize = function () {
+            var data = {
+                id: this.id,
+                templateType: this.template.type
+            };
+            if (this.unit) {
+                data.unitId = this.unit.id;
+            }
+            return data;
+        };
+        return Item;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Item;
+});
 define("src/targeting", ["require", "exports", "src/utility"], function (require, exports, utility_3) {
     "use strict";
     (function (TargetFormation) {
@@ -2199,24 +1834,7 @@ define("src/targeting", ["require", "exports", "src/utility"], function (require
         return utility_3.getFrom2dArray(units, targetLocations);
     };
 });
-define("src/getNullFormation", ["require", "exports", "src/App"], function (require, exports, App_6) {
-    "use strict";
-    function getNullFormation() {
-        var nullFormation = [];
-        var rows = App_6.default.moduleData.ruleSet.battle.rowsPerFormation;
-        var columns = App_6.default.moduleData.ruleSet.battle.cellsPerRow;
-        for (var i = 0; i < rows; i++) {
-            nullFormation.push([]);
-            for (var j = 0; j < columns; j++) {
-                nullFormation[i].push(null);
-            }
-        }
-        return nullFormation;
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = getNullFormation;
-});
-define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormation", "src/utility", "src/targeting"], function (require, exports, getNullFormation_1, utility_4, targeting_1) {
+define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormation", "src/utility", "src/targeting"], function (require, exports, getNullFormation_2, utility_4, targeting_1) {
     "use strict";
     function getFormationsToTarget(battle, user, effect) {
         if (effect.targetFormations === targeting_1.TargetFormation.either) {
@@ -2237,10 +1855,10 @@ define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormatio
             throw new Error("Invalid target formation for effect: " + effect.name);
         }
         if (insertNullBefore) {
-            return getNullFormation_1.default().concat(toConcat);
+            return getNullFormation_2.default().concat(toConcat);
         }
         else {
-            return toConcat.concat(getNullFormation_1.default());
+            return toConcat.concat(getNullFormation_2.default());
         }
     }
     exports.getFormationsToTarget = getFormationsToTarget;
@@ -2489,7 +2107,7 @@ define("src/battleAbilityUsage", ["require", "exports", "src/battleAbilityProces
         });
     }
 });
-define("src/MCTreeNode", ["require", "exports", "src/App", "src/utility", "src/battleAbilityUsage", "src/battleAbilityTargeting"], function (require, exports, App_7, utility_5, battleAbilityUsage_1, battleAbilityTargeting_2) {
+define("src/MCTreeNode", ["require", "exports", "src/App", "src/utility", "src/battleAbilityUsage", "src/battleAbilityTargeting"], function (require, exports, App_5, utility_5, battleAbilityUsage_1, battleAbilityTargeting_2) {
     "use strict";
     var MCTreeNode = (function () {
         function MCTreeNode(battle, move) {
@@ -2602,7 +2220,7 @@ define("src/MCTreeNode", ["require", "exports", "src/App", "src/utility", "src/b
         MCTreeNode.prototype.simulateOnce = function (battle) {
             var actions = battleAbilityTargeting_2.getTargetsForAllAbilities(battle, battle.activeUnit);
             var targetData = this.pickRandomAbilityAndTarget(actions);
-            var ability = App_7.default.moduleData.Templates.Abilities[targetData.abilityType];
+            var ability = App_5.default.moduleData.Templates.Abilities[targetData.abilityType];
             var target = battle.unitsById[targetData.targetId];
             battleAbilityUsage_1.useAbility(battle, ability, battle.activeUnit, target, false);
             battle.endTurn();
@@ -3060,7 +2678,7 @@ define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = AttitudeModifier;
 });
-define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManager", "src/AttitudeModifier", "src/DiplomacyState"], function (require, exports, App_8, eventManager_4, AttitudeModifier_1, DiplomacyState_1) {
+define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManager", "src/AttitudeModifier", "src/DiplomacyState"], function (require, exports, App_6, eventManager_4, AttitudeModifier_1, DiplomacyState_1) {
     "use strict";
     var DiplomacyStatus = (function () {
         function DiplomacyStatus(player) {
@@ -3072,8 +2690,8 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             this.addEventListeners();
         }
         DiplomacyStatus.prototype.addEventListeners = function () {
-            for (var key in App_8.default.moduleData.Templates.AttitudeModifiers) {
-                var template = App_8.default.moduleData.Templates.AttitudeModifiers[key];
+            for (var key in App_6.default.moduleData.Templates.AttitudeModifiers) {
+                var template = App_6.default.moduleData.Templates.AttitudeModifiers[key];
                 if (template.triggers) {
                     for (var i = 0; i < template.triggers.length; i++) {
                         var listenerKey = template.triggers[i];
@@ -3125,7 +2743,7 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             return Math.round(baseOpinion + modifierOpinion);
         };
         DiplomacyStatus.prototype.getUnMetPlayerCount = function () {
-            return App_8.default.game.playerOrder.length - Object.keys(this.metPlayers).length;
+            return App_6.default.game.playerOrder.length - Object.keys(this.metPlayers).length;
         };
         DiplomacyStatus.prototype.meetPlayer = function (player) {
             if (this.metPlayers[player.id] || player === this.player)
@@ -3153,7 +2771,7 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
             eventManager_4.default.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
             var playersAreRelevantToHuman = true;
             [this.player, player].forEach(function (p) {
-                if (App_8.default.humanPlayer !== p && !App_8.default.humanPlayer.diplomacyStatus.metPlayers[p.id]) {
+                if (App_6.default.humanPlayer !== p && !App_6.default.humanPlayer.diplomacyStatus.metPlayers[p.id]) {
                     playersAreRelevantToHuman = false;
                 }
             });
@@ -3214,13 +2832,13 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
                 return;
             var modifier = new AttitudeModifier_1.default({
                 template: template,
-                startTurn: App_8.default.game.turnNumber
+                startTurn: App_6.default.game.turnNumber
             });
             this.addAttitudeModifier(source, modifier);
         };
         DiplomacyStatus.prototype.processAttitudeModifiersForPlayer = function (player, evaluation) {
             var modifiersByPlayer = this.attitudeModifiersByPlayer;
-            var allModifiers = App_8.default.moduleData.Templates.AttitudeModifiers;
+            var allModifiers = App_6.default.moduleData.Templates.AttitudeModifiers;
             for (var playerId in modifiersByPlayer)
                 var playerModifiers = modifiersByPlayer[player.id];
             var activeModifiers = {};
@@ -3287,7 +2905,7 @@ define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManage
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = DiplomacyStatus;
 });
-define("src/Manufactory", ["require", "exports", "src/App", "src/Unit", "src/Item", "src/Fleet", "src/eventManager"], function (require, exports, App_9, Unit_1, Item_1, Fleet_1, eventManager_5) {
+define("src/Manufactory", ["require", "exports", "src/App", "src/RuleSet", "src/Unit", "src/Item", "src/Fleet", "src/eventManager"], function (require, exports, App_7, RuleSet_4, Unit_1, Item_1, Fleet_1, eventManager_5) {
     "use strict";
     var Manufactory = (function () {
         function Manufactory(star, serializedData) {
@@ -3300,8 +2918,8 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Unit", "src/Ite
                 this.makeFromData(serializedData);
             }
             else {
-                this.capacity = App_9.default.moduleData.ruleSet.manufactory.startingCapacity;
-                this.maxCapacity = App_9.default.moduleData.ruleSet.manufactory.maxCapacity;
+                this.capacity = RuleSet_4.default.manufactory.startingCapacity;
+                this.maxCapacity = RuleSet_4.default.manufactory.maxCapacity;
             }
         }
         Manufactory.prototype.makeFromData = function (data) {
@@ -3324,7 +2942,7 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Unit", "src/Ite
                 }
                 return ({
                     type: savedThing.type,
-                    template: App_9.default.moduleData.Templates[templatesString][savedThing.templateType]
+                    template: App_7.default.moduleData.Templates[templatesString][savedThing.templateType]
                 });
             });
         };
@@ -3422,7 +3040,7 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Unit", "src/Ite
             this.capacity = Math.max(1, this.capacity - 1);
         };
         Manufactory.prototype.getCapacityUpgradeCost = function () {
-            return App_9.default.moduleData.ruleSet.manufactory.buildCost * this.capacity;
+            return RuleSet_4.default.manufactory.buildCost * this.capacity;
         };
         Manufactory.prototype.upgradeCapacity = function (amount) {
             this.player.money -= this.getCapacityUpgradeCost();
@@ -3460,16 +3078,16 @@ define("src/Manufactory", ["require", "exports", "src/App", "src/Unit", "src/Ite
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Manufactory;
 });
-define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManager"], function (require, exports, App_10, eventManager_6) {
+define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManager"], function (require, exports, App_8, eventManager_6) {
     "use strict";
     var PlayerTechnology = (function () {
         function PlayerTechnology(getResearchSpeed, savedData) {
             this.tempOverflowedResearchAmount = 0;
             this.getResearchSpeed = getResearchSpeed;
             this.technologies = {};
-            var totalTechnologies = Object.keys(App_10.default.moduleData.Templates.Technologies).length;
-            for (var key in App_10.default.moduleData.Templates.Technologies) {
-                var technology = App_10.default.moduleData.Templates.Technologies[key];
+            var totalTechnologies = Object.keys(App_8.default.moduleData.Templates.Technologies).length;
+            for (var key in App_8.default.moduleData.Templates.Technologies) {
+                var technology = App_8.default.moduleData.Templates.Technologies[key];
                 this.technologies[key] =
                     {
                         technology: technology,
@@ -3748,7 +3366,7 @@ define("src/FillerPoint", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = FillerPoint;
 });
-define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/utility", "src/mapgencore/MapGenResult"], function (require, exports, App_11, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, utility_8, MapGenResult_1) {
+define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/utility", "src/mapgencore/MapGenResult"], function (require, exports, App_9, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, utility_8, MapGenResult_1) {
     "use strict";
     var GameLoader = (function () {
         function GameLoader() {
@@ -3792,7 +3410,7 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
             var notificationsData = Array.isArray(data) ? data : data.notifications;
             var notificationLog = new NotificationLog_1.default(this.humanPlayer);
             for (var i = 0; i < notificationsData.length; i++) {
-                var template = App_11.default.moduleData.Templates.Notifications[notificationsData[i].templateKey];
+                var template = App_9.default.moduleData.Templates.Notifications[notificationsData[i].templateKey];
                 var props = template.deserializeProps(notificationsData[i].props, this);
                 var notification = new Notification_1.default(template, props, notificationsData[i].turn);
                 notification.hasBeenRead = notificationsData[i].hasBeenRead;
@@ -3838,11 +3456,11 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
             star.baseIncome = data.baseIncome;
             star.seed = data.seed;
             if (data.resourceType) {
-                star.setResource(App_11.default.moduleData.Templates.Resources[data.resourceType]);
+                star.setResource(App_9.default.moduleData.Templates.Resources[data.resourceType]);
             }
             if (data.buildableUnitTypes) {
                 for (var i = 0; i < data.buildableUnitTypes.length; i++) {
-                    star.buildableUnitTypes.push(App_11.default.moduleData.Templates.Units[data.buildableUnitTypes[i]]);
+                    star.buildableUnitTypes.push(App_9.default.moduleData.Templates.Units[data.buildableUnitTypes[i]]);
                 }
             }
             return star;
@@ -3864,7 +3482,7 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
             }
         };
         GameLoader.prototype.deserializeBuilding = function (data) {
-            var template = App_11.default.moduleData.Templates.Buildings[data.templateType];
+            var template = App_9.default.moduleData.Templates.Buildings[data.templateType];
             var building = new Building_1.default({
                 template: template,
                 location: this.starsById[data.locationId],
@@ -3928,7 +3546,7 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
                         continue;
                     }
                     for (var i = 0; i < modifiers.length; i++) {
-                        var template = App_11.default.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
+                        var template = App_9.default.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
                         var modifier = new AttitudeModifier_2.default({
                             template: template,
                             startTurn: modifiers[i].startTurn,
@@ -3949,9 +3567,9 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
             }
         };
         GameLoader.prototype.deserializeEmblem = function (emblemData, colorData) {
-            var inner = App_11.default.moduleData.Templates.SubEmblems[emblemData.innerKey];
+            var inner = App_9.default.moduleData.Templates.SubEmblems[emblemData.innerKey];
             var outer = emblemData.outerKey ?
-                App_11.default.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
+                App_9.default.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
             return new Emblem_2.default(Color_1.default.deSerialize(colorData), emblemData.alpha, inner, outer);
         };
         GameLoader.prototype.deserializeFlag = function (data) {
@@ -3993,13 +3611,13 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
             return fleet;
         };
         GameLoader.prototype.deserializeUnit = function (data) {
-            var template = App_11.default.moduleData.Templates.Units[data.templateType];
+            var template = App_9.default.moduleData.Templates.Units[data.templateType];
             var unit = new Unit_2.default(template, data.id, data);
             this.unitsById[unit.id] = unit;
             return unit;
         };
         GameLoader.prototype.deserializeItem = function (data, player) {
-            var template = App_11.default.moduleData.Templates.Items[data.templateType];
+            var template = App_9.default.moduleData.Templates.Items[data.templateType];
             var item = new Item_2.default(template, data.id);
             player.addItem(item);
             if (isFinite(data.unitId)) {
@@ -4011,7 +3629,7 @@ define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/St
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = GameLoader;
 });
-define("src/NotificationFilter", ["require", "exports", "src/App", "src/NotificationFilterState", "src/utility"], function (require, exports, App_12, NotificationFilterState_1, utility_9) {
+define("src/NotificationFilter", ["require", "exports", "src/App", "src/NotificationFilterState", "src/utility"], function (require, exports, App_10, NotificationFilterState_1, utility_9) {
     "use strict";
     var NotificationFilter = (function () {
         function NotificationFilter(player) {
@@ -4021,7 +3639,7 @@ define("src/NotificationFilter", ["require", "exports", "src/App", "src/Notifica
             this.load();
         }
         NotificationFilter.prototype.setDefaultFilterStates = function () {
-            var notifications = App_12.default.moduleData.Templates.Notifications;
+            var notifications = App_10.default.moduleData.Templates.Notifications;
             for (var key in notifications) {
                 var notificationTemplate = notifications[key];
                 this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
@@ -4086,7 +3704,7 @@ define("src/NotificationFilter", ["require", "exports", "src/App", "src/Notifica
         };
         NotificationFilter.prototype.getFiltersByCategory = function () {
             var filtersByCategory = {};
-            var notifications = App_12.default.moduleData.Templates.Notifications;
+            var notifications = App_10.default.moduleData.Templates.Notifications;
             for (var key in this.filters) {
                 var notificationTemplate = notifications[key];
                 if (notificationTemplate) {
@@ -4135,7 +3753,7 @@ define("src/NotificationFilter", ["require", "exports", "src/App", "src/Notifica
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NotificationFilter;
 });
-define("src/NotificationLog", ["require", "exports", "src/App", "src/Notification", "src/NotificationFilter", "src/eventManager"], function (require, exports, App_13, Notification_2, NotificationFilter_1, eventManager_7) {
+define("src/NotificationLog", ["require", "exports", "src/App", "src/Notification", "src/NotificationFilter", "src/eventManager"], function (require, exports, App_11, Notification_2, NotificationFilter_1, eventManager_7) {
     "use strict";
     var NotificationLog = (function () {
         function NotificationLog(player) {
@@ -4147,8 +3765,8 @@ define("src/NotificationLog", ["require", "exports", "src/App", "src/Notificatio
             this.notificationFilter = new NotificationFilter_1.default(player);
         }
         NotificationLog.prototype.addEventListeners = function () {
-            for (var key in App_13.default.moduleData.Templates.Notifications) {
-                var template = App_13.default.moduleData.Templates.Notifications[key];
+            for (var key in App_11.default.moduleData.Templates.Notifications) {
+                var template = App_11.default.moduleData.Templates.Notifications[key];
                 for (var i = 0; i < template.eventListeners.length; i++) {
                     var listenerKey = template.eventListeners[i];
                     var listener = eventManager_7.default.addEventListener(listenerKey, this.makeNotification.bind(this, template));
@@ -4225,7 +3843,7 @@ define("src/NotificationLog", ["require", "exports", "src/App", "src/Notificatio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NotificationLog;
 });
-define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/eventManager", "src/utility"], function (require, exports, App_14, idGenerators_4, eventManager_8, utility_10) {
+define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/eventManager", "src/utility"], function (require, exports, App_12, idGenerators_4, eventManager_8, utility_10) {
     "use strict";
     var Game = (function () {
         function Game(map, players, humanPlayer) {
@@ -4343,7 +3961,7 @@ define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/ev
                 date: date,
                 gameData: gameData,
                 idGenerators: utility_10.extendObject(idGenerators_4.default),
-                cameraLocation: App_14.default.renderer.camera.getCenterPosition()
+                cameraLocation: App_12.default.renderer.camera.getCenterPosition()
             });
             localStorage.setItem(saveString, stringified);
         };
@@ -5441,7 +5059,7 @@ define("src/mapai/Objective", ["require", "exports", "src/idGenerators"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Objective;
 });
-define("src/mapai/ObjectivesAI", ["require", "exports", "src/App"], function (require, exports, App_15) {
+define("src/mapai/ObjectivesAI", ["require", "exports", "src/App"], function (require, exports, App_13) {
     "use strict";
     var ObjectivesAI = (function () {
         function ObjectivesAI(mapEvaluator, grandStrategyAI) {
@@ -5469,7 +5087,7 @@ define("src/mapai/ObjectivesAI", ["require", "exports", "src/App"], function (re
             this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
         };
         ObjectivesAI.prototype.setAllObjectivesWithTemplateProperty = function (propKey) {
-            var objectiveTemplates = App_15.default.moduleData.Templates.Objectives;
+            var objectiveTemplates = App_13.default.moduleData.Templates.Objectives;
             for (var key in objectiveTemplates) {
                 var template = objectiveTemplates[key];
                 if (template[propKey]) {
@@ -5820,7 +5438,7 @@ define("src/mapai/AIController", ["require", "exports", "src/mapai/MapEvaluator"
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = AIController;
 });
-define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/utility", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/colorGeneration", "src/options", "src/mapai/AIController"], function (require, exports, idGenerators_6, App_16, utility_17, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, colorGeneration_1, options_2, AIController_1) {
+define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/RuleSet", "src/utility", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/colorGeneration", "src/options", "src/mapai/AIController"], function (require, exports, idGenerators_6, App_14, RuleSet_5, utility_17, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, colorGeneration_1, options_2, AIController_1) {
     "use strict";
     var Player = (function () {
         function Player(isAI, id) {
@@ -5961,7 +5579,7 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
             this.controlledLocations.splice(index, 1);
             this.visionIsDirty = true;
             if (this.controlledLocations.length === 0) {
-                App_16.default.game.killPlayer(this);
+                App_14.default.game.killPlayer(this);
             }
         };
         Player.prototype.getIncome = function () {
@@ -6258,11 +5876,11 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
             };
             var battlePrep = new BattlePrep_1.default(battleData);
             if (battlePrep.humanPlayer) {
-                App_16.default.reactUI.battlePrep = battlePrep;
+                App_14.default.reactUI.battlePrep = battlePrep;
                 if (battleFinishCallback) {
                     battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
                 }
-                App_16.default.reactUI.switchScene("battlePrep");
+                App_14.default.reactUI.switchScene("battlePrep");
             }
             else {
                 var battle = battlePrep.makeBattle();
@@ -6274,7 +5892,7 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
         };
         Player.prototype.getResearchSpeed = function () {
             var research = 0;
-            research += App_16.default.moduleData.ruleSet.research.baseResearchSpeed;
+            research += RuleSet_5.default.research.baseResearchSpeed;
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 research += this.controlledLocations[i].getResearchPoints();
             }
@@ -6301,9 +5919,9 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
         Player.prototype.getGloballyBuildableUnits = function () {
             var templates = [];
             var typesAlreadyAddedChecked = {};
-            var unitsToAdd = App_16.default.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
+            var unitsToAdd = App_14.default.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
             if (!this.isAI && options_2.default.debugMode) {
-                unitsToAdd = unitsToAdd.concat(App_16.default.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
+                unitsToAdd = unitsToAdd.concat(App_14.default.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
             }
             for (var i = 0; i < unitsToAdd.length; i++) {
                 var template = unitsToAdd[i];
@@ -6322,8 +5940,8 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
         };
         Player.prototype.getGloballyBuildableItems = function () {
             var itemTypes = [];
-            for (var key in App_16.default.moduleData.Templates.Items) {
-                itemTypes.push(App_16.default.moduleData.Templates.Items[key]);
+            for (var key in App_14.default.moduleData.Templates.Items) {
+                itemTypes.push(App_14.default.moduleData.Templates.Items[key]);
             }
             return itemTypes;
         };
@@ -6406,267 +6024,672 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Player;
 });
-define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNullFormation"], function (require, exports, App_17, getNullFormation_2) {
+define("src/utility", ["require", "exports", "src/App"], function (require, exports, App_15) {
     "use strict";
-    var BattlePrepFormation = (function () {
-        function BattlePrepFormation(player, units, hasScouted, minUnits) {
-            this.placedUnitPositionsByID = {};
-            this.displayDataIsDirty = true;
-            this.player = player;
-            this.units = units;
-            this.hasScouted = hasScouted;
-            this.minUnits = minUnits;
-            this.formation = getNullFormation_2.default();
+    function randInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+    exports.randInt = randInt;
+    function randRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    exports.randRange = randRange;
+    function getRandomArrayKey(target) {
+        return Math.floor(Math.random() * (target.length));
+    }
+    exports.getRandomArrayKey = getRandomArrayKey;
+    function getRandomArrayItem(target) {
+        var _rnd = Math.floor(Math.random() * (target.length));
+        return target[_rnd];
+    }
+    exports.getRandomArrayItem = getRandomArrayItem;
+    function getSeededRandomArrayItem(array, rng) {
+        var _rnd = Math.floor(rng.uniform() * array.length);
+        return array[_rnd];
+    }
+    exports.getSeededRandomArrayItem = getSeededRandomArrayItem;
+    function getRandomKey(target) {
+        var _targetKeys = Object.keys(target);
+        var _rnd = Math.floor(Math.random() * (_targetKeys.length));
+        return _targetKeys[_rnd];
+    }
+    exports.getRandomKey = getRandomKey;
+    function getObjectKeysSortedByValue(obj, order) {
+        return Object.keys(obj).sort(function (a, b) {
+            if (order === "asc") {
+                return obj[a] - obj[b];
+            }
+            else
+                return obj[b] - obj[a];
+        });
+    }
+    exports.getObjectKeysSortedByValue = getObjectKeysSortedByValue;
+    function getObjectKeysSortedByValueOfProp(obj, prop, order) {
+        return Object.keys(obj).sort(function (a, b) {
+            if (order === "asc") {
+                return obj[a][prop] - obj[b][prop];
+            }
+            else
+                return obj[b][prop] - obj[a][prop];
+        });
+    }
+    exports.getObjectKeysSortedByValueOfProp = getObjectKeysSortedByValueOfProp;
+    function sortObjectsByProperty(objects, prop, order) {
+        return objects.sort(function (a, b) {
+            if (order === "asc") {
+                return a[prop] - b[prop];
+            }
+            else
+                return b[prop] - a[prop];
+        });
+    }
+    exports.sortObjectsByProperty = sortObjectsByProperty;
+    function getRandomProperty(target) {
+        var _rndProp = target[getRandomKey(target)];
+        return _rndProp;
+    }
+    exports.getRandomProperty = getRandomProperty;
+    function getAllPropertiesWithKey(target, keyToFind) {
+        var matchingProperties = [];
+        for (var key in target) {
+            if (target[key][keyToFind]) {
+                matchingProperties.push(target[key]);
+            }
         }
-        BattlePrepFormation.prototype.forEachUnitInFormation = function (f) {
-            for (var i = 0; i < this.formation.length; i++) {
-                for (var j = 0; j < this.formation[i].length; j++) {
-                    var unit = this.formation[i][j];
-                    if (unit) {
-                        f(unit, [i, j]);
-                    }
-                }
-            }
-        };
-        BattlePrepFormation.prototype.getDisplayData = function () {
-            if (this.displayDataIsDirty) {
-                this.cachedDisplayData = this.getFormationDisplayData();
-                this.displayDataIsDirty = false;
-            }
-            return this.cachedDisplayData;
-        };
-        BattlePrepFormation.prototype.setAutoFormation = function (enemyUnits, enemyFormation) {
-            var _this = this;
-            this.clearFormation();
-            this.formation = this.getAutoFormation(enemyUnits, enemyFormation);
-            this.forEachUnitInFormation(function (unit, pos) {
-                _this.placedUnitPositionsByID[unit.id] = pos;
-            });
-            this.displayDataIsDirty = true;
-        };
-        BattlePrepFormation.prototype.getUnitPosition = function (unit) {
-            return this.placedUnitPositionsByID[unit.id];
-        };
-        BattlePrepFormation.prototype.getUnitAtPosition = function (position) {
-            return this.formation[position[0]][position[1]];
-        };
-        BattlePrepFormation.prototype.clearFormation = function () {
-            this.placedUnitPositionsByID = {};
-            this.formation = getNullFormation_2.default();
-            this.displayDataIsDirty = true;
-        };
-        BattlePrepFormation.prototype.isFormationValid = function () {
-            var amountOfUnitsPlaced = 0;
-            this.forEachUnitInFormation(function (unit) { return amountOfUnitsPlaced += 1; });
-            var availableUnits = this.units.filter(function (unit) { return unit.canActThisTurn(); });
-            var hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
-            return amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits;
-        };
-        BattlePrepFormation.prototype.setUnit = function (unit, position) {
-            var unitInTargetPosition = this.getUnitAtPosition(position);
-            if (unitInTargetPosition) {
-                this.swapUnits(unit, unitInTargetPosition);
+        return matchingProperties;
+    }
+    exports.getAllPropertiesWithKey = getAllPropertiesWithKey;
+    function getRandomPropertyWithKey(target, keyToFind) {
+        var keys = Object.keys(target);
+        while (keys.length > 0) {
+            var key = getRandomArrayItem(keys);
+            var prop = target[key];
+            if (prop[keyToFind]) {
+                return prop;
             }
             else {
-                this.removeUnit(unit);
-                this.formation[position[0]][position[1]] = unit;
-                this.placedUnitPositionsByID[unit.id] = position;
-                this.displayDataIsDirty = true;
+                keys.splice(keys.indexOf(key), 1);
             }
-        };
-        BattlePrepFormation.prototype.removeUnit = function (unit) {
-            var position = this.getUnitPosition(unit);
-            if (!position) {
-                return;
+        }
+        return null;
+    }
+    exports.getRandomPropertyWithKey = getRandomPropertyWithKey;
+    function getRandomKeyWithWeights(target) {
+        var totalWeight = 0;
+        for (var prop in target) {
+            totalWeight += target[prop];
+        }
+        var selection = randRange(0, totalWeight);
+        for (var prop in target) {
+            selection -= target[prop];
+            if (selection <= 0) {
+                return prop;
             }
-            this.formation[position[0]][position[1]] = null;
-            delete this.placedUnitPositionsByID[unit.id];
-            this.displayDataIsDirty = true;
-        };
-        BattlePrepFormation.prototype.swapUnits = function (unit1, unit2) {
-            if (unit1 === unit2)
-                return;
-            var new1Pos = this.getUnitPosition(unit2);
-            var new2Pos = this.getUnitPosition(unit1);
-            this.removeUnit(unit1);
-            this.removeUnit(unit2);
-            this.setUnit(unit1, new1Pos);
-            this.setUnit(unit2, new2Pos);
-        };
-        BattlePrepFormation.prototype.getFormationDisplayData = function () {
-            var displayDataByID = {};
-            this.forEachUnitInFormation(function (u) {
-                displayDataByID[u.id] = u.getDisplayData("battlePrep");
-            });
-            return displayDataByID;
-        };
-        BattlePrepFormation.prototype.getAutoFormation = function (enemyUnits, enemyFormation) {
-            var scoutedUnits = this.hasScouted ? enemyUnits : null;
-            var scoutedFormation = this.hasScouted ? enemyFormation : null;
-            var formation = getNullFormation_2.default();
-            var unitsToPlace = this.units.filter(function (u) { return u.canActThisTurn(); });
-            var maxUnitsPerRow = formation[0].length;
-            var maxUnitsPerSide = App_17.default.moduleData.ruleSet.battle.maxUnitsPerSide;
-            var placedInFront = 0;
-            var placedInBack = 0;
-            var totalPlaced = 0;
-            var unitsPlacedByArchetype = {};
-            var getUnitScoreFN = function (unit, row) {
-                var baseScore = unit.getStrengthEvaluation();
-                var archetype = unit.template.archetype;
-                var idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
-                var unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
-                var overMaxOfArchetypeIdeal = Math.max(0, unitsPlacedOfArchetype - idealMaxUnitsOfArchetype);
-                var archetypeIdealAdjust = 1 - overMaxOfArchetypeIdeal * 0.15;
-                var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
-                var rowModifier = archetype.scoreMultiplierForRowFN ?
-                    archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
-                    archetype.rowScores[row];
-                return ({
-                    unit: unit,
-                    score: baseScore * archetypeIdealAdjust * rowModifier,
-                    row: row
-                });
-            };
-            while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide) {
-                var positionScores = [];
-                for (var i = 0; i < unitsToPlace.length; i++) {
-                    var unit = unitsToPlace[i];
-                    if (placedInFront < maxUnitsPerRow) {
-                        positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
-                    }
-                    if (placedInBack < maxUnitsPerRow) {
-                        positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
-                    }
+        }
+    }
+    exports.getRandomKeyWithWeights = getRandomKeyWithWeights;
+    function getRandomArrayItemWithWeights(arr) {
+        var totalWeight = 0;
+        for (var i = 0; i < arr.length; i++) {
+            totalWeight += arr[i].weight;
+        }
+        var selection = randRange(0, totalWeight);
+        for (var i = 0; i < arr.length; i++) {
+            selection -= arr[i].weight;
+            if (selection <= 0) {
+                return arr[i];
+            }
+        }
+    }
+    exports.getRandomArrayItemWithWeights = getRandomArrayItemWithWeights;
+    function findItemWithKey(source, keyToFind, parentKey, hasParentKey) {
+        if (hasParentKey === void 0) { hasParentKey = false; }
+        var hasParentKey = hasParentKey;
+        if (source[keyToFind]) {
+            if (!parentKey || hasParentKey) {
+                return source[keyToFind];
+            }
+        }
+        ;
+        for (var key in source) {
+            if (key === parentKey) {
+                hasParentKey = true;
+            }
+            if (source[key][keyToFind]) {
+                if (!parentKey || hasParentKey) {
+                    return source[key][keyToFind];
                 }
-                positionScores.sort(function (a, b) {
-                    return (b.score - a.score);
-                });
-                var topScore = positionScores[0];
-                if (topScore.row === "ROW_FRONT") {
-                    placedInFront++;
-                    formation[1][placedInFront - 1] = topScore.unit;
+            }
+            else if (typeof source[key] === "object") {
+                return findItemWithKey(source[key], keyToFind, parentKey, hasParentKey);
+            }
+        }
+        return null;
+    }
+    exports.findItemWithKey = findItemWithKey;
+    function getFrom2dArray(target, arr) {
+        var result = [];
+        for (var i = 0; i < arr.length; i++) {
+            if ((arr[i] !== undefined) &&
+                (arr[i][0] >= 0 && arr[i][0] < target.length) &&
+                (arr[i][1] >= 0 && arr[i][1] < target[0].length)) {
+                result.push(target[arr[i][0]][arr[i][1]]);
+            }
+            else {
+                result.push(null);
+            }
+        }
+        ;
+        return result;
+    }
+    exports.getFrom2dArray = getFrom2dArray;
+    function flatten2dArray(toFlatten) {
+        var flattened = [];
+        for (var i = 0; i < toFlatten.length; i++) {
+            for (var j = 0; j < toFlatten[i].length; j++) {
+                flattened.push(toFlatten[i][j]);
+            }
+        }
+        return flattened;
+    }
+    exports.flatten2dArray = flatten2dArray;
+    function reverseSide(side) {
+        switch (side) {
+            case "side1":
+                {
+                    return "side2";
+                }
+            case "side2":
+                {
+                    return "side1";
+                }
+            default:
+                {
+                    throw new Error("Invalid side");
+                }
+        }
+    }
+    exports.reverseSide = reverseSide;
+    function sortByManufactoryCapacityFN(a, b) {
+        var aLevel = (a.manufactory ? a.manufactory.capacity : -1);
+        var bLevel = (b.manufactory ? b.manufactory.capacity : -1);
+        if (bLevel !== aLevel) {
+            return bLevel - aLevel;
+        }
+        var _a = a.name.toLowerCase();
+        var _b = b.name.toLowerCase();
+        if (_a > _b)
+            return 1;
+        else if (_a < _b)
+            return -1;
+        else
+            return 0;
+    }
+    exports.sortByManufactoryCapacityFN = sortByManufactoryCapacityFN;
+    function rectContains(rect, point) {
+        var x = point.x;
+        var y = point.y;
+        var x1 = Math.min(rect.x1, rect.x2);
+        var x2 = Math.max(rect.x1, rect.x2);
+        var y1 = Math.min(rect.y1, rect.y2);
+        var y2 = Math.max(rect.y1, rect.y2);
+        return ((x >= x1 && x <= x2) &&
+            (y >= y1 && y <= y2));
+    }
+    exports.rectContains = rectContains;
+    function hexToString(hex) {
+        hex = Math.round(hex);
+        var converted = hex.toString(16);
+        return '000000'.substr(0, 6 - converted.length) + converted;
+    }
+    exports.hexToString = hexToString;
+    function stringToHex(text) {
+        if (text.charAt(0) === "#") {
+            text = text.substring(1, 7);
+        }
+        return parseInt(text, 16);
+    }
+    exports.stringToHex = stringToHex;
+    function colorImageInPlayerColor(image, player) {
+        var canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+        ctx.globalCompositeOperation = "source-in";
+        ctx.fillStyle = "#" + player.color.getHexString();
+        ctx.fillRect(0, 0, image.width, image.height);
+        return canvas.toDataURL();
+    }
+    exports.colorImageInPlayerColor = colorImageInPlayerColor;
+    function extendObject(from, to, onlyExtendAlreadyPresent) {
+        if (onlyExtendAlreadyPresent === void 0) { onlyExtendAlreadyPresent = false; }
+        if (from == null || typeof from != "object")
+            return from;
+        if (from.constructor != Object && from.constructor != Array)
+            return from;
+        if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
+            from.constructor == String || from.constructor == Number || from.constructor == Boolean)
+            return new from.constructor(from);
+        to = to || new from.constructor();
+        var toIterateOver = onlyExtendAlreadyPresent ? to : from;
+        for (var name_1 in toIterateOver) {
+            if (!onlyExtendAlreadyPresent || from.hasOwnProperty(name_1)) {
+                to[name_1] = extendObject(from[name_1], null);
+            }
+        }
+        return to;
+    }
+    exports.extendObject = extendObject;
+    function shallowCopy(toCopy) {
+        return shallowExtend({}, toCopy);
+    }
+    exports.shallowCopy = shallowCopy;
+    function shallowExtend(destination) {
+        var sources = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            sources[_i - 1] = arguments[_i];
+        }
+        for (var _c = 0, sources_1 = sources; _c < sources_1.length; _c++) {
+            var source = sources_1[_c];
+            for (var key in source) {
+                destination[key] = source[key];
+            }
+        }
+        return destination;
+    }
+    exports.shallowExtend = shallowExtend;
+    function deepMerge(target, src, excludeKeysNotInTarget) {
+        if (excludeKeysNotInTarget === void 0) { excludeKeysNotInTarget = false; }
+        if (excludeKeysNotInTarget) {
+            var merged = deepMerge(target, src, false);
+            return deletePropertiesNotSharedWithTarget(merged, target);
+        }
+        var array = Array.isArray(src);
+        var dst = array && [] || {};
+        if (array) {
+            target = target || [];
+            dst = dst.concat(target);
+            src.forEach(function (e, i) {
+                if (typeof dst[i] === 'undefined') {
+                    dst[i] = e;
+                }
+                else if (typeof e === 'object') {
+                    dst[i] = deepMerge(target[i], e);
                 }
                 else {
-                    placedInBack++;
-                    formation[0][placedInBack - 1] = topScore.unit;
-                }
-                totalPlaced++;
-                if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type]) {
-                    unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
-                }
-                unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
-                unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
-            }
-            return formation;
-        };
-        return BattlePrepFormation;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = BattlePrepFormation;
-});
-define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFormation"], function (require, exports, Battle_1, BattlePrepFormation_1) {
-    "use strict";
-    var BattlePrep = (function () {
-        function BattlePrep(battleData) {
-            this.afterBattleFinishCallbacks = [];
-            this.attacker = battleData.attacker.player;
-            this.defender = battleData.defender.player;
-            this.battleData = battleData;
-            this.attackerUnits = battleData.attacker.units;
-            this.defenderUnits = battleData.defender.units;
-            var attackerHasScouted = this.attacker.starIsDetected(battleData.location);
-            this.attackerFormation = new BattlePrepFormation_1.default(this.attacker, this.attackerUnits, attackerHasScouted, 0);
-            var defenderHasScouted = this.defender.starIsDetected(battleData.location);
-            this.defenderFormation = new BattlePrepFormation_1.default(this.defender, this.defenderUnits, defenderHasScouted);
-            this.resetBattleStats();
-            this.minDefenders = this.getInitialMinDefenders();
-            this.setHumanAndEnemy();
-            if (this.enemyFormation) {
-                this.enemyFormation.setAutoFormation(this.humanUnits);
-                this.triggerPassiveSkills(this.enemyFormation);
-                this.defenderFormation.minUnits = this.minDefenders;
-            }
-            else {
-                this.attackerFormation.setAutoFormation(this.defenderUnits);
-                this.triggerPassiveSkills(this.attackerFormation);
-                this.defenderFormation.minUnits = this.minDefenders;
-                this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
-            }
-        }
-        BattlePrep.prototype.forEachUnit = function (f) {
-            this.attackerUnits.forEach(f);
-            this.defenderUnits.forEach(f);
-        };
-        BattlePrep.prototype.isLocationNeutral = function () {
-            return (this.battleData.location.owner !== this.attacker &&
-                this.battleData.location.owner !== this.defender);
-        };
-        BattlePrep.prototype.makeBattle = function () {
-            var side1Formation = this.humanFormation || this.attackerFormation;
-            var side2Formation = this.enemyFormation || this.defenderFormation;
-            var side1Player = this.humanPlayer || this.attacker;
-            var side2Player = this.enemyPlayer || this.defender;
-            var battle = new Battle_1.default({
-                battleData: this.battleData,
-                side1: side1Formation.formation,
-                side2: side2Formation.formation.reverse(),
-                side1Player: side1Player,
-                side2Player: side2Player
-            });
-            battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
-            battle.init();
-            return battle;
-        };
-        BattlePrep.prototype.setHumanAndEnemy = function () {
-            if (!this.attacker.isAI) {
-                this.humanPlayer = this.attacker;
-                this.enemyPlayer = this.defender;
-                this.humanUnits = this.attackerUnits;
-                this.enemyUnits = this.defenderUnits;
-                this.humanFormation = this.attackerFormation;
-                this.enemyFormation = this.defenderFormation;
-            }
-            else if (!this.defender.isAI) {
-                this.humanPlayer = this.defender;
-                this.enemyPlayer = this.attacker;
-                this.humanUnits = this.defenderUnits;
-                this.enemyUnits = this.attackerUnits;
-                this.humanFormation = this.defenderFormation;
-                this.enemyFormation = this.attackerFormation;
-            }
-        };
-        BattlePrep.prototype.resetBattleStats = function () {
-            this.forEachUnit(function (u) {
-                u.resetBattleStats();
-            });
-        };
-        BattlePrep.prototype.triggerPassiveSkills = function (formation) {
-            var _this = this;
-            formation.forEachUnitInFormation(function (u) {
-                var passiveSkillsByPhase = u.getPassiveSkillsByPhase();
-                if (passiveSkillsByPhase.inBattlePrep) {
-                    for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++) {
-                        var skill = passiveSkillsByPhase.inBattlePrep[j];
-                        for (var k = 0; k < skill.inBattlePrep.length; k++) {
-                            skill.inBattlePrep[k](u, _this);
-                        }
+                    if (target.indexOf(e) === -1) {
+                        dst.push(e);
                     }
                 }
             });
-        };
-        BattlePrep.prototype.getInitialMinDefenders = function () {
-            if (this.isLocationNeutral()) {
-                return 1;
+        }
+        else {
+            if (target && typeof target === 'object') {
+                Object.keys(target).forEach(function (key) {
+                    dst[key] = target[key];
+                });
+            }
+            Object.keys(src).forEach(function (key) {
+                if (typeof src[key] !== 'object' || !src[key]) {
+                    dst[key] = src[key];
+                }
+                else {
+                    if (!target[key]) {
+                        dst[key] = src[key];
+                    }
+                    else {
+                        dst[key] = deepMerge(target[key], src[key]);
+                    }
+                }
+            });
+        }
+        return dst;
+    }
+    exports.deepMerge = deepMerge;
+    function deletePropertiesNotSharedWithTarget(source, target) {
+        var dst = {};
+        for (var key in target) {
+            if (typeof target[key] !== "object" || !target[key]) {
+                dst[key] = source[key];
             }
             else {
+                dst[key] = deletePropertiesNotSharedWithTarget(source[key], target[key]);
+            }
+        }
+        return dst;
+    }
+    exports.deletePropertiesNotSharedWithTarget = deletePropertiesNotSharedWithTarget;
+    function recursiveRemoveAttribute(parent, attribute) {
+        parent.removeAttribute(attribute);
+        for (var i = 0; i < parent.children.length; i++) {
+            var child = parent.children[i];
+            recursiveRemoveAttribute(child, attribute);
+        }
+    }
+    exports.recursiveRemoveAttribute = recursiveRemoveAttribute;
+    function clamp(value, min, max) {
+        if (value < min)
+            return min;
+        else if (value > max)
+            return max;
+        else
+            return value;
+    }
+    exports.clamp = clamp;
+    function roundToNearestMultiple(value, multiple) {
+        var resto = value % multiple;
+        if (resto <= (multiple / 2)) {
+            return value - resto;
+        }
+        else {
+            return value + multiple - resto;
+        }
+    }
+    exports.roundToNearestMultiple = roundToNearestMultiple;
+    function getAngleBetweenDegrees(degA, degB) {
+        var angle = Math.abs(degB - degA) % 360;
+        var distance = Math.min(360 - angle, angle);
+        return distance;
+    }
+    exports.getAngleBetweenDegrees = getAngleBetweenDegrees;
+    function prettifyDate(date) {
+        return ([
+            [
+                date.getDate(),
+                date.getMonth() + 1,
+                date.getFullYear().toString().slice(2, 4)
+            ].join("/"),
+            [
+                date.getHours(),
+                date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes().toString()
+            ].join(":")
+        ].join(" "));
+    }
+    exports.prettifyDate = prettifyDate;
+    function getMatchingLocalstorageItemsByDate(stringToMatch) {
+        var allKeys = Object.keys(localStorage);
+        var matchingItems = [];
+        for (var i = 0; i < allKeys.length; i++) {
+            if (allKeys[i].indexOf(stringToMatch) !== -1) {
+                var item = localStorage.getItem(allKeys[i]);
+                var parsed = JSON.parse(item);
+                if (parsed.date) {
+                    matchingItems.push(parsed);
+                }
+            }
+        }
+        matchingItems.sort(function (a, b) {
+            return Date.parse(b.date) - Date.parse(a.date);
+        });
+        return matchingItems;
+    }
+    exports.getMatchingLocalstorageItemsByDate = getMatchingLocalstorageItemsByDate;
+    function shuffleArray(toShuffle, seed) {
+        var rng = new RNG(seed);
+        var resultArray = toShuffle.slice(0);
+        var i = resultArray.length;
+        while (i > 0) {
+            i--;
+            var n = rng.random(0, i);
+            var temp = resultArray[i];
+            resultArray[i] = resultArray[n];
+            resultArray[n] = temp;
+        }
+        return resultArray;
+    }
+    exports.shuffleArray = shuffleArray;
+    function getRelativeValue(value, min, max, inverse) {
+        if (inverse === void 0) { inverse = false; }
+        if (inverse) {
+            if (min === max)
                 return 0;
+            else {
+                return 1 - ((value - min) / (max - min));
+            }
+        }
+        else {
+            if (min === max)
+                return 1;
+            else {
+                return (value - min) / (max - min);
+            }
+        }
+    }
+    exports.getRelativeValue = getRelativeValue;
+    function getRelativeWeightsFromObject(byCount, inverse) {
+        var relativeWeights = {};
+        var min = 0;
+        var max;
+        for (var prop in byCount) {
+            var count = byCount[prop];
+            max = isFinite(max) ? Math.max(max, count) : count;
+        }
+        for (var prop in byCount) {
+            var count = byCount[prop];
+            relativeWeights[prop] = getRelativeValue(count, min, max);
+        }
+        return relativeWeights;
+    }
+    exports.getRelativeWeightsFromObject = getRelativeWeightsFromObject;
+    function getDropTargetAtLocation(x, y) {
+        var dropTargets = document.getElementsByClassName("drop-target");
+        var point = {
+            x: x,
+            y: y
+        };
+        for (var i = 0; i < dropTargets.length; i++) {
+            var node = dropTargets[i];
+            var nodeBounds = node.getBoundingClientRect();
+            var rect = {
+                x1: nodeBounds.left,
+                x2: nodeBounds.right,
+                y1: nodeBounds.top,
+                y2: nodeBounds.bottom
+            };
+            if (rectContains(rect, point)) {
+                return node;
+            }
+        }
+        return null;
+    }
+    exports.getDropTargetAtLocation = getDropTargetAtLocation;
+    function onDOMLoaded(onLoaded) {
+        if (document.readyState === "interactive" || document.readyState === "complete") {
+            onLoaded();
+        }
+        else {
+            document.addEventListener('DOMContentLoaded', onLoaded);
+        }
+    }
+    exports.onDOMLoaded = onDOMLoaded;
+    function meetAllPlayers() {
+        for (var i = 0; i < App_15.default.game.playerOrder.length; i++) {
+            var player = App_15.default.game.playerOrder[i];
+            if (player !== App_15.default.humanPlayer) {
+                App_15.default.humanPlayer.diplomacyStatus.meetPlayer(player);
+            }
+        }
+    }
+    exports.meetAllPlayers = meetAllPlayers;
+    function getItemsFromWeightedProbabilities(probabilities) {
+        var allItems = [];
+        if (probabilities.length === 0) {
+            return allItems;
+        }
+        if (probabilities[0].weight) {
+            var selected = getRandomArrayItemWithWeights(probabilities);
+            var firstItem = selected.probabilityItems[0];
+            if (firstItem.probabilityItems) {
+                var probabilityItems = selected.probabilityItems;
+                allItems = allItems.concat(getItemsFromWeightedProbabilities(probabilityItems));
+            }
+            else {
+                var toAdd = selected.probabilityItems;
+                allItems = allItems.concat(toAdd);
+            }
+        }
+        else {
+            for (var i = 0; i < probabilities.length; i++) {
+                var selected = probabilities[i];
+                if (Math.random() < selected.flatProbability) {
+                    var firstItem = selected.probabilityItems[0];
+                    if (firstItem.probabilityItems) {
+                        var probabilityItems = selected.probabilityItems;
+                        allItems = allItems.concat(getItemsFromWeightedProbabilities(probabilityItems));
+                    }
+                    else {
+                        var toAdd = selected.probabilityItems;
+                        allItems = allItems.concat(toAdd);
+                    }
+                }
+            }
+        }
+        return allItems;
+    }
+    exports.getItemsFromWeightedProbabilities = getItemsFromWeightedProbabilities;
+    function defaultNameGenerator(unit) {
+        return "" + unit.id + " " + unit.template.displayName;
+    }
+    exports.defaultNameGenerator = defaultNameGenerator;
+    function transformMat3(a, m) {
+        var x = m[0] * a.x + m[3] * a.y + m[6];
+        var y = m[1] * a.x + m[4] * a.y + m[7];
+        return { x: x, y: y };
+    }
+    exports.transformMat3 = transformMat3;
+    function createDummySpriteForShader(x, y, width, height) {
+        var texture = getDummyTextureForShader();
+        var sprite = new PIXI.Sprite(texture);
+        if (x || y) {
+            sprite.position = new PIXI.Point(x || 0, y || 0);
+        }
+        if (width) {
+            sprite.width = width;
+        }
+        if (height) {
+            sprite.height = height;
+        }
+        return sprite;
+    }
+    exports.createDummySpriteForShader = createDummySpriteForShader;
+    function getDummyTextureForShader() {
+        var canvas = document.createElement("canvas");
+        canvas._pixiId = "dummyShaderTexture";
+        canvas.width = 1;
+        canvas.height = 1;
+        return PIXI.Texture.fromCanvas(canvas);
+    }
+    exports.getDummyTextureForShader = getDummyTextureForShader;
+    function findEasingFunctionHighPoint(easingFunction, resolution, maxIterations, startIndex, endIndex, iteration) {
+        if (resolution === void 0) { resolution = 10; }
+        if (maxIterations === void 0) { maxIterations = 4; }
+        if (startIndex === void 0) { startIndex = 0; }
+        if (endIndex === void 0) { endIndex = 1; }
+        if (iteration === void 0) { iteration = 0; }
+        if (iteration >= maxIterations) {
+            return (startIndex + endIndex) / 2;
+        }
+        var highestValue;
+        var highestValueIndex;
+        var step = (endIndex - startIndex) / resolution;
+        for (var i = 0; i < resolution; i++) {
+            var currentIndex = startIndex + i * step;
+            var currentValue = easingFunction(currentIndex);
+            if (!isFinite(highestValue) || currentValue > highestValue) {
+                highestValue = currentValue;
+                highestValueIndex = currentIndex;
+            }
+        }
+        return findEasingFunctionHighPoint(easingFunction, resolution, maxIterations, highestValueIndex - step / 2, highestValueIndex + step / 2, iteration + 1);
+    }
+    exports.findEasingFunctionHighPoint = findEasingFunctionHighPoint;
+    function pointsEqual(p1, p2) {
+        return (p1.x === p2.x && p1.y === p2.y);
+    }
+    exports.pointsEqual = pointsEqual;
+    function makeRandomPersonality() {
+        var unitCompositionPreference = {};
+        for (var archetype in App_15.default.moduleData.Templates.UnitArchetypes) {
+            unitCompositionPreference[archetype] = Math.random();
+        }
+        return ({
+            expansiveness: Math.random(),
+            aggressiveness: Math.random(),
+            friendliness: Math.random(),
+            unitCompositionPreference: unitCompositionPreference
+        });
+    }
+    exports.makeRandomPersonality = makeRandomPersonality;
+    function splitMultilineText(text) {
+        if (Array.isArray(text)) {
+            var returnArr = [];
+            for (var i = 0; i < text.length; i++) {
+                returnArr.push(text[i]);
+                returnArr.push(React.DOM.br({
+                    key: "" + i
+                }));
+            }
+            return returnArr;
+        }
+        else {
+            return text;
+        }
+    }
+    exports.splitMultilineText = splitMultilineText;
+});
+define("src/RuleSet", ["require", "exports", "src/utility"], function (require, exports, utility_18) {
+    "use strict";
+    var defaultRuleSet = {
+        manufactory: {
+            startingCapacity: 1,
+            maxCapacity: 3,
+            buildCost: 1000
+        },
+        research: {
+            baseResearchSpeed: 3000
+        },
+        battle: {
+            rowsPerFormation: 2,
+            cellsPerRow: 3,
+            maxUnitsPerSide: 6,
+            maxUnitsPerRow: 3,
+            baseMaxCapturedUnits: 1,
+            absoluteMaxCapturedUnits: 3,
+            baseUnitCaptureChance: 0.1,
+            humanUnitDeathChance: 0.65,
+            aiUnitDeathChance: 0.65,
+            independentUnitDeathChance: 1.0,
+            loserUnitExtraDeathChance: 0.35
+        }
+    };
+    var RuleSet = (function () {
+        function RuleSet() {
+            this.validCategories = {
+                manufactory: true,
+                battle: true,
+                research: true,
+            };
+        }
+        RuleSet.prototype.copyRules = function (toCopy) {
+            for (var category in toCopy) {
+                if (this.validCategories[category]) {
+                    this[category] = utility_18.deepMerge(this[category], toCopy[category]);
+                }
+                else {
+                    console.warn("Invalid ruleset category " + category + ". Category must be one of: [" +
+                        Object.keys(this.validCategories).join(", ") + "].");
+                }
             }
         };
-        return BattlePrep;
+        return RuleSet;
     }());
+    var ruleSet = new RuleSet();
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = BattlePrep;
+    exports.default = ruleSet;
+});
+define("src/RandomGenUnitRarity", ["require", "exports"], function (require, exports) {
+    "use strict";
 });
 define("src/DamageType", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -6674,7 +6697,7 @@ define("src/DamageType", ["require", "exports"], function (require, exports) {
 define("src/AbilityUpgradeData", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/utility", "src/Item", "src/Fleet"], function (require, exports, idGenerators_7, App_18, utility_18, Item_3, Fleet_4) {
+define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/RuleSet", "src/utility", "src/Item", "src/Fleet"], function (require, exports, idGenerators_7, App_16, RuleSet_6, utility_19, Item_3, Fleet_4) {
     "use strict";
     var Unit = (function () {
         function Unit(template, id, data) {
@@ -6720,17 +6743,17 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             this.currentMovePoints = data.currentMovePoints;
             this.maxMovePoints = data.maxMovePoints;
             this.timesActedThisTurn = data.timesActedThisTurn;
-            this.baseAttributes = utility_18.extendObject(data.baseAttributes);
-            this.cachedAttributes = utility_18.extendObject(this.baseAttributes);
+            this.baseAttributes = utility_19.extendObject(data.baseAttributes);
+            this.cachedAttributes = utility_19.extendObject(this.baseAttributes);
             this.abilities = data.abilityTemplateTypes.map(function (key) {
-                var template = App_18.default.moduleData.Templates.Abilities[key];
+                var template = App_16.default.moduleData.Templates.Abilities[key];
                 if (!template) {
                     throw new Error("Couldn't find ability " + key);
                 }
                 return template;
             });
             this.passiveSkills = data.passiveSkillTemplateTypes.map(function (key) {
-                var template = App_18.default.moduleData.Templates.PassiveSkills[key];
+                var template = App_16.default.moduleData.Templates.PassiveSkills[key];
                 if (!template) {
                     throw new Error("Couldn't find passive skill " + key);
                 }
@@ -6751,7 +6774,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                     lastHealthBeforeReceivingDamage: this.currentHealth,
                     queuedAction: !data.battleStats.queuedAction ? null :
                         {
-                            ability: App_18.default.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+                            ability: App_16.default.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
                             targetId: data.battleStats.queuedAction.targetId,
                             turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
                             timesInterrupted: data.battleStats.queuedAction.timesInterrupted
@@ -6764,7 +6787,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                     var item = data.items[slot];
                     if (!item)
                         return;
-                    items[slot] = new Item_3.default(App_18.default.moduleData.Templates.Items[item.templateType], item.id);
+                    items[slot] = new Item_3.default(App_16.default.moduleData.Templates.Items[item.templateType], item.id);
                 }
             });
             this.items =
@@ -6777,7 +6800,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 this.addItem(items[slot]);
             }
             if (data.portraitKey) {
-                this.portrait = utility_18.findItemWithKey(App_18.default.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+                this.portrait = utility_19.findItemWithKey(App_16.default.moduleData.Templates.Cultures, data.portraitKey, "portraits");
             }
         };
         Unit.prototype.setInitialValues = function () {
@@ -6796,7 +6819,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             if (multiplier === void 0) { multiplier = 1; }
             var min = 200 * this.template.maxHealth * multiplier;
             var max = 300 * this.template.maxHealth * multiplier;
-            this.maxHealth = utility_18.randInt(min, max);
+            this.maxHealth = utility_19.randInt(min, max);
             this.currentHealth = this.maxHealth;
         };
         Unit.prototype.setAttributes = function (baseSkill, variance) {
@@ -6808,17 +6831,17 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 defence: 1,
                 intelligence: 1,
                 speed: 1,
-                maxActionPoints: utility_18.randInt(3, 5)
+                maxActionPoints: utility_19.randInt(3, 5)
             };
             for (var attribute in template.attributeLevels) {
                 var attributeLevel = template.attributeLevels[attribute];
                 var min = Math.max(3 * baseSkill * attributeLevel, 1);
                 var max = Math.max(5 * baseSkill * attributeLevel + variance, 1);
-                attributes[attribute] = utility_18.randInt(min, max);
+                attributes[attribute] = utility_19.randInt(min, max);
                 if (attributes[attribute] > 9)
                     attributes[attribute] = 9;
             }
-            this.baseAttributes = utility_18.extendObject(attributes);
+            this.baseAttributes = utility_19.extendObject(attributes);
             this.cachedAttributes = attributes;
             this.attributesAreDirty = true;
         };
@@ -6829,17 +6852,17 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 return Boolean(cultureTemplate.nameGenerator);
             });
             if (nameGeneratorCandidateCultures.length > 0) {
-                nameGeneratorFN = utility_18.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
+                nameGeneratorFN = utility_19.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
             }
             else {
-                nameGeneratorFN = utility_18.defaultNameGenerator;
+                nameGeneratorFN = utility_19.defaultNameGenerator;
             }
             this.name = nameGeneratorFN(this);
             var portraitCandidateCultures = templateCultures.filter(function (cultureTemplate) {
                 return Boolean(cultureTemplate.portraits);
             });
             if (portraitCandidateCultures.length === 0) {
-                portraitCandidateCultures = utility_18.getAllPropertiesWithKey(App_18.default.moduleData.Templates.Cultures, "portraits");
+                portraitCandidateCultures = utility_19.getAllPropertiesWithKey(App_16.default.moduleData.Templates.Cultures, "portraits");
                 if (portraitCandidateCultures.length === 0) {
                     console.warn("No culture has portraits specified");
                     return;
@@ -6851,8 +6874,8 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                     culture: culture
                 });
             });
-            var portraitCulture = utility_18.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
-            this.portrait = utility_18.getRandomProperty(portraitCulture.portraits);
+            var portraitCulture = utility_19.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
+            this.portrait = utility_19.getRandomProperty(portraitCulture.portraits);
         };
         Unit.prototype.getBaseMoveDelay = function () {
             return 30 - this.attributes.speed;
@@ -6869,7 +6892,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                     position: null,
                     guardAmount: 0,
                     guardCoverage: null,
-                    captureChance: App_18.default.moduleData.ruleSet.battle.baseUnitCaptureChance,
+                    captureChance: RuleSet_6.default.battle.baseUnitCaptureChance,
                     statusEffects: [],
                     lastHealthBeforeReceivingDamage: this.currentHealth,
                     queuedAction: null,
@@ -6893,7 +6916,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
         };
         Unit.prototype.removeStrength = function (amount) {
             this.currentHealth -= Math.round(amount);
-            this.currentHealth = utility_18.clamp(this.currentHealth, 0, this.maxHealth);
+            this.currentHealth = utility_19.clamp(this.currentHealth, 0, this.maxHealth);
             if (amount > 0) {
                 this.removeGuard(40);
             }
@@ -7002,12 +7025,12 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             }
         };
         Unit.prototype.getAttributesWithItems = function () {
-            var attributes = utility_18.extendObject(this.baseAttributes);
+            var attributes = utility_19.extendObject(this.baseAttributes);
             for (var itemSlot in this.items) {
                 if (this.items[itemSlot]) {
                     var item = this.items[itemSlot];
                     for (var attribute in item.template.attributes) {
-                        attributes[attribute] = utility_18.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
+                        attributes[attribute] = utility_19.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
                     }
                 }
             }
@@ -7069,7 +7092,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 if (adjustments[attribute].multiplier) {
                     withItems[attribute] *= 1 + adjustments[attribute].multiplier;
                 }
-                withItems[attribute] = utility_18.clamp(withItems[attribute], -5, 20);
+                withItems[attribute] = utility_19.clamp(withItems[attribute], -5, 20);
             }
             return withItems;
         };
@@ -7096,11 +7119,11 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             return false;
         };
         Unit.prototype.setInitialAbilities = function () {
-            this.abilities = utility_18.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
+            this.abilities = utility_19.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
         };
         Unit.prototype.setInitialPassiveSkills = function () {
             if (this.template.possiblePassiveSkills) {
-                this.passiveSkills = utility_18.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
+                this.passiveSkills = utility_19.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
             }
         };
         Unit.prototype.getItemAbilities = function () {
@@ -7167,20 +7190,20 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                     relevantTemplateKeys.push("beforeAbilityUse", "afterAbilityUse");
                     break;
             }
-            var effectFilterFN = function (e) {
-                if (e.isHidden) {
+            var effectFilterFN = function (passiveEffect) {
+                if (passiveEffect.isHidden) {
                     return false;
                 }
                 for (var _i = 0, relevantTemplateKeys_1 = relevantTemplateKeys; _i < relevantTemplateKeys_1.length; _i++) {
                     var key = relevantTemplateKeys_1[_i];
-                    if (e[key]) {
+                    if (passiveEffect[key]) {
                         return true;
                     }
                 }
                 return false;
             };
-            var relevantStatusEffectTemplates = this.battleStats.statusEffects.map(function (s) {
-                return s.template;
+            var relevantStatusEffectTemplates = this.battleStats.statusEffects.map(function (statusEffect) {
+                return statusEffect.template;
             }).filter(effectFilterFN);
             var relevantPassiveEffectTemplates = this.getAllPassiveSkills().filter(effectFilterFN);
             return relevantStatusEffectTemplates.concat(relevantPassiveEffectTemplates);
@@ -7397,7 +7420,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             var upgradeData = {};
             var allAbilities = this.getAllAbilities();
             allAbilities = allAbilities.concat(this.getAllPassiveSkills());
-            var templates = App_18.default.moduleData.Templates;
+            var templates = App_16.default.moduleData.Templates;
             for (var i = 0; i < allAbilities.length; i++) {
                 var parentAbility = allAbilities[i];
                 if (!parentAbility.canUpgradeInto)
@@ -7511,7 +7534,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 currentMovePoints: this.currentMovePoints,
                 maxMovePoints: this.maxMovePoints,
                 timesActedThisTurn: this.timesActedThisTurn,
-                baseAttributes: utility_18.extendObject(this.baseAttributes),
+                baseAttributes: utility_19.extendObject(this.baseAttributes),
                 abilityTemplateTypes: this.abilities.map(function (ability) {
                     return ability.type;
                 }),
@@ -7541,7 +7564,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Unit;
 });
-define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/eventManager", "src/Manufactory", "src/pathfinding"], function (require, exports, idGenerators_8, App_19, eventManager_10, Manufactory_2, pathFinding_2) {
+define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/eventManager", "src/Manufactory", "src/pathfinding"], function (require, exports, idGenerators_8, App_17, eventManager_10, Manufactory_2, pathFinding_2) {
     "use strict";
     var Star = (function () {
         function Star(x, y, id) {
@@ -7576,7 +7599,7 @@ define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/ev
             if (building.template.category === "vision") {
                 this.owner.updateVisibleStars();
             }
-            if (this.owner === App_19.default.humanPlayer) {
+            if (this.owner === App_17.default.humanPlayer) {
                 for (var key in building.template.effect) {
                     eventManager_10.default.dispatchEvent("builtBuildingWithEffect_" + key);
                 }
@@ -7706,8 +7729,8 @@ define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/ev
         };
         Star.prototype.getBuildableBuildings = function () {
             var canBuild = [];
-            for (var buildingType in App_19.default.moduleData.Templates.Buildings) {
-                var template = App_19.default.moduleData.Templates.Buildings[buildingType];
+            for (var buildingType in App_17.default.moduleData.Templates.Buildings) {
+                var template = App_17.default.moduleData.Templates.Buildings[buildingType];
                 var alreadyBuilt;
                 if (template.category === "mine" && !this.resource) {
                     continue;
@@ -8045,7 +8068,7 @@ define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/ev
             return null;
         };
         Star.prototype.getDistanceToStar = function (target) {
-            if (!App_19.default.game) {
+            if (!App_17.default.game) {
                 var a = pathFinding_2.aStar(this, target);
                 return a.cost[target.id];
             }
@@ -8229,86 +8252,6 @@ define("src/MapVoronoiInfo", ["require", "exports"], function (require, exports)
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapVoronoiInfo;
-});
-define("src/mapgencore/Triangle", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var Triangle = (function () {
-        function Triangle(a, b, c) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-        }
-        Triangle.prototype.getPoints = function () {
-            return [this.a, this.b, this.c];
-        };
-        Triangle.prototype.calculateCircumCircle = function (tolerance) {
-            if (tolerance === void 0) { tolerance = 0.00001; }
-            var pA = this.a;
-            var pB = this.b;
-            var pC = this.c;
-            var m1, m2;
-            var mx1, mx2;
-            var my1, my2;
-            var cX, cY;
-            if (Math.abs(pB.y - pA.y) < tolerance) {
-                m2 = -(pC.x - pB.x) / (pC.y - pB.y);
-                mx2 = (pB.x + pC.x) * 0.5;
-                my2 = (pB.y + pC.y) * 0.5;
-                cX = (pB.x + pA.x) * 0.5;
-                cY = m2 * (cX - mx2) + my2;
-            }
-            else {
-                m1 = -(pB.x - pA.x) / (pB.y - pA.y);
-                mx1 = (pA.x + pB.x) * 0.5;
-                my1 = (pA.y + pB.y) * 0.5;
-                if (Math.abs(pC.y - pB.y) < tolerance) {
-                    cX = (pC.x + pB.x) * 0.5;
-                    cY = m1 * (cX - mx1) + my1;
-                }
-                else {
-                    m2 = -(pC.x - pB.x) / (pC.y - pB.y);
-                    mx2 = (pB.x + pC.x) * 0.5;
-                    my2 = (pB.y + pC.y) * 0.5;
-                    cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
-                    cY = m1 * (cX - mx1) + my1;
-                }
-            }
-            this.circumCenterX = cX;
-            this.circumCenterY = cY;
-            mx1 = pB.x - cX;
-            my1 = pB.y - cY;
-            this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
-        };
-        Triangle.prototype.circumCircleContainsPoint = function (point) {
-            this.calculateCircumCircle();
-            var x = point.x - this.circumCenterX;
-            var y = point.y - this.circumCenterY;
-            var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
-            return (contains);
-        };
-        Triangle.prototype.getEdges = function () {
-            var edges = [
-                [this.a, this.b],
-                [this.b, this.c],
-                [this.c, this.a]
-            ];
-            return edges;
-        };
-        Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
-            var ownPoints = this.getPoints();
-            var otherPoints = toCheckAgainst.getPoints();
-            var shared = 0;
-            for (var i = 0; i < ownPoints.length; i++) {
-                if (otherPoints.indexOf(ownPoints[i]) >= 0) {
-                    shared++;
-                }
-            }
-            return shared;
-        };
-        return Triangle;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Triangle;
 });
 define("src/mapgencore/voronoi", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -8541,8 +8484,13 @@ define("src/MapRendererLayer", ["require", "exports"], function (require, export
             if (!this.isDirty)
                 return;
             this.container.removeChildren();
-            this.container.addChild(this.template.drawingFunction.call(mapRenderer, map));
+            this.container.addChild(this.template.drawingFunction(map, mapRenderer.player));
             this.isDirty = false;
+        };
+        MapRendererLayer.prototype.destroy = function () {
+            if (this.template.destroy) {
+                this.template.destroy();
+            }
         };
         return MapRendererLayer;
     }());
@@ -8642,73 +8590,12 @@ define("src/MapRendererMapMode", ["require", "exports"], function (require, expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapRendererMapMode;
 });
-define("src/shaders/Occupation", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var Occupation = (function (_super) {
-        __extends(Occupation, _super);
-        function Occupation(initialUniformValues) {
-            var uniforms = Occupation.makeUniformsObject(initialUniformValues);
-            _super.call(this, null, sourceLines.join("\n"), uniforms);
-        }
-        Occupation.makeUniformsObject = function (initialValues) {
-            if (initialValues === void 0) { initialValues = {}; }
-            return ({
-                angle: { type: "1f", value: initialValues.angle },
-                offset: { type: "2fv", value: initialValues.offset },
-                scale: { type: "1f", value: initialValues.scale },
-                stripeColor: { type: "4fv", value: initialValues.stripeColor },
-                stripeSize: { type: "1f", value: initialValues.stripeSize },
-            });
-        };
-        Occupation.prototype.setUniformValues = function (values) {
-            for (var key in values) {
-                this.uniforms[key].value = values[key];
-            }
-        };
-        return Occupation;
-    }(PIXI.AbstractFilter));
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Occupation;
-    var sourceLines = [
-        "precision mediump float;",
-        "",
-        "varying vec2 vTextureCoord;",
-        "uniform sampler2D uSampler;",
-        "",
-        "uniform vec2 offset;",
-        "uniform float scale;",
-        "uniform float angle;",
-        "uniform vec4 stripeColor;",
-        "uniform float stripeSize;",
-        "",
-        "void main()",
-        "{",
-        "  vec4 color = texture2D(uSampler, vTextureCoord);",
-        "",
-        "  vec2 pos = gl_FragCoord.xy + offset;",
-        "",
-        "  vec2 q;",
-        "  q.x = cos(angle) * pos.x - sin(angle) * pos.y;",
-        "  q.y = sin(angle) * pos.x + cos(angle) * pos.y;",
-        "",
-        "  q /= scale;",
-        "",
-        "  float stripeIntensity = sin(q.x) / 2.0 + 0.5;",
-        "  stripeIntensity = step(stripeIntensity, stripeSize);",
-        "",
-        "  gl_FragColor = color + stripeColor * stripeIntensity;",
-        "}",
-    ];
-});
-define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/eventManager", "src/options", "src/shaders/Occupation"], function (require, exports, App_20, MapRendererLayer_1, MapRendererMapMode_1, eventManager_11, options_4, Occupation_1) {
+define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/eventManager", "src/options"], function (require, exports, App_18, MapRendererLayer_1, MapRendererMapMode_1, eventManager_11, options_4) {
     "use strict";
     var MapRenderer = (function () {
         function MapRenderer(map, player) {
-            this.occupationShaders = {};
             this.layers = {};
             this.mapModes = {};
-            this.fowSpriteCache = {};
-            this.fleetTextTextureCache = {};
             this.isDirty = true;
             this.preventRender = false;
             this.listeners = {};
@@ -8727,20 +8614,11 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
             this.player = null;
             this.container = null;
             this.parent = null;
-            this.occupationShaders = null;
-            for (var starId in this.fowSpriteCache) {
-                var sprite = this.fowSpriteCache[starId];
-                sprite.renderable = false;
-                sprite.texture.destroy(true);
-                this.fowSpriteCache[starId] = null;
-            }
-            for (var fleetSize in this.fleetTextTextureCache) {
-                var texture = this.fleetTextTextureCache[fleetSize];
-                texture.destroy(true);
+            for (var layerName in this.layers) {
+                this.layers[layerName].destroy();
             }
         };
         MapRenderer.prototype.init = function () {
-            this.makeFowSprite();
             this.initLayers();
             this.initMapModes();
             this.addEventListeners();
@@ -8770,99 +8648,14 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
                         self.setLayerAsDirty(layerName);
                     }
                 });
-            var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
-            var boundUpdateZoom = this.updateShaderZoom.bind(this);
-            this.listeners["registerOnMoveCallback"] =
-                eventManager_11.default.addEventListener("registerOnMoveCallback", function (callbacks) {
-                    callbacks.push(boundUpdateOffsets);
-                });
-            this.listeners["registerOnZoomCallback"] =
-                eventManager_11.default.addEventListener("registerOnZoomCallback", function (callbacks) {
-                    callbacks.push(boundUpdateZoom);
-                });
         };
         MapRenderer.prototype.setPlayer = function (player) {
             this.player = player;
             this.setAllLayersAsDirty();
         };
-        MapRenderer.prototype.updateShaderOffsets = function (x, y) {
-            for (var owner in this.occupationShaders) {
-                for (var occupier in this.occupationShaders[owner]) {
-                    var shader = this.occupationShaders[owner][occupier];
-                    shader.uniforms.offset.value = [-x, y];
-                }
-            }
-        };
-        MapRenderer.prototype.updateShaderZoom = function (zoom) {
-            for (var owner in this.occupationShaders) {
-                for (var occupier in this.occupationShaders[owner]) {
-                    var shader = this.occupationShaders[owner][occupier];
-                    shader.uniforms.zoom.value = zoom;
-                }
-            }
-        };
-        MapRenderer.prototype.makeFowSprite = function () {
-            if (!this.fowTilingSprite) {
-                var fowTexture = PIXI.Texture.fromFrame("modules/defaultmapmodes/img/fowTexture.png");
-                var w = this.galaxyMap.width;
-                var h = this.galaxyMap.height;
-                this.fowTilingSprite = new PIXI.extras.TilingSprite(fowTexture, w, h);
-            }
-        };
-        MapRenderer.prototype.getFowSpriteForStar = function (star) {
-            if (!this.fowSpriteCache[star.id] ||
-                Object.keys(this.fowSpriteCache).length < 4) {
-                var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                var gfx = new PIXI.Graphics();
-                gfx.isMask = true;
-                gfx.beginFill(0);
-                gfx.drawShape(poly);
-                gfx.endFill();
-                this.fowTilingSprite.removeChildren();
-                this.fowTilingSprite.mask = gfx;
-                this.fowTilingSprite.addChild(gfx);
-                var bounds = this.fowTilingSprite.getBounds();
-                var rendered = this.fowTilingSprite.generateTexture(App_20.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
-                var sprite = new PIXI.Sprite(rendered);
-                this.fowSpriteCache[star.id] = sprite;
-                this.fowTilingSprite.mask = null;
-            }
-            return this.fowSpriteCache[star.id];
-        };
-        MapRenderer.prototype.getOccupationShader = function (owner, occupier) {
-            if (!this.occupationShaders[owner.id]) {
-                this.occupationShaders[owner.id] = {};
-            }
-            if (!this.occupationShaders[owner.id][occupier.id]) {
-                this.occupationShaders[owner.id][occupier.id] = new Occupation_1.default({
-                    stripeColor: occupier.color.getRGBA(1.0),
-                    stripeSize: 0.5,
-                    offset: [0.0, 0.0],
-                    angle: 0.25 * Math.PI,
-                    scale: 8.0
-                });
-            }
-            return this.occupationShaders[owner.id][occupier.id];
-        };
-        MapRenderer.prototype.getFleetTextTexture = function (fleet) {
-            var fleetSize = fleet.units.length;
-            if (!this.fleetTextTextureCache[fleetSize]) {
-                var text = new PIXI.Text("" + fleetSize, {
-                    fill: "#FFFFFF",
-                    stroke: "#000000",
-                    strokeThickness: 3
-                });
-                text.getBounds();
-                this.fleetTextTextureCache[fleetSize] = text.generateTexture(App_20.default.renderer.renderer);
-                window.setTimeout(function () {
-                    text.texture.destroy(true);
-                }, 0);
-            }
-            return this.fleetTextTextureCache[fleetSize];
-        };
         MapRenderer.prototype.initLayers = function () {
-            for (var layerKey in App_20.default.moduleData.Templates.MapRendererLayers) {
-                var template = App_20.default.moduleData.Templates.MapRendererLayers[layerKey];
+            for (var layerKey in App_18.default.moduleData.Templates.MapRendererLayers) {
+                var template = App_18.default.moduleData.Templates.MapRendererLayers[layerKey];
                 var layer = new MapRendererLayer_1.default(template);
                 this.layers[layerKey] = layer;
             }
@@ -8884,8 +8677,8 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
                 }
                 this.mapModes[mapModeKey] = mapMode;
             }.bind(this);
-            for (var mapModeKey in App_20.default.moduleData.Templates.MapRendererMapModes) {
-                var template = App_20.default.moduleData.Templates.MapRendererMapModes[mapModeKey];
+            for (var mapModeKey in App_18.default.moduleData.Templates.MapRendererMapModes) {
+                var template = App_18.default.moduleData.Templates.MapRendererMapModes[mapModeKey];
                 buildMapMode(mapModeKey, template);
             }
         };
@@ -8969,7 +8762,7 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapRenderer;
 });
-define("src/ModuleData", ["require", "exports", "src/RuleSet", "src/utility"], function (require, exports, RuleSet_1, utility_19) {
+define("src/ModuleData", ["require", "exports", "src/RuleSet", "src/utility"], function (require, exports, RuleSet_7, utility_20) {
     "use strict";
     var ModuleData = (function () {
         function ModuleData() {
@@ -8997,7 +8790,6 @@ define("src/ModuleData", ["require", "exports", "src/RuleSet", "src/utility"], f
                 UnitFamilies: {},
                 Units: {}
             };
-            this.ruleSet = utility_19.extendObject(RuleSet_1.defaultRuleSet);
         }
         ModuleData.prototype.copyTemplates = function (source, category) {
             if (!this.Templates[category]) {
@@ -9027,17 +8819,20 @@ define("src/ModuleData", ["require", "exports", "src/RuleSet", "src/utility"], f
             if (this.defaultMap)
                 return this.defaultMap;
             else if (Object.keys(this.Templates.MapGen).length > 0) {
-                return utility_19.getRandomProperty(this.Templates.MapGen);
+                return utility_20.getRandomProperty(this.Templates.MapGen);
             }
             else
                 throw new Error("Module has no maps registered");
+        };
+        ModuleData.prototype.applyRuleSet = function (ruleSetValuesToCopy) {
+            RuleSet_7.default.copyRules(ruleSetValuesToCopy);
         };
         return ModuleData;
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ModuleData;
 });
-define("src/ModuleLoader", ["require", "exports", "src/ModuleData", "src/utility"], function (require, exports, ModuleData_1, utility_20) {
+define("src/ModuleLoader", ["require", "exports", "src/ModuleData"], function (require, exports, ModuleData_1) {
     "use strict";
     var ModuleLoader = (function () {
         function ModuleLoader() {
@@ -9056,9 +8851,6 @@ define("src/ModuleLoader", ["require", "exports", "src/ModuleData", "src/utility
         ModuleLoader.prototype.loadModuleFile = function (moduleFile, afterLoaded) {
             if (!this.moduleFiles[moduleFile.key]) {
                 this.addModuleFile(moduleFile);
-            }
-            if (moduleFile.ruleSet) {
-                this.copyRuleSet(moduleFile.ruleSet);
             }
             this.moduleLoadStart[moduleFile.key] = Date.now();
             if (moduleFile.loadAssets) {
@@ -9098,9 +8890,6 @@ define("src/ModuleLoader", ["require", "exports", "src/ModuleData", "src/utility
                 moduleFile.constructModule(this.moduleData);
             }
             this.moduleData.addSubModule(moduleFile);
-        };
-        ModuleLoader.prototype.copyRuleSet = function (toCopy) {
-            this.moduleData.ruleSet = utility_20.deepMerge(this.moduleData.ruleSet, toCopy);
         };
         return ModuleLoader;
     }());
@@ -9459,8 +9248,6 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
         function Camera(container, bound) {
             this.bounds = {};
             this.currZoom = 1;
-            this.onMoveCallbacks = [];
-            this.onZoomCallbacks = [];
             this.listeners = {};
             this.tempCameraId = tempCameraId++;
             this.container = container;
@@ -9476,8 +9263,6 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
             for (var name_4 in this.listeners) {
                 eventManager_14.default.removeEventListener(name_4, this.listeners[name_4]);
             }
-            this.onMoveCallbacks = [];
-            this.onZoomCallbacks = [];
             window.removeEventListener("resize", this.resizeListener);
         };
         Camera.prototype.addEventListeners = function () {
@@ -9495,8 +9280,6 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
                 eventManager_14.default.addEventListener("setCameraToCenterOn", function (position) {
                     self.toCenterOn = position;
                 });
-            eventManager_14.default.dispatchEvent("registerOnMoveCallback", self.onMoveCallbacks);
-            eventManager_14.default.dispatchEvent("registerOnZoomCallback", self.onZoomCallbacks);
         };
         Camera.prototype.setBounds = function () {
             var rect = this.container.getLocalBounds();
@@ -9539,9 +9322,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
             this.onMove();
         };
         Camera.prototype.onMove = function () {
-            for (var i = 0; i < this.onMoveCallbacks.length; i++) {
-                this.onMoveCallbacks[i](this.container.position.x, this.container.position.y);
-            }
+            eventManager_14.default.dispatchEvent("cameraMoved", this.container.position.x, this.container.position.y);
         };
         Camera.prototype.getScreenCenter = function () {
             return ({
@@ -9588,9 +9369,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
             this.onZoom();
         };
         Camera.prototype.onZoom = function () {
-            for (var i = 0; i < this.onZoomCallbacks.length; i++) {
-                this.onZoomCallbacks[i](this.currZoom);
-            }
+            eventManager_14.default.dispatchEvent("cameraZoomed", this.currZoom);
         };
         Camera.prototype.deltaZoom = function (delta, scale) {
             if (delta === 0) {
@@ -9627,7 +9406,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Camera;
 });
-define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_21, RectangleSelect_1, eventManager_15) {
+define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_19, RectangleSelect_1, eventManager_15) {
     "use strict";
     var MouseEventHandler = (function () {
         function MouseEventHandler(renderer, camera) {
@@ -9748,7 +9527,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
             this.preventGhost(15, "mouseDown");
         };
         MouseEventHandler.prototype.touchStart = function (event, star) {
-            if (App_21.default.playerControl.selectedFleets.length === 0) {
+            if (App_19.default.playerControl.selectedFleets.length === 0) {
                 this.startSelect(event);
             }
             else {
@@ -9888,7 +9667,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MouseEventHandler;
 });
-define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_22, Color_3, eventManager_16) {
+define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_20, Color_3, eventManager_16) {
     "use strict";
     var PathfindingArrow = (function () {
         function PathfindingArrow(parentContainer) {
@@ -9949,7 +9728,7 @@ define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "s
             });
         };
         PathfindingArrow.prototype.startMove = function () {
-            var fleets = App_22.default.playerControl.selectedFleets;
+            var fleets = App_20.default.playerControl.selectedFleets;
             if (this.active || !fleets || fleets.length < 1) {
                 return;
             }
@@ -10188,7 +9967,7 @@ define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "s
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = PathfindingArrow;
 });
-define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/MouseEventHandler", "src/PathfindingArrow"], function (require, exports, App_23, Camera_1, MouseEventHandler_1, PathfindingArrow_1) {
+define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/MouseEventHandler", "src/PathfindingArrow"], function (require, exports, App_21, Camera_1, MouseEventHandler_1, PathfindingArrow_1) {
     "use strict";
     var Renderer = (function () {
         function Renderer(galaxyMap) {
@@ -10357,15 +10136,15 @@ define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/Mous
                 bgObject = this.renderBlurredBackground.apply(this, this.blurProps);
             }
             else {
-                bgObject = App_23.default.moduleData.mapBackgroundDrawingFunction(this.galaxyMap.seed, this.renderer);
+                bgObject = App_21.default.moduleData.mapBackgroundDrawingFunction(this.galaxyMap.seed, this.renderer);
             }
             this.layers["bgSprite"].removeChildren();
             this.layers["bgSprite"].addChild(bgObject);
             this.backgroundIsDirty = false;
         };
         Renderer.prototype.renderBlurredBackground = function (x, y, width, height, seed) {
-            var bg = App_23.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
-            var fg = App_23.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
+            var bg = App_21.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
+            var fg = App_21.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
             var container = new PIXI.Container();
             container.addChild(bg);
             container.addChild(fg);
@@ -10823,14 +10602,14 @@ define("src/uicomponents/mixins/applyMixins", ["require", "exports"], function (
     ];
     function wrapLifeCycleFunction(base, functionName, mixins) {
         var originalFunction = base[functionName];
-        var mixinsWithFunction = mixins.filter(function (m) { return Boolean(m[functionName]); });
+        var mixinsWithFunction = mixins.filter(function (mixin) { return Boolean(mixin[functionName]); });
         base[functionName] = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            mixinsWithFunction.forEach(function (m) {
-                m[functionName].apply(m, args);
+            mixinsWithFunction.forEach(function (mixin) {
+                mixin[functionName].apply(mixin, args);
             });
             if (originalFunction) {
                 originalFunction.apply(base, args);
@@ -10839,14 +10618,14 @@ define("src/uicomponents/mixins/applyMixins", ["require", "exports"], function (
     }
     function wrapRenderFunction(base, mixins) {
         var originalFunction = base.render;
-        var mixinsWithFunction = mixins.filter(function (m) { return Boolean(m.onRender); });
+        var mixinsWithFunction = mixins.filter(function (mixin) { return Boolean(mixin.onRender); });
         base.render = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            mixinsWithFunction.forEach(function (m) {
-                m.onRender.call(m);
+            mixinsWithFunction.forEach(function (mixin) {
+                mixin.onRender.call(mixin);
             });
             return originalFunction.apply(base, args);
         };
@@ -11353,12 +11132,9 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
         PopupManagerComponent.prototype.closePopup = function (id) {
             if (!this.hasPopup(id))
                 throw new Error("No such popup");
-            var newPopups = [];
-            for (var i = 0; i < this.state.popups.length; i++) {
-                if (this.state.popups[i].id !== id) {
-                    newPopups.push(this.state.popups[i]);
-                }
-            }
+            var newPopups = this.state.popups.filter(function (popup) { return popup.id !== id; });
+            this.popupComponentsByID[id] = null;
+            delete this.popupComponentsByID[id];
             this.setState({ popups: newPopups });
         };
         PopupManagerComponent.prototype.makePopup = function (props) {
@@ -11369,7 +11145,9 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
             popupProps.id = id;
             popupProps.key = id;
             popupProps.ref = function (component) {
-                _this.popupComponentsByID[id] = component;
+                if (component) {
+                    _this.popupComponentsByID[id] = component;
+                }
             };
             popupProps.incrementZIndex = this.incrementZIndex;
             popupProps.closePopup = this.closePopup.bind(this, id);
@@ -12645,7 +12423,7 @@ define("src/uicomponents/unit/UnitActions", ["require", "exports"], function (re
         }
         UnitActionsComponent.prototype.render = function () {
             var availableSrc = "img/icons/availableAction.png";
-            var hoveredSrc = "img/icons/spentAction.png";
+            var hoveredSrc = "img/icons/hoveredAction.png";
             var spentSrc = "img/icons/spentAction.png";
             var icons = [];
             var availableCount = this.props.currentActionPoints - (this.props.hoveredActionPointExpenditure || 0);
@@ -12859,7 +12637,7 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_24, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_25) {
+define("src/uicomponents/battle/Formation", ["require", "exports", "src/RuleSet", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, RuleSet_8, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_25) {
     "use strict";
     var FormationComponent = (function (_super) {
         __extends(FormationComponent, _super);
@@ -12875,19 +12653,19 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
                 return (function () { functionToBind(valueToBind); });
             }
         };
-        FormationComponent.prototype.unitInArray = function (unit, arr) {
+        FormationComponent.prototype.unitInArray = function (unitToCheck, arr) {
             if (!arr) {
                 return false;
             }
             else {
-                return arr.some(function (u) { return u === unit; });
+                return arr.some(function (unit) { return unit === unitToCheck; });
             }
         };
         FormationComponent.prototype.render = function () {
             var formationRowElements = [];
             for (var i = 0; i < this.props.formation.length; i++) {
                 var absoluteRowIndex = this.props.facesLeft ?
-                    i + App_24.default.moduleData.ruleSet.battle.rowsPerFormation :
+                    i + RuleSet_8.default.battle.rowsPerFormation :
                     i;
                 var unitElements = [];
                 for (var j = 0; j < this.props.formation[i].length; j++) {
@@ -13244,7 +13022,7 @@ define("src/uicomponents/PlayerFlag", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_25, PlayerFlag_1, utility_27) {
+define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_22, PlayerFlag_1, utility_27) {
     "use strict";
     var DefenceBuildingComponent = (function (_super) {
         __extends(DefenceBuildingComponent, _super);
@@ -13257,7 +13035,7 @@ define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src
         };
         DefenceBuildingComponent.prototype.render = function () {
             var building = this.props.building;
-            var image = App_25.default.images[building.template.iconSrc];
+            var image = App_22.default.images[building.template.iconSrc];
             return (React.DOM.div({
                 className: "defence-building"
             }, React.DOM.img({
@@ -13362,7 +13140,7 @@ define("src/uicomponents/battleprep/BattleInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_26, eventManager_20, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
+define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_23, eventManager_20, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
     "use strict";
     var BattlePrepComponent = (function (_super) {
         __extends(BattlePrepComponent, _super);
@@ -13611,7 +13389,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 onClick: this.autoMakeFormation
             }, "Auto formation"), React.DOM.button({
                 onClick: function () {
-                    App_26.default.reactUI.switchScene("galaxyMap");
+                    App_23.default.reactUI.switchScene("galaxyMap");
                 },
                 disabled: playerIsDefending
             }, "Cancel"), React.DOM.button({
@@ -13619,8 +13397,8 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 disabled: !humanFormationIsValid,
                 onClick: function () {
                     var battle = battlePrep.makeBattle();
-                    App_26.default.reactUI.battle = battle;
-                    App_26.default.reactUI.switchScene("battle");
+                    App_23.default.reactUI.battle = battle;
+                    App_23.default.reactUI.switchScene("battle");
                 }.bind(this)
             }, "Start battle"), !Options_1.default.debugMode ? null : React.DOM.button({
                 className: "battle-prep-controls-button",
@@ -14209,8 +13987,10 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
         BattleScene.prototype.playSFX = function () {
             var SFXDuration = options_7.default.battleAnimationTiming.effectDuration *
                 this.activeSFX.duration;
-            if (SFXDuration <= 0) {
+            if (!this.activeSFX.SFXWillTriggerEffect || SFXDuration <= 0) {
                 this.executeTriggerEffectCallback();
+            }
+            if (SFXDuration <= 0) {
                 this.handleActiveSFXEnd();
             }
             else {
@@ -14310,7 +14090,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleScene;
 });
-define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_28, App_27) {
+define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_28, App_24) {
     "use strict";
     var BattleSceneTesterComponent = (function (_super) {
         __extends(BattleSceneTesterComponent, _super);
@@ -14368,7 +14148,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             battleScene.updateUnits();
         };
         BattleSceneTesterComponent.prototype.makeUnit = function () {
-            var template = utility_28.getRandomProperty(App_27.default.moduleData.Templates.Units);
+            var template = utility_28.getRandomProperty(App_24.default.moduleData.Templates.Units);
             return new Unit_5.default(template, this.idGenerator++);
         };
         BattleSceneTesterComponent.prototype.makePlayer = function () {
@@ -14487,7 +14267,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             };
             var testSFX = {
                 duration: 1000,
-                battleOverlay: App_27.default.moduleData.Templates.BattleSFX["guard"].battleOverlay,
+                battleOverlay: App_24.default.moduleData.Templates.BattleSFX["guard"].battleOverlay,
                 userOverlay: overlayTestFN.bind(null, 0xFF0000),
                 enemyOverlay: overlayTestFN.bind(null, 0x00FF00),
                 userSprite: spriteTestFN
@@ -14508,7 +14288,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var user = this.state.activeUnit;
             var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
             var bs = this.battleScene;
-            var SFXTemplate = utility_28.extendObject(App_27.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+            var SFXTemplate = utility_28.extendObject(App_24.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
             if (this.state.duration) {
                 SFXTemplate.duration = this.state.duration;
             }
@@ -14552,8 +14332,8 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
                 value: null,
                 key: "null"
             }, "null"));
-            for (var key in App_27.default.moduleData.Templates.BattleSFX) {
-                var template = App_27.default.moduleData.Templates.BattleSFX[key];
+            for (var key in App_24.default.moduleData.Templates.BattleSFX) {
+                var template = App_24.default.moduleData.Templates.BattleSFX[key];
                 SFXTemplateSelectOptions.push(React.DOM.option({
                     value: key,
                     key: key
@@ -14598,7 +14378,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"], function (require, exports, App_28) {
+define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"], function (require, exports, App_25) {
     "use strict";
     var FlagPickerComponent = (function (_super) {
         __extends(FlagPickerComponent, _super);
@@ -14653,14 +14433,14 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"
                 onClick: this.handleSelectEmblem.bind(this, template)
             }, React.DOM.img({
                 className: className,
-                src: App_28.default.images[template.src].src
+                src: App_25.default.images[template.src].src
             })));
         };
         FlagPickerComponent.prototype.render = function () {
             var _this = this;
             var emblemElements = [];
-            for (var emblemType in App_28.default.moduleData.Templates.SubEmblems) {
-                var template = App_28.default.moduleData.Templates.SubEmblems[emblemType];
+            for (var emblemType in App_25.default.moduleData.Templates.SubEmblems) {
+                var template = App_25.default.moduleData.Templates.SubEmblems[emblemType];
                 emblemElements.push(this.makeEmblemElement(template));
             }
             var imageInfoMessage;
@@ -15929,7 +15709,7 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", "src/uicomponents/setupgame/MapGenOptions"], function (require, exports, App_29, MapGenOptions_1) {
+define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", "src/uicomponents/setupgame/MapGenOptions"], function (require, exports, App_26, MapGenOptions_1) {
     "use strict";
     var MapSetupComponent = (function (_super) {
         __extends(MapSetupComponent, _super);
@@ -15946,9 +15726,9 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
         };
         MapSetupComponent.prototype.getInitialStateTODO = function () {
             var mapGenTemplates = [];
-            for (var template in App_29.default.moduleData.Templates.MapGen) {
-                if (App_29.default.moduleData.Templates.MapGen[template].key) {
-                    mapGenTemplates.push(App_29.default.moduleData.Templates.MapGen[template]);
+            for (var template in App_26.default.moduleData.Templates.MapGen) {
+                if (App_26.default.moduleData.Templates.MapGen[template].key) {
+                    mapGenTemplates.push(App_26.default.moduleData.Templates.MapGen[template]);
                 }
             }
             return ({
@@ -15968,7 +15748,7 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
         MapSetupComponent.prototype.setTemplate = function (e) {
             var target = e.target;
             this.setState({
-                selectedTemplate: App_29.default.moduleData.Templates.MapGen[target.value]
+                selectedTemplate: App_26.default.moduleData.Templates.MapGen[target.value]
             }, this.updatePlayerLimits);
         };
         MapSetupComponent.prototype.getMapSetupInfo = function () {
@@ -16013,7 +15793,7 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/uicomponents/setupgame/SetupGamePlayers", "src/uicomponents/setupgame/MapSetup"], function (require, exports, App_30, SetupGamePlayers_1, MapSetup_1) {
+define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/uicomponents/setupgame/SetupGamePlayers", "src/uicomponents/setupgame/MapSetup"], function (require, exports, App_27, SetupGamePlayers_1, MapSetup_1) {
     "use strict";
     var SetupGameComponent = (function (_super) {
         __extends(SetupGameComponent, _super);
@@ -16046,7 +15826,7 @@ define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App",
             var mapGenFunction = mapSetupInfo.template.mapGenFunction;
             var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
             var map = mapGenResult.makeMap();
-            App_30.default.makeGameFromSetup(map, players);
+            App_27.default.makeGameFromSetup(map, players);
         };
         SetupGameComponent.prototype.randomize = function () {
             this.ref_TODO_players.randomizeAllPlayers();
@@ -16236,10 +16016,17 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
                 afterFinishedCallback: this.finishEffect
             });
         };
-        AbilityUseEffectQueue.squashEffects = function (parent, toSquash) {
-            var squashedChangedUnitDisplayDataByID = utility_31.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (e) { return e.changedUnitDisplayDataByID; })));
-            var squashedEffect = utility_31.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
-            return squashedEffect;
+        AbilityUseEffectQueue.squashEffects = function (parent, toSquash, parentIsMostRecent) {
+            if (parentIsMostRecent === void 0) { parentIsMostRecent = false; }
+            var squashedChangedUnitDisplayDataByID = utility_31.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
+            if (parentIsMostRecent) {
+                var squashedEffect = utility_31.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
+                return squashedEffect;
+            }
+            else {
+                var squashedEffect = utility_31.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
+                return squashedEffect;
+            }
         };
         AbilityUseEffectQueue.squashEffectsWithoutSFX = function (sourceEffects) {
             var squashed = [];
@@ -16259,6 +16046,10 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
                 else {
                     effectsToSquash.unshift(effect);
                 }
+            }
+            if (effectsToSquash.length > 0) {
+                var lastEffectWithSFX = squashed.pop();
+                squashed.push(AbilityUseEffectQueue.squashEffects(lastEffectWithSFX, effectsToSquash, true));
             }
             squashed.reverse();
             return squashed;
@@ -16486,7 +16277,6 @@ define("src/uicomponents/battle/BattleScene", ["require", "exports", "src/uicomp
             }
             else if (this.props.battleState === "active" && newProps.battleState === "finish") {
                 this.props.battleScene.destroy();
-                this.props.battleScene = null;
             }
         };
         BattleSceneComponent.prototype.render = function () {
@@ -16734,6 +16524,23 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
         BattleComponent.prototype.componentDidMount = function () {
             this.battleStartStartTime = Date.now();
         };
+        BattleComponent.prototype.componentWillUpdate = function (newProps, newState) {
+            var battleSceneNeedsUpdate = false;
+            if (this.battleScene.activeSFX) {
+                return;
+            }
+            if (newState.hoveredUnit !== this.battleScene.hoveredUnit) {
+                battleSceneNeedsUpdate = true;
+                this.battleScene.hoveredUnit = newState.hoveredUnit;
+            }
+            if (newProps.battle.activeUnit !== this.battleScene.activeUnit) {
+                battleSceneNeedsUpdate = true;
+                this.battleScene.activeUnit = newProps.battle.activeUnit;
+            }
+            if (battleSceneNeedsUpdate) {
+                this.battleScene.updateUnits();
+            }
+        };
         BattleComponent.prototype.endBattleStart = function () {
             var _this = this;
             if (Date.now() < this.battleStartStartTime + 1000)
@@ -16741,6 +16548,9 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
             this.setState({
                 battleIsStarting: false
             }, function () {
+                if (_this.tempHoveredUnit) {
+                    _this.handleMouseEnterUnit(_this.tempHoveredUnit);
+                }
                 if (_this.props.battle.getActivePlayer() !== _this.props.humanPlayer) {
                     _this.useAIAbility();
                 }
@@ -16787,8 +16597,9 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
         };
         BattleComponent.prototype.handleMouseEnterUnit = function (unit) {
             this.tempHoveredUnit = unit;
-            if (this.props.battle.ended || this.state.playingBattleEffect)
+            if (this.state.battleIsStarting || this.props.battle.ended || this.state.playingBattleEffect) {
                 return;
+            }
             var facesLeft = unit.battleStats.side === "side2";
             var parentElement = this.getUnitElement(unit);
             this.setState({
@@ -16870,7 +16681,10 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 this.clearHoveredUnit();
             }
             this.props.battle.endTurn();
-            if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction) {
+            if (this.props.battle.ended) {
+                this.forceUpdate();
+            }
+            else if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction) {
                 this.usePreparedAbility();
             }
             else if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
@@ -16974,21 +16788,20 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 }) : null));
             }
             var upperFooter = upperFooterElement;
-            var overlayContainer = null;
+            var containerProps = {
+                className: "battle-container"
+            };
             var playerWonBattle = null;
             if (this.state.battleIsStarting) {
-                overlayContainer = React.DOM.div({
-                    className: "battle-start-overlay",
-                    onClick: this.endBattleStart
-                });
+                containerProps.className += " battle-start-overlay";
+                containerProps.onClick = this.endBattleStart;
             }
             else if (battle.ended) {
-                if (!this.battleEndStartTime)
+                if (!this.battleEndStartTime) {
                     this.battleEndStartTime = Date.now();
-                overlayContainer = React.DOM.div({
-                    className: "battle-start-overlay",
-                    onClick: this.finishBattle
-                });
+                }
+                containerProps.className += " battle-start-overlay";
+                containerProps.onClick = this.finishBattle;
                 playerWonBattle = this.props.humanPlayer === battle.getVictor();
             }
             var battleState;
@@ -17005,9 +16818,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 renderer: this.props.renderer,
                 backgroundSeed: this.props.battle.battleData.location.getSeed(),
                 getBlurArea: this.getBlurArea
-            }, React.DOM.div({
-                className: "battle-container"
-            }, overlayContainer, React.DOM.div({
+            }, React.DOM.div(containerProps, React.DOM.div({
                 className: "battle-upper"
             }, BattleScore_1.default({
                 battle: battle
@@ -17408,15 +17219,14 @@ define("modules/defaultmapmodes/maplayertemplates/resources", ["require", "expor
         key: "resources",
         displayName: "Resources",
         interactive: false,
-        drawingFunction: function (map) {
-            var self = this;
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
             var points;
-            if (!this.player) {
+            if (!perspectivePlayer) {
                 points = map.stars;
             }
             else {
-                points = this.player.getRevealedStars();
+                points = perspectivePlayer.getRevealedStars();
             }
             for (var i = 0; i < points.length; i++) {
                 var star = points[i];
@@ -17465,7 +17275,7 @@ define("src/uicomponents/galaxymap/Resource", ["require", "exports"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src/App", "src/uicomponents/galaxymap/Resource", "src/eventManager"], function (require, exports, App_31, Resource_1, eventManager_22) {
+define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src/App", "src/uicomponents/galaxymap/Resource", "src/eventManager"], function (require, exports, App_28, Resource_1, eventManager_22) {
     "use strict";
     var TopBarResourcesComponent = (function (_super) {
         __extends(TopBarResourcesComponent, _super);
@@ -17497,7 +17307,7 @@ define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src
                 if (amount === 0 && income === 0)
                     continue;
                 var resourceData = {
-                    resource: App_31.default.moduleData.Templates.Resources[resourceType],
+                    resource: App_28.default.moduleData.Templates.Resources[resourceType],
                     amount: amount,
                     income: income,
                     key: resourceType
@@ -18558,24 +18368,30 @@ define("src/uicomponents/galaxymap/fleetcontents", ["require", "exports", "src/u
     exports.default = Factory;
     var _a;
 });
-define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager"], function (require, exports, options_8, eventManager_28) {
+define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager", "src/App"], function (require, exports, options_8, eventManager_28, App_29) {
     "use strict";
     var fleets = {
         key: "fleets",
         displayName: "Fleets",
         interactive: true,
-        drawingFunction: function (map) {
-            var self = this;
+        destroy: function () {
+            for (var fleetSize in fleetTextTextureCache) {
+                fleetTextTextureCache[fleetSize].destroy(true);
+                fleetTextTextureCache[fleetSize] = null;
+                delete fleetTextTextureCache[fleetSize];
+            }
+        },
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
             var points;
-            if (!this.player) {
+            if (!perspectivePlayer) {
                 points = map.stars;
             }
             else {
-                points = this.player.getVisibleStars();
+                points = perspectivePlayer.getVisibleStars();
             }
-            var mouseDownFN = function (event) {
-                eventManager_28.default.dispatchEvent("mouseDown", event, this.location);
+            var mouseDownFN = function (fleet, event) {
+                eventManager_28.default.dispatchEvent("mouseDown", event, fleet.location);
             };
             var mouseUpFN = function (event) {
                 eventManager_28.default.dispatchEvent("mouseUp", event);
@@ -18588,18 +18404,18 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                     console.log(objective.type, target, objective.priority);
                 }
             };
-            function fleetClickFn(event) {
+            var fleetClickFN = function (fleet, event) {
                 var originalEvent = event.data.originalEvent;
                 ;
                 if (originalEvent.button === 0) {
-                    eventManager_28.default.dispatchEvent("selectFleets", [this]);
+                    eventManager_28.default.dispatchEvent("selectFleets", [fleet]);
                 }
-            }
+            };
             function singleFleetDrawFN(fleet) {
                 var fleetContainer = new PIXI.Container();
                 var color = fleet.player.color.getHex();
                 var fillAlpha = fleet.isStealthy ? 0.3 : 0.7;
-                var textTexture = self.getFleetTextTexture(fleet);
+                var textTexture = getFleetTextTexture(fleet);
                 var text = new PIXI.Sprite(textTexture);
                 var containerGfx = new PIXI.Graphics();
                 containerGfx.lineStyle(1, 0x00000, 1);
@@ -18626,15 +18442,15 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                 text.x += 2;
                 text.y -= 1;
                 fleetContainer.interactive = true;
-                var boundMouseDownFN = mouseDownFN.bind(fleet);
-                var boundFleetClickFN = fleetClickFn.bind(fleet);
+                var boundMouseDownFN = mouseDownFN.bind(null, fleet);
+                var boundFleetClickFN = fleetClickFN.bind(null, fleet);
                 fleetContainer.on("click", boundFleetClickFN);
                 fleetContainer.on("tap", boundFleetClickFN);
                 fleetContainer.on("mousedown", boundMouseDownFN);
                 fleetContainer.on("mouseup", mouseUpFN);
                 fleetContainer.on("rightdown", boundMouseDownFN);
                 fleetContainer.on("rightup", mouseUpFN);
-                fleetContainer.on("mouseover", mouseOverFN.bind(fleetContainer, fleet));
+                fleetContainer.on("mouseover", mouseOverFN.bind(null, fleet));
                 return fleetContainer;
             }
             for (var i = 0; i < points.length; i++) {
@@ -18649,7 +18465,7 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                     if (fleets[j].units.length === 0) {
                         continue;
                     }
-                    if (fleets[j].isStealthy && this.player && !this.player.starIsDetected(fleets[j].location)) {
+                    if (fleets[j].isStealthy && perspectivePlayer && !perspectivePlayer.starIsDetected(fleets[j].location)) {
                         continue;
                     }
                     var drawnFleet = singleFleetDrawFN(fleets[j]);
@@ -18666,6 +18482,23 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = fleets;
+    var fleetTextTextureCache = {};
+    function getFleetTextTexture(fleet) {
+        var fleetSize = fleet.units.length;
+        if (!fleetTextTextureCache[fleetSize]) {
+            var text = new PIXI.Text("" + fleetSize, {
+                fill: "#FFFFFF",
+                stroke: "#000000",
+                strokeThickness: 3
+            });
+            text.getBounds();
+            fleetTextTextureCache[fleetSize] = text.generateTexture(App_29.default.renderer.renderer);
+            window.setTimeout(function () {
+                text.texture.destroy(true);
+            }, 0);
+        }
+        return fleetTextTextureCache[fleetSize];
+    }
     var _a;
 });
 define("src/uicomponents/galaxymap/fleetreorganization", ["require", "exports", "src/uicomponents/galaxymap/fleetcontents", "src/eventManager"], function (require, exports, FleetContents_1, eventManager_29) {
@@ -20899,7 +20732,7 @@ define("src/uicomponents/production/ManufacturableThings", ["require", "exports"
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/production/ConstructManufactory", ["require", "exports", "src/App"], function (require, exports, App_32) {
+define("src/uicomponents/production/ConstructManufactory", ["require", "exports", "src/RuleSet"], function (require, exports, RuleSet_9) {
     "use strict";
     var ConstructManufactoryComponent = (function (_super) {
         __extends(ConstructManufactoryComponent, _super);
@@ -20915,19 +20748,19 @@ define("src/uicomponents/production/ConstructManufactory", ["require", "exports"
         };
         ConstructManufactoryComponent.prototype.getInitialStateTODO = function () {
             return ({
-                canAfford: this.props.money >= App_32.default.moduleData.ruleSet.manufactory.buildCost
+                canAfford: this.props.money >= RuleSet_9.default.manufactory.buildCost
             });
         };
         ConstructManufactoryComponent.prototype.componentWillReceiveProps = function (newProps) {
             this.setState({
-                canAfford: newProps.money >= App_32.default.moduleData.ruleSet.manufactory.buildCost
+                canAfford: newProps.money >= RuleSet_9.default.manufactory.buildCost
             });
         };
         ConstructManufactoryComponent.prototype.handleConstruct = function () {
             var star = this.props.star;
             var player = this.props.player;
             star.buildManufactory();
-            player.money -= App_32.default.moduleData.ruleSet.manufactory.buildCost;
+            player.money -= RuleSet_9.default.manufactory.buildCost;
             this.props.triggerUpdate();
         };
         ConstructManufactoryComponent.prototype.render = function () {
@@ -20942,7 +20775,7 @@ define("src/uicomponents/production/ConstructManufactory", ["require", "exports"
             }, "Construct manufactory"), React.DOM.span({
                 className: "construct-manufactory-cost money-style" +
                     (this.state.canAfford ? "" : " negative")
-            }, App_32.default.moduleData.ruleSet.manufactory.buildCost))));
+            }, RuleSet_9.default.manufactory.buildCost))));
         };
         return ConstructManufactoryComponent;
     }(React.Component));
@@ -21196,10 +21029,16 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
     "use strict";
     var SaveListItemComponent = (function (_super) {
         __extends(SaveListItemComponent, _super);
-        function SaveListItemComponent() {
-            _super.apply(this, arguments);
+        function SaveListItemComponent(props) {
+            _super.call(this, props);
             this.displayName = "SaveListItem";
+            this.bindMethods();
         }
+        SaveListItemComponent.prototype.bindMethods = function () {
+            this.handleUndoDelete = this.handleUndoDelete.bind(this);
+            this.handleDelete = this.handleDelete.bind(this);
+            this.makeCell = this.makeCell.bind(this);
+        };
         SaveListItemComponent.prototype.handleDelete = function (e) {
             e.stopPropagation();
             this.props.handleDelete();
@@ -21344,7 +21183,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_33, SaveList_1, PopupManager_7, ConfirmPopup_2) {
+define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_30, SaveList_1, PopupManager_7, ConfirmPopup_2) {
     "use strict";
     var LoadGameComponent = (function (_super) {
         __extends(LoadGameComponent, _super);
@@ -21386,7 +21225,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
             var afterConfirmFN = function () {
                 ReactDOM.findDOMNode(this.ref_TODO_okButton).blur();
                 window.setTimeout(function () {
-                    App_33.default.load(saveKey);
+                    App_30.default.load(saveKey);
                 }, 5);
             }.bind(this);
             if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1) {
@@ -21491,8 +21330,8 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 onlyAllowOne: true
             }), SaveList_1.default({
                 onRowChange: this.handleRowChange,
-                autoSelect: !Boolean(App_33.default.game.gameStorageKey),
-                selectedKey: App_33.default.game.gameStorageKey,
+                autoSelect: !Boolean(App_30.default.game.gameStorageKey),
+                selectedKey: App_30.default.game.gameStorageKey,
                 allowDelete: true,
                 onDelete: this.handleDelete,
                 onUndoDelete: this.handleUndoDelete,
@@ -21527,7 +21366,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_34, SaveList_2, PopupManager_8, ConfirmPopup_3) {
+define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_31, SaveList_2, PopupManager_8, ConfirmPopup_3) {
     "use strict";
     var SaveGameComponent = (function (_super) {
         __extends(SaveGameComponent, _super);
@@ -21546,9 +21385,10 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             this.saveGame = this.saveGame.bind(this);
             this.handleSave = this.handleSave.bind(this);
             this.handleRowChange = this.handleRowChange.bind(this);
+            this.handleSaveNameInput = this.handleSaveNameInput.bind(this);
         };
         SaveGameComponent.prototype.componentDidMount = function () {
-            if (App_34.default.game.gameStorageKey) {
+            if (App_31.default.game.gameStorageKey) {
                 ReactDOM.findDOMNode(this.ref_TODO_okButton).focus();
             }
             else {
@@ -21578,7 +21418,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             }
         };
         SaveGameComponent.prototype.saveGame = function () {
-            App_34.default.game.save(this.state.saveName);
+            App_31.default.game.save(this.state.saveName);
             this.handleClose();
         };
         SaveGameComponent.prototype.handleClose = function () {
@@ -21604,7 +21444,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
                 onlyAllowOne: true
             }), SaveList_2.default({
                 onRowChange: this.handleRowChange,
-                selectedKey: App_34.default.game.gameStorageKey,
+                selectedKey: App_31.default.game.gameStorageKey,
                 autoSelect: false
             }), React.DOM.input({
                 className: "save-game-name",
@@ -23350,7 +23190,7 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uic
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App", "src/uicomponents/galaxymap/GalaxyMapUI", "src/options"], function (require, exports, App_35, GalaxyMapUI_1, Options_6) {
+define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App", "src/uicomponents/galaxymap/GalaxyMapUI", "src/options"], function (require, exports, App_32, GalaxyMapUI_1, Options_6) {
     "use strict";
     var GalaxyMapComponent = (function (_super) {
         __extends(GalaxyMapComponent, _super);
@@ -23364,7 +23204,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
         };
         GalaxyMapComponent.prototype.changeScene = function (e) {
             var target = e.target;
-            App_35.default.reactUI.switchScene(target.value);
+            App_32.default.reactUI.switchScene(target.value);
         };
         GalaxyMapComponent.prototype.render = function () {
             var _this = this;
@@ -23395,7 +23235,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
                 ref: function (component) {
                     _this.ref_TODO_sceneSelector = component;
                 },
-                value: App_35.default.reactUI.currentScene,
+                value: App_32.default.reactUI.currentScene,
                 onChange: this.changeScene
             }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "setupGame" }, "setup game"), React.DOM.option({ value: "battleSceneTester" }, "battle scene test")), React.DOM.button({
                 className: "debug",
@@ -23403,17 +23243,17 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
                     var target = e.target;
                     target.blur();
                     window.setTimeout(function () {
-                        var position = App_35.default.renderer.camera.container.position.clone();
-                        var zoom = App_35.default.renderer.camera.currZoom;
-                        App_35.default.destroy();
-                        App_35.default.initUI();
-                        App_35.default.game = App_35.default.makeGame();
-                        App_35.default.initGame();
-                        App_35.default.initDisplay();
-                        App_35.default.hookUI();
-                        App_35.default.reactUI.switchScene("galaxyMap");
-                        App_35.default.renderer.camera.zoom(zoom);
-                        App_35.default.renderer.camera.container.position = position;
+                        var position = App_32.default.renderer.camera.container.position.clone();
+                        var zoom = App_32.default.renderer.camera.currZoom;
+                        App_32.default.destroy();
+                        App_32.default.initUI();
+                        App_32.default.game = App_32.default.makeGame();
+                        App_32.default.initGame();
+                        App_32.default.initDisplay();
+                        App_32.default.hookUI();
+                        App_32.default.reactUI.switchScene("galaxyMap");
+                        App_32.default.renderer.camera.zoom(zoom);
+                        App_32.default.renderer.camera.container.position = position;
                     }, 5);
                 }
             }, "Reset app"))));
@@ -23633,7 +23473,7 @@ define("src/ReactUI", ["require", "exports", "src/eventManager", "src/uicomponen
     exports.default = ReactUI;
     var _a;
 });
-define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "src/Unit", "src/utility"], function (require, exports, App_36, Unit_6, utility_42) {
+define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "src/Unit", "src/utility"], function (require, exports, App_33, Unit_6, utility_42) {
     "use strict";
     function setDynamicTemplateProperties() {
         setAbilityGuardAddition();
@@ -23648,8 +23488,8 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
             if (ability.secondaryEffects) {
                 effects = effects.concat(ability.secondaryEffects);
             }
-            var dummyUser = new Unit_6.default(utility_42.getRandomProperty(App_36.default.moduleData.Templates.Units));
-            var dummyTarget = new Unit_6.default(utility_42.getRandomProperty(App_36.default.moduleData.Templates.Units));
+            var dummyUser = new Unit_6.default(utility_42.getRandomProperty(App_33.default.moduleData.Templates.Units));
+            var dummyTarget = new Unit_6.default(utility_42.getRandomProperty(App_33.default.moduleData.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
                 effects[i].action.executeAction(dummyUser, dummyTarget, null, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
@@ -23658,14 +23498,14 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
             }
             return false;
         }
-        for (var abilityName in App_36.default.moduleData.Templates.Abilities) {
-            var ability = App_36.default.moduleData.Templates.Abilities[abilityName];
+        for (var abilityName in App_33.default.moduleData.Templates.Abilities) {
+            var ability = App_33.default.moduleData.Templates.Abilities[abilityName];
             ability.addsGuard = checkIfAbilityAddsGuard(ability);
         }
     }
     function setAttitudeModifierOverride() {
-        for (var modifierType in App_36.default.moduleData.Templates.AttitudeModifiers) {
-            var modifier = App_36.default.moduleData.Templates.AttitudeModifiers[modifierType];
+        for (var modifierType in App_33.default.moduleData.Templates.AttitudeModifiers) {
+            var modifier = App_33.default.moduleData.Templates.AttitudeModifiers[modifierType];
             if (modifier.canBeOverriddenBy) {
                 for (var i = 0; i < modifier.canBeOverriddenBy.length; i++) {
                     if (!modifier.canBeOverriddenBy[i].canOverride) {
@@ -23677,8 +23517,8 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
         }
     }
     function setUnitFamilyAssociatedTemplates() {
-        for (var unitType in App_36.default.moduleData.Templates.Units) {
-            var template = App_36.default.moduleData.Templates.Units[unitType];
+        for (var unitType in App_33.default.moduleData.Templates.Units) {
+            var template = App_33.default.moduleData.Templates.Units[unitType];
             for (var i = 0; i < template.families.length; i++) {
                 var family = template.families[i];
                 if (!family.associatedTemplates) {
@@ -23690,7 +23530,7 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
     }
     var _a;
 });
-define("src/shaders/BlackToAlpha", ["require", "exports"], function (require, exports) {
+define("modules/common/battlesfxfunctions/shaders/BlackToAlpha", ["require", "exports"], function (require, exports) {
     "use strict";
     var BlackToAlpha = (function (_super) {
         __extends(BlackToAlpha, _super);
@@ -23840,7 +23680,7 @@ define("modules/common/battlesfxfunctions/rocketAttack", ["require", "exports", 
     exports.default = preLoadedRocketAttack;
     var _a;
 });
-define("src/shaders/Guard", ["require", "exports"], function (require, exports) {
+define("modules/common/battlesfxfunctions/shaders/Guard", ["require", "exports"], function (require, exports) {
     "use strict";
     var Guard = (function (_super) {
         __extends(Guard, _super);
@@ -23958,7 +23798,7 @@ define("src/shaders/Guard", ["require", "exports"], function (require, exports) 
     ];
     var _a;
 });
-define("modules/common/battlesfxfunctions/guard", ["require", "exports", "src/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_44) {
+define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_44) {
     "use strict";
     function guard(props) {
         var userCanvasWidth = props.width * 0.4;
@@ -24031,7 +23871,7 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "src/sh
     exports.default = guard;
     var _a;
 });
-define("src/shaders/Beam", ["require", "exports"], function (require, exports) {
+define("modules/common/battlesfxfunctions/shaders/Beam", ["require", "exports"], function (require, exports) {
     "use strict";
     var Beam = (function (_super) {
         __extends(Beam, _super);
@@ -24192,7 +24032,7 @@ define("src/shaders/Beam", ["require", "exports"], function (require, exports) {
     ];
     var _a;
 });
-define("src/shaders/ShinyParticle", ["require", "exports"], function (require, exports) {
+define("modules/common/battlesfxfunctions/shaders/ShinyParticle", ["require", "exports"], function (require, exports) {
     "use strict";
     var ShinyParticle = (function (_super) {
         __extends(ShinyParticle, _super);
@@ -24290,7 +24130,7 @@ define("src/shaders/ShinyParticle", ["require", "exports"], function (require, e
     ];
     var _a;
 });
-define("src/shaders/IntersectingEllipses", ["require", "exports"], function (require, exports) {
+define("modules/common/battlesfxfunctions/shaders/IntersectingEllipses", ["require", "exports"], function (require, exports) {
     "use strict";
     var IntersectingEllipses = (function (_super) {
         __extends(IntersectingEllipses, _super);
@@ -24395,7 +24235,7 @@ define("src/shaders/IntersectingEllipses", ["require", "exports"], function (req
     ];
     var _a;
 });
-define("src/shaders/LightBurst", ["require", "exports"], function (require, exports) {
+define("modules/common/battlesfxfunctions/shaders/LightBurst", ["require", "exports"], function (require, exports) {
     "use strict";
     var LightBurst = (function (_super) {
         __extends(LightBurst, _super);
@@ -24643,7 +24483,7 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
     exports.default = ProtonWrapper;
     var _a;
 });
-define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "src/shaders/Beam", "src/shaders/ShinyParticle", "src/shaders/IntersectingEllipses", "src/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_45, ProtonWrapper_1) {
+define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_45, ProtonWrapper_1) {
     "use strict";
     function particleTest(props) {
         var width2 = props.width / 2;
@@ -24981,7 +24821,7 @@ define("modules/common/battlesfxfunctions/makeSFXFromVideo", ["require", "export
     exports.default = makeSFXFromVideo;
     var _a;
 });
-define("modules/common/battlesfxtemplates/battleSFX", ["require", "exports", "src/shaders/BlackToAlpha", "modules/common/battlesfxfunctions/rocketAttack", "modules/common/battlesfxfunctions/guard", "modules/common/battlesfxfunctions/particleTest", "modules/common/battlesfxfunctions/makeSFXFromVideo"], function (require, exports, BlackToAlpha_1, rocketAttack_1, guard_1, particleTest_1, makeSFXFromVideo_1) {
+define("modules/common/battlesfxtemplates/battleSFX", ["require", "exports", "modules/common/battlesfxfunctions/shaders/BlackToAlpha", "modules/common/battlesfxfunctions/rocketAttack", "modules/common/battlesfxfunctions/guard", "modules/common/battlesfxfunctions/particleTest", "modules/common/battlesfxfunctions/makeSFXFromVideo"], function (require, exports, BlackToAlpha_1, rocketAttack_1, guard_1, particleTest_1, makeSFXFromVideo_1) {
     "use strict";
     exports.rocketAttack = {
         duration: 1500,
@@ -25639,7 +25479,7 @@ define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], func
     exports.default = SubEmblemTemplates;
     var _a, _b;
 });
-define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App"], function (require, exports, SubEmblemTemplates_1, App_37) {
+define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App"], function (require, exports, SubEmblemTemplates_1, App_34) {
     "use strict";
     var defaultEmblems = {
         key: "defaultEmblems",
@@ -25663,7 +25503,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
                 for (var templateKey in SubEmblemTemplates_1.default) {
                     var template = SubEmblemTemplates_1.default[templateKey];
                     var image = loader.resources[template.src].data;
-                    App_37.default.images[template.src] = image;
+                    App_34.default.images[template.src] = image;
                     if (!image.width) {
                         document.body.appendChild(image);
                         image.width = image.offsetWidth;
@@ -25693,28 +25533,30 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports"], function
             author: "giraluna",
             description: ""
         },
-        ruleSet: {
-            manufactory: {
-                startingCapacity: 1,
-                maxCapacity: 3,
-                buildCost: 1000
-            },
-            research: {
-                baseResearchSpeed: 3000
-            },
-            battle: {
-                rowsPerFormation: 2,
-                cellsPerRow: 3,
-                maxUnitsPerSide: 6,
-                maxUnitsPerRow: 3,
-                baseMaxCapturedUnits: 1,
-                absoluteMaxCapturedUnits: 3,
-                baseUnitCaptureChance: 0.1,
-                humanUnitDeathChance: 0.65,
-                aiUnitDeathChance: 0.65,
-                independentUnitDeathChance: 1.0,
-                loserUnitExtraDeathChance: 0.35
-            }
+        constructModule: function (moduleData) {
+            moduleData.applyRuleSet({
+                manufactory: {
+                    startingCapacity: 1,
+                    maxCapacity: 3,
+                    buildCost: 1000
+                },
+                research: {
+                    baseResearchSpeed: 3000
+                },
+                battle: {
+                    rowsPerFormation: 2,
+                    cellsPerRow: 3,
+                    maxUnitsPerSide: 6,
+                    maxUnitsPerRow: 3,
+                    baseMaxCapturedUnits: 1,
+                    absoluteMaxCapturedUnits: 3,
+                    baseUnitCaptureChance: 0.1,
+                    humanUnitDeathChance: 0.65,
+                    aiUnitDeathChance: 0.65,
+                    independentUnitDeathChance: 1.0,
+                    loserUnitExtraDeathChance: 0.35
+                }
+            });
         }
     };
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -26172,7 +26014,7 @@ define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai
     exports.default = conquer;
     var _a, _b;
 });
-define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "src/mapai/Objective", "src/App"], function (require, exports, Objective_4, App_38) {
+define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "src/mapai/Objective", "src/RuleSet"], function (require, exports, Objective_4, RuleSet_10) {
     "use strict";
     var expandManufactoryCapacity = {
         key: "expandManufactoryCapacity",
@@ -26192,8 +26034,9 @@ define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "ex
                 if (fullyExpanded)
                     continue;
                 var expansionCost;
-                if (!star.manufactory)
-                    expansionCost = App_38.default.moduleData.ruleSet.manufactory.buildCost;
+                if (!star.manufactory) {
+                    expansionCost = RuleSet_10.default.manufactory.buildCost;
+                }
                 else {
                     expansionCost = star.manufactory.getCapacityUpgradeCost();
                 }
@@ -26217,7 +26060,7 @@ define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "ex
             }
             else {
                 star.buildManufactory();
-                player.money -= App_38.default.moduleData.ruleSet.manufactory.buildCost;
+                player.money -= RuleSet_10.default.manufactory.buildCost;
             }
         }
     };
@@ -26263,7 +26106,7 @@ define("modules/defaultai/Objectives", ["require", "exports", "modules/defaultai
     exports.default = Objectives;
     var _a, _b, _c;
 });
-define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_39) {
+define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_35) {
     "use strict";
     ;
     function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
@@ -26272,7 +26115,7 @@ define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], functi
         }
     }
     function addImageToApp(name, image) {
-        App_39.default.images[name] = image;
+        App_35.default.images[name] = image;
     }
     function cacheSpriteSheetAsImages(sheetData, sheetImg, onImageCreated) {
         if (onImageCreated === void 0) { onImageCreated = addImageToApp; }
@@ -26584,7 +26427,7 @@ define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", 
     exports.default = defaultAttitudeModifiers;
     var _a, _b, _c, _d, _e, _f;
 });
-define("src/mapgencore/Region", ["require", "exports"], function (require, exports) {
+define("modules/defaultmapgen/common/Region", ["require", "exports"], function (require, exports) {
     "use strict";
     var Region = (function () {
         function Region(id, isFiller) {
@@ -26623,7 +26466,7 @@ define("src/mapgencore/Region", ["require", "exports"], function (require, expor
     exports.default = Region;
     var _a, _b, _c, _d, _e, _f;
 });
-define("src/mapgencore/Sector", ["require", "exports", "src/App", "src/Unit", "src/Building", "src/Fleet", "src/utility"], function (require, exports, App_40, Unit_7, Building_4, Fleet_5, utility_49) {
+define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", "src/Unit", "src/Building", "src/Fleet", "src/utility"], function (require, exports, App_36, Unit_7, Building_4, Fleet_5, utility_49) {
     "use strict";
     var Sector = (function () {
         function Sector(id) {
@@ -26734,7 +26577,7 @@ define("src/mapgencore/Sector", ["require", "exports", "src/App", "src/Unit", "s
                 var star = independentStars[i];
                 player.addStar(star);
                 star.addBuilding(new Building_4.default({
-                    template: App_40.default.moduleData.Templates.Buildings["starBase"],
+                    template: App_36.default.moduleData.Templates.Buildings["starBase"],
                     location: star
                 }));
                 var nearestPlayerStar = star.getNearestStarForQualifier(starIsOwnedByPlayerQualifierFN);
@@ -26799,7 +26642,88 @@ define("src/mapgencore/Sector", ["require", "exports", "src/App", "src/Unit", "s
     exports.default = Sector;
     var _a, _b, _c, _d, _e, _f;
 });
-define("src/mapgencore/triangulation", ["require", "exports", "src/mapgencore/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_50) {
+define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var Triangle = (function () {
+        function Triangle(a, b, c) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+        }
+        Triangle.prototype.getPoints = function () {
+            return [this.a, this.b, this.c];
+        };
+        Triangle.prototype.calculateCircumCircle = function (tolerance) {
+            if (tolerance === void 0) { tolerance = 0.00001; }
+            var pA = this.a;
+            var pB = this.b;
+            var pC = this.c;
+            var m1, m2;
+            var mx1, mx2;
+            var my1, my2;
+            var cX, cY;
+            if (Math.abs(pB.y - pA.y) < tolerance) {
+                m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+                mx2 = (pB.x + pC.x) * 0.5;
+                my2 = (pB.y + pC.y) * 0.5;
+                cX = (pB.x + pA.x) * 0.5;
+                cY = m2 * (cX - mx2) + my2;
+            }
+            else {
+                m1 = -(pB.x - pA.x) / (pB.y - pA.y);
+                mx1 = (pA.x + pB.x) * 0.5;
+                my1 = (pA.y + pB.y) * 0.5;
+                if (Math.abs(pC.y - pB.y) < tolerance) {
+                    cX = (pC.x + pB.x) * 0.5;
+                    cY = m1 * (cX - mx1) + my1;
+                }
+                else {
+                    m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+                    mx2 = (pB.x + pC.x) * 0.5;
+                    my2 = (pB.y + pC.y) * 0.5;
+                    cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+                    cY = m1 * (cX - mx1) + my1;
+                }
+            }
+            this.circumCenterX = cX;
+            this.circumCenterY = cY;
+            mx1 = pB.x - cX;
+            my1 = pB.y - cY;
+            this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
+        };
+        Triangle.prototype.circumCircleContainsPoint = function (point) {
+            this.calculateCircumCircle();
+            var x = point.x - this.circumCenterX;
+            var y = point.y - this.circumCenterY;
+            var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
+            return (contains);
+        };
+        Triangle.prototype.getEdges = function () {
+            var edges = [
+                [this.a, this.b],
+                [this.b, this.c],
+                [this.c, this.a]
+            ];
+            return edges;
+        };
+        Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
+            var ownPoints = this.getPoints();
+            var otherPoints = toCheckAgainst.getPoints();
+            var shared = 0;
+            for (var i = 0; i < ownPoints.length; i++) {
+                if (otherPoints.indexOf(ownPoints[i]) >= 0) {
+                    shared++;
+                }
+            }
+            return shared;
+        };
+        return Triangle;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Triangle;
+    var _a, _b, _c, _d, _e, _f;
+});
+define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_50) {
     "use strict";
     function triangulate(vertices) {
         var triangles = [];
@@ -26841,7 +26765,8 @@ define("src/mapgencore/triangulation", ["require", "exports", "src/mapgencore/Tr
         }
         return triangles;
     }
-    exports.triangulate = triangulate;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = triangulate;
     function makeSuperTriangle(vertices, highestCoordinateValue) {
         var max;
         if (highestCoordinateValue) {
@@ -26876,7 +26801,7 @@ define("src/mapgencore/triangulation", ["require", "exports", "src/mapgencore/Tr
     }
     var _a, _b, _c, _d, _e, _f;
 });
-define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_41) {
+define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_37) {
     "use strict";
     var TemplateIndexes = (function () {
         function TemplateIndexes() {
@@ -26929,14 +26854,14 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
                     }
                 }
             }
-            putInGroups(App_41.default.moduleData.Templates.UnitFamilies, "unitFamilies");
-            putInGroups(App_41.default.moduleData.Templates.Resources, "resources");
+            putInGroups(App_37.default.moduleData.Templates.UnitFamilies, "unitFamilies");
+            putInGroups(App_37.default.moduleData.Templates.Resources, "resources");
             return result;
         };
         TemplateIndexes.getItemsByTechLevel = function () {
             var itemsByTechLevel = {};
-            for (var itemName in App_41.default.moduleData.Templates.Items) {
-                var item = App_41.default.moduleData.Templates.Items[itemName];
+            for (var itemName in App_37.default.moduleData.Templates.Items) {
+                var item = App_37.default.moduleData.Templates.Items[itemName];
                 if (!itemsByTechLevel[item.techLevel]) {
                     itemsByTechLevel[item.techLevel] = [];
                 }
@@ -26951,7 +26876,7 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
     exports.default = indexes;
     var _a, _b, _c, _d, _e, _f;
 });
-define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapgencore/Sector", "src/mapgencore/triangulation", "src/Building", "src/Color", "src/Emblem", "src/Flag", "src/TemplateIndexes", "src/pathfinding", "src/utility"], function (require, exports, App_42, Sector_1, triangulation_1, Building_5, Color_5, Emblem_4, Flag_5, TemplateIndexes_1, pathfinding_1, utility_51) {
+define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/App", "modules/defaultmapgen/common/Sector", "modules/defaultmapgen/common/triangulate", "src/Building", "src/Color", "src/Emblem", "src/Flag", "src/TemplateIndexes", "src/pathfinding", "src/utility"], function (require, exports, App_38, Sector_1, triangulate_1, Building_5, Color_5, Emblem_4, Flag_5, TemplateIndexes_1, pathfinding_1, utility_51) {
     "use strict";
     function linkAllStars(stars) {
         if (stars.length < 3) {
@@ -26960,7 +26885,7 @@ define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapg
             }
             return;
         }
-        var triangles = triangulation_1.triangulate(stars);
+        var triangles = triangulate_1.default(stars);
         for (var i = 0; i < triangles.length; i++) {
             var edges = triangles[i].getEdges();
             for (var j = 0; j < edges.length; j++) {
@@ -27190,14 +27115,14 @@ define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapg
         }
         if (addSectorCommand) {
             star.addBuilding(new Building_5.default({
-                template: App_42.default.moduleData.Templates.Buildings["sectorCommand"],
+                template: App_38.default.moduleData.Templates.Buildings["sectorCommand"],
                 location: star
             }));
             var amount = amount - 1;
         }
         for (var i = 0; i < amount; i++) {
             star.addBuilding(new Building_5.default({
-                template: App_42.default.moduleData.Templates.Buildings["starBase"],
+                template: App_38.default.moduleData.Templates.Buildings["starBase"],
                 location: star
             }));
         }
@@ -27210,7 +27135,7 @@ define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapg
         player.secondaryColor = Color_5.default.fromHex(0xFFFFFF);
         player.isIndependent = true;
         var foregroundEmblem = new Emblem_4.default(player.secondaryColor);
-        foregroundEmblem.inner = App_42.default.moduleData.Templates.SubEmblems["Flag_of_Edward_England"];
+        foregroundEmblem.inner = App_38.default.moduleData.Templates.SubEmblems["Flag_of_Edward_England"];
         player.flag = new Flag_5.default({
             width: 46,
             mainColor: player.color,
@@ -27232,7 +27157,7 @@ define("src/mapgencore/mapGenUtils", ["require", "exports", "src/App", "src/mapg
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/Player", "src/Star", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/Region", "src/mapgencore/voronoi", "src/mapgencore/mapGenUtils"], function (require, exports, App_43, FillerPoint_2, Player_4, Star_2, utility_52, MapGenResult_2, Region_1, voronoi_2, mapGenUtils_1) {
+define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/Player", "src/Star", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/voronoi", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/mapGenUtils"], function (require, exports, App_39, FillerPoint_2, Player_4, Star_2, utility_52, MapGenResult_2, voronoi_2, Region_1, mapGenUtils_1) {
     "use strict";
     var spiralGalaxyGeneration = function (options, players) {
         var sg = (function setStarGenerationProps(options) {
@@ -27376,14 +27301,14 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
         var resourcePlacerFN = function (sector, resource) {
             sector.addResource(resource);
         };
-        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "resources", App_43.default.moduleData.Templates.Resources, resourcePlacerFN);
+        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "resources", App_39.default.moduleData.Templates.Resources, resourcePlacerFN);
         var localUnitPlacerFN = function (sector, unitFamily) {
             for (var i = 0; i < sector.stars.length; i++) {
                 var star = sector.stars[i];
                 star.buildableUnitTypes = star.buildableUnitTypes.concat(unitFamily.associatedTemplates);
             }
         };
-        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "unitFamilies", App_43.default.moduleData.Templates.UnitFamilies, localUnitPlacerFN);
+        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "unitFamilies", App_39.default.moduleData.Templates.UnitFamilies, localUnitPlacerFN);
         var startRegions = (function setStartingRegions() {
             var armCount = options.basicOptions["arms"];
             var playerCount = Math.min(players.length, armCount);
@@ -27713,7 +27638,7 @@ define("modules/defaultunits/unitFamilies", ["require", "exports"], function (re
     exports.default = UnitFamilies;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_44, utility_53) {
+define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_40, utility_53) {
     "use strict";
     var defaultUnitDrawingFunction = function (unit, SFXParams) {
         var spriteTemplate = unit.template.sprite;
@@ -27734,7 +27659,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             isConvex = !isConvex;
             degree = Math.abs(degree);
         }
-        var image = App_44.default.images[spriteTemplate.imageSrc];
+        var image = App_40.default.images[spriteTemplate.imageSrc];
         var zDistance = props.zDistance;
         var xDistance = props.xDistance;
         var unitsToDraw;
@@ -28333,7 +28258,7 @@ define("modules/defaultunits/defaultUnits", ["require", "exports", "modules/defa
     exports.default = defaultUnits;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("src/shaders/Nebula", ["require", "exports"], function (require, exports) {
+define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (require, exports) {
     "use strict";
     var Nebula = (function (_super) {
         __extends(Nebula, _super);
@@ -28514,7 +28439,7 @@ define("src/shaders/Nebula", ["require", "exports"], function (require, exports)
     ];
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "src/shaders/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_54) {
+define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_54) {
     "use strict";
     function drawNebula(seed, renderer) {
         var oldRng = Math.random;
@@ -28578,14 +28503,14 @@ define("modules/defaultmapmodes/maplayertemplates/debugSectors", ["require", "ex
         displayName: "Sectors (debug)",
         interactive: false,
         alpha: 0.5,
-        drawingFunction: function (map) {
+        drawingFunction: function (map, persectivePlayer) {
             var doc = new PIXI.Container();
             var points;
-            if (!this.player) {
+            if (!persectivePlayer) {
                 points = map.stars;
             }
             else {
-                points = this.player.getRevealedStars();
+                points = persectivePlayer.getRevealedStars();
             }
             if (!points[0].mapGenData || !points[0].mapGenData.sector) {
                 return doc;
@@ -28623,17 +28548,17 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
         key: "nonFillerStars",
         displayName: "Stars",
         interactive: true,
-        drawingFunction: function (map) {
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
             var points;
-            if (!this.player) {
+            if (!perspectivePlayer) {
                 points = map.stars;
             }
             else {
-                points = this.player.getRevealedStars();
+                points = perspectivePlayer.getRevealedStars();
             }
-            var mouseDownFN = function (event) {
-                eventManager_41.default.dispatchEvent("mouseDown", event, this);
+            var mouseDownFN = function (star, event) {
+                eventManager_41.default.dispatchEvent("mouseDown", event, star);
             };
             var mouseUpFN = function (event) {
                 eventManager_41.default.dispatchEvent("mouseUp", event);
@@ -28668,13 +28593,13 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
                 gfx.endFill();
                 gfx.interactive = true;
                 gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
-                var boundMouseDown = mouseDownFN.bind(star);
-                var gfxClickFN = function (event) {
+                var boundMouseDown = mouseDownFN.bind(null, star);
+                var gfxClickFN = function (star, event) {
                     var originalEvent = event.data.originalEvent;
                     if (originalEvent.button)
                         return;
-                    onClickFN(this);
-                }.bind(star);
+                    onClickFN(star);
+                }.bind(null, star);
                 gfx.on("mousedown", boundMouseDown);
                 gfx.on("mouseup", mouseUpFN);
                 gfx.on("rightdown", boundMouseDown);
@@ -28708,17 +28633,17 @@ define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", 
         key: "playerInfluence",
         displayName: "Influence",
         interactive: false,
-        drawingFunction: function (map) {
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
             var points;
-            if (!this.player) {
+            if (!perspectivePlayer) {
                 points = map.stars;
             }
             else {
-                points = this.player.getRevealedStars();
+                points = perspectivePlayer.getRevealedStars();
             }
-            var mapEvaluator = new MapEvaluator_2.default(map, this.player);
-            var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
+            var mapEvaluator = new MapEvaluator_2.default(map, perspectivePlayer);
+            var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(perspectivePlayer);
             var minInfluence, maxInfluence;
             for (var starId in influenceByStar) {
                 var influence = influenceByStar[starId];
@@ -28781,17 +28706,17 @@ define("modules/defaultmapmodes/maplayertemplates/starLinks", ["require", "expor
         key: "starLinks",
         displayName: "Links",
         interactive: false,
-        drawingFunction: function (map) {
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
             var gfx = new PIXI.Graphics();
             doc.addChild(gfx);
             gfx.lineStyle(1, 0xCCCCCC, 0.6);
             var points;
-            if (!this.player) {
+            if (!perspectivePlayer) {
                 points = map.stars;
             }
             else {
-                points = this.player.getRevealedStars();
+                points = perspectivePlayer.getRevealedStars();
             }
             var starsFullyConnected = {};
             for (var i = 0; i < points.length; i++) {
@@ -28821,12 +28746,12 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", ["requ
         key: "nonFillerVoronoiLines",
         displayName: "Star borders",
         interactive: false,
-        drawingFunction: function (map) {
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
             var gfx = new PIXI.Graphics();
             doc.addChild(gfx);
             gfx.lineStyle(1, 0xA0A0A0, 0.5);
-            var visible = this.player ? this.player.getRevealedStars() : null;
+            var visible = perspectivePlayer ? perspectivePlayer.getRevealedStars() : null;
             var lines = map.voronoi.getNonFillerVoronoiLines(visible);
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i];
@@ -28840,21 +28765,85 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", ["requ
     exports.default = nonFillerVoronoiLines;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "exports"], function (require, exports) {
+define("modules/defaultmapmodes/maplayertemplates/shaders/Occupation", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var Occupation = (function (_super) {
+        __extends(Occupation, _super);
+        function Occupation(initialUniformValues) {
+            var uniforms = Occupation.makeUniformsObject(initialUniformValues);
+            _super.call(this, null, sourceLines.join("\n"), uniforms);
+        }
+        Occupation.makeUniformsObject = function (initialValues) {
+            if (initialValues === void 0) { initialValues = {}; }
+            return ({
+                angle: { type: "1f", value: initialValues.angle },
+                offset: { type: "2fv", value: initialValues.offset },
+                scale: { type: "1f", value: initialValues.scale },
+                stripeColor: { type: "4fv", value: initialValues.stripeColor },
+                stripeSize: { type: "1f", value: initialValues.stripeSize },
+            });
+        };
+        Occupation.prototype.setUniformValues = function (values) {
+            for (var key in values) {
+                this.uniforms[key].value = values[key];
+            }
+        };
+        return Occupation;
+    }(PIXI.AbstractFilter));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Occupation;
+    var sourceLines = [
+        "precision mediump float;",
+        "",
+        "varying vec2 vTextureCoord;",
+        "uniform sampler2D uSampler;",
+        "",
+        "uniform vec2 offset;",
+        "uniform float scale;",
+        "uniform float angle;",
+        "uniform vec4 stripeColor;",
+        "uniform float stripeSize;",
+        "",
+        "void main()",
+        "{",
+        "  vec4 color = texture2D(uSampler, vTextureCoord);",
+        "",
+        "  vec2 pos = gl_FragCoord.xy + offset;",
+        "",
+        "  vec2 q;",
+        "  q.x = cos(angle) * pos.x - sin(angle) * pos.y;",
+        "  q.y = sin(angle) * pos.x + cos(angle) * pos.y;",
+        "",
+        "  q /= scale;",
+        "",
+        "  float stripeIntensity = sin(q.x) / 2.0 + 0.5;",
+        "  stripeIntensity = step(stripeIntensity, stripeSize);",
+        "",
+        "  gl_FragColor = mix(color, stripeColor * color.a, stripeIntensity);",
+        "}",
+    ];
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+});
+define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "exports", "src/eventManager", "modules/defaultmapmodes/maplayertemplates/shaders/Occupation"], function (require, exports, eventManager_42, Occupation_1) {
     "use strict";
     var starOwners = {
         key: "starOwners",
         displayName: "Star owners",
         interactive: false,
         alpha: 0.5,
-        drawingFunction: function (map) {
+        destroy: function () {
+            for (var key in occupationShaders) {
+                delete occupationShaders[key];
+            }
+        },
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
             var points;
-            if (!this.player) {
+            if (!perspectivePlayer) {
                 points = map.stars;
             }
             else {
-                points = this.player.getRevealedStars();
+                points = perspectivePlayer.getRevealedStars();
             }
             for (var i = 0; i < points.length; i++) {
                 var star = points[i];
@@ -28870,53 +28859,114 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
                 gfx.drawShape(poly);
                 gfx.endFill();
                 if (occupier) {
-                    var container = new PIXI.Container();
-                    doc.addChild(container);
-                    var mask = new PIXI.Graphics();
-                    mask.isMask = true;
-                    mask.beginFill(0);
-                    mask.drawShape(poly);
-                    mask.endFill();
-                    container.addChild(gfx);
-                    container.addChild(mask);
-                    gfx.filters = [this.getOccupationShader(star.owner, occupier)];
-                    container.mask = mask;
+                    gfx.filters = [getOccupationShader(star.owner, occupier)];
                 }
-                else {
-                    doc.addChild(gfx);
-                }
+                doc.addChild(gfx);
             }
             return doc;
         }
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = starOwners;
+    var occupationShaders = {};
+    var hasAddedEventListeners = false;
+    function getOccupationShader(owner, occupier) {
+        if (!hasAddedEventListeners) {
+            eventManager_42.default.addEventListener("cameraZoomed", updateShaderZoom);
+            eventManager_42.default.addEventListener("cameraMoved", updateShaderOffset);
+        }
+        if (!occupationShaders[owner.id]) {
+            occupationShaders[owner.id] = {};
+        }
+        if (!occupationShaders[owner.id][occupier.id]) {
+            occupationShaders[owner.id][occupier.id] = new Occupation_1.default({
+                stripeColor: occupier.color.getRGBA(1.0),
+                stripeSize: 0.33,
+                offset: [0.0, 0.0],
+                angle: 0.25 * Math.PI,
+                scale: 8.0
+            });
+        }
+        return occupationShaders[owner.id][occupier.id];
+    }
+    function forEachOccupationShader(cb) {
+        for (var ownerId in occupationShaders) {
+            for (var occupierId in occupationShaders[ownerId]) {
+                cb(occupationShaders[ownerId][occupierId]);
+            }
+        }
+    }
+    function updateShaderOffset(x, y) {
+        forEachOccupationShader(function (shader) {
+            shader.uniforms.offset.value = [-x, y];
+        });
+    }
+    function updateShaderZoom(zoom) {
+        forEachOccupationShader(function (shader) {
+            shader.uniforms.scale.value = zoom * 8.0;
+        });
+    }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports"], function (require, exports) {
+define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_41) {
     "use strict";
     var fogOfWar = {
         key: "fogOfWar",
         displayName: "Fog of war",
         interactive: false,
         alpha: 0.35,
-        drawingFunction: function (map) {
+        destroy: function () {
+            for (var starId in fogOfWarSpriteByStarID) {
+                fogOfWarSpriteByStarID[starId].renderable = false;
+                fogOfWarSpriteByStarID[starId].texture.destroy(true);
+                fogOfWarSpriteByStarID[starId] = null;
+                delete fogOfWarSpriteByStarID[starId];
+            }
+        },
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
-            if (!this.player)
-                return doc;
-            var points = this.player.getRevealedButNotVisibleStars();
-            if (!points || points.length < 1)
-                return doc;
-            for (var i = 0; i < points.length; i++) {
-                var star = points[i];
-                var sprite = this.getFowSpriteForStar(star);
-                doc.addChild(sprite);
+            if (perspectivePlayer) {
+                var starsInFogOfWar = perspectivePlayer.getRevealedButNotVisibleStars();
+                for (var i = 0; i < starsInFogOfWar.length; i++) {
+                    var star = starsInFogOfWar[i];
+                    var sprite = getFogOfWarSpriteForStar(star, map.width, map.height);
+                    doc.addChild(sprite);
+                }
             }
             return doc;
         }
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = fogOfWar;
+    var fogOfWarTilingSprite;
+    function getfogOfWarTilingSprite(width, height) {
+        if (!fogOfWarTilingSprite) {
+            var fowTexture = PIXI.Texture.fromFrame("modules/defaultmapmodes/img/fowTexture.png");
+            fogOfWarTilingSprite = new PIXI.extras.TilingSprite(fowTexture, width, height);
+        }
+        return fogOfWarTilingSprite;
+    }
+    var fogOfWarSpriteByStarID = {};
+    function getFogOfWarSpriteForStar(star, width, height) {
+        var tiled = getfogOfWarTilingSprite(width, height);
+        if (!fogOfWarSpriteByStarID[star.id] || Object.keys(fogOfWarSpriteByStarID).length < 4) {
+            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+            var gfx = new PIXI.Graphics();
+            gfx.isMask = true;
+            gfx.beginFill(0);
+            gfx.drawShape(poly);
+            gfx.endFill();
+            tiled.removeChildren();
+            tiled.mask = gfx;
+            tiled.addChild(gfx);
+            var bounds = tiled.getBounds();
+            var rendered = tiled.generateTexture(App_41.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
+            var sprite = new PIXI.Sprite(rendered);
+            fogOfWarSpriteByStarID[star.id] = sprite;
+            tiled.mask = null;
+        }
+        return fogOfWarSpriteByStarID[star.id];
+    }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_55) {
@@ -29147,19 +29197,19 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
         displayName: "Owner borders",
         interactive: false,
         alpha: 0.7,
-        drawingFunction: function (map) {
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
             if (options_9.default.display.borderWidth <= 0) {
                 return doc;
             }
-            var revealedStars = this.player.getRevealedStars();
+            var revealedStars = perspectivePlayer.getRevealedStars();
             var borderEdges = borderPolygon_1.getRevealedBorderEdges(revealedStars, map.voronoi);
             for (var i = 0; i < borderEdges.length; i++) {
                 var gfx = new PIXI.Graphics();
                 doc.addChild(gfx);
                 var polyLineData = borderEdges[i];
                 var player = polyLineData.points[0].star.owner;
-                gfx.lineStyle(options_9.default.display.borderWidth, player.secondaryColor, 1);
+                gfx.lineStyle(options_9.default.display.borderWidth, player.secondaryColor.getHex(), 1);
                 var polygon = new PIXI.Polygon(polyLineData.points);
                 polygon.closed = polyLineData.isClosed;
                 gfx.drawShape(polygon);
@@ -29177,14 +29227,14 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
         key: "starIncome",
         displayName: "Income",
         interactive: false,
-        drawingFunction: function (map) {
+        drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
             var points;
-            if (!this.player) {
+            if (!perspectivePlayer) {
                 points = map.stars;
             }
             else {
-                points = this.player.getRevealedStars();
+                points = perspectivePlayer.getRevealedStars();
             }
             var incomeBounds = map.getIncomeBounds();
             function getRelativeValue(min, max, value) {
