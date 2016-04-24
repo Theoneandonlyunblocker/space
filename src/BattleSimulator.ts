@@ -33,7 +33,6 @@ export default class BattleSimulator
       this.simulateMove();
     }
   }
-
   simulateMove()
   {
     if (!this.battle.activeUnit || this.battle.ended)
@@ -48,23 +47,21 @@ export default class BattleSimulator
     
     this.battle.endTurn();
   }
-
   simulateAbility(ability: AbilityTemplate, target: Unit)
   {
     useAbility(this.battle, ability, this.battle.activeUnit, target, false);
   }
+  // getBattleEndData()
+  // {
+  //   if (!this.battle.ended)
+  //   {
+  //     throw new Error("Simulated battle hasn't ended yet");
+  //   }
 
-  getBattleEndData()
-  {
-    if (!this.battle.ended)
-    {
-      throw new Error("Simulated battle hasn't ended yet");
-    }
-
-    var captured = this.battle.capturedUnits;
-    var destroyed = this.battle.deadUnits;
-    var victor = this.battle.getVictor();
-  }
+  //   var captured = this.battle.capturedUnits;
+  //   var destroyed = this.battle.deadUnits;
+  //   var victor = this.battle.getVictor();
+  // }
   finishBattle()
   {
     this.battle.finishBattle();
