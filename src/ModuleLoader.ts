@@ -1,6 +1,5 @@
 import ModuleData from "./ModuleData";
 import ModuleFile from "./ModuleFile";
-import RuleSetValues from "./RuleSet";
 
 export default class ModuleLoader
 {

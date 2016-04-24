@@ -1,7 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-
-import RuleSet from "../../RuleSet";
+import app from "../../App";
 import Unit from "../../Unit";
 import UnitWrapper from "../unit/UnitWrapper";
 import UnitDisplayData from "../../UnitDisplayData";
@@ -99,7 +98,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
     for (let i = 0; i < this.props.formation.length; i++)
     {
       const absoluteRowIndex = this.props.facesLeft ?
-        i + RuleSet.battle.rowsPerFormation :
+        i + app.moduleData.ruleSet.battle.rowsPerFormation :
         i;
       const unitElements: React.ReactElement<any>[] = [];
       for (let j = 0; j < this.props.formation[i].length; j++)

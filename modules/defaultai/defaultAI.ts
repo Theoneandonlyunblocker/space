@@ -3,7 +3,6 @@ import Objectives from "./Objectives";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
-import RuleSet from "../../src/RuleSet";
 
 import ObjectiveTemplate from "../../src/templateinterfaces/ObjectiveTemplate";
 

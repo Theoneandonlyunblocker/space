@@ -6,9 +6,9 @@ import ObjectivesAI from "../../../src/mapai/ObjectivesAI";
 
 import ObjectiveTemplate from "../../../src/templateinterfaces/ObjectiveTemplate";
 
+import app from "../../../src/App";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
-import RuleSet from "../../../src/RuleSet";
 
 const expandManufactoryCapacity: ObjectiveTemplate =
 {
@@ -45,7 +45,7 @@ const expandManufactoryCapacity: ObjectiveTemplate =
       var expansionCost: number;
       if (!star.manufactory)
       {
-        expansionCost = RuleSet.manufactory.buildCost;
+        expansionCost = app.moduleData.ruleSet.manufactory.buildCost;
       }
       else
       {
@@ -79,7 +79,7 @@ const expandManufactoryCapacity: ObjectiveTemplate =
     else
     {
       star.buildManufactory();
-      player.money -= RuleSet.manufactory.buildCost;
+      player.money -= app.moduleData.ruleSet.manufactory.buildCost;
     }
   }
 }

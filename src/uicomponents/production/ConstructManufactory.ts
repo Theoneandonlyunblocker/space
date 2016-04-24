@@ -1,9 +1,8 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import RuleSet from "../../RuleSet";
-
 import Player from "../../Player";
 import Star from "../../Star";
+import app from "../../App";
 
 
 interface PropTypes extends React.Props<any>
@@ -44,7 +43,7 @@ export class ConstructManufactoryComponent extends React.Component<PropTypes, St
   {
     return(
     {
-      canAfford: this.props.money >= RuleSet.manufactory.buildCost
+      canAfford: this.props.money >= app.moduleData.ruleSet.manufactory.buildCost
     });
   }
   
@@ -52,7 +51,7 @@ export class ConstructManufactoryComponent extends React.Component<PropTypes, St
   {
     this.setState(
     {
-      canAfford: newProps.money >= RuleSet.manufactory.buildCost
+      canAfford: newProps.money >= app.moduleData.ruleSet.manufactory.buildCost
     });
   }
 
@@ -61,7 +60,7 @@ export class ConstructManufactoryComponent extends React.Component<PropTypes, St
     var star = this.props.star;
     var player = this.props.player;
     star.buildManufactory();
-    player.money -= RuleSet.manufactory.buildCost;
+    player.money -= app.moduleData.ruleSet.manufactory.buildCost;
     this.props.triggerUpdate();
   }
 
@@ -89,7 +88,7 @@ export class ConstructManufactoryComponent extends React.Component<PropTypes, St
             className: "construct-manufactory-cost money-style" +
               (this.state.canAfford ? "" : " negative")
           },
-            RuleSet.manufactory.buildCost
+            app.moduleData.ruleSet.manufactory.buildCost
           )
         )
       )

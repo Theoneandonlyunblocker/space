@@ -1,4 +1,3 @@
-import RuleSet from "../../src/RuleSet";
 import ModuleData from "../../src/ModuleData";
 import ModuleFile from "../../src/ModuleFile";
 

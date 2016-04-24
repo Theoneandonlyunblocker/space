@@ -29,6 +29,9 @@ define("src/idGenerators", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = idGenerators;
 });
+define("src/RandomGenUnitRarity", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
 define("src/priorityqueue", ["require", "exports"], function (require, exports) {
     "use strict";
     var PriorityQueue = (function () {
@@ -414,5617 +417,7 @@ define("src/Fleet", ["require", "exports", "src/idGenerators", "src/App", "src/e
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Fleet;
 });
-define("src/Building", ["require", "exports", "src/idGenerators", "src/App"], function (require, exports, idGenerators_2, App_2) {
-    "use strict";
-    var Building = (function () {
-        function Building(props) {
-            this.template = props.template;
-            this.id = (props.id && isFinite(props.id)) ?
-                props.id : idGenerators_2.default.building++;
-            this.location = props.location;
-            this.controller = props.controller || this.location.owner;
-            this.upgradeLevel = props.upgradeLevel || 1;
-            this.totalCost = props.totalCost || this.template.buildCost || 0;
-        }
-        Building.prototype.getEffect = function (effect) {
-            if (effect === void 0) { effect = {}; }
-            if (!this.template.effect)
-                return {};
-            var multiplier = this.template.effectMultiplierFN ?
-                this.template.effectMultiplierFN(this.upgradeLevel) :
-                this.upgradeLevel;
-            for (var key in this.template.effect) {
-                var prop = this.template.effect[key];
-                if (isFinite(prop)) {
-                    if (!effect[key]) {
-                        effect[key] = 0;
-                    }
-                    effect[key] += prop * multiplier;
-                }
-                else {
-                    if (!effect[key]) {
-                        effect[key] = {};
-                    }
-                    for (var key2 in prop) {
-                        if (!effect[key][key2]) {
-                            effect[key][key2] = 0;
-                        }
-                        effect[key][key2] += prop[key2] * multiplier;
-                    }
-                }
-            }
-            return effect;
-        };
-        Building.prototype.getPossibleUpgrades = function () {
-            var self = this;
-            var upgrades = [];
-            if (this.upgradeLevel < this.template.maxUpgradeLevel) {
-                upgrades.push({
-                    template: this.template,
-                    level: this.upgradeLevel + 1,
-                    cost: this.template.buildCost * (this.upgradeLevel + 1),
-                    parentBuilding: this
-                });
-            }
-            else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
-                var templatedUpgrades = this.template.upgradeInto.map(function (upgradeData) {
-                    var template = App_2.default.moduleData.Templates.Buildings[upgradeData.templateType];
-                    return ({
-                        level: upgradeData.level,
-                        template: template,
-                        cost: template.buildCost,
-                        parentBuilding: self
-                    });
-                });
-                upgrades = upgrades.concat(templatedUpgrades);
-            }
-            return upgrades;
-        };
-        Building.prototype.upgrade = function () {
-        };
-        Building.prototype.setController = function (newController) {
-            var oldController = this.controller;
-            if (oldController === newController)
-                return;
-            this.controller = newController;
-            this.location.updateController();
-        };
-        Building.prototype.serialize = function () {
-            var data = {
-                templateType: this.template.type,
-                id: this.id,
-                locationId: this.location.id,
-                controllerId: this.controller.id,
-                upgradeLevel: this.upgradeLevel,
-                totalCost: this.totalCost
-            };
-            return data;
-        };
-        return Building;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Building;
-});
-define("src/Color", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var Color = (function () {
-        function Color(r, g, b) {
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-        Color.fromHex = function (hex) {
-            return new Color((hex >> 16 & 0xFF) / 255, (hex >> 8 & 0xFF) / 255, (hex & 0xFF) / 255);
-        };
-        Color.fromHexString = function (hexString) {
-            var hexDigits;
-            if (hexString.charAt(0) === "#") {
-                hexDigits = hexString.substring(1, 7);
-            }
-            return Color.fromHex(parseInt(hexDigits, 16));
-        };
-        Color.fromHSV = function (h, s, v) {
-            var r, g, b, i, f, p, q, t;
-            i = Math.floor(h * 6);
-            f = h * 6 - i;
-            p = v * (1 - s);
-            q = v * (1 - f * s);
-            t = v * (1 - (1 - f) * s);
-            switch (i % 6) {
-                case 0:
-                    r = v, g = t, b = p;
-                    break;
-                case 1:
-                    r = q, g = v, b = p;
-                    break;
-                case 2:
-                    r = p, g = v, b = t;
-                    break;
-                case 3:
-                    r = p, g = q, b = v;
-                    break;
-                case 4:
-                    r = t, g = p, b = v;
-                    break;
-                case 5:
-                    r = v, g = p, b = q;
-                    break;
-            }
-            return new Color(r, g, b);
-        };
-        Color.fromHSL = function (h, s, l) {
-            var r, g, b;
-            function hue2rgb(p, q, t) {
-                if (t < 0)
-                    t += 1;
-                if (t > 1)
-                    t -= 1;
-                if (t < 1 / 6)
-                    return p + (q - p) * 6 * t;
-                if (t < 1 / 2)
-                    return q;
-                if (t < 2 / 3)
-                    return p + (q - p) * (2 / 3 - t) * 6;
-                return p;
-            }
-            if (s == 0) {
-                r = g = b = l;
-            }
-            else {
-                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                var p = 2 * l - q;
-                r = hue2rgb(p, q, h + 1 / 3);
-                g = hue2rgb(p, q, h);
-                b = hue2rgb(p, q, h - 1 / 3);
-            }
-            return new Color(r, g, b);
-        };
-        Color.fromHUSL = function (h, s, l) {
-            var RGB = HUSL.toRGB(h * 360, s * 100, l * 100);
-            return new Color(RGB[0], RGB[1], RGB[2]);
-        };
-        Color.convertScalarsToDegrees = function (s) {
-            return [s[0] * 360, s[1] * 100, s[2] * 100];
-        };
-        Color.convertDegreesToScalars = function (d) {
-            return [d[0] / 360, d[1] / 100, d[2] / 100];
-        };
-        Color.prototype.getRGB = function () {
-            return [this.r, this.g, this.b];
-        };
-        Color.prototype.getRGBA = function (alpha) {
-            return [this.r, this.g, this.b, alpha];
-        };
-        Color.prototype.get8BitRGB = function () {
-            return this.getRGB().map(function (x) { return x * 255; });
-        };
-        Color.prototype.getHex = function () {
-            return (this.r * 255 << 16) + (this.g * 255 << 8) + this.b * 255;
-        };
-        Color.prototype.getHexString = function () {
-            var hex = Math.round(this.getHex());
-            var converted = hex.toString(16);
-            return '000000'.substr(0, 6 - converted.length) + converted;
-        };
-        Color.prototype.getHUSL = function () {
-            var husl = HUSL.fromRGB(this.r, this.g, this.b);
-            return [husl[0] / 360, husl[1] / 100, husl[2] / 100];
-        };
-        Color.prototype.getHSV = function () {
-            var r = this.r;
-            var g = this.g;
-            var b = this.b;
-            var max = Math.max(r, g, b), min = Math.min(r, g, b);
-            var h, s, v = max;
-            var d = max - min;
-            s = max == 0 ? 0 : d / max;
-            if (max == min) {
-                h = 0;
-            }
-            else {
-                switch (max) {
-                    case r:
-                        h = (g - b) / d + (g < b ? 6 : 0);
-                        break;
-                    case g:
-                        h = (b - r) / d + 2;
-                        break;
-                    case b:
-                        h = (r - g) / d + 4;
-                        break;
-                }
-                h /= 6;
-            }
-            return [h, s, v];
-        };
-        Color.prototype.serialize = function () {
-            return this.getRGB();
-        };
-        Color.deSerialize = function (saveData) {
-            if (!saveData) {
-                return undefined;
-            }
-            return new Color(saveData[0], saveData[1], saveData[2]);
-        };
-        return Color;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Color;
-});
-define("src/SubEmblemCoverage", ["require", "exports"], function (require, exports) {
-    "use strict";
-});
-define("src/SubEmblemPosition", ["require", "exports"], function (require, exports) {
-    "use strict";
-});
-define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_3, utility_1) {
-    "use strict";
-    var Emblem = (function () {
-        function Emblem(color, alpha, inner, outer) {
-            this.color = color;
-            this.alpha = isFinite(alpha) ? alpha : 1;
-            this.inner = inner;
-            this.outer = outer;
-        }
-        Emblem.prototype.generateRandom = function (minAlpha, rng) {
-            var rng = rng || new RNG(Math.random);
-            this.alpha = rng.uniform();
-            this.alpha = utility_1.clamp(this.alpha, minAlpha, 1);
-            this.generateSubEmblems(rng);
-        };
-        Emblem.prototype.canAddOuterTemplate = function () {
-            return (this.inner && this.inner.coverage.indexOf(0) !== -1);
-        };
-        Emblem.prototype.getPossibleSubEmblemsToAdd = function () {
-            var possibleTemplates = [];
-            if (this.inner && this.outer) {
-                throw new Error("Tried to get available sub emblems for emblem that already has both inner and outer");
-            }
-            if (!this.inner) {
-                for (var key in App_3.default.moduleData.Templates.SubEmblems) {
-                    if (!App_3.default.moduleData.Templates.SubEmblems[key].disallowRandomGeneration) {
-                        possibleTemplates.push(App_3.default.moduleData.Templates.SubEmblems[key]);
-                    }
-                }
-            }
-            else {
-                if (this.canAddOuterTemplate()) {
-                    for (var key in App_3.default.moduleData.Templates.SubEmblems) {
-                        var template = App_3.default.moduleData.Templates.SubEmblems[key];
-                        if (!template.disallowRandomGeneration && template.coverage.indexOf(1) !== -1) {
-                            possibleTemplates.push(template);
-                        }
-                    }
-                }
-            }
-            return possibleTemplates;
-        };
-        Emblem.prototype.generateSubEmblems = function (rng) {
-            var candidates = this.getPossibleSubEmblemsToAdd();
-            this.inner = utility_1.getSeededRandomArrayItem(candidates, rng);
-            candidates = this.getPossibleSubEmblemsToAdd();
-            if (candidates.length > 0 && rng.uniform() > 0.4) {
-                this.outer = utility_1.getSeededRandomArrayItem(candidates, rng);
-            }
-        };
-        Emblem.prototype.canAddBackground = function () {
-            if (this.inner.position.indexOf(0) !== -1) {
-                return (!this.outer || this.outer.position.indexOf(0) !== -1);
-            }
-            return false;
-        };
-        Emblem.prototype.drawSubEmblem = function (toDraw, maxWidth, maxHeight, stretch) {
-            var image = App_3.default.images[toDraw.src];
-            var width = image.width;
-            var height = image.height;
-            if (stretch) {
-                var widthRatio = width / maxWidth;
-                var heightRatio = height / maxHeight;
-                var largestRatio = Math.max(widthRatio, heightRatio);
-                width /= largestRatio;
-                height /= largestRatio;
-            }
-            var canvas = document.createElement("canvas");
-            canvas.width = width;
-            canvas.height = height;
-            var ctx = canvas.getContext("2d");
-            ctx.drawImage(image, 0, 0, width, height);
-            ctx.globalCompositeOperation = "source-in";
-            ctx.fillStyle = "#" + this.color.getHexString();
-            ctx.fillRect(0, 0, width, height);
-            return canvas;
-        };
-        Emblem.prototype.draw = function (maxWidth, maxHeight, stretch) {
-            var canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-            ctx.globalAlpha = this.alpha;
-            var inner = this.drawSubEmblem(this.inner, maxWidth, maxHeight, stretch);
-            canvas.width = inner.width;
-            canvas.height = inner.height;
-            ctx.drawImage(inner, 0, 0);
-            if (this.outer) {
-                var outer = this.drawSubEmblem(this.outer, maxWidth, maxHeight, stretch);
-                ctx.drawImage(outer, 0, 0);
-            }
-            return canvas;
-        };
-        Emblem.prototype.serialize = function () {
-            var data = {
-                alpha: this.alpha,
-                innerKey: this.inner.key
-            };
-            if (this.outer) {
-                data.outerKey = this.outer.key;
-            }
-            return data;
-        };
-        return Emblem;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Emblem;
-});
-define("src/Flag", ["require", "exports", "src/Emblem"], function (require, exports, Emblem_1) {
-    "use strict";
-    var Flag = (function () {
-        function Flag(props) {
-            this.cachedCanvases = {};
-            this.width = props.width;
-            this.height = props.height || props.width;
-            this.mainColor = props.mainColor;
-            this.secondaryColor = props.secondaryColor;
-            this.tetriaryColor = props.tetriaryColor;
-        }
-        Flag.prototype.setColorScheme = function (main, secondary, tetriary) {
-            this.mainColor = main;
-            this.secondaryColor = secondary;
-            if (this.foregroundEmblem && secondary) {
-                this.foregroundEmblem.color = this.secondaryColor;
-            }
-            this.tetriaryColor = tetriary;
-            if (this.backgroundEmblem && tetriary) {
-                this.backgroundEmblem.color = this.tetriaryColor;
-            }
-        };
-        Flag.prototype.generateRandom = function (seed) {
-            this.seed = seed || Math.random();
-            var rng = new RNG(this.seed);
-            this.foregroundEmblem = new Emblem_1.default(this.secondaryColor);
-            this.foregroundEmblem.generateRandom(1, rng);
-            if (this.foregroundEmblem.canAddBackground() && rng.uniform() > 0.5) {
-                this.backgroundEmblem = new Emblem_1.default(this.tetriaryColor);
-                this.backgroundEmblem.generateRandom(0.4, rng);
-            }
-        };
-        Flag.prototype.clearContent = function () {
-            this.customImage = null;
-            this._customImageToRender = null;
-            this.foregroundEmblem = null;
-            this.backgroundEmblem = null;
-            this.seed = null;
-        };
-        Flag.prototype.setForegroundEmblem = function (emblem) {
-            if (!emblem) {
-                this.foregroundEmblem = null;
-                return;
-            }
-            this.clearContent();
-            this.foregroundEmblem = emblem;
-            if (emblem.color) {
-                this.secondaryColor = emblem.color;
-            }
-            else {
-                emblem.color = this.secondaryColor;
-            }
-        };
-        Flag.prototype.setBackgroundEmblem = function (emblem) {
-            if (!emblem) {
-                this.backgroundEmblem = null;
-                return;
-            }
-            this.clearContent();
-            this.backgroundEmblem = emblem;
-            if (emblem.color) {
-                this.tetriaryColor = emblem.color;
-            }
-            else {
-                emblem.color = this.tetriaryColor;
-            }
-        };
-        Flag.prototype.setCustomImage = function (imageSrc) {
-            this.clearContent();
-            this.customImage = imageSrc;
-            var canvas = document.createElement("canvas");
-            canvas.width = this.width;
-            canvas.height = this.height;
-            var ctx = canvas.getContext("2d");
-            var image = new Image();
-            image.src = imageSrc;
-            var xPos, xWidth, yPos, yHeight;
-            if (image.width < this.width) {
-                xPos = (this.width - image.width) / 2;
-                xWidth = image.width;
-            }
-            else {
-                xPos = 0;
-                xWidth = this.width;
-            }
-            if (image.height < this.height) {
-                yPos = (this.height - image.height) / 2;
-                yHeight = image.height;
-            }
-            else {
-                yPos = 0;
-                yHeight = this.height;
-            }
-            ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
-            this._customImageToRender = canvas;
-        };
-        Flag.prototype.getCanvas = function (width, height, stretch, useCache) {
-            if (width === void 0) { width = this.width; }
-            if (height === void 0) { height = this.height; }
-            if (stretch === void 0) { stretch = true; }
-            if (useCache === void 0) { useCache = true; }
-            if (useCache) {
-                var sizeString = "" + width + "," + height + stretch;
-                if (!this.cachedCanvases[sizeString]) {
-                    var canvas = this.draw(width, height, stretch);
-                    this.cachedCanvases[sizeString] = canvas;
-                }
-                return this.cachedCanvases[sizeString];
-            }
-            else {
-                var canvas = this.draw(width, height, stretch);
-                return (canvas);
-            }
-        };
-        Flag.prototype.draw = function (width, height, stretch) {
-            if (width === void 0) { width = this.width; }
-            if (height === void 0) { height = this.height; }
-            if (stretch === void 0) { stretch = true; }
-            var canvas = document.createElement("canvas");
-            canvas.width = width;
-            canvas.height = height;
-            if (!this.mainColor) {
-                return canvas;
-            }
-            var ctx = canvas.getContext("2d");
-            ctx.globalCompositeOperation = "source-over";
-            ctx.fillStyle = "#" + this.mainColor.getHexString();
-            ctx.fillRect(0, 0, width, height);
-            if (this._customImageToRender) {
-                ctx.drawImage(this._customImageToRender, 0, 0);
-            }
-            else {
-                if (this.backgroundEmblem && this.tetriaryColor) {
-                    var background = this.backgroundEmblem.draw(width, height, stretch);
-                    var x = (width - background.width) / 2;
-                    var y = (height - background.height) / 2;
-                    ctx.drawImage(background, x, y);
-                }
-                if (this.foregroundEmblem && this.secondaryColor) {
-                    var foreground = this.foregroundEmblem.draw(width, height, stretch);
-                    var x = (width - foreground.width) / 2;
-                    var y = (height - foreground.height) / 2;
-                    ctx.drawImage(foreground, x, y);
-                }
-            }
-            return canvas;
-        };
-        Flag.prototype.serialize = function () {
-            var data = {
-                mainColor: this.mainColor.serialize()
-            };
-            if (this.secondaryColor) {
-                data.secondaryColor = this.secondaryColor.serialize();
-            }
-            if (this.tetriaryColor) {
-                data.tetriaryColor = this.tetriaryColor.serialize();
-            }
-            if (this.customImage) {
-                data.customImage = this.customImage;
-            }
-            else if (this.seed) {
-                data.seed = this.seed;
-            }
-            else {
-                if (this.foregroundEmblem)
-                    data.foregroundEmblem = this.foregroundEmblem.serialize();
-                if (this.backgroundEmblem)
-                    data.backgroundEmblem = this.backgroundEmblem.serialize();
-            }
-            return data;
-        };
-        return Flag;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Flag;
-});
-define("src/BattleTurnOrder", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var BattleTurnOrder = (function () {
-        function BattleTurnOrder() {
-            this.allUnits = [];
-            this.orderedUnits = [];
-        }
-        BattleTurnOrder.prototype.destroy = function () {
-            this.allUnits = null;
-            this.orderedUnits = null;
-        };
-        BattleTurnOrder.prototype.hasUnit = function (unit) {
-            return this.allUnits.indexOf(unit) !== -1;
-        };
-        BattleTurnOrder.prototype.addUnit = function (unit) {
-            if (this.hasUnit(unit)) {
-                throw new Error("Unit " + unit.name + " is already part of turn order");
-            }
-            this.allUnits.push(unit);
-            this.orderedUnits.push(unit);
-        };
-        BattleTurnOrder.turnOrderFilterFN = function (unit) {
-            if (unit.battleStats.currentActionPoints <= 0) {
-                return false;
-            }
-            if (unit.currentHealth <= 0) {
-                return false;
-            }
-            return true;
-        };
-        BattleTurnOrder.turnOrderSortFN = function (a, b) {
-            if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
-                return a.battleStats.moveDelay - b.battleStats.moveDelay;
-            }
-            else {
-                return a.id - b.id;
-            }
-        };
-        BattleTurnOrder.prototype.update = function () {
-            this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
-            this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
-        };
-        BattleTurnOrder.prototype.getActiveUnit = function () {
-            return this.orderedUnits[0];
-        };
-        BattleTurnOrder.getDisplayDataFromUnit = function (unit) {
-            return ({
-                moveDelay: unit.battleStats.moveDelay,
-                isGhost: false,
-                unit: unit,
-                displayName: unit.name
-            });
-        };
-        BattleTurnOrder.makeGhostDisplayData = function (ghostMoveDelay) {
-            return ({
-                moveDelay: ghostMoveDelay,
-                isGhost: true,
-                unit: null,
-                displayName: null
-            });
-        };
-        BattleTurnOrder.prototype.getGhostIndex = function (ghostMoveDelay, ghostId) {
-            for (var i = 0; i < this.orderedUnits.length; i++) {
-                var unit = this.orderedUnits[i];
-                var unitMoveDelay = unit.battleStats.moveDelay;
-                if (ghostMoveDelay < unitMoveDelay) {
-                    return i;
-                }
-                else if (ghostMoveDelay === unitMoveDelay && ghostId < unit.id) {
-                    return i;
-                }
-            }
-            return this.orderedUnits.length;
-        };
-        BattleTurnOrder.prototype.getDisplayData = function (ghostMoveDelay, ghostId) {
-            var displayData = this.orderedUnits.map(BattleTurnOrder.getDisplayDataFromUnit);
-            if (isFinite(ghostMoveDelay)) {
-                var ghostIndex = this.getGhostIndex(ghostMoveDelay, ghostId);
-                var ghostDisplayData = BattleTurnOrder.makeGhostDisplayData(ghostMoveDelay);
-                displayData.splice(ghostIndex, 0, ghostDisplayData);
-            }
-            return displayData;
-        };
-        return BattleTurnOrder;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = BattleTurnOrder;
-});
-define("src/Battle", ["require", "exports", "src/RuleSet", "src/App", "src/eventManager", "src/BattleTurnOrder", "src/UnitBattleSide", "src/utility"], function (require, exports, RuleSet_1, App_4, eventManager_2, BattleTurnOrder_1, UnitBattleSide_1, utility_2) {
-    "use strict";
-    var Battle = (function () {
-        function Battle(props) {
-            this.unitsById = {};
-            this.unitsBySide = {
-                side1: [],
-                side2: []
-            };
-            this.evaluation = {};
-            this.isSimulated = false;
-            this.isVirtual = false;
-            this.ended = false;
-            this.afterFinishCallbacks = [];
-            this.side1 = props.side1;
-            this.side1Player = props.side1Player;
-            this.side2 = props.side2;
-            this.side2Player = props.side2Player;
-            this.battleData = props.battleData;
-            this.turnOrder = new BattleTurnOrder_1.default();
-        }
-        Battle.prototype.init = function () {
-            var self = this;
-            UnitBattleSide_1.UnitBattleSides.forEach(function (sideId) {
-                var side = self[sideId];
-                for (var i = 0; i < side.length; i++) {
-                    for (var j = 0; j < side[i].length; j++) {
-                        if (side[i][j]) {
-                            self.unitsById[side[i][j].id] = side[i][j];
-                            self.unitsBySide[sideId].push(side[i][j]);
-                            var pos = self.getAbsolutePositionFromSidePosition([i, j], sideId);
-                            self.initUnit(side[i][j], sideId, pos);
-                        }
-                    }
-                }
-            });
-            this.currentTurn = 0;
-            this.maxTurns = 24;
-            this.turnsLeft = this.maxTurns;
-            this.updateTurnOrder();
-            this.startHealth =
-                {
-                    side1: this.getTotalHealthForSide("side1").current,
-                    side2: this.getTotalHealthForSide("side2").current
-                };
-            if (this.checkBattleEnd()) {
-                this.endBattle();
-            }
-            else {
-                this.shiftRowsIfNeeded();
-            }
-            this.triggerBattleStartAbilities();
-        };
-        Battle.prototype.forEachUnit = function (operator) {
-            for (var id in this.unitsById) {
-                operator.call(this, this.unitsById[id]);
-            }
-        };
-        Battle.prototype.initUnit = function (unit, side, position) {
-            unit.resetBattleStats();
-            unit.setBattlePosition(this, side, position);
-            this.turnOrder.addUnit(unit);
-            unit.timesActedThisTurn++;
-        };
-        Battle.prototype.triggerBattleStartAbilities = function () {
-            this.forEachUnit(function (unit) {
-                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-                if (passiveSkillsByPhase["atBattleStart"]) {
-                    var skills = passiveSkillsByPhase["atBattleStart"];
-                    for (var i = 0; i < skills.length; i++) {
-                        for (var j = 0; j < skills[i].atBattleStart.length; j++) {
-                            var effect = skills[i].atBattleStart[j];
-                            effect.action.executeAction(unit, unit, this, effect.data);
-                        }
-                    }
-                }
-            });
-        };
-        Battle.prototype.endTurn = function () {
-            this.currentTurn++;
-            this.turnsLeft--;
-            this.updateTurnOrder();
-            var shouldEnd = this.checkBattleEnd();
-            if (shouldEnd) {
-                this.endBattle();
-            }
-            else {
-                this.shiftRowsIfNeeded();
-            }
-        };
-        Battle.prototype.getPlayerForSide = function (side) {
-            if (side === "side1")
-                return this.side1Player;
-            else if (side === "side2")
-                return this.side2Player;
-            else
-                throw new Error("invalid side");
-        };
-        Battle.prototype.getSideForPlayer = function (player) {
-            if (this.side1Player === player)
-                return "side1";
-            else if (this.side2Player === player)
-                return "side2";
-            else
-                throw new Error("invalid player");
-        };
-        Battle.prototype.getActivePlayer = function () {
-            if (!this.activeUnit)
-                return null;
-            var side = this.activeUnit.battleStats.side;
-            return this.getPlayerForSide(side);
-        };
-        Battle.prototype.getRowByPosition = function (position) {
-            var rowsPerSide = RuleSet_1.default.battle.rowsPerFormation;
-            var side = position < rowsPerSide ? "side1" : "side2";
-            var relativePosition = position % rowsPerSide;
-            return this[side][relativePosition];
-        };
-        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
-            if (!victor || victor.isIndependent)
-                return [];
-            var winningSide = this.getSideForPlayer(victor);
-            var losingSide = utility_2.reverseSide(winningSide);
-            var losingUnits = this.unitsBySide[losingSide].slice(0);
-            losingUnits.sort(function (a, b) {
-                var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
-                if (captureChanceSort) {
-                    return captureChanceSort;
-                }
-                else {
-                    return utility_2.randInt(0, 1) * 2 - 1;
-                }
-            });
-            var capturedUnits = [];
-            for (var i = 0; i < losingUnits.length; i++) {
-                if (capturedUnits.length >= maxCapturedUnits)
-                    break;
-                var unit = losingUnits[i];
-                if (unit.currentHealth <= 0 &&
-                    Math.random() <= unit.battleStats.captureChance) {
-                    capturedUnits.push(unit);
-                }
-            }
-            return capturedUnits;
-        };
-        Battle.prototype.getUnitDeathChance = function (unit, victor) {
-            var player = unit.fleet.player;
-            var deathChance;
-            if (player.isIndependent) {
-                deathChance = RuleSet_1.default.battle.independentUnitDeathChance;
-            }
-            else if (player.isAI) {
-                deathChance = RuleSet_1.default.battle.aiUnitDeathChance;
-            }
-            else {
-                deathChance = RuleSet_1.default.battle.humanUnitDeathChance;
-            }
-            var playerDidLose = (victor && player !== victor);
-            if (playerDidLose) {
-                deathChance += RuleSet_1.default.battle.loserUnitExtraDeathChance;
-            }
-            return deathChance;
-        };
-        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
-            var deadUnits = [];
-            this.forEachUnit(function (unit) {
-                if (unit.currentHealth <= 0) {
-                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
-                    if (!wasCaptured) {
-                        var deathChance = this.getUnitDeathChance(unit, victor);
-                        if (Math.random() < deathChance) {
-                            deadUnits.push(unit);
-                        }
-                    }
-                }
-            });
-            return deadUnits;
-        };
-        Battle.prototype.endBattle = function () {
-            this.ended = true;
-            if (this.isVirtual)
-                return;
-            this.activeUnit = null;
-            var victor = this.getVictor();
-            var maxCapturedUnits = RuleSet_1.default.battle.baseMaxCapturedUnits;
-            this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
-            this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
-            eventManager_2.default.dispatchEvent("battleEnd", null);
-        };
-        Battle.prototype.finishBattle = function (forcedVictor) {
-            var victor = forcedVictor || this.getVictor();
-            for (var i = 0; i < this.deadUnits.length; i++) {
-                this.deadUnits[i].removeFromPlayer();
-            }
-            var experiencePerSide = this.getGainedExperiencePerSide();
-            this.forEachUnit(function (unit) {
-                unit.addExperience(experiencePerSide[unit.battleStats.side]);
-                unit.resetBattleStats();
-                if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
-                    unit.currentHealth = Math.round(unit.maxHealth * 0.1);
-                }
-                this.side1Player.identifyUnit(unit);
-                this.side2Player.identifyUnit(unit);
-            });
-            if (victor) {
-                for (var i = 0; i < this.capturedUnits.length; i++) {
-                    this.capturedUnits[i].transferToPlayer(victor);
-                    this.capturedUnits[i].experienceForCurrentLevel = 0;
-                }
-            }
-            if (this.battleData.building) {
-                if (victor) {
-                    this.battleData.building.setController(victor);
-                }
-            }
-            if (this.isSimulated) {
-                eventManager_2.default.dispatchEvent("renderLayer", "fleets", this.battleData.location);
-            }
-            else {
-                eventManager_2.default.dispatchEvent("setCameraToCenterOn", this.battleData.location);
-                eventManager_2.default.dispatchEvent("switchScene", "galaxyMap");
-            }
-            if (App_4.default.humanPlayer.starIsVisible(this.battleData.location)) {
-                eventManager_2.default.dispatchEvent("makeBattleFinishNotification", {
-                    location: this.battleData.location,
-                    attacker: this.battleData.attacker.player,
-                    defender: this.battleData.defender.player,
-                    victor: victor
-                });
-            }
-            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
-                this.afterFinishCallbacks[i]();
-            }
-        };
-        Battle.prototype.getVictor = function () {
-            var evaluation = this.getEvaluation();
-            if (evaluation > 0)
-                return this.side1Player;
-            else if (evaluation < 0)
-                return this.side2Player;
-            else
-                return null;
-        };
-        Battle.prototype.getTotalHealthForRow = function (position) {
-            var row = this.getRowByPosition(position);
-            var total = 0;
-            for (var i = 0; i < row.length; i++) {
-                if (row[i]) {
-                    total += row[i].currentHealth;
-                }
-            }
-            return total;
-        };
-        Battle.prototype.getTotalHealthForSide = function (side) {
-            var health = {
-                current: 0,
-                max: 0
-            };
-            var units = this.unitsBySide[side];
-            for (var i = 0; i < units.length; i++) {
-                var unit = units[i];
-                health.current += unit.currentHealth;
-                health.max += unit.maxHealth;
-            }
-            return health;
-        };
-        Battle.prototype.getEvaluation = function () {
-            var self = this;
-            var evaluation = 0;
-            UnitBattleSide_1.UnitBattleSides.forEach(function (side) {
-                var sign = side === "side1" ? 1 : -1;
-                var currentHealth = self.getTotalHealthForSide(side).current;
-                if (currentHealth <= 0) {
-                    return -999 * sign;
-                }
-                var currentHealthFactor = currentHealth / self.startHealth[side];
-                for (var i = 0; i < self.unitsBySide[side].length; i++) {
-                    if (self.unitsBySide[side][i].currentHealth <= 0) {
-                        evaluation -= 0.2 * sign;
-                    }
-                }
-                var defenderMultiplier = 1;
-                if (self.battleData.building) {
-                    var template = self.battleData.building.template;
-                    var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
-                    if (isDefender) {
-                        defenderMultiplier += template.defenderAdvantage;
-                    }
-                }
-                evaluation += currentHealthFactor * defenderMultiplier * sign;
-            });
-            evaluation = utility_2.clamp(evaluation, -1, 1);
-            this.evaluation[this.currentTurn] = evaluation;
-            return this.evaluation[this.currentTurn];
-        };
-        Battle.prototype.getAbsolutePositionFromSidePosition = function (relativePosition, side) {
-            if (side === "side1") {
-                return relativePosition;
-            }
-            else {
-                var rowsPerSide = RuleSet_1.default.battle.rowsPerFormation;
-                return [relativePosition[0] + rowsPerSide, relativePosition[1]];
-            }
-        };
-        Battle.prototype.updateBattlePositions = function (side) {
-            var units = this[side];
-            for (var i = 0; i < units.length; i++) {
-                var row = this[side][i];
-                for (var j = 0; j < row.length; j++) {
-                    var pos = this.getAbsolutePositionFromSidePosition([i, j], side);
-                    var unit = row[j];
-                    if (unit) {
-                        unit.setBattlePosition(this, side, pos);
-                    }
-                }
-            }
-        };
-        Battle.prototype.shiftRowsForSide = function (side) {
-            var formation = this[side];
-            if (side === "side1") {
-                formation.reverse();
-            }
-            var nextHealthyRowIndex;
-            for (var i = 1; i < formation.length; i++) {
-                var absoluteRow = side === "side1" ? i : i + RuleSet_1.default.battle.rowsPerFormation;
-                if (this.getTotalHealthForRow(absoluteRow) > 0) {
-                    nextHealthyRowIndex = i;
-                    break;
-                }
-            }
-            if (!isFinite(nextHealthyRowIndex)) {
-                throw new Error("Tried to shift battle rows when all rows are defeated");
-            }
-            var rowsToShift = formation.splice(0, nextHealthyRowIndex);
-            formation = formation.concat(rowsToShift);
-            if (side === "side1") {
-                formation.reverse();
-            }
-            this[side] = formation;
-            this.updateBattlePositions(side);
-        };
-        Battle.prototype.shiftRowsIfNeeded = function () {
-            var rowsPerSide = RuleSet_1.default.battle.rowsPerFormation;
-            var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
-            if (side1FrontRowHealth <= 0) {
-                this.shiftRowsForSide("side1");
-            }
-            var side2FrontRowHealth = this.getTotalHealthForRow(rowsPerSide);
-            if (side2FrontRowHealth <= 0) {
-                this.shiftRowsForSide("side2");
-            }
-        };
-        Battle.prototype.getGainedExperiencePerSide = function () {
-            var totalValuePerSide = {
-                side1: 0,
-                side2: 0
-            };
-            for (var side in this.unitsBySide) {
-                var totalValue = 0;
-                var units = this.unitsBySide[side];
-                for (var i = 0; i < units.length; i++) {
-                    totalValuePerSide[side] += units[i].level + 1;
-                }
-            }
-            return ({
-                side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
-                side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
-            });
-        };
-        Battle.prototype.checkBattleEnd = function () {
-            if (!this.activeUnit)
-                return true;
-            if (this.turnsLeft <= 0)
-                return true;
-            if (this.getTotalHealthForSide("side1").current <= 0 ||
-                this.getTotalHealthForSide("side2").current <= 0) {
-                return true;
-            }
-            return false;
-        };
-        Battle.prototype.makeVirtualClone = function () {
-            var battleData = this.battleData;
-            function cloneUnits(units) {
-                var clones = [];
-                for (var i = 0; i < units.length; i++) {
-                    var row = [];
-                    for (var j = 0; j < units[i].length; j++) {
-                        var unit = units[i][j];
-                        if (!unit) {
-                            row.push(unit);
-                        }
-                        else {
-                            row.push(unit.makeVirtualClone());
-                        }
-                    }
-                    clones.push(row);
-                }
-                return clones;
-            }
-            var side1 = cloneUnits(this.side1);
-            var side2 = cloneUnits(this.side2);
-            var side1Player = this.side1Player;
-            var side2Player = this.side2Player;
-            var clone = new Battle({
-                battleData: battleData,
-                side1: side1,
-                side2: side2,
-                side1Player: side1Player,
-                side2Player: side2Player
-            });
-            [side1, side2].forEach(function (side) {
-                for (var i = 0; i < side.length; i++) {
-                    for (var j = 0; j < side[i].length; j++) {
-                        if (!side[i][j])
-                            continue;
-                        clone.turnOrder.addUnit(side[i][j]);
-                        clone.unitsById[side[i][j].id] = side[i][j];
-                        clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
-                    }
-                }
-            });
-            clone.isVirtual = true;
-            clone.currentTurn = this.currentTurn;
-            clone.maxTurns = this.maxTurns;
-            clone.turnsLeft = this.turnsLeft;
-            clone.startHealth = this.startHealth;
-            clone.updateTurnOrder();
-            if (clone.checkBattleEnd()) {
-                clone.endBattle();
-            }
-            else {
-                clone.shiftRowsIfNeeded();
-            }
-            return clone;
-        };
-        Battle.prototype.updateTurnOrder = function () {
-            this.turnOrder.update();
-            this.activeUnit = this.turnOrder.getActiveUnit();
-        };
-        return Battle;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Battle;
-});
-define("src/getNullFormation", ["require", "exports", "src/RuleSet"], function (require, exports, RuleSet_2) {
-    "use strict";
-    function getNullFormation() {
-        var nullFormation = [];
-        var rows = RuleSet_2.default.battle.rowsPerFormation;
-        var columns = RuleSet_2.default.battle.cellsPerRow;
-        for (var i = 0; i < rows; i++) {
-            nullFormation.push([]);
-            for (var j = 0; j < columns; j++) {
-                nullFormation[i].push(null);
-            }
-        }
-        return nullFormation;
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = getNullFormation;
-});
-define("src/BattlePrepFormation", ["require", "exports", "src/RuleSet", "src/getNullFormation"], function (require, exports, RuleSet_3, getNullFormation_1) {
-    "use strict";
-    var BattlePrepFormation = (function () {
-        function BattlePrepFormation(player, units, hasScouted, minUnits) {
-            this.placedUnitPositionsByID = {};
-            this.displayDataIsDirty = true;
-            this.player = player;
-            this.units = units;
-            this.hasScouted = hasScouted;
-            this.minUnits = minUnits;
-            this.formation = getNullFormation_1.default();
-        }
-        BattlePrepFormation.prototype.forEachUnitInFormation = function (f) {
-            for (var i = 0; i < this.formation.length; i++) {
-                for (var j = 0; j < this.formation[i].length; j++) {
-                    var unit = this.formation[i][j];
-                    if (unit) {
-                        f(unit, [i, j]);
-                    }
-                }
-            }
-        };
-        BattlePrepFormation.prototype.getDisplayData = function () {
-            if (this.displayDataIsDirty) {
-                this.cachedDisplayData = this.getFormationDisplayData();
-                this.displayDataIsDirty = false;
-            }
-            return this.cachedDisplayData;
-        };
-        BattlePrepFormation.prototype.setAutoFormation = function (enemyUnits, enemyFormation) {
-            var _this = this;
-            this.clearFormation();
-            this.formation = this.getAutoFormation(enemyUnits, enemyFormation);
-            this.forEachUnitInFormation(function (unit, pos) {
-                _this.placedUnitPositionsByID[unit.id] = pos;
-            });
-            this.displayDataIsDirty = true;
-        };
-        BattlePrepFormation.prototype.getUnitPosition = function (unit) {
-            return this.placedUnitPositionsByID[unit.id];
-        };
-        BattlePrepFormation.prototype.getUnitAtPosition = function (position) {
-            return this.formation[position[0]][position[1]];
-        };
-        BattlePrepFormation.prototype.clearFormation = function () {
-            this.placedUnitPositionsByID = {};
-            this.formation = getNullFormation_1.default();
-            this.displayDataIsDirty = true;
-        };
-        BattlePrepFormation.prototype.isFormationValid = function () {
-            var amountOfUnitsPlaced = 0;
-            this.forEachUnitInFormation(function (unit) { return amountOfUnitsPlaced += 1; });
-            var availableUnits = this.units.filter(function (unit) { return unit.canActThisTurn(); });
-            var hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
-            return amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits;
-        };
-        BattlePrepFormation.prototype.setUnit = function (unit, position) {
-            var unitInTargetPosition = this.getUnitAtPosition(position);
-            if (unitInTargetPosition) {
-                this.swapUnits(unit, unitInTargetPosition);
-            }
-            else {
-                this.removeUnit(unit);
-                this.formation[position[0]][position[1]] = unit;
-                this.placedUnitPositionsByID[unit.id] = position;
-                this.displayDataIsDirty = true;
-            }
-        };
-        BattlePrepFormation.prototype.removeUnit = function (unit) {
-            var position = this.getUnitPosition(unit);
-            if (!position) {
-                return;
-            }
-            this.formation[position[0]][position[1]] = null;
-            delete this.placedUnitPositionsByID[unit.id];
-            this.displayDataIsDirty = true;
-        };
-        BattlePrepFormation.prototype.swapUnits = function (unit1, unit2) {
-            if (unit1 === unit2)
-                return;
-            var new1Pos = this.getUnitPosition(unit2);
-            var new2Pos = this.getUnitPosition(unit1);
-            this.removeUnit(unit1);
-            this.removeUnit(unit2);
-            this.setUnit(unit1, new1Pos);
-            this.setUnit(unit2, new2Pos);
-        };
-        BattlePrepFormation.prototype.getFormationDisplayData = function () {
-            var displayDataByID = {};
-            this.forEachUnitInFormation(function (unit) {
-                displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
-            });
-            return displayDataByID;
-        };
-        BattlePrepFormation.prototype.getAutoFormation = function (enemyUnits, enemyFormation) {
-            var scoutedUnits = this.hasScouted ? enemyUnits : null;
-            var scoutedFormation = this.hasScouted ? enemyFormation : null;
-            var formation = getNullFormation_1.default();
-            var unitsToPlace = this.units.filter(function (unit) { return unit.canActThisTurn(); });
-            var maxUnitsPerRow = formation[0].length;
-            var maxUnitsPerSide = RuleSet_3.default.battle.maxUnitsPerSide;
-            var placedInFront = 0;
-            var placedInBack = 0;
-            var totalPlaced = 0;
-            var unitsPlacedByArchetype = {};
-            var getUnitScoreFN = function (unit, row) {
-                var baseScore = unit.getStrengthEvaluation();
-                var archetype = unit.template.archetype;
-                var idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
-                var unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
-                var overMaxOfArchetypeIdeal = Math.max(0, unitsPlacedOfArchetype - idealMaxUnitsOfArchetype);
-                var archetypeIdealAdjust = 1 - overMaxOfArchetypeIdeal * 0.15;
-                var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
-                var rowModifier = archetype.scoreMultiplierForRowFN ?
-                    archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
-                    archetype.rowScores[row];
-                return ({
-                    unit: unit,
-                    score: baseScore * archetypeIdealAdjust * rowModifier,
-                    row: row
-                });
-            };
-            while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide) {
-                var positionScores = [];
-                for (var i = 0; i < unitsToPlace.length; i++) {
-                    var unit = unitsToPlace[i];
-                    if (placedInFront < maxUnitsPerRow) {
-                        positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
-                    }
-                    if (placedInBack < maxUnitsPerRow) {
-                        positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
-                    }
-                }
-                positionScores.sort(function (a, b) {
-                    return (b.score - a.score);
-                });
-                var topScore = positionScores[0];
-                if (topScore.row === "ROW_FRONT") {
-                    placedInFront++;
-                    formation[1][placedInFront - 1] = topScore.unit;
-                }
-                else {
-                    placedInBack++;
-                    formation[0][placedInBack - 1] = topScore.unit;
-                }
-                totalPlaced++;
-                if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type]) {
-                    unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
-                }
-                unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
-                unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
-            }
-            return formation;
-        };
-        return BattlePrepFormation;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = BattlePrepFormation;
-});
-define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFormation"], function (require, exports, Battle_1, BattlePrepFormation_1) {
-    "use strict";
-    var BattlePrep = (function () {
-        function BattlePrep(battleData) {
-            this.afterBattleFinishCallbacks = [];
-            this.attacker = battleData.attacker.player;
-            this.defender = battleData.defender.player;
-            this.battleData = battleData;
-            this.attackerUnits = battleData.attacker.units;
-            this.defenderUnits = battleData.defender.units;
-            var attackerHasScouted = this.attacker.starIsDetected(battleData.location);
-            this.attackerFormation = new BattlePrepFormation_1.default(this.attacker, this.attackerUnits, attackerHasScouted, 0);
-            var defenderHasScouted = this.defender.starIsDetected(battleData.location);
-            this.defenderFormation = new BattlePrepFormation_1.default(this.defender, this.defenderUnits, defenderHasScouted);
-            this.resetBattleStats();
-            this.minDefenders = this.getInitialMinDefenders();
-            this.setHumanAndEnemy();
-            if (this.enemyFormation) {
-                this.enemyFormation.setAutoFormation(this.humanUnits);
-                this.triggerPassiveSkills(this.enemyFormation);
-                this.defenderFormation.minUnits = this.minDefenders;
-            }
-            else {
-                this.attackerFormation.setAutoFormation(this.defenderUnits);
-                this.triggerPassiveSkills(this.attackerFormation);
-                this.defenderFormation.minUnits = this.minDefenders;
-                this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
-            }
-        }
-        BattlePrep.prototype.forEachUnit = function (f) {
-            this.attackerUnits.forEach(f);
-            this.defenderUnits.forEach(f);
-        };
-        BattlePrep.prototype.isLocationNeutral = function () {
-            return (this.battleData.location.owner !== this.attacker &&
-                this.battleData.location.owner !== this.defender);
-        };
-        BattlePrep.prototype.makeBattle = function () {
-            var side1Formation = this.humanFormation || this.attackerFormation;
-            var side2Formation = this.enemyFormation || this.defenderFormation;
-            var side1Player = this.humanPlayer || this.attacker;
-            var side2Player = this.enemyPlayer || this.defender;
-            var battle = new Battle_1.default({
-                battleData: this.battleData,
-                side1: side1Formation.formation,
-                side2: side2Formation.formation.reverse(),
-                side1Player: side1Player,
-                side2Player: side2Player
-            });
-            battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
-            battle.init();
-            return battle;
-        };
-        BattlePrep.prototype.setHumanAndEnemy = function () {
-            if (!this.attacker.isAI) {
-                this.humanPlayer = this.attacker;
-                this.enemyPlayer = this.defender;
-                this.humanUnits = this.attackerUnits;
-                this.enemyUnits = this.defenderUnits;
-                this.humanFormation = this.attackerFormation;
-                this.enemyFormation = this.defenderFormation;
-            }
-            else if (!this.defender.isAI) {
-                this.humanPlayer = this.defender;
-                this.enemyPlayer = this.attacker;
-                this.humanUnits = this.defenderUnits;
-                this.enemyUnits = this.attackerUnits;
-                this.humanFormation = this.defenderFormation;
-                this.enemyFormation = this.attackerFormation;
-            }
-        };
-        BattlePrep.prototype.resetBattleStats = function () {
-            this.forEachUnit(function (unit) {
-                unit.resetBattleStats();
-            });
-        };
-        BattlePrep.prototype.triggerPassiveSkills = function (formation) {
-            var _this = this;
-            formation.forEachUnitInFormation(function (unit) {
-                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-                if (passiveSkillsByPhase.inBattlePrep) {
-                    for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++) {
-                        var skill = passiveSkillsByPhase.inBattlePrep[j];
-                        for (var k = 0; k < skill.inBattlePrep.length; k++) {
-                            skill.inBattlePrep[k](unit, _this);
-                        }
-                    }
-                }
-            });
-        };
-        BattlePrep.prototype.getInitialMinDefenders = function () {
-            if (this.isLocationNeutral()) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        };
-        return BattlePrep;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = BattlePrep;
-});
-define("src/Item", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_3) {
-    "use strict";
-    var Item = (function () {
-        function Item(template, id) {
-            this.id = isFinite(id) ? id : idGenerators_3.default.item++;
-            this.template = template;
-        }
-        Item.prototype.serialize = function () {
-            var data = {
-                id: this.id,
-                templateType: this.template.type
-            };
-            if (this.unit) {
-                data.unitId = this.unit.id;
-            }
-            return data;
-        };
-        return Item;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Item;
-});
-define("src/targeting", ["require", "exports", "src/utility"], function (require, exports, utility_3) {
-    "use strict";
-    (function (TargetFormation) {
-        TargetFormation[TargetFormation["ally"] = 0] = "ally";
-        TargetFormation[TargetFormation["enemy"] = 1] = "enemy";
-        TargetFormation[TargetFormation["either"] = 2] = "either";
-    })(exports.TargetFormation || (exports.TargetFormation = {}));
-    var TargetFormation = exports.TargetFormation;
-    exports.targetSelf = function (units, user) {
-        return [user];
-    };
-    exports.targetNextRow = function (units, user) {
-        var ownPosition = user.battleStats.position;
-        var increment = user.battleStats.side === "side1" ? 1 : -1;
-        return units[ownPosition[0] + increment];
-    };
-    exports.targetAll = function (units, user) {
-        return utility_3.flatten2dArray(units);
-    };
-    exports.areaSingle = function (units, target) {
-        return utility_3.getFrom2dArray(units, [target]);
-    };
-    exports.areaAll = function (units, target) {
-        return utility_3.flatten2dArray(units);
-    };
-    exports.areaColumn = function (units, target) {
-        var y = target[1];
-        var targetLocations = [];
-        for (var i = 0; i < units.length; i++) {
-            targetLocations.push([i, y]);
-        }
-        return utility_3.getFrom2dArray(units, targetLocations);
-    };
-    exports.areaRow = function (units, target) {
-        var x = target[0];
-        var targetLocations = [];
-        for (var i = 0; i < units[x].length; i++) {
-            targetLocations.push([x, i]);
-        }
-        return utility_3.getFrom2dArray(units, targetLocations);
-    };
-    exports.areaRowNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return utility_3.getFrom2dArray(units, targetLocations);
-    };
-    exports.areaNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x - 1, y]);
-        targetLocations.push([x + 1, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return utility_3.getFrom2dArray(units, targetLocations);
-    };
-});
-define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormation", "src/utility", "src/targeting"], function (require, exports, getNullFormation_2, utility_4, targeting_1) {
-    "use strict";
-    function getFormationsToTarget(battle, user, effect) {
-        if (effect.targetFormations === targeting_1.TargetFormation.either) {
-            return battle.side1.concat(battle.side2);
-        }
-        else {
-            var userSide = user.battleStats.side;
-            var insertNullBefore = (userSide === "side1") ? true : false;
-            var toConcat;
-        }
-        if (effect.targetFormations === targeting_1.TargetFormation.ally) {
-            toConcat = battle[userSide];
-        }
-        else if (effect.targetFormations === targeting_1.TargetFormation.enemy) {
-            toConcat = battle[utility_4.reverseSide(userSide)];
-        }
-        else {
-            throw new Error("Invalid target formation for effect: " + effect.name);
-        }
-        if (insertNullBefore) {
-            return getNullFormation_2.default().concat(toConcat);
-        }
-        else {
-            return toConcat.concat(getNullFormation_2.default());
-        }
-    }
-    exports.getFormationsToTarget = getFormationsToTarget;
-    function getTargetsForAllAbilities(battle, user) {
-        if (!user || !battle.activeUnit) {
-            throw new Error();
-        }
-        var allTargets = {};
-        var abilities = user.getAllAbilities();
-        for (var i = 0; i < abilities.length; i++) {
-            var ability = abilities[i];
-            var targets = getPotentialTargets(battle, user, ability);
-            for (var j = 0; j < targets.length; j++) {
-                var target = targets[j];
-                if (!allTargets[target.id]) {
-                    allTargets[target.id] = [];
-                }
-                allTargets[target.id].push(ability);
-            }
-        }
-        return allTargets;
-    }
-    exports.getTargetsForAllAbilities = getTargetsForAllAbilities;
-    function isTargetableFilterFN(unit) {
-        return unit && unit.isTargetable();
-    }
-    function getPotentialTargets(battle, user, ability) {
-        var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
-        var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
-        var targets = targetsInRange.filter(isTargetableFilterFN);
-        return targets;
-    }
-});
-define("src/battleAbilityProcessing", ["require", "exports", "src/targeting", "src/battleAbilityTargeting"], function (require, exports, targeting_2, battleAbilityTargeting_1) {
-    "use strict";
-    function getAbilityEffectDataByPhase(battle, abilityUseData) {
-        abilityUseData.actualTarget = getTargetOrGuard(battle, abilityUseData);
-        var beforeUse = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getBeforeAbilityUseEffectTemplates(abilityUseData));
-        beforeUse.push.apply(beforeUse, getDefaultBeforeUseEffects(abilityUseData));
-        var abilityEffects = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getAbilityUseEffectTemplates(abilityUseData));
-        var afterUse = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getAfterAbilityUseEffectTemplates(abilityUseData));
-        afterUse.push.apply(afterUse, getDefaultAfterUseEffects(abilityUseData));
-        return ({
-            beforeUse: beforeUse,
-            abilityEffects: abilityEffects,
-            afterUse: afterUse
-        });
-    }
-    exports.getAbilityEffectDataByPhase = getAbilityEffectDataByPhase;
-    function getUnitsInEffectArea(battle, effect, user, target) {
-        var targetFormations = battleAbilityTargeting_1.getFormationsToTarget(battle, user, effect);
-        var inArea = effect.battleAreaFunction(targetFormations, target.battleStats.position);
-        return inArea.filter(activeUnitsFilterFN);
-    }
-    exports.getUnitsInEffectArea = getUnitsInEffectArea;
-    function getTargetOrGuard(battle, abilityUseData) {
-        if (abilityUseData.ability.bypassesGuard) {
-            return abilityUseData.intendedTarget;
-        }
-        var guarding = getGuarders(battle, abilityUseData);
-        guarding = guarding.sort(function (a, b) {
-            return a.battleStats.guardAmount - b.battleStats.guardAmount;
-        });
-        for (var i = 0; i < guarding.length; i++) {
-            var guardRoll = Math.random() * 100;
-            if (guardRoll <= guarding[i].battleStats.guardAmount) {
-                return guarding[i];
-            }
-        }
-        return abilityUseData.intendedTarget;
-    }
-    function canGuardFN(intendedTarget, unit) {
-        if (!unit.isTargetable()) {
-            return false;
-        }
-        if (unit.battleStats.guardCoverage === 1) {
-            return unit.battleStats.guardAmount > 0;
-        }
-        else if (unit.battleStats.guardCoverage === 0) {
-            if (unit.battleStats.position[0] === intendedTarget.battleStats.position[0]) {
-                return unit.battleStats.guardAmount > 0;
-            }
-        }
-    }
-    function getGuarders(battle, abilityUseData) {
-        var userSide = abilityUseData.user.battleStats.side;
-        var targetSide = abilityUseData.intendedTarget.battleStats.side;
-        if (userSide === targetSide)
-            return [];
-        var allEnemies = battle.unitsBySide[targetSide];
-        var guarders = allEnemies.filter(canGuardFN.bind(null, abilityUseData.intendedTarget));
-        return guarders;
-    }
-    function activeUnitsFilterFN(unit) {
-        return unit && unit.isActiveInBattle();
-    }
-    function recursivelyGetAttachedEffects(effectTemplate) {
-        var attachedEffects = [];
-        var frontier = [effectTemplate];
-        while (frontier.length > 0) {
-            var currentEffect = frontier.pop();
-            attachedEffects.push.apply(attachedEffects, currentEffect.attachedEffects);
-            frontier.push.apply(frontier, currentEffect.attachedEffects);
-        }
-        return attachedEffects;
-    }
-    function getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, effectTemplates) {
-        var effectData = [];
-        for (var i = 0; i < effectTemplates.length; i++) {
-            var templateEffect = effectTemplates[i];
-            var targetsForEffect = getUnitsInEffectArea(battle, templateEffect.action, abilityUseData.user, abilityUseData.actualTarget);
-            var withAttached = [templateEffect].concat(recursivelyGetAttachedEffects(templateEffect));
-            for (var j = 0; j < targetsForEffect.length; j++) {
-                for (var k = 0; k < withAttached.length; k++) {
-                    effectData.push({
-                        templateEffect: withAttached[k],
-                        user: abilityUseData.user,
-                        target: targetsForEffect[j],
-                        trigger: templateEffect.trigger
-                    });
-                }
-            }
-        }
-        return effectData;
-    }
-    function getBeforeAbilityUseEffectTemplates(abilityUseData) {
-        var beforeUseEffects = [];
-        if (abilityUseData.ability.beforeUse) {
-            beforeUseEffects.push.apply(beforeUseEffects, abilityUseData.ability.beforeUse);
-        }
-        return beforeUseEffects;
-    }
-    function getAbilityUseEffectTemplates(abilityUseData) {
-        var abilityUseEffects = [];
-        abilityUseEffects.push(abilityUseData.ability.mainEffect);
-        if (abilityUseData.ability.secondaryEffects) {
-            abilityUseEffects = abilityUseEffects.concat(abilityUseData.ability.secondaryEffects);
-        }
-        return abilityUseEffects;
-    }
-    function getAfterAbilityUseEffectTemplates(abilityUseData) {
-        var afterUseEffects = [];
-        if (abilityUseData.ability.afterUse) {
-            afterUseEffects.push.apply(afterUseEffects, abilityUseData.ability.afterUse);
-        }
-        return afterUseEffects;
-    }
-    function makeSelfAbilityEffectData(user, name, actionFN) {
-        return ({
-            templateEffect: {
-                action: {
-                    name: name,
-                    targetFormations: targeting_2.TargetFormation.either,
-                    battleAreaFunction: targeting_2.areaSingle,
-                    targetRangeFunction: targeting_2.targetAll,
-                    executeAction: actionFN
-                }
-            },
-            user: user,
-            target: user,
-            trigger: null
-        });
-    }
-    function getDefaultBeforeUseEffects(abilityUseData) {
-        var effects = [];
-        if (!abilityUseData.ability.addsGuard) {
-            effects.push(makeSelfAbilityEffectData(abilityUseData.user, "removeGuard", function (user) { return user.removeAllGuard(); }));
-        }
-        effects.push(makeSelfAbilityEffectData(abilityUseData.user, "removeActionPoints", function (user) { return user.removeActionPoints(abilityUseData.ability.actionsUse); }));
-        return effects;
-    }
-    function getDefaultAfterUseEffects(abilityUseData) {
-        var effects = [];
-        effects.push(makeSelfAbilityEffectData(abilityUseData.user, "addMoveDelay", function (user) { return user.addMoveDelay(abilityUseData.ability.moveDelay); }));
-        effects.push(makeSelfAbilityEffectData(abilityUseData.user, "updateStatusEffects", function (user) { return user.updateStatusEffects(); }));
-        return effects;
-    }
-});
-define("src/battleAbilityUsage", ["require", "exports", "src/battleAbilityProcessing"], function (require, exports, battleAbilityProcessing_1) {
-    "use strict";
-    function useAbility(battle, ability, user, target, getEffects) {
-        var effectDataByPhase = battleAbilityProcessing_1.getAbilityEffectDataByPhase(battle, {
-            ability: ability,
-            user: user,
-            intendedTarget: target
-        });
-        var useData = executeFullAbilityEffects(battle, effectDataByPhase, getEffects);
-        return useData;
-    }
-    exports.useAbility = useAbility;
-    function executeFullAbilityEffects(battle, abilityEffectData, getUseEffects) {
-        var beforeUse = executeMultipleEffects(battle, abilityEffectData.beforeUse, getUseEffects);
-        var abilityEffects = executeMultipleEffects(battle, abilityEffectData.abilityEffects, getUseEffects);
-        var afterUse = executeMultipleEffects(battle, abilityEffectData.afterUse, getUseEffects);
-        if (getUseEffects) {
-            return beforeUse.concat(abilityEffects, afterUse);
-        }
-        else {
-            return null;
-        }
-    }
-    function executeMultipleEffects(battle, abilityEffectData, getUseEffects) {
-        if (getUseEffects) {
-            var useEffects = [];
-            for (var i = 0; i < abilityEffectData.length; i++) {
-                var useEffect = executeAbilityEffectDataAndGetUseEffect(battle, abilityEffectData[i]);
-                if (useEffect) {
-                    useEffects.push(useEffect);
-                }
-            }
-            return useEffects;
-        }
-        else {
-            for (var i = 0; i < abilityEffectData.length; i++) {
-                executeAbilityEffectData(battle, abilityEffectData[i]);
-            }
-        }
-    }
-    function shouldEffectActionTrigger(abilityEffectData) {
-        if (!abilityEffectData.trigger) {
-            return true;
-        }
-        return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
-    }
-    function executeAbilityEffectData(battle, abilityEffectData) {
-        if (!shouldEffectActionTrigger(abilityEffectData)) {
-            return false;
-        }
-        abilityEffectData.templateEffect.action.executeAction(abilityEffectData.user, abilityEffectData.target, battle, abilityEffectData.templateEffect.data);
-        return true;
-    }
-    function executeAbilityEffectDataAndGetUseEffect(battle, abilityEffectData) {
-        var didTriggerAction = executeAbilityEffectData(battle, abilityEffectData);
-        if (!didTriggerAction) {
-            return null;
-        }
-        var unitDisplayData = {};
-        unitDisplayData[abilityEffectData.user.id] = abilityEffectData.user.getDisplayData("battle");
-        unitDisplayData[abilityEffectData.target.id] = abilityEffectData.target.getDisplayData("battle");
-        return ({
-            actionName: abilityEffectData.templateEffect.action.name,
-            changedUnitDisplayDataByID: unitDisplayData,
-            sfx: abilityEffectData.templateEffect.sfx,
-            sfxUser: abilityEffectData.user,
-            sfxTarget: abilityEffectData.target
-        });
-    }
-});
-define("src/MCTreeNode", ["require", "exports", "src/App", "src/utility", "src/battleAbilityUsage", "src/battleAbilityTargeting"], function (require, exports, App_5, utility_5, battleAbilityUsage_1, battleAbilityTargeting_2) {
-    "use strict";
-    var MCTreeNode = (function () {
-        function MCTreeNode(battle, move) {
-            this.depth = 0;
-            this.children = [];
-            this.visits = 0;
-            this.wins = 0;
-            this.winRate = 0;
-            this.totalScore = 0;
-            this.averageScore = 0;
-            this.uctIsDirty = true;
-            this.battle = battle;
-            this.sideId = battle.activeUnit.battleStats.side;
-            this.move = move;
-            this.isBetweenAI = battle.side1Player.isAI && battle.side2Player.isAI;
-            this.currentScore = battle.getEvaluation();
-        }
-        MCTreeNode.prototype.getPossibleMoves = function () {
-            if (!this.battle.activeUnit) {
-                return [];
-            }
-            var targets = battleAbilityTargeting_2.getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
-            var actions = [];
-            for (var id in targets) {
-                var targetActions = targets[id];
-                for (var i = 0; i < targetActions.length; i++) {
-                    if (!this.isBetweenAI || !targetActions[i].disableInAIBattles) {
-                        actions.push({
-                            targetId: parseInt(id),
-                            ability: targetActions[i]
-                        });
-                    }
-                }
-            }
-            return actions;
-        };
-        MCTreeNode.prototype.addChild = function (possibleMovesIndex) {
-            if (!this.possibleMoves) {
-                this.possibleMoves = this.getPossibleMoves();
-            }
-            if (isFinite(possibleMovesIndex)) {
-                var move = this.possibleMoves.splice(possibleMovesIndex, 1)[0];
-            }
-            else {
-                var move = this.possibleMoves.pop();
-            }
-            var battle = this.battle.makeVirtualClone();
-            var child = new MCTreeNode(battle, move);
-            child.parent = this;
-            child.depth = this.depth + 1;
-            this.children.push(child);
-            battleAbilityUsage_1.useAbility(battle, move.ability, battle.activeUnit, battle.unitsById[move.targetId], false);
-            child.currentScore = battle.getEvaluation();
-            battle.endTurn();
-            return child;
-        };
-        MCTreeNode.prototype.getChildForMove = function (move) {
-            for (var i = 0; i < this.children.length; i++) {
-                var child = this.children[i];
-                if (child.move.targetId === move.targetId &&
-                    child.move.ability.type === move.ability.type) {
-                    return child;
-                }
-            }
-            if (!this.possibleMoves) {
-                this.possibleMoves = this.getPossibleMoves();
-            }
-            for (var i = 0; i < this.possibleMoves.length; i++) {
-                var possibleMove = this.possibleMoves[i];
-                if (possibleMove.targetId === move.targetId &&
-                    possibleMove.ability.type === move.ability.type) {
-                    return this.addChild(i);
-                }
-            }
-            return null;
-        };
-        MCTreeNode.prototype.updateResult = function (result) {
-            this.visits++;
-            this.totalScore += result;
-            if (this.sideId === "side1") {
-                if (result > 0)
-                    this.wins++;
-            }
-            if (this.sideId === "side2") {
-                if (result < 0)
-                    this.wins++;
-            }
-            this.averageScore = this.totalScore / this.visits;
-            this.winRate = this.wins / this.visits;
-            this.uctIsDirty = true;
-            if (this.parent)
-                this.parent.updateResult(result);
-        };
-        MCTreeNode.prototype.pickRandomAbilityAndTarget = function (actions) {
-            var prioritiesByAbilityAndTarget = {};
-            for (var targetId in actions) {
-                var abilities = actions[targetId];
-                for (var i = 0; i < abilities.length; i++) {
-                    var priority = isFinite(abilities[i].AIEvaluationPriority) ? abilities[i].AIEvaluationPriority : 1;
-                    prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
-                }
-            }
-            var selected = utility_5.getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
-            var separatorIndex = selected.indexOf(":");
-            return ({
-                targetId: parseInt(selected.slice(0, separatorIndex)),
-                abilityType: selected.slice(separatorIndex + 1)
-            });
-        };
-        MCTreeNode.prototype.simulateOnce = function (battle) {
-            var actions = battleAbilityTargeting_2.getTargetsForAllAbilities(battle, battle.activeUnit);
-            var targetData = this.pickRandomAbilityAndTarget(actions);
-            var ability = App_5.default.moduleData.Templates.Abilities[targetData.abilityType];
-            var target = battle.unitsById[targetData.targetId];
-            battleAbilityUsage_1.useAbility(battle, ability, battle.activeUnit, target, false);
-            battle.endTurn();
-        };
-        MCTreeNode.prototype.simulateToEnd = function () {
-            var battle = this.battle.makeVirtualClone();
-            while (!battle.ended) {
-                this.simulateOnce(battle);
-            }
-            this.updateResult(battle.getEvaluation());
-        };
-        MCTreeNode.prototype.clearResult = function () {
-            this.visits = 0;
-            this.wins = 0;
-            this.averageScore = 0;
-            this.totalScore = 0;
-        };
-        MCTreeNode.prototype.getCombinedScore = function () {
-            var sign = this.sideId === "side1" ? 1 : -1;
-            var baseScore = this.averageScore * sign / 2;
-            var winRate = this.winRate;
-            var aiAdjust = this.move.ability.AIScoreAdjust || 0;
-            return (baseScore + winRate) + aiAdjust * 1.5;
-        };
-        MCTreeNode.prototype.setUct = function () {
-            if (!this.parent) {
-                this.uctEvaluation = -1;
-                this.uctIsDirty = false;
-                return;
-            }
-            this.uctEvaluation = this.getCombinedScore() + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
-            if (this.move.ability.AIEvaluationPriority) {
-                this.uctEvaluation *= this.move.ability.AIEvaluationPriority;
-            }
-            this.uctIsDirty = false;
-        };
-        MCTreeNode.prototype.getHighestUctChild = function () {
-            var highest = this.children[0];
-            for (var i = 0; i < this.children.length; i++) {
-                var child = this.children[i];
-                if (child.uctIsDirty) {
-                    child.setUct();
-                }
-                if (child.uctEvaluation > highest.uctEvaluation) {
-                    highest = child;
-                }
-            }
-            return highest;
-        };
-        MCTreeNode.prototype.getRecursiveBestUctChild = function () {
-            if (this.battle.ended) {
-                return this;
-            }
-            if (!this.possibleMoves) {
-                this.possibleMoves = this.getPossibleMoves();
-            }
-            if (this.possibleMoves && this.possibleMoves.length > 0) {
-                return this.addChild();
-            }
-            else if (this.children.length === 1) {
-                return this.children[0];
-            }
-            else if (this.children.length > 1) {
-                return this.getHighestUctChild().getRecursiveBestUctChild();
-            }
-        };
-        return MCTreeNode;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = MCTreeNode;
-});
-define("src/MCTree", ["require", "exports", "src/MCTreeNode"], function (require, exports, MCTreeNode_1) {
-    "use strict";
-    var MCTree = (function () {
-        function MCTree(battle, sideId, fastMode) {
-            if (fastMode === void 0) { fastMode = false; }
-            var cloned = battle.makeVirtualClone();
-            this.rootNode = new MCTreeNode_1.default(cloned);
-            this.actualBattle = battle;
-            this.sideId = sideId;
-            if (fastMode) {
-                this.countVisitsAsIterations = true;
-            }
-        }
-        MCTree.prototype.sortByWinRateFN = function (a, b) {
-            return b.winRate - a.winRate;
-        };
-        MCTree.prototype.sortByCombinedScoreFN = function (a, b) {
-            if (a.sideId !== b.sideId)
-                debugger;
-            return b.getCombinedScore() - a.getCombinedScore();
-        };
-        MCTree.prototype.evaluate = function (iterations) {
-            var root = this.rootNode;
-            if (!root.possibleMoves)
-                root.possibleMoves = root.getPossibleMoves();
-            if (this.rootSimulationNeedsToBeRemade()) {
-                this.remakeSimulation();
-                root = this.rootNode;
-            }
-            var iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
-            for (var i = iterationStart; i < iterations; i++) {
-                var toSimulateFrom = root.getRecursiveBestUctChild();
-                toSimulateFrom.simulateToEnd();
-            }
-            var sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
-            var best = sortedMoves[0];
-            if (!best) {
-                debugger;
-            }
-            return best;
-        };
-        MCTree.prototype.getChildForMove = function (move) {
-            return this.rootNode.getChildForMove(move);
-        };
-        MCTree.prototype.rootSimulationNeedsToBeRemade = function () {
-            var scoreVariationTolerance = 0.1;
-            var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
-            if (scoreVariance > scoreVariationTolerance) {
-                return true;
-            }
-            else if (this.actualBattle.activeUnit !== this.rootNode.battle.activeUnit) {
-                return true;
-            }
-            else if (this.rootNode.children.length === 0) {
-                if (!this.rootNode.possibleMoves) {
-                    this.rootNode.possibleMoves = this.rootNode.getPossibleMoves();
-                }
-                if (this.rootNode.possibleMoves.length === 0) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        MCTree.prototype.remakeSimulation = function () {
-            this.rootNode = new MCTreeNode_1.default(this.actualBattle.makeVirtualClone());
-            return this.rootNode;
-        };
-        MCTree.prototype.advanceMove = function (move) {
-            this.rootNode = this.getChildForMove(move);
-            if (!this.rootNode) {
-                this.remakeSimulation();
-            }
-        };
-        MCTree.prototype.getBestMoveAndAdvance = function (iterations) {
-            var best = this.evaluate(iterations);
-            this.rootNode = best;
-            return best.move;
-        };
-        MCTree.prototype.printToConsole = function (nodes) {
-            var consoleRows = [];
-            for (var i = 0; i < nodes.length; i++) {
-                var node = nodes[i];
-                var row = {
-                    visits: node.visits,
-                    uctEvaluation: node.uctEvaluation,
-                    winRate: node.winRate,
-                    currentScore: node.currentScore,
-                    averageScore: node.averageScore,
-                    finalScore: node.getCombinedScore(),
-                    abilityName: node.move.ability.displayName,
-                    targetId: node.move.targetId
-                };
-                consoleRows.push(row);
-            }
-            var _ = window;
-            if (_.console.table) {
-                _.console.table(consoleRows);
-            }
-            console.log(nodes);
-        };
-        return MCTree;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = MCTree;
-});
-define("src/options", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_3, utility_6) {
-    "use strict";
-    var OptionsCategories = [
-        "battleAnimationTiming", "debugMode", "debugOptions", "ui", "display"
-    ];
-    var defaultOptionsValues = {
-        battleAnimationTiming: {
-            before: 750,
-            effectDuration: 1,
-            after: 1500,
-            unitEnter: 200,
-            unitExit: 100
-        },
-        debugMode: false,
-        debugOptions: {
-            battleSimulationDepth: 20
-        },
-        ui: {
-            noHamburger: false
-        },
-        display: {
-            borderWidth: 8
-        },
-    };
-    var Options = (function () {
-        function Options() {
-            this.setDefaults();
-        }
-        Options.prototype.setDefaultForCategory = function (category) {
-            var shouldReRenderUI = false;
-            var shouldReRenderMap = false;
-            switch (category) {
-                case "battleAnimationTiming":
-                    this.battleAnimationTiming = defaultOptionsValues.battleAnimationTiming;
-                    break;
-                case "debugMode":
-                    if (this.debugMode !== defaultOptionsValues.debugMode) {
-                        shouldReRenderUI = true;
-                    }
-                    this.debugMode = defaultOptionsValues.debugMode;
-                    break;
-                case "debugOptions":
-                    this.debugOptions = defaultOptionsValues.debugOptions;
-                    break;
-                case "ui":
-                    this.ui = defaultOptionsValues.ui;
-                    break;
-                case "display":
-                    if (this.display && this.display.borderWidth !== defaultOptionsValues.display.borderWidth) {
-                        shouldReRenderMap = true;
-                    }
-                    this.display = defaultOptionsValues.display;
-                    break;
-            }
-            if (shouldReRenderUI) {
-                eventManager_3.default.dispatchEvent("renderUI");
-            }
-            if (shouldReRenderMap) {
-                eventManager_3.default.dispatchEvent("renderMap");
-            }
-        };
-        Options.prototype.setDefaults = function () {
-            var _this = this;
-            OptionsCategories.forEach(function (category) {
-                _this.setDefaultForCategory(category);
-            });
-        };
-        Options.prototype.save = function (slot) {
-            if (slot === void 0) { slot = 0; }
-            var data = JSON.stringify({
-                options: this.serialize(),
-                date: new Date()
-            });
-            var saveName = "Options." + slot;
-            localStorage.setItem(saveName, data);
-        };
-        Options.prototype.load = function (slot) {
-            this.setDefaults();
-            var parsedData = this.getParsedDataForSlot(slot);
-            var parsedOptions = this.serialize();
-            if (parsedData) {
-                var optionsToResetIfSetEarlierThan = {
-                    "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50)
-                };
-                var dateOptionsWereSaved = Date.parse(parsedData.date);
-                for (var key in parsedData.options) {
-                    if (parsedOptions[key] !== undefined) {
-                        if (optionsToResetIfSetEarlierThan[key] && dateOptionsWereSaved <= optionsToResetIfSetEarlierThan[key]) {
-                            console.log("Reset option: " + key);
-                        }
-                        else {
-                            parsedOptions[key] = utility_6.deepMerge(parsedOptions[key], parsedData.options[key]);
-                        }
-                    }
-                }
-                this.deSerialize(parsedOptions);
-            }
-        };
-        Options.prototype.getParsedDataForSlot = function (slot) {
-            var baseString = "Options.";
-            var parsedData;
-            if (isFinite(slot)) {
-                if (!localStorage[baseString + slot]) {
-                    throw new Error("No options saved in that slot");
-                }
-                parsedData = JSON.parse(localStorage.getItem(baseString + slot));
-            }
-            else {
-                parsedData = utility_6.getMatchingLocalstorageItemsByDate(baseString)[0];
-            }
-            return parsedData;
-        };
-        Options.prototype.serialize = function () {
-            return ({
-                battleAnimationTiming: this.battleAnimationTiming,
-                debugMode: this.debugMode,
-                debugOptions: this.debugOptions,
-                ui: this.ui,
-                display: this.display
-            });
-        };
-        Options.prototype.deSerialize = function (data) {
-            this.battleAnimationTiming = utility_6.deepMerge(this.battleAnimationTiming, data.battleAnimationTiming, true);
-            this.debugMode = utility_6.deepMerge(this.debugMode, data.debugMode, true);
-            this.debugOptions = utility_6.deepMerge(this.debugOptions, data.debugOptions, true);
-            this.ui = utility_6.deepMerge(this.ui, data.ui, true);
-            this.display = utility_6.deepMerge(this.display, data.display, true);
-        };
-        return Options;
-    }());
-    var options = new Options();
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = options;
-});
-define("src/BattleSimulator", ["require", "exports", "src/MCTree", "src/options", "src/battleAbilityUsage"], function (require, exports, MCTree_1, options_1, battleAbilityUsage_2) {
-    "use strict";
-    var BattleSimulator = (function () {
-        function BattleSimulator(battle) {
-            this.hasEnded = false;
-            this.battle = battle;
-            battle.isSimulated = true;
-            if (!battle.ended) {
-                this.tree = new MCTree_1.default(this.battle, this.battle.activeUnit.battleStats.side, true);
-            }
-        }
-        BattleSimulator.prototype.simulateBattle = function () {
-            while (!this.battle.ended) {
-                this.simulateMove();
-            }
-        };
-        BattleSimulator.prototype.simulateMove = function () {
-            if (!this.battle.activeUnit || this.battle.ended) {
-                throw new Error("Simulated battle already ended");
-            }
-            var move = this.tree.getBestMoveAndAdvance(options_1.default.debugOptions.battleSimulationDepth);
-            var target = this.battle.unitsById[move.targetId];
-            this.simulateAbility(move.ability, target);
-            this.battle.endTurn();
-        };
-        BattleSimulator.prototype.simulateAbility = function (ability, target) {
-            battleAbilityUsage_2.useAbility(this.battle, ability, this.battle.activeUnit, target, false);
-        };
-        BattleSimulator.prototype.getBattleEndData = function () {
-            if (!this.battle.ended) {
-                throw new Error("Simulated battle hasn't ended yet");
-            }
-            var captured = this.battle.capturedUnits;
-            var destroyed = this.battle.deadUnits;
-            var victor = this.battle.getVictor();
-        };
-        BattleSimulator.prototype.finishBattle = function () {
-            this.battle.finishBattle();
-        };
-        return BattleSimulator;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = BattleSimulator;
-});
-define("src/DiplomacyState", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var DiplomacyState;
-    (function (DiplomacyState) {
-        DiplomacyState[DiplomacyState["peace"] = 0] = "peace";
-        DiplomacyState[DiplomacyState["coldWar"] = 1] = "coldWar";
-        DiplomacyState[DiplomacyState["war"] = 2] = "war";
-    })(DiplomacyState || (DiplomacyState = {}));
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = DiplomacyState;
-});
-define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (require, exports, utility_7) {
-    "use strict";
-    var AttitudeModifier = (function () {
-        function AttitudeModifier(props) {
-            this.isOverRidden = false;
-            this.template = props.template;
-            this.startTurn = props.startTurn;
-            this.currentTurn = this.startTurn;
-            if (isFinite(props.endTurn)) {
-                this.endTurn = props.endTurn;
-            }
-            else if (isFinite(this.template.duration)) {
-                if (this.template.duration < 0) {
-                    this.endTurn = -1;
-                }
-                else {
-                    this.endTurn = this.startTurn + this.template.duration;
-                }
-            }
-            else {
-                throw new Error("Attitude modifier has no duration or end turn set");
-            }
-            if (isFinite(this.template.constantEffect)) {
-                this.strength = this.template.constantEffect;
-            }
-            else {
-                this.strength = props.strength;
-            }
-        }
-        AttitudeModifier.prototype.setStrength = function (evaluation) {
-            if (this.template.constantEffect) {
-                this.strength = this.template.constantEffect;
-            }
-            else if (this.template.getEffectFromEvaluation) {
-                this.strength = this.template.getEffectFromEvaluation(evaluation);
-            }
-            else {
-                throw new Error("Attitude modifier has no constant effect " +
-                    "or effect from evaluation defined");
-            }
-            return this.strength;
-        };
-        AttitudeModifier.prototype.getFreshness = function (currentTurn) {
-            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
-            if (this.endTurn < 0)
-                return 1;
-            else {
-                return 1 - utility_7.getRelativeValue(currentTurn, this.startTurn, this.endTurn);
-            }
-        };
-        AttitudeModifier.prototype.refresh = function (newModifier) {
-            this.startTurn = newModifier.startTurn;
-            this.endTurn = newModifier.endTurn;
-            this.strength = newModifier.strength;
-        };
-        AttitudeModifier.prototype.getAdjustedStrength = function (currentTurn) {
-            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
-            var freshenss = this.getFreshness(currentTurn);
-            return Math.round(this.strength * freshenss);
-        };
-        AttitudeModifier.prototype.hasExpired = function (currentTurn) {
-            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
-            return (this.endTurn >= 0 && currentTurn > this.endTurn);
-        };
-        AttitudeModifier.prototype.shouldEnd = function (evaluation) {
-            if (this.hasExpired(evaluation.currentTurn)) {
-                return true;
-            }
-            else if (this.template.endCondition) {
-                return this.template.endCondition(evaluation);
-            }
-            else if (this.template.duration < 0 && this.template.startCondition) {
-                return !this.template.startCondition(evaluation);
-            }
-            else {
-                return false;
-            }
-        };
-        AttitudeModifier.prototype.serialize = function () {
-            var data = {
-                templateType: this.template.type,
-                startTurn: this.startTurn,
-                endTurn: this.endTurn,
-                strength: this.strength
-            };
-            return data;
-        };
-        return AttitudeModifier;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = AttitudeModifier;
-});
-define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManager", "src/AttitudeModifier", "src/DiplomacyState"], function (require, exports, App_6, eventManager_4, AttitudeModifier_1, DiplomacyState_1) {
-    "use strict";
-    var DiplomacyStatus = (function () {
-        function DiplomacyStatus(player) {
-            this.metPlayers = {};
-            this.statusByPlayer = {};
-            this.attitudeModifiersByPlayer = {};
-            this.listeners = {};
-            this.player = player;
-            this.addEventListeners();
-        }
-        DiplomacyStatus.prototype.addEventListeners = function () {
-            for (var key in App_6.default.moduleData.Templates.AttitudeModifiers) {
-                var template = App_6.default.moduleData.Templates.AttitudeModifiers[key];
-                if (template.triggers) {
-                    for (var i = 0; i < template.triggers.length; i++) {
-                        var listenerKey = template.triggers[i];
-                        var listener = eventManager_4.default.addEventListener(listenerKey, this.triggerAttitudeModifier.bind(this, template));
-                        if (!this.listeners[listenerKey]) {
-                            this.listeners[listenerKey] = [];
-                        }
-                        this.listeners[listenerKey].push(listener);
-                    }
-                }
-            }
-        };
-        DiplomacyStatus.prototype.destroy = function () {
-            for (var key in this.listeners) {
-                for (var i = 0; i < this.listeners[key].length; i++) {
-                    eventManager_4.default.removeEventListener(key, this.listeners[key][i]);
-                }
-            }
-        };
-        DiplomacyStatus.prototype.removePlayer = function (player) {
-            ["metPlayers", "statusByPlayer", "attitudeModifiersByPlayer"].forEach(function (prop) {
-                this[prop][player.id] = null;
-                delete this[prop][player.id];
-            }.bind(this));
-        };
-        DiplomacyStatus.prototype.getBaseOpinion = function () {
-            if (isFinite(this.baseOpinion))
-                return this.baseOpinion;
-            var friendliness = this.player.AIController.personality.friendliness;
-            this.baseOpinion = Math.round((friendliness - 0.5) * 10);
-            return this.baseOpinion;
-        };
-        DiplomacyStatus.prototype.updateAttitudes = function () {
-            if (!this.player.AIController) {
-                return;
-            }
-            this.player.AIController.diplomacyAI.setAttitudes();
-        };
-        DiplomacyStatus.prototype.handleDiplomaticStatusUpdate = function () {
-            eventManager_4.default.dispatchEvent("diplomaticStatusUpdated");
-        };
-        DiplomacyStatus.prototype.getOpinionOf = function (player) {
-            var baseOpinion = this.getBaseOpinion();
-            var attitudeModifiers = this.attitudeModifiersByPlayer[player.id];
-            var modifierOpinion = 0;
-            for (var i = 0; i < attitudeModifiers.length; i++) {
-                modifierOpinion += attitudeModifiers[i].getAdjustedStrength();
-            }
-            return Math.round(baseOpinion + modifierOpinion);
-        };
-        DiplomacyStatus.prototype.getUnMetPlayerCount = function () {
-            return App_6.default.game.playerOrder.length - Object.keys(this.metPlayers).length;
-        };
-        DiplomacyStatus.prototype.meetPlayer = function (player) {
-            if (this.metPlayers[player.id] || player === this.player)
-                return;
-            else {
-                this.metPlayers[player.id] = player;
-                this.statusByPlayer[player.id] = DiplomacyState_1.default.coldWar;
-                this.attitudeModifiersByPlayer[player.id] = [];
-                player.diplomacyStatus.meetPlayer(this.player);
-            }
-        };
-        DiplomacyStatus.prototype.canDeclareWarOn = function (player) {
-            return (this.statusByPlayer[player.id] < DiplomacyState_1.default.war);
-        };
-        DiplomacyStatus.prototype.canMakePeaceWith = function (player) {
-            return (this.statusByPlayer[player.id] > DiplomacyState_1.default.peace);
-        };
-        DiplomacyStatus.prototype.declareWarOn = function (player) {
-            if (this.statusByPlayer[player.id] >= DiplomacyState_1.default.war) {
-                console.error("Players " + this.player.id + " and " + player.id + " are already at war");
-                return;
-            }
-            this.statusByPlayer[player.id] = DiplomacyState_1.default.war;
-            player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState_1.default.war;
-            eventManager_4.default.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
-            var playersAreRelevantToHuman = true;
-            [this.player, player].forEach(function (p) {
-                if (App_6.default.humanPlayer !== p && !App_6.default.humanPlayer.diplomacyStatus.metPlayers[p.id]) {
-                    playersAreRelevantToHuman = false;
-                }
-            });
-            if (playersAreRelevantToHuman) {
-                eventManager_4.default.dispatchEvent("makeWarDeclarationNotification", {
-                    player1: this.player,
-                    player2: player
-                });
-            }
-        };
-        DiplomacyStatus.prototype.makePeaceWith = function (player) {
-            if (this.statusByPlayer[player.id] <= DiplomacyState_1.default.peace) {
-                throw new Error("Players " + this.player.id + " and " + player.id + " are already at peace");
-            }
-            this.statusByPlayer[player.id] = DiplomacyState_1.default.peace;
-            player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState_1.default.peace;
-            player.diplomacyStatus.updateAttitudes();
-        };
-        DiplomacyStatus.prototype.canAttackFleetOfPlayer = function (player) {
-            if (player.isIndependent)
-                return true;
-            if (this.statusByPlayer[player.id] >= DiplomacyState_1.default.coldWar) {
-                return true;
-            }
-            return false;
-        };
-        DiplomacyStatus.prototype.canAttackBuildingOfPlayer = function (player) {
-            if (player.isIndependent)
-                return true;
-            if (this.statusByPlayer[player.id] >= DiplomacyState_1.default.war) {
-                return true;
-            }
-            return false;
-        };
-        DiplomacyStatus.prototype.getModifierOfSameType = function (player, modifier) {
-            var modifiers = this.attitudeModifiersByPlayer[player.id];
-            for (var i = 0; i < modifiers.length; i++) {
-                if (modifiers[i].template.type === modifier.template.type) {
-                    return modifiers[i];
-                }
-            }
-            return null;
-        };
-        DiplomacyStatus.prototype.addAttitudeModifier = function (player, modifier) {
-            if (!this.attitudeModifiersByPlayer[player.id]) {
-                this.attitudeModifiersByPlayer[player.id] = [];
-            }
-            var sameType = this.getModifierOfSameType(player, modifier);
-            if (sameType) {
-                sameType.refresh(modifier);
-                return;
-            }
-            this.attitudeModifiersByPlayer[player.id].push(modifier);
-            this.updateAttitudes();
-        };
-        DiplomacyStatus.prototype.triggerAttitudeModifier = function (template, player, source) {
-            if (player !== this.player)
-                return;
-            var modifier = new AttitudeModifier_1.default({
-                template: template,
-                startTurn: App_6.default.game.turnNumber
-            });
-            this.addAttitudeModifier(source, modifier);
-        };
-        DiplomacyStatus.prototype.processAttitudeModifiersForPlayer = function (player, evaluation) {
-            var modifiersByPlayer = this.attitudeModifiersByPlayer;
-            var allModifiers = App_6.default.moduleData.Templates.AttitudeModifiers;
-            for (var playerId in modifiersByPlayer)
-                var playerModifiers = modifiersByPlayer[player.id];
-            var activeModifiers = {};
-            var modifiersAdded = {};
-            var modifiersRemoved = {};
-            for (var i = playerModifiers.length - 1; i >= 0; i--) {
-                var modifier = playerModifiers[i];
-                if (modifier.shouldEnd(evaluation)) {
-                    playerModifiers.splice(i, 1);
-                    modifiersRemoved[modifier.template.type] = modifier;
-                }
-                else {
-                    activeModifiers[modifier.template.type] = modifier;
-                }
-            }
-            for (var modifierType in allModifiers) {
-                var template = allModifiers[modifierType];
-                var modifier;
-                modifier = activeModifiers[template.type];
-                var alreadyHasModifierOfType = modifier;
-                if (!alreadyHasModifierOfType && !template.triggers) {
-                    if (!template.startCondition) {
-                        throw new Error("Attitude modifier has no start condition or triggers");
-                    }
-                    else {
-                        var shouldStart = template.startCondition(evaluation);
-                        if (shouldStart) {
-                            modifier = new AttitudeModifier_1.default({
-                                template: template,
-                                startTurn: evaluation.currentTurn
-                            });
-                            playerModifiers.push(modifier);
-                            modifiersAdded[template.type] = modifier;
-                        }
-                    }
-                }
-                if (modifier) {
-                    modifier.currentTurn = evaluation.currentTurn;
-                    modifier.setStrength(evaluation);
-                }
-            }
-        };
-        DiplomacyStatus.prototype.serialize = function () {
-            var metPlayerIds = [];
-            for (var playerId in this.metPlayers) {
-                metPlayerIds.push(this.metPlayers[playerId].id);
-            }
-            var attitudeModifiersByPlayer = {};
-            for (var playerId in this.attitudeModifiersByPlayer) {
-                var serializedModifiers = this.attitudeModifiersByPlayer[playerId].map(function (modifier) {
-                    return modifier.serialize();
-                });
-                attitudeModifiersByPlayer[playerId] = serializedModifiers;
-            }
-            var data = {
-                metPlayerIds: metPlayerIds,
-                statusByPlayer: this.statusByPlayer,
-                attitudeModifiersByPlayer: attitudeModifiersByPlayer
-            };
-            return data;
-        };
-        return DiplomacyStatus;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = DiplomacyStatus;
-});
-define("src/Manufactory", ["require", "exports", "src/App", "src/RuleSet", "src/Unit", "src/Item", "src/Fleet", "src/eventManager"], function (require, exports, App_7, RuleSet_4, Unit_1, Item_1, Fleet_1, eventManager_5) {
-    "use strict";
-    var Manufactory = (function () {
-        function Manufactory(star, serializedData) {
-            this.buildQueue = [];
-            this.unitStatsModifier = 1;
-            this.unitHealthModifier = 1;
-            this.star = star;
-            this.player = star.owner;
-            if (serializedData) {
-                this.makeFromData(serializedData);
-            }
-            else {
-                this.capacity = RuleSet_4.default.manufactory.startingCapacity;
-                this.maxCapacity = RuleSet_4.default.manufactory.maxCapacity;
-            }
-        }
-        Manufactory.prototype.makeFromData = function (data) {
-            this.capacity = data.capacity;
-            this.maxCapacity = data.maxCapacity;
-            this.unitStatsModifier = data.unitStatsModifier;
-            this.unitHealthModifier = data.unitHealthModifier;
-            this.buildQueue = data.buildQueue.map(function (savedThing) {
-                var templatesString;
-                switch (savedThing.type) {
-                    case "unit":
-                        {
-                            templatesString = "Units";
-                            break;
-                        }
-                    case "item":
-                        {
-                            templatesString = "Items";
-                        }
-                }
-                return ({
-                    type: savedThing.type,
-                    template: App_7.default.moduleData.Templates[templatesString][savedThing.templateType]
-                });
-            });
-        };
-        Manufactory.prototype.queueIsFull = function () {
-            return this.buildQueue.length >= this.capacity;
-        };
-        Manufactory.prototype.addThingToQueue = function (template, type) {
-            this.buildQueue.push({ type: type, template: template });
-            this.player.money -= template.buildCost;
-        };
-        Manufactory.prototype.removeThingAtIndex = function (index) {
-            var template = this.buildQueue[index].template;
-            this.player.money += template.buildCost;
-            this.buildQueue.splice(index, 1);
-        };
-        Manufactory.prototype.buildAllThings = function () {
-            var units = [];
-            var toBuild = this.buildQueue.slice(0, this.capacity);
-            this.buildQueue = this.buildQueue.slice(this.capacity);
-            while (toBuild.length > 0) {
-                var thingData = toBuild.pop();
-                switch (thingData.type) {
-                    case "unit":
-                        {
-                            var unitTemplate = thingData.template;
-                            var unit = new Unit_1.default(unitTemplate);
-                            unit.setAttributes(this.unitStatsModifier);
-                            unit.setBaseHealth(this.unitHealthModifier);
-                            units.push(unit);
-                            this.player.addUnit(unit);
-                            break;
-                        }
-                    case "item":
-                        {
-                            var itemTemplate = thingData.template;
-                            var item = new Item_1.default(itemTemplate);
-                            this.player.addItem(item);
-                            break;
-                        }
-                }
-            }
-            if (units.length > 0) {
-                var fleet = new Fleet_1.default(this.player, units, this.star);
-            }
-            if (!this.player.isAI) {
-                eventManager_5.default.dispatchEvent("playerManufactoryBuiltThings");
-            }
-        };
-        Manufactory.prototype.getLocalUnitTypes = function () {
-            var manufacturable = [];
-            var potential = [];
-            for (var i = 0; i < this.star.buildableUnitTypes.length; i++) {
-                var type = this.star.buildableUnitTypes[i];
-                if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements)) {
-                    manufacturable.push(type);
-                }
-                else {
-                    potential.push(type);
-                }
-            }
-            return ({
-                manufacturable: manufacturable,
-                potential: potential
-            });
-        };
-        Manufactory.prototype.getLocalItemTypes = function () {
-            var manufacturable = [];
-            var potential = [];
-            return ({
-                manufacturable: manufacturable,
-                potential: potential
-            });
-        };
-        Manufactory.prototype.getManufacturableThingsForType = function (type) {
-            switch (type) {
-                case "item":
-                    {
-                        return this.getLocalItemTypes().manufacturable;
-                    }
-                case "unit":
-                    {
-                        return this.getLocalUnitTypes().manufacturable;
-                    }
-            }
-        };
-        Manufactory.prototype.canManufactureThing = function (template, type) {
-            var manufacturableThings = this.getManufacturableThingsForType(type);
-            return manufacturableThings.indexOf(template) !== -1;
-        };
-        Manufactory.prototype.handleOwnerChange = function () {
-            while (this.buildQueue.length > 0) {
-                this.removeThingAtIndex(this.buildQueue.length - 1);
-            }
-            this.player = this.star.owner;
-            this.capacity = Math.max(1, this.capacity - 1);
-        };
-        Manufactory.prototype.getCapacityUpgradeCost = function () {
-            return RuleSet_4.default.manufactory.buildCost * this.capacity;
-        };
-        Manufactory.prototype.upgradeCapacity = function (amount) {
-            this.player.money -= this.getCapacityUpgradeCost();
-            this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
-        };
-        Manufactory.prototype.getUnitUpgradeCost = function () {
-            var totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
-            return Math.round((totalUpgrades + 1) * 100);
-        };
-        Manufactory.prototype.upgradeUnitStatsModifier = function (amount) {
-            this.player.money -= this.getUnitUpgradeCost();
-            this.unitStatsModifier += amount;
-        };
-        Manufactory.prototype.upgradeUnitHealthModifier = function (amount) {
-            this.player.money -= this.getUnitUpgradeCost();
-            this.unitHealthModifier += amount;
-        };
-        Manufactory.prototype.serialize = function () {
-            var buildQueue = this.buildQueue.map(function (thingData) {
-                return ({
-                    type: thingData.type,
-                    templateType: thingData.template.type
-                });
-            });
-            return ({
-                capacity: this.capacity,
-                maxCapacity: this.maxCapacity,
-                unitStatsModifier: this.unitStatsModifier,
-                unitHealthModifier: this.unitHealthModifier,
-                buildQueue: buildQueue
-            });
-        };
-        return Manufactory;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Manufactory;
-});
-define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManager"], function (require, exports, App_8, eventManager_6) {
-    "use strict";
-    var PlayerTechnology = (function () {
-        function PlayerTechnology(getResearchSpeed, savedData) {
-            this.tempOverflowedResearchAmount = 0;
-            this.getResearchSpeed = getResearchSpeed;
-            this.technologies = {};
-            var totalTechnologies = Object.keys(App_8.default.moduleData.Templates.Technologies).length;
-            for (var key in App_8.default.moduleData.Templates.Technologies) {
-                var technology = App_8.default.moduleData.Templates.Technologies[key];
-                this.technologies[key] =
-                    {
-                        technology: technology,
-                        totalResearch: 0,
-                        level: 0,
-                        priority: undefined,
-                        priorityIsLocked: false
-                    };
-                if (savedData && savedData[key]) {
-                    this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
-                    this.technologies[key].priority = savedData[key].priority;
-                    this.technologies[key].priorityIsLocked = savedData[key].priorityIsLocked;
-                }
-            }
-            this.initPriorities();
-        }
-        PlayerTechnology.prototype.initPriorities = function () {
-            var priorityToAllocate = 1;
-            var techsToInit = [];
-            for (var key in this.technologies) {
-                var techData = this.technologies[key];
-                if (techData.priority === undefined) {
-                    techsToInit.push(techData.technology);
-                }
-                else {
-                    priorityToAllocate -= techData.priority;
-                }
-            }
-            techsToInit.sort(function (a, b) {
-                return b.maxLevel - a.maxLevel;
-            });
-            while (techsToInit.length > 0) {
-                var averagePriority = priorityToAllocate / techsToInit.length;
-                var technology = techsToInit.pop();
-                var maxNeededPriority = this.getMaxNeededPriority(technology);
-                var priorityForTech = Math.min(averagePriority, maxNeededPriority);
-                this.technologies[technology.key].priority = priorityForTech;
-                priorityToAllocate -= priorityForTech;
-            }
-        };
-        PlayerTechnology.prototype.allocateResearchPoints = function (amount, iteration) {
-            if (iteration === void 0) { iteration = 0; }
-            var totalPriority = 0;
-            for (var key in this.technologies) {
-                totalPriority += this.technologies[key].priority;
-            }
-            for (var key in this.technologies) {
-                var techData = this.technologies[key];
-                var relativePriority = techData.priority / totalPriority;
-                if (relativePriority > 0) {
-                    this.addResearchTowardsTechnology(techData.technology, relativePriority * amount);
-                }
-            }
-            if (this.tempOverflowedResearchAmount) {
-                if (iteration > 10) {
-                    throw new RangeError("Maximum call stack size exceeded");
-                }
-                this.allocateOverflowedResearchPoints(iteration);
-            }
-            else {
-                this.capTechnologyPrioritiesToMaxNeeded();
-            }
-        };
-        PlayerTechnology.prototype.allocateOverflowedResearchPoints = function (iteration) {
-            if (iteration === void 0) { iteration = 0; }
-            var overflow = this.tempOverflowedResearchAmount;
-            this.tempOverflowedResearchAmount = 0;
-            this.allocateResearchPoints(overflow, ++iteration);
-        };
-        PlayerTechnology.prototype.getResearchNeededForTechnologyLevel = function (level) {
-            if (level <= 0)
-                return 0;
-            if (level === 1)
-                return 40;
-            var a = 20;
-            var b = 40;
-            var swap;
-            var total = 0;
-            for (var i = 0; i < level; i++) {
-                swap = a;
-                a = b;
-                b = swap + b;
-                total += a;
-            }
-            return total;
-        };
-        PlayerTechnology.prototype.addResearchTowardsTechnology = function (technology, amount) {
-            var tech = this.technologies[technology.key];
-            var overflow = 0;
-            if (tech.level >= technology.maxLevel) {
-                return;
-            }
-            else {
-                tech.totalResearch += amount;
-                while (tech.level < technology.maxLevel &&
-                    this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch) {
-                    tech.level++;
-                }
-                if (tech.level === technology.maxLevel) {
-                    var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
-                    overflow += tech.totalResearch - neededForMaxLevel;
-                    tech.totalResearch -= overflow;
-                    this.setTechnologyPriority(technology, 0, true);
-                    tech.priorityIsLocked = true;
-                }
-            }
-            this.tempOverflowedResearchAmount += overflow;
-        };
-        PlayerTechnology.prototype.getMaxNeededPriority = function (technology) {
-            var researchUntilMaxed = this.getResearchNeededForTechnologyLevel(technology.maxLevel) -
-                this.technologies[technology.key].totalResearch;
-            return researchUntilMaxed / this.getResearchSpeed();
-        };
-        PlayerTechnology.prototype.getOpenTechnologiesPriority = function () {
-            var openPriority = 0;
-            for (var key in this.technologies) {
-                var techData = this.technologies[key];
-                if (!techData.priorityIsLocked) {
-                    openPriority += techData.priority;
-                }
-            }
-            return openPriority;
-        };
-        PlayerTechnology.prototype.getRelativeOpenTechnologyPriority = function (technology) {
-            var totalOpenPriority = this.getOpenTechnologiesPriority();
-            if (this.technologies[technology.key].priorityIsLocked || !totalOpenPriority) {
-                return 0;
-            }
-            return this.technologies[technology.key].priority / totalOpenPriority;
-        };
-        PlayerTechnology.prototype.setTechnologyPriority = function (technology, priority, force) {
-            if (force === void 0) { force = false; }
-            var remainingPriority = 1;
-            var totalOtherPriority = 0;
-            var totalOtherPriorityWasZero = false;
-            var totalOthersCount = 0;
-            for (var key in this.technologies) {
-                if (key !== technology.key) {
-                    if (this.technologies[key].priorityIsLocked) {
-                        remainingPriority -= this.technologies[key].priority;
-                    }
-                    else {
-                        totalOtherPriority += this.technologies[key].priority;
-                        totalOthersCount++;
-                    }
-                }
-            }
-            if (totalOthersCount === 0) {
-                if (force) {
-                    this.technologies[technology.key].priority = priority;
-                    eventManager_6.default.dispatchEvent("technologyPrioritiesUpdated");
-                }
-                return;
-            }
-            if (remainingPriority < 0.0001) {
-                remainingPriority = 0;
-            }
-            if (priority > remainingPriority) {
-                priority = remainingPriority;
-            }
-            var priorityNeededForMaxLevel = this.getMaxNeededPriority(technology);
-            var maxNeededPriority = Math.min(priorityNeededForMaxLevel, priority);
-            this.technologies[technology.key].priority = maxNeededPriority;
-            remainingPriority -= maxNeededPriority;
-            if (totalOtherPriority === 0) {
-                totalOtherPriority = 1;
-                totalOtherPriorityWasZero = true;
-            }
-            for (var key in this.technologies) {
-                if (key !== technology.key && !this.technologies[key].priorityIsLocked) {
-                    var techData = this.technologies[key];
-                    if (totalOtherPriorityWasZero) {
-                        techData.priority = 1 / totalOthersCount;
-                    }
-                    var maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
-                    var relativePriority = techData.priority / totalOtherPriority;
-                    var reservedPriority = relativePriority * remainingPriority;
-                    if (reservedPriority > maxNeededPriorityForOtherTech) {
-                        techData.priority = maxNeededPriorityForOtherTech;
-                        var priorityOverflow = reservedPriority - maxNeededPriorityForOtherTech;
-                        remainingPriority += priorityOverflow;
-                    }
-                    else {
-                        techData.priority = reservedPriority;
-                    }
-                }
-            }
-            eventManager_6.default.dispatchEvent("technologyPrioritiesUpdated");
-        };
-        PlayerTechnology.prototype.capTechnologyPrioritiesToMaxNeeded = function () {
-            var overflowPriority = 0;
-            for (var key in this.technologies) {
-                var techData = this.technologies[key];
-                var maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
-                if (techData.priority > maxNeededPriorityForOtherTech) {
-                    overflowPriority += techData.priority - maxNeededPriorityForOtherTech;
-                    this.setTechnologyPriority(techData.technology, maxNeededPriorityForOtherTech, true);
-                    break;
-                }
-            }
-        };
-        PlayerTechnology.prototype.serialize = function () {
-            var data = {};
-            for (var key in this.technologies) {
-                data[key] =
-                    {
-                        totalResearch: this.technologies[key].totalResearch,
-                        priority: this.technologies[key].priority,
-                        priorityIsLocked: this.technologies[key].priorityIsLocked
-                    };
-            }
-            return data;
-        };
-        return PlayerTechnology;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = PlayerTechnology;
-});
-define("src/NotificationFilterState", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var NotificationFilterState;
-    (function (NotificationFilterState) {
-        NotificationFilterState[NotificationFilterState["alwaysShow"] = 0] = "alwaysShow";
-        NotificationFilterState[NotificationFilterState["showIfInvolved"] = 1] = "showIfInvolved";
-        NotificationFilterState[NotificationFilterState["neverShow"] = 2] = "neverShow";
-    })(NotificationFilterState || (NotificationFilterState = {}));
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = NotificationFilterState;
-});
-define("src/Notification", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var Notification = (function () {
-        function Notification(template, props, turn) {
-            this.hasBeenRead = false;
-            this.template = template;
-            this.props = props;
-            this.turn = turn;
-        }
-        Notification.prototype.makeMessage = function () {
-            return this.template.messageConstructor(this.props);
-        };
-        Notification.prototype.serialize = function () {
-            var data = {
-                templateKey: this.template.key,
-                hasBeenRead: this.hasBeenRead,
-                turn: this.turn,
-                props: this.template.serializeProps(this.props)
-            };
-            return data;
-        };
-        return Notification;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Notification;
-});
-define("src/FillerPoint", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var FillerPoint = (function () {
-        function FillerPoint(x, y) {
-            this.mapGenData = {};
-            this.x = x;
-            this.y = y;
-        }
-        FillerPoint.prototype.setPosition = function (x, y) {
-            this.x = x;
-            this.y = y;
-        };
-        FillerPoint.prototype.serialize = function () {
-            return ({
-                x: this.x,
-                y: this.y
-            });
-        };
-        return FillerPoint;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = FillerPoint;
-});
-define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/utility", "src/mapgencore/MapGenResult"], function (require, exports, App_9, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, utility_8, MapGenResult_1) {
-    "use strict";
-    var GameLoader = (function () {
-        function GameLoader() {
-            this.players = [];
-            this.independents = [];
-            this.playersById = {};
-            this.starsById = {};
-            this.unitsById = {};
-            this.buildingsByControllerId = {};
-        }
-        GameLoader.prototype.deserializeGame = function (data) {
-            this.map = this.deserializeMap(data.galaxyMap);
-            for (var i = 0; i < data.players.length; i++) {
-                var playerData = data.players[i];
-                var id = playerData.id;
-                var player = this.playersById[id] = this.deserializePlayer(playerData);
-                if (player.isIndependent) {
-                    this.independents.push(player);
-                }
-                else {
-                    this.players.push(player);
-                }
-            }
-            for (var i = 0; i < data.players.length; i++) {
-                var playerData = data.players[i];
-                this.deserializeDiplomacyStatus(this.playersById[playerData.id], playerData.diplomacyStatus);
-                this.deserializeIdentifiedUnits(this.playersById[playerData.id], playerData.identifiedUnitIds);
-            }
-            this.humanPlayer = this.playersById[data.humanPlayerId];
-            this.deserializeBuildings(data.galaxyMap);
-            var game = new Game_1.default(this.map, this.players, this.humanPlayer);
-            game.independents = game.independents.concat(this.independents);
-            game.turnNumber = data.turnNumber;
-            if (data.notificationLog) {
-                game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
-                game.notificationLog.setTurn(game.turnNumber, true);
-            }
-            return game;
-        };
-        GameLoader.prototype.deserializeNotificationLog = function (data) {
-            var notificationsData = Array.isArray(data) ? data : data.notifications;
-            var notificationLog = new NotificationLog_1.default(this.humanPlayer);
-            for (var i = 0; i < notificationsData.length; i++) {
-                var template = App_9.default.moduleData.Templates.Notifications[notificationsData[i].templateKey];
-                var props = template.deserializeProps(notificationsData[i].props, this);
-                var notification = new Notification_1.default(template, props, notificationsData[i].turn);
-                notification.hasBeenRead = notificationsData[i].hasBeenRead;
-                notificationLog.addNotification(notification);
-            }
-            return notificationLog;
-        };
-        GameLoader.prototype.deserializeMap = function (data) {
-            var stars = [];
-            for (var i = 0; i < data.stars.length; i++) {
-                var star = this.deserializeStar(data.stars[i]);
-                stars.push(star);
-                this.starsById[star.id] = star;
-            }
-            for (var i = 0; i < data.stars.length; i++) {
-                var dataStar = data.stars[i];
-                var realStar = this.starsById[dataStar.id];
-                for (var j = 0; j < dataStar.linksToIds.length; j++) {
-                    var linkId = dataStar.linksToIds[j];
-                    var linkStar = this.starsById[linkId];
-                    realStar.addLink(linkStar);
-                }
-            }
-            var fillerPoints = [];
-            for (var i = 0; i < data.fillerPoints.length; i++) {
-                var dataPoint = data.fillerPoints[i];
-                fillerPoints.push(new FillerPoint_1.default(dataPoint.x, dataPoint.y));
-            }
-            var mapGenResult = new MapGenResult_1.default({
-                stars: stars,
-                fillerPoints: fillerPoints,
-                width: data.width,
-                height: data.height,
-                seed: data.seed,
-                independents: null
-            });
-            var galaxyMap = mapGenResult.makeMap();
-            return galaxyMap;
-        };
-        GameLoader.prototype.deserializeStar = function (data) {
-            var star = new Star_1.default(data.x, data.y, data.id);
-            star.name = data.name;
-            star.baseIncome = data.baseIncome;
-            star.seed = data.seed;
-            if (data.resourceType) {
-                star.setResource(App_9.default.moduleData.Templates.Resources[data.resourceType]);
-            }
-            if (data.buildableUnitTypes) {
-                for (var i = 0; i < data.buildableUnitTypes.length; i++) {
-                    star.buildableUnitTypes.push(App_9.default.moduleData.Templates.Units[data.buildableUnitTypes[i]]);
-                }
-            }
-            return star;
-        };
-        GameLoader.prototype.deserializeBuildings = function (data) {
-            for (var i = 0; i < data.stars.length; i++) {
-                var starData = data.stars[i];
-                var star = this.starsById[starData.id];
-                for (var category in starData.buildings) {
-                    for (var j = 0; j < starData.buildings[category].length; j++) {
-                        var buildingData = starData.buildings[category][j];
-                        var building = this.deserializeBuilding(buildingData);
-                        star.addBuilding(building);
-                    }
-                }
-                if (starData.manufactory) {
-                    star.manufactory = new Manufactory_1.default(star, starData.manufactory);
-                }
-            }
-        };
-        GameLoader.prototype.deserializeBuilding = function (data) {
-            var template = App_9.default.moduleData.Templates.Buildings[data.templateType];
-            var building = new Building_1.default({
-                template: template,
-                location: this.starsById[data.locationId],
-                controller: this.playersById[data.controllerId],
-                upgradeLevel: data.upgradeLevel,
-                totalCost: data.totalCost,
-                id: data.id
-            });
-            return building;
-        };
-        GameLoader.prototype.deserializePlayer = function (data) {
-            var personality;
-            if (data.personality) {
-                personality = utility_8.extendObject(data.personality, utility_8.makeRandomPersonality(), true);
-            }
-            var player = new Player_1.default(data.isAI, data.id);
-            player.name = data.name;
-            player.money = data.money;
-            player.isIndependent = data.isIndependent;
-            if (data.resources) {
-                player.resources = utility_8.extendObject(data.resources);
-            }
-            player.personality = personality;
-            player.color = Color_1.default.deSerialize(data.color);
-            player.secondaryColor = Color_1.default.deSerialize(data.secondaryColor);
-            player.colorAlpha = data.colorAlpha;
-            if (data.flag) {
-                player.flag = this.deserializeFlag(data.flag);
-            }
-            else {
-                player.makeRandomFlag();
-            }
-            for (var i = 0; i < data.fleets.length; i++) {
-                var fleet = data.fleets[i];
-                player.addFleet(this.deserializeFleet(player, fleet));
-            }
-            for (var i = 0; i < data.controlledLocationIds.length; i++) {
-                player.addStar(this.starsById[data.controlledLocationIds[i]]);
-            }
-            for (var i = 0; i < data.items.length; i++) {
-                this.deserializeItem(data.items[i], player);
-            }
-            for (var i = 0; i < data.revealedStarIds.length; i++) {
-                var id = data.revealedStarIds[i];
-                player.revealedStars[id] = this.starsById[id];
-            }
-            player.initTechnologies(data.researchByTechnology);
-            return player;
-        };
-        GameLoader.prototype.deserializeDiplomacyStatus = function (player, data) {
-            if (data) {
-                for (var i = 0; i < data.metPlayerIds.length; i++) {
-                    var id = data.metPlayerIds[i];
-                    player.diplomacyStatus.metPlayers[id] = this.playersById[id];
-                }
-                player.diplomacyStatus.statusByPlayer = data.statusByPlayer;
-                for (var playerId in data.attitudeModifiersByPlayer) {
-                    var modifiers = data.attitudeModifiersByPlayer[playerId];
-                    if (!modifiers || modifiers.length === 0) {
-                        player.diplomacyStatus.attitudeModifiersByPlayer[playerId] = [];
-                        continue;
-                    }
-                    for (var i = 0; i < modifiers.length; i++) {
-                        var template = App_9.default.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
-                        var modifier = new AttitudeModifier_2.default({
-                            template: template,
-                            startTurn: modifiers[i].startTurn,
-                            endTurn: modifiers[i].endTurn,
-                            strength: modifiers[i].strength
-                        });
-                        player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
-                    }
-                }
-            }
-        };
-        GameLoader.prototype.deserializeIdentifiedUnits = function (player, data) {
-            for (var i = 0; i < data.length; i++) {
-                var unit = this.unitsById[data[i]];
-                if (unit) {
-                    player.identifyUnit(unit);
-                }
-            }
-        };
-        GameLoader.prototype.deserializeEmblem = function (emblemData, colorData) {
-            var inner = App_9.default.moduleData.Templates.SubEmblems[emblemData.innerKey];
-            var outer = emblemData.outerKey ?
-                App_9.default.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
-            return new Emblem_2.default(Color_1.default.deSerialize(colorData), emblemData.alpha, inner, outer);
-        };
-        GameLoader.prototype.deserializeFlag = function (data) {
-            var flag = new Flag_1.default({
-                width: 46,
-                mainColor: Color_1.default.deSerialize(data.mainColor),
-                secondaryColor: Color_1.default.deSerialize(data.secondaryColor),
-                tetriaryColor: Color_1.default.deSerialize(data.tetriaryColor)
-            });
-            if (data.customImage) {
-                flag.setCustomImage(data.customImage);
-            }
-            else if (data.seed) {
-                flag.generateRandom(data.seed);
-            }
-            else {
-                if (data.foregroundEmblem) {
-                    var fgEmblem = this.deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
-                    flag.setForegroundEmblem(fgEmblem);
-                }
-                if (data.backgroundEmblem) {
-                    var bgEmblem = this.deserializeEmblem(data.backgroundEmblem, data.tetriaryColor);
-                    flag.setBackgroundEmblem(bgEmblem);
-                }
-            }
-            return flag;
-        };
-        GameLoader.prototype.deserializeFleet = function (player, data) {
-            var units = [];
-            var castedData = data;
-            var unitsToDeserialize = castedData.units || castedData.ships;
-            for (var i = 0; i < unitsToDeserialize.length; i++) {
-                var unit = this.deserializeUnit(unitsToDeserialize[i]);
-                player.addUnit(unit);
-                units.push(unit);
-            }
-            var fleet = new Fleet_2.default(player, units, this.starsById[data.locationId], data.id, false);
-            fleet.name = data.name;
-            return fleet;
-        };
-        GameLoader.prototype.deserializeUnit = function (data) {
-            var template = App_9.default.moduleData.Templates.Units[data.templateType];
-            var unit = new Unit_2.default(template, data.id, data);
-            this.unitsById[unit.id] = unit;
-            return unit;
-        };
-        GameLoader.prototype.deserializeItem = function (data, player) {
-            var template = App_9.default.moduleData.Templates.Items[data.templateType];
-            var item = new Item_2.default(template, data.id);
-            player.addItem(item);
-            if (isFinite(data.unitId)) {
-                this.unitsById[data.unitId].addItem(item);
-            }
-        };
-        return GameLoader;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = GameLoader;
-});
-define("src/NotificationFilter", ["require", "exports", "src/App", "src/NotificationFilterState", "src/utility"], function (require, exports, App_10, NotificationFilterState_1, utility_9) {
-    "use strict";
-    var NotificationFilter = (function () {
-        function NotificationFilter(player) {
-            this.filters = {};
-            this.player = player;
-            this.setDefaultFilterStates();
-            this.load();
-        }
-        NotificationFilter.prototype.setDefaultFilterStates = function () {
-            var notifications = App_10.default.moduleData.Templates.Notifications;
-            for (var key in notifications) {
-                var notificationTemplate = notifications[key];
-                this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
-            }
-        };
-        NotificationFilter.prototype.shouldDisplayNotification = function (notification) {
-            var filterStates = this.filters[notification.template.key];
-            if (filterStates.indexOf(NotificationFilterState_1.default.alwaysShow) !== -1) {
-                return true;
-            }
-            else if (filterStates.indexOf(NotificationFilterState_1.default.neverShow) !== -1) {
-                return false;
-            }
-            var playerIsInvolved = false;
-            for (var key in notification.props) {
-                if (notification.props[key] === this.player) {
-                    playerIsInvolved = true;
-                    break;
-                }
-            }
-            if (playerIsInvolved) {
-                return filterStates.indexOf(NotificationFilterState_1.default.showIfInvolved) !== -1;
-            }
-            return false;
-        };
-        NotificationFilter.prototype.getCompatibleFilterStates = function (filterState) {
-            switch (filterState) {
-                case NotificationFilterState_1.default.alwaysShow:
-                    {
-                        return [];
-                    }
-                case NotificationFilterState_1.default.showIfInvolved:
-                    {
-                        return [];
-                    }
-                case NotificationFilterState_1.default.neverShow:
-                    {
-                        return [];
-                    }
-            }
-        };
-        NotificationFilter.prototype.handleFilterStateChange = function (filterKey, state) {
-            var stateIndex = this.filters[filterKey].indexOf(state);
-            if (stateIndex !== -1) {
-                if (this.filters[filterKey].length === 1) {
-                    this.filters[filterKey] = [NotificationFilterState_1.default.neverShow];
-                }
-                else {
-                    this.filters[filterKey].splice(stateIndex, 1);
-                }
-            }
-            else {
-                var newState = [state];
-                var compatibleStates = this.getCompatibleFilterStates(state);
-                for (var i = 0; i < this.filters[filterKey].length; i++) {
-                    if (compatibleStates.indexOf(this.filters[filterKey][i]) !== -1) {
-                        newState.push(this.filters[filterKey][i]);
-                    }
-                }
-                this.filters[filterKey] = newState;
-            }
-        };
-        NotificationFilter.prototype.getFiltersByCategory = function () {
-            var filtersByCategory = {};
-            var notifications = App_10.default.moduleData.Templates.Notifications;
-            for (var key in this.filters) {
-                var notificationTemplate = notifications[key];
-                if (notificationTemplate) {
-                    if (!filtersByCategory[notificationTemplate.category]) {
-                        filtersByCategory[notificationTemplate.category] = [];
-                    }
-                    filtersByCategory[notificationTemplate.category].push({
-                        notificationTemplate: notificationTemplate,
-                        filterState: this.filters[key]
-                    });
-                }
-            }
-            return filtersByCategory;
-        };
-        NotificationFilter.prototype.setDefaultFilterStatesForCategory = function (category) {
-            var byCategory = this.getFiltersByCategory();
-            var forSelectedCategory = byCategory[category];
-            for (var i = 0; i < forSelectedCategory.length; i++) {
-                var template = forSelectedCategory[i].notificationTemplate;
-                this.filters[template.key] = template.defaultFilterState.slice(0);
-            }
-        };
-        NotificationFilter.prototype.load = function (slot) {
-            var baseString = "NotificationFilter.";
-            var parsedData;
-            if (slot && localStorage[baseString + slot]) {
-                parsedData = JSON.parse(localStorage.getItem(baseString + slot));
-            }
-            else {
-                parsedData = utility_9.getMatchingLocalstorageItemsByDate(baseString)[0];
-            }
-            if (parsedData) {
-                this.filters = utility_9.extendObject(parsedData.filters, this.filters, false);
-            }
-        };
-        NotificationFilter.prototype.save = function (slot) {
-            if (slot === void 0) { slot = 0; }
-            var data = JSON.stringify({
-                filters: this.filters,
-                date: new Date()
-            });
-            localStorage.setItem("NotificationFilter." + slot, data);
-        };
-        return NotificationFilter;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = NotificationFilter;
-});
-define("src/NotificationLog", ["require", "exports", "src/App", "src/Notification", "src/NotificationFilter", "src/eventManager"], function (require, exports, App_11, Notification_2, NotificationFilter_1, eventManager_7) {
-    "use strict";
-    var NotificationLog = (function () {
-        function NotificationLog(player) {
-            this.byTurn = {};
-            this.unread = [];
-            this.isHumanTurn = true;
-            this.listeners = {};
-            this.addEventListeners();
-            this.notificationFilter = new NotificationFilter_1.default(player);
-        }
-        NotificationLog.prototype.addEventListeners = function () {
-            for (var key in App_11.default.moduleData.Templates.Notifications) {
-                var template = App_11.default.moduleData.Templates.Notifications[key];
-                for (var i = 0; i < template.eventListeners.length; i++) {
-                    var listenerKey = template.eventListeners[i];
-                    var listener = eventManager_7.default.addEventListener(listenerKey, this.makeNotification.bind(this, template));
-                    if (!this.listeners[listenerKey]) {
-                        this.listeners[listenerKey] = [];
-                    }
-                    this.listeners[listenerKey].push(listener);
-                }
-            }
-        };
-        NotificationLog.prototype.destroy = function () {
-            for (var key in this.listeners) {
-                for (var i = 0; i < this.listeners[key].length; i++) {
-                    eventManager_7.default.removeEventListener(key, this.listeners[key][i]);
-                }
-            }
-        };
-        NotificationLog.prototype.setTurn = function (turn, isHumanTurn) {
-            this.currentTurn = turn;
-            this.isHumanTurn = isHumanTurn;
-        };
-        NotificationLog.prototype.makeNotification = function (template, props) {
-            var notification = new Notification_2.default(template, props, this.currentTurn);
-            this.addNotification(notification);
-            if (this.isHumanTurn) {
-                eventManager_7.default.dispatchEvent("updateNotificationLog");
-            }
-        };
-        NotificationLog.prototype.addNotification = function (notification) {
-            if (!this.byTurn[notification.turn]) {
-                this.byTurn[notification.turn] = [];
-            }
-            this.byTurn[notification.turn].unshift(notification);
-            if (!notification.hasBeenRead) {
-                this.unread.unshift(notification);
-            }
-        };
-        NotificationLog.prototype.markAsRead = function (notification) {
-            var index = this.unread.indexOf(notification);
-            if (index === -1)
-                throw new Error("Notification is already unread");
-            notification.hasBeenRead = true;
-            this.unread.splice(index, 1);
-        };
-        NotificationLog.prototype.getUnreadNotificationsForTurn = function (turn) {
-            return this.byTurn[turn].filter(function (notification) {
-                return !notification.hasBeenRead;
-            });
-        };
-        NotificationLog.prototype.filterNotifications = function (notifications) {
-            var filtered = [];
-            for (var i = 0; i < notifications.length; i++) {
-                if (this.notificationFilter.shouldDisplayNotification(notifications[i])) {
-                    filtered.push(notifications[i]);
-                }
-            }
-            return filtered;
-        };
-        NotificationLog.prototype.serialize = function () {
-            var notificationsSaveData = [];
-            for (var turnNumber in this.byTurn) {
-                var notifications = this.byTurn[turnNumber];
-                for (var i = 0; i < notifications.length; i++) {
-                    notificationsSaveData.push(notifications[i].serialize());
-                }
-            }
-            var data = {
-                notifications: notificationsSaveData
-            };
-            return data;
-        };
-        return NotificationLog;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = NotificationLog;
-});
-define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/eventManager", "src/utility"], function (require, exports, App_12, idGenerators_4, eventManager_8, utility_10) {
-    "use strict";
-    var Game = (function () {
-        function Game(map, players, humanPlayer) {
-            this.independents = [];
-            this.galaxyMap = map;
-            if (map.independents) {
-                this.independents = map.independents;
-                map.independents = null;
-                delete map.independents;
-            }
-            this.playerOrder = players;
-            this.humanPlayer = humanPlayer;
-            this.turnNumber = 1;
-        }
-        Game.prototype.destroy = function () {
-            this.notificationLog.destroy();
-            this.notificationLog = null;
-            for (var i = 0; i < this.playerOrder.length; i++) {
-                this.playerOrder[i].destroy();
-            }
-            for (var i = 0; i < this.independents.length; i++) {
-                this.independents[i].destroy();
-            }
-        };
-        Game.prototype.endTurn = function () {
-            this.setNextPlayer();
-            while (this.activePlayer.controlledLocations.length === 0) {
-                this.killPlayer(this.activePlayer);
-                this.activePlayer = this.playerOrder[0];
-            }
-            this.processPlayerStartTurn(this.activePlayer);
-            this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
-            if (this.activePlayer.isAI) {
-                this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
-            }
-            else {
-                this.turnNumber++;
-                for (var i = 0; i < this.independents.length; i++) {
-                    this.processPlayerStartTurn(this.independents[i]);
-                }
-            }
-            eventManager_8.default.dispatchEvent("endTurn", null);
-            eventManager_8.default.dispatchEvent("updateSelection", null);
-        };
-        Game.prototype.processPlayerStartTurn = function (player) {
-            var unitStartTurnFN = function (unit) {
-                unit.resetMovePoints();
-                unit.heal();
-                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-                if (passiveSkillsByPhase.atTurnStart) {
-                    for (var i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++) {
-                        var skill = passiveSkillsByPhase.atTurnStart[i];
-                        for (var j = 0; j < skill.atTurnStart.length; j++) {
-                            skill.atTurnStart[j](unit);
-                        }
-                    }
-                }
-                unit.timesActedThisTurn = 0;
-            };
-            player.forEachUnit(unitStartTurnFN);
-            if (!player.isIndependent) {
-                player.money += player.getIncome();
-                var allResourceIncomeData = player.getResourceIncome();
-                for (var resourceType in allResourceIncomeData) {
-                    var resourceData = allResourceIncomeData[resourceType];
-                    player.addResource(resourceData.resource, resourceData.amount);
-                }
-                player.playerTechnology.allocateResearchPoints(player.getResearchSpeed());
-                player.getAllManufactories().forEach(function (manufactory) {
-                    manufactory.buildAllThings();
-                });
-            }
-        };
-        Game.prototype.setNextPlayer = function () {
-            this.playerOrder.push(this.playerOrder.shift());
-            this.activePlayer = this.playerOrder[0];
-        };
-        Game.prototype.killPlayer = function (playerToKill) {
-            var playerOrderIndex;
-            for (var i = 0; i < this.playerOrder.length; i++) {
-                var player = this.playerOrder[i];
-                if (player === playerToKill) {
-                    playerOrderIndex = i;
-                    continue;
-                }
-                player.diplomacyStatus.removePlayer(playerToKill);
-            }
-            playerToKill.die();
-            playerToKill.destroy();
-            this.playerOrder.splice(playerOrderIndex, 1);
-        };
-        Game.prototype.serialize = function () {
-            var playersSaveData = this.playerOrder.map(function (player) {
-                return player.serialize();
-            });
-            var independentsSaveData = this.independents.map(function (player) {
-                return player.serialize();
-            });
-            var data = {
-                turnNumber: this.turnNumber,
-                galaxyMap: this.galaxyMap.serialize(),
-                players: playersSaveData.concat(independentsSaveData),
-                humanPlayerId: this.humanPlayer.id,
-                notificationLog: this.notificationLog.serialize()
-            };
-            return data;
-        };
-        Game.prototype.save = function (name) {
-            var saveString = "Save." + name;
-            this.gameStorageKey = saveString;
-            var date = new Date();
-            var gameData = this.serialize();
-            var stringified = JSON.stringify({
-                name: name,
-                date: date,
-                gameData: gameData,
-                idGenerators: utility_10.extendObject(idGenerators_4.default),
-                cameraLocation: App_12.default.renderer.camera.getCenterPosition()
-            });
-            localStorage.setItem(saveString, stringified);
-        };
-        return Game;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Game;
-});
-define("src/Range", ["require", "exports"], function (require, exports) {
-    "use strict";
-});
-define("src/rangeOperations", ["require", "exports", "src/utility"], function (require, exports, utility_11) {
-    "use strict";
-    function excludeFromRanges(ranges, toExclude) {
-        var intersecting = getIntersectingRanges(ranges, toExclude);
-        var newRanges = ranges.slice(0);
-        for (var i = 0; i < intersecting.length; i++) {
-            newRanges.splice(newRanges.indexOf(intersecting[i]), 1);
-            var intersectedRanges = excludeFromRange(intersecting[i], toExclude);
-            if (intersectedRanges) {
-                newRanges = newRanges.concat(intersectedRanges);
-            }
-        }
-        return newRanges;
-    }
-    exports.excludeFromRanges = excludeFromRanges;
-    function getIntersectingRanges(ranges, toIntersectWith) {
-        var intersecting = [];
-        for (var i = 0; i < ranges.length; i++) {
-            var range = ranges[i];
-            if (toIntersectWith.max < range.min || toIntersectWith.min > range.max) {
-                continue;
-            }
-            intersecting.push(range);
-        }
-        return intersecting;
-    }
-    exports.getIntersectingRanges = getIntersectingRanges;
-    function excludeFromRange(range, toExclude) {
-        if (toExclude.max < range.min || toExclude.min > range.max) {
-            return null;
-        }
-        else if (toExclude.min < range.min && toExclude.max > range.max) {
-            return null;
-        }
-        if (toExclude.min <= range.min) {
-            return ([{ min: toExclude.max, max: range.max }]);
-        }
-        else if (toExclude.max >= range.max) {
-            return ([{ min: range.min, max: toExclude.min }]);
-        }
-        return ([
-            {
-                min: range.min,
-                max: toExclude.min
-            },
-            {
-                min: toExclude.max,
-                max: range.max
-            }
-        ]);
-    }
-    exports.excludeFromRange = excludeFromRange;
-    function randomSelectFromRanges(ranges) {
-        var totalWeight = 0;
-        var currentRelativeWeight = 0;
-        var rangesByRelativeWeight = {};
-        for (var i = 0; i < ranges.length; i++) {
-            var range = ranges[i];
-            if (!isFinite(range.max))
-                range.max = 1;
-            if (!isFinite(range.min))
-                range.min = 0;
-            var weight = range.max - range.min;
-            totalWeight += weight;
-        }
-        for (var i = 0; i < ranges.length; i++) {
-            var range = ranges[i];
-            var relativeWeight = (range.max - range.min) / totalWeight;
-            if (totalWeight === 0)
-                relativeWeight = 1;
-            currentRelativeWeight += relativeWeight;
-            rangesByRelativeWeight[currentRelativeWeight] = range;
-        }
-        var rand = Math.random();
-        var sortedWeights = Object.keys(rangesByRelativeWeight).map(function (w) {
-            return parseFloat(w);
-        }).sort();
-        for (var i = 0; i < sortedWeights.length; i++) {
-            if (rand < sortedWeights[i]) {
-                var selectedRange = rangesByRelativeWeight[sortedWeights[i]];
-                return utility_11.randRange(selectedRange.min, selectedRange.max);
-            }
-        }
-        throw new Error("Couldn't select from ranges.");
-    }
-    exports.randomSelectFromRanges = randomSelectFromRanges;
-});
-define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOperations", "src/utility"], function (require, exports, Color_2, rangeOperations_1, utility_12) {
-    "use strict";
-    function makeRandomVibrantColor() {
-        var hRanges = [
-            { min: 0, max: 90 / 360 },
-            { min: 120 / 360, max: 150 / 360 },
-            { min: 180 / 360, max: 290 / 360 },
-            { min: 320 / 360, max: 1 }
-        ];
-        var h = rangeOperations_1.randomSelectFromRanges(hRanges);
-        var s = utility_12.randRange(0.8, 0.9);
-        var v = utility_12.randRange(0.88, 0.92);
-        return Color_2.default.fromHSV(h, s, v);
-    }
-    function makeRandomDeepColor() {
-        if (Math.random() < 0.1) {
-            var h = utility_12.randRange(15 / 360, 80 / 360);
-            var s = utility_12.randRange(0.92, 1);
-            var v = utility_12.randRange(0.92, 1);
-            return Color_2.default.fromHSV(h, s, v);
-        }
-        else {
-            var hRanges = [
-                { min: 0, max: 15 / 360 },
-                { min: 100 / 360, max: 195 / 360 },
-                { min: 210 / 360, max: 1 }
-            ];
-            var h = rangeOperations_1.randomSelectFromRanges(hRanges);
-            var s = utility_12.randRange(0.8, 0.9);
-            var v = utility_12.randRange(0.88, 0.92);
-            return Color_2.default.fromHSV(h, s, v);
-        }
-    }
-    function makeRandomLightColor() {
-        return Color_2.default.fromHSV(utility_12.randRange(0, 1), utility_12.randRange(0.55, 0.65), 1);
-    }
-    function makeRandomColor(props) {
-        var hRanges = props.h || [{ min: 0, max: 1 }];
-        var sRanges = props.s || [{ min: 0, max: 1 }];
-        var lRanges = props.l || [{ min: 0, max: 1 }];
-        var h = rangeOperations_1.randomSelectFromRanges(hRanges);
-        var s = rangeOperations_1.randomSelectFromRanges(sRanges);
-        var l = rangeOperations_1.randomSelectFromRanges(lRanges);
-        return Color_2.default.fromHUSL(h, s, l);
-    }
-    function generateMainColor() {
-        if (Math.random() < 0.6) {
-            return makeRandomDeepColor();
-        }
-        else if (Math.random() < 0.25) {
-            return makeRandomLightColor();
-        }
-        else if (Math.random() < 0.3) {
-            return makeRandomVibrantColor();
-        }
-        else {
-            return makeRandomColor({
-                s: [{ min: 1, max: 1 }],
-                l: [{ min: 0.88, max: 1 }]
-            });
-        }
-    }
-    exports.generateMainColor = generateMainColor;
-    function makeContrastingColor(toContrastWith, colorGenProps) {
-        var props = colorGenProps || {};
-        var initialRanges = props.initialRanges || {};
-        var hRange = initialRanges.h || { min: 0.0, max: 1.0 };
-        var sRange = initialRanges.s || { min: 0.5, max: 1.0 };
-        var lRange = initialRanges.l || { min: 0.0, max: 1.0 };
-        var minDifference = props.minDifference || {};
-        var hMinDifference = isFinite(minDifference.h) ? minDifference.h : 0.1;
-        var sMinDifference = isFinite(minDifference.s) ? minDifference.s : 0.0;
-        var lMinDifference = isFinite(minDifference.l) ? minDifference.l : 0.3;
-        var maxDifference = props.maxDifference || {};
-        var hMaxDifference = isFinite(maxDifference.h) ? maxDifference.h : 1.0;
-        var toContrastWithHUSL = toContrastWith.getHUSL();
-        var hExclusionRange = {
-            min: (toContrastWithHUSL[0] - hMinDifference) % 1.0,
-            max: (toContrastWithHUSL[0] + hMinDifference) % 1.0
-        };
-        var hRangeWithMinExclusion = rangeOperations_1.excludeFromRange(hRange, hExclusionRange);
-        var candidateHValue = rangeOperations_1.randomSelectFromRanges(hRangeWithMinExclusion);
-        var h = utility_12.clamp(candidateHValue, toContrastWithHUSL[0] - hMaxDifference, toContrastWithHUSL[0] + hMaxDifference);
-        var hDistance = utility_12.getAngleBetweenDegrees(h * 360, toContrastWithHUSL[0]);
-        var relativeHDistance = 1 / (180 / hDistance);
-        var sExclusionRangeMin = utility_12.clamp(toContrastWithHUSL[1] - sMinDifference, sRange.min, 1.0);
-        var sExclusionRange = {
-            min: sExclusionRangeMin,
-            max: utility_12.clamp(toContrastWithHUSL[1] + sMinDifference, sExclusionRangeMin, 1.0)
-        };
-        var lExclusionRangeMin = utility_12.clamp(toContrastWithHUSL[2] - lMinDifference, lRange.min, 1.0);
-        var lExclusionRange = {
-            min: lExclusionRangeMin,
-            max: utility_12.clamp(toContrastWithHUSL[2] + lMinDifference, lExclusionRangeMin, 1.0)
-        };
-        return makeRandomColor({
-            h: [{ min: h, max: h }],
-            s: rangeOperations_1.excludeFromRange(sRange, sExclusionRange),
-            l: rangeOperations_1.excludeFromRange(lRange, lExclusionRange)
-        });
-    }
-    function colorsContrast(aColor, bColor) {
-        var a = aColor.getHUSL();
-        var b = bColor.getHUSL();
-        return Math.abs(a[2] - b[2]) > 0.2;
-    }
-    function generateSecondaryColor(mainColor) {
-        return makeContrastingColor(mainColor, {
-            minDifference: {
-                h: 0.1,
-                l: 0.3
-            }
-        });
-    }
-    exports.generateSecondaryColor = generateSecondaryColor;
-    function generateColorScheme(mainColor) {
-        var main = mainColor || generateMainColor();
-        return ({
-            main: main,
-            secondary: generateSecondaryColor(main)
-        });
-    }
-    exports.generateColorScheme = generateColorScheme;
-});
-define("src/mapai/MapEvaluator", ["require", "exports", "src/utility"], function (require, exports, utility_13) {
-    "use strict";
-    exports.defaultEvaluationParameters = {
-        starDesirability: {
-            neighborRange: 1,
-            neighborWeight: 0.5,
-            defendabilityWeight: 1,
-            totalIncomeWeight: 1,
-            baseIncomeWeight: 0.5,
-            infrastructureWeight: 1,
-            productionWeight: 1,
-        }
-    };
-    var MapEvaluator = (function () {
-        function MapEvaluator(map, player, game) {
-            this.cachedInfluenceMaps = {};
-            this.cachedVisibleFleets = {};
-            this.cachedVisionMaps = {};
-            this.map = map;
-            this.player = player;
-            this.game = game;
-            this.evaluationParameters = exports.defaultEvaluationParameters;
-        }
-        MapEvaluator.prototype.processTurnStart = function () {
-            this.cachedInfluenceMaps = {};
-            this.cachedVisibleFleets = {};
-            this.cachedVisionMaps = {};
-            this.cachedOwnIncome = undefined;
-        };
-        MapEvaluator.prototype.evaluateStarIncome = function (star) {
-            var evaluation = 0;
-            evaluation += star.baseIncome;
-            evaluation += (star.getIncome() - star.baseIncome) *
-                (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
-            var evaluation = 0;
-            for (var category in star.buildings) {
-                for (var i = 0; i < star.buildings[category].length; i++) {
-                    evaluation += star.buildings[category][i].totalCost / 25;
-                }
-            }
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarProduction = function (star) {
-            var evaluation = 0;
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarDefendability = function (star) {
-            var evaluation = 0;
-            var nearbyStars = star.getLinkedInRange(2).byRange;
-            for (var rangeString in nearbyStars) {
-                var distanceMultiplier = 1 / parseInt(rangeString);
-                var starsInRange = nearbyStars[rangeString];
-                for (var i = 0; i < starsInRange.length; i++) {
-                    var neighbor = starsInRange[i];
-                    var neighborDefendability;
-                    if (neighbor.owner === this.player) {
-                        neighborDefendability = 3;
-                    }
-                    else if (neighbor.owner.isIndependent) {
-                        neighborDefendability = -0.75;
-                    }
-                    else {
-                        neighborDefendability = -2;
-                    }
-                    evaluation += neighborDefendability * distanceMultiplier;
-                }
-            }
-            if (star.owner === this.player) {
-                evaluation += 3;
-            }
-            return evaluation * 5;
-        };
-        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-            if (!isFinite(this.cachedOwnIncome)) {
-                this.cachedOwnIncome = this.player.getIncome();
-            }
-            var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
-            incomeEvaluation *= incomeEvaluation / (this.cachedOwnIncome / 4);
-            evaluation += incomeEvaluation;
-            var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
-            evaluation += infrastructureEvaluation;
-            var productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
-            evaluation += productionEvaluation;
-            var defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
-            evaluation += defendabilityEvaluation;
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
-            var evaluation = 0;
-            var getDistanceFalloff = function (distance) {
-                return 1 / (distance + 1);
-            };
-            var inRange = star.getLinkedInRange(range).byRange;
-            for (var distanceString in inRange) {
-                var stars = inRange[distanceString];
-                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
-                for (var i = 0; i < stars.length; i++) {
-                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
-                }
-            }
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-            evaluation += this.evaluateIndividualStarDesirability(star);
-            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) *
-                p.neighborWeight;
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateIndependentTargets = function (targetStars) {
-            var evaluationByStar = {};
-            for (var i = 0; i < targetStars.length; i++) {
-                var star = targetStars[i];
-                var desirability = this.evaluateStarDesirability(star);
-                var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
-                var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-                var ownInfluenceAtStar = ownInfluenceMap[star.id] || 1;
-                evaluationByStar[star.id] =
-                    {
-                        star: star,
-                        desirability: desirability,
-                        independentStrength: independentStrength,
-                        ownInfluence: ownInfluenceAtStar
-                    };
-            }
-            return evaluationByStar;
-        };
-        MapEvaluator.prototype.scoreIndependentTargets = function (evaluations) {
-            var scores = [];
-            for (var starId in evaluations) {
-                var evaluation = evaluations[starId];
-                var easeOfCapturing = evaluation.ownInfluence / evaluation.independentStrength;
-                var score = evaluation.desirability * easeOfCapturing;
-                if (evaluation.star.getSecondaryController() === this.player) {
-                    score *= 1.5;
-                }
-                scores.push({
-                    star: evaluation.star,
-                    score: score
-                });
-            }
-            return scores.sort(function (a, b) {
-                return b.score - a.score;
-            });
-        };
-        MapEvaluator.prototype.evaluateDesirabilityOfPlayersStars = function (player) {
-            var byStar = {};
-            var total = 0;
-            var stars = this.getVisibleStarsOfPlayer(player);
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var desirability = this.evaluateStarDesirability(star);
-                byStar[star.id] =
-                    {
-                        star: star,
-                        desirability: desirability
-                    };
-                total += desirability;
-            }
-            return ({
-                byStar: byStar,
-                total: total
-            });
-        };
-        MapEvaluator.prototype.getIndependentNeighborStars = function () {
-            var self = this;
-            var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
-                var secondaryController = star.getSecondaryController();
-                return star.owner.isIndependent && (!secondaryController || secondaryController === self.player);
-            });
-            return independentNeighborStars;
-        };
-        MapEvaluator.prototype.getIndependentNeighborStarIslands = function (earlyReturnSize) {
-            var self = this;
-            var alreadyVisited = {};
-            var allStars = [];
-            var islandQualifierFN = function (a, b) {
-                var secondaryController = b.getSecondaryController();
-                return b.owner.isIndependent && (!secondaryController || secondaryController === self.player);
-            };
-            var neighborStars = this.getIndependentNeighborStars();
-            for (var i = 0; i < neighborStars.length; i++) {
-                var neighborStar = neighborStars[i];
-                if (alreadyVisited[neighborStar.id]) {
-                    continue;
-                }
-                var island = neighborStar.getIslandForQualifier(islandQualifierFN, earlyReturnSize);
-                for (var j = 0; j < island.length; j++) {
-                    var star = island[j];
-                    alreadyVisited[star.id] = true;
-                    allStars.push(star);
-                }
-            }
-            return allStars;
-        };
-        MapEvaluator.prototype.getHostileUnitsAtStar = function (star) {
-            var hostilePlayers = star.getEnemyFleetOwners(this.player);
-            var unitsByEnemy = {};
-            var allUnits = [];
-            for (var i = 0; i < hostilePlayers.length; i++) {
-                unitsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
-                allUnits = allUnits.concat(unitsByEnemy[hostilePlayers[i].id]);
-            }
-            return ({
-                byEnemy: unitsByEnemy,
-                all: allUnits
-            });
-        };
-        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
-            var hostileUnitsByPlayer = this.getHostileUnitsAtStar(star).byEnemy;
-            var strengthByEnemy = {};
-            for (var playerId in hostileUnitsByPlayer) {
-                var strength = 0;
-                for (var i = 0; i < hostileUnitsByPlayer[playerId].length; i++) {
-                    strength += hostileUnitsByPlayer[playerId][i].getStrengthEvaluation();
-                }
-                strengthByEnemy[playerId] = strength;
-            }
-            return strengthByEnemy;
-        };
-        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
-            var units = star.getIndependentUnits();
-            var total = 0;
-            for (var i = 0; i < units.length; i++) {
-                total += units[i].getStrengthEvaluation();
-            }
-            return total;
-        };
-        MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
-            var byPlayer = this.getHostileStrengthAtStar(star);
-            var total = 0;
-            for (var playerId in byPlayer) {
-                total += byPlayer[playerId];
-            }
-            return total;
-        };
-        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
-            var byPlayer = {};
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-                if (!byPlayer[building.controller.id]) {
-                    byPlayer[building.controller.id] = 0;
-                }
-                byPlayer[building.controller.id] += building.totalCost;
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
-            var strength = 0;
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-                if (building.controller.id === this.player.id)
-                    continue;
-                strength += building.totalCost;
-            }
-            return strength;
-        };
-        MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
-            return fleet.getTotalStrengthEvaluation();
-        };
-        MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
-            if (this.game && this.cachedVisibleFleets[this.game.turnNumber]) {
-                return this.cachedVisibleFleets[this.game.turnNumber];
-            }
-            var stars = this.player.getVisibleStars();
-            var byPlayer = {};
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                for (var playerId in star.fleets) {
-                    var playerFleets = star.fleets[playerId];
-                    if (!byPlayer[playerId]) {
-                        byPlayer[playerId] = [];
-                    }
-                    for (var j = 0; j < playerFleets.length; j++) {
-                        if (playerFleets[j].isStealthy && !this.player.starIsDetected(star)) {
-                            continue;
-                        }
-                        byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
-                    }
-                }
-            }
-            if (this.game) {
-                this.cachedVisibleFleets[this.game.turnNumber] = byPlayer;
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
-            var playerIsImmobile = player.isIndependent;
-            var influenceByStar = {};
-            var stars = this.player.getRevealedStars();
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
-                if (defenceBuildingStrengths[player.id]) {
-                    if (!isFinite(influenceByStar[star.id])) {
-                        influenceByStar[star.id] = 0;
-                    }
-                    ;
-                    influenceByStar[star.id] += defenceBuildingStrengths[player.id];
-                }
-            }
-            var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
-            function getDistanceFalloff(distance) {
-                return 1 / (distance + 1);
-            }
-            for (var i = 0; i < fleets.length; i++) {
-                var fleet = fleets[i];
-                var strength = this.evaluateFleetStrength(fleet);
-                var location = fleet.location;
-                var range = fleet.getMinMaxMovePoints();
-                var turnsToCheck = 4;
-                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
-                inFleetRange[0] = [location];
-                for (var distance in inFleetRange) {
-                    var numericDistance = parseInt(distance);
-                    var turnsToReach = Math.floor((numericDistance - 1) / range);
-                    if (turnsToReach < 0)
-                        turnsToReach = 0;
-                    var distanceFalloff = getDistanceFalloff(turnsToReach);
-                    var adjustedStrength = strength * distanceFalloff;
-                    for (var j = 0; j < inFleetRange[distance].length; j++) {
-                        var star = inFleetRange[distance][j];
-                        if (!isFinite(influenceByStar[star.id])) {
-                            influenceByStar[star.id] = 0;
-                        }
-                        ;
-                        influenceByStar[star.id] += adjustedStrength;
-                    }
-                }
-            }
-            return influenceByStar;
-        };
-        MapEvaluator.prototype.getPlayerInfluenceMap = function (player) {
-            if (!this.game) {
-                throw new Error("Can't use cached influence maps when game isn't specified for MapEvaluator");
-            }
-            if (!this.cachedInfluenceMaps[this.game.turnNumber]) {
-                this.cachedInfluenceMaps[this.game.turnNumber] = {};
-            }
-            if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id]) {
-                this.cachedInfluenceMaps[this.game.turnNumber][player.id] = this.buildPlayerInfluenceMap(player);
-            }
-            return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
-        };
-        MapEvaluator.prototype.getInfluenceMapsForKnownPlayers = function () {
-            var byPlayer = {};
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                byPlayer[playerId] = this.getPlayerInfluenceMap(player);
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.getVisibleStarsOfPlayer = function (player) {
-            return this.player.getVisibleStars().filter(function (star) {
-                return star.owner === player;
-            });
-        };
-        MapEvaluator.prototype.getVisibleStarsOfKnownPlayers = function () {
-            var byPlayer = {};
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                byPlayer[playerId] = this.getVisibleStarsOfPlayer(player);
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.estimateGlobalStrength = function (player) {
-            var visibleStrength = 0;
-            var invisibleStrength = 0;
-            var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
-            for (var i = 0; i < fleets.length; i++) {
-                visibleStrength += this.evaluateFleetStrength(fleets[i]);
-            }
-            if (player !== this.player) {
-                invisibleStrength = visibleStrength * 0.5;
-            }
-            return visibleStrength + invisibleStrength;
-        };
-        MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
-            if (!this.player.diplomacyStatus.metPlayers[player.id]) {
-                throw new Error(this.player.name +
-                    " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
-            }
-            var otherInfluenceMap = this.getPlayerInfluenceMap(player);
-            var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-            var totalInfluenceInOwnStars = 0;
-            for (var starId in otherInfluenceMap) {
-                for (var i = 0; i < this.player.controlledLocations.length; i++) {
-                    var star = this.player.controlledLocations[i];
-                    if (star.id === parseInt(starId)) {
-                        var otherInfluence = otherInfluenceMap[starId];
-                        var ownInfluence = ownInfluenceMap[starId];
-                        totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
-                        break;
-                    }
-                }
-            }
-            var globalStrengthDifference = this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
-            return totalInfluenceInOwnStars + globalStrengthDifference;
-        };
-        MapEvaluator.prototype.getPerceivedThreatOfAllKnownPlayers = function () {
-            var byPlayer = {};
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                byPlayer[playerId] = this.getPerceivedThreatOfPlayer(player);
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.getRelativePerceivedThreatOfAllKnownPlayers = function () {
-            var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
-            var relative = {};
-            var min, max;
-            for (var playerId in byPlayer) {
-                var threat = byPlayer[playerId];
-                min = isFinite(min) ? Math.min(min, threat) : threat;
-                max = isFinite(max) ? Math.max(max, threat) : threat;
-            }
-            for (var playerId in byPlayer) {
-                relative[playerId] = utility_13.getRelativeValue(byPlayer[playerId], min, max);
-            }
-            return relative;
-        };
-        MapEvaluator.prototype.getVisionCoverageAroundStar = function (star, range, useDetection) {
-            if (useDetection === void 0) { useDetection = false; }
-            var toCheck = star.getLinkedInRange(range).all;
-            var scorePerVisibleStar = 1 / toCheck.length;
-            var coverageScore = 0;
-            var visibilityCheckFN = useDetection ? this.player.starIsDetected : this.player.starIsVisible;
-            for (var i = 0; i < toCheck.length; i++) {
-                var neighbor = toCheck[i];
-                if (visibilityCheckFN.call(this.player, neighbor)) {
-                    coverageScore += scorePerVisibleStar;
-                }
-            }
-            return coverageScore;
-        };
-        MapEvaluator.prototype.estimateFleetRange = function (fleet, baseRange, afterSixUnits, getRangeFNName) {
-            var range = baseRange;
-            if (fleet.units.length >= 6) {
-                range += afterSixUnits;
-            }
-            for (var i = 0; i < fleet.units.length; i++) {
-                var unit = fleet.units[i];
-                if (this.player.unitIsIdentified(unit)) {
-                    range = Math.max(range, unit[getRangeFNName]());
-                }
-            }
-            return range;
-        };
-        MapEvaluator.prototype.estimateFleetVisionRange = function (fleet) {
-            return this.estimateFleetRange(fleet, 1, 1, "getVisionRange");
-        };
-        MapEvaluator.prototype.estimateFleetDetectionRange = function (fleet) {
-            return this.estimateFleetRange(fleet, -1, 1, "getDetectionRange");
-        };
-        MapEvaluator.prototype.buildPlayerVisionMap = function (player) {
-            var detectedStars = {};
-            var visibleStars = {};
-            var revealedStarsOfPlayer = this.player.getRevealedStars().filter(function (star) {
-                return star.owner === player;
-            });
-            var visibleFleetsOfPlayer = this.getVisibleFleetsByPlayer()[player.id] || [];
-            var processDetectionSource = function (source, detectionRange, visionRange) {
-                var detected = source.getLinkedInRange(detectionRange).all;
-                for (var i = 0; i < detected.length; i++) {
-                    var star = detected[i];
-                    if (!detectedStars[star.id]) {
-                        detectedStars[star.id] = star;
-                    }
-                }
-                var visible = source.getLinkedInRange(visionRange).all;
-                for (var i = 0; i < visible.length; i++) {
-                    var star = visible[i];
-                    if (!visibleStars[star.id]) {
-                        visibleStars[star.id] = star;
-                    }
-                }
-            };
-            for (var i = 0; i < revealedStarsOfPlayer.length; i++) {
-                var star = revealedStarsOfPlayer[i];
-                var detectionRange = this.player.starIsDetected(star) ? star.getDetectionRange() : 0;
-                var visionRange = this.player.starIsDetected(star) ? star.getVisionRange() : 1;
-                processDetectionSource(star, detectionRange, visionRange);
-            }
-            for (var i = 0; i < visibleFleetsOfPlayer.length; i++) {
-                var fleet = visibleFleetsOfPlayer[i];
-                var detectionRange = this.estimateFleetDetectionRange(fleet);
-                var visionRange = this.estimateFleetVisionRange(fleet);
-                processDetectionSource(fleet.location, detectionRange, visionRange);
-            }
-            return ({
-                visible: visibleStars,
-                detected: detectedStars
-            });
-        };
-        MapEvaluator.prototype.getPlayerVisionMap = function (player) {
-            if (!this.cachedVisionMaps[player.id]) {
-                this.cachedVisionMaps[player.id] = this.buildPlayerVisionMap(player);
-            }
-            return this.cachedVisionMaps[player.id];
-        };
-        MapEvaluator.prototype.getScoredPerimeterLocationsAgainstPlayer = function (player, safetyFactor, forScouting) {
-            var ownInfluence = this.getPlayerInfluenceMap(this.player);
-            var enemyInfluence = this.getPlayerInfluenceMap(player);
-            var enemyVision = this.getPlayerVisionMap(player);
-            var scores = [];
-            var revealedStars = this.player.getRevealedStars();
-            var stars = revealedStars.filter(function (star) {
-                return star.owner.isIndependent || star.owner === this.player;
-            }, this);
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var nearestOwnedStar = player.getNearestOwnedStarTo(star);
-                if (!nearestOwnedStar)
-                    debugger;
-                var distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
-                distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
-                var distanceScore = Math.pow(1 / distanceToEnemy, 2);
-                var danger = enemyInfluence[star.id] || 1;
-                if (!enemyVision.visible[star.id]) {
-                    danger *= 0.5;
-                }
-                danger *= safetyFactor;
-                if (forScouting) {
-                    var safety = ownInfluence[star.id] / (danger * safetyFactor);
-                    var score = safety * distanceScore;
-                }
-                else {
-                    var score = (danger / ownInfluence[star.id]) / safetyFactor;
-                }
-                scores.push({
-                    star: star,
-                    score: score
-                });
-            }
-            return scores;
-        };
-        MapEvaluator.prototype.getDesireToGoToWarWith = function (player) {
-            var strength = this.estimateGlobalStrength(player);
-            var opinion = this.player.diplomacyStatus.getOpinionOf(player);
-            var threat = this.getPerceivedThreatOfPlayer(player);
-            return Math.random();
-        };
-        MapEvaluator.prototype.getAbilityToGoToWarWith = function (player) {
-            var strength = this.estimateGlobalStrength(player);
-            return Math.random();
-        };
-        MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
-            var evaluationByPlayer = {};
-            var neighborStarsCountByPlayer = {};
-            var allNeighbors = this.player.getNeighboringStars();
-            var neighborStarsForPlayer = [];
-            for (var i = 0; i < allNeighbors.length; i++) {
-                var star = allNeighbors[i];
-                if (!star.owner.isIndependent) {
-                    if (!neighborStarsCountByPlayer[star.owner.id]) {
-                        neighborStarsCountByPlayer[star.owner.id] = 0;
-                    }
-                    neighborStarsCountByPlayer[star.owner.id]++;
-                }
-            }
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                evaluationByPlayer[player.id] =
-                    {
-                        currentTurn: currentTurn,
-                        opinion: this.player.diplomacyStatus.getOpinionOf(player),
-                        neighborStars: neighborStarsCountByPlayer[player.id],
-                        currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
-                    };
-            }
-            return evaluationByPlayer;
-        };
-        return MapEvaluator;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = MapEvaluator;
-});
-define("src/mapai/GrandStrategyAI", ["require", "exports", "src/utility"], function (require, exports, utility_14) {
-    "use strict";
-    var GrandStrategyAI = (function () {
-        function GrandStrategyAI(personality, mapEvaluator) {
-            this.personality = personality;
-            this.mapEvaluator = mapEvaluator;
-        }
-        GrandStrategyAI.prototype.setDesiredStars = function () {
-            var totalStarsInMap = this.mapEvaluator.map.stars.length;
-            var playersInGame = this.mapEvaluator.game.playerOrder.length;
-            var starsPerPlayer = totalStarsInMap / playersInGame;
-            var baseMinStarsDesired = starsPerPlayer * 0.34;
-            var baseMaxStarsDesired = starsPerPlayer;
-            var extraMinStarsDesired = this.personality.expansiveness * (starsPerPlayer * 0.66);
-            var extraMaxStarsDesired = this.personality.expansiveness * (starsPerPlayer * (playersInGame / 4));
-            var minStarsDesired = baseMinStarsDesired + extraMinStarsDesired;
-            var maxStarsDesired = baseMaxStarsDesired + extraMaxStarsDesired;
-            this.desiredStars =
-                {
-                    min: minStarsDesired,
-                    max: maxStarsDesired
-                };
-        };
-        GrandStrategyAI.prototype.setDesires = function () {
-            this.desireForExpansion = this.getDesireForExpansion();
-            this.desireForWar = this.getDesireForWar();
-            this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
-        };
-        GrandStrategyAI.prototype.getDesireForWar = function () {
-            if (!this.desiredStars)
-                this.setDesiredStars();
-            var fromAggressiveness = this.personality.aggressiveness;
-            var fromExpansiveness = 0;
-            var minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
-            var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
-            if (availableExpansionTargets.length < minStarsStillDesired) {
-                fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
-            }
-            var desire = fromAggressiveness + fromExpansiveness;
-            return utility_14.clamp(desire, 0, 1);
-        };
-        GrandStrategyAI.prototype.getDesireForExpansion = function () {
-            if (!this.desiredStars)
-                this.setDesiredStars();
-            var starsOwned = this.mapEvaluator.player.controlledLocations.length;
-            var desire = 1 - utility_14.getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
-            return utility_14.clamp(desire, 0.1, 1);
-        };
-        return GrandStrategyAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = GrandStrategyAI;
-});
-define("src/mapai/Front", ["require", "exports", "src/Fleet"], function (require, exports, Fleet_3) {
-    "use strict";
-    var Front = (function () {
-        function Front(props) {
-            this.hasMustered = false;
-            this.id = props.id;
-            this.objective = props.objective;
-            this.units = props.units || [];
-            this.minUnitsDesired = props.minUnitsDesired;
-            this.idealUnitsDesired = props.idealUnitsDesired;
-            this.targetLocation = props.targetLocation;
-            this.musterLocation = props.musterLocation;
-        }
-        Front.prototype.organizeFleets = function () {
-            var allFleets = this.getAssociatedFleets();
-            var pureFleetsByLocation = {};
-            var impureFleetMembersByLocation = {};
-            var ownUnitFilterFN = function (unit) {
-                return this.getUnitIndex(unit) >= 0;
-            }.bind(this);
-            for (var i = 0; i < allFleets.length; i++) {
-                var fleet = allFleets[i];
-                var star = fleet.location;
-                if (this.isFleetPure(fleet)) {
-                    if (!pureFleetsByLocation[star.id]) {
-                        pureFleetsByLocation[star.id] = [];
-                    }
-                    pureFleetsByLocation[star.id].push(fleet);
-                }
-                else {
-                    var ownUnits = fleet.units.filter(ownUnitFilterFN);
-                    for (var j = 0; j < ownUnits.length; j++) {
-                        if (!impureFleetMembersByLocation[star.id]) {
-                            impureFleetMembersByLocation[star.id] = [];
-                        }
-                        impureFleetMembersByLocation[star.id].push(ownUnits[j]);
-                    }
-                }
-            }
-            var sortFleetsBySizeFN = function (a, b) {
-                return b.units.length - a.units.length;
-            };
-            for (var starId in pureFleetsByLocation) {
-                var fleets = pureFleetsByLocation[starId];
-                if (fleets.length > 1) {
-                    fleets.sort(sortFleetsBySizeFN);
-                    for (var i = fleets.length - 1; i >= 1; i--) {
-                        fleets[i].mergeWith(fleets[0]);
-                        fleets.splice(i, 1);
-                    }
-                }
-                if (impureFleetMembersByLocation[starId]) {
-                    for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
-                        var unit = impureFleetMembersByLocation[starId][i];
-                        unit.fleet.transferUnit(fleets[0], unit);
-                        impureFleetMembersByLocation[starId].splice(i, 1);
-                    }
-                }
-            }
-            for (var starId in impureFleetMembersByLocation) {
-                var units = impureFleetMembersByLocation[starId];
-                if (units.length < 1)
-                    continue;
-                var newFleet = new Fleet_3.default(units[0].fleet.player, [], units[0].fleet.location);
-                for (var i = units.length - 1; i >= 0; i--) {
-                    units[i].fleet.transferUnit(newFleet, units[i]);
-                }
-            }
-        };
-        Front.prototype.isFleetPure = function (fleet) {
-            for (var i = 0; i < fleet.units.length; i++) {
-                if (this.getUnitIndex(fleet.units[i]) === -1) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        Front.prototype.getAssociatedFleets = function () {
-            var fleetsById = {};
-            for (var i = 0; i < this.units.length; i++) {
-                if (!this.units[i].fleet)
-                    continue;
-                if (!fleetsById[this.units[i].fleet.id]) {
-                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
-                }
-            }
-            var allFleets = [];
-            for (var fleetId in fleetsById) {
-                allFleets.push(fleetsById[fleetId]);
-            }
-            return allFleets;
-        };
-        Front.prototype.getUnitIndex = function (unit) {
-            return this.units.indexOf(unit);
-        };
-        Front.prototype.addUnit = function (unit) {
-            if (unit.front) {
-                unit.front.removeUnit(unit);
-            }
-            unit.front = this;
-            this.units.push(unit);
-        };
-        Front.prototype.removeUnit = function (unit) {
-            var unitIndex = this.getUnitIndex(unit);
-            unit.front = null;
-            this.units.splice(unitIndex, 1);
-        };
-        Front.prototype.getUnitCountByArchetype = function () {
-            var unitCountByArchetype = {};
-            for (var i = 0; i < this.units.length; i++) {
-                var archetype = this.units[i].template.archetype;
-                if (!unitCountByArchetype[archetype.type]) {
-                    unitCountByArchetype[archetype.type] = 0;
-                }
-                unitCountByArchetype[archetype.type]++;
-            }
-            return unitCountByArchetype;
-        };
-        Front.prototype.getUnitsByLocation = function () {
-            var byLocation = {};
-            for (var i = 0; i < this.units.length; i++) {
-                var star = this.units[i].fleet.location;
-                if (!byLocation[star.id]) {
-                    byLocation[star.id] = [];
-                }
-                byLocation[star.id].push(this.units[i]);
-            }
-            return byLocation;
-        };
-        Front.prototype.moveFleets = function (afterMoveCallback) {
-            if (this.units.length < 1) {
-                afterMoveCallback();
-                return;
-            }
-            else {
-                var moveRoutine = this.objective.template.moveRoutineFN;
-                moveRoutine(this, afterMoveCallback);
-            }
-        };
-        Front.prototype.hasUnit = function (unit) {
-            return this.units.indexOf(unit) !== -1;
-        };
-        Front.prototype.scoreUnitFit = function (unit) {
-            var template = this.objective.template;
-            var score = 1;
-            if (this.hasUnit(unit)) {
-                score += 0.2;
-                if (this.hasMustered) {
-                    score += 0.3;
-                }
-                this.removeUnit(unit);
-            }
-            score *= this.objective.priority;
-            score *= template.unitFitFN(unit, this);
-            score *= template.unitDesireFN(this);
-            return score;
-        };
-        Front.prototype.getNewUnitArchetypeScores = function () {
-            var countByArchetype = this.getUnitCountByArchetype();
-            var totalUnits = this.units.length;
-            var idealWeights = this.objective.template.preferredUnitComposition;
-            var scores = {};
-            for (var unitType in idealWeights) {
-                var archetypeCount = countByArchetype[unitType] || 0;
-                scores[unitType] = totalUnits * idealWeights[unitType] - archetypeCount;
-            }
-            return scores;
-        };
-        return Front;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Front;
-});
-define("src/mapai/DiplomacyAI", ["require", "exports"], function (require, exports) {
-    "use strict";
-    var DiplomacyAI = (function () {
-        function DiplomacyAI(mapEvaluator, objectivesAI, game, personality) {
-            this.game = game;
-            this.player = mapEvaluator.player;
-            this.diplomacyStatus = this.player.diplomacyStatus;
-            this.mapEvaluator = mapEvaluator;
-            this.objectivesAI = objectivesAI;
-            this.personality = personality;
-        }
-        DiplomacyAI.prototype.setAttitudes = function () {
-            var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
-            for (var playerId in diplomacyEvaluations) {
-                this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
-            }
-        };
-        DiplomacyAI.prototype.resolveDiplomaticObjectives = function (afterAllDoneCallback) {
-            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
-            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
-            this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback);
-        };
-        DiplomacyAI.prototype.resolveNextObjective = function (objectives, adjustments, afterAllDoneCallback) {
-            var objective = objectives.pop();
-            if (!objective) {
-                afterAllDoneCallback();
-                return;
-            }
-            var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
-            objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
-        };
-        return DiplomacyAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = DiplomacyAI;
-});
-define("src/mapai/Objective", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_5) {
-    "use strict";
-    var Objective = (function () {
-        function Objective(template, priority, target, targetPlayer) {
-            this.isOngoing = false;
-            this.id = idGenerators_5.default.objective++;
-            this.template = template;
-            this.type = this.template.key;
-            this.priority = priority;
-            this.target = target;
-            this.targetPlayer = targetPlayer;
-        }
-        Object.defineProperty(Objective.prototype, "priority", {
-            get: function () {
-                return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
-            },
-            set: function (priority) {
-                this._basePriority = priority;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Objective.prototype.getUnitsDesired = function (mapEvaluator) {
-            return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
-        };
-        return Objective;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Objective;
-});
-define("src/mapai/ObjectivesAI", ["require", "exports", "src/App"], function (require, exports, App_13) {
-    "use strict";
-    var ObjectivesAI = (function () {
-        function ObjectivesAI(mapEvaluator, grandStrategyAI) {
-            this.objectivesByType = {};
-            this.objectives = [];
-            this.requests = [];
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.grandStrategyAI = grandStrategyAI;
-        }
-        ObjectivesAI.prototype.clearObjectives = function () {
-            this.objectives = [];
-        };
-        ObjectivesAI.prototype.setAllDiplomaticObjectives = function () {
-            this.clearObjectives();
-            this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
-        };
-        ObjectivesAI.prototype.setAllEconomicObjectives = function () {
-            this.clearObjectives();
-            this.setAllObjectivesWithTemplateProperty("economyRoutineFN");
-        };
-        ObjectivesAI.prototype.setAllMoveObjectives = function () {
-            this.clearObjectives();
-            this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
-        };
-        ObjectivesAI.prototype.setAllObjectivesWithTemplateProperty = function (propKey) {
-            var objectiveTemplates = App_13.default.moduleData.Templates.Objectives;
-            for (var key in objectiveTemplates) {
-                var template = objectiveTemplates[key];
-                if (template[propKey]) {
-                    this.setObjectivesOfType(objectiveTemplates[key]);
-                }
-            }
-        };
-        ObjectivesAI.prototype.getNewObjectivesOfType = function (objectiveTemplate) {
-            var objectiveType = objectiveTemplate.key;
-            var byTarget = this.getObjectivesByTarget(objectiveType, true);
-            var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
-            var finalObjectives = [];
-            for (var i = 0; i < newObjectives.length; i++) {
-                var newObjective = newObjectives[i];
-                if (newObjective.priority < 0.04) {
-                    continue;
-                }
-                var keyString = newObjective.target ? newObjective.target.id : "noTarget";
-                var oldObjective = byTarget[keyString];
-                if (oldObjective) {
-                    oldObjective.priority = newObjective.priority;
-                    finalObjectives.push(oldObjective);
-                }
-                else {
-                    finalObjectives.push(newObjective);
-                }
-            }
-            return finalObjectives;
-        };
-        ObjectivesAI.prototype.setObjectivesOfType = function (objectiveTemplate) {
-            var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
-            this.objectivesByType[objectiveTemplate.key] = newObjectives;
-            this.objectives = this.objectives.concat(newObjectives);
-        };
-        ObjectivesAI.prototype.getObjectivesByTarget = function (objectiveType, markAsOngoing) {
-            var objectivesByTarget = {};
-            if (!this.objectivesByType[objectiveType]) {
-                return objectivesByTarget;
-            }
-            for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
-                var objective = this.objectivesByType[objectiveType][i];
-                if (markAsOngoing)
-                    objective.isOngoing = true;
-                var keyString = objective.target ? objective.target.id : "noTarget";
-                objectivesByTarget[keyString] = objective;
-            }
-            return objectivesByTarget;
-        };
-        ObjectivesAI.prototype.getObjectivesWithTemplateProperty = function (propKey) {
-            return this.objectives.filter(function (objective) {
-                return Boolean(objective.template[propKey]);
-            });
-        };
-        ObjectivesAI.prototype.getAdjustmentsForTemplateProperty = function (propKey) {
-            var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
-            var adjustments;
-            for (var i = 0; i < withAdjustment.length; i++) {
-                for (var j = 0; j < withAdjustment[i].template[propKey].length; j++) {
-                    var adjustment = withAdjustment[i].template[propKey][j];
-                    if (!adjustments[adjustment.target.id]) {
-                        adjustments[adjustment.target.id] =
-                            {
-                                target: adjustment.target,
-                                multiplier: 1
-                            };
-                    }
-                    adjustments[adjustment.target.id].multiplier += adjustment.multiplier;
-                }
-            }
-            return adjustments;
-        };
-        return ObjectivesAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = ObjectivesAI;
-});
-define("src/mapai/FrontsAI", ["require", "exports", "src/mapai/Front"], function (require, exports, Front_1) {
-    "use strict";
-    var FrontsAI = (function () {
-        function FrontsAI(mapEvaluator, objectivesAI, personality) {
-            this.fronts = [];
-            this.frontsRequestingUnits = [];
-            this.frontsToMove = [];
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.objectivesAI = objectivesAI;
-            this.personality = personality;
-        }
-        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
-            var scores = [];
-            for (var i = 0; i < units.length; i++) {
-                scores.push({
-                    unit: units[i],
-                    score: front.scoreUnitFit(units[i]),
-                    front: front
-                });
-            }
-            return scores;
-        };
-        FrontsAI.prototype.assignUnits = function () {
-            var units = this.player.getAllUnits();
-            var allUnitScores = [];
-            var unitScoresByFront = {};
-            var recalculateScoresForFront = function (front) {
-                var frontScores = unitScoresByFront[front.id];
-                for (var i = 0; i < frontScores.length; i++) {
-                    frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
-                }
-            };
-            var removeUnit = function (unit) {
-                for (var frontId in unitScoresByFront) {
-                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
-                        return score.unit !== unit;
-                    });
-                }
-            };
-            var sortByScoreFN = function (a, b) {
-                return a.score - b.score;
-            };
-            for (var i = 0; i < this.fronts.length; i++) {
-                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
-                unitScoresByFront[this.fronts[i].id] = frontScores;
-                allUnitScores = allUnitScores.concat(frontScores);
-            }
-            var alreadyAdded = {};
-            while (allUnitScores.length > 0) {
-                allUnitScores.sort(sortByScoreFN);
-                var bestScore = allUnitScores.pop();
-                if (alreadyAdded[bestScore.unit.id]) {
-                    continue;
-                }
-                bestScore.front.addUnit(bestScore.unit);
-                removeUnit(bestScore.unit);
-                alreadyAdded[bestScore.unit.id] = true;
-                recalculateScoresForFront(bestScore.front);
-            }
-        };
-        FrontsAI.prototype.getFrontWithId = function (id) {
-            for (var i = 0; i < this.fronts.length; i++) {
-                if (this.fronts[i].id === id) {
-                    return this.fronts[i];
-                }
-            }
-            return null;
-        };
-        FrontsAI.prototype.createFront = function (objective) {
-            var musterLocation = objective.target ?
-                this.player.getNearestOwnedStarTo(objective.target) :
-                null;
-            var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
-            var front = new Front_1.default({
-                id: objective.id,
-                objective: objective,
-                minUnitsDesired: unitsDesired.min,
-                idealUnitsDesired: unitsDesired.ideal,
-                targetLocation: objective.target,
-                musterLocation: musterLocation
-            });
-            return front;
-        };
-        FrontsAI.prototype.removeInactiveFronts = function () {
-            for (var i = this.fronts.length - 1; i >= 0; i--) {
-                var front = this.fronts[i];
-                var hasActiveObjective = false;
-                for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
-                    var objective = this.objectivesAI.objectives[j];
-                    if (objective.id === front.id) {
-                        hasActiveObjective = true;
-                        break;
-                    }
-                }
-                if (!hasActiveObjective) {
-                    this.fronts.splice(i, 1);
-                }
-            }
-        };
-        FrontsAI.prototype.formFronts = function () {
-            this.removeInactiveFronts();
-            for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
-                var objective = this.objectivesAI.objectives[i];
-                if (!objective.template.moveRoutineFN) {
-                    continue;
-                }
-                if (!this.getFrontWithId(objective.id)) {
-                    var front = this.createFront(objective);
-                    this.fronts.push(front);
-                }
-            }
-        };
-        FrontsAI.prototype.organizeFleets = function () {
-            for (var i = 0; i < this.fronts.length; i++) {
-                this.fronts[i].organizeFleets();
-            }
-        };
-        FrontsAI.prototype.setFrontsToMove = function () {
-            this.frontsToMove = this.fronts.slice(0);
-            this.frontsToMove.sort(function (a, b) {
-                return a.objective.template.movePriority - b.objective.template.movePriority;
-            });
-        };
-        FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
-            var front = this.frontsToMove.pop();
-            if (!front) {
-                afterMovingAllCallback();
-                return;
-            }
-            front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
-        };
-        FrontsAI.prototype.setUnitRequests = function () {
-            this.frontsRequestingUnits = [];
-            for (var i = 0; i < this.fronts.length; i++) {
-                var front = this.fronts[i];
-                if (front.units.length < front.idealUnitsDesired) {
-                    this.frontsRequestingUnits.push(front);
-                }
-            }
-        };
-        return FrontsAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = FrontsAI;
-});
-define("src/mapai/EconomyAI", ["require", "exports", "src/utility"], function (require, exports, utility_15) {
-    "use strict";
-    var EconomyAI = (function () {
-        function EconomyAI(props) {
-            this.objectivesAI = props.objectivesAI;
-            this.frontsAI = props.frontsAI;
-            this.mapEvaluator = props.mapEvaluator;
-            this.player = props.mapEvaluator.player;
-            this.personality = props.personality;
-        }
-        EconomyAI.prototype.resolveEconomicObjectives = function () {
-            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
-            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
-            for (var i = 0; i < objectives.length; i++) {
-                var objective = objectives[i];
-                objective.template.economyRoutineFN(objective, this, adjustments);
-            }
-        };
-        EconomyAI.prototype.satisfyAllRequests = function () {
-            var allRequests = this.frontsAI.frontsRequestingUnits;
-            allRequests.sort(function (a, b) {
-                return b.objective.priority - a.objective.priority;
-            });
-            for (var i = 0; i < allRequests.length; i++) {
-                var request = allRequests[i];
-                if (request.targetLocation) {
-                    this.satisfyFrontRequest(request);
-                }
-                else {
-                }
-            }
-        };
-        EconomyAI.prototype.satisfyFrontRequest = function (front) {
-            var player = this.player;
-            var starQualifierFN = function (star) {
-                return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
-            };
-            var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
-            if (!star) {
-                return;
-            }
-            var manufactory = star.manufactory;
-            var archetypeScores = front.getNewUnitArchetypeScores();
-            var buildableUnitTypesByArchetype = {};
-            var buildableUnitTypes = player.getGloballyBuildableUnits().concat(manufactory.getLocalUnitTypes().manufacturable);
-            for (var i = 0; i < buildableUnitTypes.length; i++) {
-                var archetype = buildableUnitTypes[i].archetype;
-                if (!buildableUnitTypesByArchetype[archetype.type]) {
-                    buildableUnitTypesByArchetype[archetype.type] = [];
-                }
-                if (!archetypeScores[archetype.type]) {
-                    archetypeScores[archetype.type] = 0;
-                }
-                buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
-            }
-            var sortedScores = utility_15.getObjectKeysSortedByValue(archetypeScores, "desc");
-            var unitType;
-            for (var i = 0; i < sortedScores.length; i++) {
-                if (buildableUnitTypesByArchetype[sortedScores[i]]) {
-                    unitType = utility_15.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-                    if (this.player.money < unitType.buildCost) {
-                        return;
-                    }
-                    else {
-                        break;
-                    }
-                }
-            }
-            if (!unitType)
-                debugger;
-            manufactory.addThingToQueue(unitType, "unit");
-        };
-        return EconomyAI;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = EconomyAI;
-});
-define("src/mapai/AIController", ["require", "exports", "src/mapai/MapEvaluator", "src/mapai/GrandStrategyAI", "src/mapai/EconomyAI", "src/mapai/FrontsAI", "src/mapai/ObjectivesAI", "src/mapai/DiplomacyAI", "src/utility"], function (require, exports, MapEvaluator_1, GrandStrategyAI_1, EconomyAI_1, FrontsAI_1, ObjectivesAI_1, DiplomacyAI_1, utility_16) {
-    "use strict";
-    var AIController = (function () {
-        function AIController(player, game, personality) {
-            this.personality = personality || utility_16.makeRandomPersonality();
-            this.player = player;
-            this.game = game;
-            this.map = game.galaxyMap;
-            this.mapEvaluator = new MapEvaluator_1.default(this.map, this.player, this.game);
-            this.grandStrategyAI = new GrandStrategyAI_1.default(this.personality, this.mapEvaluator);
-            this.objectivesAI = new ObjectivesAI_1.default(this.mapEvaluator, this.grandStrategyAI);
-            this.frontsAI = new FrontsAI_1.default(this.mapEvaluator, this.objectivesAI, this.personality);
-            this.economyAI = new EconomyAI_1.default({
-                objectivesAI: this.objectivesAI,
-                frontsAI: this.frontsAI,
-                mapEvaluator: this.mapEvaluator,
-                personality: this.personality
-            });
-            this.diplomacyAI = new DiplomacyAI_1.default(this.mapEvaluator, this.objectivesAI, this.game, this.personality);
-        }
-        AIController.prototype.processTurn = function (afterFinishedCallback) {
-            this.mapEvaluator.processTurnStart();
-            this.grandStrategyAI.setDesires();
-            this.diplomacyAI.setAttitudes();
-            this.objectivesAI.setAllDiplomaticObjectives();
-            this.diplomacyAI.resolveDiplomaticObjectives(this.processTurnAfterDiplomaticObjectives.bind(this, afterFinishedCallback));
-        };
-        AIController.prototype.processTurnAfterDiplomaticObjectives = function (afterFinishedCallback) {
-            this.objectivesAI.setAllEconomicObjectives();
-            this.economyAI.resolveEconomicObjectives();
-            this.objectivesAI.setAllMoveObjectives();
-            this.frontsAI.formFronts();
-            this.frontsAI.assignUnits();
-            this.frontsAI.setUnitRequests();
-            this.economyAI.satisfyAllRequests();
-            this.frontsAI.organizeFleets();
-            this.frontsAI.setFrontsToMove();
-            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
-        };
-        AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
-            this.frontsAI.organizeFleets();
-            if (afterFinishedCallback) {
-                afterFinishedCallback();
-            }
-        };
-        return AIController;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = AIController;
-});
-define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/RuleSet", "src/utility", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/colorGeneration", "src/options", "src/mapai/AIController"], function (require, exports, idGenerators_6, App_14, RuleSet_5, utility_17, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, colorGeneration_1, options_2, AIController_1) {
-    "use strict";
-    var Player = (function () {
-        function Player(isAI, id) {
-            this.units = {};
-            this.resources = {};
-            this.fleets = [];
-            this.items = [];
-            this.isAI = false;
-            this.isIndependent = false;
-            this.controlledLocations = [];
-            this.visionIsDirty = true;
-            this.visibleStars = {};
-            this.revealedStars = {};
-            this.detectedStars = {};
-            this.identifiedUnits = {};
-            this.tempOverflowedResearchAmount = 0;
-            this.listeners = {};
-            this.id = isFinite(id) ? id : idGenerators_6.default.player++;
-            this.name = "Player " + this.id;
-            this.isAI = isAI;
-            this.diplomacyStatus = new DiplomacyStatus_1.default(this);
-            this.money = 1000;
-        }
-        Object.defineProperty(Player.prototype, "money", {
-            get: function () {
-                return this._money;
-            },
-            set: function (amount) {
-                this._money = amount;
-                if (!this.isAI) {
-                    eventManager_9.default.dispatchEvent("playerMoneyUpdated");
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Player.prototype.destroy = function () {
-            this.diplomacyStatus.destroy();
-            this.diplomacyStatus = null;
-            this.AIController = null;
-            for (var key in this.listeners) {
-                eventManager_9.default.removeEventListener(key, this.listeners[key]);
-            }
-        };
-        Player.prototype.die = function () {
-            for (var i = 0; i < this.fleets.length; i++) {
-                this.fleets[i].deleteFleet(false);
-            }
-            eventManager_9.default.dispatchEvent("makePlayerDiedNotification", {
-                deadPlayerName: this.name
-            });
-            console.log(this.name + " died");
-        };
-        Player.prototype.initTechnologies = function (savedData) {
-            this.playerTechnology = new PlayerTechnology_1.default(this.getResearchSpeed.bind(this), savedData);
-            this.listeners["builtBuildingWithEffect_research"] = eventManager_9.default.addEventListener("builtBuildingWithEffect_research", this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology));
-        };
-        Player.prototype.makeColorScheme = function () {
-            var scheme = colorGeneration_1.generateColorScheme(this.color);
-            this.color = scheme.main;
-            this.secondaryColor = scheme.secondary;
-        };
-        Player.prototype.setupAI = function (game) {
-            this.AIController = new AIController_1.default(this, game, this.personality);
-        };
-        Player.prototype.makeRandomFlag = function (seed) {
-            if (!this.color || !this.secondaryColor)
-                this.makeColorScheme();
-            this.flag = new Flag_2.default({
-                width: 46,
-                mainColor: this.color,
-                secondaryColor: this.secondaryColor
-            });
-            this.flag.generateRandom(seed);
-        };
-        Player.prototype.addUnit = function (unit) {
-            this.units[unit.id] = unit;
-        };
-        Player.prototype.removeUnit = function (unit) {
-            this.units[unit.id] = null;
-            delete this.units[unit.id];
-        };
-        Player.prototype.getAllUnits = function () {
-            var allUnits = [];
-            for (var unitId in this.units) {
-                allUnits.push(this.units[unitId]);
-            }
-            return allUnits;
-        };
-        Player.prototype.forEachUnit = function (operator) {
-            for (var unitId in this.units) {
-                operator(this.units[unitId]);
-            }
-        };
-        Player.prototype.getFleetIndex = function (fleet) {
-            return this.fleets.indexOf(fleet);
-        };
-        Player.prototype.addFleet = function (fleet) {
-            if (this.getFleetIndex(fleet) >= 0) {
-                return;
-            }
-            this.fleets.push(fleet);
-            this.visionIsDirty = true;
-        };
-        Player.prototype.removeFleet = function (fleet) {
-            var fleetIndex = this.getFleetIndex(fleet);
-            if (fleetIndex < 0)
-                return;
-            this.fleets.splice(fleetIndex, 1);
-            this.visionIsDirty = true;
-        };
-        Player.prototype.getFleetsWithPositions = function () {
-            var positions = [];
-            for (var i = 0; i < this.fleets.length; i++) {
-                var fleet = this.fleets[i];
-                positions.push({
-                    position: fleet.location,
-                    data: fleet
-                });
-            }
-            return positions;
-        };
-        Player.prototype.hasStar = function (star) {
-            return (this.controlledLocations.indexOf(star) >= 0);
-        };
-        Player.prototype.addStar = function (star) {
-            if (this.hasStar(star))
-                return false;
-            star.owner = this;
-            this.controlledLocations.push(star);
-            this.visionIsDirty = true;
-        };
-        Player.prototype.removeStar = function (star) {
-            var index = this.controlledLocations.indexOf(star);
-            if (index < 0)
-                return false;
-            star.owner = null;
-            this.controlledLocations.splice(index, 1);
-            this.visionIsDirty = true;
-            if (this.controlledLocations.length === 0) {
-                App_14.default.game.killPlayer(this);
-            }
-        };
-        Player.prototype.getIncome = function () {
-            var income = 0;
-            for (var i = 0; i < this.controlledLocations.length; i++) {
-                income += this.controlledLocations[i].getIncome();
-            }
-            return income;
-        };
-        Player.prototype.addResource = function (resource, amount) {
-            if (!this.resources[resource.type]) {
-                this.resources[resource.type] = 0;
-            }
-            this.resources[resource.type] += amount;
-        };
-        Player.prototype.getResourceIncome = function () {
-            var incomeByResource = {};
-            for (var i = 0; i < this.controlledLocations.length; i++) {
-                var star = this.controlledLocations[i];
-                var starIncome = star.getResourceIncome();
-                if (!starIncome)
-                    continue;
-                if (!incomeByResource[starIncome.resource.type]) {
-                    incomeByResource[starIncome.resource.type] =
-                        {
-                            resource: starIncome.resource,
-                            amount: 0
-                        };
-                }
-                incomeByResource[starIncome.resource.type].amount += starIncome.amount;
-            }
-            return incomeByResource;
-        };
-        Player.prototype.getNeighboringStars = function () {
-            var stars = {};
-            for (var i = 0; i < this.controlledLocations.length; i++) {
-                var currentOwned = this.controlledLocations[i];
-                var frontier = currentOwned.getLinkedInRange(1).all;
-                for (var j = 0; j < frontier.length; j++) {
-                    if (stars[frontier[j].id]) {
-                        continue;
-                    }
-                    else if (frontier[j].owner.id === this.id) {
-                        continue;
-                    }
-                    else {
-                        stars[frontier[j].id] = frontier[j];
-                    }
-                }
-            }
-            var allStars = [];
-            for (var id in stars) {
-                allStars.push(stars[id]);
-            }
-            return allStars;
-        };
-        Player.prototype.updateVisionInStar = function (star) {
-            if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
-                this.meetPlayersInStarByVisibility(star, "visible");
-            }
-        };
-        Player.prototype.updateDetectionInStar = function (star) {
-            if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
-                this.meetPlayersInStarByVisibility(star, "detected");
-            }
-            var unitsToIdentify = star.getAllUnits();
-            for (var i = 0; i < unitsToIdentify.length; i++) {
-                this.identifyUnit(unitsToIdentify[i]);
-            }
-        };
-        Player.prototype.updateAllVisibilityInStar = function (star) {
-            if (this.starIsVisible(star)) {
-                this.updateVisionInStar(star);
-            }
-            if (this.starIsDetected(star)) {
-                this.updateDetectionInStar(star);
-            }
-        };
-        Player.prototype.meetPlayersInStarByVisibility = function (star, visibility) {
-            var presentPlayersByVisibility = star.getPresentPlayersByVisibility();
-            for (var playerId in presentPlayersByVisibility[visibility]) {
-                var player = presentPlayersByVisibility[visibility][playerId];
-                if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent) {
-                    this.diplomacyStatus.meetPlayer(player);
-                }
-            }
-        };
-        Player.prototype.updateVisibleStars = function () {
-            var previousVisibleStars = utility_17.extendObject(this.visibleStars);
-            var previousDetectedStars = utility_17.extendObject(this.detectedStars);
-            var newVisibleStars = [];
-            var newDetectedStars = [];
-            var visibilityHasChanged = false;
-            var detectionHasChanged = false;
-            this.visibleStars = {};
-            this.detectedStars = {};
-            var allVisible = [];
-            var allDetected = [];
-            for (var i = 0; i < this.controlledLocations.length; i++) {
-                allVisible = allVisible.concat(this.controlledLocations[i].getVision());
-                allDetected = allDetected.concat(this.controlledLocations[i].getDetection());
-            }
-            for (var i = 0; i < this.fleets.length; i++) {
-                allVisible = allVisible.concat(this.fleets[i].getVision());
-                allDetected = allDetected.concat(this.fleets[i].getDetection());
-            }
-            for (var i = 0; i < allVisible.length; i++) {
-                var star = allVisible[i];
-                if (!this.visibleStars[star.id]) {
-                    this.visibleStars[star.id] = star;
-                    if (!previousVisibleStars[star.id]) {
-                        visibilityHasChanged = true;
-                        newVisibleStars.push(star);
-                    }
-                    if (!this.revealedStars[star.id]) {
-                        this.revealedStars[star.id] = star;
-                    }
-                }
-            }
-            for (var i = 0; i < allDetected.length; i++) {
-                var star = allDetected[i];
-                if (!this.detectedStars[star.id]) {
-                    this.detectedStars[star.id] = star;
-                    if (!previousDetectedStars[star.id]) {
-                        detectionHasChanged = true;
-                        newDetectedStars.push(star);
-                    }
-                }
-            }
-            this.visionIsDirty = false;
-            if (!visibilityHasChanged) {
-                visibilityHasChanged = (Object.keys(this.visibleStars).length !==
-                    Object.keys(previousVisibleStars).length);
-            }
-            if (!visibilityHasChanged && !detectionHasChanged) {
-                detectionHasChanged = (Object.keys(this.detectedStars).length !==
-                    Object.keys(previousDetectedStars).length);
-            }
-            for (var i = 0; i < newVisibleStars.length; i++) {
-                this.updateVisionInStar(newVisibleStars[i]);
-            }
-            for (var i = 0; i < newDetectedStars.length; i++) {
-                this.updateDetectionInStar(newDetectedStars[i]);
-            }
-            if (visibilityHasChanged && !this.isAI) {
-                eventManager_9.default.dispatchEvent("renderMap");
-            }
-            if (detectionHasChanged && !this.isAI) {
-                eventManager_9.default.dispatchEvent("renderLayer", "fleets");
-            }
-        };
-        Player.prototype.getVisibleStars = function () {
-            if (!this.isAI && options_2.default.debugMode) {
-                return this.controlledLocations[0].getLinkedInRange(9999).all;
-            }
-            if (this.visionIsDirty)
-                this.updateVisibleStars();
-            var visible = [];
-            for (var id in this.visibleStars) {
-                var star = this.visibleStars[id];
-                visible.push(star);
-            }
-            return visible;
-        };
-        Player.prototype.getRevealedStars = function () {
-            if (!this.isAI && options_2.default.debugMode) {
-                return this.controlledLocations[0].getLinkedInRange(9999).all;
-            }
-            if (this.visionIsDirty)
-                this.updateVisibleStars();
-            var toReturn = [];
-            for (var id in this.revealedStars) {
-                toReturn.push(this.revealedStars[id]);
-            }
-            return toReturn;
-        };
-        Player.prototype.getRevealedButNotVisibleStars = function () {
-            if (this.visionIsDirty)
-                this.updateVisibleStars();
-            var toReturn = [];
-            for (var id in this.revealedStars) {
-                if (!this.visibleStars[id]) {
-                    toReturn.push(this.revealedStars[id]);
-                }
-            }
-            return toReturn;
-        };
-        Player.prototype.getDetectedStars = function () {
-            if (!this.isAI && options_2.default.debugMode) {
-                return this.controlledLocations[0].getLinkedInRange(9999).all;
-            }
-            if (this.visionIsDirty)
-                this.updateVisibleStars();
-            var toReturn = [];
-            for (var id in this.detectedStars) {
-                toReturn.push(this.detectedStars[id]);
-            }
-            return toReturn;
-        };
-        Player.prototype.starIsVisible = function (star) {
-            if (!this.isAI && options_2.default.debugMode)
-                return true;
-            if (this.visionIsDirty)
-                this.updateVisibleStars();
-            return Boolean(this.visibleStars[star.id]);
-        };
-        Player.prototype.starIsRevealed = function (star) {
-            if (!this.isAI && options_2.default.debugMode)
-                return true;
-            if (this.visionIsDirty)
-                this.updateVisibleStars();
-            return Boolean(this.revealedStars[star.id]);
-        };
-        Player.prototype.starIsDetected = function (star) {
-            if (!this.isAI && options_2.default.debugMode)
-                return true;
-            if (this.visionIsDirty)
-                this.updateVisibleStars();
-            return Boolean(this.detectedStars[star.id]);
-        };
-        Player.prototype.getLinksToUnRevealedStars = function () {
-            if (this.visionIsDirty)
-                this.updateVisibleStars();
-            var linksBySourceStarId = {};
-            for (var starId in this.revealedStars) {
-                var star = this.revealedStars[starId];
-                var links = star.getAllLinks();
-                for (var i = 0; i < links.length; i++) {
-                    var linkedStar = links[i];
-                    if (!this.revealedStars[linkedStar.id]) {
-                        if (!linksBySourceStarId[star.id]) {
-                            linksBySourceStarId[star.id] = [linkedStar];
-                        }
-                        else {
-                            linksBySourceStarId[star.id].push(linkedStar);
-                        }
-                    }
-                }
-            }
-            return linksBySourceStarId;
-        };
-        Player.prototype.identifyUnit = function (unit) {
-            if (!this.identifiedUnits[unit.id]) {
-                this.identifiedUnits[unit.id] = unit;
-            }
-        };
-        Player.prototype.unitIsIdentified = function (unit) {
-            if (options_2.default.debugMode && !this.isAI) {
-                return true;
-            }
-            else
-                return Boolean(this.identifiedUnits[unit.id]) || Boolean(this.units[unit.id]);
-        };
-        Player.prototype.fleetIsFullyIdentified = function (fleet) {
-            if (options_2.default.debugMode && !this.isAI) {
-                return true;
-            }
-            for (var i = 0; i < fleet.units.length; i++) {
-                if (!this.identifiedUnits[fleet.units[i].id]) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        Player.prototype.addItem = function (item) {
-            this.items.push(item);
-        };
-        Player.prototype.removeItem = function (item) {
-            var index = this.items.indexOf(item);
-            if (index === -1) {
-                throw new Error("Player " + this.name + " has no item " + item.id);
-            }
-            this.items.splice(index, 1);
-        };
-        Player.prototype.getNearestOwnedStarTo = function (star) {
-            var self = this;
-            var isOwnedByThisFN = function (star) {
-                return star.owner === self;
-            };
-            return star.getNearestStarForQualifier(isOwnedByThisFN);
-        };
-        Player.prototype.attackTarget = function (location, target, battleFinishCallback) {
-            var battleData = {
-                location: location,
-                building: target.building,
-                attacker: {
-                    player: this,
-                    units: location.getAllUnitsOfPlayer(this)
-                },
-                defender: {
-                    player: target.enemy,
-                    units: target.units
-                }
-            };
-            var battlePrep = new BattlePrep_1.default(battleData);
-            if (battlePrep.humanPlayer) {
-                App_14.default.reactUI.battlePrep = battlePrep;
-                if (battleFinishCallback) {
-                    battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
-                }
-                App_14.default.reactUI.switchScene("battlePrep");
-            }
-            else {
-                var battle = battlePrep.makeBattle();
-                battle.afterFinishCallbacks.push(battleFinishCallback);
-                var simulator = new BattleSimulator_1.default(battle);
-                simulator.simulateBattle();
-                simulator.finishBattle();
-            }
-        };
-        Player.prototype.getResearchSpeed = function () {
-            var research = 0;
-            research += RuleSet_5.default.research.baseResearchSpeed;
-            for (var i = 0; i < this.controlledLocations.length; i++) {
-                research += this.controlledLocations[i].getResearchPoints();
-            }
-            return research;
-        };
-        Player.prototype.getAllManufactories = function () {
-            var manufactories = [];
-            for (var i = 0; i < this.controlledLocations.length; i++) {
-                if (this.controlledLocations[i].manufactory) {
-                    manufactories.push(this.controlledLocations[i].manufactory);
-                }
-            }
-            return manufactories;
-        };
-        Player.prototype.meetsTechnologyRequirements = function (requirements) {
-            for (var i = 0; i < requirements.length; i++) {
-                var requirement = requirements[i];
-                if (this.playerTechnology.technologies[requirement.technology.key].level < requirement.level) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        Player.prototype.getGloballyBuildableUnits = function () {
-            var templates = [];
-            var typesAlreadyAddedChecked = {};
-            var unitsToAdd = App_14.default.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
-            if (!this.isAI && options_2.default.debugMode) {
-                unitsToAdd = unitsToAdd.concat(App_14.default.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
-            }
-            for (var i = 0; i < unitsToAdd.length; i++) {
-                var template = unitsToAdd[i];
-                if (typesAlreadyAddedChecked[template.type])
-                    continue;
-                else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements)) {
-                    typesAlreadyAddedChecked[template.type] = true;
-                    continue;
-                }
-                else {
-                    typesAlreadyAddedChecked[template.type] = true;
-                    templates.push(template);
-                }
-            }
-            return templates;
-        };
-        Player.prototype.getGloballyBuildableItems = function () {
-            var itemTypes = [];
-            for (var key in App_14.default.moduleData.Templates.Items) {
-                itemTypes.push(App_14.default.moduleData.Templates.Items[key]);
-            }
-            return itemTypes;
-        };
-        Player.prototype.getManufacturingCapacityFor = function (template, type) {
-            var totalCapacity = 0;
-            var capacityByStar = [];
-            var isGloballyBuildable;
-            switch (type) {
-                case "item":
-                    {
-                        var globallyBuildableItems = this.getGloballyBuildableItems();
-                        isGloballyBuildable = globallyBuildableItems.indexOf(template) !== -1;
-                    }
-                case "unit":
-                    {
-                        var globallyBuildableUnits = this.getGloballyBuildableUnits();
-                        isGloballyBuildable = globallyBuildableUnits.indexOf(template) !== -1;
-                    }
-            }
-            var manufactories = this.getAllManufactories();
-            for (var i = 0; i < manufactories.length; i++) {
-                var manufactory = manufactories[i];
-                var isBuildable = !manufactory.queueIsFull() &&
-                    (isGloballyBuildable || manufactory.canManufactureThing(template, type));
-                if (isBuildable) {
-                    var capacity = manufactory.capacity - manufactory.buildQueue.length;
-                    totalCapacity += capacity;
-                    capacityByStar.push({
-                        star: manufactory.star,
-                        capacity: capacity
-                    });
-                }
-            }
-            return totalCapacity;
-        };
-        Player.prototype.serialize = function () {
-            var unitIds = [];
-            for (var id in this.units) {
-                unitIds.push(this.units[id].id);
-            }
-            var revealedStarIds = [];
-            for (var id in this.revealedStars) {
-                revealedStarIds.push(this.revealedStars[id].id);
-            }
-            var identifiedUnitIds = [];
-            for (var id in this.identifiedUnits) {
-                identifiedUnitIds.push(this.identifiedUnits[id].id);
-            }
-            var data = {
-                id: this.id,
-                name: this.name,
-                color: this.color.serialize(),
-                colorAlpha: this.colorAlpha,
-                secondaryColor: this.secondaryColor.serialize(),
-                isIndependent: this.isIndependent,
-                isAI: this.isAI,
-                resources: utility_17.extendObject(this.resources),
-                diplomacyStatus: this.diplomacyStatus.serialize(),
-                fleets: this.fleets.map(function (fleet) { return fleet.serialize(); }),
-                money: this.money,
-                controlledLocationIds: this.controlledLocations.map(function (star) { return star.id; }),
-                items: this.items.map(function (item) { return item.serialize(); }),
-                unitIds: unitIds,
-                revealedStarIds: revealedStarIds,
-                identifiedUnitIds: identifiedUnitIds
-            };
-            if (this.playerTechnology) {
-                data.researchByTechnology = this.playerTechnology.serialize();
-            }
-            if (this.flag) {
-                data.flag = this.flag.serialize();
-            }
-            if (this.isAI && this.AIController) {
-                data.personality = utility_17.extendObject(this.AIController.personality);
-            }
-            return data;
-        };
-        return Player;
-    }());
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Player;
-});
-define("src/utility", ["require", "exports", "src/App"], function (require, exports, App_15) {
+define("src/utility", ["require", "exports", "src/App"], function (require, exports, App_2) {
     "use strict";
     function randInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
@@ -6504,10 +897,10 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
     }
     exports.onDOMLoaded = onDOMLoaded;
     function meetAllPlayers() {
-        for (var i = 0; i < App_15.default.game.playerOrder.length; i++) {
-            var player = App_15.default.game.playerOrder[i];
-            if (player !== App_15.default.humanPlayer) {
-                App_15.default.humanPlayer.diplomacyStatus.meetPlayer(player);
+        for (var i = 0; i < App_2.default.game.playerOrder.length; i++) {
+            var player = App_2.default.game.playerOrder[i];
+            if (player !== App_2.default.humanPlayer) {
+                App_2.default.humanPlayer.diplomacyStatus.meetPlayer(player);
             }
         }
     }
@@ -6610,7 +1003,7 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
     exports.pointsEqual = pointsEqual;
     function makeRandomPersonality() {
         var unitCompositionPreference = {};
-        for (var archetype in App_15.default.moduleData.Templates.UnitArchetypes) {
+        for (var archetype in App_2.default.moduleData.Templates.UnitArchetypes) {
             unitCompositionPreference[archetype] = Math.random();
         }
         return ({
@@ -6638,58 +1031,5604 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
     }
     exports.splitMultilineText = splitMultilineText;
 });
-define("src/RuleSet", ["require", "exports", "src/utility"], function (require, exports, utility_18) {
+define("src/Building", ["require", "exports", "src/idGenerators", "src/App"], function (require, exports, idGenerators_2, App_3) {
     "use strict";
-    var defaultRuleSet = {
-        manufactory: {
-            startingCapacity: 1,
-            maxCapacity: 3,
-            buildCost: 1000
-        },
-        research: {
-            baseResearchSpeed: 3000
-        },
-        battle: {
-            rowsPerFormation: 2,
-            cellsPerRow: 3,
-            maxUnitsPerSide: 6,
-            maxUnitsPerRow: 3,
-            baseMaxCapturedUnits: 1,
-            absoluteMaxCapturedUnits: 3,
-            baseUnitCaptureChance: 0.1,
-            humanUnitDeathChance: 0.65,
-            aiUnitDeathChance: 0.65,
-            independentUnitDeathChance: 1.0,
-            loserUnitExtraDeathChance: 0.35
+    var Building = (function () {
+        function Building(props) {
+            this.template = props.template;
+            this.id = (props.id && isFinite(props.id)) ?
+                props.id : idGenerators_2.default.building++;
+            this.location = props.location;
+            this.controller = props.controller || this.location.owner;
+            this.upgradeLevel = props.upgradeLevel || 1;
+            this.totalCost = props.totalCost || this.template.buildCost || 0;
         }
-    };
-    var RuleSet = (function () {
-        function RuleSet() {
-            this.validCategories = {
-                manufactory: true,
-                battle: true,
-                research: true,
-            };
-        }
-        RuleSet.prototype.copyRules = function (toCopy) {
-            for (var category in toCopy) {
-                if (this.validCategories[category]) {
-                    this[category] = utility_18.deepMerge(this[category], toCopy[category]);
+        Building.prototype.getEffect = function (effect) {
+            if (effect === void 0) { effect = {}; }
+            if (!this.template.effect)
+                return {};
+            var multiplier = this.template.effectMultiplierFN ?
+                this.template.effectMultiplierFN(this.upgradeLevel) :
+                this.upgradeLevel;
+            for (var key in this.template.effect) {
+                var prop = this.template.effect[key];
+                if (isFinite(prop)) {
+                    if (!effect[key]) {
+                        effect[key] = 0;
+                    }
+                    effect[key] += prop * multiplier;
                 }
                 else {
-                    console.warn("Invalid ruleset category " + category + ". Category must be one of: [" +
-                        Object.keys(this.validCategories).join(", ") + "].");
+                    if (!effect[key]) {
+                        effect[key] = {};
+                    }
+                    for (var key2 in prop) {
+                        if (!effect[key][key2]) {
+                            effect[key][key2] = 0;
+                        }
+                        effect[key][key2] += prop[key2] * multiplier;
+                    }
+                }
+            }
+            return effect;
+        };
+        Building.prototype.getPossibleUpgrades = function () {
+            var self = this;
+            var upgrades = [];
+            if (this.upgradeLevel < this.template.maxUpgradeLevel) {
+                upgrades.push({
+                    template: this.template,
+                    level: this.upgradeLevel + 1,
+                    cost: this.template.buildCost * (this.upgradeLevel + 1),
+                    parentBuilding: this
+                });
+            }
+            else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
+                var templatedUpgrades = this.template.upgradeInto.map(function (upgradeData) {
+                    var template = App_3.default.moduleData.Templates.Buildings[upgradeData.templateType];
+                    return ({
+                        level: upgradeData.level,
+                        template: template,
+                        cost: template.buildCost,
+                        parentBuilding: self
+                    });
+                });
+                upgrades = upgrades.concat(templatedUpgrades);
+            }
+            return upgrades;
+        };
+        Building.prototype.upgrade = function () {
+        };
+        Building.prototype.setController = function (newController) {
+            var oldController = this.controller;
+            if (oldController === newController)
+                return;
+            this.controller = newController;
+            this.location.updateController();
+        };
+        Building.prototype.serialize = function () {
+            var data = {
+                templateType: this.template.type,
+                id: this.id,
+                locationId: this.location.id,
+                controllerId: this.controller.id,
+                upgradeLevel: this.upgradeLevel,
+                totalCost: this.totalCost
+            };
+            return data;
+        };
+        return Building;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Building;
+});
+define("src/Color", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var Color = (function () {
+        function Color(r, g, b) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+        }
+        Color.fromHex = function (hex) {
+            return new Color((hex >> 16 & 0xFF) / 255, (hex >> 8 & 0xFF) / 255, (hex & 0xFF) / 255);
+        };
+        Color.fromHexString = function (hexString) {
+            var hexDigits;
+            if (hexString.charAt(0) === "#") {
+                hexDigits = hexString.substring(1, 7);
+            }
+            return Color.fromHex(parseInt(hexDigits, 16));
+        };
+        Color.fromHSV = function (h, s, v) {
+            var r, g, b, i, f, p, q, t;
+            i = Math.floor(h * 6);
+            f = h * 6 - i;
+            p = v * (1 - s);
+            q = v * (1 - f * s);
+            t = v * (1 - (1 - f) * s);
+            switch (i % 6) {
+                case 0:
+                    r = v, g = t, b = p;
+                    break;
+                case 1:
+                    r = q, g = v, b = p;
+                    break;
+                case 2:
+                    r = p, g = v, b = t;
+                    break;
+                case 3:
+                    r = p, g = q, b = v;
+                    break;
+                case 4:
+                    r = t, g = p, b = v;
+                    break;
+                case 5:
+                    r = v, g = p, b = q;
+                    break;
+            }
+            return new Color(r, g, b);
+        };
+        Color.fromHSL = function (h, s, l) {
+            var r, g, b;
+            function hue2rgb(p, q, t) {
+                if (t < 0)
+                    t += 1;
+                if (t > 1)
+                    t -= 1;
+                if (t < 1 / 6)
+                    return p + (q - p) * 6 * t;
+                if (t < 1 / 2)
+                    return q;
+                if (t < 2 / 3)
+                    return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            }
+            if (s == 0) {
+                r = g = b = l;
+            }
+            else {
+                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                var p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1 / 3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1 / 3);
+            }
+            return new Color(r, g, b);
+        };
+        Color.fromHUSL = function (h, s, l) {
+            var RGB = HUSL.toRGB(h * 360, s * 100, l * 100);
+            return new Color(RGB[0], RGB[1], RGB[2]);
+        };
+        Color.convertScalarsToDegrees = function (s) {
+            return [s[0] * 360, s[1] * 100, s[2] * 100];
+        };
+        Color.convertDegreesToScalars = function (d) {
+            return [d[0] / 360, d[1] / 100, d[2] / 100];
+        };
+        Color.prototype.getRGB = function () {
+            return [this.r, this.g, this.b];
+        };
+        Color.prototype.getRGBA = function (alpha) {
+            return [this.r, this.g, this.b, alpha];
+        };
+        Color.prototype.get8BitRGB = function () {
+            return this.getRGB().map(function (x) { return x * 255; });
+        };
+        Color.prototype.getHex = function () {
+            return (this.r * 255 << 16) + (this.g * 255 << 8) + this.b * 255;
+        };
+        Color.prototype.getHexString = function () {
+            var hex = Math.round(this.getHex());
+            var converted = hex.toString(16);
+            return '000000'.substr(0, 6 - converted.length) + converted;
+        };
+        Color.prototype.getHUSL = function () {
+            var husl = HUSL.fromRGB(this.r, this.g, this.b);
+            return [husl[0] / 360, husl[1] / 100, husl[2] / 100];
+        };
+        Color.prototype.getHSV = function () {
+            var r = this.r;
+            var g = this.g;
+            var b = this.b;
+            var max = Math.max(r, g, b), min = Math.min(r, g, b);
+            var h, s, v = max;
+            var d = max - min;
+            s = max == 0 ? 0 : d / max;
+            if (max == min) {
+                h = 0;
+            }
+            else {
+                switch (max) {
+                    case r:
+                        h = (g - b) / d + (g < b ? 6 : 0);
+                        break;
+                    case g:
+                        h = (b - r) / d + 2;
+                        break;
+                    case b:
+                        h = (r - g) / d + 4;
+                        break;
+                }
+                h /= 6;
+            }
+            return [h, s, v];
+        };
+        Color.prototype.serialize = function () {
+            return this.getRGB();
+        };
+        Color.deSerialize = function (saveData) {
+            if (!saveData) {
+                return undefined;
+            }
+            return new Color(saveData[0], saveData[1], saveData[2]);
+        };
+        return Color;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Color;
+});
+define("src/SubEmblemCoverage", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
+define("src/SubEmblemPosition", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
+define("src/Emblem", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_4, utility_1) {
+    "use strict";
+    var Emblem = (function () {
+        function Emblem(color, alpha, inner, outer) {
+            this.color = color;
+            this.alpha = isFinite(alpha) ? alpha : 1;
+            this.inner = inner;
+            this.outer = outer;
+        }
+        Emblem.prototype.generateRandom = function (minAlpha, rng) {
+            var rng = rng || new RNG(Math.random);
+            this.alpha = rng.uniform();
+            this.alpha = utility_1.clamp(this.alpha, minAlpha, 1);
+            this.generateSubEmblems(rng);
+        };
+        Emblem.prototype.canAddOuterTemplate = function () {
+            return (this.inner && this.inner.coverage.indexOf(0) !== -1);
+        };
+        Emblem.prototype.getPossibleSubEmblemsToAdd = function () {
+            var possibleTemplates = [];
+            if (this.inner && this.outer) {
+                throw new Error("Tried to get available sub emblems for emblem that already has both inner and outer");
+            }
+            if (!this.inner) {
+                for (var key in App_4.default.moduleData.Templates.SubEmblems) {
+                    if (!App_4.default.moduleData.Templates.SubEmblems[key].disallowRandomGeneration) {
+                        possibleTemplates.push(App_4.default.moduleData.Templates.SubEmblems[key]);
+                    }
+                }
+            }
+            else {
+                if (this.canAddOuterTemplate()) {
+                    for (var key in App_4.default.moduleData.Templates.SubEmblems) {
+                        var template = App_4.default.moduleData.Templates.SubEmblems[key];
+                        if (!template.disallowRandomGeneration && template.coverage.indexOf(1) !== -1) {
+                            possibleTemplates.push(template);
+                        }
+                    }
+                }
+            }
+            return possibleTemplates;
+        };
+        Emblem.prototype.generateSubEmblems = function (rng) {
+            var candidates = this.getPossibleSubEmblemsToAdd();
+            this.inner = utility_1.getSeededRandomArrayItem(candidates, rng);
+            candidates = this.getPossibleSubEmblemsToAdd();
+            if (candidates.length > 0 && rng.uniform() > 0.4) {
+                this.outer = utility_1.getSeededRandomArrayItem(candidates, rng);
+            }
+        };
+        Emblem.prototype.canAddBackground = function () {
+            if (this.inner.position.indexOf(0) !== -1) {
+                return (!this.outer || this.outer.position.indexOf(0) !== -1);
+            }
+            return false;
+        };
+        Emblem.prototype.drawSubEmblem = function (toDraw, maxWidth, maxHeight, stretch) {
+            var image = App_4.default.images[toDraw.src];
+            var width = image.width;
+            var height = image.height;
+            if (stretch) {
+                var widthRatio = width / maxWidth;
+                var heightRatio = height / maxHeight;
+                var largestRatio = Math.max(widthRatio, heightRatio);
+                width /= largestRatio;
+                height /= largestRatio;
+            }
+            var canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(image, 0, 0, width, height);
+            ctx.globalCompositeOperation = "source-in";
+            ctx.fillStyle = "#" + this.color.getHexString();
+            ctx.fillRect(0, 0, width, height);
+            return canvas;
+        };
+        Emblem.prototype.draw = function (maxWidth, maxHeight, stretch) {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            ctx.globalAlpha = this.alpha;
+            var inner = this.drawSubEmblem(this.inner, maxWidth, maxHeight, stretch);
+            canvas.width = inner.width;
+            canvas.height = inner.height;
+            ctx.drawImage(inner, 0, 0);
+            if (this.outer) {
+                var outer = this.drawSubEmblem(this.outer, maxWidth, maxHeight, stretch);
+                ctx.drawImage(outer, 0, 0);
+            }
+            return canvas;
+        };
+        Emblem.prototype.serialize = function () {
+            var data = {
+                alpha: this.alpha,
+                innerKey: this.inner.key
+            };
+            if (this.outer) {
+                data.outerKey = this.outer.key;
+            }
+            return data;
+        };
+        return Emblem;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Emblem;
+});
+define("src/Flag", ["require", "exports", "src/Emblem"], function (require, exports, Emblem_1) {
+    "use strict";
+    var Flag = (function () {
+        function Flag(props) {
+            this.cachedCanvases = {};
+            this.width = props.width;
+            this.height = props.height || props.width;
+            this.mainColor = props.mainColor;
+            this.secondaryColor = props.secondaryColor;
+            this.tetriaryColor = props.tetriaryColor;
+        }
+        Flag.prototype.setColorScheme = function (main, secondary, tetriary) {
+            this.mainColor = main;
+            this.secondaryColor = secondary;
+            if (this.foregroundEmblem && secondary) {
+                this.foregroundEmblem.color = this.secondaryColor;
+            }
+            this.tetriaryColor = tetriary;
+            if (this.backgroundEmblem && tetriary) {
+                this.backgroundEmblem.color = this.tetriaryColor;
+            }
+        };
+        Flag.prototype.generateRandom = function (seed) {
+            this.seed = seed || Math.random();
+            var rng = new RNG(this.seed);
+            this.foregroundEmblem = new Emblem_1.default(this.secondaryColor);
+            this.foregroundEmblem.generateRandom(1, rng);
+            if (this.foregroundEmblem.canAddBackground() && rng.uniform() > 0.5) {
+                this.backgroundEmblem = new Emblem_1.default(this.tetriaryColor);
+                this.backgroundEmblem.generateRandom(0.4, rng);
+            }
+        };
+        Flag.prototype.clearContent = function () {
+            this.customImage = null;
+            this._customImageToRender = null;
+            this.foregroundEmblem = null;
+            this.backgroundEmblem = null;
+            this.seed = null;
+        };
+        Flag.prototype.setForegroundEmblem = function (emblem) {
+            if (!emblem) {
+                this.foregroundEmblem = null;
+                return;
+            }
+            this.clearContent();
+            this.foregroundEmblem = emblem;
+            if (emblem.color) {
+                this.secondaryColor = emblem.color;
+            }
+            else {
+                emblem.color = this.secondaryColor;
+            }
+        };
+        Flag.prototype.setBackgroundEmblem = function (emblem) {
+            if (!emblem) {
+                this.backgroundEmblem = null;
+                return;
+            }
+            this.clearContent();
+            this.backgroundEmblem = emblem;
+            if (emblem.color) {
+                this.tetriaryColor = emblem.color;
+            }
+            else {
+                emblem.color = this.tetriaryColor;
+            }
+        };
+        Flag.prototype.setCustomImage = function (imageSrc) {
+            this.clearContent();
+            this.customImage = imageSrc;
+            var canvas = document.createElement("canvas");
+            canvas.width = this.width;
+            canvas.height = this.height;
+            var ctx = canvas.getContext("2d");
+            var image = new Image();
+            image.src = imageSrc;
+            var xPos, xWidth, yPos, yHeight;
+            if (image.width < this.width) {
+                xPos = (this.width - image.width) / 2;
+                xWidth = image.width;
+            }
+            else {
+                xPos = 0;
+                xWidth = this.width;
+            }
+            if (image.height < this.height) {
+                yPos = (this.height - image.height) / 2;
+                yHeight = image.height;
+            }
+            else {
+                yPos = 0;
+                yHeight = this.height;
+            }
+            ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
+            this._customImageToRender = canvas;
+        };
+        Flag.prototype.getCanvas = function (width, height, stretch, useCache) {
+            if (width === void 0) { width = this.width; }
+            if (height === void 0) { height = this.height; }
+            if (stretch === void 0) { stretch = true; }
+            if (useCache === void 0) { useCache = true; }
+            if (useCache) {
+                var sizeString = "" + width + "," + height + stretch;
+                if (!this.cachedCanvases[sizeString]) {
+                    var canvas = this.draw(width, height, stretch);
+                    this.cachedCanvases[sizeString] = canvas;
+                }
+                return this.cachedCanvases[sizeString];
+            }
+            else {
+                var canvas = this.draw(width, height, stretch);
+                return (canvas);
+            }
+        };
+        Flag.prototype.draw = function (width, height, stretch) {
+            if (width === void 0) { width = this.width; }
+            if (height === void 0) { height = this.height; }
+            if (stretch === void 0) { stretch = true; }
+            var canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            if (!this.mainColor) {
+                return canvas;
+            }
+            var ctx = canvas.getContext("2d");
+            ctx.globalCompositeOperation = "source-over";
+            ctx.fillStyle = "#" + this.mainColor.getHexString();
+            ctx.fillRect(0, 0, width, height);
+            if (this._customImageToRender) {
+                ctx.drawImage(this._customImageToRender, 0, 0);
+            }
+            else {
+                if (this.backgroundEmblem && this.tetriaryColor) {
+                    var background = this.backgroundEmblem.draw(width, height, stretch);
+                    var x = (width - background.width) / 2;
+                    var y = (height - background.height) / 2;
+                    ctx.drawImage(background, x, y);
+                }
+                if (this.foregroundEmblem && this.secondaryColor) {
+                    var foreground = this.foregroundEmblem.draw(width, height, stretch);
+                    var x = (width - foreground.width) / 2;
+                    var y = (height - foreground.height) / 2;
+                    ctx.drawImage(foreground, x, y);
+                }
+            }
+            return canvas;
+        };
+        Flag.prototype.serialize = function () {
+            var data = {
+                mainColor: this.mainColor.serialize()
+            };
+            if (this.secondaryColor) {
+                data.secondaryColor = this.secondaryColor.serialize();
+            }
+            if (this.tetriaryColor) {
+                data.tetriaryColor = this.tetriaryColor.serialize();
+            }
+            if (this.customImage) {
+                data.customImage = this.customImage;
+            }
+            else if (this.seed) {
+                data.seed = this.seed;
+            }
+            else {
+                if (this.foregroundEmblem)
+                    data.foregroundEmblem = this.foregroundEmblem.serialize();
+                if (this.backgroundEmblem)
+                    data.backgroundEmblem = this.backgroundEmblem.serialize();
+            }
+            return data;
+        };
+        return Flag;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Flag;
+});
+define("src/Item", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_3) {
+    "use strict";
+    var Item = (function () {
+        function Item(template, id) {
+            this.id = isFinite(id) ? id : idGenerators_3.default.item++;
+            this.template = template;
+        }
+        Item.prototype.serialize = function () {
+            var data = {
+                id: this.id,
+                templateType: this.template.type
+            };
+            if (this.unit) {
+                data.unitId = this.unit.id;
+            }
+            return data;
+        };
+        return Item;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Item;
+});
+define("src/BattleTurnOrder", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var BattleTurnOrder = (function () {
+        function BattleTurnOrder() {
+            this.allUnits = [];
+            this.orderedUnits = [];
+        }
+        BattleTurnOrder.prototype.destroy = function () {
+            this.allUnits = null;
+            this.orderedUnits = null;
+        };
+        BattleTurnOrder.prototype.hasUnit = function (unit) {
+            return this.allUnits.indexOf(unit) !== -1;
+        };
+        BattleTurnOrder.prototype.addUnit = function (unit) {
+            if (this.hasUnit(unit)) {
+                throw new Error("Unit " + unit.name + " is already part of turn order");
+            }
+            this.allUnits.push(unit);
+            this.orderedUnits.push(unit);
+        };
+        BattleTurnOrder.turnOrderFilterFN = function (unit) {
+            if (unit.battleStats.currentActionPoints <= 0) {
+                return false;
+            }
+            if (unit.currentHealth <= 0) {
+                return false;
+            }
+            return true;
+        };
+        BattleTurnOrder.turnOrderSortFN = function (a, b) {
+            if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
+                return a.battleStats.moveDelay - b.battleStats.moveDelay;
+            }
+            else {
+                return a.id - b.id;
+            }
+        };
+        BattleTurnOrder.prototype.update = function () {
+            this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
+            this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
+        };
+        BattleTurnOrder.prototype.getActiveUnit = function () {
+            return this.orderedUnits[0];
+        };
+        BattleTurnOrder.getDisplayDataFromUnit = function (unit) {
+            return ({
+                moveDelay: unit.battleStats.moveDelay,
+                isGhost: false,
+                unit: unit,
+                displayName: unit.name
+            });
+        };
+        BattleTurnOrder.makeGhostDisplayData = function (ghostMoveDelay) {
+            return ({
+                moveDelay: ghostMoveDelay,
+                isGhost: true,
+                unit: null,
+                displayName: null
+            });
+        };
+        BattleTurnOrder.prototype.getGhostIndex = function (ghostMoveDelay, ghostId) {
+            for (var i = 0; i < this.orderedUnits.length; i++) {
+                var unit = this.orderedUnits[i];
+                var unitMoveDelay = unit.battleStats.moveDelay;
+                if (ghostMoveDelay < unitMoveDelay) {
+                    return i;
+                }
+                else if (ghostMoveDelay === unitMoveDelay && ghostId < unit.id) {
+                    return i;
+                }
+            }
+            return this.orderedUnits.length;
+        };
+        BattleTurnOrder.prototype.getDisplayData = function (ghostMoveDelay, ghostId) {
+            var displayData = this.orderedUnits.map(BattleTurnOrder.getDisplayDataFromUnit);
+            if (isFinite(ghostMoveDelay)) {
+                var ghostIndex = this.getGhostIndex(ghostMoveDelay, ghostId);
+                var ghostDisplayData = BattleTurnOrder.makeGhostDisplayData(ghostMoveDelay);
+                displayData.splice(ghostIndex, 0, ghostDisplayData);
+            }
+            return displayData;
+        };
+        return BattleTurnOrder;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattleTurnOrder;
+});
+define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/BattleTurnOrder", "src/UnitBattleSide", "src/utility"], function (require, exports, App_5, eventManager_2, BattleTurnOrder_1, UnitBattleSide_1, utility_2) {
+    "use strict";
+    var Battle = (function () {
+        function Battle(props) {
+            this.unitsById = {};
+            this.unitsBySide = {
+                side1: [],
+                side2: []
+            };
+            this.evaluation = {};
+            this.isSimulated = false;
+            this.isVirtual = false;
+            this.ended = false;
+            this.afterFinishCallbacks = [];
+            this.side1 = props.side1;
+            this.side1Player = props.side1Player;
+            this.side2 = props.side2;
+            this.side2Player = props.side2Player;
+            this.battleData = props.battleData;
+            this.turnOrder = new BattleTurnOrder_1.default();
+        }
+        Battle.prototype.init = function () {
+            var self = this;
+            UnitBattleSide_1.UnitBattleSides.forEach(function (sideId) {
+                var side = self[sideId];
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (side[i][j]) {
+                            self.unitsById[side[i][j].id] = side[i][j];
+                            self.unitsBySide[sideId].push(side[i][j]);
+                            var pos = Battle.getAbsolutePositionFromSidePosition([i, j], sideId);
+                            self.initUnit(side[i][j], sideId, pos);
+                        }
+                    }
+                }
+            });
+            this.currentTurn = 0;
+            this.maxTurns = 24;
+            this.turnsLeft = this.maxTurns;
+            this.updateTurnOrder();
+            this.startHealth =
+                {
+                    side1: this.getTotalHealthForSide("side1").current,
+                    side2: this.getTotalHealthForSide("side2").current
+                };
+            if (this.shouldBattleEnd()) {
+                this.endBattle();
+            }
+            else {
+                this.shiftRowsIfNeeded();
+            }
+            this.triggerBattleStartAbilities();
+        };
+        Battle.prototype.forEachUnit = function (operator) {
+            for (var id in this.unitsById) {
+                operator.call(this, this.unitsById[id]);
+            }
+        };
+        Battle.prototype.endTurn = function () {
+            this.currentTurn++;
+            this.turnsLeft--;
+            this.updateTurnOrder();
+            var shouldEnd = this.shouldBattleEnd();
+            if (shouldEnd) {
+                this.endBattle();
+            }
+            else {
+                this.shiftRowsIfNeeded();
+            }
+        };
+        Battle.prototype.getActivePlayer = function () {
+            if (!this.activeUnit)
+                return null;
+            var side = this.activeUnit.battleStats.side;
+            return this.getPlayerForSide(side);
+        };
+        Battle.prototype.initUnit = function (unit, side, position) {
+            unit.resetBattleStats();
+            unit.setBattlePosition(this, side, position);
+            this.turnOrder.addUnit(unit);
+            unit.timesActedThisTurn++;
+        };
+        Battle.prototype.triggerBattleStartAbilities = function () {
+            this.forEachUnit(function (unit) {
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase["atBattleStart"]) {
+                    var skills = passiveSkillsByPhase["atBattleStart"];
+                    for (var i = 0; i < skills.length; i++) {
+                        for (var j = 0; j < skills[i].atBattleStart.length; j++) {
+                            var effect = skills[i].atBattleStart[j];
+                            effect.action.executeAction(unit, unit, this, effect.data);
+                        }
+                    }
+                }
+            });
+        };
+        Battle.prototype.getPlayerForSide = function (side) {
+            if (side === "side1")
+                return this.side1Player;
+            else if (side === "side2")
+                return this.side2Player;
+            else
+                throw new Error("invalid side");
+        };
+        Battle.prototype.getSideForPlayer = function (player) {
+            if (this.side1Player === player)
+                return "side1";
+            else if (this.side2Player === player)
+                return "side2";
+            else
+                throw new Error("invalid player");
+        };
+        Battle.prototype.getRowByPosition = function (position) {
+            var rowsPerSide = App_5.default.moduleData.ruleSet.battle.rowsPerFormation;
+            var side = position < rowsPerSide ? "side1" : "side2";
+            var relativePosition = position % rowsPerSide;
+            return this[side][relativePosition];
+        };
+        Battle.prototype.finishBattle = function (forcedVictor) {
+            var victor = forcedVictor || this.getVictor();
+            for (var i = 0; i < this.deadUnits.length; i++) {
+                this.deadUnits[i].removeFromPlayer();
+            }
+            var experiencePerSide = this.getGainedExperiencePerSide();
+            this.forEachUnit(function (unit) {
+                unit.addExperience(experiencePerSide[unit.battleStats.side]);
+                unit.resetBattleStats();
+                if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
+                    unit.currentHealth = Math.round(unit.maxHealth * 0.1);
+                }
+                this.side1Player.identifyUnit(unit);
+                this.side2Player.identifyUnit(unit);
+            });
+            if (victor) {
+                for (var i = 0; i < this.capturedUnits.length; i++) {
+                    this.capturedUnits[i].transferToPlayer(victor);
+                    this.capturedUnits[i].experienceForCurrentLevel = 0;
+                }
+            }
+            if (this.battleData.building) {
+                if (victor) {
+                    this.battleData.building.setController(victor);
+                }
+            }
+            if (this.isSimulated) {
+                eventManager_2.default.dispatchEvent("renderLayer", "fleets", this.battleData.location);
+            }
+            else {
+                eventManager_2.default.dispatchEvent("setCameraToCenterOn", this.battleData.location);
+                eventManager_2.default.dispatchEvent("switchScene", "galaxyMap");
+            }
+            if (App_5.default.humanPlayer.starIsVisible(this.battleData.location)) {
+                eventManager_2.default.dispatchEvent("makeBattleFinishNotification", {
+                    location: this.battleData.location,
+                    attacker: this.battleData.attacker.player,
+                    defender: this.battleData.defender.player,
+                    victor: victor
+                });
+            }
+            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
+                this.afterFinishCallbacks[i]();
+            }
+        };
+        Battle.prototype.getVictor = function () {
+            var evaluation = this.getEvaluation();
+            if (evaluation > 0)
+                return this.side1Player;
+            else if (evaluation < 0)
+                return this.side2Player;
+            else
+                return null;
+        };
+        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
+            if (!victor || victor.isIndependent)
+                return [];
+            var winningSide = this.getSideForPlayer(victor);
+            var losingSide = utility_2.reverseSide(winningSide);
+            var losingUnits = this.unitsBySide[losingSide].slice(0);
+            losingUnits.sort(function (a, b) {
+                var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
+                if (captureChanceSort) {
+                    return captureChanceSort;
+                }
+                else {
+                    return utility_2.randInt(0, 1) * 2 - 1;
+                }
+            });
+            var capturedUnits = [];
+            for (var i = 0; i < losingUnits.length; i++) {
+                if (capturedUnits.length >= maxCapturedUnits)
+                    break;
+                var unit = losingUnits[i];
+                if (unit.currentHealth <= 0 &&
+                    Math.random() <= unit.battleStats.captureChance) {
+                    capturedUnits.push(unit);
+                }
+            }
+            return capturedUnits;
+        };
+        Battle.prototype.getUnitDeathChance = function (unit, victor) {
+            var player = unit.fleet.player;
+            var deathChance;
+            if (player.isIndependent) {
+                deathChance = App_5.default.moduleData.ruleSet.battle.independentUnitDeathChance;
+            }
+            else if (player.isAI) {
+                deathChance = App_5.default.moduleData.ruleSet.battle.aiUnitDeathChance;
+            }
+            else {
+                deathChance = App_5.default.moduleData.ruleSet.battle.humanUnitDeathChance;
+            }
+            var playerDidLose = (victor && player !== victor);
+            if (playerDidLose) {
+                deathChance += App_5.default.moduleData.ruleSet.battle.loserUnitExtraDeathChance;
+            }
+            return deathChance;
+        };
+        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
+            var deadUnits = [];
+            this.forEachUnit(function (unit) {
+                if (unit.currentHealth <= 0) {
+                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
+                    if (!wasCaptured) {
+                        var deathChance = this.getUnitDeathChance(unit, victor);
+                        if (Math.random() < deathChance) {
+                            deadUnits.push(unit);
+                        }
+                    }
+                }
+            });
+            return deadUnits;
+        };
+        Battle.prototype.getGainedExperiencePerSide = function () {
+            var totalValuePerSide = {
+                side1: 0,
+                side2: 0
+            };
+            for (var side in this.unitsBySide) {
+                var totalValue = 0;
+                var units = this.unitsBySide[side];
+                for (var i = 0; i < units.length; i++) {
+                    totalValuePerSide[side] += units[i].level + 1;
+                }
+            }
+            return ({
+                side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
+                side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
+            });
+        };
+        Battle.prototype.shouldBattleEnd = function () {
+            if (!this.activeUnit)
+                return true;
+            if (this.turnsLeft <= 0)
+                return true;
+            if (this.getTotalHealthForSide("side1").current <= 0 ||
+                this.getTotalHealthForSide("side2").current <= 0) {
+                return true;
+            }
+            return false;
+        };
+        Battle.prototype.endBattle = function () {
+            this.ended = true;
+            if (this.isVirtual)
+                return;
+            this.activeUnit = null;
+            var victor = this.getVictor();
+            var maxCapturedUnits = App_5.default.moduleData.ruleSet.battle.baseMaxCapturedUnits;
+            this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
+            this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
+            eventManager_2.default.dispatchEvent("battleEnd", null);
+        };
+        Battle.prototype.getEvaluation = function () {
+            var self = this;
+            var evaluation = 0;
+            UnitBattleSide_1.UnitBattleSides.forEach(function (side) {
+                var sign = side === "side1" ? 1 : -1;
+                var currentHealth = self.getTotalHealthForSide(side).current;
+                if (currentHealth <= 0) {
+                    return -999 * sign;
+                }
+                var currentHealthFactor = currentHealth / self.startHealth[side];
+                for (var i = 0; i < self.unitsBySide[side].length; i++) {
+                    if (self.unitsBySide[side][i].currentHealth <= 0) {
+                        evaluation -= 0.2 * sign;
+                    }
+                }
+                var defenderMultiplier = 1;
+                if (self.battleData.building) {
+                    var template = self.battleData.building.template;
+                    var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
+                    if (isDefender) {
+                        defenderMultiplier += template.defenderAdvantage;
+                    }
+                }
+                evaluation += currentHealthFactor * defenderMultiplier * sign;
+            });
+            evaluation = utility_2.clamp(evaluation, -1, 1);
+            this.evaluation[this.currentTurn] = evaluation;
+            return this.evaluation[this.currentTurn];
+        };
+        Battle.prototype.getTotalHealthForRow = function (position) {
+            var row = this.getRowByPosition(position);
+            var total = 0;
+            for (var i = 0; i < row.length; i++) {
+                if (row[i]) {
+                    total += row[i].currentHealth;
+                }
+            }
+            return total;
+        };
+        Battle.prototype.getTotalHealthForSide = function (side) {
+            var health = {
+                current: 0,
+                max: 0
+            };
+            var units = this.unitsBySide[side];
+            for (var i = 0; i < units.length; i++) {
+                var unit = units[i];
+                health.current += unit.currentHealth;
+                health.max += unit.maxHealth;
+            }
+            return health;
+        };
+        Battle.getAbsolutePositionFromSidePosition = function (relativePosition, side) {
+            if (side === "side1") {
+                return relativePosition;
+            }
+            else {
+                var rowsPerSide = App_5.default.moduleData.ruleSet.battle.rowsPerFormation;
+                return [relativePosition[0] + rowsPerSide, relativePosition[1]];
+            }
+        };
+        Battle.prototype.updateBattlePositions = function (side) {
+            var units = this[side];
+            for (var i = 0; i < units.length; i++) {
+                var row = this[side][i];
+                for (var j = 0; j < row.length; j++) {
+                    var pos = Battle.getAbsolutePositionFromSidePosition([i, j], side);
+                    var unit = row[j];
+                    if (unit) {
+                        unit.setBattlePosition(this, side, pos);
+                    }
                 }
             }
         };
-        return RuleSet;
+        Battle.prototype.shiftRowsForSide = function (side) {
+            var formation = this[side];
+            if (side === "side1") {
+                formation.reverse();
+            }
+            var nextHealthyRowIndex;
+            for (var i = 1; i < formation.length; i++) {
+                var absoluteRow = side === "side1" ? i : i + App_5.default.moduleData.ruleSet.battle.rowsPerFormation;
+                if (this.getTotalHealthForRow(absoluteRow) > 0) {
+                    nextHealthyRowIndex = i;
+                    break;
+                }
+            }
+            if (!isFinite(nextHealthyRowIndex)) {
+                throw new Error("Tried to shift battle rows when all rows are defeated");
+            }
+            var rowsToShift = formation.splice(0, nextHealthyRowIndex);
+            formation = formation.concat(rowsToShift);
+            if (side === "side1") {
+                formation.reverse();
+            }
+            this[side] = formation;
+            this.updateBattlePositions(side);
+        };
+        Battle.prototype.shiftRowsIfNeeded = function () {
+            var rowsPerSide = App_5.default.moduleData.ruleSet.battle.rowsPerFormation;
+            var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
+            if (side1FrontRowHealth <= 0) {
+                this.shiftRowsForSide("side1");
+            }
+            var side2FrontRowHealth = this.getTotalHealthForRow(rowsPerSide);
+            if (side2FrontRowHealth <= 0) {
+                this.shiftRowsForSide("side2");
+            }
+        };
+        Battle.prototype.makeVirtualClone = function () {
+            var battleData = this.battleData;
+            function cloneUnits(units) {
+                var clones = [];
+                for (var i = 0; i < units.length; i++) {
+                    var row = [];
+                    for (var j = 0; j < units[i].length; j++) {
+                        var unit = units[i][j];
+                        if (!unit) {
+                            row.push(unit);
+                        }
+                        else {
+                            row.push(unit.makeVirtualClone());
+                        }
+                    }
+                    clones.push(row);
+                }
+                return clones;
+            }
+            var side1 = cloneUnits(this.side1);
+            var side2 = cloneUnits(this.side2);
+            var side1Player = this.side1Player;
+            var side2Player = this.side2Player;
+            var clone = new Battle({
+                battleData: battleData,
+                side1: side1,
+                side2: side2,
+                side1Player: side1Player,
+                side2Player: side2Player
+            });
+            [side1, side2].forEach(function (side) {
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (!side[i][j])
+                            continue;
+                        clone.turnOrder.addUnit(side[i][j]);
+                        clone.unitsById[side[i][j].id] = side[i][j];
+                        clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
+                    }
+                }
+            });
+            clone.isVirtual = true;
+            clone.currentTurn = this.currentTurn;
+            clone.maxTurns = this.maxTurns;
+            clone.turnsLeft = this.turnsLeft;
+            clone.startHealth = this.startHealth;
+            clone.updateTurnOrder();
+            if (clone.shouldBattleEnd()) {
+                clone.endBattle();
+            }
+            else {
+                clone.shiftRowsIfNeeded();
+            }
+            return clone;
+        };
+        Battle.prototype.updateTurnOrder = function () {
+            this.turnOrder.update();
+            this.activeUnit = this.turnOrder.getActiveUnit();
+        };
+        return Battle;
     }());
-    var ruleSet = new RuleSet();
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = ruleSet;
+    exports.default = Battle;
 });
-define("src/RandomGenUnitRarity", ["require", "exports"], function (require, exports) {
+define("src/targeting", ["require", "exports", "src/utility"], function (require, exports, utility_3) {
     "use strict";
+    (function (TargetFormation) {
+        TargetFormation[TargetFormation["ally"] = 0] = "ally";
+        TargetFormation[TargetFormation["enemy"] = 1] = "enemy";
+        TargetFormation[TargetFormation["either"] = 2] = "either";
+    })(exports.TargetFormation || (exports.TargetFormation = {}));
+    var TargetFormation = exports.TargetFormation;
+    exports.targetSelf = function (units, user) {
+        return [user];
+    };
+    exports.targetNextRow = function (units, user) {
+        var ownPosition = user.battleStats.position;
+        var increment = user.battleStats.side === "side1" ? 1 : -1;
+        return units[ownPosition[0] + increment];
+    };
+    exports.targetAll = function (units, user) {
+        return utility_3.flatten2dArray(units);
+    };
+    exports.areaSingle = function (units, target) {
+        return utility_3.getFrom2dArray(units, [target]);
+    };
+    exports.areaAll = function (units, target) {
+        return utility_3.flatten2dArray(units);
+    };
+    exports.areaColumn = function (units, target) {
+        var y = target[1];
+        var targetLocations = [];
+        for (var i = 0; i < units.length; i++) {
+            targetLocations.push([i, y]);
+        }
+        return utility_3.getFrom2dArray(units, targetLocations);
+    };
+    exports.areaRow = function (units, target) {
+        var x = target[0];
+        var targetLocations = [];
+        for (var i = 0; i < units[x].length; i++) {
+            targetLocations.push([x, i]);
+        }
+        return utility_3.getFrom2dArray(units, targetLocations);
+    };
+    exports.areaRowNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return utility_3.getFrom2dArray(units, targetLocations);
+    };
+    exports.areaNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x - 1, y]);
+        targetLocations.push([x + 1, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return utility_3.getFrom2dArray(units, targetLocations);
+    };
+});
+define("src/getNullFormation", ["require", "exports", "src/App"], function (require, exports, App_6) {
+    "use strict";
+    function getNullFormation() {
+        var nullFormation = [];
+        var rows = App_6.default.moduleData.ruleSet.battle.rowsPerFormation;
+        var columns = App_6.default.moduleData.ruleSet.battle.cellsPerRow;
+        for (var i = 0; i < rows; i++) {
+            nullFormation.push([]);
+            for (var j = 0; j < columns; j++) {
+                nullFormation[i].push(null);
+            }
+        }
+        return nullFormation;
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = getNullFormation;
+});
+define("src/battleAbilityTargeting", ["require", "exports", "src/getNullFormation", "src/utility", "src/targeting"], function (require, exports, getNullFormation_1, utility_4, targeting_1) {
+    "use strict";
+    function getFormationsToTarget(battle, user, effect) {
+        if (effect.targetFormations === targeting_1.TargetFormation.either) {
+            return battle.side1.concat(battle.side2);
+        }
+        else {
+            var userSide = user.battleStats.side;
+            var insertNullBefore = (userSide === "side1") ? true : false;
+            var toConcat;
+        }
+        if (effect.targetFormations === targeting_1.TargetFormation.ally) {
+            toConcat = battle[userSide];
+        }
+        else if (effect.targetFormations === targeting_1.TargetFormation.enemy) {
+            toConcat = battle[utility_4.reverseSide(userSide)];
+        }
+        else {
+            throw new Error("Invalid target formation for effect: " + effect.name);
+        }
+        if (insertNullBefore) {
+            return getNullFormation_1.default().concat(toConcat);
+        }
+        else {
+            return toConcat.concat(getNullFormation_1.default());
+        }
+    }
+    exports.getFormationsToTarget = getFormationsToTarget;
+    function getTargetsForAllAbilities(battle, user) {
+        if (!user || !battle.activeUnit) {
+            throw new Error();
+        }
+        var allTargets = {};
+        var abilities = user.getAllAbilities();
+        for (var i = 0; i < abilities.length; i++) {
+            var ability = abilities[i];
+            var targets = getPotentialTargets(battle, user, ability);
+            for (var j = 0; j < targets.length; j++) {
+                var target = targets[j];
+                if (!allTargets[target.id]) {
+                    allTargets[target.id] = [];
+                }
+                allTargets[target.id].push(ability);
+            }
+        }
+        return allTargets;
+    }
+    exports.getTargetsForAllAbilities = getTargetsForAllAbilities;
+    function isTargetableFilterFN(unit) {
+        return unit && unit.isTargetable();
+    }
+    function getPotentialTargets(battle, user, ability) {
+        var targetFormations = getFormationsToTarget(battle, user, ability.mainEffect.action);
+        var targetsInRange = ability.mainEffect.action.targetRangeFunction(targetFormations, user);
+        var targets = targetsInRange.filter(isTargetableFilterFN);
+        return targets;
+    }
+});
+define("src/battleAbilityProcessing", ["require", "exports", "src/targeting", "src/battleAbilityTargeting"], function (require, exports, targeting_2, battleAbilityTargeting_1) {
+    "use strict";
+    function getAbilityEffectDataByPhase(battle, abilityUseData) {
+        abilityUseData.actualTarget = getTargetOrGuard(battle, abilityUseData);
+        var beforeUse = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getBeforeAbilityUseEffectTemplates(abilityUseData));
+        beforeUse.push.apply(beforeUse, getDefaultBeforeUseEffects(abilityUseData));
+        var abilityEffects = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getAbilityUseEffectTemplates(abilityUseData));
+        var afterUse = getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, getAfterAbilityUseEffectTemplates(abilityUseData));
+        afterUse.push.apply(afterUse, getDefaultAfterUseEffects(abilityUseData));
+        return ({
+            beforeUse: beforeUse,
+            abilityEffects: abilityEffects,
+            afterUse: afterUse
+        });
+    }
+    exports.getAbilityEffectDataByPhase = getAbilityEffectDataByPhase;
+    function getUnitsInEffectArea(battle, effect, user, target) {
+        var targetFormations = battleAbilityTargeting_1.getFormationsToTarget(battle, user, effect);
+        var inArea = effect.battleAreaFunction(targetFormations, target.battleStats.position);
+        return inArea.filter(activeUnitsFilterFN);
+    }
+    exports.getUnitsInEffectArea = getUnitsInEffectArea;
+    function getTargetOrGuard(battle, abilityUseData) {
+        if (abilityUseData.ability.bypassesGuard) {
+            return abilityUseData.intendedTarget;
+        }
+        var guarding = getGuarders(battle, abilityUseData);
+        guarding = guarding.sort(function (a, b) {
+            return a.battleStats.guardAmount - b.battleStats.guardAmount;
+        });
+        for (var i = 0; i < guarding.length; i++) {
+            var guardRoll = Math.random() * 100;
+            if (guardRoll <= guarding[i].battleStats.guardAmount) {
+                return guarding[i];
+            }
+        }
+        return abilityUseData.intendedTarget;
+    }
+    function canGuardFN(intendedTarget, unit) {
+        if (!unit.isTargetable()) {
+            return false;
+        }
+        if (unit.battleStats.guardCoverage === 1) {
+            return unit.battleStats.guardAmount > 0;
+        }
+        else if (unit.battleStats.guardCoverage === 0) {
+            if (unit.battleStats.position[0] === intendedTarget.battleStats.position[0]) {
+                return unit.battleStats.guardAmount > 0;
+            }
+        }
+    }
+    function getGuarders(battle, abilityUseData) {
+        var userSide = abilityUseData.user.battleStats.side;
+        var targetSide = abilityUseData.intendedTarget.battleStats.side;
+        if (userSide === targetSide)
+            return [];
+        var allEnemies = battle.unitsBySide[targetSide];
+        var guarders = allEnemies.filter(canGuardFN.bind(null, abilityUseData.intendedTarget));
+        return guarders;
+    }
+    function activeUnitsFilterFN(unit) {
+        return unit && unit.isActiveInBattle();
+    }
+    function recursivelyGetAttachedEffects(effectTemplate) {
+        var attachedEffects = [];
+        var frontier = [effectTemplate];
+        while (frontier.length > 0) {
+            var currentEffect = frontier.pop();
+            attachedEffects.push.apply(attachedEffects, currentEffect.attachedEffects);
+            frontier.push.apply(frontier, currentEffect.attachedEffects);
+        }
+        return attachedEffects;
+    }
+    function getAbilityEffectDataFromEffectTemplates(battle, abilityUseData, effectTemplates) {
+        var effectData = [];
+        for (var i = 0; i < effectTemplates.length; i++) {
+            var templateEffect = effectTemplates[i];
+            var targetsForEffect = getUnitsInEffectArea(battle, templateEffect.action, abilityUseData.user, abilityUseData.actualTarget);
+            var withAttached = [templateEffect].concat(recursivelyGetAttachedEffects(templateEffect));
+            for (var j = 0; j < targetsForEffect.length; j++) {
+                for (var k = 0; k < withAttached.length; k++) {
+                    effectData.push({
+                        templateEffect: withAttached[k],
+                        user: abilityUseData.user,
+                        target: targetsForEffect[j],
+                        trigger: templateEffect.trigger
+                    });
+                }
+            }
+        }
+        return effectData;
+    }
+    function getBeforeAbilityUseEffectTemplates(abilityUseData) {
+        var beforeUseEffects = [];
+        if (abilityUseData.ability.beforeUse) {
+            beforeUseEffects.push.apply(beforeUseEffects, abilityUseData.ability.beforeUse);
+        }
+        return beforeUseEffects;
+    }
+    function getAbilityUseEffectTemplates(abilityUseData) {
+        var abilityUseEffects = [];
+        abilityUseEffects.push(abilityUseData.ability.mainEffect);
+        if (abilityUseData.ability.secondaryEffects) {
+            abilityUseEffects = abilityUseEffects.concat(abilityUseData.ability.secondaryEffects);
+        }
+        return abilityUseEffects;
+    }
+    function getAfterAbilityUseEffectTemplates(abilityUseData) {
+        var afterUseEffects = [];
+        if (abilityUseData.ability.afterUse) {
+            afterUseEffects.push.apply(afterUseEffects, abilityUseData.ability.afterUse);
+        }
+        return afterUseEffects;
+    }
+    function makeSelfAbilityEffectData(user, name, actionFN) {
+        return ({
+            templateEffect: {
+                action: {
+                    name: name,
+                    targetFormations: targeting_2.TargetFormation.either,
+                    battleAreaFunction: targeting_2.areaSingle,
+                    targetRangeFunction: targeting_2.targetAll,
+                    executeAction: actionFN
+                }
+            },
+            user: user,
+            target: user,
+            trigger: null
+        });
+    }
+    function getDefaultBeforeUseEffects(abilityUseData) {
+        var effects = [];
+        if (!abilityUseData.ability.addsGuard) {
+            effects.push(makeSelfAbilityEffectData(abilityUseData.user, "removeGuard", function (user) { return user.removeAllGuard(); }));
+        }
+        effects.push(makeSelfAbilityEffectData(abilityUseData.user, "removeActionPoints", function (user) { return user.removeActionPoints(abilityUseData.ability.actionsUse); }));
+        return effects;
+    }
+    function getDefaultAfterUseEffects(abilityUseData) {
+        var effects = [];
+        effects.push(makeSelfAbilityEffectData(abilityUseData.user, "addMoveDelay", function (user) { return user.addMoveDelay(abilityUseData.ability.moveDelay); }));
+        effects.push(makeSelfAbilityEffectData(abilityUseData.user, "updateStatusEffects", function (user) { return user.updateStatusEffects(); }));
+        return effects;
+    }
+});
+define("src/battleAbilityUsage", ["require", "exports", "src/battleAbilityProcessing"], function (require, exports, battleAbilityProcessing_1) {
+    "use strict";
+    function useAbility(battle, ability, user, target, getEffects) {
+        var effectDataByPhase = battleAbilityProcessing_1.getAbilityEffectDataByPhase(battle, {
+            ability: ability,
+            user: user,
+            intendedTarget: target
+        });
+        var useData = executeFullAbilityEffects(battle, effectDataByPhase, getEffects);
+        return useData;
+    }
+    exports.useAbility = useAbility;
+    function executeFullAbilityEffects(battle, abilityEffectData, getUseEffects) {
+        var beforeUse = executeMultipleEffects(battle, abilityEffectData.beforeUse, getUseEffects);
+        var abilityEffects = executeMultipleEffects(battle, abilityEffectData.abilityEffects, getUseEffects);
+        var afterUse = executeMultipleEffects(battle, abilityEffectData.afterUse, getUseEffects);
+        if (getUseEffects) {
+            return beforeUse.concat(abilityEffects, afterUse);
+        }
+        else {
+            return null;
+        }
+    }
+    function executeMultipleEffects(battle, abilityEffectData, getUseEffects) {
+        if (getUseEffects) {
+            var useEffects = [];
+            for (var i = 0; i < abilityEffectData.length; i++) {
+                var useEffect = executeAbilityEffectDataAndGetUseEffect(battle, abilityEffectData[i]);
+                if (useEffect) {
+                    useEffects.push(useEffect);
+                }
+            }
+            return useEffects;
+        }
+        else {
+            for (var i = 0; i < abilityEffectData.length; i++) {
+                executeAbilityEffectData(battle, abilityEffectData[i]);
+            }
+        }
+    }
+    function shouldEffectActionTrigger(abilityEffectData) {
+        if (!abilityEffectData.trigger) {
+            return true;
+        }
+        return abilityEffectData.trigger(abilityEffectData.user, abilityEffectData.target);
+    }
+    function executeAbilityEffectData(battle, abilityEffectData) {
+        if (!shouldEffectActionTrigger(abilityEffectData)) {
+            return false;
+        }
+        abilityEffectData.templateEffect.action.executeAction(abilityEffectData.user, abilityEffectData.target, battle, abilityEffectData.templateEffect.data);
+        return true;
+    }
+    function executeAbilityEffectDataAndGetUseEffect(battle, abilityEffectData) {
+        var didTriggerAction = executeAbilityEffectData(battle, abilityEffectData);
+        if (!didTriggerAction) {
+            return null;
+        }
+        var unitDisplayData = {};
+        unitDisplayData[abilityEffectData.user.id] = abilityEffectData.user.getDisplayData("battle");
+        unitDisplayData[abilityEffectData.target.id] = abilityEffectData.target.getDisplayData("battle");
+        return ({
+            actionName: abilityEffectData.templateEffect.action.name,
+            changedUnitDisplayDataByID: unitDisplayData,
+            sfx: abilityEffectData.templateEffect.sfx,
+            sfxUser: abilityEffectData.user,
+            sfxTarget: abilityEffectData.target
+        });
+    }
+});
+define("src/MCTreeNode", ["require", "exports", "src/App", "src/utility", "src/battleAbilityUsage", "src/battleAbilityTargeting"], function (require, exports, App_7, utility_5, battleAbilityUsage_1, battleAbilityTargeting_2) {
+    "use strict";
+    var MCTreeNode = (function () {
+        function MCTreeNode(battle, move) {
+            this.depth = 0;
+            this.children = [];
+            this.visits = 0;
+            this.wins = 0;
+            this.winRate = 0;
+            this.totalScore = 0;
+            this.averageScore = 0;
+            this.uctIsDirty = true;
+            this.battle = battle;
+            this.sideId = battle.activeUnit.battleStats.side;
+            this.move = move;
+            this.isBetweenAI = battle.side1Player.isAI && battle.side2Player.isAI;
+            this.currentScore = battle.getEvaluation();
+        }
+        MCTreeNode.prototype.getPossibleMoves = function () {
+            if (!this.battle.activeUnit) {
+                return [];
+            }
+            var targets = battleAbilityTargeting_2.getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
+            var actions = [];
+            for (var id in targets) {
+                var targetActions = targets[id];
+                for (var i = 0; i < targetActions.length; i++) {
+                    if (!this.isBetweenAI || !targetActions[i].disableInAIBattles) {
+                        actions.push({
+                            targetId: parseInt(id),
+                            ability: targetActions[i]
+                        });
+                    }
+                }
+            }
+            return actions;
+        };
+        MCTreeNode.prototype.addChild = function (possibleMovesIndex) {
+            if (!this.possibleMoves) {
+                this.possibleMoves = this.getPossibleMoves();
+            }
+            if (isFinite(possibleMovesIndex)) {
+                var move = this.possibleMoves.splice(possibleMovesIndex, 1)[0];
+            }
+            else {
+                var move = this.possibleMoves.pop();
+            }
+            var battle = this.battle.makeVirtualClone();
+            var child = new MCTreeNode(battle, move);
+            child.parent = this;
+            child.depth = this.depth + 1;
+            this.children.push(child);
+            battleAbilityUsage_1.useAbility(battle, move.ability, battle.activeUnit, battle.unitsById[move.targetId], false);
+            child.currentScore = battle.getEvaluation();
+            battle.endTurn();
+            return child;
+        };
+        MCTreeNode.prototype.getChildForMove = function (move) {
+            for (var i = 0; i < this.children.length; i++) {
+                var child = this.children[i];
+                if (child.move.targetId === move.targetId &&
+                    child.move.ability.type === move.ability.type) {
+                    return child;
+                }
+            }
+            if (!this.possibleMoves) {
+                this.possibleMoves = this.getPossibleMoves();
+            }
+            for (var i = 0; i < this.possibleMoves.length; i++) {
+                var possibleMove = this.possibleMoves[i];
+                if (possibleMove.targetId === move.targetId &&
+                    possibleMove.ability.type === move.ability.type) {
+                    return this.addChild(i);
+                }
+            }
+            return null;
+        };
+        MCTreeNode.prototype.updateResult = function (result) {
+            this.visits++;
+            this.totalScore += result;
+            if (this.sideId === "side1") {
+                if (result > 0)
+                    this.wins++;
+            }
+            if (this.sideId === "side2") {
+                if (result < 0)
+                    this.wins++;
+            }
+            this.averageScore = this.totalScore / this.visits;
+            this.winRate = this.wins / this.visits;
+            this.uctIsDirty = true;
+            if (this.parent)
+                this.parent.updateResult(result);
+        };
+        MCTreeNode.prototype.pickRandomAbilityAndTarget = function (actions) {
+            var prioritiesByAbilityAndTarget = {};
+            for (var targetId in actions) {
+                var abilities = actions[targetId];
+                for (var i = 0; i < abilities.length; i++) {
+                    var priority = isFinite(abilities[i].AIEvaluationPriority) ? abilities[i].AIEvaluationPriority : 1;
+                    prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
+                }
+            }
+            var selected = utility_5.getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
+            var separatorIndex = selected.indexOf(":");
+            return ({
+                targetId: parseInt(selected.slice(0, separatorIndex)),
+                abilityType: selected.slice(separatorIndex + 1)
+            });
+        };
+        MCTreeNode.prototype.simulateOnce = function (battle) {
+            var actions = battleAbilityTargeting_2.getTargetsForAllAbilities(battle, battle.activeUnit);
+            var targetData = this.pickRandomAbilityAndTarget(actions);
+            var ability = App_7.default.moduleData.Templates.Abilities[targetData.abilityType];
+            var target = battle.unitsById[targetData.targetId];
+            battleAbilityUsage_1.useAbility(battle, ability, battle.activeUnit, target, false);
+            battle.endTurn();
+        };
+        MCTreeNode.prototype.simulateToEnd = function () {
+            var battle = this.battle.makeVirtualClone();
+            while (!battle.ended) {
+                this.simulateOnce(battle);
+            }
+            this.updateResult(battle.getEvaluation());
+        };
+        MCTreeNode.prototype.clearResult = function () {
+            this.visits = 0;
+            this.wins = 0;
+            this.averageScore = 0;
+            this.totalScore = 0;
+        };
+        MCTreeNode.prototype.getCombinedScore = function () {
+            var sign = this.sideId === "side1" ? 1 : -1;
+            var baseScore = this.averageScore * sign / 2;
+            var winRate = this.winRate;
+            var aiAdjust = this.move.ability.AIScoreAdjust || 0;
+            return (baseScore + winRate) + aiAdjust * 1.5;
+        };
+        MCTreeNode.prototype.setUct = function () {
+            if (!this.parent) {
+                this.uctEvaluation = -1;
+                this.uctIsDirty = false;
+                return;
+            }
+            this.uctEvaluation = this.getCombinedScore() + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
+            if (this.move.ability.AIEvaluationPriority) {
+                this.uctEvaluation *= this.move.ability.AIEvaluationPriority;
+            }
+            this.uctIsDirty = false;
+        };
+        MCTreeNode.prototype.getHighestUctChild = function () {
+            var highest = this.children[0];
+            for (var i = 0; i < this.children.length; i++) {
+                var child = this.children[i];
+                if (child.uctIsDirty) {
+                    child.setUct();
+                }
+                if (child.uctEvaluation > highest.uctEvaluation) {
+                    highest = child;
+                }
+            }
+            return highest;
+        };
+        MCTreeNode.prototype.getRecursiveBestUctChild = function () {
+            if (this.battle.ended) {
+                return this;
+            }
+            if (!this.possibleMoves) {
+                this.possibleMoves = this.getPossibleMoves();
+            }
+            if (this.possibleMoves && this.possibleMoves.length > 0) {
+                return this.addChild();
+            }
+            else if (this.children.length === 1) {
+                return this.children[0];
+            }
+            else if (this.children.length > 1) {
+                return this.getHighestUctChild().getRecursiveBestUctChild();
+            }
+        };
+        return MCTreeNode;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = MCTreeNode;
+});
+define("src/MCTree", ["require", "exports", "src/MCTreeNode"], function (require, exports, MCTreeNode_1) {
+    "use strict";
+    var MCTree = (function () {
+        function MCTree(battle, sideId, fastMode) {
+            if (fastMode === void 0) { fastMode = false; }
+            var cloned = battle.makeVirtualClone();
+            this.rootNode = new MCTreeNode_1.default(cloned);
+            this.actualBattle = battle;
+            this.sideId = sideId;
+            if (fastMode) {
+                this.countVisitsAsIterations = true;
+            }
+        }
+        MCTree.prototype.sortByWinRateFN = function (a, b) {
+            return b.winRate - a.winRate;
+        };
+        MCTree.prototype.sortByCombinedScoreFN = function (a, b) {
+            if (a.sideId !== b.sideId)
+                debugger;
+            return b.getCombinedScore() - a.getCombinedScore();
+        };
+        MCTree.prototype.evaluate = function (iterations) {
+            var root = this.rootNode;
+            if (!root.possibleMoves)
+                root.possibleMoves = root.getPossibleMoves();
+            if (this.rootSimulationNeedsToBeRemade()) {
+                this.remakeSimulation();
+                root = this.rootNode;
+            }
+            var iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
+            for (var i = iterationStart; i < iterations; i++) {
+                var toSimulateFrom = root.getRecursiveBestUctChild();
+                toSimulateFrom.simulateToEnd();
+            }
+            var sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
+            var best = sortedMoves[0];
+            if (!best) {
+                debugger;
+            }
+            return best;
+        };
+        MCTree.prototype.getChildForMove = function (move) {
+            return this.rootNode.getChildForMove(move);
+        };
+        MCTree.prototype.rootSimulationNeedsToBeRemade = function () {
+            var scoreVariationTolerance = 0.1;
+            var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
+            if (scoreVariance > scoreVariationTolerance) {
+                return true;
+            }
+            else if (this.actualBattle.activeUnit !== this.rootNode.battle.activeUnit) {
+                return true;
+            }
+            else if (this.rootNode.children.length === 0) {
+                if (!this.rootNode.possibleMoves) {
+                    this.rootNode.possibleMoves = this.rootNode.getPossibleMoves();
+                }
+                if (this.rootNode.possibleMoves.length === 0) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        MCTree.prototype.remakeSimulation = function () {
+            this.rootNode = new MCTreeNode_1.default(this.actualBattle.makeVirtualClone());
+            return this.rootNode;
+        };
+        MCTree.prototype.advanceMove = function (move) {
+            this.rootNode = this.getChildForMove(move);
+            if (!this.rootNode) {
+                this.remakeSimulation();
+            }
+        };
+        MCTree.prototype.getBestMoveAndAdvance = function (iterations) {
+            var best = this.evaluate(iterations);
+            this.rootNode = best;
+            return best.move;
+        };
+        MCTree.prototype.printToConsole = function (nodes) {
+            var consoleRows = [];
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                var row = {
+                    visits: node.visits,
+                    uctEvaluation: node.uctEvaluation,
+                    winRate: node.winRate,
+                    currentScore: node.currentScore,
+                    averageScore: node.averageScore,
+                    finalScore: node.getCombinedScore(),
+                    abilityName: node.move.ability.displayName,
+                    targetId: node.move.targetId
+                };
+                consoleRows.push(row);
+            }
+            var _ = window;
+            if (_.console.table) {
+                _.console.table(consoleRows);
+            }
+            console.log(nodes);
+        };
+        return MCTree;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = MCTree;
+});
+define("src/options", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_3, utility_6) {
+    "use strict";
+    var OptionsCategories = [
+        "battleAnimationTiming", "debugMode", "debugOptions", "ui", "display"
+    ];
+    var defaultOptionsValues = {
+        battleAnimationTiming: {
+            before: 750,
+            effectDuration: 1,
+            after: 1500,
+            unitEnter: 200,
+            unitExit: 100
+        },
+        debugMode: false,
+        debugOptions: {
+            battleSimulationDepth: 20
+        },
+        ui: {
+            noHamburger: false
+        },
+        display: {
+            borderWidth: 8
+        },
+    };
+    var Options = (function () {
+        function Options() {
+            this.setDefaults();
+        }
+        Options.prototype.setDefaultForCategory = function (category) {
+            var shouldReRenderUI = false;
+            var shouldReRenderMap = false;
+            switch (category) {
+                case "battleAnimationTiming":
+                    this.battleAnimationTiming = defaultOptionsValues.battleAnimationTiming;
+                    break;
+                case "debugMode":
+                    if (this.debugMode !== defaultOptionsValues.debugMode) {
+                        shouldReRenderUI = true;
+                    }
+                    this.debugMode = defaultOptionsValues.debugMode;
+                    break;
+                case "debugOptions":
+                    this.debugOptions = defaultOptionsValues.debugOptions;
+                    break;
+                case "ui":
+                    this.ui = defaultOptionsValues.ui;
+                    break;
+                case "display":
+                    if (this.display && this.display.borderWidth !== defaultOptionsValues.display.borderWidth) {
+                        shouldReRenderMap = true;
+                    }
+                    this.display = defaultOptionsValues.display;
+                    break;
+            }
+            if (shouldReRenderUI) {
+                eventManager_3.default.dispatchEvent("renderUI");
+            }
+            if (shouldReRenderMap) {
+                eventManager_3.default.dispatchEvent("renderMap");
+            }
+        };
+        Options.prototype.setDefaults = function () {
+            var _this = this;
+            OptionsCategories.forEach(function (category) {
+                _this.setDefaultForCategory(category);
+            });
+        };
+        Options.prototype.save = function (slot) {
+            if (slot === void 0) { slot = 0; }
+            var data = JSON.stringify({
+                options: this.serialize(),
+                date: new Date()
+            });
+            var saveName = "Options." + slot;
+            localStorage.setItem(saveName, data);
+        };
+        Options.prototype.load = function (slot) {
+            this.setDefaults();
+            var parsedData = this.getParsedDataForSlot(slot);
+            var parsedOptions = this.serialize();
+            if (parsedData) {
+                var optionsToResetIfSetEarlierThan = {
+                    "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50)
+                };
+                var dateOptionsWereSaved = Date.parse(parsedData.date);
+                for (var key in parsedData.options) {
+                    if (parsedOptions[key] !== undefined) {
+                        if (optionsToResetIfSetEarlierThan[key] && dateOptionsWereSaved <= optionsToResetIfSetEarlierThan[key]) {
+                            console.log("Reset option: " + key);
+                        }
+                        else {
+                            parsedOptions[key] = utility_6.deepMerge(parsedOptions[key], parsedData.options[key]);
+                        }
+                    }
+                }
+                this.deSerialize(parsedOptions);
+            }
+        };
+        Options.prototype.getParsedDataForSlot = function (slot) {
+            var baseString = "Options.";
+            var parsedData;
+            if (isFinite(slot)) {
+                if (!localStorage[baseString + slot]) {
+                    throw new Error("No options saved in that slot");
+                }
+                parsedData = JSON.parse(localStorage.getItem(baseString + slot));
+            }
+            else {
+                parsedData = utility_6.getMatchingLocalstorageItemsByDate(baseString)[0];
+            }
+            return parsedData;
+        };
+        Options.prototype.serialize = function () {
+            return ({
+                battleAnimationTiming: this.battleAnimationTiming,
+                debugMode: this.debugMode,
+                debugOptions: this.debugOptions,
+                ui: this.ui,
+                display: this.display
+            });
+        };
+        Options.prototype.deSerialize = function (data) {
+            this.battleAnimationTiming = utility_6.deepMerge(this.battleAnimationTiming, data.battleAnimationTiming, true);
+            this.debugMode = utility_6.deepMerge(this.debugMode, data.debugMode, true);
+            this.debugOptions = utility_6.deepMerge(this.debugOptions, data.debugOptions, true);
+            this.ui = utility_6.deepMerge(this.ui, data.ui, true);
+            this.display = utility_6.deepMerge(this.display, data.display, true);
+        };
+        return Options;
+    }());
+    var options = new Options();
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = options;
+});
+define("src/BattleSimulator", ["require", "exports", "src/MCTree", "src/options", "src/battleAbilityUsage"], function (require, exports, MCTree_1, options_1, battleAbilityUsage_2) {
+    "use strict";
+    var BattleSimulator = (function () {
+        function BattleSimulator(battle) {
+            this.hasEnded = false;
+            this.battle = battle;
+            battle.isSimulated = true;
+            if (!battle.ended) {
+                this.tree = new MCTree_1.default(this.battle, this.battle.activeUnit.battleStats.side, true);
+            }
+        }
+        BattleSimulator.prototype.simulateBattle = function () {
+            while (!this.battle.ended) {
+                this.simulateMove();
+            }
+        };
+        BattleSimulator.prototype.simulateMove = function () {
+            if (!this.battle.activeUnit || this.battle.ended) {
+                throw new Error("Simulated battle already ended");
+            }
+            var move = this.tree.getBestMoveAndAdvance(options_1.default.debugOptions.battleSimulationDepth);
+            var target = this.battle.unitsById[move.targetId];
+            this.simulateAbility(move.ability, target);
+            this.battle.endTurn();
+        };
+        BattleSimulator.prototype.simulateAbility = function (ability, target) {
+            battleAbilityUsage_2.useAbility(this.battle, ability, this.battle.activeUnit, target, false);
+        };
+        BattleSimulator.prototype.finishBattle = function () {
+            this.battle.finishBattle();
+        };
+        return BattleSimulator;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattleSimulator;
+});
+define("src/DiplomacyState", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var DiplomacyState;
+    (function (DiplomacyState) {
+        DiplomacyState[DiplomacyState["peace"] = 0] = "peace";
+        DiplomacyState[DiplomacyState["coldWar"] = 1] = "coldWar";
+        DiplomacyState[DiplomacyState["war"] = 2] = "war";
+    })(DiplomacyState || (DiplomacyState = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = DiplomacyState;
+});
+define("src/AttitudeModifier", ["require", "exports", "src/utility"], function (require, exports, utility_7) {
+    "use strict";
+    var AttitudeModifier = (function () {
+        function AttitudeModifier(props) {
+            this.isOverRidden = false;
+            this.template = props.template;
+            this.startTurn = props.startTurn;
+            this.currentTurn = this.startTurn;
+            if (isFinite(props.endTurn)) {
+                this.endTurn = props.endTurn;
+            }
+            else if (isFinite(this.template.duration)) {
+                if (this.template.duration < 0) {
+                    this.endTurn = -1;
+                }
+                else {
+                    this.endTurn = this.startTurn + this.template.duration;
+                }
+            }
+            else {
+                throw new Error("Attitude modifier has no duration or end turn set");
+            }
+            if (isFinite(this.template.constantEffect)) {
+                this.strength = this.template.constantEffect;
+            }
+            else {
+                this.strength = props.strength;
+            }
+        }
+        AttitudeModifier.prototype.setStrength = function (evaluation) {
+            if (this.template.constantEffect) {
+                this.strength = this.template.constantEffect;
+            }
+            else if (this.template.getEffectFromEvaluation) {
+                this.strength = this.template.getEffectFromEvaluation(evaluation);
+            }
+            else {
+                throw new Error("Attitude modifier has no constant effect " +
+                    "or effect from evaluation defined");
+            }
+            return this.strength;
+        };
+        AttitudeModifier.prototype.getFreshness = function (currentTurn) {
+            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
+            if (this.endTurn < 0)
+                return 1;
+            else {
+                return 1 - utility_7.getRelativeValue(currentTurn, this.startTurn, this.endTurn);
+            }
+        };
+        AttitudeModifier.prototype.refresh = function (newModifier) {
+            this.startTurn = newModifier.startTurn;
+            this.endTurn = newModifier.endTurn;
+            this.strength = newModifier.strength;
+        };
+        AttitudeModifier.prototype.getAdjustedStrength = function (currentTurn) {
+            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
+            var freshenss = this.getFreshness(currentTurn);
+            return Math.round(this.strength * freshenss);
+        };
+        AttitudeModifier.prototype.hasExpired = function (currentTurn) {
+            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
+            return (this.endTurn >= 0 && currentTurn > this.endTurn);
+        };
+        AttitudeModifier.prototype.shouldEnd = function (evaluation) {
+            if (this.hasExpired(evaluation.currentTurn)) {
+                return true;
+            }
+            else if (this.template.endCondition) {
+                return this.template.endCondition(evaluation);
+            }
+            else if (this.template.duration < 0 && this.template.startCondition) {
+                return !this.template.startCondition(evaluation);
+            }
+            else {
+                return false;
+            }
+        };
+        AttitudeModifier.prototype.serialize = function () {
+            var data = {
+                templateType: this.template.type,
+                startTurn: this.startTurn,
+                endTurn: this.endTurn,
+                strength: this.strength
+            };
+            return data;
+        };
+        return AttitudeModifier;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = AttitudeModifier;
+});
+define("src/DiplomacyStatus", ["require", "exports", "src/App", "src/eventManager", "src/AttitudeModifier", "src/DiplomacyState"], function (require, exports, App_8, eventManager_4, AttitudeModifier_1, DiplomacyState_1) {
+    "use strict";
+    var DiplomacyStatus = (function () {
+        function DiplomacyStatus(player) {
+            this.metPlayers = {};
+            this.statusByPlayer = {};
+            this.attitudeModifiersByPlayer = {};
+            this.listeners = {};
+            this.player = player;
+            this.addEventListeners();
+        }
+        DiplomacyStatus.prototype.addEventListeners = function () {
+            for (var key in App_8.default.moduleData.Templates.AttitudeModifiers) {
+                var template = App_8.default.moduleData.Templates.AttitudeModifiers[key];
+                if (template.triggers) {
+                    for (var i = 0; i < template.triggers.length; i++) {
+                        var listenerKey = template.triggers[i];
+                        var listener = eventManager_4.default.addEventListener(listenerKey, this.triggerAttitudeModifier.bind(this, template));
+                        if (!this.listeners[listenerKey]) {
+                            this.listeners[listenerKey] = [];
+                        }
+                        this.listeners[listenerKey].push(listener);
+                    }
+                }
+            }
+        };
+        DiplomacyStatus.prototype.destroy = function () {
+            for (var key in this.listeners) {
+                for (var i = 0; i < this.listeners[key].length; i++) {
+                    eventManager_4.default.removeEventListener(key, this.listeners[key][i]);
+                }
+            }
+        };
+        DiplomacyStatus.prototype.removePlayer = function (player) {
+            ["metPlayers", "statusByPlayer", "attitudeModifiersByPlayer"].forEach(function (prop) {
+                this[prop][player.id] = null;
+                delete this[prop][player.id];
+            }.bind(this));
+        };
+        DiplomacyStatus.prototype.getBaseOpinion = function () {
+            if (isFinite(this.baseOpinion))
+                return this.baseOpinion;
+            var friendliness = this.player.AIController.personality.friendliness;
+            this.baseOpinion = Math.round((friendliness - 0.5) * 10);
+            return this.baseOpinion;
+        };
+        DiplomacyStatus.prototype.updateAttitudes = function () {
+            if (!this.player.AIController) {
+                return;
+            }
+            this.player.AIController.diplomacyAI.setAttitudes();
+        };
+        DiplomacyStatus.prototype.handleDiplomaticStatusUpdate = function () {
+            eventManager_4.default.dispatchEvent("diplomaticStatusUpdated");
+        };
+        DiplomacyStatus.prototype.getOpinionOf = function (player) {
+            var baseOpinion = this.getBaseOpinion();
+            var attitudeModifiers = this.attitudeModifiersByPlayer[player.id];
+            var modifierOpinion = 0;
+            for (var i = 0; i < attitudeModifiers.length; i++) {
+                modifierOpinion += attitudeModifiers[i].getAdjustedStrength();
+            }
+            return Math.round(baseOpinion + modifierOpinion);
+        };
+        DiplomacyStatus.prototype.getUnMetPlayerCount = function () {
+            return App_8.default.game.playerOrder.length - Object.keys(this.metPlayers).length;
+        };
+        DiplomacyStatus.prototype.meetPlayer = function (player) {
+            if (this.metPlayers[player.id] || player === this.player)
+                return;
+            else {
+                this.metPlayers[player.id] = player;
+                this.statusByPlayer[player.id] = DiplomacyState_1.default.coldWar;
+                this.attitudeModifiersByPlayer[player.id] = [];
+                player.diplomacyStatus.meetPlayer(this.player);
+            }
+        };
+        DiplomacyStatus.prototype.canDeclareWarOn = function (player) {
+            return (this.statusByPlayer[player.id] < DiplomacyState_1.default.war);
+        };
+        DiplomacyStatus.prototype.canMakePeaceWith = function (player) {
+            return (this.statusByPlayer[player.id] > DiplomacyState_1.default.peace);
+        };
+        DiplomacyStatus.prototype.declareWarOn = function (player) {
+            if (this.statusByPlayer[player.id] >= DiplomacyState_1.default.war) {
+                console.error("Players " + this.player.id + " and " + player.id + " are already at war");
+                return;
+            }
+            this.statusByPlayer[player.id] = DiplomacyState_1.default.war;
+            player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState_1.default.war;
+            eventManager_4.default.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
+            var playersAreRelevantToHuman = true;
+            [this.player, player].forEach(function (p) {
+                if (App_8.default.humanPlayer !== p && !App_8.default.humanPlayer.diplomacyStatus.metPlayers[p.id]) {
+                    playersAreRelevantToHuman = false;
+                }
+            });
+            if (playersAreRelevantToHuman) {
+                eventManager_4.default.dispatchEvent("makeWarDeclarationNotification", {
+                    player1: this.player,
+                    player2: player
+                });
+            }
+        };
+        DiplomacyStatus.prototype.makePeaceWith = function (player) {
+            if (this.statusByPlayer[player.id] <= DiplomacyState_1.default.peace) {
+                throw new Error("Players " + this.player.id + " and " + player.id + " are already at peace");
+            }
+            this.statusByPlayer[player.id] = DiplomacyState_1.default.peace;
+            player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomacyState_1.default.peace;
+            player.diplomacyStatus.updateAttitudes();
+        };
+        DiplomacyStatus.prototype.canAttackFleetOfPlayer = function (player) {
+            if (player.isIndependent)
+                return true;
+            if (this.statusByPlayer[player.id] >= DiplomacyState_1.default.coldWar) {
+                return true;
+            }
+            return false;
+        };
+        DiplomacyStatus.prototype.canAttackBuildingOfPlayer = function (player) {
+            if (player.isIndependent)
+                return true;
+            if (this.statusByPlayer[player.id] >= DiplomacyState_1.default.war) {
+                return true;
+            }
+            return false;
+        };
+        DiplomacyStatus.prototype.getModifierOfSameType = function (player, modifier) {
+            var modifiers = this.attitudeModifiersByPlayer[player.id];
+            for (var i = 0; i < modifiers.length; i++) {
+                if (modifiers[i].template.type === modifier.template.type) {
+                    return modifiers[i];
+                }
+            }
+            return null;
+        };
+        DiplomacyStatus.prototype.addAttitudeModifier = function (player, modifier) {
+            if (!this.attitudeModifiersByPlayer[player.id]) {
+                this.attitudeModifiersByPlayer[player.id] = [];
+            }
+            var sameType = this.getModifierOfSameType(player, modifier);
+            if (sameType) {
+                sameType.refresh(modifier);
+                return;
+            }
+            this.attitudeModifiersByPlayer[player.id].push(modifier);
+            this.updateAttitudes();
+        };
+        DiplomacyStatus.prototype.triggerAttitudeModifier = function (template, player, source) {
+            if (player !== this.player)
+                return;
+            var modifier = new AttitudeModifier_1.default({
+                template: template,
+                startTurn: App_8.default.game.turnNumber
+            });
+            this.addAttitudeModifier(source, modifier);
+        };
+        DiplomacyStatus.prototype.processAttitudeModifiersForPlayer = function (player, evaluation) {
+            var modifiersByPlayer = this.attitudeModifiersByPlayer;
+            var allModifiers = App_8.default.moduleData.Templates.AttitudeModifiers;
+            for (var playerId in modifiersByPlayer)
+                var playerModifiers = modifiersByPlayer[player.id];
+            var activeModifiers = {};
+            var modifiersAdded = {};
+            var modifiersRemoved = {};
+            for (var i = playerModifiers.length - 1; i >= 0; i--) {
+                var modifier = playerModifiers[i];
+                if (modifier.shouldEnd(evaluation)) {
+                    playerModifiers.splice(i, 1);
+                    modifiersRemoved[modifier.template.type] = modifier;
+                }
+                else {
+                    activeModifiers[modifier.template.type] = modifier;
+                }
+            }
+            for (var modifierType in allModifiers) {
+                var template = allModifiers[modifierType];
+                var modifier;
+                modifier = activeModifiers[template.type];
+                var alreadyHasModifierOfType = modifier;
+                if (!alreadyHasModifierOfType && !template.triggers) {
+                    if (!template.startCondition) {
+                        throw new Error("Attitude modifier has no start condition or triggers");
+                    }
+                    else {
+                        var shouldStart = template.startCondition(evaluation);
+                        if (shouldStart) {
+                            modifier = new AttitudeModifier_1.default({
+                                template: template,
+                                startTurn: evaluation.currentTurn
+                            });
+                            playerModifiers.push(modifier);
+                            modifiersAdded[template.type] = modifier;
+                        }
+                    }
+                }
+                if (modifier) {
+                    modifier.currentTurn = evaluation.currentTurn;
+                    modifier.setStrength(evaluation);
+                }
+            }
+        };
+        DiplomacyStatus.prototype.serialize = function () {
+            var metPlayerIds = [];
+            for (var playerId in this.metPlayers) {
+                metPlayerIds.push(this.metPlayers[playerId].id);
+            }
+            var attitudeModifiersByPlayer = {};
+            for (var playerId in this.attitudeModifiersByPlayer) {
+                var serializedModifiers = this.attitudeModifiersByPlayer[playerId].map(function (modifier) {
+                    return modifier.serialize();
+                });
+                attitudeModifiersByPlayer[playerId] = serializedModifiers;
+            }
+            var data = {
+                metPlayerIds: metPlayerIds,
+                statusByPlayer: this.statusByPlayer,
+                attitudeModifiersByPlayer: attitudeModifiersByPlayer
+            };
+            return data;
+        };
+        return DiplomacyStatus;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = DiplomacyStatus;
+});
+define("src/Manufactory", ["require", "exports", "src/App", "src/Unit", "src/Item", "src/Fleet", "src/eventManager"], function (require, exports, App_9, Unit_1, Item_1, Fleet_1, eventManager_5) {
+    "use strict";
+    var Manufactory = (function () {
+        function Manufactory(star, serializedData) {
+            this.buildQueue = [];
+            this.unitStatsModifier = 1;
+            this.unitHealthModifier = 1;
+            this.star = star;
+            this.player = star.owner;
+            if (serializedData) {
+                this.makeFromData(serializedData);
+            }
+            else {
+                this.capacity = App_9.default.moduleData.ruleSet.manufactory.startingCapacity;
+                this.maxCapacity = App_9.default.moduleData.ruleSet.manufactory.maxCapacity;
+            }
+        }
+        Manufactory.prototype.makeFromData = function (data) {
+            this.capacity = data.capacity;
+            this.maxCapacity = data.maxCapacity;
+            this.unitStatsModifier = data.unitStatsModifier;
+            this.unitHealthModifier = data.unitHealthModifier;
+            this.buildQueue = data.buildQueue.map(function (savedThing) {
+                var templatesString;
+                switch (savedThing.type) {
+                    case "unit":
+                        {
+                            templatesString = "Units";
+                            break;
+                        }
+                    case "item":
+                        {
+                            templatesString = "Items";
+                        }
+                }
+                return ({
+                    type: savedThing.type,
+                    template: App_9.default.moduleData.Templates[templatesString][savedThing.templateType]
+                });
+            });
+        };
+        Manufactory.prototype.queueIsFull = function () {
+            return this.buildQueue.length >= this.capacity;
+        };
+        Manufactory.prototype.addThingToQueue = function (template, type) {
+            this.buildQueue.push({ type: type, template: template });
+            this.player.money -= template.buildCost;
+        };
+        Manufactory.prototype.removeThingAtIndex = function (index) {
+            var template = this.buildQueue[index].template;
+            this.player.money += template.buildCost;
+            this.buildQueue.splice(index, 1);
+        };
+        Manufactory.prototype.buildAllThings = function () {
+            var units = [];
+            var toBuild = this.buildQueue.slice(0, this.capacity);
+            this.buildQueue = this.buildQueue.slice(this.capacity);
+            while (toBuild.length > 0) {
+                var thingData = toBuild.pop();
+                switch (thingData.type) {
+                    case "unit":
+                        {
+                            var unitTemplate = thingData.template;
+                            var unit = new Unit_1.default(unitTemplate);
+                            unit.setAttributes(this.unitStatsModifier);
+                            unit.setBaseHealth(this.unitHealthModifier);
+                            units.push(unit);
+                            this.player.addUnit(unit);
+                            break;
+                        }
+                    case "item":
+                        {
+                            var itemTemplate = thingData.template;
+                            var item = new Item_1.default(itemTemplate);
+                            this.player.addItem(item);
+                            break;
+                        }
+                }
+            }
+            if (units.length > 0) {
+                var fleet = new Fleet_1.default(this.player, units, this.star);
+            }
+            if (!this.player.isAI) {
+                eventManager_5.default.dispatchEvent("playerManufactoryBuiltThings");
+            }
+        };
+        Manufactory.prototype.getLocalUnitTypes = function () {
+            var manufacturable = [];
+            var potential = [];
+            for (var i = 0; i < this.star.buildableUnitTypes.length; i++) {
+                var type = this.star.buildableUnitTypes[i];
+                if (!type.technologyRequirements || this.player.meetsTechnologyRequirements(type.technologyRequirements)) {
+                    manufacturable.push(type);
+                }
+                else {
+                    potential.push(type);
+                }
+            }
+            return ({
+                manufacturable: manufacturable,
+                potential: potential
+            });
+        };
+        Manufactory.prototype.getLocalItemTypes = function () {
+            var manufacturable = [];
+            var potential = [];
+            return ({
+                manufacturable: manufacturable,
+                potential: potential
+            });
+        };
+        Manufactory.prototype.getManufacturableThingsForType = function (type) {
+            switch (type) {
+                case "item":
+                    {
+                        return this.getLocalItemTypes().manufacturable;
+                    }
+                case "unit":
+                    {
+                        return this.getLocalUnitTypes().manufacturable;
+                    }
+            }
+        };
+        Manufactory.prototype.canManufactureThing = function (template, type) {
+            var manufacturableThings = this.getManufacturableThingsForType(type);
+            return manufacturableThings.indexOf(template) !== -1;
+        };
+        Manufactory.prototype.handleOwnerChange = function () {
+            while (this.buildQueue.length > 0) {
+                this.removeThingAtIndex(this.buildQueue.length - 1);
+            }
+            this.player = this.star.owner;
+            this.capacity = Math.max(1, this.capacity - 1);
+        };
+        Manufactory.prototype.getCapacityUpgradeCost = function () {
+            return App_9.default.moduleData.ruleSet.manufactory.buildCost * this.capacity;
+        };
+        Manufactory.prototype.upgradeCapacity = function (amount) {
+            this.player.money -= this.getCapacityUpgradeCost();
+            this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
+        };
+        Manufactory.prototype.getUnitUpgradeCost = function () {
+            var totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
+            return Math.round((totalUpgrades + 1) * 100);
+        };
+        Manufactory.prototype.upgradeUnitStatsModifier = function (amount) {
+            this.player.money -= this.getUnitUpgradeCost();
+            this.unitStatsModifier += amount;
+        };
+        Manufactory.prototype.upgradeUnitHealthModifier = function (amount) {
+            this.player.money -= this.getUnitUpgradeCost();
+            this.unitHealthModifier += amount;
+        };
+        Manufactory.prototype.serialize = function () {
+            var buildQueue = this.buildQueue.map(function (thingData) {
+                return ({
+                    type: thingData.type,
+                    templateType: thingData.template.type
+                });
+            });
+            return ({
+                capacity: this.capacity,
+                maxCapacity: this.maxCapacity,
+                unitStatsModifier: this.unitStatsModifier,
+                unitHealthModifier: this.unitHealthModifier,
+                buildQueue: buildQueue
+            });
+        };
+        return Manufactory;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Manufactory;
+});
+define("src/PlayerTechnology", ["require", "exports", "src/App", "src/eventManager"], function (require, exports, App_10, eventManager_6) {
+    "use strict";
+    var PlayerTechnology = (function () {
+        function PlayerTechnology(getResearchSpeed, savedData) {
+            this.tempOverflowedResearchAmount = 0;
+            this.getResearchSpeed = getResearchSpeed;
+            this.technologies = {};
+            var totalTechnologies = Object.keys(App_10.default.moduleData.Templates.Technologies).length;
+            for (var key in App_10.default.moduleData.Templates.Technologies) {
+                var technology = App_10.default.moduleData.Templates.Technologies[key];
+                this.technologies[key] =
+                    {
+                        technology: technology,
+                        totalResearch: 0,
+                        level: 0,
+                        priority: undefined,
+                        priorityIsLocked: false
+                    };
+                if (savedData && savedData[key]) {
+                    this.addResearchTowardsTechnology(technology, savedData[key].totalResearch);
+                    this.technologies[key].priority = savedData[key].priority;
+                    this.technologies[key].priorityIsLocked = savedData[key].priorityIsLocked;
+                }
+            }
+            this.initPriorities();
+        }
+        PlayerTechnology.prototype.initPriorities = function () {
+            var priorityToAllocate = 1;
+            var techsToInit = [];
+            for (var key in this.technologies) {
+                var techData = this.technologies[key];
+                if (techData.priority === undefined) {
+                    techsToInit.push(techData.technology);
+                }
+                else {
+                    priorityToAllocate -= techData.priority;
+                }
+            }
+            techsToInit.sort(function (a, b) {
+                return b.maxLevel - a.maxLevel;
+            });
+            while (techsToInit.length > 0) {
+                var averagePriority = priorityToAllocate / techsToInit.length;
+                var technology = techsToInit.pop();
+                var maxNeededPriority = this.getMaxNeededPriority(technology);
+                var priorityForTech = Math.min(averagePriority, maxNeededPriority);
+                this.technologies[technology.key].priority = priorityForTech;
+                priorityToAllocate -= priorityForTech;
+            }
+        };
+        PlayerTechnology.prototype.allocateResearchPoints = function (amount, iteration) {
+            if (iteration === void 0) { iteration = 0; }
+            var totalPriority = 0;
+            for (var key in this.technologies) {
+                totalPriority += this.technologies[key].priority;
+            }
+            for (var key in this.technologies) {
+                var techData = this.technologies[key];
+                var relativePriority = techData.priority / totalPriority;
+                if (relativePriority > 0) {
+                    this.addResearchTowardsTechnology(techData.technology, relativePriority * amount);
+                }
+            }
+            if (this.tempOverflowedResearchAmount) {
+                if (iteration > 10) {
+                    throw new RangeError("Maximum call stack size exceeded");
+                }
+                this.allocateOverflowedResearchPoints(iteration);
+            }
+            else {
+                this.capTechnologyPrioritiesToMaxNeeded();
+            }
+        };
+        PlayerTechnology.prototype.allocateOverflowedResearchPoints = function (iteration) {
+            if (iteration === void 0) { iteration = 0; }
+            var overflow = this.tempOverflowedResearchAmount;
+            this.tempOverflowedResearchAmount = 0;
+            this.allocateResearchPoints(overflow, ++iteration);
+        };
+        PlayerTechnology.prototype.getResearchNeededForTechnologyLevel = function (level) {
+            if (level <= 0)
+                return 0;
+            if (level === 1)
+                return 40;
+            var a = 20;
+            var b = 40;
+            var swap;
+            var total = 0;
+            for (var i = 0; i < level; i++) {
+                swap = a;
+                a = b;
+                b = swap + b;
+                total += a;
+            }
+            return total;
+        };
+        PlayerTechnology.prototype.addResearchTowardsTechnology = function (technology, amount) {
+            var tech = this.technologies[technology.key];
+            var overflow = 0;
+            if (tech.level >= technology.maxLevel) {
+                return;
+            }
+            else {
+                tech.totalResearch += amount;
+                while (tech.level < technology.maxLevel &&
+                    this.getResearchNeededForTechnologyLevel(tech.level + 1) <= tech.totalResearch) {
+                    tech.level++;
+                }
+                if (tech.level === technology.maxLevel) {
+                    var neededForMaxLevel = this.getResearchNeededForTechnologyLevel(tech.level);
+                    overflow += tech.totalResearch - neededForMaxLevel;
+                    tech.totalResearch -= overflow;
+                    this.setTechnologyPriority(technology, 0, true);
+                    tech.priorityIsLocked = true;
+                }
+            }
+            this.tempOverflowedResearchAmount += overflow;
+        };
+        PlayerTechnology.prototype.getMaxNeededPriority = function (technology) {
+            var researchUntilMaxed = this.getResearchNeededForTechnologyLevel(technology.maxLevel) -
+                this.technologies[technology.key].totalResearch;
+            return researchUntilMaxed / this.getResearchSpeed();
+        };
+        PlayerTechnology.prototype.getOpenTechnologiesPriority = function () {
+            var openPriority = 0;
+            for (var key in this.technologies) {
+                var techData = this.technologies[key];
+                if (!techData.priorityIsLocked) {
+                    openPriority += techData.priority;
+                }
+            }
+            return openPriority;
+        };
+        PlayerTechnology.prototype.getRelativeOpenTechnologyPriority = function (technology) {
+            var totalOpenPriority = this.getOpenTechnologiesPriority();
+            if (this.technologies[technology.key].priorityIsLocked || !totalOpenPriority) {
+                return 0;
+            }
+            return this.technologies[technology.key].priority / totalOpenPriority;
+        };
+        PlayerTechnology.prototype.setTechnologyPriority = function (technology, priority, force) {
+            if (force === void 0) { force = false; }
+            var remainingPriority = 1;
+            var totalOtherPriority = 0;
+            var totalOtherPriorityWasZero = false;
+            var totalOthersCount = 0;
+            for (var key in this.technologies) {
+                if (key !== technology.key) {
+                    if (this.technologies[key].priorityIsLocked) {
+                        remainingPriority -= this.technologies[key].priority;
+                    }
+                    else {
+                        totalOtherPriority += this.technologies[key].priority;
+                        totalOthersCount++;
+                    }
+                }
+            }
+            if (totalOthersCount === 0) {
+                if (force) {
+                    this.technologies[technology.key].priority = priority;
+                    eventManager_6.default.dispatchEvent("technologyPrioritiesUpdated");
+                }
+                return;
+            }
+            if (remainingPriority < 0.0001) {
+                remainingPriority = 0;
+            }
+            if (priority > remainingPriority) {
+                priority = remainingPriority;
+            }
+            var priorityNeededForMaxLevel = this.getMaxNeededPriority(technology);
+            var maxNeededPriority = Math.min(priorityNeededForMaxLevel, priority);
+            this.technologies[technology.key].priority = maxNeededPriority;
+            remainingPriority -= maxNeededPriority;
+            if (totalOtherPriority === 0) {
+                totalOtherPriority = 1;
+                totalOtherPriorityWasZero = true;
+            }
+            for (var key in this.technologies) {
+                if (key !== technology.key && !this.technologies[key].priorityIsLocked) {
+                    var techData = this.technologies[key];
+                    if (totalOtherPriorityWasZero) {
+                        techData.priority = 1 / totalOthersCount;
+                    }
+                    var maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
+                    var relativePriority = techData.priority / totalOtherPriority;
+                    var reservedPriority = relativePriority * remainingPriority;
+                    if (reservedPriority > maxNeededPriorityForOtherTech) {
+                        techData.priority = maxNeededPriorityForOtherTech;
+                        var priorityOverflow = reservedPriority - maxNeededPriorityForOtherTech;
+                        remainingPriority += priorityOverflow;
+                    }
+                    else {
+                        techData.priority = reservedPriority;
+                    }
+                }
+            }
+            eventManager_6.default.dispatchEvent("technologyPrioritiesUpdated");
+        };
+        PlayerTechnology.prototype.capTechnologyPrioritiesToMaxNeeded = function () {
+            var overflowPriority = 0;
+            for (var key in this.technologies) {
+                var techData = this.technologies[key];
+                var maxNeededPriorityForOtherTech = this.getMaxNeededPriority(techData.technology);
+                if (techData.priority > maxNeededPriorityForOtherTech) {
+                    overflowPriority += techData.priority - maxNeededPriorityForOtherTech;
+                    this.setTechnologyPriority(techData.technology, maxNeededPriorityForOtherTech, true);
+                    break;
+                }
+            }
+        };
+        PlayerTechnology.prototype.serialize = function () {
+            var data = {};
+            for (var key in this.technologies) {
+                data[key] =
+                    {
+                        totalResearch: this.technologies[key].totalResearch,
+                        priority: this.technologies[key].priority,
+                        priorityIsLocked: this.technologies[key].priorityIsLocked
+                    };
+            }
+            return data;
+        };
+        return PlayerTechnology;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = PlayerTechnology;
+});
+define("src/NotificationFilterState", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var NotificationFilterState;
+    (function (NotificationFilterState) {
+        NotificationFilterState[NotificationFilterState["alwaysShow"] = 0] = "alwaysShow";
+        NotificationFilterState[NotificationFilterState["showIfInvolved"] = 1] = "showIfInvolved";
+        NotificationFilterState[NotificationFilterState["neverShow"] = 2] = "neverShow";
+    })(NotificationFilterState || (NotificationFilterState = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = NotificationFilterState;
+});
+define("src/Notification", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var Notification = (function () {
+        function Notification(template, props, turn) {
+            this.hasBeenRead = false;
+            this.template = template;
+            this.props = props;
+            this.turn = turn;
+        }
+        Notification.prototype.makeMessage = function () {
+            return this.template.messageConstructor(this.props);
+        };
+        Notification.prototype.serialize = function () {
+            var data = {
+                templateKey: this.template.key,
+                hasBeenRead: this.hasBeenRead,
+                turn: this.turn,
+                props: this.template.serializeProps(this.props)
+            };
+            return data;
+        };
+        return Notification;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Notification;
+});
+define("src/FillerPoint", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var FillerPoint = (function () {
+        function FillerPoint(x, y) {
+            this.mapGenData = {};
+            this.x = x;
+            this.y = y;
+        }
+        FillerPoint.prototype.setPosition = function (x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        FillerPoint.prototype.serialize = function () {
+            return ({
+                x: this.x,
+                y: this.y
+            });
+        };
+        return FillerPoint;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = FillerPoint;
+});
+define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/utility", "src/mapgencore/MapGenResult"], function (require, exports, App_11, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, utility_8, MapGenResult_1) {
+    "use strict";
+    var GameLoader = (function () {
+        function GameLoader() {
+            this.players = [];
+            this.independents = [];
+            this.playersById = {};
+            this.starsById = {};
+            this.unitsById = {};
+            this.buildingsByControllerId = {};
+        }
+        GameLoader.prototype.deserializeGame = function (data) {
+            this.map = this.deserializeMap(data.galaxyMap);
+            for (var i = 0; i < data.players.length; i++) {
+                var playerData = data.players[i];
+                var id = playerData.id;
+                var player = this.playersById[id] = this.deserializePlayer(playerData);
+                if (player.isIndependent) {
+                    this.independents.push(player);
+                }
+                else {
+                    this.players.push(player);
+                }
+            }
+            for (var i = 0; i < data.players.length; i++) {
+                var playerData = data.players[i];
+                this.deserializeDiplomacyStatus(this.playersById[playerData.id], playerData.diplomacyStatus);
+                this.deserializeIdentifiedUnits(this.playersById[playerData.id], playerData.identifiedUnitIds);
+            }
+            this.humanPlayer = this.playersById[data.humanPlayerId];
+            this.deserializeBuildings(data.galaxyMap);
+            var game = new Game_1.default(this.map, this.players, this.humanPlayer);
+            game.independents = game.independents.concat(this.independents);
+            game.turnNumber = data.turnNumber;
+            if (data.notificationLog) {
+                game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
+                game.notificationLog.setTurn(game.turnNumber, true);
+            }
+            return game;
+        };
+        GameLoader.prototype.deserializeNotificationLog = function (data) {
+            var notificationsData = Array.isArray(data) ? data : data.notifications;
+            var notificationLog = new NotificationLog_1.default(this.humanPlayer);
+            for (var i = 0; i < notificationsData.length; i++) {
+                var template = App_11.default.moduleData.Templates.Notifications[notificationsData[i].templateKey];
+                var props = template.deserializeProps(notificationsData[i].props, this);
+                var notification = new Notification_1.default(template, props, notificationsData[i].turn);
+                notification.hasBeenRead = notificationsData[i].hasBeenRead;
+                notificationLog.addNotification(notification);
+            }
+            return notificationLog;
+        };
+        GameLoader.prototype.deserializeMap = function (data) {
+            var stars = [];
+            for (var i = 0; i < data.stars.length; i++) {
+                var star = this.deserializeStar(data.stars[i]);
+                stars.push(star);
+                this.starsById[star.id] = star;
+            }
+            for (var i = 0; i < data.stars.length; i++) {
+                var dataStar = data.stars[i];
+                var realStar = this.starsById[dataStar.id];
+                for (var j = 0; j < dataStar.linksToIds.length; j++) {
+                    var linkId = dataStar.linksToIds[j];
+                    var linkStar = this.starsById[linkId];
+                    realStar.addLink(linkStar);
+                }
+            }
+            var fillerPoints = [];
+            for (var i = 0; i < data.fillerPoints.length; i++) {
+                var dataPoint = data.fillerPoints[i];
+                fillerPoints.push(new FillerPoint_1.default(dataPoint.x, dataPoint.y));
+            }
+            var mapGenResult = new MapGenResult_1.default({
+                stars: stars,
+                fillerPoints: fillerPoints,
+                width: data.width,
+                height: data.height,
+                seed: data.seed,
+                independents: null
+            });
+            var galaxyMap = mapGenResult.makeMap();
+            return galaxyMap;
+        };
+        GameLoader.prototype.deserializeStar = function (data) {
+            var star = new Star_1.default(data.x, data.y, data.id);
+            star.name = data.name;
+            star.baseIncome = data.baseIncome;
+            star.seed = data.seed;
+            if (data.resourceType) {
+                star.setResource(App_11.default.moduleData.Templates.Resources[data.resourceType]);
+            }
+            if (data.buildableUnitTypes) {
+                for (var i = 0; i < data.buildableUnitTypes.length; i++) {
+                    star.buildableUnitTypes.push(App_11.default.moduleData.Templates.Units[data.buildableUnitTypes[i]]);
+                }
+            }
+            return star;
+        };
+        GameLoader.prototype.deserializeBuildings = function (data) {
+            for (var i = 0; i < data.stars.length; i++) {
+                var starData = data.stars[i];
+                var star = this.starsById[starData.id];
+                for (var category in starData.buildings) {
+                    for (var j = 0; j < starData.buildings[category].length; j++) {
+                        var buildingData = starData.buildings[category][j];
+                        var building = this.deserializeBuilding(buildingData);
+                        star.addBuilding(building);
+                    }
+                }
+                if (starData.manufactory) {
+                    star.manufactory = new Manufactory_1.default(star, starData.manufactory);
+                }
+            }
+        };
+        GameLoader.prototype.deserializeBuilding = function (data) {
+            var template = App_11.default.moduleData.Templates.Buildings[data.templateType];
+            var building = new Building_1.default({
+                template: template,
+                location: this.starsById[data.locationId],
+                controller: this.playersById[data.controllerId],
+                upgradeLevel: data.upgradeLevel,
+                totalCost: data.totalCost,
+                id: data.id
+            });
+            return building;
+        };
+        GameLoader.prototype.deserializePlayer = function (data) {
+            var personality;
+            if (data.personality) {
+                personality = utility_8.extendObject(data.personality, utility_8.makeRandomPersonality(), true);
+            }
+            var player = new Player_1.default(data.isAI, data.id);
+            player.name = data.name;
+            player.money = data.money;
+            player.isIndependent = data.isIndependent;
+            if (data.resources) {
+                player.resources = utility_8.extendObject(data.resources);
+            }
+            player.personality = personality;
+            player.color = Color_1.default.deSerialize(data.color);
+            player.secondaryColor = Color_1.default.deSerialize(data.secondaryColor);
+            player.colorAlpha = data.colorAlpha;
+            if (data.flag) {
+                player.flag = this.deserializeFlag(data.flag);
+            }
+            else {
+                player.makeRandomFlag();
+            }
+            for (var i = 0; i < data.fleets.length; i++) {
+                var fleet = data.fleets[i];
+                player.addFleet(this.deserializeFleet(player, fleet));
+            }
+            for (var i = 0; i < data.controlledLocationIds.length; i++) {
+                player.addStar(this.starsById[data.controlledLocationIds[i]]);
+            }
+            for (var i = 0; i < data.items.length; i++) {
+                this.deserializeItem(data.items[i], player);
+            }
+            for (var i = 0; i < data.revealedStarIds.length; i++) {
+                var id = data.revealedStarIds[i];
+                player.revealedStars[id] = this.starsById[id];
+            }
+            player.initTechnologies(data.researchByTechnology);
+            return player;
+        };
+        GameLoader.prototype.deserializeDiplomacyStatus = function (player, data) {
+            if (data) {
+                for (var i = 0; i < data.metPlayerIds.length; i++) {
+                    var id = data.metPlayerIds[i];
+                    player.diplomacyStatus.metPlayers[id] = this.playersById[id];
+                }
+                player.diplomacyStatus.statusByPlayer = data.statusByPlayer;
+                for (var playerId in data.attitudeModifiersByPlayer) {
+                    var modifiers = data.attitudeModifiersByPlayer[playerId];
+                    if (!modifiers || modifiers.length === 0) {
+                        player.diplomacyStatus.attitudeModifiersByPlayer[playerId] = [];
+                        continue;
+                    }
+                    for (var i = 0; i < modifiers.length; i++) {
+                        var template = App_11.default.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
+                        var modifier = new AttitudeModifier_2.default({
+                            template: template,
+                            startTurn: modifiers[i].startTurn,
+                            endTurn: modifiers[i].endTurn,
+                            strength: modifiers[i].strength
+                        });
+                        player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
+                    }
+                }
+            }
+        };
+        GameLoader.prototype.deserializeIdentifiedUnits = function (player, data) {
+            for (var i = 0; i < data.length; i++) {
+                var unit = this.unitsById[data[i]];
+                if (unit) {
+                    player.identifyUnit(unit);
+                }
+            }
+        };
+        GameLoader.prototype.deserializeEmblem = function (emblemData, colorData) {
+            var inner = App_11.default.moduleData.Templates.SubEmblems[emblemData.innerKey];
+            var outer = emblemData.outerKey ?
+                App_11.default.moduleData.Templates.SubEmblems[emblemData.outerKey] : null;
+            return new Emblem_2.default(Color_1.default.deSerialize(colorData), emblemData.alpha, inner, outer);
+        };
+        GameLoader.prototype.deserializeFlag = function (data) {
+            var flag = new Flag_1.default({
+                width: 46,
+                mainColor: Color_1.default.deSerialize(data.mainColor),
+                secondaryColor: Color_1.default.deSerialize(data.secondaryColor),
+                tetriaryColor: Color_1.default.deSerialize(data.tetriaryColor)
+            });
+            if (data.customImage) {
+                flag.setCustomImage(data.customImage);
+            }
+            else if (data.seed) {
+                flag.generateRandom(data.seed);
+            }
+            else {
+                if (data.foregroundEmblem) {
+                    var fgEmblem = this.deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
+                    flag.setForegroundEmblem(fgEmblem);
+                }
+                if (data.backgroundEmblem) {
+                    var bgEmblem = this.deserializeEmblem(data.backgroundEmblem, data.tetriaryColor);
+                    flag.setBackgroundEmblem(bgEmblem);
+                }
+            }
+            return flag;
+        };
+        GameLoader.prototype.deserializeFleet = function (player, data) {
+            var units = [];
+            var castedData = data;
+            var unitsToDeserialize = castedData.units || castedData.ships;
+            for (var i = 0; i < unitsToDeserialize.length; i++) {
+                var unit = this.deserializeUnit(unitsToDeserialize[i]);
+                player.addUnit(unit);
+                units.push(unit);
+            }
+            var fleet = new Fleet_2.default(player, units, this.starsById[data.locationId], data.id, false);
+            fleet.name = data.name;
+            return fleet;
+        };
+        GameLoader.prototype.deserializeUnit = function (data) {
+            var template = App_11.default.moduleData.Templates.Units[data.templateType];
+            var unit = new Unit_2.default(template, data.id, data);
+            this.unitsById[unit.id] = unit;
+            return unit;
+        };
+        GameLoader.prototype.deserializeItem = function (data, player) {
+            var template = App_11.default.moduleData.Templates.Items[data.templateType];
+            var item = new Item_2.default(template, data.id);
+            player.addItem(item);
+            if (isFinite(data.unitId)) {
+                this.unitsById[data.unitId].addItem(item);
+            }
+        };
+        return GameLoader;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = GameLoader;
+});
+define("src/NotificationFilter", ["require", "exports", "src/App", "src/NotificationFilterState", "src/utility"], function (require, exports, App_12, NotificationFilterState_1, utility_9) {
+    "use strict";
+    var NotificationFilter = (function () {
+        function NotificationFilter(player) {
+            this.filters = {};
+            this.player = player;
+            this.setDefaultFilterStates();
+            this.load();
+        }
+        NotificationFilter.prototype.setDefaultFilterStates = function () {
+            var notifications = App_12.default.moduleData.Templates.Notifications;
+            for (var key in notifications) {
+                var notificationTemplate = notifications[key];
+                this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
+            }
+        };
+        NotificationFilter.prototype.shouldDisplayNotification = function (notification) {
+            var filterStates = this.filters[notification.template.key];
+            if (filterStates.indexOf(NotificationFilterState_1.default.alwaysShow) !== -1) {
+                return true;
+            }
+            else if (filterStates.indexOf(NotificationFilterState_1.default.neverShow) !== -1) {
+                return false;
+            }
+            var playerIsInvolved = false;
+            for (var key in notification.props) {
+                if (notification.props[key] === this.player) {
+                    playerIsInvolved = true;
+                    break;
+                }
+            }
+            if (playerIsInvolved) {
+                return filterStates.indexOf(NotificationFilterState_1.default.showIfInvolved) !== -1;
+            }
+            return false;
+        };
+        NotificationFilter.prototype.getCompatibleFilterStates = function (filterState) {
+            switch (filterState) {
+                case NotificationFilterState_1.default.alwaysShow:
+                    {
+                        return [];
+                    }
+                case NotificationFilterState_1.default.showIfInvolved:
+                    {
+                        return [];
+                    }
+                case NotificationFilterState_1.default.neverShow:
+                    {
+                        return [];
+                    }
+            }
+        };
+        NotificationFilter.prototype.handleFilterStateChange = function (filterKey, state) {
+            var stateIndex = this.filters[filterKey].indexOf(state);
+            if (stateIndex !== -1) {
+                if (this.filters[filterKey].length === 1) {
+                    this.filters[filterKey] = [NotificationFilterState_1.default.neverShow];
+                }
+                else {
+                    this.filters[filterKey].splice(stateIndex, 1);
+                }
+            }
+            else {
+                var newState = [state];
+                var compatibleStates = this.getCompatibleFilterStates(state);
+                for (var i = 0; i < this.filters[filterKey].length; i++) {
+                    if (compatibleStates.indexOf(this.filters[filterKey][i]) !== -1) {
+                        newState.push(this.filters[filterKey][i]);
+                    }
+                }
+                this.filters[filterKey] = newState;
+            }
+        };
+        NotificationFilter.prototype.getFiltersByCategory = function () {
+            var filtersByCategory = {};
+            var notifications = App_12.default.moduleData.Templates.Notifications;
+            for (var key in this.filters) {
+                var notificationTemplate = notifications[key];
+                if (notificationTemplate) {
+                    if (!filtersByCategory[notificationTemplate.category]) {
+                        filtersByCategory[notificationTemplate.category] = [];
+                    }
+                    filtersByCategory[notificationTemplate.category].push({
+                        notificationTemplate: notificationTemplate,
+                        filterState: this.filters[key]
+                    });
+                }
+            }
+            return filtersByCategory;
+        };
+        NotificationFilter.prototype.setDefaultFilterStatesForCategory = function (category) {
+            var byCategory = this.getFiltersByCategory();
+            var forSelectedCategory = byCategory[category];
+            for (var i = 0; i < forSelectedCategory.length; i++) {
+                var template = forSelectedCategory[i].notificationTemplate;
+                this.filters[template.key] = template.defaultFilterState.slice(0);
+            }
+        };
+        NotificationFilter.prototype.load = function (slot) {
+            var baseString = "NotificationFilter.";
+            var parsedData;
+            if (slot && localStorage[baseString + slot]) {
+                parsedData = JSON.parse(localStorage.getItem(baseString + slot));
+            }
+            else {
+                parsedData = utility_9.getMatchingLocalstorageItemsByDate(baseString)[0];
+            }
+            if (parsedData) {
+                this.filters = utility_9.extendObject(parsedData.filters, this.filters, false);
+            }
+        };
+        NotificationFilter.prototype.save = function (slot) {
+            if (slot === void 0) { slot = 0; }
+            var data = JSON.stringify({
+                filters: this.filters,
+                date: new Date()
+            });
+            localStorage.setItem("NotificationFilter." + slot, data);
+        };
+        return NotificationFilter;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = NotificationFilter;
+});
+define("src/NotificationLog", ["require", "exports", "src/App", "src/Notification", "src/NotificationFilter", "src/eventManager"], function (require, exports, App_13, Notification_2, NotificationFilter_1, eventManager_7) {
+    "use strict";
+    var NotificationLog = (function () {
+        function NotificationLog(player) {
+            this.byTurn = {};
+            this.unread = [];
+            this.isHumanTurn = true;
+            this.listeners = {};
+            this.addEventListeners();
+            this.notificationFilter = new NotificationFilter_1.default(player);
+        }
+        NotificationLog.prototype.addEventListeners = function () {
+            for (var key in App_13.default.moduleData.Templates.Notifications) {
+                var template = App_13.default.moduleData.Templates.Notifications[key];
+                for (var i = 0; i < template.eventListeners.length; i++) {
+                    var listenerKey = template.eventListeners[i];
+                    var listener = eventManager_7.default.addEventListener(listenerKey, this.makeNotification.bind(this, template));
+                    if (!this.listeners[listenerKey]) {
+                        this.listeners[listenerKey] = [];
+                    }
+                    this.listeners[listenerKey].push(listener);
+                }
+            }
+        };
+        NotificationLog.prototype.destroy = function () {
+            for (var key in this.listeners) {
+                for (var i = 0; i < this.listeners[key].length; i++) {
+                    eventManager_7.default.removeEventListener(key, this.listeners[key][i]);
+                }
+            }
+        };
+        NotificationLog.prototype.setTurn = function (turn, isHumanTurn) {
+            this.currentTurn = turn;
+            this.isHumanTurn = isHumanTurn;
+        };
+        NotificationLog.prototype.makeNotification = function (template, props) {
+            var notification = new Notification_2.default(template, props, this.currentTurn);
+            this.addNotification(notification);
+            if (this.isHumanTurn) {
+                eventManager_7.default.dispatchEvent("updateNotificationLog");
+            }
+        };
+        NotificationLog.prototype.addNotification = function (notification) {
+            if (!this.byTurn[notification.turn]) {
+                this.byTurn[notification.turn] = [];
+            }
+            this.byTurn[notification.turn].unshift(notification);
+            if (!notification.hasBeenRead) {
+                this.unread.unshift(notification);
+            }
+        };
+        NotificationLog.prototype.markAsRead = function (notification) {
+            var index = this.unread.indexOf(notification);
+            if (index === -1)
+                throw new Error("Notification is already unread");
+            notification.hasBeenRead = true;
+            this.unread.splice(index, 1);
+        };
+        NotificationLog.prototype.getUnreadNotificationsForTurn = function (turn) {
+            return this.byTurn[turn].filter(function (notification) {
+                return !notification.hasBeenRead;
+            });
+        };
+        NotificationLog.prototype.filterNotifications = function (notifications) {
+            var filtered = [];
+            for (var i = 0; i < notifications.length; i++) {
+                if (this.notificationFilter.shouldDisplayNotification(notifications[i])) {
+                    filtered.push(notifications[i]);
+                }
+            }
+            return filtered;
+        };
+        NotificationLog.prototype.serialize = function () {
+            var notificationsSaveData = [];
+            for (var turnNumber in this.byTurn) {
+                var notifications = this.byTurn[turnNumber];
+                for (var i = 0; i < notifications.length; i++) {
+                    notificationsSaveData.push(notifications[i].serialize());
+                }
+            }
+            var data = {
+                notifications: notificationsSaveData
+            };
+            return data;
+        };
+        return NotificationLog;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = NotificationLog;
+});
+define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/eventManager", "src/utility"], function (require, exports, App_14, idGenerators_4, eventManager_8, utility_10) {
+    "use strict";
+    var Game = (function () {
+        function Game(map, players, humanPlayer) {
+            this.independents = [];
+            this.galaxyMap = map;
+            if (map.independents) {
+                this.independents = map.independents;
+                map.independents = null;
+                delete map.independents;
+            }
+            this.playerOrder = players;
+            this.humanPlayer = humanPlayer;
+            this.turnNumber = 1;
+        }
+        Game.prototype.destroy = function () {
+            this.notificationLog.destroy();
+            this.notificationLog = null;
+            for (var i = 0; i < this.playerOrder.length; i++) {
+                this.playerOrder[i].destroy();
+            }
+            for (var i = 0; i < this.independents.length; i++) {
+                this.independents[i].destroy();
+            }
+        };
+        Game.prototype.endTurn = function () {
+            this.setNextPlayer();
+            while (this.activePlayer.controlledLocations.length === 0) {
+                this.killPlayer(this.activePlayer);
+                this.activePlayer = this.playerOrder[0];
+            }
+            this.processPlayerStartTurn(this.activePlayer);
+            this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
+            if (this.activePlayer.isAI) {
+                this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
+            }
+            else {
+                this.turnNumber++;
+                for (var i = 0; i < this.independents.length; i++) {
+                    this.processPlayerStartTurn(this.independents[i]);
+                }
+            }
+            eventManager_8.default.dispatchEvent("endTurn", null);
+            eventManager_8.default.dispatchEvent("updateSelection", null);
+        };
+        Game.prototype.processPlayerStartTurn = function (player) {
+            var unitStartTurnFN = function (unit) {
+                unit.resetMovePoints();
+                unit.heal();
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase.atTurnStart) {
+                    for (var i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++) {
+                        var skill = passiveSkillsByPhase.atTurnStart[i];
+                        for (var j = 0; j < skill.atTurnStart.length; j++) {
+                            skill.atTurnStart[j](unit);
+                        }
+                    }
+                }
+                unit.timesActedThisTurn = 0;
+            };
+            player.forEachUnit(unitStartTurnFN);
+            if (!player.isIndependent) {
+                player.money += player.getIncome();
+                var allResourceIncomeData = player.getResourceIncome();
+                for (var resourceType in allResourceIncomeData) {
+                    var resourceData = allResourceIncomeData[resourceType];
+                    player.addResource(resourceData.resource, resourceData.amount);
+                }
+                player.playerTechnology.allocateResearchPoints(player.getResearchSpeed());
+                player.getAllManufactories().forEach(function (manufactory) {
+                    manufactory.buildAllThings();
+                });
+            }
+        };
+        Game.prototype.setNextPlayer = function () {
+            this.playerOrder.push(this.playerOrder.shift());
+            this.activePlayer = this.playerOrder[0];
+        };
+        Game.prototype.killPlayer = function (playerToKill) {
+            var playerOrderIndex;
+            for (var i = 0; i < this.playerOrder.length; i++) {
+                var player = this.playerOrder[i];
+                if (player === playerToKill) {
+                    playerOrderIndex = i;
+                    continue;
+                }
+                player.diplomacyStatus.removePlayer(playerToKill);
+            }
+            playerToKill.die();
+            playerToKill.destroy();
+            this.playerOrder.splice(playerOrderIndex, 1);
+        };
+        Game.prototype.serialize = function () {
+            var playersSaveData = this.playerOrder.map(function (player) {
+                return player.serialize();
+            });
+            var independentsSaveData = this.independents.map(function (player) {
+                return player.serialize();
+            });
+            var data = {
+                turnNumber: this.turnNumber,
+                galaxyMap: this.galaxyMap.serialize(),
+                players: playersSaveData.concat(independentsSaveData),
+                humanPlayerId: this.humanPlayer.id,
+                notificationLog: this.notificationLog.serialize()
+            };
+            return data;
+        };
+        Game.prototype.save = function (name) {
+            var saveString = "Save." + name;
+            this.gameStorageKey = saveString;
+            var date = new Date();
+            var gameData = this.serialize();
+            var stringified = JSON.stringify({
+                name: name,
+                date: date,
+                gameData: gameData,
+                idGenerators: utility_10.extendObject(idGenerators_4.default),
+                cameraLocation: App_14.default.renderer.camera.getCenterPosition()
+            });
+            localStorage.setItem(saveString, stringified);
+        };
+        return Game;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Game;
+});
+define("src/Range", ["require", "exports"], function (require, exports) {
+    "use strict";
+});
+define("src/rangeOperations", ["require", "exports", "src/utility"], function (require, exports, utility_11) {
+    "use strict";
+    function excludeFromRanges(ranges, toExclude) {
+        var intersecting = getIntersectingRanges(ranges, toExclude);
+        var newRanges = ranges.slice(0);
+        for (var i = 0; i < intersecting.length; i++) {
+            newRanges.splice(newRanges.indexOf(intersecting[i]), 1);
+            var intersectedRanges = excludeFromRange(intersecting[i], toExclude);
+            if (intersectedRanges) {
+                newRanges = newRanges.concat(intersectedRanges);
+            }
+        }
+        return newRanges;
+    }
+    exports.excludeFromRanges = excludeFromRanges;
+    function getIntersectingRanges(ranges, toIntersectWith) {
+        var intersecting = [];
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            if (toIntersectWith.max < range.min || toIntersectWith.min > range.max) {
+                continue;
+            }
+            intersecting.push(range);
+        }
+        return intersecting;
+    }
+    exports.getIntersectingRanges = getIntersectingRanges;
+    function excludeFromRange(range, toExclude) {
+        if (toExclude.max < range.min || toExclude.min > range.max) {
+            return null;
+        }
+        else if (toExclude.min < range.min && toExclude.max > range.max) {
+            return null;
+        }
+        if (toExclude.min <= range.min) {
+            return ([{ min: toExclude.max, max: range.max }]);
+        }
+        else if (toExclude.max >= range.max) {
+            return ([{ min: range.min, max: toExclude.min }]);
+        }
+        return ([
+            {
+                min: range.min,
+                max: toExclude.min
+            },
+            {
+                min: toExclude.max,
+                max: range.max
+            }
+        ]);
+    }
+    exports.excludeFromRange = excludeFromRange;
+    function randomSelectFromRanges(ranges) {
+        var totalWeight = 0;
+        var currentRelativeWeight = 0;
+        var rangesByRelativeWeight = {};
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            if (!isFinite(range.max))
+                range.max = 1;
+            if (!isFinite(range.min))
+                range.min = 0;
+            var weight = range.max - range.min;
+            totalWeight += weight;
+        }
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            var relativeWeight = (range.max - range.min) / totalWeight;
+            if (totalWeight === 0)
+                relativeWeight = 1;
+            currentRelativeWeight += relativeWeight;
+            rangesByRelativeWeight[currentRelativeWeight] = range;
+        }
+        var rand = Math.random();
+        var sortedWeights = Object.keys(rangesByRelativeWeight).map(function (w) {
+            return parseFloat(w);
+        }).sort();
+        for (var i = 0; i < sortedWeights.length; i++) {
+            if (rand < sortedWeights[i]) {
+                var selectedRange = rangesByRelativeWeight[sortedWeights[i]];
+                return utility_11.randRange(selectedRange.min, selectedRange.max);
+            }
+        }
+        throw new Error("Couldn't select from ranges.");
+    }
+    exports.randomSelectFromRanges = randomSelectFromRanges;
+});
+define("src/colorGeneration", ["require", "exports", "src/Color", "src/rangeOperations", "src/utility"], function (require, exports, Color_2, rangeOperations_1, utility_12) {
+    "use strict";
+    function makeRandomVibrantColor() {
+        var hRanges = [
+            { min: 0, max: 90 / 360 },
+            { min: 120 / 360, max: 150 / 360 },
+            { min: 180 / 360, max: 290 / 360 },
+            { min: 320 / 360, max: 1 }
+        ];
+        var h = rangeOperations_1.randomSelectFromRanges(hRanges);
+        var s = utility_12.randRange(0.8, 0.9);
+        var v = utility_12.randRange(0.88, 0.92);
+        return Color_2.default.fromHSV(h, s, v);
+    }
+    function makeRandomDeepColor() {
+        if (Math.random() < 0.1) {
+            var h = utility_12.randRange(15 / 360, 80 / 360);
+            var s = utility_12.randRange(0.92, 1);
+            var v = utility_12.randRange(0.92, 1);
+            return Color_2.default.fromHSV(h, s, v);
+        }
+        else {
+            var hRanges = [
+                { min: 0, max: 15 / 360 },
+                { min: 100 / 360, max: 195 / 360 },
+                { min: 210 / 360, max: 1 }
+            ];
+            var h = rangeOperations_1.randomSelectFromRanges(hRanges);
+            var s = utility_12.randRange(0.8, 0.9);
+            var v = utility_12.randRange(0.88, 0.92);
+            return Color_2.default.fromHSV(h, s, v);
+        }
+    }
+    function makeRandomLightColor() {
+        return Color_2.default.fromHSV(utility_12.randRange(0, 1), utility_12.randRange(0.55, 0.65), 1);
+    }
+    function makeRandomColor(props) {
+        var hRanges = props.h || [{ min: 0, max: 1 }];
+        var sRanges = props.s || [{ min: 0, max: 1 }];
+        var lRanges = props.l || [{ min: 0, max: 1 }];
+        var h = rangeOperations_1.randomSelectFromRanges(hRanges);
+        var s = rangeOperations_1.randomSelectFromRanges(sRanges);
+        var l = rangeOperations_1.randomSelectFromRanges(lRanges);
+        return Color_2.default.fromHUSL(h, s, l);
+    }
+    function generateMainColor() {
+        if (Math.random() < 0.6) {
+            return makeRandomDeepColor();
+        }
+        else if (Math.random() < 0.25) {
+            return makeRandomLightColor();
+        }
+        else if (Math.random() < 0.3) {
+            return makeRandomVibrantColor();
+        }
+        else {
+            return makeRandomColor({
+                s: [{ min: 1, max: 1 }],
+                l: [{ min: 0.88, max: 1 }]
+            });
+        }
+    }
+    exports.generateMainColor = generateMainColor;
+    function makeContrastingColor(toContrastWith, colorGenProps) {
+        var props = colorGenProps || {};
+        var initialRanges = props.initialRanges || {};
+        var hRange = initialRanges.h || { min: 0.0, max: 1.0 };
+        var sRange = initialRanges.s || { min: 0.5, max: 1.0 };
+        var lRange = initialRanges.l || { min: 0.0, max: 1.0 };
+        var minDifference = props.minDifference || {};
+        var hMinDifference = isFinite(minDifference.h) ? minDifference.h : 0.1;
+        var sMinDifference = isFinite(minDifference.s) ? minDifference.s : 0.0;
+        var lMinDifference = isFinite(minDifference.l) ? minDifference.l : 0.3;
+        var maxDifference = props.maxDifference || {};
+        var hMaxDifference = isFinite(maxDifference.h) ? maxDifference.h : 1.0;
+        var toContrastWithHUSL = toContrastWith.getHUSL();
+        var hExclusionRange = {
+            min: (toContrastWithHUSL[0] - hMinDifference) % 1.0,
+            max: (toContrastWithHUSL[0] + hMinDifference) % 1.0
+        };
+        var hRangeWithMinExclusion = rangeOperations_1.excludeFromRange(hRange, hExclusionRange);
+        var candidateHValue = rangeOperations_1.randomSelectFromRanges(hRangeWithMinExclusion);
+        var h = utility_12.clamp(candidateHValue, toContrastWithHUSL[0] - hMaxDifference, toContrastWithHUSL[0] + hMaxDifference);
+        var hDistance = utility_12.getAngleBetweenDegrees(h * 360, toContrastWithHUSL[0]);
+        var relativeHDistance = 1 / (180 / hDistance);
+        var sExclusionRangeMin = utility_12.clamp(toContrastWithHUSL[1] - sMinDifference, sRange.min, 1.0);
+        var sExclusionRange = {
+            min: sExclusionRangeMin,
+            max: utility_12.clamp(toContrastWithHUSL[1] + sMinDifference, sExclusionRangeMin, 1.0)
+        };
+        var lExclusionRangeMin = utility_12.clamp(toContrastWithHUSL[2] - lMinDifference, lRange.min, 1.0);
+        var lExclusionRange = {
+            min: lExclusionRangeMin,
+            max: utility_12.clamp(toContrastWithHUSL[2] + lMinDifference, lExclusionRangeMin, 1.0)
+        };
+        return makeRandomColor({
+            h: [{ min: h, max: h }],
+            s: rangeOperations_1.excludeFromRange(sRange, sExclusionRange),
+            l: rangeOperations_1.excludeFromRange(lRange, lExclusionRange)
+        });
+    }
+    function colorsContrast(aColor, bColor) {
+        var a = aColor.getHUSL();
+        var b = bColor.getHUSL();
+        return Math.abs(a[2] - b[2]) > 0.2;
+    }
+    function generateSecondaryColor(mainColor) {
+        return makeContrastingColor(mainColor, {
+            minDifference: {
+                h: 0.1,
+                l: 0.3
+            }
+        });
+    }
+    exports.generateSecondaryColor = generateSecondaryColor;
+    function generateColorScheme(mainColor) {
+        var main = mainColor || generateMainColor();
+        return ({
+            main: main,
+            secondary: generateSecondaryColor(main)
+        });
+    }
+    exports.generateColorScheme = generateColorScheme;
+});
+define("src/mapai/MapEvaluator", ["require", "exports", "src/utility"], function (require, exports, utility_13) {
+    "use strict";
+    exports.defaultEvaluationParameters = {
+        starDesirability: {
+            neighborRange: 1,
+            neighborWeight: 0.5,
+            defendabilityWeight: 1,
+            totalIncomeWeight: 1,
+            baseIncomeWeight: 0.5,
+            infrastructureWeight: 1,
+            productionWeight: 1,
+        }
+    };
+    var MapEvaluator = (function () {
+        function MapEvaluator(map, player, game) {
+            this.cachedInfluenceMaps = {};
+            this.cachedVisibleFleets = {};
+            this.cachedVisionMaps = {};
+            this.map = map;
+            this.player = player;
+            this.game = game;
+            this.evaluationParameters = exports.defaultEvaluationParameters;
+        }
+        MapEvaluator.prototype.processTurnStart = function () {
+            this.cachedInfluenceMaps = {};
+            this.cachedVisibleFleets = {};
+            this.cachedVisionMaps = {};
+            this.cachedOwnIncome = undefined;
+        };
+        MapEvaluator.prototype.evaluateStarIncome = function (star) {
+            var evaluation = 0;
+            evaluation += star.baseIncome;
+            evaluation += (star.getIncome() - star.baseIncome) *
+                (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
+            var evaluation = 0;
+            for (var category in star.buildings) {
+                for (var i = 0; i < star.buildings[category].length; i++) {
+                    evaluation += star.buildings[category][i].totalCost / 25;
+                }
+            }
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateStarProduction = function (star) {
+            var evaluation = 0;
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateStarDefendability = function (star) {
+            var evaluation = 0;
+            var nearbyStars = star.getLinkedInRange(2).byRange;
+            for (var rangeString in nearbyStars) {
+                var distanceMultiplier = 1 / parseInt(rangeString);
+                var starsInRange = nearbyStars[rangeString];
+                for (var i = 0; i < starsInRange.length; i++) {
+                    var neighbor = starsInRange[i];
+                    var neighborDefendability;
+                    if (neighbor.owner === this.player) {
+                        neighborDefendability = 3;
+                    }
+                    else if (neighbor.owner.isIndependent) {
+                        neighborDefendability = -0.75;
+                    }
+                    else {
+                        neighborDefendability = -2;
+                    }
+                    evaluation += neighborDefendability * distanceMultiplier;
+                }
+            }
+            if (star.owner === this.player) {
+                evaluation += 3;
+            }
+            return evaluation * 5;
+        };
+        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+            if (!isFinite(this.cachedOwnIncome)) {
+                this.cachedOwnIncome = this.player.getIncome();
+            }
+            var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
+            incomeEvaluation *= incomeEvaluation / (this.cachedOwnIncome / 4);
+            evaluation += incomeEvaluation;
+            var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
+            evaluation += infrastructureEvaluation;
+            var productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
+            evaluation += productionEvaluation;
+            var defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
+            evaluation += defendabilityEvaluation;
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
+            var evaluation = 0;
+            var getDistanceFalloff = function (distance) {
+                return 1 / (distance + 1);
+            };
+            var inRange = star.getLinkedInRange(range).byRange;
+            for (var distanceString in inRange) {
+                var stars = inRange[distanceString];
+                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+                for (var i = 0; i < stars.length; i++) {
+                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
+                }
+            }
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+            evaluation += this.evaluateIndividualStarDesirability(star);
+            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) *
+                p.neighborWeight;
+            return evaluation;
+        };
+        MapEvaluator.prototype.evaluateIndependentTargets = function (targetStars) {
+            var evaluationByStar = {};
+            for (var i = 0; i < targetStars.length; i++) {
+                var star = targetStars[i];
+                var desirability = this.evaluateStarDesirability(star);
+                var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
+                var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
+                var ownInfluenceAtStar = ownInfluenceMap[star.id] || 1;
+                evaluationByStar[star.id] =
+                    {
+                        star: star,
+                        desirability: desirability,
+                        independentStrength: independentStrength,
+                        ownInfluence: ownInfluenceAtStar
+                    };
+            }
+            return evaluationByStar;
+        };
+        MapEvaluator.prototype.scoreIndependentTargets = function (evaluations) {
+            var scores = [];
+            for (var starId in evaluations) {
+                var evaluation = evaluations[starId];
+                var easeOfCapturing = evaluation.ownInfluence / evaluation.independentStrength;
+                var score = evaluation.desirability * easeOfCapturing;
+                if (evaluation.star.getSecondaryController() === this.player) {
+                    score *= 1.5;
+                }
+                scores.push({
+                    star: evaluation.star,
+                    score: score
+                });
+            }
+            return scores.sort(function (a, b) {
+                return b.score - a.score;
+            });
+        };
+        MapEvaluator.prototype.evaluateDesirabilityOfPlayersStars = function (player) {
+            var byStar = {};
+            var total = 0;
+            var stars = this.getVisibleStarsOfPlayer(player);
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                var desirability = this.evaluateStarDesirability(star);
+                byStar[star.id] =
+                    {
+                        star: star,
+                        desirability: desirability
+                    };
+                total += desirability;
+            }
+            return ({
+                byStar: byStar,
+                total: total
+            });
+        };
+        MapEvaluator.prototype.getIndependentNeighborStars = function () {
+            var _this = this;
+            var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
+                var secondaryController = star.getSecondaryController();
+                return star.owner.isIndependent && (!secondaryController || secondaryController === _this.player);
+            });
+            return independentNeighborStars;
+        };
+        MapEvaluator.prototype.getIndependentNeighborStarIslands = function (earlyReturnSize) {
+            var _this = this;
+            var alreadyVisited = {};
+            var allStars = [];
+            var islandQualifierFN = function (a, b) {
+                var secondaryController = b.getSecondaryController();
+                return b.owner.isIndependent && (!secondaryController || secondaryController === _this.player);
+            };
+            var neighborStars = this.getIndependentNeighborStars();
+            for (var i = 0; i < neighborStars.length; i++) {
+                var neighborStar = neighborStars[i];
+                if (alreadyVisited[neighborStar.id]) {
+                    continue;
+                }
+                var island = neighborStar.getIslandForQualifier(islandQualifierFN, earlyReturnSize);
+                for (var j = 0; j < island.length; j++) {
+                    var star = island[j];
+                    alreadyVisited[star.id] = true;
+                    allStars.push(star);
+                }
+            }
+            return allStars;
+        };
+        MapEvaluator.prototype.getHostileUnitsAtStar = function (star) {
+            var hostilePlayers = star.getEnemyFleetOwners(this.player);
+            var unitsByEnemy = {};
+            var allUnits = [];
+            for (var i = 0; i < hostilePlayers.length; i++) {
+                unitsByEnemy[hostilePlayers[i].id] = star.getAllUnitsOfPlayer(hostilePlayers[i]);
+                allUnits = allUnits.concat(unitsByEnemy[hostilePlayers[i].id]);
+            }
+            return ({
+                byEnemy: unitsByEnemy,
+                all: allUnits
+            });
+        };
+        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
+            var hostileUnitsByPlayer = this.getHostileUnitsAtStar(star).byEnemy;
+            var strengthByEnemy = {};
+            for (var playerId in hostileUnitsByPlayer) {
+                var strength = 0;
+                for (var i = 0; i < hostileUnitsByPlayer[playerId].length; i++) {
+                    strength += hostileUnitsByPlayer[playerId][i].getStrengthEvaluation();
+                }
+                strengthByEnemy[playerId] = strength;
+            }
+            return strengthByEnemy;
+        };
+        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
+            var units = star.getIndependentUnits();
+            var total = 0;
+            for (var i = 0; i < units.length; i++) {
+                total += units[i].getStrengthEvaluation();
+            }
+            return total;
+        };
+        MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
+            var byPlayer = this.getHostileStrengthAtStar(star);
+            var total = 0;
+            for (var playerId in byPlayer) {
+                total += byPlayer[playerId];
+            }
+            return total;
+        };
+        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
+            var byPlayer = {};
+            for (var i = 0; i < star.buildings["defence"].length; i++) {
+                var building = star.buildings["defence"][i];
+                if (!byPlayer[building.controller.id]) {
+                    byPlayer[building.controller.id] = 0;
+                }
+                byPlayer[building.controller.id] += building.totalCost;
+            }
+            return byPlayer;
+        };
+        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
+            var strength = 0;
+            for (var i = 0; i < star.buildings["defence"].length; i++) {
+                var building = star.buildings["defence"][i];
+                if (building.controller.id === this.player.id)
+                    continue;
+                strength += building.totalCost;
+            }
+            return strength;
+        };
+        MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
+            return fleet.getTotalStrengthEvaluation();
+        };
+        MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
+            if (this.game && this.cachedVisibleFleets[this.game.turnNumber]) {
+                return this.cachedVisibleFleets[this.game.turnNumber];
+            }
+            var stars = this.player.getVisibleStars();
+            var byPlayer = {};
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                for (var playerId in star.fleets) {
+                    var playerFleets = star.fleets[playerId];
+                    if (!byPlayer[playerId]) {
+                        byPlayer[playerId] = [];
+                    }
+                    for (var j = 0; j < playerFleets.length; j++) {
+                        if (playerFleets[j].isStealthy && !this.player.starIsDetected(star)) {
+                            continue;
+                        }
+                        byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
+                    }
+                }
+            }
+            if (this.game) {
+                this.cachedVisibleFleets[this.game.turnNumber] = byPlayer;
+            }
+            return byPlayer;
+        };
+        MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
+            var playerIsImmobile = player.isIndependent;
+            var influenceByStar = {};
+            var stars = this.player.getRevealedStars();
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
+                if (defenceBuildingStrengths[player.id]) {
+                    if (!isFinite(influenceByStar[star.id])) {
+                        influenceByStar[star.id] = 0;
+                    }
+                    ;
+                    influenceByStar[star.id] += defenceBuildingStrengths[player.id];
+                }
+            }
+            var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
+            function getDistanceFalloff(distance) {
+                return 1 / (distance + 1);
+            }
+            for (var i = 0; i < fleets.length; i++) {
+                var fleet = fleets[i];
+                var strength = this.evaluateFleetStrength(fleet);
+                var location = fleet.location;
+                var range = fleet.getMinMaxMovePoints();
+                var turnsToCheck = 4;
+                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
+                inFleetRange[0] = [location];
+                for (var distance in inFleetRange) {
+                    var numericDistance = parseInt(distance);
+                    var turnsToReach = Math.floor((numericDistance - 1) / range);
+                    if (turnsToReach < 0)
+                        turnsToReach = 0;
+                    var distanceFalloff = getDistanceFalloff(turnsToReach);
+                    var adjustedStrength = strength * distanceFalloff;
+                    for (var j = 0; j < inFleetRange[distance].length; j++) {
+                        var star = inFleetRange[distance][j];
+                        if (!isFinite(influenceByStar[star.id])) {
+                            influenceByStar[star.id] = 0;
+                        }
+                        ;
+                        influenceByStar[star.id] += adjustedStrength;
+                    }
+                }
+            }
+            return influenceByStar;
+        };
+        MapEvaluator.prototype.getPlayerInfluenceMap = function (player) {
+            if (!this.game) {
+                throw new Error("Can't use cached influence maps when game isn't specified for MapEvaluator");
+            }
+            if (!this.cachedInfluenceMaps[this.game.turnNumber]) {
+                this.cachedInfluenceMaps[this.game.turnNumber] = {};
+            }
+            if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id]) {
+                this.cachedInfluenceMaps[this.game.turnNumber][player.id] = this.buildPlayerInfluenceMap(player);
+            }
+            return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
+        };
+        MapEvaluator.prototype.getInfluenceMapsForKnownPlayers = function () {
+            var byPlayer = {};
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                byPlayer[playerId] = this.getPlayerInfluenceMap(player);
+            }
+            return byPlayer;
+        };
+        MapEvaluator.prototype.getVisibleStarsOfPlayer = function (player) {
+            return this.player.getVisibleStars().filter(function (star) {
+                return star.owner === player;
+            });
+        };
+        MapEvaluator.prototype.getVisibleStarsOfKnownPlayers = function () {
+            var byPlayer = {};
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                byPlayer[playerId] = this.getVisibleStarsOfPlayer(player);
+            }
+            return byPlayer;
+        };
+        MapEvaluator.prototype.estimateGlobalStrength = function (player) {
+            var visibleStrength = 0;
+            var invisibleStrength = 0;
+            var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
+            for (var i = 0; i < fleets.length; i++) {
+                visibleStrength += this.evaluateFleetStrength(fleets[i]);
+            }
+            if (player !== this.player) {
+                invisibleStrength = visibleStrength * 0.5;
+            }
+            return visibleStrength + invisibleStrength;
+        };
+        MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
+            if (!this.player.diplomacyStatus.metPlayers[player.id]) {
+                throw new Error(this.player.name +
+                    " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
+            }
+            var otherInfluenceMap = this.getPlayerInfluenceMap(player);
+            var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
+            var totalInfluenceInOwnStars = 0;
+            for (var starId in otherInfluenceMap) {
+                for (var i = 0; i < this.player.controlledLocations.length; i++) {
+                    var star = this.player.controlledLocations[i];
+                    if (star.id === parseInt(starId)) {
+                        var otherInfluence = otherInfluenceMap[starId];
+                        var ownInfluence = ownInfluenceMap[starId];
+                        totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
+                        break;
+                    }
+                }
+            }
+            var globalStrengthDifference = this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
+            return totalInfluenceInOwnStars + globalStrengthDifference;
+        };
+        MapEvaluator.prototype.getPerceivedThreatOfAllKnownPlayers = function () {
+            var byPlayer = {};
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                byPlayer[playerId] = this.getPerceivedThreatOfPlayer(player);
+            }
+            return byPlayer;
+        };
+        MapEvaluator.prototype.getRelativePerceivedThreatOfAllKnownPlayers = function () {
+            var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
+            var relative = {};
+            var min, max;
+            for (var playerId in byPlayer) {
+                var threat = byPlayer[playerId];
+                min = isFinite(min) ? Math.min(min, threat) : threat;
+                max = isFinite(max) ? Math.max(max, threat) : threat;
+            }
+            for (var playerId in byPlayer) {
+                relative[playerId] = utility_13.getRelativeValue(byPlayer[playerId], min, max);
+            }
+            return relative;
+        };
+        MapEvaluator.prototype.getVisionCoverageAroundStar = function (star, range, useDetection) {
+            if (useDetection === void 0) { useDetection = false; }
+            var toCheck = star.getLinkedInRange(range).all;
+            var scorePerVisibleStar = 1 / toCheck.length;
+            var coverageScore = 0;
+            var visibilityCheckFN = useDetection ? this.player.starIsDetected : this.player.starIsVisible;
+            for (var i = 0; i < toCheck.length; i++) {
+                var neighbor = toCheck[i];
+                if (visibilityCheckFN.call(this.player, neighbor)) {
+                    coverageScore += scorePerVisibleStar;
+                }
+            }
+            return coverageScore;
+        };
+        MapEvaluator.prototype.estimateFleetVisionRange = function (fleet) {
+            var _this = this;
+            var fleetLikelyHasScoutingUnit = fleet.units.length >= 5;
+            var estimatedRange = fleetLikelyHasScoutingUnit ? 2 : 1;
+            fleet.units.forEach(function (unit) {
+                if (_this.player.unitIsIdentified(unit)) {
+                    estimatedRange = Math.max(estimatedRange, unit.getVisionRange());
+                }
+            });
+            return estimatedRange;
+        };
+        MapEvaluator.prototype.estimateFleetDetectionRange = function (fleet) {
+            var _this = this;
+            var fleetLikelyHasScoutingUnit = fleet.units.length >= 5;
+            var estimatedRange = fleetLikelyHasScoutingUnit ? 0 : -1;
+            fleet.units.forEach(function (unit) {
+                if (_this.player.unitIsIdentified(unit)) {
+                    estimatedRange = Math.max(estimatedRange, unit.getDetectionRange());
+                }
+            });
+            return estimatedRange;
+        };
+        MapEvaluator.prototype.buildPlayerVisionMap = function (player) {
+            var detectedStars = {};
+            var visibleStars = {};
+            var revealedStarsOfPlayer = this.player.getRevealedStars().filter(function (star) {
+                return star.owner === player;
+            });
+            var visibleFleetsOfPlayer = this.getVisibleFleetsByPlayer()[player.id] || [];
+            var processDetectionSource = function (source, detectionRange, visionRange) {
+                var detected = source.getLinkedInRange(detectionRange).all;
+                for (var i = 0; i < detected.length; i++) {
+                    var star = detected[i];
+                    if (!detectedStars[star.id]) {
+                        detectedStars[star.id] = star;
+                    }
+                }
+                var visible = source.getLinkedInRange(visionRange).all;
+                for (var i = 0; i < visible.length; i++) {
+                    var star = visible[i];
+                    if (!visibleStars[star.id]) {
+                        visibleStars[star.id] = star;
+                    }
+                }
+            };
+            for (var i = 0; i < revealedStarsOfPlayer.length; i++) {
+                var star = revealedStarsOfPlayer[i];
+                var detectionRange = this.player.starIsDetected(star) ? star.getDetectionRange() : 0;
+                var visionRange = this.player.starIsDetected(star) ? star.getVisionRange() : 1;
+                processDetectionSource(star, detectionRange, visionRange);
+            }
+            for (var i = 0; i < visibleFleetsOfPlayer.length; i++) {
+                var fleet = visibleFleetsOfPlayer[i];
+                var detectionRange = this.estimateFleetDetectionRange(fleet);
+                var visionRange = this.estimateFleetVisionRange(fleet);
+                processDetectionSource(fleet.location, detectionRange, visionRange);
+            }
+            return ({
+                visible: visibleStars,
+                detected: detectedStars
+            });
+        };
+        MapEvaluator.prototype.getPlayerVisionMap = function (player) {
+            if (!this.cachedVisionMaps[player.id]) {
+                this.cachedVisionMaps[player.id] = this.buildPlayerVisionMap(player);
+            }
+            return this.cachedVisionMaps[player.id];
+        };
+        MapEvaluator.prototype.getScoredPerimeterLocationsAgainstPlayer = function (player, safetyFactor, forScouting) {
+            var ownInfluence = this.getPlayerInfluenceMap(this.player);
+            var enemyInfluence = this.getPlayerInfluenceMap(player);
+            var enemyVision = this.getPlayerVisionMap(player);
+            var scores = [];
+            var revealedStars = this.player.getRevealedStars();
+            var stars = revealedStars.filter(function (star) {
+                return star.owner.isIndependent || star.owner === this.player;
+            }, this);
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                var nearestOwnedStar = player.getNearestOwnedStarTo(star);
+                var distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
+                distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
+                var distanceScore = Math.pow(1 / distanceToEnemy, 2);
+                var danger = enemyInfluence[star.id] || 1;
+                if (!enemyVision.visible[star.id]) {
+                    danger *= 0.5;
+                }
+                danger *= safetyFactor;
+                if (forScouting) {
+                    var safety = ownInfluence[star.id] / (danger * safetyFactor);
+                    var score = safety * distanceScore;
+                }
+                else {
+                    var score = (danger / ownInfluence[star.id]) / safetyFactor;
+                }
+                scores.push({
+                    star: star,
+                    score: score
+                });
+            }
+            return scores;
+        };
+        MapEvaluator.prototype.getDesireToGoToWarWith = function (player) {
+            return Math.random();
+        };
+        MapEvaluator.prototype.getAbilityToGoToWarWith = function (player) {
+            return Math.random();
+        };
+        MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
+            var evaluationByPlayer = {};
+            var neighborStarsCountByPlayer = {};
+            var allNeighbors = this.player.getNeighboringStars();
+            var neighborStarsForPlayer = [];
+            for (var i = 0; i < allNeighbors.length; i++) {
+                var star = allNeighbors[i];
+                if (!star.owner.isIndependent) {
+                    if (!neighborStarsCountByPlayer[star.owner.id]) {
+                        neighborStarsCountByPlayer[star.owner.id] = 0;
+                    }
+                    neighborStarsCountByPlayer[star.owner.id]++;
+                }
+            }
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                evaluationByPlayer[player.id] =
+                    {
+                        currentTurn: currentTurn,
+                        opinion: this.player.diplomacyStatus.getOpinionOf(player),
+                        neighborStars: neighborStarsCountByPlayer[player.id],
+                        currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
+                    };
+            }
+            return evaluationByPlayer;
+        };
+        return MapEvaluator;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = MapEvaluator;
+});
+define("src/mapai/GrandStrategyAI", ["require", "exports", "src/utility"], function (require, exports, utility_14) {
+    "use strict";
+    var GrandStrategyAI = (function () {
+        function GrandStrategyAI(personality, mapEvaluator) {
+            this.personality = personality;
+            this.mapEvaluator = mapEvaluator;
+        }
+        GrandStrategyAI.prototype.setDesiredStars = function () {
+            var totalStarsInMap = this.mapEvaluator.map.stars.length;
+            var playersInGame = this.mapEvaluator.game.playerOrder.length;
+            var starsPerPlayer = totalStarsInMap / playersInGame;
+            var baseMinStarsDesired = starsPerPlayer * 0.34;
+            var baseMaxStarsDesired = starsPerPlayer;
+            var extraMinStarsDesired = this.personality.expansiveness * (starsPerPlayer * 0.66);
+            var extraMaxStarsDesired = this.personality.expansiveness * (starsPerPlayer * (playersInGame / 4));
+            var minStarsDesired = baseMinStarsDesired + extraMinStarsDesired;
+            var maxStarsDesired = baseMaxStarsDesired + extraMaxStarsDesired;
+            this.desiredStars =
+                {
+                    min: minStarsDesired,
+                    max: maxStarsDesired
+                };
+        };
+        GrandStrategyAI.prototype.setDesires = function () {
+            this.desireForExpansion = this.getDesireForExpansion();
+            this.desireForWar = this.getDesireForWar();
+            this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
+        };
+        GrandStrategyAI.prototype.getDesireForWar = function () {
+            if (!this.desiredStars)
+                this.setDesiredStars();
+            var fromAggressiveness = this.personality.aggressiveness;
+            var fromExpansiveness = 0;
+            var minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
+            var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
+            if (availableExpansionTargets.length < minStarsStillDesired) {
+                fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
+            }
+            var desire = fromAggressiveness + fromExpansiveness;
+            return utility_14.clamp(desire, 0, 1);
+        };
+        GrandStrategyAI.prototype.getDesireForExpansion = function () {
+            if (!this.desiredStars)
+                this.setDesiredStars();
+            var starsOwned = this.mapEvaluator.player.controlledLocations.length;
+            var desire = 1 - utility_14.getRelativeValue(starsOwned, this.desiredStars.min, this.desiredStars.max);
+            return utility_14.clamp(desire, 0.1, 1);
+        };
+        return GrandStrategyAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = GrandStrategyAI;
+});
+define("src/mapai/Front", ["require", "exports", "src/Fleet"], function (require, exports, Fleet_3) {
+    "use strict";
+    var Front = (function () {
+        function Front(props) {
+            this.hasMustered = false;
+            this.id = props.id;
+            this.objective = props.objective;
+            this.units = props.units || [];
+            this.minUnitsDesired = props.minUnitsDesired;
+            this.idealUnitsDesired = props.idealUnitsDesired;
+            this.targetLocation = props.targetLocation;
+            this.musterLocation = props.musterLocation;
+        }
+        Front.prototype.organizeFleets = function () {
+            var allFleets = this.getAssociatedFleets();
+            var pureFleetsByLocation = {};
+            var impureFleetMembersByLocation = {};
+            var ownUnitFilterFN = function (unit) {
+                return this.getUnitIndex(unit) >= 0;
+            }.bind(this);
+            for (var i = 0; i < allFleets.length; i++) {
+                var fleet = allFleets[i];
+                var star = fleet.location;
+                if (this.isFleetPure(fleet)) {
+                    if (!pureFleetsByLocation[star.id]) {
+                        pureFleetsByLocation[star.id] = [];
+                    }
+                    pureFleetsByLocation[star.id].push(fleet);
+                }
+                else {
+                    var ownUnits = fleet.units.filter(ownUnitFilterFN);
+                    for (var j = 0; j < ownUnits.length; j++) {
+                        if (!impureFleetMembersByLocation[star.id]) {
+                            impureFleetMembersByLocation[star.id] = [];
+                        }
+                        impureFleetMembersByLocation[star.id].push(ownUnits[j]);
+                    }
+                }
+            }
+            var sortFleetsBySizeFN = function (a, b) {
+                return b.units.length - a.units.length;
+            };
+            for (var starId in pureFleetsByLocation) {
+                var fleets = pureFleetsByLocation[starId];
+                if (fleets.length > 1) {
+                    fleets.sort(sortFleetsBySizeFN);
+                    for (var i = fleets.length - 1; i >= 1; i--) {
+                        fleets[i].mergeWith(fleets[0]);
+                        fleets.splice(i, 1);
+                    }
+                }
+                if (impureFleetMembersByLocation[starId]) {
+                    for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
+                        var unit = impureFleetMembersByLocation[starId][i];
+                        unit.fleet.transferUnit(fleets[0], unit);
+                        impureFleetMembersByLocation[starId].splice(i, 1);
+                    }
+                }
+            }
+            for (var starId in impureFleetMembersByLocation) {
+                var units = impureFleetMembersByLocation[starId];
+                if (units.length < 1)
+                    continue;
+                var newFleet = new Fleet_3.default(units[0].fleet.player, [], units[0].fleet.location);
+                for (var i = units.length - 1; i >= 0; i--) {
+                    units[i].fleet.transferUnit(newFleet, units[i]);
+                }
+            }
+        };
+        Front.prototype.isFleetPure = function (fleet) {
+            for (var i = 0; i < fleet.units.length; i++) {
+                if (this.getUnitIndex(fleet.units[i]) === -1) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        Front.prototype.getAssociatedFleets = function () {
+            var fleetsById = {};
+            for (var i = 0; i < this.units.length; i++) {
+                if (!this.units[i].fleet)
+                    continue;
+                if (!fleetsById[this.units[i].fleet.id]) {
+                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
+                }
+            }
+            var allFleets = [];
+            for (var fleetId in fleetsById) {
+                allFleets.push(fleetsById[fleetId]);
+            }
+            return allFleets;
+        };
+        Front.prototype.getUnitIndex = function (unit) {
+            return this.units.indexOf(unit);
+        };
+        Front.prototype.addUnit = function (unit) {
+            if (unit.front) {
+                unit.front.removeUnit(unit);
+            }
+            unit.front = this;
+            this.units.push(unit);
+        };
+        Front.prototype.removeUnit = function (unit) {
+            var unitIndex = this.getUnitIndex(unit);
+            unit.front = null;
+            this.units.splice(unitIndex, 1);
+        };
+        Front.prototype.getUnitCountByArchetype = function () {
+            var unitCountByArchetype = {};
+            for (var i = 0; i < this.units.length; i++) {
+                var archetype = this.units[i].template.archetype;
+                if (!unitCountByArchetype[archetype.type]) {
+                    unitCountByArchetype[archetype.type] = 0;
+                }
+                unitCountByArchetype[archetype.type]++;
+            }
+            return unitCountByArchetype;
+        };
+        Front.prototype.getUnitsByLocation = function () {
+            var byLocation = {};
+            for (var i = 0; i < this.units.length; i++) {
+                var star = this.units[i].fleet.location;
+                if (!byLocation[star.id]) {
+                    byLocation[star.id] = [];
+                }
+                byLocation[star.id].push(this.units[i]);
+            }
+            return byLocation;
+        };
+        Front.prototype.moveFleets = function (afterMoveCallback) {
+            if (this.units.length < 1) {
+                afterMoveCallback();
+                return;
+            }
+            else {
+                var moveRoutine = this.objective.template.moveRoutineFN;
+                moveRoutine(this, afterMoveCallback);
+            }
+        };
+        Front.prototype.hasUnit = function (unit) {
+            return this.units.indexOf(unit) !== -1;
+        };
+        Front.prototype.scoreUnitFit = function (unit) {
+            var template = this.objective.template;
+            var score = 1;
+            if (this.hasUnit(unit)) {
+                score += 0.2;
+                if (this.hasMustered) {
+                    score += 0.3;
+                }
+                this.removeUnit(unit);
+            }
+            score *= this.objective.priority;
+            score *= template.unitFitFN(unit, this);
+            score *= template.unitDesireFN(this);
+            return score;
+        };
+        Front.prototype.getNewUnitArchetypeScores = function () {
+            var countByArchetype = this.getUnitCountByArchetype();
+            var totalUnits = this.units.length;
+            var idealWeights = this.objective.template.preferredUnitComposition;
+            var scores = {};
+            for (var unitType in idealWeights) {
+                var archetypeCount = countByArchetype[unitType] || 0;
+                scores[unitType] = totalUnits * idealWeights[unitType] - archetypeCount;
+            }
+            return scores;
+        };
+        return Front;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Front;
+});
+define("src/mapai/DiplomacyAI", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var DiplomacyAI = (function () {
+        function DiplomacyAI(mapEvaluator, objectivesAI, game, personality) {
+            this.game = game;
+            this.player = mapEvaluator.player;
+            this.diplomacyStatus = this.player.diplomacyStatus;
+            this.mapEvaluator = mapEvaluator;
+            this.objectivesAI = objectivesAI;
+            this.personality = personality;
+        }
+        DiplomacyAI.prototype.setAttitudes = function () {
+            var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
+            for (var playerId in diplomacyEvaluations) {
+                this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
+            }
+        };
+        DiplomacyAI.prototype.resolveDiplomaticObjectives = function (afterAllDoneCallback) {
+            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
+            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
+            this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback);
+        };
+        DiplomacyAI.prototype.resolveNextObjective = function (objectives, adjustments, afterAllDoneCallback) {
+            var objective = objectives.pop();
+            if (!objective) {
+                afterAllDoneCallback();
+                return;
+            }
+            var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
+            objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
+        };
+        return DiplomacyAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = DiplomacyAI;
+});
+define("src/mapai/Objective", ["require", "exports", "src/idGenerators"], function (require, exports, idGenerators_5) {
+    "use strict";
+    var Objective = (function () {
+        function Objective(template, priority, target, targetPlayer) {
+            this.isOngoing = false;
+            this.id = idGenerators_5.default.objective++;
+            this.template = template;
+            this.type = this.template.key;
+            this.priority = priority;
+            this.target = target;
+            this.targetPlayer = targetPlayer;
+        }
+        Object.defineProperty(Objective.prototype, "priority", {
+            get: function () {
+                return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
+            },
+            set: function (priority) {
+                this._basePriority = priority;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Objective.prototype.getUnitsDesired = function (mapEvaluator) {
+            return this.template.unitsToFillObjectiveFN(mapEvaluator, this);
+        };
+        return Objective;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Objective;
+});
+define("src/mapai/ObjectivesAI", ["require", "exports", "src/App"], function (require, exports, App_15) {
+    "use strict";
+    var ObjectivesAI = (function () {
+        function ObjectivesAI(mapEvaluator, grandStrategyAI) {
+            this.objectivesByType = {};
+            this.objectives = [];
+            this.requests = [];
+            this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
+            this.grandStrategyAI = grandStrategyAI;
+        }
+        ObjectivesAI.prototype.clearObjectives = function () {
+            this.objectives = [];
+        };
+        ObjectivesAI.prototype.setAllDiplomaticObjectives = function () {
+            this.clearObjectives();
+            this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
+        };
+        ObjectivesAI.prototype.setAllEconomicObjectives = function () {
+            this.clearObjectives();
+            this.setAllObjectivesWithTemplateProperty("economyRoutineFN");
+        };
+        ObjectivesAI.prototype.setAllMoveObjectives = function () {
+            this.clearObjectives();
+            this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
+        };
+        ObjectivesAI.prototype.setAllObjectivesWithTemplateProperty = function (propKey) {
+            var objectiveTemplates = App_15.default.moduleData.Templates.Objectives;
+            for (var key in objectiveTemplates) {
+                var template = objectiveTemplates[key];
+                if (template[propKey]) {
+                    this.setObjectivesOfType(objectiveTemplates[key]);
+                }
+            }
+        };
+        ObjectivesAI.prototype.getNewObjectivesOfType = function (objectiveTemplate) {
+            var objectiveType = objectiveTemplate.key;
+            var byTarget = this.getObjectivesByTarget(objectiveType, true);
+            var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator, this);
+            var finalObjectives = [];
+            for (var i = 0; i < newObjectives.length; i++) {
+                var newObjective = newObjectives[i];
+                if (newObjective.priority < 0.04) {
+                    continue;
+                }
+                var keyString = newObjective.target ? newObjective.target.id : "noTarget";
+                var oldObjective = byTarget[keyString];
+                if (oldObjective) {
+                    oldObjective.priority = newObjective.priority;
+                    finalObjectives.push(oldObjective);
+                }
+                else {
+                    finalObjectives.push(newObjective);
+                }
+            }
+            return finalObjectives;
+        };
+        ObjectivesAI.prototype.setObjectivesOfType = function (objectiveTemplate) {
+            var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
+            this.objectivesByType[objectiveTemplate.key] = newObjectives;
+            this.objectives = this.objectives.concat(newObjectives);
+        };
+        ObjectivesAI.prototype.getObjectivesByTarget = function (objectiveType, markAsOngoing) {
+            var objectivesByTarget = {};
+            if (!this.objectivesByType[objectiveType]) {
+                return objectivesByTarget;
+            }
+            for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
+                var objective = this.objectivesByType[objectiveType][i];
+                if (markAsOngoing)
+                    objective.isOngoing = true;
+                var keyString = objective.target ? objective.target.id : "noTarget";
+                objectivesByTarget[keyString] = objective;
+            }
+            return objectivesByTarget;
+        };
+        ObjectivesAI.prototype.getObjectivesWithTemplateProperty = function (propKey) {
+            return this.objectives.filter(function (objective) {
+                return Boolean(objective.template[propKey]);
+            });
+        };
+        ObjectivesAI.prototype.getAdjustmentsForTemplateProperty = function (propKey) {
+            var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
+            var adjustments;
+            for (var i = 0; i < withAdjustment.length; i++) {
+                for (var j = 0; j < withAdjustment[i].template[propKey].length; j++) {
+                    var adjustment = withAdjustment[i].template[propKey][j];
+                    if (!adjustments[adjustment.target.id]) {
+                        adjustments[adjustment.target.id] =
+                            {
+                                target: adjustment.target,
+                                multiplier: 1
+                            };
+                    }
+                    adjustments[adjustment.target.id].multiplier += adjustment.multiplier;
+                }
+            }
+            return adjustments;
+        };
+        return ObjectivesAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = ObjectivesAI;
+});
+define("src/mapai/FrontsAI", ["require", "exports", "src/mapai/Front"], function (require, exports, Front_1) {
+    "use strict";
+    var FrontsAI = (function () {
+        function FrontsAI(mapEvaluator, objectivesAI, personality) {
+            this.fronts = [];
+            this.frontsRequestingUnits = [];
+            this.frontsToMove = [];
+            this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
+            this.objectivesAI = objectivesAI;
+            this.personality = personality;
+        }
+        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
+            var scores = [];
+            for (var i = 0; i < units.length; i++) {
+                scores.push({
+                    unit: units[i],
+                    score: front.scoreUnitFit(units[i]),
+                    front: front
+                });
+            }
+            return scores;
+        };
+        FrontsAI.prototype.assignUnits = function () {
+            var units = this.player.getAllUnits();
+            var allUnitScores = [];
+            var unitScoresByFront = {};
+            var recalculateScoresForFront = function (front) {
+                var frontScores = unitScoresByFront[front.id];
+                for (var i = 0; i < frontScores.length; i++) {
+                    frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
+                }
+            };
+            var removeUnit = function (unit) {
+                for (var frontId in unitScoresByFront) {
+                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
+                        return score.unit !== unit;
+                    });
+                }
+            };
+            var sortByScoreFN = function (a, b) {
+                return a.score - b.score;
+            };
+            for (var i = 0; i < this.fronts.length; i++) {
+                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
+                unitScoresByFront[this.fronts[i].id] = frontScores;
+                allUnitScores = allUnitScores.concat(frontScores);
+            }
+            var alreadyAdded = {};
+            while (allUnitScores.length > 0) {
+                allUnitScores.sort(sortByScoreFN);
+                var bestScore = allUnitScores.pop();
+                if (alreadyAdded[bestScore.unit.id]) {
+                    continue;
+                }
+                bestScore.front.addUnit(bestScore.unit);
+                removeUnit(bestScore.unit);
+                alreadyAdded[bestScore.unit.id] = true;
+                recalculateScoresForFront(bestScore.front);
+            }
+        };
+        FrontsAI.prototype.getFrontWithId = function (id) {
+            for (var i = 0; i < this.fronts.length; i++) {
+                if (this.fronts[i].id === id) {
+                    return this.fronts[i];
+                }
+            }
+            return null;
+        };
+        FrontsAI.prototype.createFront = function (objective) {
+            var musterLocation = objective.target ?
+                this.player.getNearestOwnedStarTo(objective.target) :
+                null;
+            var unitsDesired = objective.getUnitsDesired(this.mapEvaluator);
+            var front = new Front_1.default({
+                id: objective.id,
+                objective: objective,
+                minUnitsDesired: unitsDesired.min,
+                idealUnitsDesired: unitsDesired.ideal,
+                targetLocation: objective.target,
+                musterLocation: musterLocation
+            });
+            return front;
+        };
+        FrontsAI.prototype.removeInactiveFronts = function () {
+            for (var i = this.fronts.length - 1; i >= 0; i--) {
+                var front = this.fronts[i];
+                var hasActiveObjective = false;
+                for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
+                    var objective = this.objectivesAI.objectives[j];
+                    if (objective.id === front.id) {
+                        hasActiveObjective = true;
+                        break;
+                    }
+                }
+                if (!hasActiveObjective) {
+                    this.fronts.splice(i, 1);
+                }
+            }
+        };
+        FrontsAI.prototype.formFronts = function () {
+            this.removeInactiveFronts();
+            for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
+                var objective = this.objectivesAI.objectives[i];
+                if (!objective.template.moveRoutineFN) {
+                    continue;
+                }
+                if (!this.getFrontWithId(objective.id)) {
+                    var front = this.createFront(objective);
+                    this.fronts.push(front);
+                }
+            }
+        };
+        FrontsAI.prototype.organizeFleets = function () {
+            for (var i = 0; i < this.fronts.length; i++) {
+                this.fronts[i].organizeFleets();
+            }
+        };
+        FrontsAI.prototype.setFrontsToMove = function () {
+            this.frontsToMove = this.fronts.slice(0);
+            this.frontsToMove.sort(function (a, b) {
+                return a.objective.template.movePriority - b.objective.template.movePriority;
+            });
+        };
+        FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
+            var front = this.frontsToMove.pop();
+            if (!front) {
+                afterMovingAllCallback();
+                return;
+            }
+            front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
+        };
+        FrontsAI.prototype.setUnitRequests = function () {
+            this.frontsRequestingUnits = [];
+            for (var i = 0; i < this.fronts.length; i++) {
+                var front = this.fronts[i];
+                if (front.units.length < front.idealUnitsDesired) {
+                    this.frontsRequestingUnits.push(front);
+                }
+            }
+        };
+        return FrontsAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = FrontsAI;
+});
+define("src/mapai/EconomyAI", ["require", "exports", "src/utility"], function (require, exports, utility_15) {
+    "use strict";
+    var EconomyAI = (function () {
+        function EconomyAI(props) {
+            this.objectivesAI = props.objectivesAI;
+            this.frontsAI = props.frontsAI;
+            this.mapEvaluator = props.mapEvaluator;
+            this.player = props.mapEvaluator.player;
+            this.personality = props.personality;
+        }
+        EconomyAI.prototype.resolveEconomicObjectives = function () {
+            var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("economyRoutineFN");
+            var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("economyRoutineAdjustments");
+            for (var i = 0; i < objectives.length; i++) {
+                var objective = objectives[i];
+                objective.template.economyRoutineFN(objective, this, adjustments);
+            }
+        };
+        EconomyAI.prototype.satisfyAllRequests = function () {
+            var allRequests = this.frontsAI.frontsRequestingUnits;
+            allRequests.sort(function (a, b) {
+                return b.objective.priority - a.objective.priority;
+            });
+            for (var i = 0; i < allRequests.length; i++) {
+                var request = allRequests[i];
+                if (request.targetLocation) {
+                    this.satisfyFrontRequest(request);
+                }
+                else {
+                }
+            }
+        };
+        EconomyAI.prototype.satisfyFrontRequest = function (front) {
+            var player = this.player;
+            var starQualifierFN = function (star) {
+                return star.owner === player && star.manufactory && !star.manufactory.queueIsFull();
+            };
+            var star = front.musterLocation.getNearestStarForQualifier(starQualifierFN);
+            if (!star) {
+                return;
+            }
+            var manufactory = star.manufactory;
+            var archetypeScores = front.getNewUnitArchetypeScores();
+            var buildableUnitTypesByArchetype = {};
+            var buildableUnitTypes = player.getGloballyBuildableUnits().concat(manufactory.getLocalUnitTypes().manufacturable);
+            for (var i = 0; i < buildableUnitTypes.length; i++) {
+                var archetype = buildableUnitTypes[i].archetype;
+                if (!buildableUnitTypesByArchetype[archetype.type]) {
+                    buildableUnitTypesByArchetype[archetype.type] = [];
+                }
+                if (!archetypeScores[archetype.type]) {
+                    archetypeScores[archetype.type] = 0;
+                }
+                buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
+            }
+            var sortedScores = utility_15.getObjectKeysSortedByValue(archetypeScores, "desc");
+            var unitType;
+            for (var i = 0; i < sortedScores.length; i++) {
+                if (buildableUnitTypesByArchetype[sortedScores[i]]) {
+                    unitType = utility_15.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
+                    if (this.player.money < unitType.buildCost) {
+                        return;
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            if (!unitType)
+                debugger;
+            manufactory.addThingToQueue(unitType, "unit");
+        };
+        return EconomyAI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = EconomyAI;
+});
+define("src/mapai/AIController", ["require", "exports", "src/mapai/MapEvaluator", "src/mapai/GrandStrategyAI", "src/mapai/EconomyAI", "src/mapai/FrontsAI", "src/mapai/ObjectivesAI", "src/mapai/DiplomacyAI", "src/utility"], function (require, exports, MapEvaluator_1, GrandStrategyAI_1, EconomyAI_1, FrontsAI_1, ObjectivesAI_1, DiplomacyAI_1, utility_16) {
+    "use strict";
+    var AIController = (function () {
+        function AIController(player, game, personality) {
+            this.personality = personality || utility_16.makeRandomPersonality();
+            this.player = player;
+            this.game = game;
+            this.map = game.galaxyMap;
+            this.mapEvaluator = new MapEvaluator_1.default(this.map, this.player, this.game);
+            this.grandStrategyAI = new GrandStrategyAI_1.default(this.personality, this.mapEvaluator);
+            this.objectivesAI = new ObjectivesAI_1.default(this.mapEvaluator, this.grandStrategyAI);
+            this.frontsAI = new FrontsAI_1.default(this.mapEvaluator, this.objectivesAI, this.personality);
+            this.economyAI = new EconomyAI_1.default({
+                objectivesAI: this.objectivesAI,
+                frontsAI: this.frontsAI,
+                mapEvaluator: this.mapEvaluator,
+                personality: this.personality
+            });
+            this.diplomacyAI = new DiplomacyAI_1.default(this.mapEvaluator, this.objectivesAI, this.game, this.personality);
+        }
+        AIController.prototype.processTurn = function (afterFinishedCallback) {
+            this.mapEvaluator.processTurnStart();
+            this.grandStrategyAI.setDesires();
+            this.diplomacyAI.setAttitudes();
+            this.objectivesAI.setAllDiplomaticObjectives();
+            this.diplomacyAI.resolveDiplomaticObjectives(this.processTurnAfterDiplomaticObjectives.bind(this, afterFinishedCallback));
+        };
+        AIController.prototype.processTurnAfterDiplomaticObjectives = function (afterFinishedCallback) {
+            this.objectivesAI.setAllEconomicObjectives();
+            this.economyAI.resolveEconomicObjectives();
+            this.objectivesAI.setAllMoveObjectives();
+            this.frontsAI.formFronts();
+            this.frontsAI.assignUnits();
+            this.frontsAI.setUnitRequests();
+            this.economyAI.satisfyAllRequests();
+            this.frontsAI.organizeFleets();
+            this.frontsAI.setFrontsToMove();
+            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
+        };
+        AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
+            this.frontsAI.organizeFleets();
+            if (afterFinishedCallback) {
+                afterFinishedCallback();
+            }
+        };
+        return AIController;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = AIController;
+});
+define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/utility", "src/Flag", "src/BattleSimulator", "src/BattlePrep", "src/DiplomacyStatus", "src/PlayerTechnology", "src/eventManager", "src/colorGeneration", "src/options", "src/mapai/AIController"], function (require, exports, idGenerators_6, App_16, utility_17, Flag_2, BattleSimulator_1, BattlePrep_1, DiplomacyStatus_1, PlayerTechnology_1, eventManager_9, colorGeneration_1, options_2, AIController_1) {
+    "use strict";
+    var Player = (function () {
+        function Player(isAI, id) {
+            this.units = {};
+            this.resources = {};
+            this.fleets = [];
+            this.items = [];
+            this.isAI = false;
+            this.isIndependent = false;
+            this.controlledLocations = [];
+            this.visionIsDirty = true;
+            this.visibleStars = {};
+            this.revealedStars = {};
+            this.detectedStars = {};
+            this.identifiedUnits = {};
+            this.tempOverflowedResearchAmount = 0;
+            this.listeners = {};
+            this.id = isFinite(id) ? id : idGenerators_6.default.player++;
+            this.name = "Player " + this.id;
+            this.isAI = isAI;
+            this.diplomacyStatus = new DiplomacyStatus_1.default(this);
+            this.money = 1000;
+        }
+        Object.defineProperty(Player.prototype, "money", {
+            get: function () {
+                return this._money;
+            },
+            set: function (amount) {
+                this._money = amount;
+                if (!this.isAI) {
+                    eventManager_9.default.dispatchEvent("playerMoneyUpdated");
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Player.prototype.destroy = function () {
+            this.diplomacyStatus.destroy();
+            this.diplomacyStatus = null;
+            this.AIController = null;
+            for (var key in this.listeners) {
+                eventManager_9.default.removeEventListener(key, this.listeners[key]);
+            }
+        };
+        Player.prototype.die = function () {
+            for (var i = 0; i < this.fleets.length; i++) {
+                this.fleets[i].deleteFleet(false);
+            }
+            eventManager_9.default.dispatchEvent("makePlayerDiedNotification", {
+                deadPlayerName: this.name
+            });
+            console.log(this.name + " died");
+        };
+        Player.prototype.initTechnologies = function (savedData) {
+            this.playerTechnology = new PlayerTechnology_1.default(this.getResearchSpeed.bind(this), savedData);
+            this.listeners["builtBuildingWithEffect_research"] = eventManager_9.default.addEventListener("builtBuildingWithEffect_research", this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology));
+        };
+        Player.prototype.makeColorScheme = function () {
+            var scheme = colorGeneration_1.generateColorScheme(this.color);
+            this.color = scheme.main;
+            this.secondaryColor = scheme.secondary;
+        };
+        Player.prototype.setupAI = function (game) {
+            this.AIController = new AIController_1.default(this, game, this.personality);
+        };
+        Player.prototype.makeRandomFlag = function (seed) {
+            if (!this.color || !this.secondaryColor)
+                this.makeColorScheme();
+            this.flag = new Flag_2.default({
+                width: 46,
+                mainColor: this.color,
+                secondaryColor: this.secondaryColor
+            });
+            this.flag.generateRandom(seed);
+        };
+        Player.prototype.addUnit = function (unit) {
+            this.units[unit.id] = unit;
+        };
+        Player.prototype.removeUnit = function (unit) {
+            this.units[unit.id] = null;
+            delete this.units[unit.id];
+        };
+        Player.prototype.getAllUnits = function () {
+            var allUnits = [];
+            for (var unitId in this.units) {
+                allUnits.push(this.units[unitId]);
+            }
+            return allUnits;
+        };
+        Player.prototype.forEachUnit = function (operator) {
+            for (var unitId in this.units) {
+                operator(this.units[unitId]);
+            }
+        };
+        Player.prototype.getFleetIndex = function (fleet) {
+            return this.fleets.indexOf(fleet);
+        };
+        Player.prototype.addFleet = function (fleet) {
+            if (this.getFleetIndex(fleet) >= 0) {
+                return;
+            }
+            this.fleets.push(fleet);
+            this.visionIsDirty = true;
+        };
+        Player.prototype.removeFleet = function (fleet) {
+            var fleetIndex = this.getFleetIndex(fleet);
+            if (fleetIndex < 0)
+                return;
+            this.fleets.splice(fleetIndex, 1);
+            this.visionIsDirty = true;
+        };
+        Player.prototype.getFleetsWithPositions = function () {
+            var positions = [];
+            for (var i = 0; i < this.fleets.length; i++) {
+                var fleet = this.fleets[i];
+                positions.push({
+                    position: fleet.location,
+                    data: fleet
+                });
+            }
+            return positions;
+        };
+        Player.prototype.hasStar = function (star) {
+            return (this.controlledLocations.indexOf(star) >= 0);
+        };
+        Player.prototype.addStar = function (star) {
+            if (this.hasStar(star))
+                return false;
+            star.owner = this;
+            this.controlledLocations.push(star);
+            this.visionIsDirty = true;
+        };
+        Player.prototype.removeStar = function (star) {
+            var index = this.controlledLocations.indexOf(star);
+            if (index < 0)
+                return false;
+            star.owner = null;
+            this.controlledLocations.splice(index, 1);
+            this.visionIsDirty = true;
+            if (this.controlledLocations.length === 0) {
+                App_16.default.game.killPlayer(this);
+            }
+        };
+        Player.prototype.getIncome = function () {
+            var income = 0;
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                income += this.controlledLocations[i].getIncome();
+            }
+            return income;
+        };
+        Player.prototype.addResource = function (resource, amount) {
+            if (!this.resources[resource.type]) {
+                this.resources[resource.type] = 0;
+            }
+            this.resources[resource.type] += amount;
+        };
+        Player.prototype.getResourceIncome = function () {
+            var incomeByResource = {};
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                var star = this.controlledLocations[i];
+                var starIncome = star.getResourceIncome();
+                if (!starIncome)
+                    continue;
+                if (!incomeByResource[starIncome.resource.type]) {
+                    incomeByResource[starIncome.resource.type] =
+                        {
+                            resource: starIncome.resource,
+                            amount: 0
+                        };
+                }
+                incomeByResource[starIncome.resource.type].amount += starIncome.amount;
+            }
+            return incomeByResource;
+        };
+        Player.prototype.getNeighboringStars = function () {
+            var stars = {};
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                var currentOwned = this.controlledLocations[i];
+                var frontier = currentOwned.getLinkedInRange(1).all;
+                for (var j = 0; j < frontier.length; j++) {
+                    if (stars[frontier[j].id]) {
+                        continue;
+                    }
+                    else if (frontier[j].owner.id === this.id) {
+                        continue;
+                    }
+                    else {
+                        stars[frontier[j].id] = frontier[j];
+                    }
+                }
+            }
+            var allStars = [];
+            for (var id in stars) {
+                allStars.push(stars[id]);
+            }
+            return allStars;
+        };
+        Player.prototype.updateVisionInStar = function (star) {
+            if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
+                this.meetPlayersInStarByVisibility(star, "visible");
+            }
+        };
+        Player.prototype.updateDetectionInStar = function (star) {
+            if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
+                this.meetPlayersInStarByVisibility(star, "detected");
+            }
+            var unitsToIdentify = star.getAllUnits();
+            for (var i = 0; i < unitsToIdentify.length; i++) {
+                this.identifyUnit(unitsToIdentify[i]);
+            }
+        };
+        Player.prototype.updateAllVisibilityInStar = function (star) {
+            if (this.starIsVisible(star)) {
+                this.updateVisionInStar(star);
+            }
+            if (this.starIsDetected(star)) {
+                this.updateDetectionInStar(star);
+            }
+        };
+        Player.prototype.meetPlayersInStarByVisibility = function (star, visibility) {
+            var presentPlayersByVisibility = star.getPresentPlayersByVisibility();
+            for (var playerId in presentPlayersByVisibility[visibility]) {
+                var player = presentPlayersByVisibility[visibility][playerId];
+                if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent) {
+                    this.diplomacyStatus.meetPlayer(player);
+                }
+            }
+        };
+        Player.prototype.updateVisibleStars = function () {
+            var previousVisibleStars = utility_17.extendObject(this.visibleStars);
+            var previousDetectedStars = utility_17.extendObject(this.detectedStars);
+            var newVisibleStars = [];
+            var newDetectedStars = [];
+            var visibilityHasChanged = false;
+            var detectionHasChanged = false;
+            this.visibleStars = {};
+            this.detectedStars = {};
+            var allVisible = [];
+            var allDetected = [];
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                allVisible = allVisible.concat(this.controlledLocations[i].getVision());
+                allDetected = allDetected.concat(this.controlledLocations[i].getDetection());
+            }
+            for (var i = 0; i < this.fleets.length; i++) {
+                allVisible = allVisible.concat(this.fleets[i].getVision());
+                allDetected = allDetected.concat(this.fleets[i].getDetection());
+            }
+            for (var i = 0; i < allVisible.length; i++) {
+                var star = allVisible[i];
+                if (!this.visibleStars[star.id]) {
+                    this.visibleStars[star.id] = star;
+                    if (!previousVisibleStars[star.id]) {
+                        visibilityHasChanged = true;
+                        newVisibleStars.push(star);
+                    }
+                    if (!this.revealedStars[star.id]) {
+                        this.revealedStars[star.id] = star;
+                    }
+                }
+            }
+            for (var i = 0; i < allDetected.length; i++) {
+                var star = allDetected[i];
+                if (!this.detectedStars[star.id]) {
+                    this.detectedStars[star.id] = star;
+                    if (!previousDetectedStars[star.id]) {
+                        detectionHasChanged = true;
+                        newDetectedStars.push(star);
+                    }
+                }
+            }
+            this.visionIsDirty = false;
+            if (!visibilityHasChanged) {
+                visibilityHasChanged = (Object.keys(this.visibleStars).length !==
+                    Object.keys(previousVisibleStars).length);
+            }
+            if (!visibilityHasChanged && !detectionHasChanged) {
+                detectionHasChanged = (Object.keys(this.detectedStars).length !==
+                    Object.keys(previousDetectedStars).length);
+            }
+            for (var i = 0; i < newVisibleStars.length; i++) {
+                this.updateVisionInStar(newVisibleStars[i]);
+            }
+            for (var i = 0; i < newDetectedStars.length; i++) {
+                this.updateDetectionInStar(newDetectedStars[i]);
+            }
+            if (visibilityHasChanged && !this.isAI) {
+                eventManager_9.default.dispatchEvent("renderMap");
+            }
+            if (detectionHasChanged && !this.isAI) {
+                eventManager_9.default.dispatchEvent("renderLayer", "fleets");
+            }
+        };
+        Player.prototype.getVisibleStars = function () {
+            if (!this.isAI && options_2.default.debugMode) {
+                return this.controlledLocations[0].getLinkedInRange(9999).all;
+            }
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            var visible = [];
+            for (var id in this.visibleStars) {
+                var star = this.visibleStars[id];
+                visible.push(star);
+            }
+            return visible;
+        };
+        Player.prototype.getRevealedStars = function () {
+            if (!this.isAI && options_2.default.debugMode) {
+                return this.controlledLocations[0].getLinkedInRange(9999).all;
+            }
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            var toReturn = [];
+            for (var id in this.revealedStars) {
+                toReturn.push(this.revealedStars[id]);
+            }
+            return toReturn;
+        };
+        Player.prototype.getRevealedButNotVisibleStars = function () {
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            var toReturn = [];
+            for (var id in this.revealedStars) {
+                if (!this.visibleStars[id]) {
+                    toReturn.push(this.revealedStars[id]);
+                }
+            }
+            return toReturn;
+        };
+        Player.prototype.getDetectedStars = function () {
+            if (!this.isAI && options_2.default.debugMode) {
+                return this.controlledLocations[0].getLinkedInRange(9999).all;
+            }
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            var toReturn = [];
+            for (var id in this.detectedStars) {
+                toReturn.push(this.detectedStars[id]);
+            }
+            return toReturn;
+        };
+        Player.prototype.starIsVisible = function (star) {
+            if (!this.isAI && options_2.default.debugMode)
+                return true;
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            return Boolean(this.visibleStars[star.id]);
+        };
+        Player.prototype.starIsRevealed = function (star) {
+            if (!this.isAI && options_2.default.debugMode)
+                return true;
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            return Boolean(this.revealedStars[star.id]);
+        };
+        Player.prototype.starIsDetected = function (star) {
+            if (!this.isAI && options_2.default.debugMode)
+                return true;
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            return Boolean(this.detectedStars[star.id]);
+        };
+        Player.prototype.getLinksToUnRevealedStars = function () {
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            var linksBySourceStarId = {};
+            for (var starId in this.revealedStars) {
+                var star = this.revealedStars[starId];
+                var links = star.getAllLinks();
+                for (var i = 0; i < links.length; i++) {
+                    var linkedStar = links[i];
+                    if (!this.revealedStars[linkedStar.id]) {
+                        if (!linksBySourceStarId[star.id]) {
+                            linksBySourceStarId[star.id] = [linkedStar];
+                        }
+                        else {
+                            linksBySourceStarId[star.id].push(linkedStar);
+                        }
+                    }
+                }
+            }
+            return linksBySourceStarId;
+        };
+        Player.prototype.identifyUnit = function (unit) {
+            if (!this.identifiedUnits[unit.id]) {
+                this.identifiedUnits[unit.id] = unit;
+            }
+        };
+        Player.prototype.unitIsIdentified = function (unit) {
+            if (options_2.default.debugMode && !this.isAI) {
+                return true;
+            }
+            else
+                return Boolean(this.identifiedUnits[unit.id]) || Boolean(this.units[unit.id]);
+        };
+        Player.prototype.fleetIsFullyIdentified = function (fleet) {
+            if (options_2.default.debugMode && !this.isAI) {
+                return true;
+            }
+            for (var i = 0; i < fleet.units.length; i++) {
+                if (!this.identifiedUnits[fleet.units[i].id]) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        Player.prototype.addItem = function (item) {
+            this.items.push(item);
+        };
+        Player.prototype.removeItem = function (item) {
+            var index = this.items.indexOf(item);
+            if (index === -1) {
+                throw new Error("Player " + this.name + " has no item " + item.id);
+            }
+            this.items.splice(index, 1);
+        };
+        Player.prototype.getNearestOwnedStarTo = function (star) {
+            var self = this;
+            var isOwnedByThisFN = function (star) {
+                return star.owner === self;
+            };
+            return star.getNearestStarForQualifier(isOwnedByThisFN);
+        };
+        Player.prototype.attackTarget = function (location, target, battleFinishCallback) {
+            var battleData = {
+                location: location,
+                building: target.building,
+                attacker: {
+                    player: this,
+                    units: location.getAllUnitsOfPlayer(this)
+                },
+                defender: {
+                    player: target.enemy,
+                    units: target.units
+                }
+            };
+            var battlePrep = new BattlePrep_1.default(battleData);
+            if (battlePrep.humanPlayer) {
+                App_16.default.reactUI.battlePrep = battlePrep;
+                if (battleFinishCallback) {
+                    battlePrep.afterBattleFinishCallbacks.push(battleFinishCallback);
+                }
+                App_16.default.reactUI.switchScene("battlePrep");
+            }
+            else {
+                var battle = battlePrep.makeBattle();
+                battle.afterFinishCallbacks.push(battleFinishCallback);
+                var simulator = new BattleSimulator_1.default(battle);
+                simulator.simulateBattle();
+                simulator.finishBattle();
+            }
+        };
+        Player.prototype.getResearchSpeed = function () {
+            var research = 0;
+            research += App_16.default.moduleData.ruleSet.research.baseResearchSpeed;
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                research += this.controlledLocations[i].getResearchPoints();
+            }
+            return research;
+        };
+        Player.prototype.getAllManufactories = function () {
+            var manufactories = [];
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                if (this.controlledLocations[i].manufactory) {
+                    manufactories.push(this.controlledLocations[i].manufactory);
+                }
+            }
+            return manufactories;
+        };
+        Player.prototype.meetsTechnologyRequirements = function (requirements) {
+            for (var i = 0; i < requirements.length; i++) {
+                var requirement = requirements[i];
+                if (this.playerTechnology.technologies[requirement.technology.key].level < requirement.level) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        Player.prototype.getGloballyBuildableUnits = function () {
+            var templates = [];
+            var typesAlreadyAddedChecked = {};
+            var unitsToAdd = App_16.default.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
+            if (!this.isAI && options_2.default.debugMode) {
+                unitsToAdd = unitsToAdd.concat(App_16.default.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
+            }
+            for (var i = 0; i < unitsToAdd.length; i++) {
+                var template = unitsToAdd[i];
+                if (typesAlreadyAddedChecked[template.type])
+                    continue;
+                else if (template.technologyRequirements && !this.meetsTechnologyRequirements(template.technologyRequirements)) {
+                    typesAlreadyAddedChecked[template.type] = true;
+                    continue;
+                }
+                else {
+                    typesAlreadyAddedChecked[template.type] = true;
+                    templates.push(template);
+                }
+            }
+            return templates;
+        };
+        Player.prototype.getGloballyBuildableItems = function () {
+            var itemTypes = [];
+            for (var key in App_16.default.moduleData.Templates.Items) {
+                itemTypes.push(App_16.default.moduleData.Templates.Items[key]);
+            }
+            return itemTypes;
+        };
+        Player.prototype.getManufacturingCapacityFor = function (template, type) {
+            var totalCapacity = 0;
+            var capacityByStar = [];
+            var isGloballyBuildable;
+            switch (type) {
+                case "item":
+                    {
+                        var globallyBuildableItems = this.getGloballyBuildableItems();
+                        isGloballyBuildable = globallyBuildableItems.indexOf(template) !== -1;
+                    }
+                case "unit":
+                    {
+                        var globallyBuildableUnits = this.getGloballyBuildableUnits();
+                        isGloballyBuildable = globallyBuildableUnits.indexOf(template) !== -1;
+                    }
+            }
+            var manufactories = this.getAllManufactories();
+            for (var i = 0; i < manufactories.length; i++) {
+                var manufactory = manufactories[i];
+                var isBuildable = !manufactory.queueIsFull() &&
+                    (isGloballyBuildable || manufactory.canManufactureThing(template, type));
+                if (isBuildable) {
+                    var capacity = manufactory.capacity - manufactory.buildQueue.length;
+                    totalCapacity += capacity;
+                    capacityByStar.push({
+                        star: manufactory.star,
+                        capacity: capacity
+                    });
+                }
+            }
+            return totalCapacity;
+        };
+        Player.prototype.serialize = function () {
+            var unitIds = [];
+            for (var id in this.units) {
+                unitIds.push(this.units[id].id);
+            }
+            var revealedStarIds = [];
+            for (var id in this.revealedStars) {
+                revealedStarIds.push(this.revealedStars[id].id);
+            }
+            var identifiedUnitIds = [];
+            for (var id in this.identifiedUnits) {
+                identifiedUnitIds.push(this.identifiedUnits[id].id);
+            }
+            var data = {
+                id: this.id,
+                name: this.name,
+                color: this.color.serialize(),
+                colorAlpha: this.colorAlpha,
+                secondaryColor: this.secondaryColor.serialize(),
+                isIndependent: this.isIndependent,
+                isAI: this.isAI,
+                resources: utility_17.extendObject(this.resources),
+                diplomacyStatus: this.diplomacyStatus.serialize(),
+                fleets: this.fleets.map(function (fleet) { return fleet.serialize(); }),
+                money: this.money,
+                controlledLocationIds: this.controlledLocations.map(function (star) { return star.id; }),
+                items: this.items.map(function (item) { return item.serialize(); }),
+                unitIds: unitIds,
+                revealedStarIds: revealedStarIds,
+                identifiedUnitIds: identifiedUnitIds
+            };
+            if (this.playerTechnology) {
+                data.researchByTechnology = this.playerTechnology.serialize();
+            }
+            if (this.flag) {
+                data.flag = this.flag.serialize();
+            }
+            if (this.isAI && this.AIController) {
+                data.personality = utility_17.extendObject(this.AIController.personality);
+            }
+            return data;
+        };
+        return Player;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Player;
+});
+define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNullFormation"], function (require, exports, App_17, getNullFormation_2) {
+    "use strict";
+    var BattlePrepFormation = (function () {
+        function BattlePrepFormation(player, units, hasScouted, minUnits) {
+            this.placedUnitPositionsByID = {};
+            this.displayDataIsDirty = true;
+            this.player = player;
+            this.units = units;
+            this.hasScouted = hasScouted;
+            this.minUnits = minUnits;
+            this.formation = getNullFormation_2.default();
+        }
+        BattlePrepFormation.prototype.forEachUnitInFormation = function (f) {
+            for (var i = 0; i < this.formation.length; i++) {
+                for (var j = 0; j < this.formation[i].length; j++) {
+                    var unit = this.formation[i][j];
+                    if (unit) {
+                        f(unit, [i, j]);
+                    }
+                }
+            }
+        };
+        BattlePrepFormation.prototype.getDisplayData = function () {
+            if (this.displayDataIsDirty) {
+                this.cachedDisplayData = this.getFormationDisplayData();
+                this.displayDataIsDirty = false;
+            }
+            return this.cachedDisplayData;
+        };
+        BattlePrepFormation.prototype.setAutoFormation = function (enemyUnits, enemyFormation) {
+            var _this = this;
+            this.clearFormation();
+            this.formation = this.getAutoFormation(enemyUnits, enemyFormation);
+            this.forEachUnitInFormation(function (unit, pos) {
+                _this.placedUnitPositionsByID[unit.id] = pos;
+            });
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.getUnitPosition = function (unit) {
+            return this.placedUnitPositionsByID[unit.id];
+        };
+        BattlePrepFormation.prototype.getUnitAtPosition = function (position) {
+            return this.formation[position[0]][position[1]];
+        };
+        BattlePrepFormation.prototype.clearFormation = function () {
+            this.placedUnitPositionsByID = {};
+            this.formation = getNullFormation_2.default();
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.isFormationValid = function () {
+            var amountOfUnitsPlaced = 0;
+            this.forEachUnitInFormation(function (unit) { return amountOfUnitsPlaced += 1; });
+            var availableUnits = this.units.filter(function (unit) { return unit.canActThisTurn(); });
+            var hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
+            return amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits;
+        };
+        BattlePrepFormation.prototype.setUnit = function (unit, position) {
+            var unitInTargetPosition = this.getUnitAtPosition(position);
+            if (unitInTargetPosition) {
+                this.swapUnits(unit, unitInTargetPosition);
+            }
+            else {
+                this.removeUnit(unit);
+                this.formation[position[0]][position[1]] = unit;
+                this.placedUnitPositionsByID[unit.id] = position;
+                this.displayDataIsDirty = true;
+            }
+        };
+        BattlePrepFormation.prototype.removeUnit = function (unit) {
+            var position = this.getUnitPosition(unit);
+            if (!position) {
+                return;
+            }
+            this.formation[position[0]][position[1]] = null;
+            delete this.placedUnitPositionsByID[unit.id];
+            this.displayDataIsDirty = true;
+        };
+        BattlePrepFormation.prototype.swapUnits = function (unit1, unit2) {
+            if (unit1 === unit2)
+                return;
+            var new1Pos = this.getUnitPosition(unit2);
+            var new2Pos = this.getUnitPosition(unit1);
+            this.removeUnit(unit1);
+            this.removeUnit(unit2);
+            this.setUnit(unit1, new1Pos);
+            this.setUnit(unit2, new2Pos);
+        };
+        BattlePrepFormation.prototype.getFormationDisplayData = function () {
+            var displayDataByID = {};
+            this.forEachUnitInFormation(function (unit) {
+                displayDataByID[unit.id] = unit.getDisplayData("battlePrep");
+            });
+            return displayDataByID;
+        };
+        BattlePrepFormation.prototype.getAutoFormation = function (enemyUnits, enemyFormation) {
+            var scoutedUnits = this.hasScouted ? enemyUnits : null;
+            var scoutedFormation = this.hasScouted ? enemyFormation : null;
+            var formation = getNullFormation_2.default();
+            var unitsToPlace = this.units.filter(function (unit) { return unit.canActThisTurn(); });
+            var maxUnitsPerRow = formation[0].length;
+            var maxUnitsPerSide = App_17.default.moduleData.ruleSet.battle.maxUnitsPerSide;
+            var placedInFront = 0;
+            var placedInBack = 0;
+            var totalPlaced = 0;
+            var unitsPlacedByArchetype = {};
+            var getUnitScoreFN = function (unit, row) {
+                var baseScore = unit.getStrengthEvaluation();
+                var archetype = unit.template.archetype;
+                var idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
+                var unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
+                var overMaxOfArchetypeIdeal = Math.max(0, unitsPlacedOfArchetype - idealMaxUnitsOfArchetype);
+                var archetypeIdealAdjust = 1 - overMaxOfArchetypeIdeal * 0.15;
+                var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
+                var rowModifier = archetype.scoreMultiplierForRowFN ?
+                    archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
+                    archetype.rowScores[row];
+                return ({
+                    unit: unit,
+                    score: baseScore * archetypeIdealAdjust * rowModifier,
+                    row: row
+                });
+            };
+            while (unitsToPlace.length > 0 && totalPlaced < maxUnitsPerSide) {
+                var positionScores = [];
+                for (var i = 0; i < unitsToPlace.length; i++) {
+                    var unit = unitsToPlace[i];
+                    if (placedInFront < maxUnitsPerRow) {
+                        positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
+                    }
+                    if (placedInBack < maxUnitsPerRow) {
+                        positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
+                    }
+                }
+                positionScores.sort(function (a, b) {
+                    return (b.score - a.score);
+                });
+                var topScore = positionScores[0];
+                if (topScore.row === "ROW_FRONT") {
+                    placedInFront++;
+                    formation[1][placedInFront - 1] = topScore.unit;
+                }
+                else {
+                    placedInBack++;
+                    formation[0][placedInBack - 1] = topScore.unit;
+                }
+                totalPlaced++;
+                if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type]) {
+                    unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
+                }
+                unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
+                unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
+            }
+            return formation;
+        };
+        return BattlePrepFormation;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattlePrepFormation;
+});
+define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFormation"], function (require, exports, Battle_1, BattlePrepFormation_1) {
+    "use strict";
+    var BattlePrep = (function () {
+        function BattlePrep(battleData) {
+            this.afterBattleFinishCallbacks = [];
+            this.attacker = battleData.attacker.player;
+            this.defender = battleData.defender.player;
+            this.battleData = battleData;
+            this.attackerUnits = battleData.attacker.units;
+            this.defenderUnits = battleData.defender.units;
+            var attackerHasScouted = this.attacker.starIsDetected(battleData.location);
+            this.attackerFormation = new BattlePrepFormation_1.default(this.attacker, this.attackerUnits, attackerHasScouted, 0);
+            var defenderHasScouted = this.defender.starIsDetected(battleData.location);
+            this.defenderFormation = new BattlePrepFormation_1.default(this.defender, this.defenderUnits, defenderHasScouted);
+            this.resetBattleStats();
+            this.minDefenders = this.getInitialMinDefenders();
+            this.setHumanAndEnemy();
+            if (this.enemyFormation) {
+                this.enemyFormation.setAutoFormation(this.humanUnits);
+                this.triggerPassiveSkills(this.enemyFormation);
+                this.defenderFormation.minUnits = this.minDefenders;
+            }
+            else {
+                this.attackerFormation.setAutoFormation(this.defenderUnits);
+                this.triggerPassiveSkills(this.attackerFormation);
+                this.defenderFormation.minUnits = this.minDefenders;
+                this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
+            }
+        }
+        BattlePrep.prototype.forEachUnit = function (f) {
+            this.attackerUnits.forEach(f);
+            this.defenderUnits.forEach(f);
+        };
+        BattlePrep.prototype.isLocationNeutral = function () {
+            return (this.battleData.location.owner !== this.attacker &&
+                this.battleData.location.owner !== this.defender);
+        };
+        BattlePrep.prototype.makeBattle = function () {
+            var side1Formation = this.humanFormation || this.attackerFormation;
+            var side2Formation = this.enemyFormation || this.defenderFormation;
+            var side1Player = this.humanPlayer || this.attacker;
+            var side2Player = this.enemyPlayer || this.defender;
+            var battle = new Battle_1.default({
+                battleData: this.battleData,
+                side1: side1Formation.formation,
+                side2: side2Formation.formation.reverse(),
+                side1Player: side1Player,
+                side2Player: side2Player
+            });
+            battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
+            battle.init();
+            return battle;
+        };
+        BattlePrep.prototype.setHumanAndEnemy = function () {
+            if (!this.attacker.isAI) {
+                this.humanPlayer = this.attacker;
+                this.enemyPlayer = this.defender;
+                this.humanUnits = this.attackerUnits;
+                this.enemyUnits = this.defenderUnits;
+                this.humanFormation = this.attackerFormation;
+                this.enemyFormation = this.defenderFormation;
+            }
+            else if (!this.defender.isAI) {
+                this.humanPlayer = this.defender;
+                this.enemyPlayer = this.attacker;
+                this.humanUnits = this.defenderUnits;
+                this.enemyUnits = this.attackerUnits;
+                this.humanFormation = this.defenderFormation;
+                this.enemyFormation = this.attackerFormation;
+            }
+        };
+        BattlePrep.prototype.resetBattleStats = function () {
+            this.forEachUnit(function (unit) {
+                unit.resetBattleStats();
+            });
+        };
+        BattlePrep.prototype.triggerPassiveSkills = function (formation) {
+            var _this = this;
+            formation.forEachUnitInFormation(function (unit) {
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase.inBattlePrep) {
+                    for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++) {
+                        var skill = passiveSkillsByPhase.inBattlePrep[j];
+                        for (var k = 0; k < skill.inBattlePrep.length; k++) {
+                            skill.inBattlePrep[k](unit, _this);
+                        }
+                    }
+                }
+            });
+        };
+        BattlePrep.prototype.getInitialMinDefenders = function () {
+            if (this.isLocationNeutral()) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        };
+        return BattlePrep;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattlePrep;
 });
 define("src/DamageType", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -6697,7 +6636,7 @@ define("src/DamageType", ["require", "exports"], function (require, exports) {
 define("src/AbilityUpgradeData", ["require", "exports"], function (require, exports) {
     "use strict";
 });
-define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/RuleSet", "src/utility", "src/Item", "src/Fleet"], function (require, exports, idGenerators_7, App_16, RuleSet_6, utility_19, Item_3, Fleet_4) {
+define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/utility", "src/Item", "src/Fleet"], function (require, exports, idGenerators_7, App_18, utility_18, Item_3, Fleet_4) {
     "use strict";
     var Unit = (function () {
         function Unit(template, id, data) {
@@ -6743,17 +6682,17 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
             this.currentMovePoints = data.currentMovePoints;
             this.maxMovePoints = data.maxMovePoints;
             this.timesActedThisTurn = data.timesActedThisTurn;
-            this.baseAttributes = utility_19.extendObject(data.baseAttributes);
-            this.cachedAttributes = utility_19.extendObject(this.baseAttributes);
+            this.baseAttributes = utility_18.extendObject(data.baseAttributes);
+            this.cachedAttributes = utility_18.extendObject(this.baseAttributes);
             this.abilities = data.abilityTemplateTypes.map(function (key) {
-                var template = App_16.default.moduleData.Templates.Abilities[key];
+                var template = App_18.default.moduleData.Templates.Abilities[key];
                 if (!template) {
                     throw new Error("Couldn't find ability " + key);
                 }
                 return template;
             });
             this.passiveSkills = data.passiveSkillTemplateTypes.map(function (key) {
-                var template = App_16.default.moduleData.Templates.PassiveSkills[key];
+                var template = App_18.default.moduleData.Templates.PassiveSkills[key];
                 if (!template) {
                     throw new Error("Couldn't find passive skill " + key);
                 }
@@ -6774,7 +6713,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
                     lastHealthBeforeReceivingDamage: this.currentHealth,
                     queuedAction: !data.battleStats.queuedAction ? null :
                         {
-                            ability: App_16.default.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+                            ability: App_18.default.moduleData.Templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
                             targetId: data.battleStats.queuedAction.targetId,
                             turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
                             timesInterrupted: data.battleStats.queuedAction.timesInterrupted
@@ -6787,7 +6726,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
                     var item = data.items[slot];
                     if (!item)
                         return;
-                    items[slot] = new Item_3.default(App_16.default.moduleData.Templates.Items[item.templateType], item.id);
+                    items[slot] = new Item_3.default(App_18.default.moduleData.Templates.Items[item.templateType], item.id);
                 }
             });
             this.items =
@@ -6800,7 +6739,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
                 this.addItem(items[slot]);
             }
             if (data.portraitKey) {
-                this.portrait = utility_19.findItemWithKey(App_16.default.moduleData.Templates.Cultures, data.portraitKey, "portraits");
+                this.portrait = utility_18.findItemWithKey(App_18.default.moduleData.Templates.Cultures, data.portraitKey, "portraits");
             }
         };
         Unit.prototype.setInitialValues = function () {
@@ -6819,7 +6758,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
             if (multiplier === void 0) { multiplier = 1; }
             var min = 200 * this.template.maxHealth * multiplier;
             var max = 300 * this.template.maxHealth * multiplier;
-            this.maxHealth = utility_19.randInt(min, max);
+            this.maxHealth = utility_18.randInt(min, max);
             this.currentHealth = this.maxHealth;
         };
         Unit.prototype.setAttributes = function (baseSkill, variance) {
@@ -6831,17 +6770,17 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
                 defence: 1,
                 intelligence: 1,
                 speed: 1,
-                maxActionPoints: utility_19.randInt(3, 5)
+                maxActionPoints: utility_18.randInt(3, 5)
             };
             for (var attribute in template.attributeLevels) {
                 var attributeLevel = template.attributeLevels[attribute];
                 var min = Math.max(3 * baseSkill * attributeLevel, 1);
                 var max = Math.max(5 * baseSkill * attributeLevel + variance, 1);
-                attributes[attribute] = utility_19.randInt(min, max);
+                attributes[attribute] = utility_18.randInt(min, max);
                 if (attributes[attribute] > 9)
                     attributes[attribute] = 9;
             }
-            this.baseAttributes = utility_19.extendObject(attributes);
+            this.baseAttributes = utility_18.extendObject(attributes);
             this.cachedAttributes = attributes;
             this.attributesAreDirty = true;
         };
@@ -6852,17 +6791,17 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
                 return Boolean(cultureTemplate.nameGenerator);
             });
             if (nameGeneratorCandidateCultures.length > 0) {
-                nameGeneratorFN = utility_19.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
+                nameGeneratorFN = utility_18.getRandomArrayItem(nameGeneratorCandidateCultures).nameGenerator;
             }
             else {
-                nameGeneratorFN = utility_19.defaultNameGenerator;
+                nameGeneratorFN = utility_18.defaultNameGenerator;
             }
             this.name = nameGeneratorFN(this);
             var portraitCandidateCultures = templateCultures.filter(function (cultureTemplate) {
                 return Boolean(cultureTemplate.portraits);
             });
             if (portraitCandidateCultures.length === 0) {
-                portraitCandidateCultures = utility_19.getAllPropertiesWithKey(App_16.default.moduleData.Templates.Cultures, "portraits");
+                portraitCandidateCultures = utility_18.getAllPropertiesWithKey(App_18.default.moduleData.Templates.Cultures, "portraits");
                 if (portraitCandidateCultures.length === 0) {
                     console.warn("No culture has portraits specified");
                     return;
@@ -6874,8 +6813,8 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
                     culture: culture
                 });
             });
-            var portraitCulture = utility_19.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
-            this.portrait = utility_19.getRandomProperty(portraitCulture.portraits);
+            var portraitCulture = utility_18.getRandomArrayItemWithWeights(portraitCandidateCulturesWithWeights).culture;
+            this.portrait = utility_18.getRandomProperty(portraitCulture.portraits);
         };
         Unit.prototype.getBaseMoveDelay = function () {
             return 30 - this.attributes.speed;
@@ -6892,7 +6831,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
                     position: null,
                     guardAmount: 0,
                     guardCoverage: null,
-                    captureChance: RuleSet_6.default.battle.baseUnitCaptureChance,
+                    captureChance: App_18.default.moduleData.ruleSet.battle.baseUnitCaptureChance,
                     statusEffects: [],
                     lastHealthBeforeReceivingDamage: this.currentHealth,
                     queuedAction: null,
@@ -6916,7 +6855,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
         };
         Unit.prototype.removeStrength = function (amount) {
             this.currentHealth -= Math.round(amount);
-            this.currentHealth = utility_19.clamp(this.currentHealth, 0, this.maxHealth);
+            this.currentHealth = utility_18.clamp(this.currentHealth, 0, this.maxHealth);
             if (amount > 0) {
                 this.removeGuard(40);
             }
@@ -7025,12 +6964,12 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
             }
         };
         Unit.prototype.getAttributesWithItems = function () {
-            var attributes = utility_19.extendObject(this.baseAttributes);
+            var attributes = utility_18.extendObject(this.baseAttributes);
             for (var itemSlot in this.items) {
                 if (this.items[itemSlot]) {
                     var item = this.items[itemSlot];
                     for (var attribute in item.template.attributes) {
-                        attributes[attribute] = utility_19.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
+                        attributes[attribute] = utility_18.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
                     }
                 }
             }
@@ -7092,7 +7031,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
                 if (adjustments[attribute].multiplier) {
                     withItems[attribute] *= 1 + adjustments[attribute].multiplier;
                 }
-                withItems[attribute] = utility_19.clamp(withItems[attribute], -5, 20);
+                withItems[attribute] = utility_18.clamp(withItems[attribute], -5, 20);
             }
             return withItems;
         };
@@ -7119,11 +7058,11 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
             return false;
         };
         Unit.prototype.setInitialAbilities = function () {
-            this.abilities = utility_19.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
+            this.abilities = utility_18.getItemsFromWeightedProbabilities(this.template.possibleAbilities);
         };
         Unit.prototype.setInitialPassiveSkills = function () {
             if (this.template.possiblePassiveSkills) {
-                this.passiveSkills = utility_19.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
+                this.passiveSkills = utility_18.getItemsFromWeightedProbabilities(this.template.possiblePassiveSkills);
             }
         };
         Unit.prototype.getItemAbilities = function () {
@@ -7420,7 +7359,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
             var upgradeData = {};
             var allAbilities = this.getAllAbilities();
             allAbilities = allAbilities.concat(this.getAllPassiveSkills());
-            var templates = App_16.default.moduleData.Templates;
+            var templates = App_18.default.moduleData.Templates;
             for (var i = 0; i < allAbilities.length; i++) {
                 var parentAbility = allAbilities[i];
                 if (!parentAbility.canUpgradeInto)
@@ -7534,7 +7473,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
                 currentMovePoints: this.currentMovePoints,
                 maxMovePoints: this.maxMovePoints,
                 timesActedThisTurn: this.timesActedThisTurn,
-                baseAttributes: utility_19.extendObject(this.baseAttributes),
+                baseAttributes: utility_18.extendObject(this.baseAttributes),
                 abilityTemplateTypes: this.abilities.map(function (ability) {
                     return ability.type;
                 }),
@@ -7564,7 +7503,7 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/Ru
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Unit;
 });
-define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/eventManager", "src/Manufactory", "src/pathfinding"], function (require, exports, idGenerators_8, App_17, eventManager_10, Manufactory_2, pathFinding_2) {
+define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/eventManager", "src/Manufactory", "src/pathfinding"], function (require, exports, idGenerators_8, App_19, eventManager_10, Manufactory_2, pathFinding_2) {
     "use strict";
     var Star = (function () {
         function Star(x, y, id) {
@@ -7599,7 +7538,7 @@ define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/ev
             if (building.template.category === "vision") {
                 this.owner.updateVisibleStars();
             }
-            if (this.owner === App_17.default.humanPlayer) {
+            if (this.owner === App_19.default.humanPlayer) {
                 for (var key in building.template.effect) {
                     eventManager_10.default.dispatchEvent("builtBuildingWithEffect_" + key);
                 }
@@ -7729,8 +7668,8 @@ define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/ev
         };
         Star.prototype.getBuildableBuildings = function () {
             var canBuild = [];
-            for (var buildingType in App_17.default.moduleData.Templates.Buildings) {
-                var template = App_17.default.moduleData.Templates.Buildings[buildingType];
+            for (var buildingType in App_19.default.moduleData.Templates.Buildings) {
+                var template = App_19.default.moduleData.Templates.Buildings[buildingType];
                 var alreadyBuilt;
                 if (template.category === "mine" && !this.resource) {
                     continue;
@@ -8068,7 +8007,7 @@ define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/ev
             return null;
         };
         Star.prototype.getDistanceToStar = function (target) {
-            if (!App_17.default.game) {
+            if (!App_19.default.game) {
                 var a = pathFinding_2.aStar(this, target);
                 return a.cost[target.id];
             }
@@ -8590,7 +8529,7 @@ define("src/MapRendererMapMode", ["require", "exports"], function (require, expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapRendererMapMode;
 });
-define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/eventManager", "src/options"], function (require, exports, App_18, MapRendererLayer_1, MapRendererMapMode_1, eventManager_11, options_4) {
+define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/eventManager", "src/options"], function (require, exports, App_20, MapRendererLayer_1, MapRendererMapMode_1, eventManager_11, options_4) {
     "use strict";
     var MapRenderer = (function () {
         function MapRenderer(map, player) {
@@ -8654,8 +8593,8 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
             this.setAllLayersAsDirty();
         };
         MapRenderer.prototype.initLayers = function () {
-            for (var layerKey in App_18.default.moduleData.Templates.MapRendererLayers) {
-                var template = App_18.default.moduleData.Templates.MapRendererLayers[layerKey];
+            for (var layerKey in App_20.default.moduleData.Templates.MapRendererLayers) {
+                var template = App_20.default.moduleData.Templates.MapRendererLayers[layerKey];
                 var layer = new MapRendererLayer_1.default(template);
                 this.layers[layerKey] = layer;
             }
@@ -8677,8 +8616,8 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
                 }
                 this.mapModes[mapModeKey] = mapMode;
             }.bind(this);
-            for (var mapModeKey in App_18.default.moduleData.Templates.MapRendererMapModes) {
-                var template = App_18.default.moduleData.Templates.MapRendererMapModes[mapModeKey];
+            for (var mapModeKey in App_20.default.moduleData.Templates.MapRendererMapModes) {
+                var template = App_20.default.moduleData.Templates.MapRendererMapModes[mapModeKey];
                 buildMapMode(mapModeKey, template);
             }
         };
@@ -8762,7 +8701,7 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapRenderer;
 });
-define("src/ModuleData", ["require", "exports", "src/RuleSet", "src/utility"], function (require, exports, RuleSet_7, utility_20) {
+define("src/ModuleData", ["require", "exports", "src/utility"], function (require, exports, utility_19) {
     "use strict";
     var ModuleData = (function () {
         function ModuleData() {
@@ -8790,6 +8729,7 @@ define("src/ModuleData", ["require", "exports", "src/RuleSet", "src/utility"], f
                 UnitFamilies: {},
                 Units: {}
             };
+            this.ruleSet = {};
         }
         ModuleData.prototype.copyTemplates = function (source, category) {
             if (!this.Templates[category]) {
@@ -8819,13 +8759,13 @@ define("src/ModuleData", ["require", "exports", "src/RuleSet", "src/utility"], f
             if (this.defaultMap)
                 return this.defaultMap;
             else if (Object.keys(this.Templates.MapGen).length > 0) {
-                return utility_20.getRandomProperty(this.Templates.MapGen);
+                return utility_19.getRandomProperty(this.Templates.MapGen);
             }
             else
                 throw new Error("Module has no maps registered");
         };
         ModuleData.prototype.applyRuleSet = function (ruleSetValuesToCopy) {
-            RuleSet_7.default.copyRules(ruleSetValuesToCopy);
+            this.ruleSet = utility_19.deepMerge(this.ruleSet, ruleSetValuesToCopy);
         };
         return ModuleData;
     }());
@@ -9406,7 +9346,7 @@ define("src/Camera", ["require", "exports", "src/eventManager"], function (requi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Camera;
 });
-define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_19, RectangleSelect_1, eventManager_15) {
+define("src/MouseEventHandler", ["require", "exports", "src/App", "src/RectangleSelect", "src/eventManager"], function (require, exports, App_21, RectangleSelect_1, eventManager_15) {
     "use strict";
     var MouseEventHandler = (function () {
         function MouseEventHandler(renderer, camera) {
@@ -9527,7 +9467,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
             this.preventGhost(15, "mouseDown");
         };
         MouseEventHandler.prototype.touchStart = function (event, star) {
-            if (App_19.default.playerControl.selectedFleets.length === 0) {
+            if (App_21.default.playerControl.selectedFleets.length === 0) {
                 this.startSelect(event);
             }
             else {
@@ -9667,7 +9607,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MouseEventHandler;
 });
-define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_20, Color_3, eventManager_16) {
+define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "src/eventManager"], function (require, exports, App_22, Color_3, eventManager_16) {
     "use strict";
     var PathfindingArrow = (function () {
         function PathfindingArrow(parentContainer) {
@@ -9728,7 +9668,7 @@ define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "s
             });
         };
         PathfindingArrow.prototype.startMove = function () {
-            var fleets = App_20.default.playerControl.selectedFleets;
+            var fleets = App_22.default.playerControl.selectedFleets;
             if (this.active || !fleets || fleets.length < 1) {
                 return;
             }
@@ -9967,7 +9907,7 @@ define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "s
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = PathfindingArrow;
 });
-define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/MouseEventHandler", "src/PathfindingArrow"], function (require, exports, App_21, Camera_1, MouseEventHandler_1, PathfindingArrow_1) {
+define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/MouseEventHandler", "src/PathfindingArrow"], function (require, exports, App_23, Camera_1, MouseEventHandler_1, PathfindingArrow_1) {
     "use strict";
     var Renderer = (function () {
         function Renderer(galaxyMap) {
@@ -10136,15 +10076,15 @@ define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/Mous
                 bgObject = this.renderBlurredBackground.apply(this, this.blurProps);
             }
             else {
-                bgObject = App_21.default.moduleData.mapBackgroundDrawingFunction(this.galaxyMap.seed, this.renderer);
+                bgObject = App_23.default.moduleData.mapBackgroundDrawingFunction(this.galaxyMap.seed, this.renderer);
             }
             this.layers["bgSprite"].removeChildren();
             this.layers["bgSprite"].addChild(bgObject);
             this.backgroundIsDirty = false;
         };
         Renderer.prototype.renderBlurredBackground = function (x, y, width, height, seed) {
-            var bg = App_21.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
-            var fg = App_21.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
+            var bg = App_23.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
+            var fg = App_23.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
             var container = new PIXI.Container();
             container.addChild(bg);
             container.addChild(fg);
@@ -10328,7 +10268,7 @@ define("src/uicomponents/mixins/normalizeEvent", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = normalizeEvent;
 });
-define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/utility", "src/uicomponents/mixins/normalizeEvent"], function (require, exports, utility_21, normalizeEvent_1) {
+define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/utility", "src/uicomponents/mixins/normalizeEvent"], function (require, exports, utility_20, normalizeEvent_1) {
     "use strict";
     var DragPositioner = (function () {
         function DragPositioner(owner, props) {
@@ -10469,13 +10409,13 @@ define("src/uicomponents/mixins/DragPositioner", ["require", "exports", "src/uti
                         if (!this.makeDragClone) {
                             var nextSibling = this.ownerDOMNode.nextSibling;
                             var clone = this.ownerDOMNode.cloneNode(true);
-                            utility_21.recursiveRemoveAttribute(clone, "data-reactid");
+                            utility_20.recursiveRemoveAttribute(clone, "data-reactid");
                             this.ownerDOMNode.parentNode.insertBefore(clone, nextSibling);
                             this.cloneElement = clone;
                         }
                         else {
                             var clone = this.makeDragClone();
-                            utility_21.recursiveRemoveAttribute(clone, "data-reactid");
+                            utility_20.recursiveRemoveAttribute(clone, "data-reactid");
                             document.body.appendChild(clone);
                             this.cloneElement = clone;
                         }
@@ -10916,7 +10856,7 @@ define("src/uicomponents/popups/PopupResizeHandle", ["require", "exports", "src/
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager", "src/uicomponents/popups/PopupResizeHandle", "src/utility", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, eventManager_17, PopupResizeHandle_1, utility_22, DragPositioner_3, applyMixins_3) {
+define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager", "src/uicomponents/popups/PopupResizeHandle", "src/utility", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, eventManager_17, PopupResizeHandle_1, utility_21, DragPositioner_3, applyMixins_3) {
     "use strict";
     var PopupComponent = (function (_super) {
         __extends(PopupComponent, _super);
@@ -10980,8 +10920,8 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
                 left = position.left;
                 top = position.top;
             }
-            left = utility_22.clamp(left, 0, container.offsetWidth - rect.width);
-            top = utility_22.clamp(top, 0, container.offsetHeight - rect.height);
+            left = utility_21.clamp(left, 0, container.offsetWidth - rect.width);
+            top = utility_21.clamp(top, 0, container.offsetHeight - rect.height);
             this.dragPositioner.dragPos.y = top;
             this.dragPositioner.dragPos.x = left;
             this.dragPositioner.dragSize.x = Math.min(window.innerWidth, rect.width);
@@ -10995,8 +10935,8 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
             var maxWidth = this.props.maxWidth || window.innerWidth;
             var minHeight = this.props.minHeight || 0;
             var maxHeight = this.props.maxHeight || window.innerHeight;
-            this.dragPositioner.dragSize.x = utility_22.clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
-            this.dragPositioner.dragSize.y = utility_22.clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
+            this.dragPositioner.dragSize.x = utility_21.clamp(x + 5 - this.dragPositioner.dragPos.x, minWidth, maxWidth);
+            this.dragPositioner.dragSize.y = utility_21.clamp(y + 5 - this.dragPositioner.dragPos.y, minHeight, maxHeight);
             this.dragPositioner.updateDOMNodeStyle();
             eventManager_17.default.dispatchEvent("popupResized");
         };
@@ -11033,7 +10973,7 @@ define("src/uicomponents/popups/Popup", ["require", "exports", "src/eventManager
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicomponents/popups/Popup", "src/eventManager", "src/utility"], function (require, exports, Popup_1, eventManager_18, utility_23) {
+define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicomponents/popups/Popup", "src/eventManager", "src/utility"], function (require, exports, Popup_1, eventManager_18, utility_22) {
     "use strict";
     var PopupManagerComponent = (function (_super) {
         __extends(PopupManagerComponent, _super);
@@ -11140,7 +11080,7 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
         PopupManagerComponent.prototype.makePopup = function (props) {
             var _this = this;
             var id = this.getPopupId();
-            var popupProps = props.popupProps ? utility_23.extendObject(props.popupProps) : {};
+            var popupProps = props.popupProps ? utility_22.extendObject(props.popupProps) : {};
             popupProps.content = props.content;
             popupProps.id = id;
             popupProps.key = id;
@@ -11170,7 +11110,7 @@ define("src/uicomponents/popups/PopupManager", ["require", "exports", "src/uicom
             var toRender = [];
             for (var i = 0; i < popups.length; i++) {
                 var popup = popups[i];
-                var popupProps = utility_23.extendObject(popup);
+                var popupProps = utility_22.extendObject(popup);
                 popupProps.activePopupsCount = popups.length;
                 toRender.push(Popup_1.default(popupProps));
             }
@@ -12237,7 +12177,7 @@ define("src/uicomponents/unit/UnitAttributeChanges", ["require", "exports"], fun
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_24) {
+define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_23) {
     "use strict";
     var UnitStatusComponent = (function (_super) {
         __extends(UnitStatusComponent, _super);
@@ -12258,7 +12198,7 @@ define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"]
                 }, React.DOM.div({
                     className: "guard-meter-value",
                     style: {
-                        width: "" + utility_24.clamp(guard, 0, 100) + "%"
+                        width: "" + utility_23.clamp(guard, 0, 100) + "%"
                     }
                 }), React.DOM.div({
                     className: "status-inner-wrapper"
@@ -12637,7 +12577,7 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Formation", ["require", "exports", "src/RuleSet", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, RuleSet_8, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_25) {
+define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_24, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_24) {
     "use strict";
     var FormationComponent = (function (_super) {
         __extends(FormationComponent, _super);
@@ -12665,7 +12605,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/RuleSet"
             var formationRowElements = [];
             for (var i = 0; i < this.props.formation.length; i++) {
                 var absoluteRowIndex = this.props.facesLeft ?
-                    i + RuleSet_8.default.battle.rowsPerFormation :
+                    i + App_24.default.moduleData.ruleSet.battle.rowsPerFormation :
                     i;
                 var unitElements = [];
                 for (var j = 0; j < this.props.formation[i].length; j++) {
@@ -12698,7 +12638,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/RuleSet"
                             hoveredActionPointExpenditure: this.props.hoveredAbility &&
                                 this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
                         };
-                        unitProps = utility_25.shallowExtend(unitDisplayData, componentProps, displayProps);
+                        unitProps = utility_24.shallowExtend(unitDisplayData, componentProps, displayProps);
                     }
                     unitElements.push(UnitWrapper_1.default({ key: ("unit_wrapper_" + i) + j }, EmptyUnit_1.default({
                         facesLeft: this.props.facesLeft,
@@ -12719,7 +12659,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/RuleSet"
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_26, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
+define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_25, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
     "use strict";
     var UnitListItemComponent = (function (_super) {
         __extends(UnitListItemComponent, _super);
@@ -12758,7 +12698,7 @@ define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/uti
         };
         UnitListItemComponent.prototype.makeDragClone = function () {
             var container = document.createElement("div");
-            ReactDOM.render(Unit_4.default(utility_26.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
+            ReactDOM.render(Unit_4.default(utility_25.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
             var renderedElement = container.firstChild;
             var wrapperElement = document.getElementsByClassName("unit-wrapper")[0];
             renderedElement.classList.add("draggable", "dragging");
@@ -13022,7 +12962,7 @@ define("src/uicomponents/PlayerFlag", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_22, PlayerFlag_1, utility_27) {
+define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_25, PlayerFlag_1, utility_26) {
     "use strict";
     var DefenceBuildingComponent = (function (_super) {
         __extends(DefenceBuildingComponent, _super);
@@ -13035,12 +12975,12 @@ define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src
         };
         DefenceBuildingComponent.prototype.render = function () {
             var building = this.props.building;
-            var image = App_22.default.images[building.template.iconSrc];
+            var image = App_25.default.images[building.template.iconSrc];
             return (React.DOM.div({
                 className: "defence-building"
             }, React.DOM.img({
                 className: "defence-building-icon",
-                src: utility_27.colorImageInPlayerColor(image, building.controller),
+                src: utility_26.colorImageInPlayerColor(image, building.controller),
                 title: building.template.displayName
             }), PlayerFlag_1.default({
                 props: {
@@ -13140,7 +13080,7 @@ define("src/uicomponents/battleprep/BattleInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_23, eventManager_20, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
+define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_26, eventManager_20, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
     "use strict";
     var BattlePrepComponent = (function (_super) {
         __extends(BattlePrepComponent, _super);
@@ -13389,7 +13329,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 onClick: this.autoMakeFormation
             }, "Auto formation"), React.DOM.button({
                 onClick: function () {
-                    App_23.default.reactUI.switchScene("galaxyMap");
+                    App_26.default.reactUI.switchScene("galaxyMap");
                 },
                 disabled: playerIsDefending
             }, "Cancel"), React.DOM.button({
@@ -13397,8 +13337,8 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 disabled: !humanFormationIsValid,
                 onClick: function () {
                     var battle = battlePrep.makeBattle();
-                    App_23.default.reactUI.battle = battle;
-                    App_23.default.reactUI.switchScene("battle");
+                    App_26.default.reactUI.battle = battle;
+                    App_26.default.reactUI.switchScene("battle");
                 }.bind(this)
             }, "Start battle"), !Options_1.default.debugMode ? null : React.DOM.button({
                 className: "battle-prep-controls-button",
@@ -14090,7 +14030,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleScene;
 });
-define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_28, App_24) {
+define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_27, App_27) {
     "use strict";
     var BattleSceneTesterComponent = (function (_super) {
         __extends(BattleSceneTesterComponent, _super);
@@ -14148,7 +14088,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             battleScene.updateUnits();
         };
         BattleSceneTesterComponent.prototype.makeUnit = function () {
-            var template = utility_28.getRandomProperty(App_24.default.moduleData.Templates.Units);
+            var template = utility_27.getRandomProperty(App_27.default.moduleData.Templates.Units);
             return new Unit_5.default(template, this.idGenerator++);
         };
         BattleSceneTesterComponent.prototype.makePlayer = function () {
@@ -14267,7 +14207,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             };
             var testSFX = {
                 duration: 1000,
-                battleOverlay: App_24.default.moduleData.Templates.BattleSFX["guard"].battleOverlay,
+                battleOverlay: App_27.default.moduleData.Templates.BattleSFX["guard"].battleOverlay,
                 userOverlay: overlayTestFN.bind(null, 0xFF0000),
                 enemyOverlay: overlayTestFN.bind(null, 0x00FF00),
                 userSprite: spriteTestFN
@@ -14288,7 +14228,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var user = this.state.activeUnit;
             var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
             var bs = this.battleScene;
-            var SFXTemplate = utility_28.extendObject(App_24.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+            var SFXTemplate = utility_27.extendObject(App_27.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
             if (this.state.duration) {
                 SFXTemplate.duration = this.state.duration;
             }
@@ -14332,8 +14272,8 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
                 value: null,
                 key: "null"
             }, "null"));
-            for (var key in App_24.default.moduleData.Templates.BattleSFX) {
-                var template = App_24.default.moduleData.Templates.BattleSFX[key];
+            for (var key in App_27.default.moduleData.Templates.BattleSFX) {
+                var template = App_27.default.moduleData.Templates.BattleSFX[key];
                 SFXTemplateSelectOptions.push(React.DOM.option({
                     value: key,
                     key: key
@@ -14378,7 +14318,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"], function (require, exports, App_25) {
+define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"], function (require, exports, App_28) {
     "use strict";
     var FlagPickerComponent = (function (_super) {
         __extends(FlagPickerComponent, _super);
@@ -14433,14 +14373,14 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"
                 onClick: this.handleSelectEmblem.bind(this, template)
             }, React.DOM.img({
                 className: className,
-                src: App_25.default.images[template.src].src
+                src: App_28.default.images[template.src].src
             })));
         };
         FlagPickerComponent.prototype.render = function () {
             var _this = this;
             var emblemElements = [];
-            for (var emblemType in App_25.default.moduleData.Templates.SubEmblems) {
-                var template = App_25.default.moduleData.Templates.SubEmblems[emblemType];
+            for (var emblemType in App_28.default.moduleData.Templates.SubEmblems) {
+                var template = App_28.default.moduleData.Templates.SubEmblems[emblemType];
                 emblemElements.push(this.makeEmblemElement(template));
             }
             var imageInfoMessage;
@@ -15493,7 +15433,7 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_29) {
+define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_28) {
     "use strict";
     var MapGenOptionComponent = (function (_super) {
         __extends(MapGenOptionComponent, _super);
@@ -15505,7 +15445,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
         MapGenOptionComponent.prototype.handleChange = function (e) {
             var target = e.target;
             var option = this.props.option;
-            var newValue = utility_29.clamp(parseFloat(target.value), option.range.min, option.range.max);
+            var newValue = utility_28.clamp(parseFloat(target.value), option.range.min, option.range.max);
             this.props.onChange(this.props.id, newValue);
         };
         MapGenOptionComponent.prototype.shouldComponentUpdate = function (newProps) {
@@ -15556,7 +15496,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_30) {
+define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_29) {
     "use strict";
     var MapGenOptionsComponent = (function (_super) {
         __extends(MapGenOptionsComponent, _super);
@@ -15598,13 +15538,13 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                         var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
                         if (!oldOption)
                             continue;
-                        var oldValuePercentage = utility_30.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
+                        var oldValuePercentage = utility_29.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
                         value = option.min + (option.max - option.min) * oldValuePercentage;
                     }
                     else {
                         value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                     }
-                    value = utility_30.clamp(utility_30.roundToNearestMultiple(value, option.step), option.min, option.max);
+                    value = utility_29.clamp(utility_29.roundToNearestMultiple(value, option.step), option.min, option.max);
                     defaultValues["optionValue_" + optionName] = value;
                 }
             }.bind(this));
@@ -15628,14 +15568,14 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                 var optionGroup = optionGroups[optionGroupName];
                 for (var optionName in optionGroup) {
                     var option = optionGroup[optionName].range;
-                    var optionValue = utility_30.clamp(utility_30.roundToNearestMultiple(utility_30.randInt(option.min, option.max), option.step), option.min, option.max);
+                    var optionValue = utility_29.clamp(utility_29.roundToNearestMultiple(utility_29.randInt(option.min, option.max), option.step), option.min, option.max);
                     newValues["optionValue_" + optionName] = optionValue;
                 }
             }
             this.setState(newValues);
         };
         MapGenOptionsComponent.prototype.getOptionValuesForTemplate = function () {
-            var optionValues = utility_30.extendObject(this.props.mapGenTemplate.options);
+            var optionValues = utility_29.extendObject(this.props.mapGenTemplate.options);
             for (var groupName in optionValues) {
                 var optionsGroup = optionValues[groupName];
                 for (var optionName in optionsGroup) {
@@ -15709,7 +15649,7 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", "src/uicomponents/setupgame/MapGenOptions"], function (require, exports, App_26, MapGenOptions_1) {
+define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", "src/uicomponents/setupgame/MapGenOptions"], function (require, exports, App_29, MapGenOptions_1) {
     "use strict";
     var MapSetupComponent = (function (_super) {
         __extends(MapSetupComponent, _super);
@@ -15726,9 +15666,9 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
         };
         MapSetupComponent.prototype.getInitialStateTODO = function () {
             var mapGenTemplates = [];
-            for (var template in App_26.default.moduleData.Templates.MapGen) {
-                if (App_26.default.moduleData.Templates.MapGen[template].key) {
-                    mapGenTemplates.push(App_26.default.moduleData.Templates.MapGen[template]);
+            for (var template in App_29.default.moduleData.Templates.MapGen) {
+                if (App_29.default.moduleData.Templates.MapGen[template].key) {
+                    mapGenTemplates.push(App_29.default.moduleData.Templates.MapGen[template]);
                 }
             }
             return ({
@@ -15748,7 +15688,7 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
         MapSetupComponent.prototype.setTemplate = function (e) {
             var target = e.target;
             this.setState({
-                selectedTemplate: App_26.default.moduleData.Templates.MapGen[target.value]
+                selectedTemplate: App_29.default.moduleData.Templates.MapGen[target.value]
             }, this.updatePlayerLimits);
         };
         MapSetupComponent.prototype.getMapSetupInfo = function () {
@@ -15793,7 +15733,7 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/uicomponents/setupgame/SetupGamePlayers", "src/uicomponents/setupgame/MapSetup"], function (require, exports, App_27, SetupGamePlayers_1, MapSetup_1) {
+define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/uicomponents/setupgame/SetupGamePlayers", "src/uicomponents/setupgame/MapSetup"], function (require, exports, App_30, SetupGamePlayers_1, MapSetup_1) {
     "use strict";
     var SetupGameComponent = (function (_super) {
         __extends(SetupGameComponent, _super);
@@ -15826,7 +15766,7 @@ define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App",
             var mapGenFunction = mapSetupInfo.template.mapGenFunction;
             var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
             var map = mapGenResult.makeMap();
-            App_27.default.makeGameFromSetup(map, players);
+            App_30.default.makeGameFromSetup(map, players);
         };
         SetupGameComponent.prototype.randomize = function () {
             this.ref_TODO_players.randomizeAllPlayers();
@@ -15986,7 +15926,7 @@ define("src/uicomponents/battle/TurnCounter", ["require", "exports"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_31) {
+define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_30) {
     "use strict";
     var AbilityUseEffectQueue = (function () {
         function AbilityUseEffectQueue(battleScene) {
@@ -16018,13 +15958,13 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
         };
         AbilityUseEffectQueue.squashEffects = function (parent, toSquash, parentIsMostRecent) {
             if (parentIsMostRecent === void 0) { parentIsMostRecent = false; }
-            var squashedChangedUnitDisplayDataByID = utility_31.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
+            var squashedChangedUnitDisplayDataByID = utility_30.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
             if (parentIsMostRecent) {
-                var squashedEffect = utility_31.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
+                var squashedEffect = utility_30.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
                 return squashedEffect;
             }
             else {
-                var squashedEffect = utility_31.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
+                var squashedEffect = utility_30.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
                 return squashedEffect;
             }
         };
@@ -16455,7 +16395,7 @@ define("src/uicomponents/battle/AbilityTooltip", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounter", "src/uicomponents/battle/BattleBackground", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, TurnOrder_1, TurnCounter_1, BattleBackground_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_32, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, AbilityTooltip_1) {
+define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounter", "src/uicomponents/battle/BattleBackground", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, TurnOrder_1, TurnCounter_1, BattleBackground_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_31, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, AbilityTooltip_1) {
     "use strict";
     var BattleComponent = (function (_super) {
         __extends(BattleComponent, _super);
@@ -16662,7 +16602,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
         BattleComponent.prototype.onBattleEffectTrigger = function (effect) {
             this.setState({
                 previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
-                unitDisplayDataByID: utility_32.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
+                unitDisplayDataByID: utility_31.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
             });
         };
         BattleComponent.prototype.finishPlayingQueuedBattleEffects = function () {
@@ -17275,7 +17215,7 @@ define("src/uicomponents/galaxymap/Resource", ["require", "exports"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src/App", "src/uicomponents/galaxymap/Resource", "src/eventManager"], function (require, exports, App_28, Resource_1, eventManager_22) {
+define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src/App", "src/uicomponents/galaxymap/Resource", "src/eventManager"], function (require, exports, App_31, Resource_1, eventManager_22) {
     "use strict";
     var TopBarResourcesComponent = (function (_super) {
         __extends(TopBarResourcesComponent, _super);
@@ -17307,7 +17247,7 @@ define("src/uicomponents/galaxymap/TopBarResources", ["require", "exports", "src
                 if (amount === 0 && income === 0)
                     continue;
                 var resourceData = {
-                    resource: App_28.default.moduleData.Templates.Resources[resourceType],
+                    resource: App_31.default.moduleData.Templates.Resources[resourceType],
                     amount: amount,
                     income: income,
                     key: resourceType
@@ -18368,7 +18308,7 @@ define("src/uicomponents/galaxymap/fleetcontents", ["require", "exports", "src/u
     exports.default = Factory;
     var _a;
 });
-define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager", "src/App"], function (require, exports, options_8, eventManager_28, App_29) {
+define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager", "src/App"], function (require, exports, options_8, eventManager_28, App_32) {
     "use strict";
     var fleets = {
         key: "fleets",
@@ -18492,7 +18432,7 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                 strokeThickness: 3
             });
             text.getBounds();
-            fleetTextTextureCache[fleetSize] = text.generateTexture(App_29.default.renderer.renderer);
+            fleetTextTextureCache[fleetSize] = text.generateTexture(App_32.default.renderer.renderer);
             window.setTimeout(function () {
                 text.texture.destroy(true);
             }, 0);
@@ -19494,7 +19434,7 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_33) {
+define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_32) {
     "use strict";
     var AttitudeModifierInfoComponent = (function (_super) {
         __extends(AttitudeModifierInfoComponent, _super);
@@ -19522,8 +19462,8 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
                     }
                 case "strength":
                     {
-                        var relativeValue = utility_33.getRelativeValue(this.props.strength, -20, 20);
-                        relativeValue = utility_33.clamp(relativeValue, 0, 1);
+                        var relativeValue = utility_32.getRelativeValue(this.props.strength, -20, 20);
+                        relativeValue = utility_32.clamp(relativeValue, 0, 1);
                         var deviation = Math.abs(0.5 - relativeValue) * 2;
                         var hue = 110 * relativeValue;
                         var saturation = 0 + 50 * deviation;
@@ -19756,7 +19696,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_34) {
+define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_33) {
     "use strict";
     var OpinionComponent = (function (_super) {
         __extends(OpinionComponent, _super);
@@ -19788,8 +19728,8 @@ define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicompo
             return firstChild.getBoundingClientRect();
         };
         OpinionComponent.prototype.getColor = function () {
-            var relativeValue = utility_34.getRelativeValue(this.props.opinion, -30, 30);
-            relativeValue = utility_34.clamp(relativeValue, 0, 1);
+            var relativeValue = utility_33.getRelativeValue(this.props.opinion, -30, 30);
+            relativeValue = utility_33.clamp(relativeValue, 0, 1);
             var deviation = Math.abs(0.5 - relativeValue) * 2;
             var hue = 110 * relativeValue;
             var saturation = 0 + 50 * deviation;
@@ -20732,7 +20672,7 @@ define("src/uicomponents/production/ManufacturableThings", ["require", "exports"
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/production/ConstructManufactory", ["require", "exports", "src/RuleSet"], function (require, exports, RuleSet_9) {
+define("src/uicomponents/production/ConstructManufactory", ["require", "exports", "src/App"], function (require, exports, App_33) {
     "use strict";
     var ConstructManufactoryComponent = (function (_super) {
         __extends(ConstructManufactoryComponent, _super);
@@ -20748,19 +20688,19 @@ define("src/uicomponents/production/ConstructManufactory", ["require", "exports"
         };
         ConstructManufactoryComponent.prototype.getInitialStateTODO = function () {
             return ({
-                canAfford: this.props.money >= RuleSet_9.default.manufactory.buildCost
+                canAfford: this.props.money >= App_33.default.moduleData.ruleSet.manufactory.buildCost
             });
         };
         ConstructManufactoryComponent.prototype.componentWillReceiveProps = function (newProps) {
             this.setState({
-                canAfford: newProps.money >= RuleSet_9.default.manufactory.buildCost
+                canAfford: newProps.money >= App_33.default.moduleData.ruleSet.manufactory.buildCost
             });
         };
         ConstructManufactoryComponent.prototype.handleConstruct = function () {
             var star = this.props.star;
             var player = this.props.player;
             star.buildManufactory();
-            player.money -= RuleSet_9.default.manufactory.buildCost;
+            player.money -= App_33.default.moduleData.ruleSet.manufactory.buildCost;
             this.props.triggerUpdate();
         };
         ConstructManufactoryComponent.prototype.render = function () {
@@ -20775,7 +20715,7 @@ define("src/uicomponents/production/ConstructManufactory", ["require", "exports"
             }, "Construct manufactory"), React.DOM.span({
                 className: "construct-manufactory-cost money-style" +
                     (this.state.canAfford ? "" : " negative")
-            }, RuleSet_9.default.manufactory.buildCost))));
+            }, App_33.default.moduleData.ruleSet.manufactory.buildCost))));
         };
         return ConstructManufactoryComponent;
     }(React.Component));
@@ -20823,7 +20763,7 @@ define("src/uicomponents/production/ManufactoryStarsListItem", ["require", "expo
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_35) {
+define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_34) {
     "use strict";
     var ManufactoryStarsListComponent = (function (_super) {
         __extends(ManufactoryStarsListComponent, _super);
@@ -20833,8 +20773,8 @@ define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports"
         }
         ManufactoryStarsListComponent.prototype.render = function () {
             var rows = [];
-            this.props.starsWithManufactories.sort(utility_35.sortByManufactoryCapacityFN);
-            this.props.starsWithoutManufactories.sort(utility_35.sortByManufactoryCapacityFN);
+            this.props.starsWithManufactories.sort(utility_34.sortByManufactoryCapacityFN);
+            this.props.starsWithoutManufactories.sort(utility_34.sortByManufactoryCapacityFN);
             for (var i = 0; i < this.props.starsWithManufactories.length; i++) {
                 var star = this.props.starsWithManufactories[i];
                 var manufactory = star.manufactory;
@@ -20900,7 +20840,7 @@ define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", 
     exports.default = UpdateWhenMoneyChanges;
     var _a;
 });
-define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_34, utility_36, UpdateWhenMoneyChanges_1, applyMixins_13) {
+define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_34, utility_35, UpdateWhenMoneyChanges_1, applyMixins_13) {
     "use strict";
     var ProductionOverviewComponent = (function (_super) {
         __extends(ProductionOverviewComponent, _super);
@@ -20922,11 +20862,11 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
             var player = this.props.player;
             var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
             if (starsByManufactoryPresence.withManufactories.length > 0) {
-                starsByManufactoryPresence.withManufactories.sort(utility_36.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withManufactories.sort(utility_35.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withManufactories[0];
             }
             else if (starsByManufactoryPresence.withoutManufactories.length > 0) {
-                starsByManufactoryPresence.withoutManufactories.sort(utility_36.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withoutManufactories.sort(utility_35.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withoutManufactories[0];
             }
             return ({
@@ -21098,7 +21038,7 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/unitlist/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_37) {
+define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/unitlist/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_36) {
     "use strict";
     var SaveListComponent = (function (_super) {
         __extends(SaveListComponent, _super);
@@ -21127,7 +21067,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
                     data: {
                         storageKey: saveKeys[i],
                         name: saveData.name,
-                        date: utility_37.prettifyDate(date),
+                        date: utility_36.prettifyDate(date),
                         accurateDate: saveData.date,
                         rowConstructor: SaveListItem_1.default,
                         isMarkedForDeletion: isMarkedForDeletion,
@@ -21183,7 +21123,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_30, SaveList_1, PopupManager_7, ConfirmPopup_2) {
+define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_34, SaveList_1, PopupManager_7, ConfirmPopup_2) {
     "use strict";
     var LoadGameComponent = (function (_super) {
         __extends(LoadGameComponent, _super);
@@ -21225,7 +21165,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
             var afterConfirmFN = function () {
                 ReactDOM.findDOMNode(this.ref_TODO_okButton).blur();
                 window.setTimeout(function () {
-                    App_30.default.load(saveKey);
+                    App_34.default.load(saveKey);
                 }, 5);
             }.bind(this);
             if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1) {
@@ -21330,8 +21270,8 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 onlyAllowOne: true
             }), SaveList_1.default({
                 onRowChange: this.handleRowChange,
-                autoSelect: !Boolean(App_30.default.game.gameStorageKey),
-                selectedKey: App_30.default.game.gameStorageKey,
+                autoSelect: !Boolean(App_34.default.game.gameStorageKey),
+                selectedKey: App_34.default.game.gameStorageKey,
                 allowDelete: true,
                 onDelete: this.handleDelete,
                 onUndoDelete: this.handleUndoDelete,
@@ -21366,7 +21306,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_31, SaveList_2, PopupManager_8, ConfirmPopup_3) {
+define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_35, SaveList_2, PopupManager_8, ConfirmPopup_3) {
     "use strict";
     var SaveGameComponent = (function (_super) {
         __extends(SaveGameComponent, _super);
@@ -21388,7 +21328,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             this.handleSaveNameInput = this.handleSaveNameInput.bind(this);
         };
         SaveGameComponent.prototype.componentDidMount = function () {
-            if (App_31.default.game.gameStorageKey) {
+            if (App_35.default.game.gameStorageKey) {
                 ReactDOM.findDOMNode(this.ref_TODO_okButton).focus();
             }
             else {
@@ -21418,7 +21358,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             }
         };
         SaveGameComponent.prototype.saveGame = function () {
-            App_31.default.game.save(this.state.saveName);
+            App_35.default.game.save(this.state.saveName);
             this.handleClose();
         };
         SaveGameComponent.prototype.handleClose = function () {
@@ -21444,7 +21384,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
                 onlyAllowOne: true
             }), SaveList_2.default({
                 onRowChange: this.handleRowChange,
-                selectedKey: App_31.default.game.gameStorageKey,
+                selectedKey: App_35.default.game.gameStorageKey,
                 autoSelect: false
             }), React.DOM.input({
                 className: "save-game-name",
@@ -21505,7 +21445,7 @@ define("src/uicomponents/galaxymap/OptionsCheckbox", ["require", "exports"], fun
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_38) {
+define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_37) {
     "use strict";
     var OptionsNumericFieldComponent = (function (_super) {
         __extends(OptionsNumericFieldComponent, _super);
@@ -21538,7 +21478,7 @@ define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", 
             if (!isFinite(value)) {
                 return;
             }
-            value = utility_38.clamp(value, parseFloat(target.min), parseFloat(target.max));
+            value = utility_37.clamp(value, parseFloat(target.min), parseFloat(target.max));
             this.setState({
                 value: value
             }, this.triggerOnChangeFN);
@@ -21631,7 +21571,7 @@ define("src/tutorials/TutorialStatus", ["require", "exports", "src/tutorials/Tut
     exports.default = tutorialStatus;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_39, TutorialStatus_1) {
+define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_38, TutorialStatus_1) {
     "use strict";
     var OptionsListComponent = (function (_super) {
         __extends(OptionsListComponent, _super);
@@ -21758,7 +21698,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                             if (!isFinite(value)) {
                                 return;
                             }
-                            value = utility_39.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                            value = utility_38.clamp(value, parseFloat(target.min), parseFloat(target.max));
                             Options_3.default.debugOptions.battleSimulationDepth = value;
                             _this.forceUpdate();
                         }
@@ -22838,7 +22778,7 @@ define("src/uicomponents/tutorials/DontShowAgain", ["require", "exports", "src/t
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_40, TutorialState_3, TutorialStatus_3, utility_41) {
+define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_39, TutorialState_3, TutorialStatus_3, utility_40) {
     "use strict";
     var TutorialComponent = (function (_super) {
         __extends(TutorialComponent, _super);
@@ -22883,7 +22823,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
         TutorialComponent.prototype.flipPage = function (amount) {
             var lastPage = this.props.pages.length - 1;
             var newPage = this.state.currentPageIndex + amount;
-            newPage = utility_40.clamp(newPage, 0, lastPage);
+            newPage = utility_39.clamp(newPage, 0, lastPage);
             this.handleLeavePage(this.props.pages[this.state.currentPageIndex]);
             this.setState({
                 currentPageIndex: newPage
@@ -22927,7 +22867,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
                 className: "tutorial-inner"
             }, backElement, React.DOM.div({
                 className: "tutorial-content"
-            }, utility_41.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
+            }, utility_40.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
                 tutorialId: this.props.tutorialId
             })));
         };
@@ -23190,7 +23130,7 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uic
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App", "src/uicomponents/galaxymap/GalaxyMapUI", "src/options"], function (require, exports, App_32, GalaxyMapUI_1, Options_6) {
+define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App", "src/uicomponents/galaxymap/GalaxyMapUI", "src/options"], function (require, exports, App_36, GalaxyMapUI_1, Options_6) {
     "use strict";
     var GalaxyMapComponent = (function (_super) {
         __extends(GalaxyMapComponent, _super);
@@ -23204,7 +23144,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
         };
         GalaxyMapComponent.prototype.changeScene = function (e) {
             var target = e.target;
-            App_32.default.reactUI.switchScene(target.value);
+            App_36.default.reactUI.switchScene(target.value);
         };
         GalaxyMapComponent.prototype.render = function () {
             var _this = this;
@@ -23235,7 +23175,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
                 ref: function (component) {
                     _this.ref_TODO_sceneSelector = component;
                 },
-                value: App_32.default.reactUI.currentScene,
+                value: App_36.default.reactUI.currentScene,
                 onChange: this.changeScene
             }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "setupGame" }, "setup game"), React.DOM.option({ value: "battleSceneTester" }, "battle scene test")), React.DOM.button({
                 className: "debug",
@@ -23243,17 +23183,17 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
                     var target = e.target;
                     target.blur();
                     window.setTimeout(function () {
-                        var position = App_32.default.renderer.camera.container.position.clone();
-                        var zoom = App_32.default.renderer.camera.currZoom;
-                        App_32.default.destroy();
-                        App_32.default.initUI();
-                        App_32.default.game = App_32.default.makeGame();
-                        App_32.default.initGame();
-                        App_32.default.initDisplay();
-                        App_32.default.hookUI();
-                        App_32.default.reactUI.switchScene("galaxyMap");
-                        App_32.default.renderer.camera.zoom(zoom);
-                        App_32.default.renderer.camera.container.position = position;
+                        var position = App_36.default.renderer.camera.container.position.clone();
+                        var zoom = App_36.default.renderer.camera.currZoom;
+                        App_36.default.destroy();
+                        App_36.default.initUI();
+                        App_36.default.game = App_36.default.makeGame();
+                        App_36.default.initGame();
+                        App_36.default.initDisplay();
+                        App_36.default.hookUI();
+                        App_36.default.reactUI.switchScene("galaxyMap");
+                        App_36.default.renderer.camera.zoom(zoom);
+                        App_36.default.renderer.camera.container.position = position;
                     }, 5);
                 }
             }, "Reset app"))));
@@ -23473,7 +23413,7 @@ define("src/ReactUI", ["require", "exports", "src/eventManager", "src/uicomponen
     exports.default = ReactUI;
     var _a;
 });
-define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "src/Unit", "src/utility"], function (require, exports, App_33, Unit_6, utility_42) {
+define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "src/Unit", "src/utility"], function (require, exports, App_37, Unit_6, utility_41) {
     "use strict";
     function setDynamicTemplateProperties() {
         setAbilityGuardAddition();
@@ -23488,8 +23428,8 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
             if (ability.secondaryEffects) {
                 effects = effects.concat(ability.secondaryEffects);
             }
-            var dummyUser = new Unit_6.default(utility_42.getRandomProperty(App_33.default.moduleData.Templates.Units));
-            var dummyTarget = new Unit_6.default(utility_42.getRandomProperty(App_33.default.moduleData.Templates.Units));
+            var dummyUser = new Unit_6.default(utility_41.getRandomProperty(App_37.default.moduleData.Templates.Units));
+            var dummyTarget = new Unit_6.default(utility_41.getRandomProperty(App_37.default.moduleData.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
                 effects[i].action.executeAction(dummyUser, dummyTarget, null, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
@@ -23498,14 +23438,14 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
             }
             return false;
         }
-        for (var abilityName in App_33.default.moduleData.Templates.Abilities) {
-            var ability = App_33.default.moduleData.Templates.Abilities[abilityName];
+        for (var abilityName in App_37.default.moduleData.Templates.Abilities) {
+            var ability = App_37.default.moduleData.Templates.Abilities[abilityName];
             ability.addsGuard = checkIfAbilityAddsGuard(ability);
         }
     }
     function setAttitudeModifierOverride() {
-        for (var modifierType in App_33.default.moduleData.Templates.AttitudeModifiers) {
-            var modifier = App_33.default.moduleData.Templates.AttitudeModifiers[modifierType];
+        for (var modifierType in App_37.default.moduleData.Templates.AttitudeModifiers) {
+            var modifier = App_37.default.moduleData.Templates.AttitudeModifiers[modifierType];
             if (modifier.canBeOverriddenBy) {
                 for (var i = 0; i < modifier.canBeOverriddenBy.length; i++) {
                     if (!modifier.canBeOverriddenBy[i].canOverride) {
@@ -23517,8 +23457,8 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
         }
     }
     function setUnitFamilyAssociatedTemplates() {
-        for (var unitType in App_33.default.moduleData.Templates.Units) {
-            var template = App_33.default.moduleData.Templates.Units[unitType];
+        for (var unitType in App_37.default.moduleData.Templates.Units) {
+            var template = App_37.default.moduleData.Templates.Units[unitType];
             for (var i = 0; i < template.families.length; i++) {
                 var family = template.families[i];
                 if (!family.associatedTemplates) {
@@ -23567,7 +23507,7 @@ define("modules/common/battlesfxfunctions/shaders/BlackToAlpha", ["require", "ex
     ];
     var _a;
 });
-define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_43) {
+define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_42) {
     "use strict";
     function projectileAttack(props, params) {
         var minY = Math.max(params.height * 0.3, 30);
@@ -23584,7 +23524,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
         var stopSpawningTime = startTime + params.duration / 2;
         var lastTime = startTime;
         var nextSpawnTime = startTime;
-        var amountToSpawn = utility_43.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
+        var amountToSpawn = utility_42.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
         var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
         var projectiles = [];
         var hasTriggeredEffect = false;
@@ -23594,16 +23534,16 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
             lastTime = currentTime;
             if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
                 nextSpawnTime += spawnRate;
-                var texture = utility_43.getRandomArrayItem(props.projectileTextures);
+                var texture = utility_42.getRandomArrayItem(props.projectileTextures);
                 var sprite = new PIXI.Sprite(texture);
                 sprite.x = 20;
-                sprite.y = utility_43.randInt(minY, maxY);
+                sprite.y = utility_42.randInt(minY, maxY);
                 container.addChild(sprite);
                 projectiles.push({
                     sprite: sprite,
                     speed: 0,
                     willImpact: (projectiles.length - 1) % props.impactRate === 0,
-                    impactX: utility_43.randInt(params.width - 200, params.width - 50),
+                    impactX: utility_42.randInt(params.width - 200, params.width - 50),
                     hasImpact: false
                 });
             }
@@ -23622,7 +23562,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
                         params.triggerEffect();
                     }
                     projectile.hasImpact = true;
-                    var impactTextures = utility_43.getRandomArrayItem(props.impactTextures);
+                    var impactTextures = utility_42.getRandomArrayItem(props.impactTextures);
                     var impactClip = new PIXI.extras.MovieClip(impactTextures);
                     impactClip.anchor = new PIXI.Point(0.5, 0.5);
                     impactClip.loop = false;
@@ -23798,7 +23738,7 @@ define("modules/common/battlesfxfunctions/shaders/Guard", ["require", "exports"]
     ];
     var _a;
 });
-define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_44) {
+define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_43) {
     "use strict";
     function guard(props) {
         var userCanvasWidth = props.width * 0.4;
@@ -23830,9 +23770,9 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
                     hasTriggeredEffect = true;
                     props.triggerEffect();
                 }
-                var adjustedtime = utility_44.getRelativeValue(time, travelTime - 0.02, 1);
+                var adjustedtime = utility_43.getRelativeValue(time, travelTime - 0.02, 1);
                 adjustedtime = Math.pow(adjustedtime, 4);
-                var relativeDistance = utility_44.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+                var relativeDistance = utility_43.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
                 guardFilter.setUniformValues({
                     trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
                     blockWidth: adjustedtime * maxBlockWidth,
@@ -24483,7 +24423,7 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
     exports.default = ProtonWrapper;
     var _a;
 });
-define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_45, ProtonWrapper_1) {
+define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_44, ProtonWrapper_1) {
     "use strict";
     function particleTest(props) {
         var width2 = props.width / 2;
@@ -24552,7 +24492,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
             rampUpValue = Math.pow(rampUpValue, 7.0);
             var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-            var relativeTimeAfterImpact = utility_45.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
+            var relativeTimeAfterImpact = utility_44.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
             var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
             var beamIntensity = rampUpValue - rampDownValue;
             beamFilter.setUniformValues({
@@ -24574,7 +24514,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
                 lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
             });
         };
-        var beamSprite = utility_45.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
+        var beamSprite = utility_44.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
         beamSprite.shader = beamFilter;
         beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(beamSprite);
@@ -24615,7 +24555,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         var shinyEmitter = new Proton.BehaviourEmitter();
         shinyEmitter.p.x = beamOrigin.x;
         shinyEmitter.p.y = beamOrigin.y;
-        var shinyParticleTexture = utility_45.getDummyTextureForShader();
+        var shinyParticleTexture = utility_44.getDummyTextureForShader();
         shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
         var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
         shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
@@ -24682,7 +24622,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             x: props.height * 3.0,
             y: props.height * 3.0
         };
-        var shockWaveSprite = utility_45.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
+        var shockWaveSprite = utility_44.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
         shockWaveSprite.shader = shockWaveFilter;
         mainContainer.addChild(shockWaveSprite);
         var lightBurstFilter = new LightBurst_1.default({
@@ -24707,7 +24647,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             x: props.height * 1.5,
             y: props.height * 3
         };
-        var lightBurstSprite = utility_45.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
+        var lightBurstSprite = utility_44.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
         lightBurstSprite.shader = lightBurstFilter;
         lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(lightBurstSprite);
@@ -24722,7 +24662,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             particleShaderColorArray[3] = particleShaderColor.a;
             var timePassed = elapsedTime / props.duration;
             var lifeLeft = 1 - timePassed;
-            var timePassedSinceImpact = utility_45.getRelativeValue(timePassed, relativeImpactTime, 1.0);
+            var timePassedSinceImpact = utility_44.getRelativeValue(timePassed, relativeImpactTime, 1.0);
             if (timePassed >= relativeImpactTime - 0.02) {
                 if (!impactHasOccurred) {
                     impactHasOccurred = true;
@@ -25479,7 +25419,7 @@ define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], func
     exports.default = SubEmblemTemplates;
     var _a, _b;
 });
-define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App"], function (require, exports, SubEmblemTemplates_1, App_34) {
+define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App"], function (require, exports, SubEmblemTemplates_1, App_38) {
     "use strict";
     var defaultEmblems = {
         key: "defaultEmblems",
@@ -25503,7 +25443,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
                 for (var templateKey in SubEmblemTemplates_1.default) {
                     var template = SubEmblemTemplates_1.default[templateKey];
                     var image = loader.resources[template.src].data;
-                    App_34.default.images[template.src] = image;
+                    App_38.default.images[template.src] = image;
                     if (!image.width) {
                         document.body.appendChild(image);
                         image.width = image.offsetWidth;
@@ -25563,7 +25503,7 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports"], function
     exports.default = defaultRuleSet;
     var _a, _b;
 });
-define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, DiplomacyState_3, utility_46) {
+define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, DiplomacyState_3, utility_45) {
     "use strict";
     function moveToRoutine(front, afterMoveCallback, getMoveTargetFN) {
         var fleets = front.getAssociatedFleets();
@@ -25706,7 +25646,7 @@ define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective"
         var cost = unit.getTotalCost();
         baseScore -= cost / 1000;
         var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 2);
-        return utility_46.clamp(score, 0, 1);
+        return utility_45.clamp(score, 0, 1);
     }
     exports.scoutingUnitFitFN = scoutingUnitFitFN;
     function mergeScoresByStar(merged, scores) {
@@ -25735,7 +25675,7 @@ define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective"
             var player = evaluationScores[i].player || null;
             if (score < 0.04)
                 continue;
-            var relativeScore = utility_46.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
+            var relativeScore = utility_45.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
             var priority = relativeScore * basePriority;
             allObjectives.push(new Objective_1.default(template, priority, star, player));
         }
@@ -25875,7 +25815,7 @@ define("modules/defaultai/objectives/cleanUpPirates", ["require", "exports", "mo
     exports.default = cleanUpPirates;
     var _a, _b;
 });
-define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, utility_47, aiUtils_4) {
+define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, utility_46, aiUtils_4) {
     "use strict";
     var discovery = {
         key: "discovery",
@@ -25913,7 +25853,7 @@ define("modules/defaultai/objectives/discovery", ["require", "exports", "src/uti
             for (var starId in linksToUnrevealedStars) {
                 var star = mapEvaluator.player.revealedStars[starId];
                 var score = 0;
-                var relativeDistance = utility_47.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
+                var relativeDistance = utility_46.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
                 var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
                 var linksScore = linksToUnrevealedStars[starId].length * 20;
                 score += linksScore;
@@ -25967,7 +25907,7 @@ define("modules/defaultai/objectives/heal", ["require", "exports", "src/mapai/Ob
     exports.default = heal;
     var _a, _b;
 });
-define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, Objective_3, DiplomacyState_4, utility_48, aiUtils_6) {
+define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, Objective_3, DiplomacyState_4, utility_47, aiUtils_6) {
     "use strict";
     var conquer = {
         key: "conquer",
@@ -25992,7 +25932,7 @@ define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai
             var possibleTargets = [];
             for (var i = 0; i < hostilePlayers.length; i++) {
                 var desirabilityByStar = mapEvaluator.evaluateDesirabilityOfPlayersStars(hostilePlayers[i]).byStar;
-                var sortedIds = utility_48.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
+                var sortedIds = utility_47.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
                 if (sortedIds.length === 0) {
                     continue;
                 }
@@ -26014,7 +25954,7 @@ define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai
     exports.default = conquer;
     var _a, _b;
 });
-define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "src/mapai/Objective", "src/RuleSet"], function (require, exports, Objective_4, RuleSet_10) {
+define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "src/mapai/Objective", "src/App"], function (require, exports, Objective_4, App_39) {
     "use strict";
     var expandManufactoryCapacity = {
         key: "expandManufactoryCapacity",
@@ -26035,7 +25975,7 @@ define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "ex
                     continue;
                 var expansionCost;
                 if (!star.manufactory) {
-                    expansionCost = RuleSet_10.default.manufactory.buildCost;
+                    expansionCost = App_39.default.moduleData.ruleSet.manufactory.buildCost;
                 }
                 else {
                     expansionCost = star.manufactory.getCapacityUpgradeCost();
@@ -26060,7 +26000,7 @@ define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "ex
             }
             else {
                 star.buildManufactory();
-                player.money -= RuleSet_10.default.manufactory.buildCost;
+                player.money -= App_39.default.moduleData.ruleSet.manufactory.buildCost;
             }
         }
     };
@@ -26106,7 +26046,7 @@ define("modules/defaultai/Objectives", ["require", "exports", "modules/defaultai
     exports.default = Objectives;
     var _a, _b, _c;
 });
-define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_35) {
+define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_40) {
     "use strict";
     ;
     function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
@@ -26115,7 +26055,7 @@ define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], functi
         }
     }
     function addImageToApp(name, image) {
-        App_35.default.images[name] = image;
+        App_40.default.images[name] = image;
     }
     function cacheSpriteSheetAsImages(sheetData, sheetImg, onImageCreated) {
         if (onImageCreated === void 0) { onImageCreated = addImageToApp; }
@@ -26466,7 +26406,7 @@ define("modules/defaultmapgen/common/Region", ["require", "exports"], function (
     exports.default = Region;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", "src/Unit", "src/Building", "src/Fleet", "src/utility"], function (require, exports, App_36, Unit_7, Building_4, Fleet_5, utility_49) {
+define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", "src/Unit", "src/Building", "src/Fleet", "src/utility"], function (require, exports, App_41, Unit_7, Building_4, Fleet_5, utility_48) {
     "use strict";
     var Sector = (function () {
         function Sector(id) {
@@ -26577,7 +26517,7 @@ define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", 
                 var star = independentStars[i];
                 player.addStar(star);
                 star.addBuilding(new Building_4.default({
-                    template: App_36.default.moduleData.Templates.Buildings["starBase"],
+                    template: App_41.default.moduleData.Templates.Buildings["starBase"],
                     location: star
                 }));
                 var nearestPlayerStar = star.getNearestStarForQualifier(starIsOwnedByPlayerQualifierFN);
@@ -26618,7 +26558,7 @@ define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", 
                 var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
                 var units = [];
                 if (star === commanderStar) {
-                    var template = utility_49.getRandomArrayItem(localBuildableUnitTypes);
+                    var template = utility_48.getRandomArrayItem(localBuildableUnitTypes);
                     var commander = makeUnitFN(template, player, 1.4, 1.4 + inverseMapGenDistance);
                     commander.name = "Pirate commander";
                     units.push(commander);
@@ -26627,7 +26567,7 @@ define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", 
                     var isElite = j < elitesAmount;
                     var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
                     var unitStatsModifier = (isElite ? 1.2 : 1);
-                    var template = utility_49.getRandomArrayItem(templateCandidates);
+                    var template = utility_48.getRandomArrayItem(templateCandidates);
                     var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
                     unit.name = (isElite ? "Pirate elite" : "Pirate");
                     units.push(unit);
@@ -26723,7 +26663,7 @@ define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function
     exports.default = Triangle;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_50) {
+define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_49) {
     "use strict";
     function triangulate(vertices) {
         var triangles = [];
@@ -26796,12 +26736,12 @@ define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modul
         return triangle;
     }
     function edgesEqual(e1, e2) {
-        return ((utility_50.pointsEqual(e1[0], e2[0]) && utility_50.pointsEqual(e1[1], e2[1])) ||
-            (utility_50.pointsEqual(e1[0], e2[1]) && utility_50.pointsEqual(e1[1], e2[0])));
+        return ((utility_49.pointsEqual(e1[0], e2[0]) && utility_49.pointsEqual(e1[1], e2[1])) ||
+            (utility_49.pointsEqual(e1[0], e2[1]) && utility_49.pointsEqual(e1[1], e2[0])));
     }
     var _a, _b, _c, _d, _e, _f;
 });
-define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_37) {
+define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_42) {
     "use strict";
     var TemplateIndexes = (function () {
         function TemplateIndexes() {
@@ -26854,14 +26794,14 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
                     }
                 }
             }
-            putInGroups(App_37.default.moduleData.Templates.UnitFamilies, "unitFamilies");
-            putInGroups(App_37.default.moduleData.Templates.Resources, "resources");
+            putInGroups(App_42.default.moduleData.Templates.UnitFamilies, "unitFamilies");
+            putInGroups(App_42.default.moduleData.Templates.Resources, "resources");
             return result;
         };
         TemplateIndexes.getItemsByTechLevel = function () {
             var itemsByTechLevel = {};
-            for (var itemName in App_37.default.moduleData.Templates.Items) {
-                var item = App_37.default.moduleData.Templates.Items[itemName];
+            for (var itemName in App_42.default.moduleData.Templates.Items) {
+                var item = App_42.default.moduleData.Templates.Items[itemName];
                 if (!itemsByTechLevel[item.techLevel]) {
                     itemsByTechLevel[item.techLevel] = [];
                 }
@@ -26876,7 +26816,7 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
     exports.default = indexes;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/App", "modules/defaultmapgen/common/Sector", "modules/defaultmapgen/common/triangulate", "src/Building", "src/Color", "src/Emblem", "src/Flag", "src/TemplateIndexes", "src/pathfinding", "src/utility"], function (require, exports, App_38, Sector_1, triangulate_1, Building_5, Color_5, Emblem_4, Flag_5, TemplateIndexes_1, pathfinding_1, utility_51) {
+define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/App", "modules/defaultmapgen/common/Sector", "modules/defaultmapgen/common/triangulate", "src/Building", "src/Color", "src/Emblem", "src/Flag", "src/TemplateIndexes", "src/pathfinding", "src/utility"], function (require, exports, App_43, Sector_1, triangulate_1, Building_5, Color_5, Emblem_4, Flag_5, TemplateIndexes_1, pathfinding_1, utility_50) {
     "use strict";
     function linkAllStars(stars) {
         if (stars.length < 3) {
@@ -27069,7 +27009,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
         }
         for (var i = 0; i < sectors.length; i++) {
             var sector = sectors[i];
-            var alreadyAddedByWeight = utility_51.getRelativeWeightsFromObject(probabilityWeights);
+            var alreadyAddedByWeight = utility_50.getRelativeWeightsFromObject(probabilityWeights);
             var candidates = [];
             for (var j = 0; j < sector.distributionFlags.length; j++) {
                 var flag = sector.distributionFlags[j];
@@ -27095,7 +27035,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
                 candidatesByWeight[candidates[j].type] =
                     alreadyAddedByWeight[candidates[j].type];
             }
-            var selectedKey = utility_51.getRandomKeyWithWeights(candidatesByWeight);
+            var selectedKey = utility_50.getRandomKeyWithWeights(candidatesByWeight);
             var selectedType = allDistributables[selectedKey];
             probabilityWeights[selectedKey] /= 2;
             placerFunction(sector, selectedType);
@@ -27115,14 +27055,14 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
         }
         if (addSectorCommand) {
             star.addBuilding(new Building_5.default({
-                template: App_38.default.moduleData.Templates.Buildings["sectorCommand"],
+                template: App_43.default.moduleData.Templates.Buildings["sectorCommand"],
                 location: star
             }));
             var amount = amount - 1;
         }
         for (var i = 0; i < amount; i++) {
             star.addBuilding(new Building_5.default({
-                template: App_38.default.moduleData.Templates.Buildings["starBase"],
+                template: App_43.default.moduleData.Templates.Buildings["starBase"],
                 location: star
             }));
         }
@@ -27135,7 +27075,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
         player.secondaryColor = Color_5.default.fromHex(0xFFFFFF);
         player.isIndependent = true;
         var foregroundEmblem = new Emblem_4.default(player.secondaryColor);
-        foregroundEmblem.inner = App_38.default.moduleData.Templates.SubEmblems["Flag_of_Edward_England"];
+        foregroundEmblem.inner = App_43.default.moduleData.Templates.SubEmblems["Flag_of_Edward_England"];
         player.flag = new Flag_5.default({
             width: 46,
             mainColor: player.color,
@@ -27157,7 +27097,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/Player", "src/Star", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/voronoi", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/mapGenUtils"], function (require, exports, App_39, FillerPoint_2, Player_4, Star_2, utility_52, MapGenResult_2, voronoi_2, Region_1, mapGenUtils_1) {
+define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/Player", "src/Star", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/voronoi", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/mapGenUtils"], function (require, exports, App_44, FillerPoint_2, Player_4, Star_2, utility_51, MapGenResult_2, voronoi_2, Region_1, mapGenUtils_1) {
     "use strict";
     var spiralGalaxyGeneration = function (options, players) {
         var sg = (function setStarGenerationProps(options) {
@@ -27195,11 +27135,11 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
                 armDistance: Math.PI * 2 / totalArms,
                 armOffsetMax: 0.5,
                 armRotationFactor: actualArms / 3,
-                galaxyRotation: utility_52.randRange(0, Math.PI * 2)
+                galaxyRotation: utility_51.randRange(0, Math.PI * 2)
             });
         })(options);
         function makePoint(distanceMin, distanceMax, arm, maxOffset) {
-            var distance = utility_52.randRange(distanceMin, distanceMax);
+            var distance = utility_51.randRange(distanceMin, distanceMax);
             var offset = Math.random() * maxOffset - maxOffset / 2;
             offset *= (1 / distance);
             if (offset < 0)
@@ -27223,7 +27163,7 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
         function makeStar(point, distance) {
             var star = new Star_2.default(point.x, point.y);
             star.mapGenData.distance = distance;
-            star.baseIncome = utility_52.randInt(4, 10) * 10;
+            star.baseIncome = utility_51.randInt(4, 10) * 10;
             return star;
         }
         var stars = [];
@@ -27301,14 +27241,14 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
         var resourcePlacerFN = function (sector, resource) {
             sector.addResource(resource);
         };
-        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "resources", App_39.default.moduleData.Templates.Resources, resourcePlacerFN);
+        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "resources", App_44.default.moduleData.Templates.Resources, resourcePlacerFN);
         var localUnitPlacerFN = function (sector, unitFamily) {
             for (var i = 0; i < sector.stars.length; i++) {
                 var star = sector.stars[i];
                 star.buildableUnitTypes = star.buildableUnitTypes.concat(unitFamily.associatedTemplates);
             }
         };
-        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "unitFamilies", App_39.default.moduleData.Templates.UnitFamilies, localUnitPlacerFN);
+        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "unitFamilies", App_44.default.moduleData.Templates.UnitFamilies, localUnitPlacerFN);
         var startRegions = (function setStartingRegions() {
             var armCount = options.basicOptions["arms"];
             var playerCount = Math.min(players.length, armCount);
@@ -27638,7 +27578,7 @@ define("modules/defaultunits/unitFamilies", ["require", "exports"], function (re
     exports.default = UnitFamilies;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_40, utility_53) {
+define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_45, utility_52) {
     "use strict";
     var defaultUnitDrawingFunction = function (unit, SFXParams) {
         var spriteTemplate = unit.template.sprite;
@@ -27659,7 +27599,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             isConvex = !isConvex;
             degree = Math.abs(degree);
         }
-        var image = App_40.default.images[spriteTemplate.imageSrc];
+        var image = App_45.default.images[spriteTemplate.imageSrc];
         var zDistance = props.zDistance;
         var xDistance = props.xDistance;
         var unitsToDraw;
@@ -27675,7 +27615,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
             unitsToDraw = Math.round(unitsToDraw * heightRatio);
             zDistance *= (1 / heightRatio);
-            unitsToDraw = utility_53.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+            unitsToDraw = utility_52.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
         }
         var xMin, xMax, yMin, yMax;
         var rotationAngle = Math.PI / 180 * props.rotationAngle;
@@ -27719,7 +27659,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             var scaledHeight = image.height * scale;
             var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
             var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-            var translated = utility_53.transformMat3({ x: x, y: y }, rotationMatrix);
+            var translated = utility_52.transformMat3({ x: x, y: y }, rotationMatrix);
             x = Math.round(translated.x);
             y = Math.round(translated.y);
             var sprite = new PIXI.Sprite(texture);
@@ -28439,7 +28379,7 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
     ];
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_54) {
+define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_53) {
     "use strict";
     function drawNebula(seed, renderer) {
         var oldRng = Math.random;
@@ -28449,12 +28389,12 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/
             baseColor: nebulaColorScheme.main.getRGB(),
             overlayColor: nebulaColorScheme.secondary.getRGB(),
             highlightColor: [1.0, 1.0, 1.0],
-            coverage: utility_54.randRange(0.28, 0.32),
-            scale: utility_54.randRange(4, 8),
-            diffusion: utility_54.randRange(1.5, 3.0),
-            streakiness: utility_54.randRange(1.5, 2.5),
-            streakLightness: utility_54.randRange(1, 1.2),
-            cloudLightness: utility_54.randRange(1, 1.2),
+            coverage: utility_53.randRange(0.28, 0.32),
+            scale: utility_53.randRange(4, 8),
+            diffusion: utility_53.randRange(1.5, 3.0),
+            streakiness: utility_53.randRange(1.5, 2.5),
+            streakLightness: utility_53.randRange(1, 1.2),
+            cloudLightness: utility_53.randRange(1, 1.2),
             highlightA: 0.9,
             highlightB: 2.2,
             seed: [Math.random() * 100, Math.random() * 100]
@@ -28908,7 +28848,7 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_41) {
+define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_46) {
     "use strict";
     var fogOfWar = {
         key: "fogOfWar",
@@ -28960,7 +28900,7 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
             tiled.mask = gfx;
             tiled.addChild(gfx);
             var bounds = tiled.getBounds();
-            var rendered = tiled.generateTexture(App_41.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
+            var rendered = tiled.generateTexture(App_46.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
             var sprite = new PIXI.Sprite(rendered);
             fogOfWarSpriteByStarID[star.id] = sprite;
             tiled.mask = null;
@@ -28969,7 +28909,7 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_55) {
+define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_54) {
     "use strict";
     function starsOnlyShareNarrowBorder(a, b) {
         var minBorderWidth = Options_7.default.display.borderWidth * 2;
@@ -29130,8 +29070,8 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                     var point = offsetted[j_1];
                     var nextPoint = offsetted[(j_1 + 1) % offsetted.length];
                     var edgeCenter = {
-                        x: utility_55.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-                        y: utility_55.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
+                        x: utility_54.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: utility_54.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     if (!pointStar) {
@@ -29173,7 +29113,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
         var polyLinesData = [];
         for (var i = 0; i < polyLines.length; i++) {
             var polyLine = polyLines[i];
-            var isClosed = utility_55.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            var isClosed = utility_54.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
             if (isClosed)
                 polyLine.pop();
             for (var j_3 = 0; j_3 < polyLine.length; j_3++) {
@@ -30383,7 +30323,7 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
     exports.default = defaultNotifications;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
 });
-define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_10, TutorialStatus_5, utility_56, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
+define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_10, TutorialStatus_5, utility_55, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
     "use strict";
     var App = (function () {
         function App() {
@@ -30393,7 +30333,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
-            utility_56.onDOMLoaded(function () {
+            utility_55.onDOMLoaded(function () {
                 var moduleLoader = self.moduleLoader = new ModuleLoader_1.default();
                 self.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(defaultEmblems_1.default);

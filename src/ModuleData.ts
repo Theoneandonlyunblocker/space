@@ -1,14 +1,12 @@
-/// <reference path="RuleSet.ts" />
 import ModuleFile from "./ModuleFile";
 import Personality from "../src/Personality";
 import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
 import RuleSetValues from "./RuleSetValues";
-import RuleSet from "./RuleSet";
 
 import
 {
-  extendObject,
-  getRandomProperty
+  getRandomProperty,
+  deepMerge
 } from "./utility";
 
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
@@ -90,7 +88,6 @@ interface Templates
   {
     [type: string]: MapGenTemplate;
   };
-  // recommend not touching these 2 too much as they are likely to change and stupid anyway
   MapRendererLayers:
   {
     [layerKey: string]: MapRendererLayerTemplate;
@@ -99,12 +96,10 @@ interface Templates
   {
     [mapModeKey: string]: MapRendererMapModeTemplate;
   };
-  // can touch again
   Notifications:
   {
     [key: string]: NotificationTemplate;
   };
-  // shouldnt probably touch this either
   Objectives:
   {
     [key: string]: ObjectiveTemplate;
@@ -180,6 +175,8 @@ export default class ModuleData
     UnitFamilies: {},
     Units: {}
   };
+  
+  public ruleSet: RuleSetValues = {};
 
   defaultMap: MapGenTemplate;
 
@@ -231,6 +228,6 @@ export default class ModuleData
   }
   public applyRuleSet(ruleSetValuesToCopy: RuleSetValues): void
   {
-    RuleSet.copyRules(ruleSetValuesToCopy);
+    this.ruleSet = deepMerge(this.ruleSet, ruleSetValuesToCopy);
   }
 }
