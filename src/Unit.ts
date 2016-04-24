@@ -50,26 +50,26 @@ import Front from "./mapai/Front";
 
 export default class Unit
 {
-  template: UnitTemplate;
+  public template: UnitTemplate;
 
-  id: number;
+  public id: number;
 
-  name: string;
-  portrait: PortraitTemplate;
+  public name: string;
+  public portrait: PortraitTemplate;
 
-  maxHealth: number;
-  currentHealth: number;
-  isSquadron: boolean;
+  public maxHealth: number;
+  public currentHealth: number;
+  public isSquadron: boolean;
 
-  currentMovePoints: number;
-  maxMovePoints: number;
+  public currentMovePoints: number;
+  public maxMovePoints: number;
 
-  timesActedThisTurn: number;
+  public timesActedThisTurn: number;
 
-  baseAttributes: UnitAttributes;
-  attributesAreDirty: boolean;
-  cachedAttributes: UnitAttributes;
-  get attributes(): UnitAttributes
+  public baseAttributes: UnitAttributes;
+  public attributesAreDirty: boolean;
+  private cachedAttributes: UnitAttributes;
+  public get attributes(): UnitAttributes
   {
     if (this.attributesAreDirty || !this.cachedAttributes)
     {
@@ -79,17 +79,17 @@ export default class Unit
     return this.cachedAttributes;
   }
 
-  battleStats: UnitBattleStats;
+  public battleStats: UnitBattleStats;
 
-  abilities: AbilityTemplate[] = [];
-  passiveSkills: PassiveSkillTemplate[] = [];
+  private abilities: AbilityTemplate[] = [];
+  private passiveSkills: PassiveSkillTemplate[] = [];
 
-  experienceForCurrentLevel: number;
-  level: number;
+  public experienceForCurrentLevel: number;
+  public level: number;
 
-  fleet: Fleet;
+  public fleet: Fleet;
 
-  items:
+  public items:
   {
     low: Item;
     mid: Item;
@@ -101,7 +101,7 @@ export default class Unit
     high: null
   };
 
-  passiveSkillsByPhase:
+  private passiveSkillsByPhase:
   {
     atBattleStart?: PassiveSkillTemplate[];
     // beforeAbilityUse?: PassiveSkillTemplate[];
@@ -109,24 +109,13 @@ export default class Unit
     atTurnStart?: PassiveSkillTemplate[];
     inBattlePrep?: PassiveSkillTemplate[];
   } = {};
-  passiveSkillsByPhaseAreDirty: boolean = true;
+  private passiveSkillsByPhaseAreDirty: boolean = true;
 
-  
-  front: Front;
+  public front: Front;
 
-  uiDisplayIsDirty: boolean = true;
-  // todo old
-  displayFlags:
-  {
-    isAnnihilated: boolean;
-  };
-  sfxDuration: number;
-  lastHealthDrawnAt: number;
-  // end old
-  // todo new, but irrelevant due to unitdisplaydata
-  displayedHealth: number;
-  
-  // end new
+  public uiDisplayIsDirty: boolean = true;
+  public lastHealthDrawnAt: number;
+
   constructor(template: UnitTemplate, id?: number, data?: UnitSaveData)
   {
     this.id = isFinite(id) ? id : idGenerators.unit++;
@@ -142,13 +131,8 @@ export default class Unit
       this.setCulture();
       this.setInitialValues();
     }
-
-    this.displayFlags =
-    {
-      isAnnihilated: false
-    };
   }
-  makeFromData(data: UnitSaveData)
+  private makeFromData(data: UnitSaveData)
   {
     this.name = data.name;
 
@@ -242,7 +226,7 @@ export default class Unit
         app.moduleData.Templates.Cultures, data.portraitKey, "portraits");
     }
   }
-  setInitialValues()
+  private setInitialValues()
   {
     this.setBaseHealth();
     this.setAttributes();
@@ -258,7 +242,7 @@ export default class Unit
 
     this.timesActedThisTurn = 0;
   }
-  setBaseHealth(multiplier: number = 1)
+  public setBaseHealth(multiplier: number = 1)
   {
     var min = 200 * this.template.maxHealth * multiplier;
     var max = 300 * this.template.maxHealth * multiplier;
@@ -266,7 +250,7 @@ export default class Unit
     
     this.currentHealth = this.maxHealth;
   }
-  setAttributes(baseSkill: number = 1, variance: number = 1)
+  public setAttributes(baseSkill: number = 1, variance: number = 1)
   {
     var template = this.template;
 
@@ -294,7 +278,7 @@ export default class Unit
     this.cachedAttributes = attributes;
     this.attributesAreDirty = true;
   }
-  setCulture()
+  private setCulture()
   {
     var templateCultures = this.template.cultures;
 
@@ -347,15 +331,15 @@ export default class Unit
     var portraitCulture = getRandomArrayItemWithWeights<any>(portraitCandidateCulturesWithWeights).culture;
     this.portrait = getRandomProperty(portraitCulture.portraits);
   }
-  getBaseMoveDelay()
+  private getBaseMoveDelay()
   {
     return 30 - this.attributes.speed;
   }
-  resetMovePoints()
+  public resetMovePoints()
   {
     this.currentMovePoints = this.maxMovePoints;
   }
-  resetBattleStats()
+  public resetBattleStats()
   {
     this.battleStats =
     {
@@ -371,19 +355,13 @@ export default class Unit
       queuedAction: null,
       isAnnihilated: false
     };
-
-    this.displayFlags =
-    {
-      isAnnihilated: false
-    };
   }
-  setBattlePosition(battle: Battle, side: UnitBattleSide, position: number[])
+  public setBattlePosition(battle: Battle, side: UnitBattleSide, position: number[])
   {
     this.battleStats.side = side;
     this.battleStats.position = position;
   }
-
-  addStrength(amount: number)
+  public addStrength(amount: number)
   {
     this.currentHealth += Math.round(amount);
     if (this.currentHealth > this.maxHealth)
@@ -393,7 +371,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  removeStrength(amount: number)
+  public removeStrength(amount: number)
   {
     this.currentHealth -= Math.round(amount);
     this.currentHealth = clamp(this.currentHealth, 0, this.maxHealth);
@@ -410,7 +388,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  removeActionPoints(amount: number)
+  public removeActionPoints(amount: number)
   {
     this.battleStats.currentActionPoints -= amount;
     if (this.battleStats.currentActionPoints < 0)
@@ -420,11 +398,11 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  addMoveDelay(amount: number)
+  public addMoveDelay(amount: number)
   {
     this.battleStats.moveDelay += amount;
   }
-  updateStatusEffects()
+  public updateStatusEffects()
   {
     for (let i = 0; i < this.battleStats.statusEffects.length; i++)
     {
@@ -437,7 +415,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  setQueuedAction(ability: AbilityTemplate, target: Unit)
+  private setQueuedAction(ability: AbilityTemplate, target: Unit)
   {
     this.battleStats.queuedAction =
     {
@@ -449,7 +427,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  interruptQueuedAction(interruptStrength: number)
+  private interruptQueuedAction(interruptStrength: number)
   {
     var action = this.battleStats.queuedAction;
     if (!action) return;
@@ -462,7 +440,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  updateQueuedAction()
+  private updateQueuedAction()
   {
     var action = this.battleStats.queuedAction;
     if (!action) return;
@@ -471,29 +449,28 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  isReadyToUseQueuedAction()
+  private isReadyToUseQueuedAction()
   {
     var action = this.battleStats.queuedAction;
 
     return (action && action.turnsPrepared >= action.ability.preparation.turnsToPrep);
   }
-  clearQueuedAction()
+  private clearQueuedAction()
   {
     this.battleStats.queuedAction = null;
     this.uiDisplayIsDirty = true;
   }
-  
   // TODO gameplay | allow units to become untargetable in battle (cloaking?)
-  isTargetable()
+  public isTargetable()
   {
     return this.isActiveInBattle();
   }
-  isActiveInBattle()
+  public isActiveInBattle()
   {
     return this.currentHealth > 0 && !this.battleStats.isAnnihilated;
   }
 
-  addItem(item: Item)
+  public addItem(item: Item)
   {
     var itemSlot = item.template.slot;
 
@@ -516,7 +493,7 @@ export default class Unit
       this.passiveSkillsByPhaseAreDirty = true;
     }
   }
-  removeItem(item: Item)
+  public removeItem(item: Item)
   {
     var itemSlot = item.template.slot;
 
@@ -539,7 +516,7 @@ export default class Unit
 
     return false;
   }
-  destroyAllItems()
+  private destroyAllItems()
   {
     for (let slot in this.items)
     {
@@ -550,7 +527,7 @@ export default class Unit
       }
     }
   }
-  getAttributesWithItems()
+  private getAttributesWithItems()
   {
     var attributes = extendObject(this.baseAttributes);
 
@@ -569,7 +546,7 @@ export default class Unit
 
     return attributes;
   }
-  addStatusEffect(statusEffect: StatusEffect)
+  public addStatusEffect(statusEffect: StatusEffect)
   {
     if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1)
     {
@@ -589,7 +566,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  removeStatusEffect(statusEffect: StatusEffect)
+  private removeStatusEffect(statusEffect: StatusEffect)
   {
     var index = this.battleStats.statusEffects.indexOf(statusEffect);
     if (index === -1)
@@ -609,7 +586,7 @@ export default class Unit
   sort by attribute, positive/negative, additive vs multiplicative
   apply additive, multiplicative
    */
-  getTotalStatusEffectAttributeAdjustments()
+  private getTotalStatusEffectAttributeAdjustments()
   {
     if (!this.battleStats || !this.battleStats.statusEffects)
     {
@@ -639,7 +616,7 @@ export default class Unit
 
     return adjustments;
   }
-  getAttributesWithEffects()
+  private getAttributesWithEffects()
   {
     var withItems = this.getAttributesWithItems();
 
@@ -678,11 +655,11 @@ export default class Unit
     
     return difference;
   }
-  updateCachedAttributes()
+  private updateCachedAttributes()
   {
     this.cachedAttributes = this.getAttributesWithEffects();
   }
-  removeItemAtSlot(slot: string)
+  public removeItemAtSlot(slot: string)
   {
     if (this.items[slot])
     {
@@ -692,18 +669,18 @@ export default class Unit
 
     return false;
   }
-  setInitialAbilities()
+  private setInitialAbilities()
   {
     this.abilities = getItemsFromWeightedProbabilities<AbilityTemplate>(this.template.possibleAbilities);
   }
-  setInitialPassiveSkills()
+  private setInitialPassiveSkills()
   {
     if (this.template.possiblePassiveSkills)
     {
       this.passiveSkills = getItemsFromWeightedProbabilities<PassiveSkillTemplate>(this.template.possiblePassiveSkills);
     }
   }
-  getItemAbilities(): AbilityTemplate[]
+  private getItemAbilities(): AbilityTemplate[]
   {
     var itemAbilities: AbilityTemplate[] = [];
 
@@ -715,11 +692,11 @@ export default class Unit
 
     return itemAbilities;
   }
-  getAllAbilities(): AbilityTemplate[]
+  public getAllAbilities(): AbilityTemplate[]
   {
     return this.abilities.concat(this.getItemAbilities());
   }
-  getItemPassiveSkills(): PassiveSkillTemplate[]
+  private getItemPassiveSkills(): PassiveSkillTemplate[]
   {
     var itemPassiveSkills: PassiveSkillTemplate[] = [];
 
@@ -731,7 +708,7 @@ export default class Unit
 
     return itemPassiveSkills;
   }
-  getAllPassiveSkills(): PassiveSkillTemplate[]
+  public getAllPassiveSkills(): PassiveSkillTemplate[]
   {
     var allSkills: PassiveSkillTemplate[] = [];
     
@@ -740,7 +717,7 @@ export default class Unit
 
     return allSkills;
   }
-  updatePassiveSkillsByPhase(): void
+  private updatePassiveSkillsByPhase(): void
   {
     var updatedSkills = {};
 
@@ -769,7 +746,7 @@ export default class Unit
     this.passiveSkillsByPhase = updatedSkills;
     this.passiveSkillsByPhaseAreDirty = false;
   }
-  getPassiveSkillsByPhase()
+  public getPassiveSkillsByPhase()
   {
     if (this.passiveSkillsByPhaseAreDirty)
     {
@@ -818,7 +795,7 @@ export default class Unit
     
     return relevantStatusEffectTemplates.concat(relevantPassiveEffectTemplates);
   } 
-  receiveDamage(amount: number, damageType: DamageType)
+  public receiveDamage(amount: number, damageType: DamageType)
   {
     var damageReduction = this.getReducedDamageFactor(damageType);
 
@@ -827,7 +804,7 @@ export default class Unit
     this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
     this.removeStrength(adjustedDamage);
   }
-  getAdjustedTroopSize()
+  private getAdjustedTroopSize()
   {
     // used so unit will always counter with at least 1/3 strength it had before being attacked
     var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
@@ -850,7 +827,7 @@ export default class Unit
       return currentHealth / 4 + 750;
     }
   }
-  getAttackDamageIncrease(damageType: DamageType)
+  public getAttackDamageIncrease(damageType: DamageType)
   {
     var attackStat: number, attackFactor: number;
 
@@ -874,7 +851,7 @@ export default class Unit
 
     return (1 + attackStat * attackFactor) * troopSize;
   }
-  getReducedDamageFactor(damageType: DamageType)
+  private getReducedDamageFactor(damageType: DamageType)
   {
     var defensiveStat: number, defenceFactor: number;
     var finalDamageMultiplier = 1;
@@ -903,15 +880,15 @@ export default class Unit
 
     return finalDamageFactor;
   }
-  addToFleet(fleet: Fleet)
+  public addToFleet(fleet: Fleet)
   {
     this.fleet = fleet;
   }
-  removeFromFleet()
+  public removeFromFleet()
   {
     this.fleet = null;
   }
-  removeFromPlayer()
+  public removeFromPlayer()
   {
     var player = this.fleet.player;
 
@@ -926,7 +903,7 @@ export default class Unit
 
     this.uiDisplayIsDirty = true;
   }
-  transferToPlayer(newPlayer: Player)
+  public transferToPlayer(newPlayer: Player)
   {
     var oldPlayer = this.fleet.player;
     var location = this.fleet.location;
@@ -936,51 +913,51 @@ export default class Unit
     newPlayer.addUnit(this);
     var newFleet = new Fleet(newPlayer, [this], location);
   }
-  removeGuard(amount: number)
+  public removeGuard(amount: number)
   {
     this.battleStats.guardAmount -= amount;
     if (this.battleStats.guardAmount < 0) this.removeAllGuard();
 
     this.uiDisplayIsDirty = true;
   }
-  addGuard(amount: number, coverage: GuardCoverage)
+  public addGuard(amount: number, coverage: GuardCoverage)
   {
     this.battleStats.guardAmount += amount;
     this.battleStats.guardCoverage = coverage;
 
     this.uiDisplayIsDirty = true;
   }
-  removeAllGuard()
+  public removeAllGuard()
   {
     this.battleStats.guardAmount = 0;
     this.battleStats.guardCoverage = null;
 
     this.uiDisplayIsDirty = true;
   }
-  getCounterAttackStrength()
+  public getCounterAttackStrength()
   {
     return 1; // TODO unit
   }
-  canActThisTurn(): boolean
+  public canActThisTurn(): boolean
   {
     return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
   }
-  isStealthy(): boolean
+  public isStealthy(): boolean
   {
     // TODO unit
     return this.template.isStealthy;
   }
-  getVisionRange(): number
+  public getVisionRange(): number
   {
     // TODO unit
     return this.template.visionRange;
   }
-  getDetectionRange(): number
+  public getDetectionRange(): number
   {
     // TODO unit
     return this.template.detectionRange;
   }
-  heal()
+  public heal()
   {
     var location = this.fleet.location;
 
@@ -992,12 +969,12 @@ export default class Unit
 
     this.addStrength(healAmount);
   }
-  getStrengthEvaluation()
+  public getStrengthEvaluation()
   {
     // TODO unit TODO ai
     return this.currentHealth;
   }
-  getTotalCost()
+  public getTotalCost()
   {
     var totalCost = 0;
     totalCost += this.template.buildCost;
@@ -1011,7 +988,7 @@ export default class Unit
 
     return totalCost;
   }
-  getTurnsToReachStar(star: Star)
+  public getTurnsToReachStar(star: Star)
   {
     var currentLocation = this.fleet.location;
     var distance = currentLocation.getDistanceToStar(star);
@@ -1029,24 +1006,24 @@ export default class Unit
     distance -= this.currentMovePoints; // current turn
     return distance / this.maxMovePoints; // future turns
   }
-  getExperienceToNextLevel()
+  public getExperienceToNextLevel()
   {
     return (4 + this.level) * 10;
   }
-  addExperience(amount: number)
+  public addExperience(amount: number)
   {
     this.experienceForCurrentLevel += Math.round(amount);
   }
-  canLevelUp()
+  public canLevelUp()
   {
     return this.experienceForCurrentLevel >= this.getExperienceToNextLevel();
   }
-  handleLevelUp()
+  public handleLevelUp()
   {
     this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
     this.level++;
   }
-  hasAbility(ability: AbilityBase, allAbilities: AbilityBase[])
+  private hasAbility(ability: AbilityBase, allAbilities: AbilityBase[])
   {
     for (let i = 0; i < allAbilities.length; i++)
     {
@@ -1058,7 +1035,7 @@ export default class Unit
 
     return false;
   }
-  getLearnableAbilities(allAbilities: AbilityBase[])
+  private getLearnableAbilities(allAbilities: AbilityBase[])
   {
     var abilities: AbilityBase[] = [];
 
@@ -1092,7 +1069,7 @@ export default class Unit
 
     return abilities;
   }
-  canUpgradeIntoAbility(ability: AbilityBase, allAbilities: AbilityBase[])
+  private canUpgradeIntoAbility(ability: AbilityBase, allAbilities: AbilityBase[])
   {
     if (ability.onlyAllowExplicitUpgrade)
     {
@@ -1156,7 +1133,7 @@ export default class Unit
 
     return upgradeData;
   }
-  upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
+  public upgradeAbility(source: AbilityBase, newAbility: AbilityBase)
   {
     var newAbilityIsPassiveSkill = !newAbility.mainEffect;
     if (source)
@@ -1183,7 +1160,7 @@ export default class Unit
       this.abilities.push(castedNewAbility);
     }
   }
-  drawBattleScene(params: SFXParams)
+  public drawBattleScene(params: SFXParams)
   {
     this.template.unitDrawingFN(this, params);
   }
@@ -1211,7 +1188,7 @@ export default class Unit
       passiveEffects: this.getPassiveEffectsForScene(scene),
     });
   }
-  serialize(includeItems: boolean = true, includeFluff: boolean = true): UnitSaveData
+  public serialize(includeItems: boolean = true, includeFluff: boolean = true): UnitSaveData
   {
     var itemsSaveData: UnitItemsSaveData = {};
 
@@ -1293,7 +1270,7 @@ export default class Unit
 
     return data;
   }
-  makeVirtualClone()
+  public makeVirtualClone()
   {
     var data = this.serialize(true, false);
     var clone = new Unit(this.template, this.id, data);
