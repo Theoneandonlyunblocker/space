@@ -20,7 +20,8 @@ export default class BattlePrep
   public enemyFormation: BattlePrepFormation;
   public humanUnits: Unit[];
   public enemyUnits: Unit[];
-  
+  public afterBattleFinishCallbacks: {(): void}[] = [];
+  public minDefenders: number;
   
   private attackerUnits: Unit[];
   private defenderUnits: Unit[];
@@ -28,10 +29,6 @@ export default class BattlePrep
   private attackerFormation: BattlePrepFormation;
   private defenderFormation: BattlePrepFormation;
 
-
-  minDefenders: number;
-
-  afterBattleFinishCallbacks: Function[] = [];
 
   constructor(battleData: BattleData)
   {

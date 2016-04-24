@@ -23,11 +23,11 @@ import
 
 export default class Battle
 {
-  unitsById:
+  public unitsById:
   {
     [id: number]: Unit;
   } = {};
-  unitsBySide:
+  public unitsBySide:
   {
     side1: Unit[];
     side2: Unit[];
@@ -36,41 +36,39 @@ export default class Battle
     side1: [],
     side2: []
   };
-  side1: Unit[][];
-  side1Player: Player;
-  side2: Unit[][];
-  side2Player: Player;
+  public side1: Unit[][];
+  public side1Player: Player;
+  public side2: Unit[][];
+  public side2Player: Player;
 
-  battleData: BattleData;
+  public battleData: BattleData;
 
+  public turnOrder: BattleTurnOrder;
+  public activeUnit: Unit;
 
-  turnOrder: BattleTurnOrder;
-  activeUnit: Unit;
+  private currentTurn: number;
+  public maxTurns: number;
+  public turnsLeft: number;
 
-  currentTurn: number;
-  maxTurns: number;
-  turnsLeft: number;
-
-  startHealth:
+  private startHealth:
   {
     side1: number;
     side2: number;
   };
 
-  evaluation: //-1: side1 win, 0: even, 1: side2 win
+  private evaluation: //-1: side1 win, 0: even, 1: side2 win
   {
     [turnNumber: number]: number;
   } = {};
 
-  isSimulated: boolean = false; // true when battle is between two
-                                // ai players
-  isVirtual: boolean = false; // true when a clone made by battle ai
-  ended: boolean = false;
+  public isSimulated: boolean = false; // true when battle is between two ai players
+  private isVirtual: boolean = false; // true when a clone made by battle ai
+  public ended: boolean = false;
 
-  capturedUnits: Unit[];
-  deadUnits: Unit[];
+  public capturedUnits: Unit[];
+  public deadUnits: Unit[];
 
-  afterFinishCallbacks: any[] = [];
+  public afterFinishCallbacks: {(): void}[] = [];
 
   constructor(props:
   {
@@ -89,10 +87,10 @@ export default class Battle
     
     this.turnOrder = new BattleTurnOrder();
   }
-  init()
+  // Separate because cloned battles (for ai simulation) don't need to call this.
+  public init()
   {
     var self = this;
-
 
     UnitBattleSides.forEach(function(sideId: UnitBattleSide)
     {
@@ -106,7 +104,7 @@ export default class Battle
             self.unitsById[side[i][j].id] = side[i][j];
             self.unitsBySide[sideId].push(side[i][j]);
 
-            var pos = self.getAbsolutePositionFromSidePosition([i, j], sideId)
+            var pos = Battle.getAbsolutePositionFromSidePosition([i, j], sideId)
 
             self.initUnit(side[i][j], sideId, pos);
           }
@@ -125,7 +123,7 @@ export default class Battle
       side2: this.getTotalHealthForSide("side2").current
     }
 
-    if (this.checkBattleEnd())
+    if (this.shouldBattleEnd())
     {
       this.endBattle();
     }
@@ -135,23 +133,47 @@ export default class Battle
     }
 
     this.triggerBattleStartAbilities();
-
   }
-  forEachUnit(operator: (unit: Unit) => any): void
+  public forEachUnit(operator: (unit: Unit) => any): void
   {
     for (let id in this.unitsById)
     {
        operator.call(this, this.unitsById[id]);
     }
   }
-  initUnit(unit: Unit, side: UnitBattleSide, position: number[])
+  public endTurn()
+  {
+    this.currentTurn++;
+    this.turnsLeft--;
+    this.updateTurnOrder();
+
+    var shouldEnd = this.shouldBattleEnd();
+    if (shouldEnd)
+    {
+      this.endBattle();
+    }
+    else
+    {
+      this.shiftRowsIfNeeded();
+    }
+  }
+  public getActivePlayer()
+  {
+    if (!this.activeUnit) return null;
+
+    var side = this.activeUnit.battleStats.side;
+
+    return this.getPlayerForSide(side);
+  }
+  
+  private initUnit(unit: Unit, side: UnitBattleSide, position: number[])
   {
     unit.resetBattleStats();
     unit.setBattlePosition(this, side, position);
     this.turnOrder.addUnit(unit);
     unit.timesActedThisTurn++;
   }
-  triggerBattleStartAbilities()
+  private triggerBattleStartAbilities()
   {
     this.forEachUnit(function(unit: Unit)
     {
@@ -170,43 +192,19 @@ export default class Battle
       }
     });
   }
-  endTurn()
-  {
-    this.currentTurn++;
-    this.turnsLeft--;
-    this.updateTurnOrder();
-
-    var shouldEnd = this.checkBattleEnd();
-    if (shouldEnd)
-    {
-      this.endBattle();
-    }
-    else
-    {
-      this.shiftRowsIfNeeded();
-    }
-  }
-  getPlayerForSide(side: UnitBattleSide)
+  private getPlayerForSide(side: UnitBattleSide)
   {
     if (side === "side1") return this.side1Player;
     else if (side === "side2") return this.side2Player;
     else throw new Error("invalid side");
   }
-  getSideForPlayer(player: Player): UnitBattleSide
+  private getSideForPlayer(player: Player): UnitBattleSide
   {
     if (this.side1Player === player) return "side1";
     else if (this.side2Player === player) return "side2";
     else throw new Error("invalid player");
   }
-  getActivePlayer()
-  {
-    if (!this.activeUnit) return null;
-
-    var side = this.activeUnit.battleStats.side;
-
-    return this.getPlayerForSide(side);
-  }
-  getRowByPosition(position: number)
+  private getRowByPosition(position: number)
   {
     var rowsPerSide = RuleSet.battle.rowsPerFormation;
     var side: UnitBattleSide = position < rowsPerSide ? "side1" : "side2";
@@ -214,113 +212,8 @@ export default class Battle
 
     return this[side][relativePosition];
   }
-  // BattleEndProcessor
-  getCapturedUnits(victor: Player, maxCapturedUnits: number)
-  {
-    if (!victor || victor.isIndependent) return [];
-
-    var winningSide = this.getSideForPlayer(victor);
-    var losingSide = reverseSide(winningSide);
-
-    var losingUnits = this.unitsBySide[losingSide].slice(0);
-    losingUnits.sort(function(a: Unit, b: Unit)
-    {
-      var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
-      if (captureChanceSort)
-      {
-        return captureChanceSort;
-      }
-      else
-      {
-        return randInt(0, 1) * 2 - 1; // -1 or 1
-      }
-    });
-
-    var capturedUnits: Unit[] = [];
-
-    for (let i = 0; i < losingUnits.length; i++)
-    {
-      if (capturedUnits.length >= maxCapturedUnits) break;
-
-      var unit = losingUnits[i];
-      if (unit.currentHealth <= 0 &&
-        Math.random() <= unit.battleStats.captureChance)
-      {
-        capturedUnits.push(unit);
-      }
-    }
-
-    return capturedUnits;
-  }
-  getUnitDeathChance(unit: Unit, victor: Player)
-  {
-    var player: Player = unit.fleet.player;
-
-    var deathChance: number;
-
-    if (player.isIndependent)
-    {
-      deathChance = RuleSet.battle.independentUnitDeathChance;
-    }
-    else if (player.isAI)
-    {
-      deathChance = RuleSet.battle.aiUnitDeathChance;
-    }
-    else
-    {
-      deathChance = RuleSet.battle.humanUnitDeathChance;
-    }
-
-    var playerDidLose = (victor && player !== victor);
-    if (playerDidLose)
-    {
-      deathChance += RuleSet.battle.loserUnitExtraDeathChance;
-    }
-
-    return deathChance;
-  }
-  getDeadUnits(capturedUnits: Unit[], victor: Player)
-  {
-    var deadUnits: Unit[] = [];
-
-
-    this.forEachUnit(function(unit)
-    {
-      if (unit.currentHealth <= 0)
-      {
-        var wasCaptured = capturedUnits.indexOf(unit) >= 0;
-        if (!wasCaptured)
-        {
-          var deathChance = this.getUnitDeathChance(unit, victor);
-          if (Math.random() < deathChance)
-          {
-            deadUnits.push(unit);
-          }
-        }
-      }
-    });
-
-    return deadUnits;
-  }
-  // End BattleEndProcessor
-  endBattle()
-  {
-    this.ended = true;
-
-    if (this.isVirtual) return;
-
-    this.activeUnit = null;
-    var victor = this.getVictor();
-
-    var maxCapturedUnits = RuleSet.battle.baseMaxCapturedUnits;
-    // TODO content | Abilities that increase max captured units
-    this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
-    this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
-
-
-    eventManager.dispatchEvent("battleEnd", null);
-  }
-  finishBattle(forcedVictor?: Player)
+  // Battle End
+  public finishBattle(forcedVictor?: Player)
   {
     var victor = forcedVictor || this.getVictor();
 
@@ -389,7 +282,7 @@ export default class Battle
       this.afterFinishCallbacks[i]();
     }
   }
-  getVictor()
+  public getVictor()
   {
     var evaluation = this.getEvaluation();
 
@@ -397,41 +290,151 @@ export default class Battle
     else if (evaluation < 0) return this.side2Player;
     else return null;
   }
-  getTotalHealthForRow(position: number)
+  private getCapturedUnits(victor: Player, maxCapturedUnits: number)
   {
-    var row = this.getRowByPosition(position);
-    var total = 0;
+    if (!victor || victor.isIndependent) return [];
 
-    for (let i = 0; i < row.length; i++)
+    var winningSide = this.getSideForPlayer(victor);
+    var losingSide = reverseSide(winningSide);
+
+    var losingUnits = this.unitsBySide[losingSide].slice(0);
+    losingUnits.sort(function(a: Unit, b: Unit)
     {
-      if (row[i])
+      var captureChanceSort = b.battleStats.captureChance - a.battleStats.captureChance;
+      if (captureChanceSort)
       {
-        total += row[i].currentHealth;
+        return captureChanceSort;
+      }
+      else
+      {
+        return randInt(0, 1) * 2 - 1; // -1 or 1
+      }
+    });
+
+    var capturedUnits: Unit[] = [];
+
+    for (let i = 0; i < losingUnits.length; i++)
+    {
+      if (capturedUnits.length >= maxCapturedUnits) break;
+
+      var unit = losingUnits[i];
+      if (unit.currentHealth <= 0 &&
+        Math.random() <= unit.battleStats.captureChance)
+      {
+        capturedUnits.push(unit);
       }
     }
 
-    return total;
+    return capturedUnits;
   }
-  getTotalHealthForSide(side: UnitBattleSide)
+  private getUnitDeathChance(unit: Unit, victor: Player)
   {
-    var health =
-    {
-      current: 0,
-      max: 0
-    };
+    var player: Player = unit.fleet.player;
 
-    var units = this.unitsBySide[side];
+    var deathChance: number;
 
-    for (let i = 0; i < units.length; i++)
+    if (player.isIndependent)
     {
-      var unit = units[i];
-      health.current += unit.currentHealth;
-      health.max += unit.maxHealth;
+      deathChance = RuleSet.battle.independentUnitDeathChance;
+    }
+    else if (player.isAI)
+    {
+      deathChance = RuleSet.battle.aiUnitDeathChance;
+    }
+    else
+    {
+      deathChance = RuleSet.battle.humanUnitDeathChance;
     }
 
-    return health;
+    var playerDidLose = (victor && player !== victor);
+    if (playerDidLose)
+    {
+      deathChance += RuleSet.battle.loserUnitExtraDeathChance;
+    }
+
+    return deathChance;
   }
-  getEvaluation(): number
+  private getDeadUnits(capturedUnits: Unit[], victor: Player)
+  {
+    var deadUnits: Unit[] = [];
+
+
+    this.forEachUnit(function(unit)
+    {
+      if (unit.currentHealth <= 0)
+      {
+        var wasCaptured = capturedUnits.indexOf(unit) >= 0;
+        if (!wasCaptured)
+        {
+          var deathChance = this.getUnitDeathChance(unit, victor);
+          if (Math.random() < deathChance)
+          {
+            deadUnits.push(unit);
+          }
+        }
+      }
+    });
+
+    return deadUnits;
+  }
+  private getGainedExperiencePerSide()
+  {
+    var totalValuePerSide =
+    {
+      side1: 0,
+      side2: 0
+    };
+
+    for (let side in this.unitsBySide)
+    {
+      var totalValue = 0;
+      var units = this.unitsBySide[side];
+      for (let i = 0; i < units.length; i++)
+      {
+        totalValuePerSide[side] += units[i].level + 1;
+      }
+    }
+
+    return(
+    {
+      side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
+      side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
+    });
+  }
+  private shouldBattleEnd()
+  {
+    if (!this.activeUnit) return true;
+
+    if (this.turnsLeft <= 0) return true;
+
+    if (this.getTotalHealthForSide("side1").current <= 0 ||
+      this.getTotalHealthForSide("side2").current <= 0)
+    {
+      return true;
+    }
+
+    return false;
+  }
+  private endBattle()
+  {
+    this.ended = true;
+
+    if (this.isVirtual) return;
+
+    this.activeUnit = null;
+    var victor = this.getVictor();
+
+    // TODO content | Abilities that increase max captured units
+    var maxCapturedUnits = RuleSet.battle.baseMaxCapturedUnits;
+    this.capturedUnits = this.getCapturedUnits(victor, maxCapturedUnits);
+    this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
+
+
+    eventManager.dispatchEvent("battleEnd", null);
+  }
+  // End Battle End
+  // Evaluation
+  public getEvaluation(): number
   {
     var self = this;
     var evaluation = 0;
@@ -476,7 +479,42 @@ export default class Battle
 
     return this.evaluation[this.currentTurn];
   }
-  getAbsolutePositionFromSidePosition(relativePosition: number[], side: UnitBattleSide)
+  private getTotalHealthForRow(position: number)
+  {
+    var row = this.getRowByPosition(position);
+    var total = 0;
+
+    for (let i = 0; i < row.length; i++)
+    {
+      if (row[i])
+      {
+        total += row[i].currentHealth;
+      }
+    }
+
+    return total;
+  }
+  private getTotalHealthForSide(side: UnitBattleSide)
+  {
+    var health =
+    {
+      current: 0,
+      max: 0
+    };
+
+    var units = this.unitsBySide[side];
+
+    for (let i = 0; i < units.length; i++)
+    {
+      var unit = units[i];
+      health.current += unit.currentHealth;
+      health.max += unit.maxHealth;
+    }
+
+    return health;
+  }
+  // End Evaluation
+  private static getAbsolutePositionFromSidePosition(relativePosition: number[], side: UnitBattleSide)
   {
     if (side === "side1")
     {
@@ -488,7 +526,7 @@ export default class Battle
       return [relativePosition[0] + rowsPerSide, relativePosition[1]];
     }
   }
-  updateBattlePositions(side: UnitBattleSide)
+  private updateBattlePositions(side: UnitBattleSide)
   {
     var units = this[side];
     for (let i = 0; i < units.length; i++)
@@ -496,7 +534,7 @@ export default class Battle
       var row = this[side][i];
       for (let j = 0; j < row.length; j++)
       {
-        var pos = this.getAbsolutePositionFromSidePosition([i, j], side);
+        var pos = Battle.getAbsolutePositionFromSidePosition([i, j], side);
         var unit = row[j];
 
         if (unit)
@@ -506,7 +544,7 @@ export default class Battle
       }
     }
   }
-  shiftRowsForSide(side: UnitBattleSide)
+  private shiftRowsForSide(side: UnitBattleSide)
   {
     var formation = this[side];
     if (side === "side1")
@@ -544,7 +582,7 @@ export default class Battle
 
     this.updateBattlePositions(side);
   }
-  shiftRowsIfNeeded()
+  private shiftRowsIfNeeded()
   {
     var rowsPerSide = RuleSet.battle.rowsPerFormation;
     var side1FrontRowHealth = this.getTotalHealthForRow(rowsPerSide - 1);
@@ -558,45 +596,8 @@ export default class Battle
       this.shiftRowsForSide("side2");
     }
   }
-  getGainedExperiencePerSide()
-  {
-    var totalValuePerSide =
-    {
-      side1: 0,
-      side2: 0
-    };
 
-    for (let side in this.unitsBySide)
-    {
-      var totalValue = 0;
-      var units = this.unitsBySide[side];
-      for (let i = 0; i < units.length; i++)
-      {
-        totalValuePerSide[side] += units[i].level + 1;
-      }
-    }
-
-    return(
-    {
-      side1: totalValuePerSide.side2 / totalValuePerSide.side1 * 10,
-      side2: totalValuePerSide.side1 / totalValuePerSide.side2 * 10
-    });
-  }
-  checkBattleEnd()
-  {
-    if (!this.activeUnit) return true;
-
-    if (this.turnsLeft <= 0) return true;
-
-    if (this.getTotalHealthForSide("side1").current <= 0 ||
-      this.getTotalHealthForSide("side2").current <= 0)
-    {
-      return true;
-    }
-
-    return false;
-  }
-  makeVirtualClone(): Battle
+  public makeVirtualClone(): Battle
   {
     var battleData = this.battleData;
 
@@ -664,7 +665,7 @@ export default class Battle
     clone.updateTurnOrder();
 
 
-    if (clone.checkBattleEnd())
+    if (clone.shouldBattleEnd())
     {
       clone.endBattle();
     }
