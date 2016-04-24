@@ -1,6 +1,6 @@
 import BattleSFXTemplate from "../../../src/templateinterfaces/BattleSFXTemplate";
 
-import BlackToAlphaFilter from "./shaders/BlackToAlpha";
+import BlackToAlphaFilter from "../battlesfxfunctions/shaders/BlackToAlpha";
 
 import rocketAttackDrawingFunction from "../battlesfxfunctions/rocketAttack";
 import guardDrawingFunction from "../battlesfxfunctions/guard";
