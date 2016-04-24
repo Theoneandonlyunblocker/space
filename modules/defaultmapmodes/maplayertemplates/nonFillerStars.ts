@@ -74,14 +74,14 @@ const nonFillerStars: MapRendererLayerTemplate =
       gfx.interactive = true;
       gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
 
-      var boundMouseDown = mouseDownFN.bind(star);
+      var boundMouseDown = mouseDownFN.bind(null, star);
       var gfxClickFN = function(star: Star, event: PIXI.interaction.InteractionEvent)
       {
         var originalEvent = <MouseEvent> event.data.originalEvent;
         if (originalEvent.button) return;
 
         onClickFN(star);
-      }.bind(star);
+      }.bind(null, star);
 
       gfx.on("mousedown", boundMouseDown);
       gfx.on("mouseup", mouseUpFN);
