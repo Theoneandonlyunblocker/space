@@ -97,7 +97,10 @@ export default class MapRenderer
       var texture = this.fleetTextTextureCache[fleetSize];
       texture.destroy(true);
     }
-
+    for (let layerName in this.layers)
+    {
+      this.layers[layerName].destroy();
+    }
   }
   init()
   {

@@ -9,6 +9,7 @@ declare interface MapRendererLayerTemplate
   drawingFunction: (map: GalaxyMap) => PIXI.Container;
   interactive: boolean;
   alpha?: number; // default 1.0
+  destroy?: () => void;
 }
 
 export default MapRendererLayerTemplate;

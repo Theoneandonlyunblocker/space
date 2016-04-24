@@ -7,19 +7,21 @@ import MapRenderer from "./MapRenderer";
 
 export default class MapRendererLayer
 {
-  template: MapRendererLayerTemplate;
-  container: PIXI.Container;
-  isDirty: boolean = true;
-  private _alpha: number;
-  get alpha(): number
+  public template: MapRendererLayerTemplate;
+  public container: PIXI.Container;
+  public isDirty: boolean = true;
+  public get alpha(): number
   {
     return this._alpha;
   }
-  set alpha(newAlpha: number)
+  public set alpha(newAlpha: number)
   {
     this._alpha = newAlpha;
     this.container.alpha = newAlpha;
   }
+  
+  private _alpha: number;
+  
   constructor(template: MapRendererLayerTemplate)
   {
     this.template = template;
@@ -27,15 +29,23 @@ export default class MapRendererLayer
     this.container.interactiveChildren = template.interactive;
     this.alpha = template.alpha || 1;
   }
-  resetAlpha()
+  
+  public resetAlpha()
   {
     this.alpha = this.template.alpha || 1;
   }
-  draw(map: GalaxyMap, mapRenderer: MapRenderer)
+  public draw(map: GalaxyMap, mapRenderer: MapRenderer)
   {
     if (!this.isDirty) return;
     this.container.removeChildren();
     this.container.addChild(this.template.drawingFunction.call(mapRenderer, map));
     this.isDirty = false;
+  }
+  public destroy()
+  {
+    if (this.template.destroy)
+    {
+      this.template.destroy();
+    }
   }
 }
