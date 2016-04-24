@@ -783,32 +783,35 @@ export default class MapEvaluator
 
     return coverageScore;
   }
-  estimateFleetRange(fleet: Fleet, baseRange: number, afterSixUnits: number, getRangeFNName: string)
-  {
-    var range: number = baseRange;
-    if (fleet.units.length >= 6)
-    {
-      range += afterSixUnits;
-    }
-
-    for (let i = 0; i < fleet.units.length; i++)
-    {
-      var unit = fleet.units[i];
-      if (this.player.unitIsIdentified(unit))
-      {
-        range = Math.max(range, unit[getRangeFNName]());
-      }
-    }
-
-    return range;
-  }
   estimateFleetVisionRange(fleet: Fleet)
   {
-    return this.estimateFleetRange(fleet, 1, 1, "getVisionRange");
+    const fleetLikelyHasScoutingUnit: boolean = fleet.units.length >= 5;
+    let estimatedRange = fleetLikelyHasScoutingUnit ? 2 : 1;
+    
+    fleet.units.forEach(unit =>
+    {
+      if (this.player.unitIsIdentified(unit))
+      {
+        estimatedRange = Math.max(estimatedRange, unit.getVisionRange());
+      }
+    });
+    
+    return estimatedRange;
   }
   estimateFleetDetectionRange(fleet: Fleet)
   {
-    return this.estimateFleetRange(fleet, -1, 1, "getDetectionRange");
+    const fleetLikelyHasScoutingUnit: boolean = fleet.units.length >= 5;
+    let estimatedRange = fleetLikelyHasScoutingUnit ? 0 : -1;
+    
+    fleet.units.forEach(unit =>
+    {
+      if (this.player.unitIsIdentified(unit))
+      {
+        estimatedRange = Math.max(estimatedRange, unit.getDetectionRange());
+      }
+    });
+    
+    return estimatedRange;
   }
   buildPlayerVisionMap(player: Player)
   {
