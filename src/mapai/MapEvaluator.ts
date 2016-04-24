@@ -339,11 +339,10 @@ export default class MapEvaluator
   }
   getIndependentNeighborStars()
   {
-    var self = this;
-    var independentNeighborStars = this.player.getNeighboringStars().filter(function(star)
+    const independentNeighborStars = this.player.getNeighboringStars().filter(star =>
     {
-      var secondaryController = star.getSecondaryController();
-      return star.owner.isIndependent && (!secondaryController || secondaryController === self.player);
+      const secondaryController = star.getSecondaryController();
+      return star.owner.isIndependent && (!secondaryController || secondaryController === this.player);
     });
 
     return independentNeighborStars;
@@ -351,35 +350,33 @@ export default class MapEvaluator
 
   getIndependentNeighborStarIslands(earlyReturnSize?: number)
   {
-    var self = this;
-
-    var alreadyVisited:
+    const alreadyVisited:
     {
       [starId: number]: boolean
     } = {};
 
-    var allStars: Star[] = [];
+    const allStars: Star[] = [];
 
-    var islandQualifierFN = function(a: Star, b: Star): boolean
+    const islandQualifierFN = (a: Star, b: Star) =>
     {
-      var secondaryController = b.getSecondaryController();
-      return b.owner.isIndependent && (!secondaryController || secondaryController === self.player);
+      const secondaryController = b.getSecondaryController();
+      return b.owner.isIndependent && (!secondaryController || secondaryController === this.player);
     }
 
-    var neighborStars = this.getIndependentNeighborStars();
+    const neighborStars = this.getIndependentNeighborStars();
     for (let i = 0; i < neighborStars.length; i++)
     {
-      var neighborStar = neighborStars[i];
+      const neighborStar = neighborStars[i];
       if (alreadyVisited[neighborStar.id])
       {
         continue;
       }
 
-      var island = neighborStar.getIslandForQualifier(islandQualifierFN, earlyReturnSize);
+      const island = neighborStar.getIslandForQualifier(islandQualifierFN, earlyReturnSize);
 
       for (let j = 0; j < island.length; j++)
       {
-        var star = island[j];
+        const star = island[j];
         alreadyVisited[star.id] = true;
         allStars.push(star);
       }
@@ -906,7 +903,6 @@ export default class MapEvaluator
     {
       var star = stars[i];
       var nearestOwnedStar = player.getNearestOwnedStarTo(star);
-      if (!nearestOwnedStar) debugger;
       var distanceToEnemy = star.getDistanceToStar(nearestOwnedStar);
       distanceToEnemy = Math.max(distanceToEnemy - 1, 1);
       var distanceScore = Math.pow(1 / distanceToEnemy, 2);
@@ -941,35 +937,35 @@ export default class MapEvaluator
   }
   getDesireToGoToWarWith(player: Player)
   {
-    // potential gain
-    // perceived difficulty
-    var strength = this.estimateGlobalStrength(player);
-    // relations
-    var opinion = this.player.diplomacyStatus.getOpinionOf(player);
-    // trust
-    // own allies
-    //   ally ability to go to war with
-    //   ally trustworthiness
-    //   ally opinion of us
-    // enemy allies
-    //   enemy ally strength
-    // perceived threat
-    var threat = this.getPerceivedThreatOfPlayer(player);
+    // // potential gain
+    // // perceived difficulty
+    // var strength = this.estimateGlobalStrength(player);
+    // // relations
+    // var opinion = this.player.diplomacyStatus.getOpinionOf(player);
+    // // trust
+    // // own allies
+    // //   ally ability to go to war with
+    // //   ally trustworthiness
+    // //   ally opinion of us
+    // // enemy allies
+    // //   enemy ally strength
+    // // perceived threat
+    // var threat = this.getPerceivedThreatOfPlayer(player);
 
     return Math.random(); // TODO ai
   }
   getAbilityToGoToWarWith(player: Player)
   {
-    // perceived strength
-    var strength = this.estimateGlobalStrength(player);
-    // own trustworthy allies who can join
-    //   ally ability to go to war with
-    //   ally trustworthiness
-    //   ally opinion of us
-    // enemy allies
-    //   enemy ally strength
-    // enemy is well liked
-    // distance
+    // // perceived strength
+    // var strength = this.estimateGlobalStrength(player);
+    // // own trustworthy allies who can join
+    // //   ally ability to go to war with
+    // //   ally trustworthiness
+    // //   ally opinion of us
+    // // enemy allies
+    // //   enemy ally strength
+    // // enemy is well liked
+    // // distance
 
     return Math.random(); // TODO ai
   }
