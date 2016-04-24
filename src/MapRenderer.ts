@@ -30,12 +30,6 @@ export default class MapRenderer
     [name: string]: MapRendererMapMode;
   } = {};
 
-  fowTilingSprite: PIXI.extras.TilingSprite;
-  fowSpriteCache:
-  {
-    [starId: number]: PIXI.Sprite;
-  } = {};
-
   fleetTextTextureCache:
   {
     [fleetSize: number]: PIXI.Texture;
@@ -74,13 +68,6 @@ export default class MapRenderer
     this.container = null;
     this.parent = null;
     
-    for (let starId in this.fowSpriteCache)
-    {
-      var sprite = this.fowSpriteCache[starId];
-      sprite.renderable = false;
-      sprite.texture.destroy(true);
-      this.fowSpriteCache[starId] = null;
-    }
     for (let fleetSize in this.fleetTextTextureCache)
     {
       var texture = this.fleetTextTextureCache[fleetSize];
@@ -93,8 +80,6 @@ export default class MapRenderer
   }
   init()
   {
-    this.makeFowSprite();
-
     this.initLayers();
     this.initMapModes();
 
@@ -136,50 +121,6 @@ export default class MapRenderer
   {
     this.player = player;
     this.setAllLayersAsDirty();
-  }
-  // TODO refactor | belongs in module
-  makeFowSprite()
-  {
-    if (!this.fowTilingSprite)
-    {
-      var fowTexture = PIXI.Texture.fromFrame("modules/defaultmapmodes/img/fowTexture.png");
-      var w = this.galaxyMap.width;
-      var h = this.galaxyMap.height;
-
-      this.fowTilingSprite = new PIXI.extras.TilingSprite(fowTexture, w, h);
-
-    }
-  }
-  getFowSpriteForStar(star: Star)
-  {
-    // silly hack to make sure first texture gets created properly
-    if (!this.fowSpriteCache[star.id] ||
-      Object.keys(this.fowSpriteCache).length < 4)
-    {
-      var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-      var gfx = new PIXI.Graphics();
-      gfx.isMask = true;
-      gfx.beginFill(0);
-      gfx.drawShape(poly);
-      gfx.endFill();
-
-      this.fowTilingSprite.removeChildren();
-
-      this.fowTilingSprite.mask = gfx;
-      this.fowTilingSprite.addChild(gfx);
-
-      // triggers bounds update that gets skipped if we just call generateTexture()
-      var bounds = this.fowTilingSprite.getBounds();
-
-      var rendered = this.fowTilingSprite.generateTexture(app.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
-
-      var sprite = new PIXI.Sprite(rendered);
-
-      this.fowSpriteCache[star.id] = sprite;
-      this.fowTilingSprite.mask = null;
-    }
-
-    return this.fowSpriteCache[star.id];
   }
   getFleetTextTexture(fleet: Fleet)
   {
