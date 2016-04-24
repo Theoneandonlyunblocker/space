@@ -11,7 +11,6 @@ import MapRendererLayer from "./MapRendererLayer";
 import MapRendererMapMode from "./MapRendererMapMode";
 import eventManager from "./eventManager";
 import Options from "./options";
-import Fleet from "./Fleet";
 
 
 export default class MapRenderer
@@ -28,11 +27,6 @@ export default class MapRenderer
   mapModes:
   {
     [name: string]: MapRendererMapMode;
-  } = {};
-
-  fleetTextTextureCache:
-  {
-    [fleetSize: number]: PIXI.Texture;
   } = {};
 
   currentMapMode: MapRendererMapMode;
@@ -67,12 +61,7 @@ export default class MapRenderer
     this.player = null;
     this.container = null;
     this.parent = null;
-    
-    for (let fleetSize in this.fleetTextTextureCache)
-    {
-      var texture = this.fleetTextTextureCache[fleetSize];
-      texture.destroy(true);
-    }
+
     for (let layerName in this.layers)
     {
       this.layers[layerName].destroy();
@@ -121,31 +110,6 @@ export default class MapRenderer
   {
     this.player = player;
     this.setAllLayersAsDirty();
-  }
-  getFleetTextTexture(fleet: Fleet)
-  {
-    var fleetSize = fleet.units.length;
-
-    if (!this.fleetTextTextureCache[fleetSize])
-    {
-      var text = new PIXI.Text("" + fleetSize,
-      {
-        fill: "#FFFFFF",
-        stroke: "#000000",
-        strokeThickness: 3
-      });
-
-      // triggers bounds update that gets skipped if we just call generateTexture()
-      text.getBounds();
-
-      this.fleetTextTextureCache[fleetSize] = text.generateTexture(app.renderer.renderer);
-      window.setTimeout(function()
-      {
-        text.texture.destroy(true);
-      }, 0);
-    }
-
-    return this.fleetTextTextureCache[fleetSize];
   }
   initLayers()
   {

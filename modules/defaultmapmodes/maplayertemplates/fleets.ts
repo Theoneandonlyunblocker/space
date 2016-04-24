@@ -7,6 +7,7 @@ import Star from "../../../src/Star";
 import MapRendererLayerTemplate from "../../../src/templateinterfaces/MapRendererLayerTemplate";
 import GalaxyMap from "../../../src/GalaxyMap";
 import Player from "../../../src/Player";
+import app from "../../../src/App";
 
 
 const fleets: MapRendererLayerTemplate =
@@ -14,6 +15,15 @@ const fleets: MapRendererLayerTemplate =
   key: "fleets",
   displayName: "Fleets",
   interactive: true,
+  destroy: function()
+  {
+    for (let fleetSize in fleetTextTextureCache)
+    {
+      fleetTextTextureCache[fleetSize].destroy(true);
+      fleetTextTextureCache[fleetSize] = null;
+      delete fleetTextTextureCache[fleetSize];
+    }
+  },
   drawingFunction: function(map: GalaxyMap, perspectivePlayer: Player)
   {
     var doc = new PIXI.Container();
@@ -147,3 +157,35 @@ const fleets: MapRendererLayerTemplate =
 }
 
 export default fleets;
+
+const fleetTextTextureCache:
+{
+  [fleetSize: number]: PIXI.Texture;
+} = {};
+function getFleetTextTexture(fleet: Fleet)
+{
+  var fleetSize = fleet.units.length;
+
+  if (!fleetTextTextureCache[fleetSize])
+  {
+    var text = new PIXI.Text("" + fleetSize,
+    {
+      fill: "#FFFFFF",
+      stroke: "#000000",
+      strokeThickness: 3
+    });
+
+    // triggers bounds update that gets skipped if we just call generateTexture()
+    text.getBounds();
+
+    fleetTextTextureCache[fleetSize] = text.generateTexture(app.renderer.renderer);
+    window.setTimeout(function()
+    {
+      text.texture.destroy(true);
+    }, 0);
+  }
+
+  return fleetTextTextureCache[fleetSize];
+}
+
+
