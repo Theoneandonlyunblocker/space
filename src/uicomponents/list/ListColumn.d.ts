@@ -1,7 +1,7 @@
 import ListOrder from "./ListOrder";
 import ListItem from "./ListItem";
 
-declare interface ListColumn
+declare interface ListColumn<T>
 {
   key: string;
   label: string;
@@ -9,8 +9,8 @@ declare interface ListColumn
   
   defaultOrder: ListOrder;
   notSortable?: boolean;                                  // if true sort by VVVV
-  sortingFunction?: (a: ListItem, b: ListItem) => number; // sortingFunction(a, b)
-  propToSortBy?: string;                                  // sort(a.data[propToSortBy], b.data[propToSortBy])
+  sortingFunction?: (a: ListItem<T>, b: ListItem<T>) => number; // sortingFunction(a, b)
+  propToSortBy?: string;                                  // sort(a.sortingProps[propToSortBy], b.sortingProps[propToSortBy])
                                                           // sort(a.key, b.key)
 }
 

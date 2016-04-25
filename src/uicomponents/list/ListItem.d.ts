@@ -1,10 +1,9 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-declare interface ListItem
+declare interface ListItem<T>
 {
   key: string;
-  data_: any;
-  content: React.ReactElement<any>;
+  content: React.ReactElement<T>;
 }
 
 export default ListItem;

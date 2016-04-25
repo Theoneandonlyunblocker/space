@@ -13,31 +13,31 @@ import
 
 interface PropTypes extends React.Props<any>
 {
-  initialColumns: ListColumn[];
-  listItems: ListItem[];
-  initialSortOrder?: ListColumn[];
+  initialColumns: ListColumn<any>[];
+  listItems: ListItem<any>[];
+  initialSortOrder?: ListColumn<any>[];
   keyboardSelect?: boolean; // boolean = false
-  initialSelected?: ListItem;
+  initialSelected?: ListItem<any>;
   tabIndex?: number; // number = 1
   noHeader?: boolean; // boolean = false
   addSpacer?: boolean; // boolean = false
-  onRowChange?: (row: ListItem) => void;
-  colStylingFN?: (column: ListColumn, props: any) => any;
+  onRowChange?: (row: ListItem<any>) => void;
+  colStylingFN?: (column: ListColumn<any>, props: React.HTMLAttributes) => React.HTMLAttributes;
   autoSelect?: boolean;
 }
 
 interface StateType
 {
-  columns?: ListColumn[];
-  selectedColumn?: ListColumn;
-  columnSortingOrder?: ListColumn[]; // Sort by month->day->year etc.
+  columns?: ListColumn<any>[];
+  selectedColumn?: ListColumn<any>;
+  columnSortingOrder?: ListColumn<any>[]; // Sort by month->day->year etc.
   sortingOrderForColumnKey?: {[columnKey: string]: ListOrder}; // day: asc, month: asc, year: desc
-  selected?: ListItem;
+  selected?: ListItem<any>;
 }
 
 export class ListComponent extends React.Component<PropTypes, StateType>
 {
-  sortedItems: ListItem[];
+  sortedItems: ListItem<any>[];
   state: StateType;
   
   ref_TODO_header: HTMLElement;
@@ -65,7 +65,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   getInitialStateTODO(): StateType
   {
-    const initialColumn: ListColumn = this.props.initialSortOrder ?
+    const initialColumn: ListColumn<any> = this.props.initialSortOrder ?
       this.props.initialSortOrder[0] :
       this.props.initialColumns[0];
     
@@ -182,7 +182,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  makeInitialSortingOrder(columns: ListColumn[], initialColumn: ListColumn)
+  makeInitialSortingOrder(columns: ListColumn<any>[], initialColumn: ListColumn<any>)
   {
     var initialSortOrder = this.props.initialSortOrder;
     if (!initialSortOrder || initialSortOrder.length < 1)
@@ -205,7 +205,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     return order;
   }
 
-  getNewSortingOrder(newColumn: ListColumn)
+  getNewSortingOrder(newColumn: ListColumn<any>)
   {
     var order = this.state.columnSortingOrder.slice(0);
     var current = order.indexOf(newColumn);
@@ -234,14 +234,14 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       throw new Error("Invalid list order: " + order);
     }
   }
-  private getSortingOrderForColumnKeyWithColumnReversed(columnToReverse: ListColumn)
+  private getSortingOrderForColumnKeyWithColumnReversed(columnToReverse: ListColumn<any>)
   {
     const copied = shallowCopy(this.state.sortingOrderForColumnKey);
     copied[columnToReverse.key] = ListComponent.reverseListOrder(copied[columnToReverse.key]);
     
     return copied;
   }
-  handleSelectColumn(column: ListColumn)
+  handleSelectColumn(column: ListColumn<any>)
   {
     if (column.notSortable)
     {
@@ -262,7 +262,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     this.setState(stateObj);
   }
 
-  handleSelectRow(row: ListItem)
+  handleSelectRow(row: ListItem<any>)
   {
     if (this.props.onRowChange && row) this.props.onRowChange.call(null, row);
 
@@ -272,32 +272,42 @@ export class ListComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  private getSortedItems(): ListItem[]
+  private getSortedItems(): ListItem<any>[]
   {
     const sortingFunctions:
     {
-      [key: string]: (a: ListItem, b: ListItem) => number;
+      [key: string]: (a: ListItem<any>, b: ListItem<any>) => number;
     } = {};
-    function makeSortingFunction(column: ListColumn)
+    function makeSortingFunction(column: ListColumn<any>)
     {
       if (column.sortingFunction)
       {
         return column.sortingFunction;
       }
-
-      var propToSortBy = column.propToSortBy || column.key;
-
-      return (function (a: ListItem, b: ListItem)
+      else
       {
-        var a1 = a.data_LISTTODO[propToSortBy];
-        var b1 = b.data_LISTTODO[propToSortBy];
+        return (function (a: ListItem<any>, b: ListItem<any>)
+        {
+          let a1: any;
+          let b1: any;
+          if (column.propToSortBy)
+          {
+            a1 = a.content.props[column.propToSortBy];
+            b1 = b.content.props[column.propToSortBy];
+          }
+          else
+          {
+            a1 = a.key;
+            b1 = b.key;
+          }
 
-        if (a1 > b1) return 1;
-        else if (a1 < b1) return -1;
-        else return 0;
-      })
+          if (a1 > b1) return 1;
+          else if (a1 < b1) return -1;
+          else return 0;
+        });
+      }
     }
-    function getSortingFunction(column: ListColumn)
+    function getSortingFunction(column: ListColumn<any>)
     {
       if (!sortingFunctions[column.key])
       {
@@ -363,7 +373,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
     this.state.columns.forEach(column =>
     {
-      var colProps: any =
+      var colProps: React.HTMLAttributes =
       {
         key: column.key
       };
