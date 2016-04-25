@@ -1,7 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import ListColumn from "../list/ListColumn";
-import ListItem from "../list/ListItem";
 
 import
 {
@@ -9,12 +8,16 @@ import
   getRelativeValue,
 } from "../../utility";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
+  name: string;
   endTurn: number;
   strength: number;
-  handleClick: () => void;
-  activeColumns: ListColumn[];
+  
+  alwaysShowAtTopOfList?: boolean;
+  
+  handleClick?: () => void;
+  activeColumns?: ListColumn<PropTypes>[];
 }
 
 interface StateType
@@ -56,6 +59,10 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
 
     switch (type)
     {
+      case "name":
+      {
+        cellContent = this.props[type];
+      }
       case "endTurn":
       {
         if (this.props.endTurn < 0)
@@ -118,8 +125,8 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
     return(
       React.DOM.tr(
       {
-      className: "diplomatic-status-player",
-      onClick : this.props.handleClick
+        className: "diplomatic-status-player",
+        onClick : this.props.handleClick
       },
         cells
       )
