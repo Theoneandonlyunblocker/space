@@ -243,7 +243,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
   }
   handleSelectColumn(column: ListColumn)
   {
-    if (!column.sortingFunction)
+    if (column.notSortable)
     {
       return;
     }
@@ -274,12 +274,45 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   private getSortedItems(): ListItem[]
   {
+    const sortingFunctions:
+    {
+      [key: string]: (a: ListItem, b: ListItem) => number;
+    } = {};
+    function makeSortingFunction(column: ListColumn)
+    {
+      if (column.sortingFunction)
+      {
+        return column.sortingFunction;
+      }
+
+      var propToSortBy = column.propToSortBy || column.key;
+
+      return (function (a: ListItem, b: ListItem)
+      {
+        var a1 = a.data_LISTTODO[propToSortBy];
+        var b1 = b.data_LISTTODO[propToSortBy];
+
+        if (a1 > b1) return 1;
+        else if (a1 < b1) return -1;
+        else return 0;
+      })
+    }
+    function getSortingFunction(column: ListColumn)
+    {
+      if (!sortingFunctions[column.key])
+      {
+        sortingFunctions[column.key] = makeSortingFunction(column);
+      }
+      return sortingFunctions[column.key];
+    }
+    
     const sortedItems = this.props.listItems.slice(0).sort((a, b) =>
     {
       for (let i = 0; i < this.state.columnSortingOrder.length; i++)
       {
         const columnToSortBy = this.state.columnSortingOrder[i];
-        const sortingResult = columnToSortBy.sortingFunction(a, b);
+        const sortingFunction = getSortingFunction(columnToSortBy);
+        const sortingResult = sortingFunction(a, b);
 
         if (sortingResult)
         {
@@ -293,16 +326,15 @@ export class ListComponent extends React.Component<PropTypes, StateType>
           }
         }
       }
-
-      const keySortingResult = a.key > b.key ? 1 : -1;
-      if (this.state.sortingOrderForColumnKey[this.state.selectedColumn.key] === "desc")
-      {
-        return -1 * keySortingResult;
-      }
-      else
-      {
-        return keySortingResult;
-      }
+      // const keySortingResult = a.key > b.key ? 1 : -1;
+      // if (this.state.sortingOrderForColumnKey[this.state.selectedColumn.key] === "desc")
+      // {
+      //   return -1 * keySortingResult;
+      // }
+      // else
+      // {
+      //   return keySortingResult;
+      // }
     });
     
     return sortedItems;
@@ -347,7 +379,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
       var sortStatus: string = "";
 
-      if (Boolean(column.sortingFunction))
+      if (!column.notSortable)
       {
         sortStatus = " sortable";
       }
@@ -356,7 +388,7 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       {
         sortStatus += " sorted-" + this.state.sortingOrderForColumnKey[column.key];
       }
-      else if (Boolean(column.sortingFunction))
+      else if (!column.notSortable)
       {
         sortStatus += " unsorted";
       }
