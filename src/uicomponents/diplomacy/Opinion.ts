@@ -8,7 +8,7 @@ import
   getRelativeValue,
 } from "../../utility";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];
   baseOpinion: number;

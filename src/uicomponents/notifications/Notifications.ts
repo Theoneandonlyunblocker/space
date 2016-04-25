@@ -6,7 +6,7 @@ import Notifications from "../../../modules/defaultnotifications/NotificationTem
 import NotificationLogComponentFactory from "./NotificationLog";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   log: NotificationLog;
   currentTurn: number;

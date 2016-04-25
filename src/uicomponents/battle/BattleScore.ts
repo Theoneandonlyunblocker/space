@@ -4,7 +4,7 @@ import Battle from "../../Battle";
 import PlayerFlag from "../PlayerFlag";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   battle: Battle;
 }

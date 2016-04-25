@@ -11,7 +11,7 @@ import Star from "../../Star";
 import Player from "../../Player";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   clearExpandedAction: () => void;
   star: Star;

@@ -6,7 +6,7 @@ import TradeableItemsComponentFactory from "./TradeableItems";
 import Trade from "../../Trade";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   selfPlayer: Player;
   otherPlayer: Player;

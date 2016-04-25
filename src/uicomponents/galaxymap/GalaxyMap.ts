@@ -13,7 +13,7 @@ import MapRenderer from "../../MapRenderer";
 import Renderer from "../../Renderer";
 import Point from "../../Point";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   toCenterOn?: Point;
   player: Player;

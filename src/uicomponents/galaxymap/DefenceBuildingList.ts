@@ -3,7 +3,7 @@
 import DefenceBuilding from "./DefenceBuilding";
 import Building from "../../Building";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   buildings: Building[];
   reverse?: boolean;

@@ -3,7 +3,7 @@
 import Unit from "../../Unit";
 import TurnOrderDisplayData from "../../TurnOrderDisplayData";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   unitsBySide:
   {

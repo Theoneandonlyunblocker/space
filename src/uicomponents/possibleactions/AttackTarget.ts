@@ -5,7 +5,7 @@ import eventManager from "../../eventManager";
 import PlayerFlag from "../PlayerFlag";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   attackTarget: FleetAttackTarget;
 }

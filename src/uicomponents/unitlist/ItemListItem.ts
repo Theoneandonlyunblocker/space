@@ -8,7 +8,7 @@ import Unit from "../../Unit";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   item: Item;
   ability: AbilityBase;

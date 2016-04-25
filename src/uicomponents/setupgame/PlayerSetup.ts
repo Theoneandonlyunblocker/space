@@ -10,7 +10,7 @@ import
   generateSecondaryColor
 } from "../../colorGeneration";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   setActiveSetterComponent: (setter: ColorSetterComponent | FlagSetterComponent) => void;
   setHuman: (playerID: number) => void;

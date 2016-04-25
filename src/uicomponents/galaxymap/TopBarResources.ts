@@ -8,7 +8,7 @@ import Resource from "./Resource";
 import eventManager from "../../eventManager";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   player: Player;
 }

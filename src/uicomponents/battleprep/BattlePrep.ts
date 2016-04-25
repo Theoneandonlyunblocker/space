@@ -18,7 +18,7 @@ import BattleInfo from "./BattleInfo";
 import Renderer from "../../Renderer";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   battlePrep: BattlePrep;
   renderer: Renderer;

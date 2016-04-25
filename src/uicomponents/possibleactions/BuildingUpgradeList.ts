@@ -7,7 +7,7 @@ import Building from "../../Building";
 import BuildingUpgradeData from "../../BuildingUpgradeData";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   star: Star;
   player: Player;

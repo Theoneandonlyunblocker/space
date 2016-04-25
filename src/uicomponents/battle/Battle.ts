@@ -36,7 +36,7 @@ import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityToolt
 
 // TODO refactor
 // should have separate non-react class for battle logic
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   renderer: Renderer;
   battle: Battle;

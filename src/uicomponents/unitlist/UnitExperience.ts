@@ -8,7 +8,7 @@ import TopMenuPopup from "../popups/TopMenuPopup";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 import Unit from "../../Unit";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   unit: Unit;
   onUnitUpgrade: () => void;

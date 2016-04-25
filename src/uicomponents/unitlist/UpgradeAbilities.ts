@@ -6,7 +6,7 @@
 import AbilityList from "./AbilityList";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   sourceAbility?: AbilityBase;
   handleClick: (ability: AbilityBase) => void;

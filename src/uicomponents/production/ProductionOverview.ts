@@ -12,7 +12,7 @@ import {sortByManufactoryCapacityFN} from "../../utility";
 import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
 import applyMixins from "../mixins/applyMixins";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   player: Player;
 }

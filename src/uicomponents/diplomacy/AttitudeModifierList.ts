@@ -11,7 +11,7 @@ import AttitudeModifier from "../../AttitudeModifier";
 import {default as AutoPositioner, AutoPositionerProps} from "../mixins/AutoPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   attitudeModifiers: AttitudeModifier[];
   baseOpinion: number;

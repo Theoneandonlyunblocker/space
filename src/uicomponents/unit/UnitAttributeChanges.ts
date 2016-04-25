@@ -3,7 +3,7 @@
 import {PartialUnitAttributes} from "../../UnitAttributes";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   attributeChanges?: PartialUnitAttributes;
 }

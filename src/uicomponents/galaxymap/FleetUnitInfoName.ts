@@ -3,7 +3,7 @@
 import Unit from "../../Unit";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   unit: Unit;
   isNotDetected: boolean;

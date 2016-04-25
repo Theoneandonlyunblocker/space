@@ -15,7 +15,7 @@ import OptionsList from "./OptionsList";
 import Options from "../../Options";
 import {CustomPopupProps} from "../popups/popup";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   player: Player;
   game: Game;

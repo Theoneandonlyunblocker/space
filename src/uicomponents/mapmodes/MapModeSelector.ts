@@ -4,7 +4,7 @@
 import MapRenderer from "../../MapRenderer";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   mapRenderer: MapRenderer;
   onUpdate?: () => void;

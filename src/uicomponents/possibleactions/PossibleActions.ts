@@ -9,7 +9,7 @@ import BuildableBuildingList from "./BuildableBuildingList";
 import eventManager from "../../eventManager";
 import FleetAttackTarget from "../../FleetAttackTarget";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   player: Player;
   setExpandedActionElementOnParent: (element: React.ReactElement<any>) => void;

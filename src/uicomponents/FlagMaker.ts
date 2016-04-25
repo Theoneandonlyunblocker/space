@@ -9,7 +9,7 @@ import {generateColorScheme} from "../colorGeneration";
 import PlayerFlag from "./PlayerFlag";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
 }
 

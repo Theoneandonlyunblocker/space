@@ -17,7 +17,7 @@ import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 import {shallowExtend} from "../../utility";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   formation: Unit[][];
   facesLeft: boolean;

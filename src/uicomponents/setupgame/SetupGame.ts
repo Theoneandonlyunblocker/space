@@ -8,7 +8,7 @@ import {default as MapSetup, MapSetupComponent} from "./MapSetup";
 import MapGenFunction from "../../templateinterfaces/MapGenFunction";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
 }
 

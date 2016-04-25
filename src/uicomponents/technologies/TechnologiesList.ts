@@ -6,7 +6,7 @@ import PlayerTechnology from "../../PlayerTechnology";
 import eventManager from "../../eventManager";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   playerTechnology: PlayerTechnology;
 }

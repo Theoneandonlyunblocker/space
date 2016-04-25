@@ -3,7 +3,7 @@
 import UnitPassiveEffect from "../../templateinterfaces/UnitPassiveEffect";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   passiveEffects?: UnitPassiveEffect[];
 }

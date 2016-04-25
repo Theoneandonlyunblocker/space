@@ -2,7 +2,7 @@
 
 /// <reference path="unitstrength.ts"/>
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   currentActionPoints: number;
   maxActionPoints: number;

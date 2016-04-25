@@ -11,7 +11,7 @@ import List from "../list/List";
 import UnitListItem from "./UnitListItem";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   units: {[unitId: number]: Unit};
   selectedUnit: Unit;

@@ -8,7 +8,7 @@ import Color from "../../Color";
 import {ColorSetterComponent} from "./ColorSetter";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   maxPlayers: number;
   minPlayers: number;

@@ -6,7 +6,7 @@ import DefenceBuildingList from "../galaxymap/DefenceBuildingList";
 import BattlePrep from "../../BattlePrep";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   battlePrep: BattlePrep;
 }

@@ -7,7 +7,7 @@ import UnitStrength from "../unit/UnitStrength";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   unit?: Unit;
   isIdentified: boolean;

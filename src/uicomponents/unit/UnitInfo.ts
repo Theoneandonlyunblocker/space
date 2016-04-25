@@ -7,7 +7,7 @@ import GuardCoverage from "../../GuardCoverage";
 import UnitActions from "./UnitActions";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   name: string;
   isSquadron: boolean;

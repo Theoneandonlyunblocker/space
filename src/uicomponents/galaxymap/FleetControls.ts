@@ -7,7 +7,7 @@ import Fleet from "../../Fleet";
 import eventManager from "../../eventManager";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   fleet: Fleet;
   isInspecting?: boolean;

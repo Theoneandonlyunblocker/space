@@ -15,7 +15,7 @@ import Player from "../../Player";
 import Star from "../../Star";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   selectedFleets: Fleet[];
   player: Player;

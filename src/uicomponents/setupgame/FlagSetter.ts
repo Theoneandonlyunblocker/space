@@ -11,7 +11,7 @@ import SubEmblemTemplate from "../../templateinterfaces/SubEmblemTemplate";
 import {default as FocusTimer, FocusTimerProps} from "../mixins/FocusTimer";
 import applyMixins from "../mixins/applyMixins";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   mainColor: Color;
   subColor: Color;

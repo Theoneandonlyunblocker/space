@@ -8,7 +8,7 @@ import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
 type TabKey = "units" | "items";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   selectedStar?: Star;
   player: Player;

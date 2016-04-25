@@ -16,7 +16,7 @@ import Game from "../Game";
 import Renderer from "../Renderer";
 import UnitDisplayData from "../UnitDisplayData";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   battlePrep: BattlePrep;
   mapRenderer: MapRenderer;

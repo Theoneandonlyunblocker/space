@@ -11,7 +11,7 @@ import Player from "../../Player";
 import {default as PopupManager, PopupManagerComponent} from "../popups/PopupManager";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   metPlayers: {[id: number]: Player};
   totalPlayerCount: number;

@@ -8,7 +8,7 @@ import {default as PopupManager, PopupManagerComponent} from "../popups/PopupMan
 import ConfirmPopup from "../popups/ConfirmPopup";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   handleClose: () => void;
 }

@@ -7,7 +7,7 @@ import PlayerFlag from "../PlayerFlag";
 import ListColumn from "../list/ListColumn";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   baseOpinion: number;
   player: Player;

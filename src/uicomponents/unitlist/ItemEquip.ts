@@ -13,7 +13,7 @@ import ItemList from "./ItemList";
 import Item from "../../Item";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   player: Player;
 }

@@ -3,7 +3,7 @@
 import Unit from "../../Unit";
 import AbilityTemplate from "../../templateinterfaces/AbilityTemplate";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   parentElement: HTMLElement;
   facesLeft: boolean;

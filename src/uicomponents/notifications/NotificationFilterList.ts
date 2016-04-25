@@ -7,7 +7,7 @@ import NotificationFilter from "../../NotificationFilter";
 import eventManager from "../../eventManager";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   filter: NotificationFilter;
   highlightedOptionKey?: string;

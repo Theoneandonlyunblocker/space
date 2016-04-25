@@ -16,7 +16,7 @@ import {clamp} from "../../utility";
 import TutorialStatus from "../../tutorials/TutorialStatus";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   log: NotificationLog;
 }

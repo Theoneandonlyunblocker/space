@@ -8,7 +8,7 @@ import EconomySummaryItem from "./EconomySummaryItem";
 import Player from "../../Player";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   player: Player;
 }

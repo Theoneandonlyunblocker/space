@@ -7,7 +7,7 @@ import List from "../list/List";
 import {TradeableItems, TradeableItem} from "../../Trade";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   tradeableItems: TradeableItems; // TODO refactor | rename -> staged items
 

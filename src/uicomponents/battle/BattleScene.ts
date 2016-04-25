@@ -11,7 +11,7 @@ import BattleSFXTemplate from "../../templateinterfaces/BattleSFXTemplate";
 import Player from "../../Player";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   battleState: "start" | "active" | "finish";
   battleScene: BattleScene;

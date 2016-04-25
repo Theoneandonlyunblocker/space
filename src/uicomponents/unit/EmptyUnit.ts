@@ -4,7 +4,7 @@
 import UnitIconContainer from "./UnitIconContainer";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   facesLeft: boolean;
   onMouseUp?: () => void;

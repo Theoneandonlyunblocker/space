@@ -6,7 +6,7 @@ import Options from "../../Options";
 import Star from "../../Star";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   selectedStar: Star;
 }

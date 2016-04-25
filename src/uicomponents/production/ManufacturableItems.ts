@@ -10,7 +10,7 @@ import ManufactoryUpgradeButton from "./ManufactoryUpgradeButton";
 import Manufactory from "../../Manufactory";
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   selectedStar?: Star;
   consolidateLocations: boolean;

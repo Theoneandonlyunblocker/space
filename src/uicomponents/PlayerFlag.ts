@@ -4,7 +4,7 @@
 import Flag from "../../src/Flag";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   width?: number;
   props: React.HTMLProps<any>;

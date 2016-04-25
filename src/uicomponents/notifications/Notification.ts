@@ -2,7 +2,7 @@
 
 import Notification from "../../Notification";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   markAsRead: (notification: Notification<any>) => void;
   notification: Notification<any>;

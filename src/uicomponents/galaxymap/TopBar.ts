@@ -8,7 +8,7 @@ import TopBarResources from "./TopBarResources";
 import eventManager from "../../eventManager";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   game: Game;
   player: Player;

@@ -19,7 +19,7 @@ import Fleet from "../../Fleet";
 import FleetAttackTarget from "../../FleetAttackTarget";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   game: Game;
   mapRenderer: MapRenderer;

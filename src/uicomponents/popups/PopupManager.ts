@@ -20,7 +20,7 @@ interface MakePopupFunctionProps
   popupProps?: CustomPopupProps;
 }
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   onlyAllowOne?: boolean;
 }

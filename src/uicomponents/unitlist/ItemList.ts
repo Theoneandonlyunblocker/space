@@ -13,7 +13,7 @@ import Item from "../../Item";
 import AbilityBase from "../../templateinterfaces/AbilityBase";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   onDragEnd: (dropSuccesful?: boolean) => void;
   onDragStart: (item: Item) => void;

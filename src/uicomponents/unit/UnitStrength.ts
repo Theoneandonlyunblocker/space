@@ -2,7 +2,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   isNotDetected?: boolean;
   currentHealth: number;

@@ -5,7 +5,7 @@ import Star from "../../Star";
 import app from "../../App";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   star: Star;
   player: Player;

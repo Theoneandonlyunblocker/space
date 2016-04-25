@@ -3,7 +3,7 @@
 import ListColumn from "../list/Listcolumn";
 import Star from "../../Star";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   handleClick: () => void;
   isSelected: boolean;

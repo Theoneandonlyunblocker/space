@@ -2,7 +2,7 @@
 
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   template: ManufacturableThing;
   parentIndex: number;

@@ -5,7 +5,7 @@ import ManufactoryStarsListItem from "./ManufactoryStarsListItem";
 import {sortByManufactoryCapacityFN} from "../../utility";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   starsWithManufactories: Star[];
   starsWithoutManufactories: Star[];

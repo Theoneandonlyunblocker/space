@@ -2,7 +2,7 @@
 
 import ListColumn from "../list/ListColumn";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   isMarkedForDeletion: boolean;
   handleClick: () => void;

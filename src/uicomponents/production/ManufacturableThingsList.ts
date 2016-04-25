@@ -3,7 +3,7 @@
 import ManufacturableThingsListItem from "./ManufacturableThingsListItem";
 import ManufacturableThing from "../../templateinterfaces/ManufacturableThing";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   manufacturableThings: ManufacturableThing[];
   onClick?: (toManufacture: ManufacturableThing, parentIndex: number) => void;

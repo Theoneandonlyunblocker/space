@@ -13,7 +13,7 @@ import {default as PopupManager, PopupManagerComponent} from "../popups/PopupMan
 import AbilityUpgradeData from "../../AbilityUpgradeData";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   unit: Unit;
   onUnitUpgrade: () => void;

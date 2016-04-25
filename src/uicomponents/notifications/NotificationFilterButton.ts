@@ -10,7 +10,7 @@ import NotificationFilter from "../../NotificationFilter";
 import TopMenuPopup from "../popups/TopMenuPopup";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   filter: NotificationFilter;
   text: string;

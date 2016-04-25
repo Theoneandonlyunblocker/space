@@ -6,7 +6,7 @@ import {default as MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions"
 import MapGenTemplate from "../../templateinterfaces/MapGenTemplate";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   setPlayerLimits: (limits: {min: number; max: number;}) => void;
 }

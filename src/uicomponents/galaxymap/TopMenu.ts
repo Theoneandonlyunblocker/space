@@ -8,7 +8,7 @@ import {default as TopMenuPopups, TopMenuPopupsComponent} from "./TopMenuPopups"
 import eventManager from "../../eventManager";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   player: Player;
   game: Game;

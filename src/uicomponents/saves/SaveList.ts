@@ -6,7 +6,7 @@ import List from "../list/List";
 import {prettifyDate} from "../../utility";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   onRowChange: (row: ListItem) => void;
   saveKeysToDelete?: string[];

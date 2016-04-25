@@ -7,7 +7,7 @@ import FleetControls from "./FleetControls";
 import Fleet from "../../Fleet";
 
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   isNotDetected: boolean;
   fleet: Fleet;

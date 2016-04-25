@@ -2,7 +2,7 @@
 
 import {clamp} from "../../utility";
 
-interface PropTypes extends React.Props<any>
+export interface PropTypes extends React.Props<any>
 {
   onChangeFN: (value: number) => void;
 
