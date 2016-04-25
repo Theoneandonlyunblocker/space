@@ -4,7 +4,7 @@ import Player from "../../Player";
 import AttitudeModifier from "../../AttitudeModifier";
 import Opinion from "./Opinion";
 import PlayerFlag from "../PlayerFlag";
-import ListColumn from "../unitlist/ListColumn";
+import ListColumn from "../list/ListColumn";
 
 
 interface PropTypes extends React.Props<any>

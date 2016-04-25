@@ -3,7 +3,7 @@
 declare interface ListItem
 {
   key: string;
-  data: any;
+  data_: any;
   content: React.ReactElement<any>;
 }
 

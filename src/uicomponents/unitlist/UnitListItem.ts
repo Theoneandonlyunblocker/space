@@ -3,7 +3,7 @@
 import Unit from "../../Unit";
 import {shallowExtend} from "../../utility";
 import UnitStrength from "../unit/UnitStrength";
-import ListColumn from "./ListColumn";
+import ListColumn from "../list/ListColumn";
 import {default as UnitComponentFactory, UnitComponent} from "../unit/Unit";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";

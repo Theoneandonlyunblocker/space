@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ListColumn from "../unitlist/ListColumn";
+import ListColumn from "../list/ListColumn";
 
 interface PropTypes extends React.Props<any>
 {

@@ -1,7 +1,7 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ListColumn from "../unitlist/ListColumn";
-import ListItem from "../unitlist/ListItem";
+import ListColumn from "../list/ListColumn";
+import ListItem from "../list/ListItem";
 
 import
 {
