@@ -4,17 +4,24 @@ import Player from "../../Player";
 import AttitudeModifier from "../../AttitudeModifier";
 import Opinion from "./Opinion";
 import PlayerFlag from "../PlayerFlag";
+import Flag from "../../Flag";
 import ListColumn from "../list/ListColumn";
 
 
 export interface PropTypes extends React.Props<any>
 {
-  baseOpinion: number;
-  player: Player;
   opinion: number;
-  activeColumns: ListColumn[];
-  attitudeModifiers: AttitudeModifier[];
-  handleClick: () => void;
+  status: string;
+  name: string;
+  flag?: Flag;
+  
+  baseOpinion?: number;
+  attitudeModifiers?: AttitudeModifier[];
+  
+  statusSortingNumber?: number;
+  
+  activeColumns?: ListColumn<PropTypes>[];
+  handleClick?: () => void;
 }
 
 interface StateType
@@ -49,61 +56,32 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
   }
   makeCell(type: string)
   {
-    var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
-
-    if (type === "flag")
-    {
-      if (!this.props.player)
-      {
-        return(
-          React.DOM.td(
-          {
-            key: type,
-            className: className
-          },
-            null
-          )
-        );
-      }
-
-      return(
-        React.DOM.td(
-        {
-          key: type,
-          className: className
-        },
-          PlayerFlag(
-          {
-            flag: this.props.player.flag,
-            props:
-            {
-              className: "diplomacy-status-player-icon"
-            }
-          })
-        )
-      );
-    }
-    if (type === "opinion")
-    {
-      return(
-        React.DOM.td(
-        {
-          key: type,
-          className: className
-        },
-          Opinion(
-          {
-            attitudeModifiers: this.props.attitudeModifiers,
-            opinion: this.props.opinion,
-            baseOpinion: this.props.baseOpinion
-          })
-        )
-      );
-    }
+    let className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
+    let cellContent: React.ReactElement<any> = this.props[type];
 
     if (type === "player")
     {
       className += " player-name";
+    }
+    if (type === "flag" && this.props.flag)
+    {
+      cellContent = PlayerFlag(
+      {
+        flag: this.props.flag,
+        props:
+        {
+          className: "diplomacy-status-player-icon"
+        }
+      });
+    }
+    if (type === "opinion")
+    {
+      cellContent = Opinion(
+      {
+        attitudeModifiers: this.props.attitudeModifiers,
+        opinion: this.props.opinion,
+        baseOpinion: this.props.baseOpinion
+      });
     }
 
     return(
@@ -111,7 +89,9 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
       {
         key: type,
         className: className
-      }, this.props[type])
+      },
+        cellContent
+      )
     );
   }
   
