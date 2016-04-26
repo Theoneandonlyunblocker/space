@@ -1,9 +1,10 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import TradeableItemProps from "./TradeableItemProps";
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes extends TradeableItemProps, React.Props<any>
 {
   keyTODO: string;
   moneyAmount: number;
@@ -14,7 +15,7 @@ export interface PropTypes extends React.Props<any>
   
   onDragStart?: (tradeableItemKey: string) => void;
   onDragEnd?: () => void;
-  dragPositionerProps: DragPositionerProps;
+  dragPositionerProps?: DragPositionerProps;
 }
 
 interface StateType
@@ -93,7 +94,6 @@ export class TradeMoneyComponent extends React.Component<PropTypes, StateType>
         rowProps.className += " dragging";
       }
     }
-
     else if (this.props.onClick)
     {
       rowProps.onClick = this.handleClick;
