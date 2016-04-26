@@ -1,4 +1,4 @@
-interface IDGeneratorValues
+export interface IDGeneratorValues
 {
   fleet: number;
   item: number;

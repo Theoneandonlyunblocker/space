@@ -9,6 +9,7 @@ import Manufactory from "./Manufactory";
 import Unit from "./Unit";
 
 import GameSaveData from "./savedata/GameSaveData";
+import FullSaveData from "./savedata/FullSaveData";
 import PlayerSaveData from "./savedata/PlayerSaveData";
 
 import
@@ -185,16 +186,19 @@ export default class Game
     var saveString = "Save." + name;
     this.gameStorageKey = saveString;
 
-    var date = new Date();
-    var gameData = this.serialize();
-    var stringified = JSON.stringify(
+    const date = new Date();
+    const gameData = this.serialize();
+    
+    const fullSaveData: FullSaveData =
     {
       name: name,
       date: date,
       gameData: gameData,
       idGenerators: extendObject(idGenerators),
       cameraLocation: app.renderer.camera.getCenterPosition()
-    });
+    };
+    
+    const stringified = JSON.stringify(fullSaveData);
 
     localStorage.setItem(saveString, stringified);
   }
