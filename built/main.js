@@ -2825,7 +2825,7 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
                 options: this.serialize(),
                 date: new Date()
             });
-            var saveName = "Options." + slot;
+            var saveName = "Rance.Options." + slot;
             localStorage.setItem(saveName, data);
         };
         Options.prototype.load = function (slot) {
@@ -2851,7 +2851,7 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
             }
         };
         Options.prototype.getParsedDataForSlot = function (slot) {
-            var baseString = "Options.";
+            var baseString = "Rance.Options.";
             var parsedData;
             if (isFinite(slot)) {
                 if (!localStorage[baseString + slot]) {
@@ -4299,17 +4299,18 @@ define("src/Game", ["require", "exports", "src/App", "src/idGenerators", "src/ev
             return data;
         };
         Game.prototype.save = function (name) {
-            var saveString = "Save." + name;
+            var saveString = "Rance.Save." + name;
             this.gameStorageKey = saveString;
             var date = new Date();
             var gameData = this.serialize();
-            var stringified = JSON.stringify({
+            var fullSaveData = {
                 name: name,
                 date: date,
                 gameData: gameData,
                 idGenerators: utility_10.extendObject(idGenerators_4.default),
                 cameraLocation: App_14.default.renderer.camera.getCenterPosition()
-            });
+            };
+            var stringified = JSON.stringify(fullSaveData);
             localStorage.setItem(saveString, stringified);
         };
         return Game;
@@ -21011,6 +21012,10 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
             e.stopPropagation();
             this.props.handleUndoDelete();
         };
+        SaveListItemComponent.preventDefault = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        };
         SaveListItemComponent.prototype.makeCell = function (type) {
             var cellProps = {};
             cellProps.key = type;
@@ -21019,6 +21024,7 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
             switch (type) {
                 case "delete":
                     {
+                        cellProps.onDoubleClick = SaveListItemComponent.preventDefault;
                         if (this.props.isMarkedForDeletion) {
                             cellContent = "";
                             cellProps.className += " undo-delete-button";
@@ -21047,7 +21053,8 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
             }
             var rowProps = {
                 className: "save-list-item",
-                onClick: this.props.handleClick
+                onClick: this.props.handleClick,
+                onDoubleClick: this.props.onDoubleClick
             };
             if (this.props.isMarkedForDeletion) {
                 rowProps.className += " marked-for-deletion";
@@ -21088,20 +21095,20 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
                 }
                 var row = {
                     key: saveKeys[i],
-                    data: {
+                    content: SaveListItem_1.default({
                         storageKey: saveKeys[i],
                         name: saveData.name,
                         date: utility_37.prettifyDate(date),
                         accurateDate: saveData.date,
-                        rowConstructor: SaveListItem_1.default,
                         isMarkedForDeletion: isMarkedForDeletion,
                         handleDelete: this.props.onDelete ?
                             this.props.onDelete.bind(null, saveKeys[i]) :
                             null,
                         handleUndoDelete: this.props.onUndoDelete ?
                             this.props.onUndoDelete.bind(null, saveKeys[i]) :
-                            null
-                    }
+                            null,
+                        onDoubleClick: this.props.onDoubleClick
+                    })
                 };
                 rows.push(row);
                 if (this.props.selectedKey === saveKeys[i]) {
@@ -21125,6 +21132,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
                 columns.push({
                     label: "Del",
                     key: "delete",
+                    defaultOrder: "asc",
                     notSortable: true
                 });
             }
@@ -21180,9 +21188,9 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
         };
         LoadGameComponent.prototype.handleRowChange = function (row) {
             this.setState({
-                saveKey: row.data.storageKey
+                saveKey: row.content.props.storageKey
             });
-            this.handleUndoDelete(row.data.storageKey);
+            this.handleUndoDelete(row.content.props.storageKey);
         };
         LoadGameComponent.prototype.handleLoad = function () {
             var saveKey = this.state.saveKey;
@@ -21231,7 +21239,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
             }.bind(this);
             var confirmText = ["Are you sure you want to delete the following saves?"];
             confirmText = confirmText.concat(this.state.saveKeysToDelete.map(function (saveKey) {
-                return saveKey.replace("Save.", "");
+                return saveKey.replace("Rance.Save.", "");
             }));
             return ({
                 handleOk: deleteFN,
@@ -21299,11 +21307,16 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 allowDelete: true,
                 onDelete: this.handleDelete,
                 onUndoDelete: this.handleUndoDelete,
-                saveKeysToDelete: this.state.saveKeysToDelete
-            }), React.DOM.input({
+                saveKeysToDelete: this.state.saveKeysToDelete,
+                onDoubleClick: this.handleLoad
+            }), React.DOM.form({
+                className: "save-game-form",
+                onSubmit: this.handleLoad,
+                action: "javascript:void(0);"
+            }, React.DOM.input({
                 className: "save-game-name",
                 type: "text",
-                value: this.state.saveKey ? this.state.saveKey.replace("Save.", "") : "",
+                value: this.state.saveKey ? this.state.saveKey.replace("Rance.Save.", "") : "",
                 readOnly: true
             }), React.DOM.div({
                 className: "save-game-buttons-container"
@@ -21320,7 +21333,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 className: "save-game-button",
                 onClick: this.deleteSelectedKeys,
                 disabled: this.state.saveKeysToDelete.length < 1
-            }, "Delete"))));
+            }, "Delete")))));
         };
         return LoadGameComponent;
     }(React.Component));
@@ -21369,11 +21382,11 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             this.setSaveName(target.value);
         };
         SaveGameComponent.prototype.handleRowChange = function (row) {
-            this.setSaveName(row.data.name);
+            this.setSaveName(row.content.props.name);
         };
         SaveGameComponent.prototype.handleSave = function () {
             var saveName = this.state.saveName;
-            var saveKey = "Save." + saveName;
+            var saveKey = "Rance.Save." + saveName;
             if (localStorage[saveKey]) {
                 this.makeConfirmOverWritePopup(saveName);
             }
@@ -21393,7 +21406,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
                 content: ConfirmPopup_3.default({
                     handleOk: this.saveGame,
                     content: "Are you sure you want to overwrite " +
-                        saveName.replace("Save.", "") + "?"
+                        saveName.replace("Rance.Save.", "") + "?"
                 })
             });
         };
@@ -21562,18 +21575,18 @@ define("src/tutorials/TutorialStatus", ["require", "exports", "src/tutorials/Tut
             this.introTutorial = isFinite(this.introTutorial) ? this.introTutorial : defaultTutorialStatus.introTutorial;
         };
         TutorialStatus.prototype.save = function () {
-            localStorage.setItem("TutorialStatus", JSON.stringify(this.serialize()));
+            localStorage.setItem("Rance.TutorialStatus", JSON.stringify(this.serialize()));
         };
         TutorialStatus.prototype.load = function () {
             this.setDefaultValues();
-            if (!localStorage["TutorialStatus"]) {
+            if (!localStorage["Rance.TutorialStatus"]) {
                 return;
             }
-            var parsedData = JSON.parse(localStorage.getItem("TutorialStatus"));
+            var parsedData = JSON.parse(localStorage.getItem("Rance.TutorialStatus"));
             this.deSerialize(parsedData);
         };
         TutorialStatus.prototype.reset = function () {
-            localStorage.removeItem("TutorialStatus");
+            localStorage.removeItem("Rance.TutorialStatus");
             this.setDefaultValues();
         };
         TutorialStatus.prototype.serialize = function () {

@@ -1,18 +1,19 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
 import ListColumn from "../list/ListColumn";
+import ListItemProps from "../list/ListItemProps";
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes extends ListItemProps, React.Props<any>
 {
   isMarkedForDeletion: boolean;
-  handleClick: () => void;
   handleUndoDelete: (callback?: () => void) => void;
   handleDelete: () => void;
-  activeColumns: ListColumn[];
-  
+  onDoubleClick?: () => void;
   storageKey: string;
   name: string;
   date: string;
+  
+  accurateDate: string;
 }
 
 interface StateType
@@ -47,6 +48,11 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
     e.stopPropagation();
     this.props.handleUndoDelete();
   }
+  private static preventDefault(e: React.SyntheticEvent)
+  {
+    e.preventDefault();
+    e.stopPropagation();
+  }
   makeCell(type: string)
   {
     var cellProps: React.HTMLProps<HTMLTableCellElement> = {};
@@ -59,6 +65,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
     {
       case "delete":
       {
+        cellProps.onDoubleClick = SaveListItemComponent.preventDefault;
         if (this.props.isMarkedForDeletion)
         {
           cellContent = "";
@@ -100,7 +107,8 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
     var rowProps: React.HTMLAttributes =
     {
       className: "save-list-item",
-      onClick : this.props.handleClick
+      onClick : this.props.handleClick,
+      onDoubleClick: this.props.onDoubleClick
     };
 
     if (this.props.isMarkedForDeletion)
