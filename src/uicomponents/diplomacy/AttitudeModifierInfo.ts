@@ -1,6 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ListColumn from "../list/ListColumn";
+import ListItemProps from "../list/ListItemProps";
 
 import
 {
@@ -8,16 +8,13 @@ import
   getRelativeValue,
 } from "../../utility";
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes extends ListItemProps, React.Props<any>
 {
   name: string;
   endTurn: number;
   strength: number;
   
   alwaysShowAtTopOfList?: boolean;
-  
-  handleClick?: () => void;
-  activeColumns?: ListColumn<PropTypes>[];
 }
 
 interface StateType

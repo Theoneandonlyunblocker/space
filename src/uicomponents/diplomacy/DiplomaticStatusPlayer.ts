@@ -5,10 +5,9 @@ import AttitudeModifier from "../../AttitudeModifier";
 import Opinion from "./Opinion";
 import PlayerFlag from "../PlayerFlag";
 import Flag from "../../Flag";
-import ListColumn from "../list/ListColumn";
+import ListItemProps from "../list/ListItemProps";
 
-
-export interface PropTypes extends React.Props<any>
+export interface PropTypes extends ListItemProps, React.Props<any>
 {
   player: Player;
   opinion: number;
@@ -20,9 +19,6 @@ export interface PropTypes extends React.Props<any>
   attitudeModifiers?: AttitudeModifier[];
   
   statusSortingNumber?: number;
-  
-  activeColumns?: ListColumn<PropTypes>[];
-  handleClick?: () => void;
 }
 
 interface StateType
