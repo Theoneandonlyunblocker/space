@@ -156,26 +156,26 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             value: this.state.saveName,
             onChange: this.handleSaveNameInput,
             maxLength: 64
-          }),
-          React.DOM.div(
+          })
+        ),
+        React.DOM.div(
+        {
+          className: "save-game-buttons-container"
+        },
+          React.DOM.button(
           {
-            className: "save-game-buttons-container"
-          },
-            React.DOM.button(
+            className: "save-game-button",
+            onClick: this.handleSave,
+            ref: (component: HTMLElement) =>
             {
-              className: "save-game-button",
-              onClick: this.handleSave,
-              ref: (component: HTMLElement) =>
-              {
-                this.ref_TODO_okButton = component;
-              }
-            }, "Save"),
-            React.DOM.button(
-            {
-              className: "save-game-button",
-              onClick: this.handleClose
-            }, "Cancel")
-          )
+              this.ref_TODO_okButton = component;
+            }
+          }, "Save"),
+          React.DOM.button(
+          {
+            className: "save-game-button",
+            onClick: this.handleClose
+          }, "Cancel")
         )
       )
     );
