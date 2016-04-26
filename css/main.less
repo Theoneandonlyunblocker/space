@@ -115,7 +115,7 @@ ul, ol
     @c1 0%,
     lighten(@c1, 10%) 25%,
     darken(@c1, 5%) 50%,
-    lighten(@c1, 0%) 100%,
+    lighten(@c1, 0%) 100%
   );
 }
 .disabled-button-style
@@ -1354,7 +1354,7 @@ ul, ol
 .unit-border-no-right
 {
   border: 1px solid @unit-border-color;
-  border-right: 0;
+  border-right-width: 0;
 }
 
 .unit-border-left
@@ -2289,8 +2289,8 @@ ul, ol
 
   >.fleet-info:first-child
   {
-    border-top: 0;
-    border-left: 0;
+    border-top-width: 0;
+    border-left-width: 0;
   }
 }
 
@@ -2345,7 +2345,7 @@ ul, ol
     overflow-y: auto;
     .fleet-info
     {
-      border-right: 0;
+      border-right-width: 0;
     }
     @media(max-width: 1000px)
     {
@@ -2385,7 +2385,7 @@ ul, ol
 
   +.fleet-info
   {
-    border-top: 0;
+    border-top-width: 0;
   }
 
   &.fleet-selection-displaced
@@ -2443,7 +2443,7 @@ ul, ol
   // + selector: b immediately following a
   .fleet-unit-info + .fleet-unit-info
   {
-    border-top: 0;
+    border-top-width: 0;
   }
 }
 
@@ -2535,7 +2535,7 @@ ul, ol
 {
   flex: 1;
   border: 1px solid @ui-border-color1;
-  border-bottom: 0;
+  border-bottom-width: 0;
   padding: 0 10px;
   background-color: @bg-color2;
 }
@@ -4248,7 +4248,7 @@ button.player-setup-remove-player
   flex-flow: column;
   flex: 0 0 auto;
   border: 1px solid @ui-border-color1;
-  border-right: 0;
+  border-right-width: 0;
   box-sizing: border-box;
   margin-left: 2em;
   margin-top: 23px;
@@ -4286,7 +4286,7 @@ button.player-setup-remove-player
 .construct-manufactory-container
 {
   border: 1px solid @ui-border-color1;
-  border-right: 0;
+  border-right-width: 0;
   box-sizing: border-box;
 }
 
@@ -4350,7 +4350,7 @@ button.player-setup-remove-player
     flex: 1 1 auto;
     overflow-y: scroll;
     border: 1px solid @ui-border-color1;
-    border-top: 0;
+    border-top-width: 0;
   }
 
   .manufacturable-things-list-item

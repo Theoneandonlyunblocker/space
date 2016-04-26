@@ -665,7 +665,7 @@ ol {
 }
 .friendly-unit .unit-body {
   border: 1px solid #999999;
-  border-right: 0;
+  border-right-width: 0;
 }
 .enemy-unit .unit-body {
   background: linear-gradient(to right, rgba(250, 100, 120, 0.5), rgba(250, 100, 120, 0.3));
@@ -927,7 +927,7 @@ ol {
 }
 .unit-border-no-right {
   border: 1px solid #999999;
-  border-right: 0;
+  border-right-width: 0;
 }
 .unit-border-left {
   border-left: 1px solid #999999;
@@ -1675,8 +1675,8 @@ ol {
   position: relative;
 }
 .fleet-selection > .fleet-info:first-child {
-  border-top: 0;
-  border-left: 0;
+  border-top-width: 0;
+  border-left-width: 0;
 }
 .fleet-selection-controls {
   flex: 0 auto;
@@ -1735,7 +1735,7 @@ ol {
   overflow-y: auto;
 }
 .fleet-selection-selected.reorganizing .fleet-info {
-  border-right: 0;
+  border-right-width: 0;
 }
 @media (max-width: 1000px) {
   .fleet-selection-selected.reorganizing {
@@ -1784,7 +1784,7 @@ ol {
   align-items: center;
 }
 .fleet-info + .fleet-info {
-  border-top: 0;
+  border-top-width: 0;
 }
 .fleet-info.fleet-selection-displaced {
   border-left-width: 3px !important;
@@ -1824,7 +1824,7 @@ ol {
   flex-flow: column;
 }
 .fleet-contents .fleet-unit-info + .fleet-unit-info {
-  border-top: 0;
+  border-top-width: 0;
 }
 .fleet-contents-dummy-unit {
   height: 36px;
@@ -1903,7 +1903,7 @@ ol {
 .fleet-reorganization-subheader-fleet-name {
   flex: 1;
   border: 1px solid #c4e5fb;
-  border-bottom: 0;
+  border-bottom-width: 0;
   padding: 0 10px;
   background-color: #0d2335;
 }
@@ -4154,7 +4154,7 @@ button.player-setup-remove-player.disabled {
   flex-flow: column;
   flex: 0 0 auto;
   border: 1px solid #c4e5fb;
-  border-right: 0;
+  border-right-width: 0;
   box-sizing: border-box;
   margin-left: 2em;
   margin-top: 23px;
@@ -4181,7 +4181,7 @@ button.player-setup-remove-player.disabled {
 }
 .construct-manufactory-container {
   border: 1px solid #c4e5fb;
-  border-right: 0;
+  border-right-width: 0;
   box-sizing: border-box;
 }
 .manufacturable-things {
@@ -4238,7 +4238,7 @@ button.player-setup-remove-player.disabled {
   flex: 1 1 auto;
   overflow-y: scroll;
   border: 1px solid #c4e5fb;
-  border-top: 0;
+  border-top-width: 0;
 }
 .manufacturable-things-active-tab .manufacturable-things-list-item {
   padding: 0 0.5em;
