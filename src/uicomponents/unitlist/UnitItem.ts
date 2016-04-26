@@ -33,13 +33,11 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
     
     this.bindMethods();
     
-    if (this.props.isDraggable)
-    {
-      this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
-      this.dragPositioner.onDragStart = this.onDragStart;
-      this.dragPositioner.onDragEnd = this.onDragEnd;
-      applyMixins(this, this.dragPositioner);
-    }
+
+    this.dragPositioner = new DragPositioner(this, this.props.dragPositionerProps);
+    this.dragPositioner.onDragStart = this.onDragStart;
+    this.dragPositioner.onDragEnd = this.onDragEnd;
+    applyMixins(this, this.dragPositioner);
   }
   private bindMethods()
   {
