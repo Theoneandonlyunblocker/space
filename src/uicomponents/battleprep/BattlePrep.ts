@@ -14,7 +14,8 @@ import Formation from "../battle/Formation";
 import Options from "../../Options";
 import BattleSimulator from "../../BattleSimulator";
 import UnitList from "../unitlist/UnitList";
-import {PropTypes as UnitListPropTypes} from "../unitlist/UnitListItem";
+import {PropTypes as UnitListItemPropTypes} from "../unitlist/UnitListItem";
+import {PropTypes as ItemListItemPropTypes} from "../unitlist/ItemListItem";
 import BattleInfo from "./BattleInfo";
 import Renderer from "../../Renderer";
 
@@ -93,7 +94,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     this.forceUpdate();
   }
 
-  handleSelectRow(row: ListItem<UnitListPropTypes>)
+  handleSelectRow(row: ListItem<UnitListItemPropTypes | ItemListItemPropTypes>)
   {
     if (!row.content.props.unit)
     {
