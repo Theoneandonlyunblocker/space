@@ -10,6 +10,7 @@ import ListColumn from "../list/ListColumn";
 
 export interface PropTypes extends React.Props<any>
 {
+  player: Player;
   opinion: number;
   status: string;
   name: string;

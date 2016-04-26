@@ -6660,10 +6660,6 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                 this.setCulture();
                 this.setInitialValues();
             }
-            this.displayFlags =
-                {
-                    isAnnihilated: false
-                };
         }
         Object.defineProperty(Unit.prototype, "attributes", {
             get: function () {
@@ -6835,10 +6831,6 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                     statusEffects: [],
                     lastHealthBeforeReceivingDamage: this.currentHealth,
                     queuedAction: null,
-                    isAnnihilated: false
-                };
-            this.displayFlags =
-                {
                     isAnnihilated: false
                 };
         };
@@ -11454,13 +11446,12 @@ define("src/uicomponents/battle/BattleBackground", ["require", "exports"], funct
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_19) {
+define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_19, utility_23) {
     "use strict";
     var ListComponent = (function (_super) {
         __extends(ListComponent, _super);
         function ListComponent(props) {
             _super.call(this, props);
-            this.sortedItems = [];
             this.state = this.getInitialStateTODO();
             this.bindMethods();
         }
@@ -11472,17 +11463,22 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
             this.handleSelectRow = this.handleSelectRow.bind(this);
             this.setDesiredHeight = this.setDesiredHeight.bind(this);
             this.handleSelectColumn = this.handleSelectColumn.bind(this);
-            this.sort = this.sort.bind(this);
+            this.getSortedItems = this.getSortedItems.bind(this);
         };
         ListComponent.prototype.getInitialStateTODO = function () {
             var initialColumn = this.props.initialSortOrder ?
                 this.props.initialSortOrder[0] :
                 this.props.initialColumns[0];
+            var sortingOrderForColumnKey = {};
+            this.props.initialColumns.forEach(function (column) {
+                sortingOrderForColumnKey[column.key] = column.defaultOrder;
+            });
             return ({
                 columns: this.props.initialColumns,
                 selected: null,
                 selectedColumn: initialColumn,
-                sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
+                columnSortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn),
+                sortingOrderForColumnKey: sortingOrderForColumnKey
             });
         };
         ListComponent.prototype.componentDidMount = function () {
@@ -11559,9 +11555,6 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
             }
             var order = initialSortOrder;
             for (var i = 0; i < columns.length; i++) {
-                if (!columns[i].order) {
-                    columns[i].order = columns[i].defaultOrder;
-                }
                 if (initialSortOrder.indexOf(columns[i]) < 0) {
                     order.push(columns[i]);
                 }
@@ -11569,7 +11562,7 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
             return order;
         };
         ListComponent.prototype.getNewSortingOrder = function (newColumn) {
-            var order = this.state.sortingOrder.slice(0);
+            var order = this.state.columnSortingOrder.slice(0);
             var current = order.indexOf(newColumn);
             if (current >= 0) {
                 order.splice(current);
@@ -11577,69 +11570,93 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
             order.unshift(newColumn);
             return order;
         };
-        ListComponent.prototype.handleSelectColumn = function (column) {
-            if (column.notSortable)
-                return;
-            function getReverseOrder(order) {
-                return order === "desc" ? "asc" : "desc";
+        ListComponent.reverseListOrder = function (order) {
+            if (order === "asc") {
+                return "desc";
             }
-            if (this.state.selectedColumn.key === column.key) {
-                column.order = getReverseOrder(column.order);
-                this.forceUpdate();
+            else if (order === "desc") {
+                return "asc";
             }
             else {
-                column.order = column.defaultOrder;
-                this.setState({
-                    selectedColumn: column,
-                    sortingOrder: this.getNewSortingOrder(column)
-                });
+                throw new Error("Invalid list order: " + order);
             }
         };
+        ListComponent.prototype.getSortingOrderForColumnKeyWithColumnReversed = function (columnToReverse) {
+            var copied = utility_23.shallowCopy(this.state.sortingOrderForColumnKey);
+            copied[columnToReverse.key] = ListComponent.reverseListOrder(copied[columnToReverse.key]);
+            return copied;
+        };
+        ListComponent.prototype.handleSelectColumn = function (column) {
+            if (column.notSortable) {
+                return;
+            }
+            var stateObj = {
+                selectedColumn: column,
+                columnSortingOrder: this.getNewSortingOrder(column)
+            };
+            if (this.state.selectedColumn.key === column.key) {
+                stateObj.sortingOrderForColumnKey = this.getSortingOrderForColumnKeyWithColumnReversed(column);
+            }
+            this.setState(stateObj);
+        };
         ListComponent.prototype.handleSelectRow = function (row) {
-            if (this.props.onRowChange && row)
+            if (this.props.onRowChange && row) {
                 this.props.onRowChange.call(null, row);
+            }
             this.setState({
                 selected: row
             });
         };
-        ListComponent.prototype.sort = function () {
-            var itemsToSort = this.props.listItems;
-            var columnsToTry = this.state.columns;
-            var sortOrder = this.state.sortingOrder;
-            var sortFunctions = {};
+        ListComponent.prototype.getSortedItems = function () {
+            var _this = this;
+            var sortingFunctions = {};
             function makeSortingFunction(column) {
-                if (column.sortingFunction)
+                if (column.sortingFunction) {
                     return column.sortingFunction;
-                var propToSortBy = column.propToSortBy || column.key;
-                return (function (a, b) {
-                    var a1 = a.data[propToSortBy];
-                    var b1 = b.data[propToSortBy];
-                    if (a1 > b1)
-                        return 1;
-                    else if (a1 < b1)
-                        return -1;
-                    else
-                        return 0;
-                });
-            }
-            itemsToSort.sort(function (a, b) {
-                var result = 0;
-                for (var i = 0; i < sortOrder.length; i++) {
-                    var columnToSortBy = sortOrder[i];
-                    if (!sortFunctions[columnToSortBy.key]) {
-                        sortFunctions[columnToSortBy.key] = makeSortingFunction(columnToSortBy);
-                    }
-                    var sortFunction = sortFunctions[columnToSortBy.key];
-                    result = sortFunction(a, b);
-                    if (columnToSortBy.order === "desc") {
-                        result *= -1;
-                    }
-                    if (result)
-                        return result;
                 }
-                return 0;
+                else {
+                    return (function (a, b) {
+                        var a1;
+                        var b1;
+                        if (column.propToSortBy) {
+                            a1 = a.content.props[column.propToSortBy];
+                            b1 = b.content.props[column.propToSortBy];
+                        }
+                        else {
+                            a1 = a.key;
+                            b1 = b.key;
+                        }
+                        if (a1 > b1)
+                            return 1;
+                        else if (a1 < b1)
+                            return -1;
+                        else
+                            return 0;
+                    });
+                }
+            }
+            function getSortingFunction(column) {
+                if (!sortingFunctions[column.key]) {
+                    sortingFunctions[column.key] = makeSortingFunction(column);
+                }
+                return sortingFunctions[column.key];
+            }
+            var sortedItems = this.props.listItems.slice(0).sort(function (a, b) {
+                for (var i = 0; i < _this.state.columnSortingOrder.length; i++) {
+                    var columnToSortBy = _this.state.columnSortingOrder[i];
+                    var sortingFunction = getSortingFunction(columnToSortBy);
+                    var sortingResult = sortingFunction(a, b);
+                    if (sortingResult) {
+                        if (_this.state.sortingOrderForColumnKey[columnToSortBy.key] === "desc") {
+                            return -1 * sortingResult;
+                        }
+                        else {
+                            return sortingResult;
+                        }
+                    }
+                }
             });
-            this.sortedItems = itemsToSort;
+            return sortedItems;
         };
         ListComponent.prototype.shiftSelection = function (amountToShift) {
             var reverseIndexes = {};
@@ -11656,25 +11673,26 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
         };
         ListComponent.prototype.render = function () {
             var _this = this;
-            var self = this;
             var columns = [];
             var headerLabels = [];
             this.state.columns.forEach(function (column) {
                 var colProps = {
                     key: column.key
                 };
-                if (self.props.colStylingFN) {
-                    colProps = self.props.colStylingFN(column, colProps);
+                if (_this.props.colStylingFN) {
+                    colProps = _this.props.colStylingFN(column, colProps);
                 }
                 columns.push(React.DOM.col(colProps));
                 var sortStatus = "";
-                if (!column.notSortable)
+                if (!column.notSortable) {
                     sortStatus = " sortable";
-                if (self.state.selectedColumn.key === column.key) {
-                    sortStatus += " sorted-" + column.order;
                 }
-                else if (!column.notSortable)
+                if (_this.state.selectedColumn.key === column.key) {
+                    sortStatus += " sorted-" + _this.state.sortingOrderForColumnKey[column.key];
+                }
+                else if (!column.notSortable) {
                     sortStatus += " unsorted";
+                }
                 headerLabels.push(React.DOM.th({
                     key: column.key
                 }, React.DOM.div({
@@ -11682,20 +11700,19 @@ define("src/uicomponents/unitlist/List", ["require", "exports", "src/eventManage
                 }, React.DOM.div({
                     className: "fixed-table-th-content" + sortStatus,
                     title: column.title || colProps.title || null,
-                    onMouseDown: self.handleSelectColumn.bind(null, column),
-                    onTouchStart: self.handleSelectColumn.bind(null, column),
+                    onMouseDown: _this.handleSelectColumn.bind(null, column),
+                    onTouchStart: _this.handleSelectColumn.bind(null, column),
                 }, column.label))));
             });
-            this.sort();
-            var sortedItems = this.sortedItems;
+            this.sortedItems = this.getSortedItems();
             var rows = [];
-            sortedItems.forEach(function (item, i) {
-                item.data.key = item.key;
-                item.data.activeColumns = self.state.columns;
-                item.data.handleClick = self.handleSelectRow.bind(null, item);
-                var row = item.data.rowConstructor(item.data);
-                rows.push(row);
-                if (self.props.addSpacer && i < sortedItems.length - 1) {
+            this.sortedItems.forEach(function (item, i) {
+                rows.push(React.cloneElement(item.content, {
+                    key: item.key,
+                    activeColumns: _this.state.columns,
+                    handleClick: _this.handleSelectRow.bind(null, item),
+                }));
+                if (_this.props.addSpacer && i < _this.sortedItems.length - 1) {
                     rows.push(React.DOM.tr({
                         className: "list-spacer",
                         key: "spacer" + i
@@ -11821,7 +11838,7 @@ define("src/uicomponents/unitlist/ItemListItem", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicomponents/unitlist/List", "src/uicomponents/unitlist/ItemListItem"], function (require, exports, List_1, ItemListItem_1) {
+define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/unitlist/ItemListItem"], function (require, exports, List_1, ItemListItem_1) {
     "use strict";
     var ItemListComponent = (function (_super) {
         __extends(ItemListComponent, _super);
@@ -12177,7 +12194,7 @@ define("src/uicomponents/unit/UnitAttributeChanges", ["require", "exports"], fun
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_23) {
+define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_24) {
     "use strict";
     var UnitStatusComponent = (function (_super) {
         __extends(UnitStatusComponent, _super);
@@ -12198,7 +12215,7 @@ define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"]
                 }, React.DOM.div({
                     className: "guard-meter-value",
                     style: {
-                        width: "" + utility_23.clamp(guard, 0, 100) + "%"
+                        width: "" + utility_24.clamp(guard, 0, 100) + "%"
                     }
                 }), React.DOM.div({
                     className: "status-inner-wrapper"
@@ -12577,7 +12594,7 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_24, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_24) {
+define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_24, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_25) {
     "use strict";
     var FormationComponent = (function (_super) {
         __extends(FormationComponent, _super);
@@ -12638,7 +12655,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
                             hoveredActionPointExpenditure: this.props.hoveredAbility &&
                                 this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
                         };
-                        unitProps = utility_24.shallowExtend(unitDisplayData, componentProps, displayProps);
+                        unitProps = utility_25.shallowExtend(unitDisplayData, componentProps, displayProps);
                     }
                     unitElements.push(UnitWrapper_1.default({ key: ("unit_wrapper_" + i) + j }, EmptyUnit_1.default({
                         facesLeft: this.props.facesLeft,
@@ -12659,7 +12676,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_25, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
+define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_26, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
     "use strict";
     var UnitListItemComponent = (function (_super) {
         __extends(UnitListItemComponent, _super);
@@ -12698,7 +12715,7 @@ define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/uti
         };
         UnitListItemComponent.prototype.makeDragClone = function () {
             var container = document.createElement("div");
-            ReactDOM.render(Unit_4.default(utility_25.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
+            ReactDOM.render(Unit_4.default(utility_26.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
             var renderedElement = container.firstChild;
             var wrapperElement = document.getElementsByClassName("unit-wrapper")[0];
             renderedElement.classList.add("draggable", "dragging");
@@ -12800,7 +12817,7 @@ define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/uti
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UnitList", ["require", "exports", "src/uicomponents/unitlist/List", "src/uicomponents/unitlist/UnitListItem"], function (require, exports, List_2, UnitListItem_1) {
+define("src/uicomponents/unitlist/UnitList", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/unitlist/UnitListItem"], function (require, exports, List_2, UnitListItem_1) {
     "use strict";
     var UnitListComponent = (function (_super) {
         __extends(UnitListComponent, _super);
@@ -12962,7 +12979,7 @@ define("src/uicomponents/PlayerFlag", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_25, PlayerFlag_1, utility_26) {
+define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_25, PlayerFlag_1, utility_27) {
     "use strict";
     var DefenceBuildingComponent = (function (_super) {
         __extends(DefenceBuildingComponent, _super);
@@ -12980,7 +12997,7 @@ define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src
                 className: "defence-building"
             }, React.DOM.img({
                 className: "defence-building-icon",
-                src: utility_26.colorImageInPlayerColor(image, building.controller),
+                src: utility_27.colorImageInPlayerColor(image, building.controller),
                 title: building.template.displayName
             }), PlayerFlag_1.default({
                 props: {
@@ -14030,7 +14047,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleScene;
 });
-define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_27, App_27) {
+define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_28, App_27) {
     "use strict";
     var BattleSceneTesterComponent = (function (_super) {
         __extends(BattleSceneTesterComponent, _super);
@@ -14088,7 +14105,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             battleScene.updateUnits();
         };
         BattleSceneTesterComponent.prototype.makeUnit = function () {
-            var template = utility_27.getRandomProperty(App_27.default.moduleData.Templates.Units);
+            var template = utility_28.getRandomProperty(App_27.default.moduleData.Templates.Units);
             return new Unit_5.default(template, this.idGenerator++);
         };
         BattleSceneTesterComponent.prototype.makePlayer = function () {
@@ -14228,7 +14245,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var user = this.state.activeUnit;
             var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
             var bs = this.battleScene;
-            var SFXTemplate = utility_27.extendObject(App_27.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+            var SFXTemplate = utility_28.extendObject(App_27.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
             if (this.state.duration) {
                 SFXTemplate.duration = this.state.duration;
             }
@@ -15433,7 +15450,7 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_28) {
+define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_29) {
     "use strict";
     var MapGenOptionComponent = (function (_super) {
         __extends(MapGenOptionComponent, _super);
@@ -15445,7 +15462,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
         MapGenOptionComponent.prototype.handleChange = function (e) {
             var target = e.target;
             var option = this.props.option;
-            var newValue = utility_28.clamp(parseFloat(target.value), option.range.min, option.range.max);
+            var newValue = utility_29.clamp(parseFloat(target.value), option.range.min, option.range.max);
             this.props.onChange(this.props.id, newValue);
         };
         MapGenOptionComponent.prototype.shouldComponentUpdate = function (newProps) {
@@ -15496,7 +15513,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_29) {
+define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_30) {
     "use strict";
     var MapGenOptionsComponent = (function (_super) {
         __extends(MapGenOptionsComponent, _super);
@@ -15538,13 +15555,13 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                         var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
                         if (!oldOption)
                             continue;
-                        var oldValuePercentage = utility_29.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
+                        var oldValuePercentage = utility_30.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
                         value = option.min + (option.max - option.min) * oldValuePercentage;
                     }
                     else {
                         value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                     }
-                    value = utility_29.clamp(utility_29.roundToNearestMultiple(value, option.step), option.min, option.max);
+                    value = utility_30.clamp(utility_30.roundToNearestMultiple(value, option.step), option.min, option.max);
                     defaultValues["optionValue_" + optionName] = value;
                 }
             }.bind(this));
@@ -15568,14 +15585,14 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                 var optionGroup = optionGroups[optionGroupName];
                 for (var optionName in optionGroup) {
                     var option = optionGroup[optionName].range;
-                    var optionValue = utility_29.clamp(utility_29.roundToNearestMultiple(utility_29.randInt(option.min, option.max), option.step), option.min, option.max);
+                    var optionValue = utility_30.clamp(utility_30.roundToNearestMultiple(utility_30.randInt(option.min, option.max), option.step), option.min, option.max);
                     newValues["optionValue_" + optionName] = optionValue;
                 }
             }
             this.setState(newValues);
         };
         MapGenOptionsComponent.prototype.getOptionValuesForTemplate = function () {
-            var optionValues = utility_29.extendObject(this.props.mapGenTemplate.options);
+            var optionValues = utility_30.extendObject(this.props.mapGenTemplate.options);
             for (var groupName in optionValues) {
                 var optionsGroup = optionValues[groupName];
                 for (var optionName in optionsGroup) {
@@ -15926,7 +15943,7 @@ define("src/uicomponents/battle/TurnCounter", ["require", "exports"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_30) {
+define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_31) {
     "use strict";
     var AbilityUseEffectQueue = (function () {
         function AbilityUseEffectQueue(battleScene) {
@@ -15958,13 +15975,13 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
         };
         AbilityUseEffectQueue.squashEffects = function (parent, toSquash, parentIsMostRecent) {
             if (parentIsMostRecent === void 0) { parentIsMostRecent = false; }
-            var squashedChangedUnitDisplayDataByID = utility_30.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
+            var squashedChangedUnitDisplayDataByID = utility_31.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
             if (parentIsMostRecent) {
-                var squashedEffect = utility_30.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
+                var squashedEffect = utility_31.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
                 return squashedEffect;
             }
             else {
-                var squashedEffect = utility_30.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
+                var squashedEffect = utility_31.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
                 return squashedEffect;
             }
         };
@@ -16395,7 +16412,7 @@ define("src/uicomponents/battle/AbilityTooltip", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounter", "src/uicomponents/battle/BattleBackground", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, TurnOrder_1, TurnCounter_1, BattleBackground_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_31, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, AbilityTooltip_1) {
+define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounter", "src/uicomponents/battle/BattleBackground", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, TurnOrder_1, TurnCounter_1, BattleBackground_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_32, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, AbilityTooltip_1) {
     "use strict";
     var BattleComponent = (function (_super) {
         __extends(BattleComponent, _super);
@@ -16602,7 +16619,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
         BattleComponent.prototype.onBattleEffectTrigger = function (effect) {
             this.setState({
                 previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
-                unitDisplayDataByID: utility_31.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
+                unitDisplayDataByID: utility_32.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
             });
         };
         BattleComponent.prototype.finishPlayingQueuedBattleEffects = function () {
@@ -18700,15 +18717,18 @@ define("src/uicomponents/technologies/technologyPrioritySlider", ["require", "ex
         function TechnologyPrioritySliderComponent(props) {
             _super.call(this, props);
             this.displayName = "TechnologyPrioritySlider";
-            this.state =
-                {};
+            this.state = this.getInitialStateTODO();
             this.bindMethods();
         }
-        ;
         TechnologyPrioritySliderComponent.prototype.bindMethods = function () {
             this.getPlayerPriority = this.getPlayerPriority.bind(this);
             this.updatePriority = this.updatePriority.bind(this);
             this.handlePriorityChange = this.handlePriorityChange.bind(this);
+        };
+        TechnologyPrioritySliderComponent.prototype.getInitialStateTODO = function () {
+            return ({
+                priority: this.getPlayerPriority()
+            });
         };
         TechnologyPrioritySliderComponent.prototype.componentDidMount = function () {
             eventManager_31.default.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
@@ -19001,7 +19021,7 @@ define("src/uicomponents/trade/TradeMoney", ["require", "exports", "src/uicompon
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/trade/TradeableItemsList", ["require", "exports", "src/uicomponents/trade/TradeMoney", "src/uicomponents/unitlist/List"], function (require, exports, TradeMoney_1, List_3) {
+define("src/uicomponents/trade/TradeableItemsList", ["require", "exports", "src/uicomponents/trade/TradeMoney", "src/uicomponents/list/List"], function (require, exports, TradeMoney_1, List_3) {
     "use strict";
     var TradeableItemsListComponent = (function (_super) {
         __extends(TradeableItemsListComponent, _super);
@@ -19434,7 +19454,7 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_32) {
+define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_33) {
     "use strict";
     var AttitudeModifierInfoComponent = (function (_super) {
         __extends(AttitudeModifierInfoComponent, _super);
@@ -19447,23 +19467,29 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
             this.makeCell = this.makeCell.bind(this);
         };
         AttitudeModifierInfoComponent.prototype.makeCell = function (type) {
-            var cellProps = {};
-            cellProps.key = type;
-            cellProps.className = "attitude-modifier-info-cell" +
-                " attitude-modifier-info-" + type;
+            var cellProps = {
+                key: type,
+                className: "attitude-modifier-info-cell" + " attitude-modifier-info-" + type,
+            };
             var cellContent;
             switch (type) {
+                case "name":
+                    {
+                        cellContent = this.props.name;
+                        break;
+                    }
                 case "endTurn":
                     {
                         if (this.props.endTurn < 0) {
                             cellContent = null;
                             return;
                         }
+                        break;
                     }
                 case "strength":
                     {
-                        var relativeValue = utility_32.getRelativeValue(this.props.strength, -20, 20);
-                        relativeValue = utility_32.clamp(relativeValue, 0, 1);
+                        var relativeValue = utility_33.getRelativeValue(this.props.strength, -20, 20);
+                        relativeValue = utility_33.clamp(relativeValue, 0, 1);
                         var deviation = Math.abs(0.5 - relativeValue) * 2;
                         var hue = 110 * relativeValue;
                         var saturation = 0 + 50 * deviation;
@@ -19477,13 +19503,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
                                     saturation + "%," +
                                     lightness + "%)"
                             };
-                    }
-                default:
-                    {
-                        cellContent = this.props[type];
-                        if (isFinite(cellContent)) {
-                            cellProps.className += " center-text";
-                        }
+                        cellContent = this.props.strength;
                         break;
                     }
             }
@@ -19497,7 +19517,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
                 cells.push(cell);
             }
             return (React.DOM.tr({
-                className: "diplomatic-status-player",
+                className: "attitude-modifier-info",
                 onClick: this.props.handleClick
             }, cells));
         };
@@ -19625,7 +19645,7 @@ define("src/uicomponents/mixins/AutoPositioner", ["require", "exports"], functio
     exports.default = AutoPositioner;
     var _a;
 });
-define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports", "src/uicomponents/unitlist/List", "src/uicomponents/diplomacy/AttitudeModifierInfo", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, List_4, AttitudeModifierInfo_1, AutoPositioner_1, applyMixins_12) {
+define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/AttitudeModifierInfo", "src/uicomponents/mixins/AutoPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, List_4, AttitudeModifierInfo_1, AutoPositioner_1, applyMixins_12) {
     "use strict";
     var AttitudeModifierListComponent = (function (_super) {
         __extends(AttitudeModifierListComponent, _super);
@@ -19641,13 +19661,12 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
             var rows = [];
             rows.push({
                 key: "baseOpinion",
-                data: {
+                content: AttitudeModifierInfo_1.default({
                     name: "AI Personality",
                     strength: this.props.baseOpinion,
                     endTurn: -1,
-                    sortOrder: -1,
-                    rowConstructor: AttitudeModifierInfo_1.default
-                }
+                    alwaysShowAtTopOfList: true,
+                })
             });
             for (var i = 0; i < modifiers.length; i++) {
                 var modifier = modifiers[i];
@@ -19655,13 +19674,12 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
                     continue;
                 rows.push({
                     key: modifier.template.type,
-                    data: {
+                    content: AttitudeModifierInfo_1.default({
                         name: modifier.template.displayName,
                         strength: modifier.getAdjustedStrength(),
                         endTurn: modifier.endTurn,
-                        sortOrder: 0,
-                        rowConstructor: AttitudeModifierInfo_1.default
-                    }
+                        alwaysShowAtTopOfList: false,
+                    })
                 });
             }
             var columns = [
@@ -19669,7 +19687,23 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
                     label: "Name",
                     key: "name",
                     defaultOrder: "asc",
-                    propToSortBy: "sortOrder"
+                    sortingFunction: function (a, b) {
+                        var forcedSortOrder = 0;
+                        if (b.content.props.alwaysShowAtTopOfList) {
+                            forcedSortOrder += 10;
+                        }
+                        if (a.content.props.alwaysShowAtTopOfList) {
+                            forcedSortOrder -= 10;
+                        }
+                        var alphabeticSortOrder = 0;
+                        if (b.content.props.name > a.content.props.name) {
+                            alphabeticSortOrder -= 1;
+                        }
+                        else if (b.content.props.name < a.content.props.name) {
+                            alphabeticSortOrder += 1;
+                        }
+                        return forcedSortOrder + alphabeticSortOrder;
+                    }
                 },
                 {
                     label: "Effect",
@@ -19696,7 +19730,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_33) {
+define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_34) {
     "use strict";
     var OpinionComponent = (function (_super) {
         __extends(OpinionComponent, _super);
@@ -19728,8 +19762,8 @@ define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicompo
             return firstChild.getBoundingClientRect();
         };
         OpinionComponent.prototype.getColor = function () {
-            var relativeValue = utility_33.getRelativeValue(this.props.opinion, -30, 30);
-            relativeValue = utility_33.clamp(relativeValue, 0, 1);
+            var relativeValue = utility_34.getRelativeValue(this.props.opinion, -30, 30);
+            relativeValue = utility_34.clamp(relativeValue, 0, 1);
             var deviation = Math.abs(0.5 - relativeValue) * 2;
             var hue = 110 * relativeValue;
             var saturation = 0 + 50 * deviation;
@@ -19794,40 +19828,29 @@ define("src/uicomponents/diplomacy/DiplomaticStatusPlayer", ["require", "exports
         };
         DiplomaticStatusPlayerComponent.prototype.makeCell = function (type) {
             var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
-            if (type === "flag") {
-                if (!this.props.player) {
-                    return (React.DOM.td({
-                        key: type,
-                        className: className
-                    }, null));
-                }
-                return (React.DOM.td({
-                    key: type,
-                    className: className
-                }, PlayerFlag_6.default({
-                    flag: this.props.player.flag,
+            var cellContent = this.props[type];
+            if (type === "player") {
+                className += " player-name";
+            }
+            if (type === "flag" && this.props.flag) {
+                cellContent = PlayerFlag_6.default({
+                    flag: this.props.flag,
                     props: {
                         className: "diplomacy-status-player-icon"
                     }
-                })));
+                });
             }
             if (type === "opinion") {
-                return (React.DOM.td({
-                    key: type,
-                    className: className
-                }, Opinion_1.default({
+                cellContent = Opinion_1.default({
                     attitudeModifiers: this.props.attitudeModifiers,
                     opinion: this.props.opinion,
                     baseOpinion: this.props.baseOpinion
-                })));
-            }
-            if (type === "player") {
-                className += " player-name";
+                });
             }
             return (React.DOM.td({
                 key: type,
                 className: className
-            }, this.props[type]));
+            }, cellContent));
         };
         DiplomaticStatusPlayerComponent.prototype.render = function () {
             var columns = this.props.activeColumns;
@@ -19850,7 +19873,7 @@ define("src/uicomponents/diplomacy/DiplomaticStatusPlayer", ["require", "exports
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "src/uicomponents/unitlist/List", "src/uicomponents/diplomacy/DiplomacyActions", "src/uicomponents/diplomacy/DiplomaticStatusPlayer", "src/DiplomacyState", "src/uicomponents/popups/PopupManager"], function (require, exports, List_5, DiplomacyActions_1, DiplomaticStatusPlayer_1, DiplomacyState_2, PopupManager_6) {
+define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/diplomacy/DiplomacyActions", "src/uicomponents/diplomacy/DiplomaticStatusPlayer", "src/DiplomacyState", "src/uicomponents/popups/PopupManager"], function (require, exports, List_5, DiplomacyActions_1, DiplomaticStatusPlayer_1, DiplomacyState_2, PopupManager_6) {
     "use strict";
     var DiplomacyOverviewComponent = (function (_super) {
         __extends(DiplomacyOverviewComponent, _super);
@@ -19863,9 +19886,10 @@ define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "s
             this.makeDiplomacyActionsPopup = this.makeDiplomacyActionsPopup.bind(this);
         };
         DiplomacyOverviewComponent.prototype.makeDiplomacyActionsPopup = function (rowItem) {
-            var player = rowItem.data.player;
-            if (!player)
+            var player = rowItem.content.props.player;
+            if (!player) {
                 return;
+            }
             this.ref_TODO_popupManager.makePopup({
                 content: DiplomacyActions_1.default({
                     player: this.props.player,
@@ -19889,29 +19913,29 @@ define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "s
                 var player = this.props.metPlayers[playerId];
                 var status = this.props.player.diplomacyStatus.statusByPlayer[playerId];
                 rows.push({
-                    key: player.id,
-                    data: {
+                    key: "" + player.id,
+                    content: DiplomaticStatusPlayer_1.default({
                         player: player,
                         name: player.name,
-                        baseOpinion: player.diplomacyStatus.getBaseOpinion(),
                         status: DiplomacyState_2.default[status],
-                        statusEnum: status,
                         opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
+                        flag: player.flag,
+                        baseOpinion: player.diplomacyStatus.getBaseOpinion(),
+                        statusSortingNumber: status,
                         attitudeModifiers: player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
-                        rowConstructor: DiplomaticStatusPlayer_1.default
-                    }
+                    })
                 });
             }
             for (var i = 0; i < unmetPlayerCount; i++) {
                 rows.push({
                     key: "unmet" + i,
-                    data: {
+                    content: DiplomaticStatusPlayer_1.default({
+                        player: null,
                         name: "?????",
                         status: "unmet",
-                        statusEnum: 99999 + i,
+                        statusSortingNumber: 99999 + i,
                         opinion: null,
-                        rowConstructor: DiplomaticStatusPlayer_1.default
-                    }
+                    })
                 });
             }
             var columns = [
@@ -19919,7 +19943,7 @@ define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "s
                     label: "",
                     key: "flag",
                     defaultOrder: "asc",
-                    propToSortBy: "name"
+                    notSortable: true
                 },
                 {
                     label: "Name",
@@ -19930,7 +19954,7 @@ define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "s
                     label: "Status",
                     key: "status",
                     defaultOrder: "asc",
-                    propToSortBy: "statusEnum"
+                    propToSortBy: "statusSortingNumber"
                 },
                 {
                     label: "Opinion",
@@ -19946,7 +19970,7 @@ define("src/uicomponents/diplomacy/DiplomacyOverview", ["require", "exports", "s
             }), React.DOM.div({ className: "diplomacy-status-list fixed-table-parent" }, List_5.default({
                 listItems: rows,
                 initialColumns: columns,
-                initialSortOrder: [columns[0]],
+                initialSortOrder: [columns[1]],
                 onRowChange: this.makeDiplomacyActionsPopup
             }))));
         };
@@ -20099,7 +20123,7 @@ define("src/uicomponents/galaxymap/EconomySummaryItem", ["require", "exports"], 
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/EconomySummary", ["require", "exports", "src/uicomponents/unitlist/List", "src/uicomponents/galaxymap/EconomySummaryItem"], function (require, exports, List_6, EconomySummaryItem_1) {
+define("src/uicomponents/galaxymap/EconomySummary", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/galaxymap/EconomySummaryItem"], function (require, exports, List_6, EconomySummaryItem_1) {
     "use strict";
     var EconomySummaryComponent = (function (_super) {
         __extends(EconomySummaryComponent, _super);
@@ -20763,7 +20787,7 @@ define("src/uicomponents/production/ManufactoryStarsListItem", ["require", "expo
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_34) {
+define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_35) {
     "use strict";
     var ManufactoryStarsListComponent = (function (_super) {
         __extends(ManufactoryStarsListComponent, _super);
@@ -20773,8 +20797,8 @@ define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports"
         }
         ManufactoryStarsListComponent.prototype.render = function () {
             var rows = [];
-            this.props.starsWithManufactories.sort(utility_34.sortByManufactoryCapacityFN);
-            this.props.starsWithoutManufactories.sort(utility_34.sortByManufactoryCapacityFN);
+            this.props.starsWithManufactories.sort(utility_35.sortByManufactoryCapacityFN);
+            this.props.starsWithoutManufactories.sort(utility_35.sortByManufactoryCapacityFN);
             for (var i = 0; i < this.props.starsWithManufactories.length; i++) {
                 var star = this.props.starsWithManufactories[i];
                 var manufactory = star.manufactory;
@@ -20840,7 +20864,7 @@ define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", 
     exports.default = UpdateWhenMoneyChanges;
     var _a;
 });
-define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_34, utility_35, UpdateWhenMoneyChanges_1, applyMixins_13) {
+define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_34, utility_36, UpdateWhenMoneyChanges_1, applyMixins_13) {
     "use strict";
     var ProductionOverviewComponent = (function (_super) {
         __extends(ProductionOverviewComponent, _super);
@@ -20862,11 +20886,11 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
             var player = this.props.player;
             var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
             if (starsByManufactoryPresence.withManufactories.length > 0) {
-                starsByManufactoryPresence.withManufactories.sort(utility_35.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withManufactories.sort(utility_36.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withManufactories[0];
             }
             else if (starsByManufactoryPresence.withoutManufactories.length > 0) {
-                starsByManufactoryPresence.withoutManufactories.sort(utility_35.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withoutManufactories.sort(utility_36.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withoutManufactories[0];
             }
             return ({
@@ -21038,7 +21062,7 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/unitlist/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_36) {
+define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/list/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_37) {
     "use strict";
     var SaveListComponent = (function (_super) {
         __extends(SaveListComponent, _super);
@@ -21067,7 +21091,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
                     data: {
                         storageKey: saveKeys[i],
                         name: saveData.name,
-                        date: utility_36.prettifyDate(date),
+                        date: utility_37.prettifyDate(date),
                         accurateDate: saveData.date,
                         rowConstructor: SaveListItem_1.default,
                         isMarkedForDeletion: isMarkedForDeletion,
@@ -21445,7 +21469,7 @@ define("src/uicomponents/galaxymap/OptionsCheckbox", ["require", "exports"], fun
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_37) {
+define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_38) {
     "use strict";
     var OptionsNumericFieldComponent = (function (_super) {
         __extends(OptionsNumericFieldComponent, _super);
@@ -21478,7 +21502,7 @@ define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", 
             if (!isFinite(value)) {
                 return;
             }
-            value = utility_37.clamp(value, parseFloat(target.min), parseFloat(target.max));
+            value = utility_38.clamp(value, parseFloat(target.min), parseFloat(target.max));
             this.setState({
                 value: value
             }, this.triggerOnChangeFN);
@@ -21571,7 +21595,7 @@ define("src/tutorials/TutorialStatus", ["require", "exports", "src/tutorials/Tut
     exports.default = tutorialStatus;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_38, TutorialStatus_1) {
+define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_39, TutorialStatus_1) {
     "use strict";
     var OptionsListComponent = (function (_super) {
         __extends(OptionsListComponent, _super);
@@ -21698,7 +21722,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                             if (!isFinite(value)) {
                                 return;
                             }
-                            value = utility_38.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                            value = utility_39.clamp(value, parseFloat(target.min), parseFloat(target.max));
                             Options_3.default.debugOptions.battleSimulationDepth = value;
                             _this.forceUpdate();
                         }
@@ -22435,7 +22459,7 @@ define("src/uicomponents/possibleactions/BuildableBuilding", ["require", "export
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/possibleactions/BuildableBuildingList", ["require", "exports", "src/uicomponents/unitlist/List", "src/uicomponents/possibleactions/BuildableBuilding", "src/Building"], function (require, exports, List_8, BuildableBuilding_1, Building_3) {
+define("src/uicomponents/possibleactions/BuildableBuildingList", ["require", "exports", "src/uicomponents/list/List", "src/uicomponents/possibleactions/BuildableBuilding", "src/Building"], function (require, exports, List_8, BuildableBuilding_1, Building_3) {
     "use strict";
     var BuildableBuildingListComponent = (function (_super) {
         __extends(BuildableBuildingListComponent, _super);
@@ -22778,7 +22802,7 @@ define("src/uicomponents/tutorials/DontShowAgain", ["require", "exports", "src/t
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_39, TutorialState_3, TutorialStatus_3, utility_40) {
+define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_40, TutorialState_3, TutorialStatus_3, utility_41) {
     "use strict";
     var TutorialComponent = (function (_super) {
         __extends(TutorialComponent, _super);
@@ -22823,7 +22847,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
         TutorialComponent.prototype.flipPage = function (amount) {
             var lastPage = this.props.pages.length - 1;
             var newPage = this.state.currentPageIndex + amount;
-            newPage = utility_39.clamp(newPage, 0, lastPage);
+            newPage = utility_40.clamp(newPage, 0, lastPage);
             this.handleLeavePage(this.props.pages[this.state.currentPageIndex]);
             this.setState({
                 currentPageIndex: newPage
@@ -22867,7 +22891,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
                 className: "tutorial-inner"
             }, backElement, React.DOM.div({
                 className: "tutorial-content"
-            }, utility_40.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
+            }, utility_41.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
                 tutorialId: this.props.tutorialId
             })));
         };
@@ -23413,23 +23437,24 @@ define("src/ReactUI", ["require", "exports", "src/eventManager", "src/uicomponen
     exports.default = ReactUI;
     var _a;
 });
-define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "src/Unit", "src/utility"], function (require, exports, App_37, Unit_6, utility_41) {
+define("src/setDynamicTemplateProperties", ["require", "exports", "src/Unit", "src/utility"], function (require, exports, Unit_6, utility_42) {
     "use strict";
-    function setDynamicTemplateProperties() {
-        setAbilityGuardAddition();
-        setAttitudeModifierOverride();
-        setUnitFamilyAssociatedTemplates();
+    function setDynamicTemplateProperties(moduleData) {
+        setAbilityGuardAddition(moduleData);
+        setAttitudeModifierOverride(moduleData);
+        setUnitFamilyAssociatedTemplates(moduleData);
+        setTechnologyRequirements(moduleData);
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = setDynamicTemplateProperties;
-    function setAbilityGuardAddition() {
+    function setAbilityGuardAddition(moduleData) {
         function checkIfAbilityAddsGuard(ability) {
             var effects = [ability.mainEffect];
             if (ability.secondaryEffects) {
                 effects = effects.concat(ability.secondaryEffects);
             }
-            var dummyUser = new Unit_6.default(utility_41.getRandomProperty(App_37.default.moduleData.Templates.Units));
-            var dummyTarget = new Unit_6.default(utility_41.getRandomProperty(App_37.default.moduleData.Templates.Units));
+            var dummyUser = new Unit_6.default(utility_42.getRandomProperty(moduleData.Templates.Units));
+            var dummyTarget = new Unit_6.default(utility_42.getRandomProperty(moduleData.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
                 effects[i].action.executeAction(dummyUser, dummyTarget, null, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
@@ -23438,14 +23463,14 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
             }
             return false;
         }
-        for (var abilityName in App_37.default.moduleData.Templates.Abilities) {
-            var ability = App_37.default.moduleData.Templates.Abilities[abilityName];
+        for (var abilityName in moduleData.Templates.Abilities) {
+            var ability = moduleData.Templates.Abilities[abilityName];
             ability.addsGuard = checkIfAbilityAddsGuard(ability);
         }
     }
-    function setAttitudeModifierOverride() {
-        for (var modifierType in App_37.default.moduleData.Templates.AttitudeModifiers) {
-            var modifier = App_37.default.moduleData.Templates.AttitudeModifiers[modifierType];
+    function setAttitudeModifierOverride(moduleData) {
+        for (var modifierType in moduleData.Templates.AttitudeModifiers) {
+            var modifier = moduleData.Templates.AttitudeModifiers[modifierType];
             if (modifier.canBeOverriddenBy) {
                 for (var i = 0; i < modifier.canBeOverriddenBy.length; i++) {
                     if (!modifier.canBeOverriddenBy[i].canOverride) {
@@ -23456,9 +23481,9 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
             }
         }
     }
-    function setUnitFamilyAssociatedTemplates() {
-        for (var unitType in App_37.default.moduleData.Templates.Units) {
-            var template = App_37.default.moduleData.Templates.Units[unitType];
+    function setUnitFamilyAssociatedTemplates(moduleData) {
+        for (var unitType in moduleData.Templates.Units) {
+            var template = moduleData.Templates.Units[unitType];
             for (var i = 0; i < template.families.length; i++) {
                 var family = template.families[i];
                 if (!family.associatedTemplates) {
@@ -23466,6 +23491,29 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/App", "sr
                 }
                 family.associatedTemplates.push(template);
             }
+        }
+    }
+    function setTechnologyRequirements(moduleData) {
+        var _loop_2 = function(technologyKey) {
+            var technology = moduleData.Templates.Technologies[technologyKey];
+            var _loop_3 = function(level) {
+                var unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
+                unlockedTemplatesForLevel.forEach(function (template) {
+                    if (!template.technologyRequirements) {
+                        template.technologyRequirements = [];
+                    }
+                    template.technologyRequirements.push({
+                        technology: technology,
+                        level: parseInt(level)
+                    });
+                });
+            };
+            for (var level in technology.unlocksPerLevel) {
+                _loop_3(level);
+            }
+        };
+        for (var technologyKey in moduleData.Templates.Technologies) {
+            _loop_2(technologyKey);
         }
     }
     var _a;
@@ -23507,7 +23555,7 @@ define("modules/common/battlesfxfunctions/shaders/BlackToAlpha", ["require", "ex
     ];
     var _a;
 });
-define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_42) {
+define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_43) {
     "use strict";
     function projectileAttack(props, params) {
         var minY = Math.max(params.height * 0.3, 30);
@@ -23524,7 +23572,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
         var stopSpawningTime = startTime + params.duration / 2;
         var lastTime = startTime;
         var nextSpawnTime = startTime;
-        var amountToSpawn = utility_42.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
+        var amountToSpawn = utility_43.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
         var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
         var projectiles = [];
         var hasTriggeredEffect = false;
@@ -23534,16 +23582,16 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
             lastTime = currentTime;
             if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
                 nextSpawnTime += spawnRate;
-                var texture = utility_42.getRandomArrayItem(props.projectileTextures);
+                var texture = utility_43.getRandomArrayItem(props.projectileTextures);
                 var sprite = new PIXI.Sprite(texture);
                 sprite.x = 20;
-                sprite.y = utility_42.randInt(minY, maxY);
+                sprite.y = utility_43.randInt(minY, maxY);
                 container.addChild(sprite);
                 projectiles.push({
                     sprite: sprite,
                     speed: 0,
                     willImpact: (projectiles.length - 1) % props.impactRate === 0,
-                    impactX: utility_42.randInt(params.width - 200, params.width - 50),
+                    impactX: utility_43.randInt(params.width - 200, params.width - 50),
                     hasImpact: false
                 });
             }
@@ -23562,7 +23610,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
                         params.triggerEffect();
                     }
                     projectile.hasImpact = true;
-                    var impactTextures = utility_42.getRandomArrayItem(props.impactTextures);
+                    var impactTextures = utility_43.getRandomArrayItem(props.impactTextures);
                     var impactClip = new PIXI.extras.MovieClip(impactTextures);
                     impactClip.anchor = new PIXI.Point(0.5, 0.5);
                     impactClip.loop = false;
@@ -23738,7 +23786,7 @@ define("modules/common/battlesfxfunctions/shaders/Guard", ["require", "exports"]
     ];
     var _a;
 });
-define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_43) {
+define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_44) {
     "use strict";
     function guard(props) {
         var userCanvasWidth = props.width * 0.4;
@@ -23770,9 +23818,9 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
                     hasTriggeredEffect = true;
                     props.triggerEffect();
                 }
-                var adjustedtime = utility_43.getRelativeValue(time, travelTime - 0.02, 1);
+                var adjustedtime = utility_44.getRelativeValue(time, travelTime - 0.02, 1);
                 adjustedtime = Math.pow(adjustedtime, 4);
-                var relativeDistance = utility_43.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+                var relativeDistance = utility_44.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
                 guardFilter.setUniformValues({
                     trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
                     blockWidth: adjustedtime * maxBlockWidth,
@@ -24423,7 +24471,7 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
     exports.default = ProtonWrapper;
     var _a;
 });
-define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_44, ProtonWrapper_1) {
+define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_45, ProtonWrapper_1) {
     "use strict";
     function particleTest(props) {
         var width2 = props.width / 2;
@@ -24492,7 +24540,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
             rampUpValue = Math.pow(rampUpValue, 7.0);
             var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-            var relativeTimeAfterImpact = utility_44.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
+            var relativeTimeAfterImpact = utility_45.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
             var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
             var beamIntensity = rampUpValue - rampDownValue;
             beamFilter.setUniformValues({
@@ -24514,7 +24562,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
                 lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
             });
         };
-        var beamSprite = utility_44.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
+        var beamSprite = utility_45.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
         beamSprite.shader = beamFilter;
         beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(beamSprite);
@@ -24555,7 +24603,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         var shinyEmitter = new Proton.BehaviourEmitter();
         shinyEmitter.p.x = beamOrigin.x;
         shinyEmitter.p.y = beamOrigin.y;
-        var shinyParticleTexture = utility_44.getDummyTextureForShader();
+        var shinyParticleTexture = utility_45.getDummyTextureForShader();
         shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
         var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
         shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
@@ -24622,7 +24670,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             x: props.height * 3.0,
             y: props.height * 3.0
         };
-        var shockWaveSprite = utility_44.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
+        var shockWaveSprite = utility_45.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
         shockWaveSprite.shader = shockWaveFilter;
         mainContainer.addChild(shockWaveSprite);
         var lightBurstFilter = new LightBurst_1.default({
@@ -24647,7 +24695,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             x: props.height * 1.5,
             y: props.height * 3
         };
-        var lightBurstSprite = utility_44.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
+        var lightBurstSprite = utility_45.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
         lightBurstSprite.shader = lightBurstFilter;
         lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(lightBurstSprite);
@@ -24662,7 +24710,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             particleShaderColorArray[3] = particleShaderColor.a;
             var timePassed = elapsedTime / props.duration;
             var lifeLeft = 1 - timePassed;
-            var timePassedSinceImpact = utility_44.getRelativeValue(timePassed, relativeImpactTime, 1.0);
+            var timePassedSinceImpact = utility_45.getRelativeValue(timePassed, relativeImpactTime, 1.0);
             if (timePassed >= relativeImpactTime - 0.02) {
                 if (!impactHasOccurred) {
                     impactHasOccurred = true;
@@ -25419,7 +25467,7 @@ define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], func
     exports.default = SubEmblemTemplates;
     var _a, _b;
 });
-define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App"], function (require, exports, SubEmblemTemplates_1, App_38) {
+define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/defaultemblems/SubEmblemTemplates", "src/App"], function (require, exports, SubEmblemTemplates_1, App_37) {
     "use strict";
     var defaultEmblems = {
         key: "defaultEmblems",
@@ -25443,7 +25491,7 @@ define("modules/defaultemblems/defaultEmblems", ["require", "exports", "modules/
                 for (var templateKey in SubEmblemTemplates_1.default) {
                     var template = SubEmblemTemplates_1.default[templateKey];
                     var image = loader.resources[template.src].data;
-                    App_38.default.images[template.src] = image;
+                    App_37.default.images[template.src] = image;
                     if (!image.width) {
                         document.body.appendChild(image);
                         image.width = image.offsetWidth;
@@ -25503,7 +25551,7 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports"], function
     exports.default = defaultRuleSet;
     var _a, _b;
 });
-define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, DiplomacyState_3, utility_45) {
+define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, DiplomacyState_3, utility_46) {
     "use strict";
     function moveToRoutine(front, afterMoveCallback, getMoveTargetFN) {
         var fleets = front.getAssociatedFleets();
@@ -25646,7 +25694,7 @@ define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective"
         var cost = unit.getTotalCost();
         baseScore -= cost / 1000;
         var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 2);
-        return utility_45.clamp(score, 0, 1);
+        return utility_46.clamp(score, 0, 1);
     }
     exports.scoutingUnitFitFN = scoutingUnitFitFN;
     function mergeScoresByStar(merged, scores) {
@@ -25675,7 +25723,7 @@ define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective"
             var player = evaluationScores[i].player || null;
             if (score < 0.04)
                 continue;
-            var relativeScore = utility_45.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
+            var relativeScore = utility_46.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
             var priority = relativeScore * basePriority;
             allObjectives.push(new Objective_1.default(template, priority, star, player));
         }
@@ -25815,7 +25863,7 @@ define("modules/defaultai/objectives/cleanUpPirates", ["require", "exports", "mo
     exports.default = cleanUpPirates;
     var _a, _b;
 });
-define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, utility_46, aiUtils_4) {
+define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, utility_47, aiUtils_4) {
     "use strict";
     var discovery = {
         key: "discovery",
@@ -25853,7 +25901,7 @@ define("modules/defaultai/objectives/discovery", ["require", "exports", "src/uti
             for (var starId in linksToUnrevealedStars) {
                 var star = mapEvaluator.player.revealedStars[starId];
                 var score = 0;
-                var relativeDistance = utility_46.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
+                var relativeDistance = utility_47.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
                 var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
                 var linksScore = linksToUnrevealedStars[starId].length * 20;
                 score += linksScore;
@@ -25907,7 +25955,7 @@ define("modules/defaultai/objectives/heal", ["require", "exports", "src/mapai/Ob
     exports.default = heal;
     var _a, _b;
 });
-define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, Objective_3, DiplomacyState_4, utility_47, aiUtils_6) {
+define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, Objective_3, DiplomacyState_4, utility_48, aiUtils_6) {
     "use strict";
     var conquer = {
         key: "conquer",
@@ -25932,7 +25980,7 @@ define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai
             var possibleTargets = [];
             for (var i = 0; i < hostilePlayers.length; i++) {
                 var desirabilityByStar = mapEvaluator.evaluateDesirabilityOfPlayersStars(hostilePlayers[i]).byStar;
-                var sortedIds = utility_47.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
+                var sortedIds = utility_48.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
                 if (sortedIds.length === 0) {
                     continue;
                 }
@@ -25954,7 +26002,7 @@ define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai
     exports.default = conquer;
     var _a, _b;
 });
-define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "src/mapai/Objective", "src/App"], function (require, exports, Objective_4, App_39) {
+define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "exports", "src/mapai/Objective", "src/App"], function (require, exports, Objective_4, App_38) {
     "use strict";
     var expandManufactoryCapacity = {
         key: "expandManufactoryCapacity",
@@ -25975,7 +26023,7 @@ define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "ex
                     continue;
                 var expansionCost;
                 if (!star.manufactory) {
-                    expansionCost = App_39.default.moduleData.ruleSet.manufactory.buildCost;
+                    expansionCost = App_38.default.moduleData.ruleSet.manufactory.buildCost;
                 }
                 else {
                     expansionCost = star.manufactory.getCapacityUpgradeCost();
@@ -26000,7 +26048,7 @@ define("modules/defaultai/objectives/expandManufactoryCapacity", ["require", "ex
             }
             else {
                 star.buildManufactory();
-                player.money -= App_39.default.moduleData.ruleSet.manufactory.buildCost;
+                player.money -= App_38.default.moduleData.ruleSet.manufactory.buildCost;
             }
         }
     };
@@ -26046,7 +26094,7 @@ define("modules/defaultai/Objectives", ["require", "exports", "modules/defaultai
     exports.default = Objectives;
     var _a, _b, _c;
 });
-define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_40) {
+define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], function (require, exports, App_39) {
     "use strict";
     ;
     function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
@@ -26055,7 +26103,7 @@ define("src/cacheSpriteSheetAsImages", ["require", "exports", "src/App"], functi
         }
     }
     function addImageToApp(name, image) {
-        App_40.default.images[name] = image;
+        App_39.default.images[name] = image;
     }
     function cacheSpriteSheetAsImages(sheetData, sheetImg, onImageCreated) {
         if (onImageCreated === void 0) { onImageCreated = addImageToApp; }
@@ -26243,49 +26291,301 @@ define("modules/defaultitems/defaultItems", ["require", "exports", "modules/defa
     exports.default = defaultItems;
     var _a, _b, _c, _d;
 });
-define("modules/defaulttechnologies/TechnologyTemplates", ["require", "exports"], function (require, exports) {
+define("modules/defaultunits/unitArchetypes", ["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.combat = {
+        type: "combat",
+        idealWeightInBattle: 1,
+        idealWeightInFleet: 1,
+        rowScores: {
+            ROW_FRONT: 1,
+            ROW_BACK: 0.6
+        }
+    };
+    exports.utility = {
+        type: "utility",
+        idealWeightInBattle: 0.33,
+        idealWeightInFleet: 0.5,
+        rowScores: {
+            ROW_FRONT: 0.4,
+            ROW_BACK: 0.6
+        }
+    };
+    exports.scouting = {
+        type: "scouting",
+        idealWeightInBattle: 0.01,
+        idealWeightInFleet: 0.2,
+        rowScores: {
+            ROW_FRONT: 0.01,
+            ROW_BACK: 0.02
+        }
+    };
+    exports.defence = {
+        type: "defence",
+        idealWeightInBattle: 0.5,
+        idealWeightInFleet: 0.5,
+        rowScores: {
+            ROW_FRONT: 1,
+            ROW_BACK: 0.5
+        },
+        scoreMultiplierForRowFN: function (row, rowUnits, enemyUnits) {
+            var multiplier = (row === "ROW_BACK" ? 0.7 : 1);
+            var totalDefenceUnderThreshhold = 0;
+            var threshhold = 6;
+            var alreadyHasDefender = false;
+            for (var i = 0; i < rowUnits.length; i++) {
+                var unit = rowUnits[i];
+                if (!unit)
+                    continue;
+                if (unit.template.archetype.type === "defence") {
+                    return multiplier;
+                }
+                totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
+            }
+            return multiplier + totalDefenceUnderThreshhold * 0.2;
+        }
+    };
+    var UnitArchetypes = (_e = {},
+        _e[exports.combat.type] = exports.combat,
+        _e[exports.utility.type] = exports.utility,
+        _e[exports.scouting.type] = exports.scouting,
+        _e[exports.defence.type] = exports.defence,
+        _e
+    );
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = UnitArchetypes;
+    var _a, _b, _c, _d, _e;
+});
+define("modules/defaultunits/unitFamilies", ["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.debug = {
+        type: "debug",
+        debugOnly: true,
+        alwaysAvailable: true,
+        rarity: 0,
+        distributionGroups: []
+    };
+    exports.basic = {
+        type: "basic",
+        debugOnly: false,
+        alwaysAvailable: true,
+        rarity: 0,
+        distributionGroups: []
+    };
+    exports.red = {
+        type: "red",
+        debugOnly: false,
+        alwaysAvailable: false,
+        rarity: 1,
+        distributionGroups: ["common", "rare"]
+    };
+    exports.blue = {
+        type: "blue",
+        debugOnly: false,
+        alwaysAvailable: false,
+        rarity: 1,
+        distributionGroups: ["common", "rare"]
+    };
+    var UnitFamilies = (_f = {},
+        _f[exports.debug.type] = exports.debug,
+        _f[exports.basic.type] = exports.basic,
+        _f[exports.red.type] = exports.red,
+        _f[exports.blue.type] = exports.blue,
+        _f
+    );
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = UnitFamilies;
+    var _a, _b, _c, _d, _e, _f;
+});
+define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_40, utility_49) {
+    "use strict";
+    var defaultUnitDrawingFunction = function (unit, SFXParams) {
+        var spriteTemplate = unit.template.sprite;
+        var texture = PIXI.Texture.fromFrame(spriteTemplate.imageSrc);
+        var container = new PIXI.Container;
+        var props = {
+            zDistance: 8,
+            xDistance: 5,
+            maxUnitsPerColumn: 7,
+            degree: -0.5,
+            rotationAngle: 70,
+            scalingFactor: 0.04
+        };
+        var maxUnitsPerColumn = props.maxUnitsPerColumn;
+        var isConvex = true;
+        var degree = props.degree;
+        if (degree < 0) {
+            isConvex = !isConvex;
+            degree = Math.abs(degree);
+        }
+        var image = App_40.default.images[spriteTemplate.imageSrc];
+        var zDistance = props.zDistance;
+        var xDistance = props.xDistance;
+        var unitsToDraw;
+        if (!unit.isSquadron) {
+            unitsToDraw = 1;
+        }
+        else {
+            var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
+            unit.lastHealthDrawnAt = unit.currentHealth;
+            unitsToDraw = Math.round(lastHealthDrawnAt * 0.04) * (1 / unit.template.maxHealth);
+            var heightRatio = 25 / image.height;
+            heightRatio = Math.min(heightRatio, 1.25);
+            maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
+            unitsToDraw = Math.round(unitsToDraw * heightRatio);
+            zDistance *= (1 / heightRatio);
+            unitsToDraw = utility_49.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+        }
+        var xMin, xMax, yMin, yMax;
+        var rotationAngle = Math.PI / 180 * props.rotationAngle;
+        var sA = Math.sin(rotationAngle);
+        var cA = Math.cos(rotationAngle);
+        var rotationMatrix = [
+            1, 0, 0,
+            0, cA, -sA,
+            0, sA, cA
+        ];
+        var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
+        var yPadding = Math.min(SFXParams.height * 0.1, 30);
+        var desiredHeight = SFXParams.height - yPadding;
+        var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
+        var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
+        zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
+        for (var i = unitsToDraw - 1; i >= 0; i--) {
+            var column = Math.floor(i / maxUnitsPerColumn);
+            var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
+            var zPos;
+            if (isLastColumn) {
+                var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
+                if (maxUnitsInThisColumn === 1) {
+                    zPos = (maxUnitsPerColumn - 1) / 2;
+                }
+                else {
+                    var positionInLastColumn = i % maxUnitsInThisColumn;
+                    zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+                }
+            }
+            else {
+                zPos = i % maxUnitsPerColumn;
+            }
+            var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
+            if (isConvex) {
+                xOffset = 1 - xOffset;
+            }
+            xOffset -= minXOffset;
+            var scale = 1 - zPos * props.scalingFactor;
+            var scaledWidth = image.width * scale;
+            var scaledHeight = image.height * scale;
+            var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+            var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
+            var translated = utility_49.transformMat3({ x: x, y: y }, rotationMatrix);
+            x = Math.round(translated.x);
+            y = Math.round(translated.y);
+            var sprite = new PIXI.Sprite(texture);
+            sprite.scale.x = sprite.scale.y = scale;
+            sprite.x = x;
+            sprite.y = y;
+            container.addChild(sprite);
+        }
+        SFXParams.triggerStart(container);
+        return container;
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = defaultUnitDrawingFunction;
+    var _a, _b, _c, _d, _e, _f;
+});
+define("modules/defaultunits/templates/stealthShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_1, abilities_2) {
+    "use strict";
+    var stealthShip = {
+        type: "stealthShip",
+        displayName: "Stealth Ship",
+        description: "Weak ship that is undetectable by regular vision",
+        archetype: UnitArchetypes.scouting,
+        families: [UnitFamilies.debug],
+        cultures: [],
+        sprite: {
+            imageSrc: "scout.png",
+            anchor: { x: 0.5, y: 0.5 }
+        },
+        isSquadron: true,
+        buildCost: 500,
+        icon: "modules/defaultunits/img/icons/sc.png",
+        maxHealth: 0.6,
+        maxMovePoints: 1,
+        visionRange: 1,
+        detectionRange: -1,
+        isStealthy: true,
+        attributeLevels: {
+            attack: 0.5,
+            defence: 0.5,
+            intelligence: 0.8,
+            speed: 0.7
+        },
+        possibleAbilities: [
+            {
+                flatProbability: 1,
+                probabilityItems: [
+                    abilities_2.rangedAttack,
+                    abilities_2.standBy
+                ]
+            }
+        ],
+        unitDrawingFN: defaultUnitDrawingFunction_1.default
+    };
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = stealthShip;
+    var _a, _b, _c, _d, _e, _f;
+});
+define("modules/defaulttechnologies/TechnologyTemplates", ["require", "exports", "modules/defaultunits/templates/stealthShip"], function (require, exports, stealthShip_1) {
     "use strict";
     var stealth = {
         key: "stealth",
         displayName: "Stealth",
         description: "stealthy stuff",
-        maxLevel: 9
+        maxLevel: 9,
+        unlocksPerLevel: {
+            1: [stealthShip_1.default]
+        }
     };
     var lasers = {
         key: "lasers",
         displayName: "Lasers",
         description: "pew pew",
-        maxLevel: 9
+        maxLevel: 9,
+        unlocksPerLevel: {}
     };
     var missiles = {
         key: "missiles",
         displayName: "Missiles",
         description: "boom",
-        maxLevel: 9
+        maxLevel: 9,
+        unlocksPerLevel: {}
     };
     var test1 = {
         key: "test1",
         displayName: "test1",
         description: "test1",
-        maxLevel: 1
+        maxLevel: 1,
+        unlocksPerLevel: {}
     };
     var test2 = {
         key: "test2",
         displayName: "test2",
         description: "test2",
-        maxLevel: 2
+        maxLevel: 2,
+        unlocksPerLevel: {}
     };
-    var TechnologyTemplates = (_e = {},
-        _e[stealth.key] = stealth,
-        _e[lasers.key] = lasers,
-        _e[missiles.key] = missiles,
-        _e[test1.key] = test1,
-        _e[test2.key] = test2,
-        _e
+    var TechnologyTemplates = (_g = {},
+        _g[stealth.key] = stealth,
+        _g[lasers.key] = lasers,
+        _g[missiles.key] = missiles,
+        _g[test1.key] = test1,
+        _g[test2.key] = test2,
+        _g
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = TechnologyTemplates;
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f, _g;
 });
 define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports", "modules/defaulttechnologies/TechnologyTemplates"], function (require, exports, TechnologyTemplates_1) {
     "use strict";
@@ -26304,7 +26604,7 @@ define("modules/defaulttechnologies/defaultTechnologies", ["require", "exports",
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultTechnologies;
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f, _g;
 });
 define("modules/defaultattitudemodifiers/AttitudeModifierTemplates", ["require", "exports", "src/DiplomacyState"], function (require, exports, DiplomacyState_5) {
     "use strict";
@@ -26338,15 +26638,15 @@ define("modules/defaultattitudemodifiers/AttitudeModifierTemplates", ["require",
         triggers: ["addDeclaredWarAttitudeModifier"],
         constantEffect: -35
     };
-    var AttitudeModifierTemplates = (_f = {},
-        _f[neighborStars.type] = neighborStars,
-        _f[atWar.type] = atWar,
-        _f[declaredWar.type] = declaredWar,
-        _f
+    var AttitudeModifierTemplates = (_h = {},
+        _h[neighborStars.type] = neighborStars,
+        _h[atWar.type] = atWar,
+        _h[declaredWar.type] = declaredWar,
+        _h
     );
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = AttitudeModifierTemplates;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", "exports", "modules/defaultattitudemodifiers/AttitudeModifierTemplates"], function (require, exports, AttitudeModifierTemplates_1) {
     "use strict";
@@ -26365,7 +26665,7 @@ define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", 
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultAttitudeModifiers;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaultmapgen/common/Region", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -26404,9 +26704,9 @@ define("modules/defaultmapgen/common/Region", ["require", "exports"], function (
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Region;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", "src/Unit", "src/Building", "src/Fleet", "src/utility"], function (require, exports, App_41, Unit_7, Building_4, Fleet_5, utility_48) {
+define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", "src/Unit", "src/Building", "src/Fleet", "src/utility"], function (require, exports, App_41, Unit_7, Building_4, Fleet_5, utility_50) {
     "use strict";
     var Sector = (function () {
         function Sector(id) {
@@ -26558,7 +26858,7 @@ define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", 
                 var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
                 var units = [];
                 if (star === commanderStar) {
-                    var template = utility_48.getRandomArrayItem(localBuildableUnitTypes);
+                    var template = utility_50.getRandomArrayItem(localBuildableUnitTypes);
                     var commander = makeUnitFN(template, player, 1.4, 1.4 + inverseMapGenDistance);
                     commander.name = "Pirate commander";
                     units.push(commander);
@@ -26567,7 +26867,7 @@ define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", 
                     var isElite = j < elitesAmount;
                     var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
                     var unitStatsModifier = (isElite ? 1.2 : 1);
-                    var template = utility_48.getRandomArrayItem(templateCandidates);
+                    var template = utility_50.getRandomArrayItem(templateCandidates);
                     var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
                     unit.name = (isElite ? "Pirate elite" : "Pirate");
                     units.push(unit);
@@ -26580,7 +26880,7 @@ define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", 
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Sector;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -26661,9 +26961,9 @@ define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Triangle;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_49) {
+define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modules/defaultmapgen/common/Triangle", "src/utility"], function (require, exports, Triangle_1, utility_51) {
     "use strict";
     function triangulate(vertices) {
         var triangles = [];
@@ -26736,10 +27036,10 @@ define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modul
         return triangle;
     }
     function edgesEqual(e1, e2) {
-        return ((utility_49.pointsEqual(e1[0], e2[0]) && utility_49.pointsEqual(e1[1], e2[1])) ||
-            (utility_49.pointsEqual(e1[0], e2[1]) && utility_49.pointsEqual(e1[1], e2[0])));
+        return ((utility_51.pointsEqual(e1[0], e2[0]) && utility_51.pointsEqual(e1[1], e2[1])) ||
+            (utility_51.pointsEqual(e1[0], e2[1]) && utility_51.pointsEqual(e1[1], e2[0])));
     }
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_42) {
     "use strict";
@@ -26814,9 +27114,9 @@ define("src/TemplateIndexes", ["require", "exports", "src/App"], function (requi
     var indexes = new TemplateIndexes();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = indexes;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/App", "modules/defaultmapgen/common/Sector", "modules/defaultmapgen/common/triangulate", "src/Building", "src/Color", "src/Emblem", "src/Flag", "src/TemplateIndexes", "src/pathfinding", "src/utility"], function (require, exports, App_43, Sector_1, triangulate_1, Building_5, Color_5, Emblem_4, Flag_5, TemplateIndexes_1, pathfinding_1, utility_50) {
+define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/App", "modules/defaultmapgen/common/Sector", "modules/defaultmapgen/common/triangulate", "src/Building", "src/Color", "src/Emblem", "src/Flag", "src/TemplateIndexes", "src/pathfinding", "src/utility"], function (require, exports, App_43, Sector_1, triangulate_1, Building_5, Color_5, Emblem_4, Flag_5, TemplateIndexes_1, pathfinding_1, utility_52) {
     "use strict";
     function linkAllStars(stars) {
         if (stars.length < 3) {
@@ -27009,7 +27309,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
         }
         for (var i = 0; i < sectors.length; i++) {
             var sector = sectors[i];
-            var alreadyAddedByWeight = utility_50.getRelativeWeightsFromObject(probabilityWeights);
+            var alreadyAddedByWeight = utility_52.getRelativeWeightsFromObject(probabilityWeights);
             var candidates = [];
             for (var j = 0; j < sector.distributionFlags.length; j++) {
                 var flag = sector.distributionFlags[j];
@@ -27035,7 +27335,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
                 candidatesByWeight[candidates[j].type] =
                     alreadyAddedByWeight[candidates[j].type];
             }
-            var selectedKey = utility_50.getRandomKeyWithWeights(candidatesByWeight);
+            var selectedKey = utility_52.getRandomKeyWithWeights(candidatesByWeight);
             var selectedType = allDistributables[selectedKey];
             probabilityWeights[selectedKey] /= 2;
             placerFunction(sector, selectedType);
@@ -27095,9 +27395,9 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
         }
     }
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/Player", "src/Star", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/voronoi", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/mapGenUtils"], function (require, exports, App_44, FillerPoint_2, Player_4, Star_2, utility_51, MapGenResult_2, voronoi_2, Region_1, mapGenUtils_1) {
+define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/Player", "src/Star", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/voronoi", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/mapGenUtils"], function (require, exports, App_44, FillerPoint_2, Player_4, Star_2, utility_53, MapGenResult_2, voronoi_2, Region_1, mapGenUtils_1) {
     "use strict";
     var spiralGalaxyGeneration = function (options, players) {
         var sg = (function setStarGenerationProps(options) {
@@ -27135,11 +27435,11 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
                 armDistance: Math.PI * 2 / totalArms,
                 armOffsetMax: 0.5,
                 armRotationFactor: actualArms / 3,
-                galaxyRotation: utility_51.randRange(0, Math.PI * 2)
+                galaxyRotation: utility_53.randRange(0, Math.PI * 2)
             });
         })(options);
         function makePoint(distanceMin, distanceMax, arm, maxOffset) {
-            var distance = utility_51.randRange(distanceMin, distanceMax);
+            var distance = utility_53.randRange(distanceMin, distanceMax);
             var offset = Math.random() * maxOffset - maxOffset / 2;
             offset *= (1 / distance);
             if (offset < 0)
@@ -27163,7 +27463,7 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
         function makeStar(point, distance) {
             var star = new Star_2.default(point.x, point.y);
             star.mapGenData.distance = distance;
-            star.baseIncome = utility_51.randInt(4, 10) * 10;
+            star.baseIncome = utility_53.randInt(4, 10) * 10;
             return star;
         }
         var stars = [];
@@ -27300,7 +27600,7 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = spiralGalaxyGeneration;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaultmapgen/templates/spiralGalaxy", ["require", "exports", "modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_1) {
     "use strict";
@@ -27371,7 +27671,7 @@ define("modules/defaultmapgen/templates/spiralGalaxy", ["require", "exports", "m
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = spiralGalaxy;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaultmapgen/templates/tinierSpiralGalaxy", ["require", "exports", "modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_2) {
     "use strict";
@@ -27443,14 +27743,14 @@ define("modules/defaultmapgen/templates/tinierSpiralGalaxy", ["require", "export
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = tinierSpiralGalaxy;
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "modules/defaultmapgen/templates/spiralGalaxy", "modules/defaultmapgen/templates/tinierSpiralGalaxy"], function (require, exports, spiralGalaxy_1, tinierSpiralGalaxy_1) {
     "use strict";
-    var Templates = (_g = {},
-        _g[spiralGalaxy_1.default.key] = spiralGalaxy_1.default,
-        _g[tinierSpiralGalaxy_1.default.key] = tinierSpiralGalaxy_1.default,
-        _g
+    var Templates = (_j = {},
+        _j[spiralGalaxy_1.default.key] = spiralGalaxy_1.default,
+        _j[tinierSpiralGalaxy_1.default.key] = tinierSpiralGalaxy_1.default,
+        _j
     );
     var defaultMapGen = {
         key: "defaultMapGen",
@@ -27470,212 +27770,9 @@ define("modules/defaultmapgen/defaultMapgen", ["require", "exports", "modules/de
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultMapGen;
-    var _a, _b, _c, _d, _e, _f, _g;
-});
-define("modules/defaultunits/unitArchetypes", ["require", "exports"], function (require, exports) {
-    "use strict";
-    exports.combat = {
-        type: "combat",
-        idealWeightInBattle: 1,
-        idealWeightInFleet: 1,
-        rowScores: {
-            ROW_FRONT: 1,
-            ROW_BACK: 0.6
-        }
-    };
-    exports.utility = {
-        type: "utility",
-        idealWeightInBattle: 0.33,
-        idealWeightInFleet: 0.5,
-        rowScores: {
-            ROW_FRONT: 0.4,
-            ROW_BACK: 0.6
-        }
-    };
-    exports.scouting = {
-        type: "scouting",
-        idealWeightInBattle: 0.01,
-        idealWeightInFleet: 0.2,
-        rowScores: {
-            ROW_FRONT: 0.01,
-            ROW_BACK: 0.02
-        }
-    };
-    exports.defence = {
-        type: "defence",
-        idealWeightInBattle: 0.5,
-        idealWeightInFleet: 0.5,
-        rowScores: {
-            ROW_FRONT: 1,
-            ROW_BACK: 0.5
-        },
-        scoreMultiplierForRowFN: function (row, rowUnits, enemyUnits) {
-            var multiplier = (row === "ROW_BACK" ? 0.7 : 1);
-            var totalDefenceUnderThreshhold = 0;
-            var threshhold = 6;
-            var alreadyHasDefender = false;
-            for (var i = 0; i < rowUnits.length; i++) {
-                var unit = rowUnits[i];
-                if (!unit)
-                    continue;
-                if (unit.template.archetype.type === "defence") {
-                    return multiplier;
-                }
-                totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
-            }
-            return multiplier + totalDefenceUnderThreshhold * 0.2;
-        }
-    };
-    var UnitArchetypes = (_h = {},
-        _h[exports.combat.type] = exports.combat,
-        _h[exports.utility.type] = exports.utility,
-        _h[exports.scouting.type] = exports.scouting,
-        _h[exports.defence.type] = exports.defence,
-        _h
-    );
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = UnitArchetypes;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
-});
-define("modules/defaultunits/unitFamilies", ["require", "exports"], function (require, exports) {
-    "use strict";
-    exports.debug = {
-        type: "debug",
-        debugOnly: true,
-        alwaysAvailable: true,
-        rarity: 0,
-        distributionGroups: []
-    };
-    exports.basic = {
-        type: "basic",
-        debugOnly: false,
-        alwaysAvailable: true,
-        rarity: 0,
-        distributionGroups: []
-    };
-    exports.red = {
-        type: "red",
-        debugOnly: false,
-        alwaysAvailable: false,
-        rarity: 1,
-        distributionGroups: ["common", "rare"]
-    };
-    exports.blue = {
-        type: "blue",
-        debugOnly: false,
-        alwaysAvailable: false,
-        rarity: 1,
-        distributionGroups: ["common", "rare"]
-    };
-    var UnitFamilies = (_j = {},
-        _j[exports.debug.type] = exports.debug,
-        _j[exports.basic.type] = exports.basic,
-        _j[exports.red.type] = exports.red,
-        _j[exports.blue.type] = exports.blue,
-        _j
-    );
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = UnitFamilies;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_45, utility_52) {
-    "use strict";
-    var defaultUnitDrawingFunction = function (unit, SFXParams) {
-        var spriteTemplate = unit.template.sprite;
-        var texture = PIXI.Texture.fromFrame(spriteTemplate.imageSrc);
-        var container = new PIXI.Container;
-        var props = {
-            zDistance: 8,
-            xDistance: 5,
-            maxUnitsPerColumn: 7,
-            degree: -0.5,
-            rotationAngle: 70,
-            scalingFactor: 0.04
-        };
-        var maxUnitsPerColumn = props.maxUnitsPerColumn;
-        var isConvex = true;
-        var degree = props.degree;
-        if (degree < 0) {
-            isConvex = !isConvex;
-            degree = Math.abs(degree);
-        }
-        var image = App_45.default.images[spriteTemplate.imageSrc];
-        var zDistance = props.zDistance;
-        var xDistance = props.xDistance;
-        var unitsToDraw;
-        if (!unit.isSquadron) {
-            unitsToDraw = 1;
-        }
-        else {
-            var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
-            unit.lastHealthDrawnAt = unit.currentHealth;
-            unitsToDraw = Math.round(lastHealthDrawnAt * 0.04) * (1 / unit.template.maxHealth);
-            var heightRatio = 25 / image.height;
-            heightRatio = Math.min(heightRatio, 1.25);
-            maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
-            unitsToDraw = Math.round(unitsToDraw * heightRatio);
-            zDistance *= (1 / heightRatio);
-            unitsToDraw = utility_52.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
-        }
-        var xMin, xMax, yMin, yMax;
-        var rotationAngle = Math.PI / 180 * props.rotationAngle;
-        var sA = Math.sin(rotationAngle);
-        var cA = Math.cos(rotationAngle);
-        var rotationMatrix = [
-            1, 0, 0,
-            0, cA, -sA,
-            0, sA, cA
-        ];
-        var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
-        var yPadding = Math.min(SFXParams.height * 0.1, 30);
-        var desiredHeight = SFXParams.height - yPadding;
-        var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
-        var spaceToFill = desiredHeight - (averageHeight * maxUnitsPerColumn);
-        zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
-        for (var i = unitsToDraw - 1; i >= 0; i--) {
-            var column = Math.floor(i / maxUnitsPerColumn);
-            var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
-            var zPos;
-            if (isLastColumn) {
-                var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
-                if (maxUnitsInThisColumn === 1) {
-                    zPos = (maxUnitsPerColumn - 1) / 2;
-                }
-                else {
-                    var positionInLastColumn = i % maxUnitsInThisColumn;
-                    zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
-                }
-            }
-            else {
-                zPos = i % maxUnitsPerColumn;
-            }
-            var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
-            if (isConvex) {
-                xOffset = 1 - xOffset;
-            }
-            xOffset -= minXOffset;
-            var scale = 1 - zPos * props.scalingFactor;
-            var scaledWidth = image.width * scale;
-            var scaledHeight = image.height * scale;
-            var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
-            var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-            var translated = utility_52.transformMat3({ x: x, y: y }, rotationMatrix);
-            x = Math.round(translated.x);
-            y = Math.round(translated.y);
-            var sprite = new PIXI.Sprite(texture);
-            sprite.scale.x = sprite.scale.y = scale;
-            sprite.x = x;
-            sprite.y = y;
-            container.addChild(sprite);
-        }
-        SFXParams.triggerStart(container);
-        return container;
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = defaultUnitDrawingFunction;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-});
-define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_1, abilities_2) {
+define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_2, abilities_3) {
     "use strict";
     var battleCruiser = {
         type: "battleCruiser",
@@ -27705,19 +27802,19 @@ define("modules/defaultunits/templates/battleCruiser", ["require", "exports", "m
             {
                 flatProbability: 1,
                 probabilityItems: [
-                    abilities_2.rangedAttack,
-                    abilities_2.wholeRowAttack,
-                    abilities_2.standBy
+                    abilities_3.rangedAttack,
+                    abilities_3.wholeRowAttack,
+                    abilities_3.standBy
                 ]
             }
         ],
-        unitDrawingFN: defaultUnitDrawingFunction_1.default
+        unitDrawingFN: defaultUnitDrawingFunction_2.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = battleCruiser;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultunits/templates/commandShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_2, abilities_3, passiveSkills_2) {
+define("modules/defaultunits/templates/commandShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities", "modules/common/passiveskilltemplates/passiveSkills"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_3, abilities_4, passiveSkills_2) {
     "use strict";
     var commandShip = {
         type: "commandShip",
@@ -27747,8 +27844,8 @@ define("modules/defaultunits/templates/commandShip", ["require", "exports", "mod
             {
                 flatProbability: 1,
                 probabilityItems: [
-                    abilities_3.rangedAttack,
-                    abilities_3.standBy
+                    abilities_4.rangedAttack,
+                    abilities_4.standBy
                 ]
             }
         ],
@@ -27760,13 +27857,13 @@ define("modules/defaultunits/templates/commandShip", ["require", "exports", "mod
                 ]
             }
         ],
-        unitDrawingFN: defaultUnitDrawingFunction_2.default
+        unitDrawingFN: defaultUnitDrawingFunction_3.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = commandShip;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultunits/templates/redShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_3, abilities_4) {
+define("modules/defaultunits/templates/redShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_4, abilities_5) {
     "use strict";
     var redShip = {
         type: "redShip",
@@ -27796,48 +27893,6 @@ define("modules/defaultunits/templates/redShip", ["require", "exports", "modules
             {
                 flatProbability: 1,
                 probabilityItems: [
-                    abilities_4.rangedAttack,
-                    abilities_4.standBy
-                ]
-            }
-        ],
-        unitDrawingFN: defaultUnitDrawingFunction_3.default
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = redShip;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-});
-define("modules/defaultunits/templates/stealthShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_4, abilities_5) {
-    "use strict";
-    var stealthShip = {
-        type: "stealthShip",
-        displayName: "Stealth Ship",
-        description: "Weak ship that is undetectable by regular vision",
-        archetype: UnitArchetypes.scouting,
-        families: [UnitFamilies.debug],
-        cultures: [],
-        sprite: {
-            imageSrc: "scout.png",
-            anchor: { x: 0.5, y: 0.5 }
-        },
-        isSquadron: true,
-        buildCost: 500,
-        icon: "modules/defaultunits/img/icons/sc.png",
-        maxHealth: 0.6,
-        maxMovePoints: 1,
-        visionRange: 1,
-        detectionRange: -1,
-        isStealthy: true,
-        attributeLevels: {
-            attack: 0.5,
-            defence: 0.5,
-            intelligence: 0.8,
-            speed: 0.7
-        },
-        possibleAbilities: [
-            {
-                flatProbability: 1,
-                probabilityItems: [
                     abilities_5.rangedAttack,
                     abilities_5.standBy
                 ]
@@ -27846,7 +27901,7 @@ define("modules/defaultunits/templates/stealthShip", ["require", "exports", "mod
         unitDrawingFN: defaultUnitDrawingFunction_4.default
     };
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = stealthShip;
+    exports.default = redShip;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
 define("modules/defaultunits/templates/blueShip", ["require", "exports", "modules/defaultunits/unitArchetypes", "modules/defaultunits/unitFamilies", "modules/defaultunits/defaultUnitDrawingFunction", "modules/common/abilitytemplates/abilities"], function (require, exports, UnitArchetypes, UnitFamilies, defaultUnitDrawingFunction_5, abilities_6) {
@@ -28147,13 +28202,13 @@ define("modules/defaultunits/templates/shieldBoat", ["require", "exports", "modu
     exports.default = shieldBoat;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
 });
-define("modules/defaultunits/UnitTemplates", ["require", "exports", "modules/defaultunits/templates/battleCruiser", "modules/defaultunits/templates/commandShip", "modules/defaultunits/templates/redShip", "modules/defaultunits/templates/stealthShip", "modules/defaultunits/templates/blueShip", "modules/defaultunits/templates/debugShip", "modules/defaultunits/templates/scout", "modules/defaultunits/templates/bomberSquadron", "modules/defaultunits/templates/fighterSquadron", "modules/defaultunits/templates/shieldBoat"], function (require, exports, battleCruiser_1, commandShip_1, redShip_1, stealthShip_1, blueShip_1, debugShip_1, scout_1, bomberSquadron_1, fighterSquadron_1, shieldBoat_1) {
+define("modules/defaultunits/UnitTemplates", ["require", "exports", "modules/defaultunits/templates/battleCruiser", "modules/defaultunits/templates/commandShip", "modules/defaultunits/templates/redShip", "modules/defaultunits/templates/stealthShip", "modules/defaultunits/templates/blueShip", "modules/defaultunits/templates/debugShip", "modules/defaultunits/templates/scout", "modules/defaultunits/templates/bomberSquadron", "modules/defaultunits/templates/fighterSquadron", "modules/defaultunits/templates/shieldBoat"], function (require, exports, battleCruiser_1, commandShip_1, redShip_1, stealthShip_2, blueShip_1, debugShip_1, scout_1, bomberSquadron_1, fighterSquadron_1, shieldBoat_1) {
     "use strict";
     var UnitTemplates = (_k = {},
         _k[battleCruiser_1.default.type] = battleCruiser_1.default,
         _k[commandShip_1.default.type] = commandShip_1.default,
         _k[redShip_1.default.type] = redShip_1.default,
-        _k[stealthShip_1.default.type] = stealthShip_1.default,
+        _k[stealthShip_2.default.type] = stealthShip_2.default,
         _k[blueShip_1.default.type] = blueShip_1.default,
         _k[debugShip_1.default.type] = debugShip_1.default,
         _k[scout_1.default.type] = scout_1.default,
@@ -28379,7 +28434,7 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
     ];
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_53) {
+define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_54) {
     "use strict";
     function drawNebula(seed, renderer) {
         var oldRng = Math.random;
@@ -28389,12 +28444,12 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/
             baseColor: nebulaColorScheme.main.getRGB(),
             overlayColor: nebulaColorScheme.secondary.getRGB(),
             highlightColor: [1.0, 1.0, 1.0],
-            coverage: utility_53.randRange(0.28, 0.32),
-            scale: utility_53.randRange(4, 8),
-            diffusion: utility_53.randRange(1.5, 3.0),
-            streakiness: utility_53.randRange(1.5, 2.5),
-            streakLightness: utility_53.randRange(1, 1.2),
-            cloudLightness: utility_53.randRange(1, 1.2),
+            coverage: utility_54.randRange(0.28, 0.32),
+            scale: utility_54.randRange(4, 8),
+            diffusion: utility_54.randRange(1.5, 3.0),
+            streakiness: utility_54.randRange(1.5, 2.5),
+            streakLightness: utility_54.randRange(1, 1.2),
+            cloudLightness: utility_54.randRange(1, 1.2),
             highlightA: 0.9,
             highlightB: 2.2,
             seed: [Math.random() * 100, Math.random() * 100]
@@ -28848,7 +28903,7 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_46) {
+define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_45) {
     "use strict";
     var fogOfWar = {
         key: "fogOfWar",
@@ -28900,7 +28955,7 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
             tiled.mask = gfx;
             tiled.addChild(gfx);
             var bounds = tiled.getBounds();
-            var rendered = tiled.generateTexture(App_46.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
+            var rendered = tiled.generateTexture(App_45.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
             var sprite = new PIXI.Sprite(rendered);
             fogOfWarSpriteByStarID[star.id] = sprite;
             tiled.mask = null;
@@ -28909,7 +28964,7 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_54) {
+define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_55) {
     "use strict";
     function starsOnlyShareNarrowBorder(a, b) {
         var minBorderWidth = Options_7.default.display.borderWidth * 2;
@@ -29070,8 +29125,8 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                     var point = offsetted[j_1];
                     var nextPoint = offsetted[(j_1 + 1) % offsetted.length];
                     var edgeCenter = {
-                        x: utility_54.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-                        y: utility_54.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
+                        x: utility_55.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: utility_55.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     if (!pointStar) {
@@ -29113,7 +29168,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
         var polyLinesData = [];
         for (var i = 0; i < polyLines.length; i++) {
             var polyLine = polyLines[i];
-            var isClosed = utility_54.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            var isClosed = utility_55.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
             if (isClosed)
                 polyLine.pop();
             for (var j_3 = 0; j_3 < polyLine.length; j_3++) {
@@ -30323,7 +30378,7 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
     exports.default = defaultNotifications;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
 });
-define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_10, TutorialStatus_5, utility_55, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
+define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_10, TutorialStatus_5, utility_56, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
     "use strict";
     var App = (function () {
         function App() {
@@ -30333,7 +30388,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
-            utility_55.onDOMLoaded(function () {
+            utility_56.onDOMLoaded(function () {
                 var moduleLoader = self.moduleLoader = new ModuleLoader_1.default();
                 self.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(defaultEmblems_1.default);
@@ -30357,7 +30412,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             var startTime = Date.now();
             options_10.default.load();
             TutorialStatus_5.default.load();
-            setDynamicTemplateProperties_1.default();
+            setDynamicTemplateProperties_1.default(this.moduleData);
             this.initUI();
             this.setInitialScene();
             if (this.reactUI.currentScene === "galaxyMap") {

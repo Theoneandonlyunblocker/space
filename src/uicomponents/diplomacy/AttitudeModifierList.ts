@@ -83,13 +83,13 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
         sortingFunction: (a, b) =>
         {
           let forcedSortOrder = 0;
-          if (b.content.props.alwaysShowAtTopOfList > a.content.props.alwaysShowAtTopOfList)
-          {
-            forcedSortOrder -= 10;
-          }
-          else if (b.content.props.alwaysShowAtTopOfList < a.content.props.alwaysShowAtTopOfList)
+          if (b.content.props.alwaysShowAtTopOfList)
           {
             forcedSortOrder += 10;
+          }
+          if (a.content.props.alwaysShowAtTopOfList)
+          {
+            forcedSortOrder -= 10;
           }
           
           let alphabeticSortOrder = 0;

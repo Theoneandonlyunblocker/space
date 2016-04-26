@@ -42,7 +42,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
   
   makeCell(type: string)
   {
-    var cellProps:
+    const cellProps:
     {
       key?: string;
       className?: string;
@@ -50,18 +50,20 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
       {
         color: string;
       }
-    } = {};
-    cellProps.key = type;
-    cellProps.className = "attitude-modifier-info-cell" +
-      " attitude-modifier-info-" + type;
+    } =
+    {
+      key: type,
+      className: "attitude-modifier-info-cell" + " attitude-modifier-info-" + type,
+    };
 
-    var cellContent: string | number;
+    let cellContent: string | number;
 
     switch (type)
     {
       case "name":
       {
-        cellContent = this.props[type];
+        cellContent = this.props.name;
+        break;
       }
       case "endTurn":
       {
@@ -70,6 +72,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
           cellContent = null;
           return;
         }
+        break;
       }
       case "strength":
       {
@@ -90,16 +93,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
             saturation + "%," +
             lightness + "%)"
         }
-      }
-      default:
-      {
-        cellContent = this.props[type];
-
-        if (isFinite(<number>cellContent))
-        {
-          cellProps.className += " center-text"
-        }
-
+        cellContent = this.props.strength;
         break;
       }
     }
@@ -125,7 +119,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
     return(
       React.DOM.tr(
       {
-        className: "diplomatic-status-player",
+        className: "attitude-modifier-info",
         onClick : this.props.handleClick
       },
         cells

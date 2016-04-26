@@ -2775,6 +2775,9 @@ ol {
 .diplomatic-status-opinion {
   text-align: center;
 }
+.diplomatic-status-opinion > * {
+  text-align: auto;
+}
 .diplomacy-actions-container {
   padding: 25px;
   background-color: #0d2335;

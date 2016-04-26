@@ -85,6 +85,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         key: "" + player.id,
         content: DiplomaticStatusPlayer(
         {
+          player: player,
           name: player.name,
           status: DiplomacyState[status],
           opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
@@ -105,6 +106,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         key: "unmet" + i,
         content: DiplomaticStatusPlayer(
         {
+          player: null,
           name: "?????",
           status: "unmet",
           statusSortingNumber: 99999 + i,

@@ -264,7 +264,10 @@ export class ListComponent extends React.Component<PropTypes, StateType>
 
   handleSelectRow(row: ListItem<any>)
   {
-    if (this.props.onRowChange && row) this.props.onRowChange.call(null, row);
+    if (this.props.onRowChange && row)
+    {
+      this.props.onRowChange.call(null, row);
+    }
 
     this.setState(
     {
@@ -426,18 +429,20 @@ export class ListComponent extends React.Component<PropTypes, StateType>
       );
     });
 
-    var sortedItems = this.getSortedItems();
+    this.sortedItems = this.getSortedItems();
     
     var rows: React.ReactElement<any>[] = [];
 
-    sortedItems.forEach((item, i) =>
+    this.sortedItems.forEach((item, i) =>
     {
-      item.content.props.activeColumns = this.state.columns;
-      item.content.props.handleClick = this.handleSelectRow.bind(null, item);
-
-      rows.push(item.content);
+      rows.push(React.cloneElement(item.content,
+      {
+        key: item.key,
+        activeColumns: this.state.columns,
+        handleClick: this.handleSelectRow.bind(null, item),
+      }));
       
-      if (this.props.addSpacer && i < sortedItems.length - 1)
+      if (this.props.addSpacer && i < this.sortedItems.length - 1)
       {
         rows.push(React.DOM.tr(
         {
