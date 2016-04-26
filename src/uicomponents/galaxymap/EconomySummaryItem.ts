@@ -1,13 +1,12 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import ListItemProps from "../list/ListItemProps";
 import ListColumn from "../list/Listcolumn";
 import Star from "../../Star";
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes extends ListItemProps, React.Props<any>
 {
-  handleClick: () => void;
-  isSelected: boolean;
-  activeColumns: ListColumn[];
+  // isSelected: boolean;
   
   star: Star;
   id: number;
@@ -43,14 +42,23 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
       className: "economy-summary-item-cell" + " economy-summary-" + type,
     };
 
-    var cellContent: any;
+    var cellContent: React.ReactNode;
 
     switch (type)
     {
-      default:
+      case "id":
       {
-        cellContent = this.props[type];
-
+        cellContent = this.props.id;
+        break;
+      }
+      case "name":
+      {
+        cellContent = this.props.name;
+        break;
+      }
+      case "income":
+      {
+        cellContent = this.props.income;
         break;
       }
     }
@@ -79,10 +87,10 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
       onClick : this.props.handleClick
     };
 
-    if (this.props.isSelected)
-    {
-      rowProps.className += " selected";
-    };
+    // if (this.props.isSelected)
+    // {
+    //   rowProps.className += " selected";
+    // };
 
     return(
       React.DOM.tr(rowProps,
