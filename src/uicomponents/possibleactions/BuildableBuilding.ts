@@ -1,20 +1,19 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import ListColumn from "../list/ListColumn";
+import ListItemProps from "../list/ListItemProps";
 import Player from "../../Player";
 import BuildingTemplate from "../../templateinterfaces/BuildingTemplate";
 
 import UpdateWhenMoneyChanges from "../mixins/UpdateWhenMoneyChanges";
 import applyMixins from "../mixins/applyMixins";
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes extends ListItemProps, React.Props<any>
 {
-  activeColumns: ListColumn[];
+  typeName: string;
+  buildCost: number;
+  
   template: BuildingTemplate;
   player: Player;
-  buildCost: number;
-  handleClick: () => void;
-  typeName: string;
 }
 
 interface StateType
@@ -64,21 +63,22 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     cellProps.key = type;
     cellProps.className = "buildable-building-list-item-cell " + type;
 
-    var cellContent: string | number;
+    var cellContent: React.ReactNode;
 
     switch (type)
     {
-      case ("buildCost"):
+      case "buildCost":
       {
+        cellContent = this.props.buildCost;
         if (!this.state.canAfford)
         {
           cellProps.className += " negative";
         }
+        break;
       }
-      default:
+      case "typeName":
       {
-        cellContent = this.props[type];
-
+        cellContent = this.props.typeName;
         break;
       }
     }
