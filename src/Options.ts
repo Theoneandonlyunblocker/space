@@ -150,7 +150,7 @@ class Options implements OptionsValues
       date: new Date()
     });
 
-    var saveName = "Options." + slot;
+    var saveName = "Rance.Options." + slot;
 
     localStorage.setItem(saveName, data);
   }
@@ -191,7 +191,7 @@ class Options implements OptionsValues
   
   private getParsedDataForSlot(slot?: number)
   {
-    var baseString = "Options.";
+    var baseString = "Rance.Options.";
 
     var parsedData:
     {

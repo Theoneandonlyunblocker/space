@@ -33,23 +33,23 @@ class TutorialStatus implements TutorialStatusValues
   }
   public save()
   {
-    localStorage.setItem("TutorialStatus", JSON.stringify(this.serialize()));
+    localStorage.setItem("Rance.TutorialStatus", JSON.stringify(this.serialize()));
   }
   public load()
   {
     this.setDefaultValues();
     
-    if (!localStorage["TutorialStatus"])
+    if (!localStorage["Rance.TutorialStatus"])
     {
       return;
     }
     
-    var parsedData: TutorialStatusValues = JSON.parse(localStorage.getItem("TutorialStatus"));
+    var parsedData: TutorialStatusValues = JSON.parse(localStorage.getItem("Rance.TutorialStatus"));
     this.deSerialize(parsedData);
   }
   public reset()
   {
-    localStorage.removeItem("TutorialStatus");
+    localStorage.removeItem("Rance.TutorialStatus");
     this.setDefaultValues();
   }
   
