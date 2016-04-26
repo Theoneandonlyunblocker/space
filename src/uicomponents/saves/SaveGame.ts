@@ -139,36 +139,43 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
           autoSelect: false,
           onDoubleClick: this.saveGame
         }),
-        React.DOM.input(
+        React.DOM.form(
         {
-          className: "save-game-name",
-          ref: (component: HTMLElement) =>
-          {
-            this.ref_TODO_saveName = component;
-          },
-          type: "text",
-          value: this.state.saveName,
-          onChange: this.handleSaveNameInput,
-          maxLength: 64
-        }),
-        React.DOM.div(
-        {
-          className: "save-game-buttons-container"
+          className: "save-game-form",
+          onSubmit: this.handleSave,
+          action: "javascript:void(0);"
         },
-          React.DOM.button(
+          React.DOM.input(
           {
-            className: "save-game-button",
-            onClick: this.handleSave,
+            className: "save-game-name",
             ref: (component: HTMLElement) =>
             {
-              this.ref_TODO_okButton = component;
-            }
-          }, "Save"),
-          React.DOM.button(
+              this.ref_TODO_saveName = component;
+            },
+            type: "text",
+            value: this.state.saveName,
+            onChange: this.handleSaveNameInput,
+            maxLength: 64
+          }),
+          React.DOM.div(
           {
-            className: "save-game-button",
-            onClick: this.handleClose
-          }, "Cancel")
+            className: "save-game-buttons-container"
+          },
+            React.DOM.button(
+            {
+              className: "save-game-button",
+              onClick: this.handleSave,
+              ref: (component: HTMLElement) =>
+              {
+                this.ref_TODO_okButton = component;
+              }
+            }, "Save"),
+            React.DOM.button(
+            {
+              className: "save-game-button",
+              onClick: this.handleClose
+            }, "Cancel")
+          )
         )
       )
     );
