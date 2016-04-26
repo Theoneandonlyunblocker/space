@@ -3,14 +3,23 @@
 import Unit from "../../Unit";
 import {shallowExtend} from "../../utility";
 import UnitStrength from "../unit/UnitStrength";
-import ListColumn from "../list/ListColumn";
+import ListItemProps from "../list/ListItemProps";
 import {default as UnitComponentFactory, UnitComponent} from "../unit/Unit";
 
 import {default as DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import applyMixins from "../mixins/applyMixins";
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes extends ListItemProps, React.Props<any>
 {
+  id: number;
+  typeName: string;
+  strength: string;
+  maxActionPoints: number;
+  attack: number;
+  defence: number;
+  intelligence: number;
+  speed: number;
+  
   onMouseLeave: () => void;
   hasNoActionsLeft: boolean;
   isHovered: boolean;
@@ -19,14 +28,14 @@ export interface PropTypes extends React.Props<any>
   isSelected: boolean;
   onMouseEnter: (unit: Unit) => void;
   maxHealth: number;
-  activeColumns: ListColumn[];
   unit: Unit;
-  handleClick: () => void;
   
   isDraggable: boolean;
   onDragEnd: (dropSuccesful?: boolean) => void;
   onDragStart: (unit: Unit) => void;
   dragPositionerProps?: DragPositionerProps;
+  
+  name: string; // unused
 }
 
 interface StateType
