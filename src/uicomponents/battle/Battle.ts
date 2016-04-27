@@ -1,5 +1,6 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+import app from "../../App"; // TODO refactor
 import UnitDisplayData from "../../UnitDisplayData";
 import Renderer from "../../Renderer";
 import Player from "../../Player";
@@ -7,7 +8,7 @@ import Battle from "../../Battle";
 import Unit from "../../Unit";
 import TurnOrder from "./TurnOrder";
 import TurnCounter from "./TurnCounter";
-import BattleBackground from "./BattleBackground";
+import {default as BattleBackground, BattleBackgroundComponent} from "./BattleBackground";
 import Options from "../../Options";
 import MCTree from "../../MCTree";
 import BattleScene from "../../BattleScene";
@@ -76,6 +77,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
   private ref_TODO_formationsContainer: HTMLElement;
   private ref_TODO_abilityTooltip: AbilityTooltipComponent;
+  private ref_TODO_background: BattleBackgroundComponent;
   
   private battleScene: BattleScene;
   private abilityUseEffectQueue: AbilityUseEffectQueue;
@@ -168,6 +170,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   componentDidMount()
   {
     this.battleStartStartTime = Date.now();
+    this.ref_TODO_background.handleResize();
   }
   componentWillUpdate(newProps: PropTypes, newState: StateType)
   {
@@ -618,9 +621,13 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     return(
       BattleBackground(
       {
-        renderer: this.props.renderer,
         backgroundSeed: this.props.battle.battleData.location.getSeed(),
-        getBlurArea: this.getBlurArea
+        backgroundDrawingFunction: app.moduleData.starBackgroundDrawingFunction,
+        getBlurArea: this.getBlurArea,
+        ref: (component: BattleBackgroundComponent) =>
+        {
+          this.ref_TODO_background = component;
+        },
       },
         React.DOM.div(containerProps,
           React.DOM.div(

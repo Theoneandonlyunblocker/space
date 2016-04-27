@@ -175,7 +175,7 @@ function getFleetTextTexture(fleet: Fleet)
       strokeThickness: 3
     });
 
-    // triggers bounds update that gets skipped if we just call generateTexture()
+    // TODO PIXI4 | triggers bounds update that gets skipped if we just call generateTexture()
     text.getBounds();
 
     fleetTextTextureCache[fleetSize] = text.generateTexture(app.renderer.renderer);

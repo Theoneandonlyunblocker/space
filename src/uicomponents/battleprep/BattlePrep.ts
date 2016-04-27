@@ -355,13 +355,13 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
           }},
             BattleBackground(
             {
+              getBlurArea: this.getBackgroundBlurArea,
+              backgroundSeed: battlePrep.battleData.location.getSeed(),
+              backgroundDrawingFunction: app.moduleData.starBackgroundDrawingFunction,
               ref: (component: BattleBackgroundComponent) =>
               {
                 this.ref_TODO_background = component;
               },
-              renderer: this.props.renderer,
-              getBlurArea: this.getBackgroundBlurArea,
-              backgroundSeed: battlePrep.battleData.location.getSeed()
             },
               React.DOM.div({className: "battle-prep-left-upper-inner"},
                 leftUpperElement

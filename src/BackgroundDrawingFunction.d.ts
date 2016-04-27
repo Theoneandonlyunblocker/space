@@ -1,8 +1,10 @@
 /// <reference path="../lib/pixi.d.ts" />
 
-interface BackgroundDrawingFunction
+import Background from "./Background";
+
+declare interface BackgroundDrawingFunction
 {
-  (seed: string, size: PIXI.Rectangle, renderer: PIXI.SystemRenderer): PIXI.DisplayObject;
+  (seed: string, size: PIXI.Rectangle, renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer): Background;
 }
 
 export default BackgroundDrawingFunction;

@@ -784,7 +784,6 @@ export function makeRandomPersonality(): Personality
     unitCompositionPreference: unitCompositionPreference
   });
 }
-
 export function splitMultilineText(text: string | React.ReactFragment): string | React.ReactNode[]
 {
   if (Array.isArray(text))
@@ -804,4 +803,13 @@ export function splitMultilineText(text: string | React.ReactFragment): string |
   {
     return <string> text;
   }
+}
+export function convertClientRectToPixiRect(rect: ClientRect): PIXI.Rectangle
+{
+  return new PIXI.Rectangle(
+    rect.left,
+    rect.top,
+    rect.width,
+    rect.height
+  );
 }

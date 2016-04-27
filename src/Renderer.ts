@@ -243,6 +243,10 @@ export default class Renderer
       }
     }
   }
+  private getRendererRect(): PIXI.Rectangle
+  {
+    return new PIXI.Rectangle(0, 0, this.renderer.width, this.renderer.height);
+  }
   renderBackground()
   {
     var bgObject: PIXI.DisplayObject;
@@ -252,7 +256,7 @@ export default class Renderer
     }
     else
     {
-      bgObject = app.moduleData.mapBackgroundDrawingFunction(this.galaxyMap.seed, this.renderer);
+      bgObject = app.moduleData.mapBackgroundDrawingFunction(this.galaxyMap.seed, this.getRendererRect(), this.renderer).displayObject;
     }
 
     this.layers["bgSprite"].removeChildren();
@@ -262,8 +266,8 @@ export default class Renderer
   }
   renderBlurredBackground(x: number, y: number, width: number, height: number, seed: string)
   {
-    var bg = app.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
-    var fg = app.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
+    var bg = app.moduleData.starBackgroundDrawingFunction(seed, this.getRendererRect(), this.renderer).displayObject;
+    var fg = app.moduleData.starBackgroundDrawingFunction(seed, this.getRendererRect(), this.renderer).displayObject;
 
     var container = new PIXI.Container();
     container.addChild(bg);

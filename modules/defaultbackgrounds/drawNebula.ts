@@ -4,12 +4,15 @@
 import NebulaFilter from "./Nebula";
 
 import {generateColorScheme} from "../../src/colorGeneration";
+import BackgroundDrawingFunction from "../../src/BackgroundDrawingFunction";
 import
 {
-  randRange
+  randRange,
+  createDummySpriteForShader
 } from "../../src/utility";
 
-export default function drawNebula(seed: string, size: PIXI.Rectangle, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
+const drawNebula: BackgroundDrawingFunction = function(
+  seed: string, size: PIXI.Rectangle, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
 {
   var oldRng = Math.random;
   Math.random = RNG.prototype.uniform.bind(new RNG(seed));
@@ -37,21 +40,32 @@ export default function drawNebula(seed: string, size: PIXI.Rectangle, renderer:
 
     seed: [Math.random() * 100, Math.random() * 100]
   });
+  
+  // TODO PIXI4 | sprite.generateTexture() doesn't seem to work properly for some reason
+  const container = new PIXI.Container();
+  const shaderSprite = createDummySpriteForShader(0, 0, size.width, size.height);
+  shaderSprite.shader = filter;
+  container.addChild(shaderSprite);
 
-  var filterContainer = new PIXI.Container();
-  filterContainer.filterArea = size;
-  filterContainer.filters = [filter];
-
+  // still relevant?
   // TODO performance | need to destroy or reuse texture from filterContainer.generateTexture()
   // creates a new PIXI.FilterManager() every time that doesn't get cleaned up anywhere
   // balloons up gpu memory
-  var texture = filterContainer.generateTexture(
-    renderer, PIXI.SCALE_MODES.DEFAULT, 1, filterContainer.filterArea);
+  
+  const texture = container.generateTexture(
+    renderer, PIXI.SCALE_MODES.DEFAULT, 1, size
+  );
 
   var sprite = new PIXI.Sprite(texture);
 
-  filterContainer.filters = null;
-  filterContainer = null;
+  container.removeChildren();
+  shaderSprite.destroy(true, true);
 
-  return sprite;
+  return(
+  {
+    displayObject: sprite,
+    destroy: texture.destroy.bind(texture)
+  });
 }
+
+export default drawNebula;

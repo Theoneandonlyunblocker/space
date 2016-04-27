@@ -1,12 +1,14 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import Renderer from "../../Renderer";
+import BackgroundDrawer from "../../BackgroundDrawer";
+import BackgroundDrawingFunction from "../../BackgroundDrawingFunction";
+import {convertClientRectToPixiRect} from "../../utility";
 
 export interface PropTypes extends React.Props<any>
 {
   getBlurArea: () => ClientRect;
   backgroundSeed: string;
-  renderer: Renderer;
+  backgroundDrawingFunction: BackgroundDrawingFunction;
 }
 
 interface StateType
@@ -19,39 +21,48 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   state: StateType;
   
   ref_TODO_pixiContainer: HTMLElement;
+  backgroundDrawer: BackgroundDrawer;
 
   constructor(props: PropTypes)
   {
     super(props);
     
     this.bindMethods();
+    this.backgroundDrawer = new BackgroundDrawer(
+    {
+      seed: this.props.backgroundSeed,
+      drawBackgroundFN: this.props.backgroundDrawingFunction
+    });
   }
   private bindMethods()
   {
     this.handleResize = this.handleResize.bind(this);  
   }
-  
-  handleResize()
+  public componentWillReceiveProps(newProps: PropTypes)
+  {
+    const propsToCheck = ["getBlurArea", "backgroundSeed", "backgroundDrawingFunction"];
+    for (let prop of propsToCheck)
+    {
+      if (this.props[prop] !== newProps[prop])
+      {
+        this.handleResize();
+        break;
+      }
+    }
+  }
+  public handleResize()
   {
     // TODO this seems to trigger before any breakpoints, leading to 1 px immediately after
     // breakpoint where blurArea isnt correctly determined
-    var blurArea = this.props.getBlurArea();
-
-    this.props.renderer.blurProps =
-    [
-      blurArea.left,
-      blurArea.top,
-      blurArea.width,
-      blurArea.height,
-      this.props.backgroundSeed
-    ];
+    const blurarea = this.props.getBlurArea();
+    this.backgroundDrawer.blurArea = convertClientRectToPixiRect(blurarea);
+    this.backgroundDrawer.handleResize();
   }
-
-  componentDidMount()
+  public componentDidMount()
   {
-    this.props.renderer.isBattleBackground = true;
+    const containerElement = ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer);
 
-    this.props.renderer.bindRendererView(ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_pixiContainer));
+    this.backgroundDrawer.bindRendererView(containerElement);
 
     window.addEventListener("resize", this.handleResize, false);
   }
@@ -59,7 +70,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
-    this.props.renderer.removeRendererView();
+    this.backgroundDrawer.destroy();
   }
 
   render()

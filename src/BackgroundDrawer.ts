@@ -1,15 +1,13 @@
 /// <reference path="../lib/pixi.d.ts" />
+
 import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
-import
-{
-  roundToNearestMultiple
-} from "./utility";
 
 export default class BackgroundDrawer
 {
   public drawBackgroundFN: BackgroundDrawingFunction;
   public containerElement: HTMLElement;
   public seed: string;
+  public blurArea: PIXI.Rectangle;
   
   private resizeBuffer:
   {
@@ -20,9 +18,20 @@ export default class BackgroundDrawer
     width: 15,
     height: 15
   };
-  private renderer: PIXI.SystemRenderer;
-  private blurArea: PIXI.Rectangle;
+  private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
   private blurFilter: PIXI.filters.BlurFilter;
+  private pixiContainer: PIXI.Container;
+  private destroyBackgroundFN: () => void;
+  private cachedBackgroundSize: PIXI.Rectangle;
+  private layers:
+  {
+    bg: PIXI.DisplayObject;
+    blur: PIXI.DisplayObject;
+  } =
+  {
+    bg: null,
+    blur: null
+  };
 
   constructor(props:
   {
@@ -35,6 +44,15 @@ export default class BackgroundDrawer
     
     this.blurFilter = new PIXI.filters.BlurFilter();
     this.blurFilter.blur = 1;
+    this.pixiContainer = new PIXI.Container();
+  }
+  public destroy()
+  {
+    this.renderer.destroy(true);
+    this.renderer = null;
+    this.containerElement = null;
+    this.destroyOldBackground();
+    this.blurFilter = null;
   }
   public bindRendererView(containerElement: HTMLElement): void
   {
@@ -49,34 +67,92 @@ export default class BackgroundDrawer
     {
       this.renderer = this.createRenderer();
     }
-    else
-    {
-      this.handleResize();
-    }
     
     this.containerElement.appendChild(this.renderer.view);
   }
-  public renderBackground(): void
+  public handleResize(): void
   {
-    const bg = this.drawBackground();
-    if (this.blurArea)
+    if (!this.containerElement)
     {
-      bg.filterArea = this.blurArea;
-      bg.filters = [this.blurFilter];
-    }
-    else
-    {
-      bg.filters = [];
+      return;
     }
     
-    this.renderer.render(bg);
-  }
-  public setBlurArea(blurArea: PIXI.Rectangle): void
-  {
-    this.blurArea = blurArea;
+    const containerElementRect = this.getContainerElementRect();
+    
+    this.renderer.resize(containerElementRect.width, containerElementRect.height);
+    
+    if (!this.cachedBackgroundSize ||
+      this.isRectBiggerThanCachedBackground(containerElementRect))
+    {
+      this.drawScene();
+    }
+    
+    if (this.blurArea)
+    {
+      this.setBlurMask();
+    }
+    
+    this.renderer.render(this.pixiContainer);
   }
   
-  private createRenderer(): PIXI.SystemRenderer
+  private drawBackground(): PIXI.DisplayObject
+  {
+    const backgroundSize = this.getDesiredBackgroundSize();
+    const bg = this.drawBackgroundFN(this.seed, backgroundSize, this.renderer);
+    this.destroyBackgroundFN = bg.destroy;
+    this.cachedBackgroundSize = backgroundSize;
+    return bg.displayObject;
+  }
+  private drawBlurredBackground(background: PIXI.DisplayObject): PIXI.DisplayObject
+  {
+    background.filters = [this.blurFilter];
+    const blurTextureSize = this.getDesiredBlurSize();
+    
+    const blurTexture = background.generateTexture(
+      this.renderer, PIXI.SCALE_MODES.DEFAULT, this.renderer.resolution, blurTextureSize
+    );
+    
+    background.filters = null;
+    
+    const blurSprite = new PIXI.Sprite(blurTexture);
+    return blurSprite;
+  }
+  private drawScene(): void
+  {
+    this.pixiContainer.removeChildren();
+    this.destroyOldBackground();
+      
+    this.layers.bg = this.drawBackground();
+    this.pixiContainer.addChild(this.layers.bg);
+    
+    if (this.blurArea)
+    {
+      this.layers.blur = this.drawBlurredBackground(this.layers.bg);
+      this.pixiContainer.addChild(this.layers.blur);
+    }
+  }
+  private setBlurMask(): void
+  {
+    if (!this.layers.blur.mask)
+    {
+      this.layers.blur.mask = new PIXI.Graphics();
+    }
+    
+    const mask = <PIXI.Graphics> this.layers.blur.mask;
+    mask.clear();
+    mask.beginFill(0x000000);
+    mask.drawShape(this.blurArea);
+    mask.endFill();
+  }
+  private destroyOldBackground(): void
+  {
+    if (this.destroyBackgroundFN)
+    {
+      this.destroyBackgroundFN();
+      this.destroyBackgroundFN = null;
+    }
+  }
+  private createRenderer(): PIXI.CanvasRenderer | PIXI.WebGLRenderer
   {
     const renderer = PIXI.autoDetectRenderer(
       this.containerElement.clientWidth,
@@ -91,60 +167,33 @@ export default class BackgroundDrawer
     
     return renderer;
   }
-  private drawBackground(): PIXI.DisplayObject
+  private addBufferToRect(rect: PIXI.Rectangle): PIXI.Rectangle
   {
-    return this.drawBackgroundFN(this.seed, this.getDisplayObjectSize(), this.renderer);
-  }
-  private getDisplayObjectSize(): PIXI.Rectangle
-  {
-    const w = this.renderer.width;
-    const h = this.renderer.height;
-    const rendererRect = new PIXI.Rectangle(0, 0, w, h);
-    return this.roundRectangleToNearestBreakPoint(rendererRect);
-  }
-  private handleResize(): void
-  {
-    if (!this.containerElement)
-    {
-      return;
-    }
+    const cloned = rect.clone();
+    cloned.width += this.resizeBuffer.width;
+    cloned.height += this.resizeBuffer.height;
     
+    return cloned;
+  }
+  private getDesiredBackgroundSize(): PIXI.Rectangle
+  {
+    return this.addBufferToRect(this.getContainerElementRect());
+  }
+  private getDesiredBlurSize(): PIXI.Rectangle
+  {
+    return this.cachedBackgroundSize;
+  }
+  private getContainerElementRect(): PIXI.Rectangle
+  {
     const w = this.containerElement.clientWidth;
     const h = this.containerElement.clientHeight;
-    const containerElementRect = new PIXI.Rectangle(0, 0, w, h);
-    
-    if (!this.isRectWithinBufferLimit(containerElementRect))
-    {
-      this.renderer.resize(w, h);
-      this.drawBackground();
-    }
-  }
-  private roundRectangleToNearestBreakPoint(rect: PIXI.Rectangle): PIXI.Rectangle
-  {
-    const resizeBufferW2 = this.resizeBuffer.width / 2;
-    const resizeBufferH2 = this.resizeBuffer.height / 2;
-    const w = roundToNearestMultiple(
-      rect.width + resizeBufferW2, this.resizeBuffer.width);
-    const h = roundToNearestMultiple(
-      rect.height + resizeBufferH2, this.resizeBuffer.height);
-      
     return new PIXI.Rectangle(0, 0, w, h);
   }
-  private isRectWithinBufferLimit(toCheck: PIXI.Rectangle): boolean
+  private isRectBiggerThanCachedBackground(toCheck: PIXI.Rectangle): boolean
   {
-    const minWidth = this.renderer.width - this.resizeBuffer.width;
-    const maxWidth = this.renderer.width + this.resizeBuffer.width;
-    const widthFits = toCheck.width > minWidth && toCheck.width < maxWidth;
-    
-    if (widthFits)
-    {
-      const minHeight = this.renderer.height - this.resizeBuffer.height;
-      const maxHeight = this.renderer.height + this.resizeBuffer.height;
-      const heightFits = toCheck.height > minHeight && toCheck.height < maxHeight;
-      
-      return heightFits;
-    }
-    
-    return false;
+    return(
+      toCheck.width > this.cachedBackgroundSize.width ||
+      toCheck.height > this.cachedBackgroundSize.height
+    );
   }
 }
