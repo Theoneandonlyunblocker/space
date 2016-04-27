@@ -1,4 +1,5 @@
 import ModuleFile from "./ModuleFile";
+import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 import Personality from "../src/Personality";
 import TemplateCollection from "../src/templateinterfaces/TemplateCollection";
 import RuleSetValues from "./RuleSetValues";
@@ -146,10 +147,8 @@ export default class ModuleData
 {
   private subModuleFiles: ModuleFile[] = [];
 
-  mapBackgroundDrawingFunction: (seed: string,
-    renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
-  starBackgroundDrawingFunction: (seed: string,
-    renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
+  mapBackgroundDrawingFunction: BackgroundDrawingFunction; 
+  starBackgroundDrawingFunction: BackgroundDrawingFunction; 
 
   Templates: Templates =
   {

@@ -9,7 +9,7 @@ import
   randRange
 } from "../../src/utility";
 
-export default function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
+export default function drawNebula(seed: string, size: PIXI.Rectangle, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
 {
   var oldRng = Math.random;
   Math.random = RNG.prototype.uniform.bind(new RNG(seed));
@@ -39,7 +39,7 @@ export default function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | 
   });
 
   var filterContainer = new PIXI.Container();
-  filterContainer.filterArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
+  filterContainer.filterArea = size;
   filterContainer.filters = [filter];
 
   // TODO performance | need to destroy or reuse texture from filterContainer.generateTexture()
