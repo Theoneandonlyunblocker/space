@@ -17,13 +17,11 @@ import UnitList from "../unitlist/UnitList";
 import {PropTypes as UnitListItemPropTypes} from "../unitlist/UnitListItem";
 import {PropTypes as ItemListItemPropTypes} from "../unitlist/ItemListItem";
 import BattleInfo from "./BattleInfo";
-import Renderer from "../../Renderer";
 
 
 export interface PropTypes extends React.Props<any>
 {
   battlePrep: BattlePrep;
-  renderer: Renderer;
 }
 
 interface StateType

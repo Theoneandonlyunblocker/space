@@ -2,7 +2,6 @@
 
 import app from "../../App"; // TODO refactor
 import UnitDisplayData from "../../UnitDisplayData";
-import Renderer from "../../Renderer";
 import Player from "../../Player";
 import Battle from "../../Battle";
 import Unit from "../../Unit";
@@ -39,7 +38,6 @@ import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityToolt
 // should have separate non-react class for battle logic
 export interface PropTypes extends React.Props<any>
 {
-  renderer: Renderer;
   battle: Battle;
   humanPlayer: Player;
 }
