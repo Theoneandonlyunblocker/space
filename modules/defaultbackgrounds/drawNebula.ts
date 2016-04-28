@@ -41,7 +41,7 @@ const drawNebula: BackgroundDrawingFunction = function(
     seed: [Math.random() * 100, Math.random() * 100]
   });
   
-  // TODO PIXI4 | sprite.generateTexture() doesn't seem to work properly for some reason
+  // TODO PIXI4 | directly calling sprite.generateTexture() doesn't seem to work properly
   const container = new PIXI.Container();
   const shaderSprite = createDummySpriteForShader(0, 0, size.width, size.height);
   shaderSprite.shader = filter;

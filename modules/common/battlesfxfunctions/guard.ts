@@ -8,7 +8,7 @@ import
 
 export default function guard(props: SFXParams)
 {
-  var userCanvasWidth = props.width * 0.4; // TODO BattleSFX
+  var userCanvasWidth = props.width * 0.4; // TODO BattleSFX | get user scene bbox
   var maxFrontier = userCanvasWidth;
   var baseTrailDistance = 80;
   var maxTrailDistance = maxFrontier;

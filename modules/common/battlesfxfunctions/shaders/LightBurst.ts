@@ -94,7 +94,6 @@ const sourceLines =
   "// Tileable noise, for creating useful textures. By David Hoskins, Sept. 2013.",
   "// It can be extrapolated to other types of randomised texture.",
   "",
-  "// TODO license?",
   "// https://www.shadertoy.com/terms says default license is CC BY-NC-SA 3.0 which should be fine",
   "",
   "float hash(in vec2 p, in float scale)",

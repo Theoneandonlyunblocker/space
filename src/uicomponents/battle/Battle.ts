@@ -567,8 +567,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     // is this still relevant? written for react-0.11
-    // TODO react
-    // hack
+    // TODO react | TODO hack
     // 
     // transitiongroups dont work very well, especially in the older version
     // of react we're using. seems to be mostly fine on webkit & ie though

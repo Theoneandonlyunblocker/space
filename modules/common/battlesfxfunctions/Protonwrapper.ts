@@ -52,7 +52,6 @@ export default class ProtonWrapper
   {
     var renderer = this.protonRenderer = new Proton.Renderer("other", this.proton);
 
-    // TODO performance | .bind might be too much un-needed overhead
     renderer.onParticleCreated = this.onProtonParticleCreated.bind(this);
     renderer.onParticleUpdate = this.onProtonParticleUpdated.bind(this);
     renderer.onParticleDead = this.onProtonParticleDead.bind(this);
@@ -78,6 +77,8 @@ export default class ProtonWrapper
 
   private onProtonParticleUpdated(particle: Proton.Particle)
   {
+    // TODO refactor | just use an external function for this to save unneeded updates
+    
     var sprite: PIXI.DisplayObject = particle.sprite;
 
     sprite.position.x = particle.p.x;
@@ -88,9 +89,7 @@ export default class ProtonWrapper
 
     sprite.alpha = particle.alpha;
 
-    sprite.rotation = particle.rotation * PIXI.DEG_TO_RAD;
-
-    // todo update other transforms
+    // sprite.rotation = particle.rotation * PIXI.DEG_TO_RAD;
   }
 
   private onProtonParticleDead(particle: Proton.Particle)
