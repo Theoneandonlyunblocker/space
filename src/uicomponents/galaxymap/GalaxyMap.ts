@@ -114,28 +114,21 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
             onClick: function(e: React.FormEvent)
             {
               const target = <HTMLButtonElement> e.target;
-              // TODO refactor | can remove in react 15.0+
-              // https://github.com/facebook/react/issues/2988
-              // https://github.com/facebook/react/issues/2605#issuecomment-118398797
-              // without this react will keep a reference to this element causing a big memory leak
-              target.blur();
-              window.setTimeout(function()
-              {
-                var position = app.renderer.camera.container.position.clone();
-                var zoom = app.renderer.camera.currZoom;
-                app.destroy();
 
-                app.initUI();
+              var position = app.renderer.camera.container.position.clone();
+              var zoom = app.renderer.camera.currZoom;
+              app.destroy();
 
-                app.game = app.makeGame();
-                app.initGame();
+              app.initUI();
 
-                app.initDisplay();
-                app.hookUI();
-                app.reactUI.switchScene("galaxyMap");
-                app.renderer.camera.zoom(zoom);
-                app.renderer.camera.container.position = position;
-              }, 5);
+              app.game = app.makeGame();
+              app.initGame();
+
+              app.initDisplay();
+              app.hookUI();
+              app.reactUI.switchScene("galaxyMap");
+              app.renderer.camera.zoom(zoom);
+              app.renderer.camera.container.position = position;
             }
           },
             "Reset app"

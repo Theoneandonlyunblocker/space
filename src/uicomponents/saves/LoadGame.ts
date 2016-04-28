@@ -77,17 +77,10 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
   {
     var saveKey = this.state.saveKey;
 
-    var afterConfirmFN = function()
+    var afterConfirmFN = () =>
     {
-      // https://github.com/facebook/react/issues/2988
-      // https://github.com/facebook/react/issues/2605#issuecomment-118398797
-      // without this react will keep a reference to this element causing a big memory leak
-      ReactDOM.findDOMNode<HTMLElement>(this.ref_TODO_okButton).blur();
-      window.setTimeout(function()
-      {
-        app.load(saveKey);
-      }, 5);
-    }.bind(this);
+      app.load(saveKey);
+    };
 
     if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1)
     {
