@@ -15,8 +15,12 @@ export default class Renderer
   pixiContainer: HTMLElement;
   layers:
   {
-    [name: string] : PIXI.Container;
-  } = {};
+    background: PIXI.Container;
+    
+    main: PIXI.Container;
+    map: PIXI.Container;
+    select: PIXI.Container;
+  };
   camera: Camera;
   mouseEventHandler: MouseEventHandler;
   pathfindingArrow: PathfindingArrow;

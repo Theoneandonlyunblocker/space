@@ -34,7 +34,7 @@ export default class MouseEventHandler
   {
     this.renderer = renderer;
     this.camera = camera;
-    this.rectangleSelect = new RectangleSelect(renderer.layers["select"]);
+    this.rectangleSelect = new RectangleSelect(renderer.layers.select);
     this.currentAction = undefined;
 
     window.oncontextmenu = function(event)
@@ -344,16 +344,16 @@ export default class MouseEventHandler
   startSelect(event: PIXI.interaction.InteractionEvent)
   {
     this.currentAction = "select";
-    this.rectangleSelect.startSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
+    this.rectangleSelect.startSelection(event.data.getLocalPosition(this.renderer.layers.main));
     this.makeUITransparent();
   }
   dragSelect(event: PIXI.interaction.InteractionEvent)
   {
-    this.rectangleSelect.moveSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
+    this.rectangleSelect.moveSelection(event.data.getLocalPosition(this.renderer.layers.main));
   }
   endSelect(event: PIXI.interaction.InteractionEvent)
   {
-    this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
+    this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers.main));
     this.currentAction = undefined;
     this.makeUIOpaque();
   }

@@ -272,7 +272,7 @@ class App
     this.renderer.init();
 
     this.mapRenderer = new MapRenderer(this.game.galaxyMap, this.humanPlayer);
-    this.mapRenderer.setParent(this.renderer.layers["map"]);
+    this.mapRenderer.setParent(this.renderer.layers.map);
     this.mapRenderer.init();
 
     // some initialization is done when the react component owning the
