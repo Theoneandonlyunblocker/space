@@ -5,10 +5,11 @@ import BackgroundDrawingFunction from "./BackgroundDrawingFunction";
 export default class BackgroundDrawer
 {
   public drawBackgroundFN: BackgroundDrawingFunction;
-  public containerElement: HTMLElement;
   public seed: string;
   public blurArea: PIXI.Rectangle;
+  public pixiContainer: PIXI.Container;
   
+  private containerElement: HTMLElement;
   private resizeBuffer:
   {
     width: number;
@@ -19,8 +20,8 @@ export default class BackgroundDrawer
     height: 15
   };
   private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
+  private hasExternalRenderer: boolean;
   private blurFilter: PIXI.filters.BlurFilter;
-  private pixiContainer: PIXI.Container;
   private destroyBackgroundFN: () => void;
   private cachedBackgroundSize: PIXI.Rectangle;
   private layers:
@@ -37,6 +38,9 @@ export default class BackgroundDrawer
   {
     drawBackgroundFN: BackgroundDrawingFunction;
     seed: string;
+    // if specified, this class won't create it's own renderer.
+    // actions like resizing and binding the renderer view are also skipped
+    renderer?: PIXI.CanvasRenderer | PIXI.WebGLRenderer;
   })
   {
     this.drawBackgroundFN = props.drawBackgroundFN;
@@ -45,17 +49,33 @@ export default class BackgroundDrawer
     this.blurFilter = new PIXI.filters.BlurFilter();
     this.blurFilter.blur = 1;
     this.pixiContainer = new PIXI.Container();
+    
+    this.setExternalRenderer(props.renderer);
+  }
+  public setExternalRenderer(renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer)
+  {
+    this.renderer = renderer;
+    this.hasExternalRenderer = Boolean(renderer);
   }
   public destroy()
   {
-    this.renderer.destroy(true);
-    this.renderer = null;
+    if (!this.hasExternalRenderer)
+    {
+      this.renderer.destroy(true);
+      this.renderer = null;
+    }
     this.containerElement = null;
     this.destroyOldBackground();
+    this.pixiContainer.removeChildren();
     this.blurFilter = null;
   }
   public bindRendererView(containerElement: HTMLElement): void
   {
+    if (this.hasExternalRenderer)
+    {
+      this.containerElement = containerElement;
+      return;
+    }
     if (this.containerElement)
     {
       this.containerElement.removeChild(this.renderer.view);
@@ -79,7 +99,10 @@ export default class BackgroundDrawer
     
     const containerElementRect = this.getContainerElementRect();
     
-    this.renderer.resize(containerElementRect.width, containerElementRect.height);
+    if (!this.hasExternalRenderer)
+    {
+      this.renderer.resize(containerElementRect.width, containerElementRect.height);
+    }
     
     if (!this.cachedBackgroundSize ||
       this.isRectBiggerThanCachedBackground(containerElementRect))
@@ -92,7 +115,10 @@ export default class BackgroundDrawer
       this.setBlurMask();
     }
     
-    this.renderer.render(this.pixiContainer);
+    if (!this.hasExternalRenderer)
+    {
+      this.renderer.render(this.pixiContainer);
+    }
   }
   
   private drawBackground(): PIXI.DisplayObject
