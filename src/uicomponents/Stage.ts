@@ -55,7 +55,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
           {
             battle: this.props.battle,
             humanPlayer: this.props.player,
-            renderer: this.props.renderer,
             key: "battle"
           })
         );
@@ -67,7 +66,6 @@ export class StageComponent extends React.Component<PropTypes, StateType>
           BattlePrepComponentFactory(
           {
             battlePrep: this.props.battlePrep,
-            renderer: this.props.renderer,
             key: "battlePrep"
           })
         );

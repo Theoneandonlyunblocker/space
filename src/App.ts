@@ -268,7 +268,10 @@ class App
   }
   initDisplay()
   {
-    this.renderer = new Renderer(this.game.galaxyMap);
+    this.renderer = new Renderer(
+      this.game.galaxyMap.seed, 
+      this.moduleData.mapBackgroundDrawingFunction
+    );
     this.renderer.init();
 
     this.mapRenderer = new MapRenderer(this.game.galaxyMap, this.humanPlayer);
