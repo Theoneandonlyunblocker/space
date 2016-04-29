@@ -1,9 +1,13 @@
-
 import
 {
   sectorCommand,
   starBase
 } from "../../defaultbuildings/templates/Templates";
+import
+{
+  Flag_of_Edward_England
+} from "../../defaultemblems/SubEmblemTemplates";
+
 import Sector from "./Sector";
 import triangulate from "./triangulate";
 
@@ -431,7 +435,7 @@ export function setupPirates(player: Player)
   player.isIndependent = true;
 
   var foregroundEmblem = new Emblem(player.secondaryColor);
-  foregroundEmblem.inner = app.moduleData.Templates.SubEmblems["Flag_of_Edward_England"];
+  foregroundEmblem.inner = Flag_of_Edward_England;
 
   player.flag = new Flag(
   {
