@@ -6,9 +6,9 @@ import
   pointsEqual
 } from "../../../src/utility";
 
-export default function triangulate(vertices: Point[]): Triangle[]
+export default function triangulate<T extends Point>(vertices: T[]): Triangle<T>[]
 {
-  var triangles: Triangle[] = [];
+  var triangles: Triangle<Point>[] = [];
 
   var superTriangle = makeSuperTriangle(vertices);
   triangles.push(superTriangle);
@@ -64,11 +64,17 @@ export default function triangulate(vertices: Point[]): Triangle[]
       triangles.splice(i, 1);
     }
   }
+  const trianglesWithoutSuperTriangle = <Triangle<T>[]> triangles.filter((triangle: Triangle<T>) =>
+  {
+    const verticesSharedWithSuperTriangle = triangle.getAmountOfSharedVerticesWith(superTriangle);
+    
+    return verticesSharedWithSuperTriangle === 0;
+  });
 
-  return triangles;
+  return trianglesWithoutSuperTriangle;
 }
 
-function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle
+function makeSuperTriangle<T extends Point>(vertices: T[], highestCoordinateValue?: number): Triangle<Point>
 {
   var max: number;
 
@@ -111,7 +117,7 @@ function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): 
   return triangle;
 }
 
-function edgesEqual(e1: Point[], e2: Point[])
+function edgesEqual<T extends Point>(e1: T[], e2: T[])
 {
   return(
     (

@@ -1,3 +1,5 @@
+import VoronoiCell from "./VoronoiCell";
+
 import Point from "./Point";
 
 export default class FillerPoint implements Point
@@ -5,9 +7,7 @@ export default class FillerPoint implements Point
   x: number;
   y: number;
 
-  mapGenData: any = {};
-  voronoiCell: any;
-  voronoiId: number;
+  voronoiCell: VoronoiCell<FillerPoint>;
 
   constructor(x: number, y: number)
   {

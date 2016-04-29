@@ -6,6 +6,27 @@ var __extends = (this && this.__extends) || function (d, b) {
 define("src/Point", ["require", "exports"], function (require, exports) {
     "use strict";
 });
+define("src/VoronoiCell", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var VoronoiCell = (function (_super) {
+        __extends(VoronoiCell, _super);
+        function VoronoiCell(cell) {
+            _super.call(this, cell.site);
+            this.halfedges = cell.halfedges;
+            var bbox = cell.getBbox();
+            this.x = bbox.x;
+            this.y = bbox.y;
+            this.width = bbox.width;
+            this.height = bbox.height;
+            this.vertices = cell.halfedges.map(function (halfEdge) {
+                return halfEdge.getStartpoint();
+            });
+        }
+        return VoronoiCell;
+    }(Voronoi.prototype.Cell));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = VoronoiCell;
+});
 define("src/idGenerators", ["require", "exports"], function (require, exports) {
     "use strict";
     var IDGenerator = (function () {
@@ -1030,6 +1051,10 @@ define("src/utility", ["require", "exports", "src/App"], function (require, expo
         }
     }
     exports.splitMultilineText = splitMultilineText;
+    function convertClientRectToPixiRect(rect) {
+        return new PIXI.Rectangle(rect.left, rect.top, rect.width, rect.height);
+    }
+    exports.convertClientRectToPixiRect = convertClientRectToPixiRect;
 });
 define("src/Building", ["require", "exports", "src/idGenerators", "src/App"], function (require, exports, idGenerators_2, App_3) {
     "use strict";
@@ -3694,7 +3719,6 @@ define("src/FillerPoint", ["require", "exports"], function (require, exports) {
     "use strict";
     var FillerPoint = (function () {
         function FillerPoint(x, y) {
-            this.mapGenData = {};
             this.x = x;
             this.y = y;
         }
@@ -7502,7 +7526,6 @@ define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/ev
         function Star(x, y, id) {
             this.linksTo = [];
             this.linksFrom = [];
-            this.mapGenData = {};
             this.fleets = {};
             this.buildings = {};
             this.buildingsEffectIsDirty = true;
@@ -7827,10 +7850,6 @@ define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/ev
                 fleetOwners.push(this.fleets[playerId][0].player);
             }
             return fleetOwners;
-        };
-        Star.prototype.setPosition = function (x, y) {
-            this.x = x;
-            this.y = y;
         };
         Star.prototype.setResource = function (resource) {
             this.resource = resource;
@@ -8157,7 +8176,9 @@ define("src/MapVoronoiInfo", ["require", "exports"], function (require, exports)
                                 continue;
                             }
                             ;
-                            if (!isFinite(site.id)) {
+                            var castedSite = site;
+                            var isFiller = !isFinite(castedSite.id);
+                            if (isFiller) {
                                 adjacentFillerSites++;
                                 if (adjacentFillerSites >= maxAllowedFillerSites) {
                                     return false;
@@ -8173,9 +8194,8 @@ define("src/MapVoronoiInfo", ["require", "exports"], function (require, exports)
         MapVoronoiInfo.prototype.getStarAtPoint = function (point) {
             var items = this.treeMap.retrieve(point);
             for (var i = 0; i < items.length; i++) {
-                var cell = items[i].cell;
-                if (cell.pointIntersection(point.x, point.y) > -1) {
-                    return cell.site;
+                if (items[i].pointIntersection(point.x, point.y) > -1) {
+                    return items[i].site;
                 }
             }
             return null;
@@ -8185,7 +8205,7 @@ define("src/MapVoronoiInfo", ["require", "exports"], function (require, exports)
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapVoronoiInfo;
 });
-define("src/mapgencore/voronoi", ["require", "exports"], function (require, exports) {
+define("src/mapgencore/voronoi", ["require", "exports", "src/VoronoiCell"], function (require, exports, VoronoiCell_1) {
     "use strict";
     function makeVoronoi(points, width, height) {
         var boundingBox = {
@@ -8196,31 +8216,44 @@ define("src/mapgencore/voronoi", ["require", "exports"], function (require, expo
         };
         var voronoi = new Voronoi();
         var diagram = voronoi.compute(points, boundingBox);
-        for (var i = 0; i < diagram.cells.length; i++) {
-            var cell = diagram.cells[i];
-            cell.site.voronoiCell = cell;
-            cell.vertices = getVerticesFromCell(cell);
-        }
         return diagram;
     }
     exports.makeVoronoi = makeVoronoi;
-    function relaxVoronoi(diagram, dampeningFunction) {
+    function relaxVoronoi(diagram, getRelaxAmountFN) {
         for (var i = 0; i < diagram.cells.length; i++) {
             var cell = diagram.cells[i];
             var point = cell.site;
-            var centroid = getPolygonCentroid(cell.vertices);
-            if (dampeningFunction) {
-                var dampeningValue = dampeningFunction(point);
+            var vertices = cell.halfedges.map(function (halfEdge) {
+                return halfEdge.getStartpoint();
+            });
+            var centroid = getPolygonCentroid(vertices);
+            if (getRelaxAmountFN) {
+                var dampeningValue = getRelaxAmountFN(point);
                 var xDelta = (centroid.x - point.x) * dampeningValue;
                 var yDelta = (centroid.y - point.y) * dampeningValue;
-                point.setPosition(point.x + xDelta, point.y + yDelta);
+                point.x = point.x + xDelta;
+                point.y = point.y + yDelta;
             }
             else {
-                point.setPosition(centroid.x, centroid.y);
+                point.x = centroid.x;
+                point.y = centroid.y;
             }
         }
     }
     exports.relaxVoronoi = relaxVoronoi;
+    function setVoronoiCells(cells) {
+        cells.forEach(function (cell) {
+            var castedSite = cell.site;
+            var isFiller = !isFinite(castedSite.id);
+            if (isFiller) {
+                cell.site.voronoiCell = new VoronoiCell_1.default(cell);
+            }
+            else {
+                cell.site.voronoiCell = new VoronoiCell_1.default(cell);
+            }
+        });
+    }
+    exports.setVoronoiCells = setVoronoiCells;
     function getPolygonCentroid(vertices) {
         var signedArea = 0;
         var x = 0;
@@ -8257,15 +8290,8 @@ define("src/mapgencore/voronoi", ["require", "exports"], function (require, expo
             y: y
         });
     }
-    function getVerticesFromCell(cell) {
-        var vertices = [];
-        for (var i = 0; i < cell.halfedges.length; i++) {
-            vertices.push(cell.halfedges[i].getStartpoint());
-        }
-        return vertices;
-    }
 });
-define("src/mapgencore/MapGenResult", ["require", "exports", "src/MapVoronoiInfo", "src/GalaxyMap", "src/options", "src/mapgencore/voronoi"], function (require, exports, MapVoronoiInfo_1, GalaxyMap_1, options_3, voronoi_1) {
+define("src/mapgencore/MapGenResult", ["require", "exports", "src/MapVoronoiInfo", "src/GalaxyMap", "src/mapgencore/voronoi"], function (require, exports, MapVoronoiInfo_1, GalaxyMap_1, voronoi_1) {
     "use strict";
     var MapGenResult = (function () {
         function MapGenResult(props) {
@@ -8276,18 +8302,18 @@ define("src/mapgencore/MapGenResult", ["require", "exports", "src/MapVoronoiInfo
             this.seed = props.seed;
             this.independents = props.independents;
         }
-        MapGenResult.prototype.getAllPoints = function () {
-            return this.fillerPoints.concat(this.stars);
-        };
         MapGenResult.prototype.makeMap = function () {
             this.voronoiInfo = this.makeVoronoiInfo();
-            this.clearMapGenData();
             var map = new GalaxyMap_1.default(this);
             return map;
+        };
+        MapGenResult.prototype.getAllPoints = function () {
+            return this.fillerPoints.concat(this.stars);
         };
         MapGenResult.prototype.makeVoronoiInfo = function () {
             var voronoiInfo = new MapVoronoiInfo_1.default();
             voronoiInfo.diagram = voronoi_1.makeVoronoi(this.getAllPoints(), this.width, this.height);
+            voronoi_1.setVoronoiCells(voronoiInfo.diagram.cells);
             voronoiInfo.treeMap = this.makeVoronoiTreeMap();
             voronoiInfo.bounds =
                 {
@@ -8303,7 +8329,8 @@ define("src/mapgencore/MapGenResult", ["require", "exports", "src/MapVoronoiInfo
             }
             voronoi_1.relaxVoronoi(voronoiInfo.diagram, function (point) {
                 var castedPoint = point;
-                return isFinite(castedPoint.id) ? 1 : 0;
+                var isFiller = !isFinite(castedPoint.id);
+                return isFiller ? 0 : 1;
             });
             return voronoiInfo;
         };
@@ -8314,24 +8341,10 @@ define("src/mapgencore/MapGenResult", ["require", "exports", "src/MapVoronoiInfo
                 width: this.width,
                 height: this.height
             });
-            for (var i = 0; i < this.stars.length; i++) {
-                var cell = this.stars[i].voronoiCell;
-                var bbox = cell.getBbox();
-                bbox.cell = cell;
-                treeMap.insert(bbox);
-            }
+            this.stars.forEach(function (star) {
+                treeMap.insert(star.voronoiCell);
+            });
             return treeMap;
-        };
-        MapGenResult.prototype.clearMapGenData = function () {
-            if (options_3.default.debugMode) {
-                console.log("Skipped cleaning map gen data due to debug mode being enabled");
-                return;
-            }
-            for (var i = 0; i < this.stars.length; i++) {
-                this.stars[i].mapGenData = null;
-                delete this.stars[i].mapGenData;
-                delete this.stars[i].voronoiId;
-            }
         };
         return MapGenResult;
     }());
@@ -8522,7 +8535,7 @@ define("src/MapRendererMapMode", ["require", "exports"], function (require, expo
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapRendererMapMode;
 });
-define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/eventManager", "src/options"], function (require, exports, App_20, MapRendererLayer_1, MapRendererMapMode_1, eventManager_11, options_4) {
+define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLayer", "src/MapRendererMapMode", "src/eventManager", "src/options"], function (require, exports, App_20, MapRendererLayer_1, MapRendererMapMode_1, eventManager_11, options_3) {
     "use strict";
     var MapRenderer = (function () {
         function MapRenderer(map, player) {
@@ -8576,7 +8589,7 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
                                 }
                         }
                     }
-                    if (passesStarVisibilityCheck || options_4.default.debugMode) {
+                    if (passesStarVisibilityCheck || options_3.default.debugMode) {
                         self.setLayerAsDirty(layerName);
                     }
                 });
@@ -9347,7 +9360,7 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
             this.listeners = {};
             this.renderer = renderer;
             this.camera = camera;
-            this.rectangleSelect = new RectangleSelect_1.default(renderer.layers["select"]);
+            this.rectangleSelect = new RectangleSelect_1.default(renderer.layers.select);
             this.currentAction = undefined;
             window.oncontextmenu = function (event) {
                 var eventTarget = event.target;
@@ -9584,14 +9597,14 @@ define("src/MouseEventHandler", ["require", "exports", "src/App", "src/Rectangle
         };
         MouseEventHandler.prototype.startSelect = function (event) {
             this.currentAction = "select";
-            this.rectangleSelect.startSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
+            this.rectangleSelect.startSelection(event.data.getLocalPosition(this.renderer.layers.main));
             this.makeUITransparent();
         };
         MouseEventHandler.prototype.dragSelect = function (event) {
-            this.rectangleSelect.moveSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
+            this.rectangleSelect.moveSelection(event.data.getLocalPosition(this.renderer.layers.main));
         };
         MouseEventHandler.prototype.endSelect = function (event) {
-            this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
+            this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers.main));
             this.currentAction = undefined;
             this.makeUIOpaque();
         };
@@ -9900,22 +9913,163 @@ define("src/PathfindingArrow", ["require", "exports", "src/App", "src/Color", "s
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = PathfindingArrow;
 });
-define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/MouseEventHandler", "src/PathfindingArrow"], function (require, exports, App_23, Camera_1, MouseEventHandler_1, PathfindingArrow_1) {
+define("src/BackgroundDrawer", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var BackgroundDrawer = (function () {
+        function BackgroundDrawer(props) {
+            this.resizeBuffer = {
+                width: 15,
+                height: 15
+            };
+            this.layers = {
+                bg: null,
+                blur: null
+            };
+            this.drawBackgroundFN = props.drawBackgroundFN;
+            this.seed = props.seed;
+            this.blurFilter = new PIXI.filters.BlurFilter();
+            this.blurFilter.blur = 1;
+            this.pixiContainer = new PIXI.Container();
+            this.setExternalRenderer(props.renderer);
+        }
+        BackgroundDrawer.prototype.setExternalRenderer = function (renderer) {
+            this.renderer = renderer;
+            this.hasExternalRenderer = Boolean(renderer);
+        };
+        BackgroundDrawer.prototype.destroy = function () {
+            if (!this.hasExternalRenderer) {
+                this.renderer.destroy(true);
+                this.renderer = null;
+            }
+            this.containerElement = null;
+            this.destroyOldBackground();
+            this.pixiContainer.removeChildren();
+            this.blurFilter = null;
+        };
+        BackgroundDrawer.prototype.bindRendererView = function (containerElement) {
+            if (this.hasExternalRenderer) {
+                this.containerElement = containerElement;
+                return;
+            }
+            if (this.containerElement) {
+                this.containerElement.removeChild(this.renderer.view);
+            }
+            this.containerElement = containerElement;
+            if (!this.renderer) {
+                this.renderer = this.createRenderer();
+            }
+            this.containerElement.appendChild(this.renderer.view);
+        };
+        BackgroundDrawer.prototype.handleResize = function () {
+            if (!this.containerElement) {
+                return;
+            }
+            var containerElementRect = this.getContainerElementRect();
+            if (!this.hasExternalRenderer) {
+                this.renderer.resize(containerElementRect.width, containerElementRect.height);
+            }
+            if (!this.cachedBackgroundSize ||
+                this.isRectBiggerThanCachedBackground(containerElementRect)) {
+                this.drawScene();
+            }
+            if (this.blurArea) {
+                this.setBlurMask();
+            }
+            if (!this.hasExternalRenderer) {
+                this.renderer.render(this.pixiContainer);
+            }
+        };
+        BackgroundDrawer.prototype.drawBackground = function () {
+            var backgroundSize = this.getDesiredBackgroundSize();
+            var bg = this.drawBackgroundFN(this.seed, backgroundSize, this.renderer);
+            this.destroyBackgroundFN = bg.destroy;
+            this.cachedBackgroundSize = backgroundSize;
+            return bg.displayObject;
+        };
+        BackgroundDrawer.prototype.drawBlurredBackground = function (background) {
+            background.filters = [this.blurFilter];
+            var blurTextureSize = this.getDesiredBlurSize();
+            var blurTexture = background.generateTexture(this.renderer, PIXI.SCALE_MODES.DEFAULT, this.renderer.resolution, blurTextureSize);
+            background.filters = null;
+            var blurSprite = new PIXI.Sprite(blurTexture);
+            return blurSprite;
+        };
+        BackgroundDrawer.prototype.drawScene = function () {
+            this.pixiContainer.removeChildren();
+            this.destroyOldBackground();
+            this.layers.bg = this.drawBackground();
+            this.pixiContainer.addChild(this.layers.bg);
+            if (this.blurArea) {
+                this.layers.blur = this.drawBlurredBackground(this.layers.bg);
+                this.pixiContainer.addChild(this.layers.blur);
+            }
+        };
+        BackgroundDrawer.prototype.setBlurMask = function () {
+            if (!this.layers.blur.mask) {
+                this.layers.blur.mask = new PIXI.Graphics();
+            }
+            var mask = this.layers.blur.mask;
+            mask.clear();
+            mask.beginFill(0x000000);
+            mask.drawShape(this.blurArea);
+            mask.endFill();
+        };
+        BackgroundDrawer.prototype.destroyOldBackground = function () {
+            if (this.destroyBackgroundFN) {
+                this.destroyBackgroundFN();
+                this.destroyBackgroundFN = null;
+            }
+        };
+        BackgroundDrawer.prototype.createRenderer = function () {
+            var renderer = PIXI.autoDetectRenderer(this.containerElement.clientWidth, this.containerElement.clientHeight, {
+                autoResize: false,
+                resolution: window.devicePixelRatio
+            });
+            renderer.view.setAttribute("id", "pixi-canvas");
+            return renderer;
+        };
+        BackgroundDrawer.prototype.addBufferToRect = function (rect) {
+            var cloned = rect.clone();
+            cloned.width += this.resizeBuffer.width;
+            cloned.height += this.resizeBuffer.height;
+            return cloned;
+        };
+        BackgroundDrawer.prototype.getDesiredBackgroundSize = function () {
+            return this.addBufferToRect(this.getContainerElementRect());
+        };
+        BackgroundDrawer.prototype.getDesiredBlurSize = function () {
+            return this.cachedBackgroundSize;
+        };
+        BackgroundDrawer.prototype.getContainerElementRect = function () {
+            var w = this.containerElement.clientWidth;
+            var h = this.containerElement.clientHeight;
+            return new PIXI.Rectangle(0, 0, w, h);
+        };
+        BackgroundDrawer.prototype.isRectBiggerThanCachedBackground = function (toCheck) {
+            return (toCheck.width > this.cachedBackgroundSize.width ||
+                toCheck.height > this.cachedBackgroundSize.height);
+        };
+        return BackgroundDrawer;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BackgroundDrawer;
+});
+define("src/Renderer", ["require", "exports", "src/Camera", "src/MouseEventHandler", "src/PathfindingArrow", "src/BackgroundDrawer"], function (require, exports, Camera_1, MouseEventHandler_1, PathfindingArrow_1, BackgroundDrawer_1) {
     "use strict";
     var Renderer = (function () {
-        function Renderer(galaxyMap) {
-            this.layers = {};
+        function Renderer(backgroundSeed, backgroundDrawingFunction) {
             this.activeRenderLoopId = 0;
             this.isPaused = false;
             this.forceFrame = false;
-            this.backgroundIsDirty = true;
-            this.isBattleBackground = false;
             PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
             this.stage = new PIXI.Container();
-            this.galaxyMap = galaxyMap;
+            this.backgroundDrawer = new BackgroundDrawer_1.default({
+                seed: backgroundSeed,
+                drawBackgroundFN: backgroundDrawingFunction
+            });
         }
         Renderer.prototype.init = function () {
-            this.initLayers();
+            this.setupDefaultLayers();
             this.addEventListeners();
             this.activeRenderLoopId++;
             this.stage.renderable = true;
@@ -9925,6 +10079,7 @@ define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/Mous
         Renderer.prototype.destroy = function () {
             this.stage.renderable = false;
             this.pause();
+            this.backgroundDrawer.destroy();
             if (this.pathfindingArrow) {
                 this.pathfindingArrow.destroy();
                 this.pathfindingArrow = null;
@@ -9937,7 +10092,6 @@ define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/Mous
                 this.camera.destroy();
                 this.camera = null;
             }
-            this.galaxyMap = null;
             if (this.renderer) {
                 this.renderer.destroy(true);
                 this.renderer = null;
@@ -9960,40 +10114,28 @@ define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/Mous
                     autoResize: false,
                     antialias: true
                 });
+                this.backgroundDrawer.setExternalRenderer(this.renderer);
             }
             this.pixiContainer.appendChild(this.renderer.view);
             this.renderer.view.setAttribute("id", "pixi-canvas");
+            this.backgroundDrawer.bindRendererView(this.pixiContainer);
             this.resize();
-            if (!this.isBattleBackground) {
-                this.setupDefaultLayers();
-                this.addCamera();
-            }
-            else {
-                this.setupBackgroundLayers();
-            }
-        };
-        Renderer.prototype.initLayers = function () {
-            var _bgSprite = this.layers["bgSprite"] = new PIXI.Container();
-            _bgSprite.interactiveChildren = false;
-            var _main = this.layers["main"] = new PIXI.Container();
-            var _map = this.layers["map"] = new PIXI.Container();
-            var _bgFilter = this.layers["bgFilter"] = new PIXI.Container();
-            _bgFilter.interactiveChildren = false;
-            var _select = this.layers["select"] = new PIXI.Container();
-            _select.interactiveChildren = false;
-            _main.addChild(_map);
-            _main.addChild(_select);
+            this.addCamera();
         };
         Renderer.prototype.setupDefaultLayers = function () {
+            this.layers =
+                {
+                    background: this.backgroundDrawer.pixiContainer,
+                    main: new PIXI.Container(),
+                    map: new PIXI.Container(),
+                    select: new PIXI.Container(),
+                };
+            this.layers.select.interactiveChildren = false;
+            this.layers.main.addChild(this.layers.map);
+            this.layers.main.addChild(this.layers.select);
             this.stage.removeChildren();
-            this.stage.addChild(this.layers["bgSprite"]);
-            this.stage.addChild(this.layers["main"]);
-            this.renderOnce();
-        };
-        Renderer.prototype.setupBackgroundLayers = function () {
-            this.stage.removeChildren();
-            this.stage.addChild(this.layers["bgSprite"]);
-            this.renderOnce();
+            this.stage.addChild(this.layers.background);
+            this.stage.addChild(this.layers.main);
         };
         Renderer.prototype.addCamera = function () {
             var oldToCenterOn;
@@ -10003,11 +10145,11 @@ define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/Mous
                 oldToCenterOn = this.camera.toCenterOn;
                 this.camera.destroy();
             }
-            this.camera = new Camera_1.default(this.layers["main"], 0.5);
+            this.camera = new Camera_1.default(this.layers.main, 0.5);
             this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
             this.toCenterOn = null;
             this.mouseEventHandler = new MouseEventHandler_1.default(this, this.camera);
-            this.pathfindingArrow = new PathfindingArrow_1.default(this.layers["select"]);
+            this.pathfindingArrow = new PathfindingArrow_1.default(this.layers.select);
         };
         Renderer.prototype.addEventListeners = function () {
             var self = this;
@@ -10056,38 +10198,11 @@ define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/Mous
                 var w = this.pixiContainer.offsetWidth * window.devicePixelRatio;
                 var h = this.pixiContainer.offsetHeight * window.devicePixelRatio;
                 this.renderer.resize(w, h);
-                this.layers["bgFilter"].filterArea = new PIXI.Rectangle(0, 0, w, h);
-                this.backgroundIsDirty = true;
+                this.backgroundDrawer.handleResize();
                 if (this.isPaused) {
                     this.renderOnce();
                 }
             }
-        };
-        Renderer.prototype.renderBackground = function () {
-            var bgObject;
-            if (this.isBattleBackground) {
-                bgObject = this.renderBlurredBackground.apply(this, this.blurProps);
-            }
-            else {
-                bgObject = App_23.default.moduleData.mapBackgroundDrawingFunction(this.galaxyMap.seed, this.renderer);
-            }
-            this.layers["bgSprite"].removeChildren();
-            this.layers["bgSprite"].addChild(bgObject);
-            this.backgroundIsDirty = false;
-        };
-        Renderer.prototype.renderBlurredBackground = function (x, y, width, height, seed) {
-            var bg = App_23.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
-            var fg = App_23.default.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
-            var container = new PIXI.Container();
-            container.addChild(bg);
-            container.addChild(fg);
-            var blurFilter = new PIXI.filters.BlurFilter();
-            blurFilter.blur = 1;
-            fg.filters = [blurFilter];
-            fg.filterArea = new PIXI.Rectangle(x, y, width, height);
-            var texture = container.generateTexture(this.renderer);
-            var sprite = new PIXI.Sprite(texture);
-            return sprite;
         };
         Renderer.prototype.renderOnce = function () {
             this.forceFrame = true;
@@ -10115,9 +10230,6 @@ define("src/Renderer", ["require", "exports", "src/App", "src/Camera", "src/Mous
                 else {
                     return;
                 }
-            }
-            if (this.backgroundIsDirty) {
-                this.renderBackground();
             }
             this.renderer.render(this.stage);
             if (this.activeRenderLoopId === renderLoopId) {
@@ -10584,12 +10696,10 @@ define("src/uicomponents/unitlist/UnitItem", ["require", "exports", "src/uicompo
             _super.call(this, props);
             this.displayName = "UnitItem";
             this.bindMethods();
-            if (this.props.isDraggable) {
-                this.dragPositioner = new DragPositioner_1.default(this, this.props.dragPositionerProps);
-                this.dragPositioner.onDragStart = this.onDragStart;
-                this.dragPositioner.onDragEnd = this.onDragEnd;
-                applyMixins_1.default(this, this.dragPositioner);
-            }
+            this.dragPositioner = new DragPositioner_1.default(this, this.props.dragPositionerProps);
+            this.dragPositioner.onDragStart = this.onDragStart;
+            this.dragPositioner.onDragEnd = this.onDragEnd;
+            applyMixins_1.default(this, this.dragPositioner);
         }
         UnitItemComponent.prototype.bindMethods = function () {
             this.onDragEnd = this.onDragEnd.bind(this);
@@ -11399,7 +11509,7 @@ define("src/uicomponents/unitlist/MenuUnitInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/BattleBackground", ["require", "exports"], function (require, exports) {
+define("src/uicomponents/battle/BattleBackground", ["require", "exports", "src/BackgroundDrawer", "src/utility"], function (require, exports, BackgroundDrawer_2, utility_23) {
     "use strict";
     var BattleBackgroundComponent = (function (_super) {
         __extends(BattleBackgroundComponent, _super);
@@ -11407,29 +11517,37 @@ define("src/uicomponents/battle/BattleBackground", ["require", "exports"], funct
             _super.call(this, props);
             this.displayName = "BattleBackground";
             this.bindMethods();
+            this.backgroundDrawer = new BackgroundDrawer_2.default({
+                seed: this.props.backgroundSeed,
+                drawBackgroundFN: this.props.backgroundDrawingFunction
+            });
         }
         BattleBackgroundComponent.prototype.bindMethods = function () {
             this.handleResize = this.handleResize.bind(this);
         };
+        BattleBackgroundComponent.prototype.componentWillReceiveProps = function (newProps) {
+            var propsToCheck = ["getBlurArea", "backgroundSeed", "backgroundDrawingFunction"];
+            for (var _i = 0, propsToCheck_1 = propsToCheck; _i < propsToCheck_1.length; _i++) {
+                var prop = propsToCheck_1[_i];
+                if (this.props[prop] !== newProps[prop]) {
+                    this.handleResize();
+                    break;
+                }
+            }
+        };
         BattleBackgroundComponent.prototype.handleResize = function () {
-            var blurArea = this.props.getBlurArea();
-            this.props.renderer.blurProps =
-                [
-                    blurArea.left,
-                    blurArea.top,
-                    blurArea.width,
-                    blurArea.height,
-                    this.props.backgroundSeed
-                ];
+            var blurarea = this.props.getBlurArea();
+            this.backgroundDrawer.blurArea = utility_23.convertClientRectToPixiRect(blurarea);
+            this.backgroundDrawer.handleResize();
         };
         BattleBackgroundComponent.prototype.componentDidMount = function () {
-            this.props.renderer.isBattleBackground = true;
-            this.props.renderer.bindRendererView(ReactDOM.findDOMNode(this.ref_TODO_pixiContainer));
+            var containerElement = ReactDOM.findDOMNode(this.ref_TODO_pixiContainer);
+            this.backgroundDrawer.bindRendererView(containerElement);
             window.addEventListener("resize", this.handleResize, false);
         };
         BattleBackgroundComponent.prototype.componentWillUnmount = function () {
             window.removeEventListener("resize", this.handleResize);
-            this.props.renderer.removeRendererView();
+            this.backgroundDrawer.destroy();
         };
         BattleBackgroundComponent.prototype.render = function () {
             var _this = this;
@@ -11447,7 +11565,7 @@ define("src/uicomponents/battle/BattleBackground", ["require", "exports"], funct
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_19, utility_23) {
+define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_19, utility_24) {
     "use strict";
     var ListComponent = (function (_super) {
         __extends(ListComponent, _super);
@@ -11583,7 +11701,7 @@ define("src/uicomponents/list/List", ["require", "exports", "src/eventManager", 
             }
         };
         ListComponent.prototype.getSortingOrderForColumnKeyWithColumnReversed = function (columnToReverse) {
-            var copied = utility_23.shallowCopy(this.state.sortingOrderForColumnKey);
+            var copied = utility_24.shallowCopy(this.state.sortingOrderForColumnKey);
             copied[columnToReverse.key] = ListComponent.reverseListOrder(copied[columnToReverse.key]);
             return copied;
         };
@@ -11823,10 +11941,6 @@ define("src/uicomponents/unitlist/ItemListItem", ["require", "exports", "src/uic
                 rowProps.onTouchStart = rowProps.onMouseDown =
                     this.dragPositioner.handleReactDownEvent;
             }
-            if (this.props.isSelected) {
-                rowProps.className += " selected-item";
-            }
-            ;
             if (this.props.isReserved) {
                 rowProps.className += " reserved-item";
             }
@@ -11861,13 +11975,21 @@ define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicompo
         ItemListComponent.prototype.bindMethods = function () {
             this.getSlotIndex = this.getSlotIndex.bind(this);
         };
+        ItemListComponent.getAttributeProp = function (item, attribute) {
+            if (!item.template.attributes) {
+                return null;
+            }
+            else {
+                return item.template.attributes[attribute];
+            }
+        };
         ItemListComponent.prototype.render = function () {
             var rows = [];
             var items = this.props.items;
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
-                var ability = null;
-                var abilityIsPassive = false;
+            var _loop_1 = function(i) {
+                item = items[i];
+                ability = null;
+                abilityIsPassive = false;
                 if (item.template.ability) {
                     ability = item.template.ability;
                 }
@@ -11875,121 +11997,100 @@ define("src/uicomponents/unitlist/ItemList", ["require", "exports", "src/uicompo
                     ability = item.template.passiveSkill;
                     abilityIsPassive = true;
                 }
-                var data = {
+                var props = {
+                    typeName: item.template.displayName,
+                    slot: item.template.slot,
+                    unitName: item.unit ? item.unit.name : "",
+                    maxActionPoints: ItemListComponent.getAttributeProp(item, "maxActionPoints"),
+                    attack: ItemListComponent.getAttributeProp(item, "attack"),
+                    defence: ItemListComponent.getAttributeProp(item, "defence"),
+                    intelligence: ItemListComponent.getAttributeProp(item, "intelligence"),
+                    speed: ItemListComponent.getAttributeProp(item, "speed"),
+                    abilityName: ability ? ability.displayName : "",
                     item: item,
                     key: item.id,
                     keyTODO: item.id,
                     id: item.id,
-                    typeName: item.template.displayName,
-                    slot: item.template.slot,
-                    slotIndex: this.getSlotIndex(item.template.slot),
+                    slotIndex: this_1.getSlotIndex(item.template.slot),
                     unit: item.unit ? item.unit : null,
-                    unitName: item.unit ? item.unit.name : "",
                     techLevel: item.template.techLevel,
                     cost: item.template.buildCost,
                     ability: ability,
-                    abilityName: ability ? ability.displayName : "",
                     abilityIsPassive: abilityIsPassive,
                     isReserved: Boolean(item.unit),
-                    rowConstructor: ItemListItem_1.default,
                     dragPositionerProps: {
                         shouldMakeClone: true,
                         forcedDragOffset: { x: 32, y: 32 },
                     },
-                    isDraggable: this.props.isDraggable,
-                    onDragStart: this.props.onDragStart,
-                    onDragEnd: this.props.onDragEnd
+                    isDraggable: this_1.props.isDraggable,
+                    onDragStart: this_1.props.onDragStart,
+                    onDragEnd: this_1.props.onDragEnd
                 };
                 ["maxActionPoints", "attack", "defence",
                     "intelligence", "speed"].forEach(function (stat) {
                     if (!item.template.attributes)
-                        data[stat] = null;
+                        props[stat] = null;
                     else
-                        data[stat] = item.template.attributes[stat] || null;
+                        props[stat] = item.template.attributes[stat] || null;
                 });
                 rows.push({
-                    key: item.id,
-                    data: data
+                    key: "" + item.id,
+                    content: ItemListItem_1.default(props)
                 });
+            };
+            var this_1 = this;
+            var item, ability, abilityIsPassive;
+            for (var i = 0; i < items.length; i++) {
+                _loop_1(i);
             }
-            var columns;
-            if (this.props.isItemPurchaseList) {
-                columns =
-                    [
-                        {
-                            label: "Type",
-                            key: "typeName",
-                            defaultOrder: "asc"
-                        },
-                        {
-                            label: "Slot",
-                            key: "slot",
-                            propToSortBy: "slotIndex",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Tech",
-                            key: "techLevel",
-                            defaultOrder: "asc"
-                        },
-                        {
-                            label: "Cost",
-                            key: "cost",
-                            defaultOrder: "asc"
-                        }
-                    ];
-            }
-            else {
-                columns =
-                    [
-                        {
-                            label: "Type",
-                            key: "typeName",
-                            defaultOrder: "asc"
-                        },
-                        {
-                            label: "Slot",
-                            key: "slot",
-                            propToSortBy: "slotIndex",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Unit",
-                            key: "unitName",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Act",
-                            key: "maxActionPoints",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Atk",
-                            key: "attack",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Def",
-                            key: "defence",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Int",
-                            key: "intelligence",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Spd",
-                            key: "speed",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Ability",
-                            key: "abilityName",
-                            defaultOrder: "desc"
-                        }
-                    ];
-            }
+            var columns = [
+                {
+                    label: "Type",
+                    key: "typeName",
+                    defaultOrder: "asc"
+                },
+                {
+                    label: "Slot",
+                    key: "slot",
+                    propToSortBy: "slotIndex",
+                    defaultOrder: "desc"
+                },
+                {
+                    label: "Unit",
+                    key: "unitName",
+                    defaultOrder: "desc"
+                },
+                {
+                    label: "Act",
+                    key: "maxActionPoints",
+                    defaultOrder: "desc"
+                },
+                {
+                    label: "Atk",
+                    key: "attack",
+                    defaultOrder: "desc"
+                },
+                {
+                    label: "Def",
+                    key: "defence",
+                    defaultOrder: "desc"
+                },
+                {
+                    label: "Int",
+                    key: "intelligence",
+                    defaultOrder: "desc"
+                },
+                {
+                    label: "Spd",
+                    key: "speed",
+                    defaultOrder: "desc"
+                },
+                {
+                    label: "Ability",
+                    key: "abilityName",
+                    defaultOrder: "desc"
+                }
+            ];
             return (React.DOM.div({ className: "item-list fixed-table-parent" }, List_1.default({
                 listItems: rows,
                 initialColumns: columns,
@@ -12195,7 +12296,7 @@ define("src/uicomponents/unit/UnitAttributeChanges", ["require", "exports"], fun
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_24) {
+define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"], function (require, exports, utility_25) {
     "use strict";
     var UnitStatusComponent = (function (_super) {
         __extends(UnitStatusComponent, _super);
@@ -12216,7 +12317,7 @@ define("src/uicomponents/unit/UnitStatus", ["require", "exports", "src/utility"]
                 }, React.DOM.div({
                     className: "guard-meter-value",
                     style: {
-                        width: "" + utility_24.clamp(guard, 0, 100) + "%"
+                        width: "" + utility_25.clamp(guard, 0, 100) + "%"
                     }
                 }), React.DOM.div({
                     className: "status-inner-wrapper"
@@ -12595,7 +12696,7 @@ define("src/uicomponents/unit/Unit", ["require", "exports", "src/uicomponents/un
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_24, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_25) {
+define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "src/uicomponents/unit/UnitWrapper", "src/uicomponents/unit/EmptyUnit", "src/uicomponents/unit/Unit", "src/utility"], function (require, exports, App_23, UnitWrapper_1, EmptyUnit_1, Unit_3, utility_26) {
     "use strict";
     var FormationComponent = (function (_super) {
         __extends(FormationComponent, _super);
@@ -12623,7 +12724,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
             var formationRowElements = [];
             for (var i = 0; i < this.props.formation.length; i++) {
                 var absoluteRowIndex = this.props.facesLeft ?
-                    i + App_24.default.moduleData.ruleSet.battle.rowsPerFormation :
+                    i + App_23.default.moduleData.ruleSet.battle.rowsPerFormation :
                     i;
                 var unitElements = [];
                 for (var j = 0; j < this.props.formation[i].length; j++) {
@@ -12656,7 +12757,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
                             hoveredActionPointExpenditure: this.props.hoveredAbility &&
                                 this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
                         };
-                        unitProps = utility_25.shallowExtend(unitDisplayData, componentProps, displayProps);
+                        unitProps = utility_26.shallowExtend(unitDisplayData, componentProps, displayProps);
                     }
                     unitElements.push(UnitWrapper_1.default({ key: ("unit_wrapper_" + i) + j }, EmptyUnit_1.default({
                         facesLeft: this.props.facesLeft,
@@ -12677,7 +12778,7 @@ define("src/uicomponents/battle/Formation", ["require", "exports", "src/App", "s
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_26, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
+define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/utility", "src/uicomponents/unit/UnitStrength", "src/uicomponents/unit/Unit", "src/uicomponents/mixins/DragPositioner", "src/uicomponents/mixins/applyMixins"], function (require, exports, utility_27, UnitStrength_2, Unit_4, DragPositioner_6, applyMixins_6) {
     "use strict";
     var UnitListItemComponent = (function (_super) {
         __extends(UnitListItemComponent, _super);
@@ -12716,7 +12817,7 @@ define("src/uicomponents/unitlist/UnitListItem", ["require", "exports", "src/uti
         };
         UnitListItemComponent.prototype.makeDragClone = function () {
             var container = document.createElement("div");
-            ReactDOM.render(Unit_4.default(utility_26.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
+            ReactDOM.render(Unit_4.default(utility_27.shallowExtend(this.props.unit.getDisplayData("battlePrep"), { id: this.props.unit.id })), container);
             var renderedElement = container.firstChild;
             var wrapperElement = document.getElementsByClassName("unit-wrapper")[0];
             renderedElement.classList.add("draggable", "dragging");
@@ -12830,34 +12931,34 @@ define("src/uicomponents/unitlist/UnitList", ["require", "exports", "src/uicompo
             var rows = [];
             for (var id in this.props.units) {
                 var unit = this.props.units[id];
-                var data = {
-                    unit: unit,
-                    id: unit.id,
-                    name: unit.name,
-                    typeName: unit.template.displayName,
-                    strength: "" + unit.currentHealth + " / " + unit.maxHealth,
-                    currentHealth: unit.currentHealth,
-                    maxHealth: unit.maxHealth,
-                    maxActionPoints: unit.attributes.maxActionPoints,
-                    attack: unit.attributes.attack,
-                    defence: unit.attributes.defence,
-                    intelligence: unit.attributes.intelligence,
-                    speed: unit.attributes.speed,
-                    rowConstructor: UnitListItem_1.default,
-                    shouldMakeClone: true,
-                    isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
-                    hasNoActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),
-                    isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
-                    isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
-                    onMouseEnter: this.props.onMouseEnterUnit,
-                    onMouseLeave: this.props.onMouseLeave,
-                    isDraggable: this.props.isDraggable,
-                    onDragStart: this.props.onDragStart,
-                    onDragEnd: this.props.onDragEnd
-                };
                 rows.push({
-                    key: unit.id,
-                    data: data
+                    key: "" + unit.id,
+                    content: UnitListItem_1.default({
+                        unit: unit,
+                        id: unit.id,
+                        name: unit.name,
+                        typeName: unit.template.displayName,
+                        strength: "" + unit.currentHealth + " / " + unit.maxHealth,
+                        currentHealth: unit.currentHealth,
+                        maxHealth: unit.maxHealth,
+                        maxActionPoints: unit.attributes.maxActionPoints,
+                        attack: unit.attributes.attack,
+                        defence: unit.attributes.defence,
+                        intelligence: unit.attributes.intelligence,
+                        speed: unit.attributes.speed,
+                        isReserved: Boolean(this.props.reservedUnits && this.props.reservedUnits[unit.id]),
+                        hasNoActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),
+                        isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
+                        isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
+                        onMouseEnter: this.props.onMouseEnterUnit,
+                        onMouseLeave: this.props.onMouseLeave,
+                        isDraggable: this.props.isDraggable,
+                        onDragStart: this.props.onDragStart,
+                        onDragEnd: this.props.onDragEnd,
+                        dragPositionerProps: {
+                            shouldMakeClone: true
+                        }
+                    })
                 });
             }
             var columns = [
@@ -12876,7 +12977,7 @@ define("src/uicomponents/unitlist/UnitList", ["require", "exports", "src/uicompo
                     key: "strength",
                     defaultOrder: "desc",
                     sortingFunction: function (a, b) {
-                        return a.data.currentHealth - b.data.currentHealth;
+                        return a.content.props.currentHealth - b.content.props.currentHealth;
                     }
                 },
                 {
@@ -12980,7 +13081,7 @@ define("src/uicomponents/PlayerFlag", ["require", "exports"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_25, PlayerFlag_1, utility_27) {
+define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src/App", "src/uicomponents/PlayerFlag", "src/utility"], function (require, exports, App_24, PlayerFlag_1, utility_28) {
     "use strict";
     var DefenceBuildingComponent = (function (_super) {
         __extends(DefenceBuildingComponent, _super);
@@ -12993,12 +13094,12 @@ define("src/uicomponents/galaxymap/DefenceBuilding", ["require", "exports", "src
         };
         DefenceBuildingComponent.prototype.render = function () {
             var building = this.props.building;
-            var image = App_25.default.images[building.template.iconSrc];
+            var image = App_24.default.images[building.template.iconSrc];
             return (React.DOM.div({
                 className: "defence-building"
             }, React.DOM.img({
                 className: "defence-building-icon",
-                src: utility_27.colorImageInPlayerColor(image, building.controller),
+                src: utility_28.colorImageInPlayerColor(image, building.controller),
                 title: building.template.displayName
             }), PlayerFlag_1.default({
                 props: {
@@ -13098,7 +13199,7 @@ define("src/uicomponents/battleprep/BattleInfo", ["require", "exports", "src/uic
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_26, eventManager_20, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
+define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App", "src/eventManager", "src/uicomponents/unitlist/MenuUnitInfo", "src/uicomponents/battle/BattleBackground", "src/uicomponents/unitlist/ItemList", "src/uicomponents/battle/Formation", "src/options", "src/BattleSimulator", "src/uicomponents/unitlist/UnitList", "src/uicomponents/battleprep/BattleInfo"], function (require, exports, App_25, eventManager_20, MenuUnitInfo_1, BattleBackground_1, ItemList_1, Formation_1, Options_1, BattleSimulator_2, UnitList_1, BattleInfo_1) {
     "use strict";
     var BattlePrepComponent = (function (_super) {
         __extends(BattlePrepComponent, _super);
@@ -13143,9 +13244,10 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
             this.forceUpdate();
         };
         BattlePrepComponent.prototype.handleSelectRow = function (row) {
-            if (!row.data.unit)
+            if (!row.content.props.unit) {
                 return;
-            this.setSelectedUnit(row.data.unit);
+            }
+            this.setSelectedUnit(row.content.props.unit);
         };
         BattlePrepComponent.prototype.clearSelectedUnit = function () {
             this.setState({
@@ -13323,12 +13425,12 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
             return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: function (component) {
                     _this.ref_TODO_upper = component;
                 } }, BattleBackground_1.default({
+                getBlurArea: this.getBackgroundBlurArea,
+                backgroundSeed: battlePrep.battleData.location.getSeed(),
+                backgroundDrawingFunction: App_25.default.moduleData.starBackgroundDrawingFunction,
                 ref: function (component) {
                     _this.ref_TODO_background = component;
                 },
-                renderer: this.props.renderer,
-                getBlurArea: this.getBackgroundBlurArea,
-                backgroundSeed: battlePrep.battleData.location.getSeed()
             }, React.DOM.div({ className: "battle-prep-left-upper-inner" }, leftUpperElement))), React.DOM.div({ className: "battle-prep-left-controls" }, React.DOM.button({
                 className: "battle-prep-controls-button",
                 onClick: this.setLeftLowerElement.bind(this, "itemEquip"),
@@ -13347,7 +13449,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 onClick: this.autoMakeFormation
             }, "Auto formation"), React.DOM.button({
                 onClick: function () {
-                    App_26.default.reactUI.switchScene("galaxyMap");
+                    App_25.default.reactUI.switchScene("galaxyMap");
                 },
                 disabled: playerIsDefending
             }, "Cancel"), React.DOM.button({
@@ -13355,8 +13457,8 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 disabled: !humanFormationIsValid,
                 onClick: function () {
                     var battle = battlePrep.makeBattle();
-                    App_26.default.reactUI.battle = battle;
-                    App_26.default.reactUI.switchScene("battle");
+                    App_25.default.reactUI.battle = battle;
+                    App_25.default.reactUI.switchScene("battle");
                 }.bind(this)
             }, "Start battle"), !Options_1.default.debugMode ? null : React.DOM.button({
                 className: "battle-prep-controls-button",
@@ -13389,7 +13491,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/BattleSceneUnit", ["require", "exports", "src/options"], function (require, exports, options_5) {
+define("src/BattleSceneUnit", ["require", "exports", "src/options"], function (require, exports, options_4) {
     "use strict";
     var BattleSceneUnit = (function () {
         function BattleSceneUnit(container, renderer) {
@@ -13429,7 +13531,7 @@ define("src/BattleSceneUnit", ["require", "exports", "src/options"], function (r
         };
         BattleSceneUnit.prototype.setSFX = function (SFXTemplate, user, target) {
             if (this.activeUnit) {
-                var duration = SFXTemplate.duration * options_5.default.battleAnimationTiming.effectDuration;
+                var duration = SFXTemplate.duration * options_4.default.battleAnimationTiming.effectDuration;
                 if (this.activeUnit === user && SFXTemplate.userSprite) {
                     this.setSFXSprite(SFXTemplate.userSprite, duration);
                 }
@@ -13484,7 +13586,7 @@ define("src/BattleSceneUnit", ["require", "exports", "src/options"], function (r
             }
         };
         BattleSceneUnit.prototype.startUnitSpriteEnter = function (unit) {
-            var enterAnimationDuration = options_5.default.battleAnimationTiming.unitEnter;
+            var enterAnimationDuration = options_4.default.battleAnimationTiming.unitEnter;
             if (enterAnimationDuration <= 0) {
                 this.enterUnitSpriteWithoutAnimation(unit);
                 return;
@@ -13504,7 +13606,7 @@ define("src/BattleSceneUnit", ["require", "exports", "src/options"], function (r
             }
         };
         BattleSceneUnit.prototype.startUnitSpriteExit = function () {
-            var exitAnimationDuration = options_5.default.battleAnimationTiming.unitExit;
+            var exitAnimationDuration = options_4.default.battleAnimationTiming.unitExit;
             if (exitAnimationDuration <= 0) {
                 this.exitUnitSpriteWithoutAnimation();
                 return;
@@ -13625,7 +13727,7 @@ define("src/BattleSceneUnit", ["require", "exports", "src/options"], function (r
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleSceneUnit;
 });
-define("src/BattleSceneUnitOverlay", ["require", "exports", "src/options"], function (require, exports, options_6) {
+define("src/BattleSceneUnitOverlay", ["require", "exports", "src/options"], function (require, exports, options_5) {
     "use strict";
     var BattleSceneUnitOverlay = (function () {
         function BattleSceneUnitOverlay(container, renderer) {
@@ -13642,7 +13744,7 @@ define("src/BattleSceneUnitOverlay", ["require", "exports", "src/options"], func
         };
         BattleSceneUnitOverlay.prototype.setSFX = function (SFXTemplate, user, target) {
             if (this.activeUnit) {
-                var duration = SFXTemplate.duration * options_6.default.battleAnimationTiming.effectDuration;
+                var duration = SFXTemplate.duration * options_5.default.battleAnimationTiming.effectDuration;
                 if (this.activeUnit === user && SFXTemplate.userOverlay) {
                     this.setOverlay(SFXTemplate.userOverlay, user, duration);
                 }
@@ -13711,7 +13813,7 @@ define("src/BattleSceneUnitOverlay", ["require", "exports", "src/options"], func
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleSceneUnitOverlay;
 });
-define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/BattleSceneUnitOverlay", "src/options"], function (require, exports, BattleSceneUnit_1, BattleSceneUnitOverlay_1, options_7) {
+define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/BattleSceneUnitOverlay", "src/options"], function (require, exports, BattleSceneUnit_1, BattleSceneUnitOverlay_1, options_6) {
     "use strict";
     var BattleScene = (function () {
         function BattleScene(containerElement) {
@@ -13839,7 +13941,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
         };
         BattleScene.prototype.getSFXParams = function (props) {
             var bounds = this.getSceneBounds();
-            var duration = this.activeSFX.duration * options_7.default.battleAnimationTiming.effectDuration;
+            var duration = this.activeSFX.duration * options_6.default.battleAnimationTiming.effectDuration;
             return ({
                 user: this.userUnit,
                 target: this.targetUnit,
@@ -13931,7 +14033,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             temp();
         };
         BattleScene.prototype.prepareSFX = function () {
-            var beforeUseDelay = options_7.default.battleAnimationTiming.before;
+            var beforeUseDelay = options_6.default.battleAnimationTiming.before;
             var afterUnitsHaveFinishedUpdatingCallback = function () {
                 if (beforeUseDelay >= 0) {
                     window.setTimeout(this.executeBeforeUseDelayHasFinishedCallback.bind(this), beforeUseDelay);
@@ -13943,7 +14045,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             this.updateUnits(afterUnitsHaveFinishedUpdatingCallback);
         };
         BattleScene.prototype.playSFX = function () {
-            var SFXDuration = options_7.default.battleAnimationTiming.effectDuration *
+            var SFXDuration = options_6.default.battleAnimationTiming.effectDuration *
                 this.activeSFX.duration;
             if (!this.activeSFX.SFXWillTriggerEffect || SFXDuration <= 0) {
                 this.executeTriggerEffectCallback();
@@ -13962,7 +14064,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             this.executeActiveSFXHasFinishedCallback();
         };
         BattleScene.prototype.cleanUpAfterSFX = function () {
-            var afterUseDelay = options_7.default.battleAnimationTiming.after;
+            var afterUseDelay = options_6.default.battleAnimationTiming.after;
             this.afterUseDelayHasFinishedCallback = function () {
                 this.userUnit = null;
                 this.targetUnit = null;
@@ -14048,7 +14150,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = BattleScene;
 });
-define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_28, App_27) {
+define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", "src/Player", "src/Battle", "src/BattleScene", "src/utility", "src/App"], function (require, exports, Unit_5, Player_2, Battle_2, BattleScene_1, utility_29, App_26) {
     "use strict";
     var BattleSceneTesterComponent = (function (_super) {
         __extends(BattleSceneTesterComponent, _super);
@@ -14106,7 +14208,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             battleScene.updateUnits();
         };
         BattleSceneTesterComponent.prototype.makeUnit = function () {
-            var template = utility_28.getRandomProperty(App_27.default.moduleData.Templates.Units);
+            var template = utility_29.getRandomProperty(App_26.default.moduleData.Templates.Units);
             return new Unit_5.default(template, this.idGenerator++);
         };
         BattleSceneTesterComponent.prototype.makePlayer = function () {
@@ -14225,7 +14327,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             };
             var testSFX = {
                 duration: 1000,
-                battleOverlay: App_27.default.moduleData.Templates.BattleSFX["guard"].battleOverlay,
+                battleOverlay: App_26.default.moduleData.Templates.BattleSFX["guard"].battleOverlay,
                 userOverlay: overlayTestFN.bind(null, 0xFF0000),
                 enemyOverlay: overlayTestFN.bind(null, 0x00FF00),
                 userSprite: spriteTestFN
@@ -14246,7 +14348,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
             var user = this.state.activeUnit;
             var target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
             var bs = this.battleScene;
-            var SFXTemplate = utility_28.extendObject(App_27.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
+            var SFXTemplate = utility_29.extendObject(App_26.default.moduleData.Templates.BattleSFX[this.state.selectedSFXTemplateKey]);
             if (this.state.duration) {
                 SFXTemplate.duration = this.state.duration;
             }
@@ -14290,8 +14392,8 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
                 value: null,
                 key: "null"
             }, "null"));
-            for (var key in App_27.default.moduleData.Templates.BattleSFX) {
-                var template = App_27.default.moduleData.Templates.BattleSFX[key];
+            for (var key in App_26.default.moduleData.Templates.BattleSFX) {
+                var template = App_26.default.moduleData.Templates.BattleSFX[key];
                 SFXTemplateSelectOptions.push(React.DOM.option({
                     value: key,
                     key: key
@@ -14336,7 +14438,7 @@ define("src/uicomponents/BattleSceneTester", ["require", "exports", "src/Unit", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"], function (require, exports, App_28) {
+define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"], function (require, exports, App_27) {
     "use strict";
     var FlagPickerComponent = (function (_super) {
         __extends(FlagPickerComponent, _super);
@@ -14391,14 +14493,14 @@ define("src/uicomponents/setupgame/FlagPicker", ["require", "exports", "src/App"
                 onClick: this.handleSelectEmblem.bind(this, template)
             }, React.DOM.img({
                 className: className,
-                src: App_28.default.images[template.src].src
+                src: App_27.default.images[template.src].src
             })));
         };
         FlagPickerComponent.prototype.render = function () {
             var _this = this;
             var emblemElements = [];
-            for (var emblemType in App_28.default.moduleData.Templates.SubEmblems) {
-                var template = App_28.default.moduleData.Templates.SubEmblems[emblemType];
+            for (var emblemType in App_27.default.moduleData.Templates.SubEmblems) {
+                var template = App_27.default.moduleData.Templates.SubEmblems[emblemType];
                 emblemElements.push(this.makeEmblemElement(template));
             }
             var imageInfoMessage;
@@ -15340,23 +15442,23 @@ define("src/uicomponents/setupgame/SetupGamePlayers", ["require", "exports", "sr
         SetupGamePlayersComponent.prototype.render = function () {
             var _this = this;
             var playerSetups = [];
-            var _loop_1 = function(i) {
+            var _loop_2 = function(i) {
                 playerSetups.push(PlayerSetup_1.default({
-                    key: this_1.state.playerKeys[i],
-                    keyTODO: this_1.state.playerKeys[i],
+                    key: this_2.state.playerKeys[i],
+                    keyTODO: this_2.state.playerKeys[i],
                     ref: function (component) {
                         _this.playerSetupComponentsByID[i] = component;
                     },
-                    removePlayers: this_1.removePlayers,
-                    setActiveSetterComponent: this_1.setActiveColorSetter,
-                    initialName: "Player " + this_1.state.playerKeys[i],
+                    removePlayers: this_2.removePlayers,
+                    setActiveSetterComponent: this_2.setActiveColorSetter,
+                    initialName: "Player " + this_2.state.playerKeys[i],
                     isHuman: i === 0,
-                    setHuman: this_1.setHumanPlayer
+                    setHuman: this_2.setHumanPlayer
                 }));
             };
-            var this_1 = this;
+            var this_2 = this;
             for (var i = 0; i < this.state.playerKeys.length; i++) {
-                _loop_1(i);
+                _loop_2(i);
             }
             var canAddPlayers = this.state.playerKeys.length < this.props.maxPlayers;
             return (React.DOM.div({ className: "setup-game-players" }, React.DOM.div({
@@ -15451,7 +15553,7 @@ define("src/uicomponents/galaxymap/OptionsGroup", ["require", "exports"], functi
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_29) {
+define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/utility"], function (require, exports, utility_30) {
     "use strict";
     var MapGenOptionComponent = (function (_super) {
         __extends(MapGenOptionComponent, _super);
@@ -15463,7 +15565,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
         MapGenOptionComponent.prototype.handleChange = function (e) {
             var target = e.target;
             var option = this.props.option;
-            var newValue = utility_29.clamp(parseFloat(target.value), option.range.min, option.range.max);
+            var newValue = utility_30.clamp(parseFloat(target.value), option.range.min, option.range.max);
             this.props.onChange(this.props.id, newValue);
         };
         MapGenOptionComponent.prototype.shouldComponentUpdate = function (newProps) {
@@ -15514,7 +15616,7 @@ define("src/uicomponents/setupgame/MapGenOption", ["require", "exports", "src/ut
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_30) {
+define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/setupgame/MapGenOption", "src/utility"], function (require, exports, OptionsGroup_1, MapGenOption_1, utility_31) {
     "use strict";
     var MapGenOptionsComponent = (function (_super) {
         __extends(MapGenOptionsComponent, _super);
@@ -15556,13 +15658,13 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                         var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
                         if (!oldOption)
                             continue;
-                        var oldValuePercentage = utility_30.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
+                        var oldValuePercentage = utility_31.getRelativeValue(this.getOptionValue(optionName), oldOption.range.min, oldOption.range.max);
                         value = option.min + (option.max - option.min) * oldValuePercentage;
                     }
                     else {
                         value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                     }
-                    value = utility_30.clamp(utility_30.roundToNearestMultiple(value, option.step), option.min, option.max);
+                    value = utility_31.clamp(utility_31.roundToNearestMultiple(value, option.step), option.min, option.max);
                     defaultValues["optionValue_" + optionName] = value;
                 }
             }.bind(this));
@@ -15586,14 +15688,14 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
                 var optionGroup = optionGroups[optionGroupName];
                 for (var optionName in optionGroup) {
                     var option = optionGroup[optionName].range;
-                    var optionValue = utility_30.clamp(utility_30.roundToNearestMultiple(utility_30.randInt(option.min, option.max), option.step), option.min, option.max);
+                    var optionValue = utility_31.clamp(utility_31.roundToNearestMultiple(utility_31.randInt(option.min, option.max), option.step), option.min, option.max);
                     newValues["optionValue_" + optionName] = optionValue;
                 }
             }
             this.setState(newValues);
         };
         MapGenOptionsComponent.prototype.getOptionValuesForTemplate = function () {
-            var optionValues = utility_30.extendObject(this.props.mapGenTemplate.options);
+            var optionValues = utility_31.extendObject(this.props.mapGenTemplate.options);
             for (var groupName in optionValues) {
                 var optionsGroup = optionValues[groupName];
                 for (var optionName in optionsGroup) {
@@ -15667,7 +15769,7 @@ define("src/uicomponents/setupgame/MapGenOptions", ["require", "exports", "src/u
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", "src/uicomponents/setupgame/MapGenOptions"], function (require, exports, App_29, MapGenOptions_1) {
+define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", "src/uicomponents/setupgame/MapGenOptions"], function (require, exports, App_28, MapGenOptions_1) {
     "use strict";
     var MapSetupComponent = (function (_super) {
         __extends(MapSetupComponent, _super);
@@ -15684,9 +15786,9 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
         };
         MapSetupComponent.prototype.getInitialStateTODO = function () {
             var mapGenTemplates = [];
-            for (var template in App_29.default.moduleData.Templates.MapGen) {
-                if (App_29.default.moduleData.Templates.MapGen[template].key) {
-                    mapGenTemplates.push(App_29.default.moduleData.Templates.MapGen[template]);
+            for (var template in App_28.default.moduleData.Templates.MapGen) {
+                if (App_28.default.moduleData.Templates.MapGen[template].key) {
+                    mapGenTemplates.push(App_28.default.moduleData.Templates.MapGen[template]);
                 }
             }
             return ({
@@ -15706,7 +15808,7 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
         MapSetupComponent.prototype.setTemplate = function (e) {
             var target = e.target;
             this.setState({
-                selectedTemplate: App_29.default.moduleData.Templates.MapGen[target.value]
+                selectedTemplate: App_28.default.moduleData.Templates.MapGen[target.value]
             }, this.updatePlayerLimits);
         };
         MapSetupComponent.prototype.getMapSetupInfo = function () {
@@ -15751,7 +15853,7 @@ define("src/uicomponents/setupgame/MapSetup", ["require", "exports", "src/App", 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/uicomponents/setupgame/SetupGamePlayers", "src/uicomponents/setupgame/MapSetup"], function (require, exports, App_30, SetupGamePlayers_1, MapSetup_1) {
+define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App", "src/uicomponents/setupgame/SetupGamePlayers", "src/uicomponents/setupgame/MapSetup"], function (require, exports, App_29, SetupGamePlayers_1, MapSetup_1) {
     "use strict";
     var SetupGameComponent = (function (_super) {
         __extends(SetupGameComponent, _super);
@@ -15784,7 +15886,7 @@ define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App",
             var mapGenFunction = mapSetupInfo.template.mapGenFunction;
             var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players);
             var map = mapGenResult.makeMap();
-            App_30.default.makeGameFromSetup(map, players);
+            App_29.default.makeGameFromSetup(map, players);
         };
         SetupGameComponent.prototype.randomize = function () {
             this.ref_TODO_players.randomizeAllPlayers();
@@ -15944,7 +16046,7 @@ define("src/uicomponents/battle/TurnCounter", ["require", "exports"], function (
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_31) {
+define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], function (require, exports, utility_32) {
     "use strict";
     var AbilityUseEffectQueue = (function () {
         function AbilityUseEffectQueue(battleScene) {
@@ -15976,13 +16078,13 @@ define("src/AbilityUseEffectQueue", ["require", "exports", "src/utility"], funct
         };
         AbilityUseEffectQueue.squashEffects = function (parent, toSquash, parentIsMostRecent) {
             if (parentIsMostRecent === void 0) { parentIsMostRecent = false; }
-            var squashedChangedUnitDisplayDataByID = utility_31.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
+            var squashedChangedUnitDisplayDataByID = utility_32.shallowExtend.apply(void 0, [{}, parent.changedUnitDisplayDataByID].concat(toSquash.map(function (effect) { return effect.changedUnitDisplayDataByID; })));
             if (parentIsMostRecent) {
-                var squashedEffect = utility_31.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
+                var squashedEffect = utility_32.shallowExtend({}, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID }, parent);
                 return squashedEffect;
             }
             else {
-                var squashedEffect = utility_31.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
+                var squashedEffect = utility_32.shallowExtend({}, parent, { changedUnitDisplayDataByID: squashedChangedUnitDisplayDataByID });
                 return squashedEffect;
             }
         };
@@ -16413,7 +16515,7 @@ define("src/uicomponents/battle/AbilityTooltip", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounter", "src/uicomponents/battle/BattleBackground", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, TurnOrder_1, TurnCounter_1, BattleBackground_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_32, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, AbilityTooltip_1) {
+define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounter", "src/uicomponents/battle/BattleBackground", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, App_30, TurnOrder_1, TurnCounter_1, BattleBackground_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_33, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, AbilityTooltip_1) {
     "use strict";
     var BattleComponent = (function (_super) {
         __extends(BattleComponent, _super);
@@ -16481,6 +16583,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
         };
         BattleComponent.prototype.componentDidMount = function () {
             this.battleStartStartTime = Date.now();
+            this.ref_TODO_background.handleResize();
         };
         BattleComponent.prototype.componentWillUpdate = function (newProps, newState) {
             var battleSceneNeedsUpdate = false;
@@ -16620,7 +16723,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
         BattleComponent.prototype.onBattleEffectTrigger = function (effect) {
             this.setState({
                 previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
-                unitDisplayDataByID: utility_32.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
+                unitDisplayDataByID: utility_33.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
             });
         };
         BattleComponent.prototype.finishPlayingQueuedBattleEffects = function () {
@@ -16773,9 +16876,12 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/uicomponent
                 battleState = "active";
             }
             return (BattleBackground_2.default({
-                renderer: this.props.renderer,
                 backgroundSeed: this.props.battle.battleData.location.getSeed(),
-                getBlurArea: this.getBlurArea
+                backgroundDrawingFunction: App_30.default.moduleData.starBackgroundDrawingFunction,
+                getBlurArea: this.getBlurArea,
+                ref: function (component) {
+                    _this.ref_TODO_background = component;
+                },
             }, React.DOM.div(containerProps, React.DOM.div({
                 className: "battle-upper"
             }, BattleScore_1.default({
@@ -18003,7 +18109,7 @@ define("src/uicomponents/notifications/Notifications", ["require", "exports", "s
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/StarInfo", ["require", "exports", "src/uicomponents/galaxymap/DefenceBuildingList", "src/options"], function (require, exports, DefenceBuildingList_2, Options_2) {
+define("src/uicomponents/galaxymap/StarInfo", ["require", "exports", "src/uicomponents/galaxymap/DefenceBuildingList"], function (require, exports, DefenceBuildingList_2) {
     "use strict";
     var StarInfoComponent = (function (_super) {
         __extends(StarInfoComponent, _super);
@@ -18018,23 +18124,13 @@ define("src/uicomponents/galaxymap/StarInfo", ["require", "exports", "src/uicomp
             var star = this.props.selectedStar;
             if (!star)
                 return null;
-            var dumpDebugInfoButton = null;
-            if (Options_2.default.debugMode) {
-                dumpDebugInfoButton = React.DOM.button({
-                    className: "star-info-dump-debug-button",
-                    onClick: function (e) {
-                        console.log(star);
-                        console.log(star.mapGenData);
-                    }
-                }, "Debug");
-            }
             return (React.DOM.div({
                 className: "star-info"
             }, React.DOM.div({
                 className: "star-info-name"
             }, star.name), React.DOM.div({
                 className: "star-info-owner"
-            }, star.owner ? star.owner.name : null), dumpDebugInfoButton, React.DOM.div({
+            }, star.owner ? star.owner.name : null), React.DOM.div({
                 className: "star-info-location"
             }, "x: " + star.x.toFixed() +
                 " y: " + star.y.toFixed()), React.DOM.div({
@@ -18326,7 +18422,7 @@ define("src/uicomponents/galaxymap/fleetcontents", ["require", "exports", "src/u
     exports.default = Factory;
     var _a;
 });
-define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager", "src/App"], function (require, exports, options_8, eventManager_28, App_32) {
+define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports", "src/options", "src/eventManager", "src/App"], function (require, exports, options_7, eventManager_28, App_32) {
     "use strict";
     var fleets = {
         key: "fleets",
@@ -18356,7 +18452,7 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
             };
             var mouseOverFN = function (fleet) {
                 eventManager_28.default.dispatchEvent("hoverStar", fleet.location);
-                if (options_8.default.debugMode && fleet.units.length > 0 && fleet.units[0].front) {
+                if (options_7.default.debugMode && fleet.units.length > 0 && fleet.units[0].front) {
                     var objective = fleet.units[0].front.objective;
                     var target = objective.target ? objective.target.id : null;
                     console.log(objective.type, target, objective.priority);
@@ -18378,7 +18474,7 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                 var containerGfx = new PIXI.Graphics();
                 containerGfx.lineStyle(1, 0x00000, 1);
                 var front = fleet.units[0].front;
-                if (front && options_8.default.debugMode) {
+                if (front && options_7.default.debugMode) {
                     switch (front.objective.type) {
                         case "discovery":
                             {
@@ -19040,31 +19136,17 @@ define("src/uicomponents/trade/TradeableItemsList", ["require", "exports", "src/
                     {
                         return ({
                             key: "money",
-                            data: {
+                            content: TradeMoney_1.default({
                                 keyTODO: "money",
-                                rowConstructor: TradeMoney_1.default,
                                 title: "Money",
                                 moneyAmount: item.amount,
-                                sortOrder: 0,
                                 onDragStart: this.props.onDragStart,
                                 onDragEnd: this.props.onDragEnd,
                                 onClick: this.props.onItemClick,
                                 adjustItemAmount: this.props.adjustItemAmount,
                                 maxMoneyAvailable: (this.props.availableItems && this.props.availableItems["money"]) ?
                                     this.props.availableItems["money"].amount : undefined
-                            }
-                        });
-                    }
-                default:
-                    {
-                        return ({
-                            key: item.key,
-                            data: {
-                                rowConstructor: TradeMoney_1.default,
-                                title: item.key,
-                                moneyAmount: item.amount,
-                                sortOrder: 1
-                            }
+                            })
                         });
                     }
             }
@@ -19080,7 +19162,10 @@ define("src/uicomponents/trade/TradeableItemsList", ["require", "exports", "src/
                     label: "Item",
                     key: "item",
                     defaultOrder: "asc",
-                    propToSortBy: "sortOrder"
+                    sortingFunction: function (a, b) {
+                        return (TradeableItemsListComponent.listItemSortOrder[a.content.props.keyTODO] -
+                            TradeableItemsListComponent.listItemSortOrder[b.content.props.keyTODO]);
+                    }
                 }
             ];
             return (React.DOM.div({
@@ -19091,6 +19176,9 @@ define("src/uicomponents/trade/TradeableItemsList", ["require", "exports", "src/
                 initialSortOrder: [columns[0]],
                 noHeader: this.props.noListHeader
             })));
+        };
+        TradeableItemsListComponent.listItemSortOrder = {
+            money: 0
         };
         return TradeableItemsListComponent;
     }(React.Component));
@@ -19455,7 +19543,7 @@ define("src/uicomponents/diplomacy/DiplomacyActions", ["require", "exports", "sr
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_33) {
+define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports", "src/utility"], function (require, exports, utility_34) {
     "use strict";
     var AttitudeModifierInfoComponent = (function (_super) {
         __extends(AttitudeModifierInfoComponent, _super);
@@ -19489,8 +19577,8 @@ define("src/uicomponents/diplomacy/AttitudeModifierInfo", ["require", "exports",
                     }
                 case "strength":
                     {
-                        var relativeValue = utility_33.getRelativeValue(this.props.strength, -20, 20);
-                        relativeValue = utility_33.clamp(relativeValue, 0, 1);
+                        var relativeValue = utility_34.getRelativeValue(this.props.strength, -20, 20);
+                        relativeValue = utility_34.clamp(relativeValue, 0, 1);
                         var deviation = Math.abs(0.5 - relativeValue) * 2;
                         var hue = 110 * relativeValue;
                         var saturation = 0 + 50 * deviation;
@@ -19731,7 +19819,7 @@ define("src/uicomponents/diplomacy/AttitudeModifierList", ["require", "exports",
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_34) {
+define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicomponents/diplomacy/AttitudeModifierList", "src/utility"], function (require, exports, AttitudeModifierList_1, utility_35) {
     "use strict";
     var OpinionComponent = (function (_super) {
         __extends(OpinionComponent, _super);
@@ -19763,8 +19851,8 @@ define("src/uicomponents/diplomacy/Opinion", ["require", "exports", "src/uicompo
             return firstChild.getBoundingClientRect();
         };
         OpinionComponent.prototype.getColor = function () {
-            var relativeValue = utility_34.getRelativeValue(this.props.opinion, -30, 30);
-            relativeValue = utility_34.clamp(relativeValue, 0, 1);
+            var relativeValue = utility_35.getRelativeValue(this.props.opinion, -30, 30);
+            relativeValue = utility_35.clamp(relativeValue, 0, 1);
             var deviation = Math.abs(0.5 - relativeValue) * 2;
             var hue = 110 * relativeValue;
             var saturation = 0 + 50 * deviation;
@@ -20006,10 +20094,11 @@ define("src/uicomponents/unitlist/ItemEquip", ["require", "exports", "src/uicomp
             });
         };
         ItemEquipComponent.prototype.handleSelectRow = function (row) {
-            if (!row.data.unit)
+            if (!row.content.props.unit) {
                 return;
+            }
             this.setState({
-                selectedUnit: row.data.unit
+                selectedUnit: row.content.props.unit
             });
         };
         ItemEquipComponent.prototype.handleDragStart = function (item) {
@@ -20091,9 +20180,19 @@ define("src/uicomponents/galaxymap/EconomySummaryItem", ["require", "exports"], 
             };
             var cellContent;
             switch (type) {
-                default:
+                case "id":
                     {
-                        cellContent = this.props[type];
+                        cellContent = this.props.id;
+                        break;
+                    }
+                case "name":
+                    {
+                        cellContent = this.props.name;
+                        break;
+                    }
+                case "income":
+                    {
+                        cellContent = this.props.income;
                         break;
                     }
             }
@@ -20110,10 +20209,6 @@ define("src/uicomponents/galaxymap/EconomySummaryItem", ["require", "exports"], 
                 className: "economy-summary-item",
                 onClick: this.props.handleClick
             };
-            if (this.props.isSelected) {
-                rowProps.className += " selected";
-            }
-            ;
             return (React.DOM.tr(rowProps, cells));
         };
         return EconomySummaryItemComponent;
@@ -20145,8 +20240,13 @@ define("src/uicomponents/galaxymap/EconomySummary", ["require", "exports", "src/
                     rowConstructor: EconomySummaryItem_1.default
                 };
                 rows.push({
-                    key: star.id,
-                    data: data
+                    key: "" + star.id,
+                    content: EconomySummaryItem_1.default({
+                        star: star,
+                        id: star.id,
+                        name: star.name,
+                        income: star.getIncome()
+                    })
                 });
             }
             var columns = [
@@ -20788,7 +20888,7 @@ define("src/uicomponents/production/ManufactoryStarsListItem", ["require", "expo
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_35) {
+define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports", "src/uicomponents/production/ManufactoryStarsListItem", "src/utility"], function (require, exports, ManufactoryStarsListItem_1, utility_36) {
     "use strict";
     var ManufactoryStarsListComponent = (function (_super) {
         __extends(ManufactoryStarsListComponent, _super);
@@ -20798,8 +20898,8 @@ define("src/uicomponents/production/ManufactoryStarsList", ["require", "exports"
         }
         ManufactoryStarsListComponent.prototype.render = function () {
             var rows = [];
-            this.props.starsWithManufactories.sort(utility_35.sortByManufactoryCapacityFN);
-            this.props.starsWithoutManufactories.sort(utility_35.sortByManufactoryCapacityFN);
+            this.props.starsWithManufactories.sort(utility_36.sortByManufactoryCapacityFN);
+            this.props.starsWithoutManufactories.sort(utility_36.sortByManufactoryCapacityFN);
             for (var i = 0; i < this.props.starsWithManufactories.length; i++) {
                 var star = this.props.starsWithManufactories[i];
                 var manufactory = star.manufactory;
@@ -20865,7 +20965,7 @@ define("src/uicomponents/mixins/UpdateWhenMoneyChanges", ["require", "exports", 
     exports.default = UpdateWhenMoneyChanges;
     var _a;
 });
-define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_34, utility_36, UpdateWhenMoneyChanges_1, applyMixins_13) {
+define("src/uicomponents/production/ProductionOverview", ["require", "exports", "src/uicomponents/production/BuildQueue", "src/uicomponents/production/ManufacturableThings", "src/uicomponents/production/ConstructManufactory", "src/uicomponents/production/ManufactoryStarsList", "src/eventManager", "src/utility", "src/uicomponents/mixins/UpdateWhenMoneyChanges", "src/uicomponents/mixins/applyMixins"], function (require, exports, BuildQueue_1, ManufacturableThings_1, ConstructManufactory_1, ManufactoryStarsList_1, eventManager_34, utility_37, UpdateWhenMoneyChanges_1, applyMixins_13) {
     "use strict";
     var ProductionOverviewComponent = (function (_super) {
         __extends(ProductionOverviewComponent, _super);
@@ -20887,11 +20987,11 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
             var player = this.props.player;
             var starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
             if (starsByManufactoryPresence.withManufactories.length > 0) {
-                starsByManufactoryPresence.withManufactories.sort(utility_36.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withManufactories.sort(utility_37.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withManufactories[0];
             }
             else if (starsByManufactoryPresence.withoutManufactories.length > 0) {
-                starsByManufactoryPresence.withoutManufactories.sort(utility_36.sortByManufactoryCapacityFN);
+                starsByManufactoryPresence.withoutManufactories.sort(utility_37.sortByManufactoryCapacityFN);
                 initialSelected = starsByManufactoryPresence.withoutManufactories[0];
             }
             return ({
@@ -20990,6 +21090,37 @@ define("src/uicomponents/production/ProductionOverview", ["require", "exports", 
     exports.default = Factory;
     var _a;
 });
+define("src/uicomponents/saves/ConfirmDeleteSavesContent", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var ConfirmDeleteSavesContentComponent = (function (_super) {
+        __extends(ConfirmDeleteSavesContentComponent, _super);
+        function ConfirmDeleteSavesContentComponent(props) {
+            _super.call(this, props);
+            this.displayName = "ConfirmDeleteSavesContent";
+            this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+        }
+        ConfirmDeleteSavesContentComponent.prototype.render = function () {
+            return (React.DOM.div({
+                className: "confirm-delete-saves-content"
+            }, React.DOM.span({
+                className: "confirm-delete-saves-content-title"
+            }, "Are you sure you want to delete the following saves?"), React.DOM.ol({
+                className: "confirm-delete-saves-content-saves-list"
+            }, this.props.saveNames.map(function (saveName) {
+                return (React.DOM.li({
+                    className: "confirm-delete-saves-content-save-name",
+                    key: saveName
+                }, saveName));
+            }))));
+        };
+        return ConfirmDeleteSavesContentComponent;
+    }(React.Component));
+    exports.ConfirmDeleteSavesContentComponent = ConfirmDeleteSavesContentComponent;
+    var Factory = React.createFactory(ConfirmDeleteSavesContentComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+    var _a;
+});
 define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (require, exports) {
     "use strict";
     var SaveListItemComponent = (function (_super) {
@@ -21069,7 +21200,7 @@ define("src/uicomponents/saves/SaveListItem", ["require", "exports"], function (
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/list/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_37) {
+define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponents/saves/SaveListItem", "src/uicomponents/list/List", "src/utility"], function (require, exports, SaveListItem_1, List_7, utility_38) {
     "use strict";
     var SaveListComponent = (function (_super) {
         __extends(SaveListComponent, _super);
@@ -21098,7 +21229,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
                     content: SaveListItem_1.default({
                         storageKey: saveKeys[i],
                         name: saveData.name,
-                        date: utility_37.prettifyDate(date),
+                        date: utility_38.prettifyDate(date),
                         accurateDate: saveData.date,
                         isMarkedForDeletion: isMarkedForDeletion,
                         handleDelete: this.props.onDelete ?
@@ -21155,7 +21286,7 @@ define("src/uicomponents/saves/SaveList", ["require", "exports", "src/uicomponen
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_34, SaveList_1, PopupManager_7, ConfirmPopup_2) {
+define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src/uicomponents/saves/ConfirmDeleteSavesContent", "src/uicomponents/saves/SaveList", "src/uicomponents/popups/PopupManager", "src/uicomponents/popups/ConfirmPopup"], function (require, exports, App_34, ConfirmDeleteSavesContent_1, SaveList_1, PopupManager_7, ConfirmPopup_2) {
     "use strict";
     var LoadGameComponent = (function (_super) {
         __extends(LoadGameComponent, _super);
@@ -21195,11 +21326,8 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
         LoadGameComponent.prototype.handleLoad = function () {
             var saveKey = this.state.saveKey;
             var afterConfirmFN = function () {
-                ReactDOM.findDOMNode(this.ref_TODO_okButton).blur();
-                window.setTimeout(function () {
-                    App_34.default.load(saveKey);
-                }, 5);
-            }.bind(this);
+                App_34.default.load(saveKey);
+            };
             if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1) {
                 var boundClose = this.handleClose.bind(this, true, afterConfirmFN);
                 this.handleUndoDelete(saveKey, boundClose);
@@ -21210,7 +21338,12 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
         };
         LoadGameComponent.prototype.deleteSelectedKeys = function () {
             this.popupID = this.ref_TODO_popupManager.makePopup({
-                content: ConfirmPopup_2.default(this.getClosePopupContent(null, false, false))
+                content: ConfirmPopup_2.default(this.getClosePopupContent(null, false, false)),
+                popupProps: {
+                    dragPositionerProps: {
+                        preventAutoResize: true
+                    }
+                }
             });
         };
         LoadGameComponent.prototype.getClosePopupContent = function (afterCloseCallback, shouldCloseParent, shouldUndoAll) {
@@ -21237,14 +21370,12 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 if (afterCloseCallback)
                     afterCloseCallback();
             }.bind(this);
-            var confirmText = ["Are you sure you want to delete the following saves?"];
-            confirmText = confirmText.concat(this.state.saveKeysToDelete.map(function (saveKey) {
-                return saveKey.replace("Rance.Save.", "");
-            }));
             return ({
                 handleOk: deleteFN,
                 handleClose: closeFN,
-                content: confirmText
+                content: ConfirmDeleteSavesContent_1.default({
+                    saveNames: this.state.saveKeysToDelete
+                })
             });
         };
         LoadGameComponent.prototype.updateClosePopup = function () {
@@ -21265,7 +21396,12 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 return;
             }
             this.popupID = this.ref_TODO_popupManager.makePopup({
-                content: ConfirmPopup_2.default(this.getClosePopupContent(afterCloseCallback, true, true))
+                content: ConfirmPopup_2.default(this.getClosePopupContent(afterCloseCallback, true, true)),
+                popupProps: {
+                    dragPositionerProps: {
+                        preventAutoResize: true
+                    }
+                }
             });
         };
         LoadGameComponent.prototype.handleDelete = function (saveKey) {
@@ -21318,7 +21454,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 type: "text",
                 value: this.state.saveKey ? this.state.saveKey.replace("Rance.Save.", "") : "",
                 readOnly: true
-            }), React.DOM.div({
+            })), React.DOM.div({
                 className: "save-game-buttons-container"
             }, React.DOM.button({
                 className: "save-game-button",
@@ -21333,7 +21469,7 @@ define("src/uicomponents/saves/LoadGame", ["require", "exports", "src/App", "src
                 className: "save-game-button",
                 onClick: this.deleteSelectedKeys,
                 disabled: this.state.saveKeysToDelete.length < 1
-            }, "Delete")))));
+            }, "Delete"))));
         };
         return LoadGameComponent;
     }(React.Component));
@@ -21422,8 +21558,13 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
             }), SaveList_2.default({
                 onRowChange: this.handleRowChange,
                 selectedKey: App_35.default.game.gameStorageKey,
-                autoSelect: false
-            }), React.DOM.input({
+                autoSelect: false,
+                onDoubleClick: this.saveGame
+            }), React.DOM.form({
+                className: "save-game-form",
+                onSubmit: this.handleSave,
+                action: "javascript:void(0);"
+            }, React.DOM.input({
                 className: "save-game-name",
                 ref: function (component) {
                     _this.ref_TODO_saveName = component;
@@ -21432,7 +21573,7 @@ define("src/uicomponents/saves/SaveGame", ["require", "exports", "src/App", "src
                 value: this.state.saveName,
                 onChange: this.handleSaveNameInput,
                 maxLength: 64
-            }), React.DOM.div({
+            })), React.DOM.div({
                 className: "save-game-buttons-container"
             }, React.DOM.button({
                 className: "save-game-button",
@@ -21482,7 +21623,7 @@ define("src/uicomponents/galaxymap/OptionsCheckbox", ["require", "exports"], fun
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_38) {
+define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", "src/utility"], function (require, exports, utility_39) {
     "use strict";
     var OptionsNumericFieldComponent = (function (_super) {
         __extends(OptionsNumericFieldComponent, _super);
@@ -21515,7 +21656,7 @@ define("src/uicomponents/galaxymap/OptionsNumericField", ["require", "exports", 
             if (!isFinite(value)) {
                 return;
             }
-            value = utility_38.clamp(value, parseFloat(target.min), parseFloat(target.max));
+            value = utility_39.clamp(value, parseFloat(target.min), parseFloat(target.max));
             this.setState({
                 value: value
             }, this.triggerOnChangeFN);
@@ -21608,7 +21749,7 @@ define("src/tutorials/TutorialStatus", ["require", "exports", "src/tutorials/Tut
     exports.default = tutorialStatus;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_39, TutorialStatus_1) {
+define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_2, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_40, TutorialStatus_1) {
     "use strict";
     var OptionsListComponent = (function (_super) {
         __extends(OptionsListComponent, _super);
@@ -21625,7 +21766,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
             this.ref_TODO_popupManager.makePopup({
                 content: ConfirmPopup_4.default({
                     handleOk: function () {
-                        Options_3.default.setDefaults();
+                        Options_2.default.setDefaults();
                         _this.forceUpdate();
                     },
                     content: "Are you sure you want to reset all options?"
@@ -21687,12 +21828,12 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                     content: OptionsNumericField_1.default({
                         label: props.displayName,
                         id: "options-battle-animation-" + stage,
-                        value: Options_3.default.battleAnimationTiming[stage],
+                        value: Options_2.default.battleAnimationTiming[stage],
                         min: props.min,
                         max: props.max,
                         step: props.step,
                         onChangeFN: function (stage, value) {
-                            Options_3.default.battleAnimationTiming[stage] = value;
+                            Options_2.default.battleAnimationTiming[stage] = value;
                         }.bind(null, stage)
                     })
                 });
@@ -21702,7 +21843,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                 header: "Battle animation timing",
                 options: battleAnimationOptions,
                 resetFN: function () {
-                    Options_3.default.setDefaultForCategory("battleAnimationTiming");
+                    Options_2.default.setDefaultForCategory("battleAnimationTiming");
                     _this.forceUpdate();
                 }
             }));
@@ -21710,22 +21851,22 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
             debugOptions.push({
                 key: "debugMode",
                 content: OptionsCheckbox_1.default({
-                    isChecked: Options_3.default.debugMode,
+                    isChecked: Options_2.default.debugMode,
                     label: "Debug mode",
                     onChangeFN: function () {
-                        Options_3.default.debugMode = !Options_3.default.debugMode;
+                        Options_2.default.debugMode = !Options_2.default.debugMode;
                         _this.forceUpdate();
                         eventManager_35.default.dispatchEvent("renderUI");
                     }
                 })
             });
-            if (Options_3.default.debugMode) {
+            if (Options_2.default.debugMode) {
                 debugOptions.push({
                     key: "battleSimulationDepth",
                     content: React.DOM.div({}, React.DOM.input({
                         type: "number",
                         id: "battle-simulation-depth-input",
-                        value: "" + Options_3.default.debugOptions.battleSimulationDepth,
+                        value: "" + Options_2.default.debugOptions.battleSimulationDepth,
                         min: 1,
                         max: 500,
                         step: 1,
@@ -21735,8 +21876,8 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                             if (!isFinite(value)) {
                                 return;
                             }
-                            value = utility_39.clamp(value, parseFloat(target.min), parseFloat(target.max));
-                            Options_3.default.debugOptions.battleSimulationDepth = value;
+                            value = utility_40.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                            Options_2.default.debugOptions.battleSimulationDepth = value;
                             _this.forceUpdate();
                         }
                     }), React.DOM.label({
@@ -21749,18 +21890,18 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                 header: "Debug",
                 options: debugOptions,
                 resetFN: function () {
-                    Options_3.default.setDefaultForCategory("debugOptions");
-                    Options_3.default.setDefaultForCategory("debugMode");
+                    Options_2.default.setDefaultForCategory("debugOptions");
+                    Options_2.default.setDefaultForCategory("debugMode");
                 }
             }));
             var uiOptions = [];
             uiOptions.push({
                 key: "noHamburger",
                 content: OptionsCheckbox_1.default({
-                    isChecked: Options_3.default.ui.noHamburger,
+                    isChecked: Options_2.default.ui.noHamburger,
                     label: "Always expand top right menu on low resolution",
                     onChangeFN: function () {
-                        Options_3.default.ui.noHamburger = !Options_3.default.ui.noHamburger;
+                        Options_2.default.ui.noHamburger = !Options_2.default.ui.noHamburger;
                         eventManager_35.default.dispatchEvent("updateHamburgerMenu");
                         _this.forceUpdate();
                     }
@@ -21786,7 +21927,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                 header: "UI",
                 options: uiOptions,
                 resetFN: function () {
-                    Options_3.default.setDefaultForCategory("ui");
+                    Options_2.default.setDefaultForCategory("ui");
                 }
             }));
             var displayOptions = [];
@@ -21798,9 +21939,9 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                     min: 0,
                     max: 50,
                     step: 1,
-                    value: Options_3.default.display.borderWidth,
+                    value: Options_2.default.display.borderWidth,
                     onChangeFN: function (value) {
-                        Options_3.default.display.borderWidth = value;
+                        Options_2.default.display.borderWidth = value;
                         eventManager_35.default.dispatchEvent("renderMap");
                     }
                 })
@@ -21810,7 +21951,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                 header: "Display",
                 options: displayOptions,
                 resetFN: function () {
-                    Options_3.default.setDefaultForCategory("display");
+                    Options_2.default.setDefaultForCategory("display");
                     _this.forceUpdate();
                 }
             }));
@@ -21832,7 +21973,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/popups/PopupManager", "src/uicomponents/diplomacy/DiplomacyOverview", "src/uicomponents/unitlist/ItemEquip", "src/uicomponents/galaxymap/EconomySummary", "src/uicomponents/technologies/TechnologiesList", "src/uicomponents/production/ProductionOverview", "src/uicomponents/saves/LoadGame", "src/uicomponents/saves/SaveGame", "src/uicomponents/galaxymap/OptionsList", "src/options"], function (require, exports, TopMenuPopup_5, PopupManager_10, DiplomacyOverview_1, ItemEquip_1, EconomySummary_1, TechnologiesList_1, ProductionOverview_1, LoadGame_1, SaveGame_1, OptionsList_1, Options_4) {
+define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/popups/PopupManager", "src/uicomponents/diplomacy/DiplomacyOverview", "src/uicomponents/unitlist/ItemEquip", "src/uicomponents/galaxymap/EconomySummary", "src/uicomponents/technologies/TechnologiesList", "src/uicomponents/production/ProductionOverview", "src/uicomponents/saves/LoadGame", "src/uicomponents/saves/SaveGame", "src/uicomponents/galaxymap/OptionsList", "src/options"], function (require, exports, TopMenuPopup_5, PopupManager_10, DiplomacyOverview_1, ItemEquip_1, EconomySummary_1, TechnologiesList_1, ProductionOverview_1, LoadGame_1, SaveGame_1, OptionsList_1, Options_3) {
     "use strict";
     var TopMenuPopupsComponent = (function (_super) {
         __extends(TopMenuPopupsComponent, _super);
@@ -21869,7 +22010,7 @@ define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/u
             stateObj[popupType] = undefined;
             this.setState(stateObj);
             if (popupType === "options") {
-                Options_4.default.save();
+                Options_3.default.save();
             }
         };
         TopMenuPopupsComponent.prototype.makePopup = function (popupType) {
@@ -22002,7 +22143,7 @@ define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/u
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options", "src/uicomponents/galaxymap/TopMenuPopups", "src/eventManager"], function (require, exports, Options_5, TopMenuPopups_1, eventManager_36) {
+define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options", "src/uicomponents/galaxymap/TopMenuPopups", "src/eventManager"], function (require, exports, Options_4, TopMenuPopups_1, eventManager_36) {
     "use strict";
     var TopMenuComponent = (function (_super) {
         __extends(TopMenuComponent, _super);
@@ -22027,7 +22168,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
             return ({
                 hasCondensedMenu: false,
                 buttonsToPlace: 999,
-                condensedMenuOpened: Options_5.default.ui.noHamburger
+                condensedMenuOpened: Options_4.default.ui.noHamburger
             });
         };
         TopMenuComponent.prototype.componentDidMount = function () {
@@ -22085,7 +22226,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
             var hasCondensedMenu = spaceAvailable < this.cachedTopMenuWidth;
             var amountOfButtonsToPlace = 0;
             if (hasCondensedMenu) {
-                if (!Options_5.default.ui.noHamburger) {
+                if (!Options_4.default.ui.noHamburger) {
                     spaceAvailable -= this.cachedMenuButtonWidth;
                 }
                 var padding = window.innerHeight > 600 ? 25 : 0;
@@ -22166,7 +22307,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
             ];
             var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
             var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
-            if (this.state.hasCondensedMenu && !Options_5.default.ui.noHamburger) {
+            if (this.state.hasCondensedMenu && !Options_4.default.ui.noHamburger) {
                 topMenuItems.push(React.DOM.button({
                     className: "top-menu-items-button top-menu-open-condensed-button",
                     key: "openCondensedMenu",
@@ -22175,7 +22316,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
                 }));
             }
             var openedCondensedMenu = null;
-            if ((this.state.condensedMenuOpened || Options_5.default.ui.noHamburger) && leftoverButtons.length > 0) {
+            if ((this.state.condensedMenuOpened || Options_4.default.ui.noHamburger) && leftoverButtons.length > 0) {
                 openedCondensedMenu = React.DOM.div({
                     className: "top-menu-opened-condensed-menu"
                 }, leftoverButtons);
@@ -22431,15 +22572,17 @@ define("src/uicomponents/possibleactions/BuildableBuilding", ["require", "export
             cellProps.className = "buildable-building-list-item-cell " + type;
             var cellContent;
             switch (type) {
-                case ("buildCost"):
+                case "buildCost":
                     {
+                        cellContent = this.props.buildCost;
                         if (!this.state.canAfford) {
                             cellProps.className += " negative";
                         }
+                        break;
                     }
-                default:
+                case "typeName":
                     {
-                        cellContent = this.props[type];
+                        cellContent = this.props.typeName;
                         break;
                     }
             }
@@ -22501,7 +22644,7 @@ define("src/uicomponents/possibleactions/BuildableBuildingList", ["require", "ex
             }
         };
         BuildableBuildingListComponent.prototype.buildBuilding = function (rowItem) {
-            var template = rowItem.data.template;
+            var template = rowItem.content.props.template;
             var building = new Building_3.default({
                 template: template,
                 location: this.props.star
@@ -22520,14 +22663,13 @@ define("src/uicomponents/possibleactions/BuildableBuildingList", ["require", "ex
             for (var i = 0; i < this.state.buildingTemplates.length; i++) {
                 var template = this.state.buildingTemplates[i];
                 rows.push({
-                    key: i,
-                    data: {
+                    key: template.type,
+                    content: BuildableBuilding_1.default({
                         template: template,
                         typeName: template.displayName,
                         buildCost: template.buildCost,
                         player: this.props.player,
-                        rowConstructor: BuildableBuilding_1.default
-                    }
+                    })
                 });
             }
             var columns = [
@@ -22815,7 +22957,7 @@ define("src/uicomponents/tutorials/DontShowAgain", ["require", "exports", "src/t
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_40, TutorialState_3, TutorialStatus_3, utility_41) {
+define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomponents/tutorials/DontShowAgain", "src/utility", "src/tutorials/TutorialState", "src/tutorials/TutorialStatus", "src/utility"], function (require, exports, DontShowAgain_1, utility_41, TutorialState_3, TutorialStatus_3, utility_42) {
     "use strict";
     var TutorialComponent = (function (_super) {
         __extends(TutorialComponent, _super);
@@ -22860,7 +23002,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
         TutorialComponent.prototype.flipPage = function (amount) {
             var lastPage = this.props.pages.length - 1;
             var newPage = this.state.currentPageIndex + amount;
-            newPage = utility_40.clamp(newPage, 0, lastPage);
+            newPage = utility_41.clamp(newPage, 0, lastPage);
             this.handleLeavePage(this.props.pages[this.state.currentPageIndex]);
             this.setState({
                 currentPageIndex: newPage
@@ -22904,7 +23046,7 @@ define("src/uicomponents/tutorials/Tutorial", ["require", "exports", "src/uicomp
                 className: "tutorial-inner"
             }, backElement, React.DOM.div({
                 className: "tutorial-content"
-            }, utility_41.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
+            }, utility_42.splitMultilineText(this.props.pages[this.state.currentPageIndex].content)), forwardElement), DontShowAgain_1.default({
                 tutorialId: this.props.tutorialId
             })));
         };
@@ -23167,7 +23309,7 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uic
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App", "src/uicomponents/galaxymap/GalaxyMapUI", "src/options"], function (require, exports, App_36, GalaxyMapUI_1, Options_6) {
+define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App", "src/uicomponents/galaxymap/GalaxyMapUI", "src/options"], function (require, exports, App_36, GalaxyMapUI_1, Options_5) {
     "use strict";
     var GalaxyMapComponent = (function (_super) {
         __extends(GalaxyMapComponent, _super);
@@ -23205,7 +23347,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
                 game: this.props.game,
                 mapRenderer: this.props.mapRenderer,
                 key: "galaxyMapUI"
-            })), !Options_6.default.debugMode ? null : React.DOM.div({
+            })), !Options_5.default.debugMode ? null : React.DOM.div({
                 className: "galaxy-map-debug debug"
             }, React.DOM.select({
                 className: "reactui-selector debug",
@@ -23218,25 +23360,21 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
                 className: "debug",
                 onClick: function (e) {
                     var target = e.target;
-                    target.blur();
-                    window.setTimeout(function () {
-                        var position = App_36.default.renderer.camera.container.position.clone();
-                        var zoom = App_36.default.renderer.camera.currZoom;
-                        App_36.default.destroy();
-                        App_36.default.initUI();
-                        App_36.default.game = App_36.default.makeGame();
-                        App_36.default.initGame();
-                        App_36.default.initDisplay();
-                        App_36.default.hookUI();
-                        App_36.default.reactUI.switchScene("galaxyMap");
-                        App_36.default.renderer.camera.zoom(zoom);
-                        App_36.default.renderer.camera.container.position = position;
-                    }, 5);
+                    var position = App_36.default.renderer.camera.container.position.clone();
+                    var zoom = App_36.default.renderer.camera.currZoom;
+                    App_36.default.destroy();
+                    App_36.default.initUI();
+                    App_36.default.game = App_36.default.makeGame();
+                    App_36.default.initGame();
+                    App_36.default.initDisplay();
+                    App_36.default.hookUI();
+                    App_36.default.reactUI.switchScene("galaxyMap");
+                    App_36.default.renderer.camera.zoom(zoom);
+                    App_36.default.renderer.camera.container.position = position;
                 }
             }, "Reset app"))));
         };
         GalaxyMapComponent.prototype.componentDidMount = function () {
-            this.props.renderer.isBattleBackground = false;
             this.props.renderer.bindRendererView(ReactDOM.findDOMNode(this.ref_TODO_pixiContainer));
             this.props.mapRenderer.setMapModeByKey("defaultMapMode");
             this.props.renderer.resume();
@@ -23353,7 +23491,6 @@ define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/battle
                         elementsToRender.push(Battle_3.default({
                             battle: this.props.battle,
                             humanPlayer: this.props.player,
-                            renderer: this.props.renderer,
                             key: "battle"
                         }));
                         break;
@@ -23362,7 +23499,6 @@ define("src/uicomponents/Stage", ["require", "exports", "src/uicomponents/battle
                     {
                         elementsToRender.push(BattlePrep_2.default({
                             battlePrep: this.props.battlePrep,
-                            renderer: this.props.renderer,
                             key: "battlePrep"
                         }));
                         break;
@@ -23450,7 +23586,7 @@ define("src/ReactUI", ["require", "exports", "src/eventManager", "src/uicomponen
     exports.default = ReactUI;
     var _a;
 });
-define("src/setDynamicTemplateProperties", ["require", "exports", "src/Unit", "src/utility"], function (require, exports, Unit_6, utility_42) {
+define("src/setDynamicTemplateProperties", ["require", "exports", "src/Unit", "src/utility"], function (require, exports, Unit_6, utility_43) {
     "use strict";
     function setDynamicTemplateProperties(moduleData) {
         setAbilityGuardAddition(moduleData);
@@ -23466,8 +23602,8 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/Unit", "s
             if (ability.secondaryEffects) {
                 effects = effects.concat(ability.secondaryEffects);
             }
-            var dummyUser = new Unit_6.default(utility_42.getRandomProperty(moduleData.Templates.Units));
-            var dummyTarget = new Unit_6.default(utility_42.getRandomProperty(moduleData.Templates.Units));
+            var dummyUser = new Unit_6.default(utility_43.getRandomProperty(moduleData.Templates.Units));
+            var dummyTarget = new Unit_6.default(utility_43.getRandomProperty(moduleData.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
                 effects[i].action.executeAction(dummyUser, dummyTarget, null, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
@@ -23507,9 +23643,9 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/Unit", "s
         }
     }
     function setTechnologyRequirements(moduleData) {
-        var _loop_2 = function(technologyKey) {
+        var _loop_3 = function(technologyKey) {
             var technology = moduleData.Templates.Technologies[technologyKey];
-            var _loop_3 = function(level) {
+            var _loop_4 = function(level) {
                 var unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
                 unlockedTemplatesForLevel.forEach(function (template) {
                     if (!template.technologyRequirements) {
@@ -23522,11 +23658,11 @@ define("src/setDynamicTemplateProperties", ["require", "exports", "src/Unit", "s
                 });
             };
             for (var level in technology.unlocksPerLevel) {
-                _loop_3(level);
+                _loop_4(level);
             }
         };
         for (var technologyKey in moduleData.Templates.Technologies) {
-            _loop_2(technologyKey);
+            _loop_3(technologyKey);
         }
     }
     var _a;
@@ -23568,7 +23704,7 @@ define("modules/common/battlesfxfunctions/shaders/BlackToAlpha", ["require", "ex
     ];
     var _a;
 });
-define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_43) {
+define("modules/common/battlesfxfunctions/projectileattack", ["require", "exports", "src/utility"], function (require, exports, utility_44) {
     "use strict";
     function projectileAttack(props, params) {
         var minY = Math.max(params.height * 0.3, 30);
@@ -23585,7 +23721,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
         var stopSpawningTime = startTime + params.duration / 2;
         var lastTime = startTime;
         var nextSpawnTime = startTime;
-        var amountToSpawn = utility_43.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
+        var amountToSpawn = utility_44.randInt(props.amountToSpawn.min, props.amountToSpawn.max);
         var spawnRate = (stopSpawningTime - startTime) / amountToSpawn;
         var projectiles = [];
         var hasTriggeredEffect = false;
@@ -23595,16 +23731,16 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
             lastTime = currentTime;
             if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
                 nextSpawnTime += spawnRate;
-                var texture = utility_43.getRandomArrayItem(props.projectileTextures);
+                var texture = utility_44.getRandomArrayItem(props.projectileTextures);
                 var sprite = new PIXI.Sprite(texture);
                 sprite.x = 20;
-                sprite.y = utility_43.randInt(minY, maxY);
+                sprite.y = utility_44.randInt(minY, maxY);
                 container.addChild(sprite);
                 projectiles.push({
                     sprite: sprite,
                     speed: 0,
                     willImpact: (projectiles.length - 1) % props.impactRate === 0,
-                    impactX: utility_43.randInt(params.width - 200, params.width - 50),
+                    impactX: utility_44.randInt(params.width - 200, params.width - 50),
                     hasImpact: false
                 });
             }
@@ -23623,7 +23759,7 @@ define("modules/common/battlesfxfunctions/projectileattack", ["require", "export
                         params.triggerEffect();
                     }
                     projectile.hasImpact = true;
-                    var impactTextures = utility_43.getRandomArrayItem(props.impactTextures);
+                    var impactTextures = utility_44.getRandomArrayItem(props.impactTextures);
                     var impactClip = new PIXI.extras.MovieClip(impactTextures);
                     impactClip.anchor = new PIXI.Point(0.5, 0.5);
                     impactClip.loop = false;
@@ -23799,7 +23935,7 @@ define("modules/common/battlesfxfunctions/shaders/Guard", ["require", "exports"]
     ];
     var _a;
 });
-define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_44) {
+define("modules/common/battlesfxfunctions/guard", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Guard", "src/utility"], function (require, exports, Guard_1, utility_45) {
     "use strict";
     function guard(props) {
         var userCanvasWidth = props.width * 0.4;
@@ -23831,9 +23967,9 @@ define("modules/common/battlesfxfunctions/guard", ["require", "exports", "module
                     hasTriggeredEffect = true;
                     props.triggerEffect();
                 }
-                var adjustedtime = utility_44.getRelativeValue(time, travelTime - 0.02, 1);
+                var adjustedtime = utility_45.getRelativeValue(time, travelTime - 0.02, 1);
                 adjustedtime = Math.pow(adjustedtime, 4);
-                var relativeDistance = utility_44.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+                var relativeDistance = utility_45.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
                 guardFilter.setUniformValues({
                     trailDistance: baseTrailDistance + trailDistanceGrowth * adjustedtime,
                     blockWidth: adjustedtime * maxBlockWidth,
@@ -24303,7 +24439,6 @@ define("modules/common/battlesfxfunctions/shaders/LightBurst", ["require", "expo
         "// Tileable noise, for creating useful textures. By David Hoskins, Sept. 2013.",
         "// It can be extrapolated to other types of randomised texture.",
         "",
-        "// TODO license?",
         "// https://www.shadertoy.com/terms says default license is CC BY-NC-SA 3.0 which should be fine",
         "",
         "float hash(in vec2 p, in float scale)",
@@ -24437,7 +24572,6 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
             sprite.scale.x = particle.scale;
             sprite.scale.y = particle.scale;
             sprite.alpha = particle.alpha;
-            sprite.rotation = particle.rotation * PIXI.DEG_TO_RAD;
         };
         ProtonWrapper.prototype.onProtonParticleDead = function (particle) {
             this.container.removeChild(particle.sprite);
@@ -24484,7 +24618,7 @@ define("modules/common/battlesfxfunctions/ProtonWrapper", ["require", "exports"]
     exports.default = ProtonWrapper;
     var _a;
 });
-define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_45, ProtonWrapper_1) {
+define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", "modules/common/battlesfxfunctions/shaders/Beam", "modules/common/battlesfxfunctions/shaders/ShinyParticle", "modules/common/battlesfxfunctions/shaders/IntersectingEllipses", "modules/common/battlesfxfunctions/shaders/LightBurst", "src/utility", "modules/common/battlesfxfunctions/ProtonWrapper"], function (require, exports, Beam_1, ShinyParticle_1, IntersectingEllipses_1, LightBurst_1, utility_46, ProtonWrapper_1) {
     "use strict";
     function particleTest(props) {
         var width2 = props.width / 2;
@@ -24553,7 +24687,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             var rampUpValue = Math.min(time / relativeImpactTime, 1.0);
             rampUpValue = Math.pow(rampUpValue, 7.0);
             var timeAfterImpact = Math.max(time - relativeImpactTime, 0.0);
-            var relativeTimeAfterImpact = utility_45.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
+            var relativeTimeAfterImpact = utility_46.getRelativeValue(timeAfterImpact, 0.0, 1.0 - relativeImpactTime);
             var rampDownValue = Math.min(Math.pow(relativeTimeAfterImpact * 1.2, 12.0), 1.0);
             var beamIntensity = rampUpValue - rampDownValue;
             beamFilter.setUniformValues({
@@ -24575,7 +24709,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
                 lineYSharpness: 0.99 - beamIntensity * 0.15 + 0.01 * rampDownValue
             });
         };
-        var beamSprite = utility_45.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
+        var beamSprite = utility_46.createDummySpriteForShader(0, beamOrigin.y - beamSpriteSize.y / 2, beamSpriteSize.x, beamSpriteSize.y);
         beamSprite.shader = beamFilter;
         beamSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(beamSprite);
@@ -24616,7 +24750,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
         var shinyEmitter = new Proton.BehaviourEmitter();
         shinyEmitter.p.x = beamOrigin.x;
         shinyEmitter.p.y = beamOrigin.y;
-        var shinyParticleTexture = utility_45.getDummyTextureForShader();
+        var shinyParticleTexture = utility_46.getDummyTextureForShader();
         shinyEmitter.addInitialize(new Proton.ImageTarget(shinyParticleTexture));
         var shinyEmitterLifeInitialize = new Proton.Life(new Proton.Span(props.duration / 3000, props.duration / 1000));
         shinyEmitter.addInitialize(shinyEmitterLifeInitialize);
@@ -24683,7 +24817,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             x: props.height * 3.0,
             y: props.height * 3.0
         };
-        var shockWaveSprite = utility_45.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
+        var shockWaveSprite = utility_46.createDummySpriteForShader(beamOrigin.x - (shockWaveSpriteSize.x / 2 * 1.04), beamOrigin.y - shockWaveSpriteSize.y / 2, shockWaveSpriteSize.x, shockWaveSpriteSize.y);
         shockWaveSprite.shader = shockWaveFilter;
         mainContainer.addChild(shockWaveSprite);
         var lightBurstFilter = new LightBurst_1.default({
@@ -24708,7 +24842,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             x: props.height * 1.5,
             y: props.height * 3
         };
-        var lightBurstSprite = utility_45.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
+        var lightBurstSprite = utility_46.createDummySpriteForShader(beamOrigin.x - lightBurstSize.x / 2, beamOrigin.y - lightBurstSize.y / 2, lightBurstSize.x, lightBurstSize.y);
         lightBurstSprite.shader = lightBurstFilter;
         lightBurstSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
         mainContainer.addChild(lightBurstSprite);
@@ -24723,7 +24857,7 @@ define("modules/common/battlesfxfunctions/particleTest", ["require", "exports", 
             particleShaderColorArray[3] = particleShaderColor.a;
             var timePassed = elapsedTime / props.duration;
             var lifeLeft = 1 - timePassed;
-            var timePassedSinceImpact = utility_45.getRelativeValue(timePassed, relativeImpactTime, 1.0);
+            var timePassedSinceImpact = utility_46.getRelativeValue(timePassed, relativeImpactTime, 1.0);
             if (timePassed >= relativeImpactTime - 0.02) {
                 if (!impactHasOccurred) {
                     impactHasOccurred = true;
@@ -25325,127 +25459,127 @@ define("modules/common/copyCommonTemplates", ["require", "exports", "modules/com
 });
 define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], function (require, exports) {
     "use strict";
-    var Aguila_explayada_2 = {
+    exports.Aguila_explayada_2 = {
         key: "Aguila_explayada_2",
         src: "modules/defaultemblems/img/Aguila_explayada_2.svg",
         coverage: [2],
         position: [2]
     };
-    var Berliner_Baer = {
+    exports.Berliner_Baer = {
         key: "Berliner_Baer",
         src: "modules/defaultemblems/img/Berliner_Baer.svg",
         coverage: [2],
         position: [2]
     };
-    var Cles_en_sautoir = {
+    exports.Cles_en_sautoir = {
         key: "Cles_en_sautoir",
         src: "modules/defaultemblems/img/Cles_en_sautoir.svg",
         coverage: [2],
         position: [2]
     };
-    var Coa_Illustration_Cross_Bowen_3 = {
+    exports.Coa_Illustration_Cross_Bowen_3 = {
         key: "Coa_Illustration_Cross_Bowen_3",
         src: "modules/defaultemblems/img/Coa_Illustration_Cross_Bowen_3.svg",
         coverage: [2],
         position: [2]
     };
-    var Coa_Illustration_Cross_Malte_1 = {
+    exports.Coa_Illustration_Cross_Malte_1 = {
         key: "Coa_Illustration_Cross_Malte_1",
         src: "modules/defaultemblems/img/Coa_Illustration_Cross_Malte_1.svg",
         coverage: [2],
         position: [2]
     };
-    var Coa_Illustration_Elements_Planet_Moon = {
+    exports.Coa_Illustration_Elements_Planet_Moon = {
         key: "Coa_Illustration_Elements_Planet_Moon",
         src: "modules/defaultemblems/img/Coa_Illustration_Elements_Planet_Moon.svg",
         coverage: [2],
         position: [2]
     };
-    var Couronne_heraldique_svg = {
+    exports.Couronne_heraldique_svg = {
         key: "Couronne_heraldique_svg",
         src: "modules/defaultemblems/img/Couronne_heraldique_svg.svg",
         coverage: [2],
         position: [2]
     };
-    var Gomaisasa = {
+    exports.Gomaisasa = {
         key: "Gomaisasa",
         src: "modules/defaultemblems/img/Gomaisasa.svg",
         coverage: [2],
         position: [2]
     };
-    var Gryphon_Segreant = {
+    exports.Gryphon_Segreant = {
         key: "Gryphon_Segreant",
         src: "modules/defaultemblems/img/Gryphon_Segreant.svg",
         coverage: [2],
         position: [2]
     };
-    var Heraldic_pentacle = {
+    exports.Heraldic_pentacle = {
         key: "Heraldic_pentacle",
         src: "modules/defaultemblems/img/Heraldic_pentacle.svg",
         coverage: [2],
         position: [2]
     };
-    var Japanese_Crest_Futatsudomoe_1 = {
+    exports.Japanese_Crest_Futatsudomoe_1 = {
         key: "Japanese_Crest_Futatsudomoe_1",
         src: "modules/defaultemblems/img/Japanese_Crest_Futatsudomoe_1.svg",
         coverage: [2],
         position: [2]
     };
-    var Japanese_Crest_Hana_Hisi = {
+    exports.Japanese_Crest_Hana_Hisi = {
         key: "Japanese_Crest_Hana_Hisi",
         src: "modules/defaultemblems/img/Japanese_Crest_Hana_Hisi.svg",
         coverage: [2],
         position: [2]
     };
-    var Japanese_Crest_Mitsumori_Janome = {
+    exports.Japanese_Crest_Mitsumori_Janome = {
         key: "Japanese_Crest_Mitsumori_Janome",
         src: "modules/defaultemblems/img/Japanese_Crest_Mitsumori_Janome.svg",
         coverage: [2],
         position: [2]
     };
-    var Japanese_Crest_Oda_ka = {
+    exports.Japanese_Crest_Oda_ka = {
         key: "Japanese_Crest_Oda_ka",
         src: "modules/defaultemblems/img/Japanese_Crest_Oda_ka.svg",
         coverage: [2],
         position: [2]
     };
-    var Japanese_crest_Tsuki_ni_Hoshi = {
+    exports.Japanese_crest_Tsuki_ni_Hoshi = {
         key: "Japanese_crest_Tsuki_ni_Hoshi",
         src: "modules/defaultemblems/img/Japanese_crest_Tsuki_ni_Hoshi.svg",
         coverage: [2],
         position: [2]
     };
-    var Japanese_Crest_Ume = {
+    exports.Japanese_Crest_Ume = {
         key: "Japanese_Crest_Ume",
         src: "modules/defaultemblems/img/Japanese_Crest_Ume.svg",
         coverage: [2],
         position: [2]
     };
-    var Mitsuuroko = {
+    exports.Mitsuuroko = {
         key: "Mitsuuroko",
         src: "modules/defaultemblems/img/Mitsuuroko.svg",
         coverage: [2],
         position: [2]
     };
-    var Musubikashiwa = {
+    exports.Musubikashiwa = {
         key: "Musubikashiwa",
         src: "modules/defaultemblems/img/Musubi-kashiwa.svg",
         coverage: [2],
         position: [2]
     };
-    var Takeda_mon = {
+    exports.Takeda_mon = {
         key: "Takeda_mon",
         src: "modules/defaultemblems/img/Takeda_mon.svg",
         coverage: [2],
         position: [2]
     };
-    var threeHorns = {
+    exports.threeHorns = {
         key: "threeHorns",
         src: "modules/defaultemblems/img/threeHorns.svg",
         coverage: [2],
         position: [2]
     };
-    var Flag_of_Edward_England = {
+    exports.Flag_of_Edward_England = {
         key: "Flag_of_Edward_England",
         src: "modules/defaultemblems/img/Flag_of_Edward_England.svg",
         coverage: [2],
@@ -25453,27 +25587,27 @@ define("modules/defaultemblems/SubEmblemTemplates", ["require", "exports"], func
         disallowRandomGeneration: true
     };
     var SubEmblemTemplates = (_b = {},
-        _b[Aguila_explayada_2.key] = Aguila_explayada_2,
-        _b[Berliner_Baer.key] = Berliner_Baer,
-        _b[Cles_en_sautoir.key] = Cles_en_sautoir,
-        _b[Coa_Illustration_Cross_Bowen_3.key] = Coa_Illustration_Cross_Bowen_3,
-        _b[Coa_Illustration_Cross_Malte_1.key] = Coa_Illustration_Cross_Malte_1,
-        _b[Coa_Illustration_Elements_Planet_Moon.key] = Coa_Illustration_Elements_Planet_Moon,
-        _b[Couronne_heraldique_svg.key] = Couronne_heraldique_svg,
-        _b[Gomaisasa.key] = Gomaisasa,
-        _b[Gryphon_Segreant.key] = Gryphon_Segreant,
-        _b[Heraldic_pentacle.key] = Heraldic_pentacle,
-        _b[Japanese_Crest_Futatsudomoe_1.key] = Japanese_Crest_Futatsudomoe_1,
-        _b[Japanese_Crest_Hana_Hisi.key] = Japanese_Crest_Hana_Hisi,
-        _b[Japanese_Crest_Mitsumori_Janome.key] = Japanese_Crest_Mitsumori_Janome,
-        _b[Japanese_Crest_Oda_ka.key] = Japanese_Crest_Oda_ka,
-        _b[Japanese_crest_Tsuki_ni_Hoshi.key] = Japanese_crest_Tsuki_ni_Hoshi,
-        _b[Japanese_Crest_Ume.key] = Japanese_Crest_Ume,
-        _b[Mitsuuroko.key] = Mitsuuroko,
-        _b[Musubikashiwa.key] = Musubikashiwa,
-        _b[Takeda_mon.key] = Takeda_mon,
-        _b[threeHorns.key] = threeHorns,
-        _b[Flag_of_Edward_England.key] = Flag_of_Edward_England,
+        _b[exports.Aguila_explayada_2.key] = exports.Aguila_explayada_2,
+        _b[exports.Berliner_Baer.key] = exports.Berliner_Baer,
+        _b[exports.Cles_en_sautoir.key] = exports.Cles_en_sautoir,
+        _b[exports.Coa_Illustration_Cross_Bowen_3.key] = exports.Coa_Illustration_Cross_Bowen_3,
+        _b[exports.Coa_Illustration_Cross_Malte_1.key] = exports.Coa_Illustration_Cross_Malte_1,
+        _b[exports.Coa_Illustration_Elements_Planet_Moon.key] = exports.Coa_Illustration_Elements_Planet_Moon,
+        _b[exports.Couronne_heraldique_svg.key] = exports.Couronne_heraldique_svg,
+        _b[exports.Gomaisasa.key] = exports.Gomaisasa,
+        _b[exports.Gryphon_Segreant.key] = exports.Gryphon_Segreant,
+        _b[exports.Heraldic_pentacle.key] = exports.Heraldic_pentacle,
+        _b[exports.Japanese_Crest_Futatsudomoe_1.key] = exports.Japanese_Crest_Futatsudomoe_1,
+        _b[exports.Japanese_Crest_Hana_Hisi.key] = exports.Japanese_Crest_Hana_Hisi,
+        _b[exports.Japanese_Crest_Mitsumori_Janome.key] = exports.Japanese_Crest_Mitsumori_Janome,
+        _b[exports.Japanese_Crest_Oda_ka.key] = exports.Japanese_Crest_Oda_ka,
+        _b[exports.Japanese_crest_Tsuki_ni_Hoshi.key] = exports.Japanese_crest_Tsuki_ni_Hoshi,
+        _b[exports.Japanese_Crest_Ume.key] = exports.Japanese_Crest_Ume,
+        _b[exports.Mitsuuroko.key] = exports.Mitsuuroko,
+        _b[exports.Musubikashiwa.key] = exports.Musubikashiwa,
+        _b[exports.Takeda_mon.key] = exports.Takeda_mon,
+        _b[exports.threeHorns.key] = exports.threeHorns,
+        _b[exports.Flag_of_Edward_England.key] = exports.Flag_of_Edward_England,
         _b
     );
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -25564,7 +25698,7 @@ define("modules/defaultruleset/defaultRuleset", ["require", "exports"], function
     exports.default = defaultRuleSet;
     var _a, _b;
 });
-define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, DiplomacyState_3, utility_46) {
+define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility"], function (require, exports, Objective_1, DiplomacyState_3, utility_47) {
     "use strict";
     function moveToRoutine(front, afterMoveCallback, getMoveTargetFN) {
         var fleets = front.getAssociatedFleets();
@@ -25707,7 +25841,7 @@ define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective"
         var cost = unit.getTotalCost();
         baseScore -= cost / 1000;
         var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 2);
-        return utility_46.clamp(score, 0, 1);
+        return utility_47.clamp(score, 0, 1);
     }
     exports.scoutingUnitFitFN = scoutingUnitFitFN;
     function mergeScoresByStar(merged, scores) {
@@ -25736,7 +25870,7 @@ define("modules/defaultai/aiUtils", ["require", "exports", "src/mapai/Objective"
             var player = evaluationScores[i].player || null;
             if (score < 0.04)
                 continue;
-            var relativeScore = utility_46.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
+            var relativeScore = utility_47.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
             var priority = relativeScore * basePriority;
             allObjectives.push(new Objective_1.default(template, priority, star, player));
         }
@@ -25876,7 +26010,7 @@ define("modules/defaultai/objectives/cleanUpPirates", ["require", "exports", "mo
     exports.default = cleanUpPirates;
     var _a, _b;
 });
-define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, utility_47, aiUtils_4) {
+define("modules/defaultai/objectives/discovery", ["require", "exports", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, utility_48, aiUtils_4) {
     "use strict";
     var discovery = {
         key: "discovery",
@@ -25914,7 +26048,7 @@ define("modules/defaultai/objectives/discovery", ["require", "exports", "src/uti
             for (var starId in linksToUnrevealedStars) {
                 var star = mapEvaluator.player.revealedStars[starId];
                 var score = 0;
-                var relativeDistance = utility_47.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
+                var relativeDistance = utility_48.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
                 var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
                 var linksScore = linksToUnrevealedStars[starId].length * 20;
                 score += linksScore;
@@ -25968,7 +26102,7 @@ define("modules/defaultai/objectives/heal", ["require", "exports", "src/mapai/Ob
     exports.default = heal;
     var _a, _b;
 });
-define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, Objective_3, DiplomacyState_4, utility_48, aiUtils_6) {
+define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai/Objective", "src/DiplomacyState", "src/utility", "modules/defaultai/aiUtils"], function (require, exports, Objective_3, DiplomacyState_4, utility_49, aiUtils_6) {
     "use strict";
     var conquer = {
         key: "conquer",
@@ -25993,7 +26127,7 @@ define("modules/defaultai/objectives/conquer", ["require", "exports", "src/mapai
             var possibleTargets = [];
             for (var i = 0; i < hostilePlayers.length; i++) {
                 var desirabilityByStar = mapEvaluator.evaluateDesirabilityOfPlayersStars(hostilePlayers[i]).byStar;
-                var sortedIds = utility_48.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
+                var sortedIds = utility_49.getObjectKeysSortedByValueOfProp(desirabilityByStar, "desirabilityByStar", "desc");
                 if (sortedIds.length === 0) {
                     continue;
                 }
@@ -26161,7 +26295,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "bombLauncher1",
         displayName: "Bomb Launcher 1",
         description: "",
-        icon: "modules/default/img/items/cannon.png",
+        icon: "modules/defaultitems/img/cannon.png",
         techLevel: 1,
         buildCost: 100,
         slot: "high",
@@ -26171,7 +26305,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "bombLauncher2",
         displayName: "Bomb Launcher 2",
         description: "",
-        icon: "modules/default/img/items/cannon.png",
+        icon: "modules/defaultitems/img/cannon.png",
         techLevel: 2,
         buildCost: 200,
         attributes: {
@@ -26184,7 +26318,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "bombLauncher3",
         displayName: "Bomb Launcher 3",
         description: "",
-        icon: "modules/default/img/items/cannon.png",
+        icon: "modules/defaultitems/img/cannon.png",
         techLevel: 3,
         buildCost: 300,
         attributes: {
@@ -26197,7 +26331,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "afterBurner1",
         displayName: "Afterburner 1",
         description: "",
-        icon: "modules/default/img/items/blueThing.png",
+        icon: "modules/defaultitems/img/blueThing.png",
         techLevel: 1,
         buildCost: 100,
         attributes: {
@@ -26210,7 +26344,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "afterBurner2",
         displayName: "Afterburner 2",
         description: "",
-        icon: "modules/default/img/items/blueThing.png",
+        icon: "modules/defaultitems/img/blueThing.png",
         techLevel: 2,
         buildCost: 200,
         attributes: {
@@ -26222,7 +26356,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "afterBurner3",
         displayName: "Afterburner 3",
         description: "",
-        icon: "modules/default/img/items/blueThing.png",
+        icon: "modules/defaultitems/img/blueThing.png",
         techLevel: 3,
         buildCost: 300,
         attributes: {
@@ -26235,7 +26369,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "shieldPlating1",
         displayName: "Shield Plating 1",
         description: "",
-        icon: "modules/default/img/items/armor1.png",
+        icon: "modules/defaultitems/img/armor1.png",
         techLevel: 1,
         buildCost: 100,
         attributes: {
@@ -26247,7 +26381,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "shieldPlating2",
         displayName: "Shield Plating 2",
         description: "",
-        icon: "modules/default/img/items/armor1.png",
+        icon: "modules/defaultitems/img/armor1.png",
         techLevel: 2,
         buildCost: 200,
         attributes: {
@@ -26259,7 +26393,7 @@ define("modules/defaultitems/ItemTemplates", ["require", "exports", "modules/com
         type: "shieldPlating3",
         displayName: "Shield Plating 3",
         description: "",
-        icon: "modules/default/img/items/armor1.png",
+        icon: "modules/defaultitems/img/armor1.png",
         techLevel: 3,
         buildCost: 300,
         attributes: {
@@ -26410,7 +26544,7 @@ define("modules/defaultunits/unitFamilies", ["require", "exports"], function (re
     exports.default = UnitFamilies;
     var _a, _b, _c, _d, _e, _f;
 });
-define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_40, utility_49) {
+define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports", "src/App", "src/utility"], function (require, exports, App_40, utility_50) {
     "use strict";
     var defaultUnitDrawingFunction = function (unit, SFXParams) {
         var spriteTemplate = unit.template.sprite;
@@ -26447,7 +26581,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
             unitsToDraw = Math.round(unitsToDraw * heightRatio);
             zDistance *= (1 / heightRatio);
-            unitsToDraw = utility_49.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+            unitsToDraw = utility_50.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
         }
         var xMin, xMax, yMin, yMax;
         var rotationAngle = Math.PI / 180 * props.rotationAngle;
@@ -26491,7 +26625,7 @@ define("modules/defaultunits/defaultUnitDrawingFunction", ["require", "exports",
             var scaledHeight = image.height * scale;
             var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
             var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-            var translated = utility_49.transformMat3({ x: x, y: y }, rotationMatrix);
+            var translated = utility_50.transformMat3({ x: x, y: y }, rotationMatrix);
             x = Math.round(translated.x);
             y = Math.round(translated.y);
             var sprite = new PIXI.Sprite(texture);
@@ -26680,38 +26814,231 @@ define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", 
     exports.default = defaultAttitudeModifiers;
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
+define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_41) {
+    "use strict";
+    var TemplateIndexes = (function () {
+        function TemplateIndexes() {
+            this.builtIndexes = {
+                distributablesByTypeAndDistributionGroup: null,
+                itemsByTechLevel: null,
+            };
+        }
+        Object.defineProperty(TemplateIndexes.prototype, "distributablesByDistributionGroup", {
+            get: function () {
+                if (!this.builtIndexes.distributablesByTypeAndDistributionGroup) {
+                    this.builtIndexes.distributablesByTypeAndDistributionGroup =
+                        TemplateIndexes.getDistributablesByTypeAndDistributionGroup();
+                }
+                return this.builtIndexes.distributablesByTypeAndDistributionGroup;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TemplateIndexes.prototype, "itemsByTechLevel", {
+            get: function () {
+                if (!this.builtIndexes.itemsByTechLevel) {
+                    this.builtIndexes.itemsByTechLevel = TemplateIndexes.getItemsByTechLevel();
+                }
+                return this.builtIndexes.itemsByTechLevel;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        TemplateIndexes.prototype.clear = function () {
+            for (var key in this.builtIndexes) {
+                this.builtIndexes[key] = null;
+            }
+        };
+        TemplateIndexes.getDistributablesByTypeAndDistributionGroup = function () {
+            return ({
+                unitFamilies: TemplateIndexes.getDistributablesByGroup(App_41.default.moduleData.Templates.UnitFamilies),
+                resources: TemplateIndexes.getDistributablesByGroup(App_41.default.moduleData.Templates.Resources)
+            });
+        };
+        TemplateIndexes.getDistributablesByGroup = function (allDistributables) {
+            var byGroup = {};
+            var _loop_5 = function(key) {
+                var distributable = allDistributables[key];
+                distributable.distributionGroups.forEach(function (group) {
+                    if (!byGroup[group]) {
+                        byGroup[group] = [];
+                    }
+                    byGroup[group].push(distributable);
+                });
+            };
+            for (var key in allDistributables) {
+                _loop_5(key);
+            }
+            return byGroup;
+        };
+        TemplateIndexes.getItemsByTechLevel = function () {
+            var itemsByTechLevel = {};
+            for (var itemName in App_41.default.moduleData.Templates.Items) {
+                var item = App_41.default.moduleData.Templates.Items[itemName];
+                if (!itemsByTechLevel[item.techLevel]) {
+                    itemsByTechLevel[item.techLevel] = [];
+                }
+                itemsByTechLevel[item.techLevel].push(item);
+            }
+            return itemsByTechLevel;
+        };
+        return TemplateIndexes;
+    }());
+    var indexes = new TemplateIndexes();
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = indexes;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+});
 define("modules/defaultmapgen/common/Region", ["require", "exports"], function (require, exports) {
     "use strict";
     var Region = (function () {
-        function Region(id, isFiller) {
+        function Region(id, initialStars) {
+            var _this = this;
             this.stars = [];
-            this.fillerPoints = [];
+            this.starsByID = {};
             this.id = id;
-            this.isFiller = isFiller;
+            if (initialStars) {
+                initialStars.forEach(function (star) { return _this.addStar(star); });
+            }
         }
         Region.prototype.addStar = function (star) {
             this.stars.push(star);
-            star.mapGenData.region = this;
+            this.starsByID[star.id] = star;
         };
-        Region.prototype.addFillerPoint = function (point) {
-            this.fillerPoints.push(point);
-            point.mapGenData.region;
-        };
-        Region.prototype.severLinksByQualifier = function (qualifierFN) {
-            for (var i = 0; i < this.stars.length; i++) {
-                var star = this.stars[i];
-                var links = star.getAllLinks();
-                for (var j = 0; j < links.length; j++) {
-                    if (qualifierFN(star, links[j])) {
-                        star.removeLink(links[j]);
-                    }
-                }
-            }
+        Region.prototype.hasStar = function (star) {
+            return Boolean(this.starsByID[star.id]);
         };
         Region.prototype.severLinksToRegionsExcept = function (exemptRegions) {
-            this.severLinksByQualifier(function (a, b) {
-                return exemptRegions.indexOf(b.mapGenData.region) !== -1;
+            this.severLinksForQualifier(function (a, b) {
+                var isPartOfExemptRegion = exemptRegions.some(function (region) {
+                    return region.hasStar(b);
+                });
+                return !isPartOfExemptRegion;
             });
+        };
+        Region.prototype.getBorderLengthWithStars = function (stars) {
+            var sharedHalfEdges = this.getSharedHalfEdgesWithStars(stars);
+            var borderLength = sharedHalfEdges.reduce(function (borderLength, halfEdge) {
+                var edge = halfEdge.edge;
+                var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
+                return edgeLength;
+            }, 0);
+            return borderLength;
+        };
+        Region.prototype.getStarsByDistanceToQualifier = function (qualifierFN) {
+            var starsByDistance = {};
+            this.stars.forEach(function (star) {
+                var nearestStar = star.getNearestStarForQualifier(qualifierFN);
+                var distanceToNearestStar = star.getDistanceToStar(nearestStar);
+                if (!starsByDistance[distanceToNearestStar]) {
+                    starsByDistance[distanceToNearestStar] = [];
+                }
+                starsByDistance[distanceToNearestStar].push(star);
+            });
+            return starsByDistance;
+        };
+        Region.prototype.getLinkedStars = function () {
+            var _this = this;
+            return this.getUniqueStarsFromCallback(function (star) {
+                var linkedStars = star.getLinkedInRange(1).all;
+                return linkedStars.filter(function (linkedStar) {
+                    return !_this.hasStar(linkedStar);
+                });
+            });
+        };
+        Region.prototype.getMajorityRegions = function (regionsToCheck) {
+            var overlappingStarsWithRegions = this.getOverlappingStarsWithRegions(regionsToCheck);
+            var maxStarCount = 0;
+            var regionsByOverlappingStarCount = {};
+            overlappingStarsWithRegions.forEach(function (regionWithStars) {
+                var starCount = regionWithStars.stars.length;
+                if (!regionsByOverlappingStarCount[starCount]) {
+                    regionsByOverlappingStarCount[starCount] = [];
+                }
+                regionsByOverlappingStarCount[starCount].push(regionWithStars.region);
+                maxStarCount = Math.max(maxStarCount, starCount);
+            });
+            return regionsByOverlappingStarCount[maxStarCount];
+        };
+        Region.prototype.getLinkedRegions = function (regionsToCheck) {
+            return this.getLinkedStarsWithRegions(regionsToCheck).map(function (rs) {
+                return rs.region;
+            });
+        };
+        Region.prototype.getSharedHalfEdgesWithStars = function (stars) {
+            var _this = this;
+            var toCheckRegion = new Region(null, stars);
+            var sharedStarsWithRegion = this.getNeighboringStarsWithRegions([toCheckRegion])[0];
+            var neighboringStars = sharedStarsWithRegion ? sharedStarsWithRegion.stars : [];
+            var sharedHalfEdges = [];
+            neighboringStars.forEach(function (star) {
+                star.voronoiCell.halfedges.forEach(function (halfEdge) {
+                    var edge = halfEdge.edge;
+                    var edgeNeighborsThisRegion = ((edge.lSite && _this.hasStar(edge.lSite)) ||
+                        (edge.rSite && _this.hasStar(edge.rSite)));
+                    if (edgeNeighborsThisRegion) {
+                        sharedHalfEdges.push(halfEdge);
+                    }
+                });
+            });
+            return sharedHalfEdges;
+        };
+        Region.prototype.getLinkedStarsWithRegions = function (regionsToCheck) {
+            return Region.getRegionsWithStarsForQualifier(regionsToCheck, this.getLinkedStars(), function (region, star) { return region.hasStar(star); });
+        };
+        Region.prototype.getOverlappingStarsWithRegions = function (regionsToCheck) {
+            return Region.getRegionsWithStarsForQualifier(regionsToCheck, this.stars, function (region, star) { return region.hasStar(star); });
+        };
+        Region.prototype.getNeighboringStarsWithRegions = function (regionsToCheck) {
+            return Region.getRegionsWithStarsForQualifier(regionsToCheck, this.getNeighboringStars(), function (region, star) { return region.hasStar(star); });
+        };
+        Region.getRegionsWithStarsForQualifier = function (regionsToCheck, starsToCheck, qualifierFN) {
+            var regionsWithStarsForQualifier = regionsToCheck.map(function (region) {
+                var starsThatPassQualifier = starsToCheck.filter(function (star) {
+                    return qualifierFN(region, star);
+                });
+                return ({
+                    region: region,
+                    stars: starsThatPassQualifier
+                });
+            });
+            return regionsWithStarsForQualifier.filter(function (regionWithStars) {
+                return regionWithStars.stars.length > 0;
+            });
+        };
+        Region.prototype.severLinksForQualifier = function (qualifierFN) {
+            this.stars.forEach(function (star) {
+                star.getAllLinks().forEach(function (linkedStar) {
+                    if (qualifierFN(star, linkedStar)) {
+                        star.removeLink(linkedStar);
+                    }
+                });
+            });
+        };
+        Region.prototype.getNeighboringStars = function () {
+            var _this = this;
+            return this.getUniqueStarsFromCallback(function (star) {
+                var neighborPoints = star.getNeighbors();
+                return neighborPoints.filter(function (neighbor) {
+                    var isFillerPoint = !isFinite(neighbor.id);
+                    return !isFillerPoint && !_this.hasStar(neighbor);
+                });
+            });
+        };
+        Region.prototype.getUniqueStarsFromCallback = function (callbackFN) {
+            var resultStars = [];
+            var alreadyAdded = {};
+            this.stars.forEach(function (star) {
+                var starsFromCallback = callbackFN(star);
+                var newStarsFromCallback = starsFromCallback.filter(function (star) {
+                    return !alreadyAdded[star.id];
+                });
+                newStarsFromCallback.forEach(function (star) {
+                    alreadyAdded[star.id] = true;
+                    resultStars.push(star);
+                });
+            });
+            return resultStars;
         };
         return Region;
     }());
@@ -26719,180 +27046,148 @@ define("modules/defaultmapgen/common/Region", ["require", "exports"], function (
     exports.default = Region;
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/common/Sector", ["require", "exports", "src/App", "src/Unit", "src/Building", "src/Fleet", "src/utility"], function (require, exports, App_41, Unit_7, Building_4, Fleet_5, utility_50) {
+define("modules/defaultmapgen/common/MapGenPoint", ["require", "exports"], function (require, exports) {
     "use strict";
-    var Sector = (function () {
-        function Sector(id) {
-            this.stars = [];
-            this.addedDistributables = [];
-            this.id = id;
+    var MapGenPoint = (function () {
+        function MapGenPoint(x, y) {
+            this.mapGenData = {};
+            this.x = x;
+            this.y = y;
         }
-        Sector.prototype.addStar = function (star) {
-            if (star.mapGenData.sector) {
-                throw new Error("Star already part of a sector");
-            }
-            this.stars.push(star);
-            star.mapGenData.sector = this;
-        };
-        Sector.prototype.addResource = function (resource) {
-            var star = this.stars[0];
-            this.resourceType = resource;
-            this.resourceLocation = star;
-            star.setResource(resource);
-        };
-        Sector.prototype.getNeighboringStars = function () {
-            var neighbors = [];
-            var alreadyAdded = {};
-            for (var i = 0; i < this.stars.length; i++) {
-                var frontier = this.stars[i].getLinkedInRange(1).all;
-                for (var j = 0; j < frontier.length; j++) {
-                    if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id]) {
-                        neighbors.push(frontier[j]);
-                        alreadyAdded[frontier[j].id] = true;
-                    }
-                }
-            }
-            return neighbors;
-        };
-        Sector.prototype.getNeighboringSectors = function () {
-            var sectors = [];
-            var alreadyAdded = {};
-            var neighborStars = this.getNeighboringStars();
-            for (var i = 0; i < neighborStars.length; i++) {
-                var sector = neighborStars[i].mapGenData.sector;
-                if (!alreadyAdded[sector.id]) {
-                    alreadyAdded[sector.id] = true;
-                    sectors.push(sector);
-                }
-            }
-            return sectors;
-        };
-        Sector.prototype.getMajorityRegions = function () {
-            var regionsByStars = {};
-            var biggestRegionStarCount = 0;
-            for (var i = 0; i < this.stars.length; i++) {
-                var star = this.stars[i];
-                var region = star.mapGenData.region;
-                if (!regionsByStars[region.id]) {
-                    regionsByStars[region.id] =
-                        {
-                            count: 0,
-                            region: region
-                        };
-                }
-                regionsByStars[region.id].count++;
-                if (regionsByStars[region.id].count > biggestRegionStarCount) {
-                    biggestRegionStarCount = regionsByStars[region.id].count;
-                }
-            }
-            var majorityRegions = [];
-            for (var regionId in regionsByStars) {
-                if (regionsByStars[regionId].count >= biggestRegionStarCount) {
-                    majorityRegions.push(regionsByStars[regionId].region);
-                }
-            }
-            return majorityRegions;
-        };
-        Sector.prototype.getPerimeterLengthWithStar = function (star) {
-            var perimeterLength = 0;
-            for (var i = 0; i < this.stars.length; i++) {
-                var ownStar = this.stars[i];
-                var halfEdges = ownStar.voronoiCell.halfedges;
-                for (var j = 0; j < halfEdges.length; j++) {
-                    var edge = halfEdges[j].edge;
-                    if (edge.lSite === star || edge.rSite === star) {
-                        var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
-                        perimeterLength += edgeLength;
-                    }
-                }
-            }
-            return perimeterLength;
-        };
-        Sector.prototype.setupIndependents = function (player, intensity, variance) {
-            if (intensity === void 0) { intensity = 1; }
-            if (variance === void 0) { variance = 0.33; }
-            var independentStars = this.stars.filter(function (star) {
-                return !star.owner || star.owner.isIndependent;
-            });
-            var distanceFromPlayerOwnedLocationById = {};
-            var starIsOwnedByPlayerQualifierFN = function (star) {
-                return star.owner && !star.owner.isIndependent;
-            };
-            var makeUnitFN = function (template, player, unitStatsModifier, unitHealthModifier) {
-                var unit = new Unit_7.default(template);
-                unit.setAttributes(unitStatsModifier);
-                unit.setBaseHealth(unitHealthModifier);
-                player.addUnit(unit);
-                return unit;
-            };
-            var maxDistance = 0;
-            for (var i = 0; i < independentStars.length; i++) {
-                var star = independentStars[i];
-                player.addStar(star);
-                star.addBuilding(new Building_4.default({
-                    template: App_41.default.moduleData.Templates.Buildings["starBase"],
-                    location: star
-                }));
-                var nearestPlayerStar = star.getNearestStarForQualifier(starIsOwnedByPlayerQualifierFN);
-                var distance = star.getDistanceToStar(nearestPlayerStar);
-                distanceFromPlayerOwnedLocationById[star.id] = distance;
-                maxDistance = Math.max(maxDistance, distance);
-            }
-            var starsAtMaxDistance = independentStars.filter(function (star) {
-                return distanceFromPlayerOwnedLocationById[star.id] === maxDistance;
-            });
-            var commanderStar = starsAtMaxDistance.sort(function (a, b) {
-                return b.mapGenData.connectedness - a.mapGenData.connectedness;
-            })[0];
-            var minUnits = 2;
-            var maxUnits = 5;
-            var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
-            for (var i = 0; i < independentStars.length; i++) {
-                var star = independentStars[i];
-                var distance = distanceFromPlayerOwnedLocationById[star.id];
-                var inverseMapGenDistance = 1 - star.mapGenData.distance;
-                var localBuildableUnitTypes = [];
-                for (var j = 0; j < star.buildableUnitTypes.length; j++) {
-                    var template = star.buildableUnitTypes[j];
-                    if (!template.technologyRequirements ||
-                        star.owner.meetsTechnologyRequirements(template.technologyRequirements)) {
-                        localBuildableUnitTypes.push(template);
-                    }
-                }
-                var unitsToAddCount = minUnits;
-                for (var j = minUnits; j < distance; j++) {
-                    unitsToAddCount += (1 - variance + Math.random() * distance * variance) * intensity;
-                    if (unitsToAddCount >= maxUnits) {
-                        unitsToAddCount = maxUnits;
-                        break;
-                    }
-                }
-                var elitesAmount = Math.floor(unitsToAddCount / 2);
-                var templateCandidates = localBuildableUnitTypes.concat(globalBuildableUnitTypes);
-                var units = [];
-                if (star === commanderStar) {
-                    var template = utility_50.getRandomArrayItem(localBuildableUnitTypes);
-                    var commander = makeUnitFN(template, player, 1.4, 1.4 + inverseMapGenDistance);
-                    commander.name = "Pirate commander";
-                    units.push(commander);
-                }
-                for (var j = 0; j < unitsToAddCount; j++) {
-                    var isElite = j < elitesAmount;
-                    var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
-                    var unitStatsModifier = (isElite ? 1.2 : 1);
-                    var template = utility_50.getRandomArrayItem(templateCandidates);
-                    var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
-                    unit.name = (isElite ? "Pirate elite" : "Pirate");
-                    units.push(unit);
-                }
-                var fleet = new Fleet_5.default(player, units, star, undefined, false);
-                fleet.name = "Pirates";
-            }
-        };
-        return Sector;
+        return MapGenPoint;
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = Sector;
+    exports.default = MapGenPoint;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+});
+define("modules/defaultbuildings/templates/Templates", ["require", "exports"], function (require, exports) {
+    "use strict";
+    exports.sectorCommand = {
+        type: "sectorCommand",
+        category: "defence",
+        family: "sectorCommand",
+        displayName: "Sector Command",
+        description: "Defence building with slight defender advantage. (All defence buildings must " +
+            "be captured to gain control of area)",
+        iconSrc: "sectorCommand.png",
+        buildCost: 200,
+        maxPerType: 1,
+        maxUpgradeLevel: 1,
+        upgradeInto: [
+            {
+                templateType: "sectorCommand1",
+                level: 1
+            },
+            {
+                templateType: "sectorCommand2",
+                level: 1
+            }
+        ],
+        defenderAdvantage: 0.2
+    };
+    exports.sectorCommand1 = {
+        type: "sectorCommand1",
+        category: "defence",
+        family: "sectorCommand",
+        displayName: "Sector Command1",
+        description: "just testing upgrade paths",
+        iconSrc: "sectorCommand.png",
+        buildCost: 100,
+        maxPerType: 1,
+        maxUpgradeLevel: 1,
+        upgradeOnly: true,
+        defenderAdvantage: 0.3
+    };
+    exports.sectorCommand2 = {
+        type: "sectorCommand2",
+        category: "defence",
+        family: "sectorCommand",
+        displayName: "Sector Command2",
+        description: "just testing upgrade paths",
+        iconSrc: "sectorCommand.png",
+        buildCost: 200,
+        maxPerType: 1,
+        maxUpgradeLevel: 1,
+        upgradeOnly: true,
+        defenderAdvantage: 0.3
+    };
+    exports.starBase = {
+        type: "starBase",
+        category: "defence",
+        displayName: "Starbase",
+        description: "Defence building with no defender advantage. (All defence buildings must " +
+            "be captured to gain control of area)",
+        iconSrc: "starBase.png",
+        buildCost: 200,
+        maxPerType: 3,
+        maxUpgradeLevel: 1,
+        defenderAdvantage: 0.1,
+        upgradeInto: [
+            {
+                templateType: "sectorCommand",
+                level: 1
+            }
+        ]
+    };
+    exports.commercialPort = {
+        type: "commercialPort",
+        category: "economy",
+        displayName: "Commercial Spaceport",
+        description: "Increase star income by 20",
+        iconSrc: "commercialPort.png",
+        buildCost: 200,
+        maxPerType: 1,
+        effect: {
+            income: {
+                flat: 20
+            }
+        },
+        maxUpgradeLevel: 4
+    };
+    exports.deepSpaceRadar = {
+        type: "deepSpaceRadar",
+        category: "vision",
+        displayName: "Deep Space Radar",
+        description: "Increase star vision and detection radius",
+        iconSrc: "commercialPort.png",
+        buildCost: 200,
+        maxPerType: 1,
+        effect: {
+            vision: 1,
+            detection: 0.999
+        },
+        maxUpgradeLevel: 2
+    };
+    exports.resourceMine = {
+        type: "resourceMine",
+        category: "mine",
+        displayName: "Mine",
+        description: "Gathers resources from current star",
+        iconSrc: "commercialPort.png",
+        buildCost: 500,
+        maxPerType: 1,
+        effect: {
+            resourceIncome: {
+                flat: 1
+            }
+        },
+        maxUpgradeLevel: 3
+    };
+    exports.reserachLab = {
+        type: "reserachLab",
+        category: "research",
+        displayName: "Research Lab",
+        description: "Increase research speed",
+        iconSrc: "commercialPort.png",
+        buildCost: 300,
+        maxPerType: 1,
+        effect: {
+            research: {
+                flat: 10
+            }
+        },
+        maxUpgradeLevel: 3
+    };
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaultmapgen/common/Triangle", ["require", "exports"], function (require, exports) {
@@ -27016,7 +27311,11 @@ define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modul
                 triangles.splice(i, 1);
             }
         }
-        return triangles;
+        var trianglesWithoutSuperTriangle = triangles.filter(function (triangle) {
+            var verticesSharedWithSuperTriangle = triangle.getAmountOfSharedVerticesWith(superTriangle);
+            return verticesSharedWithSuperTriangle === 0;
+        });
+        return trianglesWithoutSuperTriangle;
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = triangulate;
@@ -27054,84 +27353,9 @@ define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modul
     }
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_42) {
+define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultemblems/SubEmblemTemplates", "modules/defaultmapgen/common/triangulate", "modules/defaultmapgen/common/Region", "src/Building", "src/Player", "src/Color", "src/Emblem", "src/Flag", "src/pathfinding", "src/utility"], function (require, exports, Templates_1, SubEmblemTemplates_2, triangulate_1, Region_1, Building_4, Player_4, Color_5, Emblem_4, Flag_5, pathfinding_1, utility_52) {
     "use strict";
-    var TemplateIndexes = (function () {
-        function TemplateIndexes() {
-            this.builtIndexes = {
-                distributablesByDistributionGroup: null,
-                itemsByTechLevel: null,
-            };
-        }
-        Object.defineProperty(TemplateIndexes.prototype, "distributablesByDistributionGroup", {
-            get: function () {
-                if (!this.builtIndexes.distributablesByDistributionGroup) {
-                    this.builtIndexes.distributablesByDistributionGroup =
-                        TemplateIndexes.getDistributablesByDistributionGroup();
-                }
-                return this.builtIndexes.distributablesByDistributionGroup;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(TemplateIndexes.prototype, "itemsByTechLevel", {
-            get: function () {
-                if (!this.builtIndexes.itemsByTechLevel) {
-                    this.builtIndexes.itemsByTechLevel = TemplateIndexes.getItemsByTechLevel();
-                }
-                return this.builtIndexes.itemsByTechLevel;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        TemplateIndexes.prototype.clear = function () {
-            for (var key in this.builtIndexes) {
-                this.builtIndexes[key] = null;
-            }
-        };
-        TemplateIndexes.getDistributablesByDistributionGroup = function () {
-            var result = {};
-            function putInGroups(distributables, distributableType) {
-                for (var key in distributables) {
-                    var distributable = distributables[key];
-                    for (var i = 0; i < distributable.distributionGroups.length; i++) {
-                        var groupName = distributable.distributionGroups[i];
-                        if (!result[groupName]) {
-                            result[groupName] =
-                                {
-                                    unitFamilies: [],
-                                    resources: []
-                                };
-                        }
-                        result[groupName][distributableType].push(distributable);
-                    }
-                }
-            }
-            putInGroups(App_42.default.moduleData.Templates.UnitFamilies, "unitFamilies");
-            putInGroups(App_42.default.moduleData.Templates.Resources, "resources");
-            return result;
-        };
-        TemplateIndexes.getItemsByTechLevel = function () {
-            var itemsByTechLevel = {};
-            for (var itemName in App_42.default.moduleData.Templates.Items) {
-                var item = App_42.default.moduleData.Templates.Items[itemName];
-                if (!itemsByTechLevel[item.techLevel]) {
-                    itemsByTechLevel[item.techLevel] = [];
-                }
-                itemsByTechLevel[item.techLevel].push(item);
-            }
-            return itemsByTechLevel;
-        };
-        return TemplateIndexes;
-    }());
-    var indexes = new TemplateIndexes();
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = indexes;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
-});
-define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/App", "modules/defaultmapgen/common/Sector", "modules/defaultmapgen/common/triangulate", "src/Building", "src/Color", "src/Emblem", "src/Flag", "src/TemplateIndexes", "src/pathfinding", "src/utility"], function (require, exports, App_43, Sector_1, triangulate_1, Building_5, Color_5, Emblem_4, Flag_5, TemplateIndexes_1, pathfinding_1, utility_52) {
-    "use strict";
-    function linkAllStars(stars) {
+    function linkStarsByTriangulation(stars) {
         if (stars.length < 3) {
             if (stars.length === 2) {
                 stars[0].addLink(stars[1]);
@@ -27146,101 +27370,106 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
             }
         }
     }
-    exports.linkAllStars = linkAllStars;
-    function partiallyCutLinks(stars, minConnections, maxCutsPerRegion) {
-        for (var i = 0; i < stars.length; i++) {
-            var star = stars[i];
-            var regionsAlreadyCut = {};
+    exports.linkStarsByTriangulation = linkStarsByTriangulation;
+    function partiallySeverLinks(stars, mapGenDataByStarID, minConnectionsToKeep, maxCuts) {
+        stars.forEach(function (star) {
+            var cutsDone = 0;
             var neighbors = star.getAllLinks();
-            if (neighbors.length <= minConnections)
-                continue;
-            for (var j = neighbors.length - 1; j >= 0; j--) {
-                var neighbor = neighbors[j];
-                if (regionsAlreadyCut[neighbor.mapGenData.region.id] >= maxCutsPerRegion) {
-                    continue;
-                }
-                var neighborLinks = neighbor.getAllLinks();
-                if (neighbors.length <= minConnections || neighborLinks.length <= minConnections)
-                    continue;
-                var totalLinks = neighbors.length + neighborLinks.length;
-                var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - star.mapGenData.distance);
-                var minMultipleCutThreshhold = 0.15;
-                if (cutThreshhold > 0) {
-                    if (Math.random() < cutThreshhold) {
-                        star.removeLink(neighbor);
-                        neighbors.pop();
-                        if (!regionsAlreadyCut[neighbor.mapGenData.region.id]) {
-                            regionsAlreadyCut[neighbor.mapGenData.region.id] = 0;
-                        }
-                        regionsAlreadyCut[neighbor.mapGenData.region.id]++;
-                        var path = pathfinding_1.aStar(star, neighbor);
-                        if (!path) {
-                            star.addLink(neighbor);
-                            regionsAlreadyCut[neighbor.mapGenData.region.id]--;
-                            neighbors.push(neighbor);
+            var mapGenDistance = mapGenDataByStarID[star.id].mapGenDistance;
+            if (neighbors.length > minConnectionsToKeep) {
+                for (var j = neighbors.length - 1; j >= 0; j--) {
+                    var neighbor = neighbors[j];
+                    if (cutsDone < maxCuts) {
+                        var neighborLinks = neighbor.getAllLinks();
+                        if (neighbors.length <= minConnectionsToKeep || neighborLinks.length <= minConnectionsToKeep)
+                            continue;
+                        var totalLinks = neighbors.length + neighborLinks.length;
+                        var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnectionsToKeep) * (1 - mapGenDistance);
+                        var minMultipleCutThreshhold = 0.15;
+                        if (cutThreshhold > 0) {
+                            if (Math.random() < cutThreshhold) {
+                                star.removeLink(neighbor);
+                                neighbors.pop();
+                                if (!cutsDone) {
+                                    cutsDone = 0;
+                                }
+                                cutsDone++;
+                                var path = pathfinding_1.aStar(star, neighbor);
+                                if (!path) {
+                                    star.addLink(neighbor);
+                                    cutsDone--;
+                                    neighbors.push(neighbor);
+                                }
+                            }
+                            cutThreshhold -= minMultipleCutThreshhold;
                         }
                     }
-                    cutThreshhold -= minMultipleCutThreshhold;
                 }
             }
-        }
+        });
     }
-    exports.partiallyCutLinks = partiallyCutLinks;
-    function calculateConnectedness(stars, maxRange) {
-        for (var i = 0; i < stars.length; i++) {
-            var connectedness = 0;
-            var linkedByRange = stars[i].getLinkedInRange(maxRange).byRange;
-            for (var rangeString in linkedByRange) {
-                var range = parseInt(rangeString);
-                connectedness += linkedByRange[rangeString].length / range;
-            }
-            stars[i].mapGenData.connectedness = connectedness;
+    exports.partiallySeverLinks = partiallySeverLinks;
+    function getStarConnectedness(star, maxRange) {
+        var connectedness = 0;
+        var linkedByRange = star.getLinkedInRange(maxRange).byRange;
+        for (var rangeString in linkedByRange) {
+            var range = parseInt(rangeString);
+            connectedness += linkedByRange[rangeString].length / range;
         }
+        return connectedness;
     }
-    exports.calculateConnectedness = calculateConnectedness;
-    function makeSectors(stars, minSize, maxSize) {
+    exports.getStarConnectedness = getStarConnectedness;
+    function makeSectors(stars, mapGenDataByStarID, minSize, maxSize) {
         var totalStars = stars.length;
-        var unassignedStars = stars.slice(0);
-        var leftoverStars = [];
         var averageSize = (minSize + maxSize) / 2;
         var averageSectorsAmount = Math.round(totalStars / averageSize);
-        var sectorsById = {};
-        var sectorIdGen = 0;
+        var sectorIDGen = 0;
+        var sectorsByID = {};
+        var sectorsByStarID = {};
         var sectorsOverMaxSize = [];
-        var sameSectorFN = function (a, b) {
-            return a.mapGenData.sector === b.mapGenData.sector;
-        };
-        calculateConnectedness(stars, minSize);
+        var unassignedStars = stars.slice(0);
+        var leftoverStars = [];
         unassignedStars.sort(function (a, b) {
-            return b.mapGenData.connectedness - a.mapGenData.connectedness;
+            return mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
         });
-        while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
+        var _loop_6 = function() {
             var seedStar = unassignedStars.pop();
-            var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
+            var islandForSameSector = seedStar.getIslandForQualifier(function (a, b) {
+                return sectorsByStarID[a.id] === sectorsByStarID[b.id];
+            }, minSize);
+            var canFormMinSizeSector = islandForSameSector.length >= minSize;
             if (canFormMinSizeSector) {
-                var sector = new Sector_1.default(sectorIdGen++);
-                sectorsById[sector.id] = sector;
+                var sectorID = sectorIDGen++;
+                var sector_1 = new Region_1.default("sector_" + sectorID);
+                sectorsByID[sectorID] = sector_1;
                 var discoveryStarIndex = 0;
-                sector.addStar(seedStar);
-                while (sector.stars.length < minSize) {
-                    var discoveryStar = sector.stars[discoveryStarIndex];
-                    var frontier = discoveryStar.getLinkedInRange(1).all;
-                    frontier = frontier.filter(function (star) {
-                        return !star.mapGenData.sector;
+                sector_1.addStar(seedStar);
+                sectorsByStarID[seedStar.id] = sector_1;
+                while (sector_1.stars.length < minSize) {
+                    var discoveryStar = sector_1.stars[discoveryStarIndex];
+                    var discoveryStarLinkedNeighbors = discoveryStar.getLinkedInRange(1).all;
+                    var frontier = discoveryStarLinkedNeighbors.filter(function (star) {
+                        var starHasSector = Boolean(sectorsByStarID[star.id]);
+                        return !starHasSector;
                     });
-                    while (sector.stars.length < minSize && frontier.length > 0) {
+                    var _loop_7 = function() {
                         var frontierSortScores = {};
-                        for (var i = 0; i < frontier.length; i++) {
-                            var perimeter = sector.getPerimeterLengthWithStar(frontier[i]) / 15;
-                            var sortScore = frontier[i].mapGenData.connectedness - perimeter;
-                            frontierSortScores[frontier[i].id] = sortScore;
-                        }
+                        frontier.forEach(function (star) {
+                            var borderLengthWithSector = sector_1.getBorderLengthWithStars([star]);
+                            var borderScore = borderLengthWithSector / 15;
+                            var connectedness = mapGenDataByStarID[star.id].connectedness;
+                            frontierSortScores[star.id] = borderScore - connectedness;
+                        });
                         frontier.sort(function (a, b) {
                             return frontierSortScores[b.id] - frontierSortScores[a.id];
                         });
-                        var toAdd = frontier.pop();
+                        toAdd = frontier.pop();
                         unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
-                        sector.addStar(toAdd);
+                        sector_1.addStar(toAdd);
+                        sectorsByStarID[toAdd.id] = sector_1;
+                    };
+                    while (sector_1.stars.length < minSize && frontier.length > 0) {
+                        _loop_7();
                     }
                     discoveryStarIndex++;
                 }
@@ -27248,112 +27477,107 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
             else {
                 leftoverStars.push(seedStar);
             }
+        };
+        var toAdd;
+        while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
+            _loop_6();
         }
-        while (leftoverStars.length > 0) {
-            var star = leftoverStars.pop();
-            var neighbors = star.getLinkedInRange(1).all;
-            var alreadyAddedNeighborSectors = {};
-            var candidateSectors = [];
-            for (var j = 0; j < neighbors.length; j++) {
-                if (!neighbors[j].mapGenData.sector)
-                    continue;
-                else {
-                    if (!alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id]) {
-                        alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id] = true;
-                        candidateSectors.push(neighbors[j].mapGenData.sector);
+        var _loop_8 = function() {
+            star = leftoverStars.pop();
+            neighbors = star.getLinkedInRange(1).all;
+            alreadyAddedNeighborSectors = {};
+            candidateSectors = [];
+            neighbors.forEach(function (neighbor) {
+                var neighborSector = sectorsByStarID[neighbor.id];
+                if (neighborSector) {
+                    if (!alreadyAddedNeighborSectors[neighborSector.id]) {
+                        alreadyAddedNeighborSectors[neighborSector.id] = true;
+                        candidateSectors.push(neighborSector);
                     }
                 }
-            }
+            });
             if (candidateSectors.length < 1) {
                 leftoverStars.unshift(star);
-                continue;
+                return "continue";
             }
-            var unclaimedNeighborsPerSector = {};
-            for (var j = 0; j < candidateSectors.length; j++) {
-                var sectorNeighbors = candidateSectors[j].getNeighboringStars();
-                var unclaimed = 0;
-                for (var k = 0; k < sectorNeighbors.length; k++) {
-                    if (!sectorNeighbors[k].mapGenData.sector) {
-                        unclaimed++;
-                    }
-                }
-                unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
+            else {
+                var unclaimedNeighborsPerSector_1 = {};
+                candidateSectors.forEach(function (sector) {
+                    var sectorLinkedStars = sector.getLinkedStars();
+                    var unclaimedSectorLinkedStars = sectorLinkedStars.filter(function (star) {
+                        return !sectorsByStarID[star.id];
+                    });
+                    unclaimedNeighborsPerSector_1[sector.id] = unclaimedSectorLinkedStars.length;
+                });
+                candidateSectors.sort(function (a, b) {
+                    var sizeSort = a.stars.length - b.stars.length;
+                    if (sizeSort)
+                        return sizeSort;
+                    var unclaimedSort = unclaimedNeighborsPerSector_1[b.id] -
+                        unclaimedNeighborsPerSector_1[a.id];
+                    if (sizeSort)
+                        return unclaimedSort;
+                    var perimeterSort = b.getBorderLengthWithStars([star]) - a.getBorderLengthWithStars([star]);
+                    if (perimeterSort)
+                        return perimeterSort;
+                });
+                candidateSectors[0].addStar(star);
+                sectorsByStarID[star.id] = candidateSectors[0];
             }
-            candidateSectors.sort(function (a, b) {
-                var sizeSort = a.stars.length - b.stars.length;
-                if (sizeSort)
-                    return sizeSort;
-                var unclaimedSort = unclaimedNeighborsPerSector[b.id] -
-                    unclaimedNeighborsPerSector[a.id];
-                if (sizeSort)
-                    return unclaimedSort;
-                var perimeterSort = b.getPerimeterLengthWithStar(star) - a.getPerimeterLengthWithStar(star);
-                if (perimeterSort)
-                    return perimeterSort;
-            });
-            candidateSectors[0].addStar(star);
+        };
+        var star, neighbors, alreadyAddedNeighborSectors, candidateSectors;
+        while (leftoverStars.length > 0) {
+            var state_8 = _loop_8();
+            if (state_8 === "continue") continue;
         }
-        return sectorsById;
+        return Object.keys(sectorsByID).map(function (sectorID) {
+            return sectorsByID[sectorID];
+        });
     }
     exports.makeSectors = makeSectors;
-    function setSectorDistributionFlags(sectors) {
-        for (var i = 0; i < sectors.length; i++) {
-            var sector = sectors[i];
-            sector.distributionFlags = [];
-            var majorityRegions = sector.getMajorityRegions();
-            for (var j = 0; j < majorityRegions.length; j++) {
-                if (majorityRegions[j].id.indexOf("center") !== -1) {
-                    sector.distributionFlags.push("rare");
-                }
-                else {
-                    sector.distributionFlags.push("common");
-                }
-            }
-        }
-    }
-    exports.setSectorDistributionFlags = setSectorDistributionFlags;
-    function distributeDistributablesPerSector(sectors, distributableType, allDistributables, placerFunction) {
-        if (!sectors[0].distributionFlags) {
-            setSectorDistributionFlags(sectors);
-        }
+    function distributeDistributablesPerSector(sectors, distributionFlagsBySectorID, distributablesByDistributionGroup, placerFunction) {
         var probabilityWeights = {};
-        for (var name_7 in allDistributables) {
-            probabilityWeights[name_7] = allDistributables[name_7].rarity;
-        }
-        for (var i = 0; i < sectors.length; i++) {
-            var sector = sectors[i];
-            var alreadyAddedByWeight = utility_52.getRelativeWeightsFromObject(probabilityWeights);
-            var candidates = [];
-            for (var j = 0; j < sector.distributionFlags.length; j++) {
-                var flag = sector.distributionFlags[j];
-                var distributablesForFlag = TemplateIndexes_1.default.distributablesByDistributionGroup[flag][distributableType];
-                candidates = candidates.concat(distributablesForFlag);
-            }
-            if (candidates.length === 0)
-                continue;
-            var neighborSectors = sector.getNeighboringSectors();
-            var candidatesNotInNeighboringSectors = candidates.filter(function (candidate) {
-                for (var k = 0; k < neighborSectors.length; k++) {
-                    if (neighborSectors[k].addedDistributables.indexOf(candidate) !== -1) {
-                        return false;
-                    }
-                }
-                return true;
+        var allDistributablesByType = {};
+        var addedDistributablesByRegionID = {};
+        for (var distributionGroup in distributablesByDistributionGroup) {
+            var distributables = distributablesByDistributionGroup[distributionGroup];
+            distributables.forEach(function (distributable) {
+                probabilityWeights[distributable.type] = distributable.rarity;
+                allDistributablesByType[distributable.type] = distributable;
             });
-            if (candidatesNotInNeighboringSectors.length > 0) {
-                candidates = candidatesNotInNeighboringSectors;
+        }
+        sectors.forEach(function (sector) {
+            var alreadyAddedByWeight = utility_52.getRelativeWeightsFromObject(probabilityWeights);
+            var distributionFlags = distributionFlagsBySectorID[sector.id];
+            var distributablesForSector = distributionFlags.reduce(function (distributables, flag) {
+                return distributables.concat(distributablesByDistributionGroup[flag]);
+            }, []);
+            if (distributablesForSector.length < 1) {
+                return;
             }
+            var linkedNeighborRegions = sector.getLinkedRegions(sectors);
+            var candidatesNotInNeighboringSectors = distributablesForSector.filter(function (candidate) {
+                return linkedNeighborRegions.some(function (linkedRegion) {
+                    return (addedDistributablesByRegionID[linkedRegion.id] &&
+                        addedDistributablesByRegionID[linkedRegion.id][candidate.type]);
+                });
+            });
+            var candidates = candidatesNotInNeighboringSectors.length > 0 ?
+                candidatesNotInNeighboringSectors :
+                distributablesForSector;
             var candidatesByWeight = {};
-            for (var j = 0; j < candidates.length; j++) {
-                candidatesByWeight[candidates[j].type] =
-                    alreadyAddedByWeight[candidates[j].type];
-            }
+            candidates.forEach(function (candidate) {
+                candidatesByWeight[candidate.type] = alreadyAddedByWeight[candidate.type];
+            });
             var selectedKey = utility_52.getRandomKeyWithWeights(candidatesByWeight);
-            var selectedType = allDistributables[selectedKey];
+            var selectedType = allDistributablesByType[selectedKey];
             probabilityWeights[selectedKey] /= 2;
             placerFunction(sector, selectedType);
-            sector.addedDistributables.push(selectedType);
-        }
+            if (!addedDistributablesByRegionID[sector.id]) {
+                addedDistributablesByRegionID[sector.id] = {};
+            }
+            addedDistributablesByRegionID[sector.id][selectedKey] = true;
+        });
     }
     exports.distributeDistributablesPerSector = distributeDistributablesPerSector;
     function addDefenceBuildings(star, amount, addSectorCommand) {
@@ -27367,213 +27591,307 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "src/A
             return;
         }
         if (addSectorCommand) {
-            star.addBuilding(new Building_5.default({
-                template: App_43.default.moduleData.Templates.Buildings["sectorCommand"],
+            star.addBuilding(new Building_4.default({
+                template: Templates_1.sectorCommand,
                 location: star
             }));
             var amount = amount - 1;
         }
         for (var i = 0; i < amount; i++) {
-            star.addBuilding(new Building_5.default({
-                template: App_43.default.moduleData.Templates.Buildings["starBase"],
+            star.addBuilding(new Building_4.default({
+                template: Templates_1.starBase,
                 location: star
             }));
         }
     }
     exports.addDefenceBuildings = addDefenceBuildings;
-    function setupPirates(player) {
+    function makePlayerForPirates() {
+        var player = new Player_4.default(true);
         player.name = "Pirates";
         player.color = Color_5.default.fromHex(0x000000);
         player.colorAlpha = 0;
         player.secondaryColor = Color_5.default.fromHex(0xFFFFFF);
         player.isIndependent = true;
         var foregroundEmblem = new Emblem_4.default(player.secondaryColor);
-        foregroundEmblem.inner = App_43.default.moduleData.Templates.SubEmblems["Flag_of_Edward_England"];
+        foregroundEmblem.inner = SubEmblemTemplates_2.Flag_of_Edward_England;
         player.flag = new Flag_5.default({
             width: 46,
             mainColor: player.color,
             secondaryColor: player.secondaryColor
         });
         player.flag.setForegroundEmblem(foregroundEmblem);
+        return player;
     }
-    exports.setupPirates = setupPirates;
+    exports.makePlayerForPirates = makePlayerForPirates;
     function severLinksToNonAdjacentStars(star) {
         var allLinks = star.getAllLinks();
-        var neighborVoronoiIds = star.voronoiCell.getNeighborIds();
-        for (var i = 0; i < allLinks.length; i++) {
-            var toSever = allLinks[i];
-            if (neighborVoronoiIds.indexOf(toSever.voronoiId) === -1) {
-                star.removeLink(toSever);
+        var neighbors = star.getNeighbors();
+        allLinks.forEach(function (linkedStar) {
+            if (neighbors.indexOf(linkedStar) === -1) {
+                star.removeLink(linkedStar);
             }
-        }
+        });
     }
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require", "exports", "src/App", "src/FillerPoint", "src/Player", "src/Star", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/voronoi", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/mapGenUtils"], function (require, exports, App_44, FillerPoint_2, Player_4, Star_2, utility_53, MapGenResult_2, voronoi_2, Region_1, mapGenUtils_1) {
+define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/mapGenUtils"], function (require, exports, Region_2, mapGenUtils_1) {
     "use strict";
-    var spiralGalaxyGeneration = function (options, players) {
-        var sg = (function setStarGenerationProps(options) {
-            var totalSize = options.defaultOptions.width * options.defaultOptions.height;
-            var totalStars = options.defaultOptions.starCount;
-            var actualArms = options.basicOptions["arms"];
-            var totalArms = actualArms * 2;
-            var percentageInCenter = 0.3;
-            var percentageInArms = 1 - percentageInCenter;
-            var amountInCenter = totalStars * percentageInCenter;
-            var amountPerArm = Math.round(totalStars / actualArms * percentageInArms);
-            var amountPerFillerArm = Math.round(amountPerArm / 2);
-            var amountPerCenter = Math.round(amountInCenter / totalArms);
-            var actualStarsInArms = actualArms * amountPerArm;
-            var actualStarsInCenter = totalArms * amountPerCenter;
-            var actualStars = actualStarsInCenter + actualStarsInArms;
-            var starsDeficit = totalStars - actualStars;
-            var armsToMakeUpDeficit = [];
-            var starsToAddPerDeficitArm = 0;
-            if (starsDeficit !== 0) {
-                starsToAddPerDeficitArm = starsDeficit > 0 ? 1 : -1;
-                var deficitStep = totalArms / Math.abs(starsDeficit);
-                for (var i = 0; i < totalArms; i += deficitStep) {
-                    armsToMakeUpDeficit.push(Math.round(i));
-                }
+    function setupIndependents(props) {
+        var independentStars = props.region.stars.filter(function (star) {
+            return !star.owner || star.owner.isIndependent;
+        });
+        independentStars.forEach(function (star) {
+            props.player.addStar(star);
+            mapGenUtils_1.addDefenceBuildings(star, 1, false);
+        });
+        var commanderStar = getCommanderStar(independentStars, props.mapGenDataByStarID);
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = setupIndependents;
+    function getCommanderStar(stars, mapGenDataByStarID) {
+        var region = new Region_2.default(null, stars);
+        var starsByDistance = region.getStarsByDistanceToQualifier(function (star) {
+            return star.owner && !star.owner.isIndependent;
+        });
+        var numericDistances = Object.keys(starsByDistance).map(function (distanceString) {
+            return parseInt(distanceString);
+        });
+        var maxDistance = Math.max.apply(null, numericDistances);
+        var starsAtMaxDistance = starsByDistance[maxDistance];
+        return starsAtMaxDistance.sort(function (a, b) {
+            var connectednessSort = mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
+            if (connectednessSort) {
+                return connectednessSort;
             }
-            return ({
-                totalArms: totalArms,
-                armsToMakeUpDeficit: armsToMakeUpDeficit,
-                starsToAddPerDeficitArm: starsToAddPerDeficitArm,
-                amountPerArm: amountPerArm,
-                amountPerFillerArm: amountPerFillerArm,
-                amountPerCenter: amountPerCenter,
-                centerSize: 0.4,
-                armDistance: Math.PI * 2 / totalArms,
-                armOffsetMax: 0.5,
-                armRotationFactor: actualArms / 3,
-                galaxyRotation: utility_53.randRange(0, Math.PI * 2)
-            });
-        })(options);
-        function makePoint(distanceMin, distanceMax, arm, maxOffset) {
+            else {
+                return mapGenDataByStarID[b.id].mapGenDistance - mapGenDataByStarID[a.id].mapGenDistance;
+            }
+        })[0];
+    }
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+});
+define("modules/defaultmapgen/spiralGalaxy/SpiralGalaxyOptionValues", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+});
+define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_53) {
+    "use strict";
+    function generateSpiralPoints(options) {
+        var sg = convertMapGenOptionValues(options);
+        var makePoint = function (distanceMin, distanceMax, arm, maxOffset) {
             var distance = utility_53.randRange(distanceMin, distanceMax);
             var offset = Math.random() * maxOffset - maxOffset / 2;
             offset *= (1 / distance);
-            if (offset < 0)
+            if (offset < 0) {
                 offset = Math.pow(offset, 2) * -1;
-            else
+            }
+            else {
                 offset = Math.pow(offset, 2);
+            }
             var armRotation = distance * sg.armRotationFactor;
             var angle = arm * sg.armDistance + sg.galaxyRotation + offset + armRotation;
             var width = options.defaultOptions.width / 2;
             var height = options.defaultOptions.height / 2;
             var x = Math.cos(angle) * distance * width + width;
             var y = Math.sin(angle) * distance * height + height;
-            return ({
-                pos: {
-                    x: x,
-                    y: y
-                },
-                distance: distance
-            });
-        }
-        function makeStar(point, distance) {
-            var star = new Star_2.default(point.x, point.y);
-            star.mapGenData.distance = distance;
-            star.baseIncome = utility_53.randInt(4, 10) * 10;
-            return star;
-        }
-        var stars = [];
-        var fillerPoints = [];
-        var regions = [];
-        var centerRegion = new Region_1.default("center", false);
-        regions.push(centerRegion);
-        var fillerRegionId = 0;
-        var regionId = 0;
+            var point = new MapGenPoint_1.default(x, y);
+            point.mapGenData.mapGenDistance = distance;
+            return point;
+        };
+        var points = [];
         for (var i = 0; i < sg.totalArms; i++) {
-            var isFiller = i % 2 !== 0;
-            var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
-            var region = new Region_1.default(regionName, isFiller);
-            regions.push(region);
-            var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
-            var amountForThisCenter = sg.amountPerCenter;
-            if (sg.armsToMakeUpDeficit.indexOf(i) !== -1) {
-                amountForThisCenter += sg.starsToAddPerDeficitArm;
-            }
-            var maxOffsetForThisArm = isFiller ? sg.armOffsetMax / 2 : sg.armOffsetMax;
+            var currentArmIsFiller = i % 2 !== 0;
+            var amountForThisArm = currentArmIsFiller ? sg.amountPerFillerArm : sg.amountPerArm;
+            var shouldMakeUpDeficitForThisArm = sg.armsToMakeUpDeficit.indexOf(i) !== -1;
+            var amountForThisCenter = sg.amountPerCenter +
+                (shouldMakeUpDeficitForThisArm ? sg.starsToAddPerDeficitArm : 0);
+            var maxOffsetForThisArm = currentArmIsFiller ? sg.armOffsetMax / 2 : sg.armOffsetMax;
             for (var j = 0; j < amountForThisArm; j++) {
                 var point = makePoint(sg.centerSize, 1, i, maxOffsetForThisArm);
-                if (isFiller) {
-                    var fillerPoint = new FillerPoint_2.default(point.pos.x, point.pos.y);
-                    region.addFillerPoint(fillerPoint);
-                    fillerPoint.mapGenData.distance = point.distance;
-                    fillerPoints.push(fillerPoint);
-                }
-                else {
-                    var star = makeStar(point.pos, point.distance);
-                    region.addStar(star);
-                    stars.push(star);
-                }
+                points.push(point);
+                point.mapGenData.tags = ["arm_" + i];
+                point.mapGenData.isFiller = currentArmIsFiller;
             }
             for (var j = 0; j < amountForThisCenter; j++) {
                 var point = makePoint(0, sg.centerSize, i, maxOffsetForThisArm);
-                var star = makeStar(point.pos, point.distance);
-                centerRegion.addStar(star);
-                stars.push(star);
+                points.push(point);
+                point.mapGenData.tags = ["center"];
+                point.mapGenData.isFiller = false;
             }
         }
-        var allPoints = fillerPoints.concat(stars);
-        var voronoi = voronoi_2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
-        var regularity = options.basicOptions["starSizeRegularity"] / 100;
-        var centerDensity = options.basicOptions["centerDensity"] / 100;
+        return points;
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = generateSpiralPoints;
+    function convertMapGenOptionValues(options) {
+        var totalSize = options.defaultOptions.width * options.defaultOptions.height;
+        var totalStars = options.defaultOptions.starCount;
+        var actualArms = options.basicOptions.arms;
+        var totalArms = actualArms * 2;
+        var percentageInCenter = 0.3;
+        var percentageInArms = 1 - percentageInCenter;
+        var amountInCenter = totalStars * percentageInCenter;
+        var amountPerArm = Math.round(totalStars / actualArms * percentageInArms);
+        var amountPerFillerArm = Math.round(amountPerArm / 2);
+        var amountPerCenter = Math.round(amountInCenter / totalArms);
+        var actualStarsInArms = actualArms * amountPerArm;
+        var actualStarsInCenter = totalArms * amountPerCenter;
+        var actualStars = actualStarsInCenter + actualStarsInArms;
+        var starsDeficit = totalStars - actualStars;
+        var armsToMakeUpDeficit = [];
+        var starsToAddPerDeficitArm = 0;
+        if (starsDeficit !== 0) {
+            starsToAddPerDeficitArm = starsDeficit > 0 ? 1 : -1;
+            var deficitStep = totalArms / Math.abs(starsDeficit);
+            for (var i = 0; i < totalArms; i += deficitStep) {
+                armsToMakeUpDeficit.push(Math.round(i));
+            }
+        }
+        return ({
+            totalArms: totalArms,
+            armsToMakeUpDeficit: armsToMakeUpDeficit,
+            starsToAddPerDeficitArm: starsToAddPerDeficitArm,
+            amountPerArm: amountPerArm,
+            amountPerFillerArm: amountPerFillerArm,
+            amountPerCenter: amountPerCenter,
+            centerSize: 0.4,
+            armDistance: Math.PI * 2 / totalArms,
+            armOffsetMax: 0.5,
+            armRotationFactor: actualArms / 3,
+            galaxyRotation: utility_53.randRange(0, Math.PI * 2)
+        });
+    }
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+});
+define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/FillerPoint", "src/Star", "src/TemplateIndexes", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/voronoi", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, FillerPoint_2, Star_2, TemplateIndexes_1, utility_54, MapGenResult_2, voronoi_2, Region_3, setupIndependents_1, mapGenUtils_2, generateSpiralPoints_1) {
+    "use strict";
+    var spiralGalaxyGeneration = function (options, players) {
+        var points = generateSpiralPoints_1.default(options);
+        var voronoiRegularity = options.basicOptions.starSizeRegularity / 100;
+        var centerDensity = options.basicOptions.centerDensity / 100;
         var inverseCenterDensity = 1 - centerDensity;
+        var getRelaxAmountFN = function (point) {
+            return (inverseCenterDensity + centerDensity * point.mapGenData.mapGenDistance) * voronoiRegularity;
+        };
         for (var i = 0; i < 2; i++) {
-            voronoi_2.relaxVoronoi(voronoi, function (star) {
-                return (inverseCenterDensity + centerDensity * star.mapGenData.distance) * regularity;
-            });
-            voronoi = voronoi_2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+            var diagram_1 = voronoi_2.makeVoronoi(points, options.defaultOptions.width, options.defaultOptions.height);
+            voronoi_2.relaxVoronoi(diagram_1, getRelaxAmountFN);
         }
-        mapGenUtils_1.linkAllStars(stars);
-        for (var i = 0; i < regions.length; i++) {
-            regions[i].severLinksByQualifier(function (a, b) {
-                return (a.mapGenData.region !== b.mapGenData.region &&
-                    a.mapGenData.region !== regions[0] &&
-                    b.mapGenData.region !== regions[0]);
-            });
-            for (var j = 0; j < regions[i].stars.length; j++) {
-                mapGenUtils_1.severLinksToNonAdjacentStars(regions[i].stars[j]);
+        var starsWithMapGenPoints = [];
+        var stars = [];
+        var fillerPoints = [];
+        points.forEach(function (point) {
+            if (point.mapGenData.isFiller) {
+                var fillerPoint = new FillerPoint_2.default(point.x, point.y);
+                fillerPoints.push(fillerPoint);
             }
-        }
-        var isConnected = stars[0].getLinkedInRange(stars.length).all.length === stars.length;
-        if (!isConnected) {
+            else {
+                var star = new Star_2.default(point.x, point.y);
+                stars.push(star);
+                starsWithMapGenPoints.push({
+                    star: star,
+                    mapGenpoint: point
+                });
+            }
+        });
+        var allPoints = [].concat(stars, fillerPoints);
+        var diagram = voronoi_2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+        voronoi_2.setVoronoiCells(diagram.cells);
+        var mapGenDataByStarID = {};
+        starsWithMapGenPoints.forEach(function (starWithMapGenPoint) {
+            mapGenDataByStarID[starWithMapGenPoint.star.id] =
+                starWithMapGenPoint.mapGenpoint.mapGenData;
+        });
+        var regions = [];
+        var regionsByID = {};
+        starsWithMapGenPoints.forEach(function (starWithMapGenPoint) {
+            var tags = starWithMapGenPoint.mapGenpoint.mapGenData.tags;
+            tags.forEach(function (tag) {
+                if (!regionsByID[tag]) {
+                    regionsByID[tag] = new Region_3.default(tag);
+                    regions.push(regionsByID[tag]);
+                }
+                regionsByID[tag].addStar(starWithMapGenPoint.star);
+            });
+        });
+        stars.forEach(function (star) {
+            star.getNeighbors().filter(function (neighbor) {
+                var castedPoint = neighbor;
+                var isFiller = !isFinite(castedPoint.id);
+                return !isFiller;
+            }).forEach(function (neighbor) {
+                star.addLink(neighbor);
+            });
+        });
+        var armRegions = regions.filter(function (region) {
+            return region !== regionsByID["center"];
+        });
+        armRegions.forEach(function (region) {
+            region.severLinksToRegionsExcept([region, regionsByID["center"]]);
+        });
+        var entireMapIsConnected = stars[0].getLinkedInRange(stars.length).all.length === stars.length;
+        if (!entireMapIsConnected) {
             console.log("Regenerated map due to insufficient connections");
             return spiralGalaxyGeneration(options, players);
         }
-        mapGenUtils_1.partiallyCutLinks(stars, 4, 2);
-        var sectorsById = mapGenUtils_1.makeSectors(stars, 3, 3);
-        var allSectors = [];
-        for (var sectorId in sectorsById) {
-            allSectors.push(sectorsById[sectorId]);
-        }
+        mapGenUtils_2.partiallySeverLinks(stars, mapGenDataByStarID, 4, 2);
+        stars.forEach(function (star) {
+            mapGenDataByStarID[star.id].connectedness = mapGenUtils_2.getStarConnectedness(star, 3);
+        });
+        var sectors = mapGenUtils_2.makeSectors(stars, mapGenDataByStarID, 3, 3);
+        var distributionFlagsBySectorID = {};
+        sectors.forEach(function (sector) {
+            var distributionFlagsByKeyWord = {
+                arm: "common",
+                center: "rare"
+            };
+            var foundDistributionFlags = {
+                common: false,
+                rare: false
+            };
+            var distributionFlags = [];
+            var majorityRegions = sector.getMajorityRegions(regions);
+            majorityRegions.forEach(function (region) {
+                for (var keyWord in distributionFlagsByKeyWord) {
+                    if (region.id.indexOf(keyWord) !== -1) {
+                        var distributionFlag = distributionFlagsByKeyWord[keyWord];
+                        if (!foundDistributionFlags[distributionFlag]) {
+                            foundDistributionFlags[distributionFlag] = true;
+                            distributionFlags.push(distributionFlag);
+                        }
+                    }
+                }
+                distributionFlagsBySectorID[sector.id] = distributionFlags;
+            });
+        });
         var resourcePlacerFN = function (sector, resource) {
-            sector.addResource(resource);
+            sector.stars[0].setResource(resource);
         };
-        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "resources", App_44.default.moduleData.Templates.Resources, resourcePlacerFN);
+        mapGenUtils_2.distributeDistributablesPerSector(sectors, distributionFlagsBySectorID, TemplateIndexes_1.default.distributablesByDistributionGroup.resources, resourcePlacerFN);
         var localUnitPlacerFN = function (sector, unitFamily) {
             for (var i = 0; i < sector.stars.length; i++) {
                 var star = sector.stars[i];
                 star.buildableUnitTypes = star.buildableUnitTypes.concat(unitFamily.associatedTemplates);
             }
         };
-        mapGenUtils_1.distributeDistributablesPerSector(allSectors, "unitFamilies", App_44.default.moduleData.Templates.UnitFamilies, localUnitPlacerFN);
+        mapGenUtils_2.distributeDistributablesPerSector(sectors, distributionFlagsBySectorID, TemplateIndexes_1.default.distributablesByDistributionGroup.unitFamilies, localUnitPlacerFN);
         var startRegions = (function setStartingRegions() {
-            var armCount = options.basicOptions["arms"];
-            var playerCount = Math.min(players.length, armCount);
-            var playerArmStep = armCount / playerCount;
-            var startRegions = [];
-            var candidateRegions = regions.filter(function (region) {
-                return region.id.indexOf("arm") !== -1;
+            var availableStartRegions = regions.filter(function (region) {
+                return region.id.indexOf("center") === -1;
             });
-            for (var i = 0; i < playerCount; i++) {
+            var armCount = options.basicOptions.arms;
+            var playersInArmsCount = Math.min(players.length, armCount);
+            var playerArmStep = armCount / playersInArmsCount;
+            var startRegions = [];
+            for (var i = 0; i < playersInArmsCount; i++) {
                 var regionNumber = Math.floor(i * playerArmStep);
-                var regionToAdd = candidateRegions[regionNumber];
+                var regionToAdd = availableStartRegions[regionNumber];
                 startRegions.push(regionToAdd);
+            }
+            var leftOverPlayerCount = playersInArmsCount - armCount;
+            for (var i = 0; i < leftOverPlayerCount; i++) {
+                startRegions.push(regionsByID["center"]);
             }
             return startRegions;
         })();
@@ -27582,7 +27900,7 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
             for (var i = 0; i < regions.length; i++) {
                 var region = regions[i];
                 var starsByDistance = region.stars.slice(0).sort(function (a, b) {
-                    return b.mapGenData.distance - a.mapGenData.distance;
+                    return mapGenDataByStarID[b.id].mapGenDistance - mapGenDataByStarID[a.id].mapGenDistance;
                 });
                 var star = starsByDistance[0];
                 startPositions.push(star);
@@ -27593,15 +27911,22 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
             var star = startPositions[i];
             var player = players[i];
             player.addStar(star);
-            mapGenUtils_1.addDefenceBuildings(star, 2);
+            mapGenUtils_2.addDefenceBuildings(star, 2);
             star.buildManufactory();
         }
-        var pirates = new Player_4.default(true);
-        mapGenUtils_1.setupPirates(pirates);
-        for (var i = 0; i < allSectors.length; i++) {
-            var sector = allSectors[i];
-            sector.setupIndependents(pirates, 1, 0);
-        }
+        var pirates = mapGenUtils_2.makePlayerForPirates();
+        sectors.forEach(function (sector) {
+            setupIndependents_1.default({
+                player: pirates,
+                region: sector,
+                intensity: 1,
+                variance: 0,
+                mapGenDataByStarID: mapGenDataByStarID
+            });
+        });
+        stars.forEach(function (star) {
+            star.baseIncome = utility_54.randInt(4, 6) * 10;
+        });
         return new MapGenResult_2.default({
             stars: stars,
             fillerPoints: fillerPoints,
@@ -27615,7 +27940,7 @@ define("modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration", ["require
     exports.default = spiralGalaxyGeneration;
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/templates/spiralGalaxy", ["require", "exports", "modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_1) {
+define("modules/defaultmapgen/templates/spiralGalaxy", ["require", "exports", "modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_1) {
     "use strict";
     var spiralGalaxy = {
         key: "spiralGalaxy",
@@ -27686,7 +28011,7 @@ define("modules/defaultmapgen/templates/spiralGalaxy", ["require", "exports", "m
     exports.default = spiralGalaxy;
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/templates/tinierSpiralGalaxy", ["require", "exports", "modules/defaultmapgen/mapgenfunctions/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_2) {
+define("modules/defaultmapgen/templates/tinierSpiralGalaxy", ["require", "exports", "modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration"], function (require, exports, spiralGalaxyGeneration_2) {
     "use strict";
     var tinierSpiralGalaxy = {
         key: "tinierSpiralGalaxy",
@@ -28447,9 +28772,9 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
     ];
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_54) {
+define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_55) {
     "use strict";
-    function drawNebula(seed, renderer) {
+    var drawNebula = function (seed, size, renderer) {
         var oldRng = Math.random;
         Math.random = RNG.prototype.uniform.bind(new RNG(seed));
         var nebulaColorScheme = colorGeneration_4.generateColorScheme();
@@ -28457,25 +28782,29 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/
             baseColor: nebulaColorScheme.main.getRGB(),
             overlayColor: nebulaColorScheme.secondary.getRGB(),
             highlightColor: [1.0, 1.0, 1.0],
-            coverage: utility_54.randRange(0.28, 0.32),
-            scale: utility_54.randRange(4, 8),
-            diffusion: utility_54.randRange(1.5, 3.0),
-            streakiness: utility_54.randRange(1.5, 2.5),
-            streakLightness: utility_54.randRange(1, 1.2),
-            cloudLightness: utility_54.randRange(1, 1.2),
+            coverage: utility_55.randRange(0.28, 0.32),
+            scale: utility_55.randRange(4, 8),
+            diffusion: utility_55.randRange(1.5, 3.0),
+            streakiness: utility_55.randRange(1.5, 2.5),
+            streakLightness: utility_55.randRange(1, 1.2),
+            cloudLightness: utility_55.randRange(1, 1.2),
             highlightA: 0.9,
             highlightB: 2.2,
             seed: [Math.random() * 100, Math.random() * 100]
         });
-        var filterContainer = new PIXI.Container();
-        filterContainer.filterArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
-        filterContainer.filters = [filter];
-        var texture = filterContainer.generateTexture(renderer, PIXI.SCALE_MODES.DEFAULT, 1, filterContainer.filterArea);
+        var container = new PIXI.Container();
+        var shaderSprite = utility_55.createDummySpriteForShader(0, 0, size.width, size.height);
+        shaderSprite.shader = filter;
+        container.addChild(shaderSprite);
+        var texture = container.generateTexture(renderer, PIXI.SCALE_MODES.DEFAULT, 1, size);
         var sprite = new PIXI.Sprite(texture);
-        filterContainer.filters = null;
-        filterContainer = null;
-        return sprite;
-    }
+        container.removeChildren();
+        shaderSprite.destroy(true, true);
+        return ({
+            displayObject: sprite,
+            destroy: texture.destroy.bind(texture)
+        });
+    };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = drawNebula;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
@@ -28502,52 +28831,6 @@ define("modules/defaultbackgrounds/defaultBackgrounds", ["require", "exports", "
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = defaultBackgrounds;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-});
-define("modules/defaultmapmodes/maplayertemplates/debugSectors", ["require", "exports", "src/Color"], function (require, exports, Color_6) {
-    "use strict";
-    var debugSectors = {
-        key: "debugSectors",
-        displayName: "Sectors (debug)",
-        interactive: false,
-        alpha: 0.5,
-        drawingFunction: function (map, persectivePlayer) {
-            var doc = new PIXI.Container();
-            var points;
-            if (!persectivePlayer) {
-                points = map.stars;
-            }
-            else {
-                points = persectivePlayer.getRevealedStars();
-            }
-            if (!points[0].mapGenData || !points[0].mapGenData.sector) {
-                return doc;
-            }
-            var sectorIds = {};
-            for (var i = 0; i < points.length; i++) {
-                var star = points[i];
-                if (star.mapGenData && star.mapGenData.sector) {
-                    sectorIds[star.mapGenData.sector.id] = true;
-                }
-            }
-            var sectorsCount = Object.keys(sectorIds).length;
-            for (var i = 0; i < points.length; i++) {
-                var star = points[i];
-                var sector = star.mapGenData.sector;
-                var hue = sector.id / sectorsCount;
-                var color = Color_6.default.fromHSL(hue, 0.8, 0.5).getHex();
-                var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                var gfx = new PIXI.Graphics();
-                gfx.beginFill(color, 1);
-                gfx.drawShape(poly);
-                gfx.endFill();
-                doc.addChild(gfx);
-            }
-            return doc;
-        }
-    };
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = debugSectors;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
 define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "exports", "src/eventManager"], function (require, exports, eventManager_41) {
@@ -28635,7 +28918,7 @@ define("modules/defaultmapmodes/maplayertemplates/nonFillerStars", ["require", "
     exports.default = nonFillerStars;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", "exports", "src/Color", "src/mapai/MapEvaluator"], function (require, exports, Color_7, MapEvaluator_2) {
+define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", "exports", "src/Color", "src/mapai/MapEvaluator"], function (require, exports, Color_6, MapEvaluator_2) {
     "use strict";
     var playerInfluence = {
         key: "playerInfluence",
@@ -28683,7 +28966,7 @@ define("modules/defaultmapmodes/maplayertemplates/playerInfluence", ["require", 
                     var hue = 110 * value;
                     var saturation = 0.5 + 0.2 * deviation;
                     var lightness = 0.6 + 0.25 * deviation;
-                    colorIndexes[value] = Color_7.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
+                    colorIndexes[value] = Color_6.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
                 }
                 return colorIndexes[value];
             }
@@ -28916,7 +29199,7 @@ define("modules/defaultmapmodes/maplayertemplates/starOwners", ["require", "expo
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_45) {
+define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "exports", "src/App"], function (require, exports, App_42) {
     "use strict";
     var fogOfWar = {
         key: "fogOfWar",
@@ -28968,7 +29251,7 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
             tiled.mask = gfx;
             tiled.addChild(gfx);
             var bounds = tiled.getBounds();
-            var rendered = tiled.generateTexture(App_45.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
+            var rendered = tiled.generateTexture(App_42.default.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
             var sprite = new PIXI.Sprite(rendered);
             fogOfWarSpriteByStarID[star.id] = sprite;
             tiled.mask = null;
@@ -28977,10 +29260,10 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_55) {
+define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_6, utility_56) {
     "use strict";
     function starsOnlyShareNarrowBorder(a, b) {
-        var minBorderWidth = Options_7.default.display.borderWidth * 2;
+        var minBorderWidth = Options_6.default.display.borderWidth * 2;
         var edge = a.getEdgeWith(b);
         if (!edge) {
             return false;
@@ -29112,10 +29395,10 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                 y: v1.y
             });
         });
-        joinPointsWithin(convertedToPoints, Options_7.default.display.borderWidth / 2);
+        joinPointsWithin(convertedToPoints, Options_6.default.display.borderWidth / 2);
         var offset = new Offset();
         offset.arcSegments(0);
-        var convertedToOffset = offset.data(convertedToPoints).padding(Options_7.default.display.borderWidth / 2);
+        var convertedToOffset = offset.data(convertedToPoints).padding(Options_6.default.display.borderWidth / 2);
         return convertedToOffset;
     }
     exports.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
@@ -29138,8 +29421,8 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                     var point = offsetted[j_1];
                     var nextPoint = offsetted[(j_1 + 1) % offsetted.length];
                     var edgeCenter = {
-                        x: utility_55.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-                        y: utility_55.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
+                        x: utility_56.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: utility_56.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     if (!pointStar) {
@@ -29181,7 +29464,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
         var polyLinesData = [];
         for (var i = 0; i < polyLines.length; i++) {
             var polyLine = polyLines[i];
-            var isClosed = utility_55.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            var isClosed = utility_56.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
             if (isClosed)
                 polyLine.pop();
             for (var j_3 = 0; j_3 < polyLine.length; j_3++) {
@@ -29198,7 +29481,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
     exports.getRevealedBorderEdges = getRevealedBorderEdges;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "exports", "src/options", "src/borderPolygon"], function (require, exports, options_9, borderPolygon_1) {
+define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "exports", "src/options", "src/borderPolygon"], function (require, exports, options_8, borderPolygon_1) {
     "use strict";
     var ownerBorders = {
         key: "ownerBorders",
@@ -29207,7 +29490,7 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
         alpha: 0.7,
         drawingFunction: function (map, perspectivePlayer) {
             var doc = new PIXI.Container();
-            if (options_9.default.display.borderWidth <= 0) {
+            if (options_8.default.display.borderWidth <= 0) {
                 return doc;
             }
             var revealedStars = perspectivePlayer.getRevealedStars();
@@ -29217,7 +29500,7 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
                 doc.addChild(gfx);
                 var polyLineData = borderEdges[i];
                 var player = polyLineData.points[0].star.owner;
-                gfx.lineStyle(options_9.default.display.borderWidth, player.secondaryColor.getHex(), 1);
+                gfx.lineStyle(options_8.default.display.borderWidth, player.secondaryColor.getHex(), 1);
                 var polygon = new PIXI.Polygon(polyLineData.points);
                 polygon.closed = polyLineData.isClosed;
                 gfx.drawShape(polygon);
@@ -29229,7 +29512,7 @@ define("modules/defaultmapmodes/maplayertemplates/ownerBorders", ["require", "ex
     exports.default = ownerBorders;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "exports", "src/Color"], function (require, exports, Color_8) {
+define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "exports", "src/Color"], function (require, exports, Color_7) {
     "use strict";
     var starIncome = {
         key: "starIncome",
@@ -29266,7 +29549,7 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
                     var hue = 110 * value;
                     var saturation = 0.5 + 0.2 * deviation;
                     var lightness = 0.6 + 0.25 * deviation;
-                    colorIndexes[value] = Color_8.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
+                    colorIndexes[value] = Color_7.default.fromHSL(hue / 360, saturation, lightness / 2).getHex();
                 }
                 return colorIndexes[value];
             }
@@ -29289,9 +29572,8 @@ define("modules/defaultmapmodes/maplayertemplates/starIncome", ["require", "expo
     exports.default = starIncome;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultmapmodes/allMapLayerTemplates", ["require", "exports", "modules/defaultmapmodes/maplayertemplates/debugSectors", "modules/defaultmapmodes/maplayertemplates/nonFillerStars", "modules/defaultmapmodes/maplayertemplates/playerInfluence", "modules/defaultmapmodes/maplayertemplates/starLinks", "modules/defaultmapmodes/maplayertemplates/fleets", "modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", "modules/defaultmapmodes/maplayertemplates/resources", "modules/defaultmapmodes/maplayertemplates/starOwners", "modules/defaultmapmodes/maplayertemplates/fogOfWar", "modules/defaultmapmodes/maplayertemplates/ownerBorders", "modules/defaultmapmodes/maplayertemplates/starIncome"], function (require, exports, debugSectors_1, nonFillerStars_1, playerInfluence_1, starLinks_1, fleets_1, nonFillerVoronoiLines_1, resources_1, starOwners_1, fogOfWar_1, ownerBorders_1, starIncome_1) {
+define("modules/defaultmapmodes/allMapLayerTemplates", ["require", "exports", "modules/defaultmapmodes/maplayertemplates/nonFillerStars", "modules/defaultmapmodes/maplayertemplates/playerInfluence", "modules/defaultmapmodes/maplayertemplates/starLinks", "modules/defaultmapmodes/maplayertemplates/fleets", "modules/defaultmapmodes/maplayertemplates/nonFillerVoronoiLines", "modules/defaultmapmodes/maplayertemplates/resources", "modules/defaultmapmodes/maplayertemplates/starOwners", "modules/defaultmapmodes/maplayertemplates/fogOfWar", "modules/defaultmapmodes/maplayertemplates/ownerBorders", "modules/defaultmapmodes/maplayertemplates/starIncome"], function (require, exports, nonFillerStars_1, playerInfluence_1, starLinks_1, fleets_1, nonFillerVoronoiLines_1, resources_1, starOwners_1, fogOfWar_1, ownerBorders_1, starIncome_1) {
     "use strict";
-    exports.debugSectors = debugSectors_1.default;
     exports.nonFillerStars = nonFillerStars_1.default;
     exports.playerInfluence = playerInfluence_1.default;
     exports.starLinks = starLinks_1.default;
@@ -29307,7 +29589,6 @@ define("modules/defaultmapmodes/allMapLayerTemplates", ["require", "exports", "m
 define("modules/defaultmapmodes/MapLayerTemplates", ["require", "exports", "modules/defaultmapmodes/allMapLayerTemplates"], function (require, exports, MapLayers) {
     "use strict";
     var MapLayerTemplates = (_l = {},
-        _l[MapLayers.debugSectors.key] = MapLayers.debugSectors,
         _l[MapLayers.nonFillerStars.key] = MapLayers.nonFillerStars,
         _l[MapLayers.playerInfluence.key] = MapLayers.playerInfluence,
         _l[MapLayers.starLinks.key] = MapLayers.starLinks,
@@ -29376,7 +29657,6 @@ define("modules/defaultmapmodes/mapmodetemplates/mapModes", ["require", "exports
         key: "resources",
         displayName: "Resources",
         layers: [
-            MapLayers.debugSectors,
             MapLayers.nonFillerVoronoiLines,
             MapLayers.starLinks,
             MapLayers.nonFillerStars,
@@ -30199,143 +30479,17 @@ define("modules/paintingportraits/paintingPortraits", ["require", "exports", "mo
     exports.default = paintingPortraits;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
 });
-define("modules/defaultbuildings/BuildingTemplates", ["require", "exports"], function (require, exports) {
+define("modules/defaultbuildings/BuildingTemplates", ["require", "exports", "modules/defaultbuildings/templates/Templates"], function (require, exports, Templates) {
     "use strict";
-    var sectorCommand = {
-        type: "sectorCommand",
-        category: "defence",
-        family: "sectorCommand",
-        displayName: "Sector Command",
-        description: "Defence building with slight defender advantage. (All defence buildings must " +
-            "be captured to gain control of area)",
-        iconSrc: "sectorCommand.png",
-        buildCost: 200,
-        maxPerType: 1,
-        maxUpgradeLevel: 1,
-        upgradeInto: [
-            {
-                templateType: "sectorCommand1",
-                level: 1
-            },
-            {
-                templateType: "sectorCommand2",
-                level: 1
-            }
-        ],
-        defenderAdvantage: 0.2
-    };
-    var sectorCommand1 = {
-        type: "sectorCommand1",
-        category: "defence",
-        family: "sectorCommand",
-        displayName: "Sector Command1",
-        description: "just testing upgrade paths",
-        iconSrc: "sectorCommand.png",
-        buildCost: 100,
-        maxPerType: 1,
-        maxUpgradeLevel: 1,
-        upgradeOnly: true,
-        defenderAdvantage: 0.3
-    };
-    var sectorCommand2 = {
-        type: "sectorCommand2",
-        category: "defence",
-        family: "sectorCommand",
-        displayName: "Sector Command2",
-        description: "just testing upgrade paths",
-        iconSrc: "sectorCommand.png",
-        buildCost: 200,
-        maxPerType: 1,
-        maxUpgradeLevel: 1,
-        upgradeOnly: true,
-        defenderAdvantage: 0.3
-    };
-    var starBase = {
-        type: "starBase",
-        category: "defence",
-        displayName: "Starbase",
-        description: "Defence building with no defender advantage. (All defence buildings must " +
-            "be captured to gain control of area)",
-        iconSrc: "starBase.png",
-        buildCost: 200,
-        maxPerType: 3,
-        maxUpgradeLevel: 1,
-        defenderAdvantage: 0.1,
-        upgradeInto: [
-            {
-                templateType: "sectorCommand",
-                level: 1
-            }
-        ]
-    };
-    var commercialPort = {
-        type: "commercialPort",
-        category: "economy",
-        displayName: "Commercial Spaceport",
-        description: "Increase star income by 20",
-        iconSrc: "commercialPort.png",
-        buildCost: 200,
-        maxPerType: 1,
-        effect: {
-            income: {
-                flat: 20
-            }
-        },
-        maxUpgradeLevel: 4
-    };
-    var deepSpaceRadar = {
-        type: "deepSpaceRadar",
-        category: "vision",
-        displayName: "Deep Space Radar",
-        description: "Increase star vision and detection radius",
-        iconSrc: "commercialPort.png",
-        buildCost: 200,
-        maxPerType: 1,
-        effect: {
-            vision: 1,
-            detection: 0.999
-        },
-        maxUpgradeLevel: 2
-    };
-    var resourceMine = {
-        type: "resourceMine",
-        category: "mine",
-        displayName: "Mine",
-        description: "Gathers resources from current star",
-        iconSrc: "commercialPort.png",
-        buildCost: 500,
-        maxPerType: 1,
-        effect: {
-            resourceIncome: {
-                flat: 1
-            }
-        },
-        maxUpgradeLevel: 3
-    };
-    var reserachLab = {
-        type: "reserachLab",
-        category: "research",
-        displayName: "Research Lab",
-        description: "Increase research speed",
-        iconSrc: "commercialPort.png",
-        buildCost: 300,
-        maxPerType: 1,
-        effect: {
-            research: {
-                flat: 10
-            }
-        },
-        maxUpgradeLevel: 3
-    };
     var BuildingTemplates = (_o = {},
-        _o[sectorCommand.type] = sectorCommand,
-        _o[sectorCommand1.type] = sectorCommand1,
-        _o[sectorCommand2.type] = sectorCommand2,
-        _o[starBase.type] = starBase,
-        _o[commercialPort.type] = commercialPort,
-        _o[deepSpaceRadar.type] = deepSpaceRadar,
-        _o[resourceMine.type] = resourceMine,
-        _o[reserachLab.type] = reserachLab,
+        _o[Templates.sectorCommand.type] = Templates.sectorCommand,
+        _o[Templates.sectorCommand1.type] = Templates.sectorCommand1,
+        _o[Templates.sectorCommand2.type] = Templates.sectorCommand2,
+        _o[Templates.starBase.type] = Templates.starBase,
+        _o[Templates.commercialPort.type] = Templates.commercialPort,
+        _o[Templates.deepSpaceRadar.type] = Templates.deepSpaceRadar,
+        _o[Templates.resourceMine.type] = Templates.resourceMine,
+        _o[Templates.reserachLab.type] = Templates.reserachLab,
         _o
     );
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -30391,7 +30545,7 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
     exports.default = defaultNotifications;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
 });
-define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_10, TutorialStatus_5, utility_56, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
+define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_9, TutorialStatus_5, utility_57, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
     "use strict";
     var App = (function () {
         function App() {
@@ -30401,7 +30555,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
-            utility_56.onDOMLoaded(function () {
+            utility_57.onDOMLoaded(function () {
                 var moduleLoader = self.moduleLoader = new ModuleLoader_1.default();
                 self.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(defaultEmblems_1.default);
@@ -30423,7 +30577,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
         }
         App.prototype.makeApp = function () {
             var startTime = Date.now();
-            options_10.default.load();
+            options_9.default.load();
             TutorialStatus_5.default.load();
             setDynamicTemplateProperties_1.default(this.moduleData);
             this.initUI();
@@ -30543,10 +30697,10 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             }
         };
         App.prototype.initDisplay = function () {
-            this.renderer = new Renderer_1.default(this.game.galaxyMap);
+            this.renderer = new Renderer_1.default(this.game.galaxyMap.seed, this.moduleData.mapBackgroundDrawingFunction);
             this.renderer.init();
             this.mapRenderer = new MapRenderer_1.default(this.game.galaxyMap, this.humanPlayer);
-            this.mapRenderer.setParent(this.renderer.layers["map"]);
+            this.mapRenderer.setParent(this.renderer.layers.map);
             this.mapRenderer.init();
         };
         App.prototype.initUI = function () {

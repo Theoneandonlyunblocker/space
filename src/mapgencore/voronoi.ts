@@ -1,8 +1,11 @@
 /// <reference path="../../lib/voronoi.d.ts" />
 
 import Point from "../Point";
+import FillerPoint from "../FillerPoint";
+import Star from "../Star";
+import VoronoiCell from "../VoronoiCell";
 
-export function makeVoronoi(points: Point[], width: number, height: number)
+export function makeVoronoi<T extends Point>(points: T[], width: number, height: number)
 {
   var boundingBox =
   {
@@ -15,44 +18,64 @@ export function makeVoronoi(points: Point[], width: number, height: number)
   var voronoi = new Voronoi();
   var diagram = voronoi.compute(points, boundingBox);
 
-  for (let i = 0; i < diagram.cells.length; i++)
-  {
-    var cell = diagram.cells[i];
-    cell.site.voronoiCell = cell;
-    cell.vertices = getVerticesFromCell(cell);
-  }
-
   return diagram;
 }
-
 /**
  * Perform one iteration of Lloyd's Algorithm to move points in voronoi diagram to their centroid
- * @param {any}             diagram Voronoi diagram to relax
- * @param {(Point) => number} dampeningFunction If specified, use value returned by dampeningFunction(cell.site)
+ * @param {Voronoi.Result}             diagram Voronoi diagram to relax
+ * @param {(Point) => number} getRelaxAmountFN If specified, use value returned by getRelaxAmountFN(cell.site)
  *                                            to adjust how far towards centroid the point is moved.
  *                                            0.0 = not moved, 0.5 = moved halfway, 1.0 = moved fully
  */
-export function relaxVoronoi(diagram: any, dampeningFunction?: (point: Point) => number)
+export function relaxVoronoi<T extends Point>(
+  diagram: Voronoi.Result<T>,
+  getRelaxAmountFN?: (point: T) => number
+): void
 {
   for (let i = 0; i < diagram.cells.length; i++)
   {
     var cell = diagram.cells[i];
     var point = cell.site;
-    var centroid = getPolygonCentroid(cell.vertices);
-    if (dampeningFunction)
+    
+    const vertices = cell.halfedges.map(halfEdge =>
     {
-      var dampeningValue = dampeningFunction(point);
+      return halfEdge.getStartpoint();
+    });
+    
+    const centroid = getPolygonCentroid(vertices);
+    if (getRelaxAmountFN)
+    {
+      var dampeningValue = getRelaxAmountFN(point);
 
       var xDelta = (centroid.x - point.x) * dampeningValue;
       var yDelta = (centroid.y - point.y) * dampeningValue;
 
-      point.setPosition(point.x + xDelta, point.y + yDelta);
+      point.x = point.x + xDelta;
+      point.y = point.y + yDelta;
     }
     else
     {
-      point.setPosition(centroid.x, centroid.y);
+      point.x = centroid.x;
+      point.y = centroid.y;
     }
   }
+}
+export function setVoronoiCells(cells: Voronoi.Cell<(FillerPoint | Star)>[]): void
+{
+  cells.forEach(cell =>
+  {
+    const castedSite = <Star> cell.site;
+    const isFiller = !isFinite(castedSite.id);
+    
+    if (isFiller)
+    {
+      cell.site.voronoiCell = new VoronoiCell(<Voronoi.Cell<FillerPoint>> cell);
+    }
+    else
+    {
+      cell.site.voronoiCell = new VoronoiCell(<Voronoi.Cell<Star>> cell);
+    }
+  });
 }
 
 function getPolygonCentroid(vertices: Point[]): Point
@@ -98,16 +121,4 @@ function getPolygonCentroid(vertices: Point[]): Point
     x: x,
     y: y
   });
-}
-
-function getVerticesFromCell(cell: any)
-{
-  var vertices: Point[] = [];
-
-  for (let i = 0; i < cell.halfedges.length; i++)
-  {
-    vertices.push(cell.halfedges[i].getStartpoint());
-  }
-
-  return vertices;
 }

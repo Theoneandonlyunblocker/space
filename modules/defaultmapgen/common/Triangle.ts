@@ -1,16 +1,16 @@
 import Point from "../../../src/Point";
 
-export default class Triangle
+export default class Triangle<T extends Point>
 {
-  public a: Point;
-  public b: Point;
-  public c: Point;
+  public a: T;
+  public b: T;
+  public c: T;
 
   private circumCenterX: number;
   private circumCenterY: number;
   private circumRadius: number;
 
-  constructor(a: Point, b: Point, c: Point)
+  constructor(a: T, b: T, c: T)
   {
     this.a = a;
     this.b = b;
@@ -103,7 +103,7 @@ export default class Triangle
 
     return edges;
   }
-  public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle)
+  public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle<Point>)
   {
     var ownPoints = this.getPoints();
     var otherPoints = toCheckAgainst.getPoints();

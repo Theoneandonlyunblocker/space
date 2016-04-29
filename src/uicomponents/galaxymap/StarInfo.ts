@@ -33,23 +33,6 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
   {
     var star = this.props.selectedStar;
     if (!star) return null;
-
-    var dumpDebugInfoButton: React.ReactHTMLElement<any> = null;
-
-    if (Options.debugMode)
-    {
-      dumpDebugInfoButton = React.DOM.button(
-      {
-        className: "star-info-dump-debug-button",
-        onClick: function(e)
-        {
-          console.log(star);
-          console.log(star.mapGenData)
-        }
-      },
-        "Debug"
-      )
-    }
     
     return(
       React.DOM.div(
@@ -68,7 +51,6 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         },
           star.owner ? star.owner.name : null
         ),
-        dumpDebugInfoButton,
         React.DOM.div(
         {
           className: "star-info-location"

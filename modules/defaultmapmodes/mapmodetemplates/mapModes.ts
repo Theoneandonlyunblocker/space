@@ -62,7 +62,6 @@ export const resources: MapRendererMapModeTemplate =
   displayName: "Resources",
   layers:
   [
-    MapLayers.debugSectors,
     MapLayers.nonFillerVoronoiLines,
     MapLayers.starLinks,
     MapLayers.nonFillerStars,

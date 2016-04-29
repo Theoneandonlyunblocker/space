@@ -43,7 +43,7 @@ const starOwners: MapRendererLayerTemplate =
       var occupier = star.getSecondaryController();
       if (!star.owner || (!occupier && star.owner.colorAlpha === 0)) continue;
 
-      var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+      var poly = new PIXI.Polygon(<PIXI.Point[]> star.voronoiCell.vertices);
       var gfx = new PIXI.Graphics();
       var alpha = 1;
       if (isFinite(star.owner.colorAlpha)) alpha *= star.owner.colorAlpha;

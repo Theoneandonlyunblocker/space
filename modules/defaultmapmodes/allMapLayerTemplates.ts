@@ -1,4 +1,3 @@
-export {default as debugSectors} from  "./maplayertemplates/debugSectors";
 export {default as nonFillerStars} from  "./maplayertemplates/nonFillerStars";
 export {default as playerInfluence} from  "./maplayertemplates/playerInfluence";
 export {default as starLinks} from  "./maplayertemplates/starLinks";

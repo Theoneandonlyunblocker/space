@@ -1,13 +1,17 @@
+/// <reference path="../lib/voronoi.d.ts" />
+
+import VoronoiCell from "./VoronoiCell";
 import Star from "./Star";
 import Point from "./Point";
+import FillerPoint from "./FillerPoint";
 
 export default class MapVoronoiInfo
 {
-  treeMap: any;
-  diagram: any;
+  treeMap: BoundsQuadTree<VoronoiCell<Star>>;
+  diagram: Voronoi.Result<Star | FillerPoint>;
   nonFillerLines:
   {
-    [visibility: string]: any[];
+    [visibility: string]: Voronoi.Edge<Star | FillerPoint>[];
   } = {};
   bounds:
   {
@@ -21,7 +25,7 @@ export default class MapVoronoiInfo
   {
     
   }
-  getNonFillerVoronoiLines(visibleStars?: Star[])
+  public getNonFillerVoronoiLines(visibleStars?: Star[])
   {
     if (!this.diagram) return [];
 
@@ -39,7 +43,7 @@ export default class MapVoronoiInfo
       this.nonFillerLines[indexString].length <= 0)
     {
       this.nonFillerLines[indexString] =
-        this.diagram.edges.filter(function(edge: any)
+        this.diagram.edges.filter(function(edge)
       {
         var adjacentSites = [edge.lSite, edge.rSite];
         var adjacentFillerSites = 0;
@@ -64,7 +68,7 @@ export default class MapVoronoiInfo
           };
 
 
-          if (visibleStars && visibleStars.indexOf(site) < 0)
+          if (visibleStars && visibleStars.indexOf(<Star> site) < 0)
           {
             maxAllowedFillerSites--;
             if (adjacentFillerSites >= maxAllowedFillerSites)
@@ -74,8 +78,9 @@ export default class MapVoronoiInfo
             continue;
           };
 
-
-          if (!isFinite(site.id)) // is filler
+          const castedSite = <Star> site;
+          const isFiller = !isFinite(castedSite.id);
+          if (isFiller)
           {
             adjacentFillerSites++;
             if (adjacentFillerSites >= maxAllowedFillerSites)
@@ -91,15 +96,14 @@ export default class MapVoronoiInfo
 
     return this.nonFillerLines[indexString];
   }
-  getStarAtPoint(point: Point)
+  public getStarAtPoint(point: Point): Star
   {
     var items = this.treeMap.retrieve(point);
     for (let i = 0; i < items.length; i++)
     {
-      var cell = items[i].cell;
-      if (cell.pointIntersection(point.x, point.y) > -1)
+      if (items[i].pointIntersection(point.x, point.y) > -1)
       {
-        return cell.site;
+        return items[i].site;
       }
     }
 

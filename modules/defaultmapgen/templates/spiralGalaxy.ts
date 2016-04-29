@@ -1,6 +1,6 @@
 import MapGenTemplate from "../../../src/templateinterfaces/mapgentemplate";
 
-import spiralGalaxyGeneration from "../mapgenfunctions/spiralGalaxyGeneration";
+import spiralGalaxyGeneration from "../spiralGalaxy/spiralGalaxyGeneration";
 
 const spiralGalaxy: MapGenTemplate =
 {

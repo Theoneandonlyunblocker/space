@@ -5,7 +5,6 @@ import * as MapLayers from "./allMapLayerTemplates";
 
 const MapLayerTemplates: TemplateCollection<MapRendererLayerTemplate> =
 {
-  [MapLayers.debugSectors.key]: MapLayers.debugSectors,
   [MapLayers.nonFillerStars.key]: MapLayers.nonFillerStars,
   [MapLayers.playerInfluence.key]: MapLayers.playerInfluence,
   [MapLayers.starLinks.key]: MapLayers.starLinks,

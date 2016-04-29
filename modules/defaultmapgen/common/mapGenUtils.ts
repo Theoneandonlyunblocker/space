@@ -8,8 +8,10 @@ import
   Flag_of_Edward_England
 } from "../../defaultemblems/SubEmblemTemplates";
 
-import Sector from "./Sector";
 import triangulate from "./triangulate";
+import MapGenDataByStarID from "./MapGenDataByStarID";
+import Region from "./Region";
+import MapGenPoint from "./MapGenPoint";
 
 import Star from "../../../src/Star";
 import Building from "../../../src/Building";
@@ -28,10 +30,10 @@ import
   getRandomKeyWithWeights
 } from "../../../src/utility";
 
-
 import Distributable from "../../../src/templateinterfaces/Distributable";
 
-export function linkAllStars(stars: Star[])
+
+export function linkStarsByTriangulation(stars: Star[]): void
 {
   if (stars.length < 3)
   {
@@ -47,87 +49,93 @@ export function linkAllStars(stars: Star[])
 
   for (let i = 0; i < triangles.length; i++)
   {
-    var edges = <Star[][]> triangles[i].getEdges();
+    var edges: Star[][] = triangles[i].getEdges();
     for (let j = 0; j < edges.length; j++)
     {
       edges[j][0].addLink(edges[j][1]);
     }
   }
 }
-export function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number)
+
+export function partiallySeverLinks(
+  stars: Star[],
+  mapGenDataByStarID: MapGenDataByStarID,
+  minConnectionsToKeep: number,
+  maxCuts: number
+): void
 {
-  for (let i = 0; i < stars.length; i++)
+  stars.forEach(star =>
   {
-    var star = stars[i];
-    var regionsAlreadyCut:
-    {
-      [regionId: number]: number;
-    } = {};
-
+    let cutsDone = 0;
+    
     var neighbors = star.getAllLinks();
+    const mapGenDistance = mapGenDataByStarID[star.id].mapGenDistance;
 
-    if (neighbors.length <= minConnections) continue;
-
-    for (let j = neighbors.length - 1; j >= 0; j--)
+    if (neighbors.length > minConnectionsToKeep)
     {
-      var neighbor = neighbors[j];
-
-      if (regionsAlreadyCut[neighbor.mapGenData.region.id] >= maxCutsPerRegion)
+      for (let j = neighbors.length - 1; j >= 0; j--)
       {
-        continue;
-      }
+        var neighbor = neighbors[j];
 
-      var neighborLinks = neighbor.getAllLinks();
-
-      if (neighbors.length <= minConnections || neighborLinks.length <= minConnections) continue;
-
-      var totalLinks = neighbors.length + neighborLinks.length;
-
-      var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - star.mapGenData.distance);
-      var minMultipleCutThreshhold = 0.15;
-      if (cutThreshhold > 0)
-      {
-        if (Math.random() < cutThreshhold)
+        if (cutsDone < maxCuts)
         {
-          star.removeLink(neighbor);
-          neighbors.pop();
+          var neighborLinks = neighbor.getAllLinks();
 
-          if (!regionsAlreadyCut[neighbor.mapGenData.region.id])
+          if (neighbors.length <= minConnectionsToKeep || neighborLinks.length <= minConnectionsToKeep) continue;
+
+          var totalLinks = neighbors.length + neighborLinks.length;
+
+          var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnectionsToKeep) * (1 - mapGenDistance);
+          var minMultipleCutThreshhold = 0.15;
+          if (cutThreshhold > 0)
           {
-            regionsAlreadyCut[neighbor.mapGenData.region.id] = 0;
-          }
-          regionsAlreadyCut[neighbor.mapGenData.region.id]++;
+            if (Math.random() < cutThreshhold)
+            {
+              star.removeLink(neighbor);
+              neighbors.pop();
 
-          var path = aStar(star, neighbor);
+              if (!cutsDone)
+              {
+                cutsDone = 0;
+              }
+              cutsDone++;
 
-          if (!path) // left star inaccesible
-          {
-            star.addLink(neighbor);
-            regionsAlreadyCut[neighbor.mapGenData.region.id]--;
-            neighbors.push(neighbor);
+              var path = aStar(star, neighbor);
+
+              if (!path) // left star inaccesible
+              {
+                star.addLink(neighbor);
+                cutsDone--;
+                neighbors.push(neighbor);
+              }
+            }
+
+            cutThreshhold -= minMultipleCutThreshhold;
           }
         }
-
-        cutThreshhold -= minMultipleCutThreshhold;
       }
     }
-  }
+  });
 }
-export function calculateConnectedness(stars: Star[], maxRange: number)
+
+export function getStarConnectedness(star: Star, maxRange: number): number
 {
-  for (let i = 0; i < stars.length; i++)
+  let connectedness: number = 0;
+  let linkedByRange = star.getLinkedInRange(maxRange).byRange;
+  for (let rangeString in linkedByRange)
   {
-    var connectedness: number = 0;
-    var linkedByRange = stars[i].getLinkedInRange(maxRange).byRange;
-    for (let rangeString in linkedByRange)
-    {
-      var range = parseInt(rangeString);
-      connectedness += linkedByRange[rangeString].length / range;
-    }
-    stars[i].mapGenData.connectedness = connectedness;
+    const range = parseInt(rangeString);
+    connectedness += linkedByRange[rangeString].length / range;
   }
+  
+  return connectedness;
 }
-export function makeSectors(stars: Star[], minSize: number, maxSize: number)
+export function makeSectors(
+  stars: Star[],
+  mapGenDataByStarID: MapGenDataByStarID,
+  minSize: number,
+  maxSize: number
+): Region[]
 {
   /*
   while average size sectors left to assign && unassigned stars left
@@ -143,73 +151,82 @@ export function makeSectors(stars: Star[], minSize: number, maxSize: number)
 
     leftover gets assigned to smallest neighboring sector
     if sizes equal, assign to sector with least neighboring leftovers
+    if neighboring leftovers equal, assing to sector with biggest perimeter with leftover
 
   for each sector larger than maxSize
     assign extra stars to smaller neighboring sectors
    */
-  var totalStars = stars.length;
-  var unassignedStars: Star[] = stars.slice(0);
-  var leftoverStars: Star[] = [];
+  const totalStars = stars.length;
+  const averageSize = (minSize + maxSize) / 2;
+  const averageSectorsAmount = Math.round(totalStars / averageSize);
   
-  var averageSize = (minSize + maxSize) / 2;
-  var averageSectorsAmount = Math.round(totalStars / averageSize);
-
-  var sectorsById:
+  let sectorIDGen = 0;
+  const sectorsByID:
   {
-    [sectorId: number]: Sector;
+    [sectorId: number]: Region;
   } = {};
-  var sectorIdGen = 0;
-
-  var sectorsOverMaxSize: Sector[] = [];
-
-  var sameSectorFN = function(a: Star, b: Star)
+  const sectorsByStarID:
   {
-    return a.mapGenData.sector === b.mapGenData.sector;
-  };
+    [starID: number]: Region;
+  } = {};
 
-  calculateConnectedness(stars, minSize);
-  unassignedStars.sort(function(a: Star, b: Star)
+  const sectorsOverMaxSize: Region[] = [];
+  const unassignedStars: Star[] = stars.slice(0);
+  const leftoverStars: Star[] = [];
+
+  unassignedStars.sort((a, b) =>
   {
-    return b.mapGenData.connectedness - a.mapGenData.connectedness;
-  });
+    return mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
+  })
 
   while (averageSectorsAmount > 0 && unassignedStars.length > 0)
   {
-    var seedStar = unassignedStars.pop();
-    var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
+    const seedStar = unassignedStars.pop();
+    const islandForSameSector = seedStar.getIslandForQualifier((a, b) =>
+    {
+      return sectorsByStarID[a.id] === sectorsByStarID[b.id];
+    }, minSize);
+    
+    const canFormMinSizeSector = islandForSameSector.length >= minSize;
 
     if (canFormMinSizeSector)
     {
-      var sector = new Sector(sectorIdGen++);
-      sectorsById[sector.id] = sector;
+      const sectorID = sectorIDGen++;
+      
+      const sector = new Region("sector_" + sectorID);
+      sectorsByID[sectorID] = sector;
 
-      var discoveryStarIndex = 0;
+      let discoveryStarIndex = 0;
       sector.addStar(seedStar);
+      sectorsByStarID[seedStar.id] = sector;
 
       while (sector.stars.length < minSize)
       {
-        var discoveryStar = sector.stars[discoveryStarIndex];
+        const discoveryStar = sector.stars[discoveryStarIndex];
 
-        var frontier = discoveryStar.getLinkedInRange(1).all;
-        frontier = frontier.filter(function(star: Star)
+        const discoveryStarLinkedNeighbors = discoveryStar.getLinkedInRange(1).all;
+        const frontier = discoveryStarLinkedNeighbors.filter(star =>
         {
-          return !star.mapGenData.sector;
+          const starHasSector = Boolean(sectorsByStarID[star.id]);
+          return !starHasSector;
         });
 
         while (sector.stars.length < minSize && frontier.length > 0)
         {
-          var frontierSortScores:
+          const frontierSortScores:
           {
             [starId: number]: number
           } = {};
-
-          for (let i = 0; i < frontier.length; i++)
+          
+          frontier.forEach(star =>
           {
-            var perimeter = sector.getPerimeterLengthWithStar(frontier[i]) / 15;
-            var sortScore = frontier[i].mapGenData.connectedness - perimeter;
-
-            frontierSortScores[frontier[i].id] = sortScore;
-          }
+            const borderLengthWithSector = sector.getBorderLengthWithStars([star]);
+            const borderScore = borderLengthWithSector / 15;
+            
+            const connectedness = mapGenDataByStarID[star.id].connectedness;
+            
+            frontierSortScores[star.id] = borderScore - connectedness;
+          });
 
           frontier.sort(function(a: Star, b: Star)
           {
@@ -220,6 +237,7 @@ export function makeSectors(stars: Star[], minSize: number, maxSize: number)
           unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
 
           sector.addStar(toAdd);
+          sectorsByStarID[toAdd.id] = sector;
         }
 
         discoveryStarIndex++;
@@ -240,158 +258,174 @@ export function makeSectors(stars: Star[], minSize: number, maxSize: number)
     {
       [sectorId: number]: boolean;
     } = {};
-    var candidateSectors: Sector[] = [];
+    var candidateSectors: Region[] = [];
 
-    for (let j = 0; j < neighbors.length; j++)
+    neighbors.forEach(neighbor =>
     {
-      if (!neighbors[j].mapGenData.sector) continue;
-      else
+      const neighborSector = sectorsByStarID[neighbor.id];
+      if (neighborSector)
       {
-        if (!alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id])
+        if (!alreadyAddedNeighborSectors[neighborSector.id])
         {
-          alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id] = true;
-          candidateSectors.push(neighbors[j].mapGenData.sector);
+          alreadyAddedNeighborSectors[neighborSector.id] = true;
+          candidateSectors.push(neighborSector);
         }
       }
-    }
+    });
 
-    // all neighboring stars don't have sectors
+    // no neigboring star is part of a sector
     // put star at back of queue and try again later
     if (candidateSectors.length < 1)
     {
       leftoverStars.unshift(star);
       continue;
     }
-
-    var unclaimedNeighborsPerSector:
+    else
     {
-      [sectorId: number]: number;
-    } = {};
-
-    for (let j = 0; j < candidateSectors.length; j++)
-    {
-      var sectorNeighbors = candidateSectors[j].getNeighboringStars();
-      var unclaimed = 0;
-      for (let k = 0; k < sectorNeighbors.length; k++)
+      const unclaimedNeighborsPerSector:
       {
-        if (!sectorNeighbors[k].mapGenData.sector)
+        [sectorId: string]: number;
+      } = {};
+      
+      candidateSectors.forEach(sector =>
+      {
+        const sectorLinkedStars = sector.getLinkedStars();
+        
+        const unclaimedSectorLinkedStars = sectorLinkedStars.filter(star =>
         {
-          unclaimed++;
-        }
-      }
-
-      unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
-    }
-
-    candidateSectors.sort(function(a: Sector, b: Sector)
-    {
-      var sizeSort = a.stars.length - b.stars.length;
-      if (sizeSort) return sizeSort;
-
-      var unclaimedSort = unclaimedNeighborsPerSector[b.id] -
-        unclaimedNeighborsPerSector[a.id];
-      if (sizeSort) return unclaimedSort;
-
-      var perimeterSort = b.getPerimeterLengthWithStar(star) - a.getPerimeterLengthWithStar(star);
-      if (perimeterSort) return perimeterSort;
-    });
-
-    candidateSectors[0].addStar(star);
-  }
-
-  return sectorsById;
-}
-export function setSectorDistributionFlags(sectors: Sector[])
-{
-  for (let i = 0; i < sectors.length; i++)
-  {
-    var sector = sectors[i];
-    sector.distributionFlags = [];
-    var majorityRegions = sector.getMajorityRegions();
-    for (let j = 0; j < majorityRegions.length; j++)
-    {
-      if (majorityRegions[j].id.indexOf("center") !== -1)
+          return !sectorsByStarID[star.id];
+        });
+        
+        unclaimedNeighborsPerSector[sector.id] = unclaimedSectorLinkedStars.length;
+      });
+      
+      candidateSectors.sort((a, b) =>
       {
-        sector.distributionFlags.push("rare");
-      }
-      else
-      {
-        sector.distributionFlags.push("common");
-      }
+        const sizeSort = a.stars.length - b.stars.length;
+        if (sizeSort) return sizeSort;
+
+        const unclaimedSort = unclaimedNeighborsPerSector[b.id] -
+          unclaimedNeighborsPerSector[a.id];
+        if (sizeSort) return unclaimedSort;
+
+        const perimeterSort = b.getBorderLengthWithStars([star]) - a.getBorderLengthWithStars([star]);
+        if (perimeterSort) return perimeterSort;
+      });
+
+      candidateSectors[0].addStar(star);
+      sectorsByStarID[star.id] = candidateSectors[0];
     }
   }
-}
-export function distributeDistributablesPerSector(sectors: Sector[],
-  distributableType: string,
-  allDistributables: any,
-  placerFunction: (sector: Sector, distributable: Distributable) => void)
-{
-  if (!sectors[0].distributionFlags)
-  {
-    setSectorDistributionFlags(sectors);
-  }
 
-  var probabilityWeights:
+  return Object.keys(sectorsByID).map(sectorID =>
+  {
+    return sectorsByID[sectorID];
+  });
+}
+// export function setSectorDistributionFlags(sectors: Sector[])
+// {
+//   for (let i = 0; i < sectors.length; i++)
+//   {
+//     var sector = sectors[i];
+//     sector.distributionFlags = [];
+//     var majorityRegions = sector.getMajorityRegions();
+//     for (let j = 0; j < majorityRegions.length; j++)
+//     {
+//       if (majorityRegions[j].id.indexOf("center") !== -1)
+//       {
+//         sector.distributionFlags.push("rare");
+//       }
+//       else
+//       {
+//         sector.distributionFlags.push("common");
+//       }
+//     }
+//   }
+// }
+export function distributeDistributablesPerSector<T extends Distributable>(
+  sectors: Region[],
+  distributionFlagsBySectorID: {[sectorID: string]: string[]},
+  distributablesByDistributionGroup: {[groupName: string]: T[]},
+  placerFunction: (sector: Region, distributable: T) => void
+): void
+{
+  const probabilityWeights:
   {
     [distributableName: string]: number;
   } = {};
-  for (let name in allDistributables)
+  const allDistributablesByType:
   {
-    probabilityWeights[name] = allDistributables[name].rarity;
+    [distributableName: string]: T;
+  } = {};
+  
+  const addedDistributablesByRegionID:
+  {
+    [regionID: string]:
+    {
+      [distributableName: string]: boolean;
+    }
+  } = {};
+  
+  for (let distributionGroup in distributablesByDistributionGroup)
+  {
+    const distributables = distributablesByDistributionGroup[distributionGroup];
+    distributables.forEach(distributable =>
+    {
+      probabilityWeights[distributable.type] = distributable.rarity;
+      allDistributablesByType[distributable.type] = distributable;
+    });
   }
 
-  for (let i = 0; i < sectors.length; i++)
+  sectors.forEach(sector =>
   {
-    var sector = sectors[i];
-    var alreadyAddedByWeight = getRelativeWeightsFromObject(probabilityWeights);
-    var candidates: Distributable[] = [];
-
-    for (let j = 0; j < sector.distributionFlags.length; j++)
+    const alreadyAddedByWeight = getRelativeWeightsFromObject(probabilityWeights);
+    const distributionFlags = distributionFlagsBySectorID[sector.id];
+    const distributablesForSector = distributionFlags.reduce((distributables: T[], flag: string) =>
     {
-      var flag = sector.distributionFlags[j];
-      var distributablesForFlag = TemplateIndexes.distributablesByDistributionGroup[flag][distributableType];
-      candidates = candidates.concat(distributablesForFlag);
+      return distributables.concat(distributablesByDistributionGroup[flag]);
+    }, []);
+
+    if (distributablesForSector.length < 1)
+    {
+      return;
     }
 
-    if (candidates.length === 0) continue;
-
-    var neighborSectors = sector.getNeighboringSectors();
-    var candidatesNotInNeighboringSectors = candidates.filter(function(candidate: Distributable)
+    const linkedNeighborRegions = sector.getLinkedRegions(sectors);
+    const candidatesNotInNeighboringSectors = distributablesForSector.filter(candidate =>
     {
-      for (let k = 0; k < neighborSectors.length; k++)
+      return linkedNeighborRegions.some(linkedRegion =>
       {
-        if (neighborSectors[k].addedDistributables.indexOf(candidate) !== -1)
-        {
-          return false;
-        }
-      }
-
-      return true;
+        return(addedDistributablesByRegionID[linkedRegion.id] &&
+          addedDistributablesByRegionID[linkedRegion.id][candidate.type]);
+      });
     });
+    
+    const candidates = candidatesNotInNeighboringSectors.length > 0 ?
+      candidatesNotInNeighboringSectors :
+      distributablesForSector;
 
-    if (candidatesNotInNeighboringSectors.length > 0)
-    {
-      candidates = candidatesNotInNeighboringSectors;
-    }
-
-    var candidatesByWeight:
+    const candidatesByWeight:
     {
       [distributableName: string]: number;
     } = {};
-    for (let j = 0; j < candidates.length; j++)
+    
+    candidates.forEach(candidate =>
     {
-      candidatesByWeight[candidates[j].type] =
-        alreadyAddedByWeight[candidates[j].type];
-    }
+      candidatesByWeight[candidate.type] = alreadyAddedByWeight[candidate.type];
+    });
 
-
-    var selectedKey = getRandomKeyWithWeights(candidatesByWeight);
-    var selectedType = allDistributables[selectedKey];
-    probabilityWeights[selectedKey]  /= 2;
+    const selectedKey = getRandomKeyWithWeights(candidatesByWeight);
+    const selectedType = allDistributablesByType[selectedKey];
+    probabilityWeights[selectedKey] /= 2;
 
     placerFunction(sector, selectedType);
-    sector.addedDistributables.push(selectedType);
-  }
+    
+    if (!addedDistributablesByRegionID[sector.id])
+    {
+      addedDistributablesByRegionID[sector.id] = {};
+    }
+    addedDistributablesByRegionID[sector.id][selectedKey] = true;
+  });
 }
 export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCommand: boolean = true)
 {
@@ -425,8 +459,10 @@ export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCom
     }));
   }
 }
-export function setupPirates(player: Player)
+export function makePlayerForPirates(): Player
 {
+  const player = new Player(true);
+  
   player.name = "Pirates"
   player.color = Color.fromHex(0x000000);
   player.colorAlpha = 0;
@@ -445,20 +481,19 @@ export function setupPirates(player: Player)
   });
 
   player.flag.setForegroundEmblem(foregroundEmblem);
+  
+  return player;
 }
 export function severLinksToNonAdjacentStars(star: Star)
 {
-  var allLinks = star.getAllLinks();
+  const allLinks = star.getAllLinks();
+  const neighbors = star.getNeighbors();
 
-  var neighborVoronoiIds = star.voronoiCell.getNeighborIds();
-
-  for (let i = 0; i < allLinks.length; i++)
+  allLinks.forEach(linkedStar =>
   {
-    var toSever = allLinks[i];
-
-    if (neighborVoronoiIds.indexOf(toSever.voronoiId) === -1)
+    if (neighbors.indexOf(linkedStar) === -1)
     {
-      star.removeLink(toSever);
+      star.removeLink(linkedStar);
     }
-  }
+  });
 }

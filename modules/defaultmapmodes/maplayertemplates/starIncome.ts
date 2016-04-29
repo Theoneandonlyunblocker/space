@@ -66,7 +66,7 @@ const starIncome: MapRendererLayerTemplate =
       var relativeIncome = getRelativeValue(incomeBounds.min, incomeBounds.max, income);
       var color = getRelativeColor(incomeBounds.min, incomeBounds.max, relativeIncome);
 
-      var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+      var poly = new PIXI.Polygon(<PIXI.Point[]> star.voronoiCell.vertices);
       var gfx = new PIXI.Graphics();
       gfx.beginFill(color, 0.6);
       gfx.drawShape(poly);

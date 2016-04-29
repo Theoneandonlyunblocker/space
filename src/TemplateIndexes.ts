@@ -5,18 +5,19 @@ import ResourceTemplate from "./templateinterfaces/ResourceTemplate";
 import ItemTemplate from "./templateinterfaces/ItemTemplate";
 import Distributable from "./templateinterfaces/Distributable";
 
-interface DistributablesByKey
+interface DistributablesByKey<T extends Distributable>
 {
-  [key: string]: Distributable;
+  [key: string]: T;
+}
+interface DistributablesByDistributionGroup<T extends Distributable>
+{
+  [groupName: string]: T[];
 }
 
-interface DistributablesByDistributionGroup
+interface DistributablesByTypeAndDistributionGroup
 {
-  [groupName: string]:
-  {
-    unitFamilies: UnitFamily[];
-    resources: ResourceTemplate[];
-  };
+  unitFamilies: DistributablesByDistributionGroup<UnitFamily>;
+  resources: DistributablesByDistributionGroup<ResourceTemplate>;
 }
 interface ItemsByTechLevel
 {
@@ -27,22 +28,22 @@ class TemplateIndexes
 {
   private builtIndexes:
   {
-    distributablesByDistributionGroup: DistributablesByDistributionGroup;
+    distributablesByTypeAndDistributionGroup: DistributablesByTypeAndDistributionGroup;
     itemsByTechLevel: ItemsByTechLevel;
   } =
   {
-    distributablesByDistributionGroup: null,
+    distributablesByTypeAndDistributionGroup: null,
     itemsByTechLevel: null,
   }
   
   public get distributablesByDistributionGroup()
   {
-    if (!this.builtIndexes.distributablesByDistributionGroup)
+    if (!this.builtIndexes.distributablesByTypeAndDistributionGroup)
     {
-      this.builtIndexes.distributablesByDistributionGroup =
-        TemplateIndexes.getDistributablesByDistributionGroup();
+      this.builtIndexes.distributablesByTypeAndDistributionGroup =
+        TemplateIndexes.getDistributablesByTypeAndDistributionGroup();
     }
-    return this.builtIndexes.distributablesByDistributionGroup;
+    return this.builtIndexes.distributablesByTypeAndDistributionGroup;
   }
   public get itemsByTechLevel()
   {
@@ -66,44 +67,76 @@ class TemplateIndexes
     }
   }
   
-  private static getDistributablesByDistributionGroup()
+  private static getDistributablesByTypeAndDistributionGroup(): DistributablesByTypeAndDistributionGroup
   {
-    var result:
+    return(
     {
-      [groupName: string]:
-      {
-        unitFamilies: UnitFamily[];
-        resources: ResourceTemplate[];
-      };
-    } = {};
-
-    function putInGroups(distributables: DistributablesByKey, distributableType: string)
-    {
-      for (let key in distributables)
-      {
-        var distributable = distributables[key];
-        for (let i = 0; i < distributable.distributionGroups.length; i++)
-        {
-          var groupName = distributable.distributionGroups[i];
-          if (!result[groupName])
-          {
-            result[groupName] =
-            {
-              unitFamilies: [],
-              resources: []
-            }
-          }
-
-          result[groupName][distributableType].push(distributable);
-        }
-      }
-    }
-
-    putInGroups(app.moduleData.Templates.UnitFamilies, "unitFamilies");
-    putInGroups(app.moduleData.Templates.Resources, "resources");
-
-    return result;
+      unitFamilies: TemplateIndexes.getDistributablesByGroup(app.moduleData.Templates.UnitFamilies),
+      resources: TemplateIndexes.getDistributablesByGroup(app.moduleData.Templates.Resources)
+    });
   }
+  private static getDistributablesByGroup<T extends Distributable>(
+    allDistributables: DistributablesByKey<T>
+  ): DistributablesByDistributionGroup<T>
+  {
+    const byGroup: DistributablesByDistributionGroup<T> = {};
+    
+    for (let key in allDistributables)
+    {
+      const distributable = allDistributables[key];
+      distributable.distributionGroups.forEach(group =>
+      {
+        if (!byGroup[group])
+        {
+          byGroup[group] = [];
+        }
+        byGroup[group].push(distributable);
+      });
+    }
+    
+    return byGroup;
+  }
+  // private static getDistributablesByDistributionGroup()
+  // {
+  //   var result:
+  //   {
+  //     [groupName: string]:
+  //     {
+  //       unitFamilies: UnitFamily[];
+  //       resources: ResourceTemplate[];
+  //     };
+  //   } = {};
+
+  //   function putInGroups(
+  //     distributables: DistributablesByKey<Distributable>,
+  //     distributableType: string
+  //   ): void
+  //   {
+  //     for (let key in distributables)
+  //     {
+  //       var distributable = distributables[key];
+  //       for (let i = 0; i < distributable.distributionGroups.length; i++)
+  //       {
+  //         var groupName = distributable.distributionGroups[i];
+  //         if (!result[groupName])
+  //         {
+  //           result[groupName] =
+  //           {
+  //             unitFamilies: [],
+  //             resources: []
+  //           }
+  //         }
+
+  //         result[groupName][distributableType].push(distributable);
+  //       }
+  //     }
+  //   }
+
+  //   putInGroups(app.moduleData.Templates.UnitFamilies, "unitFamilies");
+  //   putInGroups(app.moduleData.Templates.Resources, "resources");
+
+  //   return result;
+  // }
   private static getItemsByTechLevel()
   {
     var itemsByTechLevel:

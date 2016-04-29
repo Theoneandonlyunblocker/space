@@ -2,6 +2,7 @@
 
 import MapVoronoiInfo from "../MapVoronoiInfo";
 import Star from "../Star";
+import VoronoiCell from "./VoronoiCell";
 import FillerPoint from "../FillerPoint";
 import Player from "../Player";
 import Point from "../Point";
@@ -11,7 +12,8 @@ import Options from "../options";
 import
 {
   relaxVoronoi,
-  makeVoronoi
+  makeVoronoi,
+  setVoronoiCells
 } from "./voronoi";
 
 export default class MapGenResult
@@ -47,26 +49,26 @@ export default class MapGenResult
     this.independents = props.independents;
   }
 
-  getAllPoints(): Point[]
-  {
-    return this.fillerPoints.concat(this.stars);
-  }
-
-  makeMap(): GalaxyMap
+  public makeMap(): GalaxyMap
   {
     this.voronoiInfo = this.makeVoronoiInfo();
 
-    this.clearMapGenData()
-
     var map = new GalaxyMap(this);
-
+    
     return map;
   }
-
-  makeVoronoiInfo(): MapVoronoiInfo
+  
+  private getAllPoints(): (Star | FillerPoint)[]
+  {
+    return this.fillerPoints.concat<any[]>(this.stars);
+  }
+  private makeVoronoiInfo(): MapVoronoiInfo
   {
     var voronoiInfo = new MapVoronoiInfo();
     voronoiInfo.diagram = makeVoronoi(this.getAllPoints(), this.width, this.height);
+    
+    setVoronoiCells(voronoiInfo.diagram.cells);
+
     voronoiInfo.treeMap = this.makeVoronoiTreeMap();
     voronoiInfo.bounds =
     {
@@ -86,17 +88,17 @@ export default class MapGenResult
 
     relaxVoronoi(voronoiInfo.diagram, function(point: Point)
     {
-      // dont move filler points
       const castedPoint = <Star> point;
-      return isFinite(castedPoint.id) ? 1 : 0;
+      const isFiller = !isFinite(castedPoint.id);
+      // dont move filler points
+      return isFiller ? 0 : 1;
     });
 
     return voronoiInfo;
   }
-
-  makeVoronoiTreeMap()
+  private makeVoronoiTreeMap(): BoundsQuadTree<VoronoiCell<Star>>
   {
-    var treeMap = new QuadTree(
+    var treeMap = <BoundsQuadTree<VoronoiCell<Star>>> new QuadTree(
     {
       x: 0,
       y: 0,
@@ -104,29 +106,11 @@ export default class MapGenResult
       height: this.height
     });
 
-    for (let i = 0; i < this.stars.length; i++)
+    this.stars.forEach(star =>
     {
-      var cell = this.stars[i].voronoiCell;
-      var bbox = cell.getBbox();
-      bbox.cell = cell;
-      treeMap.insert(bbox);
-    }
+      treeMap.insert(star.voronoiCell);
+    });
 
     return treeMap;
-  }
-
-  clearMapGenData()
-  {
-    if (Options.debugMode)
-    {
-      console.log("Skipped cleaning map gen data due to debug mode being enabled");
-      return;
-    }
-    for (let i = 0; i < this.stars.length; i++)
-    {
-      this.stars[i].mapGenData = null;
-      delete this.stars[i].mapGenData;
-      delete this.stars[i].voronoiId;
-    }
   }
 }

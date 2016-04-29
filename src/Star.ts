@@ -8,12 +8,14 @@ import UnitTemplate from "./templateinterfaces/UnitTemplate";
 
 import eventManager from "./eventManager";
 import Point from "./Point";
+import FillerPoint from "./FillerPoint";
 import Player from "./Player";
 import Fleet from "./Fleet";
 import Building from "./Building";
 import BuildingUpgradeData from "./BuildingUpgradeData";
 import Manufactory from "./Manufactory";
 import Unit from "./Unit";
+import VoronoiCell from "./VoronoiCell";
 import FleetAttackTarget from "./FleetAttackTarget";
 import
 {
@@ -39,11 +41,9 @@ export default class Star implements Point
   linksTo: Star[] = [];
   linksFrom: Star[] = [];
 
-  // can be used during map gen to attach temporary variables for easier debugging
-  // nulled and deleted after map gen is done
-  mapGenData: any = {};
   // set by voronoi library and deleted after mapgen
-  voronoiId: number;
+  // voronoiId: number;
+  voronoiCell: VoronoiCell<Star>;
 
   seed: string;
 
@@ -65,7 +65,6 @@ export default class Star implements Point
   buildingsEffect: BuildingEffect;
   buildingsEffectIsDirty: boolean = true;
 
-  voronoiCell: any;
 
   indexedNeighborsInRange:
   {
@@ -560,11 +559,11 @@ export default class Star implements Point
   }
 
   // MAP GEN
-  setPosition(x: number, y: number)
-  {
-    this.x = x;
-    this.y = y;
-  }
+  // setPosition(x: number, y: number)
+  // {
+  //   this.x = x;
+  //   this.y = y;
+  // }
   setResource(resource: ResourceTemplate)
   {
     this.resource = resource;
@@ -624,12 +623,12 @@ export default class Star implements Point
 
     return null;
   }
-  getSharedNeighborsWith(neighbor: Star)
+  getSharedNeighborsWith(neighbor: Star): (Star | FillerPoint)[]
   {
     var ownNeighbors = this.getNeighbors();
     var neighborNeighbors = neighbor.getNeighbors();
 
-    var sharedNeighbors: Star[] = [];
+    var sharedNeighbors: Array<Star | FillerPoint> = [];
 
     for (let i = 0; i < ownNeighbors.length; i++)
     {
@@ -643,13 +642,13 @@ export default class Star implements Point
     return sharedNeighbors;
   }
   // return adjacent stars whether they're linked to this or not
-  getNeighbors(): Star[]
+  getNeighbors(): (Star | FillerPoint)[]
   {
-    var neighbors: Star[] = [];
+    var neighbors: (Star | FillerPoint)[] = [];
 
     for (let i = 0; i < this.voronoiCell.halfedges.length; i++)
     {
-      var edge = this.voronoiCell.halfedges[i].edge;
+      var edge = <Voronoi.Edge<Star>> this.voronoiCell.halfedges[i].edge;
 
       if (edge.lSite !== null && edge.lSite.id !== this.id)
       {
@@ -829,7 +828,6 @@ export default class Star implements Point
   getDistanceToStar(target: Star): number
   {
     // don't index distance while generating map as distance can change
-    // if (this.mapGenData)
     if (!app.game)
     {
       var a = aStar(this, target);
