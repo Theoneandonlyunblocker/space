@@ -164,27 +164,90 @@ export default class Sector
 
     return perimeterLength;
   }
-  setupIndependents(player: Player, intensity: number = 1, variance: number = 0.33)
+  private getDistanceToNearestPlayerOwnerLocationByStarID(): {[starID: number]: number}
+  {
+    const distanceByStarID:
+    {
+      [starID: number]: number;
+    } = {};
+    
+    this.stars.forEach(star =>
+    {
+      const nearestPlayerStar = star.getNearestStarForQualifier(star =>
+      {
+        return star.owner && !star.owner.isIndependent;
+      });
+      
+      const distanceToNearestPlayerStar = star.getDistanceToStar(nearestPlayerStar);
+      
+      distanceByStarID[star.id] = distanceToNearestPlayerStar;
+    });
+    
+    return distanceByStarID;
+  }
+  private getCommanderStar(distanceFromPlayerOwnedLocationById: {[starID: number]: number}): Star
+  {
+    const independentStars = this.stars.filter(star =>
+    {
+      return !star.owner || star.owner.isIndependent;
+    });
+    
+    let maxDistance = 0;
+    const starsByDistance:
+    {
+      [distance: number]: Star[];
+    } = {};
+    independentStars.forEach(star =>
+    {
+      const distance = distanceFromPlayerOwnedLocationById[star.id];
+      maxDistance = Math.max(distance, maxDistance);
+      
+      if (!starsByDistance[distance])
+      {
+        starsByDistance[distance] = [];
+      }
+      starsByDistance[distance].push(star);
+    });
+    
+    const starsAtMaxDistance = starsByDistance[maxDistance];
+    
+    return starsAtMaxDistance.sort((a, b) =>
+    {
+      const connectednessSort = b.mapGenData.connectedness - a.mapGenData.connectedness;
+      if (connectednessSort)
+      {
+        return connectednessSort;
+      }
+      else
+      {
+        return b.mapGenData.distance - a.mapGenData.distance;
+      }
+    })[0];
+  }
+  public setupIndependents(player: Player, intensity: number = 1, variance: number = 0.33)
   {
     var independentStars = this.stars.filter(function(star: Star)
     {
       return !star.owner || star.owner.isIndependent;
     });
 
-    var distanceFromPlayerOwnedLocationById:
-    {
-      [starId: number]: number;
-    } = {};
+    const distanceFromPlayerOwnedLocationById = this.getDistanceToNearestPlayerOwnerLocationByStarID();
+    const commanderStar = this.getCommanderStar(distanceFromPlayerOwnedLocationById);
 
-    var starIsOwnedByPlayerQualifierFN = function(star: Star)
+    independentStars.forEach(star =>
     {
-      return star.owner && !star.owner.isIndependent;
-    }
-
-    var makeUnitFN = function(template: UnitTemplate, player: Player,
+      player.addStar(star);
+      star.addBuilding(new Building(
+      {
+        template: starBase,
+        location: star
+      }));
+    });
+    
+    const makeUnitFN = function(template: UnitTemplate, player: Player,
       unitStatsModifier: number, unitHealthModifier: number)
     {
-      var unit = new Unit(template);
+      const unit = new Unit(template);
 
       unit.setAttributes(unitStatsModifier);
       unit.setBaseHealth(unitHealthModifier);
@@ -193,58 +256,23 @@ export default class Sector
       return unit;
     }
 
-    var maxDistance: number = 0;
 
-    for (let i = 0; i < independentStars.length; i++)
+    const minUnits = 2;
+    const maxUnits = 5;
+
+    const globalBuildableUnitTypes = player.getGloballyBuildableUnits();
+    
+    independentStars.forEach(star =>
     {
-      var star = independentStars[i];
-
-      player.addStar(star);
-      star.addBuilding(new Building(
+      const distance = distanceFromPlayerOwnedLocationById[star.id];
+      const inverseMapGenDistance = 1 - star.mapGenData.distance;
+      const localBuildableUnitTypes = star.buildableUnitTypes.filter(unitTemplate =>
       {
-        template: starBase,
-        location: star
-      }));
-
-      var nearestPlayerStar = star.getNearestStarForQualifier(
-        starIsOwnedByPlayerQualifierFN);
-      var distance = star.getDistanceToStar(nearestPlayerStar);
-      distanceFromPlayerOwnedLocationById[star.id] = distance;
-      maxDistance = Math.max(maxDistance, distance);
-    }
-
-    var starsAtMaxDistance = independentStars.filter(function(star: Star)
-    {
-      return distanceFromPlayerOwnedLocationById[star.id] === maxDistance;
-    });
-
-    var commanderStar = starsAtMaxDistance.sort(function(a: Star, b: Star)
-    {
-      return b.mapGenData.connectedness - a.mapGenData.connectedness;
-    })[0];
-
-    var minUnits = 2;
-    var maxUnits = 5;
-
-    var globalBuildableUnitTypes = player.getGloballyBuildableUnits();
-
-    for (let i = 0; i < independentStars.length; i++)
-    {
-      var star = independentStars[i];
-      var distance = distanceFromPlayerOwnedLocationById[star.id];
-      var inverseMapGenDistance = 1 - star.mapGenData.distance;
-
-      var localBuildableUnitTypes: UnitTemplate[] = [];
-      for (let j = 0; j < star.buildableUnitTypes.length; j++)
-      {
-        var template = star.buildableUnitTypes[j];
-        if (!template.technologyRequirements ||
-          star.owner.meetsTechnologyRequirements(template.technologyRequirements))
-        {
-          localBuildableUnitTypes.push(template);
-        }
-      }
-
+        return (!unitTemplate.technologyRequirements ||
+          star.owner.meetsTechnologyRequirements(unitTemplate.technologyRequirements));
+      });
+      
+      
       // TODO map gen | kinda weird
       var unitsToAddCount = minUnits;
       for (let j = minUnits; j < distance; j++)
@@ -276,13 +304,17 @@ export default class Sector
         var unitStatsModifier = (isElite ? 1.2 : 1);
         var template: UnitTemplate = getRandomArrayItem(templateCandidates);
 
-        var unit = makeUnitFN(template, player, unitStatsModifier, unitHealthModifier);
+        const unit = new Unit(template);
         unit.name = (isElite ? "Pirate elite" : "Pirate");
+        
+        unit.setAttributes(unitStatsModifier);
+        unit.setBaseHealth(unitHealthModifier);
+        player.addUnit(unit);
         units.push(unit);
       }
       
       var fleet = new Fleet(player, units, star, undefined, false);
       fleet.name = "Pirates";
-    }
+    });
   }
 }
