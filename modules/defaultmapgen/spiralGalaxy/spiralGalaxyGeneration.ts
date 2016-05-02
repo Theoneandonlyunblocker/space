@@ -3,6 +3,7 @@ import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 import Region from "../../../src/Region";
 import TemplateIndexes from "../../../src/TemplateIndexes";
+import MapGenResult from "../../../src/MapGenResult";
 import
 {
   randInt,
@@ -12,13 +13,12 @@ import MapGenFunction from "../../../src/templateinterfaces/MapGenFunction";
 import ResourceTemplate from "../../../src/templateinterfaces/ResourceTemplate";
 import UnitFamily from "../../../src/templateinterfaces/UnitFamily";
 
-import MapGenResult from "../../../src/mapgencore/MapGenResult";
 import
 {
   makeVoronoi,
   relaxVoronoi,
   setVoronoiCells
-} from "../../../src/mapgencore/voronoi";
+} from "../../../src/voronoi";
 
 import MapGenPoint from "../common/MapGenPoint";
 import setupIndependents from "../common/setupIndependents";
@@ -331,7 +331,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
     fillerPoints: fillerPoints,
     width: options.defaultOptions.width,
     height: options.defaultOptions.height,
-    seed: "" + Math.random(), // TODO map gen
+    seed: "" + Math.random(), // TODO map gen | actually use seed for generating map
     independents: [pirates]
   });
 }

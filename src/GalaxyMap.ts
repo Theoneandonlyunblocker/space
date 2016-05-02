@@ -1,7 +1,6 @@
 import GalaxyMapSaveData from "./savedata/GalaxyMapSaveData";
 
-import MapGenResult from "./mapgencore/MapGenResult";
-
+import MapGenResult from "./MapGenResult";
 import Star from "./Star";
 import FillerPoint from "./FillerPoint";
 import Player from "./Player";

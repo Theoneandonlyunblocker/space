@@ -1,9 +1,9 @@
-/// <reference path="../../lib/voronoi.d.ts" />
+/// <reference path="../lib/voronoi.d.ts" />
 
-import Point from "../Point";
-import FillerPoint from "../FillerPoint";
-import Star from "../Star";
-import VoronoiCell from "../VoronoiCell";
+import Point from "./Point";
+import FillerPoint from "./FillerPoint";
+import Star from "./Star";
+import VoronoiCell from "./VoronoiCell";
 
 export function makeVoronoi<T extends Point>(points: T[], width: number, height: number)
 {
