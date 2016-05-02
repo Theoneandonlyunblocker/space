@@ -662,6 +662,10 @@ export default class Star implements Point
 
     return neighbors;
   }
+  public getAllLinkedStars()
+  {
+    return this.getLinkedInRange(99999).all;
+  }
   getLinkedInRange(range: number)
   {
     if (this.indexedNeighborsInRange[range])

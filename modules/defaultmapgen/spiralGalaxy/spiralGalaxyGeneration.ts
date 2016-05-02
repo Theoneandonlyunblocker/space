@@ -150,7 +150,7 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
 
 
   //   if all stars aren't connected to each other, start again
-  const entireMapIsConnected = stars[0].getLinkedInRange(stars.length).all.length === stars.length;
+  const entireMapIsConnected = stars[0].getAllLinkedStars().length === stars.length;
   if (!entireMapIsConnected)
   {
     console.log("Regenerated map due to insufficient connections");

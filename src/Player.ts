@@ -498,7 +498,7 @@ export default class Player
   {
     if (!this.isAI && Options.debugMode)
     {
-      return this.controlledLocations[0].getLinkedInRange(9999).all;
+      return this.controlledLocations[0].getAllLinkedStars();
     }
     if (this.visionIsDirty) this.updateVisibleStars();
 
@@ -516,7 +516,7 @@ export default class Player
   {
     if (!this.isAI && Options.debugMode)
     {
-      return this.controlledLocations[0].getLinkedInRange(9999).all;
+      return this.controlledLocations[0].getAllLinkedStars();
     }
     if (this.visionIsDirty) this.updateVisibleStars();
 
@@ -549,7 +549,7 @@ export default class Player
   {
     if (!this.isAI && Options.debugMode)
     {
-      return this.controlledLocations[0].getLinkedInRange(9999).all;
+      return this.controlledLocations[0].getAllLinkedStars();
     }
     if (this.visionIsDirty) this.updateVisibleStars();
 

@@ -480,7 +480,6 @@ export function getAngleBetweenDegrees(degA: number, degB: number)
 {
   var angle = Math.abs(degB - degA) % 360;
   var distance = Math.min(360 - angle, angle);
-  //console.log(degA, degB, distance);
   return distance;
 }
 export function prettifyDate(date: Date)
