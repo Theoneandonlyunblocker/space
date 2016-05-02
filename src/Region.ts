@@ -1,6 +1,4 @@
-import Star from "../../../src/Star";
-
-// TODO move to src/
+import Star from "./Star";
 
 interface regionWithStars
 {

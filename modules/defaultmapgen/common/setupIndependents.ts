@@ -1,10 +1,10 @@
-import Region from "./Region";
 import MapGenDataByStarID from "./MapGenDataByStarID";
 import
 {
   addDefenceBuildings
 } from "./mapGenUtils";
 
+import Region from "../../../src/Region";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
 

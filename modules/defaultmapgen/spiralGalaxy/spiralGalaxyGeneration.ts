@@ -1,6 +1,7 @@
 import FillerPoint from "../../../src/FillerPoint";
 import Player from "../../../src/Player";
 import Star from "../../../src/Star";
+import Region from "../../../src/Region";
 import TemplateIndexes from "../../../src/TemplateIndexes";
 import
 {
@@ -19,7 +20,6 @@ import
   setVoronoiCells
 } from "../../../src/mapgencore/voronoi";
 
-import Region from "../common/Region";
 import MapGenPoint from "../common/MapGenPoint";
 import setupIndependents from "../common/setupIndependents";
 import MapGenDataByStarID from "../common/MapGenDataByStarID";

@@ -10,9 +10,9 @@ import
 
 import triangulate from "./triangulate";
 import MapGenDataByStarID from "./MapGenDataByStarID";
-import Region from "./Region";
 import MapGenPoint from "./MapGenPoint";
 
+import Region from "../../../src/Region";
 import Star from "../../../src/Star";
 import Building from "../../../src/Building";
 import Player from "../../../src/Player";
