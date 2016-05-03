@@ -312,6 +312,5 @@ class App
 }
 
 const app = new App();
-console.log("create app");
 export default app;
 
