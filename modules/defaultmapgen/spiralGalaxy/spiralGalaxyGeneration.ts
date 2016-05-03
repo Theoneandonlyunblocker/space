@@ -306,7 +306,23 @@ const spiralGalaxyGeneration: MapGenFunction = function(options: SpiralGalaxyOpt
   // setup pirates
   const pirates = makePlayerForPirates();
 
-  // add unowned locations to pirates
+  // set star distance from player
+  (function setDistanceFromPlayer()
+  {
+    const isPlayerOwnedFN = ((star: Star) =>
+    {
+      return star.owner && !star.owner.isIndependent;
+    });
+
+    stars.forEach(star =>
+    {
+      const nearestPlayerStar = star.getNearestStarForQualifier(isPlayerOwnedFN);
+      const distanceToPlayer = star.getDistanceToStar(nearestPlayerStar);
+      mapGenDataByStarID[star.id].distanceFromPlayerOwnedLocation = distanceToPlayer;
+    });
+  })();
+  
+  // add unowned locations to pirates 
   sectors.forEach(sector =>
   {
     setupIndependents(
