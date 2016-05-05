@@ -57,7 +57,6 @@ export default class BattleScene
   constructor(containerElement?: HTMLElement)
   {
     this.container = new PIXI.Container();
-    this.containerElement = containerElement;
     
     this.renderer = PIXI.autoDetectRenderer(
       2, // set in this.bindRendererView()
