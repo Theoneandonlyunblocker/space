@@ -170,29 +170,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.battleStartStartTime = Date.now();
     this.ref_TODO_background.handleResize();
   }
-  componentWillUpdate(newProps: PropTypes, newState: StateType)
-  {
-    let battleSceneNeedsUpdate = false;
-    if (this.battleScene.activeSFX)
-    {
-      return;
-    }
-    if (newState.hoveredUnit !== this.battleScene.hoveredUnit)
-    {
-      battleSceneNeedsUpdate = true;
-      this.battleScene.hoveredUnit = newState.hoveredUnit;
-    }
-    if (newProps.battle.activeUnit !== this.battleScene.activeUnit)
-    {
-      battleSceneNeedsUpdate = true;
-      this.battleScene.activeUnit = newProps.battle.activeUnit;
-    }
-    
-    if (battleSceneNeedsUpdate)
-    {
-      this.battleScene.updateUnits();
-    }
-  }
 
   private endBattleStart()
   {
@@ -235,6 +212,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       potentialDelayAmount: undefined,
       targetsInPotentialArea: []
     });
+    this.battleScene.hoveredUnit = null;
+    this.battleScene.updateUnits();
   }
   private handleMouseLeaveUnit(e: React.MouseEvent)
   {
@@ -294,6 +273,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       hoveredUnit: unit,
       highlightedUnit: unit
     });
+    
+    this.battleScene.hoveredUnit = unit;
+    this.battleScene.updateUnits();
   }
   private handleMouseEnterAbility(ability: AbilityTemplate)
   {
@@ -414,6 +396,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     this.props.battle.endTurn();
+    
+    this.battleScene.activeUnit = this.props.battle.activeUnit;
+    this.battleScene.updateUnits();
     
     if (this.props.battle.ended)
     {
