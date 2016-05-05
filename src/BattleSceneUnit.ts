@@ -36,19 +36,16 @@ export default class BattleSceneUnit
   {
     this.container = container;
     this.renderer = renderer;
-    this.initLayers();
-  }
-  destroy()
-  {
 
-  }
-  private initLayers()
-  {
     this.spriteContainer = new PIXI.Container;
     this.container.addChild(this.spriteContainer);
   }
+  public destroy()
+  {
 
-  changeActiveUnit(unit: Unit, afterChangedCallback?: () => void)
+  }
+
+  public changeActiveUnit(unit: Unit, afterChangedCallback?: () => void)
   {
     if (this.hasSFXSprite)
     {
