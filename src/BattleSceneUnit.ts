@@ -75,7 +75,7 @@ export default class BattleSceneUnit
       afterChangedCallback();
     }
   }
-  setSFX(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit)
+  public setSFX(SFXTemplate: BattleSFXTemplate, user: Unit, target: Unit)
   {
     if (this.activeUnit)
     {
@@ -98,7 +98,7 @@ export default class BattleSceneUnit
 
     }
   }
-  resize()
+  public resize()
   {
     if (this.spriteContainer.children.length > 0)
     {
