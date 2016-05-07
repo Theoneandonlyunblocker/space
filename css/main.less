@@ -1460,27 +1460,60 @@ ul, ol
   display: flex;
   flex-flow: column;
   justify-content: space-between;
+  align-items: center;
   margin: 0 20px;
   margin-top: 5px;
 }
 
 .turn-counter
 {
-  flex: 0 0 6px;
+  position: relative;
   margin: 2px 0;
   width: 30px;
-}
+  height: 6px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-.used-turn
-{
   border: 1px solid #999;
   background-color: fadeout(white, 80%);
+}
+.turn-counter-available-border
+{
+  border: 1px solid desaturate(darken(#9EFFF5, 40%), 10%);
 }
 
 .available-turn
 {
-  border: 1px solid desaturate(darken(#9EFFF5, 40%), 10%);
   .double-gradient(to right, #9EFFF5, #DFFFEF);
+  width: 100%;
+  height: 100%;
+}
+
+.available-turn-leave-active
+{
+  animation-name: turn-counter-remove;
+  animation-timing-function: ease-in;
+}
+
+@keyframes turn-counter-remove
+{
+  0%
+  {
+    width: 100%;
+    height: 100%;
+  }
+  80%
+  {
+    opacity: 100%;
+  }
+  100%
+  {
+    width: 0%;
+    height: 0%;
+    opacity: 0%;
+  }
 }
 
 
