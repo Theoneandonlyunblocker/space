@@ -31,11 +31,10 @@ import BattleScore from "./BattleScore";
 import BattleSceneComponentFactory from "./BattleScene";
 import Formation from "./Formation";
 import BattleDisplayStrength from "./BattleDisplayStrength";
+import BattleUIState from "./BattleUIState";
 import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityTooltip";
 
 
-// TODO refactor
-// should have separate non-react class for battle logic
 export interface PropTypes extends React.Props<any>
 {
   battle: Battle;
@@ -44,6 +43,8 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+  UIState?: BattleUIState;
+  
   highlightedUnit?: Unit;
   hoveredUnit?: Unit;
   hoveredAbility?: AbilityTemplate;
@@ -140,6 +141,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     
     return(
     {
+      UIState: BattleUIState.idle,
+      
       highlightedUnit: null,
       hoveredUnit: null,
       hoveredAbility: null,
@@ -355,6 +358,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     const stateObj: StateType = BattleComponent.getUnitsBySideFromEffect(effect);
     stateObj.playingBattleEffect = true;
+    stateObj.UIState = BattleUIState.playingSFX;
     stateObj.battleEffectDuration = effect.sfx.duration;
     
     this.setState(stateObj);
