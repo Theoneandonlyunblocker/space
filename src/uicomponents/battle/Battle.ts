@@ -59,8 +59,6 @@ interface StateType
     facesLeft?: boolean;
   };
   
-  battleIsStarting?: boolean;
-  
   battleSceneUnit1?: Unit
   battleSceneUnit2?: Unit
   playingBattleEffect?: boolean;
@@ -143,7 +141,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     
     return(
     {
-      UIState: BattleUIState.idle,
+      UIState: BattleUIState.starting,
       
       highlightedUnit: null,
       hoveredUnit: null,
@@ -157,8 +155,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         parentElement: null,
         facesLeft: null
       },
-      
-      battleIsStarting: true,
 
       battleSceneUnit1: null,
       battleSceneUnit2: null,
@@ -180,10 +176,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     if (Date.now() < this.battleStartStartTime + 1000) return;
     
-    
     this.setState(
     {
-      battleIsStarting: false
+      UIState: BattleUIState.idle
     },() =>
     {
       this.battleScene.activeUnit = this.props.battle.activeUnit;
@@ -262,7 +257,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     this.tempHoveredUnit = unit;
 
-    if (this.state.battleIsStarting || this.props.battle.ended || this.state.playingBattleEffect)
+    if (this.state.UIState !== BattleUIState.idle)
     {
       return;
     }
@@ -418,6 +413,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     if (this.props.battle.ended)
     {
       // this.forceUpdate();
+      this.setState(
+      {
+        UIState: BattleUIState.ending
+      });
     }
     else if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
     {
@@ -513,7 +512,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     var upperFooterElement: React.ReactElement<any>;
-    if (this.state.battleIsStarting)
+    if (this.state.UIState === BattleUIState.starting)
     {
       upperFooterElement = null;
     }
@@ -585,7 +584,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       className: "battle-container"
     };
     var playerWonBattle: boolean = null;
-    if (this.state.battleIsStarting)
+    if (this.state.UIState === BattleUIState.starting)
     {
       containerProps.className += " battle-start-overlay";
       containerProps.onClick = this.endBattleStart;
@@ -603,8 +602,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       playerWonBattle = this.props.humanPlayer === battle.getVictor();
     }
 
-    var battleState: "start" | "active" | "finish";
-    if (this.state.battleIsStarting)
+    // TODO refactor
+    let battleState: "start" | "active" | "finish";
+    if (this.state.UIState === BattleUIState.starting)
     {
       battleState = "start";
     }
