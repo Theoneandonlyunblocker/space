@@ -34,6 +34,7 @@ import BattleDisplayStrength from "./BattleDisplayStrength";
 import BattleUIState from "./BattleUIState";
 import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityTooltip";
 
+const turnTransitionDuration = 2000; // TODO | move
 
 export interface PropTypes extends React.Props<any>
 {
@@ -117,6 +118,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.usePreparedAbility = this.usePreparedAbility.bind(this);
     this.useAIAbility = this.useAIAbility.bind(this);
     this.handleMouseLeaveAbility = this.handleMouseLeaveAbility.bind(this);
+    this.startTurnTransition = this.startTurnTransition.bind(this);
     this.handleTurnEnd = this.handleTurnEnd.bind(this);
     this.handleMouseLeaveUnit = this.handleMouseLeaveUnit.bind(this);
     this.usePlayerAbility = this.usePlayerAbility.bind(this);
@@ -385,30 +387,37 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleSceneUnit1: null,
       battleSceneUnit2: null,
       playingBattleEffect: false,
-      battleEffectDuration: undefined
-    });
-    
-    this.handleTurnEnd();
+      battleEffectDuration: undefined,
+    }, this.startTurnTransition);
   }
-  private handleTurnEnd()
+  private startTurnTransition()
   {
-    if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable())
-    {
-      // this.forceUpdate();
-    }
-    else
+    if (!this.state.hoveredUnit || !this.state.hoveredUnit.isTargetable())
     {
       this.clearHoveredUnit();
     }
 
     this.props.battle.endTurn();
     
-    this.battleScene.activeUnit = this.props.battle.activeUnit;
-    this.battleScene.updateUnits();
+    this.setState(
+    {
+      UIState: BattleUIState.transitioningTurn
+    }, () =>
+    {
+      window.setTimeout(this.handleTurnEnd, turnTransitionDuration);
+    });
+  }
+  private handleTurnEnd()
+  {
+    this.setState(
+    {
+      UIState: BattleUIState.idle
+    });
+    
     
     if (this.props.battle.ended)
     {
-      this.forceUpdate();
+      // this.forceUpdate();
     }
     else if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
     {
