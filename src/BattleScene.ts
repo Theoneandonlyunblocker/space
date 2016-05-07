@@ -130,7 +130,7 @@ export default class BattleScene
 
 
     this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
-    this.activeSFXHasFinishedCallback = this.cleanUpAfterSFX.bind(this);
+    this.activeSFXHasFinishedCallback = this.handleActiveSFXEnd.bind(this);
 
     this.triggerEffectCallback = props.triggerEffectCallback;
     this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
@@ -165,16 +165,6 @@ export default class BattleScene
 
     this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
     this.side2Overlay.activeUnit = activeSide2Unit;
-  }
-  public clearActiveSFX()
-  {
-    this.activeSFX = null;
-
-    this.userUnit = null;
-    this.targetUnit = null;
-
-    this.clearBattleOverlay();
-    this.clearUnitOverlays();
   }
   public renderOnce()
   {
@@ -405,24 +395,26 @@ export default class BattleScene
         this.targetUnit, this.handleActiveSFXEnd.bind(this));
     }
   }
-  private handleActiveSFXEnd()
+  private clearActiveSFX()
   {
     this.activeSFX = null;
+
+    this.userUnit = null;
+    this.targetUnit = null;
+
     this.clearBattleOverlay();
     this.clearUnitOverlays();
-    this.executeActiveSFXHasFinishedCallback();
   }
-  private cleanUpAfterSFX()
+  private handleActiveSFXEnd()
   {
-    var afterUseDelay = Options.battleAnimationTiming.after;
-
+    const afterUseDelay = Options.battleAnimationTiming.after;
+    
     this.afterUseDelayHasFinishedCallback = function()
     {
-      this.userUnit = null;
-      this.targetUnit = null;
+      this.clearActiveSFX();
       this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
     }.bind(this);
-
+    
     if (afterUseDelay >= 0)
     {
       window.setTimeout(this.executeAfterUseDelayHasFinishedCallback.bind(this), afterUseDelay);
@@ -442,7 +434,7 @@ export default class BattleScene
     this.side2Overlay.setSFX(SFXTemplate, user, target);
     this.makeBattleOverlay(afterFinishedCallback);
   }
-  private makeBattleOverlay(afterFinishedCallback: () => void = this.clearActiveSFX.bind(this))
+  private makeBattleOverlay(afterFinishedCallback: () => void)
   {
     if (!this.activeSFX.battleOverlay)
     {
