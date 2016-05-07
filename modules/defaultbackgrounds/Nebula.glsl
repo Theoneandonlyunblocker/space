@@ -121,22 +121,12 @@ vec3 nebula(vec2 pos, out float volume)
 
 float star(vec2 pos, float volume)
 {
-  float genValue = hash(pos);
-
-  genValue -= volume * 0.01;
-
-  float color = 0.0;
-
-  if (genValue < 0.001)
-  {
-    float r = hash(pos + vec2(4.20, 6.9));
-    color = r;
-    return color;
-  }
-  else
-  {
-    return color;
-  }
+  float h = hash(pos);
+  
+  float intensityCutoff = (1.0 - starDensity) - (volume * nebulaStarConcentration);
+  float starIntensity = smoothstep(intensityCutoff, 1.0, h);
+  
+  return starIntensity;
 }
 
 void main(void)
