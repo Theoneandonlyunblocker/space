@@ -6,7 +6,7 @@ import Player from "../../Player";
 import Battle from "../../Battle";
 import Unit from "../../Unit";
 import TurnOrder from "./TurnOrder";
-import TurnCounter from "./TurnCounter";
+import TurnCounterList from "./TurnCounterList";
 import {default as BattleBackground, BattleBackgroundComponent} from "./BattleBackground";
 import Options from "../../Options";
 import MCTree from "../../MCTree";
@@ -658,10 +658,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
               capturedUnits: this.props.battle.capturedUnits,
               destroyedUnits: this.props.battle.deadUnits,
             }),
-            TurnCounter(
+            TurnCounterList(
             {
               turnsLeft: battle.turnsLeft,
-              maxTurns: battle.maxTurns
+              maxTurns: battle.maxTurns,
+              animationDuration: turnTransitionDuration / 24
             }),
             Formation(
             {

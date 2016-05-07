@@ -1,9 +1,22 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
+const ReactCSSTransitionGroup =
+  React.createFactory(React.addons.CSSTransitionGroup);
+
+
+const FirstChild = React.createClass(
+{
+  render: function()
+  {
+    const child = <React.ReactElement<any>> React.Children.toArray(this.props.children)[0];
+    return child || null;
+  }
+});
+
 export interface PropTypes extends React.Props<any>
 {
-  turnsLeft: number;
-  maxTurns: number;
+  isEmpty: boolean;
+  animationDuration: number;
 }
 
 interface StateType
@@ -15,49 +28,48 @@ export class TurnCounterComponent extends React.Component<PropTypes, StateType>
   displayName: string = "TurnCounter";
   shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   state: StateType;
+  inner: HTMLDivElement;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
   
+  componentDidMount()
+  {
+    if (this.inner)
+    {
+      this.inner.style.animationDuration = "" + this.props.animationDuration + "ms";
+    }
+  }
+
   render()
   {
-    var turnsLeft = this.props.turnsLeft;
-
-    var turns: React.ReactHTMLElement<any>[] = [];
-
-    var usedTurns = this.props.maxTurns - turnsLeft;
-
-    for (let i = 0; i < usedTurns; i++)
-    {
-      turns.push(
-        React.DOM.div(
-        {
-          key: "used" + i,
-          className: "turn-counter used-turn"
-        })
-      );
-    }
-
-    for (let i = 0; i < turnsLeft; i++)
-    {
-      turns.push(
-        React.DOM.div(
-        {
-          key: "available" + i,
-          className: "turn-counter available-turn"
-        })
-      );
-    }
-
     return(
       React.DOM.div(
       {
-        className: "turns-container",
-        title: "Turns left: " + turnsLeft
+        className: "turn-counter" +
+          (!this.props.isEmpty ? " turn-counter-available-border" : "")
       },
-        turns
+        ReactCSSTransitionGroup(
+        {
+          transitionName: "available-turn",
+          transitionAppear: false,
+          transitionEnter: false,
+          transitionLeave: true,
+          transitionLeaveTimeout: this.props.animationDuration,
+          component: FirstChild
+        },
+          this.props.isEmpty ? null : React.DOM.div(
+          {
+            key: "inner",
+            className: "available-turn",
+            ref: (element) =>
+            {
+              this.inner = element;
+            }
+          })
+        )
       )
     );
   }
