@@ -184,6 +184,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       battleIsStarting: false
     },() =>
     {
+      this.battleScene.activeUnit = this.props.battle.activeUnit;
+      this.battleScene.updateUnits();
       if (this.tempHoveredUnit)
       {
         this.handleMouseEnterUnit(this.tempHoveredUnit);
@@ -418,7 +420,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
-      this.forceUpdate();
+      this.battleScene.activeUnit = this.props.battle.activeUnit;
+      this.battleScene.updateUnits();
+      // this.forceUpdate();
     }
   }
   private usePreparedAbility()
