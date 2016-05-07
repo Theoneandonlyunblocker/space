@@ -1,45 +1,53 @@
 precision mediump float;
 
-uniform vec3 baseColor;
-uniform vec3 overlayColor;
-uniform vec3 highlightColor;
+#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com
 
-uniform float coverage;
+#if DOMAIN == 0
+  uniform vec3 baseColor;
+  uniform vec3 overlayColor;
+  uniform vec3 highlightColor;
 
-uniform float scale;
+  uniform float coverage;
 
-uniform float diffusion;
-uniform float streakiness;
+  uniform float scale;
 
-uniform float streakLightness;
-uniform float cloudLightness;
+  uniform float diffusion;
+  uniform float streakiness;
 
-uniform float highlightA;
-uniform float highlightB;
+  uniform float streakLightness;
+  uniform float cloudLightness;
 
-uniform vec2 seed;
+  uniform float highlightA;
+  uniform float highlightB;
+  
+  uniform float starDensity;
+  uniform float nebulaStarConcentration;
 
-/*
-const vec3 baseColor = vec3(1.0, 0.0, 0.0);
-const vec3 overlayColor = vec3(0.0, 0.0, 1.0);
-const vec3 highlightColor = vec3(1.0, 1.0, 1.0);
+  uniform vec2 seed;
+#elif DOMAIN == 1
+  const vec3 baseColor = vec3(1.0, 0.0, 0.0);
+  const vec3 overlayColor = vec3(0.0, 0.0, 1.0);
+  const vec3 highlightColor = vec3(1.0, 1.0, 1.0);
 
-const float coverage = 0.3;
-const float coverage2 = coverage / 2.0;
+  const float coverage = 0.3;
+  const float coverage2 = coverage / 2.0;
 
-const float scale = 4.0;
+  const float scale = 4.0;
 
-const float diffusion = 3.0;
-const float streakiness = 2.0;
+  const float diffusion = 3.0;
+  const float streakiness = 2.0;
 
-const float streakLightness = 1.0;
-const float cloudLightness = 1.0;
+  const float streakLightness = 1.0;
+  const float cloudLightness = 1.0;
 
-const float highlightA = 0.9;
-const float highlightB = 2.2;
+  const float highlightA = 0.9;
+  const float highlightB = 2.2;
+  
+  const float starDensity = 0.0008;
+  const float nebulaStarConcentration = 0.01;
 
-const vec2 seed = vec2(69.0, 42.0);
-*/
+  const vec2 seed = vec2(69.0, 42.0);
+#endif
 
 const int sharpness = 6;
 
