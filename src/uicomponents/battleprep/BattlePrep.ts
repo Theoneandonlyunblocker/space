@@ -341,7 +341,7 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
     };
 
     var playerIsDefending = player === battlePrep.defender;
-    var humanFormationIsValid = battlePrep.humanFormation.isFormationValid();
+    const humanFormationValidity = battlePrep.humanFormation.getFormationValidity();
     var canScout = player.starIsDetected(battlePrep.battleData.location);
 
     return(
@@ -402,7 +402,8 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
             React.DOM.button(
             {
               className: "battle-prep-controls-button",
-              disabled: !humanFormationIsValid,
+              disabled: !humanFormationValidity.isValid,
+              title: humanFormationValidity.description,
               onClick: function()
               {
                 var battle = battlePrep.makeBattle();
