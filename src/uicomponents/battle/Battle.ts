@@ -32,9 +32,14 @@ import BattleSceneComponentFactory from "./BattleScene";
 import Formation from "./Formation";
 import BattleDisplayStrength from "./BattleDisplayStrength";
 import BattleUIState from "./BattleUIState";
-import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityTooltip";
+import
+{
+  default as AbilityTooltip,
+  AbilityTooltipComponent,
+  PropTypes as AbilityTooltipProps
+} from "./AbilityTooltip";
 
-const turnTransitionDuration = 1000; // TODO | move
+const turnTransitionDuration = 500; // TODO | move
 
 export interface PropTypes extends React.Props<any>
 {
@@ -410,12 +415,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private handleTurnEnd()
   {
-    this.setState(
-    {
-      UIState: BattleUIState.idle
-    });
-    
-    
     if (this.props.battle.ended)
     {
       this.setState(
@@ -435,7 +434,11 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       this.battleScene.activeUnit = this.props.battle.activeUnit;
       this.battleScene.updateUnits();
-      // this.forceUpdate();
+      
+      this.setState(
+      {
+        UIState: BattleUIState.idle
+      });
     }
   }
   private usePreparedAbility()
@@ -483,12 +486,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     const battle = this.props.battle;
 
-    if (this.state.UIState !== BattleUIState.ending)
+    if (this.state.UIState === BattleUIState.idle)
     {
       var activeTargets = getTargetsForAllAbilities(battle, battle.activeUnit);
     }
 
-    var abilityTooltip: any = null;
+    var abilityTooltip: React.ReactElement<AbilityTooltipProps> = null;
 
     if (
       this.state.UIState === BattleUIState.idle &&
