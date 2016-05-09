@@ -139,13 +139,13 @@ export default class BattleScene
     // this.prepareSFX();
     // this.playSFX();
     // props.triggerEffectCallback();
-    // this.cleanUpAfterSFX();
+    // this.handleActiveSFXEnd();
     // props.afterFinishedCallback();
   }
   public updateUnits(afterFinishedUpdatingCallback?: () => void)
   {
-    var boundAfterFinishFN1: () => void = null;
-    var boundAfterFinishFN2: () => void = null;
+    let boundAfterFinishFN1: () => void = null;
+    let boundAfterFinishFN2: () => void = null;
     if (afterFinishedUpdatingCallback)
     {
       this.afterUnitsHaveFinishedUpdatingCallback = afterFinishedUpdatingCallback;
@@ -157,8 +157,8 @@ export default class BattleScene
       this.side2UnitHasFinishedUpdating = false;
     }
 
-    var activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
-    var activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
+    const activeSide1Unit = this.getHighestPriorityUnitForSide("side1");
+    const activeSide2Unit = this.getHighestPriorityUnitForSide("side2");
 
     this.side1Unit.changeActiveUnit(activeSide1Unit, boundAfterFinishFN1);
     this.side1Overlay.activeUnit = activeSide1Unit;
@@ -250,17 +250,20 @@ export default class BattleScene
   }
   private getHighestPriorityUnitForSide(side: UnitBattleSide)
   {
-    var units =
-    [
-      this.targetUnit,
-      this.userUnit,
-      this.activeUnit,
-      this.hoveredUnit
-    ];
+    const units: Unit[] = [];
+    
+    if (Boolean(this.activeSFX))
+    {
+      units.push(this.targetUnit, this.userUnit);
+    }
+    else
+    {
+      units.push(this.activeUnit, this.hoveredUnit);
+    }
 
     for (let i = 0; i < units.length; i++)
     {
-      var unit = units[i];
+      const unit = units[i];
       if (unit && unit.battleStats.side === side)
       {
         return unit;

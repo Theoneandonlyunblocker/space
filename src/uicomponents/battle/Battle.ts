@@ -214,8 +214,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       potentialDelayAmount: undefined,
       targetsInPotentialArea: []
     });
+    
     this.battleScene.hoveredUnit = null;
-    this.battleScene.updateUnits();
+    if (this.state.UIState === BattleUIState.idle)
+    {
+      this.battleScene.updateUnits();
+    }
   }
   private handleMouseLeaveUnit(e: React.MouseEvent)
   {
@@ -336,7 +340,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     //   });
     // }
     
-    this.clearHoveredUnit();
     
     this.playQueuedBattleEffects();
   }
@@ -360,7 +363,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     stateObj.UIState = BattleUIState.playingSFX;
     stateObj.battleEffectDuration = effect.sfx.duration;
     
-    this.setState(stateObj);
+    this.setState(stateObj, this.clearHoveredUnit);
   }
   private playQueuedBattleEffects()
   {
