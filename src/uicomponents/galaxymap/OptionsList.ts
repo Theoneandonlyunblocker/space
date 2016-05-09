@@ -158,18 +158,18 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       content:
         OptionsCheckbox(
         {
-          isChecked: Options.debugMode,
+          isChecked: Options.debug.enabled,
           label: "Debug mode",
           onChangeFN: () =>
           {
-            Options.debugMode = !Options.debugMode;
+            Options.debug.enabled = !Options.debug.enabled;
             this.forceUpdate();
             eventManager.dispatchEvent("renderUI");
           }
         })
     });
 
-    if (Options.debugMode)
+    if (Options.debug.enabled)
     {
       debugOptions.push(
       {
@@ -182,7 +182,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
           {
             type: "number",
             id: "battle-simulation-depth-input",
-            value: "" + Options.debugOptions.battleSimulationDepth,
+            value: "" + Options.debug.battleSimulationDepth,
             min: 1,
             max: 500,
             step: 1,
@@ -195,7 +195,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
                 return;
               }
               value = clamp(value, parseFloat(target.min), parseFloat(target.max));
-              Options.debugOptions.battleSimulationDepth = value;
+              Options.debug.battleSimulationDepth = value;
               this.forceUpdate();
             }
           }),
@@ -217,8 +217,8 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
       options: debugOptions,
       resetFN: () =>
       {
-        Options.setDefaultForCategory("debugOptions");
-        Options.setDefaultForCategory("debugMode");
+        Options.setDefaultForCategory("debug");
+        this.forceUpdate();
       }
     }));
 

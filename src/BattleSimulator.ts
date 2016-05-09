@@ -40,7 +40,7 @@ export default class BattleSimulator
       throw new Error("Simulated battle already ended");
     }
 
-    var move = this.tree.getBestMoveAndAdvance(Options.debugOptions.battleSimulationDepth);
+    var move = this.tree.getBestMoveAndAdvance(Options.debug.battleSimulationDepth);
     var target = this.battle.unitsById[move.targetId];
 
     this.simulateAbility(move.ability, target);

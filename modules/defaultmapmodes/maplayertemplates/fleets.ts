@@ -49,7 +49,7 @@ const fleets: MapRendererLayerTemplate =
     const mouseOverFN = function(fleet: Fleet)
     {
       eventManager.dispatchEvent("hoverStar", fleet.location);
-      if (Options.debugMode && fleet.units.length > 0 && fleet.units[0].front)
+      if (Options.debug.enabled && fleet.units.length > 0 && fleet.units[0].front)
       {
         const objective = fleet.units[0].front.objective;
         const target = objective.target ? objective.target.id : null;
@@ -78,7 +78,7 @@ const fleets: MapRendererLayerTemplate =
       containerGfx.lineStyle(1, 0x00000, 1);
       // debug
       var front = fleet.units[0].front;
-      if (front && Options.debugMode)
+      if (front && Options.debug.enabled)
       {
         switch (front.objective.type)
         {

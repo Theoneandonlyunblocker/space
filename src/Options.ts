@@ -5,10 +5,10 @@ import
   deepMerge,
 } from "./utility";
 
-type OptionsCategory = "battleAnimationTiming" | "debugMode" | "debugOptions" | "ui" | "display";
+type OptionsCategory = "battleAnimationTiming" | "debug" | "ui" | "display";
 const OptionsCategories: OptionsCategory[] =
 [
-  "battleAnimationTiming", "debugMode", "debugOptions", "ui", "display"
+  "battleAnimationTiming", "debug", "ui", "display"
 ];
 
 interface OptionsValues
@@ -21,9 +21,9 @@ interface OptionsValues
     unitEnter?: number;
     unitExit?: number;
   };
-  debugMode?: boolean;
-  debugOptions?:
+  debug?:
   {
+    enabled?: boolean;
     battleSimulationDepth?: number;
   };
   ui?:
@@ -46,9 +46,9 @@ const defaultOptionsValues =
     unitEnter: 200,
     unitExit: 100
   },
-  debugMode: false,
-  debugOptions:
+  debug:
   {
+    enabled: false,
     battleSimulationDepth: 20
   },
   ui:
@@ -71,9 +71,9 @@ class Options implements OptionsValues
     unitEnter: number;
     unitExit: number;
   };
-  debugMode: boolean;
-  debugOptions:
+  debug:
   {
+    enabled: boolean;
     battleSimulationDepth: number;
   };
   ui:
@@ -101,16 +101,15 @@ class Options implements OptionsValues
         this.battleAnimationTiming = defaultOptionsValues.battleAnimationTiming;
         break;
         
-      case "debugMode":
-        if (this.debugMode !== defaultOptionsValues.debugMode)
+      case "debug":
+        this.debug = defaultOptionsValues.debug;
+        
+        if (this.debug.enabled !== defaultOptionsValues.debug.enabled)
         {
           shouldReRenderUI = true;
+          shouldReRenderMap = true;
         }
-        this.debugMode = defaultOptionsValues.debugMode;
-        break;
         
-      case "debugOptions":
-        this.debugOptions = defaultOptionsValues.debugOptions;
         break;
         
       case "ui":
@@ -118,11 +117,13 @@ class Options implements OptionsValues
         break;
         
       case "display":
-        if (this.display && this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
+        this.display = defaultOptionsValues.display;
+        
+        if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth)
         {
           shouldReRenderMap = true;
         }
-        this.display = defaultOptionsValues.display;
+        
         break;
     }
     
@@ -165,7 +166,9 @@ class Options implements OptionsValues
       // month goes 0-11
       const optionsToResetIfSetEarlierThan =
       {
-        "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50)
+        "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50),
+        "debugMode": Date.UTC(2016, 4, 9, 10, 10),
+        "debugOptions": Date.UTC(2016, 4, 9, 10, 10),
       };
 
       const dateOptionsWereSaved = Date.parse(parsedData.date);
@@ -219,8 +222,7 @@ class Options implements OptionsValues
     return(
     {
       battleAnimationTiming: this.battleAnimationTiming,
-      debugMode: this.debugMode,
-      debugOptions: this.debugOptions,
+      debug: this.debug,
       ui: this.ui,
       display: this.display
     });
@@ -228,8 +230,7 @@ class Options implements OptionsValues
   private deSerialize(data: OptionsValues)
   {
     this.battleAnimationTiming = deepMerge<any>(this.battleAnimationTiming, data.battleAnimationTiming, true);
-    this.debugMode = deepMerge<any>(this.debugMode, data.debugMode, true);
-    this.debugOptions = deepMerge<any>(this.debugOptions, data.debugOptions, true);
+    this.debug = deepMerge<any>(this.debug, data.debug, true);
     this.ui = deepMerge<any>(this.ui, data.ui, true);
     this.display = deepMerge<any>(this.display, data.display, true);
   }

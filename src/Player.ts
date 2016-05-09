@@ -496,7 +496,7 @@ export default class Player
   }
   getVisibleStars(): Star[]
   {
-    if (!this.isAI && Options.debugMode)
+    if (!this.isAI && Options.debug.enabled)
     {
       return this.controlledLocations[0].getAllLinkedStars();
     }
@@ -514,7 +514,7 @@ export default class Player
   }
   getRevealedStars(): Star[]
   {
-    if (!this.isAI && Options.debugMode)
+    if (!this.isAI && Options.debug.enabled)
     {
       return this.controlledLocations[0].getAllLinkedStars();
     }
@@ -547,7 +547,7 @@ export default class Player
   }
   getDetectedStars(): Star[]
   {
-    if (!this.isAI && Options.debugMode)
+    if (!this.isAI && Options.debug.enabled)
     {
       return this.controlledLocations[0].getAllLinkedStars();
     }
@@ -564,19 +564,19 @@ export default class Player
   }
   starIsVisible(star: Star): boolean
   {
-    if (!this.isAI && Options.debugMode) return true;
+    if (!this.isAI && Options.debug.enabled) return true;
     if (this.visionIsDirty) this.updateVisibleStars();
     return Boolean(this.visibleStars[star.id]);
   }
   starIsRevealed(star: Star): boolean
   {
-    if (!this.isAI && Options.debugMode) return true;
+    if (!this.isAI && Options.debug.enabled) return true;
     if (this.visionIsDirty) this.updateVisibleStars();
     return Boolean(this.revealedStars[star.id]);
   }
   starIsDetected(star: Star): boolean
   {
-    if (!this.isAI && Options.debugMode) return true;
+    if (!this.isAI && Options.debug.enabled) return true;
     if (this.visionIsDirty) this.updateVisibleStars();
     return Boolean(this.detectedStars[star.id]);
   }
@@ -621,7 +621,7 @@ export default class Player
   }
   unitIsIdentified(unit: Unit)
   {
-    if (Options.debugMode && !this.isAI)
+    if (Options.debug.enabled && !this.isAI)
     {
       return true;
     }
@@ -629,7 +629,7 @@ export default class Player
   }
   fleetIsFullyIdentified(fleet: Fleet)
   {
-    if (Options.debugMode && !this.isAI)
+    if (Options.debug.enabled && !this.isAI)
     {
       return true;
     }
@@ -754,7 +754,7 @@ export default class Player
     } = {};
 
     var unitsToAdd: UnitTemplate[] = app.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
-    if (!this.isAI && Options.debugMode)
+    if (!this.isAI && Options.debug.enabled)
     {
       unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
     }

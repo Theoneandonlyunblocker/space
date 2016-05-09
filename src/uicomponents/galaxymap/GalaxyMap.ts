@@ -89,7 +89,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
             key: "galaxyMapUI"
           })
         ),
-        !Options.debugMode ? null : React.DOM.div(
+        !Options.debug.enabled ? null : React.DOM.div(
         {
           className: "galaxy-map-debug debug"
         },

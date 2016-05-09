@@ -100,7 +100,7 @@ export default class MapRenderer
         }
       }
 
-      if (passesStarVisibilityCheck || Options.debugMode)
+      if (passesStarVisibilityCheck || Options.debug.enabled)
       {
         self.setLayerAsDirty(layerName);
       }
