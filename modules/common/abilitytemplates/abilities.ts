@@ -5,36 +5,6 @@ import DamageType from "../../../src/DamageType";
 import * as BattleSFX from "../battlesfxtemplates/battleSFX";
 import * as EffectActions from "../effectactiontemplates/effectActions";
 
-
-export var rangedAttack: AbilityTemplate =
-{
-  type: "rangedAttack",
-  displayName: "Ranged Attack",
-  description: "Standard ranged attack",
-  moveDelay: 100,
-  actionsUse: 1,
-  mainEffect:
-  {
-    action: EffectActions.singleTargetDamage,
-    sfx: BattleSFX.rocketAttack,
-    data:
-    {
-      baseDamage: 1,
-      damageType: DamageType.physical
-    },
-    attachedEffects:
-    [
-      {
-        action: EffectActions.receiveCounterAttack,
-        data:
-        {
-          baseDamage: 0.5
-        }
-      }
-    ]
-  },
-  canUpgradeInto: ["bombAttack", "boardingHook", "ranceAttack"]
-}
 export var closeAttack: AbilityTemplate =
 {
   type: "closeAttack",
@@ -143,6 +113,40 @@ export var debugAbility: AbilityTemplate =
     sfx: BattleSFX.guard,
     data: {}
   }
+}
+
+export var rangedAttack: AbilityTemplate =
+{
+  type: "rangedAttack",
+  displayName: "Ranged Attack",
+  description: "Standard ranged attack",
+  moveDelay: 100,
+  actionsUse: 1,
+  mainEffect:
+  {
+    action: EffectActions.singleTargetDamage,
+    sfx: BattleSFX.rocketAttack,
+    data:
+    {
+      baseDamage: 1,
+      damageType: DamageType.physical
+    },
+    attachedEffects:
+    [
+      {
+        action: EffectActions.receiveCounterAttack,
+        data:
+        {
+          baseDamage: 0.5
+        }
+      }
+    ]
+  },
+  canUpgradeInto:
+  [
+    bombAttack,
+    boardingHook,
+  ]
 }
 
 export var standBy: AbilityTemplate =

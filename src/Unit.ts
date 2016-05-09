@@ -1087,24 +1087,20 @@ export default class Unit
   }
   public getAbilityUpgradeData(): AbilityUpgradeData
   {
-    var upgradeData: AbilityUpgradeData = {};
+    const upgradeData: AbilityUpgradeData = {};
 
-    var allAbilities: AbilityBase[] = this.getAllAbilities();
-    allAbilities = allAbilities.concat(this.getAllPassiveSkills());
-
-    var templates = app.moduleData.Templates;
-
-    for (let i = 0; i < allAbilities.length; i++)
+    const allAbilities: AbilityBase[] = this.getAllAbilities();
+    allAbilities.push(...this.getAllPassiveSkills());
+    
+    const upgradableAbilities: AbilityBase[] = allAbilities.filter(abilityTemplate =>
     {
-      var parentAbility = allAbilities[i];
-      if (!parentAbility.canUpgradeInto) continue;
+      return abilityTemplate.canUpgradeInto && abilityTemplate.canUpgradeInto.length > 0;
+    });
 
-      for (let j = 0; j < parentAbility.canUpgradeInto.length; j++)
+    upgradableAbilities.forEach(parentAbility =>
+    {
+      parentAbility.canUpgradeInto.forEach(childAbility =>
       {
-        var childAbilityType = parentAbility.canUpgradeInto[j];
-        var childAbility: AbilityBase =
-          templates.Abilities[childAbilityType] || templates.PassiveSkills[childAbilityType];
-        if (!childAbility) throw new Error("Invalid ability upgrade " + childAbilityType);
         if (this.canUpgradeIntoAbility(childAbility, allAbilities))
         {
           if (!upgradeData[parentAbility.type])
@@ -1118,10 +1114,10 @@ export default class Unit
 
           upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
         }
-      }
-    }
+      });
+    });
 
-    var learnable = this.getLearnableAbilities(allAbilities);
+    const learnable = this.getLearnableAbilities(allAbilities);
     if (learnable.length > 0)
     {
       upgradeData["learnable"] =

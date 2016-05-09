@@ -106,24 +106,6 @@ export var initialGuard: PassiveSkillTemplate =
     }
   ]
 }
-export var warpJammer: PassiveSkillTemplate =
-{
-  type: "warpJammer",
-  displayName: "Warp Jammer",
-  description: "Forces an extra unit to defend in neutral territory",
-
-  inBattlePrep:
-  [
-    function(user: Unit, battlePrep: BattlePrep)
-    {
-      if (battlePrep.isLocationNeutral() && user.fleet.player === battlePrep.attacker)
-      {
-        battlePrep.minDefenders += 1;
-      }
-    }
-  ],
-  canUpgradeInto: ["medic"]
-}
 export var medic: PassiveSkillTemplate =
 {
   type: "medic",
@@ -142,4 +124,22 @@ export var medic: PassiveSkillTemplate =
       }
     }
   ]
+}
+export var warpJammer: PassiveSkillTemplate =
+{
+  type: "warpJammer",
+  displayName: "Warp Jammer",
+  description: "Forces an extra unit to defend in neutral territory",
+
+  inBattlePrep:
+  [
+    function(user: Unit, battlePrep: BattlePrep)
+    {
+      if (battlePrep.isLocationNeutral() && user.fleet.player === battlePrep.attacker)
+      {
+        battlePrep.minDefenders += 1;
+      }
+    }
+  ],
+  canUpgradeInto: [medic]
 }
