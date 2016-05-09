@@ -34,7 +34,7 @@ import BattleDisplayStrength from "./BattleDisplayStrength";
 import BattleUIState from "./BattleUIState";
 import {default as AbilityTooltip, AbilityTooltipComponent} from "./AbilityTooltip";
 
-const turnTransitionDuration = 2000; // TODO | move
+const turnTransitionDuration = 1000; // TODO | move
 
 export interface PropTypes extends React.Props<any>
 {
@@ -412,7 +412,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     
     if (this.props.battle.ended)
     {
-      // this.forceUpdate();
       this.setState(
       {
         UIState: BattleUIState.ending
@@ -449,7 +448,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private useAIAbility()
   {
-    if (!this.props.battle.activeUnit || this.props.battle.ended) return;
+    if (!this.props.battle.activeUnit || this.props.battle.ended)
+    {
+      return;
+    }
     
     if (!this.MCTree) this.MCTree = new MCTree(this.props.battle,
       this.props.battle.activeUnit.battleStats.side, false);
@@ -462,18 +464,20 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   }
   private finishBattle()
   {
-    if (Date.now() < this.battleEndStartTime + 1000) return;
-    var battle = this.props.battle;
-    if (!battle.ended) throw new Error();
+    if (Date.now() < this.battleEndStartTime + 1000)
+    {
+      return;
+    }
 
-    battle.finishBattle();
+    // unmounts this component and changes scene
+    this.props.battle.finishBattle();
   }
 
   render()
   {
-    var battle = this.props.battle;
+    const battle = this.props.battle;
 
-    if (!battle.ended)
+    if (this.state.UIState !== BattleUIState.ending)
     {
       var activeTargets = getTargetsForAllAbilities(battle, battle.activeUnit);
     }
@@ -481,8 +485,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     var abilityTooltip: any = null;
 
     if (
-      !battle.ended &&
-      !this.state.playingBattleEffect &&
+      this.state.UIState === BattleUIState.idle &&
       this.state.hoveredUnit &&
       activeTargets[this.state.hoveredUnit.id]
     )
@@ -608,7 +611,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       battleState = "start";
     }
-    else if (battle.ended)
+    else if (this.state.UIState === BattleUIState.ending)
     {
       battleState = "finish";
     }
@@ -679,7 +682,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             {
               turnsLeft: battle.turnsLeft,
               maxTurns: battle.maxTurns,
-              animationDuration: turnTransitionDuration / 24
+              animationDuration: 100
             }),
             Formation(
             {
