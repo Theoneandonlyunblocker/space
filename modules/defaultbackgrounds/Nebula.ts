@@ -15,6 +15,7 @@ interface Uniforms
   overlayColor: {type: "3fv"; value: number[];};
   scale: {type: "1f"; value: number;};
   seed: {type: "2fv"; value: number[];};
+  starBrightness: {type: "1f"; value: number;};
   starDensity: {type: "1f"; value: number;};
   streakLightness: {type: "1f"; value: number;};
   streakiness: {type: "1f"; value: number;};
@@ -33,6 +34,7 @@ interface PartialUniformValues
   overlayColor?: number[];
   scale?: number;
   seed?: number[];
+  starBrightness?: number;
   starDensity?: number;
   streakLightness?: number;
   streakiness?: number;
@@ -62,6 +64,7 @@ export default class Nebula extends PIXI.AbstractFilter
       overlayColor: {type: "3fv", value: initialValues.overlayColor},
       scale: {type: "1f", value: initialValues.scale},
       seed: {type: "2fv", value: initialValues.seed},
+      starBrightness: {type: "1f", value: initialValues.starBrightness},
       starDensity: {type: "1f", value: initialValues.starDensity},
       streakLightness: {type: "1f", value: initialValues.streakLightness},
       streakiness: {type: "1f", value: initialValues.streakiness},
@@ -102,6 +105,7 @@ const sourceLines =
   "",
   "  uniform float starDensity;",
   "  uniform float nebulaStarConcentration;",
+  "  uniform float starBrightness;",
   "",
   "  uniform vec2 seed;",
   "#elif DOMAIN == 1",
@@ -125,6 +129,7 @@ const sourceLines =
   "",
   "  const float starDensity = 0.0008;",
   "  const float nebulaStarConcentration = 0.01;",
+  "  const float starBrightness = 0.6;",
   "",
   "  const vec2 seed = vec2(69.0, 42.0);",
   "#endif",
@@ -206,7 +211,7 @@ const sourceLines =
   "  float intensityCutoff = (1.0 - starDensity) - (volume * nebulaStarConcentration);",
   "  float starIntensity = smoothstep(intensityCutoff, 1.0, h);",
   "",
-  "  return starIntensity;",
+  "  return starIntensity * starBrightness;",
   "}",
   "",
   "void main(void)",

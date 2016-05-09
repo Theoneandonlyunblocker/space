@@ -22,6 +22,7 @@ precision mediump float;
   
   uniform float starDensity;
   uniform float nebulaStarConcentration;
+  uniform float starBrightness;
 
   uniform vec2 seed;
 #elif DOMAIN == 1
@@ -45,6 +46,7 @@ precision mediump float;
   
   const float starDensity = 0.0008;
   const float nebulaStarConcentration = 0.01;
+  const float starBrightness = 0.6;
 
   const vec2 seed = vec2(69.0, 42.0);
 #endif
@@ -126,7 +128,7 @@ float star(vec2 pos, float volume)
   float intensityCutoff = (1.0 - starDensity) - (volume * nebulaStarConcentration);
   float starIntensity = smoothstep(intensityCutoff, 1.0, h);
   
-  return starIntensity;
+  return starIntensity * starBrightness;
 }
 
 void main(void)

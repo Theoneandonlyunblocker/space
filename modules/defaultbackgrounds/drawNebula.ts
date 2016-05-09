@@ -38,8 +38,9 @@ const drawNebula: BackgroundDrawingFunction = function(
     highlightA: 0.9,
     highlightB: 2.2,
     
-    starDensity: randRange(0.0006, 0.0010),
-    nebulaStarConcentration: randRange(0.008, 0.012),
+    starDensity: randRange(0.0014, 0.0018),
+    nebulaStarConcentration: randRange(0.000, 0.004),
+    starBrightness: 0.6,
 
     seed: [Math.random() * 100, Math.random() * 100]
   });
