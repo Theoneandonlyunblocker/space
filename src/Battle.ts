@@ -435,34 +435,33 @@ export default class Battle
   // Evaluation
   public getEvaluation(): number
   {
-    var self = this;
     var evaluation = 0;
 
-    UnitBattleSides.forEach(function(side: UnitBattleSide)
+    UnitBattleSides.forEach(side =>
     {
       // positive * sign === good, negative * sign === bad
       var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
-      var currentHealth = self.getTotalHealthForSide(side).current;
+      var currentHealth = this.getTotalHealthForSide(side).current;
       if (currentHealth <= 0)
       {
         return -999 * sign;
       }
       // how much health remains from strating health 0.0-1.0
-      var currentHealthFactor = currentHealth / self.startHealth[side];
+      var currentHealthFactor = currentHealth / this.startHealth[side];
 
-      for (let i = 0; i < self.unitsBySide[side].length; i++)
+      for (let i = 0; i < this.unitsBySide[side].length; i++)
       {
-        if (self.unitsBySide[side][i].currentHealth <= 0)
+        if (this.unitsBySide[side][i].currentHealth <= 0)
         {
           evaluation -= 0.2 * sign;
         }
       }
 
       var defenderMultiplier = 1;
-      if (self.battleData.building)
+      if (this.battleData.building)
       {
-        var template = <DefenceBuildingTemplate> self.battleData.building.template;
-        var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
+        var template = <DefenceBuildingTemplate> this.battleData.building.template;
+        var isDefender = this.battleData.defender.player === this.getPlayerForSide(side);
         if (isDefender)
         {
           defenderMultiplier += template.defenderAdvantage;

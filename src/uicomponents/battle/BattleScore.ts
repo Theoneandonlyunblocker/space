@@ -1,12 +1,14 @@
 /// <reference path="../../../lib/react-global.d.ts" />
 
-import Battle from "../../Battle";
 import PlayerFlag from "../PlayerFlag";
-
+import Player from "../../Player";
 
 export interface PropTypes extends React.Props<any>
 {
-  battle: Battle;
+  evaluation: number;
+  
+  player1: Player;
+  player2: Player;
 }
 
 interface StateType
@@ -16,31 +18,18 @@ interface StateType
 export class BattleScoreComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "BattleScore";
-  lastEvaluation: number
-  shouldComponentUpdate(newProps: PropTypes)
-  {
-    var oldEvaluation = this.lastEvaluation;
-    this.lastEvaluation = newProps.battle.getEvaluation();
-
-    return this.lastEvaluation !== oldEvaluation;
-  }
+  lastEvaluation: number;
   state: StateType;
+  
+  shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
 
   constructor(props: PropTypes)
   {
     super(props);
   }
-  
-  componentWillMount()
-  {
-    this.lastEvaluation = this.props.battle.getEvaluation();
-  }
   render()
   {
-    var battle = this.props.battle;
-    var evaluation = this.lastEvaluation;
-
-    var evaluationPercentage = 50 + evaluation * 50;
+    const evaluationPercentage = 50 + this.props.evaluation * 50;
 
     return(
       React.DOM.div(
@@ -64,7 +53,7 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
             {
               className: "battle-score-flag"
             },
-            flag: battle.side1Player.flag
+            flag: this.props.player1.flag
           }),
           React.DOM.div(
           {
@@ -76,8 +65,8 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
               style:
               {
                 width: "" + evaluationPercentage + "%",
-                backgroundColor: "#" + battle.side1Player.color.getHexString(),
-                borderColor: "#" + battle.side1Player.secondaryColor.getHexString()
+                backgroundColor: "#" + this.props.player1.color.getHexString(),
+                borderColor: "#" + this.props.player1.secondaryColor.getHexString()
               }
             }),
             React.DOM.div(
@@ -86,8 +75,8 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
               style:
               {
                 width: "" + (100 - evaluationPercentage) + "%",
-                backgroundColor: "#" + battle.side2Player.color.getHexString(),
-                borderColor: "#" + battle.side2Player.secondaryColor.getHexString()
+                backgroundColor: "#" + this.props.player2.color.getHexString(),
+                borderColor: "#" + this.props.player2.secondaryColor.getHexString()
               }
             })
           ),
@@ -97,7 +86,7 @@ export class BattleScoreComponent extends React.Component<PropTypes, StateType>
             {
               className: "battle-score-flag"
             },
-            flag: battle.side2Player.flag
+            flag: this.props.player2.flag
           })
         )
       )

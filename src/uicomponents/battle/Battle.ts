@@ -64,6 +64,7 @@ interface StateType
   playingBattleEffect?: boolean;
   battleEffectDuration?: number;
   
+  battleEvaluation?: number;
   unitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
   previousUnitDisplayDataByID?: {[unitID: number]: UnitDisplayData};
 }
@@ -161,6 +162,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       playingBattleEffect: false,
       battleEffectDuration: null,
       
+      battleEvaluation: this.props.battle.getEvaluation(),
       unitDisplayDataByID: initialDisplayData,
       previousUnitDisplayDataByID: initialDisplayData,
     });
@@ -376,6 +378,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
       unitDisplayDataByID: shallowExtend(
         this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
+      battleEvaluation: effect.newEvaluation
     });
   }
   private finishPlayingQueuedBattleEffects()
@@ -641,7 +644,9 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
           },
             BattleScore(
             {
-              battle: battle
+              evaluation: this.state.battleEvaluation,
+              player1: battle.side1Player,
+              player2: battle.side2Player
             }),
             upperFooter,
             BattleSceneComponentFactory(

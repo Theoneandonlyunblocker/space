@@ -19,10 +19,11 @@ export interface AbilityUseEffect
   sfx: BattleSFXTemplate;
   sfxUser: Unit;
   sfxTarget: Unit;
+  newEvaluation: number;
 }
 
 export function useAbility(battle: Battle, ability: AbilityTemplate,
-  user: Unit, target: Unit, getEffects: boolean)
+  user: Unit, target: Unit, getEffects: boolean): AbilityUseEffect[]
 {
   var effectDataByPhase = getAbilityEffectDataByPhase(battle,
   {
@@ -123,6 +124,7 @@ function executeAbilityEffectDataAndGetUseEffect(battle: Battle,
     changedUnitDisplayDataByID: unitDisplayData,
     sfx: abilityEffectData.templateEffect.sfx,
     sfxUser: abilityEffectData.user,
-    sfxTarget: abilityEffectData.target
-  })
+    sfxTarget: abilityEffectData.target,
+    newEvaluation: battle.getEvaluation()
+  });
 }
