@@ -181,24 +181,37 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
   private endBattleStart()
   {
-    if (Date.now() < this.battleStartStartTime + 1000) return;
+    if (Date.now() < this.battleStartStartTime + 1000)
+    {
+      return;
+    }
+    else if (this.props.battle.ended)
+    {
+      this.setState(
+      {
+        UIState: BattleUIState.ending
+      });
+    }
+    else
+    {
+      this.setState(
+      {
+        UIState: BattleUIState.idle
+      },() =>
+      {
+        this.battleScene.activeUnit = this.props.battle.activeUnit;
+        this.battleScene.updateUnits();
+        if (this.tempHoveredUnit)
+        {
+          this.handleMouseEnterUnit(this.tempHoveredUnit);
+        }
+        if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
+        {
+          this.useAIAbility();
+        }
+      });
+    }
     
-    this.setState(
-    {
-      UIState: BattleUIState.idle
-    },() =>
-    {
-      this.battleScene.activeUnit = this.props.battle.activeUnit;
-      this.battleScene.updateUnits();
-      if (this.tempHoveredUnit)
-      {
-        this.handleMouseEnterUnit(this.tempHoveredUnit);
-      }
-      if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
-      {
-        this.useAIAbility();
-      }
-    });
 
   }
   private getBlurArea()

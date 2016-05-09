@@ -17,16 +17,24 @@ export default class BattlePrepFormation
   } = {};
   
   private player: Player;
+  private isAttacker: boolean;
   
   private cachedDisplayData: {[unitID: number]: UnitDisplayData};
   private displayDataIsDirty: boolean = true;
   
-  constructor(player: Player, units: Unit[], hasScouted: boolean, minUnits?: number)
+  constructor(
+    player: Player,
+    units: Unit[],
+    hasScouted: boolean,
+    minUnits: number,
+    isAttacker: boolean
+  )
   {
     this.player = player;
     this.units = units;
     this.hasScouted = hasScouted;
     this.minUnits = minUnits;
+    this.isAttacker = isAttacker;
     
     this.formation = getNullFormation();
   }
@@ -82,14 +90,39 @@ export default class BattlePrepFormation
     this.displayDataIsDirty = true;
   }
   // end human formation stuff
-  public isFormationValid(): boolean
+  public getFormationValidity(): {isValid: boolean; description: string;}
   {
     let amountOfUnitsPlaced = 0;
     this.forEachUnitInFormation(unit => amountOfUnitsPlaced += 1);
+    
+    if (this.isAttacker && amountOfUnitsPlaced < 1)
+    {
+      return(
+      {
+        isValid: false,
+        description: "Attacker must place at least 1 unit."
+      });
+    }
+    
     const availableUnits = this.units.filter(unit => unit.canActThisTurn());
     const hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
     
-    return amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits;
+    if (amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits)
+    {
+      return(
+      {
+        isValid: true,
+        description: ""
+      });
+    }
+    else
+    {
+      return(
+      {
+        isValid: false,
+        description: `Must place at least ${this.minUnits} units or all available units.`
+      });
+    }
   }
   public setUnit(unit: Unit, position: number[]): void
   {
