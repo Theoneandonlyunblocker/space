@@ -16,10 +16,6 @@ export default class BattleTurnOrder
     this.orderedUnits = null;
   }
 
-  private hasUnit(unit: Unit): boolean
-  {
-    return this.allUnits.indexOf(unit) !== -1;
-  }
   public addUnit(unit: Unit): void
   {
     if (this.hasUnit(unit))
@@ -29,6 +25,44 @@ export default class BattleTurnOrder
 
     this.allUnits.push(unit);
     this.orderedUnits.push(unit);
+  }
+  public update(): void
+  {
+    this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
+
+    this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
+  }
+  public getActiveUnit(): Unit
+  {
+    return this.orderedUnits[0];
+  }
+  public getDisplayData(): TurnOrderDisplayData[]
+  {
+    return this.orderedUnits.map(BattleTurnOrder.getDisplayDataFromUnit);
+  }
+  public getGhostIndex(ghostMoveDelay: number, ghostId: number): number
+  {
+    for (let i = 0; i < this.orderedUnits.length; i++)
+    {
+      var unit = this.orderedUnits[i];
+      var unitMoveDelay = unit.battleStats.moveDelay;
+      
+      if (ghostMoveDelay < unitMoveDelay)
+      {
+        return i;
+      }
+      else if (ghostMoveDelay === unitMoveDelay && ghostId < unit.id)
+      {
+        return i;
+      }
+    }
+
+    return this.orderedUnits.length;
+  }
+  
+  private hasUnit(unit: Unit): boolean
+  {
+    return this.allUnits.indexOf(unit) !== -1;
   }
   private static turnOrderFilterFN(unit: Unit)
   {
@@ -55,68 +89,14 @@ export default class BattleTurnOrder
       return a.id - b.id;
     }
   }
-  public update(): void
-  {
-    this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
-
-    this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
-  }
-  public getActiveUnit(): Unit
-  {
-    return this.orderedUnits[0];
-  }
   private static getDisplayDataFromUnit(unit: Unit): TurnOrderDisplayData
   {
     return(
     {
       moveDelay: unit.battleStats.moveDelay,
 
-      isGhost: false,
       unit: unit,
       displayName: unit.name
     });
-  }
-  private static makeGhostDisplayData(ghostMoveDelay: number): TurnOrderDisplayData
-  {
-    return(
-    {
-      moveDelay: ghostMoveDelay,
-
-      isGhost: true,
-      unit: null,
-      displayName: null
-    });
-  }
-  private getGhostIndex(ghostMoveDelay: number, ghostId: number): number
-  {
-    for (let i = 0; i < this.orderedUnits.length; i++)
-    {
-      var unit = this.orderedUnits[i];
-      var unitMoveDelay = unit.battleStats.moveDelay;
-      
-      if (ghostMoveDelay < unitMoveDelay)
-      {
-        return i;
-      }
-      else if (ghostMoveDelay === unitMoveDelay && ghostId < unit.id)
-      {
-        return i;
-      }
-    }
-
-    return this.orderedUnits.length;
-  }
-  public getDisplayData(ghostMoveDelay?: number, ghostId?: number): TurnOrderDisplayData[]
-  {
-    var displayData = this.orderedUnits.map(BattleTurnOrder.getDisplayDataFromUnit);
-
-    if (isFinite(ghostMoveDelay))
-    {
-      var ghostIndex = this.getGhostIndex(ghostMoveDelay, ghostId);
-      var ghostDisplayData = BattleTurnOrder.makeGhostDisplayData(ghostMoveDelay);
-      displayData.splice(ghostIndex, 0, ghostDisplayData);
-    }
-
-    return displayData;
   }
 }
