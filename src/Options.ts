@@ -20,6 +20,7 @@ interface OptionsValues
     after?: number;
     unitEnter?: number;
     unitExit?: number;
+    turnTransition?: number;
   };
   debug?:
   {
@@ -44,7 +45,8 @@ const defaultOptionsValues =
     effectDuration: 1,
     after: 1500,
     unitEnter: 200,
-    unitExit: 100
+    unitExit: 100,
+    turnTransition: 1000
   },
   debug:
   {
@@ -70,6 +72,7 @@ class Options implements OptionsValues
     after: number;
     unitEnter: number;
     unitExit: number;
+    turnTransition: number;
   };
   debug:
   {

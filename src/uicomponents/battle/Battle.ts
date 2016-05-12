@@ -39,8 +39,6 @@ import
   PropTypes as AbilityTooltipProps
 } from "./AbilityTooltip";
 
-const turnTransitionDuration = 5000; // TODO | move
-
 export interface PropTypes extends React.Props<any>
 {
   battle: Battle;
@@ -423,7 +421,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       UIState: BattleUIState.transitioningTurn
     }, () =>
     {
-      window.setTimeout(this.handleTurnEnd, turnTransitionDuration);
+      window.setTimeout(this.handleTurnEnd, Options.battleAnimationTiming.turnTransition);
     });
   }
   private handleTurnEnd()
@@ -561,7 +559,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         onMouseLeaveUnit: this.handleMouseLeaveUnit,
         
         turnIsTransitioning: this.state.UIState === BattleUIState.transitioningTurn,
-        turnTransitionDuration: turnTransitionDuration
+        turnTransitionDuration: Options.battleAnimationTiming.turnTransition
       })
     }
     else

@@ -82,7 +82,7 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         displayName: "Before ability (ms)",
         min: 0,
         max: 5000,
-        step: 50
+        step: 100
       },
       {
         stage: "effectDuration",
@@ -96,21 +96,28 @@ export class OptionsListComponent extends React.Component<PropTypes, StateType>
         displayName: "After ability (ms)",
         min: 0,
         max: 5000,
-        step: 50
+        step: 100
       },
       {
         stage: "unitEnter",
         displayName: "Unit enter (ms)",
         min: 0,
         max: 1000,
-        step: 10
+        step: 50
       },
       {
         stage: "unitExit",
         displayName: "Unit exit (ms)",
         min: 0,
         max: 1000,
-        step: 10
+        step: 50
+      },
+      {
+        stage: "turnTransition",
+        displayName: "Turn transition (ms)",
+        min: 0,
+        max: 2000,
+        step: 100
       }
     ];
     for (let i = 0; i < battleAnimationStages.length; i++)
