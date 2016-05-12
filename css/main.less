@@ -720,21 +720,11 @@ ul, ol
   }
 }
 
-.attach-animation(@duration, @name, @timing)
-{
-  -webkit-animation-duration: @duration;
-  animation-duration: @duration;
-  -webkit-animation-name: @name;
-  animation-name: @name;
-  -webkit-animation-timing: @timing;
-  animation-timing: @timing;
-}
-
 .battle-scene-unit-fade-in
 {
-  .attach-animation(0.5s, battle-scene-unit-fade-in, linear);
+  animation: battle-scene-unit-fade-in 0.5s linear;
 }
-.unit-fade-in-keyframes
+@keyframes battle-scene-unit-fade-in
 {
   from
   {
@@ -745,11 +735,9 @@ ul, ol
     opacity: 1;
   }
 }
-@keyframes battle-scene-unit-fade-in {.unit-fade-in-keyframes;}
-@-webkit-keyframes battle-scene-unit-fade-in {.unit-fade-in-keyframes;}
 .battle-scene-unit-fade-out
 {
-  .attach-animation(0.5s, battle-scene-unit-fade-out, linear);
+  animation: battle-scene-unit-fade-out 0.5s linear;
 }
 .unit-fade-out-keyframes
 {
@@ -762,12 +750,21 @@ ul, ol
     opacity: 0;
   }
 }
-@keyframes battle-scene-unit-fade-out {.unit-fade-out-keyframes;}
-@-webkit-keyframes battle-scene-unit-fade-out {.unit-fade-out-keyframes;}
+@keyframes battle-scene-unit-fade-out
+{
+  from
+  {
+    opacity: 1;
+  }
+  to
+  {
+    opacity: 0;
+  }
+}
 
 .battle-scene-unit-enter-side1
 {
-  .attach-animation(0.2s, battle-scene-unit-enter-side1, ease);
+  animation: battle-scene-unit-enter-side1 0.2s ease;
 }
 .unit-enter-side1-keyframes
 {
@@ -780,16 +777,24 @@ ul, ol
     left: 0%;
   }
 }
-@keyframes battle-scene-unit-enter-side1 {.unit-enter-side1-keyframes;}
-@-webkit-keyframes battle-scene-unit-enter-side1 {.unit-enter-side1-keyframes;}
-
+@keyframes battle-scene-unit-enter-side1
+{
+  from
+  {
+    left: -50%;
+  }
+  to
+  {
+    left: 0%;
+  }
+}
 
 .battle-scene-unit-leave-side1
 {
-  .attach-animation(0.2s, battle-scene-unit-leave-side1, ease);
+  animation: battle-scene-unit-leave-side1 0.2s ease;
 }
 
-.unit-leave-side1-keyframes
+@keyframes battle-scene-unit-leave-side1
 {
   from
   {
@@ -800,12 +805,10 @@ ul, ol
     left: -50%;
   }
 }
-@keyframes battle-scene-unit-leave-side1 {.unit-leave-side1-keyframes;}
-@-webkit-keyframes battle-scene-unit-leave-side1 {.unit-leave-side1-keyframes;}
 
 .battle-scene-unit-enter-side2
 {
-  .attach-animation(0.2s, battle-scene-unit-enter-side2, ease);
+  animation: battle-scene-unit-enter-side2 0.2s ease;
 }
 .unit-enter-side2-keyframes
 {
@@ -818,12 +821,21 @@ ul, ol
     right: 0%;
   }
 }
-@keyframes battle-scene-unit-enter-side2 {.unit-enter-side2-keyframes;}
-@-webkit-keyframes battle-scene-unit-enter-side2 {.unit-enter-side2-keyframes;}
+@keyframes battle-scene-unit-enter-side2
+{
+  from
+  {
+    right: -50%;
+  }
+  to
+  {
+    right: 0%;
+  }
+}
 
 .battle-scene-unit-leave-side2
 {
-  .attach-animation(0.2s, battle-scene-unit-leave-side2, ease);
+  animation: battle-scene-unit-leave-side2 0.2s ease;
 }
 .unit-leave-side2-keyframes
 {
@@ -836,8 +848,17 @@ ul, ol
     right: -50%;
   }
 }
-@keyframes battle-scene-unit-leave-side2 {.unit-leave-side2-keyframes;}
-@-webkit-keyframes battle-scene-unit-leave-side2 {.unit-leave-side2-keyframes;}
+@keyframes battle-scene-unit-leave-side2
+{
+  from
+  {
+    right: 0%;
+  }
+  to
+  {
+    right: -50%;
+  }
+}
 
 .ability-tooltip
 {
@@ -1007,7 +1028,6 @@ ul, ol
 .empty-unit
 {
   .unit-style(@empty-unit-bg) !important;
-  -webkit-animation-name: none !important;
   animation-name: none !important;
 }
 
@@ -1730,16 +1750,12 @@ ul, ol
 {
   cursor: move;
   //cursor: grab;
-  //cursor: -webkit-grab;
-  //cursor: -moz-grab;
 }
 
 .dragging-cursor
 {
   cursor: move;
   //cursor: grabbing;
-  //cursor: -webkit-grabbing;
-  //cursor: -moz-grabbing;
 }
 
 .draggable
@@ -4027,12 +4043,7 @@ button.player-setup-remove-player
 
 .image-loading-fail-message
 {
-  -webkit-animation-duration: 2s;
-  animation-duration: 2s;
-  -webkit-animation-name: flash-bg-red;
-  animation-name: flash-bg-red;
-  -webkit-animation-timing-function: ease-in-quart;
-  animation-timing-function: ease-in-quart;
+  animation: flash-bg-red 2s ease-in-quart;
 }
 
 .emblem-picker
