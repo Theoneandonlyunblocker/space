@@ -9,16 +9,7 @@ import
   AnimationState
 } from "./TurnOrderUnit";
 
-/*
-remove first unit
-if unit is inserted within visible turn order:
-  on remove finish:
-    clear space by moving units right of new space to the right
-    on clear finish:
-      insert unit from bottom
-else:
-  
-*/
+// TODO | animate units being removed from turn order
 
 export interface PropTypes extends React.Props<any>
 {
@@ -109,7 +100,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         }
       }
       
-      const unitsToRender = Math.min(this.state.currentDisplayData.length, this.state.maxUnits);
+      const unitsToRender = Math.min(newProps.turnOrderDisplayData.length, this.state.maxUnits);
       const shouldInsertRemovedUnit = newRemovedUnitIndex < unitsToRender - 1;
       
       this.setState(
@@ -145,7 +136,6 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.removeUnit
     }, () =>
     {
-      console.log("removeUnit");
       window.setTimeout(() =>
       {
         this.setState(
@@ -171,7 +161,6 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.clearSpaceForUnit,
     }, () =>
     {
-      console.log("clearSpaceForUnit");
       window.setTimeout(() =>
       {
         this.insertUnit();
@@ -188,7 +177,6 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.insertUnit
     }, () =>
     {
-      console.log("insertUnit");
       this.setFinishAnimatingTimeout();
     });
   }
@@ -202,7 +190,6 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.pushUnit
     }, () =>
     {
-      console.log("pushUnit");
       this.setFinishAnimatingTimeout();
     });
   }
