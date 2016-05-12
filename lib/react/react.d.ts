@@ -534,6 +534,9 @@ declare namespace __React {
          */
         animationDirection?: any;
 
+        // CUSTOM
+        animationDuration?: string;
+        
         /**
          * Specifies how many times an animation cycle should play.
          */
