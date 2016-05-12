@@ -542,20 +542,94 @@ ul, ol
   display: flex;
   flex-flow: row;
   width: 100%;
-  min-height: 20px;
   z-index: 152;
 }
 
-.turn-order-unit
+@turn-order-unit-margin: 2px;
+
+@keyframes remove-unit
+{
+  from
+  {
+    left: 0;
+    margin-right: @turn-order-unit-margin;
+  }
+  to
+  {
+    left: -160px - @turn-order-unit-margin;
+    margin-right: -160px - @turn-order-unit-margin;
+  }
+}
+@keyframes push-unit
+{
+  from {left: 100%;}
+  to {left: 0;}
+}
+@keyframes clear-space-for-unit
+{
+  from {margin-left: @turn-order-unit-margin;}
+  to {margin-left: 160px + @turn-order-unit-margin;}
+}
+@keyframes insert-unit
+{
+  from {bottom: -20px;}
+  to {bottom: 0;}
+}
+
+.turn-order-unit-container
 {
   display: flex;
   flex: 1;
   position: relative;
+  height: 20px;
   max-width: 160px;
+  overflow: hidden;
+  
+  margin: 0 @turn-order-unit-margin;
+  
+  &.remove-unit
+  {
+    animation-name: remove-unit;
+    // animation-duration: set in react
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  &.push-unit
+  {
+    animation-name: push-unit;
+    // animation-duration: set in react
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  &.clear-space-for-unit
+  {
+    animation-name: clear-space-for-unit;
+    // animation-duration: set in react
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  &.insert-unit
+  {
+    .turn-order-unit
+    {
+      animation-name: insert-unit;
+      // animation-duration: set in react
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+  }
+}
+
+.turn-order-unit
+{
+  position: relative;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: clip;
-  margin: 0 2px;
+  
+  transition: background-color 100ms;
 }
 
 
@@ -578,7 +652,6 @@ ul, ol
 {
   background-color: lighten(saturate(@enemy-unit-color, 20%), 10%);
 }
-
 
 
 .turn-order-arrow
@@ -3130,7 +3203,7 @@ ul, ol
 
 .unit-info-ability
 {
-  display: inline-block;
+  display: block;
   float: left;
   clear: both;
 }

@@ -3,6 +3,23 @@
 import Unit from "../../Unit";
 import TurnOrderDisplayData from "../../TurnOrderDisplayData";
 
+import
+{
+  default as TurnOrderUnit,
+  AnimationState
+} from "./TurnOrderUnit";
+
+/*
+remove first unit
+if unit is inserted within visible turn order:
+  on remove finish:
+    clear space by moving units right of new space to the right
+    on clear finish:
+      insert unit from bottom
+else:
+  
+*/
+
 export interface PropTypes extends React.Props<any>
 {
   unitsBySide:
@@ -12,6 +29,11 @@ export interface PropTypes extends React.Props<any>
   }
   turnOrderDisplayData: TurnOrderDisplayData[];
   hoveredUnit: Unit;
+  hoveredGhostIndex: number;
+  
+  turnIsTransitioning: boolean;
+  turnTransitionDuration: number;
+  
   onMouseLeaveUnit: (e: React.MouseEvent) => void;
   onMouseEnterUnit: (unit: Unit) => void;
 }
@@ -19,12 +41,20 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   maxUnits?: number;
+  
+  currentDisplayData?: TurnOrderDisplayData[];
+  pendingDisplayData?: TurnOrderDisplayData[];
+  
+  insertIndex?: number;
+  
+  animationState?: AnimationState;
 }
 
 export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 {
   displayName: string = "TurnOrder";
   state: StateType;
+  animationDuration: number;
 
   constructor(props: PropTypes)
   {
@@ -43,7 +73,14 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      maxUnits: 7
+      maxUnits: 7,
+      
+      currentDisplayData: this.props.turnOrderDisplayData,
+      pendingDisplayData: undefined,
+      
+      insertIndex: undefined,
+      
+      animationState: AnimationState.idle
     });
   }
   componentDidMount()
@@ -56,8 +93,121 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
   {
     window.removeEventListener("resize", this.setMaxUnits);
   }
-
-  setMaxUnits()
+  componentWillReceiveProps(newProps: PropTypes)
+  {
+    if (newProps.turnIsTransitioning && !this.props.turnIsTransitioning)
+    {
+      const removedUnit = this.state.currentDisplayData[0].unit;
+      
+      let newRemovedUnitIndex: number;
+      for (let i = 0; i < newProps.turnOrderDisplayData.length; i++)
+      {
+        if (newProps.turnOrderDisplayData[i].unit === removedUnit)
+        {
+          newRemovedUnitIndex = i;
+          break;
+        }
+      }
+      
+      const unitsToRender = Math.min(this.state.currentDisplayData.length, this.state.maxUnits);
+      const shouldInsertRemovedUnit = newRemovedUnitIndex < unitsToRender - 1;
+      
+      this.setState(
+      {
+        pendingDisplayData: newProps.turnOrderDisplayData,
+        
+        insertIndex: shouldInsertRemovedUnit ? newRemovedUnitIndex : undefined,
+      });
+      
+      this.removeUnit(shouldInsertRemovedUnit, newRemovedUnitIndex);
+    }
+  }
+  
+  private getTransitionDuration()
+  {
+    return this.props.turnTransitionDuration / 3;
+  }
+  private setFinishAnimatingTimeout()
+  {
+    window.setTimeout(() =>
+    {
+      this.setState(
+      {
+        animationState: AnimationState.idle,
+        
+      });
+    }, this.getTransitionDuration())
+  }
+  private removeUnit(shouldInsertRemovedUnit: boolean, insertIndex: number)
+  {
+    this.setState(
+    {
+      animationState: AnimationState.removeUnit
+    }, () =>
+    {
+      console.log("removeUnit");
+      window.setTimeout(() =>
+      {
+        this.setState(
+        {
+          currentDisplayData: this.state.currentDisplayData.slice(1),
+        });
+        
+        if (shouldInsertRemovedUnit)
+        {
+          this.clearSpaceForUnit();
+        }
+        else
+        {
+          this.pushUnit();
+        }
+      }, this.getTransitionDuration());
+    });
+  }
+  private clearSpaceForUnit()
+  {
+    this.setState(
+    {
+      animationState: AnimationState.clearSpaceForUnit,
+    }, () =>
+    {
+      console.log("clearSpaceForUnit");
+      window.setTimeout(() =>
+      {
+        this.insertUnit();
+      }, this.getTransitionDuration());
+    });
+  }
+  private insertUnit()
+  {
+    this.setState(
+    {
+      currentDisplayData: this.state.pendingDisplayData,
+      pendingDisplayData: undefined,
+      
+      animationState: AnimationState.insertUnit
+    }, () =>
+    {
+      console.log("insertUnit");
+      this.setFinishAnimatingTimeout();
+    });
+  }
+  private pushUnit()
+  {
+    this.setState(
+    {
+      currentDisplayData: this.state.pendingDisplayData,
+      pendingDisplayData: undefined,
+      
+      animationState: AnimationState.pushUnit
+    }, () =>
+    {
+      console.log("pushUnit");
+      this.setFinishAnimatingTimeout();
+    });
+  }
+  
+  private setMaxUnits()
   {
     const minUnits = 7;
 
@@ -76,60 +226,79 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
   render()
   {
-    const needsExtraSpaceForGhost = this.props.turnOrderDisplayData.some((d, i) =>
-    {
-      return d.isGhost && i < this.state.maxUnits;
-    });
+    const toRender: React.ReactElement<any>[] = [];
     
-    const maxUnitsWithGhost = needsExtraSpaceForGhost ? this.state.maxUnits + 1 : this.state.maxUnits;
-    const filteredTurnOrderDisplayData = this.props.turnOrderDisplayData.filter((d, i) =>
-    {
-      return i < maxUnitsWithGhost || d.isGhost;
-    });
+    const unitsToRender = Math.min(this.state.currentDisplayData.length, this.state.maxUnits);
+    const transitionDuration = this.getTransitionDuration();
     
-    const toRender: React.ReactHTMLElement<any>[] = [];
-
-    for (let i = 0; i < filteredTurnOrderDisplayData.length; i++)
+    for (let i = 0; i < unitsToRender; i++)
     {
-      const displayData = filteredTurnOrderDisplayData[i];
-
-      if (displayData.isGhost)
+      const displayData = this.state.currentDisplayData[i];
+      
+      let unitAnimationState: AnimationState = AnimationState.idle;
+      
+      switch (this.state.animationState)
       {
-        toRender.push(React.DOM.div(
+        case AnimationState.removeUnit:
         {
-          className: "turn-order-arrow",
-          key: "" + i
-        }));
-        continue;
+          if (i === 0)
+          {
+            unitAnimationState = AnimationState.removeUnit;
+          }
+          break;
+        }
+        case AnimationState.clearSpaceForUnit:
+        {
+          if (i === this.state.insertIndex)
+          {
+            unitAnimationState = AnimationState.clearSpaceForUnit;
+          }
+          break;
+        }
+        case AnimationState.insertUnit:
+        {
+          if (i === this.state.insertIndex)
+          {
+            unitAnimationState = AnimationState.insertUnit;
+          }
+          break;
+        }
+        case AnimationState.pushUnit:
+        {
+          if (i === unitsToRender - 1)
+          {
+            unitAnimationState = AnimationState.pushUnit;
+          }
+          break;
+        }
       }
-
-      const data: React.HTMLAttributes =
-      {
-        key: "" + i,
-        className: "turn-order-unit",
-        title: "delay: " + displayData.moveDelay + "\n",
-        onMouseEnter: this.props.onMouseEnterUnit.bind(null, displayData.unit),
-        onMouseLeave: this.props.onMouseLeaveUnit
-      };
-
-      if (this.props.unitsBySide.side1.indexOf(displayData.unit) > -1)
-      {
-        data.className += " turn-order-unit-friendly";
-      }
-      else
-      {
-        data.className += " turn-order-unit-enemy";
-      }
-
-      if (this.props.hoveredUnit && displayData.unit === this.props.hoveredUnit)
-      {
-        data.className += " turn-order-unit-hover";
-      }
-
+      
+      // todo pass animation state
       toRender.push(
-        React.DOM.div(data, displayData.unit.name)
-      )
-
+        TurnOrderUnit(
+        {
+          key: displayData.unit.id,
+          unitName: displayData.unit.name,
+          delay: displayData.moveDelay,
+          isFriendly: this.props.unitsBySide.side1.indexOf(displayData.unit) > -1,
+          isHovered: this.props.hoveredUnit && displayData.unit === this.props.hoveredUnit,
+          
+          animationState: unitAnimationState,
+          transitionDuration: transitionDuration,
+          
+          onMouseEnter: this.props.onMouseEnterUnit.bind(null, displayData.unit),
+          onMouseLeave: this.props.onMouseLeaveUnit,
+        })
+      );
+    }
+    
+    if (isFinite(this.props.hoveredGhostIndex))
+    {
+      toRender.splice(this.props.hoveredGhostIndex, 0, React.DOM.div(
+      {
+        className: "turn-order-arrow",
+        key: "ghost"
+      }));
     }
 
     // if (this.props.turnOrderDisplayData.length > maxUnits)

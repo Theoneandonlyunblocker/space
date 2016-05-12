@@ -39,7 +39,7 @@ import
   PropTypes as AbilityTooltipProps
 } from "./AbilityTooltip";
 
-const turnTransitionDuration = 500; // TODO | move
+const turnTransitionDuration = 5000; // TODO | move
 
 export interface PropTypes extends React.Props<any>
 {
@@ -543,18 +543,25 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
     else if (!this.state.playingBattleEffect)
     {
-      const turnOrderDisplayData = battle.turnOrder.getDisplayData(
-        this.state.potentialDelayAmount,
-        this.state.potentialDelayID);
-
       upperFooterElement = TurnOrder(
       {
         key: "turnOrder",
-        turnOrderDisplayData: turnOrderDisplayData,
         unitsBySide: battle.unitsBySide,
+        
+        turnOrderDisplayData: battle.turnOrder.getDisplayData(),
         hoveredUnit: this.state.highlightedUnit,
+        hoveredGhostIndex: isFinite(this.state.potentialDelayAmount) ?
+          battle.turnOrder.getGhostIndex(
+            this.state.potentialDelayAmount,
+            this.state.potentialDelayID
+          ) :
+          undefined,
+        
         onMouseEnterUnit: this.handleMouseEnterUnit,
-        onMouseLeaveUnit: this.handleMouseLeaveUnit
+        onMouseLeaveUnit: this.handleMouseLeaveUnit,
+        
+        turnIsTransitioning: this.state.UIState === BattleUIState.transitioningTurn,
+        turnTransitionDuration: turnTransitionDuration
       })
     }
     else
