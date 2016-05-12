@@ -1614,15 +1614,38 @@ define("src/BattleTurnOrder", ["require", "exports"], function (require, exports
             this.allUnits = null;
             this.orderedUnits = null;
         };
-        BattleTurnOrder.prototype.hasUnit = function (unit) {
-            return this.allUnits.indexOf(unit) !== -1;
-        };
         BattleTurnOrder.prototype.addUnit = function (unit) {
             if (this.hasUnit(unit)) {
                 throw new Error("Unit " + unit.name + " is already part of turn order");
             }
             this.allUnits.push(unit);
             this.orderedUnits.push(unit);
+        };
+        BattleTurnOrder.prototype.update = function () {
+            this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
+            this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
+        };
+        BattleTurnOrder.prototype.getActiveUnit = function () {
+            return this.orderedUnits[0];
+        };
+        BattleTurnOrder.prototype.getDisplayData = function () {
+            return this.orderedUnits.map(BattleTurnOrder.getDisplayDataFromUnit);
+        };
+        BattleTurnOrder.prototype.getGhostIndex = function (ghostMoveDelay, ghostId) {
+            for (var i = 0; i < this.orderedUnits.length; i++) {
+                var unit = this.orderedUnits[i];
+                var unitMoveDelay = unit.battleStats.moveDelay;
+                if (ghostMoveDelay < unitMoveDelay) {
+                    return i;
+                }
+                else if (ghostMoveDelay === unitMoveDelay && ghostId < unit.id) {
+                    return i;
+                }
+            }
+            return this.orderedUnits.length;
+        };
+        BattleTurnOrder.prototype.hasUnit = function (unit) {
+            return this.allUnits.indexOf(unit) !== -1;
         };
         BattleTurnOrder.turnOrderFilterFN = function (unit) {
             if (unit.battleStats.currentActionPoints <= 0) {
@@ -1641,50 +1664,12 @@ define("src/BattleTurnOrder", ["require", "exports"], function (require, exports
                 return a.id - b.id;
             }
         };
-        BattleTurnOrder.prototype.update = function () {
-            this.orderedUnits = this.allUnits.filter(BattleTurnOrder.turnOrderFilterFN);
-            this.orderedUnits.sort(BattleTurnOrder.turnOrderSortFN);
-        };
-        BattleTurnOrder.prototype.getActiveUnit = function () {
-            return this.orderedUnits[0];
-        };
         BattleTurnOrder.getDisplayDataFromUnit = function (unit) {
             return ({
                 moveDelay: unit.battleStats.moveDelay,
-                isGhost: false,
                 unit: unit,
                 displayName: unit.name
             });
-        };
-        BattleTurnOrder.makeGhostDisplayData = function (ghostMoveDelay) {
-            return ({
-                moveDelay: ghostMoveDelay,
-                isGhost: true,
-                unit: null,
-                displayName: null
-            });
-        };
-        BattleTurnOrder.prototype.getGhostIndex = function (ghostMoveDelay, ghostId) {
-            for (var i = 0; i < this.orderedUnits.length; i++) {
-                var unit = this.orderedUnits[i];
-                var unitMoveDelay = unit.battleStats.moveDelay;
-                if (ghostMoveDelay < unitMoveDelay) {
-                    return i;
-                }
-                else if (ghostMoveDelay === unitMoveDelay && ghostId < unit.id) {
-                    return i;
-                }
-            }
-            return this.orderedUnits.length;
-        };
-        BattleTurnOrder.prototype.getDisplayData = function (ghostMoveDelay, ghostId) {
-            var displayData = this.orderedUnits.map(BattleTurnOrder.getDisplayDataFromUnit);
-            if (isFinite(ghostMoveDelay)) {
-                var ghostIndex = this.getGhostIndex(ghostMoveDelay, ghostId);
-                var ghostDisplayData = BattleTurnOrder.makeGhostDisplayData(ghostMoveDelay);
-                displayData.splice(ghostIndex, 0, ghostDisplayData);
-            }
-            return displayData;
         };
         return BattleTurnOrder;
     }());
@@ -1963,24 +1948,24 @@ define("src/Battle", ["require", "exports", "src/App", "src/eventManager", "src/
             eventManager_2.default.dispatchEvent("battleEnd", null);
         };
         Battle.prototype.getEvaluation = function () {
-            var self = this;
+            var _this = this;
             var evaluation = 0;
             UnitBattleSide_1.UnitBattleSides.forEach(function (side) {
                 var sign = side === "side1" ? 1 : -1;
-                var currentHealth = self.getTotalHealthForSide(side).current;
+                var currentHealth = _this.getTotalHealthForSide(side).current;
                 if (currentHealth <= 0) {
                     return -999 * sign;
                 }
-                var currentHealthFactor = currentHealth / self.startHealth[side];
-                for (var i = 0; i < self.unitsBySide[side].length; i++) {
-                    if (self.unitsBySide[side][i].currentHealth <= 0) {
+                var currentHealthFactor = currentHealth / _this.startHealth[side];
+                for (var i = 0; i < _this.unitsBySide[side].length; i++) {
+                    if (_this.unitsBySide[side][i].currentHealth <= 0) {
                         evaluation -= 0.2 * sign;
                     }
                 }
                 var defenderMultiplier = 1;
-                if (self.battleData.building) {
-                    var template = self.battleData.building.template;
-                    var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
+                if (_this.battleData.building) {
+                    var template = _this.battleData.building.template;
+                    var isDefender = _this.battleData.defender.player === _this.getPlayerForSide(side);
                     if (isDefender) {
                         defenderMultiplier += template.defenderAdvantage;
                     }
@@ -2483,7 +2468,8 @@ define("src/battleAbilityUsage", ["require", "exports", "src/battleAbilityProces
             changedUnitDisplayDataByID: unitDisplayData,
             sfx: abilityEffectData.templateEffect.sfx,
             sfxUser: abilityEffectData.user,
-            sfxTarget: abilityEffectData.target
+            sfxTarget: abilityEffectData.target,
+            newEvaluation: battle.getEvaluation()
         });
     }
 });
@@ -2780,7 +2766,7 @@ define("src/MCTree", ["require", "exports", "src/MCTreeNode"], function (require
 define("src/options", ["require", "exports", "src/eventManager", "src/utility"], function (require, exports, eventManager_3, utility_6) {
     "use strict";
     var OptionsCategories = [
-        "battleAnimationTiming", "debugMode", "debugOptions", "ui", "display"
+        "battleAnimationTiming", "debug", "ui", "display"
     ];
     var defaultOptionsValues = {
         battleAnimationTiming: {
@@ -2788,10 +2774,11 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
             effectDuration: 1,
             after: 1500,
             unitEnter: 200,
-            unitExit: 100
+            unitExit: 100,
+            turnTransition: 1000
         },
-        debugMode: false,
-        debugOptions: {
+        debug: {
+            enabled: false,
             battleSimulationDepth: 20
         },
         ui: {
@@ -2812,23 +2799,21 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
                 case "battleAnimationTiming":
                     this.battleAnimationTiming = defaultOptionsValues.battleAnimationTiming;
                     break;
-                case "debugMode":
-                    if (this.debugMode !== defaultOptionsValues.debugMode) {
+                case "debug":
+                    this.debug = defaultOptionsValues.debug;
+                    if (this.debug.enabled !== defaultOptionsValues.debug.enabled) {
                         shouldReRenderUI = true;
+                        shouldReRenderMap = true;
                     }
-                    this.debugMode = defaultOptionsValues.debugMode;
-                    break;
-                case "debugOptions":
-                    this.debugOptions = defaultOptionsValues.debugOptions;
                     break;
                 case "ui":
                     this.ui = defaultOptionsValues.ui;
                     break;
                 case "display":
-                    if (this.display && this.display.borderWidth !== defaultOptionsValues.display.borderWidth) {
+                    this.display = defaultOptionsValues.display;
+                    if (this.display.borderWidth !== defaultOptionsValues.display.borderWidth) {
                         shouldReRenderMap = true;
                     }
-                    this.display = defaultOptionsValues.display;
                     break;
             }
             if (shouldReRenderUI) {
@@ -2859,7 +2844,9 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
             var parsedOptions = this.serialize();
             if (parsedData) {
                 var optionsToResetIfSetEarlierThan = {
-                    "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50)
+                    "battleAnimationTiming": Date.UTC(2016, 1, 25, 10, 50),
+                    "debugMode": Date.UTC(2016, 4, 9, 10, 10),
+                    "debugOptions": Date.UTC(2016, 4, 9, 10, 10),
                 };
                 var dateOptionsWereSaved = Date.parse(parsedData.date);
                 for (var key in parsedData.options) {
@@ -2892,16 +2879,14 @@ define("src/options", ["require", "exports", "src/eventManager", "src/utility"],
         Options.prototype.serialize = function () {
             return ({
                 battleAnimationTiming: this.battleAnimationTiming,
-                debugMode: this.debugMode,
-                debugOptions: this.debugOptions,
+                debug: this.debug,
                 ui: this.ui,
                 display: this.display
             });
         };
         Options.prototype.deSerialize = function (data) {
             this.battleAnimationTiming = utility_6.deepMerge(this.battleAnimationTiming, data.battleAnimationTiming, true);
-            this.debugMode = utility_6.deepMerge(this.debugMode, data.debugMode, true);
-            this.debugOptions = utility_6.deepMerge(this.debugOptions, data.debugOptions, true);
+            this.debug = utility_6.deepMerge(this.debug, data.debug, true);
             this.ui = utility_6.deepMerge(this.ui, data.ui, true);
             this.display = utility_6.deepMerge(this.display, data.display, true);
         };
@@ -2931,7 +2916,7 @@ define("src/BattleSimulator", ["require", "exports", "src/MCTree", "src/options"
             if (!this.battle.activeUnit || this.battle.ended) {
                 throw new Error("Simulated battle already ended");
             }
-            var move = this.tree.getBestMoveAndAdvance(options_1.default.debugOptions.battleSimulationDepth);
+            var move = this.tree.getBestMoveAndAdvance(options_1.default.debug.battleSimulationDepth);
             var target = this.battle.unitsById[move.targetId];
             this.simulateAbility(move.ability, target);
             this.battle.endTurn();
@@ -3737,7 +3722,7 @@ define("src/FillerPoint", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = FillerPoint;
 });
-define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/utility", "src/mapgencore/MapGenResult"], function (require, exports, App_11, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, utility_8, MapGenResult_1) {
+define("src/GameLoader", ["require", "exports", "src/App", "src/Player", "src/Star", "src/Unit", "src/Building", "src/Game", "src/NotificationLog", "src/Notification", "src/FillerPoint", "src/Manufactory", "src/Color", "src/AttitudeModifier", "src/Emblem", "src/Flag", "src/Fleet", "src/Item", "src/MapGenResult", "src/utility"], function (require, exports, App_11, Player_1, Star_1, Unit_2, Building_1, Game_1, NotificationLog_1, Notification_1, FillerPoint_1, Manufactory_1, Color_1, AttitudeModifier_2, Emblem_2, Flag_1, Fleet_2, Item_2, MapGenResult_1, utility_8) {
     "use strict";
     var GameLoader = (function () {
         function GameLoader() {
@@ -6101,8 +6086,8 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
             }
         };
         Player.prototype.getVisibleStars = function () {
-            if (!this.isAI && options_2.default.debugMode) {
-                return this.controlledLocations[0].getLinkedInRange(9999).all;
+            if (!this.isAI && options_2.default.debug.enabled) {
+                return this.controlledLocations[0].getAllLinkedStars();
             }
             if (this.visionIsDirty)
                 this.updateVisibleStars();
@@ -6114,8 +6099,8 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
             return visible;
         };
         Player.prototype.getRevealedStars = function () {
-            if (!this.isAI && options_2.default.debugMode) {
-                return this.controlledLocations[0].getLinkedInRange(9999).all;
+            if (!this.isAI && options_2.default.debug.enabled) {
+                return this.controlledLocations[0].getAllLinkedStars();
             }
             if (this.visionIsDirty)
                 this.updateVisibleStars();
@@ -6137,8 +6122,8 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
             return toReturn;
         };
         Player.prototype.getDetectedStars = function () {
-            if (!this.isAI && options_2.default.debugMode) {
-                return this.controlledLocations[0].getLinkedInRange(9999).all;
+            if (!this.isAI && options_2.default.debug.enabled) {
+                return this.controlledLocations[0].getAllLinkedStars();
             }
             if (this.visionIsDirty)
                 this.updateVisibleStars();
@@ -6149,21 +6134,21 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
             return toReturn;
         };
         Player.prototype.starIsVisible = function (star) {
-            if (!this.isAI && options_2.default.debugMode)
+            if (!this.isAI && options_2.default.debug.enabled)
                 return true;
             if (this.visionIsDirty)
                 this.updateVisibleStars();
             return Boolean(this.visibleStars[star.id]);
         };
         Player.prototype.starIsRevealed = function (star) {
-            if (!this.isAI && options_2.default.debugMode)
+            if (!this.isAI && options_2.default.debug.enabled)
                 return true;
             if (this.visionIsDirty)
                 this.updateVisibleStars();
             return Boolean(this.revealedStars[star.id]);
         };
         Player.prototype.starIsDetected = function (star) {
-            if (!this.isAI && options_2.default.debugMode)
+            if (!this.isAI && options_2.default.debug.enabled)
                 return true;
             if (this.visionIsDirty)
                 this.updateVisibleStars();
@@ -6196,14 +6181,14 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
             }
         };
         Player.prototype.unitIsIdentified = function (unit) {
-            if (options_2.default.debugMode && !this.isAI) {
+            if (options_2.default.debug.enabled && !this.isAI) {
                 return true;
             }
             else
                 return Boolean(this.identifiedUnits[unit.id]) || Boolean(this.units[unit.id]);
         };
         Player.prototype.fleetIsFullyIdentified = function (fleet) {
-            if (options_2.default.debugMode && !this.isAI) {
+            if (options_2.default.debug.enabled && !this.isAI) {
                 return true;
             }
             for (var i = 0; i < fleet.units.length; i++) {
@@ -6289,7 +6274,7 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
             var templates = [];
             var typesAlreadyAddedChecked = {};
             var unitsToAdd = App_16.default.moduleData.Templates.UnitFamilies["basic"].associatedTemplates.slice(0);
-            if (!this.isAI && options_2.default.debugMode) {
+            if (!this.isAI && options_2.default.debug.enabled) {
                 unitsToAdd = unitsToAdd.concat(App_16.default.moduleData.Templates.UnitFamilies["debug"].associatedTemplates);
             }
             for (var i = 0; i < unitsToAdd.length; i++) {
@@ -6396,13 +6381,14 @@ define("src/Player", ["require", "exports", "src/idGenerators", "src/App", "src/
 define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNullFormation"], function (require, exports, App_17, getNullFormation_2) {
     "use strict";
     var BattlePrepFormation = (function () {
-        function BattlePrepFormation(player, units, hasScouted, minUnits) {
+        function BattlePrepFormation(player, units, hasScouted, minUnits, isAttacker) {
             this.placedUnitPositionsByID = {};
             this.displayDataIsDirty = true;
             this.player = player;
             this.units = units;
             this.hasScouted = hasScouted;
             this.minUnits = minUnits;
+            this.isAttacker = isAttacker;
             this.formation = getNullFormation_2.default();
         }
         BattlePrepFormation.prototype.forEachUnitInFormation = function (f) {
@@ -6442,12 +6428,29 @@ define("src/BattlePrepFormation", ["require", "exports", "src/App", "src/getNull
             this.formation = getNullFormation_2.default();
             this.displayDataIsDirty = true;
         };
-        BattlePrepFormation.prototype.isFormationValid = function () {
+        BattlePrepFormation.prototype.getFormationValidity = function () {
             var amountOfUnitsPlaced = 0;
             this.forEachUnitInFormation(function (unit) { return amountOfUnitsPlaced += 1; });
+            if (this.isAttacker && amountOfUnitsPlaced < 1) {
+                return ({
+                    isValid: false,
+                    description: "Attacker must place at least 1 unit."
+                });
+            }
             var availableUnits = this.units.filter(function (unit) { return unit.canActThisTurn(); });
             var hasPlacedAllAvailableUnits = amountOfUnitsPlaced === availableUnits.length;
-            return amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits;
+            if (amountOfUnitsPlaced >= this.minUnits || hasPlacedAllAvailableUnits) {
+                return ({
+                    isValid: true,
+                    description: ""
+                });
+            }
+            else {
+                return ({
+                    isValid: false,
+                    description: "Must place at least " + this.minUnits + " units or all available units."
+                });
+            }
         };
         BattlePrepFormation.prototype.setUnit = function (unit, position) {
             var unitInTargetPosition = this.getUnitAtPosition(position);
@@ -6563,9 +6566,9 @@ define("src/BattlePrep", ["require", "exports", "src/Battle", "src/BattlePrepFor
             this.attackerUnits = battleData.attacker.units;
             this.defenderUnits = battleData.defender.units;
             var attackerHasScouted = this.attacker.starIsDetected(battleData.location);
-            this.attackerFormation = new BattlePrepFormation_1.default(this.attacker, this.attackerUnits, attackerHasScouted, 0);
+            this.attackerFormation = new BattlePrepFormation_1.default(this.attacker, this.attackerUnits, attackerHasScouted, 1, true);
             var defenderHasScouted = this.defender.starIsDetected(battleData.location);
-            this.defenderFormation = new BattlePrepFormation_1.default(this.defender, this.defenderUnits, defenderHasScouted);
+            this.defenderFormation = new BattlePrepFormation_1.default(this.defender, this.defenderUnits, defenderHasScouted, undefined, false);
             this.resetBattleStats();
             this.minDefenders = this.getInitialMinDefenders();
             this.setHumanAndEnemy();
@@ -7373,20 +7376,16 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
             return true;
         };
         Unit.prototype.getAbilityUpgradeData = function () {
+            var _this = this;
             var upgradeData = {};
             var allAbilities = this.getAllAbilities();
-            allAbilities = allAbilities.concat(this.getAllPassiveSkills());
-            var templates = App_18.default.moduleData.Templates;
-            for (var i = 0; i < allAbilities.length; i++) {
-                var parentAbility = allAbilities[i];
-                if (!parentAbility.canUpgradeInto)
-                    continue;
-                for (var j = 0; j < parentAbility.canUpgradeInto.length; j++) {
-                    var childAbilityType = parentAbility.canUpgradeInto[j];
-                    var childAbility = templates.Abilities[childAbilityType] || templates.PassiveSkills[childAbilityType];
-                    if (!childAbility)
-                        throw new Error("Invalid ability upgrade " + childAbilityType);
-                    if (this.canUpgradeIntoAbility(childAbility, allAbilities)) {
+            allAbilities.push.apply(allAbilities, this.getAllPassiveSkills());
+            var upgradableAbilities = allAbilities.filter(function (abilityTemplate) {
+                return abilityTemplate.canUpgradeInto && abilityTemplate.canUpgradeInto.length > 0;
+            });
+            upgradableAbilities.forEach(function (parentAbility) {
+                parentAbility.canUpgradeInto.forEach(function (childAbility) {
+                    if (_this.canUpgradeIntoAbility(childAbility, allAbilities)) {
                         if (!upgradeData[parentAbility.type]) {
                             upgradeData[parentAbility.type] =
                                 {
@@ -7396,8 +7395,8 @@ define("src/Unit", ["require", "exports", "src/idGenerators", "src/App", "src/ut
                         }
                         upgradeData[parentAbility.type].possibleUpgrades.push(childAbility);
                     }
-                }
-            }
+                });
+            });
             var learnable = this.getLearnableAbilities(allAbilities);
             if (learnable.length > 0) {
                 upgradeData["learnable"] =
@@ -7917,6 +7916,9 @@ define("src/Star", ["require", "exports", "src/idGenerators", "src/App", "src/ev
             }
             return neighbors;
         };
+        Star.prototype.getAllLinkedStars = function () {
+            return this.getLinkedInRange(99999).all;
+        };
         Star.prototype.getLinkedInRange = function (range) {
             if (this.indexedNeighborsInRange[range]) {
                 return this.indexedNeighborsInRange[range];
@@ -8205,7 +8207,7 @@ define("src/MapVoronoiInfo", ["require", "exports"], function (require, exports)
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = MapVoronoiInfo;
 });
-define("src/mapgencore/voronoi", ["require", "exports", "src/VoronoiCell"], function (require, exports, VoronoiCell_1) {
+define("src/voronoi", ["require", "exports", "src/VoronoiCell"], function (require, exports, VoronoiCell_1) {
     "use strict";
     function makeVoronoi(points, width, height) {
         var boundingBox = {
@@ -8291,7 +8293,7 @@ define("src/mapgencore/voronoi", ["require", "exports", "src/VoronoiCell"], func
         });
     }
 });
-define("src/mapgencore/MapGenResult", ["require", "exports", "src/MapVoronoiInfo", "src/GalaxyMap", "src/mapgencore/voronoi"], function (require, exports, MapVoronoiInfo_1, GalaxyMap_1, voronoi_1) {
+define("src/MapGenResult", ["require", "exports", "src/MapVoronoiInfo", "src/GalaxyMap", "src/voronoi"], function (require, exports, MapVoronoiInfo_1, GalaxyMap_1, voronoi_1) {
     "use strict";
     var MapGenResult = (function () {
         function MapGenResult(props) {
@@ -8589,7 +8591,7 @@ define("src/MapRenderer", ["require", "exports", "src/App", "src/MapRendererLaye
                                 }
                         }
                     }
-                    if (passesStarVisibilityCheck || options_3.default.debugMode) {
+                    if (passesStarVisibilityCheck || options_3.default.debug.enabled) {
                         self.setLayerAsDirty(layerName);
                     }
                 });
@@ -13420,7 +13422,7 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
             }
             ;
             var playerIsDefending = player === battlePrep.defender;
-            var humanFormationIsValid = battlePrep.humanFormation.isFormationValid();
+            var humanFormationValidity = battlePrep.humanFormation.getFormationValidity();
             var canScout = player.starIsDetected(battlePrep.battleData.location);
             return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: function (component) {
                     _this.ref_TODO_upper = component;
@@ -13454,13 +13456,14 @@ define("src/uicomponents/battleprep/BattlePrep", ["require", "exports", "src/App
                 disabled: playerIsDefending
             }, "Cancel"), React.DOM.button({
                 className: "battle-prep-controls-button",
-                disabled: !humanFormationIsValid,
+                disabled: !humanFormationValidity.isValid,
+                title: humanFormationValidity.description,
                 onClick: function () {
                     var battle = battlePrep.makeBattle();
                     App_25.default.reactUI.battle = battle;
                     App_25.default.reactUI.switchScene("battle");
                 }.bind(this)
-            }, "Start battle"), !Options_1.default.debugMode ? null : React.DOM.button({
+            }, "Start battle"), !Options_1.default.debug.enabled ? null : React.DOM.button({
                 className: "battle-prep-controls-button",
                 onClick: function () {
                     var battle = battlePrep.makeBattle();
@@ -13499,13 +13502,10 @@ define("src/BattleSceneUnit", ["require", "exports", "src/options"], function (r
             this.hasSFXSprite = false;
             this.container = container;
             this.renderer = renderer;
-            this.initLayers();
-        }
-        BattleSceneUnit.prototype.destroy = function () {
-        };
-        BattleSceneUnit.prototype.initLayers = function () {
             this.spriteContainer = new PIXI.Container;
             this.container.addChild(this.spriteContainer);
+        }
+        BattleSceneUnit.prototype.destroy = function () {
         };
         BattleSceneUnit.prototype.changeActiveUnit = function (unit, afterChangedCallback) {
             if (this.hasSFXSprite) {
@@ -13822,7 +13822,6 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             this.isPaused = false;
             this.forceFrame = false;
             this.container = new PIXI.Container();
-            this.containerElement = containerElement;
             this.renderer = PIXI.autoDetectRenderer(2, 2, {
                 autoResize: false,
                 antialias: true,
@@ -13864,7 +13863,7 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             this.targetUnit = props.target;
             this.activeSFX = props.SFXTemplate;
             this.abilityUseHasFinishedCallback = props.afterFinishedCallback;
-            this.activeSFXHasFinishedCallback = this.cleanUpAfterSFX.bind(this);
+            this.activeSFXHasFinishedCallback = this.handleActiveSFXEnd.bind(this);
             this.triggerEffectCallback = props.triggerEffectCallback;
             this.beforeUseDelayHasFinishedCallback = this.playSFX.bind(this);
             this.prepareSFX();
@@ -13885,13 +13884,6 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             this.side1Overlay.activeUnit = activeSide1Unit;
             this.side2Unit.changeActiveUnit(activeSide2Unit, boundAfterFinishFN2);
             this.side2Overlay.activeUnit = activeSide2Unit;
-        };
-        BattleScene.prototype.clearActiveSFX = function () {
-            this.activeSFX = null;
-            this.userUnit = null;
-            this.targetUnit = null;
-            this.clearBattleOverlay();
-            this.clearUnitOverlays();
         };
         BattleScene.prototype.renderOnce = function () {
             this.forceFrame = true;
@@ -13956,12 +13948,13 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             });
         };
         BattleScene.prototype.getHighestPriorityUnitForSide = function (side) {
-            var units = [
-                this.targetUnit,
-                this.userUnit,
-                this.activeUnit,
-                this.hoveredUnit
-            ];
+            var units = [];
+            if (Boolean(this.activeSFX)) {
+                units.push(this.targetUnit, this.userUnit);
+            }
+            else {
+                units.push(this.activeUnit, this.hoveredUnit);
+            }
             for (var i = 0; i < units.length; i++) {
                 var unit = units[i];
                 if (unit && unit.battleStats.side === side) {
@@ -14057,17 +14050,17 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
                 this.triggerSFXStart(this.activeSFX, this.userUnit, this.targetUnit, this.handleActiveSFXEnd.bind(this));
             }
         };
-        BattleScene.prototype.handleActiveSFXEnd = function () {
+        BattleScene.prototype.clearActiveSFX = function () {
             this.activeSFX = null;
+            this.userUnit = null;
+            this.targetUnit = null;
             this.clearBattleOverlay();
             this.clearUnitOverlays();
-            this.executeActiveSFXHasFinishedCallback();
         };
-        BattleScene.prototype.cleanUpAfterSFX = function () {
+        BattleScene.prototype.handleActiveSFXEnd = function () {
             var afterUseDelay = options_6.default.battleAnimationTiming.after;
             this.afterUseDelayHasFinishedCallback = function () {
-                this.userUnit = null;
-                this.targetUnit = null;
+                this.clearActiveSFX();
                 this.updateUnits(this.executeAbilityUseHasFinishedCallback.bind(this));
             }.bind(this);
             if (afterUseDelay >= 0) {
@@ -14086,7 +14079,6 @@ define("src/BattleScene", ["require", "exports", "src/BattleSceneUnit", "src/Bat
             this.makeBattleOverlay(afterFinishedCallback);
         };
         BattleScene.prototype.makeBattleOverlay = function (afterFinishedCallback) {
-            if (afterFinishedCallback === void 0) { afterFinishedCallback = this.clearActiveSFX.bind(this); }
             if (!this.activeSFX.battleOverlay) {
                 afterFinishedCallback();
             }
@@ -15928,7 +15920,67 @@ define("src/uicomponents/setupgame/SetupGame", ["require", "exports", "src/App",
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/TurnOrder", ["require", "exports"], function (require, exports) {
+define("src/uicomponents/battle/TurnOrderUnit", ["require", "exports"], function (require, exports) {
+    "use strict";
+    (function (AnimationState) {
+        AnimationState[AnimationState["removeUnit"] = 0] = "removeUnit";
+        AnimationState[AnimationState["clearSpaceForUnit"] = 1] = "clearSpaceForUnit";
+        AnimationState[AnimationState["insertUnit"] = 2] = "insertUnit";
+        AnimationState[AnimationState["pushUnit"] = 3] = "pushUnit";
+        AnimationState[AnimationState["idle"] = 4] = "idle";
+    })(exports.AnimationState || (exports.AnimationState = {}));
+    var AnimationState = exports.AnimationState;
+    var TurnOrderUnitComponent = (function (_super) {
+        __extends(TurnOrderUnitComponent, _super);
+        function TurnOrderUnitComponent(props) {
+            _super.call(this, props);
+            this.displayName = "TurnOrderUnit";
+            this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+            this.containerClassForAnimationState = (_a = {},
+                _a[AnimationState.removeUnit] = "remove-unit",
+                _a[AnimationState.clearSpaceForUnit] = "clear-space-for-unit",
+                _a[AnimationState.insertUnit] = "insert-unit",
+                _a[AnimationState.pushUnit] = "push-unit",
+                _a[AnimationState.idle] = "",
+                _a
+            );
+            var _a;
+        }
+        TurnOrderUnitComponent.prototype.render = function () {
+            var additionalUnitClasses = "";
+            if (this.props.isFriendly) {
+                additionalUnitClasses += " turn-order-unit-friendly";
+            }
+            else {
+                additionalUnitClasses += " turn-order-unit-enemy";
+            }
+            if (this.props.isHovered) {
+                additionalUnitClasses += " turn-order-unit-hover";
+            }
+            return (React.DOM.div({
+                className: "turn-order-unit-container" + " " +
+                    this.containerClassForAnimationState[this.props.animationState],
+                style: {
+                    animationDuration: "" + this.props.transitionDuration + "ms"
+                }
+            }, React.DOM.div({
+                className: "turn-order-unit" + additionalUnitClasses,
+                style: {
+                    animationDuration: "" + this.props.transitionDuration + "ms"
+                },
+                title: "delay: " + this.props.delay,
+                onMouseEnter: this.props.onMouseEnter,
+                onMouseLeave: this.props.onMouseLeave,
+            }, this.props.unitName)));
+        };
+        return TurnOrderUnitComponent;
+    }(React.Component));
+    exports.TurnOrderUnitComponent = TurnOrderUnitComponent;
+    var Factory = React.createFactory(TurnOrderUnitComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
+define("src/uicomponents/battle/TurnOrder", ["require", "exports", "src/uicomponents/battle/TurnOrderUnit"], function (require, exports, TurnOrderUnit_1) {
     "use strict";
     var TurnOrderComponent = (function (_super) {
         __extends(TurnOrderComponent, _super);
@@ -15943,7 +15995,11 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports"], function (re
         };
         TurnOrderComponent.prototype.getInitialStateTODO = function () {
             return ({
-                maxUnits: 7
+                maxUnits: 7,
+                currentDisplayData: this.props.turnOrderDisplayData,
+                pendingDisplayData: undefined,
+                insertIndex: undefined,
+                animationState: TurnOrderUnit_1.AnimationState.idle
             });
         };
         TurnOrderComponent.prototype.componentDidMount = function () {
@@ -15952,6 +16008,84 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports"], function (re
         };
         TurnOrderComponent.prototype.componentWillUnmount = function () {
             window.removeEventListener("resize", this.setMaxUnits);
+        };
+        TurnOrderComponent.prototype.componentWillReceiveProps = function (newProps) {
+            if (newProps.turnIsTransitioning && !this.props.turnIsTransitioning) {
+                var removedUnit = this.state.currentDisplayData[0].unit;
+                var newRemovedUnitIndex = void 0;
+                for (var i = 0; i < newProps.turnOrderDisplayData.length; i++) {
+                    if (newProps.turnOrderDisplayData[i].unit === removedUnit) {
+                        newRemovedUnitIndex = i;
+                        break;
+                    }
+                }
+                var unitsToRender = Math.min(newProps.turnOrderDisplayData.length, this.state.maxUnits);
+                var shouldInsertRemovedUnit = newRemovedUnitIndex < unitsToRender - 1;
+                this.setState({
+                    pendingDisplayData: newProps.turnOrderDisplayData,
+                    insertIndex: shouldInsertRemovedUnit ? newRemovedUnitIndex : undefined,
+                });
+                this.removeUnit(shouldInsertRemovedUnit, newRemovedUnitIndex);
+            }
+        };
+        TurnOrderComponent.prototype.getTransitionDuration = function () {
+            return this.props.turnTransitionDuration / 3;
+        };
+        TurnOrderComponent.prototype.setFinishAnimatingTimeout = function () {
+            var _this = this;
+            window.setTimeout(function () {
+                _this.setState({
+                    animationState: TurnOrderUnit_1.AnimationState.idle,
+                });
+            }, this.getTransitionDuration());
+        };
+        TurnOrderComponent.prototype.removeUnit = function (shouldInsertRemovedUnit, insertIndex) {
+            var _this = this;
+            this.setState({
+                animationState: TurnOrderUnit_1.AnimationState.removeUnit
+            }, function () {
+                window.setTimeout(function () {
+                    _this.setState({
+                        currentDisplayData: _this.state.currentDisplayData.slice(1),
+                    });
+                    if (shouldInsertRemovedUnit) {
+                        _this.clearSpaceForUnit();
+                    }
+                    else {
+                        _this.pushUnit();
+                    }
+                }, _this.getTransitionDuration());
+            });
+        };
+        TurnOrderComponent.prototype.clearSpaceForUnit = function () {
+            var _this = this;
+            this.setState({
+                animationState: TurnOrderUnit_1.AnimationState.clearSpaceForUnit,
+            }, function () {
+                window.setTimeout(function () {
+                    _this.insertUnit();
+                }, _this.getTransitionDuration());
+            });
+        };
+        TurnOrderComponent.prototype.insertUnit = function () {
+            var _this = this;
+            this.setState({
+                currentDisplayData: this.state.pendingDisplayData,
+                pendingDisplayData: undefined,
+                animationState: TurnOrderUnit_1.AnimationState.insertUnit
+            }, function () {
+                _this.setFinishAnimatingTimeout();
+            });
+        };
+        TurnOrderComponent.prototype.pushUnit = function () {
+            var _this = this;
+            this.setState({
+                currentDisplayData: this.state.pendingDisplayData,
+                pendingDisplayData: undefined,
+                animationState: TurnOrderUnit_1.AnimationState.pushUnit
+            }, function () {
+                _this.setFinishAnimatingTimeout();
+            });
         };
         TurnOrderComponent.prototype.setMaxUnits = function () {
             var minUnits = 7;
@@ -15964,41 +16098,59 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports"], function (re
             });
         };
         TurnOrderComponent.prototype.render = function () {
-            var _this = this;
-            var needsExtraSpaceForGhost = this.props.turnOrderDisplayData.some(function (d, i) {
-                return d.isGhost && i < _this.state.maxUnits;
-            });
-            var maxUnitsWithGhost = needsExtraSpaceForGhost ? this.state.maxUnits + 1 : this.state.maxUnits;
-            var filteredTurnOrderDisplayData = this.props.turnOrderDisplayData.filter(function (d, i) {
-                return i < maxUnitsWithGhost || d.isGhost;
-            });
             var toRender = [];
-            for (var i = 0; i < filteredTurnOrderDisplayData.length; i++) {
-                var displayData = filteredTurnOrderDisplayData[i];
-                if (displayData.isGhost) {
-                    toRender.push(React.DOM.div({
-                        className: "turn-order-arrow",
-                        key: "" + i
-                    }));
-                    continue;
+            var unitsToRender = Math.min(this.state.currentDisplayData.length, this.state.maxUnits);
+            var transitionDuration = this.getTransitionDuration();
+            for (var i = 0; i < unitsToRender; i++) {
+                var displayData = this.state.currentDisplayData[i];
+                var unitAnimationState = TurnOrderUnit_1.AnimationState.idle;
+                switch (this.state.animationState) {
+                    case TurnOrderUnit_1.AnimationState.removeUnit:
+                        {
+                            if (i === 0) {
+                                unitAnimationState = TurnOrderUnit_1.AnimationState.removeUnit;
+                            }
+                            break;
+                        }
+                    case TurnOrderUnit_1.AnimationState.clearSpaceForUnit:
+                        {
+                            if (i === this.state.insertIndex) {
+                                unitAnimationState = TurnOrderUnit_1.AnimationState.clearSpaceForUnit;
+                            }
+                            break;
+                        }
+                    case TurnOrderUnit_1.AnimationState.insertUnit:
+                        {
+                            if (i === this.state.insertIndex) {
+                                unitAnimationState = TurnOrderUnit_1.AnimationState.insertUnit;
+                            }
+                            break;
+                        }
+                    case TurnOrderUnit_1.AnimationState.pushUnit:
+                        {
+                            if (i === unitsToRender - 1) {
+                                unitAnimationState = TurnOrderUnit_1.AnimationState.pushUnit;
+                            }
+                            break;
+                        }
                 }
-                var data = {
-                    key: "" + i,
-                    className: "turn-order-unit",
-                    title: "delay: " + displayData.moveDelay + "\n",
+                toRender.push(TurnOrderUnit_1.default({
+                    key: displayData.unit.id,
+                    unitName: displayData.unit.name,
+                    delay: displayData.moveDelay,
+                    isFriendly: this.props.unitsBySide.side1.indexOf(displayData.unit) > -1,
+                    isHovered: this.props.hoveredUnit && displayData.unit === this.props.hoveredUnit,
+                    animationState: unitAnimationState,
+                    transitionDuration: transitionDuration,
                     onMouseEnter: this.props.onMouseEnterUnit.bind(null, displayData.unit),
-                    onMouseLeave: this.props.onMouseLeaveUnit
-                };
-                if (this.props.unitsBySide.side1.indexOf(displayData.unit) > -1) {
-                    data.className += " turn-order-unit-friendly";
-                }
-                else {
-                    data.className += " turn-order-unit-enemy";
-                }
-                if (this.props.hoveredUnit && displayData.unit === this.props.hoveredUnit) {
-                    data.className += " turn-order-unit-hover";
-                }
-                toRender.push(React.DOM.div(data, displayData.unit.name));
+                    onMouseLeave: this.props.onMouseLeaveUnit,
+                }));
+            }
+            if (isFinite(this.props.hoveredGhostIndex)) {
+                toRender.splice(this.props.hoveredGhostIndex, 0, React.DOM.div({
+                    className: "turn-order-arrow",
+                    key: "ghost"
+                }));
             }
             return (React.DOM.div({ className: "turn-order-container" }, toRender));
         };
@@ -16011,6 +16163,13 @@ define("src/uicomponents/battle/TurnOrder", ["require", "exports"], function (re
 });
 define("src/uicomponents/battle/TurnCounter", ["require", "exports"], function (require, exports) {
     "use strict";
+    var ReactCSSTransitionGroup = React.createFactory(React.addons.CSSTransitionGroup);
+    var FirstChild = React.createClass({
+        render: function () {
+            var child = React.Children.toArray(this.props.children)[0];
+            return child || null;
+        }
+    });
     var TurnCounterComponent = (function (_super) {
         __extends(TurnCounterComponent, _super);
         function TurnCounterComponent(props) {
@@ -16018,31 +16177,67 @@ define("src/uicomponents/battle/TurnCounter", ["require", "exports"], function (
             this.displayName = "TurnCounter";
             this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
         }
+        TurnCounterComponent.prototype.componentDidMount = function () {
+            if (this.inner) {
+                this.inner.style.animationDuration = "" + this.props.animationDuration + "ms";
+            }
+        };
         TurnCounterComponent.prototype.render = function () {
-            var turnsLeft = this.props.turnsLeft;
-            var turns = [];
-            var usedTurns = this.props.maxTurns - turnsLeft;
-            for (var i = 0; i < usedTurns; i++) {
-                turns.push(React.DOM.div({
-                    key: "used" + i,
-                    className: "turn-counter used-turn"
-                }));
-            }
-            for (var i = 0; i < turnsLeft; i++) {
-                turns.push(React.DOM.div({
-                    key: "available" + i,
-                    className: "turn-counter available-turn"
-                }));
-            }
+            var _this = this;
             return (React.DOM.div({
-                className: "turns-container",
-                title: "Turns left: " + turnsLeft
-            }, turns));
+                className: "turn-counter" +
+                    (!this.props.isEmpty ? " turn-counter-available-border" : "")
+            }, ReactCSSTransitionGroup({
+                transitionName: "available-turn",
+                transitionAppear: false,
+                transitionEnter: false,
+                transitionLeave: true,
+                transitionLeaveTimeout: this.props.animationDuration,
+                component: FirstChild
+            }, this.props.isEmpty ? null : React.DOM.div({
+                key: "inner",
+                className: "available-turn",
+                ref: function (element) {
+                    _this.inner = element;
+                }
+            }))));
         };
         return TurnCounterComponent;
     }(React.Component));
     exports.TurnCounterComponent = TurnCounterComponent;
     var Factory = React.createFactory(TurnCounterComponent);
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Factory;
+});
+define("src/uicomponents/battle/TurnCounterList", ["require", "exports", "src/uicomponents/battle/TurnCounter"], function (require, exports, TurnCounter_1) {
+    "use strict";
+    var TurnCounterListComponent = (function (_super) {
+        __extends(TurnCounterListComponent, _super);
+        function TurnCounterListComponent(props) {
+            _super.call(this, props);
+            this.displayName = "TurnCounterList";
+            this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
+        }
+        TurnCounterListComponent.prototype.render = function () {
+            var turnElements = [];
+            var usedTurns = this.props.maxTurns - this.props.turnsLeft;
+            for (var i = 0; i < this.props.maxTurns; i++) {
+                var isEmpty = i < usedTurns;
+                turnElements.push(TurnCounter_1.default({
+                    key: i,
+                    isEmpty: i < usedTurns,
+                    animationDuration: this.props.animationDuration
+                }));
+            }
+            return (React.DOM.div({
+                className: "turns-container",
+                title: "Turns left: " + this.props.turnsLeft
+            }, turnElements));
+        };
+        return TurnCounterListComponent;
+    }(React.Component));
+    exports.TurnCounterListComponent = TurnCounterListComponent;
+    var Factory = React.createFactory(TurnCounterListComponent);
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
@@ -16164,19 +16359,10 @@ define("src/uicomponents/battle/BattleScore", ["require", "exports", "src/uicomp
         function BattleScoreComponent(props) {
             _super.call(this, props);
             this.displayName = "BattleScore";
+            this.shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
         }
-        BattleScoreComponent.prototype.shouldComponentUpdate = function (newProps) {
-            var oldEvaluation = this.lastEvaluation;
-            this.lastEvaluation = newProps.battle.getEvaluation();
-            return this.lastEvaluation !== oldEvaluation;
-        };
-        BattleScoreComponent.prototype.componentWillMount = function () {
-            this.lastEvaluation = this.props.battle.getEvaluation();
-        };
         BattleScoreComponent.prototype.render = function () {
-            var battle = this.props.battle;
-            var evaluation = this.lastEvaluation;
-            var evaluationPercentage = 50 + evaluation * 50;
+            var evaluationPercentage = 50 + this.props.evaluation * 50;
             return (React.DOM.div({
                 className: "battle-score-wrapper"
             }, React.DOM.div({
@@ -16188,28 +16374,28 @@ define("src/uicomponents/battle/BattleScore", ["require", "exports", "src/uicomp
                 props: {
                     className: "battle-score-flag"
                 },
-                flag: battle.side1Player.flag
+                flag: this.props.player1.flag
             }), React.DOM.div({
                 className: "battle-score-bar-container"
             }, React.DOM.div({
                 className: "battle-score-bar-value battle-score-bar-side1",
                 style: {
                     width: "" + evaluationPercentage + "%",
-                    backgroundColor: "#" + battle.side1Player.color.getHexString(),
-                    borderColor: "#" + battle.side1Player.secondaryColor.getHexString()
+                    backgroundColor: "#" + this.props.player1.color.getHexString(),
+                    borderColor: "#" + this.props.player1.secondaryColor.getHexString()
                 }
             }), React.DOM.div({
                 className: "battle-score-bar-value battle-score-bar-side2",
                 style: {
                     width: "" + (100 - evaluationPercentage) + "%",
-                    backgroundColor: "#" + battle.side2Player.color.getHexString(),
-                    borderColor: "#" + battle.side2Player.secondaryColor.getHexString()
+                    backgroundColor: "#" + this.props.player2.color.getHexString(),
+                    borderColor: "#" + this.props.player2.secondaryColor.getHexString()
                 }
             })), PlayerFlag_4.default({
                 props: {
                     className: "battle-score-flag"
                 },
-                flag: battle.side2Player.flag
+                flag: this.props.player2.flag
             }))));
         };
         return BattleScoreComponent;
@@ -16454,6 +16640,20 @@ define("src/uicomponents/battle/BattleDisplayStrength", ["require", "exports"], 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
+define("src/uicomponents/battle/BattleUIState", ["require", "exports"], function (require, exports) {
+    "use strict";
+    var BattleUIState;
+    (function (BattleUIState) {
+        BattleUIState[BattleUIState["starting"] = 0] = "starting";
+        BattleUIState[BattleUIState["idle"] = 1] = "idle";
+        BattleUIState[BattleUIState["focusingUnit"] = 2] = "focusingUnit";
+        BattleUIState[BattleUIState["playingSFX"] = 3] = "playingSFX";
+        BattleUIState[BattleUIState["transitioningTurn"] = 4] = "transitioningTurn";
+        BattleUIState[BattleUIState["ending"] = 5] = "ending";
+    })(BattleUIState || (BattleUIState = {}));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = BattleUIState;
+});
 define("src/uicomponents/battle/AbilityTooltip", ["require", "exports"], function (require, exports) {
     "use strict";
     var AbilityTooltipComponent = (function (_super) {
@@ -16515,7 +16715,7 @@ define("src/uicomponents/battle/AbilityTooltip", ["require", "exports"], functio
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Factory;
 });
-define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounter", "src/uicomponents/battle/BattleBackground", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, App_30, TurnOrder_1, TurnCounter_1, BattleBackground_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_33, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, AbilityTooltip_1) {
+define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/uicomponents/battle/TurnOrder", "src/uicomponents/battle/TurnCounterList", "src/uicomponents/battle/BattleBackground", "src/options", "src/MCTree", "src/BattleScene", "src/AbilityUseEffectQueue", "src/battleAbilityUsage", "src/battleAbilityUI", "src/utility", "src/uicomponents/battle/BattleScore", "src/uicomponents/battle/BattleScene", "src/uicomponents/battle/Formation", "src/uicomponents/battle/BattleDisplayStrength", "src/uicomponents/battle/BattleUIState", "src/uicomponents/battle/AbilityTooltip"], function (require, exports, App_30, TurnOrder_1, TurnCounterList_1, BattleBackground_2, Options_2, MCTree_2, BattleScene_2, AbilityUseEffectQueue_1, battleAbilityUsage_3, battleAbilityUI_1, utility_33, BattleScore_1, BattleScene_3, Formation_2, BattleDisplayStrength_1, BattleUIState_1, AbilityTooltip_1) {
     "use strict";
     var BattleComponent = (function (_super) {
         __extends(BattleComponent, _super);
@@ -16544,6 +16744,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
             this.usePreparedAbility = this.usePreparedAbility.bind(this);
             this.useAIAbility = this.useAIAbility.bind(this);
             this.handleMouseLeaveAbility = this.handleMouseLeaveAbility.bind(this);
+            this.startTurnTransition = this.startTurnTransition.bind(this);
             this.handleTurnEnd = this.handleTurnEnd.bind(this);
             this.handleMouseLeaveUnit = this.handleMouseLeaveUnit.bind(this);
             this.usePlayerAbility = this.usePlayerAbility.bind(this);
@@ -16562,6 +16763,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 initialDisplayData[unit.id] = unit.getDisplayData("battle");
             });
             return ({
+                UIState: BattleUIState_1.default.starting,
                 highlightedUnit: null,
                 hoveredUnit: null,
                 hoveredAbility: null,
@@ -16572,11 +16774,11 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                     parentElement: null,
                     facesLeft: null
                 },
-                battleIsStarting: true,
                 battleSceneUnit1: null,
                 battleSceneUnit2: null,
                 playingBattleEffect: false,
                 battleEffectDuration: null,
+                battleEvaluation: this.props.battle.getEvaluation(),
                 unitDisplayDataByID: initialDisplayData,
                 previousUnitDisplayDataByID: initialDisplayData,
             });
@@ -16585,37 +16787,30 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
             this.battleStartStartTime = Date.now();
             this.ref_TODO_background.handleResize();
         };
-        BattleComponent.prototype.componentWillUpdate = function (newProps, newState) {
-            var battleSceneNeedsUpdate = false;
-            if (this.battleScene.activeSFX) {
-                return;
-            }
-            if (newState.hoveredUnit !== this.battleScene.hoveredUnit) {
-                battleSceneNeedsUpdate = true;
-                this.battleScene.hoveredUnit = newState.hoveredUnit;
-            }
-            if (newProps.battle.activeUnit !== this.battleScene.activeUnit) {
-                battleSceneNeedsUpdate = true;
-                this.battleScene.activeUnit = newProps.battle.activeUnit;
-            }
-            if (battleSceneNeedsUpdate) {
-                this.battleScene.updateUnits();
-            }
-        };
         BattleComponent.prototype.endBattleStart = function () {
             var _this = this;
-            if (Date.now() < this.battleStartStartTime + 1000)
+            if (Date.now() < this.battleStartStartTime + 1000) {
                 return;
-            this.setState({
-                battleIsStarting: false
-            }, function () {
-                if (_this.tempHoveredUnit) {
-                    _this.handleMouseEnterUnit(_this.tempHoveredUnit);
-                }
-                if (_this.props.battle.getActivePlayer() !== _this.props.humanPlayer) {
-                    _this.useAIAbility();
-                }
-            });
+            }
+            else if (this.props.battle.ended) {
+                this.setState({
+                    UIState: BattleUIState_1.default.ending
+                });
+            }
+            else {
+                this.setState({
+                    UIState: BattleUIState_1.default.idle
+                }, function () {
+                    _this.battleScene.activeUnit = _this.props.battle.activeUnit;
+                    _this.battleScene.updateUnits();
+                    if (_this.tempHoveredUnit) {
+                        _this.handleMouseEnterUnit(_this.tempHoveredUnit);
+                    }
+                    if (_this.props.battle.getActivePlayer() !== _this.props.humanPlayer) {
+                        _this.useAIAbility();
+                    }
+                });
+            }
         };
         BattleComponent.prototype.getBlurArea = function () {
             return ReactDOM.findDOMNode(this.ref_TODO_formationsContainer).getBoundingClientRect();
@@ -16633,6 +16828,10 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 potentialDelayAmount: undefined,
                 targetsInPotentialArea: []
             });
+            this.battleScene.hoveredUnit = null;
+            if (this.state.UIState === BattleUIState_1.default.idle) {
+                this.battleScene.updateUnits();
+            }
         };
         BattleComponent.prototype.handleMouseLeaveUnit = function (e) {
             if (!this.state.hoveredUnit || this.state.playingBattleEffect) {
@@ -16658,7 +16857,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
         };
         BattleComponent.prototype.handleMouseEnterUnit = function (unit) {
             this.tempHoveredUnit = unit;
-            if (this.state.battleIsStarting || this.props.battle.ended || this.state.playingBattleEffect) {
+            if (this.state.UIState !== BattleUIState_1.default.idle) {
                 return;
             }
             var facesLeft = unit.battleStats.side === "side2";
@@ -16671,6 +16870,8 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 hoveredUnit: unit,
                 highlightedUnit: unit
             });
+            this.battleScene.hoveredUnit = unit;
+            this.battleScene.updateUnits();
         };
         BattleComponent.prototype.handleMouseEnterAbility = function (ability) {
             var targetsInPotentialArea = battleAbilityUI_1.getUnitsInAbilityArea(this.props.battle, ability, this.props.battle.activeUnit, this.state.hoveredUnit);
@@ -16698,7 +16899,6 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
         BattleComponent.prototype.handleAbilityUse = function (ability, target, wasByPlayer) {
             var abilityUseEffects = battleAbilityUsage_3.useAbility(this.props.battle, ability, this.props.battle.activeUnit, target, true);
             this.abilityUseEffectQueue.addEffects(abilityUseEffects);
-            this.clearHoveredUnit();
             this.playQueuedBattleEffects();
         };
         BattleComponent.getUnitsBySideFromEffect = function (effect) {
@@ -16714,8 +16914,9 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
         BattleComponent.prototype.setStateForBattleEffect = function (effect) {
             var stateObj = BattleComponent.getUnitsBySideFromEffect(effect);
             stateObj.playingBattleEffect = true;
+            stateObj.UIState = BattleUIState_1.default.playingSFX;
             stateObj.battleEffectDuration = effect.sfx.duration;
-            this.setState(stateObj);
+            this.setState(stateObj, this.clearHoveredUnit);
         };
         BattleComponent.prototype.playQueuedBattleEffects = function () {
             this.abilityUseEffectQueue.playOnce();
@@ -16724,6 +16925,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
             this.setState({
                 previousUnitDisplayDataByID: this.state.unitDisplayDataByID,
                 unitDisplayDataByID: utility_33.shallowExtend(this.state.unitDisplayDataByID, effect.changedUnitDisplayDataByID),
+                battleEvaluation: effect.newEvaluation
             });
         };
         BattleComponent.prototype.finishPlayingQueuedBattleEffects = function () {
@@ -16731,19 +16933,26 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 battleSceneUnit1: null,
                 battleSceneUnit2: null,
                 playingBattleEffect: false,
-                battleEffectDuration: undefined
-            });
-            this.handleTurnEnd();
+                battleEffectDuration: undefined,
+            }, this.startTurnTransition);
         };
-        BattleComponent.prototype.handleTurnEnd = function () {
-            if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable()) {
-            }
-            else {
+        BattleComponent.prototype.startTurnTransition = function () {
+            var _this = this;
+            if (!this.state.hoveredUnit || !this.state.hoveredUnit.isTargetable()) {
                 this.clearHoveredUnit();
             }
             this.props.battle.endTurn();
+            this.setState({
+                UIState: BattleUIState_1.default.transitioningTurn
+            }, function () {
+                window.setTimeout(_this.handleTurnEnd, Options_2.default.battleAnimationTiming.turnTransition);
+            });
+        };
+        BattleComponent.prototype.handleTurnEnd = function () {
             if (this.props.battle.ended) {
-                this.forceUpdate();
+                this.setState({
+                    UIState: BattleUIState_1.default.ending
+                });
             }
             else if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction) {
                 this.usePreparedAbility();
@@ -16752,7 +16961,11 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 this.useAIAbility();
             }
             else {
-                this.forceUpdate();
+                this.battleScene.activeUnit = this.props.battle.activeUnit;
+                this.battleScene.updateUnits();
+                this.setState({
+                    UIState: BattleUIState_1.default.idle
+                });
             }
         };
         BattleComponent.prototype.usePreparedAbility = function () {
@@ -16766,8 +16979,9 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
             this.handleAbilityUse(ability, target, true);
         };
         BattleComponent.prototype.useAIAbility = function () {
-            if (!this.props.battle.activeUnit || this.props.battle.ended)
+            if (!this.props.battle.activeUnit || this.props.battle.ended) {
                 return;
+            }
             if (!this.MCTree)
                 this.MCTree = new MCTree_2.default(this.props.battle, this.props.battle.activeUnit.battleStats.side, false);
             var move = this.MCTree.getBestMoveAndAdvance(1000);
@@ -16775,22 +16989,19 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
             this.handleAbilityUse(move.ability, target, false);
         };
         BattleComponent.prototype.finishBattle = function () {
-            if (Date.now() < this.battleEndStartTime + 1000)
+            if (Date.now() < this.battleEndStartTime + 1000) {
                 return;
-            var battle = this.props.battle;
-            if (!battle.ended)
-                throw new Error();
-            battle.finishBattle();
+            }
+            this.props.battle.finishBattle();
         };
         BattleComponent.prototype.render = function () {
             var _this = this;
             var battle = this.props.battle;
-            if (!battle.ended) {
+            if (this.state.UIState === BattleUIState_1.default.idle) {
                 var activeTargets = battleAbilityUI_1.getTargetsForAllAbilities(battle, battle.activeUnit);
             }
             var abilityTooltip = null;
-            if (!battle.ended &&
-                !this.state.playingBattleEffect &&
+            if (this.state.UIState === BattleUIState_1.default.idle &&
                 this.state.hoveredUnit &&
                 activeTargets[this.state.hoveredUnit.id]) {
                 abilityTooltip = AbilityTooltip_1.default({
@@ -16814,18 +17025,22 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
             }
             var upperFooterElement;
-            if (this.state.battleIsStarting) {
+            if (this.state.UIState === BattleUIState_1.default.starting) {
                 upperFooterElement = null;
             }
             else if (!this.state.playingBattleEffect) {
-                var turnOrderDisplayData = battle.turnOrder.getDisplayData(this.state.potentialDelayAmount, this.state.potentialDelayID);
                 upperFooterElement = TurnOrder_1.default({
                     key: "turnOrder",
-                    turnOrderDisplayData: turnOrderDisplayData,
                     unitsBySide: battle.unitsBySide,
+                    turnOrderDisplayData: battle.turnOrder.getDisplayData(),
                     hoveredUnit: this.state.highlightedUnit,
+                    hoveredGhostIndex: isFinite(this.state.potentialDelayAmount) ?
+                        battle.turnOrder.getGhostIndex(this.state.potentialDelayAmount, this.state.potentialDelayID) :
+                        undefined,
                     onMouseEnterUnit: this.handleMouseEnterUnit,
-                    onMouseLeaveUnit: this.handleMouseLeaveUnit
+                    onMouseLeaveUnit: this.handleMouseLeaveUnit,
+                    turnIsTransitioning: this.state.UIState === BattleUIState_1.default.transitioningTurn,
+                    turnTransitionDuration: Options_2.default.battleAnimationTiming.turnTransition
                 });
             }
             else {
@@ -16853,7 +17068,7 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 className: "battle-container"
             };
             var playerWonBattle = null;
-            if (this.state.battleIsStarting) {
+            if (this.state.UIState === BattleUIState_1.default.starting) {
                 containerProps.className += " battle-start-overlay";
                 containerProps.onClick = this.endBattleStart;
             }
@@ -16866,10 +17081,10 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 playerWonBattle = this.props.humanPlayer === battle.getVictor();
             }
             var battleState;
-            if (this.state.battleIsStarting) {
+            if (this.state.UIState === BattleUIState_1.default.starting) {
                 battleState = "start";
             }
-            else if (battle.ended) {
+            else if (this.state.UIState === BattleUIState_1.default.ending) {
                 battleState = "finish";
             }
             else {
@@ -16885,7 +17100,9 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
             }, React.DOM.div(containerProps, React.DOM.div({
                 className: "battle-upper"
             }, BattleScore_1.default({
-                battle: battle
+                evaluation: this.state.battleEvaluation,
+                player1: battle.side1Player,
+                player2: battle.side2Player
             }), upperFooter, BattleScene_3.default({
                 battleState: battleState,
                 battleScene: this.battleScene,
@@ -16911,9 +17128,10 @@ define("src/uicomponents/battle/Battle", ["require", "exports", "src/App", "src/
                 hoveredAbility: this.state.hoveredAbility,
                 capturedUnits: this.props.battle.capturedUnits,
                 destroyedUnits: this.props.battle.deadUnits,
-            }), TurnCounter_1.default({
+            }), TurnCounterList_1.default({
                 turnsLeft: battle.turnsLeft,
-                maxTurns: battle.maxTurns
+                maxTurns: battle.maxTurns,
+                animationDuration: 100
             }), Formation_2.default({
                 unitDisplayDataByID: this.state.unitDisplayDataByID,
                 formation: battle.side2,
@@ -18452,7 +18670,7 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
             };
             var mouseOverFN = function (fleet) {
                 eventManager_28.default.dispatchEvent("hoverStar", fleet.location);
-                if (options_7.default.debugMode && fleet.units.length > 0 && fleet.units[0].front) {
+                if (options_7.default.debug.enabled && fleet.units.length > 0 && fleet.units[0].front) {
                     var objective = fleet.units[0].front.objective;
                     var target = objective.target ? objective.target.id : null;
                     console.log(objective.type, target, objective.priority);
@@ -18474,7 +18692,7 @@ define("modules/defaultmapmodes/maplayertemplates/fleets", ["require", "exports"
                 var containerGfx = new PIXI.Graphics();
                 containerGfx.lineStyle(1, 0x00000, 1);
                 var front = fleet.units[0].front;
-                if (front && options_7.default.debugMode) {
+                if (front && options_7.default.debug.enabled) {
                     switch (front.objective.type) {
                         case "discovery":
                             {
@@ -21749,7 +21967,7 @@ define("src/tutorials/TutorialStatus", ["require", "exports", "src/tutorials/Tut
     exports.default = tutorialStatus;
     var _a;
 });
-define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_2, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_40, TutorialStatus_1) {
+define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uicomponents/galaxymap/OptionsCheckbox", "src/uicomponents/popups/PopupManager", "src/options", "src/uicomponents/galaxymap/OptionsNumericField", "src/uicomponents/galaxymap/OptionsGroup", "src/uicomponents/popups/ConfirmPopup", "src/uicomponents/notifications/NotificationFilterButton", "src/eventManager", "src/utility", "src/tutorials/TutorialStatus"], function (require, exports, OptionsCheckbox_1, PopupManager_9, Options_3, OptionsNumericField_1, OptionsGroup_3, ConfirmPopup_4, NotificationFilterButton_2, eventManager_35, utility_40, TutorialStatus_1) {
     "use strict";
     var OptionsListComponent = (function (_super) {
         __extends(OptionsListComponent, _super);
@@ -21766,7 +21984,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
             this.ref_TODO_popupManager.makePopup({
                 content: ConfirmPopup_4.default({
                     handleOk: function () {
-                        Options_2.default.setDefaults();
+                        Options_3.default.setDefaults();
                         _this.forceUpdate();
                     },
                     content: "Are you sure you want to reset all options?"
@@ -21789,7 +22007,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                     displayName: "Before ability (ms)",
                     min: 0,
                     max: 5000,
-                    step: 50
+                    step: 100
                 },
                 {
                     stage: "effectDuration",
@@ -21803,21 +22021,28 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                     displayName: "After ability (ms)",
                     min: 0,
                     max: 5000,
-                    step: 50
+                    step: 100
                 },
                 {
                     stage: "unitEnter",
                     displayName: "Unit enter (ms)",
                     min: 0,
                     max: 1000,
-                    step: 10
+                    step: 50
                 },
                 {
                     stage: "unitExit",
                     displayName: "Unit exit (ms)",
                     min: 0,
                     max: 1000,
-                    step: 10
+                    step: 50
+                },
+                {
+                    stage: "turnTransition",
+                    displayName: "Turn transition (ms)",
+                    min: 0,
+                    max: 2000,
+                    step: 100
                 }
             ];
             for (var i = 0; i < battleAnimationStages.length; i++) {
@@ -21828,12 +22053,12 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                     content: OptionsNumericField_1.default({
                         label: props.displayName,
                         id: "options-battle-animation-" + stage,
-                        value: Options_2.default.battleAnimationTiming[stage],
+                        value: Options_3.default.battleAnimationTiming[stage],
                         min: props.min,
                         max: props.max,
                         step: props.step,
                         onChangeFN: function (stage, value) {
-                            Options_2.default.battleAnimationTiming[stage] = value;
+                            Options_3.default.battleAnimationTiming[stage] = value;
                         }.bind(null, stage)
                     })
                 });
@@ -21843,7 +22068,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                 header: "Battle animation timing",
                 options: battleAnimationOptions,
                 resetFN: function () {
-                    Options_2.default.setDefaultForCategory("battleAnimationTiming");
+                    Options_3.default.setDefaultForCategory("battleAnimationTiming");
                     _this.forceUpdate();
                 }
             }));
@@ -21851,22 +22076,22 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
             debugOptions.push({
                 key: "debugMode",
                 content: OptionsCheckbox_1.default({
-                    isChecked: Options_2.default.debugMode,
+                    isChecked: Options_3.default.debug.enabled,
                     label: "Debug mode",
                     onChangeFN: function () {
-                        Options_2.default.debugMode = !Options_2.default.debugMode;
+                        Options_3.default.debug.enabled = !Options_3.default.debug.enabled;
                         _this.forceUpdate();
                         eventManager_35.default.dispatchEvent("renderUI");
                     }
                 })
             });
-            if (Options_2.default.debugMode) {
+            if (Options_3.default.debug.enabled) {
                 debugOptions.push({
                     key: "battleSimulationDepth",
                     content: React.DOM.div({}, React.DOM.input({
                         type: "number",
                         id: "battle-simulation-depth-input",
-                        value: "" + Options_2.default.debugOptions.battleSimulationDepth,
+                        value: "" + Options_3.default.debug.battleSimulationDepth,
                         min: 1,
                         max: 500,
                         step: 1,
@@ -21877,7 +22102,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                                 return;
                             }
                             value = utility_40.clamp(value, parseFloat(target.min), parseFloat(target.max));
-                            Options_2.default.debugOptions.battleSimulationDepth = value;
+                            Options_3.default.debug.battleSimulationDepth = value;
                             _this.forceUpdate();
                         }
                     }), React.DOM.label({
@@ -21890,18 +22115,18 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                 header: "Debug",
                 options: debugOptions,
                 resetFN: function () {
-                    Options_2.default.setDefaultForCategory("debugOptions");
-                    Options_2.default.setDefaultForCategory("debugMode");
+                    Options_3.default.setDefaultForCategory("debug");
+                    _this.forceUpdate();
                 }
             }));
             var uiOptions = [];
             uiOptions.push({
                 key: "noHamburger",
                 content: OptionsCheckbox_1.default({
-                    isChecked: Options_2.default.ui.noHamburger,
+                    isChecked: Options_3.default.ui.noHamburger,
                     label: "Always expand top right menu on low resolution",
                     onChangeFN: function () {
-                        Options_2.default.ui.noHamburger = !Options_2.default.ui.noHamburger;
+                        Options_3.default.ui.noHamburger = !Options_3.default.ui.noHamburger;
                         eventManager_35.default.dispatchEvent("updateHamburgerMenu");
                         _this.forceUpdate();
                     }
@@ -21927,7 +22152,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                 header: "UI",
                 options: uiOptions,
                 resetFN: function () {
-                    Options_2.default.setDefaultForCategory("ui");
+                    Options_3.default.setDefaultForCategory("ui");
                 }
             }));
             var displayOptions = [];
@@ -21939,9 +22164,9 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                     min: 0,
                     max: 50,
                     step: 1,
-                    value: Options_2.default.display.borderWidth,
+                    value: Options_3.default.display.borderWidth,
                     onChangeFN: function (value) {
-                        Options_2.default.display.borderWidth = value;
+                        Options_3.default.display.borderWidth = value;
                         eventManager_35.default.dispatchEvent("renderMap");
                     }
                 })
@@ -21951,7 +22176,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
                 header: "Display",
                 options: displayOptions,
                 resetFN: function () {
-                    Options_2.default.setDefaultForCategory("display");
+                    Options_3.default.setDefaultForCategory("display");
                     _this.forceUpdate();
                 }
             }));
@@ -21973,7 +22198,7 @@ define("src/uicomponents/galaxymap/OptionsList", ["require", "exports", "src/uic
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/popups/PopupManager", "src/uicomponents/diplomacy/DiplomacyOverview", "src/uicomponents/unitlist/ItemEquip", "src/uicomponents/galaxymap/EconomySummary", "src/uicomponents/technologies/TechnologiesList", "src/uicomponents/production/ProductionOverview", "src/uicomponents/saves/LoadGame", "src/uicomponents/saves/SaveGame", "src/uicomponents/galaxymap/OptionsList", "src/options"], function (require, exports, TopMenuPopup_5, PopupManager_10, DiplomacyOverview_1, ItemEquip_1, EconomySummary_1, TechnologiesList_1, ProductionOverview_1, LoadGame_1, SaveGame_1, OptionsList_1, Options_3) {
+define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/uicomponents/popups/TopMenuPopup", "src/uicomponents/popups/PopupManager", "src/uicomponents/diplomacy/DiplomacyOverview", "src/uicomponents/unitlist/ItemEquip", "src/uicomponents/galaxymap/EconomySummary", "src/uicomponents/technologies/TechnologiesList", "src/uicomponents/production/ProductionOverview", "src/uicomponents/saves/LoadGame", "src/uicomponents/saves/SaveGame", "src/uicomponents/galaxymap/OptionsList", "src/options"], function (require, exports, TopMenuPopup_5, PopupManager_10, DiplomacyOverview_1, ItemEquip_1, EconomySummary_1, TechnologiesList_1, ProductionOverview_1, LoadGame_1, SaveGame_1, OptionsList_1, Options_4) {
     "use strict";
     var TopMenuPopupsComponent = (function (_super) {
         __extends(TopMenuPopupsComponent, _super);
@@ -22010,7 +22235,7 @@ define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/u
             stateObj[popupType] = undefined;
             this.setState(stateObj);
             if (popupType === "options") {
-                Options_3.default.save();
+                Options_4.default.save();
             }
         };
         TopMenuPopupsComponent.prototype.makePopup = function (popupType) {
@@ -22143,7 +22368,7 @@ define("src/uicomponents/galaxymap/TopMenuPopups", ["require", "exports", "src/u
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options", "src/uicomponents/galaxymap/TopMenuPopups", "src/eventManager"], function (require, exports, Options_4, TopMenuPopups_1, eventManager_36) {
+define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options", "src/uicomponents/galaxymap/TopMenuPopups", "src/eventManager"], function (require, exports, Options_5, TopMenuPopups_1, eventManager_36) {
     "use strict";
     var TopMenuComponent = (function (_super) {
         __extends(TopMenuComponent, _super);
@@ -22168,7 +22393,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
             return ({
                 hasCondensedMenu: false,
                 buttonsToPlace: 999,
-                condensedMenuOpened: Options_4.default.ui.noHamburger
+                condensedMenuOpened: Options_5.default.ui.noHamburger
             });
         };
         TopMenuComponent.prototype.componentDidMount = function () {
@@ -22226,7 +22451,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
             var hasCondensedMenu = spaceAvailable < this.cachedTopMenuWidth;
             var amountOfButtonsToPlace = 0;
             if (hasCondensedMenu) {
-                if (!Options_4.default.ui.noHamburger) {
+                if (!Options_5.default.ui.noHamburger) {
                     spaceAvailable -= this.cachedMenuButtonWidth;
                 }
                 var padding = window.innerHeight > 600 ? 25 : 0;
@@ -22307,7 +22532,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
             ];
             var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
             var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
-            if (this.state.hasCondensedMenu && !Options_4.default.ui.noHamburger) {
+            if (this.state.hasCondensedMenu && !Options_5.default.ui.noHamburger) {
                 topMenuItems.push(React.DOM.button({
                     className: "top-menu-items-button top-menu-open-condensed-button",
                     key: "openCondensedMenu",
@@ -22316,7 +22541,7 @@ define("src/uicomponents/galaxymap/TopMenu", ["require", "exports", "src/options
                 }));
             }
             var openedCondensedMenu = null;
-            if ((this.state.condensedMenuOpened || Options_4.default.ui.noHamburger) && leftoverButtons.length > 0) {
+            if ((this.state.condensedMenuOpened || Options_5.default.ui.noHamburger) && leftoverButtons.length > 0) {
                 openedCondensedMenu = React.DOM.div({
                     className: "top-menu-opened-condensed-menu"
                 }, leftoverButtons);
@@ -23309,7 +23534,7 @@ define("src/uicomponents/galaxymap/GalaxyMapUI", ["require", "exports", "src/uic
     exports.default = Factory;
     var _a;
 });
-define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App", "src/uicomponents/galaxymap/GalaxyMapUI", "src/options"], function (require, exports, App_36, GalaxyMapUI_1, Options_5) {
+define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App", "src/uicomponents/galaxymap/GalaxyMapUI", "src/options"], function (require, exports, App_36, GalaxyMapUI_1, Options_6) {
     "use strict";
     var GalaxyMapComponent = (function (_super) {
         __extends(GalaxyMapComponent, _super);
@@ -23347,7 +23572,7 @@ define("src/uicomponents/galaxymap/GalaxyMap", ["require", "exports", "src/App",
                 game: this.props.game,
                 mapRenderer: this.props.mapRenderer,
                 key: "galaxyMapUI"
-            })), !Options_5.default.debugMode ? null : React.DOM.div({
+            })), !Options_6.default.debug.enabled ? null : React.DOM.div({
                 className: "galaxy-map-debug debug"
             }, React.DOM.select({
                 className: "reactui-selector debug",
@@ -25169,30 +25394,6 @@ define("modules/common/effectactiontemplates/effectActions", ["require", "export
 });
 define("modules/common/abilitytemplates/abilities", ["require", "exports", "modules/common/battlesfxtemplates/battleSFX", "modules/common/effectactiontemplates/effectActions"], function (require, exports, BattleSFX, EffectActions) {
     "use strict";
-    exports.rangedAttack = {
-        type: "rangedAttack",
-        displayName: "Ranged Attack",
-        description: "Standard ranged attack",
-        moveDelay: 100,
-        actionsUse: 1,
-        mainEffect: {
-            action: EffectActions.singleTargetDamage,
-            sfx: BattleSFX.rocketAttack,
-            data: {
-                baseDamage: 1,
-                damageType: 0
-            },
-            attachedEffects: [
-                {
-                    action: EffectActions.receiveCounterAttack,
-                    data: {
-                        baseDamage: 0.5
-                    }
-                }
-            ]
-        },
-        canUpgradeInto: ["bombAttack", "boardingHook", "ranceAttack"]
-    };
     exports.closeAttack = {
         type: "closeAttack",
         displayName: "Close Attack",
@@ -25282,6 +25483,33 @@ define("modules/common/abilitytemplates/abilities", ["require", "exports", "modu
             sfx: BattleSFX.guard,
             data: {}
         }
+    };
+    exports.rangedAttack = {
+        type: "rangedAttack",
+        displayName: "Ranged Attack",
+        description: "Standard ranged attack",
+        moveDelay: 100,
+        actionsUse: 1,
+        mainEffect: {
+            action: EffectActions.singleTargetDamage,
+            sfx: BattleSFX.rocketAttack,
+            data: {
+                baseDamage: 1,
+                damageType: 0
+            },
+            attachedEffects: [
+                {
+                    action: EffectActions.receiveCounterAttack,
+                    data: {
+                        baseDamage: 0.5
+                    }
+                }
+            ]
+        },
+        canUpgradeInto: [
+            exports.bombAttack,
+            exports.boardingHook,
+        ]
     };
     exports.standBy = {
         type: "standBy",
@@ -25413,19 +25641,6 @@ define("modules/common/passiveskilltemplates/passiveSkills", ["require", "export
             }
         ]
     };
-    exports.warpJammer = {
-        type: "warpJammer",
-        displayName: "Warp Jammer",
-        description: "Forces an extra unit to defend in neutral territory",
-        inBattlePrep: [
-            function (user, battlePrep) {
-                if (battlePrep.isLocationNeutral() && user.fleet.player === battlePrep.attacker) {
-                    battlePrep.minDefenders += 1;
-                }
-            }
-        ],
-        canUpgradeInto: ["medic"]
-    };
     exports.medic = {
         type: "medic",
         displayName: "Medic",
@@ -25439,6 +25654,19 @@ define("modules/common/passiveskilltemplates/passiveSkills", ["require", "export
                 }
             }
         ]
+    };
+    exports.warpJammer = {
+        type: "warpJammer",
+        displayName: "Warp Jammer",
+        description: "Forces an extra unit to defend in neutral territory",
+        inBattlePrep: [
+            function (user, battlePrep) {
+                if (battlePrep.isLocationNeutral() && user.fleet.player === battlePrep.attacker) {
+                    battlePrep.minDefenders += 1;
+                }
+            }
+        ],
+        canUpgradeInto: [exports.medic]
     };
     var _a;
 });
@@ -26814,82 +27042,7 @@ define("modules/defaultattitudemodifiers/defaultAttitudemodifiers", ["require", 
     exports.default = defaultAttitudeModifiers;
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_41) {
-    "use strict";
-    var TemplateIndexes = (function () {
-        function TemplateIndexes() {
-            this.builtIndexes = {
-                distributablesByTypeAndDistributionGroup: null,
-                itemsByTechLevel: null,
-            };
-        }
-        Object.defineProperty(TemplateIndexes.prototype, "distributablesByDistributionGroup", {
-            get: function () {
-                if (!this.builtIndexes.distributablesByTypeAndDistributionGroup) {
-                    this.builtIndexes.distributablesByTypeAndDistributionGroup =
-                        TemplateIndexes.getDistributablesByTypeAndDistributionGroup();
-                }
-                return this.builtIndexes.distributablesByTypeAndDistributionGroup;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(TemplateIndexes.prototype, "itemsByTechLevel", {
-            get: function () {
-                if (!this.builtIndexes.itemsByTechLevel) {
-                    this.builtIndexes.itemsByTechLevel = TemplateIndexes.getItemsByTechLevel();
-                }
-                return this.builtIndexes.itemsByTechLevel;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        TemplateIndexes.prototype.clear = function () {
-            for (var key in this.builtIndexes) {
-                this.builtIndexes[key] = null;
-            }
-        };
-        TemplateIndexes.getDistributablesByTypeAndDistributionGroup = function () {
-            return ({
-                unitFamilies: TemplateIndexes.getDistributablesByGroup(App_41.default.moduleData.Templates.UnitFamilies),
-                resources: TemplateIndexes.getDistributablesByGroup(App_41.default.moduleData.Templates.Resources)
-            });
-        };
-        TemplateIndexes.getDistributablesByGroup = function (allDistributables) {
-            var byGroup = {};
-            var _loop_5 = function(key) {
-                var distributable = allDistributables[key];
-                distributable.distributionGroups.forEach(function (group) {
-                    if (!byGroup[group]) {
-                        byGroup[group] = [];
-                    }
-                    byGroup[group].push(distributable);
-                });
-            };
-            for (var key in allDistributables) {
-                _loop_5(key);
-            }
-            return byGroup;
-        };
-        TemplateIndexes.getItemsByTechLevel = function () {
-            var itemsByTechLevel = {};
-            for (var itemName in App_41.default.moduleData.Templates.Items) {
-                var item = App_41.default.moduleData.Templates.Items[itemName];
-                if (!itemsByTechLevel[item.techLevel]) {
-                    itemsByTechLevel[item.techLevel] = [];
-                }
-                itemsByTechLevel[item.techLevel].push(item);
-            }
-            return itemsByTechLevel;
-        };
-        return TemplateIndexes;
-    }());
-    var indexes = new TemplateIndexes();
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = indexes;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
-});
-define("modules/defaultmapgen/common/Region", ["require", "exports"], function (require, exports) {
+define("src/Region", ["require", "exports"], function (require, exports) {
     "use strict";
     var Region = (function () {
         function Region(id, initialStars) {
@@ -27044,6 +27197,81 @@ define("modules/defaultmapgen/common/Region", ["require", "exports"], function (
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Region;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+});
+define("src/TemplateIndexes", ["require", "exports", "src/App"], function (require, exports, App_41) {
+    "use strict";
+    var TemplateIndexes = (function () {
+        function TemplateIndexes() {
+            this.builtIndexes = {
+                distributablesByTypeAndDistributionGroup: null,
+                itemsByTechLevel: null,
+            };
+        }
+        Object.defineProperty(TemplateIndexes.prototype, "distributablesByDistributionGroup", {
+            get: function () {
+                if (!this.builtIndexes.distributablesByTypeAndDistributionGroup) {
+                    this.builtIndexes.distributablesByTypeAndDistributionGroup =
+                        TemplateIndexes.getDistributablesByTypeAndDistributionGroup();
+                }
+                return this.builtIndexes.distributablesByTypeAndDistributionGroup;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TemplateIndexes.prototype, "itemsByTechLevel", {
+            get: function () {
+                if (!this.builtIndexes.itemsByTechLevel) {
+                    this.builtIndexes.itemsByTechLevel = TemplateIndexes.getItemsByTechLevel();
+                }
+                return this.builtIndexes.itemsByTechLevel;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        TemplateIndexes.prototype.clear = function () {
+            for (var key in this.builtIndexes) {
+                this.builtIndexes[key] = null;
+            }
+        };
+        TemplateIndexes.getDistributablesByTypeAndDistributionGroup = function () {
+            return ({
+                unitFamilies: TemplateIndexes.getDistributablesByGroup(App_41.default.moduleData.Templates.UnitFamilies),
+                resources: TemplateIndexes.getDistributablesByGroup(App_41.default.moduleData.Templates.Resources)
+            });
+        };
+        TemplateIndexes.getDistributablesByGroup = function (allDistributables) {
+            var byGroup = {};
+            var _loop_5 = function(key) {
+                var distributable = allDistributables[key];
+                distributable.distributionGroups.forEach(function (group) {
+                    if (!byGroup[group]) {
+                        byGroup[group] = [];
+                    }
+                    byGroup[group].push(distributable);
+                });
+            };
+            for (var key in allDistributables) {
+                _loop_5(key);
+            }
+            return byGroup;
+        };
+        TemplateIndexes.getItemsByTechLevel = function () {
+            var itemsByTechLevel = {};
+            for (var itemName in App_41.default.moduleData.Templates.Items) {
+                var item = App_41.default.moduleData.Templates.Items[itemName];
+                if (!itemsByTechLevel[item.techLevel]) {
+                    itemsByTechLevel[item.techLevel] = [];
+                }
+                itemsByTechLevel[item.techLevel].push(item);
+            }
+            return itemsByTechLevel;
+        };
+        return TemplateIndexes;
+    }());
+    var indexes = new TemplateIndexes();
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = indexes;
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
 define("modules/defaultmapgen/common/MapGenPoint", ["require", "exports"], function (require, exports) {
@@ -27353,7 +27581,7 @@ define("modules/defaultmapgen/common/triangulate", ["require", "exports", "modul
     }
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultemblems/SubEmblemTemplates", "modules/defaultmapgen/common/triangulate", "modules/defaultmapgen/common/Region", "src/Building", "src/Player", "src/Color", "src/Emblem", "src/Flag", "src/pathfinding", "src/utility"], function (require, exports, Templates_1, SubEmblemTemplates_2, triangulate_1, Region_1, Building_4, Player_4, Color_5, Emblem_4, Flag_5, pathfinding_1, utility_52) {
+define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modules/defaultbuildings/templates/Templates", "modules/defaultemblems/SubEmblemTemplates", "modules/defaultmapgen/common/triangulate", "src/Region", "src/Building", "src/Player", "src/Color", "src/Emblem", "src/Flag", "src/pathfinding", "src/utility"], function (require, exports, Templates_1, SubEmblemTemplates_2, triangulate_1, Region_1, Building_4, Player_4, Color_5, Emblem_4, Flag_5, pathfinding_1, utility_52) {
     "use strict";
     function linkStarsByTriangulation(stars) {
         if (stars.length < 3) {
@@ -27635,7 +27863,7 @@ define("modules/defaultmapgen/common/mapGenUtils", ["require", "exports", "modul
     exports.severLinksToNonAdjacentStars = severLinksToNonAdjacentStars;
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/mapGenUtils"], function (require, exports, Region_2, mapGenUtils_1) {
+define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", "modules/defaultmapgen/common/mapGenUtils", "src/Unit", "src/Fleet", "src/utility"], function (require, exports, mapGenUtils_1, Unit_7, Fleet_5, utility_53) {
     "use strict";
     function setupIndependents(props) {
         var independentStars = props.region.stars.filter(function (star) {
@@ -27645,21 +27873,86 @@ define("modules/defaultmapgen/common/setupIndependents", ["require", "exports", 
             props.player.addStar(star);
             mapGenUtils_1.addDefenceBuildings(star, 1, false);
         });
-        var commanderStar = getCommanderStar(independentStars, props.mapGenDataByStarID);
+        var starsByDistance = getStarsByDistanceToPlayer(independentStars, props.mapGenDataByStarID);
+        var maxDistanceFromPlayer = getMaxDistanceFromStarsByDistance(starsByDistance);
+        var starsAtMaxDistance = starsByDistance[maxDistanceFromPlayer];
+        var commanderStar = getMostSuitableCommanderStarFromStars(starsAtMaxDistance, props.mapGenDataByStarID);
+        var minUnits = 2;
+        var maxUnits = 5;
+        var globalBuildableUnitTypes = props.player.getGloballyBuildableUnits();
+        var globalMaxDistanceFromPlayer = (function () {
+            var maxDistance = 0;
+            for (var starID in props.mapGenDataByStarID) {
+                var distance = props.mapGenDataByStarID[starID].distanceFromPlayerOwnedLocation;
+                maxDistance = Math.max(maxDistance, distance);
+            }
+            return maxDistance;
+        })();
+        independentStars.forEach(function (star) {
+            var localBuildableUnitTypes = star.buildableUnitTypes.filter(function (unitTemplate) {
+                var techRequirements = unitTemplate.technologyRequirements;
+                return !techRequirements || props.player.meetsTechnologyRequirements(techRequirements);
+            });
+            var unitTypes = globalBuildableUnitTypes.concat(localBuildableUnitTypes);
+            var mapGenData = props.mapGenDataByStarID[star.id];
+            var inverseMapGenDistance = 1 - mapGenData.mapGenDistance;
+            var distanceFromPlayer = mapGenData.distanceFromPlayerOwnedLocation - 1;
+            var relativeDistanceFromPlayer = Math.pow(distanceFromPlayer / globalMaxDistanceFromPlayer, 1.6);
+            var unitCountFromVariance = utility_53.randRange(-1, 1) * props.variance;
+            var unitCount = minUnits + (maxUnits - minUnits) * relativeDistanceFromPlayer;
+            unitCount += unitCountFromVariance;
+            unitCount *= props.intensity;
+            unitCount = utility_53.clamp(unitCount, minUnits, maxUnits);
+            unitCount = Math.round(unitCount);
+            var eliteCount = unitCount < 3 ? 0 : unitCount < 5 ? 1 : 2;
+            var units = [];
+            if (star === commanderStar) {
+                var template = utility_53.getRandomArrayItem(unitTypes);
+                var unit = new Unit_7.default(template);
+                unit.name = "Pirate commander";
+                unit.setAttributes(1.35);
+                unit.setBaseHealth(1.35 + inverseMapGenDistance);
+                props.player.addUnit(unit);
+                units.push(unit);
+            }
+            for (var i = 0; i < unitCount; i++) {
+                var isElite = i < eliteCount;
+                var unitHealthModifier = (isElite ? 1.2 : 1) + inverseMapGenDistance;
+                var unitStatsModifier = (isElite ? 1.2 : 1);
+                var template = utility_53.getRandomArrayItem(unitTypes);
+                var unit = new Unit_7.default(template);
+                unit.name = (isElite ? "Pirate elite" : "Pirate");
+                unit.setAttributes(unitStatsModifier);
+                unit.setBaseHealth(unitHealthModifier);
+                props.player.addUnit(unit);
+                units.push(unit);
+            }
+            var fleet = new Fleet_5.default(props.player, units, star, undefined, false);
+            fleet.name = "Pirates";
+        });
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = setupIndependents;
-    function getCommanderStar(stars, mapGenDataByStarID) {
-        var region = new Region_2.default(null, stars);
-        var starsByDistance = region.getStarsByDistanceToQualifier(function (star) {
-            return star.owner && !star.owner.isIndependent;
+    function getStarsByDistanceToPlayer(stars, mapGenDataByStarID) {
+        var starsByDistance = {};
+        stars.forEach(function (star) {
+            var distance = mapGenDataByStarID[star.id].distanceFromPlayerOwnedLocation;
+            if (!starsByDistance[distance]) {
+                starsByDistance[distance] = [];
+            }
+            starsByDistance[distance].push(star);
         });
+        return starsByDistance;
+    }
+    function getMaxDistanceFromStarsByDistance(starsByDistance) {
         var numericDistances = Object.keys(starsByDistance).map(function (distanceString) {
             return parseInt(distanceString);
         });
         var maxDistance = Math.max.apply(null, numericDistances);
-        var starsAtMaxDistance = starsByDistance[maxDistance];
-        return starsAtMaxDistance.sort(function (a, b) {
+        return maxDistance;
+    }
+    function getMostSuitableCommanderStarFromStars(stars, mapGenDataByStarID) {
+        return stars.sort(function (a, b) {
             var connectednessSort = mapGenDataByStarID[b.id].connectedness - mapGenDataByStarID[a.id].connectedness;
             if (connectednessSort) {
                 return connectednessSort;
@@ -27675,12 +27968,12 @@ define("modules/defaultmapgen/spiralGalaxy/SpiralGalaxyOptionValues", ["require"
     "use strict";
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_53) {
+define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "exports", "modules/defaultmapgen/common/MapGenPoint", "src/utility"], function (require, exports, MapGenPoint_1, utility_54) {
     "use strict";
     function generateSpiralPoints(options) {
         var sg = convertMapGenOptionValues(options);
         var makePoint = function (distanceMin, distanceMax, arm, maxOffset) {
-            var distance = utility_53.randRange(distanceMin, distanceMax);
+            var distance = utility_54.randRange(distanceMin, distanceMax);
             var offset = Math.random() * maxOffset - maxOffset / 2;
             offset *= (1 / distance);
             if (offset < 0) {
@@ -27759,12 +28052,12 @@ define("modules/defaultmapgen/spiralGalaxy/generateSpiralPoints", ["require", "e
             armDistance: Math.PI * 2 / totalArms,
             armOffsetMax: 0.5,
             armRotationFactor: actualArms / 3,
-            galaxyRotation: utility_53.randRange(0, Math.PI * 2)
+            galaxyRotation: utility_54.randRange(0, Math.PI * 2)
         });
     }
     var _a, _b, _c, _d, _e, _f, _g, _h;
 });
-define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/FillerPoint", "src/Star", "src/TemplateIndexes", "src/utility", "src/mapgencore/MapGenResult", "src/mapgencore/voronoi", "modules/defaultmapgen/common/Region", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, FillerPoint_2, Star_2, TemplateIndexes_1, utility_54, MapGenResult_2, voronoi_2, Region_3, setupIndependents_1, mapGenUtils_2, generateSpiralPoints_1) {
+define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", "exports", "src/FillerPoint", "src/Star", "src/Region", "src/TemplateIndexes", "src/MapGenResult", "src/utility", "src/voronoi", "modules/defaultmapgen/common/setupIndependents", "modules/defaultmapgen/common/mapGenUtils", "modules/defaultmapgen/spiralGalaxy/generateSpiralPoints"], function (require, exports, FillerPoint_2, Star_2, Region_2, TemplateIndexes_1, MapGenResult_2, utility_55, voronoi_2, setupIndependents_1, mapGenUtils_2, generateSpiralPoints_1) {
     "use strict";
     var spiralGalaxyGeneration = function (options, players) {
         var points = generateSpiralPoints_1.default(options);
@@ -27809,7 +28102,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
             var tags = starWithMapGenPoint.mapGenpoint.mapGenData.tags;
             tags.forEach(function (tag) {
                 if (!regionsByID[tag]) {
-                    regionsByID[tag] = new Region_3.default(tag);
+                    regionsByID[tag] = new Region_2.default(tag);
                     regions.push(regionsByID[tag]);
                 }
                 regionsByID[tag].addStar(starWithMapGenPoint.star);
@@ -27830,7 +28123,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
         armRegions.forEach(function (region) {
             region.severLinksToRegionsExcept([region, regionsByID["center"]]);
         });
-        var entireMapIsConnected = stars[0].getLinkedInRange(stars.length).all.length === stars.length;
+        var entireMapIsConnected = stars[0].getAllLinkedStars().length === stars.length;
         if (!entireMapIsConnected) {
             console.log("Regenerated map due to insufficient connections");
             return spiralGalaxyGeneration(options, players);
@@ -27915,6 +28208,16 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
             star.buildManufactory();
         }
         var pirates = mapGenUtils_2.makePlayerForPirates();
+        (function setDistanceFromPlayer() {
+            var isPlayerOwnedFN = (function (star) {
+                return star.owner && !star.owner.isIndependent;
+            });
+            stars.forEach(function (star) {
+                var nearestPlayerStar = star.getNearestStarForQualifier(isPlayerOwnedFN);
+                var distanceToPlayer = star.getDistanceToStar(nearestPlayerStar);
+                mapGenDataByStarID[star.id].distanceFromPlayerOwnedLocation = distanceToPlayer;
+            });
+        })();
         sectors.forEach(function (sector) {
             setupIndependents_1.default({
                 player: pirates,
@@ -27925,7 +28228,7 @@ define("modules/defaultmapgen/spiralGalaxy/spiralGalaxyGeneration", ["require", 
             });
         });
         stars.forEach(function (star) {
-            star.baseIncome = utility_54.randInt(4, 6) * 10;
+            star.baseIncome = utility_55.randInt(4, 6) * 10;
         });
         return new MapGenResult_2.default({
             stars: stars,
@@ -28609,9 +28912,12 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
                 highlightA: { type: "1f", value: initialValues.highlightA },
                 highlightB: { type: "1f", value: initialValues.highlightB },
                 highlightColor: { type: "3fv", value: initialValues.highlightColor },
+                nebulaStarConcentration: { type: "1f", value: initialValues.nebulaStarConcentration },
                 overlayColor: { type: "3fv", value: initialValues.overlayColor },
                 scale: { type: "1f", value: initialValues.scale },
                 seed: { type: "2fv", value: initialValues.seed },
+                starBrightness: { type: "1f", value: initialValues.starBrightness },
+                starDensity: { type: "1f", value: initialValues.starDensity },
                 streakLightness: { type: "1f", value: initialValues.streakLightness },
                 streakiness: { type: "1f", value: initialValues.streakiness },
             });
@@ -28628,46 +28934,56 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
     var sourceLines = [
         "precision mediump float;",
         "",
-        "uniform vec3 baseColor;",
-        "uniform vec3 overlayColor;",
-        "uniform vec3 highlightColor;",
+        "#define DOMAIN 0 // 0 == pixi, 1 == shdr.bkcore.com",
         "",
-        "uniform float coverage;",
+        "#if DOMAIN == 0",
+        "  uniform vec3 baseColor;",
+        "  uniform vec3 overlayColor;",
+        "  uniform vec3 highlightColor;",
         "",
-        "uniform float scale;",
+        "  uniform float coverage;",
         "",
-        "uniform float diffusion;",
-        "uniform float streakiness;",
+        "  uniform float scale;",
         "",
-        "uniform float streakLightness;",
-        "uniform float cloudLightness;",
+        "  uniform float diffusion;",
+        "  uniform float streakiness;",
         "",
-        "uniform float highlightA;",
-        "uniform float highlightB;",
+        "  uniform float streakLightness;",
+        "  uniform float cloudLightness;",
         "",
-        "uniform vec2 seed;",
+        "  uniform float highlightA;",
+        "  uniform float highlightB;",
         "",
-        "/*",
-        "const vec3 baseColor = vec3(1.0, 0.0, 0.0);",
-        "const vec3 overlayColor = vec3(0.0, 0.0, 1.0);",
-        "const vec3 highlightColor = vec3(1.0, 1.0, 1.0);",
+        "  uniform float starDensity;",
+        "  uniform float nebulaStarConcentration;",
+        "  uniform float starBrightness;",
         "",
-        "const float coverage = 0.3;",
-        "const float coverage2 = coverage / 2.0;",
+        "  uniform vec2 seed;",
+        "#elif DOMAIN == 1",
+        "  const vec3 baseColor = vec3(1.0, 0.0, 0.0);",
+        "  const vec3 overlayColor = vec3(0.0, 0.0, 1.0);",
+        "  const vec3 highlightColor = vec3(1.0, 1.0, 1.0);",
         "",
-        "const float scale = 4.0;",
+        "  const float coverage = 0.3;",
+        "  const float coverage2 = coverage / 2.0;",
         "",
-        "const float diffusion = 3.0;",
-        "const float streakiness = 2.0;",
+        "  const float scale = 4.0;",
         "",
-        "const float streakLightness = 1.0;",
-        "const float cloudLightness = 1.0;",
+        "  const float diffusion = 3.0;",
+        "  const float streakiness = 2.0;",
         "",
-        "const float highlightA = 0.9;",
-        "const float highlightB = 2.2;",
+        "  const float streakLightness = 1.0;",
+        "  const float cloudLightness = 1.0;",
         "",
-        "const vec2 seed = vec2(69.0, 42.0);",
-        "*/",
+        "  const float highlightA = 0.9;",
+        "  const float highlightB = 2.2;",
+        "",
+        "  const float starDensity = 0.0008;",
+        "  const float nebulaStarConcentration = 0.01;",
+        "  const float starBrightness = 0.6;",
+        "",
+        "  const vec2 seed = vec2(69.0, 42.0);",
+        "#endif",
         "",
         "const int sharpness = 6;",
         "",
@@ -28741,22 +29057,12 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
         "",
         "float star(vec2 pos, float volume)",
         "{",
-        "  float genValue = hash(pos);",
+        "  float h = hash(pos);",
         "",
-        "  genValue -= volume * 0.01;",
+        "  float intensityCutoff = (1.0 - starDensity) - (volume * nebulaStarConcentration);",
+        "  float starIntensity = smoothstep(intensityCutoff, 1.0, h);",
         "",
-        "  float color = 0.0;",
-        "",
-        "  if (genValue < 0.001)",
-        "  {",
-        "    float r = hash(pos + vec2(4.20, 6.9));",
-        "    color = r;",
-        "    return color;",
-        "  }",
-        "  else",
-        "  {",
-        "    return color;",
-        "  }",
+        "  return starIntensity * starBrightness;",
         "}",
         "",
         "void main(void)",
@@ -28772,7 +29078,7 @@ define("modules/defaultbackgrounds/Nebula", ["require", "exports"], function (re
     ];
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_55) {
+define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/defaultbackgrounds/Nebula", "src/colorGeneration", "src/utility"], function (require, exports, Nebula_1, colorGeneration_4, utility_56) {
     "use strict";
     var drawNebula = function (seed, size, renderer) {
         var oldRng = Math.random;
@@ -28782,18 +29088,21 @@ define("modules/defaultbackgrounds/drawNebula", ["require", "exports", "modules/
             baseColor: nebulaColorScheme.main.getRGB(),
             overlayColor: nebulaColorScheme.secondary.getRGB(),
             highlightColor: [1.0, 1.0, 1.0],
-            coverage: utility_55.randRange(0.28, 0.32),
-            scale: utility_55.randRange(4, 8),
-            diffusion: utility_55.randRange(1.5, 3.0),
-            streakiness: utility_55.randRange(1.5, 2.5),
-            streakLightness: utility_55.randRange(1, 1.2),
-            cloudLightness: utility_55.randRange(1, 1.2),
+            coverage: utility_56.randRange(0.28, 0.32),
+            scale: utility_56.randRange(4, 8),
+            diffusion: utility_56.randRange(1.5, 3.0),
+            streakiness: utility_56.randRange(1.5, 2.5),
+            streakLightness: utility_56.randRange(1, 1.2),
+            cloudLightness: utility_56.randRange(1, 1.2),
             highlightA: 0.9,
             highlightB: 2.2,
+            starDensity: utility_56.randRange(0.0014, 0.0018),
+            nebulaStarConcentration: utility_56.randRange(0.000, 0.004),
+            starBrightness: 0.6,
             seed: [Math.random() * 100, Math.random() * 100]
         });
         var container = new PIXI.Container();
-        var shaderSprite = utility_55.createDummySpriteForShader(0, 0, size.width, size.height);
+        var shaderSprite = utility_56.createDummySpriteForShader(0, 0, size.width, size.height);
         shaderSprite.shader = filter;
         container.addChild(shaderSprite);
         var texture = container.generateTexture(renderer, PIXI.SCALE_MODES.DEFAULT, 1, size);
@@ -29260,10 +29569,10 @@ define("modules/defaultmapmodes/maplayertemplates/fogOfWar", ["require", "export
     }
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 });
-define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_6, utility_56) {
+define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"], function (require, exports, Options_7, utility_57) {
     "use strict";
     function starsOnlyShareNarrowBorder(a, b) {
-        var minBorderWidth = Options_6.default.display.borderWidth * 2;
+        var minBorderWidth = Options_7.default.display.borderWidth * 2;
         var edge = a.getEdgeWith(b);
         if (!edge) {
             return false;
@@ -29395,10 +29704,10 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                 y: v1.y
             });
         });
-        joinPointsWithin(convertedToPoints, Options_6.default.display.borderWidth / 2);
+        joinPointsWithin(convertedToPoints, Options_7.default.display.borderWidth / 2);
         var offset = new Offset();
         offset.arcSegments(0);
-        var convertedToOffset = offset.data(convertedToPoints).padding(Options_6.default.display.borderWidth / 2);
+        var convertedToOffset = offset.data(convertedToPoints).padding(Options_7.default.display.borderWidth / 2);
         return convertedToOffset;
     }
     exports.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
@@ -29421,8 +29730,8 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
                     var point = offsetted[j_1];
                     var nextPoint = offsetted[(j_1 + 1) % offsetted.length];
                     var edgeCenter = {
-                        x: utility_56.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
-                        y: utility_56.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
+                        x: utility_57.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: utility_57.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     if (!pointStar) {
@@ -29464,7 +29773,7 @@ define("src/borderPolygon", ["require", "exports", "src/options", "src/utility"]
         var polyLinesData = [];
         for (var i = 0; i < polyLines.length; i++) {
             var polyLine = polyLines[i];
-            var isClosed = utility_56.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            var isClosed = utility_57.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
             if (isClosed)
                 polyLine.pop();
             for (var j_3 = 0; j_3 < polyLine.length; j_3++) {
@@ -30545,7 +30854,7 @@ define("modules/defaultnotifications/defaultNotifications", ["require", "exports
     exports.default = defaultNotifications;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
 });
-define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_9, TutorialStatus_5, utility_57, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
+define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGenerators", "src/MapRenderer", "src/ModuleLoader", "src/NotificationLog", "src/Player", "src/PlayerControl", "src/ReactUI", "src/Renderer", "src/setDynamicTemplateProperties", "src/options", "src/tutorials/TutorialStatus", "src/utility", "modules/common/copyCommonTemplates", "modules/defaultemblems/defaultEmblems", "modules/defaultruleset/defaultRuleset", "modules/defaultai/defaultAI", "modules/defaultitems/defaultItems", "modules/defaulttechnologies/defaultTechnologies", "modules/defaultattitudemodifiers/defaultAttitudemodifiers", "modules/defaultmapgen/defaultMapgen", "modules/defaultunits/defaultUnits", "modules/defaultbackgrounds/defaultBackgrounds", "modules/defaultmapmodes/defaultMapmodes", "modules/paintingportraits/paintingPortraits", "modules/defaultbuildings/defaultBuildings", "modules/defaultnotifications/defaultNotifications"], function (require, exports, Game_2, GameLoader_1, idGenerators_9, MapRenderer_1, ModuleLoader_1, NotificationLog_3, Player_5, PlayerControl_1, ReactUI_1, Renderer_1, setDynamicTemplateProperties_1, options_9, TutorialStatus_5, utility_58, copyCommonTemplates_1, defaultEmblems_1, defaultRuleset_1, defaultAI_1, defaultItems_1, defaultTechnologies_1, defaultAttitudemodifiers_1, defaultMapgen_1, defaultUnits_1, defaultBackgrounds_1, defaultMapmodes_1, paintingPortraits_1, defaultBuildings_1, defaultNotifications_1) {
     "use strict";
     var App = (function () {
         function App() {
@@ -30555,7 +30864,7 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
             this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             var boundMakeApp = this.makeApp.bind(this);
-            utility_57.onDOMLoaded(function () {
+            utility_58.onDOMLoaded(function () {
                 var moduleLoader = self.moduleLoader = new ModuleLoader_1.default();
                 self.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(defaultEmblems_1.default);
@@ -30727,7 +31036,6 @@ define("src/App", ["require", "exports", "src/Game", "src/GameLoader", "src/idGe
         return App;
     }());
     var app = new App();
-    console.log("create app");
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = app;
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;

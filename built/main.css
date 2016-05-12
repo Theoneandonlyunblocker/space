@@ -225,18 +225,79 @@ ol {
   display: flex;
   flex-flow: row;
   width: 100%;
-  min-height: 20px;
   z-index: 152;
 }
-.turn-order-unit {
+@keyframes remove-unit {
+  from {
+    left: 0;
+    margin-right: 2px;
+  }
+  to {
+    left: -162px;
+    margin-right: -162px;
+  }
+}
+@keyframes push-unit {
+  from {
+    left: 100%;
+  }
+  to {
+    left: 0;
+  }
+}
+@keyframes clear-space-for-unit {
+  from {
+    margin-left: 2px;
+  }
+  to {
+    margin-left: 162px;
+  }
+}
+@keyframes insert-unit {
+  from {
+    bottom: -20px;
+  }
+  to {
+    bottom: 0;
+  }
+}
+.turn-order-unit-container {
   display: flex;
   flex: 1;
   position: relative;
+  height: 20px;
   max-width: 160px;
+  overflow: hidden;
+  margin: 0 2px;
+}
+.turn-order-unit-container.remove-unit {
+  animation-name: remove-unit;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.turn-order-unit-container.push-unit {
+  animation-name: push-unit;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.turn-order-unit-container.clear-space-for-unit {
+  animation-name: clear-space-for-unit;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.turn-order-unit-container.insert-unit .turn-order-unit {
+  animation-name: insert-unit;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.turn-order-unit {
+  position: relative;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: clip;
-  margin: 0 2px;
+  transition: background-color 100ms;
 }
 .turn-order-unit-friendly {
   background-color: #6c7ef2;
@@ -347,18 +408,7 @@ ol {
   right: 0px;
 }
 .battle-scene-unit-fade-in {
-  -webkit-animation-duration: 0.5s;
-  animation-duration: 0.5s;
-  -webkit-animation-name: battle-scene-unit-fade-in;
-  animation-name: battle-scene-unit-fade-in;
-  -webkit-animation-timing: linear;
-  animation-timing: linear;
-}
-.unit-fade-in-keyframes from {
-  opacity: 0;
-}
-.unit-fade-in-keyframes to {
-  opacity: 1;
+  animation: battle-scene-unit-fade-in 0.5s linear;
 }
 @keyframes battle-scene-unit-fade-in {
   from {
@@ -368,21 +418,8 @@ ol {
     opacity: 1;
   }
 }
-@-webkit-keyframes battle-scene-unit-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 .battle-scene-unit-fade-out {
-  -webkit-animation-duration: 0.5s;
-  animation-duration: 0.5s;
-  -webkit-animation-name: battle-scene-unit-fade-out;
-  animation-name: battle-scene-unit-fade-out;
-  -webkit-animation-timing: linear;
-  animation-timing: linear;
+  animation: battle-scene-unit-fade-out 0.5s linear;
 }
 .unit-fade-out-keyframes from {
   opacity: 1;
@@ -398,21 +435,8 @@ ol {
     opacity: 0;
   }
 }
-@-webkit-keyframes battle-scene-unit-fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
 .battle-scene-unit-enter-side1 {
-  -webkit-animation-duration: 0.2s;
-  animation-duration: 0.2s;
-  -webkit-animation-name: battle-scene-unit-enter-side1;
-  animation-name: battle-scene-unit-enter-side1;
-  -webkit-animation-timing: ease;
-  animation-timing: ease;
+  animation: battle-scene-unit-enter-side1 0.2s ease;
 }
 .unit-enter-side1-keyframes from {
   left: -50%;
@@ -428,27 +452,8 @@ ol {
     left: 0%;
   }
 }
-@-webkit-keyframes battle-scene-unit-enter-side1 {
-  from {
-    left: -50%;
-  }
-  to {
-    left: 0%;
-  }
-}
 .battle-scene-unit-leave-side1 {
-  -webkit-animation-duration: 0.2s;
-  animation-duration: 0.2s;
-  -webkit-animation-name: battle-scene-unit-leave-side1;
-  animation-name: battle-scene-unit-leave-side1;
-  -webkit-animation-timing: ease;
-  animation-timing: ease;
-}
-.unit-leave-side1-keyframes from {
-  left: 0%;
-}
-.unit-leave-side1-keyframes to {
-  left: -50%;
+  animation: battle-scene-unit-leave-side1 0.2s ease;
 }
 @keyframes battle-scene-unit-leave-side1 {
   from {
@@ -458,21 +463,8 @@ ol {
     left: -50%;
   }
 }
-@-webkit-keyframes battle-scene-unit-leave-side1 {
-  from {
-    left: 0%;
-  }
-  to {
-    left: -50%;
-  }
-}
 .battle-scene-unit-enter-side2 {
-  -webkit-animation-duration: 0.2s;
-  animation-duration: 0.2s;
-  -webkit-animation-name: battle-scene-unit-enter-side2;
-  animation-name: battle-scene-unit-enter-side2;
-  -webkit-animation-timing: ease;
-  animation-timing: ease;
+  animation: battle-scene-unit-enter-side2 0.2s ease;
 }
 .unit-enter-side2-keyframes from {
   right: -50%;
@@ -488,21 +480,8 @@ ol {
     right: 0%;
   }
 }
-@-webkit-keyframes battle-scene-unit-enter-side2 {
-  from {
-    right: -50%;
-  }
-  to {
-    right: 0%;
-  }
-}
 .battle-scene-unit-leave-side2 {
-  -webkit-animation-duration: 0.2s;
-  animation-duration: 0.2s;
-  -webkit-animation-name: battle-scene-unit-leave-side2;
-  animation-name: battle-scene-unit-leave-side2;
-  -webkit-animation-timing: ease;
-  animation-timing: ease;
+  animation: battle-scene-unit-leave-side2 0.2s ease;
 }
 .unit-leave-side2-keyframes from {
   right: 0%;
@@ -511,14 +490,6 @@ ol {
   right: -50%;
 }
 @keyframes battle-scene-unit-leave-side2 {
-  from {
-    right: 0%;
-  }
-  to {
-    right: -50%;
-  }
-}
-@-webkit-keyframes battle-scene-unit-leave-side2 {
   from {
     right: 0%;
   }
@@ -640,7 +611,6 @@ ol {
   border-image-outset: 4px;
 }
 .empty-unit {
-  -webkit-animation-name: none !important;
   animation-name: none !important;
 }
 .empty-unit .unit-body {
@@ -985,21 +955,46 @@ ol {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
+  align-items: center;
   margin: 0 20px;
   margin-top: 5px;
 }
 .turn-counter {
-  flex: 0 0 6px;
+  position: relative;
   margin: 2px 0;
   width: 30px;
-}
-.used-turn {
+  height: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #999;
   background-color: rgba(255, 255, 255, 0.2);
 }
-.available-turn {
+.turn-counter-available-border {
   border: 1px solid #0ac7b3;
+}
+.available-turn {
   background: linear-gradient(to right, #9efff5 0%, #dfffef 50%, #9efff5 100%);
+  width: 100%;
+  height: 100%;
+}
+.available-turn-leave-active {
+  animation-name: turn-counter-remove;
+  animation-timing-function: ease-in;
+}
+@keyframes turn-counter-remove {
+  0% {
+    width: 100%;
+    height: 100%;
+  }
+  80% {
+    opacity: 100%;
+  }
+  100% {
+    width: 0%;
+    height: 0%;
+    opacity: 0%;
+  }
 }
 .react-list {
   width: 100%;
@@ -2508,6 +2503,7 @@ ol {
   height: 1em;
   display: flex;
   border: 1px solid #c4e5fb;
+  max-width: 300px;
 }
 .unit-experience-bar :last-child {
   border-right: none;
@@ -2547,7 +2543,7 @@ ol {
   background-color: rgba(255, 255, 255, 0.3);
 }
 .unit-info-ability {
-  display: inline-block;
+  display: block;
   float: left;
   clear: both;
 }
@@ -3888,12 +3884,7 @@ button.player-setup-remove-player.disabled {
   }
 }
 .image-loading-fail-message {
-  -webkit-animation-duration: 2s;
-  animation-duration: 2s;
-  -webkit-animation-name: flash-bg-red;
-  animation-name: flash-bg-red;
-  -webkit-animation-timing-function: ease-in-quart;
-  animation-timing-function: ease-in-quart;
+  animation: flash-bg-red 2s ease-in-quart;
 }
 .emblem-picker {
   background: magenta;
