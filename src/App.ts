@@ -55,17 +55,15 @@ class App
 
   constructor()
   {
-    var self = this;
     PIXI.utils._saidHello = true;
 
     this.seed = "" + Math.random();
     Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
-    var boundMakeApp = this.makeApp.bind(this);
-    onDOMLoaded(function()
+    onDOMLoaded(() =>
     {
-      var moduleLoader = self.moduleLoader = new ModuleLoader();
-      self.moduleData = moduleLoader.moduleData;
+      var moduleLoader = this.moduleLoader = new ModuleLoader();
+      this.moduleData = moduleLoader.moduleData;
       
       moduleLoader.addModuleFile(defaultEmblems);
       moduleLoader.addModuleFile(defaultRuleset);
@@ -83,7 +81,10 @@ class App
       
       copyCommonTemplates(moduleLoader.moduleData);
       
-      moduleLoader.loadAll(boundMakeApp);
+      moduleLoader.loadAll(() =>
+      {
+        this.makeApp();
+      });
     });
   }
   makeApp()
