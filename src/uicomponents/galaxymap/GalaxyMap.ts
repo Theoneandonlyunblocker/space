@@ -38,18 +38,6 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   constructor(props: PropTypes)
   {
     super(props);
-    
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.changeScene = this.changeScene.bind(this);    
-  }
-  
-  changeScene(e: React.FormEvent)
-  {
-    var target = <HTMLInputElement> e.target;
-    app.reactUI.switchScene(target.value);
   }
   
   render()
@@ -88,52 +76,56 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
             mapRenderer: this.props.mapRenderer,
             key: "galaxyMapUI"
           })
-        ),
-        !Options.debug.enabled ? null : React.DOM.div(
-        {
-          className: "galaxy-map-debug debug"
-        },
-          React.DOM.select(
-            {
-              className: "reactui-selector debug",
-              ref: (component: HTMLElement) =>
-              {
-                this.ref_TODO_sceneSelector = component;
-              },
-              value: app.reactUI.currentScene,
-              onChange: this.changeScene
-            },
-            React.DOM.option({value: "galaxyMap"}, "map"),
-            React.DOM.option({value: "flagMaker"}, "make flags"),
-            React.DOM.option({value: "setupGame"}, "setup game"),
-            React.DOM.option({value: "battleSceneTester"}, "battle scene test")
-          ),
-          React.DOM.button(
-          {
-            className: "debug",
-            onClick: function(e: React.FormEvent)
-            {
-              const target = <HTMLButtonElement> e.target;
+        )//,
+        // !Options.debug.enabled ? null : React.DOM.div(
+        // {
+        //   className: "galaxy-map-debug debug"
+        // },
+        //   React.DOM.select(
+        //     {
+        //       className: "reactui-selector debug",
+        //       ref: (component: HTMLElement) =>
+        //       {
+        //         this.ref_TODO_sceneSelector = component;
+        //       },
+        //       value: app.reactUI.currentScene,
+              // onChange: (e: React.FormEvent) =>
+              // {
+              //   var target = <HTMLInputElement> e.target;
+              //   app.reactUI.switchScene(target.value);
+              // }
+        //     },
+        //     React.DOM.option({value: "galaxyMap"}, "map"),
+        //     React.DOM.option({value: "flagMaker"}, "make flags"),
+        //     React.DOM.option({value: "setupGame"}, "setup game"),
+        //     React.DOM.option({value: "battleSceneTester"}, "battle scene test")
+        //   ),
+        //   React.DOM.button(
+        //   {
+        //     className: "debug",
+        //     onClick: function(e: React.FormEvent)
+        //     {
+        //       const target = <HTMLButtonElement> e.target;
 
-              var position = app.renderer.camera.container.position.clone();
-              var zoom = app.renderer.camera.currZoom;
-              app.destroy();
+        //       var position = app.renderer.camera.container.position.clone();
+        //       var zoom = app.renderer.camera.currZoom;
+        //       app.destroy();
 
-              app.initUI();
+        //       app.initUI();
 
-              app.game = app.makeGame();
-              app.initGame();
+        //       app.game = app.makeGame();
+        //       app.initGame();
 
-              app.initDisplay();
-              app.hookUI();
-              app.reactUI.switchScene("galaxyMap");
-              app.renderer.camera.zoom(zoom);
-              app.renderer.camera.container.position = position;
-            }
-          },
-            "Reset app"
-          )
-        )
+        //       app.initDisplay();
+        //       app.hookUI();
+        //       app.reactUI.switchScene("galaxyMap");
+        //       app.renderer.camera.zoom(zoom);
+        //       app.renderer.camera.container.position = position;
+        //     }
+        //   },
+        //     "Reset app"
+        //   )
+        // )
       )
     );
   }
