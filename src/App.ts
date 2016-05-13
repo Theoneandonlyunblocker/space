@@ -38,20 +38,21 @@ import defaultNotifications from "../modules/defaultnotifications/defaultNotific
 
 class App
 {
-  seed: string;
-  renderer: Renderer;
-  game: Game;
-  mapRenderer: MapRenderer;
-  reactUI: ReactUI;
-  humanPlayer: Player;
-  playerControl: PlayerControl;
-  images:
+  // TODO refactor | most (all?) of these should be private or moved
+  public renderer: Renderer;
+  public game: Game;
+  public moduleData: ModuleData;
+  public humanPlayer: Player;
+  public playerControl: PlayerControl;
+  public reactUI: ReactUI;
+  public images:
   {
     [id: string]: HTMLImageElement;
   } = {};
-
-  moduleData: ModuleData;
-  moduleLoader: ModuleLoader;
+  
+  private seed: string;
+  private mapRenderer: MapRenderer;
+  private moduleLoader: ModuleLoader;
 
   constructor()
   {
@@ -87,7 +88,50 @@ class App
       });
     });
   }
-  makeApp()
+  
+  public makeGameFromSetup(map: GalaxyMap, players: Player[])
+  {
+    this.destroy();
+
+    this.initUI();
+
+    this.game = new Game(map, players, players[0]);
+    this.initGame();
+
+    this.initDisplay();
+    this.hookUI();
+
+    this.reactUI.switchScene("galaxyMap");
+  }
+  public load(saveKey: string)
+  {
+    var data = localStorage.getItem(saveKey);
+    if (!data) return;
+
+    var parsed = JSON.parse(data);
+
+    idGenerators.setValues(parsed.idGenerators);
+
+    this.destroy();
+
+    this.initUI();
+
+    this.game = new GameLoader().deserializeGame(parsed.gameData);
+    this.game.gameStorageKey = saveKey;
+    this.initGame();
+
+    this.initDisplay();
+    this.hookUI();
+    if (parsed.cameraLocation)
+    {
+      this.renderer.toCenterOn = parsed.cameraLocation;
+    }
+
+
+    this.reactUI.switchScene("galaxyMap");
+  }
+  
+  private makeApp()
   {
     var startTime = Date.now();
 
@@ -112,7 +156,7 @@ class App
 
     console.log("Init in " + (Date.now() - startTime) + " ms");
   }
-  destroy()
+  private destroy()
   {
     if (this.game)
     {
@@ -144,48 +188,7 @@ class App
       this.reactUI = null;
     }
   }
-  load(saveKey: string)
-  {
-    var data = localStorage.getItem(saveKey);
-    if (!data) return;
-
-    var parsed = JSON.parse(data);
-
-    idGenerators.setValues(parsed.idGenerators);
-
-    this.destroy();
-
-    this.initUI();
-
-    this.game = new GameLoader().deserializeGame(parsed.gameData);
-    this.game.gameStorageKey = saveKey;
-    this.initGame();
-
-    this.initDisplay();
-    this.hookUI();
-    if (parsed.cameraLocation)
-    {
-      this.renderer.toCenterOn = parsed.cameraLocation;
-    }
-
-
-    this.reactUI.switchScene("galaxyMap");
-  }
-  makeGameFromSetup(map: GalaxyMap, players: Player[])
-  {
-    this.destroy();
-
-    this.initUI();
-
-    this.game = new Game(map, players, players[0]);
-    this.initGame();
-
-    this.initDisplay();
-    this.hookUI();
-
-    this.reactUI.switchScene("galaxyMap");
-  }
-  makeGame()
+  private makeGame()
   {
     var playerData = this.makePlayers();
     var players = playerData.players;
@@ -195,8 +198,7 @@ class App
 
     return game;
   }
-
-  makePlayers()
+  private makePlayers()
   {
     var players: Player[] = [];
 
@@ -214,7 +216,7 @@ class App
       players: players
     });
   }
-  makeMap(playerData: {players: Player[]})
+  private makeMap(playerData: {players: Player[]})
   {
     var optionValues: MapGenOptionValues =
     {
@@ -240,7 +242,7 @@ class App
     var galaxyMap = mapGenResult.makeMap();
     return galaxyMap;
   }
-  initGame()
+  private initGame()
   {
     if (!this.game) throw new Error("App tried to init game without " +
       "having one specified");
@@ -267,7 +269,7 @@ class App
       this.game.notificationLog.setTurn(this.game.turnNumber, true);
     }
   }
-  initDisplay()
+  private initDisplay()
   {
     this.renderer = new Renderer(
       this.game.galaxyMap.seed, 
@@ -282,12 +284,12 @@ class App
     // some initialization is done when the react component owning the
     // renderer mounts, such as in uicomponents/galaxymap/galaxymap.ts
   }
-  initUI()
+  private initUI()
   {
     this.reactUI = new ReactUI(
       document.getElementById("react-container"));
   }
-  hookUI()
+  private hookUI()
   {
     this.reactUI.game = this.game;
     this.reactUI.player = this.humanPlayer;
@@ -295,7 +297,7 @@ class App
     this.reactUI.renderer = this.renderer;
     this.reactUI.mapRenderer = this.mapRenderer;
   }
-  setInitialScene()
+  private setInitialScene()
   {
     var uriParser = document.createElement("a");
     uriParser.href = document.URL;
