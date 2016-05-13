@@ -2,6 +2,7 @@ import ItemTemplates from "./ItemTemplates";
 
 import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
+import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import ItemTemplate from "../../src/templateinterfaces/ItemTemplate";
 
@@ -15,6 +16,7 @@ const defaultItems: ModuleFile =
     author: "giraluna",
     description: ""
   },
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<ItemTemplate>(ItemTemplates, "Items");

@@ -6,6 +6,7 @@ import UnitArchetypes from "./UnitArchetypes";
 
 import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
+import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
@@ -22,6 +23,7 @@ const defaultUnits: ModuleFile =
     author: "giraluna",
     description: ""
   },
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   loadAssets: function(onLoaded: () => void)
   {
     const loader = new PIXI.loaders.Loader();

@@ -4,6 +4,7 @@ import BuildingTemplates from "./BuildingTemplates";
 
 import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
+import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
 
 import BuildingTemplate from "../../src/templateinterfaces/BuildingTemplate";
@@ -18,6 +19,7 @@ const defaultBuildings: ModuleFile =
     author: "giraluna",
     description: ""
   },
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   loadAssets: function(onLoaded: () => void)
   {
     const loader = new PIXI.loaders.Loader();

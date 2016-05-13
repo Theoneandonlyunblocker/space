@@ -1,5 +1,6 @@
 import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
+import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import MapGenTemplate from "../../src/templateinterfaces/MapGenTemplate";
 import TemplateCollection from "../../src/templateinterfaces/TemplateCollection";
@@ -23,6 +24,7 @@ const defaultMapGen: ModuleFile =
     author: "giraluna",
     description: ""
   },
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<MapGenTemplate>(Templates, "MapGen");

@@ -5,6 +5,7 @@ import MapModeTemplates from "./MapModeTemplates";
 
 import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
+import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import MapRendererLayerTemplate from "../../src/templateinterfaces/MapRendererLayerTemplate";
 import MapRendererMapModeTemplate from "../../src/templateinterfaces/MapRendererMapModeTemplate";
@@ -19,6 +20,7 @@ const defaultMapModes: ModuleFile =
     author: "giraluna",
     description: ""
   },
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.game,
   loadAssets: function(onLoaded: () => void)
   {
     var loader = new PIXI.loaders.Loader();

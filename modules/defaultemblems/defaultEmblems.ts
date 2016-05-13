@@ -3,6 +3,7 @@ import SubEmblemTemplates from "./SubEmblemTemplates";
 import app from "../../src/App";
 import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
+import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import SubEmblemTemplate from "../../src/templateinterfaces/SubEmblemTemplate";
 
@@ -16,6 +17,7 @@ const defaultEmblems: ModuleFile =
     author: "giraluna",
     description: ""
   },
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.setup,
   loadAssets: function(onLoaded: () => void)
   {
     const loader = new PIXI.loaders.Loader();

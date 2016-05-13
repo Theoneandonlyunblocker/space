@@ -2,6 +2,7 @@ import AttitudeModifierTemplates from "./AttitudeModifierTemplates";
 
 import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
+import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 
 import AttitudeModifierTemplate from "../../src/templateinterfaces/AttitudeModifierTemplate";
 
@@ -15,6 +16,7 @@ const defaultAttitudeModifiers: ModuleFile =
     author: "giraluna",
     description: ""
   },
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   constructModule: function(moduleData: ModuleData)
   {
     moduleData.copyTemplates<AttitudeModifierTemplate>(AttitudeModifierTemplates, "AttitudeModifiers");
