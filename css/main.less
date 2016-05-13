@@ -560,6 +560,11 @@ ul, ol
     margin-right: -160px - @turn-order-unit-margin;
   }
 }
+@keyframes fill-space-left-by-dead-unit
+{
+  from {margin-right: @turn-order-unit-margin;}
+  to {margin-right: -160px - @turn-order-unit-margin;}
+}
 @keyframes push-unit
 {
   from {left: 100%;}
@@ -587,6 +592,28 @@ ul, ol
   
   margin: 0 @turn-order-unit-margin;
   
+  &.remove-dead-unit
+  {
+    .turn-order-unit
+    {
+      animation-name: insert-unit;
+      // animation-duration: set in react
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      animation-direction: reverse;
+    }
+  }
+  &.fill-space-left-by-dead-unit
+  {
+    animation-name: fill-space-left-by-dead-unit;
+    // animation-duration: set in react
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    .turn-order-unit
+    {
+      bottom: -20px;
+    }
+  }
   &.remove-unit
   {
     animation-name: remove-unit;

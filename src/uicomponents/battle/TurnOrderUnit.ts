@@ -2,6 +2,8 @@
 
 export enum AnimationState
 {
+  removeDeadUnit,
+  fillSpaceLeftByDeadUnits,
   removeUnit,
   clearSpaceForUnit,
   insertUnit,
@@ -34,6 +36,8 @@ export class TurnOrderUnitComponent extends React.Component<PropTypes, StateType
   shouldComponentUpdate = React.addons.PureRenderMixin.shouldComponentUpdate.bind(this);
   containerClassForAnimationState =
   {
+    [AnimationState.removeDeadUnit]: "remove-dead-unit",
+    [AnimationState.fillSpaceLeftByDeadUnits]: "fill-space-left-by-dead-unit",
     [AnimationState.removeUnit]: "remove-unit",
     [AnimationState.clearSpaceForUnit]: "clear-space-for-unit",
     [AnimationState.insertUnit]: "insert-unit",

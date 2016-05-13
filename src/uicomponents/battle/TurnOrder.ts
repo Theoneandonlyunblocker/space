@@ -35,6 +35,8 @@ interface StateType
   
   currentDisplayData?: TurnOrderDisplayData[];
   pendingDisplayData?: TurnOrderDisplayData[];
+  pendingDeadUnitsByID?: {[id: number]: boolean};
+  pendingDeadUnitIndices?: {[index: number]: boolean};
   
   insertIndex?: number;
   
@@ -68,6 +70,8 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       
       currentDisplayData: this.props.turnOrderDisplayData,
       pendingDisplayData: undefined,
+      pendingDeadUnitsByID: {},
+      pendingDeadUnitIndices: {},
       
       insertIndex: undefined,
       
@@ -100,23 +104,38 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         }
       }
       
+      const pendingDeadUnitsByID: {[id: number]: boolean} = {};
+      this.props.turnOrderDisplayData.forEach(currentDisplayData =>
+      {
+        const unit = currentDisplayData.unit;
+        if (!newProps.turnOrderDisplayData.some(newDisplayData =>
+        {
+          return newDisplayData.unit === unit;
+        }))
+        {
+          pendingDeadUnitsByID[unit.id] = true;
+        }
+      });
+      
       const unitsToRender = Math.min(newProps.turnOrderDisplayData.length, this.state.maxUnits);
       const shouldInsertRemovedUnit = newRemovedUnitIndex < unitsToRender - 1;
       
       this.setState(
       {
         pendingDisplayData: newProps.turnOrderDisplayData,
+        pendingDeadUnitsByID: pendingDeadUnitsByID,
         
         insertIndex: shouldInsertRemovedUnit ? newRemovedUnitIndex : undefined,
+      }, () =>
+      {
+        this.removeDeadUnits();
       });
-      
-      this.removeUnit(shouldInsertRemovedUnit, newRemovedUnitIndex);
     }
   }
   
   private getTransitionDuration()
   {
-    return this.props.turnTransitionDuration / 3;
+    return this.props.turnTransitionDuration / 4;
   }
   private setFinishAnimatingTimeout()
   {
@@ -129,7 +148,60 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       });
     }, this.getTransitionDuration())
   }
-  private removeUnit(shouldInsertRemovedUnit: boolean, insertIndex: number)
+  private removeDeadUnits()
+  {
+    if (Object.keys(this.state.pendingDeadUnitsByID).length > 0)
+    {
+      const deadUnitIndices: {[index: number]: boolean} = {};
+      
+      this.state.currentDisplayData.forEach((displayData, i) =>
+      {
+        if (this.state.pendingDeadUnitsByID[displayData.unit.id])
+        {
+          deadUnitIndices[i] = true;
+        }
+      });
+      
+      this.setState(
+      {
+        animationState: AnimationState.removeDeadUnit,
+        pendingDeadUnitIndices: deadUnitIndices
+      }, () =>
+      {
+        window.setTimeout(() =>
+        {
+          this.fillSpaceLeftByDeadUnits();
+        }, this.getTransitionDuration());
+      });
+    }
+    else
+    {
+      this.removeUnit();
+    }
+  }
+  private fillSpaceLeftByDeadUnits()
+  {
+    this.setState(
+    {
+      animationState: AnimationState.fillSpaceLeftByDeadUnits
+    }, () =>
+    {
+      window.setTimeout(() =>
+      {
+        this.setState(
+        {
+          currentDisplayData: this.state.currentDisplayData.filter(d =>
+          {
+            return !this.state.pendingDeadUnitsByID[d.unit.id];
+          })
+        }, () =>
+        {
+          this.removeUnit();
+        })
+      }, this.getTransitionDuration());
+    });
+  }
+  private removeUnit()
   {
     this.setState(
     {
@@ -143,7 +215,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
           currentDisplayData: this.state.currentDisplayData.slice(1),
         });
         
-        if (shouldInsertRemovedUnit)
+        if (isFinite(this.state.insertIndex))
         {
           this.clearSpaceForUnit();
         }
@@ -226,6 +298,22 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       
       switch (this.state.animationState)
       {
+        case AnimationState.removeDeadUnit:
+        {
+          if (this.state.pendingDeadUnitsByID[displayData.unit.id])
+          {
+            unitAnimationState = AnimationState.removeDeadUnit;
+          }
+          break;
+        }
+        case AnimationState.fillSpaceLeftByDeadUnits:
+        {
+          if (this.state.pendingDeadUnitIndices[i])
+          {
+            unitAnimationState = AnimationState.fillSpaceLeftByDeadUnits;
+          }
+          break;
+        }
         case AnimationState.removeUnit:
         {
           if (i === 0)
