@@ -25,12 +25,13 @@ export var wholeRowAttack: AbilityTemplate =
   description: "Attack entire row of units",
   moveDelay: 300,
   actionsUse: 1,
-  bypassesGuard: true,
   mainEffect:
   {
     action: EffectActions.wholeRowAttack,
     sfx: BattleSFX.particleTest
-  }
+  },
+  
+  bypassesGuard: true,
 }
 
 export var bombAttack: AbilityTemplate =
@@ -61,9 +62,10 @@ export var guardRow: AbilityTemplate =
     {
       perInt: 20
     }
-  }
+  },
+  
+  addsGuard: true,
 }
-export var guardColumn = guardRow; // legacy alias 10.3.2016
 export var boardingHook: AbilityTemplate =
 {
   type: "boardingHook",
@@ -142,6 +144,7 @@ export var rangedAttack: AbilityTemplate =
       }
     ]
   },
+  
   canUpgradeInto:
   [
     bombAttack,
@@ -156,9 +159,6 @@ export var standBy: AbilityTemplate =
   description: "Skip a turn but next one comes faster",
   moveDelay: 50,
   actionsUse: 1,
-  AIEvaluationPriority: 0.6,
-  AIScoreAdjust: -0.1,
-  disableInAIBattles: true,
   mainEffect:
   {
     action: EffectActions.standBy,
@@ -166,5 +166,10 @@ export var standBy: AbilityTemplate =
     {
       duration: 750
     }
-  }
+  },
+  
+  addsGuard: true,
+  AIEvaluationPriority: 0.6,
+  AIScoreAdjust: -0.1,
+  disableInAIBattles: true,
 }

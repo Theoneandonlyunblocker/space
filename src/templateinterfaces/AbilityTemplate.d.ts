@@ -15,6 +15,9 @@ declare interface AbilityTemplate extends AbilityBase
     prepDelay: number;
   };
   actionsUse: number;
+  // TODO refactor | rename addsGuard
+  // if not true, user will lose all guard before using ability
+  addsGuard?: boolean;
   // if true, ability will always hit intended target. guard can still provide defensive benefits
   bypassesGuard?: boolean;
   
@@ -37,7 +40,6 @@ declare interface AbilityTemplate extends AbilityBase
   // to let AIScoreAdjust kick in
   disableInAIBattles?: boolean;
   
-  addsGuard?: boolean; // set dynamically
 }
 
 export default AbilityTemplate;
