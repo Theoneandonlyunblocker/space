@@ -15,6 +15,8 @@ import Battle from "../Battle";
 import Game from "../Game";
 import Renderer from "../Renderer";
 import UnitDisplayData from "../UnitDisplayData";
+import ReactUIScene from "../ReactUIScene";
+
 
 export interface PropTypes extends React.Props<any>
 {
@@ -24,7 +26,7 @@ export interface PropTypes extends React.Props<any>
   playerControl: PlayerControl;
   battle: Battle;
   game: Game;
-  sceneToRender: string;
+  sceneToRender: ReactUIScene;
   renderer: Renderer;
 }
 

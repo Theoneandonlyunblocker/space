@@ -8,12 +8,13 @@ import PlayerControl from "./PlayerControl";
 import Player from "./Player";
 import Game from "./Game";
 import eventManager from "./eventManager";
+import ReactUIScene from "./ReactUIScene";
 
 import Stage from "./uicomponents/Stage";
 
 export default class ReactUI
 {
-  public currentScene: string;
+  public currentScene: ReactUIScene;
   public battle: Battle;
   public battlePrep: BattlePrep;
   public renderer: Renderer;
@@ -31,7 +32,7 @@ export default class ReactUI
     eventManager.addEventListener("switchScene", this.switchScene.bind(this));
     eventManager.addEventListener("renderUI", this.render.bind(this));
   }
-  public switchScene(newScene: string)
+  public switchScene(newScene: ReactUIScene)
   {
     this.currentScene = newScene;
     this.render();
