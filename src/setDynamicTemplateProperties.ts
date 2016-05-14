@@ -1,59 +1,14 @@
-
-import ModuleData from "./ModuleData";
-import Unit from "./Unit";
-import
-{
-  getRandomProperty
-} from "./utility";
-
 import AbilityTemplate from "./templateinterfaces/AbilityTemplate";
-import ManufacturableThing from "./templateinterfaces/ManufacturableThing";
+import TemplateCollection from "./templateinterfaces/TemplateCollection";
+import AttitudeModifierTemplate from "./templateinterfaces/AttitudeModifierTemplate";
+import UnitTemplate from "./templateinterfaces/UnitTemplate";
+import TechnologyTemplate from "./templateinterfaces/TechnologyTemplate";
 
-// TODO | add technology requirements
-export default function setDynamicTemplateProperties(moduleData: ModuleData)
+export function setAttitudeModifierOverride(attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>)
 {
-  setAbilityGuardAddition(moduleData);
-  setAttitudeModifierOverride(moduleData);
-  setUnitFamilyAssociatedTemplates(moduleData);
-  setTechnologyRequirements(moduleData);
-}
-// TODO | use proper ability usage system
-function setAbilityGuardAddition(moduleData: ModuleData)
-{
-  function checkIfAbilityAddsGuard(ability: AbilityTemplate)
+  for (let modifierType in attitudeModifiers)
   {
-    var effects = [ability.mainEffect];
-    if (ability.secondaryEffects)
-    {
-      effects = effects.concat(ability.secondaryEffects);
-    }
-
-    var dummyUser = new Unit(getRandomProperty(moduleData.Templates.Units));
-    var dummyTarget = new Unit(getRandomProperty(moduleData.Templates.Units));
-
-    for (let i = 0; i < effects.length; i++)
-    {
-      effects[i].action.executeAction(dummyUser, dummyTarget, null, effects[i].data);
-      if (dummyUser.battleStats.guardAmount)
-      {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  for (let abilityName in moduleData.Templates.Abilities)
-  {
-    var ability = <AbilityTemplate> moduleData.Templates.Abilities[abilityName];
-    ability.addsGuard = checkIfAbilityAddsGuard(ability);
-  }
-}
-function setAttitudeModifierOverride(moduleData: ModuleData)
-{
-  for (let modifierType in moduleData.Templates.AttitudeModifiers)
-  {
-    var modifier = moduleData.Templates.AttitudeModifiers[modifierType];
+    var modifier = attitudeModifiers[modifierType];
     if (modifier.canBeOverriddenBy)
     {
       for (let i = 0; i < modifier.canBeOverriddenBy.length; i++)
@@ -68,11 +23,11 @@ function setAttitudeModifierOverride(moduleData: ModuleData)
     }
   }
 }
-function setUnitFamilyAssociatedTemplates(moduleData: ModuleData)
+export function setUnitFamilyAssociatedTemplates(unitTemplates: TemplateCollection<UnitTemplate>)
 {
-  for (let unitType in moduleData.Templates.Units)
+  for (let unitType in unitTemplates)
   {
-    var template = moduleData.Templates.Units[unitType];
+    var template = unitTemplates[unitType];
     for (let i = 0; i < template.families.length; i++)
     {
       var family = template.families[i];
@@ -85,11 +40,11 @@ function setUnitFamilyAssociatedTemplates(moduleData: ModuleData)
     }
   }
 }
-function setTechnologyRequirements(moduleData: ModuleData)
+export function setTechnologyRequirements(technologyTemplates: TemplateCollection<TechnologyTemplate>)
 {
-  for (let technologyKey in moduleData.Templates.Technologies)
+  for (let technologyKey in technologyTemplates)
   {
-    const technology = moduleData.Templates.Technologies[technologyKey];
+    const technology = technologyTemplates[technologyKey];
     for (let level in technology.unlocksPerLevel)
     {
       const unlockedTemplatesForLevel = technology.unlocksPerLevel[level];
