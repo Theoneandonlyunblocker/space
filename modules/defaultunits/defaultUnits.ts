@@ -8,6 +8,7 @@ import ModuleFile from "../../src/ModuleFile";
 import ModuleData from "../../src/ModuleData";
 import ModuleFileLoadingPhase from "../../src/ModuleFileLoadingPhase";
 import cacheSpriteSheetAsImages from "../../src/cacheSpriteSheetAsImages";
+import {setUnitFamilyAssociatedTemplates} from "../../src/setDynamicTemplateProperties";
 
 import UnitTemplate from "../../src/templateinterfaces/UnitTemplate";
 import UnitFamily from "../../src/templateinterfaces/UnitFamily";
@@ -42,6 +43,8 @@ const defaultUnits: ModuleFile =
   },
   constructModule: function(moduleData: ModuleData)
   {
+    setUnitFamilyAssociatedTemplates(UnitTemplates);
+    
     moduleData.copyTemplates<UnitTemplate>(UnitTemplates, "Units");
     moduleData.copyTemplates<UnitFamily>(UnitFamilies, "UnitFamilies");
     moduleData.copyTemplates<UnitArchetype>(UnitArchetypes, "UnitArchetypes");

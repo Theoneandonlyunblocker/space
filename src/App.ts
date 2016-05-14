@@ -10,7 +10,6 @@ import Player from "./Player";
 import PlayerControl from "./PlayerControl";
 import ReactUI from "./ReactUI";
 import Renderer from "./Renderer";
-import setDynamicTemplateProperties from "./setDynamicTemplateProperties";
 import Options from "./options";
 import TutorialStatus from "./tutorials/TutorialStatus";
 import
@@ -137,8 +136,6 @@ class App
 
     Options.load();
     TutorialStatus.load();
-
-    setDynamicTemplateProperties(this.moduleData);
     
     this.initUI();
     this.setInitialScene();
