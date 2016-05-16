@@ -14,7 +14,7 @@ const paintingPortraits: ModuleFile =
     author: "various artists",
     description: "old ppl"
   },
-  needsToBeLoadedBefore: ModuleFileLoadingPhase.battlePrep,
+  needsToBeLoadedBefore: ModuleFileLoadingPhase.mapGen,
   loadAssets: function(onLoaded: () => void)
   {
     onLoaded();
