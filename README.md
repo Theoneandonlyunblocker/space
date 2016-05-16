@@ -9,7 +9,7 @@ and
 [Node.JS](https://nodejs.org/en/)
 if you need to.
 
-Execute the following commands to clone the repository and install required depndencies.
+Execute the following commands to clone the repository and install required dependencies.
 ```bash
 git clone https://github.com/giraluna/spacegame.git
 cd spacegame
